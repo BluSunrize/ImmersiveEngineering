@@ -555,9 +555,10 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						);
 						transform.pop();
 					}
-					else if(equipped.getItem() instanceof DrillItem||equipped.getItem() instanceof ChemthrowerItem)
+					else if(equipped.getItem() instanceof DrillItem||equipped.getItem() instanceof ChemthrowerItem||equipped.getItem() instanceof BuzzsawItem)
 					{
 						boolean drill = equipped.getItem() instanceof DrillItem;
+						boolean buzzsaw = equipped.getItem() instanceof BuzzsawItem;
 						IVertexBuilder builder = buffer.getBuffer(IERenderTypes.getGui(rl("textures/gui/hud_elements.png")));
 						float dx = scaledWidth-16;
 						float dy = scaledHeight;
@@ -573,58 +574,68 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 
 						transform.translate(-23, -37, 0);
 						LazyOptional<IFluidHandlerItem> handlerOpt = FluidUtil.getFluidHandler(equipped);
-						int capacity = -1;
-						if(handlerOpt.isPresent())
-						{
-							IFluidHandlerItem handler = handlerOpt.orElseThrow(RuntimeException::new);
+						handlerOpt.ifPresent(handler -> {
+							int capacity = -1;
 							if(handler.getTanks() > 0)
 								capacity = handler.getTankCapacity(0);
-						}
-						if(capacity >= 0)
-						{
-							FluidStack fuel = FluidUtil.getFluidContained(equipped).orElse(FluidStack.EMPTY);
-							int amount = fuel.getAmount();
-							if(!drill&&player.isHandActive()&&player.getActiveHand()==hand)
+							if(capacity > 0)
 							{
-								int use = player.getItemInUseMaxCount();
-								amount -= use*IEConfig.TOOLS.chemthrower_consumption.get();
-							}
-							float cap = (float)capacity;
-							float angle = 83-(166*amount/cap);
-							transform.push();
-							transform.rotate(new Quaternion(0, 0, angle, true));
-							ClientUtils.drawTexturedRect(builder, transform, 6, -2, 24, 4, 1, 1, 1, 1, 91/256f, 123/256f, 80/256f, 87/256f);
-							transform.pop();
-							transform.translate(23, 37, 0);
-							if(drill)
-							{
-								ClientUtils.drawTexturedRect(builder, transform, -54, -73, 66, 72, 1, 1, 1, 1, 108/256f, 174/256f, 4/256f, 76/256f);
-								ItemRenderer ir = ClientUtils.mc().getItemRenderer();
-								ItemStack head = ((DrillItem)equipped.getItem()).getHead(equipped);
-								if(!head.isEmpty())
+								FluidStack fuel = handler.getFluidInTank(0);
+								int amount = fuel.getAmount();
+								if(!drill&&player.isHandActive()&&player.getActiveHand()==hand)
 								{
-									ir.renderItemIntoGUI(head, -51, -45);
-									ir.renderItemOverlayIntoGUI(head.getItem().getFontRenderer(head), head, -51, -45, null);
+									int use = player.getItemInUseMaxCount();
+									amount -= use*IEConfig.TOOLS.chemthrower_consumption.get();
 								}
-							}
-							else
-							{
-								ClientUtils.drawTexturedRect(builder, transform, -41, -73, 53, 72, 1, 1, 1, 1, 8/256f, 61/256f, 4/256f, 76/256f);
-								boolean ignite = ItemNBTHelper.getBoolean(equipped, "ignite");
-								ClientUtils.drawTexturedRect(builder, transform, -32, -43, 12, 12, 1, 1, 1, 1, 66/256f, 78/256f, (ignite?21: 9)/256f, (ignite?33: 21)/256f);
+								float cap = (float)capacity;
+								float angle = 83-(166*amount/cap);
+								transform.push();
+								transform.rotate(new Quaternion(0, 0, angle, true));
+								ClientUtils.drawTexturedRect(builder, transform, 6, -2, 24, 4, 1, 1, 1, 1, 91/256f, 123/256f, 80/256f, 87/256f);
+								transform.pop();
+								transform.translate(23, 37, 0);
+								if(drill)
+								{
+									ClientUtils.drawTexturedRect(builder, transform, -54, -73, 66, 72, 1, 1, 1, 1, 108/256f, 174/256f, 4/256f, 76/256f);
+									ItemRenderer ir = ClientUtils.mc().getItemRenderer();
+									ItemStack head = ((DrillItem)equipped.getItem()).getHead(equipped);
+									if(!head.isEmpty())
+									{
+										ir.renderItemIntoGUI(head, -51, -45);
+										ir.renderItemOverlayIntoGUI(head.getItem().getFontRenderer(head), head, -51, -45, null);
+										RenderHelper.disableStandardItemLighting();
+									}
+								}
+								else if(buzzsaw)
+								{
+									ClientUtils.drawTexturedRect(builder, transform, -54, -73, 66, 72, 1, 1, 1, 1, 108/256f, 174/256f, 4/256f, 76/256f);
+									ItemRenderer ir = ClientUtils.mc().getItemRenderer();
+									ItemStack blade = ((BuzzsawItem)equipped.getItem()).getSawblade(equipped);
+									if(!blade.isEmpty())
+									{
+										ir.renderItemIntoGUI(blade, -51, -45);
+										ir.renderItemOverlayIntoGUI(blade.getItem().getFontRenderer(blade), blade, -51, -45, null);
+									}
+								}
+								else
+								{
+									ClientUtils.drawTexturedRect(builder, transform, -41, -73, 53, 72, 1, 1, 1, 1, 8/256f, 61/256f, 4/256f, 76/256f);
+									boolean ignite = ItemNBTHelper.getBoolean(equipped, "ignite");
+									ClientUtils.drawTexturedRect(builder, transform, -32, -43, 12, 12, 1, 1, 1, 1, 66/256f, 78/256f, (ignite?21: 9)/256f, (ignite?33: 21)/256f);
 
-								ClientUtils.drawTexturedRect(builder, transform, -100, -20, 64, 16, 1, 1, 1, 1, 0/256f, 64/256f, 76/256f, 92/256f);
-								if(!fuel.isEmpty())
-								{
-									String name = ClientUtils.font().trimStringToWidth(fuel.getDisplayName().getFormattedText(), 50).trim();
-									ClientUtils.font().renderString(
-											name, -68-ClientUtils.font().getStringWidth(name)/2, -15, 0,
-											false, transform.getLast().getMatrix(), buffer, false,
-											0, 0xf000f0
-									);
+									ClientUtils.drawTexturedRect(builder, transform, -100, -20, 64, 16, 1, 1, 1, 1, 0/256f, 64/256f, 76/256f, 92/256f);
+									if(!fuel.isEmpty())
+									{
+										String name = ClientUtils.font().trimStringToWidth(fuel.getDisplayName().getFormattedText(), 50).trim();
+										ClientUtils.font().renderString(
+												name, -68-ClientUtils.font().getStringWidth(name)/2, -15, 0,
+												false, transform.getLast().getMatrix(), buffer, false,
+												0, 0xf000f0
+										);
+									}
 								}
 							}
-						}
+						});
 						transform.pop();
 					}
 					else if(equipped.getItem() instanceof IEShieldItem)

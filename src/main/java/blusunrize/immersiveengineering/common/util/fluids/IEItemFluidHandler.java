@@ -100,4 +100,10 @@ public class IEItemFluidHandler extends FluidHandlerItemStack
 			return 0;
 		}
 	}
+
+	@Override
+	public int getTankCapacity(int tank)
+	{
+		return getCapacity();
+	}
 }

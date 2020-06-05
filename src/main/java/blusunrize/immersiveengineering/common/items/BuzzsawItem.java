@@ -211,7 +211,7 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 	{
 		LazyOptional<IItemHandler> invCap = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		invCap.ifPresent(inv -> {
-			if(!inv.getStackInSlot(0).isEmpty()&&!inv.getStackInSlot(1).isEmpty()&&!inv.getStackInSlot(2).isEmpty()&&!inv.getStackInSlot(3).isEmpty())
+			if(!inv.getStackInSlot(0).isEmpty()&&!inv.getStackInSlot(1).isEmpty()&&!inv.getStackInSlot(2).isEmpty())
 				Utils.unlockIEAdvancement(player, "main/upgrade_buzzsaw");
 		});
 	}
@@ -320,7 +320,7 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 		if(slot==EquipmentSlotType.MAINHAND)
 		{
 			ItemStack sawblade = getSawblade(stack);
-			if(!sawblade.isEmpty())
+			if(!sawblade.isEmpty()&&canBuzzsawBeUsed(stack, null))
 			{
 				multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(),
 						new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier",
@@ -341,6 +341,7 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 	@Override
 	public boolean hitEntity(ItemStack stack, LivingEntity target, LivingEntity player)
 	{
+		consumeDurability(stack, target.getEntityWorld(), null, null, player);
 		return true;
 	}
 
@@ -400,9 +401,9 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 
 	private void consumeDurability(ItemStack stack, World world, BlockState state, BlockPos pos, LivingEntity living)
 	{
-		if(state.getBlockHardness(world, pos)!=0.0f)
+		if(state==null || state.getBlockHardness(world, pos)!=0.0f)
 		{
-			int dmg = ForgeHooks.isToolEffective(world, pos, stack)||isEffective(stack, state.getMaterial())?1: 3;
+			int dmg = state==null||ForgeHooks.isToolEffective(world, pos, stack)||isEffective(stack, state.getMaterial())?1: 3;
 			ItemStack sawblade = getSawblade(stack);
 			if(!sawblade.isEmpty())
 			{

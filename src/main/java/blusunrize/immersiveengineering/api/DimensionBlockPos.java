@@ -28,7 +28,10 @@ public class DimensionBlockPos
 	public DimensionBlockPos(int x, int y, int z, DimensionType dim)
 	{
 		pos = new BlockPos(x, y, z);
-		dimension = dim;
+		if(dim==null)
+			dimension = DimensionType.OVERWORLD;
+		else
+			dimension = dim;
 	}
 
 	public DimensionBlockPos(int x, int y, int z, World w)

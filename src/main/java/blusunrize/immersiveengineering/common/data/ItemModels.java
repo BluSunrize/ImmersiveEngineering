@@ -213,7 +213,10 @@ public class ItemModels extends LoadedModelProvider
 				Ingredients.wireCopper, Ingredients.wireElectrum, Ingredients.wireAluminum, Ingredients.wireSteel,
 				Ingredients.dustSaltpeter, Ingredients.dustSulfur, Ingredients.electronTube, Ingredients.circuitBoard);
 
-		addItemModels("tool_", Tools.hammer, Tools.wirecutter, Tools.screwdriver, Tools.manual, Tools.steelPick, Tools.steelShovel, Tools.steelAxe, Tools.steelSword);
+		addItemModels(
+				"tool_", mcLoc("item/handheld"), Tools.hammer, Tools.wirecutter, Tools.screwdriver,
+				Tools.manual, Tools.steelPick, Tools.steelShovel, Tools.steelAxe, Tools.steelSword
+		);
 		addItemModels("", IEItems.Misc.wireCoils.values().toArray(new Item[0]));
 		addItemModels("", IEItems.Misc.graphiteElectrode);
 		addItemModels("", IEItems.Misc.toolUpgrades.values().toArray(new Item[0]));
@@ -398,17 +401,32 @@ public class ItemModels extends LoadedModelProvider
 		addItemModels(texturePrefix, Arrays.asList(items));
 	}
 
+	private void addItemModels(String texturePrefix, ResourceLocation parent, Item... items)
+	{
+		addItemModels(texturePrefix, parent, Arrays.asList(items));
+	}
+
 	private void addItemModels(String texturePrefix, Collection<Item> items)
 	{
+		addItemModels(texturePrefix, mcLoc("item/generated"), items);
+	}
+
+	private void addItemModels(String texturePrefix, ResourceLocation parent, Collection<Item> items)
+	{
 		for(Item item : items)
-			addItemModel(texturePrefix==null?null: (texturePrefix+item.getRegistryName().getPath()), item);
+			addItemModel(texturePrefix==null?null: (texturePrefix+item.getRegistryName().getPath()), item, parent);
 	}
 
 	private void addItemModel(String texture, Item item)
 	{
+		addItemModel(texture, item, mcLoc("item/generated"));
+	}
+
+	private void addItemModel(String texture, Item item, ResourceLocation parent)
+	{
 		String path = name(item);
 		String textureLoc = texture==null?path: ("item/"+texture);
-		withExistingParent(path, mcLoc("item/generated"))
+		withExistingParent(path, parent)
 				.texture("layer0", modLoc(textureLoc));
 	}
 
