@@ -48,7 +48,9 @@ public class EngineersBlueprintItem extends IEBaseItem
 	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
 	{
 		String key = ItemNBTHelper.getString(stack, "blueprint");
-		if(!key.isEmpty()&&BlueprintCraftingRecipe.recipeCategories.contains(key))
+		if(!key.isEmpty()
+				&&BlueprintCraftingRecipe.recipeCategories!=null
+				&&BlueprintCraftingRecipe.recipeCategories.contains(key))
 		{
 			String formatKey = Lib.DESC_INFO+"blueprint."+key;
 			String formatted = I18n.format(formatKey);
