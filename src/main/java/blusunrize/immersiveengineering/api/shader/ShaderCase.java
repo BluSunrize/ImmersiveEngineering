@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.api.shader;
 
 import net.minecraft.client.renderer.Vector4f;
-import net.minecraft.client.renderer.model.Material;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.Collection;
@@ -84,7 +83,7 @@ public abstract class ShaderCase
 	/**
 	 * @return which icon is to be used for the given pass and model part. These obviously need to be stitched on the given sheet (mind the revolvers!)
 	 */
-	public Material getTextureReplacement(String modelPart, int pass)
+	public ResourceLocation getTextureReplacement(String modelPart, int pass)
 	{
 		return getLayers()[pass].getTexture();
 	}

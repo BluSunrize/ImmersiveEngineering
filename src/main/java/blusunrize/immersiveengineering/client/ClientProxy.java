@@ -326,7 +326,7 @@ public class ClientProxy extends CommonProxy
 				if(sCase.stitchIntoSheet())
 					for(ShaderLayer layer : sCase.getLayers())
 						if(layer.getTexture()!=null)
-							event.addSprite(layer.getTexture().getTextureLocation());
+							event.addSprite(layer.getTexture());
 
 		for(DrillHeadPerm p : DrillHeadPerm.ALL_PERMS)
 			event.addSprite(p.texture);

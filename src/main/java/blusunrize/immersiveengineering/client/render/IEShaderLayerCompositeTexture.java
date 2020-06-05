@@ -63,13 +63,13 @@ public class IEShaderLayerCompositeTexture extends Texture
 
 				try
 				{
-					String texPath = this.layers[layer].getTexture().getTextureLocation().getPath();
+					String texPath = this.layers[layer].getTexture().getPath();
 
 					if(!texPath.startsWith("textures/"))
 						texPath = "textures/"+texPath;
 					if(!texPath.endsWith(".png"))
 						texPath += ".png";
-					String texture = this.layers[layer].getTexture().getTextureLocation().getNamespace()+":"+texPath;
+					String texture = this.layers[layer].getTexture().getNamespace()+":"+texPath;
 					Vector4f colour = this.layers[layer].getColor();
 
 					iresource1 = resourceManager.getResource(new ResourceLocation(texture));

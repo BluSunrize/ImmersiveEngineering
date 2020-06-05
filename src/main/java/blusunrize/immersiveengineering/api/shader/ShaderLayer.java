@@ -3,7 +3,6 @@ package blusunrize.immersiveengineering.api.shader;
 import com.google.common.base.Preconditions;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Vector4f;
-import net.minecraft.client.renderer.model.Material;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -75,12 +74,9 @@ public class ShaderLayer
 		return this.cutoutBounds;
 	}
 
-	public Material getTexture()
+	public ResourceLocation getTexture()
 	{
-		if(texture!=null)
-			return new Material(texture, texture);
-		else
-			return null;
+		return texture;
 	}
 
 	@OnlyIn(Dist.CLIENT)

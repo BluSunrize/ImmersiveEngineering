@@ -4,6 +4,8 @@ import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import net.minecraft.client.renderer.model.Material;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.inventory.container.PlayerContainer;
+import net.minecraft.util.ResourceLocation;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -46,9 +48,9 @@ public class MaterialSpriteGetter<T> implements BiFunction<String, Material, Tex
 			sprite = callback.getTextureReplacement(callbackObject, groupName, material);
 		if(shaderCase!=null)
 		{
-			Material rl = shaderCase.getTextureReplacement(groupName, renderPass);
+			ResourceLocation rl = shaderCase.getTextureReplacement(groupName, renderPass);
 			if(rl!=null)
-				sprite = getter.apply(rl);
+				sprite = getter.apply(new Material(PlayerContainer.LOCATION_BLOCKS_TEXTURE, rl));
 		}
 		if(sprite==null)
 			sprite = getter.apply(resourceLocation);

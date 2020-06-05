@@ -24,6 +24,7 @@ import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3i;
@@ -111,7 +112,7 @@ public class IEOBJItemRenderer extends ItemStackTileEntityRenderer
 		{
 			boolean bright = callback.areGroupsFullbright(stack, groups);
 			RenderType baseType;
-			ResourceLocation atlas = quadsForLayer.layer.getTexture().getAtlasLocation();
+			ResourceLocation atlas = PlayerContainer.LOCATION_BLOCKS_TEXTURE;
 			if(bright)
 				baseType = IERenderTypes.getFullbrightTranslucent(atlas);
 			else if(quadsForLayer.layer.isTranslucent())
