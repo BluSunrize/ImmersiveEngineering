@@ -1,0 +1,19 @@
+{
+  "type": "forge:ore_shaped",
+  "result": {
+    "item": "immersiveengineering:hoe_steel"
+  },
+  "pattern": [
+    "SS",
+    " T",
+    " T"
+  ],
+  "key": {
+    "S": {
+      "item": "#ingotSteel"
+    },
+    "T": {
+      "item": "#stickTreatedWood"
+    }
+  }
+}

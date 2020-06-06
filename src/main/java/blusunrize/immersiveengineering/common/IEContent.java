@@ -172,6 +172,7 @@ public class IEContent
 	public static ItemToolBase itemSteelPick;
 	public static ItemToolBase itemSteelShovel;
 	public static ItemToolBase itemSteelAxe;
+	public static ItemIEHoe itemSteelHoe;
 	public static ItemIESword itemSteelSword;
 	public static ItemIEBase itemToolbox;
 	public static ItemIEBase itemWireCoil;
@@ -297,6 +298,7 @@ public class IEContent
 		itemSteelPick = new ItemIEPickaxe(Lib.MATERIAL_Steel, "pickaxe_steel", "pickaxe", "ingotSteel");
 		itemSteelShovel = new ItemIEShovel(Lib.MATERIAL_Steel, "shovel_steel", "shovel", "ingotSteel");
 		itemSteelAxe = new ItemIEAxe(Lib.MATERIAL_Steel, "axe_steel", "axe", "ingotSteel");
+		itemSteelHoe = new ItemIEHoe(Lib.MATERIAL_Steel, "hoe_steel", "ingotSteel");
 		itemSteelSword = new ItemIESword(Lib.MATERIAL_Steel, "sword_steel", "ingotSteel");
 		itemToolbox = new ItemToolbox();
 		itemWireCoil = new ItemWireCoil();
