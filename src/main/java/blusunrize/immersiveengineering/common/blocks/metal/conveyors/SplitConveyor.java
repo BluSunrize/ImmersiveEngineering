@@ -222,6 +222,7 @@ public class SplitConveyor extends BasicConveyor
 				baseModel.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices3), getFacing(), tex_casing0, new double[]{u-1, 16, u, 8}, colour, false));
 			}
 		}
+		super.modifyQuads(baseModel);
 		return baseModel;
 	}
 

@@ -1745,12 +1745,14 @@ public class Recipes extends RecipeProvider
 		IItemProvider extract = ConveyorHandler.getBlock(ExtractConveyor.NAME);
 		IItemProvider extractCovered = ConveyorHandler.getBlock(ExtractCoveredConveyor.NAME);
 		IItemProvider splitter = ConveyorHandler.getBlock(SplitConveyor.NAME);
+		IItemProvider splitterCovered = ConveyorHandler.getBlock(SplitCoveredConveyor.NAME);
 		IItemProvider vertical = ConveyorHandler.getBlock(VerticalConveyor.NAME);
 		IItemProvider verticalCovered = ConveyorHandler.getBlock(VerticalCoveredConveyor.NAME);
-		addCoveyorCoveringRecipe(verticalCovered, vertical, out);
 		addCoveyorCoveringRecipe(covered, basic, out);
 		addCoveyorCoveringRecipe(dropperCovered, dropper, out);
 		addCoveyorCoveringRecipe(extractCovered, extract, out);
+		addCoveyorCoveringRecipe(splitterCovered, splitter, out);
+		addCoveyorCoveringRecipe(verticalCovered, vertical, out);
 		ShapedRecipeBuilder.shapedRecipe(basic, 8)
 				.patternLine("lll")
 				.patternLine("iri")
