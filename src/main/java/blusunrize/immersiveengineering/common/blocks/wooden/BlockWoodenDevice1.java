@@ -101,6 +101,8 @@ public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDev
 					return side==(((TileEntityWallmount)te).orientation > 1?((TileEntityWallmount)te).facing.getOpposite(): ((TileEntityWallmount)te).facing)?BlockFaceShape.CENTER: BlockFaceShape.UNDEFINED;
 			}
 		}
+		if(meta==BlockTypes_WoodenDevice1.WATERMILL.getMeta()||meta==BlockTypes_WoodenDevice1.WINDMILL.getMeta())
+			return BlockFaceShape.UNDEFINED;
 		return BlockFaceShape.SOLID;
 	}
 
