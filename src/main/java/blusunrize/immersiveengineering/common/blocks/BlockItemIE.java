@@ -23,6 +23,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -36,9 +38,14 @@ public class BlockItemIE extends BlockItem
 {
 	private int burnTime;
 
+	public BlockItemIE(Block b, Item.Properties props)
+	{
+		super(b, props);
+	}
+
 	public BlockItemIE(Block b)
 	{
-		super(b, new Item.Properties().group(ImmersiveEngineering.itemGroup));
+		this(b, new Item.Properties().group(ImmersiveEngineering.itemGroup));
 		setRegistryName(b.getRegistryName());
 	}
 
@@ -59,26 +66,25 @@ public class BlockItemIE extends BlockItem
 	@OnlyIn(Dist.CLIENT)
 	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag advanced)
 	{
-		if(getBlock() instanceof IEBaseBlock)
+		if(getBlock() instanceof IIEBlock)
 		{
-			IEBaseBlock ieBlock = (IEBaseBlock)getBlock();
+			IIEBlock ieBlock = (IIEBlock)getBlock();
 			if(ieBlock.hasFlavour())
 			{
-				String flavourKey = Lib.DESC_FLAVOUR+ieBlock.name;
-				//TODO color
-				tooltip.add(new TranslationTextComponent(I18n.format(flavourKey)));
+				String flavourKey = Lib.DESC_FLAVOUR+ieBlock.getNameForFlavour();
+				tooltip.add(new TranslationTextComponent(flavourKey).setStyle(new Style().setColor(TextFormatting.GRAY)));
 			}
 		}
 		super.addInformation(stack, world, tooltip, advanced);
 		if(ItemNBTHelper.hasKey(stack, "energyStorage"))
 			tooltip.add(new TranslationTextComponent(Lib.DESC_INFO+"energyStored",
-					ItemNBTHelper.getInt(stack, "energyStorage")));
+					ItemNBTHelper.getInt(stack, "energyStorage")).setStyle(new Style().setColor(TextFormatting.GRAY)));
 		if(ItemNBTHelper.hasKey(stack, "tank"))
 		{
 			FluidStack fs = FluidStack.loadFluidStackFromNBT(ItemNBTHelper.getTagCompound(stack, "tank"));
 			if(fs!=null)
 				tooltip.add(new TranslationTextComponent(Lib.DESC_INFO+"fluidStored",
-						fs.getDisplayName(), fs.getAmount()));
+						fs.getDisplayName(), fs.getAmount()).setStyle(new Style().setColor(TextFormatting.GRAY)));
 		}
 	}
 
@@ -98,7 +104,7 @@ public class BlockItemIE extends BlockItem
 	@Override
 	protected boolean placeBlock(BlockItemUseContext context, BlockState newState)
 	{
-		Block b = getBlock();
+		Block b = newState.getBlock();
 		if(b instanceof IEBaseBlock)
 		{
 			IEBaseBlock ieBlock = (IEBaseBlock)b;
@@ -115,9 +121,9 @@ public class BlockItemIE extends BlockItem
 
 	public static class BlockItemIENoInventory extends BlockItemIE
 	{
-		public BlockItemIENoInventory(Block b)
+		public BlockItemIENoInventory(Block b, Properties props)
 		{
-			super(b);
+			super(b, props);
 		}
 
 		@Nullable

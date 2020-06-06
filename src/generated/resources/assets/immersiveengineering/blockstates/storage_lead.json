@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "immersiveengineering:block/metal/storage_lead"
+      "model": "immersiveengineering:block/storage_lead"
     }
   }
 }

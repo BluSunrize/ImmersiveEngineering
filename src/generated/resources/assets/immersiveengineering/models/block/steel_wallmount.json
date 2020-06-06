@@ -1,0 +1,11 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "particle": "immersiveengineering:block/metal_decoration/steel_wallmount",
+    "texture": "immersiveengineering:block/metal_decoration/steel_wallmount"
+  },
+  "loader": "forge:obj",
+  "detectCullableFaces": false,
+  "model": "immersiveengineering:models/block/wooden_device/wallmount.obj",
+  "flip-v": true
+}

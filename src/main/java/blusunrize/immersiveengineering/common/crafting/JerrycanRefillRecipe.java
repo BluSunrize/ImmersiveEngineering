@@ -78,7 +78,7 @@ public class JerrycanRefillRecipe extends SpecialRecipe
 			{
 				if(ret[0].isEmpty()&&Misc.jerrycan.equals(stackInSlot.getItem())&&FluidUtil.getFluidContained(stackInSlot)!=null)
 					ret[0] = stackInSlot;
-				else if(ret[1].isEmpty()&&FluidUtil.getFluidHandler(stackInSlot)!=null)
+				else if(ret[1].isEmpty()&&FluidUtil.getFluidHandler(stackInSlot).isPresent())
 					ret[1] = stackInSlot;
 				else
 					return ret;

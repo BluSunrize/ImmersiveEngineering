@@ -8,8 +8,6 @@
 
 package blusunrize.immersiveengineering.common.util.compat112;
 
-import blusunrize.immersiveengineering.api.tool.BelljarHandler;
-import blusunrize.immersiveengineering.api.tool.BelljarHandler.IPlantHandler;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.block.Block;

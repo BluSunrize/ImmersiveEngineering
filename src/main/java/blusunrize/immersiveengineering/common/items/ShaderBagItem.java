@@ -8,21 +8,23 @@
 
 package blusunrize.immersiveengineering.common.items;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
+import net.minecraft.util.*;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
+import java.util.Locale;
 
 public class ShaderBagItem extends IEBaseItem
 {
@@ -50,7 +52,15 @@ public class ShaderBagItem extends IEBaseItem
 	@Override
 	public ITextComponent getDisplayName(ItemStack stack)
 	{
-		return new StringTextComponent(rarity.name()+" ").appendSibling(super.getDisplayName(stack));
+		return new TranslationTextComponent(Lib.DESC_INFO+"shader.rarity."+this.rarity.name().toLowerCase(Locale.US))
+				.appendText(" ")
+				.appendSibling(super.getDisplayName(stack));
+	}
+
+	@Override
+	public String getTranslationKey()
+	{
+		return "item."+ImmersiveEngineering.MODID+".shader_bag";
 	}
 
 	@Override
@@ -60,17 +70,26 @@ public class ShaderBagItem extends IEBaseItem
 	}
 
 	@Override
+	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items)
+	{
+		if(this.isInGroup(group)&&ShaderRegistry.sortedRarityMap.contains(this.rarity))
+		{
+			items.add(new ItemStack(this));
+		}
+	}
+
+	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand)
 	{
 		ItemStack stack = player.getHeldItem(hand);
 		if(!world.isRemote)
 			if(ShaderRegistry.totalWeight.containsKey(rarity))
 			{
-				String shader = ShaderRegistry.getRandomShader(player.getUniqueID(), player.getRNG(), rarity, true);
-				if(shader==null||shader.isEmpty())
+				ResourceLocation shader = ShaderRegistry.getRandomShader(player.getUniqueID(), player.getRNG(), rarity, true);
+				if(shader==null)
 					return new ActionResult<>(ActionResultType.FAIL, stack);
 				ItemStack shaderItem = new ItemStack(Misc.shader);
-				ItemNBTHelper.putString(shaderItem, "shader_name", shader);
+				ItemNBTHelper.putString(shaderItem, "shader_name", shader.toString());
 				Rarity shaderRarity = ShaderRegistry.shaderRegistry.get(shader).getRarity();
 				if(ShaderRegistry.sortedRarityMap.indexOf(shaderRarity) <= ShaderRegistry.sortedRarityMap.indexOf(Rarity.EPIC)&&
 						ShaderRegistry.sortedRarityMap.indexOf(rarity) >= ShaderRegistry.sortedRarityMap.indexOf(Rarity.COMMON))

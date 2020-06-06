@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.items;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
@@ -21,6 +22,7 @@ import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.entities.ChemthrowerShotEntity;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IAdvancedFluidItem;
+import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IScrollwheel;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.fluids.IEItemFluidHandler;
@@ -59,11 +61,11 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFluidItem, IOBJModelCallback<ItemStack>, ITool
+public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFluidItem, IOBJModelCallback<ItemStack>, ITool, IScrollwheel
 {
 	public ChemthrowerItem()
 	{
-		super("chemthrower", new Item.Properties().setTEISR(() -> () -> IEOBJItemRenderer.INSTANCE), "CHEMTHROWER");
+		super("chemthrower", new Item.Properties().setTEISR(() -> () -> IEOBJItemRenderer.INSTANCE).maxStackSize(1), "CHEMTHROWER");
 	}
 
 	@Override
@@ -201,7 +203,8 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 		return 72000;
 	}
 
-	public void switchTank(ItemStack stack, boolean forward)
+	@Override
+	public void onScrollwheel(ItemStack stack, boolean forward)
 	{
 		if(getUpgrades(stack).getBoolean("multitank"))
 		{
@@ -273,7 +276,7 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 			return new IEItemStackHandler(stack)
 			{
 				LazyOptional<IEItemFluidHandler> fluids = ApiUtils.constantOptional(new IEItemFluidHandler(stack, 2000));
-				LazyOptional<ShaderWrapper_Item> shaders = ApiUtils.constantOptional(new ShaderWrapper_Item("immersiveengineering:chemthrower", stack));
+				LazyOptional<ShaderWrapper_Item> shaders = ApiUtils.constantOptional(new ShaderWrapper_Item(new ResourceLocation(ImmersiveEngineering.MODID, "chemthrower"), stack));
 
 				@Nonnull
 				@Override
@@ -309,13 +312,13 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 	}
 
 	@Override
-	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, Supplier<World> getWorld)
+	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, Supplier<World> getWorld, Supplier<PlayerEntity> getPlayer)
 	{
 		LazyOptional<IItemHandler> inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		return new Slot[]
 				{
-						new IESlot.Upgrades(container, inv.orElseThrow(RuntimeException::new), 0, 80, 32, "CHEMTHROWER", stack, true, getWorld),
-						new IESlot.Upgrades(container, inv.orElseThrow(RuntimeException::new), 1, 100, 32, "CHEMTHROWER", stack, true, getWorld)
+						new IESlot.Upgrades(container, inv.orElseThrow(RuntimeException::new), 0, 80, 32, "CHEMTHROWER", stack, true, getWorld, getPlayer),
+						new IESlot.Upgrades(container, inv.orElseThrow(RuntimeException::new), 1, 100, 32, "CHEMTHROWER", stack, true, getWorld, getPlayer)
 				};
 	}
 

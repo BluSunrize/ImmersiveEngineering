@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " S ",
+    "S S",
+    "W W"
+  ],
+  "key": {
+    "S": {
+      "tag": "forge:rods/iron"
+    },
+    "W": {
+      "tag": "minecraft:wool"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:earmuffs"
+  }
+}

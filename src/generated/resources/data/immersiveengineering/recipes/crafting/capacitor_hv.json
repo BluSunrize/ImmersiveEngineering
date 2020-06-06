@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "sss",
+    "ala",
+    "wrw"
+  ],
+  "key": {
+    "s": {
+      "tag": "forge:ingots/steel"
+    },
+    "a": {
+      "tag": "forge:ingots/aluminum"
+    },
+    "l": {
+      "tag": "forge:storage_blocks/lead"
+    },
+    "w": {
+      "tag": "forge:treated_wood"
+    },
+    "r": {
+      "tag": "forge:storage_blocks/redstone"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:capacitor_hv"
+  }
+}

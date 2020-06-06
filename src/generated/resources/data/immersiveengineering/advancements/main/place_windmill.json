@@ -1,0 +1,31 @@
+{
+  "parent": "immersiveengineering:main/root",
+  "display": {
+    "icon": {
+      "item": "immersiveengineering:windmill"
+    },
+    "title": {
+      "translate": "advancement.immersiveengineering.place_windmill"
+    },
+    "description": {
+      "translate": "advancement.immersiveengineering.place_windmill.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "windmill": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "block": "immersiveengineering:windmill"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "windmill"
+    ]
+  ]
+}

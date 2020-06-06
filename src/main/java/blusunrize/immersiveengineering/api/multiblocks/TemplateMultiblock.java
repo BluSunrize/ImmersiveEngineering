@@ -9,9 +9,9 @@
 package blusunrize.immersiveengineering.api.multiblocks;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.multiblocks.BlockMatcher.Result;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.StaticTemplateManager;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -45,13 +45,13 @@ import java.util.Map;
 public abstract class TemplateMultiblock implements MultiblockHandler.IMultiblock
 {
 	private final ResourceLocation loc;
-	private final BlockPos masterFromOrigin;
-	public final BlockPos triggerFromOrigin;
-	private final List<BlockMatcher.MatcherPredicate> additionalPredicates;
+	protected final BlockPos masterFromOrigin;
+	protected final BlockPos triggerFromOrigin;
+	protected final List<BlockMatcher.MatcherPredicate> additionalPredicates;
 	@Nullable
 	private Template template;
 	@Nullable
-	private IngredientStack[] materials;
+	private ItemStack[] materials;
 	private BlockState trigger = Blocks.AIR.getDefaultState();
 
 	public TemplateMultiblock(ResourceLocation loc, BlockPos masterFromOrigin, BlockPos triggerFromOrigin,
@@ -87,7 +87,7 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 	}
 
 	@Nonnull
-	private Template getTemplate()
+	protected Template getTemplate()
 	{
 		if(template==null)//TODO reset on resource reload
 		{
@@ -104,6 +104,11 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 					{
 						blocks.remove(i);
 						i--;
+					}
+					else if(info.state.isAir())
+					{
+						// Usually means it contains a block that has been renamed
+						IELogger.error("Found non-default air block in template "+loc);
 					}
 				}
 				materials = null;
@@ -133,7 +138,7 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 	public boolean createStructure(World world, BlockPos pos, Direction side, PlayerEntity player)
 	{
 		if(side.getAxis()==Axis.Y)
-			side = Direction.fromAngle(player.rotationYaw);
+			side = Direction.fromAngle(player.rotationYaw).getOpposite();
 		Rotation rot = Utils.getRotationBetweenFacings(Direction.NORTH, side.getOpposite());
 		if(rot==null)
 			return false;
@@ -212,28 +217,28 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 	}
 
 	@Override
-	public IngredientStack[] getTotalMaterials()
+	public ItemStack[] getTotalMaterials()
 	{
 		if(materials==null)
 		{
 			List<BlockInfo> structure = getStructure();
-			List<IngredientStack> ret = new ArrayList<>(structure.size());
+			List<ItemStack> ret = new ArrayList<>(structure.size());
 			RayTraceResult rtr = new BlockRayTraceResult(Vec3d.ZERO, Direction.DOWN, BlockPos.ZERO, false);
 			for(BlockInfo info : structure)
 			{
 				ItemStack picked = Utils.getPickBlock(info.state, rtr, ImmersiveEngineering.proxy.getClientPlayer());
 				boolean added = false;
-				for(IngredientStack existing : ret)
-					if(existing.matchesItemStackIgnoringSize(picked))
+				for(ItemStack existing : ret)
+					if(ItemStack.areItemsEqual(existing, picked))
 					{
-						++existing.inputSize;
+						existing.grow(1);
 						added = true;
 						break;
 					}
 				if(!added)
-					ret.add(new IngredientStack(picked));
+					ret.add(picked.copy());
 			}
-			materials = ret.toArray(new IngredientStack[0]);
+			materials = ret.toArray(new ItemStack[0]);
 		}
 		return materials;
 	}

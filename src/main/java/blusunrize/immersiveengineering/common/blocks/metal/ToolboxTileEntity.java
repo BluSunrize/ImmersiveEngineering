@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEApi;
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.items.IEItems.Tools;
@@ -23,6 +24,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
@@ -30,20 +32,22 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.storage.loot.LootContext.Builder;
+import net.minecraft.world.storage.loot.LootContext;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 import java.util.List;
 
-public class ToolboxTileEntity extends IEBaseTileEntity implements IDirectionalTile, IBlockBounds, IIEInventory, IInteractionObjectIE, ITileDrop, IPlayerInteraction
+public class ToolboxTileEntity extends IEBaseTileEntity implements IStateBasedDirectional, IBlockBounds, IIEInventory,
+		IInteractionObjectIE, ITileDrop, IPlayerInteraction
 {
 	public static TileEntityType<ToolboxTileEntity> TYPE;
 
 	NonNullList<ItemStack> inventory = NonNullList.withSize(ToolboxItem.SLOT_COUNT, ItemStack.EMPTY);
 	public ITextComponent name;
-	private Direction facing = Direction.NORTH;
 	private ListNBT enchantments;
 
 	public ToolboxTileEntity()
@@ -54,7 +58,6 @@ public class ToolboxTileEntity extends IEBaseTileEntity implements IDirectionalT
 	@Override
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		facing = Direction.byIndex(nbt.getInt("facing"));
 		if(nbt.contains("name", NBT.TAG_STRING))
 			this.name = ITextComponent.Serializer.fromJson(nbt.getString("name"));
 		if(nbt.contains("enchantments", NBT.TAG_LIST))
@@ -66,7 +69,6 @@ public class ToolboxTileEntity extends IEBaseTileEntity implements IDirectionalT
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		nbt.putInt("facing", facing.ordinal());
 		if(this.name!=null)
 			nbt.putString("name", ITextComponent.Serializer.toJson(this.name));
 		if(this.enchantments!=null)
@@ -138,7 +140,7 @@ public class ToolboxTileEntity extends IEBaseTileEntity implements IDirectionalT
 	}
 
 	@Override
-	public List<ItemStack> getTileDrops(Builder context)
+	public List<ItemStack> getTileDrops(LootContext context)
 	{
 		ItemStack stack = new ItemStack(Tools.toolbox);
 		((InternalStorageItem)Tools.toolbox).setContainedItems(stack, inventory);
@@ -168,21 +170,9 @@ public class ToolboxTileEntity extends IEBaseTileEntity implements IDirectionalT
 	}
 
 	@Override
-	public boolean preventInventoryDrop()
+	public EnumProperty<Direction> getFacingProperty()
 	{
-		return true;
-	}
-
-	@Override
-	public Direction getFacing()
-	{
-		return facing;
-	}
-
-	@Override
-	public void setFacing(Direction facing)
-	{
-		this.facing = facing;
+		return IEProperties.FACING_HORIZONTAL;
 	}
 
 	@Override
@@ -198,7 +188,7 @@ public class ToolboxTileEntity extends IEBaseTileEntity implements IDirectionalT
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, float hitX, float hitY, float hitZ, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
 	{
 		return false;
 	}
@@ -209,12 +199,12 @@ public class ToolboxTileEntity extends IEBaseTileEntity implements IDirectionalT
 		return true;
 	}
 
-	private static final float[] boundsZ = {.125f, 0, .25f, .875f, .625f, .75f};
-	private static final float[] boundsX = {.25f, 0, .125f, .75f, .625f, .875f};
+	private static final VoxelShape boundsZ = VoxelShapes.create(.125f, 0, .25f, .875f, .625f, .75f);
+	private static final VoxelShape boundsX = VoxelShapes.create(.25f, 0, .125f, .75f, .625f, .875f);
 
 	@Override
-	public float[] getBlockBounds()
+	public VoxelShape getBlockBounds()
 	{
-		return facing.getAxis()==Axis.Z?boundsZ: boundsX;
+		return getFacing().getAxis()==Axis.Z?boundsZ: boundsX;
 	}
 }

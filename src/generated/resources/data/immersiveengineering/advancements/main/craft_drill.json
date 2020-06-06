@@ -1,0 +1,35 @@
+{
+  "parent": "immersiveengineering:main/craft_workbench",
+  "display": {
+    "icon": {
+      "item": "immersiveengineering:drill"
+    },
+    "title": {
+      "translate": "advancement.immersiveengineering.craft_drill"
+    },
+    "description": {
+      "translate": "advancement.immersiveengineering.craft_drill.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "drill": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:drill"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "drill"
+    ]
+  ]
+}

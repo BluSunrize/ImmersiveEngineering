@@ -8,11 +8,15 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
+import net.minecraft.state.IProperty;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.Direction;
 import net.minecraft.world.IBlockReader;
 
 import javax.annotation.Nonnull;
@@ -20,9 +24,14 @@ import javax.annotation.Nullable;
 
 public class StructuralArmBlock extends IETileProviderBlock
 {
+	public static final IProperty<Direction> FACING = IEProperties.FACING_HORIZONTAL;
+
 	public StructuralArmBlock(String name)
 	{
-		super(name, Properties.create(Material.IRON).hardnessAndResistance(3, 15), BlockItemIE.class);
+		super(name, Properties.create(Material.IRON).hardnessAndResistance(3, 15),
+				BlockItemIE::new, FACING);
+		setNotNormalBlock();
+		setBlockLayer(BlockRenderLayer.CUTOUT_MIPPED);
 	}
 
 	@Nullable

@@ -1,0 +1,14 @@
+{
+  "brick_recipe": {
+    "type": "crafting",
+    "recipe": "crafting/blastbrick_reinforced"
+  },
+  "multiblock": {
+    "type": "multiblock",
+    "name": "multiblocks/improved_blast_furnace"
+  },
+  "preheater": {
+    "type": "crafting",
+    "recipe": "crafting/blastfurnace_preheater"
+  }
+}

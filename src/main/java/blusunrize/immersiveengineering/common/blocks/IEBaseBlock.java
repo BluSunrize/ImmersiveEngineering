@@ -12,20 +12,23 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.items.HammerItem;
 import blusunrize.immersiveengineering.common.items.WirecutterItem;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.base.Preconditions;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.PushReaction;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
+import net.minecraft.item.Item.Properties;
 import net.minecraft.state.IProperty;
 import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
@@ -38,8 +41,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
-public class IEBaseBlock extends Block
+public class IEBaseBlock extends Block implements IIEBlock
 {
 	protected static IProperty[] tempProperties;
 
@@ -54,7 +59,7 @@ public class IEBaseBlock extends Block
 	protected boolean canHammerHarvest;
 	protected boolean notNormalBlock;
 
-	public IEBaseBlock(String name, Block.Properties blockProps, @Nullable Class<? extends BlockItemIE> itemBlock, IProperty... additionalProperties)
+	public IEBaseBlock(String name, Block.Properties blockProps, BiFunction<Block, Item.Properties, Item> createItemBlock, IProperty... additionalProperties)
 	{
 		super(setTempProperties(blockProps, additionalProperties));
 		this.name = name;
@@ -64,20 +69,12 @@ public class IEBaseBlock extends Block
 		ResourceLocation registryName = createRegistryName();
 		setRegistryName(registryName);
 
-		//TODO this.adjustSo/nd();
-
 		IEContent.registeredIEBlocks.add(this);
-		if(itemBlock!=null)
+		Item item = createItemBlock.apply(this, new Item.Properties().group(ImmersiveEngineering.itemGroup));
+		if(item!=null)
 		{
-			try
-			{
-				IEContent.registeredIEItems.add(itemBlock.getConstructor(Block.class)
-						.newInstance(this));
-			} catch(Exception e)
-			{
-				//TODO e.printStackTrace();
-				throw new RuntimeException(e);
-			}
+			item.setRegistryName(registryName);
+			IEContent.registeredIEItems.add(item);
 		}
 		lightOpacity = 15;
 	}
@@ -114,6 +111,13 @@ public class IEBaseBlock extends Block
 		return this;
 	}
 
+	@Override
+	public String getNameForFlavour()
+	{
+		return name;
+	}
+
+	@Override
 	public boolean hasFlavour()
 	{
 		return hasFlavour;
@@ -149,14 +153,13 @@ public class IEBaseBlock extends Block
 	@SuppressWarnings("deprecation")
 	public int getOpacity(BlockState state, IBlockReader worldIn, BlockPos pos)
 	{
-		if(state.isOpaqueCube(worldIn, pos))
-		{
+		if(notNormalBlock)
+			return 0;
+			//TODO this sometimes locks up when generating IE blocks as part of worldgen
+		else if(state.isOpaqueCube(worldIn, pos))
 			return lightOpacity;
-		}
 		else
-		{
 			return state.propagatesSkylightDown(worldIn, pos)?0: 1;
-		}
 	}
 
 	public IEBaseBlock setMobility(PushReaction flag)
@@ -178,11 +181,11 @@ public class IEBaseBlock extends Block
 		return this;
 	}
 
-	//TODO what is this?
+
 	@Override
-	public float func_220080_a(BlockState p_220080_1_, IBlockReader p_220080_2_, BlockPos p_220080_3_)
+	public float getAmbientOcclusionLightValue(BlockState state, IBlockReader world, BlockPos pos)
 	{
-		return notNormalBlock?1: super.func_220080_a(p_220080_1_, p_220080_2_, p_220080_3_);
+		return notNormalBlock?1: super.getAmbientOcclusionLightValue(state, world, pos);
 	}
 
 	@Override
@@ -307,7 +310,7 @@ public class IEBaseBlock extends Block
 	public abstract static class IELadderBlock extends IEBaseBlock
 	{
 		public IELadderBlock(String name, Block.Properties material,
-							 Class<? extends BlockItemIE> itemBlock, IProperty... additionalProperties)
+							 BiFunction<Block, Item.Properties, Item> itemBlock, IProperty... additionalProperties)
 		{
 			super(name, material, itemBlock, additionalProperties);
 		}
@@ -316,6 +319,36 @@ public class IEBaseBlock extends Block
 		public boolean isLadder(BlockState state, IWorldReader world, BlockPos pos, LivingEntity entity)
 		{
 			return true;
+		}
+
+		@Override
+		public void onEntityCollision(BlockState state, World worldIn, BlockPos pos, Entity entityIn)
+		{
+			super.onEntityCollision(state, worldIn, pos, entityIn);
+			if(entityIn instanceof LivingEntity&&isLadder(state, worldIn, pos, (LivingEntity)entityIn))
+				applyLadderLogic(entityIn);
+		}
+
+		public static void applyLadderLogic(Entity entityIn)
+		{
+			if(entityIn instanceof LivingEntity&&!((LivingEntity)entityIn).isOnLadder())
+			{
+				Vec3d motion = entityIn.getMotion();
+				float maxMotion = 0.15F;
+				motion = new Vec3d(
+						MathHelper.clamp(motion.x, -maxMotion, maxMotion),
+						Math.max(motion.y, -maxMotion),
+						MathHelper.clamp(motion.z, -maxMotion, maxMotion)
+				);
+
+				entityIn.fallDistance = 0.0F;
+
+				if(motion.y < 0&&entityIn instanceof PlayerEntity&&entityIn.isSneaking())
+					motion = new Vec3d(motion.x, 0, motion.z);
+				else if(entityIn.collidedHorizontally)
+					motion = new Vec3d(motion.x, 0.2, motion.z);
+				entityIn.setMotion(motion);
+			}
 		}
 	}
 }

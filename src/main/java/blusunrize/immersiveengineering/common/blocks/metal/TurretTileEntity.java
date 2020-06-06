@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.common.IEConfig;
@@ -22,7 +23,6 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxH
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -45,9 +45,10 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.storage.loot.LootContext.Builder;
+import net.minecraft.world.storage.loot.LootContext;
 import net.minecraft.world.storage.loot.LootParameters;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -63,7 +64,6 @@ import java.util.UUID;
 public abstract class TurretTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInternalFluxHandler, IIEInventory,
 		IHasDummyBlocks, ITileDrop, IStateBasedDirectional, IBlockBounds, IInteractionObjectIE, IEntityProof, IHammerInteraction, IHasObjProperty
 {
-	public boolean dummy = false;
 	public FluxStorage energyStorage = new FluxStorage(16000);
 	public boolean redstoneControlInverted = false;
 
@@ -90,7 +90,7 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 	public void tick()
 	{
 		ApiUtils.checkForNeedlessTicking(this);
-		if(dummy)
+		if(isDummy())
 			return;
 		double range = getRange();
 		if(targetId!=null)
@@ -303,7 +303,6 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 	@Override
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		dummy = nbt.getBoolean("dummy");
 		redstoneControlInverted = nbt.getBoolean("redstoneInverted");
 		energyStorage.readFromNBT(nbt);
 
@@ -326,7 +325,6 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		nbt.putBoolean("dummy", dummy);
 		nbt.putBoolean("redstoneInverted", redstoneControlInverted);
 		energyStorage.writeToNBT(nbt);
 
@@ -346,22 +344,22 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 	}
 
 	@Override
-	public float[] getBlockBounds()
+	public VoxelShape getBlockBounds()
 	{
-		if(!dummy)
-			return null;
+		if(!isDummy())
+			return VoxelShapes.fullCube();
 		switch(getFacing())
 		{
 			case NORTH:
-				return new float[]{.125f, .0625f, .125f, .875f, .875f, 1};
+				return VoxelShapes.create(.125f, .0625f, .125f, .875f, .875f, 1);
 			case SOUTH:
-				return new float[]{.125f, .0625f, 0, .875f, .875f, .875f};
+				return VoxelShapes.create(.125f, .0625f, 0, .875f, .875f, .875f);
 			case WEST:
-				return new float[]{.125f, .0625f, .125f, 1, .875f, .875f};
+				return VoxelShapes.create(.125f, .0625f, .125f, 1, .875f, .875f);
 			case EAST:
-				return new float[]{0, .0625f, .125f, .875f, .875f, .875f};
+				return VoxelShapes.create(0, .0625f, .125f, .875f, .875f, .875f);
 		}
-		return null;
+		return VoxelShapes.fullCube();
 	}
 
 	AxisAlignedBB renderBB;
@@ -378,7 +376,7 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 	@Override
 	public boolean hammerUseSide(Direction side, PlayerEntity player, Vec3d hitVec)
 	{
-		if(dummy)
+		if(isDummy())
 		{
 			TileEntity te = world.getTileEntity(getPos().down());
 			if(te instanceof TurretTileEntity)
@@ -430,7 +428,7 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 	@Override
 	public IInteractionObjectIE getGuiMaster()
 	{
-		if(!dummy)
+		if(!isDummy())
 			return this;
 		TileEntity te = world.getTileEntity(getPos().down());
 		if(te instanceof TurretTileEntity)
@@ -457,7 +455,7 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, float hitX, float hitY, float hitZ, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
 	{
 		return false;
 	}
@@ -471,7 +469,7 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 	@Override
 	public boolean canEntityDestroy(Entity entity)
 	{
-		if(dummy)
+		if(isDummy())
 		{
 			TileEntity te = world.getTileEntity(getPos().down());
 			if(te instanceof TurretTileEntity)
@@ -485,32 +483,47 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 	@Override
 	public boolean isDummy()
 	{
-		return dummy;
+		return getBlockState().get(IEProperties.MULTIBLOCKSLAVE);
+	}
+
+	@Nullable
+	@Override
+	public IGeneralMultiblock master()
+	{
+		if(!isDummy())
+			return this;
+		// Used to provide tile-dependant drops after breaking
+		if(tempMasterTE!=null)
+			return tempMasterTE;
+		BlockPos masterPos = getPos().down();
+		TileEntity te = Utils.getExistingTileEntity(world, masterPos);
+		return this.getClass().isInstance(te)?(IGeneralMultiblock)te: null;
 	}
 
 	@Override
 	public void placeDummies(BlockItemUseContext ctx, BlockState state)
 	{
 		world.setBlockState(pos.up(), state);
-		((TurretTileEntity)world.getTileEntity(pos.up())).dummy = true;
+		((TurretTileEntity)world.getTileEntity(pos.up())).setDummy(true);
 		((TurretTileEntity)world.getTileEntity(pos.up())).setFacing(getFacing());
 	}
 
 	@Override
 	public void breakDummies(BlockPos pos, BlockState state)
 	{
-		if(world.getTileEntity(dummy?getPos().down(): getPos().up()) instanceof TurretTileEntity)
-			world.removeBlock(dummy?getPos().down(): getPos().up(), false);
+		tempMasterTE = master();
+		if(world.getTileEntity(isDummy()?getPos().down(): getPos().up()) instanceof TurretTileEntity)
+			world.removeBlock(isDummy()?getPos().down(): getPos().up(), false);
 	}
 
 	@Override
-	public List<ItemStack> getTileDrops(Builder context)
+	public List<ItemStack> getTileDrops(LootContext context)
 	{
 		BlockState state = context.get(LootParameters.BLOCK_STATE);
 		Entity player = context.get(LootParameters.THIS_ENTITY);
 		ItemStack stack = new ItemStack(state.getBlock(), 1);
 		TurretTileEntity turret = this;
-		if(dummy)
+		if(isDummy())
 		{
 			TileEntity t = world.getTileEntity(getPos().down());
 			if(t instanceof TurretTileEntity)
@@ -587,7 +600,7 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 	@Override
 	public FluxStorage getFluxStorage()
 	{
-		if(dummy)
+		if(isDummy())
 		{
 			TileEntity te = world.getTileEntity(getPos().down());
 			if(te instanceof TurretTileEntity)
@@ -600,7 +613,7 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 	@Override
 	public IOSideConfig getEnergySideConfig(Direction facing)
 	{
-		return !dummy?IOSideConfig.INPUT: IOSideConfig.NONE;
+		return !isDummy()?IOSideConfig.INPUT: IOSideConfig.NONE;
 	}
 
 	IEForgeEnergyWrapper[] wrappers = IEForgeEnergyWrapper.getDefaultWrapperArray(this);
@@ -608,16 +621,23 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 	@Override
 	public IEForgeEnergyWrapper getCapabilityWrapper(Direction facing)
 	{
-		if(!dummy)
+		if(!isDummy())
 			return wrappers[facing==null?0: facing.ordinal()];
 		return null;
 	}
 
-	static ArrayList<String> displayList = Lists.newArrayList("base");
+	static VisibilityList displayList = VisibilityList.show("base");
 
 	@Override
-	public ArrayList<String> compileDisplayList()
+	public VisibilityList compileDisplayList(BlockState state)
 	{
 		return displayList;
+	}
+
+	public void setDummy(boolean dummy)
+	{
+		BlockState old = getBlockState();
+		BlockState newState = old.with(IEProperties.MULTIBLOCKSLAVE, dummy);
+		world.setBlockState(pos, newState);
 	}
 }

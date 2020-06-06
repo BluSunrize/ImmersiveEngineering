@@ -9,62 +9,59 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.Lib;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.RegistryObject;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.Map;
 
 /**
  * @author BluSunrize - 23.03.2015
  * <br>
  * The recipe for the coke oven
  */
-public class CokeOvenRecipe
+public class CokeOvenRecipe extends IESerializableRecipe
 {
-	public final Object input;
+	public static IRecipeType<CokeOvenRecipe> TYPE = IRecipeType.register(Lib.MODID+":coke_oven");
+	public static RegistryObject<IERecipeSerializer<CokeOvenRecipe>> SERIALIZER;
+
+	public final IngredientWithSize input;
 	public final ItemStack output;
 	public final int time;
 	public final int creosoteOutput;
 
-	public CokeOvenRecipe(ItemStack output, Object input, int time, int creosoteOutput)
+	public CokeOvenRecipe(ResourceLocation id, ItemStack output, IngredientWithSize input, int time, int creosoteOutput)
 	{
+		super(output, TYPE, id);
 		this.output = output;
-		this.input = ApiUtils.convertToValidRecipeInput(input);
+		this.input = input;
 		this.time = time;
 		this.creosoteOutput = creosoteOutput;
 	}
 
-	public static ArrayList<CokeOvenRecipe> recipeList = new ArrayList<CokeOvenRecipe>();
-
-	public static void addRecipe(ItemStack output, Object input, int time, int creosoteOutput)
+	@Override
+	protected IERecipeSerializer getIESerializer()
 	{
-		CokeOvenRecipe recipe = new CokeOvenRecipe(output, input, time, creosoteOutput);
-		if(recipe.input!=null)
-			recipeList.add(recipe);
+		return SERIALIZER.get();
 	}
+
+	@Override
+	public ItemStack getRecipeOutput()
+	{
+		return this.output;
+	}
+
+	// Initialized by reload listener
+	public static Map<ResourceLocation, CokeOvenRecipe> recipeList;
 
 	public static CokeOvenRecipe findRecipe(ItemStack input)
 	{
-		for(CokeOvenRecipe recipe : recipeList)
+		for(CokeOvenRecipe recipe : recipeList.values())
 			if(ApiUtils.stackMatchesObject(input, recipe.input))
 				return recipe;
 		return null;
 	}
 
-	public static List<CokeOvenRecipe> removeRecipes(ItemStack stack)
-	{
-		List<CokeOvenRecipe> list = new ArrayList<>();
-		Iterator<CokeOvenRecipe> it = recipeList.iterator();
-		while(it.hasNext())
-		{
-			CokeOvenRecipe ir = it.next();
-			if(ItemStack.areItemsEqual(ir.output, stack))
-			{
-				list.add(ir);
-				it.remove();
-			}
-		}
-		return list;
-	}
 }

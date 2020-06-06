@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.client.gui;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.gui.elements.GuiButtonBoolean;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonState;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity.MultiblockProcess;
@@ -46,10 +47,10 @@ public class MixerScreen extends IEContainerScreen<MixerContainer>
 	{
 		super.init();
 		this.buttons.clear();
-		this.addButton(new GuiButtonState(guiLeft+106, guiTop+61, 30, 16, "", tile.outputAll, "immersiveengineering:textures/gui/mixer.png", 176, 82, 1,
+		this.addButton(new GuiButtonBoolean(guiLeft+106, guiTop+61, 30, 16, "", tile.outputAll, "immersiveengineering:textures/gui/mixer.png", 176, 82, 1,
 				btn -> {
 					CompoundNBT tag = new CompoundNBT();
-					tile.outputAll = !((GuiButtonState)btn).state;
+					tile.outputAll = !btn.getState();
 					tag.putBoolean("outputAll", tile.outputAll);
 					ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, tag));
 					fullInit();

@@ -1,0 +1,14 @@
+{
+  "excavator": {
+    "type": "multiblock",
+    "name": "multiblocks/excavator"
+  },
+  "wheel": {
+    "type": "multiblock",
+    "name": "multiblocks/bucket_wheel"
+  },
+  "full": {
+    "type": "multiblock",
+    "name": "excavator_demo"
+  }
+}

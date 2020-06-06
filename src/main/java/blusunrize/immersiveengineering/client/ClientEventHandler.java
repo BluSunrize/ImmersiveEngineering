@@ -9,9 +9,8 @@
 package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.DimensionBlockPos;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
+import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
@@ -21,6 +20,7 @@ import blusunrize.immersiveengineering.api.tool.ZoomHandler;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.Connection.RenderData;
+import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.IWireCoil;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.fx.FractalParticle;
@@ -35,11 +35,13 @@ import blusunrize.immersiveengineering.common.blocks.metal.SampleDrillTileEntity
 import blusunrize.immersiveengineering.common.blocks.wooden.TurntableTileEntity;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
+import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IScrollwheel;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.items.IEItems.Tools;
-import blusunrize.immersiveengineering.common.network.MessageChemthrowerSwitch;
 import blusunrize.immersiveengineering.common.network.MessageMagnetEquip;
 import blusunrize.immersiveengineering.common.network.MessageRequestBlockUpdate;
+import blusunrize.immersiveengineering.common.network.MessageRevolverRotate;
+import blusunrize.immersiveengineering.common.network.MessageScrollwheelItem;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.IEPotions;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -116,7 +118,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 {
 	private boolean shieldToggleButton = false;
 	private int shieldToggleTimer = 0;
-	private static final String[] BULLET_TOOLTIP = {"\u00A0\u00A0IE\u00A0", "\u00A0\u00A0AMMO\u00A0", "\u00A0\u00A0HERE\u00A0", "\u00A0\u00A0--\u00A0"};
+	private static final String[] BULLET_TOOLTIP = {"  IE ", "  AMMO ", "  HERE ", "  -- "};
 
 	@Override
 	public void onResourceManagerReload(@Nonnull IResourceManager resourceManager, Predicate<IResourceType> resourcePredicate)
@@ -125,7 +127,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			ImmersiveEngineering.proxy.clearRenderCaches();
 	}
 
-	public static final Map<Connection, Pair<BlockPos, AtomicInteger>> FAILED_CONNECTIONS = new HashMap<>();
+	public static final Map<Connection, Pair<Collection<BlockPos>, AtomicInteger>> FAILED_CONNECTIONS = new HashMap<>();
 
 	@SubscribeEvent
 	public void onPlayerTick(TickEvent.PlayerTickEvent event)
@@ -163,11 +165,11 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 					this.shieldToggleButton = ClientUtils.mc().gameSettings.keyBindBack.isKeyDown();
 
 
-				if(ClientProxy.keybind_chemthrowerSwitch.isPressed())
+				if(!ClientProxy.keybind_chemthrowerSwitch.isInvalid()&&ClientProxy.keybind_chemthrowerSwitch.isPressed())
 				{
 					ItemStack held = event.player.getHeldItem(Hand.MAIN_HAND);
-					if(held.getItem() instanceof ChemthrowerItem&&((ChemthrowerItem)held.getItem()).getUpgrades(held).getBoolean("multitank"))
-						ImmersiveEngineering.packetHandler.sendToServer(new MessageChemthrowerSwitch(true));
+					if(held.getItem() instanceof IScrollwheel)
+						ImmersiveEngineering.packetHandler.sendToServer(new MessageScrollwheelItem(true));
 				}
 			}
 		}
@@ -210,10 +212,11 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		}
 		if(ClientUtils.mc().currentScreen!=null
 				&&ClientUtils.mc().currentScreen instanceof BlastFurnaceScreen
-				&&BlastFurnaceRecipe.isValidBlastFuel(event.getItemStack()))
-			event.getToolTip().add(new TranslationTextComponent("desc.immersiveengineering.info.blastFuelTime", BlastFurnaceRecipe.getBlastFuelTime(event.getItemStack()))
+				&&BlastFurnaceFuel.isValidBlastFuel(event.getItemStack()))
+			event.getToolTip().add(new TranslationTextComponent("desc.immersiveengineering.info.blastFuelTime", BlastFurnaceFuel.getBlastFuelTime(event.getItemStack()))
 					.setStyle(gray));
-		if(IEConfig.GENERAL.oreTooltips.get()&&event.getFlags().isAdvanced())
+
+		if(IEConfig.GENERAL.tagTooltips.get()&&event.getFlags().isAdvanced())
 		{
 			for(ResourceLocation oid : ItemTags.getCollection().getOwningTags(event.getItemStack().getItem()))
 				event.getToolTip().add(new StringTextComponent(oid.toString()).setStyle(gray));
@@ -234,7 +237,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			if(bullets!=null)
 			{
 				int bulletAmount = ((IBulletContainer)stack.getItem()).getBulletCount(stack);
-				int line = event.getLines().size()-Utils.findSequenceInList(event.getLines(), BULLET_TOOLTIP, (s, s2) -> s.equals(s2.substring(2)));
+				int line = event.getLines().size()-Utils.findSequenceInList(event.getLines(), BULLET_TOOLTIP, (a, b) -> b.endsWith(a));
 
 				int currentX = event.getX();
 				int currentY = line > 0?event.getY()+(event.getHeight()+1-line*10): event.getY()-42;
@@ -264,22 +267,24 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		{
 			event.getSound().getCategory();
 		}
-		if(!ItemEarmuffs.affectedSoundCategories.contains(event.getSound().getCategory().getName()))
+		if(!EarmuffsItem.affectedSoundCategories.contains(event.getSound().getCategory().getName()))
 			return;
 		if(ClientUtils.mc().player!=null&&!ClientUtils.mc().player.getItemStackFromSlot(EquipmentSlotType.HEAD).isEmpty())
 		{
 			ItemStack earmuffs = ClientUtils.mc().player.getItemStackFromSlot(EquipmentSlotType.HEAD);
 			if(ItemNBTHelper.hasKey(earmuffs, Lib.NBT_Earmuffs))
 				earmuffs = ItemNBTHelper.getItemStack(earmuffs, Lib.NBT_Earmuffs);
-			if(!earmuffs.isEmpty()&&Misc.earmuffs.equals(earmuffs.getItem())&&!ItemNBTHelper.getBoolean(earmuffs, "IE:Earmuffs:Cat_"+event.getSound().getCategory().getName()))
+			if(!earmuffs.isEmpty()&&
+					Misc.earmuffs==earmuffs.getItem()&&
+					!ItemNBTHelper.getBoolean(earmuffs, "IE:Earmuffs:Cat_"+event.getSound().getCategory().getName()))
 			{
 				for(String blacklist : IEConfig.TOOLS.earDefenders_SoundBlacklist.get())
 					if(blacklist!=null&&blacklist.equalsIgnoreCase(event.getSound().getSoundLocation().toString()))
 						return;
 				if(event.getSound() instanceof ITickableSound)
-					event.setResultSound(new IEMuffledTickableSound((ITickableSound)event.getSound(), ItemEarmuffs.getVolumeMod(earmuffs)));
+					event.setResultSound(new IEMuffledTickableSound((ITickableSound)event.getSound(), EarmuffsItem.getVolumeMod(earmuffs)));
 				else
-					event.setResultSound(new IEMuffledSound(event.getSound(), ItemEarmuffs.getVolumeMod(earmuffs)));
+					event.setResultSound(new IEMuffledSound(event.getSound(), EarmuffsItem.getVolumeMod(earmuffs)));
 
 				if(event.getSound().getCategory()==SoundCategory.RECORDS)
 				{
@@ -294,14 +299,16 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	private void renderObstructingBlocks(BufferBuilder bb, Tessellator tes, double dx, double dy, double dz)
 	{
 		bb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
-		for(Map.Entry<Connection, Pair<BlockPos, AtomicInteger>> entry : FAILED_CONNECTIONS.entrySet())
+		for(Entry<Connection, Pair<Collection<BlockPos>, AtomicInteger>> entry : FAILED_CONNECTIONS.entrySet())
 		{
-			BlockPos obstruction = entry.getValue().getKey();
-			bb.setTranslation(obstruction.getX()-dx,
-					obstruction.getY()-dy,
-					obstruction.getZ()-dz);
-			final double eps = 1e-3;
-			ClientUtils.renderBox(bb, -eps, -eps, -eps, 1+eps, 1+eps, 1+eps);
+			for(BlockPos obstruction : entry.getValue().getKey())
+			{
+				bb.setTranslation(obstruction.getX()-dx,
+						obstruction.getY()-dy,
+						obstruction.getZ()-dz);
+				final double eps = 1e-3;
+				ClientUtils.renderBox(bb, -eps, -eps, -eps, 1+eps, 1+eps, 1+eps);
+			}
 		}
 		bb.setTranslation(0, 0, 0);
 		tes.draw();
@@ -310,7 +317,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	@SubscribeEvent
 	public void onRenderItemFrame(RenderItemInFrameEvent event)
 	{
-		if(!event.getItem().isEmpty()&&event.getItem().getItem() instanceof EngineersBlueprintItem)
+		if(event.getItem().getItem() instanceof EngineersBlueprintItem)
 		{
 			double playerDistanceSq = ClientUtils.mc().player.getDistanceSq(event.getEntityItemFrame());
 
@@ -344,6 +351,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						GlStateManager.enableAlphaTest();
 						GlStateManager.enableTexture();
 						GlStateManager.enableCull();
+						GlStateManager.disableBlend();
 
 						event.setCanceled(true);
 					}
@@ -449,8 +457,9 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						if(equipped.hasTag()&&equipped.getOrCreateTag().contains("linkingPos", NBT.TAG_COMPOUND))
 						{
 							CompoundNBT link = equipped.getOrCreateTag().getCompound("linkingPos");
-							DimensionBlockPos pos = new DimensionBlockPos(link.getCompound("master"));
-							String s = I18n.format(Lib.DESC_INFO+"attachedTo", pos.pos.getX(), pos.pos.getY(), pos.pos.getZ());
+							ConnectionPoint cp = new ConnectionPoint(link);
+							BlockPos pos = cp.getPosition();
+							String s = I18n.format(Lib.DESC_INFO+"attachedTo", pos.getX(), pos.getY(), pos.getZ());
 							int col = WireType.ELECTRUM.getColour(null);
 							if(equipped.getItem() instanceof IWireCoil)
 							{
@@ -458,9 +467,9 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 								RayTraceResult rtr = ClientUtils.mc().objectMouseOver;
 								double d;
 								if(rtr instanceof BlockRayTraceResult)
-									d = ((BlockRayTraceResult)rtr).getPos().distanceSq(pos.pos.getX(), pos.pos.getY(), pos.pos.getZ(), true);
+									d = ((BlockRayTraceResult)rtr).getPos().distanceSq(pos.getX(), pos.getY(), pos.getZ(), true);
 								else
-									d = player.getDistanceSq(pos.pos.getX(), pos.pos.getY(), pos.pos.getZ());
+									d = player.getDistanceSq(pos.getX(), pos.getY(), pos.getZ());
 								int max = ((IWireCoil)equipped.getItem()).getWireType(equipped).getMaxLength();
 								if(d > max*max)
 									col = 0xdd3333;
@@ -544,9 +553,10 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						GlStateManager.disableBlend();
 						GlStateManager.popMatrix();
 					}
-					else if(equipped.getItem() instanceof DrillItem||equipped.getItem() instanceof ChemthrowerItem)
+					else if(equipped.getItem() instanceof DrillItem||equipped.getItem() instanceof ChemthrowerItem||equipped.getItem() instanceof BuzzsawItem)
 					{
 						boolean drill = equipped.getItem() instanceof DrillItem;
+						boolean buzzsaw = equipped.getItem() instanceof BuzzsawItem;
 						ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
 						GlStateManager.color3f(1, 1, 1);
 						float dx = scaledWidth-16;
@@ -563,54 +573,64 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 
 						GlStateManager.translated(-23, -37, 0);
 						LazyOptional<IFluidHandlerItem> handlerOpt = FluidUtil.getFluidHandler(equipped);
-						int capacity = -1;
-						if(handlerOpt.isPresent())
-						{
-							IFluidHandlerItem handler = handlerOpt.orElseThrow(RuntimeException::new);
+						handlerOpt.ifPresent(handler -> {
+							int capacity = -1;
 							if(handler.getTanks() > 0)
 								capacity = handler.getTankCapacity(0);
-						}
-						if(capacity >= 0)
-						{
-							FluidStack fuel = FluidUtil.getFluidContained(equipped).orElse(FluidStack.EMPTY);
-							int amount = fuel.getAmount();
-							if(!drill&&player.isHandActive()&&player.getActiveHand()==hand)
+							if(capacity > 0)
 							{
-								int use = player.getItemInUseMaxCount();
-								amount -= use*IEConfig.TOOLS.chemthrower_consumption.get();
-							}
-							float cap = (float)capacity;
-							float angle = 83-(166*amount/cap);
-							GlStateManager.rotatef(angle, 0, 0, 1);
-							ClientUtils.drawTexturedRect(6, -2, 24, 4, 91/256f, 123/256f, 80/256f, 87/256f);
-							GlStateManager.rotatef(-angle, 0, 0, 1);
-							GlStateManager.translated(23, 37, 0);
-							if(drill)
-							{
-								ClientUtils.drawTexturedRect(-54, -73, 66, 72, 108/256f, 174/256f, 4/256f, 76/256f);
-								ItemRenderer ir = ClientUtils.mc().getItemRenderer();
-								ItemStack head = ((DrillItem)equipped.getItem()).getHead(equipped);
-								if(!head.isEmpty())
+								FluidStack fuel = handler.getFluidInTank(0);
+								int amount = fuel.getAmount();
+								if(!drill&&player.isHandActive()&&player.getActiveHand()==hand)
 								{
-									ir.renderItemIntoGUI(head, -51, -45);
-									ir.renderItemOverlayIntoGUI(head.getItem().getFontRenderer(head), head, -51, -45, null);
-									RenderHelper.disableStandardItemLighting();
+									int use = player.getItemInUseMaxCount();
+									amount -= use*IEConfig.TOOLS.chemthrower_consumption.get();
 								}
-							}
-							else
-							{
-								ClientUtils.drawTexturedRect(-41, -73, 53, 72, 8/256f, 61/256f, 4/256f, 76/256f);
-								boolean ignite = ItemNBTHelper.getBoolean(equipped, "ignite");
-								ClientUtils.drawTexturedRect(-32, -43, 12, 12, 66/256f, 78/256f, (ignite?21: 9)/256f, (ignite?33: 21)/256f);
+								float cap = (float)capacity;
+								float angle = 83-(166*amount/cap);
+								GlStateManager.rotatef(angle, 0, 0, 1);
+								ClientUtils.drawTexturedRect(6, -2, 24, 4, 91/256f, 123/256f, 80/256f, 87/256f);
+								GlStateManager.rotatef(-angle, 0, 0, 1);
+								GlStateManager.translated(23, 37, 0);
+								if(drill)
+								{
+									ClientUtils.drawTexturedRect(-54, -73, 66, 72, 108/256f, 174/256f, 4/256f, 76/256f);
+									ItemRenderer ir = ClientUtils.mc().getItemRenderer();
+									ItemStack head = ((DrillItem)equipped.getItem()).getHead(equipped);
+									if(!head.isEmpty())
+									{
+										ir.renderItemIntoGUI(head, -51, -45);
+										ir.renderItemOverlayIntoGUI(head.getItem().getFontRenderer(head), head, -51, -45, null);
+										RenderHelper.disableStandardItemLighting();
+									}
+								}
+								else if(buzzsaw)
+								{
+									ClientUtils.drawTexturedRect(-54, -73, 66, 72, 108/256f, 174/256f, 4/256f, 76/256f);
+									ItemRenderer ir = ClientUtils.mc().getItemRenderer();
+									ItemStack blade = ((BuzzsawItem)equipped.getItem()).getSawblade(equipped);
+									if(!blade.isEmpty())
+									{
+										ir.renderItemIntoGUI(blade, -51, -45);
+										ir.renderItemOverlayIntoGUI(blade.getItem().getFontRenderer(blade), blade, -51, -45, null);
+										RenderHelper.disableStandardItemLighting();
+									}
+								}
+								else
+								{
+									ClientUtils.drawTexturedRect(-41, -73, 53, 72, 8/256f, 61/256f, 4/256f, 76/256f);
+									boolean ignite = ItemNBTHelper.getBoolean(equipped, "ignite");
+									ClientUtils.drawTexturedRect(-32, -43, 12, 12, 66/256f, 78/256f, (ignite?21: 9)/256f, (ignite?33: 21)/256f);
 
-								ClientUtils.drawTexturedRect(-100, -20, 64, 16, 0/256f, 64/256f, 76/256f, 92/256f);
-								if(!fuel.isEmpty())
-								{
-									String name = ClientUtils.font().trimStringToWidth(fuel.getDisplayName().getFormattedText(), 50).trim();
-									ClientUtils.font().drawString(name, -68-ClientUtils.font().getStringWidth(name)/2, -15, 0);
+									ClientUtils.drawTexturedRect(-100, -20, 64, 16, 0/256f, 64/256f, 76/256f, 92/256f);
+									if(!fuel.isEmpty())
+									{
+										String name = ClientUtils.font().trimStringToWidth(fuel.getDisplayName().getFormattedText(), 50).trim();
+										ClientUtils.font().drawString(name, -68-ClientUtils.font().getStringWidth(name)/2, -15, 0);
+									}
 								}
 							}
-						}
+						});
 						GlStateManager.popMatrix();
 					}
 					else if(equipped.getItem() instanceof IEShieldItem)
@@ -830,9 +850,14 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						}
 					}
 				}
-				if(IEConfig.TOOLS.chemthrower_scroll.get()&&equipped.getItem() instanceof ChemthrowerItem&&((ChemthrowerItem)equipped.getItem()).getUpgrades(equipped).getBoolean("multitank"))
+				if(IEConfig.TOOLS.chemthrower_scroll.get()&&equipped.getItem() instanceof IScrollwheel)
 				{
-					ImmersiveEngineering.packetHandler.sendToServer(new MessageChemthrowerSwitch(event.getScrollDelta() < 0));
+					ImmersiveEngineering.packetHandler.sendToServer(new MessageScrollwheelItem(event.getScrollDelta() < 0));
+					event.setCanceled(true);
+				}
+				if(equipped.getItem() instanceof RevolverItem)
+				{
+					ImmersiveEngineering.packetHandler.sendToServer(new MessageRevolverRotate(event.getScrollDelta() < 0));
 					event.setCanceled(true);
 				}
 			}
@@ -855,37 +880,50 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 
 			if(Utils.isHammer(stack)&&tile instanceof TurntableTileEntity)
 			{
-				BlockPos pos = rtr.getPos();
-
-				GlStateManager.enableBlend();
-				GlStateManager.blendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
-				GlStateManager.lineWidth(2.0F);
-				GlStateManager.disableTexture();
-				GlStateManager.depthMask(false);
-
-				Tessellator tessellator = Tessellator.getInstance();
-				BufferBuilder BufferBuilder = tessellator.getBuffer();
-
-				Direction f = ((TurntableTileEntity)tile).getFacing();
-				double tx = pos.getX()+.5;
-				double ty = pos.getY()+.5;
-				double tz = pos.getZ()+.5;
-				if(!player.world.isAirBlock(pos.offset(f)))
+				TurntableTileEntity turntableTile = ((TurntableTileEntity)tile);
+				Direction side = rtr.getFace();
+				Direction facing = turntableTile.getFacing();
+				if(side.getAxis()!=facing.getAxis())
 				{
-					tx += f.getXOffset();
-					ty += f.getYOffset();
-					tz += f.getZOffset();
+					BlockPos pos = rtr.getPos();
+
+					GlStateManager.enableBlend();
+					GlStateManager.blendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
+					GlStateManager.lineWidth(2.0F);
+					GlStateManager.disableTexture();
+					GlStateManager.depthMask(false);
+
+					Tessellator tessellator = Tessellator.getInstance();
+					BufferBuilder BufferBuilder = tessellator.getBuffer();
+
+					double tx = pos.getX()+.5;
+					double ty = pos.getY()+.5;
+					double tz = pos.getZ()+.5;
+					if(!player.world.isAirBlock(pos.offset(facing)))
+					{
+						tx += facing.getXOffset();
+						ty += facing.getYOffset();
+						tz += facing.getZOffset();
+					}
+					BufferBuilder.setTranslation(tx+px, ty+py, tz+pz);
+
+					Rotation rotation = turntableTile.getRotationFromSide(side);
+					boolean cw180 = rotation==Rotation.CLOCKWISE_180;
+					double angle;
+					if(cw180)
+						angle = player.ticksExisted%40/20d;
+					else
+						angle = player.ticksExisted%80/40d;
+					double stepDistance = (cw180?2: 4)*Math.PI;
+					angle = -(angle-Math.sin(angle*stepDistance)/stepDistance)*Math.PI;
+					drawCircularRotationArrows(tessellator, BufferBuilder, facing, angle, rotation==Rotation.COUNTERCLOCKWISE_90, cw180);
+
+					BufferBuilder.setTranslation(0, 0, 0);
+
+					GlStateManager.depthMask(true);
+					GlStateManager.enableTexture();
+					GlStateManager.disableBlend();
 				}
-				BufferBuilder.setTranslation(tx+px, ty+py, tz+pz);
-
-				double angle = -player.ticksExisted%80/40d*Math.PI;
-				drawRotationArrows(tessellator, BufferBuilder, f, angle, ((TurntableTileEntity)tile).invert);
-
-				BufferBuilder.setTranslation(0, 0, 0);
-
-				GlStateManager.depthMask(true);
-				GlStateManager.enableTexture();
-				GlStateManager.disableBlend();
 			}
 
 			World world = player.world;
@@ -972,11 +1010,27 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		}
 	}
 
-	private static double[][] rotationArrowCoords = {{.375, 0}, {.5, -.125}, {.4375, -.125}, {.4375, -.25}, {.25, -.4375}, {-.25, -.4375}, {-.4375, -.25}, {-.4375, -.0625}, {-.3125, -.0625}, {-.3125, -.1875}, {-.1875, -.3125}, {.1875, -.3125}, {.3125, -.1875}, {.3125, -.125}, {.25, -.125}};
-	private static double[][] rotationArrowQuads = {rotationArrowCoords[7], rotationArrowCoords[8], rotationArrowCoords[6], rotationArrowCoords[9], rotationArrowCoords[5], rotationArrowCoords[10], rotationArrowCoords[4], rotationArrowCoords[11], rotationArrowCoords[3], rotationArrowCoords[12], rotationArrowCoords[2], rotationArrowCoords[13], rotationArrowCoords[1], rotationArrowCoords[14], rotationArrowCoords[0], rotationArrowCoords[0]};
+	private final static double[][] quarterRotationArrowCoords = {{.375, 0}, {.5, -.125}, {.4375, -.125}, {.4375, -.25}, {.25, -.4375}, {0, -.4375}, {0, -.3125}, {.1875, -.3125}, {.3125, -.1875}, {.3125, -.125}, {.25, -.125}};
+	private final static double[][] quarterRotationArrowQuads = {quarterRotationArrowCoords[5], quarterRotationArrowCoords[6], quarterRotationArrowCoords[4], quarterRotationArrowCoords[7], quarterRotationArrowCoords[3], quarterRotationArrowCoords[8], quarterRotationArrowCoords[2], quarterRotationArrowCoords[9], quarterRotationArrowCoords[1], quarterRotationArrowCoords[10], quarterRotationArrowCoords[0], quarterRotationArrowCoords[0]};
 
-	public static void drawRotationArrows(Tessellator tessellator, BufferBuilder BufferBuilder, Direction facing, double rotation, boolean flip)
+	private final static double[][] halfRotationArrowCoords = {{.375, 0}, {.5, -.125}, {.4375, -.125}, {.4375, -.25}, {.25, -.4375}, {-.25, -.4375}, {-.4375, -.25}, {-.4375, -.0625}, {-.3125, -.0625}, {-.3125, -.1875}, {-.1875, -.3125}, {.1875, -.3125}, {.3125, -.1875}, {.3125, -.125}, {.25, -.125}};
+	private final static double[][] halfRotationArrowQuads = {halfRotationArrowCoords[7], halfRotationArrowCoords[8], halfRotationArrowCoords[6], halfRotationArrowCoords[9], halfRotationArrowCoords[5], halfRotationArrowCoords[10], halfRotationArrowCoords[4], halfRotationArrowCoords[11], halfRotationArrowCoords[3], halfRotationArrowCoords[12], halfRotationArrowCoords[2], halfRotationArrowCoords[13], halfRotationArrowCoords[1], halfRotationArrowCoords[14], halfRotationArrowCoords[0], halfRotationArrowCoords[0]};
+
+	public static void drawCircularRotationArrows(Tessellator tessellator, BufferBuilder BufferBuilder, Direction facing, double rotation, boolean flip, boolean halfCircle)
 	{
+		double[][] rotationArrowCoords;
+		double[][] rotationArrowQuads;
+		if(halfCircle)
+		{
+			rotationArrowCoords = halfRotationArrowCoords;
+			rotationArrowQuads = halfRotationArrowQuads;
+		}
+		else
+		{
+			rotationArrowCoords = quarterRotationArrowCoords;
+			rotationArrowQuads = quarterRotationArrowQuads;
+		}
+
 		double cos = Math.cos(rotation);
 		double sin = Math.sin(rotation);
 		BufferBuilder.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
@@ -1026,7 +1080,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		tessellator.draw();
 	}
 
-	private static float[][] arrowCoords = {{0, .375f}, {.3125f, .0625f}, {.125f, .0625f}, {.125f, -.375f}, {-.125f, -.375f}, {-.125f, .0625f}, {-.3125f, .0625f}};
+	private final static float[][] arrowCoords = {{0, .375f}, {.3125f, .0625f}, {.125f, .0625f}, {.125f, -.375f}, {-.125f, -.375f}, {-.125f, .0625f}, {-.3125f, .0625f}};
 
 	public static void drawBlockOverlayArrow(Tessellator tessellator, BufferBuilder BufferBuilder, Vec3d directionVec, Direction side, AxisAlignedBB targetedBB)
 	{
@@ -1085,11 +1139,11 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			chunkBorders = true;
 
 		float partial = event.getPartialTicks();
+		double px = TileEntityRendererDispatcher.staticPlayerX;
+		double py = TileEntityRendererDispatcher.staticPlayerY;
+		double pz = TileEntityRendererDispatcher.staticPlayerZ;
 		if(!FractalParticle.PARTICLE_FRACTAL_DEQUE.isEmpty())
 		{
-			double px = TileEntityRendererDispatcher.staticPlayerX;
-			double py = TileEntityRendererDispatcher.staticPlayerY;
-			double pz = TileEntityRendererDispatcher.staticPlayerZ;
 
 			Tessellator tessellator = Tessellator.getInstance();
 
@@ -1114,9 +1168,6 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		if(chunkBorders)
 		{
 			PlayerEntity player = ClientUtils.mc().player;
-			double px = TileEntityRendererDispatcher.staticPlayerX;
-			double py = TileEntityRendererDispatcher.staticPlayerY;
-			double pz = TileEntityRendererDispatcher.staticPlayerZ;
 			int chunkX = (int)player.posX >> 4<<4;
 			int chunkZ = (int)player.posZ >> 4<<4;
 			int y = Math.min((int)player.posY-2, 0);//TODO player.getEntityWorld().getChunk(new BlockPos(player.posX, 0, player.posZ)).getLowestHeight());
@@ -1165,9 +1216,6 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			Entity viewer = ClientUtils.mc().getRenderViewEntity();
 			if(viewer==null)
 				viewer = ClientUtils.mc().player;
-			double dx = viewer.lastTickPosX+(viewer.posX-viewer.lastTickPosX)*partial;
-			double dy = viewer.lastTickPosY+(viewer.posY-viewer.lastTickPosY)*partial;
-			double dz = viewer.lastTickPosZ+(viewer.posZ-viewer.lastTickPosZ)*partial;
 			Tessellator tes = Tessellator.getInstance();
 			BufferBuilder bb = tes.getBuffer();
 			float oldLineWidth = GL11.glGetFloat(GL11.GL_LINE_WIDTH);
@@ -1175,12 +1223,12 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			GlStateManager.disableTexture();
 			GlStateManager.enableBlend();
 			bb.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
-			for(Entry<Connection, Pair<BlockPos, AtomicInteger>> entry : FAILED_CONNECTIONS.entrySet())
+			for(Entry<Connection, Pair<Collection<BlockPos>, AtomicInteger>> entry : FAILED_CONNECTIONS.entrySet())
 			{
 				Connection conn = entry.getKey();
-				bb.setTranslation(conn.getEndA().getX()-dx,
-						conn.getEndA().getY()-dy,
-						conn.getEndA().getZ()-dz);
+				bb.setTranslation(conn.getEndA().getX()-px,
+						conn.getEndA().getY()-py,
+						conn.getEndA().getZ()-pz);
 				int time = entry.getValue().getValue().get();
 				float alpha = (float)Math.min((2+Math.sin(time*Math.PI/40))/3, time/20F);
 				Vec3d prev = conn.getPoint(0, conn.getEndA());
@@ -1200,7 +1248,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			GlStateManager.lineWidth(oldLineWidth);
 			GlStateManager.enableBlend();
 			GlStateManager.color4f(1, 0, 0, .5F);
-			renderObstructingBlocks(bb, tes, dx, dy, dz);
+			renderObstructingBlocks(bb, tes, px, py, pz);
 
 			GlStateManager.disableBlend();
 			GlStateManager.enableTexture();

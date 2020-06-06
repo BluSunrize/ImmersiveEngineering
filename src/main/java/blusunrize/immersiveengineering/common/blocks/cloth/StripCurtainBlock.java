@@ -37,7 +37,7 @@ public class StripCurtainBlock extends IETileProviderBlock
 
 	public StripCurtainBlock()
 	{
-		super("strip_curtain", Block.Properties.create(Material.WOOL).hardnessAndResistance(0.8F), BlockItemIE.class,
+		super("strip_curtain", Block.Properties.create(Material.WOOL).hardnessAndResistance(0.8F), BlockItemIE::new,
 				CEILING_ATTACHED, FACING);
 		setLightOpacity(0);
 		setHasColours();

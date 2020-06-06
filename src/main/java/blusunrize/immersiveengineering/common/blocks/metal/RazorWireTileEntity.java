@@ -15,9 +15,13 @@ import blusunrize.immersiveengineering.api.wires.ImmersiveConnectableTileEntity;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler.EnergyConnector;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICollisionBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISelectionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
+import blusunrize.immersiveengineering.common.util.shapes.CachedVoxelShapes;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -33,6 +37,8 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -41,9 +47,10 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
-public class RazorWireTileEntity extends ImmersiveConnectableTileEntity implements IStateBasedDirectional, IAdvancedCollisionBounds,
-		IOBJModelCallback<BlockState>, EnergyConnector
+public class RazorWireTileEntity extends ImmersiveConnectableTileEntity implements IStateBasedDirectional, ICollisionBounds,
+		IOBJModelCallback<BlockState>, EnergyConnector, ISelectionBounds
 {
 	public static TileEntityType<RazorWireTileEntity> TYPE;
 
@@ -71,7 +78,7 @@ public class RazorWireTileEntity extends ImmersiveConnectableTileEntity implemen
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, float hitX, float hitY, float hitZ, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
 	{
 		return true;
 	}
@@ -101,23 +108,32 @@ public class RazorWireTileEntity extends ImmersiveConnectableTileEntity implemen
 	}
 
 	@Override
-	public float[] getBlockBounds()
+	public VoxelShape getSelectionShape()
 	{
-		return null;
+		return VoxelShapes.fullCube();
 	}
 
+	private static final CachedVoxelShapes<BoundingBoxKey> SHAPES = new CachedVoxelShapes<>(RazorWireTileEntity::getShape);
+
 	@Override
-	public List<AxisAlignedBB> getAdvancedCollisionBounds()
+	public VoxelShape getCollisionShape()
 	{
-		boolean wallL = renderWall(true);
-		boolean wallR = renderWall(false);
-		if((!isOnGround()&&!isStacked())||!(wallL||wallR))
-			return Collections.singletonList(null);
-		List<AxisAlignedBB> list = new ArrayList<>(wallL&&wallR?2: 1);
-		if(wallL)
-			list.add(new AxisAlignedBB(getFacing()==Direction.SOUTH?.8125: 0, 0, getFacing()==Direction.WEST?.8125: 0, getFacing()==Direction.NORTH?.1875: 1, 1, getFacing()==Direction.EAST?.1875: 1).offset(getPos()));
-		if(wallR)
-			list.add(new AxisAlignedBB(getFacing()==Direction.NORTH?.8125: 0, 0, getFacing()==Direction.EAST?.8125: 0, getFacing()==Direction.SOUTH?.1875: 1, 1, getFacing()==Direction.WEST?.1875: 1).offset(getPos()));
+		return SHAPES.get(new BoundingBoxKey(this));
+	}
+
+	private static List<AxisAlignedBB> getShape(BoundingBoxKey key)
+	{
+		if((!key.onGround&&!key.stacked)||!(key.wallL||key.wallR))
+			return ImmutableList.of();
+		List<AxisAlignedBB> list = new ArrayList<>(key.wallL&&key.wallR?2: 1);
+		if(key.wallL)
+			list.add(new AxisAlignedBB(
+					key.facing==Direction.SOUTH?.8125: 0, 0, key.facing==Direction.WEST?.8125: 0,
+					key.facing==Direction.NORTH?.1875: 1, 1, key.facing==Direction.EAST?.1875: 1));
+		if(key.wallR)
+			list.add(new AxisAlignedBB(
+					key.facing==Direction.NORTH?.8125: 0, 0, key.facing==Direction.EAST?.8125: 0,
+					key.facing==Direction.SOUTH?.1875: 1, 1, key.facing==Direction.WEST?.1875: 1));
 		return list;
 	}
 
@@ -131,6 +147,43 @@ public class RazorWireTileEntity extends ImmersiveConnectableTileEntity implemen
 			return false;
 		BlockState neighbour = world.getBlockState(neighbourPos);
 		return !Block.doesSideFillSquare(neighbour.getShape(world, neighbourPos), dir);
+	}
+
+	private static class BoundingBoxKey
+	{
+		public final boolean wallL;
+		public final boolean wallR;
+		public final boolean onGround;
+		public final boolean stacked;
+		public final Direction facing;
+
+		public BoundingBoxKey(RazorWireTileEntity te)
+		{
+			this.facing = te.getFacing();
+			this.wallL = te.renderWall(true);
+			this.wallR = te.renderWall(false);
+			this.onGround = te.isOnGround();
+			this.stacked = te.isStacked();
+		}
+
+		@Override
+		public boolean equals(Object o)
+		{
+			if(this==o) return true;
+			if(o==null||getClass()!=o.getClass()) return false;
+			BoundingBoxKey that = (BoundingBoxKey)o;
+			return wallL==that.wallL&&
+					wallR==that.wallR&&
+					onGround==that.onGround&&
+					stacked==that.stacked&&
+					facing==that.facing;
+		}
+
+		@Override
+		public int hashCode()
+		{
+			return Objects.hash(wallL, wallR, onGround, stacked, facing);
+		}
 	}
 
 	private boolean isOnGround()

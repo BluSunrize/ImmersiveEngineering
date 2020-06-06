@@ -1409,12 +1409,12 @@
  "item.immersiveengineering.railgun": "Рельсотрон",
  "item.immersiveengineering.earmuffs": "Защитные наушники",
  "item.immersiveengineering.coresample": "Керновая проба",
- "item.immersiveengineering.faraday_suit_head": "Шлем Фарадея",
- "item.immersiveengineering.faraday_suit_chest": "Нагрудник Фарадея",
- "item.immersiveengineering.faraday_suit_legs": "Поножи Фарадея",
- "item.immersiveengineering.faraday_suit_feet": "Сапоги Фарадея",
+ "item.immersiveengineering.armor_faraday_head": "Шлем Фарадея",
+ "item.immersiveengineering.armor_faraday_chest": "Нагрудник Фарадея",
+ "item.immersiveengineering.armor_faraday_legs": "Поножи Фарадея",
+ "item.immersiveengineering.armor_faraday_feet": "Сапоги Фарадея",
  "item.immersiveengineering.fluorescent_tube": "Люминесцентная лампа",
  "item.immersiveengineering.powerpack": "Конденсаторный рюкзак",
  "item.immersiveengineering.shield": "Тяжёлый покрытый щит",
- "item.immersiveengineering.maintenance_kit": "Комплект для обслуживания",
+ "item.immersiveengineering.maintenance_kit": "Комплект для обслуживания"
 }

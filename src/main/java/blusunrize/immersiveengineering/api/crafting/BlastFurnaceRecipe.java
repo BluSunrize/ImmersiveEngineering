@@ -8,101 +8,60 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.Lib;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.RegistryObject;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.Map;
 
 /**
  * @author BluSunrize - 23.03.2015
  * <br>
  * The recipe for the blast furnace
  */
-public class BlastFurnaceRecipe
+public class BlastFurnaceRecipe extends IESerializableRecipe
 {
-	public final Object input;
+	public static IRecipeType<BlastFurnaceRecipe> TYPE = IRecipeType.register(Lib.MODID+":blast_furnace");
+	public static RegistryObject<IERecipeSerializer<BlastFurnaceRecipe>> SERIALIZER;
+
+	public final IngredientWithSize input;
 	public final ItemStack output;
 	@Nonnull
 	public final ItemStack slag;
 	public final int time;
 
-	public BlastFurnaceRecipe(ItemStack output, Object input, int time, @Nonnull ItemStack slag)
+	public BlastFurnaceRecipe(ResourceLocation id, ItemStack output, IngredientWithSize input, int time, @Nonnull ItemStack slag)
 	{
+		super(output, TYPE, id);
 		this.output = output;
-		this.input = ApiUtils.convertToValidRecipeInput(input);
+		this.input = input;
 		this.time = time;
 		this.slag = slag;
 	}
 
-	public static ArrayList<BlastFurnaceRecipe> recipeList = new ArrayList<BlastFurnaceRecipe>();
-
-	public static void addRecipe(ItemStack output, Object input, int time, @Nonnull ItemStack slag)
+	@Override
+	protected IERecipeSerializer<BlastFurnaceRecipe> getIESerializer()
 	{
-		BlastFurnaceRecipe recipe = new BlastFurnaceRecipe(output, input, time, slag);
-		if(recipe.input!=null)
-			recipeList.add(recipe);
+		return SERIALIZER.get();
 	}
+
+	@Override
+	public ItemStack getRecipeOutput()
+	{
+		return output;
+	}
+
+	// Initialized by reload listener
+	public static Map<ResourceLocation, BlastFurnaceRecipe> recipeList;
 
 	public static BlastFurnaceRecipe findRecipe(ItemStack input)
 	{
-		for(BlastFurnaceRecipe recipe : recipeList)
-		{
-			if(ApiUtils.stackMatchesObject(input, recipe.input))
+		for(BlastFurnaceRecipe recipe : recipeList.values())
+			if(recipe.input.test(input))
 				return recipe;
-		}
 		return null;
-	}
-
-	public static List<BlastFurnaceRecipe> removeRecipes(ItemStack stack)
-	{
-		List<BlastFurnaceRecipe> list = new ArrayList<>();
-		Iterator<BlastFurnaceRecipe> it = recipeList.iterator();
-		while(it.hasNext())
-		{
-			BlastFurnaceRecipe ir = it.next();
-			if(ItemStack.areItemsEqual(ir.output, stack))
-			{
-				list.add(ir);
-				it.remove();
-			}
-		}
-		return list;
-	}
-
-	public static List<BlastFurnaceFuel> blastFuels = new ArrayList<>();
-
-	public static class BlastFurnaceFuel
-	{
-		public final IngredientStack input;
-		public final int burnTime;
-
-		public BlastFurnaceFuel(IngredientStack input, int burnTime)
-		{
-			this.input = input;
-			this.burnTime = burnTime;
-		}
-	}
-
-	public static BlastFurnaceFuel addBlastFuel(Object fuel, int burnTime)
-	{
-		BlastFurnaceFuel entry = new BlastFurnaceFuel(ApiUtils.createIngredientStack(fuel), burnTime);
-		blastFuels.add(entry);
-		return entry;
-	}
-
-	public static int getBlastFuelTime(ItemStack stack)
-	{
-		for(BlastFurnaceFuel e : blastFuels)
-			if(e.input.matchesItemStack(stack))
-				return e.burnTime;
-		return 0;
-	}
-
-	public static boolean isValidBlastFuel(ItemStack stack)
-	{
-		return getBlastFuelTime(stack) > 0;
 	}
 }

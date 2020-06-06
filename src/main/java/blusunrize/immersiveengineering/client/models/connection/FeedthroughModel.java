@@ -9,16 +9,21 @@
 package blusunrize.immersiveengineering.client.models.connection;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.wires.WireApi;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.BakedIEModel;
+import blusunrize.immersiveengineering.client.utils.CombinedModelData;
+import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Connectors;
+import blusunrize.immersiveengineering.common.blocks.metal.FeedthroughTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.FeedthroughTileEntity.FeedthroughData;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import com.google.common.base.Preconditions;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
@@ -27,7 +32,9 @@ import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -36,13 +43,18 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTUtil;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.common.model.TRSRTransformation;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -79,26 +91,48 @@ public class FeedthroughModel extends BakedIEModel
 		Int2IntFunction colorMultiplier = i -> 0xffffffff;
 
 		if(extraData.hasProperty(Model.FEEDTHROUGH))
-			{
-				FeedthroughData data = extraData.getData(Model.FEEDTHROUGH);
-				assert (data!=null);
-				baseState = data.baseState;
-				wire = data.wire;
-				facing = data.facing;
-				offset = data.offset;
-				colorMultiplier = data.colorMultiplier;
-			}
+		{
+			FeedthroughData data = extraData.getData(Model.FEEDTHROUGH);
+			assert (data!=null);
+			baseState = data.baseState;
+			wire = data.wire;
+			facing = data.facing;
+			offset = data.offset;
+			colorMultiplier = data.colorMultiplier;
+		}
 		final Int2IntFunction colorMultiplierFinal = colorMultiplier;
 		FeedthroughCacheKey key = new FeedthroughCacheKey(wire, baseState, offset, facing, MinecraftForgeClient.getRenderLayer(), colorMultiplier);
-		try
+		SpecificFeedthroughModel ret = CACHE.getIfPresent(key);
+		if(ret==null)
 		{
-			return CACHE.get(key,
-					() -> new SpecificFeedthroughModel(key, colorMultiplierFinal)).getQuads(state, side, rand);
-		} catch(ExecutionException e)
-		{
-			e.printStackTrace();
-			return ImmutableList.of();
+			ret = new SpecificFeedthroughModel(key, colorMultiplierFinal);
+			Preconditions.checkState(key.usedColorMultipliers!=null);
+			CACHE.put(key, ret);
 		}
+		return ret.getQuads(state, side, rand);
+	}
+
+	@Nonnull
+	@Override
+	public IModelData getModelData(@Nonnull IEnviromentBlockReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData)
+	{
+		List<IModelData> ret = new ArrayList<>();
+		ret.add(tileData);
+		TileEntity te = world.getTileEntity(pos);
+		if(te instanceof FeedthroughTileEntity)
+		{
+			FeedthroughTileEntity feedthrough = (FeedthroughTileEntity)te;
+			int color = Minecraft.getInstance().getBlockColors().getColor(feedthrough.stateForMiddle, world, pos, 0);
+			FeedthroughData d = new FeedthroughData(
+					feedthrough.stateForMiddle,
+					feedthrough.reference,
+					state.get(IEProperties.FACING_ALL),
+					feedthrough.offset,
+					i -> color
+			);
+			ret.add(new SinglePropertyModelData<>(d, Model.FEEDTHROUGH));
+		}
+		return new CombinedModelData(ret.toArray(new IModelData[0]));
 	}
 
 	@Override
@@ -191,7 +225,7 @@ public class FeedthroughModel extends BakedIEModel
 		final Direction facing;
 		final BlockRenderLayer layer;
 		@Nullable
-		final Int2IntMap usedColorMultipliers;
+		Int2IntMap usedColorMultipliers;
 		@Nullable
 		final Int2IntFunction allColorMultipliers;
 
@@ -291,6 +325,7 @@ public class FeedthroughModel extends BakedIEModel
 				colorMultiplierBasic = (i) -> colors.getColor(stack, i);
 			}
 			Int2IntFunction colorMultiplierFinal = colorMultiplierBasic;
+			k.usedColorMultipliers = new Int2IntOpenHashMap();
 			Int2IntFunction colorMultiplier = i -> {
 				int ret = colorMultiplierFinal.get(i);
 				k.usedColorMultipliers.put(i, ret);
@@ -305,9 +340,11 @@ public class FeedthroughModel extends BakedIEModel
 					case 0:
 						if(k.layer==null||k.baseState.getBlock().canRenderInLayer(k.baseState, k.layer))
 						{
-							Function<BakedQuad, BakedQuad> tintTransformer = ApiUtils.transformQuad(new Matrix4(),
-									DefaultVertexFormats.ITEM, colorMultiplier);
-							quads.add(model.getQuads(k.baseState, side, Utils.RAND).stream().map(tintTransformer)
+							Function<BakedQuad, BakedQuad> tintTransformer = ApiUtils.transformQuad(TRSRTransformation.identity(),
+									colorMultiplier);
+							quads.add(model.getQuads(k.baseState, side, Utils.RAND, EmptyModelData.INSTANCE)
+									.stream()
+									.map(tintTransformer)
 									.collect(Collectors.toCollection(ArrayList::new)));
 						}
 						break;
@@ -324,8 +361,8 @@ public class FeedthroughModel extends BakedIEModel
 						mat = new Matrix4();
 						mat.translate(0, 0, -1);
 						all.addAll(getConnQuads(facing.getOpposite(), side, k.type, mat));
-						Function<BakedQuad, BakedQuad> tintTransformer = ApiUtils.transformQuad(new Matrix4(),
-								DefaultVertexFormats.ITEM, colorMultiplier);
+						Function<BakedQuad, BakedQuad> tintTransformer = ApiUtils.transformQuad(TRSRTransformation.identity(),
+								colorMultiplier);
 						all.addAll(model.getQuads(k.baseState, side, Utils.RAND).stream().map(tintTransformer)
 								.collect(Collectors.toCollection(ArrayList::new)));
 						quads.add(all);
@@ -353,15 +390,23 @@ public class FeedthroughModel extends BakedIEModel
 						rotateAround.getZOffset());
 			}
 			mat.translate(-.5, -.5, -.5);
-			List<BakedQuad> conn = new ArrayList<>(info.model.getQuads(null, side, Utils.RAND));
+			IBakedModel model = mc().getBlockRendererDispatcher().getBlockModelShapes()
+					.getModel(info.conn.get().with(IEProperties.FACING_ALL, Direction.DOWN));
+			List<BakedQuad> conn = new ArrayList<>(model.getQuads(null, side, Utils.RAND, EmptyModelData.INSTANCE));
 			if(side==facing)
 				conn.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, vertices, Direction.UP, info.tex, info.uvs, WHITE, false));
-			Function<BakedQuad, BakedQuad> transf = ApiUtils.transformQuad(mat, null,
-					null);//I hope no one uses tint index for connectors
+			Function<BakedQuad, BakedQuad> transf = ApiUtils.transformQuad(new TRSRTransformation(mat.toMatrix4f()), null);//I hope no one uses tint index for connectors
 			if(transf!=null)
 				return conn.stream().map(transf).collect(Collectors.toList());
 			else
 				return conn;
+		}
+
+		@Nonnull
+		@Override
+		public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData)
+		{
+			return quads.get(side==null?6: side.getIndex());
 		}
 	}
 }

@@ -8,77 +8,76 @@
 
 package blusunrize.immersiveengineering.common.util;
 
-import net.minecraft.block.*;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.ChestBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ArmorStandEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.state.properties.ChestType;
-import net.minecraft.tileentity.ChestTileEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import java.util.HashSet;
-import java.util.function.Predicate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RotationUtil
 {
-	public static HashSet<Predicate<BlockState>> permittedRotation = new HashSet<>();
-	public static HashSet<Predicate<TileEntity>> permittedTileRotation = new HashSet<>();
+	public static final List<RotationBlacklistEntry> blacklist = new ArrayList<>();
 
 	static
 	{
-		permittedRotation.add(state -> {
-			//preventing extended pistons from rotating
-			return !((state.getBlock()==Blocks.PISTON||state.getBlock()==Blocks.STICKY_PISTON)&&state.get(PistonBlock.EXTENDED));
-		});
-		permittedRotation.add(state -> {
-			//beds don't like being rotated piecewise
-			return !(state.getBlock() instanceof BedBlock);
-		});
-		/*permittedRotation.add(state -> {
-			//A lot of the RS stuff breaks when rotated
-			Block b = state.getBlock();
-			return b!=Blocks.TRIPWIRE_HOOK&&b!=Blocks.STONE_BUTTON&&b!=Blocks.WOODEN_BUTTON&&b!=Blocks.LEVER&&b!=Blocks.REDSTONE_TORCH;
-		});
-		permittedRotation.add(state -> {
-			//misc things don't like floating in the air...
-			Block b = state.getBlock();
-			return b!=Blocks.TORCH&&b!=Blocks.LADDER&&b!=Blocks.WALL_SIGN&&b!=Blocks.WALL_BANNER;
-		});*/
-		permittedRotation.add(state -> {
-			//preventing endportals, skulls from rotating
-			return !(state.getBlock()==Blocks.END_PORTAL_FRAME||state.getBlock() instanceof SkullBlock);
-		});
-		permittedTileRotation.add(tile -> {
-			//preventing double chests from rotating
-			if(tile instanceof ChestTileEntity)
-				return tile.getBlockState().get(ChestBlock.TYPE)==ChestType.SINGLE;
-			return true;
+		//Double chests don't implement updatePostPlacement correctly
+		blacklist.add((w, pos) -> {
+			BlockState state = w.getBlockState(pos);
+			return state.getBlock()!=Blocks.CHEST||state.get(ChestBlock.TYPE)==ChestType.SINGLE;
 		});
 	}
 
-	public static boolean rotateBlock(World world, BlockPos pos, Direction axis)
+	public static boolean rotateBlock(World world, BlockPos pos, boolean inverse)
 	{
-		BlockState state = world.getBlockState(pos);
-		for(Predicate<BlockState> pred : permittedRotation)
-			if(!pred.test(state))
+		return rotateBlock(world, pos, inverse?Rotation.COUNTERCLOCKWISE_90: Rotation.CLOCKWISE_90);
+	}
+
+	public static boolean rotateBlock(World world, BlockPos pos, Rotation rotation) {
+		for(RotationBlacklistEntry e : blacklist)
+			if(!e.blockRotation(world, pos))
 				return false;
-		if(state.getBlock().hasTileEntity(state))
-		{
-			TileEntity tile = world.getTileEntity(pos);
-			if(tile!=null)
-				for(Predicate<TileEntity> pred : permittedTileRotation)
-					if(!pred.test(tile))
-						return false;
-		}
-		//TODO this is not the right kind of rotation...
-		BlockState newState = state.rotate(world, pos, Rotation.CLOCKWISE_90);
-		if(newState!=state&&false)
+
+		BlockState state = world.getBlockState(pos);
+		BlockState newState = state.rotate(world, pos, rotation);
+		if(newState!=state)
 		{
 			world.setBlockState(pos, newState);
+			for(Direction d : Direction.VALUES)
+			{
+				final BlockPos otherPos = pos.offset(d);
+				final BlockState otherState = world.getBlockState(otherPos);
+				final BlockState nextState = newState.updatePostPlacement(d, otherState, world, pos, otherPos);
+				if(nextState!=newState)
+				{
+					if(!nextState.isAir())
+					{
+						world.setBlockState(pos, nextState);
+						newState = nextState;
+					}
+					else
+					{
+						world.setBlockState(pos, state);
+						return false;
+					}
+				}
+			}
+			for(Direction d : Direction.VALUES)
+			{
+				final BlockPos otherPos = pos.offset(d);
+				final BlockState otherState = world.getBlockState(otherPos);
+				final BlockState nextOther = otherState.updatePostPlacement(d.getOpposite(), newState, world, otherPos, pos);
+				if(nextOther!=otherState)
+					world.setBlockState(otherPos, nextOther);
+			}
 			return true;
 		}
 		else
@@ -89,10 +88,14 @@ public class RotationUtil
 	{
 		if(entity instanceof ArmorStandEntity)
 		{
-//			float f = (float)MathHelper.floor_float((MathHelper.wrapAngleTo180_float(playerIn.rotationYaw - 180.0F) + 22.5F) / 45.0F) * 45.0F;
-//			((EntityArmorStand)entity).rotationYaw+=22.5;
-//			((EntityArmorStand)entity).rotationYaw%=360;
+			((ArmorStandEntity)entity).rotationYaw += 22.5;
+			((ArmorStandEntity)entity).rotationYaw %= 360;
 		}
 		return false;
+	}
+
+	public interface RotationBlacklistEntry
+	{
+		boolean blockRotation(World w, BlockPos pos);
 	}
 }

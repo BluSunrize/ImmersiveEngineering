@@ -1,0 +1,43 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/conveyor_dropper"
+    ]
+  },
+  "criteria": {
+    "has_trapdoor": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "minecraft:iron_trapdoor"
+          }
+        ]
+      }
+    },
+    "has_conveyor": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:conveyor_basic"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/conveyor_dropper"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_trapdoor",
+      "has_conveyor",
+      "has_the_recipe"
+    ]
+  ]
+}

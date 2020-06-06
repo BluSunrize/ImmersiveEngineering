@@ -1,0 +1,12 @@
+{
+  "textures": {
+    "particle": "immersiveengineering:block/connector/transformer"
+  },
+  "loader": "immersiveengineering:connector",
+  "base_model": {
+    "parent": "immersiveengineering:block/ie_empty"
+  },
+  "layers": [
+    "SOLID"
+  ]
+}

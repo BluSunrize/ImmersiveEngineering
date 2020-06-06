@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.items;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
@@ -60,7 +61,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Supplier;
 
 public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, IZoomTool, ITool, IOBJModelCallback<ItemStack>
@@ -77,14 +77,14 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 	}
 
 	@Override
-	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, Supplier<World> getWorld)
+	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, Supplier<World> getWorld, Supplier<PlayerEntity> getPlayer)
 	{
 		IItemHandler inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)
 				.orElseThrow(RuntimeException::new);
 		return new Slot[]
 				{
-						new IESlot.Upgrades(container, inv, 0, 80, 32, "RAILGUN", stack, true, getWorld),
-						new IESlot.Upgrades(container, inv, 1, 100, 32, "RAILGUN", stack, true, getWorld)
+						new IESlot.Upgrades(container, inv, 0, 80, 32, "RAILGUN", stack, true, getWorld, getPlayer),
+						new IESlot.Upgrades(container, inv, 1, 100, 32, "RAILGUN", stack, true, getWorld, getPlayer)
 				};
 	}
 
@@ -95,9 +95,9 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 	}
 
 	@Override
-	public void recalculateUpgrades(ItemStack stack, World w)
+	public void recalculateUpgrades(ItemStack stack, World w, PlayerEntity player)
 	{
-		super.recalculateUpgrades(stack, w);
+		super.recalculateUpgrades(stack, w, player);
 		if(this.getEnergyStored(stack) > this.getMaxEnergyStored(stack))
 			ItemNBTHelper.putInt(stack, "energy", this.getMaxEnergyStored(stack));
 	}
@@ -136,7 +136,7 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 						new EnergyHelper.ItemEnergyStorage(stack)
 				);
 				final LazyOptional<ShaderWrapper_Item> shaders = ApiUtils.constantOptional(
-						new ShaderWrapper_Item("immersiveengineering:railgun", stack)
+						new ShaderWrapper_Item(new ResourceLocation(ImmersiveEngineering.MODID, "railgun"), stack)
 				);
 
 				@Nonnull
@@ -208,7 +208,7 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 			if(shader!=null)
 			{
 				Vec3d pos = Utils.getLivingFrontPos(user, .4375, user.getHeight()*.75, user.getActiveHand()==Hand.MAIN_HAND?user.getPrimaryHand(): user.getPrimaryHand().opposite(), false, 1);
-				shader.getMiddle().getEffectFunction().execute(user.world, shader.getLeft(), stack, shader.getRight().getShaderType(), pos, null, .0625f);
+				shader.getMiddle().getEffectFunction().execute(user.world, shader.getLeft(), stack, shader.getRight().getShaderType().toString(), pos, null, .0625f);
 			}
 		}
 	}
@@ -245,7 +245,9 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 					if(shader!=null)
 					{
 						Vec3d pos = Utils.getLivingFrontPos(user, .75, user.getHeight()*.75, user.getActiveHand()==Hand.MAIN_HAND?user.getPrimaryHand(): user.getPrimaryHand().opposite(), false, 1);
-						shader.getMiddle().getEffectFunction().execute(world, shader.getLeft(), stack, shader.getRight().getShaderType(), pos, user.getForward(), .125f);
+						shader.getMiddle().getEffectFunction().execute(world, shader.getLeft(), stack,
+								shader.getRight().getShaderType().toString(), pos,
+								Vec3d.fromPitchYaw(user.getPitchYaw()), .125f);
 					}
 				}
 			}
@@ -352,7 +354,7 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public Optional<TRSRTransformation> applyTransformations(ItemStack stack, String group, Optional<TRSRTransformation> transform)
+	public TRSRTransformation applyTransformations(ItemStack stack, String group, TRSRTransformation transform)
 	{
 		//		if(transform.isPresent())
 		//		{

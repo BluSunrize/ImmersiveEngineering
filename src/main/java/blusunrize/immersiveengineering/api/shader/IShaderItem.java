@@ -9,10 +9,11 @@
 package blusunrize.immersiveengineering.api.shader;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 public interface IShaderItem
 {
-	ShaderCase getShaderCase(ItemStack shader, ItemStack item, String shaderType);
+	ShaderCase getShaderCase(ItemStack shader, ItemStack item, ResourceLocation shaderType);
 
-	String getShaderName(ItemStack shader);
+	ResourceLocation getShaderName(ItemStack shader);
 }

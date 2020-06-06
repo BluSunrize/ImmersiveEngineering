@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.DieselGeneratorTileEntity;
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -32,7 +33,7 @@ public class DieselGeneratorRenderer extends TileEntityRenderer<DieselGeneratorT
 {
 	private final DynamicModel<Direction> dynamic = DynamicModel.createSided(
 			new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/diesel_generator_fan.obj"),
-			"diesel_gen");
+			"diesel_gen", ModelType.OBJ);
 
 	@Override
 	public void render(DieselGeneratorTileEntity te, double x, double y, double z, float partialTicks, int destroyStage)

@@ -1,38 +1,21 @@
 {
   "variants": {
-    "facing=north,waterlogged=true": {
-      "model": "immersiveengineering:block/metal_decoration/metal_ladder_steel"
+    "facing=north": {
+      "model": "immersiveengineering:block/metal_ladder_steel",
+      "uvlock": true
     },
-    "facing=north,waterlogged=false": {
-      "model": "immersiveengineering:block/metal_decoration/metal_ladder_steel"
-    },
-    "facing=south,waterlogged=true": {
-      "model": "immersiveengineering:block/metal_decoration/metal_ladder_steel",
+    "facing=south": {
+      "model": "immersiveengineering:block/metal_ladder_steel",
       "y": 180,
       "uvlock": true
     },
-    "facing=south,waterlogged=false": {
-      "model": "immersiveengineering:block/metal_decoration/metal_ladder_steel",
-      "y": 180,
-      "uvlock": true
-    },
-    "facing=west,waterlogged=true": {
-      "model": "immersiveengineering:block/metal_decoration/metal_ladder_steel",
+    "facing=west": {
+      "model": "immersiveengineering:block/metal_ladder_steel",
       "y": 270,
       "uvlock": true
     },
-    "facing=west,waterlogged=false": {
-      "model": "immersiveengineering:block/metal_decoration/metal_ladder_steel",
-      "y": 270,
-      "uvlock": true
-    },
-    "facing=east,waterlogged=true": {
-      "model": "immersiveengineering:block/metal_decoration/metal_ladder_steel",
-      "y": 90,
-      "uvlock": true
-    },
-    "facing=east,waterlogged=false": {
-      "model": "immersiveengineering:block/metal_decoration/metal_ladder_steel",
+    "facing=east": {
+      "model": "immersiveengineering:block/metal_ladder_steel",
       "y": 90,
       "uvlock": true
     }

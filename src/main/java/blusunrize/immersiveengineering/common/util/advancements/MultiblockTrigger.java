@@ -14,6 +14,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.ICriterionTrigger;
 import net.minecraft.advancements.PlayerAdvancements;
@@ -76,7 +77,7 @@ public class MultiblockTrigger implements ICriterionTrigger<MultiblockTrigger.In
 	@Override
 	public MultiblockTrigger.Instance deserializeInstance(JsonObject json, JsonDeserializationContext context)
 	{
-		return new MultiblockTrigger.Instance(JSONUtils.getString(json, "multiblock"), ItemPredicate.deserialize(json.get("item")));
+		return new MultiblockTrigger.Instance(new ResourceLocation(JSONUtils.getString(json, "multiblock")), ItemPredicate.deserialize(json.get("item")));
 	}
 
 	public void trigger(ServerPlayerEntity player, IMultiblock multiblock, ItemStack hammer)
@@ -88,10 +89,10 @@ public class MultiblockTrigger implements ICriterionTrigger<MultiblockTrigger.In
 
 	public static class Instance extends CriterionInstance
 	{
-		private final String multiblock;
+		private final ResourceLocation multiblock;
 		private final ItemPredicate hammer;
 
-		public Instance(String multiblock, ItemPredicate hammer)
+		public Instance(ResourceLocation multiblock, ItemPredicate hammer)
 		{
 			super(MultiblockTrigger.ID);
 			this.multiblock = multiblock;
@@ -101,6 +102,15 @@ public class MultiblockTrigger implements ICriterionTrigger<MultiblockTrigger.In
 		public boolean test(IMultiblock multiblock, ItemStack hammer)
 		{
 			return this.multiblock.equals(multiblock.getUniqueName())&&this.hammer.test(hammer);
+		}
+
+		@Override
+		public JsonElement serialize()
+		{
+			JsonObject jsonobject = new JsonObject();
+			jsonobject.addProperty("multiblock", this.multiblock.toString());
+			jsonobject.add("item", this.hammer.serialize());
+			return jsonobject;
 		}
 	}
 

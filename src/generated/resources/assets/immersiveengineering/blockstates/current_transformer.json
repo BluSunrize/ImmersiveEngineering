@@ -1,80 +1,42 @@
 {
   "variants": {
     "facing=north,multiblockslave=false": {
-      "model": "immersiveengineering:connector",
+      "model": "immersiveengineering:block/current_transformer_empty",
       "y": 180,
-      "uvlock": true,
-      "custom": {
-        "flip-v": true,
-        "base": "immersiveengineering:block/ie_empty",
-        "layers": "[SOLID]"
-      }
-    },
-    "facing=north,multiblockslave=true": {
-      "model": "immersiveengineering:connector",
-      "y": 180,
-      "uvlock": true,
-      "custom": {
-        "flip-v": true,
-        "base": "immersiveengineering:block/connector/e_meter.obj",
-        "layers": "[SOLID]"
-      }
+      "uvlock": true
     },
     "facing=south,multiblockslave=false": {
-      "model": "immersiveengineering:connector",
-      "custom": {
-        "flip-v": true,
-        "base": "immersiveengineering:block/ie_empty",
-        "layers": "[SOLID]"
-      }
-    },
-    "facing=south,multiblockslave=true": {
-      "model": "immersiveengineering:connector",
-      "custom": {
-        "flip-v": true,
-        "base": "immersiveengineering:block/connector/e_meter.obj",
-        "layers": "[SOLID]"
-      }
+      "model": "immersiveengineering:block/current_transformer_empty",
+      "uvlock": true
     },
     "facing=west,multiblockslave=false": {
-      "model": "immersiveengineering:connector",
+      "model": "immersiveengineering:block/current_transformer_empty",
       "y": 90,
-      "uvlock": true,
-      "custom": {
-        "flip-v": true,
-        "base": "immersiveengineering:block/ie_empty",
-        "layers": "[SOLID]"
-      }
-    },
-    "facing=west,multiblockslave=true": {
-      "model": "immersiveengineering:connector",
-      "y": 90,
-      "uvlock": true,
-      "custom": {
-        "flip-v": true,
-        "base": "immersiveengineering:block/connector/e_meter.obj",
-        "layers": "[SOLID]"
-      }
+      "uvlock": true
     },
     "facing=east,multiblockslave=false": {
-      "model": "immersiveengineering:connector",
+      "model": "immersiveengineering:block/current_transformer_empty",
       "y": 270,
-      "uvlock": true,
-      "custom": {
-        "flip-v": true,
-        "base": "immersiveengineering:block/ie_empty",
-        "layers": "[SOLID]"
-      }
+      "uvlock": true
+    },
+    "facing=north,multiblockslave=true": {
+      "model": "immersiveengineering:block/connector/e_meter",
+      "y": 180,
+      "uvlock": true
+    },
+    "facing=south,multiblockslave=true": {
+      "model": "immersiveengineering:block/connector/e_meter",
+      "uvlock": true
+    },
+    "facing=west,multiblockslave=true": {
+      "model": "immersiveengineering:block/connector/e_meter",
+      "y": 90,
+      "uvlock": true
     },
     "facing=east,multiblockslave=true": {
-      "model": "immersiveengineering:connector",
+      "model": "immersiveengineering:block/connector/e_meter",
       "y": 270,
-      "uvlock": true,
-      "custom": {
-        "flip-v": true,
-        "base": "immersiveengineering:block/connector/e_meter.obj",
-        "layers": "[SOLID]"
-      }
+      "uvlock": true
     }
   }
 }

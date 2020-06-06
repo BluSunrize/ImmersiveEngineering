@@ -45,7 +45,7 @@ public class ConveyorBlock extends IETileProviderBlock
 	{
 		super(ConveyorHandler.getRegistryNameFor(type).getPath(),
 				Properties.create(Material.IRON).hardnessAndResistance(3.0F, 15.0F),
-				BlockItemIE.class, FACING);
+				BlockItemIE::new, FACING);
 		this.typeName = type;
 		this.setBlockLayer(BlockRenderLayer.CUTOUT);
 		this.setNotNormalBlock();

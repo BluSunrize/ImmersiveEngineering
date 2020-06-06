@@ -2,7 +2,16 @@
   "multipart": [
     {
       "apply": {
-        "model": "immersiveengineering:block/wooden_decoration/treated_fence_post"
+        "model": "immersiveengineering:block/treated_fence_post"
+      }
+    },
+    {
+      "when": {
+        "north": "true"
+      },
+      "apply": {
+        "model": "immersiveengineering:block/treated_fence_side",
+        "uvlock": true
       }
     },
     {
@@ -10,7 +19,7 @@
         "south": "true"
       },
       "apply": {
-        "model": "immersiveengineering:block/wooden_decoration/treated_fence_side",
+        "model": "immersiveengineering:block/treated_fence_side",
         "y": 180,
         "uvlock": true
       }
@@ -20,17 +29,9 @@
         "west": "true"
       },
       "apply": {
-        "model": "immersiveengineering:block/wooden_decoration/treated_fence_side",
+        "model": "immersiveengineering:block/treated_fence_side",
         "y": 270,
         "uvlock": true
-      }
-    },
-    {
-      "when": {
-        "north": "true"
-      },
-      "apply": {
-        "model": "immersiveengineering:block/wooden_decoration/treated_fence_side"
       }
     },
     {
@@ -38,7 +39,7 @@
         "east": "true"
       },
       "apply": {
-        "model": "immersiveengineering:block/wooden_decoration/treated_fence_side",
+        "model": "immersiveengineering:block/treated_fence_side",
         "y": 90,
         "uvlock": true
       }

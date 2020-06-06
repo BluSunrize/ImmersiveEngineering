@@ -8,9 +8,14 @@
 
 package blusunrize.immersiveengineering.client.models.connection;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.client.models.connection.FeedthroughLoader.FeedthroughModelRaw;
 import com.google.common.collect.ImmutableList;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonObject;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.IUnbakedModel;
+import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.model.ModelBakery;
 import net.minecraft.client.renderer.texture.ISprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -18,6 +23,9 @@ import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ICustomModelLoader;
+import net.minecraftforge.client.model.IModelConfiguration;
+import net.minecraftforge.client.model.IModelLoader;
+import net.minecraftforge.client.model.geometry.IModelGeometry;
 import net.minecraftforge.resource.IResourceType;
 
 import javax.annotation.Nonnull;
@@ -33,57 +41,31 @@ import static blusunrize.immersiveengineering.api.wires.WireApi.INFOS;
 import static net.minecraftforge.resource.VanillaResourceType.MODELS;
 import static net.minecraftforge.resource.VanillaResourceType.TEXTURES;
 
-
-public class FeedthroughLoader implements ICustomModelLoader
+public class FeedthroughLoader implements IModelLoader<FeedthroughModelRaw>
 {
-	public static final String RESOURCE_LOCATION = "models/block/smartmodel/feedthrough";
+	public static final ResourceLocation LOCATION = new ResourceLocation(ImmersiveEngineering.MODID, "feedthrough");
 
 	@Override
-	public void onResourceManagerReload(IResourceManager resourceManager, Predicate<IResourceType> resourcePredicate)
+	public void onResourceManagerReload(IResourceManager resourceManager)
 	{
-		if(resourcePredicate.test(TEXTURES)||resourcePredicate.test(MODELS))
-			onResourceManagerReload(resourceManager);
 	}
 
 	@Override
-	public void onResourceManagerReload(@Nonnull IResourceManager resourceManager)
-	{
-		FeedthroughModel.CACHE.invalidateAll();
-	}
-
-	@Override
-	public boolean accepts(@Nonnull ResourceLocation modelLocation)
-	{
-		return modelLocation.getPath().equals(RESOURCE_LOCATION);
-	}
-
-	@Nonnull
-	@Override
-	public IUnbakedModel loadModel(@Nonnull ResourceLocation modelLocation)
+	public FeedthroughModelRaw read(JsonDeserializationContext deserializationContext, JsonObject modelContents)
 	{
 		return new FeedthroughModelRaw();
 	}
 
-	private class FeedthroughModelRaw implements IUnbakedModel
+	public static class FeedthroughModelRaw implements IModelGeometry<FeedthroughModelRaw>
 	{
-		@Nonnull
 		@Override
-		public Collection<ResourceLocation> getDependencies()
-		{
-			return INFOS.values().stream().map((i) -> i.modelLoc).collect(Collectors.toCollection(ArrayList::new));
-		}
-
-		@Override
-		public Collection<ResourceLocation> getTextures(@Nonnull Function<ResourceLocation, IUnbakedModel> modelGetter,
-														@Nonnull Set<String> missingTextureErrors)
+		public Collection<ResourceLocation> getTextureDependencies(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<String> missingTextureErrors)
 		{
 			return ImmutableList.of();
 		}
 
-		@Nullable
 		@Override
-		public IBakedModel bake(@Nonnull ModelBakery bakery, @Nonnull Function<ResourceLocation, TextureAtlasSprite> spriteGetter,
-								@Nonnull ISprite sprite, @Nonnull VertexFormat format)
+		public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<ResourceLocation, TextureAtlasSprite> spriteGetter, ISprite sprite, VertexFormat format, ItemOverrideList overrides)
 		{
 			return new FeedthroughModel();
 		}

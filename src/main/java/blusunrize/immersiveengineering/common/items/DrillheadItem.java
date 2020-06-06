@@ -25,6 +25,7 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
@@ -39,6 +40,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.Tags.Items;
+import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nullable;
 import java.util.HashSet;
@@ -50,6 +52,9 @@ public class DrillheadItem extends IEBaseItem implements IDrillHead
 	//Maximal damage is slightly proportionate to pickaxes
 	public static final DrillHeadPerm STEEL = new DrillHeadPerm("steel", IETags.getTagsFor(EnumMetals.STEEL).ingot, 3, 1, 3, 10, 7, 10000, new ResourceLocation(ImmersiveEngineering.MODID, "item/drill_diesel"));
 	public static final DrillHeadPerm IRON = new DrillHeadPerm("iron", Items.INGOTS_IRON, 2, 1, 2, 9, 6, 6000, new ResourceLocation(ImmersiveEngineering.MODID, "item/drill_iron"));
+
+	public static final String DAMAGE_KEY_OLD = "headDamage";
+	public static final String DAMAGE_KEY = "Damage";
 
 	public DrillHeadPerm perms;
 
@@ -113,7 +118,16 @@ public class DrillheadItem extends IEBaseItem implements IDrillHead
 	@Override
 	public int getHeadDamage(ItemStack head)
 	{
-		return ItemNBTHelper.getInt(head, "headDamage");
+		if(head.hasTag())
+		{
+			CompoundNBT nbt = head.getOrCreateTag();
+			if(nbt.contains(DAMAGE_KEY_OLD, NBT.TAG_INT))
+				return nbt.getInt(DAMAGE_KEY_OLD);
+			else
+				return nbt.getInt(DAMAGE_KEY);
+		}
+		else
+			return 0;
 	}
 
 	@Override
@@ -125,7 +139,14 @@ public class DrillheadItem extends IEBaseItem implements IDrillHead
 	@Override
 	public void damageHead(ItemStack head, int dmg)
 	{
-		ItemNBTHelper.putInt(head, "headDamage", ItemNBTHelper.getInt(head, "headDamage")+dmg);
+		setHeadDamage(head, getHeadDamage(head)+dmg);
+	}
+
+	public static void setHeadDamage(ItemStack head, int totalDamage)
+	{
+		CompoundNBT nbt = head.getOrCreateTag();
+		nbt.remove(DAMAGE_KEY_OLD);
+		nbt.putInt(DAMAGE_KEY, totalDamage);
 	}
 
 	@Override
@@ -138,13 +159,13 @@ public class DrillheadItem extends IEBaseItem implements IDrillHead
 	@Override
 	public double getDurabilityForDisplay(ItemStack stack)
 	{
-		return (double)ItemNBTHelper.getInt(stack, "headDamage")/(double)getMaximumHeadDamage(stack);
+		return getHeadDamage(stack)/(double)getMaximumHeadDamage(stack);
 	}
 
 	@Override
 	public boolean showDurabilityBar(ItemStack stack)
 	{
-		return ItemNBTHelper.getInt(stack, "headDamage") > 0;
+		return getHeadDamage(stack) > 0;
 	}
 
 	public static class DrillHeadPerm

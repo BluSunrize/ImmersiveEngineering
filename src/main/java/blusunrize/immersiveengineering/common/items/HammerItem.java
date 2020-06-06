@@ -40,6 +40,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.*;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
@@ -56,7 +57,7 @@ public class HammerItem extends IEBaseItem implements ITool
 
 	public HammerItem()
 	{
-		super("hammer", new Properties().defaultMaxDamage(IEConfig.TOOLS.hammerDurabiliy.get()).setNoRepair());
+		super("hammer", new Properties().defaultMaxDamage(IEConfig.TOOLS.hammerDurabiliy.get()));
 	}
 
 	@Override
@@ -100,18 +101,28 @@ public class HammerItem extends IEBaseItem implements ITool
 		TileEntity tile = world.getTileEntity(pos);
 		if(!world.isRemote)
 		{
+			PlayerEntity player = context.getPlayer();
 			if(tile instanceof IConfigurableSides)
 			{
-				PlayerEntity player = context.getPlayer();
 				Direction activeSide = ((player!=null)&&player.isSneaking())?side.getOpposite(): side;
 				if(((IConfigurableSides)tile).toggleSide(activeSide, player))
 					return ActionResultType.SUCCESS;
 				else
 					return ActionResultType.FAIL;
 			}
-			else if(!(tile instanceof IDirectionalTile)&&!(tile instanceof IHammerInteraction))
-				if(RotationUtil.rotateBlock(world, pos, side))
+			else
+			{
+				boolean rotate = !(tile instanceof IDirectionalTile)&&!(tile instanceof IHammerInteraction);
+				if(!rotate&&tile instanceof IDirectionalTile)
+					rotate = ((IDirectionalTile)tile).canHammerRotate(side, context.getHitVec().subtract(new Vec3d(pos)), player);
+				if(rotate&&RotationUtil.rotateBlock(world, pos, player!=null&&(player.isSneaking()!=side.equals(Direction.DOWN))))
 					return ActionResultType.SUCCESS;
+				else if(!rotate&&tile instanceof IHammerInteraction)
+				{
+					if(((IHammerInteraction)tile).hammerUseSide(side, player, context.getHitVec()))
+						return ActionResultType.SUCCESS;
+				}
+			}
 		}
 		return ActionResultType.PASS;
 	}
@@ -173,13 +184,21 @@ public class HammerItem extends IEBaseItem implements ITool
 		return ActionResultType.PASS;
 	}
 
+	@Override
+	public boolean doesSneakBypassUse(ItemStack stack, IWorldReader world, BlockPos pos, PlayerEntity player)
+	{
+		return true;
+	}
+
 	@Nonnull
 	@Override
 	public ItemStack getContainerItem(@Nonnull ItemStack stack)
 	{
 		ItemStack container = stack.copy();
-		container.attemptDamageItem(1, Utils.RAND, null);
-		return container;
+		if(container.attemptDamageItem(1, Utils.RAND, null))
+			return ItemStack.EMPTY;
+		else
+			return container;
 	}
 
 	@Override
@@ -204,12 +223,6 @@ public class HammerItem extends IEBaseItem implements ITool
 	public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment)
 	{
 		return enchantment==Enchantments.EFFICIENCY||enchantment==Enchantments.UNBREAKING||enchantment==Enchantments.MENDING;
-	}
-
-	@Override
-	public boolean doesSneakBypassUse(ItemStack stack, IWorldReader world, BlockPos pos, PlayerEntity player)
-	{
-		return true;
 	}
 
 	@Override

@@ -1,0 +1,15 @@
+{
+  "textures": {
+    "particle": "immersiveengineering:block/connector/connector_hv"
+  },
+  "loader": "immersiveengineering:connector",
+  "base_model": {
+    "loader": "forge:obj",
+    "model": "immersiveengineering:models/block/connector/connector_hv.obj",
+    "flip-v": true
+  },
+  "layers": [
+    "SOLID"
+  ],
+  "detectCullableFaces": false
+}

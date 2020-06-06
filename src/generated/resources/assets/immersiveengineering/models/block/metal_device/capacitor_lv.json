@@ -1,0 +1,5 @@
+{
+  "loader": "immersiveengineering:conf_sides",
+  "type": "side_top_bottom",
+  "base_name": "immersiveengineering:block/metal_device/capacitor_lv"
+}

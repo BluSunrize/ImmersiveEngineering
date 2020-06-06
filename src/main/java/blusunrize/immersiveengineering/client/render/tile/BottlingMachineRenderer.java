@@ -9,9 +9,13 @@
 package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
+import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.client.ClientProxy;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.BottlingMachineTileEntity;
@@ -43,7 +47,7 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 {
 	private final DynamicModel<Direction> dynamic = DynamicModel.createSided(
 			new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/bottling_machine_animated.obj.ie"),
-			"bottling_machine");
+			"bottling_machine", ModelType.IE_OBJ);
 
 	@Override
 	public void render(BottlingMachineTileEntity te, double x, double y, double z, float partialTicks, int destroyStage)
@@ -128,10 +132,14 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 		RenderHelper.enableStandardItemLighting();
 		GlStateManager.popMatrix();
 
+		float dir = te.getFacing()==Direction.SOUTH?180: te.getFacing()==Direction.NORTH?0: te.getFacing()==Direction.EAST?-90: 90;
+		GlStateManager.rotatef(dir, 0, 1, 0);
+
 		float scale = .0625f;
 		FluidStack fs = te.tanks[0].getFluid();
 		if(!fs.isEmpty())
 		{
+			RenderHelper.disableStandardItemLighting();
 			GlStateManager.pushMatrix();
 			float level = fs.getAmount()/(float)te.tanks[0].getCapacity();
 			GlStateManager.translated(-.21875, .376, 1.21875);
@@ -226,7 +234,7 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 
 	public static void renderModelPart(final BlockRendererDispatcher blockRenderer, Tessellator tessellator, BufferBuilder worldRenderer, World world, BlockState state, IBakedModel model, BlockPos pos, String... parts)
 	{
-		IModelData data = new SinglePropertyModelData<>(new OBJState(Arrays.asList(parts), true), Model.OBJ_STATE);
+		IModelData data = new SinglePropertyModelData<>(new IEObjState(VisibilityList.show(parts)), Model.IE_OBJ_STATE);
 
 		RenderHelper.disableStandardItemLighting();
 		GlStateManager.blendFunc(770, 771);

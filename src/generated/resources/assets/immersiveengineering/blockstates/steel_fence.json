@@ -7,6 +7,15 @@
     },
     {
       "when": {
+        "north": "true"
+      },
+      "apply": {
+        "model": "immersiveengineering:block/steel_fence_side",
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
         "south": "true"
       },
       "apply": {
@@ -23,14 +32,6 @@
         "model": "immersiveengineering:block/steel_fence_side",
         "y": 270,
         "uvlock": true
-      }
-    },
-    {
-      "when": {
-        "north": "true"
-      },
-      "apply": {
-        "model": "immersiveengineering:block/steel_fence_side"
       }
     },
     {

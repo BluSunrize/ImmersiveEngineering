@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.client.models;
 
+import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
@@ -21,8 +22,10 @@ import net.minecraftforge.common.model.TRSRTransformation;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.vecmath.Vector4f;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 @SuppressWarnings("deprecation")
 //T must be ItemStack for Items or IBlockState for TileEntities implementing this
@@ -31,7 +34,7 @@ public interface IOBJModelCallback<T>
 	ModelProperty<IOBJModelCallback> PROPERTY = new ModelProperty<>();
 
 	@OnlyIn(Dist.CLIENT)
-	default TextureAtlasSprite getTextureReplacement(T object, String material)
+	default TextureAtlasSprite getTextureReplacement(T object, String group, String material)
 	{
 		return null;
 	}
@@ -42,8 +45,17 @@ public interface IOBJModelCallback<T>
 		return true;
 	}
 
+	default VisibilityList getVisibility(Collection<String> allGroups, T object)
+	{
+		List<String> visible = new ArrayList<>();
+		for(String g : allGroups)
+			if(shouldRenderGroup(object, g))
+				visible.add(g);
+		return VisibilityList.show(visible);
+	}
+
 	@OnlyIn(Dist.CLIENT)
-	default Optional<TRSRTransformation> applyTransformations(T object, String group, Optional<TRSRTransformation> transform)
+	default TRSRTransformation applyTransformations(T object, String group, TRSRTransformation transform)
 	{
 		return transform;
 	}
@@ -55,9 +67,9 @@ public interface IOBJModelCallback<T>
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	default int getRenderColour(T object, String group)
+	default Vector4f getRenderColor(T object, String group, Vector4f original)
 	{
-		return 0xffffffff;
+		return original;
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -82,10 +94,10 @@ public interface IOBJModelCallback<T>
 
 	@OnlyIn(Dist.CLIENT)
 	@Nonnull
-	default Matrix4 getTransformForGroups(ItemStack stack, String[] groups, TransformType transform, LivingEntity entity,
-										  Matrix4 mat, float partialTicks)
+	default TRSRTransformation getTransformForGroups(ItemStack stack, String[] groups, TransformType transform, LivingEntity entity,
+													 float partialTicks)
 	{
-		return mat.setIdentity();
+		return TRSRTransformation.identity();
 	}
 
 	@OnlyIn(Dist.CLIENT)

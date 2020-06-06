@@ -11,9 +11,10 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
-import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
+import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttachable;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.BasicConveyor;
@@ -30,7 +31,10 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
@@ -44,8 +48,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Set;
 
-public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWorkbenchTileEntity, IMultiblockRecipe>
-		implements IInteractionObjectIE, IConveyorAttachable
+public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWorkbenchTileEntity, MultiblockRecipe>
+		implements IInteractionObjectIE, IConveyorAttachable, IBlockBounds
 {
 	public static TileEntityType<AutoWorkbenchTileEntity> TYPE;
 
@@ -120,23 +124,22 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 	}
 
 	@Override
-	public float[] getBlockBounds()
+	public VoxelShape getBlockBounds()
 	{
 		Set<BlockPos> highFullBlocks = ImmutableSet.of(
-				//TODO this block (10) is handled further down as well?
-				new BlockPos(0, 1, 1),
-				new BlockPos(1, 1, 0)
+				new BlockPos(0, 1, 2),
+				new BlockPos(0, 1, 1)
 		);
 		if(posInMultiblock.getY()==0||highFullBlocks.contains(posInMultiblock))
-			return new float[]{0, 0, 0, 1, 1, 1};
+			return VoxelShapes.create(0, 0, 0, 1, 1, 1);
 		Set<BlockPos> conveyors = ImmutableSet.of(
 				new BlockPos(1, 1, 1),
-				new BlockPos(1, 1, 2),
-				new BlockPos(2, 1, 0),
-				new BlockPos(2, 1, 1)
+				new BlockPos(2, 1, 1),
+				new BlockPos(0, 1, 0),
+				new BlockPos(1, 1, 0)
 		);
 		if(conveyors.contains(posInMultiblock))
-			return new float[]{0, 0, 0, 1, .125f, 1};
+			return VoxelShapes.create(0, 0, 0, 1, .125f, 1);
 		float xMin = 0;
 		float yMin = 0;
 		float zMin = 0;
@@ -144,12 +147,12 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 		float yMax = 1;
 		float zMax = 1;
 		if(ImmutableSet.of(
-				new BlockPos(0, 1, 1),
-				new BlockPos(0, 1, 2)
+				new BlockPos(1, 1, 2),
+				new BlockPos(2, 1, 2)
 		).contains(posInMultiblock))
 		{
 			//TODO more sensible name
-			boolean is11 = new BlockPos(0, 1, 2).equals(posInMultiblock);
+			boolean is11 = new BlockPos(2, 1, 2).equals(posInMultiblock);
 			yMax = .8125f;
 			if(getFacing()==Direction.NORTH)
 			{
@@ -176,7 +179,7 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 					zMax = .875f;
 			}
 		}
-		if(new BlockPos(2, 1, 2).equals(posInMultiblock))
+		if(new BlockPos(2, 1, 0).equals(posInMultiblock))
 		{
 			yMax = .3125f;
 			if(getFacing()==Direction.NORTH)
@@ -200,14 +203,14 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 				zMax = .875f;
 			}
 		}
-		return new float[]{xMin, yMin, zMin, xMax, yMax, zMax};
+		return VoxelShapes.create(xMin, yMin, zMin, xMax, yMax, zMax);
 	}
 
 	@Override
 	public Set<BlockPos> getEnergyPos()
 	{
 		return ImmutableSet.of(
-				new BlockPos(0, 1, 0)
+				new BlockPos(0, 1, 2)
 		);
 	}
 
@@ -215,7 +218,7 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 	public Set<BlockPos> getRedstonePos()
 	{
 		return ImmutableSet.of(
-				new BlockPos(0, 0, 1)
+				new BlockPos(1, 0, 2)
 		);
 	}
 
@@ -226,7 +229,7 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 	}
 
 	@Override
-	public boolean additionalCanProcessCheck(MultiblockProcess<IMultiblockRecipe> process)
+	public boolean additionalCanProcessCheck(MultiblockProcess<MultiblockRecipe> process)
 	{
 		return true;
 	}
@@ -253,7 +256,7 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 	}
 
 	@Override
-	public void onProcessFinish(MultiblockProcess<IMultiblockRecipe> process)
+	public void onProcessFinish(MultiblockProcess<MultiblockRecipe> process)
 	{
 	}
 
@@ -270,7 +273,7 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 	}
 
 	@Override
-	public float getMinProcessDistance(MultiblockProcess<IMultiblockRecipe> process)
+	public float getMinProcessDistance(MultiblockProcess<MultiblockRecipe> process)
 	{
 		return .4375f;
 	}
@@ -327,7 +330,7 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
-		if(new BlockPos(0, 1, 0).equals(posInMultiblock)&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		if(new BlockPos(0, 1, 2).equals(posInMultiblock)&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
 			AutoWorkbenchTileEntity master = master();
 			if(master!=null)
@@ -336,17 +339,16 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 		return super.getCapability(capability, facing);
 	}
 
-
 	@Override
-	public IMultiblockRecipe findRecipeForInsertion(ItemStack inserting)
+	public MultiblockRecipe findRecipeForInsertion(ItemStack inserting)
 	{
 		return null;
 	}
 
 	@Override
-	protected IMultiblockRecipe readRecipeFromNBT(CompoundNBT tag)
+	protected BlueprintCraftingRecipe getRecipeForId(ResourceLocation id)
 	{
-		return BlueprintCraftingRecipe.loadFromNBT(tag);
+		return BlueprintCraftingRecipe.recipeList.get(id);
 	}
 
 	@Override

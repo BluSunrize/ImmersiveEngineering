@@ -11,8 +11,8 @@ package blusunrize.immersiveengineering.client.gui;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.gui.elements.GuiButtonBoolean;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE;
-import blusunrize.immersiveengineering.client.gui.elements.GuiButtonState;
 import blusunrize.immersiveengineering.common.blocks.metal.AssemblerTileEntity;
 import blusunrize.immersiveengineering.common.gui.AssemblerContainer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
@@ -58,7 +58,7 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerContainer>
 					btn -> sendButtonClick.accept(id))
 					.setHoverOffset(0, 10));
 		}
-		this.addButton(new GuiButtonState(guiLeft+162, guiTop+69, 16, 16, "", tile.recursiveIngredients, texture, 240, 66, 3,
+		this.addButton(new GuiButtonBoolean(guiLeft+162, guiTop+69, 16, 16, "", tile.recursiveIngredients, texture, 240, 66, 3,
 				btn -> {
 					sendButtonClick.accept(3);
 					tile.recursiveIngredients = !tile.recursiveIngredients;

@@ -8,9 +8,9 @@
 
 package blusunrize.immersiveengineering.api.shader;
 
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
+import javax.vecmath.Vector4f;
 import java.util.Collection;
 
 /**
@@ -63,12 +63,12 @@ public abstract class ShaderCase
 	/**
 	 * @return if the given part of the model renders on the pass
 	 */
-	public abstract boolean renderModelPartForPass(ItemStack shader, ItemStack item, String modelPart, int pass);
+	public abstract boolean shouldRenderGroupForPass(String modelPart, int pass);
 
 	/**
 	 * @return A string representing which item this shader case applies to. e.g.: "immersiveengineering:revolver"
 	 */
-	public abstract String getShaderType();
+	public abstract ResourceLocation getShaderType();
 
 	/**
 	 * @return if the ResourceLocations of the layers should be stitched into the main texturemap<br>
@@ -83,7 +83,7 @@ public abstract class ShaderCase
 	/**
 	 * @return which icon is to be used for the given pass and model part. These obviously need to be stitched on the given sheet (mind the revolvers!)
 	 */
-	public ResourceLocation getReplacementSprite(ItemStack shader, ItemStack item, String modelPart, int pass)
+	public ResourceLocation getTextureReplacement(String modelPart, int pass)
 	{
 		return getLayers()[pass].getTexture();
 	}
@@ -91,126 +91,8 @@ public abstract class ShaderCase
 	/**
 	 * @return the ARGB values to be appleid to the given part in the given pass
 	 */
-	public int getARGBColourModifier(ItemStack shader, ItemStack item, String modelPart, int pass)
+	public Vector4f getRenderColor(String modelPart, int pass, Vector4f original)
 	{
-		return getLayers()[pass].getColour();
-	}
-
-	/**
-	 * DEPRECATED. WILL BE REMOVED IN 1.13
-	 *
-	 * @param pre indicates whether this is before or after the part was rendered
-	 * @return make specific changes to the render, like GL calls
-	 */
-	@Deprecated
-	public void modifyRender(ItemStack shader, ItemStack item, String modelPart, int pass, boolean pre, boolean inventory)
-	{
-	}
-
-	public static class ShaderLayer
-	{
-		/**
-		 * A resource location pointing to a texture on the sheet
-		 */
-		private final ResourceLocation texture;
-		/**
-		 * An ARGB formatted colour
-		 */
-		private final int colour;
-		/**
-		 * An optional double array (uMin, vMin, uMax, vMax; values of 0-1) to define which part of the original texture is overriden<br>
-		 * The model will then only render faces who's coords lie within that limited space.<br>
-		 * Useful for keeping additional decorations (see Sponsor Shader) in smaller textures
-		 */
-		private double[] textureBounds;
-		/**
-		 * An optional double array (uMin, vMin, uMax, vMax; values of 0-1) for the parts of the texture to be used.<br>
-		 * Useful when putting multiple shader textures into one file
-		 */
-		private double[] cutoutBounds;
-
-		public ShaderLayer(ResourceLocation texture, int colour)
-		{
-			this.texture = texture;
-			this.colour = colour;
-			if(ShaderRegistry.defaultLayerBounds.containsKey(texture))
-				this.setTextureBounds(ShaderRegistry.defaultLayerBounds.get(texture));
-		}
-
-		public ShaderLayer setTextureBounds(double... bounds)
-		{
-			if(bounds==null)
-				return this;
-			assert (bounds.length==4);
-			this.textureBounds = bounds;
-			return this;
-		}
-
-		/**
-		 * @return An optional double array (uMin, vMin, uMax, vMax; values of 0-1) to define which part of the original texture is overriden<br>
-		 * The model will then only render faces who's coords lie within that limited space.<br>
-		 * Useful for keeping additional decorations (see Sponsor Shader) in smaller textures
-		 */
-		public double[] getTextureBounds()
-		{
-			return this.textureBounds;
-		}
-
-		public ShaderLayer setCutoutBounds(double... bounds)
-		{
-			if(bounds==null)
-				return this;
-			assert (bounds.length==4);
-			this.cutoutBounds = bounds;
-			return this;
-		}
-
-		/**
-		 * @return An optional double array (uMin, vMin, uMax, vMax; values of 0-1) for the parts of the texture to be used.<br>
-		 * Useful when putting multiple shader textures into one file
-		 */
-		public double[] getCutoutBounds()
-		{
-			return this.cutoutBounds;
-		}
-
-		public ResourceLocation getTexture()
-		{
-			return texture;
-		}
-
-		public int getColour()
-		{
-			return colour;
-		}
-
-		/**
-		 * @return if this layer is dynamic and should be excluded from batched rendering
-		 */
-		public boolean isDynamicLayer()
-		{
-			return false;
-		}
-
-		/**
-		 * modify the render, provided that the layer is flagged as dynamic
-		 */
-		public void modifyRender(boolean pre, float partialTick)
-		{
-		}
-	}
-
-	public static class DynamicShaderLayer extends ShaderLayer
-	{
-		public DynamicShaderLayer(ResourceLocation texture, int colour)
-		{
-			super(texture, colour);
-		}
-
-		@Override
-		public boolean isDynamicLayer()
-		{
-			return true;
-		}
+		return getLayers()[pass].getColor();
 	}
 }

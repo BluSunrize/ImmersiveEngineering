@@ -1,0 +1,11 @@
+{
+  "parent": "immersiveengineering:block/ie_two_cubed",
+  "textures": {
+    "north": "immersiveengineering:block/multiblocks/alloy_smelter_off",
+    "top": "immersiveengineering:block/multiblocks/alloy_smelter_top",
+    "bottom": "immersiveengineering:block/multiblocks/alloy_smelter_bottom",
+    "east": "immersiveengineering:block/multiblocks/alloy_smelter_side",
+    "west": "immersiveengineering:block/multiblocks/alloy_smelter_side",
+    "south": "immersiveengineering:block/multiblocks/alloy_smelter_side"
+  }
+}

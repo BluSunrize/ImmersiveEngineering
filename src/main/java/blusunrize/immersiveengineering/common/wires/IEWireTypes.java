@@ -18,7 +18,6 @@ import blusunrize.immersiveengineering.api.wires.localhandlers.WireDamageHandler
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Connectors;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
@@ -27,12 +26,14 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 import static blusunrize.immersiveengineering.api.wires.WireApi.registerFeedthroughForWiretype;
 import static blusunrize.immersiveengineering.api.wires.WireType.*;
+import static blusunrize.immersiveengineering.common.IEConfig.CACHED;
 import static blusunrize.immersiveengineering.common.IEConfig.WIRES;
 
 public class IEWireTypes
@@ -65,18 +66,18 @@ public class IEWireTypes
 
 	public static void setup()
 	{
-		registerFeedthroughForWiretype(COPPER, new ResourceLocation(MODID, "block/connector/connector_lv.obj"),
-				new ResourceLocation(MODID, "blocks/connector_connector_lv"), new float[]{0, 4, 8, 12},
-				.5, Connectors.getEnergyConnector(LV_CATEGORY, false).getDefaultState());
-		registerFeedthroughForWiretype(ELECTRUM, new ResourceLocation(MODID, "block/connector/connector_mv.obj"),
-				new ResourceLocation(MODID, "blocks/connector_connector_mv"), new float[]{0, 4, 8, 12},
-				.5625, Connectors.getEnergyConnector(MV_CATEGORY, false).getDefaultState());
-		registerFeedthroughForWiretype(STEEL, new ResourceLocation(MODID, "block/connector/connector_hv.obj"),
-				new ResourceLocation(MODID, "blocks/connector_connector_hv"), new float[]{0, 4, 8, 12},
-				.75, Connectors.getEnergyConnector(HV_CATEGORY, false).getDefaultState());
-		registerFeedthroughForWiretype(REDSTONE, new ResourceLocation(MODID, "block/connector/connector_redstone.obj.ie"),
-				ImmutableMap.of(), new ResourceLocation(MODID, "blocks/connector_connector_redstone"), new float[]{3, 8, 11, 16},
-				.5625, .5, Connectors.connectorRedstone.getDefaultState()
+		registerFeedthroughForWiretype(COPPER, new ResourceLocation(MODID, "block/connector/connector_lv"),
+				new float[]{0, 4, 8, 12}, .5,
+				() -> Connectors.getEnergyConnector(LV_CATEGORY, false).getDefaultState());
+		registerFeedthroughForWiretype(ELECTRUM, new ResourceLocation(MODID, "block/connector/connector_mv"),
+				new float[]{0, 4, 8, 12}, .5625,
+				() -> Connectors.getEnergyConnector(MV_CATEGORY, false).getDefaultState());
+		registerFeedthroughForWiretype(STEEL, new ResourceLocation(MODID, "block/connector/connector_hv"),
+				new float[]{0, 4, 8, 12}, .75,
+				() -> Connectors.getEnergyConnector(HV_CATEGORY, false).getDefaultState());
+		registerFeedthroughForWiretype(REDSTONE, new ResourceLocation(MODID, "block/connector/connector_redstone"),
+				new float[]{3, 8, 11, 16}, .5625, .5,
+				() -> Connectors.connectorRedstone.getDefaultState()
 		);
 	}
 
@@ -134,7 +135,7 @@ public class IEWireTypes
 			return renderDiameter[ordinal%6];
 		}
 
-		@Nullable
+		@Nonnull
 		@Override
 		public String getCategory()
 		{
@@ -154,7 +155,7 @@ public class IEWireTypes
 				case 5:
 					return REDSTONE_CATEGORY;
 				default:
-					return null;
+					throw new IllegalStateException("Ordinal "+ordinal+" is not valid");
 			}
 		}
 
@@ -175,13 +176,13 @@ public class IEWireTypes
 
 		public double getLossRatio()
 		{
-			return Math.abs(WIRES.wireLossRatio.get().get(ordinal%6));
+			return Math.abs(CACHED.wireLossRatio[ordinal%6]);
 		}
 
 		@Override
 		public int getTransferRate()
 		{
-			return Math.abs(WIRES.wireTransferRate.get().get(ordinal%6));
+			return Math.abs(CACHED.wireTransferRate[ordinal%6]);
 		}
 
 		@Override
@@ -297,6 +298,13 @@ public class IEWireTypes
 		public double getRenderDiameter()
 		{
 			return 0;
+		}
+
+		@Nonnull
+		@Override
+		public String getCategory()
+		{
+			return "INTERNAL";
 		}
 	}
 }

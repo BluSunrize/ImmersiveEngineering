@@ -8,10 +8,12 @@
 
 package blusunrize.lib.manual;
 
+import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.lib.manual.gui.ManualScreen;
-import net.minecraft.client.gui.widget.Widget;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.client.config.GuiUtils;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -37,7 +39,7 @@ public abstract class SpecialManualElements extends SpecialManualElement
 	}
 
 	@Override
-	public void mouseDragged(int x, int y, double clickX, double clickY, double mx, double my, double lastX, double lastY, Widget button)
+	public void mouseDragged(int x, int y, double clickX, double clickY, double mx, double my, double lastX, double lastY, int mouseButton)
 	{
 	}
 
@@ -54,6 +56,17 @@ public abstract class SpecialManualElements extends SpecialManualElement
 	@Override
 	public void recalculateCraftingRecipes()
 	{
+	}
+
+	protected void renderHighlightedTooltip(ManualScreen gui, int mx, int my)
+	{
+		if(!highlighted.isEmpty())
+		{
+			FontRenderer font = highlighted.getItem().getFontRenderer(highlighted);
+			GuiUtils.preItemToolTip(highlighted);
+			gui.renderTooltip(gui.getTooltipFromItem(highlighted), mx, my, font!=null?font: ClientUtils.font());
+			GuiUtils.postItemToolTip();
+		}
 	}
 
 	public void addProvidedItem(ItemStack s)

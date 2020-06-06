@@ -31,19 +31,20 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.model.TRSRTransformation;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
-import java.util.Optional;
 
 import static blusunrize.immersiveengineering.api.wires.WireType.HV_CATEGORY;
 
-//TODO ConnectionPoints for opening/closing
 public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity implements IBlockBounds, IAdvancedDirectionalTile,
 		IActiveState, IHammerInteraction, IPlayerInteraction, IRedstoneOutput, IOBJModelCallback<BlockState>, IStateBasedDirectional
 {
@@ -84,7 +85,10 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 	{
 		if(HV_CATEGORY.equals(cableType.getCategory())&&!canTakeHV())
 			return false;
-		//TODO
+		for(ConnectionPoint cp : getConnectionPoints())
+			for(Connection c : globalNet.getLocalNet(cp).getConnections(cp))
+				if(!c.isInternal()&&(cp.equals(target)||!cableType.getCategory().equals(c.type.getCategory())))
+					return false;
 		return true;
 	}
 
@@ -100,7 +104,7 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 	}
 
 	@Override
-	public void removeCable(Connection connection)
+	public void removeCable(Connection connection, ConnectionPoint attachedPoint)
 	{
 		WireType type = connection!=null?connection.type: null;
 		if(type==null)
@@ -214,7 +218,7 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, float hitX, float hitY, float hitZ, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
 	{
 		return false;
 	}
@@ -226,7 +230,7 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 	}
 
 	@Override
-	public float[] getBlockBounds()
+	public VoxelShape getBlockBounds()
 	{
 		Vec3d start = new Vec3d(.25, .1875, 0);
 		Vec3d end = new Vec3d(.75, .8125, .5);
@@ -234,8 +238,7 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 		mat.translate(.5, .5, 0).rotate(Math.PI/2*rotation, 0, 0, 1).translate(-.5, -.5, 0);
 		start = mat.apply(start);
 		end = mat.apply(end);
-		return new float[]{(float)start.x, (float)start.y, (float)start.z,
-				(float)end.x, (float)end.y, (float)end.z};
+		return VoxelShapes.create(new AxisAlignedBB(start, end));
 	}
 
 	@Override
@@ -257,11 +260,11 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 	}
 
 	@Override
-	public Optional<TRSRTransformation> applyTransformations(BlockState object, String group, Optional<TRSRTransformation> transform)
+	public TRSRTransformation applyTransformations(BlockState object, String group, TRSRTransformation transform)
 	{
-		Matrix4 mat = transform.map(trsrTransformation -> new Matrix4(trsrTransformation.getMatrixVec())).orElseGet(Matrix4::new);
+		Matrix4 mat = new Matrix4(transform.getMatrixVec());
 		mat = mat.translate(.5, 0, .5).rotate(Math.PI/2*rotation, 0, 1, 0).translate(-.5, 0, -.5);
-		transform = Optional.of(new TRSRTransformation(mat.toMatrix4f()));
+		transform = new TRSRTransformation(mat.toMatrix4f());
 		return transform;
 	}
 

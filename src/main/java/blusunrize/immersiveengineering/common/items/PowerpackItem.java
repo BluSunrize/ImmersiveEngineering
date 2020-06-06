@@ -8,12 +8,10 @@
 
 package blusunrize.immersiveengineering.common.items;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientProxy;
 import blusunrize.immersiveengineering.client.models.ModelPowerpack;
-import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEEnergyItem;
 import net.minecraft.client.gui.FontRenderer;
@@ -23,8 +21,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.ArmorMaterial;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
@@ -46,15 +42,17 @@ import java.util.List;
  * @author BluSunrize
  * @since 15.06.2017
  */
-public class PowerpackItem extends ArmorItem implements IIEEnergyItem
+public class PowerpackItem extends IEBaseItem implements IIEEnergyItem
 {
 	public PowerpackItem()
 	{
-		//TODO custom material rather than leather
-		super(ArmorMaterial.LEATHER, EquipmentSlotType.CHEST, new Properties().maxStackSize(1).defaultMaxDamage(0)
-				.group(ImmersiveEngineering.itemGroup));
-		setRegistryName(ImmersiveEngineering.MODID, "powerpack");
-		IEContent.registeredIEItems.add(this);
+		super("powerpack");
+	}
+
+	@Override
+	public boolean canEquip(ItemStack stack, EquipmentSlotType armorType, Entity entity)
+	{
+		return armorType==EquipmentSlotType.CHEST;
 	}
 
 	@Override

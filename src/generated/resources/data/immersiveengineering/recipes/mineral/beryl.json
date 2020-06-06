@@ -1,0 +1,37 @@
+{
+  "type": "immersiveengineering:mineral_mix",
+  "ores": [
+    {
+      "chance": 0.3,
+      "output": {
+        "tag": "forge:ores/emerald"
+      }
+    },
+    {
+      "chance": 0.7,
+      "output": {
+        "item": "minecraft:prismarine"
+      }
+    },
+    {
+      "conditions": [
+        {
+          "value": {
+            "tag": "forge:gems/aquamarine",
+            "type": "forge:tag_empty"
+          },
+          "type": "forge:not"
+        }
+      ],
+      "chance": 0.3,
+      "output": {
+        "tag": "forge:gems/aquamarine"
+      }
+    }
+  ],
+  "dimensions": [
+    "minecraft:overworld"
+  ],
+  "weight": 5,
+  "fail_chance": 0.2
+}

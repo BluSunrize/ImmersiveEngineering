@@ -1,6 +1,6 @@
 {
   "recipe": {
     "type": "crafting",
-    "recipe": "metal_devices/external_heater"
+    "recipe": "crafting/furnace_heater"
   }
 }

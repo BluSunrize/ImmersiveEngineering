@@ -1,88 +1,45 @@
 {
   "variants": {
     "facing=north,mirrored=false,multiblockslave=false": {
-      "model": "immersiveengineering:block/metal_multiblock/refinery.obj",
-      "custom": {
-        "flip-v": true
-      }
-    },
-    "facing=north,mirrored=false,multiblockslave=true": {
-      "model": "immersiveengineering:block/ie_empty"
-    },
-    "facing=north,mirrored=true,multiblockslave=false": {
-      "model": "immersiveengineering:block/metal_multiblock/refinery_mirrored.obj",
-      "custom": {
-        "flip-v": true
-      }
-    },
-    "facing=north,mirrored=true,multiblockslave=true": {
-      "model": "immersiveengineering:block/ie_empty"
+      "model": "immersiveengineering:block/metal_multiblock/refinery",
+      "uvlock": true
     },
     "facing=south,mirrored=false,multiblockslave=false": {
-      "model": "immersiveengineering:block/metal_multiblock/refinery.obj",
+      "model": "immersiveengineering:block/metal_multiblock/refinery",
       "y": 180,
-      "uvlock": true,
-      "custom": {
-        "flip-v": true
-      }
-    },
-    "facing=south,mirrored=false,multiblockslave=true": {
-      "model": "immersiveengineering:block/ie_empty"
-    },
-    "facing=south,mirrored=true,multiblockslave=false": {
-      "model": "immersiveengineering:block/metal_multiblock/refinery_mirrored.obj",
-      "y": 180,
-      "uvlock": true,
-      "custom": {
-        "flip-v": true
-      }
-    },
-    "facing=south,mirrored=true,multiblockslave=true": {
-      "model": "immersiveengineering:block/ie_empty"
+      "uvlock": true
     },
     "facing=west,mirrored=false,multiblockslave=false": {
-      "model": "immersiveengineering:block/metal_multiblock/refinery.obj",
+      "model": "immersiveengineering:block/metal_multiblock/refinery",
       "y": 270,
-      "uvlock": true,
-      "custom": {
-        "flip-v": true
-      }
-    },
-    "facing=west,mirrored=false,multiblockslave=true": {
-      "model": "immersiveengineering:block/ie_empty"
-    },
-    "facing=west,mirrored=true,multiblockslave=false": {
-      "model": "immersiveengineering:block/metal_multiblock/refinery_mirrored.obj",
-      "y": 270,
-      "uvlock": true,
-      "custom": {
-        "flip-v": true
-      }
-    },
-    "facing=west,mirrored=true,multiblockslave=true": {
-      "model": "immersiveengineering:block/ie_empty"
+      "uvlock": true
     },
     "facing=east,mirrored=false,multiblockslave=false": {
-      "model": "immersiveengineering:block/metal_multiblock/refinery.obj",
+      "model": "immersiveengineering:block/metal_multiblock/refinery",
       "y": 90,
-      "uvlock": true,
-      "custom": {
-        "flip-v": true
-      }
+      "uvlock": true
     },
-    "facing=east,mirrored=false,multiblockslave=true": {
-      "model": "immersiveengineering:block/ie_empty"
+    "facing=north,mirrored=true,multiblockslave=false": {
+      "model": "immersiveengineering:block/metal_multiblock/refinery_mirrored",
+      "uvlock": true
+    },
+    "facing=south,mirrored=true,multiblockslave=false": {
+      "model": "immersiveengineering:block/metal_multiblock/refinery_mirrored",
+      "y": 180,
+      "uvlock": true
+    },
+    "facing=west,mirrored=true,multiblockslave=false": {
+      "model": "immersiveengineering:block/metal_multiblock/refinery_mirrored",
+      "y": 270,
+      "uvlock": true
     },
     "facing=east,mirrored=true,multiblockslave=false": {
-      "model": "immersiveengineering:block/metal_multiblock/refinery_mirrored.obj",
+      "model": "immersiveengineering:block/metal_multiblock/refinery_mirrored",
       "y": 90,
-      "uvlock": true,
-      "custom": {
-        "flip-v": true
-      }
+      "uvlock": true
     },
-    "facing=east,mirrored=true,multiblockslave=true": {
-      "model": "immersiveengineering:block/ie_empty"
+    "multiblockslave=true": {
+      "model": "immersiveengineering:block/refinery_empty"
     }
   }
 }

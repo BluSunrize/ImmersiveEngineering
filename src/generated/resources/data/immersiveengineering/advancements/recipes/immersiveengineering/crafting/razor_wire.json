@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/razor_wire"
+    ]
+  },
+  "criteria": {
+    "has_wire_steel": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:wire_steel"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/razor_wire"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_wire_steel",
+      "has_the_recipe"
+    ]
+  ]
+}

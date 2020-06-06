@@ -1,0 +1,9 @@
+{
+  "start": {
+    "type": "crafting",
+    "recipes": [
+      "crafting/blueprint_components",
+      "crafting/blueprint_molds"
+    ]
+  }
+}

@@ -13,6 +13,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 
@@ -22,7 +23,7 @@ public class ShaderInventory implements IInventory
 	private Container container;
 	@Nonnull
 	public ItemStack shader;
-	private String name;
+	private ResourceLocation name;
 
 	public ShaderInventory(Container par1Container, ShaderWrapper wrapper)
 	{

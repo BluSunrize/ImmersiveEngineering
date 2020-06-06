@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "wrw",
+    "ici",
+    "wpw"
+  ],
+  "key": {
+    "i": {
+      "tag": "forge:ingots/iron"
+    },
+    "r": {
+      "tag": "forge:dusts/redstone"
+    },
+    "w": {
+      "tag": "forge:treated_wood"
+    },
+    "p": {
+      "item": "immersiveengineering:circuit_board"
+    },
+    "c": {
+      "item": "immersiveengineering:component_iron"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:item_batcher"
+  }
+}

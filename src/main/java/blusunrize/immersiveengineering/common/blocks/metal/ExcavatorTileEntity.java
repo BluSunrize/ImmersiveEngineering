@@ -10,18 +10,20 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
-import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
+import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralWorldInfo;
 import blusunrize.immersiveengineering.common.IEConfig;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.FakePlayerUtil;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.shapes.CachedShapesWithTransform;
+import blusunrize.immersiveengineering.common.util.shapes.CachedVoxelShapes;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
@@ -36,9 +38,11 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.loot.LootContext;
 import net.minecraft.world.storage.loot.LootContext.Builder;
@@ -50,11 +54,13 @@ import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
 import java.util.Set;
 
-public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTileEntity, IMultiblockRecipe> implements IAdvancedSelectionBounds, IAdvancedCollisionBounds
+public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTileEntity, MultiblockRecipe> implements
+		IBlockBounds
 {
 	public static TileEntityType<ExcavatorTileEntity> TYPE;
 	private static final BlockPos wheelCenterOffset = new BlockPos(1, 1, 1);
@@ -186,7 +192,7 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 							{
 								this.doProcessOutput(wheel.digStacks.get(target).copy());
 								Block b = Block.getBlockFromItem(wheel.digStacks.get(target).getItem());
-								if(b!=null&&b!=Blocks.AIR)
+								if(b!=Blocks.AIR)
 									wheel.particleStack = wheel.digStacks.get(target).copy();
 								wheel.digStacks.set(target, ItemStack.EMPTY);
 								wheel.markDirty();
@@ -301,83 +307,65 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 		return ItemStack.EMPTY;
 	}
 
+	private static final CachedShapesWithTransform<BlockPos, Pair<Direction, Boolean>> SHAPES =
+			CachedShapesWithTransform.createForMultiblock(ExcavatorTileEntity::getShape);
+
 	@Override
-	public float[] getBlockBounds()
+	public VoxelShape getBlockBounds()
 	{
-		Direction fl = getFacing();
-		Direction fw = getFacing().rotateY();
-		if(getIsMirrored())
-			fw = fw.getOpposite();
-
-		if(new BlockPos(0, 2, 2).equals(posInMultiblock))
-			return new float[]{fl==Direction.EAST?.5f: 0, 0, fl==Direction.SOUTH?.5f: 0, fl==Direction.WEST?.5f: 1, .5f, fl==Direction.NORTH?.5f: 1};
-		if(new BlockPos(0, 2, 1).equals(posInMultiblock))
-			return new float[]{0, 0, 0, 1, .5f, 1};
-		if(new BlockPos(0, 2, 0).equals(posInMultiblock))
-			return new float[]{fl==Direction.WEST?.5f: 0, 0, fl==Direction.NORTH?.5f: 0, fl==Direction.EAST?.5f: 1, .5f, fl==Direction.SOUTH?.5f: 1};
-
-		if(new BlockPos(2, 2, 2).equals(posInMultiblock))
-			return new float[]{fl==Direction.EAST?.5f: fl==Direction.WEST?.375f: 0, 0, fl==Direction.SOUTH?.5f: fl==Direction.NORTH?.375f: 0, fl==Direction.WEST?.5f: fl==Direction.EAST?.625f: 1, 1, fl==Direction.NORTH?.5f: fl==Direction.SOUTH?.625f: 1};
-		if(new BlockPos(2, 2, 1).equals(posInMultiblock))
-			return new float[]{fw==Direction.EAST?.875f: 0, 0, fw==Direction.SOUTH?.875f: 0, fw==Direction.WEST?.125f: 1, 1, fw==Direction.NORTH?.125f: 1};
-		if(new BlockPos(2, 2, 0).equals(posInMultiblock))
-			return new float[]{fl==Direction.WEST?.5f: fl==Direction.EAST?.375f: 0, 0, fl==Direction.NORTH?.5f: fl==Direction.SOUTH?.375f: 0, fl==Direction.EAST?.5f: fl==Direction.WEST?.625f: 1, 1, fl==Direction.SOUTH?.5f: fl==Direction.NORTH?.625f: 1};
-
-		if(posInMultiblock.getX()==2&&posInMultiblock.getZ()==4)
-			return new float[]{fw==Direction.WEST?.5f: 0, 0, fw==Direction.NORTH?.5f: 0, fw==Direction.EAST?.5f: 1, 1, fw==Direction.SOUTH?.5f: 1};
-		if(posInMultiblock.getZ() < 3&&posInMultiblock.getY()==0&&posInMultiblock.getX()==0)
-			return new float[]{fw==Direction.EAST?.5f: 0, 0, fw==Direction.SOUTH?.5f: 0, fw==Direction.WEST?.5f: 1, 1, fw==Direction.NORTH?.5f: 1};
-		if(posInMultiblock.getZ() < 3&&posInMultiblock.getY()==0&&posInMultiblock.getX()==2)
-			return new float[]{fw==Direction.WEST?.5f: 0, 0, fw==Direction.NORTH?.5f: 0, fw==Direction.EAST?.5f: 1, 1, fw==Direction.SOUTH?.5f: 1};
-
-
-		return new float[]{0, 0, 0, 1, 1, 1};
+		return CachedShapesWithTransform.get(SHAPES, this);
 	}
 
-	@Override
-	public List<AxisAlignedBB> getAdvancedSelectionBounds()
+	private static List<AxisAlignedBB> getShape(BlockPos posInMultiblock)
 	{
-		Direction fl = getFacing();
-		Direction fw = getFacing().rotateY();
-		if(getIsMirrored())
-			fw = fw.getOpposite();
-
 		if(posInMultiblock.getX()==2&&posInMultiblock.getZ()==4)
-		{
-			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(fw==Direction.WEST?.5f: 0, 0, fw==Direction.NORTH?.5f: 0, fw==Direction.EAST?.5f: 1, 1, fw==Direction.SOUTH?.5f: 1));
-			list.add(new AxisAlignedBB(fw==Direction.EAST?.5f: fw==Direction.WEST?0: .25f, .25f, fw==Direction.SOUTH?.5f: fw==Direction.NORTH?0: .25f, fw==Direction.WEST?.5f: fw==Direction.EAST?1: .75f, .75f, fw==Direction.NORTH?.5f: fw==Direction.SOUTH?1: .75f));
-			return list;
-		}
+			return ImmutableList.of(
+					new AxisAlignedBB(0, 0, 0, .5f, 1, 1),
+					new AxisAlignedBB(.5f, .25f, .25f, 1, .75f, .75f)
+			);
 		else if(posInMultiblock.getZ() < 3&&posInMultiblock.getY()==0&&posInMultiblock.getX()==0)
 		{
-			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(fw==Direction.EAST?.5f: 0, 0, fw==Direction.SOUTH?.5f: 0, fw==Direction.WEST?.5f: 1, 1, fw==Direction.NORTH?.5f: 1));
+			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(.5f, 0, 0, 1, 1, 1));
 			if(posInMultiblock.getZ()==2)
-				list.add(new AxisAlignedBB(fw==Direction.WEST||fl==Direction.EAST?.5f: 0, .5f, fw==Direction.NORTH||fl==Direction.SOUTH?.5f: 0, fw==Direction.EAST||fl==Direction.WEST?.5f: 1, 1, fw==Direction.SOUTH||fl==Direction.NORTH?.5f: 1));
+				list.add(new AxisAlignedBB(0, .5f, 0, .5f, 1, .5f));
 			else if(posInMultiblock.getZ()==1)
-				list.add(new AxisAlignedBB(fw==Direction.WEST?.5f: 0, .5f, fw==Direction.NORTH?.5f: 0, fw==Direction.EAST?.5f: 1, 1, fw==Direction.SOUTH?.5f: 1));
+				list.add(new AxisAlignedBB(0, .5f, 0, .5f, 1, 1));
 			else
-				list.add(new AxisAlignedBB(fw==Direction.WEST||fl==Direction.WEST?.5f: 0, .5f, fw==Direction.NORTH||fl==Direction.NORTH?.5f: 0, fw==Direction.EAST||fl==Direction.EAST?.5f: 1, 1, fw==Direction.SOUTH||fl==Direction.SOUTH?.5f: 1));
+				list.add(new AxisAlignedBB(0, .5f, .5f, .5f, 1, 1));
 			return list;
 		}
 		else if(new BlockPos(2, 2, 2).equals(posInMultiblock))
-		{
-			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(fl==Direction.EAST?.5f: fl==Direction.WEST?.375f: 0, 0, fl==Direction.SOUTH?.5f: fl==Direction.NORTH?.375f: 0, fl==Direction.WEST?.5f: fl==Direction.EAST?.625f: 1, 1, fl==Direction.NORTH?.5f: fl==Direction.SOUTH?.625f: 1));
-			list.add(new AxisAlignedBB(fl==Direction.EAST?.625f: fw==Direction.EAST?.875f: 0, 0, fl==Direction.SOUTH?.625f: fw==Direction.SOUTH?.875f: 0, fl==Direction.WEST?.375f: fw==Direction.WEST?.125f: 1, 1, fl==Direction.NORTH?.375f: fw==Direction.NORTH?.125f: 1));
-			return list;
-		}
+			return ImmutableList.of(
+					new AxisAlignedBB(0, 0, .375f, 1, 1, .5f),
+					new AxisAlignedBB(.875f, 0, 0, 1, 1, .375f)
+			);
 		else if(new BlockPos(2, 2, 0).equals(posInMultiblock))
-		{
-			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(fl==Direction.WEST?.5f: fl==Direction.EAST?.375f: 0, 0, fl==Direction.NORTH?.5f: fl==Direction.SOUTH?.375f: 0, fl==Direction.EAST?.5f: fl==Direction.WEST?.625f: 1, 1, fl==Direction.SOUTH?.5f: fl==Direction.NORTH?.625f: 1));
-			list.add(new AxisAlignedBB(fl==Direction.WEST?.625f: fw==Direction.EAST?.875f: 0, 0, fl==Direction.NORTH?.625f: fw==Direction.SOUTH?.875f: 0, fl==Direction.EAST?.375f: fw==Direction.WEST?.125f: 1, 1, fl==Direction.SOUTH?.375f: fw==Direction.NORTH?.125f: 1));
-			return list;
-		}
-		return null;
-	}
-
-	@Override
-	public List<AxisAlignedBB> getAdvancedCollisionBounds()
-	{
-		return getAdvancedSelectionBounds();
+			return ImmutableList.of(
+					new AxisAlignedBB(0, 0, .5f, 1, 1, .625f),
+					new AxisAlignedBB(.875f, 0, .625f, 1, 1, 1)
+			);
+		final AxisAlignedBB ret;
+		if(new BlockPos(0, 2, 2).equals(posInMultiblock))
+			ret = new AxisAlignedBB(0, 0, 0, 1, .5f, .5f);
+		else if(new BlockPos(0, 2, 1).equals(posInMultiblock))
+			ret = new AxisAlignedBB(0, 0, 0, 1, .5f, 1);
+		else if(new BlockPos(0, 2, 0).equals(posInMultiblock))
+			ret = new AxisAlignedBB(0, 0, .5f, 1, .5f, 1);
+		else if(new BlockPos(2, 2, 2).equals(posInMultiblock))
+			ret = new AxisAlignedBB(0, 0, .375f, 1, 1, .5f);
+		else if(new BlockPos(2, 2, 1).equals(posInMultiblock))
+			ret = new AxisAlignedBB(.875f, 0, 0, 1, 1, 1);
+		else if(new BlockPos(2, 2, 0).equals(posInMultiblock))
+			ret = new AxisAlignedBB(0, 0, .5f, 1, 1, .625f);
+		else if(posInMultiblock.getX()==2&&posInMultiblock.getZ()==4)
+			ret = new AxisAlignedBB(0, 0, 0, .5f, 1, 1);
+		else if(posInMultiblock.getZ() < 3&&posInMultiblock.getY()==0&&posInMultiblock.getX()==0)
+			ret = new AxisAlignedBB(.5f, 0, 0, 1, 1, 1);
+		else if(posInMultiblock.getZ() < 3&&posInMultiblock.getY()==0&&posInMultiblock.getX()==2)
+			ret = new AxisAlignedBB(0, 0, 0, .5f, 1, 1);
+		else
+			ret = new AxisAlignedBB(0, 0, 0, 1, 1, 1);
+		return ImmutableList.of(ret);
 	}
 
 	@Override
@@ -405,7 +393,7 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 	}
 
 	@Override
-	public boolean additionalCanProcessCheck(MultiblockProcess<IMultiblockRecipe> process)
+	public boolean additionalCanProcessCheck(MultiblockProcess<MultiblockRecipe> process)
 	{
 		return false;
 	}
@@ -427,7 +415,7 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 	}
 
 	@Override
-	public void onProcessFinish(MultiblockProcess<IMultiblockRecipe> process)
+	public void onProcessFinish(MultiblockProcess<MultiblockRecipe> process)
 	{
 	}
 
@@ -444,7 +432,7 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 	}
 
 	@Override
-	public float getMinProcessDistance(MultiblockProcess<IMultiblockRecipe> process)
+	public float getMinProcessDistance(MultiblockProcess<MultiblockRecipe> process)
 	{
 		return 0;
 	}
@@ -513,13 +501,13 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 
 
 	@Override
-	public IMultiblockRecipe findRecipeForInsertion(ItemStack inserting)
+	public MultiblockRecipe findRecipeForInsertion(ItemStack inserting)
 	{
 		return null;
 	}
 
 	@Override
-	protected IMultiblockRecipe readRecipeFromNBT(CompoundNBT tag)
+	protected MultiblockRecipe getRecipeForId(ResourceLocation id)
 	{
 		return null;
 	}

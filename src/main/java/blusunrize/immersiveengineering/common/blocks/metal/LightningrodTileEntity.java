@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
@@ -26,6 +27,8 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
@@ -35,7 +38,8 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LightningrodTileEntity extends MultiblockPartTileEntity<LightningrodTileEntity> implements IIEInternalFluxHandler
+public class LightningrodTileEntity extends MultiblockPartTileEntity<LightningrodTileEntity> implements
+		IIEInternalFluxHandler, IBlockBounds
 {
 	public static TileEntityType<LightningrodTileEntity> TYPE;
 
@@ -154,15 +158,15 @@ public class LightningrodTileEntity extends MultiblockPartTileEntity<Lightningro
 	}
 
 	@Override
-	public float[] getBlockBounds()
+	public VoxelShape getBlockBounds()
 	{
 		if(new BlockPos(1, 2, 1).equals(posInMultiblock))
-			return new float[]{-.125f, 0, -.125f, 1.125f, 1, 1.125f};
+			return VoxelShapes.create(-.125f, 0, -.125f, 1.125f, 1, 1.125f);
 		if((posInMultiblock.getX()==1&&posInMultiblock.getZ()==1)
 				||(posInMultiblock.getY() < 2&&(posInMultiblock.getX()+posInMultiblock.getZ())%2==1))
-			return new float[]{0, 0, 0, 1, 1, 1};
+			return VoxelShapes.fullCube();
 		if(posInMultiblock.getY()==0)
-			return new float[]{0, 0, 0, 1, .5f, 1};
+			return VoxelShapes.create(0, 0, 0, 1, .5f, 1);
 		float xMin = 0;
 		float xMax = 1;
 		float yMin = 0;
@@ -200,7 +204,7 @@ public class LightningrodTileEntity extends MultiblockPartTileEntity<Lightningro
 			zMin = offsetToMaster.getZ() < 0?.375f: 0;
 			zMax = offsetToMaster.getZ() > 0?.625f: 1;
 		}
-		return new float[]{xMin, yMin, zMin, xMax, yMax, zMax};
+		return VoxelShapes.create(xMin, yMin, zMin, xMax, yMax, zMax);
 	}
 
 	@Override

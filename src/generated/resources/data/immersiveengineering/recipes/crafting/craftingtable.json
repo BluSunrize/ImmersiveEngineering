@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "sss",
+    "rcr",
+    "r r"
+  ],
+  "key": {
+    "s": {
+      "tag": "forge:treated_wood_slab"
+    },
+    "r": {
+      "tag": "forge:rods/treated_wood"
+    },
+    "c": {
+      "item": "minecraft:crafting_table"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:craftingtable"
+  }
+}

@@ -10,6 +10,8 @@ package blusunrize.immersiveengineering.common.blocks;
 
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
+import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.gui.GuiHandler;
 import blusunrize.immersiveengineering.common.util.IELogger;
@@ -29,28 +31,26 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.storage.loot.LootContext;
 import net.minecraft.world.storage.loot.LootContext.Builder;
+import net.minecraft.world.storage.loot.LootParameterSets;
 import net.minecraft.world.storage.loot.LootParameters;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.client.model.obj.OBJModel.OBJState;
+import net.minecraftforge.common.model.TRSRTransformation;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 
 public class IEBlockInterfaces
@@ -77,7 +77,12 @@ public class IEBlockInterfaces
 
 	public interface ISoundTile
 	{
-		boolean shoudlPlaySound(String sound);
+		boolean shouldPlaySound(String sound);
+
+		default float getSoundRadiusSq()
+		{
+			return 256.0f;
+		}
 	}
 
 	public interface ISpawnInterdiction
@@ -100,15 +105,6 @@ public class IEBlockInterfaces
 		int getStrongRSOutput(BlockState state, Direction side);
 
 		boolean canConnectRedstone(BlockState state, Direction side);
-	}
-
-	public interface ILightValue
-	{
-		//TODO: Note: In case lighting does not work: It seems light values are now discrete and
-		//      also caches for blockstates. Either an additional Forge patch is needed (or it
-		//      is buggy?) the returned light value has to correspond to the values passed as
-		//      block property during block construction.
-		int getLightValue();
 	}
 
 	public interface IColouredBlock
@@ -185,11 +181,20 @@ public class IEBlockInterfaces
 			return mirrorFacingOnPlacement(placer)?f.getOpposite(): f;
 		}
 
-		boolean mirrorFacingOnPlacement(LivingEntity placer);
+		default boolean mirrorFacingOnPlacement(LivingEntity placer)
+		{
+			return false;
+		}
 
-		boolean canHammerRotate(Direction side, float hitX, float hitY, float hitZ, LivingEntity entity);
+		default boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
+		{
+			return true;
+		}
 
-		boolean canRotate(Direction axis);
+		default boolean canRotate(Direction axis)
+		{
+			return true;
+		}
 
 		default void afterRotation(Direction oldDir, Direction newDir)
 		{
@@ -251,9 +256,9 @@ public class IEBlockInterfaces
 		boolean toggleSide(Direction side, PlayerEntity p);
 	}
 
-	public interface ITileDrop
+	public interface ITileDrop extends IReadOnPlacement
 	{
-		List<ItemStack> getTileDrops(Builder context);
+		List<ItemStack> getTileDrops(LootContext context);
 
 		default ItemStack getPickBlock(@Nullable PlayerEntity player, BlockState state, RayTraceResult rayRes)
 		{
@@ -267,15 +272,14 @@ public class IEBlockInterfaces
 							.withNullableParameter(LootParameters.TOOL, ItemStack.EMPTY)
 							.withNullableParameter(LootParameters.BLOCK_STATE, world.getBlockState(tile.getPos()))
 							.withNullableParameter(LootParameters.POSITION, tile.getPos())
+							.build(LootParameterSets.BLOCK)
 			).get(0);
 		}
+	}
 
+	public interface IReadOnPlacement
+	{
 		void readOnPlacement(@Nullable LivingEntity placer, ItemStack stack);
-
-		default boolean preventInventoryDrop()
-		{
-			return false;
-		}
 	}
 
 	public interface IAdditionalDrops
@@ -341,20 +345,36 @@ public class IEBlockInterfaces
 		}
 	}
 
-	public interface IBlockBounds
+	public interface IBlockBounds extends ISelectionBounds, ICollisionBounds
 	{
-		float[] getBlockBounds();
+		@Nonnull
+		VoxelShape getBlockBounds();
+
+		@Nonnull
+		@Override
+		default VoxelShape getCollisionShape()
+		{
+			return getBlockBounds();
+		}
+
+		@Nonnull
+		@Override
+		default VoxelShape getSelectionShape()
+		{
+			return getBlockBounds();
+		}
 	}
 
-	public interface IAdvancedSelectionBounds extends IBlockBounds
+	public interface ISelectionBounds
 	{
-		List<AxisAlignedBB> getAdvancedSelectionBounds();
+		@Nonnull
+		VoxelShape getSelectionShape();
 	}
 
-	public interface IAdvancedCollisionBounds extends IBlockBounds
+	public interface ICollisionBounds
 	{
-		@Nullable
-		List<AxisAlignedBB> getAdvancedCollisionBounds();
+		@Nonnull
+		VoxelShape getCollisionShape();
 	}
 
 	//TODO move a lot of this to block states!
@@ -370,6 +390,9 @@ public class IEBlockInterfaces
 	 */
 	public interface IGeneralMultiblock extends BlockstateProvider
 	{
+		@Nullable
+		IGeneralMultiblock master();
+
 		default boolean isDummy()
 		{
 			BlockState state = getState();
@@ -380,20 +403,20 @@ public class IEBlockInterfaces
 		}
 	}
 
-	public interface IHasObjProperty
+	public interface IHasObjProperty extends IAdvancedHasObjProperty
 	{
-		ArrayList<String> compileDisplayList();
+		VisibilityList compileDisplayList(BlockState state);
+
+		@Override
+		default IEObjState getIEObjState(BlockState state)
+		{
+			return new IEObjState(compileDisplayList(state), TRSRTransformation.identity());
+		}
 	}
 
 	public interface IAdvancedHasObjProperty
 	{
-		OBJState getOBJState();
-	}
-
-	public interface IDynamicTexture
-	{
-		@OnlyIn(Dist.CLIENT)
-		HashMap<String, String> getTextureReplacements();
+		IEObjState getIEObjState(BlockState state);
 	}
 
 	public interface IInteractionObjectIE extends INamedContainerProvider

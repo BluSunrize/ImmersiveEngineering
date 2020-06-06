@@ -16,7 +16,6 @@ import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBeltTileEntit
 import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.entity.Entity;
@@ -31,13 +30,17 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -81,9 +84,11 @@ public class ConveyorHandler
 
 	/**
 	 * Registers a valid substitute for the given key conveyor. This substitute is allowed in the construction of multiblocks in place of the key
-	 * @param key			A unique ResourceLocation to identify the conveyor by
-	 * @param substitute	A unique ResourceLocation to identify the substitute
+	 *
+	 * @param key        A unique ResourceLocation to identify the conveyor by
+	 * @param substitute A unique ResourceLocation to identify the substitute
 	 */
+	//TODO this is probably broken?
 	public static void registerSubstitute(ResourceLocation key, ResourceLocation substitute)
 	{
 		Set<ResourceLocation> registeredSubstitutes = substituteRegistry.computeIfAbsent(key, k -> new HashSet<>());
@@ -287,8 +292,8 @@ public class ConveyorHandler
 		 * sets the colour of the conveyor when rightclicked with a dye
 		 * parsed value is a hex RGB
 		 *
-		 * @return true if renderupdate should happen
 		 * @param colour
+		 * @return true if renderupdate should happen
 		 */
 		boolean setDyeColour(DyeColor colour);
 
@@ -412,8 +417,8 @@ public class ConveyorHandler
 				entity.setMotion(vec);
 				double distX = Math.abs(pos.offset(getFacing()).getX()+.5-entity.posX);
 				double distZ = Math.abs(pos.offset(getFacing()).getZ()+.5-entity.posZ);
-				double treshold = .9;
-				boolean contact = getFacing().getAxis()==Axis.Z?distZ < treshold: distX < treshold;
+				double threshold = .9;
+				boolean contact = getFacing().getAxis()==Axis.Z?distZ < threshold: distX < threshold;
 				World w = getTile().getWorld();
 				BlockPos upPos = pos.offset(getFacing()).up();
 				if(contact&&conveyorDirection==ConveyorDirection.UP&&
@@ -437,7 +442,7 @@ public class ConveyorHandler
 					ItemEntity item = (ItemEntity)entity;
 					if(!contact)
 					{
-						if(item.getAge() > item.lifespan-60*20)
+						if(item.age > item.lifespan-60*20)
 							item.setAgeToCreativeDespawnTime();
 					}
 					else
@@ -451,30 +456,33 @@ public class ConveyorHandler
 		 */
 		default void onItemDeployed(ItemEntity entity)
 		{
+			ConveyorHandler.applyMagnetSupression(entity, (IConveyorTile)getTile());
 		}
 
 		default void handleInsertion(ItemEntity entity, ConveyorDirection conDir, double distX, double distZ)
 		{
+			if(getTile().getWorld().isRemote)
+				return;
 			BlockPos invPos = getTile().getPos().offset(getFacing()).add(0, (conDir==ConveyorDirection.UP?1: conDir==ConveyorDirection.DOWN?-1: 0), 0);
 			World world = getTile().getWorld();
-			TileEntity inventoryTile = Utils.getExistingTileEntity(world, invPos);
 			boolean contact = getFacing().getAxis()==Axis.Z?distZ < .7: distX < .7;
-			if(!getTile().getWorld().isRemote)
-			{
-				if(contact&&inventoryTile!=null&&!(inventoryTile instanceof IConveyorTile))
-				{
-					ItemStack stack = entity.getItem();
-					if(!stack.isEmpty())
-					{
-						ItemStack ret = ApiUtils.insertStackIntoInventory(inventoryTile, stack, getFacing().getOpposite());
-						if(ret.isEmpty())
-							entity.remove();
-						else if(ret.getCount() < stack.getCount())
-							entity.setItem(ret);
-					}
-				}
-			}
+			TileEntity inventoryTile = Utils.getExistingTileEntity(world, invPos);
+			if(inventoryTile instanceof IConveyorTile||!contact)
+				return;
 
+			LazyOptional<IItemHandler> cap = ApiUtils.findItemHandlerAtPos(world, invPos, getFacing().getOpposite(), true);
+			cap.ifPresent(itemHandler -> {
+				ItemStack stack = entity.getItem();
+				ItemStack temp = ItemHandlerHelper.insertItem(itemHandler, stack.copy(), true);
+				if(temp.isEmpty()||temp.getCount() < stack.getCount())
+				{
+					temp = ItemHandlerHelper.insertItem(itemHandler, stack, false);
+					if(temp.isEmpty())
+						entity.remove();
+					else if(temp.getCount() < stack.getCount())
+						entity.setItem(temp);
+				}
+			});
 		}
 
 		default boolean isTicking()
@@ -486,18 +494,18 @@ public class ConveyorHandler
 		{
 		}
 
-		AxisAlignedBB conveyorBounds = new AxisAlignedBB(0, 0, 0, 1, .125f, 1);
-		AxisAlignedBB highConveyorBounds = new AxisAlignedBB(0, 0, 0, 1, 1.125f, 1);
-		AxisAlignedBB FULL_BLOCK = new AxisAlignedBB(0, 0, 0, 1, 1, 1);
+		VoxelShape conveyorBounds = VoxelShapes.create(0, 0, 0, 1, .125f, 1);
+		VoxelShape highConveyorBounds = VoxelShapes.create(0, 0, 0, 1, 1.125f, 1);
+		VoxelShape FULL_BLOCK = VoxelShapes.create(0, 0, 0, 1, 1, 1);
 
-		default List<AxisAlignedBB> getSelectionBoxes()
+		default VoxelShape getSelectionShape()
 		{
-			return getConveyorDirection()==ConveyorDirection.HORIZONTAL?Lists.newArrayList(conveyorBounds): Lists.newArrayList(highConveyorBounds);
+			return getConveyorDirection()==ConveyorDirection.HORIZONTAL?conveyorBounds: highConveyorBounds;
 		}
 
-		default List<AxisAlignedBB> getColisionBoxes()
+		default VoxelShape getCollisionShape()
 		{
-			return Lists.newArrayList(conveyorBounds);
+			return conveyorBounds;
 		}
 
 		CompoundNBT writeConveyorNBT();

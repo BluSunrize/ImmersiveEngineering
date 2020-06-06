@@ -46,7 +46,7 @@ import java.util.Optional;
 import java.util.Set;
 
 public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntity<T>> extends IEBaseTileEntity
-		implements ITickableTileEntity, IDirectionalTile, IBlockBounds, IGeneralMultiblock, IHammerInteraction, IMirrorAble
+		implements ITickableTileEntity, IDirectionalTile, IGeneralMultiblock, IHammerInteraction, IMirrorAble
 {
 	public boolean formed = false;
 	//Position of this block according to the BlockInfo's returned by IMultiblock#getStructure
@@ -99,7 +99,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, float hitX, float hitY, float hitZ, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
 	{
 		return false;
 	}
@@ -283,11 +283,15 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 		return true;
 	}
 
+	@Override
 	@Nullable
 	public T master()
 	{
 		if(offsetToMaster.equals(Vec3i.NULL_VECTOR))
 			return (T)this;
+		// Used to provide tile-dependant drops after disassembly
+		if(tempMasterTE!=null)
+			return (T)tempMasterTE;
 		BlockPos masterPos = getPos().subtract(offsetToMaster);
 		TileEntity te = Utils.getExistingTileEntity(world, masterPos);
 		return this.getClass().isInstance(te)?(T)te: null;
@@ -322,6 +326,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	{
 		if(formed&&!world.isRemote)
 		{
+			tempMasterTE = master();
 			BlockPos startPos = getOrigin();
 			multiblockInstance.disassemble(world, startPos, getIsMirrored(), multiblockInstance.untransformDirection(getFacing()));
 			world.removeBlock(pos, false);
@@ -346,8 +351,8 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 			getWorldNonnull().removeBlock(pos, false);
 		getWorldNonnull().setBlockState(pos, state);
 		TileEntity tile = getWorldNonnull().getTileEntity(pos);
-		if(tile instanceof ITileDrop)
-			((ITileDrop)tile).readOnPlacement(null, stack);
+		if(tile instanceof IReadOnPlacement)
+			((IReadOnPlacement)tile).readOnPlacement(null, stack);
 	}
 
 	//	=================================

@@ -8,10 +8,11 @@
 
 package blusunrize.immersiveengineering.client.models;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
-import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
-import blusunrize.immersiveengineering.api.shader.ShaderCaseMinecart;
+import blusunrize.immersiveengineering.api.shader.ShaderLayer;
+import blusunrize.immersiveengineering.api.shader.impl.ShaderCaseMinecart;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import com.mojang.blaze3d.platform.GlStateManager;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -19,13 +20,15 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.client.renderer.entity.model.MinecartModel;
 import net.minecraft.client.renderer.entity.model.RendererModel;
 import net.minecraft.client.renderer.model.ModelBox;
-import net.minecraft.entity.item.minecart.MinecartEntity;
+import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
+import javax.vecmath.Vector4f;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShaderMinecartModel<T extends MinecartEntity> extends MinecartModel<T>
+public class ShaderMinecartModel<T extends AbstractMinecartEntity> extends MinecartModel<T>
 {
 	public static Int2ObjectMap<ItemStack> shadedCarts = new Int2ObjectOpenHashMap<>();
 	public static boolean rendersReplaced = false;
@@ -55,7 +58,7 @@ public class ShaderMinecartModel<T extends MinecartEntity> extends MinecartModel
 		{
 			shader = shadedCarts.get(entity.getEntityId());
 			if(shader!=null&&!shader.isEmpty()&&shader.getItem() instanceof IShaderItem)
-				sCase = ((IShaderItem)shader.getItem()).getShaderCase(shader, null, "immersiveengineering:minecart");
+				sCase = ((IShaderItem)shader.getItem()).getShaderCase(shader, null, new ResourceLocation(ImmersiveEngineering.MODID, "minecart"));
 		}
 		if(sCase!=null)
 		{
@@ -73,13 +76,13 @@ public class ShaderMinecartModel<T extends MinecartEntity> extends MinecartModel
 					//identify part 1+2, they shouldn'T render with additional?!
 
 					for(int pass = 0; pass < layers.length; pass++)
-						if(sCase.renderModelPartForPass(shader, null, ""+part, pass))
+						if(sCase.shouldRenderGroupForPass(""+part, pass))
 						{
-							int col = sCase.getARGBColourModifier(shader, null, ""+part, pass);
+							Vector4f col = sCase.getRenderColor(""+part, pass, new javax.vecmath.Vector4f(1, 1, 1, 1));
 							GlStateManager.scalef(scale, scale, scale);
-							GlStateManager.color4f((col >> 16&255)/255f, (col >> 8&255)/255f, (col&255)/255f, (col >> 24&255)/255f);
+							GlStateManager.color4f(col.x, col.y, col.z, col.w);
 
-							ClientUtils.mc().getTextureManager().bindTexture(sCase.getReplacementSprite(shader, null, ""+part, pass));
+							ClientUtils.mc().getTextureManager().bindTexture(sCase.getTextureReplacement(""+part, pass));
 
 							if(layers[pass].isDynamicLayer())
 								layers[pass].modifyRender(true, part);

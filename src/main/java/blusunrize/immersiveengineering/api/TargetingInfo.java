@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.api;
 
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 
@@ -22,6 +23,11 @@ public class TargetingInfo
 	public final float hitX;
 	public final float hitY;
 	public final float hitZ;
+
+	public TargetingInfo(ItemUseContext ctx)
+	{
+		this(ctx.getFace(), (float)ctx.getHitVec().x, (float)ctx.getHitVec().y, (float)ctx.getHitVec().z);
+	}
 
 	public TargetingInfo(Direction side, float hitX, float hitY, float hitZ)
 	{

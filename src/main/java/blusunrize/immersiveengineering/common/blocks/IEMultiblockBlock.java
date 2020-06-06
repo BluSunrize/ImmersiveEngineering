@@ -37,10 +37,9 @@ import java.util.List;
 
 public abstract class IEMultiblockBlock extends IETileProviderBlock
 {
-
 	public IEMultiblockBlock(String name, Properties props, IProperty<?>... additionalProperties)
 	{
-		super(name, props, null, ArrayUtils.addAll(additionalProperties, IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE));
+		super(name, props, BlockItemIE::new, ArrayUtils.addAll(additionalProperties, IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE));
 		setMobility(PushReaction.BLOCK);
 		setNotNormalBlock();
 	}
@@ -53,37 +52,10 @@ public abstract class IEMultiblockBlock extends IETileProviderBlock
 			TileEntity tileEntity = world.getTileEntity(pos);
 			if(tileEntity instanceof IEBaseTileEntity)
 				((IEBaseTileEntity)tileEntity).setOverrideState(state);
-			if(tileEntity instanceof MultiblockPartTileEntity&&world.getGameRules().getBoolean(GameRules.DO_TILE_DROPS))
-			{
-				MultiblockPartTileEntity tile = (MultiblockPartTileEntity)tileEntity;
-				if(tile.formed&&tile instanceof IIEInventory)
-				{
-					IIEInventory master = (IIEInventory)tile.master();
-					if(master!=null&&(!(master instanceof ITileDrop)||!((ITileDrop)master).preventInventoryDrop())&&master.getDroppedItems()!=null)
-						for(ItemStack s : master.getDroppedItems())
-							if(!s.isEmpty())
-								world.addEntity(new ItemEntity(world, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, s.copy()));
-				}
-			}
 			if(tileEntity instanceof MultiblockPartTileEntity)
-				((MultiblockPartTileEntity)tileEntity).disassemble();
+				((MultiblockPartTileEntity<?>)tileEntity).disassemble();
 		}
 		super.onReplaced(state, world, pos, newState, isMoving);
-	}
-
-	@Override
-	public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder)
-	{
-		TileEntity te = builder.get(LootParameters.BLOCK_ENTITY);
-		if(te instanceof MultiblockPartTileEntity)
-		{
-			MultiblockPartTileEntity<?> multiblockTile = (MultiblockPartTileEntity<?>)te;
-			return Utils.getDrops(multiblockTile.getOriginalBlock(), new Builder(builder.getWorld())
-					.withParameter(LootParameters.TOOL, builder.get(LootParameters.TOOL))
-					.withParameter(LootParameters.POSITION, builder.get(LootParameters.POSITION))
-			);
-		}
-		return Collections.emptyList();
 	}
 
 	@Override

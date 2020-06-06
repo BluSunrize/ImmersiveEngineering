@@ -1,3 +1,125 @@
+##### Version 0.14-97
+- Added fuel gauge for the buzzsaw (BluSunrize)
+- Added a covered version of the splitting conveyor (BluSunrize)
+- Added a steel hoe (BluSunrize)
+- Changed buzzsaw blade quiver to keep the sawblades when removed (BluSunrize)
+- Fixed a crash triggered by other mod's automatic recipe unlocks (BluSunrize)
+- Fixed a crash with the wirecoil tooltips (Malte)
+- Fixed a crash when rendering coresamples with Optifine installed (Malte)
+- Fixed buzzsaw upgrade achievement not triggering (BluSunrize)
+- Fixed buzzsaw and drill not taking damage or requiring fuel when used as weapons (BluSunrize)
+- Fixed wrong transformations for steel tools (Malte)
+- Fixed fluid gauge for the drill going over (Malte)
+- Fixed broken recipe syncing (Malte)
+
+##### Version 0.14-96 - BUILT
+- All IE recipes are now JSON based! (BluSunrize)
+    - This includes the excavator's mineral veins. ALL EXISTING VEINS WILL BE BROKEN. The last release was an Alpha, so
+      this has to be expected
+    - Mineral veins have also been changed and rebalanced
+- Overhauled the turntable, to allow side-based redstone input to produce different rotations (MalkContent)
+- Added furnace fuel values for coke coal and coke coal blocks (Malte)
+- Re-Added automatic changelog generation (Malte)
+- Re-Added Graphite Electrode blueprints (BluSunrize)
+- Changed and improved Multiblock bounding boxes (Malte)
+- Changed dropping conveyors to not drop downwards when given redstone signal (MalkContent)
+- Changed hammers and wirecutters to allow repairing (BluSunrize)
+- Changed high-explosive cartridge to not destroy blocks (BluSunrize)
+- Fixed IE ores not generating in non-vanilla biomes (Malte)
+- Fixed IE ores generating in blacklisted dimensions (Malte)
+- Fixed refinery not accepting input fluids when only one tank is filled  (Malte)
+- Fixed crashes when using railguns or revolvers with shaders on a dedicated server (Malte)
+- Fixed some texture and model loading errors (Malte)
+- Fixed scaffolding not acting as a ladder (Malte)
+- Fixed fontrendering issues with Optifine (Malte)
+- Fixed refinery accepting fluid pipes from all sides (BluSunrize)
+- Fixed Voltmeter being broken (Malte)
+- Fixed renders for Bottling Machine and Mixer (Malte)
+- Fixed collision on diagonal covered conveyors (BluSunrize)
+- Fixed recipes for sheetmetal not accepting other mods' plates (BluSunrize)
+
+##### Version 0.14-95 - BUILT
+- Added the Buzzsaw! It cuts Trees! (BluSunrize)
+- Added full support for the new Villages! (BluSunrize)
+    - Different houses based on biome
+    - 5 different IE Villagers and their workstations:
+        - Structural Engineer, using the new Engineer's Crafting Table
+        - Machinist, using an Anvil
+        - Electrician, using a Current Transformer
+        - Gunsmith, using the Engineer's Workbench
+        - Outfitter, using IE's Shader Banner
+    - All IE villagers vary their outfit based on profession and biome 
+- Re-Added Revolver Perks (BluSunrize)
+- Re-Added the Fluid Outlet (Malte)
+- Added the Firework Cartridge for the Revolver (BluSunrize)
+- Re-Added IE's Advancements (BluSunrize)
+- Re-Added the Maintenance Kit (BluSunrize)
+- Added the Engineer's Screwdriver (BluSunrize)
+- Added herbicide fluid. It kills leaves and grass (BluSunrize)
+- Re-Added Chutes (BluSunrize)
+- Added the Redstone Controlled conveyor (BluSunrize)
+    - Normal conveyors now ignore redstone
+    - This special one can be disabled with a signal
+- Added the Item Batcher! It collects items until a specified amount is reached, then sends them on (BluSunrize)
+- Added the Redstone Interface Connector! It allows blocks (like the Item Batcher) to send bundled redstone signals (BluSunrize)
+- Re-Added Ore Retrogeneration (phit / Malte)
+- Added "Igneous Rock" mineral vein which contains Granite, Diorite, Andesite and Obsidian (BluSunrize)
+- Changed Ear Protectors and Capacitor Backpack to no longer provide armor (BluSunrize)
+- Changed Dieselgen to emit more appropriate smoke particles (TwistedGate)
+- Changed Quarzite vein to only show up in the Nether (BluSunrize)
+- Enabled text overlay (previously colourblind mode) by default (BluSunrize)
+- Enabled metal blocks to be used as Beacon bases (BluSunrize)
+- Expanded available methods for addons (Malte)
+- Fixed countless bits of rendering (Malte & BluSunrize)
+- Fixed a few recipes (BluSunrize)
+- Fixed rendering for revolver cartridges (BluSunrize)
+- Fixed bug in Shaderbag distribution (BluSunrize)
+- Fixed faulty ore gen (Malte)
+- Fixed sync issues (Malte)
+- Fixed worldgen lag (Malte)
+- Fixed recipes for Crusher (Malte)
+- Fixed Probe Connectors (Malte)
+- Fixed Windmills's obstruction code (Malte)
+- Fixed collision on slabs (Malte)
+- Fixed Conveyors crashing on servers (Malte)
+- Fixed connections on Current Transformers (Malte)
+- Fixed missing particles (Malte)
+- Fixed furnace heater being oriented wrong (Malte)
+- Fixed crafting of treated wood with jerrycans (Malte)
+- Fixed Manual entries for Shaders, and other entries (BluSunrize)
+- Fixed wires not being craftable in metal press (Malte)
+- Fixed crashes in the Manual (Malte)
+- Fixed wrong sound when breaking hemp (gyroplast)
+- Fixed glitches with the Skyhook (Malte)
+- Fixed missing recipes for String and Torches (gyroplast)
+- Fixed drops from metal press breaking (Malte)
+- Fixed recipes not being added properly (Malte)
+- Fixed crash with razorwire (Malte)
+- Fixed distance limit on Dieselgen Sounds (BluSunrize)
+- Fixed conveyors crashing when dyed (BluSunrize)
+- Fixed in- & output on the assembler, and bugged recipe handling (BluSunrize)
+- Fixed various issues with the wire network (Malte)
+- Fixed an issue where some blocks allowed too many wires to be attached (Malte)
+- Fixed workbench, cloche and turret not dropping their inventory when their dummy blocks are broken (BluSunrize)
+
+##### Version 0.14-94 - BUILT
+- Added Minecarts!
+    - Wooden crates, reinforced crates, wooden barrels and metal barrels can be put in carts
+    - IE's conveyors can load and unload (extracting conveyor) Minecarts (including vanilla ones!)
+- Re-Added Steel Armor
+- Added vanilla recycling (1 nugget!) for steel tools, steel armor and the faraday suit
+- Change minimum Forge version to 28.2.3
+- Fixed crash due to Minecart render
+- Fixed various rendering glitches
+- Fixed buckets not working
+- Fixed cloche and other dummy-constructed blocks replacing existing blocks
+- Fixed links in the manual's search function
+- Fixed extracting conveyors not being able to rotate their input points
+- Fixed missing vanilla materials in excavator minerals
+
+##### Version 0.14-93 - BUILT
+- Initial alpha release for Minecraft 1.14.4
+
 ##### Version 0.12-90
 - Items on conveyors now despawn after the usual time when stuck against a block (Malte)
 - Fixed wires sometimes attaching to the wrong parts of transformers (Malte)

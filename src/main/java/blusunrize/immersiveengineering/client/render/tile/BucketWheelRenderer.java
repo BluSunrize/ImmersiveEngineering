@@ -9,9 +9,13 @@
 package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
+import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.client.models.obj.IESmartObjModel;
+import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
@@ -48,7 +52,7 @@ public class BucketWheelRenderer extends TileEntityRenderer<BucketWheelTileEntit
 {
 	private final DynamicModel<Void> wheel = DynamicModel.createSimple(
 			new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/bucket_wheel.obj.ie"),
-			"bucket_wheel");
+			"bucket_wheel", ModelType.IE_OBJ);
 
 	@Override
 	public void render(BucketWheelTileEntity tile, double x, double y, double z, float partialTicks, int destroyStage)
@@ -60,7 +64,6 @@ public class BucketWheelRenderer extends TileEntityRenderer<BucketWheelTileEntit
 		if(state.getBlock()!=Multiblocks.bucketWheel)
 			return;
 		IBakedModel model = wheel.get(null);
-		OBJState objState = null;
 		Map<String, String> texMap = new HashMap<>();
 		List<String> list = Lists.newArrayList("bucketWheel");
 		synchronized(tile.digStacks)
@@ -76,7 +79,7 @@ public class BucketWheelRenderer extends TileEntityRenderer<BucketWheelTileEntit
 					texMap.put("dig"+i, digModel.getParticleTexture().getName().toString());
 				}
 		}
-		objState = new OBJState(list, true);
+		IEObjState objState = new IEObjState(VisibilityList.show(list));
 
 		Tessellator tessellator = Tessellator.getInstance();
 		GlStateManager.pushMatrix();
@@ -101,7 +104,8 @@ public class BucketWheelRenderer extends TileEntityRenderer<BucketWheelTileEntit
 		BufferBuilder worldRenderer = tessellator.getBuffer();
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 		worldRenderer.setTranslation(-.5, -.5, -.5);
-		IModelData modelData = new SinglePropertyModelData<>(objState, Model.OBJ_STATE);
+//		IModelData modelData = new SinglePropertyModelData<>(objState, Model.IE_OBJ_STATE);
+		IModelData modelData = new SinglePropertyModelData<>(tile, IOBJModelCallback.PROPERTY);
 		List<BakedQuad> quads;
 		if(model instanceof IESmartObjModel)
 			quads = ((IESmartObjModel)model).getQuads(state, null, 0, objState, texMap, true,

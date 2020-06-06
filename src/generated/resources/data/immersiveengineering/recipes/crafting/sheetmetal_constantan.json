@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " p ",
+    "p p",
+    " p "
+  ],
+  "key": {
+    "p": {
+      "tag": "forge:plates/constantan"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:sheetmetal_constantan",
+    "count": 4
+  }
+}

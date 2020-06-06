@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.api;
 
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.common.IERecipes;
 import net.minecraft.item.IItemTier;
 import net.minecraft.item.Rarity;
 import net.minecraft.item.crafting.Ingredient;
@@ -50,25 +49,31 @@ public class Lib
 	public static final ResourceLocation GUIID_CokeOven = new ResourceLocation(MODID, "cokeoven");
 	public static final ResourceLocation GUIID_AlloySmelter = new ResourceLocation(MODID, "alloysmelter");
 	public static final ResourceLocation GUIID_BlastFurnace = new ResourceLocation(MODID, "blastfurnace");
+	public static final ResourceLocation GUIID_CraftingTable = new ResourceLocation(MODID, "craftingtable");
 	public static final ResourceLocation GUIID_WoodenCrate = new ResourceLocation(MODID, "woodencrate");
 	public static final ResourceLocation GUIID_Workbench = new ResourceLocation(MODID, "workbench");
 	public static final ResourceLocation GUIID_Assembler = new ResourceLocation(MODID, "assembler");
 	public static final ResourceLocation GUIID_Sorter = new ResourceLocation(MODID, "sorter");
+	public static final ResourceLocation GUIID_ItemBatcher = new ResourceLocation(MODID, "item_batcher");
 	public static final ResourceLocation GUIID_Squeezer = new ResourceLocation(MODID, "squeezer");
 	public static final ResourceLocation GUIID_Fermenter = new ResourceLocation(MODID, "fermenter");
 	public static final ResourceLocation GUIID_Refinery = new ResourceLocation(MODID, "refinery");
 	public static final ResourceLocation GUIID_ArcFurnace = new ResourceLocation(MODID, "arcfurnace");
 	public static final ResourceLocation GUIID_AutoWorkbench = new ResourceLocation(MODID, "autoworkbench");
 	public static final ResourceLocation GUIID_Mixer = new ResourceLocation(MODID, "mixer");
-	public static final ResourceLocation GUIID_Turret = new ResourceLocation(MODID, "turret");
+	public static final ResourceLocation GUIID_Turret_Gun = new ResourceLocation(MODID, "turret_gun");
+	public static final ResourceLocation GUIID_Turret_Chem = new ResourceLocation(MODID, "turret_chem");
 	public static final ResourceLocation GUIID_FluidSorter = new ResourceLocation(MODID, "fluidsorter");
-	public static final ResourceLocation GUIID_Belljar = new ResourceLocation(MODID, "belljar");
+	public static final ResourceLocation GUIID_Cloche = new ResourceLocation(MODID, "cloche");
 	public static final ResourceLocation GUIID_ToolboxBlock = new ResourceLocation(MODID, "toolboxblock");
 	//Items
 	public static final ResourceLocation GUIID_Manual = new ResourceLocation(MODID, "manual");
 	public static final ResourceLocation GUIID_Revolver = new ResourceLocation(MODID, "revolver");
 	public static final ResourceLocation GUIID_Toolbox = new ResourceLocation(MODID, "toolbox");
 	public static final ResourceLocation GUIID_MaintenanceKit = new ResourceLocation(MODID, "maintenancekit");
+	//Entities
+	public static final ResourceLocation GUIID_CartCrate = new ResourceLocation(MODID, "cart_crate");
+	public static final ResourceLocation GUIID_CartReinforcedCrate = new ResourceLocation(MODID, "cart_reinforcedcrate");
 
 	public static final String NBT_Earmuffs = "IE:Earmuffs";
 	public static final String NBT_EarmuffColour = "IE:EarmuffColour";
@@ -89,6 +94,7 @@ public class Lib
 	public static String DMG_Tesla = "ieTesla";
 	public static String DMG_Acid = "ieAcid";
 	public static String DMG_Railgun = "ieRailgun";
+	public static String DMG_Sawblade = "ieSawblade";
 	public static String DMG_Tesla_prim = "ieTeslaPrimary";
 	public static String DMG_RazorWire = "ieRazorWire";
 	public static String DMG_RazorShock = "ieRazorShock";
@@ -129,8 +135,8 @@ public class Lib
 		@Override
 		public Ingredient getRepairMaterial()
 		{
-			return Ingredient.fromTag(ItemTags.getCollection().get(IERecipes.getIngot("steel")));
+			return Ingredient.fromTag(ItemTags.getCollection().get(IETags.getIngot("steel")));
 		}
 	};
-	public static final Rarity RARITY_Masterwork = Rarity.create("IE:MASTERWORK", TextFormatting.GOLD);
+	public static final Rarity RARITY_MASTERWORK = Rarity.create("IE_MASTERWORK", TextFormatting.GOLD);
 }

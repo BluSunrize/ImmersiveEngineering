@@ -8,17 +8,23 @@
 
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.multiblocks.BlockMatcher;
 import blusunrize.immersiveengineering.api.multiblocks.BlockMatcher.Result;
+import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.UnionMultiblock.TransformedMultiblock;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.FourWayBlock;
 import net.minecraft.state.Property;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Rotation;
+import net.minecraft.util.math.Vec3i;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import java.util.List;
 
 public class IEMultiblocks
 {
-	//TODO replace with correct instances
 	public static IETemplateMultiblock CRUSHER;
 	public static IETemplateMultiblock ALLOY_SMELTER;
 	public static IETemplateMultiblock ARC_FURNACE;
@@ -31,8 +37,8 @@ public class IEMultiblocks
 	public static IETemplateMultiblock COKE_OVEN;
 	public static IETemplateMultiblock DIESEL_GENERATOR;
 	public static IETemplateMultiblock EXCAVATOR;
-	public static IETemplateMultiblock EXCAVATOR_DEMO;
-	public static IETemplateMultiblock FEEDTHROUGH;
+	public static IMultiblock EXCAVATOR_DEMO;
+	public static IMultiblock FEEDTHROUGH;
 	public static IETemplateMultiblock FERMENTER;
 	public static IETemplateMultiblock LIGHTNING_ROD;
 	public static IETemplateMultiblock METAL_PRESS;
@@ -77,8 +83,7 @@ public class IEMultiblocks
 		COKE_OVEN = new CokeOvenMultiblock();
 		DIESEL_GENERATOR = new DieselGeneratorMultiblock();
 		EXCAVATOR = new ExcavatorMultiblock();
-		EXCAVATOR_DEMO = CRUSHER;
-		FEEDTHROUGH = CRUSHER;
+		FEEDTHROUGH = new FeedthroughMultiblock();
 		FERMENTER = new FermenterMultiblock();
 		LIGHTNING_ROD = new LightningRodMultiblock();
 		METAL_PRESS = new MetalPressMultiblock();
@@ -87,5 +92,10 @@ public class IEMultiblocks
 		SHEETMETAL_TANK = new SheetmetalTankMultiblock();
 		SILO = new SiloMultiblock();
 		SQUEEZER = new SqueezerMultiblock();
+		EXCAVATOR_DEMO = new UnionMultiblock(new ResourceLocation(ImmersiveEngineering.MODID, "excavator_demo"),
+				ImmutableList.of(
+						new TransformedMultiblock(EXCAVATOR, Vec3i.NULL_VECTOR, Rotation.NONE),
+						new TransformedMultiblock(BUCKET_WHEEL, new Vec3i(1, -2, 4), Rotation.COUNTERCLOCKWISE_90)
+				));
 	}
 }

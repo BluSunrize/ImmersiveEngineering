@@ -39,6 +39,8 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraftforge.event.RegistryEvent;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -130,7 +132,7 @@ public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity im
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, float hitX, float hitY, float hitZ, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
 	{
 		return false;
 	}
@@ -293,29 +295,29 @@ public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity im
 		LENGTH.defaultReturnValue(0.5F);
 	}
 
-	public static float[] getConnectorBounds(Direction facing, float wMin, float length)
+	public static VoxelShape getConnectorBounds(Direction facing, float wMin, float length)
 	{
 		float wMax = 1-wMin;
 		switch(facing.getOpposite())
 		{
 			case UP:
-				return new float[]{wMin, 0, wMin, wMax, length, wMax};
+				return VoxelShapes.create(wMin, 0, wMin, wMax, length, wMax);
 			case DOWN:
-				return new float[]{wMin, 1-length, wMin, wMax, 1, wMax};
+				return VoxelShapes.create(wMin, 1-length, wMin, wMax, 1, wMax);
 			case SOUTH:
-				return new float[]{wMin, wMin, 0, wMax, wMax, length};
+				return VoxelShapes.create(wMin, wMin, 0, wMax, wMax, length);
 			case NORTH:
-				return new float[]{wMin, wMin, 1-length, wMax, wMax, 1};
+				return VoxelShapes.create(wMin, wMin, 1-length, wMax, wMax, 1);
 			case EAST:
-				return new float[]{0, wMin, wMin, length, wMax, wMax};
+				return VoxelShapes.create(0, wMin, wMin, length, wMax, wMax);
 			case WEST:
-				return new float[]{1-length, wMin, wMin, 1, wMax, wMax};
+				return VoxelShapes.create(1-length, wMin, wMin, 1, wMax, wMax);
 		}
-		return new float[]{0, 0, 0, 1, 1, 1};
+		return VoxelShapes.fullCube();
 	}
 
 	@Override
-	public float[] getBlockBounds()
+	public VoxelShape getBlockBounds()
 	{
 		float length = LENGTH.getFloat(new ImmutablePair<>(voltage, relay));
 		float wMin = .3125f;

@@ -58,8 +58,8 @@ public class CommandMineral
 		list.executes(command -> {
 			StringBuilder s = new StringBuilder();
 			int i = 0;
-			for(MineralMix mm : ExcavatorHandler.mineralList.keySet())
-				s.append((i++) > 0?", ": "").append(mm.name);
+			for(MineralMix mm : ExcavatorHandler.mineralList.values())
+				s.append((i++) > 0?", ": "").append(mm.getId());
 			command.getSource().sendFeedback(new StringTextComponent(s.toString()), true);
 			return Command.SINGLE_SUCCESS;
 		});
@@ -90,8 +90,8 @@ public class CommandMineral
 		MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(sender.getWorld(),
 				xChunk, zChunk);
 		sender.sendFeedback(new TranslationTextComponent(Lib.CHAT_COMMAND+"mineral.get",
-				TextFormatting.GOLD+(info.mineral!=null?info.mineral.name: "null")+TextFormatting.RESET,
-				TextFormatting.GOLD+(info.mineralOverride!=null?info.mineralOverride.name: "null")+TextFormatting.RESET,
+				TextFormatting.GOLD+(info.mineral!=null?info.mineral.getId().toString(): "null")+TextFormatting.RESET,
+				TextFormatting.GOLD+(info.mineralOverride!=null?info.mineralOverride.getId().toString(): "null")+TextFormatting.RESET,
 				TextFormatting.GOLD+(""+info.depletion)+TextFormatting.RESET), true);
 	}
 
@@ -124,7 +124,7 @@ public class CommandMineral
 		info.mineralOverride = mineral;
 		IESaveData.setDirty();
 		sender.sendFeedback(new TranslationTextComponent(Lib.CHAT_COMMAND+
-				"mineral.set.sucess", mineral.name), true);
+				"mineral.set.sucess", mineral.getId()), true);
 	}
 
 	private static LiteralArgumentBuilder<CommandSource> setMineralDepletion()
@@ -167,8 +167,8 @@ public class CommandMineral
 		public MineralMix parse(StringReader reader) throws CommandSyntaxException
 		{
 			String name = reader.readQuotedString();//TODO does this work properly?
-			for(MineralMix mm : ExcavatorHandler.mineralList.keySet())
-				if(mm.name.equalsIgnoreCase(name))
+			for(MineralMix mm : ExcavatorHandler.mineralList.values())
+				if(mm.getId().toString().equalsIgnoreCase(name))
 					return mm;
 			throw invalidVein.create(name);
 		}
@@ -176,16 +176,16 @@ public class CommandMineral
 		@Override
 		public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder)
 		{
-			return ISuggestionProvider.suggest(ExcavatorHandler.mineralList.keySet().stream().map(mix -> "\""+mix.name+"\""), builder);
+			return ISuggestionProvider.suggest(ExcavatorHandler.mineralList.values().stream().map(mix -> "\""+mix.getId()+"\""), builder);
 		}
 
 		@Override
 		public Collection<String> getExamples()
 		{
 			List<String> ret = new ArrayList<>();
-			for(MineralMix mix : ExcavatorHandler.mineralList.keySet())
+			for(MineralMix mix : ExcavatorHandler.mineralList.values())
 			{
-				ret.add("\""+mix.name+"\"");
+				ret.add("\""+mix.getId()+"\"");
 				if(ret.size() > 5)
 					break;
 			}

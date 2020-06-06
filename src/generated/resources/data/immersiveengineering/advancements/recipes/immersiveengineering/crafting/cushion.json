@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/cushion"
+    ]
+  },
+  "criteria": {
+    "has_hemp_fabric": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:fabric_hemp"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/cushion"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_hemp_fabric",
+      "has_the_recipe"
+    ]
+  ]
+}

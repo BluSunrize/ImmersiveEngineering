@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/stick_aluminum"
+    ]
+  },
+  "criteria": {
+    "has_alu_ingot": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:ingots/aluminum"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/stick_aluminum"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_alu_ingot",
+      "has_the_recipe"
+    ]
+  ]
+}

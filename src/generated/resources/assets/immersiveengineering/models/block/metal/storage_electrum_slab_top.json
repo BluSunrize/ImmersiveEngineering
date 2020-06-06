@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/slab_top",
-  "textures": {
-    "top": "immersiveengineering:block/metal/storage_electrum",
-    "bottom": "immersiveengineering:block/metal/storage_electrum",
-    "side": "immersiveengineering:block/metal/storage_electrum"
-  }
-}

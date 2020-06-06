@@ -1,0 +1,16 @@
+{
+  "textures": {
+    "particle": "immersiveengineering:block/metal_device/floodlight"
+  },
+  "loader": "immersiveengineering:connector",
+  "base_model": {
+    "loader": "immersiveengineering:ie_obj",
+    "model": "immersiveengineering:models/block/metal_device/floodlight.obj.ie",
+    "flip-v": true
+  },
+  "layers": [
+    "TRANSLUCENT",
+    "SOLID"
+  ],
+  "detectCullableFaces": false
+}

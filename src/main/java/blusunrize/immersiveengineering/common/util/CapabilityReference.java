@@ -66,6 +66,7 @@ public abstract class CapabilityReference<T>
 		private LazyOptional<T> currentCap = LazyOptional.empty();
 		private DirectionalBlockPos lastPos;
 		private World lastWorld;//TODO does this leak anywhere?
+		private TileEntity lastTE;
 
 		public TECapReference(Supplier<World> world, Supplier<DirectionalBlockPos> pos, Capability<T> cap)
 		{
@@ -98,12 +99,27 @@ public abstract class CapabilityReference<T>
 				currentCap = LazyOptional.empty();
 				lastWorld = null;
 				lastPos = null;
+				lastTE = null;
 			}
-			else if(currWorld!=lastWorld||!currPos.equals(lastPos)||!currentCap.isPresent())
+			else if(currWorld!=lastWorld
+					||!currPos.equals(lastPos)
+					||!currentCap.isPresent()
+					||(lastTE!=null&&lastTE.isRemoved()))
 			{
-				TileEntity te = Utils.getExistingTileEntity(currWorld, currPos);
-				if(te!=null)
-					currentCap = te.getCapability(cap, currPos.direction);
+				if(currentCap.isPresent()&&lastTE!=null&&lastTE.isRemoved())
+				{
+					IELogger.logger.warn(
+							"The tile entity {} (class {}) was removed, but the value {} provided by it "+
+									"for the capability {} is still marked as valid. This is likely a bug in the mod(s) adding "+
+									"the tile entity/the capability",
+							lastTE,
+							lastTE.getClass(),
+							currentCap.orElseThrow(RuntimeException::new),
+							cap.getName());
+				}
+				lastTE = Utils.getExistingTileEntity(currWorld, currPos);
+				if(lastTE!=null)
+					currentCap = lastTE.getCapability(cap, currPos.direction);
 				else
 					currentCap = LazyOptional.empty();
 				lastWorld = currWorld;

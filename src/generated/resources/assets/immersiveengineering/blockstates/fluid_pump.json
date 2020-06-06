@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "multiblockslave=false": {
+      "model": "immersiveengineering:metal_device/pump_bottom"
+    },
+    "multiblockslave=true": {
+      "model": "immersiveengineering:block/metal_device/fluid_pump"
+    }
+  }
+}

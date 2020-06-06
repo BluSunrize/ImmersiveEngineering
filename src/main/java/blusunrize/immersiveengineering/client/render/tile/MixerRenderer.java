@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.MixerTileEntity;
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -33,7 +34,7 @@ public class MixerRenderer extends TileEntityRenderer<MixerTileEntity>
 {
 	private final DynamicModel<Direction> dynamic = DynamicModel.createSided(
 			new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/mixer_agitator.obj"),
-			"mixer");
+			"mixer", ModelType.OBJ);
 
 	@Override
 	public void render(MixerTileEntity te, double x, double y, double z, float partialTicks, int destroyStage)
@@ -82,9 +83,9 @@ public class MixerRenderer extends TileEntityRenderer<MixerTileEntity>
 
 		GlStateManager.popMatrix();
 
+		GlStateManager.translated(te.getFacing()==Direction.SOUTH||te.getFacing()==Direction.WEST?-.5: .5, -.625f, te.getFacing()==Direction.SOUTH||te.getFacing()==Direction.EAST?.5: -.5);
 		GlStateManager.scalef(.0625f, 1, .0625f);
 		GlStateManager.rotatef(90, 1, 0, 0);
-		GlStateManager.translated(8, -8, .625f);
 
 		RenderHelper.disableStandardItemLighting();
 

@@ -21,6 +21,8 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -70,7 +72,7 @@ public class BlastFurnaceAdvancedTileEntity extends BlastFurnaceTileEntity
 	}
 
 	@Override
-	public float[] getBlockBounds()
+	public VoxelShape getBlockBounds()
 	{
 		if((posInMultiblock.getX()==1&&posInMultiblock.getZ()==1)
 				||ImmutableSet.of(
@@ -78,7 +80,7 @@ public class BlastFurnaceAdvancedTileEntity extends BlastFurnaceTileEntity
 				new BlockPos(1, 1, 2),
 				new BlockPos(1, 3, 1)
 		).contains(posInMultiblock))
-			return new float[]{0, 0, 0, 1, 1, 1};
+			return VoxelShapes.fullCube();
 
 		float xMin = 0;
 		float yMin = 0;
@@ -127,7 +129,7 @@ public class BlastFurnaceAdvancedTileEntity extends BlastFurnaceTileEntity
 				zMax = indent;
 		}
 
-		return new float[]{xMin, yMin, zMin, xMax, yMax, zMax};
+		return VoxelShapes.create(xMin, yMin, zMin, xMax, yMax, zMax);
 	}
 
 	@Override

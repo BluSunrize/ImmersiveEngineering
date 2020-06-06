@@ -1,0 +1,20 @@
+{
+  "pools": [
+    {
+      "name": "epic_shader",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": 1.0
+            }
+          ],
+          "name": "immersiveengineering:shader_bag_epic"
+        }
+      ]
+    }
+  ]
+}

@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.stone;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.AlloyRecipe;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IActiveState;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IProcessTile;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
@@ -30,13 +31,17 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.IIntArray;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
+import java.util.function.Predicate;
+
 public class AlloySmelterTileEntity extends MultiblockPartTileEntity<AlloySmelterTileEntity> implements IIEInventory,
-		IActiveState, IInteractionObjectIE, IProcessTile
+		IActiveState, IInteractionObjectIE, IProcessTile, IBlockBounds
 {
 	public static TileEntityType<AlloySmelterTileEntity> TYPE;
 
@@ -65,9 +70,9 @@ public class AlloySmelterTileEntity extends MultiblockPartTileEntity<AlloySmelte
 	}
 
 	@Override
-	public float[] getBlockBounds()
+	public VoxelShape getBlockBounds()
 	{
-		return null;
+		return VoxelShapes.fullCube();
 	}
 
 	@Override
@@ -116,9 +121,9 @@ public class AlloySmelterTileEntity extends MultiblockPartTileEntity<AlloySmelte
 						AlloyRecipe recipe = getRecipe();
 						if(recipe!=null)
 						{
-							boolean flip = !recipe.input0.matchesItemStack(inventory.get(0));
-							Utils.modifyInvStackSize(inventory, flip?1: 0, -recipe.input0.inputSize);
-							Utils.modifyInvStackSize(inventory, flip?0: 1, -recipe.input1.inputSize);
+							boolean flip = !recipe.input0.test(inventory.get(0));
+							Utils.modifyInvStackSize(inventory, flip?1: 0, -recipe.input0.getCount());
+							Utils.modifyInvStackSize(inventory, flip?0: 1, -recipe.input1.getCount());
 
 							if(!inventory.get(3).isEmpty())
 								inventory.get(3).grow(recipe.output.copy().getCount());

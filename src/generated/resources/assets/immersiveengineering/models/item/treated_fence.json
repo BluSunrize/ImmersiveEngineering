@@ -1,6 +1,3 @@
 {
-  "parent": "minecraft:block/fence_inventory",
-  "textures": {
-    "texture": "immersiveengineering:block/wooden_decoration/treated_wood_horizontal"
-  }
+  "parent": "immersiveengineering:block/treated_fence_inventory"
 }

@@ -1,22 +1,13 @@
 {
   "variants": {
-    "type=top,waterlogged=true": {
-      "model": "immersiveengineering:block/stone_decoration/coke_slab_top"
+    "type=top": {
+      "model": "immersiveengineering:block/slab_coke_top"
     },
-    "type=top,waterlogged=false": {
-      "model": "immersiveengineering:block/stone_decoration/coke_slab_top"
+    "type=bottom": {
+      "model": "immersiveengineering:block/slab_coke_bottom"
     },
-    "type=bottom,waterlogged=true": {
-      "model": "immersiveengineering:block/stone_decoration/coke_slab"
-    },
-    "type=bottom,waterlogged=false": {
-      "model": "immersiveengineering:block/stone_decoration/coke_slab"
-    },
-    "type=double,waterlogged=true": {
-      "model": "immersiveengineering:block/stone_decoration/coke"
-    },
-    "type=double,waterlogged=false": {
-      "model": "immersiveengineering:block/stone_decoration/coke"
+    "type=double": {
+      "model": "immersiveengineering:block/slab_coke_double"
     }
   }
 }

@@ -9,14 +9,12 @@
 package blusunrize.immersiveengineering.api.wires;
 
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties.ConnectionModelData;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.client.utils.CombinedModelData;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
-import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.BlockState;
@@ -60,7 +58,7 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 	}
 
 	@Override
-	public void removeCable(Connection connection)
+	public void removeCable(Connection connection, ConnectionPoint attachedPoint)
 	{
 		this.markDirty();
 		if(world!=null)
@@ -121,19 +119,22 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 			Collection<Connection> conns = local.getConnections(cp);
 			if(conns==null)
 			{
-				IELogger.logger.debug("Aborting and returning empty data: null connections at {}", cp);
+				WireLogger.logger.debug("Aborting and returning empty data: null connections at {}", cp);
 				return new ConnectionModelData(ImmutableSet.of(), pos);
 			}
 			//TODO change model data to only include catenary (a, oX, oY) and number of vertices to render
 			for(Connection c : conns)
-				if(!c.isInternal())
+			{
+				ConnectionPoint other = c.getOtherEnd(cp);
+				if(!c.isInternal()&&!(globalNet.getLocalNet(other).getConnector(other) instanceof IICProxy))
 				{
 					// generate subvertices
 					c.generateCatenaryData(world);
 					ret.add(c);
 				}
+			}
 		}
-		IELogger.logger.info("Model data has connections {}", ret);
+		WireLogger.logger.info("Model data has connections {}", ret);
 		return new ConnectionModelData(ret, pos);
 	}
 
@@ -149,7 +150,7 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 	public void onChunkUnloaded()
 	{
 		super.onChunkUnloaded();
-		IELogger.logger.info("Unloading connector at {}", pos);
+		WireLogger.logger.info("Unloading connector at {}", pos);
 		globalNet.onConnectorUnload(pos, this);
 	}
 
@@ -157,28 +158,21 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 	public void onLoad()
 	{
 		super.onLoad();
-		IELogger.info("Loading connector at {}", pos);
-		if(world.isRemote)
-			globalNet.onConnectorLoad(this, world);
-		else
-			ApiUtils.addFutureServerTask(world, () -> globalNet.onConnectorLoad(this, world), true);
+		WireLogger.logger.info("Loading connector at {}", pos);
+		globalNet.onConnectorLoad(this, world);
 	}
 
 	@Override
 	public void remove()
 	{
 		super.remove();
-		IELogger.logger.info("Removing connector at {}", pos);
-		if(world.isRemote)
-			globalNet.removeConnector(this);
-		else
-			ApiUtils.addFutureServerTask(world, () -> globalNet.removeConnector(this), true);
+		WireLogger.logger.info("Removing connector at {}", pos);
+		globalNet.removeConnector(this);
 	}
 
 	@Override
 	public Collection<ConnectionPoint> getConnectionPoints()
 	{
-		//TODO override in the relevant conn classes
 		return ImmutableList.of(new ConnectionPoint(pos, 0));
 	}
 }

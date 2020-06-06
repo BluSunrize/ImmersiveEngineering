@@ -1,0 +1,35 @@
+{
+  "parent": "immersiveengineering:main/craft_workbench",
+  "display": {
+    "icon": {
+      "item": "immersiveengineering:buzzsaw"
+    },
+    "title": {
+      "translate": "advancement.immersiveengineering.craft_buzzsaw"
+    },
+    "description": {
+      "translate": "advancement.immersiveengineering.craft_buzzsaw.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "buzzsaw": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:buzzsaw"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "buzzsaw"
+    ]
+  ]
+}

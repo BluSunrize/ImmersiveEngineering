@@ -233,8 +233,7 @@ public class ManualElementCrafting extends SpecialManualElements
 		GlStateManager.enableBlend();
 		RenderHelper.disableStandardItemLighting();
 
-		if(!highlighted.isEmpty())
-			gui.renderTooltip(gui.getTooltipFromItem(highlighted), mx, my);
+		this.renderHighlightedTooltip(gui, mx, my);
 		GlStateManager.enableBlend();
 		GlStateManager.enableAlphaTest();
 		RenderHelper.disableStandardItemLighting();

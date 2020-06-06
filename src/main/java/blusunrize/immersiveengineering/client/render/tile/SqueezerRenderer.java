@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.SqueezerTileEntity;
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -32,7 +33,7 @@ public class SqueezerRenderer extends TileEntityRenderer<SqueezerTileEntity>
 {
 	private final DynamicModel<Direction> dynamic = DynamicModel.createSided(
 			new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/squeezer_piston.obj"),
-			"squeezer");
+			"squeezer", ModelType.OBJ);
 
 	@Override
 	public void render(SqueezerTileEntity te, double x, double y, double z, float partialTicks, int destroyStage)

@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralWorldInf
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.WorldSavedData;
 
 import javax.annotation.Nonnull;
@@ -62,7 +63,7 @@ public class IESaveData extends WorldSavedData
 			{
 				String s = playerReceived.getString(j);
 				if(!s.isEmpty())
-					ShaderRegistry.receivedShaders.put(player, s);
+					ShaderRegistry.receivedShaders.put(player, new ResourceLocation(s));
 			}
 		}
 	}
@@ -88,9 +89,9 @@ public class IESaveData extends WorldSavedData
 			CompoundNBT tag = new CompoundNBT();
 			tag.putUniqueId("player", player);
 			ListNBT playerReceived = new ListNBT();
-			for(String shader : ShaderRegistry.receivedShaders.get(player))
-				if(shader!=null&&!shader.isEmpty())
-					playerReceived.add(new StringNBT(shader));
+			for(ResourceLocation shader : ShaderRegistry.receivedShaders.get(player))
+				if(shader!=null)
+					playerReceived.add(new StringNBT(shader.toString()));
 			tag.put("received", playerReceived);
 			receivedShaderList.add(tag);
 		}

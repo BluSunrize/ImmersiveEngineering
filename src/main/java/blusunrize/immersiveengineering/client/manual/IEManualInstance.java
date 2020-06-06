@@ -34,12 +34,12 @@ import java.util.Set;
 
 public class IEManualInstance extends ManualInstance
 {
-	private final Set<String> hiddenEntries = new HashSet<>();
+	private final Set<ResourceLocation> hiddenEntries = new HashSet<>();
 
 	public IEManualInstance()
 	{
 		super("immersiveengineering:textures/gui/manual.png",
-				120, 179-28, new ResourceLocation(ImmersiveEngineering.MODID, "manual"));
+				120, 148, new ResourceLocation(ImmersiveEngineering.MODID, "manual"));
 		/*
 		TODO no longer easily possible?
 		this.fontRenderer.colorCode[0+6] = Lib.COLOUR_I_ImmersiveOrange;
@@ -57,14 +57,6 @@ public class IEManualInstance extends ManualInstance
 	@Override
 	public String formatText(String s)
 	{
-//		if(!s.contains(" "))//if it contains spaces, it's probably already translated.
-//		{
-//			s = ManualUtils.attemptStringTranslation("ie.manual.entry.%s",s);
-//			String translKey =  + s;
-//			String translated = I18n.format(translKey);
-//			if(!translKey.equals(translated))
-//				s = translated;
-//		}
 		String splitKey = ";";
 
 		s = s.replaceAll("<br>", "\n");
@@ -88,9 +80,12 @@ public class IEManualInstance extends ManualInstance
 			String[] segment = rep.substring(0, rep.length()-1).split(splitKey);
 			if(segment.length < 2)
 				break;
-			String result = segment[1];
-			//TODO better dimension name creation
-			s = s.replaceFirst(rep, result);
+			ResourceLocation dimKey = new ResourceLocation(segment[1]);
+			StringBuilder dimName = new StringBuilder();
+			for(String ss : dimKey.getPath().split("_"))
+				if(!"the".equalsIgnoreCase(ss))
+					dimName.append(Utils.toCamelCase(ss)+" ");
+			s = s.replaceFirst(rep, dimName.toString().trim());
 		}
 
 		overflow = 0;
@@ -106,7 +101,9 @@ public class IEManualInstance extends ManualInstance
 			for(KeyBinding kb : ClientUtils.mc().gameSettings.keyBindings)
 				if(segment[1].equalsIgnoreCase(kb.getKeyDescription()))
 				{
-					result = Utils.toCamelCase(kb.getKey().toString());
+					result = kb.getLocalizedName();
+					if(result!=null&&result.length() > 1)
+						result = Utils.toCamelCase(result);
 					break;
 				}
 			s = s.replaceFirst(rep, result);
@@ -231,9 +228,9 @@ public class IEManualInstance extends ManualInstance
 	//TODO this was changed to snake_case. Where else do I need to change it
 	private static final ResourceLocation SHADER_ENTRY = new ResourceLocation(ImmersiveEngineering.MODID, "shader_list");
 
-	public void hideEntry(String name)
+	public void hideEntry(ResourceLocation name)
 	{
-		this.hiddenEntries.add(name.toLowerCase());
+		this.hiddenEntries.add(name);
 	}
 
 	@Override
@@ -243,7 +240,7 @@ public class IEManualInstance extends ManualInstance
 		if(ImmersiveEngineering.MODID.equals(nodeLoc.getNamespace())&&
 				nodeLoc.getPath().startsWith(ManualHelper.CAT_UPDATE))
 			return IEConfig.GENERAL.showUpdateNews.get();
-		return !nodeLoc.equals(SHADER_ENTRY);
+		return !nodeLoc.equals(SHADER_ENTRY)&&!hiddenEntries.contains(nodeLoc);
 	}
 
 	@Override

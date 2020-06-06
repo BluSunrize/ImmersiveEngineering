@@ -10,8 +10,10 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.energy.IRotationAcceptor;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
@@ -34,7 +36,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 
 public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IStateBasedDirectional, IHasDummyBlocks, IHasObjProperty
 {
@@ -283,7 +284,7 @@ public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTi
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, float hitX, float hitY, float hitZ, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
 	{
 		return false;
 	}
@@ -300,9 +301,21 @@ public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTi
 		return offset[0]!=0||offset[1]!=0;
 	}
 
+	@Nullable
+	@Override
+	public IGeneralMultiblock master()
+	{
+		if(!isDummy())
+			return this;
+		BlockPos masterPos = getPos().add(getFacing().getAxis()==Axis.Z?-offset[0]: 0, -offset[1], getFacing().getAxis()==Axis.Z?0: -offset[0]);
+		TileEntity te = Utils.getExistingTileEntity(world, masterPos);
+		return this.getClass().isInstance(te)?(IGeneralMultiblock)te: null;
+	}
+
 	@Override
 	public void placeDummies(BlockItemUseContext ctx, BlockState state)
 	{
+		state = state.with(IEProperties.MULTIBLOCKSLAVE, true);
 		for(int hh = -2; hh <= 2; hh++)
 			for(int ww = -2; ww <= 2; ww++)
 				if(((hh > -2&&hh < 2)||(ww > -2&&ww < 2))&&(hh!=0||ww!=0))
@@ -335,11 +348,9 @@ public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTi
 				}
 	}
 
-	static ArrayList<String> emptyDisplayList = new ArrayList<>();
-
 	@Override
-	public ArrayList<String> compileDisplayList()
+	public VisibilityList compileDisplayList(BlockState state)
 	{
-		return emptyDisplayList;
+		return VisibilityList.hideAll();
 	}
 }

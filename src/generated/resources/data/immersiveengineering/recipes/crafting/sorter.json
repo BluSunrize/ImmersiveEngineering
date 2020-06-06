@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "wrw",
+    "ici",
+    "wbw"
+  ],
+  "key": {
+    "i": {
+      "tag": "forge:ingots/iron"
+    },
+    "r": {
+      "tag": "forge:dusts/redstone"
+    },
+    "w": {
+      "tag": "forge:treated_wood"
+    },
+    "b": {
+      "item": "immersiveengineering:conveyor_basic"
+    },
+    "c": {
+      "item": "immersiveengineering:component_iron"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:sorter"
+  }
+}

@@ -1,12 +1,3 @@
 {
-  "parent": "immersiveengineering:block/ie_six_sides",
-  "textures": {
-    "east": "immersiveengineering:block/wooden_device/fluid_sorter_5",
-    "south": "immersiveengineering:block/wooden_device/fluid_sorter_3",
-    "north": "immersiveengineering:block/wooden_device/fluid_sorter_2",
-    "west": "immersiveengineering:block/wooden_device/fluid_sorter_4",
-    "particle": "immersiveengineering:block/wooden_device/fluid_sorter_0",
-    "up": "immersiveengineering:block/wooden_device/fluid_sorter_1",
-    "down": "immersiveengineering:block/wooden_device/fluid_sorter_0"
-  }
+  "parent": "immersiveengineering:block/fluid_router"
 }

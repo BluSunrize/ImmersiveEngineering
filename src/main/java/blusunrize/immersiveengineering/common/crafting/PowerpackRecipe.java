@@ -8,28 +8,26 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.SpecialRecipeSerializer;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class PowerpackRecipe implements ICraftingRecipe
 {
-	public static final IRecipeSerializer<PowerpackRecipe> SERIALIZER = IRecipeSerializer.register(
-			ImmersiveEngineering.MODID+":powerpack", new SpecialRecipeSerializer<>(PowerpackRecipe::new)
-	);
-
 	private final ResourceLocation id;
 
 	public PowerpackRecipe(ResourceLocation id)
@@ -38,7 +36,7 @@ public class PowerpackRecipe implements ICraftingRecipe
 	}
 
 	@Override
-	public boolean matches(CraftingInventory inv, World world)
+	public boolean matches(CraftingInventory inv, @Nonnull World world)
 	{
 		ItemStack powerpack = ItemStack.EMPTY;
 		ItemStack armor = ItemStack.EMPTY;
@@ -58,6 +56,7 @@ public class PowerpackRecipe implements ICraftingRecipe
 		else return !armor.isEmpty()&&ItemNBTHelper.hasKey(armor, Lib.NBT_Powerpack)&&powerpack.isEmpty();
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack getCraftingResult(CraftingInventory inv)
 	{
@@ -95,12 +94,14 @@ public class PowerpackRecipe implements ICraftingRecipe
 		return width >= 2&&height >= 2;
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack getRecipeOutput()
 	{
 		return new ItemStack(Misc.powerpack, 1);
 	}
 
+	@Nonnull
 	@Override
 	public NonNullList<ItemStack> getRemainingItems(CraftingInventory inv)
 	{
@@ -130,15 +131,23 @@ public class PowerpackRecipe implements ICraftingRecipe
 		return true;
 	}
 
+	@Nonnull
 	@Override
 	public ResourceLocation getId()
 	{
 		return id;
 	}
 
+	@Nonnull
 	@Override
 	public IRecipeSerializer<?> getSerializer()
 	{
-		return SERIALIZER;
+		return RecipeSerializers.POWERPACK_SERIALIZER.get();
+	}
+
+	@Override
+	public NonNullList<Ingredient> getIngredients()
+	{
+		return NonNullList.withSize(1, Ingredient.fromItems(Misc.powerpack));
 	}
 }

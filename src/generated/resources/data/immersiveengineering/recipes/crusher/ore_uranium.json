@@ -1,0 +1,30 @@
+{
+  "type": "immersiveengineering:crusher",
+  "secondaries": [
+    {
+      "chance": 0.1,
+      "output": {
+        "tag": "forge:dusts/lead"
+      },
+      "conditions": [
+        {
+          "value": {
+            "tag": "forge:dusts/lead",
+            "type": "forge:tag_empty"
+          },
+          "type": "forge:not"
+        }
+      ]
+    }
+  ],
+  "result": {
+    "count": 2,
+    "base_ingredient": {
+      "tag": "forge:dusts/uranium"
+    }
+  },
+  "input": {
+    "tag": "forge:ores/uranium"
+  },
+  "energy": 6000
+}

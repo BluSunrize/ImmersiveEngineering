@@ -28,6 +28,7 @@ import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
 import java.util.*;
+import java.util.function.Consumer;
 
 public class ManualScreen extends Screen
 {
@@ -43,7 +44,7 @@ public class ManualScreen extends Screen
 	public AbstractNode<ResourceLocation, ManualEntry> currentNode;
 	public Stack<ManualLink> previousSelectedEntry = new Stack<>();
 	public int page;
-	public static ManualScreen activeManual;
+	public static ManualScreen lastActiveManual;
 
 	ManualInstance manual;
 	String texture;
@@ -58,13 +59,12 @@ public class ManualScreen extends Screen
 	{
 		super(new StringTextComponent("manual"));
 		this.manual = manual;
-		this.currentNode = manual.contentTree.getRoot();
+		this.currentNode = manual.getRoot();
 		this.texture = texture;
 
 		prevGuiScale = mc.gameSettings.guiScale;
 		if(prevGuiScale!=0&&prevGuiScale!=2&&manual.allowGuiRescale())
 			mc.gameSettings.guiScale = 2;
-		activeManual = this;
 	}
 
 	public ManualEntry getCurrentPage()
@@ -113,19 +113,19 @@ public class ManualScreen extends Screen
 			for(AbstractNode<ResourceLocation, ManualEntry> node : currentNode.getChildren())
 				if(manual.showNodeInList(node))
 					children.add(node);
-			entryList = new ClickableList(this, guiLeft+40, guiTop+20, 100, 168,
-					1f, children, sel -> {
+			Consumer<AbstractNode<ResourceLocation, ManualEntry>> openEntry = sel -> {
 				if(sel!=null)
 				{
 					previousSelectedEntry.clear();
 					setCurrentNode(sel);
 					ManualScreen.this.fullInit();
 				}
-			});
+			};
+			entryList = new ClickableList(this, guiLeft+40, guiTop+20, 100, 168,
+					1f, children, openEntry);
 			addButton(entryList);
 			suggestionList = new ClickableList(this, guiLeft+180, guiTop+138, 100, 80, 1f,
-					new ArrayList<>(), sel -> {
-			});
+					new ArrayList<>(), openEntry);
 			suggestionList.visible = false;
 			addButton(suggestionList);
 			textField = true;
@@ -154,6 +154,7 @@ public class ManualScreen extends Screen
 		}
 		else if(searchField!=null)
 			searchField = null;
+		lastActiveManual = this;
 	}
 
 	public void fullInit()
@@ -257,7 +258,6 @@ public class ManualScreen extends Screen
 		super.onClose();
 		if(prevGuiScale!=-1&&manual.allowGuiRescale())
 			mc.gameSettings.guiScale = prevGuiScale;
-		activeManual = null;
 	}
 
 	private void drawCenteredStringScaled(FontRenderer fr, String s, int x, int y, int colour, float scale, boolean shadow)
@@ -387,14 +387,14 @@ public class ManualScreen extends Screen
 	}
 
 	@Override
-	public boolean mouseDragged(double mx, double my, int button, double p_mouseDragged_6_, double p_mouseDragged_8_)
+	public boolean mouseDragged(double mx, double my, int button, double deltaX, double deltaY)
 	{
 		if(lastClick!=null&&currentNode.isLeaf())
 		{
 			if(lastDrag==null)
 				lastDrag = new double[]{mx-guiLeft, my-guiTop};
 			currentNode.getLeafData().mouseDragged(this, guiLeft+32, guiTop+28, lastClick[0], lastClick[1], mx-guiLeft,
-					my-guiTop, lastDrag[0], lastDrag[1], buttons.get(button));
+					my-guiTop, lastDrag[0], lastDrag[1], button);
 			lastDrag = new double[]{mx-guiLeft, my-guiTop};
 			return true;
 		}
@@ -439,7 +439,7 @@ public class ManualScreen extends Screen
 			ArrayList<AbstractNode<ResourceLocation, ManualEntry>> lHeaders = new ArrayList<>();
 			Set<AbstractNode<ResourceLocation, ManualEntry>> lSpellcheck = new HashSet<>();
 			final String searchFinal = search;
-			manual.contentTree.fullStream().forEach((node) ->
+			manual.getAllEntriesAndCategories().forEach((node) ->
 			{
 				if(manual.showNodeInList(node))
 				{
@@ -471,9 +471,16 @@ public class ManualScreen extends Screen
 		}
 	}
 
+	//Make public as a utility
 	@Override
 	public void fillGradient(int x1, int yA, int x2, int yB, int colorA, int colorB)
 	{
 		super.fillGradient(x1, yA, x2, yB, colorA, colorB);
+	}
+
+	@Override
+	public boolean isPauseScreen()
+	{
+		return false;
 	}
 }

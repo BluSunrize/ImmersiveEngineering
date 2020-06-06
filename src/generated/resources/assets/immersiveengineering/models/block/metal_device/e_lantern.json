@@ -1,0 +1,16 @@
+{
+  "textures": {
+    "texture": "immersiveengineering:block/metal_device/electric_lantern",
+    "particle": "immersiveengineering:block/metal_device/electric_lantern"
+  },
+  "loader": "immersiveengineering:connector",
+  "base_model": {
+    "loader": "forge:obj",
+    "model": "immersiveengineering:models/block/metal_device/e_lantern.obj",
+    "flip-v": true
+  },
+  "layers": [
+    "SOLID"
+  ],
+  "detectCullableFaces": false
+}

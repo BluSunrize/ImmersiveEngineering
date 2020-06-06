@@ -46,7 +46,7 @@ public class ManualElementItem extends SpecialManualElements
 		super(manual);
 		this.stacks = stacks;
 		int totalLength = stacks.size();
-		scale = totalLength > 7?1f: totalLength > 4?1.5f: 2f;
+		scale = totalLength > 7?1f: totalLength > 4?1.5f: 1.75f;
 		//Alternating long and short lines of items
 		int longLineLen = (int)(8/scale);
 		int shortLineLen = longLineLen-1;
@@ -100,8 +100,7 @@ public class ManualElementItem extends SpecialManualElements
 		GlStateManager.disableRescaleNormal();
 		GlStateManager.enableBlend();
 
-		if(!highlighted.isEmpty())
-			gui.renderTooltip(gui.getTooltipFromItem(highlighted), mx, my);
+		this.renderHighlightedTooltip(gui, mx, my);
 		RenderHelper.disableStandardItemLighting();
 	}
 

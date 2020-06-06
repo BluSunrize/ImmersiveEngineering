@@ -1,0 +1,4 @@
+newmtl cloche
+map_Kd immersiveengineering:block/metal_device/cloche
+newmtl farmland
+map_Kd immersiveengineering:block/wooden_decoration/treated_wood_vertical

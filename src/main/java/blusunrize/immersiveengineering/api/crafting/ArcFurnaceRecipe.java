@@ -8,19 +8,18 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.common.util.ListUtils;
+import blusunrize.immersiveengineering.api.Lib;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.NonNullList;
-import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.RegistryObject;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
+import java.util.function.Predicate;
 
 /**
  * @author BluSunrize - 23.03.2015
@@ -29,41 +28,45 @@ import java.util.List;
  */
 public class ArcFurnaceRecipe extends MultiblockRecipe
 {
+	public static IRecipeType<ArcFurnaceRecipe> TYPE = IRecipeType.register(Lib.MODID+":arc_furnace");
+	public static RegistryObject<IERecipeSerializer<ArcFurnaceRecipe>> SERIALIZER;
+
 	public static float energyModifier = 1;
 	public static float timeModifier = 1;
 
-	public final IngredientStack input;
-	public final String oreInputString;
-	public final IngredientStack[] additives;
-	public final ItemStack output;
+	public final IngredientWithSize input;
+	public final IngredientWithSize[] additives;
+	public final NonNullList<ItemStack> output;
 	@Nonnull
 	public final ItemStack slag;
 
 	public String specialRecipeType;
-	public static ArrayList<String> specialRecipeTypes = new ArrayList<String>();
-	public static ArrayList<ArcFurnaceRecipe> recipeList = new ArrayList<ArcFurnaceRecipe>();
+	public static List<String> specialRecipeTypes = new ArrayList<>();
+	// Initialized by reload listener
+	public static Map<ResourceLocation, ArcFurnaceRecipe> recipeList;
 
-	public ArcFurnaceRecipe(ItemStack output, Object input, @Nonnull ItemStack slag, int time, int energyPerTick, Object... additives)
+	public ArcFurnaceRecipe(ResourceLocation id, NonNullList<ItemStack> output, IngredientWithSize input, @Nonnull ItemStack slag, int time,
+							int energy, IngredientWithSize... additives)
 	{
+		super(output.get(0), TYPE, id);
 		this.output = output;
-		this.input = ApiUtils.createIngredientStack(input);
-		this.oreInputString = input instanceof String?(String)input: null;
+		this.input = input;
 		this.slag = slag;
 		this.totalProcessTime = (int)Math.floor(time*timeModifier);
-		this.totalProcessEnergy = (int)Math.floor(energyPerTick*energyModifier)*totalProcessTime;
-		if(additives==null)
-			this.additives = new IngredientStack[0];
-		else
-		{
-			this.additives = new IngredientStack[additives.length];
-			for(int i = 0; i < additives.length; i++)
-				this.additives[i] = ApiUtils.createIngredientStack(additives[i]);
-		}
+		this.totalProcessEnergy = (int)Math.floor(energy*energyModifier);
+		this.additives = additives;
 
-		this.inputList = Lists.newArrayList(this.input);
+		List<IngredientWithSize> inputList = Lists.newArrayList(this.input);
 		if(this.additives.length > 0)
-			this.inputList.addAll(Lists.newArrayList(this.additives));
-		this.outputList = ListUtils.fromItem(this.output);
+			inputList.addAll(Lists.newArrayList(this.additives));
+		setInputListWithSizes(inputList);
+		this.outputList = this.output;
+	}
+
+	@Override
+	protected IERecipeSerializer<ArcFurnaceRecipe> getIESerializer()
+	{
+		return SERIALIZER.get();
 	}
 
 	@Override
@@ -83,62 +86,14 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 		return 0;
 	}
 
-	@Override
-	public CompoundNBT writeToNBT(CompoundNBT nbt)
-	{
-		nbt.put("input", input.writeToNBT(new CompoundNBT()));
-		if(this.additives.length > 0)
-		{
-			ListNBT list = new ListNBT();
-			for(IngredientStack add : this.additives)
-				list.add(add.writeToNBT(new CompoundNBT()));
-			nbt.put("additives", list);
-		}
-		return nbt;
-	}
-
-	public static ArcFurnaceRecipe loadFromNBT(CompoundNBT nbt)
-	{
-		IngredientStack input = IngredientStack.readFromNBT(nbt.getCompound("input"));
-		IngredientStack[] additives = null;
-		if(nbt.contains("additives", NBT.TAG_LIST))
-		{
-			ListNBT list = nbt.getList("additives", 10);
-			additives = new IngredientStack[list.size()];
-			for(int i = 0; i < additives.length; i++)
-				additives[i] = IngredientStack.readFromNBT(list.getCompound(i));
-		}
-		for(ArcFurnaceRecipe recipe : recipeList)
-			if(recipe.input.equals(input))
-			{
-				if(additives==null&&recipe.additives.length < 1)
-					return recipe;
-				else if(additives!=null&&recipe.additives.length==additives.length)
-				{
-					boolean b = true;
-					for(int i = 0; i < additives.length; i++)
-						if(!additives[i].equals(recipe.additives[i]))
-						{
-							b = false;
-							break;
-						}
-					if(b)
-						return recipe;
-				}
-			}
-		return null;
-	}
-
 	public NonNullList<ItemStack> getOutputs(ItemStack input, NonNullList<ItemStack> additives)
 	{
-		NonNullList<ItemStack> outputs = NonNullList.create();
-		outputs.add(output);
-		return outputs;
+		return this.output;
 	}
 
 	public boolean matches(ItemStack input, NonNullList<ItemStack> additives)
 	{
-		if(this.input!=null&&this.input.matches(input))
+		if(this.input!=null&&this.input.test(input))
 		{
 			int[] consumed = getConsumedAdditives(additives, false);
 			return consumed!=null;
@@ -150,10 +105,10 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 	public int[] getConsumedAdditives(NonNullList<ItemStack> additives, boolean consume)
 	{
 		int[] consumed = new int[additives.size()];
-		for(IngredientStack add : this.additives)
+		for(IngredientWithSize add : this.additives)
 			if(add!=null)
 			{
-				int addAmount = add.inputSize;
+				int addAmount = add.getCount();
 				Iterator<ItemStack> it = additives.iterator();
 				int i = 0;
 				while(it.hasNext())
@@ -161,7 +116,7 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 					ItemStack query = it.next();
 					if(!query.isEmpty())
 					{
-						if(add.matches(query))
+						if(add.test(query))
 						{
 							if(query.getCount() > addAmount)
 							{
@@ -198,13 +153,13 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 
 	public boolean isValidInput(ItemStack stack)
 	{
-		return this.input!=null&&this.input.matches(stack);
+		return this.input!=null&&this.input.test(stack);
 	}
 
 	public boolean isValidAdditive(ItemStack stack)
 	{
-		for(IngredientStack add : additives)
-			if(add!=null&&add.matches(stack))
+		for(IngredientWithSize add : additives)
+			if(add!=null&&add.test(stack))
 				return true;
 		return false;
 	}
@@ -217,41 +172,17 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 		return this;
 	}
 
-	public static ArcFurnaceRecipe addRecipe(ItemStack output, Object input, @Nonnull ItemStack slag, int time, int energyPerTick, Object... additives)
-	{
-		ArcFurnaceRecipe recipe = new ArcFurnaceRecipe(output, input, slag, time, energyPerTick, additives);
-		if(recipe.input!=null)
-			recipeList.add(recipe);
-		return recipe;
-	}
-
 	public static ArcFurnaceRecipe findRecipe(ItemStack input, NonNullList<ItemStack> additives)
 	{
-		for(ArcFurnaceRecipe recipe : recipeList)
+		for(ArcFurnaceRecipe recipe : recipeList.values())
 			if(recipe!=null&&recipe.matches(input, additives))
 				return recipe;
 		return null;
 	}
 
-	public static List<ArcFurnaceRecipe> removeRecipes(ItemStack stack)
-	{
-		List<ArcFurnaceRecipe> list = new ArrayList<>();
-		Iterator<ArcFurnaceRecipe> it = recipeList.iterator();
-		while(it.hasNext())
-		{
-			ArcFurnaceRecipe ir = it.next();
-			if(ItemStack.areItemStacksEqual(ir.output, stack))
-			{
-				list.add(ir);
-				it.remove();
-			}
-		}
-		return list;
-	}
-
 	public static boolean isValidRecipeInput(ItemStack stack)
 	{
-		for(ArcFurnaceRecipe recipe : recipeList)
+		for(ArcFurnaceRecipe recipe : recipeList.values())
 			if(recipe!=null&&recipe.isValidInput(stack))
 				return true;
 		return false;
@@ -259,30 +190,76 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 
 	public static boolean isValidRecipeAdditive(ItemStack stack)
 	{
-		for(ArcFurnaceRecipe recipe : recipeList)
+		for(ArcFurnaceRecipe recipe : recipeList.values())
 			if(recipe!=null&&recipe.isValidAdditive(stack))
 				return true;
 		return false;
 	}
 
-	public static ArrayList recyclingAllowed = new ArrayList();
+	private static final Set<IRecipeType<?>> RECYCLING_RECIPE_TYPES = new HashSet<>();
+	private static final List<Predicate<ItemStack>> RECYCLING_ALLOWED = new ArrayList<>();
+	private static final List<Predicate<ItemStack>> INVALID_RECYCLING_OUTPUTS = new ArrayList<>();
 
 	/**
-	 * Set an item/oredict-entry to be considered for recycling in the arc furnace. Tools and Armor should usually be auto-detected
+	 * Add a predicate to the list of predicates determining whether an item may be recycled
 	 */
-	public static void allowItemForRecycling(Object stack)
+	public static void allowRecipeTypeForRecycling(IRecipeType<?> recipeType)
 	{
-		recyclingAllowed.add(ApiUtils.convertToValidRecipeInput(stack));
+		RECYCLING_RECIPE_TYPES.add(recipeType);
 	}
 
-	public static ArrayList invalidRecyclingOutput = new ArrayList();
+	/**
+	 * Add a predicate to the list of predicates determining whether an item may be recycled
+	 */
+	public static void allowItemForRecycling(Predicate<ItemStack> predicate)
+	{
+		RECYCLING_ALLOWED.add(predicate);
+	}
 
 	/**
-	 * Set an item/oredict-entry to be an invalid output for the recycling process.
+	 * Add a predicate to determine an invalid output for the recycling process.
 	 * Used for magical ingots that should not be reclaimable or similar
 	 */
-	public static void makeItemInvalidRecyclingOutput(Object stack)
+	public static void makeItemInvalidRecyclingOutput(Predicate<ItemStack> predicate)
 	{
-		invalidRecyclingOutput.add(ApiUtils.convertToValidRecipeInput(stack));
+		INVALID_RECYCLING_OUTPUTS.add(predicate);
+	}
+
+	/**
+	 * @return true if the given ItemStack can be recycled
+	 */
+	public static boolean canRecycle(ItemStack stack)
+	{
+		if(stack.isEmpty())
+			return false;
+		for(Predicate<ItemStack> predicate : RECYCLING_ALLOWED)
+			if(predicate.test(stack))
+				return true;
+		return false;
+	}
+
+	/**
+	 * @return true if the given ItemStack should not be returned from recycling
+	 */
+	public static boolean isValidRecyclingOutput(ItemStack stack)
+	{
+		if(stack.isEmpty())
+			return false;
+		for(Predicate<ItemStack> predicate : INVALID_RECYCLING_OUTPUTS)
+			if(predicate.test(stack))
+				return false;
+		return true;
+	}
+
+	/**
+	 * @return a predicate for IRecipes which is used to filter the list of crafting recipes for recycling
+	 */
+	public static Predicate<IRecipe<?>> assembleRecyclingFilter()
+	{
+		return iRecipe -> {
+			if(!RECYCLING_RECIPE_TYPES.contains(iRecipe.getType()))
+				return false;
+			return canRecycle(iRecipe.getRecipeOutput());
+		};
 	}
 }

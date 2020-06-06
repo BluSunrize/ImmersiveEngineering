@@ -15,7 +15,6 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.IIngredientSerializer;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -27,8 +26,8 @@ import javax.annotation.Nonnull;
  */
 public class IngredientSerializerFluidStack implements IIngredientSerializer<IngredientFluidStack>
 {
-	public static IIngredientSerializer<IngredientFluidStack> INSTANCE = CraftingHelper.register(new ResourceLocation(ImmersiveEngineering.MODID,
-			"fluid"), new IngredientSerializerFluidStack());
+	public static ResourceLocation NAME = new ResourceLocation(ImmersiveEngineering.MODID, "fluid");
+	public static IIngredientSerializer<IngredientFluidStack> INSTANCE = new IngredientSerializerFluidStack();
 
 	@Nonnull
 	@Override

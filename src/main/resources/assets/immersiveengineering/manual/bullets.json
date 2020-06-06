@@ -1,0 +1,83 @@
+{
+  "empty": {
+    "type": "crafting",
+    "recipes": [
+      [
+        "crafting/empty_casing",
+        "crafting/empty_shell"
+      ]
+    ]
+  },
+  "casull": {
+    "type": "blueprint",
+    "recipes": [
+      {
+        "item": "immersiveengineering:casull"
+      }
+    ]
+  },
+  "ap": {
+    "type": "blueprint",
+    "recipes": [
+      {
+        "item": "immersiveengineering:armor_piercing"
+      }
+    ]
+  },
+  "buckshot": {
+    "type": "blueprint",
+    "recipes": [
+      {
+        "item": "immersiveengineering:buckshot"
+      }
+    ]
+  },
+  "he": {
+    "type": "blueprint",
+    "recipes": [
+      {
+        "item": "immersiveengineering:he"
+      }
+    ]
+  },
+  "silver": {
+    "type": "blueprint",
+    "recipes": [
+      {
+        "item": "immersiveengineering:silver"
+      }
+    ]
+  },
+  "dragon": {
+    "type": "blueprint",
+    "recipes": [
+      {
+        "item": "immersiveengineering:dragons_breath"
+      }
+    ]
+  },
+  "potion": {
+    "type": "blueprint",
+    "recipes": [
+      {
+        "item": "immersiveengineering:potion"
+      }
+    ]
+  },
+  "flare": {
+    "type": "blueprint",
+    "recipes": [
+      {
+        "item": "immersiveengineering:flare"
+      }
+    ]
+  },
+  "wolfpack": {
+    "type": "blueprint",
+    "recipes": [
+      {
+        "item": "immersiveengineering:wolfpack"
+      }
+    ]
+  }
+}

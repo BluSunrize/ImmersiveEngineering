@@ -1,0 +1,6 @@
+{
+  "parent": "block/crop",
+  "textures": {
+    "crop": "immersiveengineering:block/hemp/bottom3"
+  }
+}

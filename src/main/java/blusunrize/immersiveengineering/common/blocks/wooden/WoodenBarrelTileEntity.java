@@ -32,7 +32,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.storage.loot.LootContext.Builder;
+import net.minecraft.world.storage.loot.LootContext;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -124,7 +124,7 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 				s = I18n.format(Lib.GUI+"empty");
 			return new String[]{s};
 		}
-		if(hammer&&IEConfig.GENERAL.colourblindSupport.get()&&brtr.getFace().getAxis()==Axis.Y)
+		if(hammer&&IEConfig.GENERAL.showTextOverlay.get()&&brtr.getFace().getAxis()==Axis.Y)
 		{
 			IOSideConfig side = sideConfig.getOrDefault(brtr.getFace(), NONE);
 			IOSideConfig opposite = sideConfig.getOrDefault(brtr.getFace().getOpposite(), NONE);
@@ -342,7 +342,7 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 	}
 
 	@Override
-	public List<ItemStack> getTileDrops(Builder context)
+	public List<ItemStack> getTileDrops(LootContext context)
 	{
 		ItemStack stack = new ItemStack(getBlockState().getBlock(), 1);
 		CompoundNBT tag = new CompoundNBT();

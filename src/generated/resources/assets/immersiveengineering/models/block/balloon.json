@@ -1,0 +1,15 @@
+{
+  "textures": {
+    "particle": "immersiveengineering:block/connector/balloon"
+  },
+  "loader": "immersiveengineering:connector",
+  "base_model": {
+    "loader": "immersiveengineering:ie_obj",
+    "model": "immersiveengineering:models/block/balloon.obj.ie",
+    "flip-v": true
+  },
+  "layers": [
+    "TRANSLUCENT"
+  ],
+  "detectCullableFaces": false
+}

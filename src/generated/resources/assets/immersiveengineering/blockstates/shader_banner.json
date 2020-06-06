@@ -1,15 +1,6 @@
 {
   "variants": {
-    "facing=north": {
-      "model": "immersiveengineering:block/ie_empty"
-    },
-    "facing=south": {
-      "model": "immersiveengineering:block/ie_empty"
-    },
-    "facing=west": {
-      "model": "immersiveengineering:block/ie_empty"
-    },
-    "facing=east": {
+    "": {
       "model": "immersiveengineering:block/ie_empty"
     }
   }

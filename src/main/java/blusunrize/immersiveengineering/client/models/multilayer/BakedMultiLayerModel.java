@@ -14,25 +14,28 @@ import com.google.common.collect.ImmutableList.Builder;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.data.IModelData;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.vecmath.Matrix4f;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
 public class BakedMultiLayerModel extends BakedIEModel
 {
-	private final Map<BlockRenderLayer, List<IBakedModel>> models;
+	private final Map<BlockRenderLayer, IBakedModel> models;
 	private final IBakedModel model;
 
-	public BakedMultiLayerModel(Map<BlockRenderLayer, List<IBakedModel>> models)
+	public BakedMultiLayerModel(Map<BlockRenderLayer, IBakedModel> models)
 	{
 		this.models = models;
 		BlockRenderLayer[] preferences = {BlockRenderLayer.SOLID, BlockRenderLayer.CUTOUT, BlockRenderLayer.CUTOUT_MIPPED,
@@ -40,9 +43,7 @@ public class BakedMultiLayerModel extends BakedIEModel
 		for(BlockRenderLayer layer : preferences)
 			if(models.containsKey(layer))
 			{
-				List<IBakedModel> solidModels = models.get(layer);
-				assert !solidModels.isEmpty();
-				model = solidModels.get(0);
+				model = models.get(layer);
 				return;
 			}
 		throw new IllegalArgumentException("Can't create multi layer model without any submodels");
@@ -56,16 +57,14 @@ public class BakedMultiLayerModel extends BakedIEModel
 		if(current==null)
 		{
 			ImmutableList.Builder<BakedQuad> ret = new Builder<>();
-			for(List<IBakedModel> forLayer : models.values())
-				for(IBakedModel model : forLayer)
-					ret.addAll(model.getQuads(state, side, rand));
+			for(IBakedModel model : models.values())
+				ret.addAll(model.getQuads(state, side, rand));
 			return ret.build();
 		}
 		else if(models.containsKey(current))
 		{
 			ImmutableList.Builder<BakedQuad> ret = new Builder<>();
-			for(IBakedModel model : models.get(current))
-				ret.addAll(model.getQuads(state, side, rand));
+			ret.addAll(models.get(current).getQuads(state, side, rand));
 			return ret.build();
 		}
 		else
@@ -102,5 +101,12 @@ public class BakedMultiLayerModel extends BakedIEModel
 	public ItemOverrideList getOverrides()
 	{
 		return model.getOverrides();
+	}
+
+	@Override
+	public Pair<? extends IBakedModel, Matrix4f> handlePerspective(TransformType cameraTransformType)
+	{
+		Pair<? extends IBakedModel, Matrix4f> base = model.handlePerspective(cameraTransformType);
+		return Pair.of(this, base.getRight());
 	}
 }

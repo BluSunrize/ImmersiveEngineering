@@ -14,19 +14,36 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 
-public class GuiButtonState extends GuiButtonIE
+public class GuiButtonState<E> extends GuiButtonIE
 {
-	public boolean state;
+	public E[] states;
+	private int state;
 	protected final int offsetDir;
 	public int[] textOffset = {0, 0};
 
-	public GuiButtonState(int x, int y, int w, int h, String name, boolean state, String texture, int u,
-						  int v, int offsetDir, IPressable handler)
+	public GuiButtonState(int x, int y, int w, int h, String name, E[] states, int initialState, String texture, int u,
+						  int v, int offsetDir, IIEPressable<GuiButtonState<E>> handler)
 	{
 		super(x, y, w, h, name, texture, u, v, handler);
-		this.state = state;
+		this.states = states;
+		this.state = initialState;
 		this.offsetDir = offsetDir;
 		textOffset = new int[]{width+1, height/2-3};
+	}
+
+	protected int getNextStateInt()
+	{
+		return (state+1)%states.length;
+	}
+
+	public E getNextState()
+	{
+		return this.states[getNextStateInt()];
+	}
+
+	public E getState()
+	{
+		return this.states[this.state];
 	}
 
 	@Override
@@ -42,8 +59,8 @@ public class GuiButtonState extends GuiButtonIE
 			GlStateManager.enableBlend();
 			GlStateManager.blendFuncSeparate(770, 771, 1, 0);
 			GlStateManager.blendFunc(770, 771);
-			int u = texU+(!state?0: offsetDir==0?width: offsetDir==2?-width: 0);
-			int v = texV+(!state?0: offsetDir==1?height: offsetDir==3?-height: 0);
+			int u = texU+(offsetDir==0?width: offsetDir==2?-width: 0)*state;
+			int v = texV+(offsetDir==1?height: offsetDir==3?-height: 0)*state;
 			this.blit(x, y, u, v, width, height);
 			if(!getMessage().isEmpty())
 			{
@@ -62,7 +79,7 @@ public class GuiButtonState extends GuiButtonIE
 	{
 		boolean b = super.mouseClicked(mouseX, mouseY, key);
 		if(b)
-			this.state = !state;
+			this.state = getNextStateInt();
 		return b;
 	}
 }

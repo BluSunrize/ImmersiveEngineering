@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Direct;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
-import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.wires.NetHandlerCapability;
@@ -31,7 +30,6 @@ import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import blusunrize.immersiveengineering.common.items.IEShieldItem;
 import blusunrize.immersiveengineering.common.network.MessageMinecartShaderSync;
-import blusunrize.immersiveengineering.common.network.MessageMineralListSync;
 import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamageSource;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
@@ -43,13 +41,13 @@ import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.boss.WitherEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
-import net.minecraft.entity.item.minecart.MinecartEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -57,10 +55,12 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.storage.loot.LootPool;
+import net.minecraft.world.storage.loot.TableLootEntry;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.event.TagsUpdatedEvent;
+import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.WorldTickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -76,14 +76,12 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.lang.reflect.Field;
 import java.util.*;
-import java.util.Map.Entry;
 
 public class EventHandler
 {
@@ -93,6 +91,8 @@ public class EventHandler
 	public static HashSet<IEExplosion> currentExplosions = new HashSet<IEExplosion>();
 	public static final Queue<Pair<DimensionType, BlockPos>> requestedBlockUpdates = new LinkedList<>();
 	public static final Set<TileEntity> REMOVE_FROM_TICKING = new HashSet<>();
+
+	private static final ResourceLocation TALL_GRASS_DROP = new ResourceLocation("minecraft", "blocks/tall_grass");
 
 	@SubscribeEvent
 	public void onLoad(WorldEvent.Load event)
@@ -105,7 +105,7 @@ public class EventHandler
 	{
 		if(event.getObject() instanceof AbstractMinecartEntity)
 			event.addCapability(new ResourceLocation("immersiveengineering:shader"),
-					new ShaderWrapper_Direct("immersiveengineering:minecart"));
+					new ShaderWrapper_Direct(new ResourceLocation(ImmersiveEngineering.MODID, "minecart")));
 		if(event.getObject() instanceof PlayerEntity)
 			event.addCapability(new ResourceLocation(ImmersiveEngineering.MODID, "skyhook_data"),
 					new SimpleSkyhookProvider());
@@ -119,30 +119,25 @@ public class EventHandler
 	}
 
 	@SubscribeEvent
-	public void onTagsUpdated(TagsUpdatedEvent tagsChanged)
-	{
-		if(EffectiveSide.get().isServer())
-		{
-			IERecipes.addTagBasedRecipes();//TODO does this already have the new tags?
-		}
-	}
-
-	@SubscribeEvent
 	public void onMinecartInteraction(EntityInteractSpecific event)
 	{
 		PlayerEntity player = event.getEntityPlayer();
 		ItemStack stack = event.getItemStack();
-		if(!(event.getEntity() instanceof MinecartEntity))
+		if(!(event.getTarget() instanceof AbstractMinecartEntity))
 			return;
-		MinecartEntity cart = (MinecartEntity)event.getEntity();
-		if(!player.world.isRemote&&!stack.isEmpty()&&stack.getItem() instanceof IShaderItem)
+		AbstractMinecartEntity cart = (AbstractMinecartEntity)event.getTarget();
+		if(!stack.isEmpty()&&stack.getItem() instanceof IShaderItem)
+		{
 			cart.getCapability(CapabilityShader.SHADER_CAPABILITY).ifPresent(wrapper ->
 			{
 				wrapper.setShaderItem(Utils.copyStackWithAmount(stack, 1));
-				ImmersiveEngineering.packetHandler.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity)player),
-						new MessageMinecartShaderSync(cart, wrapper));
-				event.setCanceled(true);
+				if(!player.world.isRemote)
+					ImmersiveEngineering.packetHandler.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity)player),
+							new MessageMinecartShaderSync(cart, wrapper));
 			});
+			event.setCanceled(true);
+			event.setCancellationResult(ActionResultType.SUCCESS);
+		}
 	}
 
 	/*TODO re-add when the event exists again!
@@ -173,6 +168,15 @@ public class EventHandler
 			new ResourceLocation(ImmersiveEngineering.MODID, "chests/village_blacksmith")
 	);
 	private static Field f_lootEntries;
+
+	@SubscribeEvent
+	public void lootTableLoad(LootTableLoadEvent event)
+	{
+		if(event.getName().equals(TALL_GRASS_DROP))
+			event.getTable().addPool(LootPool.builder()
+					.addEntry(TableLootEntry.builder(new ResourceLocation(ImmersiveEngineering.MODID, "blocks/grass_drops")))
+					.name("ie_grass_drops").build());
+	}
 
 	/*TODO I think this can be done data-driven now?
 	@SubscribeEvent
@@ -215,6 +219,7 @@ public class EventHandler
 	}
 
 	private LongList tickTimes = new LongArrayList();
+
 	@SubscribeEvent
 	public void onWorldTick(WorldTickEvent event)
 	{
@@ -255,27 +260,6 @@ public class EventHandler
 				}
 			}
 		}
-	}
-
-	@SubscribeEvent(priority = EventPriority.HIGH)
-	public void onLogin(PlayerLoggedInEvent event)
-	{
-		ExcavatorHandler.allowPacketsToPlayer.add(event.getPlayer().getUniqueID());
-		if(!event.getPlayer().world.isRemote)
-		{
-			HashMap<MineralMix, Integer> packetMap = new HashMap<MineralMix, Integer>();
-			for(Entry<MineralMix, Integer> e : ExcavatorHandler.mineralList.entrySet())
-				if(e.getKey()!=null&&e.getValue()!=null)
-					packetMap.put(e.getKey(), e.getValue());
-			ImmersiveEngineering.packetHandler.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity)event.getPlayer()),
-					new MessageMineralListSync(packetMap));
-		}
-	}
-
-	@SubscribeEvent(priority = EventPriority.HIGH)
-	public void onLogout(PlayerLoggedOutEvent event)
-	{
-		ExcavatorHandler.allowPacketsToPlayer.remove(event.getPlayer().getUniqueID());
 	}
 
 	public static HashMap<UUID, CrusherTileEntity> crusherMap = new HashMap<UUID, CrusherTileEntity>();

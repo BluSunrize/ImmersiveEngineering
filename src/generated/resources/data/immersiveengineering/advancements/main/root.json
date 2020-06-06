@@ -1,0 +1,35 @@
+{
+  "display": {
+    "icon": {
+      "item": "immersiveengineering:manual"
+    },
+    "title": {
+      "translate": "advancement.immersiveengineering.root"
+    },
+    "description": {
+      "translate": "advancement.immersiveengineering.root.desc"
+    },
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": false,
+    "hidden": false,
+    "background": "immersiveengineering:textures/block/wooden_decoration/treated_wood.png"
+  },
+  "criteria": {
+    "manual": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:manual"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "manual"
+    ]
+  ]
+}

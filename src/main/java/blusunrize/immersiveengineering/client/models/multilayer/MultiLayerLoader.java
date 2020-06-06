@@ -9,33 +9,39 @@
 package blusunrize.immersiveengineering.client.models.multilayer;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import net.minecraft.client.renderer.model.IUnbakedModel;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonObject;
 import net.minecraft.resources.IResourceManager;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.ICustomModelLoader;
+import net.minecraftforge.client.model.IModelLoader;
+import net.minecraftforge.client.model.ModelLoaderRegistry2;
+import net.minecraftforge.client.model.geometry.IModelGeometry;
 
 import javax.annotation.Nonnull;
+import java.util.HashMap;
+import java.util.Map;
 
-public class MultiLayerLoader implements ICustomModelLoader
+public class MultiLayerLoader implements IModelLoader<MultiLayerModel>
 {
+	public static final ResourceLocation LOCATION = new ResourceLocation(ImmersiveEngineering.MODID,
+			"models/multilayer");
+
 	@Override
 	public void onResourceManagerReload(@Nonnull IResourceManager resourceManager)
 	{
 	}
 
-	private static final ResourceLocation LOCATION = new ResourceLocation(ImmersiveEngineering.MODID,
-			"models/block/multilayer");
-
 	@Override
-	public boolean accepts(@Nonnull ResourceLocation modelLocation)
+	public MultiLayerModel read(JsonDeserializationContext deserializationContext, JsonObject modelContents)
 	{
-		return LOCATION.equals(modelLocation);
-	}
-
-	@Nonnull
-	@Override
-	public IUnbakedModel loadModel(@Nonnull ResourceLocation modelLocation) throws Exception
-	{
-		return MultiLayerModel.INSTANCE;
+		Map<BlockRenderLayer, IModelGeometry<?>> subModels = new HashMap<>();
+		for(BlockRenderLayer l : BlockRenderLayer.values())
+		{
+			JsonObject subModel = modelContents.getAsJsonObject(l.toString().toLowerCase());
+			if(subModel!=null)
+				subModels.put(l, ModelLoaderRegistry2.deserializeGeometry(deserializationContext, subModel));
+		}
+		return new MultiLayerModel(subModels);
 	}
 }

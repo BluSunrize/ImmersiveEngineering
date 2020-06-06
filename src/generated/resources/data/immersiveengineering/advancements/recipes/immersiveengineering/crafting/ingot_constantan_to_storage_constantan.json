@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/ingot_constantan_to_storage_constantan"
+    ]
+  },
+  "criteria": {
+    "has_ingot_constantan": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:ingot_constantan"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/ingot_constantan_to_storage_constantan"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_ingot_constantan",
+      "has_the_recipe"
+    ]
+  ]
+}

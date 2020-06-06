@@ -30,11 +30,9 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.AreaEffectCloudEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.item.FireworkRocketEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.LingeringPotionItem;
-import net.minecraft.item.PotionItem;
-import net.minecraft.item.SplashPotionItem;
+import net.minecraft.item.*;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtils;
@@ -66,6 +64,7 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 	public static final ResourceLocation DRAGONS_BREATH = new ResourceLocation(ImmersiveEngineering.MODID, "dragons_breath");
 	public static final ResourceLocation POTION = new ResourceLocation(ImmersiveEngineering.MODID, "potion");
 	public static final ResourceLocation FLARE = new ResourceLocation(ImmersiveEngineering.MODID, "flare");
+	public static final ResourceLocation FIREWORK = new ResourceLocation(ImmersiveEngineering.MODID, "firework");
 	public static final ResourceLocation WOLFPACK = new ResourceLocation(ImmersiveEngineering.MODID, "wolfpack");
 	public static final ResourceLocation WOLFPACK_PART = new ResourceLocation(ImmersiveEngineering.MODID, "wolfpack_part");
 
@@ -123,7 +122,7 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 				Entity shooter = null;
 				if(shooterId!=null)
 					shooter = world.getPlayerByUuid(shooterId);
-				world.createExplosion(shooter, projectile.posX, projectile.posY, projectile.posZ, 2, Mode.BREAK);
+				world.createExplosion(shooter, projectile.posX, projectile.posY, projectile.posZ, 2, Mode.NONE);
 			}
 
 			@Override
@@ -156,7 +155,7 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 				true,
 				true,
 				() -> BulletHandler.emptyShell,
-				new ResourceLocation("immersiveengineering:item/bullet_dragonsbreath"))
+				new ResourceLocation("immersiveengineering:item/bullet_dragons_breath"))
 		{
 			@Override
 			public int getProjectileCount(PlayerEntity shooter)
@@ -176,6 +175,8 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 		BulletHandler.registerBullet(POTION, new PotionBullet());
 
 		BulletHandler.registerBullet(FLARE, new FlareBullet());
+
+		BulletHandler.registerBullet(FIREWORK, new FireworkBullet());
 
 		BulletHandler.registerBullet(WOLFPACK, new WolfpackBullet());
 
@@ -319,7 +320,7 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 								}
 
 					}
-					else if(((EntityRayTraceResult)target).getEntity() instanceof LivingEntity)
+					else if(target instanceof EntityRayTraceResult && ((EntityRayTraceResult)target).getEntity() instanceof LivingEntity)
 						for(EffectInstance p : effects)
 						{
 							if(p.getDuration() < 1)
@@ -407,6 +408,67 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 			if(layer!=1)
 				return 0xffffffff;
 			return ItemNBTHelper.hasKey(stack, "flareColour")?ItemNBTHelper.getInt(stack, "flareColour"): 0xcc2e06;
+		}
+
+		@Override
+		public boolean isValidForTurret()
+		{
+			return true;
+		}
+	}
+
+	public static class FireworkBullet implements BulletHandler.IBullet
+	{
+		static ResourceLocation[] textures = {new ResourceLocation("immersiveengineering:item/bullet_firework")};
+
+		public FireworkBullet()
+		{
+		}
+
+		@Override
+		public Entity getProjectile(PlayerEntity shooter, ItemStack cartridge, Entity projectile, boolean electro)
+		{
+			ItemStack fireworkStack = new ItemStack(Items.FIREWORK_ROCKET);
+			fireworkStack.setTag(cartridge.hasTag()?cartridge.getTag().copy(): null);
+			FireworkRocketEntity firework = new FireworkRocketEntity(projectile.world, fireworkStack, shooter.posX, shooter.posY+(double)shooter.getEyeHeight()-(double)0.15F, shooter.posZ, true);
+			Vec3d vector = projectile.getMotion();
+			firework.shoot(vector.getX(), vector.getY(), vector.getZ(), 1.6f, 1.0f);
+			return firework;
+		}
+
+		@Override
+		public SoundEvent getSound()
+		{
+			return IESounds.revolverFireThump;
+		}
+
+		@Override
+		public void onHitTarget(World world, RayTraceResult target, UUID shooter, Entity projectile, boolean headshot)
+		{
+		}
+
+		@Override
+		public ItemStack getCasing(ItemStack stack)
+		{
+			return BulletHandler.emptyShell;
+		}
+
+		@Override
+		public ResourceLocation[] getTextures()
+		{
+			return textures;
+		}
+
+		@Override
+		public void addTooltip(ItemStack stack, World world, List<ITextComponent> list, ITooltipFlag flag)
+		{
+			Items.FIREWORK_ROCKET.addInformation(stack, world, list, flag);
+		}
+
+		@Override
+		public int getColour(ItemStack stack, int layer)
+		{
+			return 0xffffffff;
 		}
 
 		@Override

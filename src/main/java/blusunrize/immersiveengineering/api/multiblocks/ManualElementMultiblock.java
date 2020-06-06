@@ -8,9 +8,7 @@
 
 package blusunrize.immersiveengineering.api.multiblocks;
 
-import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.ManualUtils;
@@ -21,7 +19,6 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -41,10 +38,12 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.gen.feature.template.Template.BlockInfo;
 import net.minecraftforge.client.model.data.EmptyModelData;
+import net.minecraftforge.client.model.data.IModelData;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.Map.Entry;
 
 public class ManualElementMultiblock extends SpecialManualElements
 {
@@ -69,9 +68,6 @@ public class ManualElementMultiblock extends SpecialManualElements
 	public ManualElementMultiblock(ManualInstance manual, IMultiblock multiblock)
 	{
 		super(manual);
-		//TODO remove
-		if(multiblock==null)
-			multiblock = IEMultiblocks.CRUSHER;
 		this.multiblock = multiblock;
 		renderInfo = new MultiblockRenderInfo(multiblock);
 		float diagLength = (float)Math.sqrt(renderInfo.structureHeight*renderInfo.structureHeight+
@@ -118,7 +114,13 @@ public class ManualElementMultiblock extends SpecialManualElements
 						btn -> showCompleted = !showCompleted));
 		}
 
-		IngredientStack[] totalMaterials = this.multiblock.getTotalMaterials();
+		checkMaterials();
+		super.onOpened(gui, x, yOff, pageButtons);
+	}
+
+	private void checkMaterials()
+	{
+		ItemStack[] totalMaterials = this.multiblock.getTotalMaterials();
 		if(totalMaterials!=null)
 		{
 			componentTooltip = new ArrayList<>();
@@ -129,12 +131,12 @@ public class ManualElementMultiblock extends SpecialManualElements
 			for(int ss = 0; ss < totalMaterials.length; ss++)
 				if(totalMaterials[ss]!=null)
 				{
-					IngredientStack req = totalMaterials[ss];
-					int reqSize = req.inputSize;
+					ItemStack req = totalMaterials[ss];
+					int reqSize = req.getCount();
 					for(int slot = 0; slot < ManualUtils.mc().player.inventory.getSizeInventory(); slot++)
 					{
 						ItemStack inSlot = ManualUtils.mc().player.inventory.getStackInSlot(slot);
-						if(!inSlot.isEmpty()&&req.matchesItemStackIgnoringSize(inSlot))
+						if(!inSlot.isEmpty()&&ItemStack.areItemsEqual(inSlot, req))
 							if((reqSize -= inSlot.getCount()) <= 0)
 								break;
 					}
@@ -144,13 +146,13 @@ public class ManualElementMultiblock extends SpecialManualElements
 						if(!hasAnyItems)
 							hasAnyItems = true;
 					}
-					maxOff = Math.max(maxOff, (""+req.inputSize).length());
+					maxOff = Math.max(maxOff, (""+req.getCount()).length());
 				}
 			for(int ss = 0; ss < totalMaterials.length; ss++)
 				if(totalMaterials[ss]!=null)
 				{
-					IngredientStack req = totalMaterials[ss];
-					int indent = maxOff-(""+req.inputSize).length();
+					ItemStack req = totalMaterials[ss];
+					int indent = maxOff-(""+req.getCount()).length();
 					StringBuilder sIndent = new StringBuilder();
 					if(indent > 0)
 						for(int ii = 0; ii < indent; ii++)
@@ -161,21 +163,19 @@ public class ManualElementMultiblock extends SpecialManualElements
 					else
 						s = new StringTextComponent(hasAnyItems?"   ": "");
 					s.appendSibling(
-							new StringTextComponent(sIndent.toString()+req.inputSize+"x ")
+							new StringTextComponent(sIndent.toString()+req.getCount()+"x ")
 									.setStyle(new Style().setColor(TextFormatting.GRAY))
 					);
-					ItemStack example = req.getExampleStack();
-					if(!example.isEmpty())
+					if(!req.isEmpty())
 						s.appendSibling(
-								example.getDisplayName().deepCopy()
-										.setStyle(new Style().setColor(example.getRarity().color))
+								req.getDisplayName().deepCopy()
+										.setStyle(new Style().setColor(req.getRarity().color))
 						);
 					else
 						s.appendSibling(new StringTextComponent("???"));
 					componentTooltip.add(s);
 				}
 		}
-		super.onOpened(gui, x, yOff, pageButtons);
 	}
 
 	@Override
@@ -185,6 +185,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 		int stackDepth = GL11.glGetInteger(GL11.GL_MODELVIEW_STACK_DEPTH);
 		try
 		{
+			multiblock.getSize();
 			if(multiblock.getStructure()!=null)
 			{
 				long currentTime = System.currentTimeMillis();
@@ -203,12 +204,8 @@ public class ManualElementMultiblock extends SpecialManualElements
 				GlStateManager.enableRescaleNormal();
 				GlStateManager.pushMatrix();
 				RenderHelper.disableStandardItemLighting();
-				int i = 0;
-				ItemStack highlighted = ItemStack.EMPTY;
 
 				final BlockRendererDispatcher blockRender = Minecraft.getInstance().getBlockRendererDispatcher();
-
-				float f = (float)Math.sqrt(structureHeight*structureHeight+structureWidth*structureWidth+structureLength*structureLength);
 
 				GlStateManager.translated(transX, transY, Math.max(structureHeight, Math.max(structureWidth, structureLength)));
 				GlStateManager.scaled(scale, -scale, 1);
@@ -249,8 +246,12 @@ public class ManualElementMultiblock extends SpecialManualElements
 										BufferBuilder buffer = tessellator.getBuffer();
 										buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 										openBuffer = true;
-										blockRender.renderBlock(state, pos, blockAccess, buffer, Utils.RAND,
-												EmptyModelData.INSTANCE);
+										IModelData modelData = EmptyModelData.INSTANCE;
+										TileEntity te = blockAccess.getTileEntity(pos);
+										if(te!=null)
+											modelData = te.getModelData();
+
+										blockRender.renderBlock(state, pos, blockAccess, buffer, Utils.RAND, modelData);
 										tessellator.draw();
 										openBuffer = false;
 									}
@@ -302,7 +303,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 	}
 
 	@Override
-	public void mouseDragged(int x, int y, double clickX, double clickY, double mouseX, double mouseY, double lastX, double lastY, Widget button)
+	public void mouseDragged(int x, int y, double clickX, double clickY, double mouseX, double mouseY, double lastX, double lastY, int mouseButton)
 	{
 		if((clickX >= 40&&clickX < 144&&mouseX >= 20&&mouseX < 164)&&(clickY >= 30&&clickY < 130&&mouseY >= 30&&mouseY < 180))
 		{
@@ -328,16 +329,37 @@ public class ManualElementMultiblock extends SpecialManualElements
 	static class MultiblockBlockAccess implements IEnviromentBlockReader
 	{
 		private final MultiblockRenderInfo data;
+		private final Map<BlockPos, TileEntity> tiles;
 
 		MultiblockBlockAccess(MultiblockRenderInfo data)
 		{
 			this.data = data;
+			this.tiles = new HashMap<>();
+			for(Entry<BlockPos, BlockInfo> p : data.data.entrySet())
+				if(p.getValue().nbt!=null&&!p.getValue().nbt.isEmpty())
+				{
+					TileEntity te = TileEntity.create(p.getValue().nbt);
+					if(te!=null)
+					{
+						te.cachedBlockState = p.getValue().state;
+						tiles.put(p.getKey(), te);
+					}
+				}
 		}
 
 		@Nullable
 		@Override
 		public TileEntity getTileEntity(BlockPos pos)
 		{
+			if(data.data.containsKey(pos))
+			{
+				int x = pos.getX();
+				int y = pos.getY();
+				int z = pos.getZ();
+				int index = y*(data.structureLength*data.structureWidth)+x*data.structureWidth+z;
+				if(index <= data.getLimiter())
+					return tiles.get(pos);
+			}
 			return null;
 		}
 
@@ -351,7 +373,6 @@ public class ManualElementMultiblock extends SpecialManualElements
 		@Override
 		public BlockState getBlockState(BlockPos pos)
 		{
-
 			if(data.data.containsKey(pos))
 			{
 				int x = pos.getX();

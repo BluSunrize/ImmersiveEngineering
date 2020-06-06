@@ -1,0 +1,8 @@
+{
+  "parent": "block/cube_bottom_top",
+  "textures": {
+    "side": "immersiveengineering:block/metal/sheetmetal_aluminum",
+    "bottom": "immersiveengineering:block/metal/sheetmetal_aluminum",
+    "top": "immersiveengineering:block/metal/sheetmetal_aluminum"
+  }
+}

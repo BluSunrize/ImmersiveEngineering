@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.api.wires;
 
 import blusunrize.immersiveengineering.api.TargetingInfo;
-import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -82,20 +81,20 @@ public class IICProxy implements IImmersiveConnectable
 	}
 
 	@Override
-	public void removeCable(Connection connection)
+	public void removeCable(Connection connection, ConnectionPoint attachedPoint)
 	{
 		//TODO clean up
 		//this will load the chunk the TE is in for 1 tick since it needs to be notified about the removed wires
 		World w = DimensionManager.getWorld(ServerLifecycleHooks.getCurrentServer(), dim, false, true);
 		if(w==null)
 		{
-			IELogger.warn("Tried to remove a wire in dimension "+dim+" which does not exist");
+			WireLogger.logger.warn("Tried to remove a wire in dimension "+dim+" which does not exist");
 			return;
 		}
 		TileEntity te = w.getTileEntity(pos);
 		if(!(te instanceof IImmersiveConnectable))
 			return;
-		((IImmersiveConnectable)te).removeCable(connection);
+		((IImmersiveConnectable)te).removeCable(connection, attachedPoint);
 	}
 
 	@Override

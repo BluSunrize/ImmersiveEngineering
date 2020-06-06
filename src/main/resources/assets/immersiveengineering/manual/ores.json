@@ -6,7 +6,7 @@
         "item": "immersiveengineering:ore_copper"
       },
       {
-        "item": "immersiveengineering:plate_copper"
+        "item": "immersiveengineering:ingot_copper"
       }
     ]
   },
@@ -17,7 +17,7 @@
         "item": "immersiveengineering:ore_aluminum"
       },
       {
-        "item": "immersiveengineering:plate_aluminum"
+        "item": "immersiveengineering:ingot_aluminum"
       }
     ]
   },
@@ -28,7 +28,7 @@
         "item": "immersiveengineering:ore_lead"
       },
       {
-        "item": "immersiveengineering:plate_lead"
+        "item": "immersiveengineering:ingot_lead"
       }
     ]
   },
@@ -39,7 +39,7 @@
         "item": "immersiveengineering:ore_silver"
       },
       {
-        "item": "immersiveengineering:plate_silver"
+        "item": "immersiveengineering:ingot_silver"
       }
     ]
   },
@@ -50,7 +50,7 @@
         "item": "immersiveengineering:ore_nickel"
       },
       {
-        "item": "immersiveengineering:plate_nickel"
+        "item": "immersiveengineering:ingot_nickel"
       }
     ]
   },
@@ -61,7 +61,7 @@
         "item": "immersiveengineering:ore_uranium"
       },
       {
-        "item": "immersiveengineering:plate_uranium"
+        "item": "immersiveengineering:ingot_uranium"
       }
     ]
   }

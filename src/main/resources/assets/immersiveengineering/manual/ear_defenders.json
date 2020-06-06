@@ -1,0 +1,113 @@
+{
+  "recipe": {
+    "type": "crafting",
+    "recipe": "crafting/earmuffs"
+  },
+  "color_and_armor": {
+    "type": "crafting",
+    "recipes": [
+      [
+        [
+          {
+            "x": 24,
+            "y": 0,
+            "item": "immersiveengineering:earmuffs"
+          },
+          {
+            "x": 42,
+            "y": 0,
+            "stacks": [
+              {
+                "item": "minecraft:white_dye"
+              },
+              {
+                "item": "minecraft:red_dye"
+              },
+              {
+                "item": "minecraft:green_dye"
+              },
+              {
+                "item": "minecraft:blue_dye"
+              }
+            ]
+          },
+          {
+            "x": 78,
+            "y": 0,
+            "stacks": [
+              {
+                "item": "immersiveengineering:earmuffs",
+                "nbt": {
+                  "IE:EarmuffColour": 16383998
+                }
+              },
+              {
+                "item": "immersiveengineering:earmuffs",
+                "nbt": {
+                  "IE:EarmuffColour": 11546150
+                }
+              },
+              {
+                "item": "immersiveengineering:earmuffs",
+                "nbt": {
+                  "IE:EarmuffColour": 6192150
+                }
+              },
+              {
+                "item": "immersiveengineering:earmuffs",
+                "nbt": {
+                  "IE:EarmuffColour": 8606770
+                }
+              }
+            ]
+          }
+        ]
+      ],
+      [
+        [
+          {
+            "item": "immersiveengineering:earmuffs",
+            "x": 24,
+            "y": 0
+          },
+          {
+            "x": 42,
+            "y": 0,
+            "stacks": [
+              {
+                "item": "minecraft:leather_helmet"
+              },
+              {
+                "item": "minecraft:iron_helmet"
+              }
+            ]
+          },
+          {
+            "x": 78,
+            "y": 0,
+            "stacks": [
+              {
+                "item": "minecraft:leather_helmet",
+                "nbt": {
+                  "IE:Earmuffs": {
+                    "id": "immersiveengineering:earmuffs",
+                    "Count": 1
+                  }
+                }
+              },
+              {
+                "item": "minecraft:iron_helmet",
+                "nbt": {
+                  "IE:Earmuffs": {
+                    "id": "immersiveengineering:earmuffs",
+                    "Count": 1
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      ]
+    ]
+  }
+}

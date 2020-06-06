@@ -61,7 +61,7 @@ public class IEShieldItem extends UpgradeableToolItem implements IIEEnergyItem, 
 {
 	public IEShieldItem()
 	{
-		super("shield", new Properties().maxStackSize(1).defaultMaxDamage(1024).setTEISR(() -> () -> IEOBJItemRenderer.INSTANCE), "SHIELD");
+		super("shield", new Properties().defaultMaxDamage(1024).setTEISR(() -> () -> IEOBJItemRenderer.INSTANCE), "SHIELD");
 		DispenserBlock.registerDispenseBehavior(this, ArmorItem.DISPENSER_BEHAVIOR);
 	}
 
@@ -75,7 +75,7 @@ public class IEShieldItem extends UpgradeableToolItem implements IIEEnergyItem, 
 						new EnergyHelper.ItemEnergyStorage(stack)
 				);
 				final LazyOptional<ShaderWrapper_Item> shaders = ApiUtils.constantOptional(
-						new ShaderWrapper_Item("immersiveengineering:shield", stack)
+						new ShaderWrapper_Item(new ResourceLocation(ImmersiveEngineering.MODID, "shield"), stack)
 				);
 
 				@Nonnull
@@ -271,13 +271,13 @@ public class IEShieldItem extends UpgradeableToolItem implements IIEEnergyItem, 
 	}
 
 	@Override
-	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, Supplier<World> getWorld)
+	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, Supplier<World> getWorld, Supplier<PlayerEntity> getPlayer)
 	{
 		IItemHandler inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).orElseThrow(RuntimeException::new);
 		return new Slot[]
 				{
-						new IESlot.Upgrades(container, inv, 0, 80, 32, "SHIELD", stack, true, getWorld),
-						new IESlot.Upgrades(container, inv, 1, 100, 32, "SHIELD", stack, true, getWorld)
+						new IESlot.Upgrades(container, inv, 0, 80, 32, "SHIELD", stack, true, getWorld, getPlayer),
+						new IESlot.Upgrades(container, inv, 1, 100, 32, "SHIELD", stack, true, getWorld, getPlayer)
 //						new IESlot.Upgrades(container, invItem,2,100,32, "SHIELD", stack, true)
 				};
 

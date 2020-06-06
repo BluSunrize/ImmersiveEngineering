@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.shapes.CachedVoxelShapes;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import net.minecraft.block.BlockState;
@@ -28,9 +29,12 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-import net.minecraft.world.storage.loot.LootContext.Builder;
+import net.minecraft.world.storage.loot.LootContext;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -39,7 +43,7 @@ import java.util.List;
  * @author BluSunrize - 01.10.2016
  */
 public class StripCurtainTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IRedstoneOutput, IHammerInteraction,
-		IAdvancedCollisionBounds, IAdvancedDirectionalTile, IStateBasedDirectional, IColouredTile, ITileDrop
+		ICollisionBounds, IAdvancedDirectionalTile, IStateBasedDirectional, IColouredTile, ITileDrop, ISelectionBounds
 {
 	public static TileEntityType<StripCurtainTileEntity> TYPE;
 
@@ -127,7 +131,7 @@ public class StripCurtainTileEntity extends IEBaseTileEntity implements ITickabl
 		nbt.putInt("colour", colour);
 	}
 
-	AxisAlignedBB[] bounds = {
+	private static final AxisAlignedBB[] bounds = {
 			new AxisAlignedBB(0, 0, 0, 1, .1875f, .0625f),
 			new AxisAlignedBB(0, 0, .9375f, 1, .1875f, 1),
 			new AxisAlignedBB(0, 0, 0, .0625f, .1875f, 1),
@@ -136,17 +140,27 @@ public class StripCurtainTileEntity extends IEBaseTileEntity implements ITickabl
 			new AxisAlignedBB(.46875f, .8125f, 0, .53125f, 1, 1)
 	};
 
+	@Nonnull
 	@Override
-	public float[] getBlockBounds()
+	public VoxelShape getSelectionShape()
 	{
 		AxisAlignedBB aabb = bounds[isCeilingAttached()?(getFacing().getAxis()==Axis.Z?4: 5): ((getFacing().ordinal()-2)%4)];
-		return new float[]{(float)aabb.minX, (float)aabb.minY, (float)aabb.minZ, (float)aabb.maxX, (float)aabb.maxY, (float)aabb.maxZ};
+		return VoxelShapes.create(aabb.minX, aabb.minY, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ);
 	}
 
+	private static final CachedVoxelShapes<Pair<Boolean, Direction>> SHAPES = new CachedVoxelShapes<>(StripCurtainTileEntity::getShape);
+
+	@Nonnull
 	@Override
-	public List<AxisAlignedBB> getAdvancedCollisionBounds()
+	public VoxelShape getCollisionShape()
 	{
-		return Lists.newArrayList(bounds[isCeilingAttached()?(getFacing().getAxis()==Axis.Z?4: 5): ((getFacing().ordinal()-2)%4)]);
+		return SHAPES.get(Pair.of(isCeilingAttached(), getFacing()));
+	}
+
+	private static List<AxisAlignedBB> getShape(Pair<Boolean, Direction> key)
+	{
+		int index = key.getLeft()?(key.getRight().getAxis()==Axis.Z?4: 5): ((key.getRight().ordinal()-2)%4);
+		return Lists.newArrayList(bounds[index]);
 	}
 
 	@Nonnull
@@ -169,7 +183,7 @@ public class StripCurtainTileEntity extends IEBaseTileEntity implements ITickabl
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, float hitX, float hitY, float hitZ, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
 	{
 		return false;
 	}
@@ -198,7 +212,7 @@ public class StripCurtainTileEntity extends IEBaseTileEntity implements ITickabl
 	}
 
 	@Override
-	public List<ItemStack> getTileDrops(Builder context)
+	public List<ItemStack> getTileDrops(LootContext context)
 	{
 		ItemStack stack = new ItemStack(getBlockState().getBlock(), 1);
 		if(colour!=0xffffff)

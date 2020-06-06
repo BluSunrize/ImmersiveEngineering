@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
@@ -27,6 +28,8 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
@@ -38,7 +41,7 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import java.util.Set;
 
 public class SheetmetalTankTileEntity extends MultiblockPartTileEntity<SheetmetalTankTileEntity>
-		implements IBlockOverlayText, IPlayerInteraction, IComparatorOverride
+		implements IBlockOverlayText, IPlayerInteraction, IComparatorOverride, IBlockBounds
 {
 	public static TileEntityType<SheetmetalTankTileEntity> TYPE;
 
@@ -123,11 +126,11 @@ public class SheetmetalTankTileEntity extends MultiblockPartTileEntity<Sheetmeta
 	}
 
 	@Override
-	public float[] getBlockBounds()
+	public VoxelShape getBlockBounds()
 	{
 		if(posInMultiblock.getX()%2==0&&posInMultiblock.getY()==0&&posInMultiblock.getZ()%2==0)
-			return new float[]{.375f, 0, .375f, .625f, 1, .625f};
-		return new float[]{0, 0, 0, 1, 1, 1};
+			return VoxelShapes.create(.375f, 0, .375f, .625f, 1, .625f);
+		return VoxelShapes.fullCube();
 	}
 
 	private static final BlockPos ioTopOffset = new BlockPos(1, 4, 1);

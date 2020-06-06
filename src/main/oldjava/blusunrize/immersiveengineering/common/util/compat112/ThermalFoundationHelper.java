@@ -8,8 +8,6 @@
 
 package blusunrize.immersiveengineering.common.util.compat112;
 
-import blusunrize.immersiveengineering.api.tool.BelljarHandler;
-import blusunrize.immersiveengineering.api.tool.BelljarHandler.ItemFertilizerHandler;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect_Damage;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect_Potion;

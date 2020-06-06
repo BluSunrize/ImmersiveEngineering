@@ -19,7 +19,9 @@ import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHan
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.shapes.CachedVoxelShapes;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
 import it.unimi.dsi.fastutil.doubles.DoubleList;
@@ -40,20 +42,24 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.TranslationTextComponent;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implements ITickableTileEntity, IStateBasedDirectional,
-		IHasDummyBlocks, IAdvancedCollisionBounds, IAdvancedSelectionBounds, IPlayerInteraction, IComparatorOverride,
-		EnergyConnector
+		IHasDummyBlocks, IPlayerInteraction, IComparatorOverride,
+		EnergyConnector, IBlockBounds
 {
 	public static TileEntityType<EnergyMeterTileEntity> TYPE;
 
-	public final DoubleList lastPackets = new DoubleArrayList(25);
+	public final DoubleList lastPackets = new DoubleArrayList(20);
+	private int nextPacketIndex = 0;
 	private int compVal = -1;
 	private Connection shuntConnection;
 
@@ -95,12 +101,14 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 		double transferred = 0;
 		if(handler!=null)
 		{
-			Object2DoubleMap<Connection> map = handler.getTransferredInTick();
+			Object2DoubleMap<Connection> map = handler.getTransferredLastTick();
 			transferred = map.getDouble(shuntConnection);
 		}
-		lastPackets.add(transferred);
-		if(lastPackets.size() > 20)
-			lastPackets.remove(0);
+		if(nextPacketIndex >= lastPackets.size())
+			lastPackets.add(transferred);
+		else
+			lastPackets.set(nextPacketIndex, transferred);
+		nextPacketIndex = (nextPacketIndex+1)%20;
 	}
 
 	@Override
@@ -118,18 +126,43 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 			if(below instanceof EnergyMeterTileEntity)
 				return ((EnergyMeterTileEntity)below).canConnectCable(cableType, target, offset);
 		}
-		//TODO correct condition. Energy wire + same voltage as any existing ones?
-		return cableType instanceof IEnergyWire;
+		if(!(cableType instanceof IEnergyWire))
+			return false;
+		for(ConnectionPoint cp : getConnectionPoints())
+			for(Connection c : globalNet.getLocalNet(pos).getConnections(cp))
+				if(!c.isInternal()&&(target.equals(cp)||!c.type.getCategory().equals(cableType.getCategory())))
+					return false;
+		return true;
+	}
+
+	@Override
+	public Set<BlockPos> getIgnored(IImmersiveConnectable other)
+	{
+		if(isDummy())
+			return ImmutableSet.of(
+					pos,
+					pos.down()
+			);
+		else
+			return ImmutableSet.of(
+					pos,
+					pos.up()
+			);
 	}
 
 	@Nullable
 	@Override
 	public ConnectionPoint getTargetedPoint(TargetingInfo info, Vec3i offset)
 	{
+		ConnectionPoint targetByHit;
 		if(getFacing().getAxis()==Axis.X)
-			return info.hitZ > 0.5?new ConnectionPoint(pos, 0): new ConnectionPoint(pos, 1);
+			targetByHit = info.hitZ > 0.5?new ConnectionPoint(pos, 0): new ConnectionPoint(pos, 1);
 		else
-			return info.hitX > 0.5?new ConnectionPoint(pos, 0): new ConnectionPoint(pos, 1);
+			targetByHit = info.hitX > 0.5?new ConnectionPoint(pos, 0): new ConnectionPoint(pos, 1);
+		if(!globalNet.getLocalNet(targetByHit).getConnections(targetByHit).stream().allMatch(Connection::isInternal))
+			return new ConnectionPoint(pos, 1-targetByHit.getIndex());
+		else
+			return targetByHit;
 	}
 
 	@Override
@@ -163,6 +196,18 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 			return new Vec3d(here.getIndex()==0?.8125: .1875, 1.4375, .5);
 	}
 
+	@Nullable
+	@Override
+	public IGeneralMultiblock master()
+	{
+		if(!isDummy())
+			return this;
+		BlockPos masterPos = getPos().down();
+		TileEntity te = Utils.getExistingTileEntity(world, masterPos);
+		return this.getClass().isInstance(te)?(IGeneralMultiblock)te: null;
+	}
+
+	@Override
 	public void placeDummies(BlockItemUseContext ctx, BlockState state)
 	{
 		world.setBlockState(pos.add(0, 1, 0), state.with(IEProperties.MULTIBLOCKSLAVE, true));
@@ -200,28 +245,23 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 	}
 
 	@Override
-	public float[] getBlockBounds()
+	public VoxelShape getBlockBounds()
 	{
-		return new float[]{0, 0, 0, 1, 1, 1};
+		return SHAPES.get(isDummy());
 	}
 
-	@Override
-	public List<AxisAlignedBB> getAdvancedSelectionBounds()
+	private static final CachedVoxelShapes<Boolean> SHAPES = new CachedVoxelShapes<>(EnergyMeterTileEntity::getShape);
+
+	private static List<AxisAlignedBB> getShape(Boolean isDummy)
 	{
 		List<AxisAlignedBB> list = Lists.newArrayList(
 				new AxisAlignedBB(.1875f, -.625f, .1875f, .8125f, .8125f, .8125f),
 				new AxisAlignedBB(0, -1, 0, 1, .375f-1, 1)
 		);
-		if(!isDummy())
+		if(!isDummy)
 			for(int i = 0; i < list.size(); ++i)
 				list.set(i, list.get(i).offset(0, 1, 0));
 		return list;
-	}
-
-	@Override
-	public List<AxisAlignedBB> getAdvancedCollisionBounds()
-	{
-		return getAdvancedSelectionBounds();
 	}
 
 	@Override
@@ -239,11 +279,11 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 	@Override
 	public boolean mirrorFacingOnPlacement(LivingEntity placer)
 	{
-		return false;
+		return true;
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, float hitX, float hitY, float hitZ, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
 	{
 		return false;
 	}
@@ -301,14 +341,17 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 	@Override
 	public void onLoad()
 	{
-		super.onLoad();
 		shuntConnection = new Connection(pos, 0, 1);
+		super.onLoad();
 	}
 
 	@Override
 	public Iterable<? extends Connection> getInternalConnections()
 	{
-		return ImmutableList.of(shuntConnection);
+		if(shuntConnection!=null)
+			return ImmutableList.of(shuntConnection);
+		else
+			return ImmutableList.of();
 	}
 
 	@Override

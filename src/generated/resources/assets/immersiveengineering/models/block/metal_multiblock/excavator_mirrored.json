@@ -1,0 +1,10 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "particle": "immersiveengineering:block/multiblocks/excavator"
+  },
+  "loader": "forge:obj",
+  "detectCullableFaces": false,
+  "model": "immersiveengineering:models/block/metal_multiblock/excavator_mirrored.obj",
+  "flip-v": true
+}

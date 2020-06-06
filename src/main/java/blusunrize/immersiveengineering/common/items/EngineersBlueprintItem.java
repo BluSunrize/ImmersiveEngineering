@@ -10,8 +10,9 @@ package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
+import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemGroup;
@@ -47,19 +48,23 @@ public class EngineersBlueprintItem extends IEBaseItem
 	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
 	{
 		String key = ItemNBTHelper.getString(stack, "blueprint");
-		if(key!=null&&!key.isEmpty()&&BlueprintCraftingRecipe.blueprintCategories.contains(key))
+		if(!key.isEmpty()
+				&&BlueprintCraftingRecipe.recipeCategories!=null
+				&&BlueprintCraftingRecipe.recipeCategories.contains(key))
 		{
 			String formatKey = Lib.DESC_INFO+"blueprint."+key;
 			String formatted = I18n.format(formatKey);
-			if(formatKey.equals(formatted)) list.add(new StringTextComponent(key));
-			else list.add(new TranslationTextComponent(formatKey));
-			if(Minecraft.getInstance().player!=null&&Minecraft.getInstance().player.isSneaking())
+			if(formatKey.equals(formatted))
+				list.add(new StringTextComponent(key));
+			else
+				list.add(new TranslationTextComponent(formatKey));
+			if(Screen.hasShiftDown())
 			{
 				list.add(new TranslationTextComponent(Lib.DESC_INFO+"blueprint.creates1"));
 				BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(key);
 				if(recipes.length > 0)
-					for(int i = 0; i < recipes.length; i++)
-						list.add(new StringTextComponent(" "+recipes[i].output.getDisplayName()));
+					for(BlueprintCraftingRecipe recipe : recipes)
+						list.add(new StringTextComponent(" ").appendSibling(recipe.output.getDisplayName()));
 			}
 			else
 				list.add(new TranslationTextComponent(Lib.DESC_INFO+"blueprint.creates0"));
@@ -68,11 +73,10 @@ public class EngineersBlueprintItem extends IEBaseItem
 
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public void fillItemGroup(ItemGroup tab, NonNullList<ItemStack> list)
 	{
-		if(this.isInGroup(tab))
-			for(String key : BlueprintCraftingRecipe.blueprintCategories)
+		if(this.isInGroup(tab) && BlueprintCraftingRecipe.recipeCategories!=null)
+			for(String key : BlueprintCraftingRecipe.recipeCategories)
 			{
 				ItemStack stack = new ItemStack(this);
 				ItemNBTHelper.putString(stack, "blueprint", key);

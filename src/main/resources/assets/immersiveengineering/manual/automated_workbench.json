@@ -1,6 +1,6 @@
 {
   "multiblock": {
     "type": "multiblock",
-    "name": "immersiveengineering:multiblocks/automated_workbench"
+    "name": "multiblocks/auto_workbench"
   }
 }

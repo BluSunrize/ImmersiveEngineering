@@ -1,65 +1,36 @@
 {
   "variants": {
     "facing=down": {
-      "model": "immersiveengineering:connector",
-      "custom": {
-        "flip-v": true,
-        "base": "immersiveengineering:block/connector/connector_mv.obj",
-        "layers": "[SOLID]"
-      }
+      "model": "immersiveengineering:block/connector/connector_mv",
+      "uvlock": true
     },
     "facing=up": {
-      "model": "immersiveengineering:connector",
+      "model": "immersiveengineering:block/connector/connector_mv",
       "x": 180,
-      "uvlock": true,
-      "custom": {
-        "flip-v": true,
-        "base": "immersiveengineering:block/connector/connector_mv.obj",
-        "layers": "[SOLID]"
-      }
+      "uvlock": true
     },
     "facing=north": {
-      "model": "immersiveengineering:connector",
+      "model": "immersiveengineering:block/connector/connector_mv",
       "x": 90,
       "y": 180,
-      "uvlock": true,
-      "custom": {
-        "flip-v": true,
-        "base": "immersiveengineering:block/connector/connector_mv.obj",
-        "layers": "[SOLID]"
-      }
+      "uvlock": true
     },
     "facing=south": {
-      "model": "immersiveengineering:connector",
+      "model": "immersiveengineering:block/connector/connector_mv",
       "x": 90,
-      "uvlock": true,
-      "custom": {
-        "flip-v": true,
-        "base": "immersiveengineering:block/connector/connector_mv.obj",
-        "layers": "[SOLID]"
-      }
+      "uvlock": true
     },
     "facing=west": {
-      "model": "immersiveengineering:connector",
+      "model": "immersiveengineering:block/connector/connector_mv",
       "x": 90,
       "y": 90,
-      "uvlock": true,
-      "custom": {
-        "flip-v": true,
-        "base": "immersiveengineering:block/connector/connector_mv.obj",
-        "layers": "[SOLID]"
-      }
+      "uvlock": true
     },
     "facing=east": {
-      "model": "immersiveengineering:connector",
+      "model": "immersiveengineering:block/connector/connector_mv",
       "x": 90,
       "y": 270,
-      "uvlock": true,
-      "custom": {
-        "flip-v": true,
-        "base": "immersiveengineering:block/connector/connector_mv.obj",
-        "layers": "[SOLID]"
-      }
+      "uvlock": true
     }
   }
 }

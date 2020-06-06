@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "iii",
+    "ele",
+    "eee"
+  ],
+  "key": {
+    "i": {
+      "tag": "forge:ingots/steel"
+    },
+    "l": {
+      "item": "immersiveengineering:coil_lv"
+    },
+    "e": {
+      "tag": "forge:plates/constantan"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:thermoelectric_generator"
+  }
+}

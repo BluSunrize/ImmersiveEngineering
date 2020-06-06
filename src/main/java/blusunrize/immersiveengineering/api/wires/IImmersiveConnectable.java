@@ -90,7 +90,7 @@ public interface IImmersiveConnectable extends ILocalHandlerProvider
 	 * used to reset the CableType limiter of the tile, provided it matches the given argument
 	 * acts as a wildcard, meaning if connection.CableType is null, you /always/ reset the limiter
 	 */
-	void removeCable(@Nullable Connection connection);
+	void removeCable(@Nullable Connection connection, ConnectionPoint attachedPoint);
 
 
 	/**

@@ -1,0 +1,25 @@
+{
+  "type": "immersiveengineering:metal_press",
+  "mold": {
+    "item": "immersiveengineering:mold_rod"
+  },
+  "result": {
+    "count": 2,
+    "base_ingredient": {
+      "tag": "forge:rods/constantan"
+    }
+  },
+  "conditions": [
+    {
+      "value": {
+        "tag": "forge:rods/constantan",
+        "type": "forge:tag_empty"
+      },
+      "type": "forge:not"
+    }
+  ],
+  "input": {
+    "tag": "forge:ingots/constantan"
+  },
+  "energy": 2400
+}

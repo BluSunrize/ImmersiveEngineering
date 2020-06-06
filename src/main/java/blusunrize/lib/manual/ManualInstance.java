@@ -26,7 +26,6 @@ import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.resource.IResourceType;
 import net.minecraftforge.resource.ISelectiveResourceReloadListener;
@@ -35,6 +34,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -43,7 +43,7 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 {
 	public String texture;
 	private Map<ResourceLocation, Function<JsonObject, SpecialManualElement>> specialElements = new HashMap<>();
-	public final Tree<ResourceLocation, ManualEntry> contentTree;
+	private final Tree<ResourceLocation, ManualEntry> contentTree;
 	public Map<ResourceLocation, ManualEntry> contentsByName = new HashMap<>();
 	public final int pageWidth;
 	public final int pageHeight;
@@ -71,13 +71,11 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 						JsonArray inner = el.getAsJsonArray();
 						Object[] innerSaR = new Object[inner.size()];
 						for(int j = 0; j < inner.size(); ++j)
-						{
 							innerSaR[j] = ManualUtils.getRecipeObjFromJson(this, inner.get(j));
-						}
 						stacksAndRecipes[i] = innerSaR;
 					}
-					else if(el.isJsonObject())
-						stacksAndRecipes[i] = ManualUtils.getRecipeObjFromJson(this, el.getAsJsonObject());
+					else
+						stacksAndRecipes[i] = ManualUtils.getRecipeObjFromJson(this, el);
 				}
 			}
 			else
@@ -105,19 +103,18 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 					return new ManualElementImage(this, images);
 				}
 		);
-		//TODO test these
 		registerSpecialElement(new ResourceLocation(name.getNamespace(), "item_display"),
 				s -> {
-					JsonElement items = s.get("items");
 					NonNullList<ItemStack> stacks;
-					if(items.isJsonObject())
-						stacks = NonNullList.withSize(1, CraftingHelper.getItemStack(items.getAsJsonObject(), true));
+					if(s.has("item"))
+						stacks = NonNullList.withSize(1, ManualUtils.getItemStackFromJson(this, s.get("item")));
 					else
 					{
+						JsonElement items = s.get("items");
 						JsonArray arr = items.getAsJsonArray();
 						stacks = NonNullList.withSize(arr.size(), ItemStack.EMPTY);
 						for(int i = 0; i < arr.size(); i++)
-							stacks.set(i, CraftingHelper.getItemStack(arr.get(i).getAsJsonObject(), true));
+							stacks.set(i, ManualUtils.getItemStackFromJson(this, arr.get(i)));
 					}
 					return new ManualElementItem(this, stacks);
 				}
@@ -144,6 +141,16 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 		if(specialElements.containsKey(resLoc))
 			throw new IllegalArgumentException("Tried adding manual element type "+resLoc+" twice!");
 		specialElements.put(resLoc, factory);
+	}
+
+	public Tree.InnerNode<ResourceLocation, ManualEntry> getRoot()
+	{
+		return contentTree.getRoot();
+	}
+
+	public Stream<Tree.AbstractNode<ResourceLocation, ManualEntry>> getAllEntriesAndCategories()
+	{
+		return contentTree.fullStream();
 	}
 
 	public Function<JsonObject, SpecialManualElement> getElementFactory(ResourceLocation loc)
@@ -224,8 +231,8 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 
 	public ManualScreen getGui()
 	{
-		if(ManualScreen.activeManual!=null&&ManualScreen.activeManual.getManual()==this)
-			return ManualScreen.activeManual;
+		if(ManualScreen.lastActiveManual!=null&&ManualScreen.lastActiveManual.getManual()==this)
+			return ManualScreen.lastActiveManual;
 		if(!initialized)
 			reload();
 		return new ManualScreen(this, texture);
@@ -233,16 +240,30 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 
 	public void addEntry(InnerNode<ResourceLocation, ManualEntry> node, ManualEntry entry)
 	{
-		node.addNewLeaf(entry);
-		contentsByName.put(entry.getLocation(), entry);
-		initialized = false;
+		addEntry(node, entry, 0);
 	}
 
-	public void addEntry(InnerNode<ResourceLocation, ManualEntry> node, ResourceLocation source)
+	public void addEntry(InnerNode<ResourceLocation, ManualEntry> node, ManualEntry entry, int priority)
+	{
+		node.addNewLeaf(entry, priority);
+		contentsByName.put(entry.getLocation(), entry);
+		initialized = false;
+		ManualScreen.lastActiveManual = null;
+	}
+
+	public ManualEntry addEntry(InnerNode<ResourceLocation, ManualEntry> node, ResourceLocation source)
+	{
+		int nextPrio = node.getChildren().size();
+		return addEntry(node, source, nextPrio);
+	}
+
+	public ManualEntry addEntry(InnerNode<ResourceLocation, ManualEntry> node, ResourceLocation source, int priority)
 	{
 		ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());
 		builder.readFromFile(source);
-		addEntry(node, builder.create());
+		ManualEntry entry = builder.create();
+		addEntry(node, entry, priority);
+		return entry;
 	}
 
 	@Nullable
@@ -298,11 +319,24 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 	public void onResourceManagerReload(@Nonnull IResourceManager resourceManager, @Nonnull Predicate<IResourceType> resourcePredicate)
 	{
 		initialized = false;
+		ManualScreen.lastActiveManual = null;
 	}
 
 	public void reload()
 	{
-		getAllEntries().forEach(ManualEntry::refreshPages);
+		AtomicInteger numErrors = new AtomicInteger(0);
+		getAllEntries().forEach(manualEntry -> {
+			try
+			{
+				manualEntry.refreshPages();
+			} catch(Exception x)
+			{
+				x.printStackTrace();
+				numErrors.incrementAndGet();
+			}
+		});
+		if(numErrors.get()!=0)
+			throw new RuntimeException(numErrors.get()+" manual entries failed to load, see log for details!");
 		contentTree.sortAll();
 		indexRecipes();
 		initialized = true;

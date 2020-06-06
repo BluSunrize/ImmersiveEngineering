@@ -11,9 +11,12 @@ package blusunrize.immersiveengineering.common.blocks.stone;
 import blusunrize.immersiveengineering.api.DimensionChunkCoords;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
+import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.LivingEntity;
@@ -29,13 +32,17 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.storage.MapData;
 import net.minecraft.world.storage.MapDecoration;
-import net.minecraft.world.storage.loot.LootContext.Builder;
+import net.minecraft.world.storage.loot.LootContext;
 import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nullable;
@@ -85,7 +92,7 @@ public class CoresampleTileEntity extends IEBaseTileEntity implements IStateBase
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, float hitX, float hitY, float hitZ, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
 	{
 		return true;
 	}
@@ -173,7 +180,7 @@ public class CoresampleTileEntity extends IEBaseTileEntity implements IStateBase
 	}
 
 	@Override
-	public List<ItemStack> getTileDrops(Builder context)
+	public List<ItemStack> getTileDrops(LootContext context)
 	{
 		return ImmutableList.of(this.coresample);
 	}
@@ -182,12 +189,6 @@ public class CoresampleTileEntity extends IEBaseTileEntity implements IStateBase
 	public void readOnPlacement(LivingEntity placer, ItemStack stack)
 	{
 		this.coresample = stack.copy();
-	}
-
-	@Override
-	public boolean preventInventoryDrop()
-	{
-		return true;
 	}
 
 	private String[] overlay = null;
@@ -206,19 +207,22 @@ public class CoresampleTileEntity extends IEBaseTileEntity implements IStateBase
 				overlay[0] = I18n.format(Lib.CHAT_INFO+"coresample.noMineral");
 				if(ItemNBTHelper.hasKey(coresample, "mineral"))
 				{
-					String mineral = ItemNBTHelper.getString(coresample, "mineral");
-					String unloc = Lib.DESC_INFO+"mineral."+mineral;
+					ResourceLocation rl = new ResourceLocation(ItemNBTHelper.getString(coresample, "mineral"));
+					MineralMix mineral = ExcavatorHandler.mineralList.get(rl);
+					String unloc = mineral.getTranslationKey();
 					String loc = I18n.format(unloc);
-					overlay[0] = TextFormatting.GOLD+I18n.format(Lib.CHAT_INFO+"coresample.mineral", (unloc.equals(loc)?mineral: loc));
+					if(unloc.equals(loc))
+						loc = mineral.getPlainName();
+					overlay[0] = TextFormatting.GOLD+I18n.format(Lib.CHAT_INFO+"coresample.mineral", loc);
 				}
 
 				String s0 = (dimPos.x*16)+", "+(dimPos.z*16);
 				String s1 = (dimPos.x*16+16)+", "+(dimPos.z*16+16);
 				//TODO
 				String name = dimPos.dimension.getRegistryName().getPath();
-				if(name.toLowerCase(Locale.ENGLISH).startsWith("the "))
+				if(name.toLowerCase(Locale.ENGLISH).startsWith("the_"))
 					name = name.substring(4);
-				overlay[1] = name;
+				overlay[1] = Utils.toCamelCase(name);
 				overlay[2] = I18n.format(Lib.CHAT_INFO+"coresample.pos", s0, s1);
 			}
 			return overlay;
@@ -232,11 +236,11 @@ public class CoresampleTileEntity extends IEBaseTileEntity implements IStateBase
 		return false;
 	}
 
-	private static final float[] AABB_CORESAMPLE_X = new float[]{0, 0, .28125f, 1, 1, .71875f};
-	private static final float[] AABB_CORESAMPLE_Z = new float[]{.28125f, 0, 0, .71875f, 1, 1};
+	private static final VoxelShape AABB_CORESAMPLE_X = VoxelShapes.create(0, 0, .28125f, 1, 1, .71875f);
+	private static final VoxelShape AABB_CORESAMPLE_Z = VoxelShapes.create(.28125f, 0, 0, .71875f, 1, 1);
 
 	@Override
-	public float[] getBlockBounds()
+	public VoxelShape getBlockBounds()
 	{
 		return getFacing().getAxis()==Axis.Z?AABB_CORESAMPLE_Z: AABB_CORESAMPLE_X;
 	}

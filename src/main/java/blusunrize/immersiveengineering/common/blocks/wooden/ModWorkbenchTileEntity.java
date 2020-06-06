@@ -8,16 +8,14 @@
 
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
+import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
-import com.google.common.collect.Lists;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -27,6 +25,7 @@ import net.minecraft.nbt.ByteNBT;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.FloatNBT;
 import net.minecraft.nbt.INBT;
+import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
@@ -34,18 +33,17 @@ import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import java.util.ArrayList;
+import javax.annotation.Nullable;
 
-public class ModWorkbenchTileEntity extends IEBaseTileEntity implements IIEInventory, IDirectionalTile, IHasDummyBlocks,
-		IInteractionObjectIE, IHasObjProperty
+public class ModWorkbenchTileEntity extends IEBaseTileEntity implements IIEInventory, IStateBasedDirectional,
+		IHasDummyBlocks, IInteractionObjectIE, IHasObjProperty
 {
 	public static TileEntityType<ModWorkbenchTileEntity> TYPE;
 	NonNullList<ItemStack> inventory = NonNullList.withSize(7, ItemStack.EMPTY);
-	Direction facing = Direction.NORTH;
-	public boolean dummy = false;
 
 	public ModWorkbenchTileEntity()
 	{
@@ -55,16 +53,12 @@ public class ModWorkbenchTileEntity extends IEBaseTileEntity implements IIEInven
 	@Override
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		facing = Direction.byIndex(nbt.getInt("facing"));
-		dummy = nbt.getBoolean("dummy");
 		inventory = Utils.readInventory(nbt.getList("inventory", 10), 7);
 	}
 
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		nbt.putInt("facing", facing.ordinal());
-		nbt.putBoolean("dummy", dummy);
 		nbt.put("inventory", Utils.writeInventory(inventory));
 	}
 
@@ -104,18 +98,6 @@ public class ModWorkbenchTileEntity extends IEBaseTileEntity implements IIEInven
 	}
 
 	@Override
-	public Direction getFacing()
-	{
-		return facing;
-	}
-
-	@Override
-	public void setFacing(Direction facing)
-	{
-		this.facing = facing;
-	}
-
-	@Override
 	public PlacementLimitation getFacingLimitation()
 	{
 		return PlacementLimitation.HORIZONTAL;
@@ -128,7 +110,7 @@ public class ModWorkbenchTileEntity extends IEBaseTileEntity implements IIEInven
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, float hitX, float hitY, float hitZ, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
 	{
 		return false;
 	}
@@ -145,7 +127,6 @@ public class ModWorkbenchTileEntity extends IEBaseTileEntity implements IIEInven
 		if(!inventory.get(0).isEmpty()&&inventory.get(0).getItem() instanceof IConfigurableTool)
 			for(String key : message.keySet())
 			{
-				//TODO remove suffix whatever sends these
 				INBT tag = message.get(key);
 				if(tag instanceof ByteNBT)
 					((IConfigurableTool)inventory.get(0).getItem()).applyConfigOption(inventory.get(0), key,
@@ -159,37 +140,58 @@ public class ModWorkbenchTileEntity extends IEBaseTileEntity implements IIEInven
 	@Override
 	public boolean isDummy()
 	{
-		return this.dummy;
+		return getState().get(IEProperties.MULTIBLOCKSLAVE);
+	}
+
+	@Nullable
+	@Override
+	public IGeneralMultiblock master()
+	{
+		if(!isDummy())
+			return this;
+		// Used to provide tile-dependant drops after breaking
+		if(tempMasterTE!=null)
+			return tempMasterTE;
+		Direction dummyDir = isDummy()?getFacing().rotateYCCW(): getFacing().rotateY();
+		BlockPos masterPos = getPos().offset(dummyDir);
+		TileEntity te = Utils.getExistingTileEntity(world, masterPos);
+		return this.getClass().isInstance(te)?(IGeneralMultiblock)te: null;
+	}
+
+	private void setDummy(boolean dummy)
+	{
+		setState(getState().with(IEProperties.MULTIBLOCKSLAVE, dummy));
 	}
 
 	@Override
 	public void placeDummies(BlockItemUseContext ctx, BlockState state)
 	{
+		final Direction facing = getFacing();
 		Direction dummyDir;
 		if(facing.getAxis()==Axis.X)
 			dummyDir = ctx.getHitVec().z < .5?Direction.NORTH: Direction.SOUTH;
 		else
 			dummyDir = ctx.getHitVec().x < .5?Direction.WEST: Direction.EAST;
-		boolean mirror;
 		BlockPos dummyPos = pos.offset(dummyDir);
 		if(!world.getBlockState(dummyPos).isReplaceable(BlockItemUseContext.func_221536_a(ctx, dummyPos, dummyDir)))
 		{
 			dummyDir = dummyDir.getOpposite();
 			dummyPos = pos.offset(dummyDir);
 		}
-		mirror = dummyDir!=facing.rotateY();
+		boolean mirror = dummyDir!=facing.rotateY();
 		if(mirror)
-			this.dummy = true;
+			setDummy(true);
 		world.setBlockState(dummyPos, state);
 		ModWorkbenchTileEntity tileEntityDummy = ((ModWorkbenchTileEntity)world.getTileEntity(dummyPos));
-		tileEntityDummy.facing = this.facing;
-		tileEntityDummy.dummy = !mirror;
+		tileEntityDummy.setDummy(!mirror);
+		tileEntityDummy.setFacing(facing);
 	}
 
 	@Override
 	public void breakDummies(BlockPos pos, BlockState state)
 	{
-		Direction dummyDir = dummy?facing.rotateYCCW(): facing.rotateY();
+		tempMasterTE = master();
+		Direction dummyDir = isDummy()?getFacing().rotateYCCW(): getFacing().rotateY();
 		world.removeBlock(pos.offset(dummyDir), false);
 	}
 
@@ -202,23 +204,29 @@ public class ModWorkbenchTileEntity extends IEBaseTileEntity implements IIEInven
 	@Override
 	public IInteractionObjectIE getGuiMaster()
 	{
-		if(!dummy)
+		if(!isDummy())
 			return this;
-		Direction dummyDir = facing.rotateYCCW();
+		Direction dummyDir = getFacing().rotateYCCW();
 		TileEntity tileEntityModWorkbench = world.getTileEntity(pos.offset(dummyDir));
 		if(tileEntityModWorkbench instanceof ModWorkbenchTileEntity)
 			return (ModWorkbenchTileEntity)tileEntityModWorkbench;
 		return null;
 	}
 
-	private static ArrayList<String> normalDisplayList = Lists.newArrayList("cube0");
-	private static ArrayList<String> blueprintDisplayList = Lists.newArrayList("cube0", "blueprint");
+	private static VisibilityList normalDisplayList = VisibilityList.show("cube0");
+	private static VisibilityList blueprintDisplayList = VisibilityList.show("cube0", "blueprint");
 
 	@Override
-	public ArrayList<String> compileDisplayList()
+	public VisibilityList compileDisplayList(BlockState state)
 	{
 		if(this.inventory.get(0).getItem() instanceof EngineersBlueprintItem)
 			return blueprintDisplayList;
 		return normalDisplayList;
+	}
+
+	@Override
+	public EnumProperty<Direction> getFacingProperty()
+	{
+		return IEProperties.FACING_HORIZONTAL;
 	}
 }

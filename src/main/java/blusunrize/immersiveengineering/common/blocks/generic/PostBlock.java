@@ -8,7 +8,10 @@
 
 package blusunrize.immersiveengineering.common.blocks.generic;
 
+import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
+import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
+import blusunrize.immersiveengineering.api.IPostBlock;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
@@ -16,7 +19,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IModelDat
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.FenceBlock;
 import net.minecraft.block.material.PushReaction;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -28,6 +30,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Direction.AxisDirection;
 import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.Vec3i;
@@ -41,21 +44,21 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.loot.LootContext.Builder;
 import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class PostBlock extends IEBaseBlock implements IModelDataBlock
+public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBlock
 {
 	public static final IntegerProperty POST_SLAVE = IntegerProperty.create("post_slave", 0, 3);
 	public static final EnumProperty<HorizontalOffset> HORIZONTAL_OFFSET = EnumProperty.create("horizontal_offset",
 			HorizontalOffset.class);
+
 	public PostBlock(String name, Properties blockProps)
 	{
-		super(name, blockProps, BlockItemIE.class, POST_SLAVE, HORIZONTAL_OFFSET);
+		super(name, blockProps, BlockItemIE::new, POST_SLAVE, HORIZONTAL_OFFSET);
 		setNotNormalBlock();
 		setMobility(PushReaction.BLOCK);
 		lightOpacity = 0;
@@ -73,21 +76,21 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock
 		int dummyState = state.get(POST_SLAVE);
 		HorizontalOffset offset = state.get(HORIZONTAL_OFFSET);
 		if(dummyState > 0&&offset==HorizontalOffset.NONE)
-			world.setBlockState(pos.subtract(state.get(HORIZONTAL_OFFSET).getOffset()).down(dummyState),
-					Blocks.AIR.getDefaultState());
+			world.setBlockState(pos.down(dummyState), Blocks.AIR.getDefaultState());
 		else if(dummyState==0)
 		{
 			spawnAsEntity(world, pos, new ItemStack(this));
 			final int highestBlock = 3;
-			for(int i = 0; i <= highestBlock; ++i)
-				world.setBlockState(pos.up(i), Blocks.AIR.getDefaultState());
 			BlockPos armStart = pos.up(highestBlock);
 			for(Direction d : Direction.BY_HORIZONTAL_INDEX)
 			{
 				BlockPos armPos = armStart.offset(d);
-				if(hasArmFor(armStart, d, world))
+				BlockState armState = world.getBlockState(armPos);
+				if(armState.getBlock()==this&&armState.get(HORIZONTAL_OFFSET).getOffset().equals(d.getDirectionVec()))
 					world.setBlockState(armPos, Blocks.AIR.getDefaultState());
 			}
+			for(int i = 0; i <= highestBlock; ++i)
+				world.setBlockState(pos.up(i), Blocks.AIR.getDefaultState());
 		}
 		super.onReplaced(state, world, pos, newState, moving);
 	}
@@ -292,9 +295,13 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock
 		if(dummy > 0&&dummy < 3)
 		{
 			BlockState neighborState = world.getBlockState(neighborPos);
-			//TODO test
-			ret = !FenceBlock.cannotAttach(neighborState.getBlock())&&neighborState.func_224755_d(world, neighborPos,
-					dir.getOpposite());
+			VoxelShape shape = neighborState.getShape(world, neighborPos);
+			if(!shape.isEmpty())
+			{
+				AxisAlignedBB aabb = shape.getBoundingBox();
+				boolean connect = dir==Direction.NORTH?aabb.maxZ==1: dir==Direction.SOUTH?aabb.minZ==0: dir==Direction.WEST?aabb.maxX==1: aabb.minX==0;
+				ret = connect&&((dir.getAxis()==Axis.Z&&aabb.minX > 0&&aabb.maxX < 1)||(dir.getAxis()==Axis.X&&aabb.minZ > 0&&aabb.maxZ < 1));
+			}
 		}
 		else if(dummy==3)
 		{
@@ -361,11 +368,16 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock
 					}
 			}
 		}
-		OBJState modelState = new OBJState(visible, true);
-		return new SinglePropertyModelData<>(modelState, Model.OBJ_STATE);
+		IEObjState modelState = new IEObjState(VisibilityList.show(visible));
+		return new SinglePropertyModelData<>(modelState, Model.IE_OBJ_STATE);
 	}
 
-	//TODO transformers
+	@Override
+	public boolean canConnectTransformer(IBlockReader world, BlockPos pos)
+	{
+		int offset = world.getBlockState(pos).get(POST_SLAVE);
+		return offset > 0;
+	}
 
 	enum HorizontalOffset implements IStringSerializable
 	{

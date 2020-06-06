@@ -9,19 +9,28 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
+import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
+import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.fluid.IFluidPipe;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
+import blusunrize.immersiveengineering.common.blocks.IEBaseBlock.IELadderBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
-import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDecoration;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import blusunrize.immersiveengineering.common.util.shapes.CachedVoxelShapes;
 import com.google.common.collect.Lists;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
@@ -31,17 +40,22 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.model.obj.OBJModel.OBJState;
+import net.minecraftforge.client.ForgeHooksClient;
+import net.minecraftforge.client.MinecraftForgeClient;
+import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -49,26 +63,27 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.vecmath.Vector4f;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-import java.util.stream.Stream;
+import java.util.function.Predicate;
 
 import static java.util.Collections.newSetFromMap;
 
 //TODO use cap references
 public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe, IAdvancedHasObjProperty,
 		IOBJModelCallback<BlockState>, IColouredTile, IPlayerInteraction, IHammerInteraction, IPlacementInteraction,
-		IAdvancedSelectionBounds, IAdvancedCollisionBounds, IAdditionalDrops, INeighbourChangeTile
+		ISelectionBounds, ICollisionBounds, IAdditionalDrops, INeighbourChangeTile
 {
 	public static TileEntityType<FluidPipeTileEntity> TYPE;
 
 	static ConcurrentHashMap<BlockPos, Set<DirectionalFluidOutput>> indirectConnections = new ConcurrentHashMap<>();
-	public static ArrayList<Function<ItemStack, Boolean>> validPipeCovers = new ArrayList<>();
-	public static ArrayList<Function<ItemStack, Boolean>> climbablePipeCovers = new ArrayList<>();
+	public static ArrayList<Predicate<Block>> validPipeCovers = new ArrayList<>();
+	public static ArrayList<Predicate<Block>> climbablePipeCovers = new ArrayList<>();
 
 	public FluidPipeTileEntity()
 	{
@@ -77,23 +92,13 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 
 	public static void initCovers()
 	{
-		final ArrayList<ItemStack> scaffolds = Lists.newArrayList(new ItemStack(WoodenDecoration.treatedScaffolding));
-		Stream.concat(
-				MetalDecoration.aluScaffolding.values().stream(),
-				MetalDecoration.steelScaffolding.values().stream()
-		)
-				.map(ItemStack::new)
-				.forEach(scaffolds::add);
-		Function<ItemStack, Boolean> defaultMatch = (input) -> {
-			if(input.isEmpty())
-				return false;
-			for(ItemStack stack : scaffolds)
-				if(ItemStack.areItemsEqual(stack, input))
-					return true;
-			return false;
-		};
-		FluidPipeTileEntity.validPipeCovers.add(defaultMatch);
-		FluidPipeTileEntity.climbablePipeCovers.add(defaultMatch);
+		validPipeCovers.add(IETags.scaffoldingAlu::contains);
+		validPipeCovers.add(IETags.scaffoldingSteel::contains);
+		validPipeCovers.add(input -> input==WoodenDecoration.treatedScaffolding);
+
+		climbablePipeCovers.add(IETags.scaffoldingAlu::contains);
+		climbablePipeCovers.add(IETags.scaffoldingSteel::contains);
+		climbablePipeCovers.add(input -> input==WoodenDecoration.treatedScaffolding);
 	}
 
 	public Object2BooleanMap<Direction> sideConfig = new Object2BooleanOpenHashMap<>();
@@ -103,7 +108,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 			sideConfig.put(d, true);
 	}
 
-	public ItemStack pipeCover = ItemStack.EMPTY;
+	public Block cover = Blocks.AIR;
 	private byte connections = 0;
 	@Nullable
 	private DyeColor color = null;
@@ -193,37 +198,19 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 	@Override
 	public void onEntityCollision(World world, Entity entity)
 	{
-		if(!(entity instanceof LivingEntity)||((LivingEntity)entity).isOnLadder()||pipeCover.isEmpty())
+		if(!(entity instanceof LivingEntity)||((LivingEntity)entity).isOnLadder()||this.cover==Blocks.AIR)
 			return;
 		else
 		{
 			boolean climb = false;
-			for(Function<ItemStack, Boolean> f : climbablePipeCovers)
-				if(f!=null&&f.apply(pipeCover)==Boolean.TRUE)
+			for(Predicate<Block> f : climbablePipeCovers)
+				if(f!=null&&f.test(cover))
 				{
 					climb = true;
 					break;
 				}
-			if(!climb)
-				return;
-			double motionX = entity.getMotion().x;
-			double motionY = entity.getMotion().y;
-			double motionZ = entity.getMotion().z;
-			double maxSpeed = 0.15;
-			motionX = MathHelper.clamp(motionX, -maxSpeed, maxSpeed);
-			motionY = MathHelper.clamp(motionY, -maxSpeed, maxSpeed);
-			motionZ = MathHelper.clamp(motionZ, -maxSpeed, maxSpeed);
-
-			entity.fallDistance = 0f;
-
-			if(motionY < 0&&entity instanceof PlayerEntity&&entity.isSneaking())
-			{
-				motionY = .05;
-				return;
-			}
-			if(entity.collidedHorizontally)
-				motionY = .2;
-			entity.setMotion(motionX, motionY, motionZ);
+			if(climb)
+				IELadderBlock.applyLadderLogic(entity);
 		}
 	}
 
@@ -236,7 +223,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 				sideConfig.put(Direction.byIndex(i), config[i]!=0);
 			else
 				sideConfig.put(Direction.byIndex(i), false);
-		pipeCover = ItemStack.read(nbt.getCompound("pipeCover"));
+		cover = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(nbt.getString("cover")));
 		DyeColor oldColor = color;
 		if(nbt.contains("color", NBT.TAG_INT))
 			color = DyeColor.byId(nbt.getInt("color"));
@@ -259,8 +246,8 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 			if(sideConfig.getBoolean(Direction.byIndex(i)))
 				config[i] = 1;
 		nbt.putIntArray("sideConfig", config);
-		if(!pipeCover.isEmpty())
-			nbt.put("pipeCover", (pipeCover.write(new CompoundNBT())));
+		if(hasCover())
+			nbt.putString("cover", ForgeRegistries.BLOCKS.getKey(cover).toString());
 		nbt.putByte("connections", connections);
 		if(color!=null)
 			nbt.putInt("color", color.getId());
@@ -294,30 +281,32 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 		return super.getCapability(capability, facing);
 	}
 
-	/*TODO
+	protected boolean hasCover()
+	{
+		return this.cover!=Blocks.AIR;
+	}
+
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public List<BakedQuad> modifyQuads(IBlockState object, List<BakedQuad> quads)
+	public List<BakedQuad> modifyQuads(BlockState object, List<BakedQuad> quads)
 	{
-		if(!pipeCover.isEmpty())
+		if(hasCover())
 		{
-			Block b = Block.getBlockFromItem(pipeCover.getItem());
-			IBlockState state = b!=null?b.getStateFromMeta(pipeCover.getMetadata()): Blocks.STONE.getDefaultState();
-			IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(state);
+			BlockState state = cover.getDefaultState();
+			IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes().getModel(state);
 			BlockRenderLayer curL = MinecraftForgeClient.getRenderLayer();
 			if(model!=null)
 				for(BlockRenderLayer layer : BlockRenderLayer.values())
 				{
 					ForgeHooksClient.setRenderLayer(layer);
-					for(EnumFacing facing : EnumFacing.VALUES)
-						quads.addAll(model.getQuads(state, facing, 0));
-					quads.addAll(model.getQuads(state, null, 0));
+					for(Direction direction : Direction.values())
+						quads.addAll(model.getQuads(state, direction, world.rand, EmptyModelData.INSTANCE));
+					quads.addAll(model.getQuads(state, null, world.rand, EmptyModelData.INSTANCE));
 				}
 			ForgeHooksClient.setRenderLayer(curL);
 		}
 		return quads;
 	}
-	*/
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
@@ -328,7 +317,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public Optional<TRSRTransformation> applyTransformations(BlockState object, String group, Optional<TRSRTransformation> transform)
+	public TRSRTransformation applyTransformations(BlockState object, String group, TRSRTransformation transform)
 	{
 		return transform;
 	}
@@ -336,8 +325,8 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 	@Override
 	public Collection<ItemStack> getExtraDrops(PlayerEntity player, BlockState state)
 	{
-		if(!pipeCover.isEmpty())
-			return Lists.newArrayList(pipeCover);
+		if(hasCover())
+			return Lists.newArrayList(new ItemStack(cover));
 		return null;
 	}
 
@@ -527,7 +516,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 
 		if(connections!=3&&connections!=12&&connections!=48)
 			return 1;
-		TileEntity con = world.getTileEntity(getPos().offset(connection));
+		TileEntity con = Utils.getExistingTileEntity(world, getPos().offset(connection));
 		if(con instanceof FluidPipeTileEntity)
 		{
 			byte tileConnections = ((FluidPipeTileEntity)con).connections;
@@ -564,36 +553,31 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 		return false;
 	}
 
+	private static final CachedVoxelShapes<BoundingBoxKey> SHAPES = new CachedVoxelShapes<>(FluidPipeTileEntity::getBoxes);
+
 	@Override
-	public float[] getBlockBounds()
+	public VoxelShape getCollisionShape()
 	{
-		return null;
+		return SHAPES.get(new BoundingBoxKey(true, this));
 	}
 
 	@Override
-	public List<AxisAlignedBB> getAdvancedCollisionBounds()
+	public VoxelShape getSelectionShape()
+	{
+		return SHAPES.get(new BoundingBoxKey(false, this));
+	}
+
+	private static List<AxisAlignedBB> getBoxes(BoundingBoxKey key)
 	{
 		List<AxisAlignedBB> list = Lists.newArrayList();
-		if(!pipeCover.isEmpty())
+		if(key.collisions&&key.hasCover)
 		{
 			list.add(new AxisAlignedBB(0, 0, 0, 1, 1, 1).grow(-.03125f));
 			return list;
 		}
-		return getBoxes(true);
-	}
-
-	@Override
-	public List<AxisAlignedBB> getAdvancedSelectionBounds()
-	{
-		return getBoxes(false);
-	}
-
-	private List<AxisAlignedBB> getBoxes(boolean collision)
-	{
-		List<AxisAlignedBB> list = Lists.newArrayList();
-		byte availableConnections = getAvailableConnectionByte();
-		byte activeConnections = connections;
-		double[] baseAABB = !pipeCover.isEmpty()?new double[]{.002, .998, .002, .998, .002, .998}: new double[]{.25, .75, .25, .75, .25, .75};
+		byte availableConnections = key.availableConnections;
+		byte activeConnections = key.connections;
+		double[] baseAABB = key.hasCover?new double[]{.002, .998, .002, .998, .002, .998}: new double[]{.25, .75, .25, .75, .25, .75};
 		for(Direction d : Direction.VALUES)
 		{
 			int i = d.ordinal();
@@ -604,7 +588,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 							i==4?0: i==5?0.75: 0.25, i==0?0: i==1?0.75: 0.25, i==2?0: i==3?0.75: 0.25,
 							i==4?0.25: i==5?1: 0.75, i==0?0.25: i==1?1: 0.75, i==2?0.25: i==3?1: 0.75
 					));
-				if(((activeConnections&1)==0&&!collision)||getConnectionStyle(d)==1)
+				if(((activeConnections&1)==0&&!key.collisions)||key.connectionStyles.get(d)==1)
 					list.add(new AxisAlignedBB(
 							i==4?0: i==5?0.875: 0.125, i==0?0: i==1?0.875: 0.125, i==2?0: i==3?0.875: 0.125,
 							i==4?0.125: i==5?1: 0.875, i==0?0.125: i==1?1: 0.875, i==2?0.125: i==3?1: 0.875
@@ -617,7 +601,45 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 		return list;
 	}
 
-	public static HashMap<String, OBJState> cachedOBJStates = new HashMap<>();
+	private static class BoundingBoxKey
+	{
+		private final boolean collisions;
+		private final byte connections;
+		private final byte availableConnections;
+		private final boolean hasCover;
+		private final Map<Direction, Integer> connectionStyles = new EnumMap<>(Direction.class);
+
+		private BoundingBoxKey(boolean collisions, FluidPipeTileEntity te)
+		{
+			this.collisions = collisions;
+			this.connections = te.connections;
+			this.availableConnections = te.getAvailableConnectionByte();
+			this.hasCover = te.hasCover();
+			for(Direction d : Direction.VALUES)
+				connectionStyles.put(d, te.getConnectionStyle(d));
+		}
+
+		@Override
+		public boolean equals(Object o)
+		{
+			if(this==o) return true;
+			if(o==null||getClass()!=o.getClass()) return false;
+			BoundingBoxKey that = (BoundingBoxKey)o;
+			return collisions==that.collisions&&
+					connections==that.connections&&
+					availableConnections==that.availableConnections&&
+					hasCover==that.hasCover&&
+					connectionStyles.equals(that.connectionStyles);
+		}
+
+		@Override
+		public int hashCode()
+		{
+			return Objects.hash(collisions, connections, availableConnections, hasCover, connectionStyles);
+		}
+	}
+
+	public static HashMap<String, IEObjState> cachedOBJStates = new HashMap<>();
 
 	String getRenderCacheKey()
 	{
@@ -629,8 +651,8 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 			else
 				key.append("0");
 		}
-		if(!pipeCover.isEmpty())
-			key.append("scaf:").append(pipeCover);
+		if(hasCover())
+			key.append("scaf:").append(ForgeRegistries.BLOCKS.getKey(cover).toString());
 		key.append(color);
 		return key.toString();
 	}
@@ -664,21 +686,21 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 	}
 
 	@Override
-	public OBJState getOBJState()
+	public IEObjState getIEObjState(BlockState state)
 	{
 		String key = getRenderCacheKey();
 		return getStateFromKey(key);
 	}
 
-	public static OBJState getStateFromKey(String key)
+	public static IEObjState getStateFromKey(String key)
 	{
 		if(!cachedOBJStates.containsKey(key))
 		{
 			ArrayList<String> parts = new ArrayList<>();
 			Matrix4 rotationMatrix = new Matrix4(TRSRTransformation.identity().getMatrixVec());//TODO is getMatrixVec correct?
 			short connections = getConnectionsFromKey(key);
-//			if(pipeCover!=null)
-//				parts.add("cover");
+			if(key.contains("scaf:"))
+				parts.add("cover");
 			int totalConnections = Integer.bitCount(connections&255);
 			boolean straightY = (connections&3)==3;
 			boolean straightZ = (connections&12)==12;
@@ -919,11 +941,11 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 			tempMatr.invert();
 			rotationMatrix = rotationMatrix.multiply(tempMatr);
 
-			cachedOBJStates.put(key, new OBJState(parts, true, new TRSRTransformation(rotationMatrix.toMatrix4f())));
+			cachedOBJStates.put(key, new IEObjState(VisibilityList.show(parts),
+					new TRSRTransformation(rotationMatrix.toMatrix4f())));
 		}
 		return cachedOBJStates.get(key);
 	}
-
 
 	@Override
 	public int getRenderColour(int tintIndex)
@@ -931,42 +953,44 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 		return 0xffffff;
 	}
 
+	public void dropCover(PlayerEntity player)
+	{
+		if(!world.isRemote&&hasCover()&&world.getGameRules().getBoolean(GameRules.DO_TILE_DROPS))
+		{
+			ItemEntity entityitem = player.dropItem(new ItemStack(cover), false);
+			if(entityitem!=null)
+				entityitem.setNoPickupDelay();
+		}
+	}
+
 	@Override
 	public boolean interact(Direction side, PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
-		if(heldItem.isEmpty()&&player.isSneaking()&&!pipeCover.isEmpty())
+		if(heldItem.isEmpty()&&player.isSneaking()&&hasCover())
 		{
-			if(!world.isRemote&&world.getGameRules().getBoolean(GameRules.DO_TILE_DROPS))
-			{
-				ItemEntity entityitem = player.dropItem(pipeCover.copy(), false);
-				if(entityitem!=null)
-					entityitem.setNoPickupDelay();
-			}
-			pipeCover = ItemStack.EMPTY;
+			dropCover(player);
+			this.cover = Blocks.AIR;
 			this.markContainingBlockForUpdate(null);
 			world.addBlockEvent(getPos(), getBlockState().getBlock(), 255, 0);
 			return true;
 		}
 		else if(!heldItem.isEmpty()&&!player.isSneaking())
 		{
-			for(Function<ItemStack, Boolean> func : validPipeCovers)
-				if(func.apply(heldItem)==Boolean.TRUE)
-				{
-					if(!ItemStack.areItemsEqual(pipeCover, heldItem))
+			Block heldBlock = Block.getBlockFromItem(heldItem.getItem());
+			if(heldBlock!=Blocks.AIR)
+				for(Predicate<Block> func : validPipeCovers)
+					if(func.test(heldBlock))
 					{
-						if(!world.isRemote&&!pipeCover.isEmpty()&&world.getGameRules().getBoolean(GameRules.DO_TILE_DROPS))
+						if(this.cover!=heldBlock)
 						{
-							ItemEntity entityitem = player.dropItem(pipeCover.copy(), false);
-							if(entityitem!=null)
-								entityitem.setNoPickupDelay();
+							dropCover(player);
+							this.cover = heldBlock;
+							heldItem.shrink(1);
+							this.markContainingBlockForUpdate(null);
+							world.addBlockEvent(getPos(), getBlockState().getBlock(), 255, 0);
+							return true;
 						}
-						pipeCover = Utils.copyStackWithAmount(heldItem, 1);
-						heldItem.shrink(1);
-						this.markContainingBlockForUpdate(null);
-						world.addBlockEvent(getPos(), getBlockState().getBlock(), 255, 0);
-						return true;
 					}
-				}
 			DyeColor heldDye = Utils.getDye(heldItem);
 			if(heldDye!=null)
 			{
@@ -985,7 +1009,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 			return true;
 		hitVec = hitVec.subtract(new Vec3d(pos));
 		Direction fd = side;
-		List<AxisAlignedBB> boxes = this.getAdvancedSelectionBounds();
+		List<AxisAlignedBB> boxes = getBoxes(new BoundingBoxKey(true, this));
 		for(AxisAlignedBB box : boxes)
 			if(box.grow(.002).contains(hitVec))
 			{
@@ -1033,10 +1057,13 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 	}
 
 	@Override
-	public int getRenderColour(BlockState object, String group)
+	public Vector4f getRenderColor(BlockState object, String group, Vector4f original)
 	{
 		if(color!=null)
-			return color.colorValue|(0xff000000);
-		return 0xffffffff;
+		{
+			float[] rgb = color.getColorComponentValues();
+			return new Vector4f(rgb[0], rgb[1], rgb[2], 1);
+		}
+		return original;
 	}
 }

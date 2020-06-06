@@ -1,0 +1,10 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "texture": "immersiveengineering:block/wooden_decoration/post",
+    "particle": "immersiveengineering:block/wooden_decoration/post"
+  },
+  "loader": "immersiveengineering:ie_obj",
+  "model": "immersiveengineering:models/block/wooden_device/wooden_post.obj.ie",
+  "flip-v": true
+}

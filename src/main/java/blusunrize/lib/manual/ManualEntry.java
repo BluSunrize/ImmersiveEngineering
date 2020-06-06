@@ -16,11 +16,7 @@ import com.google.gson.JsonObject;
 import com.mojang.blaze3d.platform.GlStateManager;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.crash.CrashReport;
-import net.minecraft.crash.CrashReportCategory;
-import net.minecraft.crash.ReportedException;
 import net.minecraft.item.ItemStack;
 import net.minecraft.resources.IResource;
 import net.minecraft.util.JSONUtils;
@@ -36,6 +32,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 @SuppressWarnings("WeakerAccess")
@@ -83,13 +80,11 @@ public class ManualEntry implements Comparable<ManualEntry>
 				pages.add(new ManualPage(text.get(i), special));
 			}
 			manual.entryRenderPost();
-		} catch(Throwable throwable)
+		} catch(Exception x)
 		{
-			CrashReport crashreport = CrashReport.makeCrashReport(throwable, "Refreshing an IE manual entry");
-			CrashReportCategory crashreportcategory = crashreport.makeCategory("Entry being refreshed:");
-			crashreportcategory.addDetail("Entry name", location);
-			crashreportcategory.addDetail("Manual", manual.getManualName());
-			throw new ReportedException(crashreport);
+			throw new RuntimeException(
+					"Exception while refreshing manual entry "+location+" for manual "+manual.getManualName(),
+					x);
 		}
 	}
 
@@ -168,8 +163,8 @@ public class ManualEntry implements Comparable<ManualEntry>
 		return false;
 	}
 
-	public void mouseDragged(ManualScreen gui, int x, int y, double clickX, double clickY, double mx, double my, double lastX, double lastY,
-							 Widget button)
+	public void mouseDragged(ManualScreen gui, int x, int y, double clickX, double clickY, double mx, double my,
+							 double lastX, double lastY, int button)
 	{
 		pages.get(gui.page).special.mouseDragged(x, y, clickX, clickY, mx, my, lastX, lastY, button);
 	}
@@ -186,7 +181,8 @@ public class ManualEntry implements Comparable<ManualEntry>
 
 	public Tree.AbstractNode<ResourceLocation, ManualEntry> getTreeNode()
 	{
-		return manual.contentTree.fullStream().filter((e) -> e.getLeafData()==this).findAny().orElse(null);
+		return manual.getAllEntriesAndCategories()
+				.filter((e) -> e.getLeafData()==this).findAny().orElse(null);
 	}
 
 	@Override
@@ -215,7 +211,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 		TextSplitter splitter;
 		Function<TextSplitter, String[]> getContent = null;
 		private ResourceLocation location;
-		private List<Triple<String, Integer, SpecialManualElement>> hardcodedSpecials = new ArrayList<>();
+		private List<Triple<String, Integer, Supplier<? extends SpecialManualElement>>> hardcodedSpecials = new ArrayList<>();
 
 		public ManualEntryBuilder(ManualInstance manual)
 		{
@@ -229,19 +225,47 @@ public class ManualEntry implements Comparable<ManualEntry>
 			this.splitter = splitter;
 		}
 
-		public void addSpecialElement(String anchor, int offset, SpecialManualElement element)
+		public void addSpecialElement(String anchor, int offset, Supplier<? extends SpecialManualElement> element)
 		{
 			hardcodedSpecials.add(new ImmutableTriple<>(anchor, offset, element));
 		}
 
+		public void addSpecialElement(String anchor, int offset, SpecialManualElement element)
+		{
+			hardcodedSpecials.add(new ImmutableTriple<>(anchor, offset, () -> element));
+		}
+
+		public void setContent(Function<TextSplitter, String[]> get)
+		{
+			getContent = splitter -> {
+				addHardcodedSpecials(splitter);
+				return get.apply(splitter);
+			};
+		}
+
+		public void setContent(Supplier<String> title, Supplier<String> subText, Supplier<String> mainText)
+		{
+			getContent = splitter -> {
+				addHardcodedSpecials(splitter);
+				return new String[]{
+						title.get(), subText.get(), mainText.get()
+				};
+			};
+		}
+
+		private void addHardcodedSpecials(TextSplitter splitter)
+		{
+			for(Triple<String, Integer, Supplier<? extends SpecialManualElement>> special : hardcodedSpecials)
+				splitter.addSpecialPage(
+						special.getLeft(),
+						special.getMiddle(),
+						special.getRight().get()
+				);
+		}
+
 		public void setContent(String title, String subText, String mainText)
 		{
-			String[] content = {title, subText, mainText};
-			getContent = (splitter) -> {
-				for(Triple<String, Integer, SpecialManualElement> special : hardcodedSpecials)
-					splitter.addSpecialPage(special.getLeft(), special.getMiddle(), special.getRight());
-				return content;
-			};
+			setContent(() -> title, () -> subText, () -> mainText);
 		}
 
 		private static Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
@@ -275,8 +299,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 							JsonObject.class, true);
 					byte[] bytesLang = IOUtils.toByteArray(resLang.getInputStream());
 					String content = new String(bytesLang, StandardCharsets.UTF_8);
-					for(Triple<String, Integer, SpecialManualElement> special : hardcodedSpecials)
-						splitter.addSpecialPage(special.getLeft(), special.getMiddle(), special.getRight());
+					addHardcodedSpecials(splitter);
 					assert json!=null;
 					ManualUtils.parseSpecials(json, splitter, manual);
 					int titleEnd = content.indexOf('\n');
@@ -288,10 +311,9 @@ public class ManualEntry implements Comparable<ManualEntry>
 					Pattern backslashNewline = Pattern.compile("[^\\\\][\\\\][\r]?\n[\r]?");
 					String rawText = backslashNewline.matcher(content).replaceAll("").replace("\\\\", "\\");
 					return new String[]{title, subtext, rawText};
-				} catch(IOException e)
+				} catch(Exception e)
 				{
-					e.printStackTrace();
-					return new String[]{"ERROR", "This is not a good thing", "Please check the log file for errors"};
+					throw new RuntimeException("Failed to load manual entry from "+name, e);
 				}
 			};
 		}
@@ -342,7 +364,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 		}
 
 		@Override
-		public void mouseDragged(int x, int y, double clickX, double clickY, double mx, double my, double lastX, double lastY, Widget button)
+		public void mouseDragged(int x, int y, double clickX, double clickY, double mx, double my, double lastX, double lastY, int mouseButton)
 		{
 		}
 

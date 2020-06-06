@@ -1,12 +1,8 @@
 {
   "variants": {
     "": {
-      "model": "immersiveengineering:connector",
-      "custom": {
-        "flip-v": true,
-        "base": "immersiveengineering:block/balloon.obj.ie",
-        "layers": "[SOLID]"
-      }
+      "model": "immersiveengineering:block/balloon",
+      "uvlock": true
     }
   }
 }

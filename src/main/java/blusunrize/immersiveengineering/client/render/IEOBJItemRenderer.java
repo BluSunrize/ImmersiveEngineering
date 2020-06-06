@@ -11,10 +11,11 @@ package blusunrize.immersiveengineering.client.render;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
-import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
+import blusunrize.immersiveengineering.api.shader.ShaderLayer;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.client.models.obj.IESmartObjModel;
+import blusunrize.immersiveengineering.client.models.obj.OBJHelper;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.mojang.blaze3d.platform.GLX;
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -28,8 +29,6 @@ import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.obj.OBJModel;
-import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 import net.minecraftforge.client.model.pipeline.VertexBufferConsumer;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -45,7 +44,6 @@ public class IEOBJItemRenderer extends ItemStackTileEntityRenderer
 {
 	public static final ItemStackTileEntityRenderer INSTANCE = new IEOBJItemRenderer();
 	private static FloatBuffer transform = GLAllocation.createDirectFloatBuffer(16);
-	private static final Matrix4 mat = new Matrix4();
 
 	@Override
 	public void renderByItem(ItemStack stack)
@@ -79,24 +77,19 @@ public class IEOBJItemRenderer extends ItemStackTileEntityRenderer
 					sCase = tmp.getRight();
 				}
 				IESmartObjModel obj = (IESmartObjModel)model;
-				Map<String, Boolean> visible;
-				if(obj.getState() instanceof OBJState)
-					visible = new HashMap<>(((OBJModel.OBJState)obj.getState()).getVisibilityMap());
-				else
-				{
-					visible = new HashMap<>();
-					for(String g : obj.getModel().getMatLib().getGroups().keySet())
-						visible.put(g, true);
-				}
+				Set<String> visible = new HashSet<>();
+				for(String g : OBJHelper.getGroups(obj.baseModel).keySet())
+					if(callback.shouldRenderGroup(stack, g))
+						visible.add(g);
 				Tessellator tes = Tessellator.getInstance();
 				BufferBuilder bb = tes.getBuffer();
 				TransformType transformType = obj.lastCameraTransform;
-				List<Pair<BakedQuad, ShaderLayer>> quads = new ArrayList<>();
+				List<BakedQuad> quads = new ArrayList<>();
 				for(String[] groups : callback.getSpecialGroups(stack, transformType, IESmartObjModel.tempEntityStatic))
 				{
 					GlStateManager.pushMatrix();
-					Matrix4 mat = callback.getTransformForGroups(stack, groups, transformType, mc().player,
-							IEOBJItemRenderer.mat, partialTicks);
+					Matrix4 mat = new Matrix4(callback.getTransformForGroups(stack, groups, transformType, mc().player,
+							partialTicks).getMatrixVec());
 					GlStateManager.multMatrix(mat.toFloatBuffer(transform));
 					boolean wasLightmapEnabled, wasLightingEnabled;
 					{
@@ -122,7 +115,7 @@ public class IEOBJItemRenderer extends ItemStackTileEntityRenderer
 					}
 					GlStateManager.popMatrix();
 				}
-				renderQuadsForGroups(visible.keySet().toArray(new String[0]), callback, obj, quads, stack,
+				renderQuadsForGroups(visible.toArray(new String[0]), callback, obj, quads, stack,
 						sCase, shader, false, bb, tes, visible, partialTicks);
 				GlStateManager.enableCull();
 			}
@@ -130,15 +123,15 @@ public class IEOBJItemRenderer extends ItemStackTileEntityRenderer
 	}
 
 	private void renderQuadsForGroups(String[] groups, IOBJModelCallback<ItemStack> callback, IESmartObjModel model,
-									  List<Pair<BakedQuad, ShaderLayer>> quadsForGroup, ItemStack stack, ShaderCase sCase, ItemStack shader,
-									  boolean dynamic,
-									  BufferBuilder bb, Tessellator tes, Map<String, Boolean> visible, float partialTicks)
+									  List<BakedQuad> quadsForGroup, ItemStack stack, ShaderCase sCase, ItemStack shader,
+									  boolean dynamic, BufferBuilder bb, Tessellator tes, Set<String> visible,
+									  float partialTicks)
 	{
 		quadsForGroup.clear();
 		for(String g : groups)
 		{
-			if(visible.getOrDefault(g, Boolean.FALSE)&&callback.shouldRenderGroup(stack, g))
-				quadsForGroup.addAll(model.addQuadsForGroup(callback, stack, g, sCase, shader, !dynamic)
+			if(visible.contains(g)&&callback.shouldRenderGroup(stack, g))
+				quadsForGroup.addAll(model.addQuadsForGroup(callback, stack, g, sCase, !dynamic)
 						.stream().filter(Objects::nonNull).collect(Collectors.toList()));
 			visible.remove(g);
 		}
@@ -148,11 +141,10 @@ public class IEOBJItemRenderer extends ItemStackTileEntityRenderer
 			bb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
 		VertexBufferConsumer vbc = new VertexBufferConsumer(bb);
 		ShaderLayer lastShaderLayer = null;
-		for(Pair<BakedQuad, ShaderLayer> pair : quadsForGroup)
+		for(BakedQuad bq : quadsForGroup)
 		{
-			BakedQuad bq = pair.getKey();
-			ShaderLayer layer = pair.getValue();
 			//Switch to or between dynamic layers
+			/*TODO
 			boolean switchDynamic = layer!=lastShaderLayer;
 			if(switchDynamic)
 			{
@@ -174,6 +166,7 @@ public class IEOBJItemRenderer extends ItemStackTileEntityRenderer
 					bb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
 
 			}
+			 */
 			bq.pipe(vbc);
 		}
 		tes.draw();

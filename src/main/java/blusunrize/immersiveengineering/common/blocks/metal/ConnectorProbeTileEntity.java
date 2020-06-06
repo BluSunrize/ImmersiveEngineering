@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
+import blusunrize.immersiveengineering.api.wires.redstone.RedstoneNetworkHandler;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.resources.I18n;
@@ -25,12 +26,15 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.MinecraftForgeClient;
 
 import javax.annotation.Nonnull;
+import javax.vecmath.Vector4f;
 import java.util.List;
 
 public class ConnectorProbeTileEntity extends ConnectorRedstoneTileEntity
@@ -99,13 +103,12 @@ public class ConnectorProbeTileEntity extends ConnectorRedstoneTileEntity
 		return list.size()==1?list.get(0): null;
 	}
 
-	//TODO
-	//@Override
-	//public void updateInput(byte[] signals)
-	//{
-	//	signals[redstoneChannelSending] = (byte)Math.max(lastOutput, signals[redstoneChannelSending]);
-	//	rsDirty = false;
-	//}
+	@Override
+	public void updateInput(byte[] signals, ConnectionPoint cp)
+	{
+		signals[redstoneChannelSending.ordinal()] = (byte)Math.max(lastOutput, signals[redstoneChannelSending.ordinal()]);
+		rsDirty = false;
+	}
 
 	@Override
 	public boolean hammerUseSide(Direction side, PlayerEntity player, Vec3d hitVec)
@@ -117,8 +120,9 @@ public class ConnectorProbeTileEntity extends ConnectorRedstoneTileEntity
 			else
 				redstoneChannelSending = DyeColor.byId(redstoneChannelSending.getId()+1);
 			markDirty();
-			//TODO wireNetwork.updateValues();
-			//TODO onChange();
+			globalNet.getLocalNet(pos)
+					.getHandler(RedstoneNetworkHandler.ID, RedstoneNetworkHandler.class)
+					.updateValues();
 			this.markContainingBlockForUpdate(null);
 			world.addBlockEvent(getPos(), this.getBlockState().getBlock(), 254, 0);
 		}
@@ -148,7 +152,7 @@ public class ConnectorProbeTileEntity extends ConnectorRedstoneTileEntity
 	}
 
 	@Override
-	public float[] getBlockBounds()
+	public VoxelShape getBlockBounds()
 	{
 		float wMin = .28125f;
 		float wMax = .71875f;
@@ -156,15 +160,15 @@ public class ConnectorProbeTileEntity extends ConnectorRedstoneTileEntity
 		{
 			case UP:
 			case DOWN:
-				return new float[]{wMin, 0, wMin, wMax, 1, wMax};
+				return VoxelShapes.create(wMin, 0, wMin, wMax, 1, wMax);
 			case SOUTH:
 			case NORTH:
-				return new float[]{wMin, wMin, 0, wMax, wMax, 1};
+				return VoxelShapes.create(wMin, wMin, 0, wMax, wMax, 1);
 			case EAST:
 			case WEST:
-				return new float[]{0, wMin, wMin, 1, wMax, wMax};
+				return VoxelShapes.create(0, wMin, wMin, 1, wMax, wMax);
 		}
-		return new float[]{0, 0, 0, 1, 1, 1};
+		return VoxelShapes.fullCube();
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -178,13 +182,19 @@ public class ConnectorProbeTileEntity extends ConnectorRedstoneTileEntity
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public int getRenderColour(BlockState object, String group)
+	public Vector4f getRenderColor(BlockState object, String group, Vector4f original)
 	{
 		if("colour_in".equals(group))
-			return 0xff000000|redstoneChannel.colorValue;
+		{
+			float[] rgb = redstoneChannel.getColorComponentValues();
+			return new Vector4f(rgb[0], rgb[1], rgb[2], 1);
+		}
 		else if("colour_out".equals(group))
-			return 0xff000000|redstoneChannelSending.colorValue;
-		return 0xffffffff;
+		{
+			float[] rgb = redstoneChannelSending.getColorComponentValues();
+			return new Vector4f(rgb[0], rgb[1], rgb[2], 1);
+		}
+		return original;
 	}
 
 	@Override
@@ -199,8 +209,8 @@ public class ConnectorProbeTileEntity extends ConnectorRedstoneTileEntity
 		if(!hammer)
 			return null;
 		return new String[]{
-				I18n.format(Lib.DESC_INFO+"redstoneChannel.rec", I18n.format("item.fireworksCharge."+redstoneChannel.getTranslationKey())),
-				I18n.format(Lib.DESC_INFO+"redstoneChannel.send", I18n.format("item.fireworksCharge."+redstoneChannelSending.getTranslationKey()))
+				I18n.format(Lib.DESC_INFO+"redstoneChannel.rec", I18n.format("item.minecraft.firework_star."+redstoneChannel.getTranslationKey())),
+				I18n.format(Lib.DESC_INFO+"redstoneChannel.send", I18n.format("item.minecraft.firework_star."+redstoneChannelSending.getTranslationKey()))
 		};
 	}
 

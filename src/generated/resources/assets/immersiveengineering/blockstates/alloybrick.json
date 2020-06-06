@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "immersiveengineering:block/stone_decoration/alloybrick"
+      "model": "immersiveengineering:block/alloybrick"
     }
   }
 }

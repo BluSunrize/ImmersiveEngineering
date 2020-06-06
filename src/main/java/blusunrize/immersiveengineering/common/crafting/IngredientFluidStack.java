@@ -8,6 +8,8 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
@@ -15,6 +17,7 @@ import net.minecraftforge.common.crafting.IIngredientSerializer;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.stream.Stream;
 
@@ -43,6 +46,7 @@ public class IngredientFluidStack extends Ingredient
 
 	ItemStack[] cachedStacks;
 
+	@Nonnull
 	@Override
 	public ItemStack[] getMatchingStacks()
 	{
@@ -68,9 +72,27 @@ public class IngredientFluidStack extends Ingredient
 		}
 	}
 
+	@Nonnull
 	@Override
 	public IIngredientSerializer<? extends Ingredient> getSerializer()
 	{
 		return IngredientSerializerFluidStack.INSTANCE;
+	}
+
+	@Nonnull
+	@Override
+	public JsonElement serialize()
+	{
+		JsonObject ret = new JsonObject();
+		ret.addProperty("amount", fluid.getAmount());
+		ret.addProperty("fluid", fluid.getFluid().getRegistryName().toString());
+		ret.addProperty("type", IngredientSerializerFluidStack.NAME.toString());
+		return ret;
+	}
+
+	@Override
+	public boolean isSimple()
+	{
+		return false;
 	}
 }

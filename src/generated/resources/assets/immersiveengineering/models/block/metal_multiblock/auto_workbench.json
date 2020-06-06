@@ -1,0 +1,10 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "particle": "immersiveengineering:block/conveyor/conveyor"
+  },
+  "loader": "forge:obj",
+  "detectCullableFaces": false,
+  "model": "immersiveengineering:models/block/metal_multiblock/auto_workbench.obj",
+  "flip-v": true
+}

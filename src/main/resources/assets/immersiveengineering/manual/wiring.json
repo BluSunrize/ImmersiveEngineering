@@ -4,33 +4,32 @@
     "recipes": [
       [
       {
-        "recipe": "material/wire_copper"
+        "recipe": "crafting/wire_copper"
       },
       {
-        "recipe": "wirecoils/wirecoil_lv"
+        "recipe": "crafting/wirecoil_copper"
       },
       {
-        "recipe": "wirecoils/wirecoil_lv_ins"
-      },
-
-      {
-        "recipe": "material/wire_electrum"
-      },
-      {
-        "recipe": "wirecoils/wirecoil_mv"
-      },
-      {
-        "recipe": "wirecoils/wirecoil_mv_ins"
+        "recipe": "crafting/wirecoil_copper_ins"
       },
 
       {
-        "recipe": "material/wire_steel"
+        "recipe": "crafting/wire_electrum"
       },
       {
-        "recipe": "material/wire_aluminum"
+        "recipe": "crafting/wirecoil_electrum"
       },
       {
-        "recipe": "wirecoils/wirecoil_hv"
+        "recipe": "crafting/wirecoil_electrum_ins"
+      },
+      {
+        "recipe": "crafting/wire_steel"
+      },
+      {
+        "recipe": "crafting/wire_aluminum"
+      },
+      {
+        "recipe": "crafting/wirecoil_steel"
       }
       ]
     ]
@@ -81,22 +80,22 @@
     "recipes": [
       [
       {
-        "recipe": "connectors/connector_lv"
+        "recipe": "crafting/connector_lv"
       },
       {
-        "recipe": "connectors/relay_lv"
+        "recipe": "crafting/connector_lv_relay"
       },
       {
-        "recipe": "connectors/connector_mv"
+        "recipe": "crafting/connector_mv"
       },
       {
-        "recipe": "connectors/relay_mv"
+        "recipe": "crafting/connector_mv_relay"
       },
       {
-        "recipe": "connectors/connector_hv"
+        "recipe": "crafting/connector_hv"
       },
       {
-        "recipe": "connectors/relay_hv"
+        "recipe": "crafting/connector_hv_relay"
       }
       ]
     ]
@@ -106,13 +105,13 @@
     "recipes": [
       [
       {
-        "recipe": "metal_devices/capacitor_lv"
+        "recipe": "crafting/capacitor_lv"
       },
       {
-        "recipe": "metal_devices/capacitor_mv"
+        "recipe": "crafting/capacitor_mv"
       },
       {
-        "recipe": "metal_devices/capacitor_hv"
+        "recipe": "crafting/capacitor_hv"
       }
       ]
     ]
@@ -122,24 +121,24 @@
     "recipes": [
       [
       {
-        "recipe": "connectors/transformer"
+        "recipe": "crafting/transformer"
       },
       {
-        "recipe": "connectors/transformer_hv"
+        "recipe": "crafting/transformer_hv"
       }
       ]
     ]
   },
   "wirecutter_recipe": {
     "type": "crafting",
-    "recipe": "tool/wirecutters"
+    "recipe": "crafting/wirecutter"
   },
   "voltmeter_recipe": {
     "type": "crafting",
-    "recipe": "tool/voltmeter"
+    "recipe": "crafting/voltmeter"
   },
   "feedthrough": {
     "type": "multiblock",
-    "name": "immersiveengineering:feedthrough"
+    "name": "feedthrough"
   }
 }

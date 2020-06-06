@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.api;
 
 import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.IntNBT;
 import net.minecraft.util.Direction;
@@ -45,6 +46,7 @@ public class CapabilitySkyhookData
 		{
 			if(hook!=null)
 			{
+				IELogger.logger.debug("Dismounting");
 				hook.remove();
 				hook = null;
 			}

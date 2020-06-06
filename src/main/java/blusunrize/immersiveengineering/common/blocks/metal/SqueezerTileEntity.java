@@ -10,14 +10,18 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.crafting.SqueezerRecipe;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICollisionBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISelectionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
+import blusunrize.immersiveengineering.common.util.shapes.CachedShapesWithTransform;
+import blusunrize.immersiveengineering.common.util.shapes.CachedVoxelShapes;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.player.PlayerEntity;
@@ -27,9 +31,11 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -40,13 +46,14 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
 public class SqueezerTileEntity extends PoweredMultiblockTileEntity<SqueezerTileEntity, SqueezerRecipe> implements
-		IAdvancedSelectionBounds, IAdvancedCollisionBounds, IInteractionObjectIE
+		ISelectionBounds, ICollisionBounds, IInteractionObjectIE, IBlockBounds
 {
 	public static TileEntityType<SqueezerTileEntity> TYPE;
 	
@@ -209,127 +216,63 @@ public class SqueezerTileEntity extends PoweredMultiblockTileEntity<SqueezerTile
 		return new DirectionalBlockPos(pos.offset(fw), fw.getOpposite());
 	}
 
-	@Override
-	public float[] getBlockBounds()
-	{
-		if(posInMultiblock.getY()==0&&!ImmutableSet.of(
-				new BlockPos(0, 0, 0),
-				new BlockPos(2, 0, 1)
-		).contains(posInMultiblock))
-			return new float[]{0, 0, 0, 1, .5f, 1};
-		if(new BlockPos(2, 1, 2).equals(posInMultiblock))
-			return new float[]{getFacing()==Direction.WEST?.5f: 0, 0, getFacing()==Direction.NORTH?.5f: 0, getFacing()==Direction.EAST?.5f: 1, 1, getFacing()==Direction.SOUTH?.5f: 1};
+	private static final CachedShapesWithTransform<BlockPos, Pair<Direction, Boolean>> SHAPES =
+			CachedShapesWithTransform.createForMultiblock(SqueezerTileEntity::getShape);
 
-		return new float[]{0, 0, 0, 1, 1, 1};
+	@Override
+	public VoxelShape getBlockBounds()
+	{
+		return CachedShapesWithTransform.get(SHAPES, this);
 	}
 
-	@Override
-	public List<AxisAlignedBB> getAdvancedSelectionBounds()
+	private static List<AxisAlignedBB> getShape(BlockPos posInMultiblock)
 	{
-		Direction fl = getFacing();
-		Direction fw = getFacing().rotateY();
-		if(getIsMirrored())
-			fw = fw.getOpposite();
 		if(new BlockPos(2, 0, 2).equals(posInMultiblock))
-		{
-			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0, 0, 0, 1, .5f, 1));
-			float minX = fl==Direction.WEST?.625f: fl==Direction.EAST?.125f: .125f;
-			float maxX = fl==Direction.EAST?.375f: fl==Direction.WEST?.875f: .25f;
-			float minZ = fl==Direction.NORTH?.625f: fl==Direction.SOUTH?.125f: .125f;
-			float maxZ = fl==Direction.SOUTH?.375f: fl==Direction.NORTH?.875f: .25f;
-			list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, 1, maxZ));
-
-			minX = fl==Direction.WEST?.625f: fl==Direction.EAST?.125f: .75f;
-			maxX = fl==Direction.EAST?.375f: fl==Direction.WEST?.875f: .875f;
-			minZ = fl==Direction.NORTH?.625f: fl==Direction.SOUTH?.125f: .75f;
-			maxZ = fl==Direction.SOUTH?.375f: fl==Direction.NORTH?.875f: .875f;
-			list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, 1, maxZ));
-			return list;
-		}
+			return ImmutableList.of(
+					new AxisAlignedBB(0, 0, 0, 1, .5f, 1),
+					new AxisAlignedBB(0.125, .5f, 0.625, 0.25, 1, 0.875),
+					new AxisAlignedBB(0.75, .5f, 0.625, 0.875, 1, 0.875)
+			);
 		if(new MutableBoundingBox(0, 0, 0, 1, 0, 1)
 				.isVecInside(posInMultiblock))
 		{
 			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0, 0, 0, 1, .5f, 1));
-			if(posInMultiblock.getZ()==0)
-				fl = fl.getOpposite();
-			if(posInMultiblock.getX()==1)
-				fw = fw.getOpposite();
-			float minX = fl==Direction.WEST?.6875f: fl==Direction.EAST?.0625f: fw==Direction.EAST?.0625f: .6875f;
-			float maxX = fl==Direction.EAST?.3125f: fl==Direction.WEST?.9375f: fw==Direction.EAST?.3125f: .9375f;
-			float minZ = fl==Direction.NORTH?.6875f: fl==Direction.SOUTH?.0625f: fw==Direction.SOUTH?.0625f: .6875f;
-			float maxZ = fl==Direction.SOUTH?.3125f: fl==Direction.NORTH?.9375f: fw==Direction.SOUTH?.3125f: .9375f;
-			list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, 1, maxZ));
+			list.add(new AxisAlignedBB(0.0625, .5f, 0.6875, 0.3125, 1, 0.9375));
 
 			if(new BlockPos(1, 0, 1).equals(posInMultiblock))
 			{
-				minX = fl==Direction.WEST?.375f: fl==Direction.EAST?.625f: fw==Direction.WEST?-.125f: 0;
-				maxX = fl==Direction.EAST?.375f: fl==Direction.WEST?.625f: fw==Direction.EAST?1.125f: 1;
-				minZ = fl==Direction.NORTH?.375f: fl==Direction.SOUTH?.625f: fw==Direction.NORTH?-.125f: 0;
-				maxZ = fl==Direction.SOUTH?.375f: fl==Direction.NORTH?.625f: fw==Direction.SOUTH?1.125f: 1;
-				list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, .75f, maxZ));
-
-				minX = fl==Direction.WEST?-.125f: fl==Direction.EAST?.625f: fw==Direction.WEST?-.125f: .875f;
-				maxX = fl==Direction.EAST?1.125f: fl==Direction.WEST?.375f: fw==Direction.EAST?1.125f: .125f;
-				minZ = fl==Direction.NORTH?-.125f: fl==Direction.SOUTH?.625f: fw==Direction.NORTH?-.125f: .875f;
-				maxZ = fl==Direction.SOUTH?1.25f: fl==Direction.NORTH?.375f: fw==Direction.SOUTH?1.125f: .125f;
-				list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, .75f, maxZ));
-
-				minX = fl==Direction.WEST?-.125f: fl==Direction.EAST?.875f: fw==Direction.WEST?-.125f: .875f;
-				maxX = fl==Direction.EAST?1.125f: fl==Direction.WEST?.125f: fw==Direction.EAST?1.125f: .125f;
-				minZ = fl==Direction.NORTH?-.125f: fl==Direction.SOUTH?.875f: fw==Direction.NORTH?-.125f: .875f;
-				maxZ = fl==Direction.SOUTH?1.25f: fl==Direction.NORTH?.125f: fw==Direction.SOUTH?1.125f: .125f;
-				list.add(new AxisAlignedBB(minX, .75f, minZ, maxX, 1, maxZ));
+				list.add(new AxisAlignedBB(0, .5f, 0.375, 1.125, .75f, 0.625));
+				list.add(new AxisAlignedBB(0.875, .5f, -0.125, 1.125, .75f, 0.375));
+				list.add(new AxisAlignedBB(0.875, .75f, -0.125, 1.125, 1, 0.125));
 			}
 
-			return list;
+			return Utils.flipBoxes(posInMultiblock.getZ()==0, posInMultiblock.getX()==1, list);
 		}
 		if(new MutableBoundingBox(0, 1, 0, 1, 2, 1).isVecInside(posInMultiblock))
 		{
 			List<AxisAlignedBB> list = new ArrayList<>(2);
 			if(posInMultiblock.getY()==1)
 				list.add(new AxisAlignedBB(0, 0, 0, 1, .125f, 1));
-			if(posInMultiblock.getZ()==0)
-				fl = fl.getOpposite();
-			if(posInMultiblock.getX()==1)
-				fw = fw.getOpposite();
 			float minY = posInMultiblock.getY()==1?.125f: -.875f;
 			float maxY = posInMultiblock.getY()==1?1.125f: .125f;
 
-			float minX = fl==Direction.WEST?.84375f: fl==Direction.EAST?0f: fw==Direction.EAST?0f: .84375f;
-			float maxX = fl==Direction.EAST?.15625f: fl==Direction.WEST?1f: fw==Direction.EAST?.15625f: 1;
-			float minZ = fl==Direction.NORTH?.84375f: fl==Direction.SOUTH?0f: fw==Direction.SOUTH?0f: .84375f;
-			float maxZ = fl==Direction.SOUTH?.15625f: fl==Direction.NORTH?1f: fw==Direction.SOUTH?.15625f: 1;
-			list.add(new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ));
-
-			minX = fl==Direction.WEST?0f: fl==Direction.EAST?.15625f: fw==Direction.EAST?.0625f: .8125f;
-			maxX = fl==Direction.EAST?1f: fl==Direction.WEST?.84375f: fw==Direction.EAST?.1875f: .9375f;
-			minZ = fl==Direction.NORTH?0f: fl==Direction.SOUTH?.15625f: fw==Direction.SOUTH?.0625f: .8125f;
-			maxZ = fl==Direction.SOUTH?1f: fl==Direction.NORTH?.84375f: fw==Direction.SOUTH?.1875f: .9375f;
-			list.add(new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ));
-
-			minX = fl==Direction.WEST?.8125f: fl==Direction.EAST?.0625f: fw==Direction.EAST?.15625f: 0f;
-			maxX = fl==Direction.EAST?.1875f: fl==Direction.WEST?.9375f: fw==Direction.EAST?1f: .84375f;
-			minZ = fl==Direction.NORTH?.8125f: fl==Direction.SOUTH?.0625f: fw==Direction.SOUTH?.15625f: 0f;
-			maxZ = fl==Direction.SOUTH?.1875f: fl==Direction.NORTH?.9375f: fw==Direction.SOUTH?1f: .84375f;
-			list.add(new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ));
+			list.add(new AxisAlignedBB(0, minY, 0.84375, 0.15625, maxY, 1));
+			list.add(new AxisAlignedBB(0.0625, minY, 0, 0.1875, maxY, 0.84375));
+			list.add(new AxisAlignedBB(0.15625, minY, 0.8125, 1, maxY, 0.9375));
 
 			if(posInMultiblock.getY()==2)
-			{
-				minX = fl==Direction.WEST?-.25f: fl==Direction.EAST?1.25f: fw==Direction.EAST?.75f: -.25f;
-				maxX = fl==Direction.EAST?.75f: fl==Direction.WEST?.25f: fw==Direction.EAST?1.25f: .25f;
-				minZ = fl==Direction.NORTH?-.25f: fl==Direction.SOUTH?1.25f: fw==Direction.SOUTH?.75f: -.25f;
-				maxZ = fl==Direction.SOUTH?.75f: fl==Direction.NORTH?.25f: fw==Direction.SOUTH?1.25f: .25f;
-				list.add(new AxisAlignedBB(minX, .375f, minZ, maxX, .9375f, maxZ));
-			}
-			return list;
+				list.add(new AxisAlignedBB(0.75, .375f, -0.25, 1.25, .9375f, 0.25));
+			return Utils.flipBoxes(posInMultiblock.getZ()==0, posInMultiblock.getX()==1, list);
 		}
-		return null;
-	}
-
-	@Override
-	public List<AxisAlignedBB> getAdvancedCollisionBounds()
-	{
-		return getAdvancedSelectionBounds();
+		else if(posInMultiblock.getY()==0&&!ImmutableSet.of(
+				new BlockPos(0, 0, 0),
+				new BlockPos(2, 0, 1)
+		).contains(posInMultiblock))
+			return ImmutableList.of(new AxisAlignedBB(0, 0, 0, 1, .5f, 1));
+		else if(new BlockPos(2, 1, 2).equals(posInMultiblock))
+			return ImmutableList.of(new AxisAlignedBB(0, 0, 0.5, 1, 1, 1));
+		else
+			return ImmutableList.of(new AxisAlignedBB(0, 0, 0, 1, 1, 1));
 	}
 
 	@Override
@@ -502,9 +445,9 @@ public class SqueezerTileEntity extends PoweredMultiblockTileEntity<SqueezerTile
 	}
 
 	@Override
-	protected SqueezerRecipe readRecipeFromNBT(CompoundNBT tag)
+	protected SqueezerRecipe getRecipeForId(ResourceLocation id)
 	{
-		return SqueezerRecipe.loadFromNBT(tag);
+		return SqueezerRecipe.recipeList.get(id);
 	}
 
 	@Override

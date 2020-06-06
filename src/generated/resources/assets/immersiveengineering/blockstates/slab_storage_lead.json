@@ -1,22 +1,13 @@
 {
   "variants": {
-    "type=top,waterlogged=true": {
-      "model": "immersiveengineering:block/metal/storage_lead_slab_top"
+    "type=top": {
+      "model": "immersiveengineering:block/slab_storage_lead_top"
     },
-    "type=top,waterlogged=false": {
-      "model": "immersiveengineering:block/metal/storage_lead_slab_top"
+    "type=bottom": {
+      "model": "immersiveengineering:block/slab_storage_lead_bottom"
     },
-    "type=bottom,waterlogged=true": {
-      "model": "immersiveengineering:block/metal/storage_lead_slab"
-    },
-    "type=bottom,waterlogged=false": {
-      "model": "immersiveengineering:block/metal/storage_lead_slab"
-    },
-    "type=double,waterlogged=true": {
-      "model": "immersiveengineering:block/metal/storage_lead"
-    },
-    "type=double,waterlogged=false": {
-      "model": "immersiveengineering:block/metal/storage_lead"
+    "type=double": {
+      "model": "immersiveengineering:block/slab_storage_lead_double"
     }
   }
 }

@@ -178,13 +178,13 @@ public class SkyhookItem extends UpgradeableToolItem implements ITool
 	}
 
 	@Override
-	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, Supplier<World> getWorld)
+	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, Supplier<World> getWorld, Supplier<PlayerEntity> getPlayer)
 	{
 		IItemHandler inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).orElseThrow(RuntimeException::new);
 		return new Slot[]
 				{
-						new IESlot.Upgrades(container, inv, 0, 102, 42, "SKYHOOK", stack, true, getWorld),
-						new IESlot.Upgrades(container, inv, 1, 102, 22, "SKYHOOK", stack, true, getWorld),
+						new IESlot.Upgrades(container, inv, 0, 102, 42, "SKYHOOK", stack, true, getWorld, getPlayer),
+						new IESlot.Upgrades(container, inv, 1, 102, 22, "SKYHOOK", stack, true, getWorld, getPlayer),
 				};
 	}
 

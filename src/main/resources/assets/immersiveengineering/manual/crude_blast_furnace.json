@@ -1,0 +1,10 @@
+{
+  "block": {
+    "type": "crafting",
+    "recipe": "crafting/blastbrick"
+  },
+  "multiblock": {
+    "type": "multiblock",
+    "name": "multiblocks/blast_furnace"
+  }
+}

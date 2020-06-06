@@ -8,16 +8,18 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.INeighbourChangeTile;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
@@ -26,14 +28,25 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.IBooleanFunction;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.model.obj.OBJModel.Normal;
+import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static blusunrize.immersiveengineering.client.ClientUtils.putVertexData;
 import static net.minecraft.util.Direction.*;
 
 public class StructuralArmTileEntity extends IEBaseTileEntity implements IOBJModelCallback<BlockState>, INeighbourChangeTile,
-		IDirectionalTile, IAdvancedCollisionBounds, IAdvancedSelectionBounds
+		IDirectionalTile, ICollisionBounds, ISelectionBounds, IBlockBounds
 {
 	public static TileEntityType<StructuralArmTileEntity> TYPE;
 
@@ -92,7 +105,7 @@ public class StructuralArmTileEntity extends IEBaseTileEntity implements IOBJMod
 				StructuralArmTileEntity tmp = (StructuralArmTileEntity)atOther;
 				BlockState stateHere = world.getBlockState(pos);
 				BlockState stateThere = world.getBlockState(otherPos);
-				if(tmp.facing==this.facing&&stateHere.getBlock()==stateThere.getBlock())
+				if(tmp.facing==this.facing&&stateHere.getBlock()==stateThere.getBlock()&&tmp.onCeiling==this.onCeiling)
 					slope = (StructuralArmTileEntity)atOther;
 			}
 		}
@@ -182,7 +195,8 @@ public class StructuralArmTileEntity extends IEBaseTileEntity implements IOBJMod
 			int offsetAtPos = slopePosition+offsetToHere;
 			BlockState stateHere = world.getBlockState(pos);
 			BlockState stateThere = world.getBlockState(posI);
-			if((!removing||(slope.totalLength==this.totalLength&&slope.slopePosition==offsetAtPos&&slope.onCeiling==this.onCeiling))
+			if((!removing||(slope.totalLength==this.totalLength&&slope.slopePosition==offsetAtPos))
+					&&slope.onCeiling==this.onCeiling
 					&&stateHere.getBlock()==stateThere.getBlock()
 					&&slope.facing==this.facing)
 				out.accept(slope);
@@ -233,7 +247,7 @@ public class StructuralArmTileEntity extends IEBaseTileEntity implements IOBJMod
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, float hitX, float hitY, float hitZ, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
 	{
 		return side.getAxis()==Axis.Y;
 	}
@@ -244,21 +258,10 @@ public class StructuralArmTileEntity extends IEBaseTileEntity implements IOBJMod
 		return axis.getAxis()==Axis.Y;
 	}
 
-	private List<AxisAlignedBB> bounds = null;
+	private VoxelShape bounds = null;
 
 	@Override
-	public List<AxisAlignedBB> getAdvancedSelectionBounds()
-	{
-		return getBounds();
-	}
-
-	@Override
-	public List<AxisAlignedBB> getAdvancedCollisionBounds()
-	{
-		return getBounds();
-	}
-
-	private List<AxisAlignedBB> getBounds()
+	public VoxelShape getBlockBounds()
 	{
 		if(bounds==null)
 		{
@@ -275,17 +278,21 @@ public class StructuralArmTileEntity extends IEBaseTileEntity implements IOBJMod
 						new AxisAlignedBB(0, 1-lowerH, 0, 1, 1, 1),
 						new AxisAlignedBB(0, 1-upperH, 0, 1, 1-lowerH, .5)
 				);
-			bounds = basic.stream()
-					.map(aabb -> Utils.transformAABB(aabb, facing).offset(pos))
-					.collect(ImmutableList.toImmutableList());
+			bounds = VoxelShapes.empty();
+			for(AxisAlignedBB aabb : basic)
+			{
+				AxisAlignedBB transformed = Utils.transformAABB(aabb, facing);
+				VoxelShape subShape = VoxelShapes.create(transformed);
+				bounds = VoxelShapes.combine(bounds, subShape, IBooleanFunction.OR);
+			}
+			bounds = bounds.simplify();
 		}
 		return bounds;
 	}
 
-	/*TODO
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public List<BakedQuad> modifyQuads(IBlockState object, List<BakedQuad> quads)
+	public List<BakedQuad> modifyQuads(BlockState object, List<BakedQuad> quads)
 	{
 		float lowerHeight = slopePosition/(float)totalLength;
 		float upperHeight = (slopePosition+1F)/totalLength;
@@ -296,21 +303,21 @@ public class StructuralArmTileEntity extends IEBaseTileEntity implements IOBJMod
 		quads = new ArrayList<>();
 		Matrix4 mat = new Matrix4(facing);
 
-		Vector3f[] vertices;
+		Vec3d[] vertices;
 		{
 			float y03 = onCeiling?1: upperHeight;
 			float y12 = onCeiling?1: lowerHeight;
 			float y47 = onCeiling?1-upperHeight: 0;
 			float y56 = onCeiling?1-lowerHeight: 0;
-			vertices = new Vector3f[]{
-					new Vector3f(0, y03, 0),//0
-					new Vector3f(0, y12, 1),//1
-					new Vector3f(1, y12, 1),//2
-					new Vector3f(1, y03, 0),//3
-					new Vector3f(0, y47, 0),//4
-					new Vector3f(0, y56, 1),//5
-					new Vector3f(1, y56, 1),//6
-					new Vector3f(1, y47, 0),//7
+			vertices = new Vec3d[]{
+					new Vec3d(0, y03, 0),//0
+					new Vec3d(0, y12, 1),//1
+					new Vec3d(1, y12, 1),//2
+					new Vec3d(1, y03, 0),//3
+					new Vec3d(0, y47, 0),//4
+					new Vec3d(0, y56, 1),//5
+					new Vec3d(1, y56, 1),//6
+					new Vec3d(1, y47, 0),//7
 			};
 		}
 		for(int i = 0; i < vertices.length; i++)
@@ -341,7 +348,7 @@ public class StructuralArmTileEntity extends IEBaseTileEntity implements IOBJMod
 		SHRINK.translate(-.5, -.5, -.5);
 	}
 
-	private void addCulledQuad(List<BakedQuad> quads, VertexFormat format, Vector3f[] vertices, EnumFacing side,
+	private void addCulledQuad(List<BakedQuad> quads, VertexFormat format, Vec3d[] vertices, Direction side,
 							   TextureAtlasSprite tas, double[] uvs, float[] alpha)
 	{
 		side = Utils.rotateFacingTowardsDir(side, this.facing);
@@ -351,7 +358,7 @@ public class StructuralArmTileEntity extends IEBaseTileEntity implements IOBJMod
 		quads.add(ClientUtils.createBakedQuad(format, vertices, side.getOpposite(), tas, uvs, alpha, true));
 	}
 
-	private void addSides(List<BakedQuad> quads, Vector3f[] vertices, TextureAtlasSprite tas, double lowerV,
+	private void addSides(List<BakedQuad> quads, Vec3d[] vertices, TextureAtlasSprite tas, double lowerV,
 						  double upperV, boolean invert)
 	{
 		if(invert)
@@ -366,7 +373,7 @@ public class StructuralArmTileEntity extends IEBaseTileEntity implements IOBJMod
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	private BakedQuad createSide(VertexFormat format, Vector3f[] vertices, EnumFacing facing, TextureAtlasSprite sprite,
+	private BakedQuad createSide(VertexFormat format, Vec3d[] vertices, Direction facing, TextureAtlasSprite sprite,
 								 double leftV, double rightV, boolean invert)
 	{
 		facing = Utils.rotateFacingTowardsDir(facing, this.facing);
@@ -399,15 +406,11 @@ public class StructuralArmTileEntity extends IEBaseTileEntity implements IOBJMod
 		return builder.build();
 	}
 
-	 */
-
-	private Vector3f[] getArrayByIndices(Vector3f[] in, int... indices)
+	private Vec3d[] getArrayByIndices(Vec3d[] in, int... indices)
 	{
-		Vector3f[] ret = new Vector3f[indices.length];
+		Vec3d[] ret = new Vec3d[indices.length];
 		for(int i = 0; i < indices.length; i++)
-		{
 			ret[i] = in[indices[i]];
-		}
 		return ret;
 	}
 
@@ -415,13 +418,5 @@ public class StructuralArmTileEntity extends IEBaseTileEntity implements IOBJMod
 	public String getCacheKey(BlockState object)
 	{
 		return totalLength+","+slopePosition+","+facing.name()+","+(onCeiling?"1": "0");
-	}
-
-	@Override
-	public float[] getBlockBounds()
-	{
-		return new float[]{
-				0, 0, 0, 1, (slopePosition+.5F)/totalLength, 1
-		};
 	}
 }

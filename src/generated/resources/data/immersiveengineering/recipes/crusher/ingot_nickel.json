@@ -1,0 +1,11 @@
+{
+  "type": "immersiveengineering:crusher",
+  "secondaries": [],
+  "result": {
+    "tag": "forge:dusts/nickel"
+  },
+  "input": {
+    "tag": "forge:ingots/nickel"
+  },
+  "energy": 3000
+}

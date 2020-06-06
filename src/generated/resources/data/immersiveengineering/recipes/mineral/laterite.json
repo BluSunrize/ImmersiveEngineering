@@ -1,0 +1,37 @@
+{
+  "type": "immersiveengineering:mineral_mix",
+  "ores": [
+    {
+      "chance": 0.7,
+      "output": {
+        "tag": "forge:ores/aluminum"
+      }
+    },
+    {
+      "chance": 0.2,
+      "output": {
+        "tag": "forge:ores/iron"
+      }
+    },
+    {
+      "conditions": [
+        {
+          "value": {
+            "tag": "forge:ores/titanium",
+            "type": "forge:tag_empty"
+          },
+          "type": "forge:not"
+        }
+      ],
+      "chance": 0.1,
+      "output": {
+        "tag": "forge:ores/titanium"
+      }
+    }
+  ],
+  "dimensions": [
+    "minecraft:overworld"
+  ],
+  "weight": 20,
+  "fail_chance": 0.05
+}

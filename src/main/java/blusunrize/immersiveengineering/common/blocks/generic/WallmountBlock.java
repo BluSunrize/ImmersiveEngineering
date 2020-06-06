@@ -28,6 +28,8 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 
+import java.util.Locale;
+
 import static blusunrize.immersiveengineering.common.blocks.generic.WallmountBlock.Orientation.*;
 
 public class WallmountBlock extends IEBaseBlock
@@ -37,7 +39,7 @@ public class WallmountBlock extends IEBaseBlock
 
 	public WallmountBlock(String name, Properties blockProps)
 	{
-		super(name, blockProps, BlockItemIE.class, IEProperties.FACING_HORIZONTAL,
+		super(name, blockProps, BlockItemIE::new, IEProperties.FACING_HORIZONTAL,
 				ORIENTATION);
 		setNotNormalBlock();
 		lightOpacity = 0;
@@ -124,7 +126,7 @@ public class WallmountBlock extends IEBaseBlock
 		@Override
 		public String getName()
 		{
-			return name().toLowerCase();
+			return name().toLowerCase(Locale.ENGLISH);
 		}
 
 		public boolean attachedToSide()
@@ -167,6 +169,12 @@ public class WallmountBlock extends IEBaseBlock
 				default:
 					return "_sideways_inverted";
 			}
+		}
+
+		@Override
+		public String toString()
+		{
+			return getName();
 		}
 	}
 }

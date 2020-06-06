@@ -1,0 +1,6 @@
+{
+  "parent": "immersiveengineering:block/ie_empty",
+  "textures": {
+    "particle": "immersiveengineering:block/multiblocks/fermenter"
+  }
+}

@@ -49,9 +49,11 @@ class ItemTags extends ItemTagsProvider
 		IETags.forAllBlocktags(this::copy);
 
 		getBuilder(IETags.clay).add(Items.CLAY_BALL);
+		getBuilder(IETags.charCoal).add(Items.CHARCOAL);
 
 		getBuilder(Tags.Items.RODS_WOODEN).add(Ingredients.stickTreated);
 		getBuilder(IETags.treatedStick).add(Ingredients.stickTreated);
+		getBuilder(IETags.slag).add(Ingredients.slag);
 		getBuilder(IETags.ironRod).add(Ingredients.stickIron);
 		getBuilder(IETags.steelRod).add(Ingredients.stickSteel);
 		getBuilder(IETags.aluminumRod).add(Ingredients.stickAluminum);
@@ -67,5 +69,6 @@ class ItemTags extends ItemTagsProvider
 		getBuilder(IETags.steelWire).add(Ingredients.wireSteel);
 		getBuilder(IETags.saltpeterDust).add(Ingredients.dustSaltpeter);
 		getBuilder(IETags.sulfurDust).add(Ingredients.dustSulfur);
+		getBuilder(IETags.metalRods).add(IETags.aluminumRod, IETags.ironRod, IETags.steelRod);
 	}
 }

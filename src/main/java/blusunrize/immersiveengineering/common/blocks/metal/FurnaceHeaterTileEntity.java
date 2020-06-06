@@ -27,8 +27,10 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.Vec3d;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class FurnaceHeaterTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInternalFluxHandler, IActiveState,
 		IStateBasedDirectional
@@ -49,8 +51,9 @@ public class FurnaceHeaterTileEntity extends IEBaseTileEntity implements ITickab
 		{
 			boolean activeBeforeTick = getIsActive();
 			boolean redstonePower = world.getRedstonePowerFromNeighbors(getPos()) > 0;
+			boolean newActive = activeBeforeTick;
 			if(activeBeforeTick&&!redstonePower)
-				setActive(false);
+				newActive = false;
 			if(energyStorage.getEnergyStored() > 3200||activeBeforeTick)
 				for(Direction fd : Direction.VALUES)
 				{
@@ -68,14 +71,13 @@ public class FurnaceHeaterTileEntity extends IEBaseTileEntity implements ITickab
 					if(consumed > 0)
 					{
 						this.energyStorage.extractEnergy(consumed, false);
-						if(!activeBeforeTick)
-							setActive(true);
+						newActive = true;
 					}
 				}
-			if(getIsActive()!=activeBeforeTick)
+			if(newActive!=activeBeforeTick)
 			{
+				setActive(newActive);
 				this.markDirty();
-				this.markContainingBlockForUpdate(null);
 			}
 		}
 	}
@@ -113,14 +115,15 @@ public class FurnaceHeaterTileEntity extends IEBaseTileEntity implements ITickab
 		return facing==this.getFacing()?IOSideConfig.INPUT: IOSideConfig.NONE;
 	}
 
-	IEForgeEnergyWrapper wrapper = new IEForgeEnergyWrapper(this, getFacing());
+	@Nullable
+	IEForgeEnergyWrapper wrapper;
 
 	@Override
 	public IEForgeEnergyWrapper getCapabilityWrapper(Direction facing)
 	{
 		if(facing==this.getFacing())
 		{
-			if(wrapper.side!=this.getFacing())
+			if(wrapper==null||wrapper.side!=this.getFacing())
 				wrapper = new IEForgeEnergyWrapper(this, this.getFacing());
 			return wrapper;
 		}
@@ -130,7 +133,7 @@ public class FurnaceHeaterTileEntity extends IEBaseTileEntity implements ITickab
 	@Override
 	public EnumProperty<Direction> getFacingProperty()
 	{
-		return IEProperties.FACING_HORIZONTAL;
+		return IEProperties.FACING_ALL;
 	}
 
 	@Override
@@ -146,7 +149,7 @@ public class FurnaceHeaterTileEntity extends IEBaseTileEntity implements ITickab
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, float hitX, float hitY, float hitZ, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
 	{
 		return true;
 	}

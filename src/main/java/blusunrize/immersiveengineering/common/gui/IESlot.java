@@ -10,11 +10,14 @@ package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
-import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
+import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
+import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
-import blusunrize.immersiveengineering.api.tool.*;
+import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
+import blusunrize.immersiveengineering.api.tool.IUpgrade;
+import blusunrize.immersiveengineering.api.tool.IUpgradeableTool;
 import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
@@ -37,10 +40,10 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
 import javax.annotation.Nonnull;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static blusunrize.immersiveengineering.common.blocks.metal.BelljarTileEntity.SLOT_SEED;
-import static blusunrize.immersiveengineering.common.blocks.metal.BelljarTileEntity.SLOT_SOIL;
+import static blusunrize.immersiveengineering.common.blocks.metal.ClocheTileEntity.SLOT_FERTILIZER;
 
 public abstract class IESlot extends Slot
 {
@@ -134,7 +137,7 @@ public abstract class IESlot extends Slot
 		@Override
 		public boolean isItemValid(ItemStack itemStack)
 		{
-			return BlastFurnaceRecipe.isValidBlastFuel(itemStack);
+			return BlastFurnaceFuel.isValidBlastFuel(itemStack);
 		}
 	}
 
@@ -167,17 +170,20 @@ public abstract class IESlot extends Slot
 		}
 	}
 
-	public static class DrillHead extends SlotItemHandler
+	public static class WithPredicate extends SlotItemHandler
 	{
-		public DrillHead(IItemHandler inv, int id, int x, int y)
+		final Predicate<ItemStack> predicate;
+
+		public WithPredicate(IItemHandler inv, int id, int x, int y, Predicate<ItemStack> predicate)
 		{
 			super(inv, id, x, y);
+			this.predicate = predicate;
 		}
 
 		@Override
 		public boolean isItemValid(ItemStack itemStack)
 		{
-			return !itemStack.isEmpty()&&itemStack.getItem() instanceof IDrillHead;
+			return !itemStack.isEmpty()&&this.predicate.test(itemStack);
 		}
 
 		@Override
@@ -194,9 +200,10 @@ public abstract class IESlot extends Slot
 		final boolean preventDoubles;
 		final Container container;
 		final Supplier<World> getWorld;
+		final Supplier<PlayerEntity> getPlayer;
 
 		public Upgrades(Container container, IItemHandler inv, int id, int x, int y, String type, ItemStack upgradeableTool,
-						boolean preventDoubles, Supplier<World> getWorld)
+						boolean preventDoubles, Supplier<World> getWorld, Supplier<PlayerEntity> getPlayer)
 		{
 			super(inv, id, x, y);
 			this.container = container;
@@ -204,6 +211,7 @@ public abstract class IESlot extends Slot
 			this.upgradeableTool = upgradeableTool;
 			this.preventDoubles = preventDoubles;
 			this.getWorld = getWorld;
+			this.getPlayer = getPlayer;
 		}
 
 		@Override
@@ -223,9 +231,22 @@ public abstract class IESlot extends Slot
 		}
 
 		@Override
+		public ItemStack onTake(PlayerEntity thePlayer, ItemStack stack)
+		{
+			stack = ((IUpgradeableTool)upgradeableTool.getItem()).removeUpgrade(upgradeableTool, thePlayer, stack);
+			stack = super.onTake(thePlayer, stack);
+			return stack;
+		}
+
+		@Override
 		public void onSlotChanged()
 		{
-			((IUpgradeableTool)upgradeableTool.getItem()).recalculateUpgrades(upgradeableTool, getWorld.get());
+			super.onSlotChanged();
+			((IUpgradeableTool)upgradeableTool.getItem()).recalculateUpgrades(upgradeableTool, getWorld.get(), getPlayer.get());
+			if(container instanceof ModWorkbenchContainer)
+				((ModWorkbenchContainer)container).rebindSlots();
+			else if(container instanceof MaintenanceKitContainer)
+				((MaintenanceKitContainer)container).updateSlots();
 		}
 	}
 
@@ -533,11 +554,11 @@ public abstract class IESlot extends Slot
 		}
 	}
 
-	public static class Belljar extends IESlot
+	public static class Cloche extends IESlot
 	{
 		int type = 0;
 
-		public Belljar(int type, Container container, IInventory inv, int id, int x, int y)
+		public Cloche(int type, Container container, IInventory inv, int id, int x, int y)
 		{
 			super(container, inv, id, x, y);
 			this.type = type;
@@ -554,10 +575,9 @@ public abstract class IESlot extends Slot
 		{
 			if(itemStack.isEmpty())
 				return false;
-			if(type==SLOT_SEED)
-				return BelljarHandler.getHandler(itemStack)!=null;
-			else
-				return type==SLOT_SOIL||BelljarHandler.getItemFertilizerHandler(itemStack)!=null;
+			if(type==SLOT_FERTILIZER)
+				return ClocheRecipe.isValidFertilizer(itemStack);
+			return true;
 		}
 	}
 

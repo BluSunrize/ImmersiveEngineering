@@ -13,8 +13,11 @@ import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer.Builder;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
@@ -35,11 +38,21 @@ public class HempBlock extends BushBlock implements IGrowable
 
 	public HempBlock(String name)
 	{
-		super(Block.Properties.create(Material.PLANTS).hardnessAndResistance(0));
+		super(Block.Properties.create(Material.PLANTS)
+				.sound(SoundType.CROP)
+				.doesNotBlockMovement()
+				.hardnessAndResistance(0)
+				.tickRandomly());
 		this.name = name;
 		setRegistryName(ImmersiveEngineering.MODID, name);
 		IEContent.registeredIEBlocks.add(this);
 		IEContent.registeredIEItems.add(new BlockItemIE(this));
+	}
+
+	@Override
+	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items)
+	{
+		//NOP
 	}
 
 	@Override
@@ -123,7 +136,6 @@ public class HempBlock extends BushBlock implements IGrowable
 	@Override
 	public void tick(BlockState state, World world, BlockPos pos, Random random)
 	{
-		//TODO this.checkAndDropBlock(world, pos, state);
 		int light = world.getLight(pos);
 		if(light >= 12)
 		{

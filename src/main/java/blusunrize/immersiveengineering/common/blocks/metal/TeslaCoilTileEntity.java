@@ -19,10 +19,7 @@ import blusunrize.immersiveengineering.api.tool.IElectricEquipment.ElectricSourc
 import blusunrize.immersiveengineering.api.tool.ITeslaEntity;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
@@ -47,6 +44,8 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -54,6 +53,7 @@ import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -64,7 +64,6 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 {
 	public static TileEntityType<TeslaCoilTileEntity> TYPE;
 
-	public boolean dummy = false;
 	public FluxStorage energyStorage = new FluxStorage(48000);
 	public boolean redstoneControlInverted = false;
 	public boolean lowPower = false;
@@ -82,7 +81,7 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 	public void tick()
 	{
 		ApiUtils.checkForNeedlessTicking(this);
-		if(dummy)
+		if(isDummy())
 			return;
 		synchronized(this)
 		{
@@ -350,7 +349,6 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 	@Override
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		dummy = nbt.getBoolean("dummy");
 		redstoneControlInverted = nbt.getBoolean("redstoneInverted");
 		lowPower = nbt.getBoolean("lowPower");
 		energyStorage.readFromNBT(nbt);
@@ -359,33 +357,32 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		nbt.putBoolean("dummy", dummy);
 		nbt.putBoolean("redstoneInverted", redstoneControlInverted);
 		nbt.putBoolean("lowPower", lowPower);
 		energyStorage.writeToNBT(nbt);
 	}
 
 	@Override
-	public float[] getBlockBounds()
+	public VoxelShape getBlockBounds()
 	{
-		if(!dummy)
-			return null;
+		if(!isDummy())
+			return VoxelShapes.fullCube();
 		switch(getFacing())
 		{
 			case DOWN:
-				return new float[]{.125f, .125f, .125f, .875f, 1, .875f};
+				return VoxelShapes.create(.125f, .125f, .125f, .875f, 1, .875f);
 			case UP:
-				return new float[]{.125f, 0, .125f, .875f, .875f, .875f};
+				return VoxelShapes.create(.125f, 0, .125f, .875f, .875f, .875f);
 			case NORTH:
-				return new float[]{.125f, .125f, .125f, .875f, .875f, 1};
+				return VoxelShapes.create(.125f, .125f, .125f, .875f, .875f, 1);
 			case SOUTH:
-				return new float[]{.125f, .125f, 0, .875f, .875f, .875f};
+				return VoxelShapes.create(.125f, .125f, 0, .875f, .875f, .875f);
 			case WEST:
-				return new float[]{.125f, .125f, .125f, 1, .875f, .875f};
+				return VoxelShapes.create(.125f, .125f, .125f, 1, .875f, .875f);
 			case EAST:
-				return new float[]{0, .125f, .125f, .875f, .875f, .875f};
+				return VoxelShapes.create(0, .125f, .125f, .875f, .875f, .875f);
 		}
-		return null;
+		return VoxelShapes.fullCube();
 	}
 
 	AxisAlignedBB renderBB;
@@ -402,7 +399,7 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 	@Override
 	public boolean hammerUseSide(Direction side, PlayerEntity player, Vec3d hitVec)
 	{
-		if(dummy)
+		if(isDummy())
 		{
 			TileEntity te = world.getTileEntity(getPos().offset(getFacing(), -1));
 			if(te instanceof TeslaCoilTileEntity)
@@ -455,7 +452,7 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, float hitX, float hitY, float hitZ, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
 	{
 		return false;
 	}
@@ -466,23 +463,28 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 		return false;
 	}
 
+	@Nullable
 	@Override
-	public boolean isDummy()
+	public IGeneralMultiblock master()
 	{
-		return dummy;
+		if(!isDummy())
+			return this;
+		BlockPos masterPos = getPos().down();
+		TileEntity te = Utils.getExistingTileEntity(world, masterPos);
+		return this.getClass().isInstance(te)?(IGeneralMultiblock)te: null;
 	}
 
 	@Override
 	public void placeDummies(BlockItemUseContext ctx, BlockState state)
 	{
-		world.setBlockState(pos.offset(getFacing()), state);
-		((TeslaCoilTileEntity)world.getTileEntity(pos.offset(getFacing()))).dummy = true;
+		world.setBlockState(pos.offset(getFacing()), state.with(IEProperties.MULTIBLOCKSLAVE, true));
 		((TeslaCoilTileEntity)world.getTileEntity(pos.offset(getFacing()))).setFacing(getFacing());
 	}
 
 	@Override
 	public void breakDummies(BlockPos pos, BlockState state)
 	{
+		boolean dummy = isDummy();
 		for(int i = 0; i <= 1; i++)
 			if(world.getTileEntity(getPos().offset(getFacing(), dummy?-1: 0).offset(getFacing(), i)) instanceof TeslaCoilTileEntity)
 				world.removeBlock(getPos().offset(getFacing(), dummy?-1: 0).offset(getFacing(), i), false);
@@ -492,7 +494,7 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 	@Override
 	public FluxStorage getFluxStorage()
 	{
-		if(dummy)
+		if(isDummy())
 		{
 			TileEntity te = world.getTileEntity(getPos().offset(getFacing(), -1));
 			if(te instanceof TeslaCoilTileEntity)
@@ -505,7 +507,7 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 	@Override
 	public IOSideConfig getEnergySideConfig(Direction facing)
 	{
-		return !dummy?IOSideConfig.INPUT: IOSideConfig.NONE;
+		return !isDummy()?IOSideConfig.INPUT: IOSideConfig.NONE;
 	}
 
 	IEForgeEnergyWrapper[] wrappers = IEForgeEnergyWrapper.getDefaultWrapperArray(this);
@@ -513,7 +515,7 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 	@Override
 	public IEForgeEnergyWrapper getCapabilityWrapper(Direction facing)
 	{
-		if(!dummy)
+		if(!isDummy())
 			return wrappers[facing==null?0: facing.ordinal()];
 		return null;
 	}

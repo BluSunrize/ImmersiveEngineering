@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "wc ",
+    "sss"
+  ],
+  "key": {
+    "w": {
+      "tag": "minecraft:wool"
+    },
+    "c": {
+      "amount": 1000,
+      "fluid": "immersiveengineering:creosote",
+      "type": "immersiveengineering:fluid"
+    },
+    "s": {
+      "tag": "forge:rods/wooden"
+    }
+  },
+  "result": {
+    "item": "minecraft:torch",
+    "count": 12
+  }
+}

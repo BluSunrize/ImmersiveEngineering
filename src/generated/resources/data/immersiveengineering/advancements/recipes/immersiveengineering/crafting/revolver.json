@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/revolver"
+    ]
+  },
+  "criteria": {
+    "has_wooden_grip": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:wooden_grip"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/revolver"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_wooden_grip",
+      "has_the_recipe"
+    ]
+  ]
+}

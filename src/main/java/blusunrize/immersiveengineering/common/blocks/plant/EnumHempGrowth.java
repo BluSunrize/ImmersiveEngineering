@@ -8,7 +8,9 @@
 
 package blusunrize.immersiveengineering.common.blocks.plant;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.ResourceLocation;
 
 import java.util.Locale;
 
@@ -24,7 +26,18 @@ public enum EnumHempGrowth implements IStringSerializable
 	@Override
 	public String getName()
 	{
-		return this.toString().toLowerCase(Locale.ENGLISH);
+		return name().toLowerCase(Locale.ENGLISH);
+	}
+
+	public ResourceLocation getTextureName()
+	{
+		return new ResourceLocation(ImmersiveEngineering.MODID, "block/hemp/"+getName());
+	}
+
+	@Override
+	public String toString()
+	{
+		return getName();
 	}
 
 	public EnumHempGrowth next()

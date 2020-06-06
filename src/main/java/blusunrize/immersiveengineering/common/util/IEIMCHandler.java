@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.common.util;
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.blocks.metal.FluidPipeTileEntity;
 import com.google.common.collect.ImmutableList;
+import net.minecraft.block.Block;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.InterModComms.IMCMessage;
@@ -10,6 +11,7 @@ import net.minecraftforge.fml.InterModComms.IMCMessage;
 import java.util.HashMap;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * @author BluSunrize - 27.05.2018
@@ -21,12 +23,12 @@ public class IEIMCHandler
 	public static void init()
 	{
 		MESSAGE_HANDLERS.put("fluidpipe_cover", imcMessage -> {
-			Function<ItemStack, Boolean> func = (Function<ItemStack, Boolean>)imcMessage.getMessageSupplier().get();
+			Predicate<Block> func = (Predicate<Block>)imcMessage.getMessageSupplier().get();
 			FluidPipeTileEntity.validPipeCovers.add(func);
 		});
 
 		MESSAGE_HANDLERS.put("fluidpipe_cover_climb", imcMessage -> {
-			Function<ItemStack, Boolean> func = (Function<ItemStack, Boolean>)imcMessage.getMessageSupplier().get();
+			Predicate<Block> func = (Predicate<Block>)imcMessage.getMessageSupplier().get();
 			FluidPipeTileEntity.climbablePipeCovers.add(func);
 		});
 

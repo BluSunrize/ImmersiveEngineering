@@ -1,0 +1,15 @@
+{
+  "textures": {
+    "particle": "immersiveengineering:block/connector/relay_hv"
+  },
+  "loader": "immersiveengineering:connector",
+  "base_model": {
+    "loader": "forge:obj",
+    "model": "immersiveengineering:models/block/connector/relay_hv.obj",
+    "flip-v": true
+  },
+  "layers": [
+    "TRANSLUCENT"
+  ],
+  "detectCullableFaces": false
+}

@@ -47,7 +47,7 @@ public class WirecutterItem extends IEBaseItem implements ITool
 
 	public WirecutterItem()
 	{
-		super("wirecutter", new Properties().defaultMaxDamage(IEConfig.TOOLS.cutterDurabiliy.get()).setNoRepair());
+		super("wirecutter", new Properties().defaultMaxDamage(IEConfig.TOOLS.cutterDurabiliy.get()));
 	}
 
 	@Nonnull
@@ -55,8 +55,10 @@ public class WirecutterItem extends IEBaseItem implements ITool
 	public ItemStack getContainerItem(@Nonnull ItemStack stack)
 	{
 		ItemStack container = stack.copy();
-		container.attemptDamageItem(1, Utils.RAND, null);
-		return container;
+		if(container.attemptDamageItem(1, Utils.RAND, null))
+			return ItemStack.EMPTY;
+		else
+			return container;
 	}
 
 	@Override

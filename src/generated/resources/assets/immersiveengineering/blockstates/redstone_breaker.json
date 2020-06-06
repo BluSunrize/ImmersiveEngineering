@@ -1,126 +1,36 @@
 {
   "variants": {
-    "active=false,facing=down": {
-      "model": "immersiveengineering:connector",
-      "custom": {
-        "flip-v": true,
-        "base": "immersiveengineering:block/connector/redstone_breaker.obj.ie",
-        "layers": "[SOLID]"
-      }
+    "facing=down": {
+      "model": "immersiveengineering:block/connector/redstone_breaker",
+      "uvlock": true
     },
-    "active=false,facing=up": {
-      "model": "immersiveengineering:connector",
+    "facing=up": {
+      "model": "immersiveengineering:block/connector/redstone_breaker",
       "x": 180,
-      "uvlock": true,
-      "custom": {
-        "flip-v": true,
-        "base": "immersiveengineering:block/connector/redstone_breaker.obj.ie",
-        "layers": "[SOLID]"
-      }
+      "uvlock": true
     },
-    "active=false,facing=north": {
-      "model": "immersiveengineering:connector",
+    "facing=north": {
+      "model": "immersiveengineering:block/connector/redstone_breaker",
       "x": 90,
       "y": 180,
-      "uvlock": true,
-      "custom": {
-        "flip-v": true,
-        "base": "immersiveengineering:block/connector/redstone_breaker.obj.ie",
-        "layers": "[SOLID]"
-      }
+      "uvlock": true
     },
-    "active=false,facing=south": {
-      "model": "immersiveengineering:connector",
+    "facing=south": {
+      "model": "immersiveengineering:block/connector/redstone_breaker",
       "x": 90,
-      "uvlock": true,
-      "custom": {
-        "flip-v": true,
-        "base": "immersiveengineering:block/connector/redstone_breaker.obj.ie",
-        "layers": "[SOLID]"
-      }
+      "uvlock": true
     },
-    "active=false,facing=west": {
-      "model": "immersiveengineering:connector",
+    "facing=west": {
+      "model": "immersiveengineering:block/connector/redstone_breaker",
       "x": 90,
       "y": 90,
-      "uvlock": true,
-      "custom": {
-        "flip-v": true,
-        "base": "immersiveengineering:block/connector/redstone_breaker.obj.ie",
-        "layers": "[SOLID]"
-      }
+      "uvlock": true
     },
-    "active=false,facing=east": {
-      "model": "immersiveengineering:connector",
+    "facing=east": {
+      "model": "immersiveengineering:block/connector/redstone_breaker",
       "x": 90,
       "y": 270,
-      "uvlock": true,
-      "custom": {
-        "flip-v": true,
-        "base": "immersiveengineering:block/connector/redstone_breaker.obj.ie",
-        "layers": "[SOLID]"
-      }
-    },
-    "active=true,facing=down": {
-      "model": "immersiveengineering:connector",
-      "custom": {
-        "flip-v": true,
-        "base": "immersiveengineering:block/connector/redstone_breaker.obj.ie",
-        "layers": "[SOLID]"
-      }
-    },
-    "active=true,facing=up": {
-      "model": "immersiveengineering:connector",
-      "x": 180,
-      "uvlock": true,
-      "custom": {
-        "flip-v": true,
-        "base": "immersiveengineering:block/connector/redstone_breaker.obj.ie",
-        "layers": "[SOLID]"
-      }
-    },
-    "active=true,facing=north": {
-      "model": "immersiveengineering:connector",
-      "x": 90,
-      "y": 180,
-      "uvlock": true,
-      "custom": {
-        "flip-v": true,
-        "base": "immersiveengineering:block/connector/redstone_breaker.obj.ie",
-        "layers": "[SOLID]"
-      }
-    },
-    "active=true,facing=south": {
-      "model": "immersiveengineering:connector",
-      "x": 90,
-      "uvlock": true,
-      "custom": {
-        "flip-v": true,
-        "base": "immersiveengineering:block/connector/redstone_breaker.obj.ie",
-        "layers": "[SOLID]"
-      }
-    },
-    "active=true,facing=west": {
-      "model": "immersiveengineering:connector",
-      "x": 90,
-      "y": 90,
-      "uvlock": true,
-      "custom": {
-        "flip-v": true,
-        "base": "immersiveengineering:block/connector/redstone_breaker.obj.ie",
-        "layers": "[SOLID]"
-      }
-    },
-    "active=true,facing=east": {
-      "model": "immersiveengineering:connector",
-      "x": 90,
-      "y": 270,
-      "uvlock": true,
-      "custom": {
-        "flip-v": true,
-        "base": "immersiveengineering:block/connector/redstone_breaker.obj.ie",
-        "layers": "[SOLID]"
-      }
+      "uvlock": true
     }
   }
 }

@@ -1,6 +1,6 @@
 {
   "recipe": {
     "type": "crafting",
-    "recipe": "cloth_devices/balloon"
+    "recipe": "crafting/balloon"
   }
 }

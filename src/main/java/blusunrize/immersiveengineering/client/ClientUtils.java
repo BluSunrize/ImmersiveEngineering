@@ -50,7 +50,10 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.ITooltipFlag.TooltipFlags;
+import net.minecraft.client.util.InputMappings;
+import net.minecraft.client.util.InputMappings.Input;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -70,6 +73,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import javax.vecmath.Quat4d;
+import javax.vecmath.Vector4f;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -381,7 +385,7 @@ public class ClientUtils
 	public static IETileSound generatePositionedIESound(SoundEvent soundEvent, float volume, float pitch, boolean repeat, int delay, BlockPos pos)
 	{
 		IETileSound sound = new IETileSound(soundEvent, volume, pitch, repeat, delay, pos, AttenuationType.LINEAR, SoundCategory.BLOCKS);
-//		sound.evaluateVolume();
+		sound.evaluateVolume();
 		ClientUtils.mc().getSoundHandler().play(sound);
 		return sound;
 	}
@@ -390,25 +394,27 @@ public class ClientUtils
 	{
 		List<RendererModel> newRenderers = new ArrayList<>(oldRenderers.size());
 		for(int i = 0; i < oldRenderers.size(); i++)
-			{
-				RendererModel oldM = oldRenderers.get(i);
-				RendererModel newM = new RendererModel(model, oldM.boxName);
-				int toX = oldM.textureOffsetX;
-				int toY = oldM.textureOffsetY;
-				newM.setTextureOffset(toX, toY);
-				newM.mirror = oldM.mirror;
-				newM.cubeList.clear();
-				for(ModelBox cube : oldM.cubeList)
-					newM.cubeList.add(new ModelBox(newM, toX, toY, cube.posX1, cube.posY1, cube.posZ1, (int)(cube.posX2-cube.posX1), (int)(cube.posY2-cube.posY1), (int)(cube.posZ2-cube.posZ1), 0));
-				newM.setRotationPoint(oldM.rotationPointX, oldM.rotationPointY, oldM.rotationPointZ);
-				newM.rotateAngleX = oldM.rotateAngleX;
-				newM.rotateAngleY = oldM.rotateAngleY;
-				newM.rotateAngleZ = oldM.rotateAngleZ;
-				newM.offsetX = oldM.offsetX;
-				newM.offsetY = oldM.offsetY;
-				newM.offsetZ = oldM.offsetZ;
-				newRenderers.add(newM);
-			}
+		{
+			RendererModel oldM = oldRenderers.get(i);
+			RendererModel newM = new RendererModel(model, oldM.boxName);
+			// remove the freshly added box, because the constructor adds it
+			model.boxList.remove(model.boxList.size()-1);
+			int toX = oldM.textureOffsetX;
+			int toY = oldM.textureOffsetY;
+			newM.setTextureOffset(toX, toY);
+			newM.mirror = oldM.mirror;
+			newM.cubeList.clear();
+			for(ModelBox cube : oldM.cubeList)
+				newM.cubeList.add(new ModelBox(newM, toX, toY, cube.posX1, cube.posY1, cube.posZ1, (int)(cube.posX2-cube.posX1), (int)(cube.posY2-cube.posY1), (int)(cube.posZ2-cube.posZ1), 0));
+			newM.setRotationPoint(oldM.rotationPointX, oldM.rotationPointY, oldM.rotationPointZ);
+			newM.rotateAngleX = oldM.rotateAngleX;
+			newM.rotateAngleY = oldM.rotateAngleY;
+			newM.rotateAngleZ = oldM.rotateAngleZ;
+			newM.offsetX = oldM.offsetX;
+			newM.offsetY = oldM.offsetY;
+			newM.offsetZ = oldM.offsetZ;
+			newRenderers.add(newM);
+		}
 		return newRenderers;
 	}
 
@@ -1121,18 +1127,13 @@ public class ClientUtils
 		return quads.get(0).getSprite().getName();
 	}
 
-	public static int pulseRGBAlpha(int rgb, int tickrate, float min, float max)
+	public static Vector4f pulseRGBAlpha(Vector4f rgba, int tickrate, float min, float max)
 	{
 		float f_alpha = mc().player.ticksExisted%(tickrate*2)/(float)tickrate;
 		if(f_alpha > 1)
 			f_alpha = 2-f_alpha;
-		return changeRGBAlpha(rgb, MathHelper.clamp(f_alpha, min, max));
-
-	}
-
-	public static int changeRGBAlpha(int rgb, float alpha)
-	{
-		return (rgb&0x00ffffff)|((int)(alpha*255)<<24);
+		rgba.w = MathHelper.clamp(f_alpha, min, max);
+		return rgba;
 	}
 
 	public static void renderBox(BufferBuilder wr, double x0, double y0, double z0, double x1, double y1, double z1)
@@ -1238,11 +1239,12 @@ public class ClientUtils
 	 * @param world     the world the model is in. Will be used to obtain lighting information
 	 * @param pos       the position that this model is in. Use the position the the quads are actually in, not the rendering block
 	 * @param useCached Whether to use cached information for world local data. Set to true if the previous call to this method was in the same tick and for the same world+pos
+	 * @param color 	the render color (mostly used for plants)
 	 */
-	public static void renderModelTESRFancy(List<BakedQuad> quads, BufferBuilder renderer, World world, BlockPos pos, boolean useCached)
+	public static void renderModelTESRFancy(List<BakedQuad> quads, BufferBuilder renderer, World world, BlockPos pos, boolean useCached, int color)
 	{//TODO include matrix transformations?, cache normals?
 		if(IEConfig.GENERAL.disableFancyTESR.get())
-			renderModelTESRFast(quads, renderer, world, pos);
+			renderModelTESRFast(quads, renderer, world, pos, color);
 		else
 		{
 			if(!useCached)
@@ -1275,6 +1277,13 @@ public class ClientUtils
 					}
 			}
 			int localBrightness = world.getCombinedLight(pos, 0);
+			int rgba[] = {255, 255, 255, 255};
+			if(color >= 0)
+			{
+				rgba[0] = color >> 16&255;
+				rgba[1] = color >> 8&255;
+				rgba[2] = color&255;
+			}
 			for(BakedQuad quad : quads)
 			{
 				int[] vData = quad.getVertexData();
@@ -1290,11 +1299,11 @@ public class ClientUtils
 				}
 				//generate the normal vector
 				Vec3d side1 = new Vec3d(quadCoords[1][0]-quadCoords[3][0],
-				quadCoords[1][1]-quadCoords[3][1],
-				quadCoords[1][2]-quadCoords[3][2]);
+						quadCoords[1][1]-quadCoords[3][1],
+						quadCoords[1][2]-quadCoords[3][2]);
 				Vec3d side2 = new Vec3d(quadCoords[2][0]-quadCoords[0][0],
-				quadCoords[2][1]-quadCoords[0][1],
-				quadCoords[2][2]-quadCoords[0][2]);
+						quadCoords[2][1]-quadCoords[0][1],
+						quadCoords[2][2]-quadCoords[0][2]);
 				Vec3d normal = side1.crossProduct(side2);
 				normal = normal.normalize();
 				// calculate the final light values and do the rendering
@@ -1304,7 +1313,7 @@ public class ClientUtils
 				{
 					renderer
 							.pos(quadCoords[i][0], quadCoords[i][1], quadCoords[i][2])
-							.color(255, 255, 255, 255)
+							.color(rgba[0], rgba[1], rgba[2], rgba[3])
 							.tex(Float.intBitsToFloat(vData[size*i+uv]), Float.intBitsToFloat(vData[size*i+uv+1]))
 							.lightmap(l1, l2)
 							.endVertex();
@@ -1351,9 +1360,21 @@ public class ClientUtils
 
 	public static void renderModelTESRFast(List<BakedQuad> quads, BufferBuilder renderer, World world, BlockPos pos)
 	{
+		renderModelTESRFast(quads, renderer, world, pos, -1);
+	}
+
+	public static void renderModelTESRFast(List<BakedQuad> quads, BufferBuilder renderer, World world, BlockPos pos, int color)
+	{
 		int brightness = world.getCombinedLight(pos, 0);
 		int l1 = (brightness >> 0x10)&0xFFFF;
 		int l2 = brightness&0xFFFF;
+		int rgba[] = {255, 255, 255, 255};
+		if(color >= 0)
+		{
+			rgba[0] = color >> 16&255;
+			rgba[1] = color >> 8&255;
+			rgba[2] = color&255;
+		}
 		for(BakedQuad quad : quads)
 		{
 			int[] vData = quad.getVertexData();
@@ -1366,7 +1387,7 @@ public class ClientUtils
 						.pos(Float.intBitsToFloat(vData[size*i]),
 								Float.intBitsToFloat(vData[size*i+1]),
 								Float.intBitsToFloat(vData[size*i+2]))
-						.color(255, 255, 255, 255)
+						.color(rgba[0], rgba[1], rgba[2], rgba[3])
 						.tex(Float.intBitsToFloat(vData[size*i+uv]), Float.intBitsToFloat(vData[size*i+uv+1]))
 						.lightmap(l1, l2)
 						.endVertex();
@@ -1415,5 +1436,17 @@ public class ClientUtils
 			lightmapState = null;
 		}
 		GlStateManager.activeTexture(GLX.GL_TEXTURE0);
+	}
+
+	public static boolean isSneakKeyPressed()
+	{
+		if(Minecraft.getInstance().gameSettings==null)
+			return false;
+		KeyBinding keybind = Minecraft.getInstance().gameSettings.keyBindSneak;
+		Input keyCode = keybind.getKey();
+		if(keyCode.getType()==InputMappings.Type.KEYSYM&&keyCode.getKeyCode()!=InputMappings.INPUT_INVALID.getKeyCode())
+			return InputMappings.isKeyDown(Minecraft.getInstance().mainWindow.getHandle(), keyCode.getKeyCode());
+		else
+			return false;
 	}
 }

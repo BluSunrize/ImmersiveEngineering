@@ -14,7 +14,9 @@ import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.BlockstateProvider;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPropertyPassthrough;
+import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import net.minecraft.block.BlockState;
@@ -42,7 +44,13 @@ import java.util.*;
 
 public abstract class IEBaseTileEntity extends TileEntity implements BlockstateProvider
 {
+	/**
+	 * Set by and for those instances of IGeneralMultiblock that need to drop their inventory
+	 */
+	protected IGeneralMultiblock tempMasterTE;
+
 	private BlockState overrideBlockState = null;
+
 	public IEBaseTileEntity(TileEntityType<? extends TileEntity> type)
 	{
 		super(type);
@@ -159,7 +167,8 @@ public abstract class IEBaseTileEntity extends TileEntity implements BlockstateP
 
 	public void markContainingBlockForUpdate(@Nullable BlockState newState)
 	{
-		markBlockForUpdate(getPos(), newState);
+		if(this.world!=null)
+			markBlockForUpdate(getPos(), newState);
 	}
 
 	public void markBlockForUpdate(BlockPos pos, @Nullable BlockState newState)
@@ -232,6 +241,7 @@ public abstract class IEBaseTileEntity extends TileEntity implements BlockstateP
 		for(LazyOptional<?> cap : caps)
 			if(cap.isPresent())
 				cap.invalidate();
+		caps.clear();
 	}
 
 	@Nonnull
@@ -247,9 +257,7 @@ public abstract class IEBaseTileEntity extends TileEntity implements BlockstateP
 
 	protected void checkLight(BlockPos pos)
 	{
-		getWorldNonnull().getProfiler().startSection("queueCheckLight");
-		getWorldNonnull().getChunkProvider().getLightManager().checkBlock(pos);
-		getWorldNonnull().getProfiler().endSection();
+		getWorldNonnull().getPendingBlockTicks().scheduleTick(pos, getBlockState().getBlock(), 4);
 	}
 
 	public void setOverrideState(BlockState state)
@@ -282,7 +290,8 @@ public abstract class IEBaseTileEntity extends TileEntity implements BlockstateP
 	@Override
 	public void setState(BlockState state)
 	{
-		getWorldNonnull().setBlockState(pos, state);
+		if(getWorldNonnull().getBlockState(pos)==getState())
+			getWorldNonnull().setBlockState(pos, state);
 	}
 
 	@Override

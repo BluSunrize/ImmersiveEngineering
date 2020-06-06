@@ -20,6 +20,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.Item.Properties;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.IProperty;
 import net.minecraft.tileentity.TileEntity;
@@ -30,51 +32,24 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
+import java.util.function.BiFunction;
+
 public abstract class ConnectorBlock extends IETileProviderBlock
 {
-
-	public ConnectorBlock(String name, IProperty... additional)
+	public ConnectorBlock(String name, BiFunction<Block, Item.Properties, Item> item, IProperty... additional)
 	{
 		super(name, Block.Properties.create(Material.IRON).hardnessAndResistance(3.0F, 15.0F),
-				BlockItemIE.class, additional);
+				item, additional);
 		lightOpacity = 0;
 		setBlockLayer(BlockRenderLayer.SOLID, BlockRenderLayer.TRANSLUCENT);
 		setNotNormalBlock();
-		/*setMetaBlockLayer(BlockTypes_Connector.CONNECTOR_PROBE.getMeta(), BlockRenderLayer.SOLID, BlockRenderLayer.CUTOUT, BlockRenderLayer.TRANSLUCENT);
-		setMetaBlockLayer(BlockTypes_Connector.FEEDTHROUGH.getMeta(), BlockRenderLayer.SOLID,
-				BlockRenderLayer.CUTOUT, BlockRenderLayer.CUTOUT_MIPPED, BlockRenderLayer.TRANSLUCENT);
-		setMetaMobilityFlag(BlockTypes_Connector.TRANSFORMER.getMeta(), EnumPushReaction.BLOCK);
-		setMetaMobilityFlag(BlockTypes_Connector.TRANSFORMER_HV.getMeta(), EnumPushReaction.BLOCK);
-		setMetaMobilityFlag(BlockTypes_Connector.ENERGY_METER.getMeta(), EnumPushReaction.BLOCK);
-		setMetaMobilityFlag(BlockTypes_Connector.FEEDTHROUGH.getMeta(), EnumPushReaction.BLOCK);*/
 	}
 
-		/*
-		TODO when unlisted properties are back
-	@Override
-	protected void fillStateContainer(Builder<Block, IBlockState> builder)
+	public ConnectorBlock(String name, IProperty... additional)
 	{
-		IUnlistedProperty[] unlisted = (base instanceof ExtendedBlockState)?((ExtendedBlockState)base).getUnlistedProperties().toArray(new IUnlistedProperty[0]): new IUnlistedProperty[0];
-		unlisted = Arrays.copyOf(unlisted, unlisted.length+1);
-		unlisted[unlisted.length-1] = IEProperties.CONNECTIONS;
-		return new ExtendedBlockState(this, base.getProperties().toArray(new IProperty[0]), unlisted);
+		this(name, BlockItemIE::new, additional);
 	}
-
-	@Override
-	public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos)
-	{
-		state = super.getExtendedState(state, world, pos);
-		if(state instanceof IExtendedBlockState)
-		{
-			IExtendedBlockState ext = (IExtendedBlockState)state;
-			TileEntity te = world.getTileEntity(pos);
-			if(!(te instanceof ImmersiveConnectableTileEntity))
-				return state;
-			state = ext.with(IEProperties.CONNECTIONS, ((ImmersiveConnectableTileEntity)te).genConnBlockstate());
-		}
-		return state;
-	}
-	*/
 
 	@Override
 	public void neighborChanged(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving)

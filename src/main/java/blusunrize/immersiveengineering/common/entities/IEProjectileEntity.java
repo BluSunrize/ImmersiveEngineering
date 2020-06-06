@@ -67,10 +67,12 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 	public IEProjectileEntity(EntityType<? extends IEProjectileEntity> type, World world, LivingEntity living, double x, double y, double z, double ax, double ay, double az)
 	{
 		this(type, world);
-		this.setLocationAndAngles(x, y, z, living.rotationYaw, living.rotationPitch);
+		float yaw = living!=null?living.rotationYaw: 0;
+		float pitch = living!=null?living.rotationPitch: 0;
+		this.setLocationAndAngles(x, y, z, yaw, pitch);
 		this.setPosition(this.posX, this.posY, this.posZ);
 		setMotion(ax, ay, az);
-		this.shootingEntity = living.getUniqueID();
+		this.shootingEntity = living!=null?living.getUniqueID(): UUID.randomUUID();
 		this.setShooterSynced();
 		Vec3d motion = getMotion();
 		this.shoot(motion.x, motion.y, motion.z, 2*1.5F, 1.0F);
@@ -215,7 +217,8 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 					}
 					if(allowHit)
 						this.onImpact(mop);
-					this.remove();
+					if(this.getPierceLevel() <= 0)
+						this.remove();
 				}
 				else if(mop.getType()==Type.BLOCK)
 				{
@@ -280,8 +283,24 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 	}
 
 	@Override
-	public void onCollideWithPlayer(PlayerEntity p_70100_1_)
+	public void onCollideWithPlayer(PlayerEntity player)
 	{
+		if(!this.world.isRemote&&(this.inGround||this.getNoClip())&&this.arrowShake <= 0)
+		{
+			boolean flag = this.pickupStatus==AbstractArrowEntity.PickupStatus.ALLOWED
+					||this.pickupStatus==AbstractArrowEntity.PickupStatus.CREATIVE_ONLY&&player.abilities.isCreativeMode
+					||this.getNoClip()&&this.getShooter().getUniqueID()==player.getUniqueID();
+			if(this.pickupStatus==AbstractArrowEntity.PickupStatus.ALLOWED
+					&&!player.inventory.addItemStackToInventory(this.getArrowStack()))
+				flag = false;
+
+			if(flag)
+			{
+				player.onItemPickup(this, 1);
+				this.remove();
+			}
+
+		}
 	}
 
 	@OnlyIn(Dist.CLIENT)

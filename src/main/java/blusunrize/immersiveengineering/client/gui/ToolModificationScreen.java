@@ -65,12 +65,12 @@ public abstract class ToolModificationScreen<C extends Container> extends IECont
 			CompoundNBT message = new CompoundNBT();
 			if(changed instanceof GuiButtonCheckbox)
 			{
-				message.putBoolean("b_"+name, ((GuiButtonCheckbox)changed).state);
-				tool.applyConfigOption(stack, name, ((GuiButtonCheckbox)changed).state);
+				message.putBoolean(name, !((GuiButtonCheckbox)changed).getState());
+				tool.applyConfigOption(stack, name, !((GuiButtonCheckbox)changed).getState());
 			}
 			else if(changed instanceof GuiSliderIE)
 			{
-				message.putFloat("f_"+name, (float)((GuiSliderIE)changed).sliderValue);
+				message.putFloat(name, (float)((GuiSliderIE)changed).sliderValue);
 				tool.applyConfigOption(stack, name, (float)((GuiSliderIE)changed).sliderValue);
 			}
 			if(!message.equals(lastMessage))//Only send packets when values have changed

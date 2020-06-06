@@ -1,0 +1,13 @@
+{
+    "start": {
+        "type": "crafting",
+        "recipes": [
+            {
+                "recipe": "crafting/electrum_mix"
+            },
+            {
+                "recipe": "crafting/constantan_mix"
+            }
+        ]
+    }
+}

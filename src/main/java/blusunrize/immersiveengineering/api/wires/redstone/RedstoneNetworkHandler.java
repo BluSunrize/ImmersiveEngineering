@@ -44,14 +44,16 @@ public class RedstoneNetworkHandler extends LocalNetworkHandler
 	{
 		if(!(iic instanceof IRedstoneConnector))
 			return;
-		IRedstoneConnector rsConn = (IRedstoneConnector)iic;
-		rsConn.updateInput(values, newCP);
-		for(ConnectionPoint cp : net.getConnectionPoints())
-		{
-			IImmersiveConnectable here = net.getConnector(cp);
-			if(here instanceof IRedstoneConnector)
-				((IRedstoneConnector)here).onChange(cp, this);
-		}
+		net.addAsFutureTask(() -> {
+			IRedstoneConnector rsConn = (IRedstoneConnector)iic;
+			rsConn.updateInput(values, newCP);
+			for(ConnectionPoint cp : net.getConnectionPoints())
+			{
+				IImmersiveConnectable here = net.getConnector(cp);
+				if(here instanceof IRedstoneConnector)
+					((IRedstoneConnector)here).onChange(cp, this);
+			}
+		});
 	}
 
 	public void updateValues()

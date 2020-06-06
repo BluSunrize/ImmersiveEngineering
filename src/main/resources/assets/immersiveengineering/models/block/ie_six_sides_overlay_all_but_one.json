@@ -1,0 +1,17 @@
+{
+  "parent": "immersiveengineering:block/ie_six_sides_overlay",
+  "textures": {
+    "particle": "#block_all",
+    "block_down": "#block_all",
+    "block_up": "#block_all",
+    "block_south": "#block_all",
+    "block_west": "#block_all",
+    "block_east": "#block_all",
+    "overlay_down": "#overlay_all",
+    "overlay_up": "#overlay_all",
+    "overlay_north": "#block_north",
+    "overlay_south": "#overlay_all",
+    "overlay_west": "#overlay_all",
+    "overlay_east": "#overlay_all"
+  }
+}

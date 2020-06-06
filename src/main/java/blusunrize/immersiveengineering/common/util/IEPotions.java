@@ -142,7 +142,10 @@ public class IEPotions
 						concrete.stream()
 								.map(IEBlocks.toSlab::get)
 								.noneMatch(b -> b==state.getBlock()))
-					living.removeActivePotionEffect(this);
+				{
+					living.removePotionEffect(this);
+					IELogger.logger.info("Removing concrete feet");
+				}
 			}
 		}
 	}

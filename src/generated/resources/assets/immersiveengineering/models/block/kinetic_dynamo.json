@@ -1,0 +1,11 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "immersiveengineering:block/metal_device/dynamo_bottom",
+    "south": "immersiveengineering:block/metal_device/dynamo_bottom",
+    "up": "immersiveengineering:block/metal_device/dynamo_top",
+    "north": "immersiveengineering:block/metal_device/dynamo_front",
+    "west": "immersiveengineering:block/metal_device/dynamo_side",
+    "east": "immersiveengineering:block/metal_device/dynamo_side"
+  }
+}

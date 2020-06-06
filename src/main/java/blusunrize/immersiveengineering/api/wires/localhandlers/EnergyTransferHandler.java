@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.wires.utils.BinaryHeap.HeapEntry;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
+import it.unimi.dsi.fastutil.objects.Object2DoubleMaps;
 import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -23,14 +24,17 @@ import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Predicate;
 
 public class EnergyTransferHandler extends LocalNetworkHandler implements IWorldTickable
 {
 	public static final ResourceLocation ID = new ResourceLocation(ImmersiveEngineering.MODID, "energy_transfer");
 
 	private final Table<ConnectionPoint, ConnectionPoint, Path> energyPaths = HashBasedTable.create();
-	private final Object2DoubleMap<Connection> transferredInTick = new Object2DoubleOpenHashMap<>();
+	private Object2DoubleMap<Connection> transferredNextTick = new Object2DoubleOpenHashMap<>();
+	private Object2DoubleMap<Connection> transferredLastTick = new Object2DoubleOpenHashMap<>();
 	private final Map<ConnectionPoint, EnergyConnector> sources = new HashMap<>();
 	private final Map<ConnectionPoint, EnergyConnector> sinks = new HashMap<>();
 	private boolean uninitialised = true;
@@ -84,18 +88,32 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 			calcPaths();
 		transferPower();
 		burnOverloaded(w);
-		transferredInTick.clear();
+		transferredLastTick = transferredNextTick;
+		transferredNextTick = new Object2DoubleOpenHashMap<>();
 	}
 
-	public Object2DoubleMap<Connection> getTransferredInTick()
+	/**
+	 * @return the transfer map for the next transfert tick. Modify to include transfers made outside of the usual
+	 * transfer code in wire burn calculations, CT measurements etc.
+	 */
+	public Object2DoubleMap<Connection> getTransferredNextTick()
 	{
-		return transferredInTick;
+		return transferredNextTick;
+	}
+
+	/**
+	 * @return the amount of energy transferred by each connection in the last tick. Must not be modified.
+	 */
+	public Object2DoubleMap<Connection> getTransferredLastTick()
+	{
+		return Object2DoubleMaps.unmodifiable(transferredLastTick);
 	}
 
 	private void reset()
 	{
 		energyPaths.clear();
-		transferredInTick.clear();
+		transferredNextTick.clear();
+		transferredLastTick.clear();
 		sinks.clear();
 		sources.clear();
 		uninitialised = true;
@@ -108,11 +126,27 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 		return sources;
 	}
 
+	@Nullable
 	public Path getPath(ConnectionPoint source, ConnectionPoint sink)
 	{
 		if(uninitialised)
 			calcPaths();
-		return energyPaths.get(source, sink);
+		if(sources.containsKey(source)&&sinks.containsKey(sink))
+			return energyPaths.get(source, sink);
+		else
+		{
+			final Path[] ret = {null};
+			runDijkstraWithSource(source, p -> {
+				if(p.end.equals(sink))
+				{
+					ret[0] = p;
+					return true;
+				}
+				else
+					return false;
+			});
+			return ret[0];
+		}
 	}
 
 	private void calcPaths()
@@ -134,38 +168,45 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 		if(sources.isEmpty()||sinks.isEmpty())
 			return;
 		for(ConnectionPoint source : sources.keySet())
+			runDijkstraWithSource(source, p -> {
+				energyPaths.put(source, p.end, p);
+				return false;
+			});
+	}
+
+	private void runDijkstraWithSource(ConnectionPoint source, Predicate<Path> stopAfter)
+	{
+		Map<ConnectionPoint, Path> shortestKnown = new HashMap<>();
+		BinaryHeap<ConnectionPoint> heap = new BinaryHeap<>(
+				Comparator.comparingDouble(end -> shortestKnown.get(end).loss));
+		Map<ConnectionPoint, HeapEntry<ConnectionPoint>> entryMap = new HashMap<>();
+		shortestKnown.put(source, new Path(source));
+		entryMap.put(source, heap.insert(source));
+		while(!heap.empty())
 		{
-			Map<ConnectionPoint, Path> shortestKnown = new HashMap<>();
-			BinaryHeap<ConnectionPoint> heap = new BinaryHeap<>(
-					Comparator.comparingDouble(end -> shortestKnown.get(end).loss));
-			Map<ConnectionPoint, HeapEntry<ConnectionPoint>> entryMap = new HashMap<>();
-			shortestKnown.put(source, new Path(source));
-			entryMap.put(source, heap.insert(source));
-			while(!heap.empty())
+			ConnectionPoint endPoint = heap.extractMin();
+			entryMap.remove(endPoint);
+			Path shortest = shortestKnown.get(endPoint);
+			if(stopAfter.test(shortest))
+				return;
+			//Loss of 1 means no energy will be transferred, so the paths are irrelevant
+			if(shortest.loss >= 1)
+				break;
+			for(Connection next : net.getConnections(endPoint))
 			{
-				ConnectionPoint endPoint = heap.extractMin();
-				entryMap.remove(endPoint);
-				Path shortest = shortestKnown.get(endPoint);
-				energyPaths.put(source, shortest.end, shortest);
-				//Loss of 1 means no energy will be transferred, so the paths are irrelevant
-				if(shortest.loss >= 1)
-					break;
-				for(Connection next : net.getConnections(endPoint))
+				Path alternative = shortest.append(next, sinks.containsKey(next.getOtherEnd(shortest.end)));
+				if(!shortestKnown.containsKey(alternative.end))
 				{
-					Path alternative = shortest.append(next, sinks.containsKey(next.getOtherEnd(shortest.end)));
-					if(!shortestKnown.containsKey(alternative.end))
+					shortestKnown.put(alternative.end, alternative);
+					entryMap.put(alternative.end, heap.insert(alternative.end));
+				}
+				else
+				{
+					Path oldPath = shortestKnown.get(alternative.end);
+					if(alternative.loss < oldPath.loss)
 					{
 						shortestKnown.put(alternative.end, alternative);
-						entryMap.put(alternative.end, heap.insert(alternative.end));
-					}
-					else
-					{
-						Path oldPath = shortestKnown.get(alternative.end);
-						if(alternative.loss < oldPath.loss)
-						{
-							shortestKnown.put(alternative.end, alternative);
-							heap.decreaseKey(entryMap.get(alternative.end));
-						}
+						heap.decreaseKey(entryMap.get(alternative.end));
 					}
 				}
 			}
@@ -205,8 +246,8 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 					//TODO use Blu's loss formula
 					currentLoss += getBasicLoss(c);
 					double availableAtPoint = atSource*(1-currentLoss);
-					double transferred = transferredInTick.getDouble(c);
-					transferredInTick.put(c, transferred+availableAtPoint);
+					double transferred = transferredNextTick.getDouble(c);
+					transferredNextTick.put(c, transferred+availableAtPoint);
 					if(!currentPoint.equals(p.end))
 					{
 						IImmersiveConnectable iic = net.getConnector(currentPoint);
@@ -227,9 +268,9 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 	private void burnOverloaded(World world)
 	{
 		List<Pair<Connection, Double>> toBurn = new ArrayList<>();
-		for(Connection c : transferredInTick.keySet())
+		for(Connection c : transferredNextTick.keySet())
 		{
-			double transferred = transferredInTick.getDouble(c);
+			double transferred = transferredNextTick.getDouble(c);
 			if(c.type instanceof IEnergyWire&&((IEnergyWire)c.type).shouldBurn(c, transferred))
 				toBurn.add(new ImmutablePair<>(c, transferred));
 		}

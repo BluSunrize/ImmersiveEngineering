@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.common.blocks.wooden.FluidSorterTileEntity;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
@@ -35,5 +36,13 @@ public class FluidSorterContainer extends IEBaseContainer<FluidSorterTileEntity>
 	public ItemStack transferStackInSlot(PlayerEntity player, int slot)
 	{
 		return ItemStack.EMPTY;
+	}
+
+	@Override
+	public boolean canInteractWith(@Nonnull PlayerEntity player)
+	{
+		if(tile instanceof IInteractionObjectIE&&!((IInteractionObjectIE)tile).canUseGui(player))
+			return false;
+		return !tile.isRemoved()&&tile.getDistanceSq(player.posX, player.posY, player.posZ) < 64;
 	}
 }

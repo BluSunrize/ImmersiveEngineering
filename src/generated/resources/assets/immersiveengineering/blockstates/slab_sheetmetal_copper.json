@@ -1,22 +1,13 @@
 {
   "variants": {
-    "type=top,waterlogged=true": {
-      "model": "immersiveengineering:block/metal/sheetmetal_copper_slab_top"
+    "type=top": {
+      "model": "immersiveengineering:block/slab_sheetmetal_copper_top"
     },
-    "type=top,waterlogged=false": {
-      "model": "immersiveengineering:block/metal/sheetmetal_copper_slab_top"
+    "type=bottom": {
+      "model": "immersiveengineering:block/slab_sheetmetal_copper_bottom"
     },
-    "type=bottom,waterlogged=true": {
-      "model": "immersiveengineering:block/metal/sheetmetal_copper_slab"
-    },
-    "type=bottom,waterlogged=false": {
-      "model": "immersiveengineering:block/metal/sheetmetal_copper_slab"
-    },
-    "type=double,waterlogged=true": {
-      "model": "immersiveengineering:block/metal/sheetmetal_copper"
-    },
-    "type=double,waterlogged=false": {
-      "model": "immersiveengineering:block/metal/sheetmetal_copper"
+    "type=double": {
+      "model": "immersiveengineering:block/slab_sheetmetal_copper_double"
     }
   }
 }

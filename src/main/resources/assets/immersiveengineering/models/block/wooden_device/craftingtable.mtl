@@ -1,0 +1,5 @@
+newmtl workbench
+map_Kd immersiveengineering:block/wooden_device/workbench
+
+newmtl craftingtable
+map_Kd immersiveengineering:block/wooden_device/craftingtable

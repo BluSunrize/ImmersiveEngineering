@@ -1,0 +1,6 @@
+{
+  "parent": "block/fence_inventory",
+  "textures": {
+    "texture": "immersiveengineering:block/metal/storage_steel"
+  }
+}

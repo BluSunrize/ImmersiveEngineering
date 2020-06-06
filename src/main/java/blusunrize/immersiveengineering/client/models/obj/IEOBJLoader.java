@@ -8,24 +8,27 @@
 
 package blusunrize.immersiveengineering.client.models.obj;
 
+import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
+import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.common.util.IELogger;
-import net.minecraft.client.renderer.model.IUnbakedModel;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonObject;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.ICustomModelLoader;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
-import net.minecraftforge.client.model.obj.OBJLoader;
-import net.minecraftforge.client.model.obj.OBJModel;
+import net.minecraftforge.client.model.IModelLoader;
+import net.minecraftforge.client.model.obj.OBJLoader2;
+import net.minecraftforge.client.model.obj.OBJModel2;
 
 import javax.annotation.Nonnull;
 import java.util.*;
 
-public class IEOBJLoader implements ICustomModelLoader
+public class IEOBJLoader implements IModelLoader<IEOBJModel>
 {
 	private IResourceManager manager;
-	private final Set<String> enabledDomains = new HashSet<String>();
-	private final Map<ResourceLocation, IEOBJModel> cache = new HashMap<ResourceLocation, IEOBJModel>();
-	private final Map<ResourceLocation, Exception> errors = new HashMap<ResourceLocation, Exception>();
+	private final Set<String> enabledDomains = new HashSet<>();
+	private final Map<ResourceLocation, IEOBJModel> cache = new HashMap<>();
+	private final Map<ResourceLocation, Exception> errors = new HashMap<>();
 	public static IEOBJLoader instance = new IEOBJLoader();
 
 	public void addDomain(String domain)
@@ -35,28 +38,14 @@ public class IEOBJLoader implements ICustomModelLoader
 	}
 
 	@Override
-	public boolean accepts(@Nonnull ResourceLocation modelLocation)
+	public IEOBJModel read(JsonDeserializationContext deserializationContext, JsonObject modelContents)
 	{
-		return enabledDomains.contains(modelLocation.getNamespace())&&modelLocation.getPath().endsWith(".obj.ie");
-	}
-
-	@Nonnull
-	@Override
-	public IUnbakedModel loadModel(@Nonnull ResourceLocation modelLocation) throws Exception
-	{
-		if(!cache.containsKey(modelLocation))
-		{
-			IUnbakedModel model = OBJLoader.INSTANCE.loadModel(modelLocation);
-			if(model instanceof OBJModel)
-			{
-				IEOBJModel ieobj = new IEOBJModel(((OBJModel)model).getMatLib(), modelLocation);
-				cache.put(modelLocation, ieobj);
-			}
-		}
-		IEOBJModel model = cache.get(modelLocation);
-		if(model==null)
-			return ModelLoaderRegistry.getMissingModel();
-		return model;
+		OBJModel2 model = OBJLoader2.INSTANCE.read(deserializationContext, modelContents);
+		return new IEOBJModel(
+				model,
+				modelContents.has("dynamic")&&modelContents.get("dynamic").getAsBoolean(),
+				new IEObjState(VisibilityList.showAll())
+		);
 	}
 
 	@Override

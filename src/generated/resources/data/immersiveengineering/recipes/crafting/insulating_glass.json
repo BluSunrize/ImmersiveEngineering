@@ -1,0 +1,24 @@
+{
+  "type": "immersiveengineering:turn_and_copy",
+  "pattern": [
+    " g ",
+    "idi",
+    " g "
+  ],
+  "key": {
+    "g": {
+      "tag": "forge:glass"
+    },
+    "i": {
+      "tag": "forge:dusts/iron"
+    },
+    "d": {
+      "tag": "forge:dyes/green"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:insulating_glass",
+    "count": 2
+  },
+  "quarter_turn": true
+}

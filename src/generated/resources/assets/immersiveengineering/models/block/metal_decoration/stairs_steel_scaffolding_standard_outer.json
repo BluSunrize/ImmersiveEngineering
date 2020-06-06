@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/outer_stairs",
-  "textures": {
-    "top": "immersiveengineering:block/metal_decoration/steel_scaffolding_top_standard",
-    "bottom": "immersiveengineering:block/metal_decoration/steel_scaffolding",
-    "side": "immersiveengineering:block/metal_decoration/steel_scaffolding"
-  }
-}

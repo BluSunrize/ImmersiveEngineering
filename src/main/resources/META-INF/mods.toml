@@ -7,7 +7,7 @@ issueTrackerURL="https://github.com/BluSunrize/ImmersiveEngineering/issues"
 
 [[mods]]
 modId="immersiveengineering"
-version="${file.jarVersion}"
+version="${version}"
 displayName="Immersive Engineering"
 description="A tech based mod focused on realism."
 authors="BluSunrize and Damien A.W. Hazard"
@@ -19,7 +19,7 @@ credits="All the great other Git Contributors, and the nerds on IRC!"
 [[dependencies.immersiveengineering]]
   modId="forge"
   mandatory=true
-  versionRange="[25,)"
+  versionRange="[28.2.16,)"
   ordering="NONE"
   side="BOTH"
 

@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralWorldInfo;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
@@ -25,6 +26,7 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWra
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
@@ -147,9 +149,9 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 		if(info==null)
 			return stack;
 		if(info.mineralOverride!=null)
-			ItemNBTHelper.putString(stack, "mineral", info.mineralOverride.name);
+			ItemNBTHelper.putString(stack, "mineral", info.mineralOverride.getId().toString());
 		else if(info.mineral!=null)
-			ItemNBTHelper.putString(stack, "mineral", info.mineral.name);
+			ItemNBTHelper.putString(stack, "mineral", info.mineral.getId().toString());
 		else
 			return stack;
 		if(ExcavatorHandler.mineralVeinCapacity < 0||info.depletion < 0)
@@ -237,6 +239,17 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 	public boolean isDummy()
 	{
 		return dummy > 0;
+	}
+
+	@Nullable
+	@Override
+	public IGeneralMultiblock master()
+	{
+		if(!isDummy())
+			return this;
+		BlockPos masterPos = getPos().down(dummy);
+		TileEntity te = Utils.getExistingTileEntity(world, masterPos);
+		return this.getClass().isInstance(te)?(IGeneralMultiblock)te: null;
 	}
 
 	@Override

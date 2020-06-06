@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/blastfurnace_preheater"
+    ]
+  },
+  "criteria": {
+    "has_furnace_heater": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:furnace_heater"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/blastfurnace_preheater"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_furnace_heater",
+      "has_the_recipe"
+    ]
+  ]
+}

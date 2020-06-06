@@ -4,10 +4,10 @@
     "recipes": [
       [
         {
-          "recipe": "tools/drill_diesel"
+          "recipe": "crafting/drill"
         },
         {
-          "recipe": "material/wooden_grip"
+          "recipe": "crafting/wooden_grip"
         }
       ]
     ]
@@ -17,28 +17,28 @@
     "recipes": [
       [
         {
-          "recipe": "tools/drillhead_steel"
+          "recipe": "crafting/drillhead_iron"
         },
         {
-          "recipe": "tools/drillhead_iron"
+          "recipe": "crafting/drillhead_steel"
         }
       ]
     ]
   },
   "drill_waterproof_recipe": {
     "type": "crafting",
-    "recipe": "toolupgrades/drill_waterproof"
+    "recipe": "crafting/toolupgrade_drill_waterproof"
   },
   "drill_lube_recipe": {
     "type": "crafting",
-    "recipe": "toolupgrades/drill_lube"
+    "recipe": "crafting/toolupgrade_drill_lube"
   },
   "drill_damage_recipe": {
     "type": "crafting",
-    "recipe": "toolupgrades/drill_damage"
+    "recipe": "crafting/toolupgrade_drill_damage"
   },
   "drill_capacity_recipe": {
     "type": "crafting",
-    "recipe": "toolupgrades/drill_capacity"
+    "recipe": "crafting/toolupgrade_drill_capacity"
   }
 }

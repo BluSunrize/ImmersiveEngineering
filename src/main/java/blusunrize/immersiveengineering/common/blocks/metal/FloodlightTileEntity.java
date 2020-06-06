@@ -39,6 +39,8 @@ import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -51,7 +53,7 @@ import javax.vecmath.Vector3f;
 import java.util.*;
 
 public class FloodlightTileEntity extends ImmersiveConnectableTileEntity implements ITickableTileEntity, IAdvancedDirectionalTile,
-		IHammerInteraction, ISpawnInterdiction, IBlockBounds, IActiveState, ILightValue, IOBJModelCallback<BlockState>,
+		IHammerInteraction, ISpawnInterdiction, IBlockBounds, IActiveState, IOBJModelCallback<BlockState>,
 		EnergyConnector, IStateBasedDirectional
 {
 	public static TileEntityType<FloodlightTileEntity> TYPE;
@@ -394,22 +396,16 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 	}
 
 	@Override
-	public float[] getBlockBounds()
+	public VoxelShape getBlockBounds()
 	{
-		return new float[]{
-				getFacing().getAxis()==Axis.X?0: .0625f,
-				getFacing().getAxis()==Axis.Y?0: .0625f,
-				getFacing().getAxis()==Axis.Z?0: .0625f,
-				getFacing().getAxis()==Axis.X?1: .9375f,
-				getFacing().getAxis()==Axis.Y?1: .9375f,
-				getFacing().getAxis()==Axis.Z?1: .9375f
-		};
-	}
-
-	@Override
-	public int getLightValue()
-	{
-		return getIsActive()?15: 0;
+		return VoxelShapes.create(
+				getFacing().getAxis()==Axis.X?0: .0625,
+				getFacing().getAxis()==Axis.Y?0: .0625,
+				getFacing().getAxis()==Axis.Z?0: .0625,
+				getFacing().getAxis()==Axis.X?1: .9375,
+				getFacing().getAxis()==Axis.Y?1: .9375,
+				getFacing().getAxis()==Axis.Z?1: .9375
+		);
 	}
 
 	@Override
@@ -459,7 +455,7 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, float hitX, float hitY, float hitZ, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
 	{
 		return false;
 	}
@@ -491,11 +487,9 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public Optional<TRSRTransformation> applyTransformations(BlockState object, String group, Optional<TRSRTransformation> transform)
+	public TRSRTransformation applyTransformations(BlockState object, String group, TRSRTransformation transform)
 	{
-		if(!transform.isPresent())
-			transform = Optional.of(new TRSRTransformation((Matrix4f)null));
-		Matrix4f mat = transform.get().getMatrixVec();//TODO is this correct?
+		Matrix4f mat = transform.getMatrixVec();
 		Vector3f transl = new Vector3f(.5f, .5f, .5f);
 
 		double yaw = 0;
@@ -549,7 +543,7 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 		}
 		mat.setRotation(ClientUtils.degreeToQuaterion(pitch, yaw, roll));
 		mat.setTranslation(transl);
-		return Optional.of(new TRSRTransformation(mat));
+		return new TRSRTransformation(mat);
 	}
 
 	@OnlyIn(Dist.CLIENT)

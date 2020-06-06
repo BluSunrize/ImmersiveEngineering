@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/drill"
+    ]
+  },
+  "criteria": {
+    "has_heavy_engineering": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:heavy_engineering"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/drill"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_heavy_engineering",
+      "has_the_recipe"
+    ]
+  ]
+}

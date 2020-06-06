@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.blocks;
 
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.IEConfig;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ILightValue;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISpawnInterdiction;
 import blusunrize.immersiveengineering.common.blocks.metal.FloodlightTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -38,7 +37,7 @@ public class FakeLightBlock extends IETileProviderBlock
 {
 	public FakeLightBlock()
 	{
-		super("fake_light", Properties.create(Material.AIR), null);
+		super("fake_light", Properties.create(Material.AIR), (b, p) -> null);
 		setNotNormalBlock();
 	}
 
@@ -72,7 +71,14 @@ public class FakeLightBlock extends IETileProviderBlock
 		return new FakeLightTileEntity();
 	}
 
-	public static class FakeLightTileEntity extends IEBaseTileEntity implements ITickableTileEntity, ISpawnInterdiction, ILightValue
+	@Override
+	public int getLightValue(BlockState state)
+	{
+		return 15;
+	}
+
+
+	public static class FakeLightTileEntity extends IEBaseTileEntity implements ITickableTileEntity, ISpawnInterdiction
 	{
 		public static TileEntityType<FakeLightTileEntity> TYPE;
 
@@ -81,13 +87,6 @@ public class FakeLightBlock extends IETileProviderBlock
 		public FakeLightTileEntity()
 		{
 			super(TYPE);
-			if(IEConfig.MACHINES.floodlight_spawnPrevent.get())
-				synchronized(EventHandler.interdictionTiles)
-				{
-					Set<ISpawnInterdiction> forDim = EventHandler.interdictionTiles.computeIfAbsent(world.getDimension().getType(), x -> new HashSet<>());
-					if(!forDim.contains(this))
-						forDim.add(this);
-				}
 		}
 
 		@Override
@@ -108,12 +107,6 @@ public class FakeLightBlock extends IETileProviderBlock
 				}
 			}
 
-		}
-
-		@Override
-		public int getLightValue()
-		{
-			return 15;
 		}
 
 		@Override
@@ -140,6 +133,19 @@ public class FakeLightBlock extends IETileProviderBlock
 				EventHandler.interdictionTiles.remove(this);
 			}
 			super.onChunkUnloaded();
+		}
+
+		@Override
+		public void onLoad()
+		{
+			if(IEConfig.MACHINES.floodlight_spawnPrevent.get())
+				synchronized(EventHandler.interdictionTiles)
+				{
+					Set<ISpawnInterdiction> forDim = EventHandler.interdictionTiles.computeIfAbsent(
+							world.getDimension().getType(), x -> new HashSet<>()
+					);
+					forDim.add(this);
+				}
 		}
 
 		@Override

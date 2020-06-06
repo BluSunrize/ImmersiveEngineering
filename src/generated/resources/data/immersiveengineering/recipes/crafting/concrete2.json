@@ -1,0 +1,28 @@
+{
+  "type": "immersiveengineering:turn_and_copy",
+  "group": "ie_concrete",
+  "pattern": [
+    "scs",
+    "gbg",
+    "scs"
+  ],
+  "key": {
+    "s": {
+      "item": "immersiveengineering:slag"
+    },
+    "c": {
+      "tag": "forge:clay"
+    },
+    "g": {
+      "tag": "forge:gravel"
+    },
+    "b": {
+      "item": "minecraft:water_bucket"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:concrete",
+    "count": 12
+  },
+  "quarter_turn": true
+}

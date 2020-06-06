@@ -1,6 +1,6 @@
 {
   "recipe": {
     "type": "crafting",
-    "recipe": "wooden_devices/item_router"
+    "recipe": "crafting/sorter"
   }
 }

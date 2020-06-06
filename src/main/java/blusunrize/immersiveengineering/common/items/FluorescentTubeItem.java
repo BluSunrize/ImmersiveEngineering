@@ -32,7 +32,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
@@ -43,6 +42,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.vecmath.Vector4f;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -70,14 +70,13 @@ public class FluorescentTubeItem extends IEBaseItem implements IConfigurableTool
 				Vec3d look = player.getLookVec();
 				float angle = (float)Math.toDegrees(Math.atan2(look.x, look.z));
 				FluorescentTubeEntity tube = new FluorescentTubeEntity(world, stack.copy(), angle);
-				BlockPos pos = ctx.getPos();
-				tube.setPosition(pos.getX()+ctx.getHitVec().x, pos.getY()+1.5, pos.getZ()+ctx.getHitVec().z);
+				tube.setPosition(ctx.getHitVec().x, ctx.getHitVec().y+1.5, ctx.getHitVec().z);
 				world.addEntity(tube);
 				stack.split(1);
 				if(stack.getCount() > 0)
-					player.setItemStackToSlot(EquipmentSlotType.MAINHAND, stack);
+					player.setHeldItem(ctx.getHand(), stack);
 				else
-					player.setItemStackToSlot(EquipmentSlotType.MAINHAND, ItemStack.EMPTY);
+					player.setHeldItem(ctx.getHand(), ItemStack.EMPTY);
 			}
 			return ActionResultType.SUCCESS;
 		}
@@ -175,10 +174,16 @@ public class FluorescentTubeItem extends IEBaseItem implements IConfigurableTool
 		return super.getColourForIEItem(stack, pass);
 	}
 
-	public static int getRGBInt(ItemStack stack, float factor)
+	public static float[] getRGBFloat(ItemStack stack, float factor)
 	{
 		float[] fRGB = getRGB(stack);
-		return (((int)(fRGB[0]*255*factor)<<16)+((int)(fRGB[1]*255*factor)<<8)+(int)(fRGB[2]*255*factor));
+		return new float[]{fRGB[0]*factor, fRGB[1]*factor, fRGB[2]*factor, 1};
+	}
+
+	public static int getRGBInt(ItemStack stack, float factor)
+	{
+		float[] scaled = getRGBFloat(stack, factor);
+		return (((int)(scaled[0]*255)<<16)+((int)(scaled[1]*255)<<8)+(int)(scaled[2]*255));
 	}
 
 	public static String hexColorString(ItemStack stack)
@@ -251,16 +256,16 @@ public class FluorescentTubeItem extends IEBaseItem implements IConfigurableTool
 	}
 
 	@Override
-	public int getRenderColour(ItemStack object, String group)
+	public Vector4f getRenderColor(ItemStack object, String group, Vector4f original)
 	{
 		if("tube".equals(group))
 		{
 			boolean lit = isLit(object);
 			float min = .3F+(lit?ItemNBTHelper.getFloat(object, LIT_STRENGTH)*.68F: 0);
 			float mult = min+(lit?Utils.RAND.nextFloat()*MathHelper.clamp(1-min, 0, .1F): 0);
-			return getRGBInt(object, mult)|0xff000000;
+			return new Vector4f(getRGBFloat(object, mult));
 		}
 		else
-			return 0xff111111;
+			return new Vector4f(.067f, .067f, .067f, 1);
 	}
 }

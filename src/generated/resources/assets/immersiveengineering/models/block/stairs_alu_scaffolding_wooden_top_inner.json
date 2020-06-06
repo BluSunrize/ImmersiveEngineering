@@ -1,0 +1,8 @@
+{
+  "parent": "block/inner_stairs",
+  "textures": {
+    "side": "immersiveengineering:block/metal_decoration/aluminum_scaffolding",
+    "bottom": "immersiveengineering:block/metal_decoration/aluminum_scaffolding",
+    "top": "immersiveengineering:block/metal_decoration/aluminum_scaffolding_top_wooden_top"
+  }
+}

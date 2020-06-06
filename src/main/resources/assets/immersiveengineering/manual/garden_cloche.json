@@ -1,6 +1,6 @@
 {
   "recipe": {
     "type": "crafting",
-    "recipe": "metal_device/garden_cloche"
+    "recipe": "crafting/cloche"
   }
 }

@@ -1,0 +1,15 @@
+{
+  "textures": {
+    "particle": "immersiveengineering:block/connector/connector_redstone"
+  },
+  "loader": "immersiveengineering:connector",
+  "base_model": {
+    "loader": "immersiveengineering:ie_obj",
+    "model": "immersiveengineering:models/block/connector/connector_redstone.obj.ie",
+    "flip-v": true
+  },
+  "layers": [
+    "SOLID"
+  ],
+  "detectCullableFaces": false
+}

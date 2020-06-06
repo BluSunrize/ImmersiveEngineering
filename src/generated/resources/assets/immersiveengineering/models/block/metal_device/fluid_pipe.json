@@ -1,0 +1,9 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "particle": "immersiveengineering:block/metal_device/fluid_pipe"
+  },
+  "loader": "immersiveengineering:ie_obj",
+  "model": "immersiveengineering:models/block/metal_device/fluid_pipe.obj.ie",
+  "flip-v": true
+}

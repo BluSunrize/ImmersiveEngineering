@@ -15,6 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -77,12 +78,8 @@ public abstract class WireType implements ILocalHandlerProvider
 	 * Used to determine which other wire types can be on the same connector as this wire (obviously does not apply to transformers)
 	 * Returning null will cause the wire to be incompatible with all other wires
 	 */
-	@Nullable
-	public String getCategory()
-	{
-		return null;
-	}
-
+	@Nonnull
+	public abstract String getCategory();
 
 	@OnlyIn(Dist.CLIENT)
 	public static TextureAtlasSprite iconDefaultWire;

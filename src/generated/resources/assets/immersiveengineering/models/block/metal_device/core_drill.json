@@ -1,0 +1,10 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "particle": "immersiveengineering:block/metal_device/coresample_drill"
+  },
+  "loader": "forge:obj",
+  "detectCullableFaces": false,
+  "model": "immersiveengineering:models/block/metal_device/core_drill.obj",
+  "flip-v": true
+}

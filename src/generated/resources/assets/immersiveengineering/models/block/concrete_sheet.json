@@ -1,0 +1,6 @@
+{
+  "parent": "block/carpet",
+  "textures": {
+    "wool": "immersiveengineering:block/stone_decoration/concrete"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "start": {
+    "type": "crafting",
+    "recipe": "crafting/toolbox"
+  }
+}

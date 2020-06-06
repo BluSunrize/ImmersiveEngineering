@@ -40,9 +40,10 @@ public class IEBipedLayerRenderer<E extends LivingEntity, M extends BipedModel<E
 	@Override
 	public void render(LivingEntity living, float limbSwing, float prevLimbSwing, float partialTicks, float rotation, float yaw, float pitch, float scale)
 	{
-		if(!living.getItemStackFromSlot(EquipmentSlotType.HEAD).isEmpty()&&ItemNBTHelper.hasKey(living.getItemStackFromSlot(EquipmentSlotType.HEAD), "IE:Earmuffs"))
+		ItemStack head = living.getItemStackFromSlot(EquipmentSlotType.HEAD);
+		if(!head.isEmpty()&&(head.getItem()==Misc.earmuffs||ItemNBTHelper.hasKey(head, Lib.NBT_Earmuffs)))
 		{
-			ItemStack earmuffs = ItemNBTHelper.getItemStack(living.getItemStackFromSlot(EquipmentSlotType.HEAD), Lib.NBT_Earmuffs);
+			ItemStack earmuffs = head.getItem()==Misc.earmuffs?head: ItemNBTHelper.getItemStack(head, Lib.NBT_Earmuffs);
 			if(!earmuffs.isEmpty())
 			{
 				GlStateManager.pushMatrix();
@@ -53,13 +54,15 @@ public class IEBipedLayerRenderer<E extends LivingEntity, M extends BipedModel<E
 				GlStateManager.color3f((colour >> 16&255)/255f, (colour >> 8&255)/255f, (colour&255)/255f);
 				ClientUtils.bindTexture(Misc.earmuffs.getArmorTexture(earmuffs, living, EquipmentSlotType.HEAD, null));
 				model.render(living, limbSwing, prevLimbSwing, rotation, yaw, pitch, scale);
+				GlStateManager.color3f(1, 1, 1);
 				GlStateManager.popMatrix();
 			}
 		}
 
-		if(!living.getItemStackFromSlot(EquipmentSlotType.CHEST).isEmpty()&&ItemNBTHelper.hasKey(living.getItemStackFromSlot(EquipmentSlotType.CHEST), "IE:Powerpack"))
+		ItemStack chest = living.getItemStackFromSlot(EquipmentSlotType.CHEST);
+		if(!chest.isEmpty()&&(chest.getItem()==Misc.powerpack||ItemNBTHelper.hasKey(chest, Lib.NBT_Powerpack)))
 		{
-			ItemStack powerpack = ItemNBTHelper.getItemStack(living.getItemStackFromSlot(EquipmentSlotType.CHEST), Lib.NBT_Powerpack);
+			ItemStack powerpack = chest.getItem()==Misc.powerpack?chest: ItemNBTHelper.getItemStack(chest, Lib.NBT_Powerpack);
 			addWornPowerpack(living, powerpack);
 		}
 

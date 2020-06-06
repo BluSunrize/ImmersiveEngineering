@@ -1,0 +1,10 @@
+{
+  "recipe": {
+    "type": "crafting",
+    "recipe": "crafting/alloybrick"
+  },
+  "multiblock": {
+    "type": "multiblock",
+    "name": "multiblocks/alloy_smelter"
+  }
+}

@@ -119,5 +119,15 @@
 			"immersiveengineering:dire_switch"
 		],
 		"subtitle": "subtitle.immersiveengineering.direSwitch"
+	},
+	"chute": {
+		"category": "block",
+		"sounds": [
+			"immersiveengineering:chute0",
+			"immersiveengineering:chute1",
+			"immersiveengineering:chute2",
+			"immersiveengineering:chute3"
+		],
+		"subtitle": "subtitle.immersiveengineering.chute"
 	}
 }

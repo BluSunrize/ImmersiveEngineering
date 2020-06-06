@@ -1,22 +1,13 @@
 {
   "variants": {
-    "type=top,waterlogged=true": {
-      "model": "immersiveengineering:block/stone_decoration/insulating_glass_slab_top"
+    "type=top": {
+      "model": "immersiveengineering:block/slab_insulating_glass_top"
     },
-    "type=top,waterlogged=false": {
-      "model": "immersiveengineering:block/stone_decoration/insulating_glass_slab_top"
+    "type=bottom": {
+      "model": "immersiveengineering:block/slab_insulating_glass_bottom"
     },
-    "type=bottom,waterlogged=true": {
-      "model": "immersiveengineering:block/stone_decoration/insulating_glass_slab"
-    },
-    "type=bottom,waterlogged=false": {
-      "model": "immersiveengineering:block/stone_decoration/insulating_glass_slab"
-    },
-    "type=double,waterlogged=true": {
-      "model": "immersiveengineering:block/stone_decoration/insulating_glass"
-    },
-    "type=double,waterlogged=false": {
-      "model": "immersiveengineering:block/stone_decoration/insulating_glass"
+    "type=double": {
+      "model": "immersiveengineering:block/slab_insulating_glass_double"
     }
   }
 }

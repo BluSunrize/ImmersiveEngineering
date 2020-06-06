@@ -37,7 +37,7 @@ public class IEItemFluidHandler extends FluidHandlerItemStack
 			return new TranslationTextComponent(Lib.DESC_FLAVOUR+"fluidStack", fluid.getDisplayName(), fluid.getAmount(), fluidCapacity)
 					.setStyle(new Style().setColor(rarity));
 		}
-		return new TranslationTextComponent(Lib.DESC_FLAVOUR+"drill.empty");
+		return new TranslationTextComponent(Lib.DESC_FLAVOUR+"drill.empty").setStyle(new Style().setColor(TextFormatting.GRAY));
 	}
 
 	public IEItemFluidHandler(ItemStack container, int capacity)
@@ -99,5 +99,11 @@ public class IEItemFluidHandler extends FluidHandlerItemStack
 			}
 			return 0;
 		}
+	}
+
+	@Override
+	public int getTankCapacity(int tank)
+	{
+		return getCapacity();
 	}
 }

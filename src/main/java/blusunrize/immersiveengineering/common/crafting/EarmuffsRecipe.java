@@ -8,11 +8,11 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.passive.SheepEntity;
@@ -22,7 +22,7 @@ import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.SpecialRecipeSerializer;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -32,9 +32,6 @@ import java.util.List;
 
 public class EarmuffsRecipe implements ICraftingRecipe
 {
-	public static final IRecipeSerializer<EarmuffsRecipe> SERIALIZER = IRecipeSerializer.register(
-			ImmersiveEngineering.MODID+":earmuffs", new SpecialRecipeSerializer<>(EarmuffsRecipe::new)
-	);
 	private final ResourceLocation id;
 
 	public EarmuffsRecipe(ResourceLocation rl)
@@ -184,6 +181,12 @@ public class EarmuffsRecipe implements ICraftingRecipe
 	@Override
 	public IRecipeSerializer<?> getSerializer()
 	{
-		return SERIALIZER;
+		return RecipeSerializers.EARMUFF_SERIALIZER.get();
+	}
+
+	@Override
+	public NonNullList<Ingredient> getIngredients()
+	{
+		return NonNullList.withSize(1, Ingredient.fromItems(Misc.earmuffs));
 	}
 }

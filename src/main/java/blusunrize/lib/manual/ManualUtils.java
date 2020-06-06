@@ -8,13 +8,14 @@
 
 package blusunrize.lib.manual;
 
+import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.lib.manual.Tree.AbstractNode;
 import blusunrize.lib.manual.gui.GuiButtonManualLink;
 import blusunrize.lib.manual.gui.ManualScreen;
-import com.google.common.base.Preconditions;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -33,8 +34,10 @@ import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.Function;
@@ -174,14 +177,13 @@ public class ManualUtils
 			String[] segment = rep.substring(0, rep.length()-1).split(";");
 			if(segment.length < 3)
 				break;
-			String anchor = segment.length > 3?segment[3]: "-1";
+			String anchor = segment.length > 3?segment[3]: TextSplitter.START;
 			String[] resultParts = segment[2].split("(?<= )");// Split and keep the whitespace at the end of the tokens
 			StringBuilder result = new StringBuilder();
 			List<String> forCompleteLink = new ArrayList<>(3*resultParts.length);
 			for(String resultPart : resultParts)
 			{
-				//prefixing replacements with MC's formatting character and an unused char to keep them unique, but not counted for size
-				String part = format+'\u00a7'+String.valueOf((char)(128+repList.size()))+resultPart;
+				String part = format+resultPart;
 				forCompleteLink.add(part);
 				forCompleteLink.add(segment[1]);
 				forCompleteLink.add(anchor);
@@ -197,9 +199,8 @@ public class ManualUtils
 	public static void addLinks(ManualEntry entry, ManualInstance manual, ManualScreen gui, List<String> text, int x, int y,
 								List<Button> pageButtons, List<String[]> repList)
 	{
-		for(int linkIndex = 0; linkIndex < repList.size(); linkIndex++)
+		for(String[] repComplete : repList)
 		{
-			String[] repComplete = repList.get(linkIndex);
 			String[] rep = new String[3];
 			List<GuiButtonManualLink> parts = new ArrayList<>();
 			for(int i = 0; i < repComplete.length/3; i++)
@@ -211,8 +212,7 @@ public class ManualUtils
 					int start;
 					if((start = s.indexOf(rep[0].trim())) >= 0)
 					{
-						String formatIdent = rep[0].substring(0, 2);
-						String linkText = rep[0].substring(2);
+						String linkText = rep[0];
 						if(!s.substring(start).startsWith(rep[0]))//This can happen when whitespace is cut off at the end of a line
 							linkText = linkText.trim();
 						int bx = manual.fontRenderer().getStringWidth(s.substring(0, start));
@@ -236,13 +236,23 @@ public class ManualUtils
 							e.printStackTrace();
 							throw new RuntimeException(e);
 						}
-						ManualEntry bEntry = Objects.requireNonNull(manual.getEntry(bkey), bkey+" is not a known entry!");
-						Preconditions.checkArgument(bEntry.hasAnchor(bAnchor), "Entry "+bkey+" does not contain anchor "+bAnchor);
+						ManualInstance.ManualLink link;
+						ManualEntry bEntry = manual.getEntry(bkey);
+						if(bEntry!=null&&bEntry.hasAnchor(bAnchor))
+							link = new ManualInstance.ManualLink(bEntry, bAnchor, bOffset);
+						else
+						{
+							if(bEntry==null)
+								IELogger.logger.error("Unknown manual entry: {} (link from {})", bkey, entry.getLocation());
+							else if(!bEntry.hasAnchor(bAnchor))
+								IELogger.logger.error("Unknown anchor {} in entry {} (link from {})", bAnchor, bkey,
+										entry.getLocation());
+							link = null;
+						}
 						GuiButtonManualLink btn = new GuiButtonManualLink(gui, x+bx, y+by, bw, (int)(manual.fontRenderer().FONT_HEIGHT*1.5),
-								new ManualInstance.ManualLink(bEntry, bAnchor, bOffset), linkText);
+								link, linkText);
 						parts.add(btn);
 						pageButtons.add(btn);
-						s = s.replaceFirst(formatIdent, "");
 						text.set(line, s);
 						break;
 					}
@@ -335,7 +345,7 @@ public class ManualUtils
 		for(String s : text)
 		{
 			fontRenderer.drawString(s, x, y, colour);
-			y += 9;
+			y += fontRenderer.FONT_HEIGHT;
 		}
 	}
 
@@ -369,10 +379,20 @@ public class ManualUtils
 			return new ResourceLocation(instance.getDefaultResourceDomain(), s);
 	}
 
+	public static boolean isNumber(JsonObject main, String name)
+	{
+		return main.has(name)&&main.get(name).isJsonPrimitive()&&main.get(name).getAsJsonPrimitive().isNumber();
+	}
+
+	@Nullable
 	public static PositionedItemStack parsePosItemStack(JsonElement ele)
 	{
 		JsonObject json = ele.getAsJsonObject();
+		if(!isNumber(json, "x"))
+			return null;
 		int x = JSONUtils.getInt(json, "x");
+		if(!isNumber(json, "y"))
+			return null;
 		int y = JSONUtils.getInt(json, "y");
 		if(JSONUtils.isString(json, "item"))
 			return new PositionedItemStack(CraftingHelper.getItemStack(json, true), x, y);
@@ -385,7 +405,24 @@ public class ManualUtils
 			return new PositionedItemStack(stacks, x, y);
 		}
 		else
-			return new PositionedItemStack(CraftingHelper.getIngredient(json), x, y);
+			try
+			{
+				return new PositionedItemStack(CraftingHelper.getIngredient(json), x, y);
+			} catch(JsonSyntaxException xcp)
+			{
+				return null;
+			}
+	}
+
+	public static ItemStack getItemStackFromJson(ManualInstance m, JsonElement jsonEle)
+	{
+		if(jsonEle.isJsonPrimitive())
+		{
+			ResourceLocation itemName = getLocationForManual(jsonEle.getAsString(), m);
+			return new ItemStack(ForgeRegistries.ITEMS.getValue(itemName));
+		}
+		else
+			return CraftingHelper.getItemStack(jsonEle.getAsJsonObject(), true);
 	}
 
 	public static Object getRecipeObjFromJson(ManualInstance m, JsonElement jsonEle)
@@ -405,9 +442,17 @@ public class ManualUtils
 			JsonArray json = jsonEle.getAsJsonArray();
 			PositionedItemStack[] stacks = new PositionedItemStack[json.size()];
 			for(int i = 0; i < json.size(); i++)
-				stacks[i] = parsePosItemStack(json.get(i));
+			{
+				PositionedItemStack posStack = parsePosItemStack(json.get(i));
+				if(posStack!=null)
+					stacks[i] = posStack;
+				else
+					throw new RuntimeException("Failed to load positional item stack from "+json.get(i));
+			}
 			return stacks;
 		}
+		else if(jsonEle.isJsonPrimitive()&&jsonEle.getAsJsonPrimitive().isString())
+			return ManualUtils.getLocationForManual(jsonEle.getAsString(), m);
 		throw new RuntimeException("Could not find recipe for "+jsonEle);
 	}
 

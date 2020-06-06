@@ -1,34 +1,19 @@
 {
   "variants": {
     "facing=north": {
-      "model": "immersiveengineering:block/coresample.obj",
-      "custom": {
-        "flip-v": true
-      }
+      "model": "immersiveengineering:block/coresample"
     },
     "facing=south": {
-      "model": "immersiveengineering:block/coresample.obj",
-      "y": 180,
-      "uvlock": true,
-      "custom": {
-        "flip-v": true
-      }
+      "model": "immersiveengineering:block/coresample",
+      "y": 180
     },
     "facing=west": {
-      "model": "immersiveengineering:block/coresample.obj",
-      "y": 270,
-      "uvlock": true,
-      "custom": {
-        "flip-v": true
-      }
+      "model": "immersiveengineering:block/coresample",
+      "y": 270
     },
     "facing=east": {
-      "model": "immersiveengineering:block/coresample.obj",
-      "y": 90,
-      "uvlock": true,
-      "custom": {
-        "flip-v": true
-      }
+      "model": "immersiveengineering:block/coresample",
+      "y": 90
     }
   }
 }

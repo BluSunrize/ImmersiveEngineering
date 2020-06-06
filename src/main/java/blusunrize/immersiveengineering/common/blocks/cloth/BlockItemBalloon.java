@@ -8,10 +8,11 @@
 
 package blusunrize.immersiveengineering.common.blocks.cloth;
 
-import blusunrize.immersiveengineering.common.blocks.IEBlocks.Cloth;
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.Cloth;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
@@ -25,10 +26,9 @@ import net.minecraft.world.World;
 
 public class BlockItemBalloon extends BlockItemIE
 {
-
-	public BlockItemBalloon(Block b)
+	public BlockItemBalloon(Block b, Item.Properties props)
 	{
-		super(b);
+		super(b, props);
 	}
 
 	@Override

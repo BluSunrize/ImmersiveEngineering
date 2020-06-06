@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/slab_top",
-  "textures": {
-    "top": "immersiveengineering:block/metal/storage_uranium_top",
-    "bottom": "immersiveengineering:block/metal/storage_uranium_top",
-    "side": "immersiveengineering:block/metal/storage_uranium_side"
-  }
-}

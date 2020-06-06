@@ -429,6 +429,13 @@ public class Matrix4
 		return new Vec3d(x, y, z);
 	}
 
+	public net.minecraft.client.renderer.Vector3f apply(net.minecraft.client.renderer.Vector3f vec)
+	{
+		Vec3d input = new Vec3d(vec.getX(), vec.getY(), vec.getZ());
+		Vec3d output = apply(input);
+		return new net.minecraft.client.renderer.Vector3f((float)output.x, (float)output.y, (float)output.z);
+	}
+
 	public Vec3d apply(Vec3d vec)
 	{
 		return mult3x3(vec).add(m03, m13, m23);

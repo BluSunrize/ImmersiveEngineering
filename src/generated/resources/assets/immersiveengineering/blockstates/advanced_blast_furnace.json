@@ -1,88 +1,26 @@
 {
   "variants": {
-    "active=false,facing=north,multiblockslave=false": {
-      "model": "immersiveengineering:block/blastfurnace_advanced.obj",
-      "custom": {
-        "flip-v": true
-      }
+    "facing=north,multiblockslave=false": {
+      "model": "immersiveengineering:block/blastfurnace_advanced",
+      "uvlock": true
     },
-    "active=false,facing=north,multiblockslave=true": {
-      "model": "immersiveengineering:block/ie_empty"
-    },
-    "active=false,facing=south,multiblockslave=false": {
-      "model": "immersiveengineering:block/blastfurnace_advanced.obj",
+    "facing=south,multiblockslave=false": {
+      "model": "immersiveengineering:block/blastfurnace_advanced",
       "y": 180,
-      "uvlock": true,
-      "custom": {
-        "flip-v": true
-      }
+      "uvlock": true
     },
-    "active=false,facing=south,multiblockslave=true": {
-      "model": "immersiveengineering:block/ie_empty"
-    },
-    "active=false,facing=west,multiblockslave=false": {
-      "model": "immersiveengineering:block/blastfurnace_advanced.obj",
+    "facing=west,multiblockslave=false": {
+      "model": "immersiveengineering:block/blastfurnace_advanced",
       "y": 270,
-      "uvlock": true,
-      "custom": {
-        "flip-v": true
-      }
+      "uvlock": true
     },
-    "active=false,facing=west,multiblockslave=true": {
-      "model": "immersiveengineering:block/ie_empty"
-    },
-    "active=false,facing=east,multiblockslave=false": {
-      "model": "immersiveengineering:block/blastfurnace_advanced.obj",
+    "facing=east,multiblockslave=false": {
+      "model": "immersiveengineering:block/blastfurnace_advanced",
       "y": 90,
-      "uvlock": true,
-      "custom": {
-        "flip-v": true
-      }
+      "uvlock": true
     },
-    "active=false,facing=east,multiblockslave=true": {
-      "model": "immersiveengineering:block/ie_empty"
-    },
-    "active=true,facing=north,multiblockslave=false": {
-      "model": "immersiveengineering:block/blastfurnace_advanced.obj",
-      "custom": {
-        "flip-v": true
-      }
-    },
-    "active=true,facing=north,multiblockslave=true": {
-      "model": "immersiveengineering:block/ie_empty"
-    },
-    "active=true,facing=south,multiblockslave=false": {
-      "model": "immersiveengineering:block/blastfurnace_advanced.obj",
-      "y": 180,
-      "uvlock": true,
-      "custom": {
-        "flip-v": true
-      }
-    },
-    "active=true,facing=south,multiblockslave=true": {
-      "model": "immersiveengineering:block/ie_empty"
-    },
-    "active=true,facing=west,multiblockslave=false": {
-      "model": "immersiveengineering:block/blastfurnace_advanced.obj",
-      "y": 270,
-      "uvlock": true,
-      "custom": {
-        "flip-v": true
-      }
-    },
-    "active=true,facing=west,multiblockslave=true": {
-      "model": "immersiveengineering:block/ie_empty"
-    },
-    "active=true,facing=east,multiblockslave=false": {
-      "model": "immersiveengineering:block/blastfurnace_advanced.obj",
-      "y": 90,
-      "uvlock": true,
-      "custom": {
-        "flip-v": true
-      }
-    },
-    "active=true,facing=east,multiblockslave=true": {
-      "model": "immersiveengineering:block/ie_empty"
+    "multiblockslave=true": {
+      "model": "immersiveengineering:block/advanced_blast_furnace_empty"
     }
   }
 }

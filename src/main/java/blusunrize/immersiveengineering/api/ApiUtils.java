@@ -9,20 +9,23 @@
 package blusunrize.immersiveengineering.api;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.crafting.IngredientStack;
+import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.api.wires.Connection.CatenaryData;
 import blusunrize.immersiveengineering.api.wires.WireCollisionData.CollisionInfo;
+import blusunrize.immersiveengineering.api.wires.utils.CatenaryTracer;
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
 import blusunrize.immersiveengineering.common.network.MessageObstructedConnection;
-import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
-import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.AtomicDouble;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
+import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
+import net.minecraft.block.AbstractRailBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -30,29 +33,33 @@ import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.concurrent.ThreadTaskExecutor;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.concurrent.TickDelayedTask;
+import net.minecraft.util.math.*;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
+import net.minecraftforge.common.extensions.IForgeEntityMinecart;
+import net.minecraftforge.common.model.TRSRTransformation;
+import net.minecraftforge.common.util.JsonUtils;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -60,7 +67,9 @@ import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.LogicalSidedProvider;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Pair;
@@ -68,19 +77,21 @@ import org.apache.commons.lang3.tuple.Triple;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.vecmath.Vector3f;
+import javax.vecmath.Vector4f;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
-import static blusunrize.immersiveengineering.common.IERecipes.getIngot;
+import static blusunrize.immersiveengineering.api.IETags.getIngot;
 
 public class ApiUtils
 {
 	public static boolean compareToOreName(ItemStack stack, ResourceLocation oreName)
 	{
-		if(!isNonemptyItemTag(oreName))
+		if(!isNonemptyBlockOrItemTag(oreName))
 			return false;
 		Tag<Item> itemTag = ItemTags.getCollection().get(oreName);
 		if(itemTag!=null&&itemTag.getAllElements().contains(stack.getItem()))
@@ -110,8 +121,10 @@ public class ApiUtils
 				if(stackMatchesObject(stack, io, checkNBT))
 					return true;
 		}
-		else if(o instanceof IngredientStack)
-			return ((IngredientStack)o).matchesItemStack(stack);
+		else if(o instanceof IngredientWithSize)
+			return ((IngredientWithSize)o).test(stack);
+		else if(o instanceof Ingredient)
+			return ((Ingredient)o).test(stack);
 		else if(o instanceof ItemStack[])
 		{
 			for(ItemStack io : (ItemStack[])o)
@@ -138,24 +151,35 @@ public class ApiUtils
 		return s2;
 	}
 
-	public static boolean stacksMatchIngredientList(List<IngredientStack> list, NonNullList<ItemStack> stacks)
+	public static boolean stacksMatchIngredientList(List<Ingredient> list, NonNullList<ItemStack> stacks)
 	{
-		ArrayList<ItemStack> queryList = new ArrayList<ItemStack>(stacks.size());
+		return stacksMatchList(list, stacks, i -> 1, Ingredient::test);
+	}
+
+	public static boolean stacksMatchIngredientWithSizeList(List<IngredientWithSize> list, NonNullList<ItemStack> stacks)
+	{
+		return stacksMatchList(list, stacks, IngredientWithSize::getCount, IngredientWithSize::testIgnoringSize);
+	}
+
+	private static <T> boolean stacksMatchList(List<T> list, NonNullList<ItemStack> stacks, Function<T, Integer> size,
+											   BiPredicate<T, ItemStack> matchesIgnoringSize)
+	{
+		List<ItemStack> queryList = new ArrayList<>(stacks.size());
 		for(ItemStack s : stacks)
 			if(!s.isEmpty())
 				queryList.add(s.copy());
 
-		for(IngredientStack ingr : list)
+		for(T ingr : list)
 			if(ingr!=null)
 			{
-				int amount = ingr.inputSize;
+				int amount = size.apply(ingr);
 				Iterator<ItemStack> it = queryList.iterator();
 				while(it.hasNext())
 				{
 					ItemStack query = it.next();
 					if(!query.isEmpty())
 					{
-						if(ingr.matchesItemStackIgnoringSize(query))
+						if(matchesIgnoringSize.test(ingr, query))
 						{
 							if(query.getCount() > amount)
 							{
@@ -185,13 +209,6 @@ public class ApiUtils
 		return Ingredient.fromStacks(list.toArray(new ItemStack[0]));
 	}
 
-	@Deprecated
-	public static ComparableItemStack createComparableItemStack(ItemStack stack)
-	{
-		return createComparableItemStack(stack, true);
-	}
-
-
 	public static ComparableItemStack createComparableItemStack(ItemStack stack, boolean copy)
 	{
 		return createComparableItemStack(stack, copy, stack.hasTag()&&!stack.getOrCreateTag().isEmpty());
@@ -199,9 +216,31 @@ public class ApiUtils
 
 	public static ComparableItemStack createComparableItemStack(ItemStack stack, boolean copy, boolean useNbt)
 	{
-		ComparableItemStack comp = new ComparableItemStack(stack, true, copy);
+		ComparableItemStack comp = new ComparableItemStack(stack, copy);
 		comp.setUseNBT(useNbt);
 		return comp;
+	}
+
+	public static JsonElement jsonSerializeFluidStack(FluidStack fluidStack)
+	{
+		if(fluidStack==null)
+			return JsonNull.INSTANCE;
+		JsonObject jsonObject = new JsonObject();
+		jsonObject.addProperty("fluid", fluidStack.getFluid().getRegistryName().toString());
+		jsonObject.addProperty("amount", fluidStack.getAmount());
+		if(fluidStack.hasTag())
+			jsonObject.addProperty("tag", fluidStack.getTag().toString());
+		return jsonObject;
+	}
+
+	public static FluidStack jsonDeserializeFluidStack(JsonObject jsonObject)
+	{
+		Fluid fluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(JSONUtils.getString(jsonObject, "fluid")));
+		int amount = JSONUtils.getInt(jsonObject, "amount");
+		FluidStack fluidStack = new FluidStack(fluid, amount);
+		if(JSONUtils.hasField(jsonObject, "tag"))
+			fluidStack.setTag(JsonUtils.readNBT(jsonObject, "tag"));
+		return fluidStack;
 	}
 
 	public static boolean isNonemptyItemTag(ResourceLocation name)
@@ -268,7 +307,13 @@ public class ApiUtils
 		{
 			for(String componentType : componentTypes)
 				if(name.getPath().startsWith(componentType))
-					return new String[]{componentType, name.getPath().substring(componentType.length())};
+				{
+					String material = name.getPath().substring(componentType.length());
+					if(material.startsWith("/"))
+						material = material.substring(1);
+					if(material.length() > 0)
+						return new String[]{componentType, material};
+				}
 		}
 		return null;
 	}
@@ -329,6 +374,31 @@ public class ApiUtils
 			}
 		}
 		return null;
+	}
+
+	public static LazyOptional<IItemHandler> findItemHandlerAtPos(World world, BlockPos pos, Direction side, boolean allowCart)
+	{
+		TileEntity neighbourTile = world.getTileEntity(pos);
+		if(neighbourTile!=null)
+		{
+			LazyOptional<IItemHandler> cap = neighbourTile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side);
+			if(cap.isPresent())
+				return cap;
+		}
+		if(allowCart)
+		{
+			if(AbstractRailBlock.isRail(world, pos))
+			{
+				List<Entity> list = world.getEntitiesInAABBexcluding(null, new AxisAlignedBB(pos), entity -> entity instanceof IForgeEntityMinecart);
+				if(!list.isEmpty())
+				{
+					LazyOptional<IItemHandler> cap = list.get(world.rand.nextInt(list.size())).getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+					if(cap.isPresent())
+						return cap;
+				}
+			}
+		}
+		return LazyOptional.empty();
 	}
 
 	public static boolean canInsertStackIntoInventory(TileEntity inventory, ItemStack stack, Direction side)
@@ -425,12 +495,6 @@ public class ApiUtils
 		return vec0.add(vec1.x, vec1.y, vec1.z);
 	}
 
-	public static double acosh(double x)
-	{
-		//See http://mathworld.wolfram.com/InverseHyperbolicCosine.html
-		return Math.log(x+Math.sqrt(x+1)*Math.sqrt(x-1));
-	}
-
 	public static Vec3d[] getConnectionCatenary(Vec3d start, Vec3d end, double slack)
 	{
 		final int vertices = 17;
@@ -483,149 +547,34 @@ public class ApiUtils
 		return p.add(dim==0?amount: 0, dim==1?amount: 0, dim==2?amount: 0);
 	}
 
-	public static boolean raytraceAlongCatenary(Connection conn, LocalWireNetwork net, Predicate<Triple<BlockPos, Vec3d, Vec3d>> shouldStop,
-												Consumer<Triple<BlockPos, Vec3d, Vec3d>> close)
+	public static void raytraceAlongCatenary(Connection conn, LocalWireNetwork net, Consumer<Triple<BlockPos, Vec3d, Vec3d>> in,
+											 Consumer<Triple<BlockPos, Vec3d, Vec3d>> close)
 	{
 		Vec3d vStart = getVecForIICAt(net, conn.getEndA(), conn, false);
 		Vec3d vEnd = getVecForIICAt(net, conn.getEndB(), conn, true);
-		IELogger.logger.info("Start: {}, end: {}", vStart, vEnd);
-		return raytraceAlongCatenaryRelative(conn, shouldStop, close, vStart, vEnd);
+		raytraceAlongCatenaryRelative(conn, in, close, vStart, vEnd);
 	}
 
-	public static boolean raytraceAlongCatenaryRelative(Connection conn, Predicate<Triple<BlockPos, Vec3d, Vec3d>> shouldStop,
-														Consumer<Triple<BlockPos, Vec3d, Vec3d>> close, Vec3d vStart, Vec3d vEnd)
+	public static void raytraceAlongCatenaryRelative(Connection conn, Consumer<Triple<BlockPos, Vec3d, Vec3d>> in,
+													 Consumer<Triple<BlockPos, Vec3d, Vec3d>> close, Vec3d vStart,
+													 Vec3d vEnd)
 	{
 		conn.generateCatenaryData(vStart, vEnd);
-		HashMap<BlockPos, Vec3d> halfScanned = new HashMap<>();
-		HashSet<BlockPos> done = new HashSet<>();
-		HashSet<Triple<BlockPos, Vec3d, Vec3d>> near = new HashSet<>();
-		Vec3d across = vEnd.subtract(vStart);
-		across = new Vec3d(across.x, 0, across.z);
-		double lengthHor = across.length();
-		BlockPos startPos = conn.getEndA().getPosition();
-		BlockPos endPos = conn.getEndB().getPosition();
-		halfScanned.put(startPos, vStart);
-		halfScanned.put(endPos, vEnd);
-		//Raytrace X&Z
-		for(int dim = 0; dim <= 2; dim += 2)
-		{
-			int start = (int)Math.ceil(Math.min(getDim(vStart, dim), getDim(vEnd, dim)));
-			int end = (int)Math.ceil(Math.max(getDim(vStart, dim), getDim(vEnd, dim)));
-			for(int i = start; i < end; i++)
-			{
-				double factor = (i-getDim(vStart, dim))/getDim(across, dim);
-				Vec3d pos = conn.getPoint(factor, conn.getEndA());
-
-				if(handleVec(pos, pos, 0, halfScanned, done, shouldStop, near, startPos))
-					return false;
-			}
-		}
-		//Raytrace Y
-		boolean vertical = vStart.x==vEnd.x&&vStart.z==vEnd.z;
-		if(vertical)
-		{
-			for(int y = (int)Math.ceil(Math.min(vStart.y, vEnd.y)); y <= Math.floor(Math.max(vStart.y, vEnd.y)); y++)
-			{
-				Vec3d pos = new Vec3d(vStart.x, y, vStart.z);
-				if(handleVec(pos, pos, 0, halfScanned, done, shouldStop, near, startPos))
-					return false;
-			}
-		}
-		else
-		{
-			CatenaryData data = conn.catData;
-			double min = data.getScale()+data.getOffsetY()+vStart.y;
-			for(int i = 0; i < 2; i++)
-			{
-				double factor = i==0?1: -1;
-				double max = i==0?vEnd.y: vStart.y;
-				for(int y = (int)Math.ceil(min); y <= Math.floor(max); y++)
-				{
-					double yReal = y-vStart.y;
-					double posRel;
-					Vec3d pos;
-					posRel = (factor*acosh((yReal-data.getOffsetY())/data.getScale())*data.getScale()+data.getOffsetX())/lengthHor;
-					pos = new Vec3d(vStart.x+across.x*posRel, y, vStart.z+across.z*posRel);
-
-					if(posRel >= 0&&posRel <= 1&&handleVec(pos, pos, 0, halfScanned, done, shouldStop, near, startPos))
-						return false;
-				}
-			}
-		}
-		for(Triple<BlockPos, Vec3d, Vec3d> p : near)
-			close.accept(p);
-		for(Map.Entry<BlockPos, Vec3d> p : halfScanned.entrySet())
-			if(shouldStop.test(new ImmutableTriple<>(p.getKey(), p.getValue(), p.getValue())))
-				return false;
-		return true;
+		final BlockPos offset = conn.getEndA().getPosition();
+		raytraceAlongCatenary(conn.getCatenaryData(), offset, in, close);
 	}
 
-	private static boolean handleVec(Vec3d pos, Vec3d origPos, int start, HashMap<BlockPos, Vec3d> halfScanned, HashSet<BlockPos> done,
-									 Predicate<Triple<BlockPos, Vec3d, Vec3d>> shouldStop, HashSet<Triple<BlockPos, Vec3d, Vec3d>> near,
-									 BlockPos offset)
+	public static void raytraceAlongCatenary(CatenaryData data, BlockPos offset, Consumer<Triple<BlockPos, Vec3d, Vec3d>> in,
+											 Consumer<Triple<BlockPos, Vec3d, Vec3d>> close)
 	{
-		final double DELTA_HIT = 1e-5;
-		final double EPSILON = 1e-5;
-		boolean calledOther = false;
-		for(int i = start; i < 3; i++)
-		{
-			double coord = getDim(pos, i);
-			double diff = coord-Math.floor(coord);
-			if(diff < DELTA_HIT)
-			{
-				if(handleVec(offsetDim(pos, i, -(diff+EPSILON)), origPos, i+1, halfScanned, done, shouldStop, near, offset))
-					return true;
-				calledOther = true;
-			}
-			diff = Math.ceil(coord)-coord;
-			if(diff < DELTA_HIT)
-			{
-				if(handleVec(offsetDim(pos, i, diff+EPSILON), origPos, i+1, halfScanned, done, shouldStop, near, offset))
-					return true;
-				calledOther = true;
-			}
-		}
-		if(!calledOther)
-		{
-			BlockPos blockPos = new BlockPos(pos);
-			return handlePos(origPos.subtract(blockPos.getX(), blockPos.getY(), blockPos.getZ()),
-					blockPos.add(offset), halfScanned, done, shouldStop, near);
-		}
-		return false;
-	}
-
-	private static boolean handlePos(Vec3d pos, BlockPos posB, HashMap<BlockPos, Vec3d> halfScanned, HashSet<BlockPos> done,
-									 Predicate<Triple<BlockPos, Vec3d, Vec3d>> shouldStop, HashSet<Triple<BlockPos, Vec3d, Vec3d>> near)
-	{
-		final double DELTA_NEAR = .3;
-		if(!done.contains(posB))
-		{
-			if(halfScanned.containsKey(posB)&&!pos.equals(halfScanned.get(posB)))
-			{
-				Triple<BlockPos, Vec3d, Vec3d> added = new ImmutableTriple<>(posB, halfScanned.get(posB), pos);
-				boolean stop = shouldStop.test(added);
-				done.add(posB);
-				halfScanned.remove(posB);
-				near.removeIf((t) -> t.getLeft().equals(posB));
-				if(stop)
-					return true;
-				for(int i = 0; i < 3; i++)
-				{
-					double coord = getDim(pos, i);
-					double diff = coord-Math.floor(coord);
-					if(diff < DELTA_NEAR)
-						near.add(new ImmutableTriple<>(offsetDim(posB, i, -1), added.getMiddle(), added.getRight()));
-					diff = Math.ceil(coord)-coord;
-					if(diff < DELTA_NEAR)
-						near.add(new ImmutableTriple<>(offsetDim(posB, i, 1), added.getMiddle(), added.getRight()));
-				}
-			}
+		CatenaryTracer ct = new CatenaryTracer(data, offset);
+		ct.calculateIntegerIntersections();
+		ct.forEachSegment(segment -> {
+			if(segment.inBlock)
+				in.accept(new ImmutableTriple<>(segment.mainPos, segment.relativeSegmentStart, segment.relativeSegmentEnd));
 			else
-			{
-				halfScanned.put(posB, pos);
-			}
-		}
-		return false;
+				close.accept(new ImmutableTriple<>(segment.mainPos, segment.relativeSegmentStart, segment.relativeSegmentEnd));
+		});
 	}
 
 	public static WireType getWireTypeFromNBT(CompoundNBT tag, String key)
@@ -658,29 +607,26 @@ public class ApiUtils
 			}
 
 			if(!world.isRemote)
+			{
+				CompoundNBT nbt = stack.getOrCreateTag();
 				if(!ItemNBTHelper.hasKey(stack, "linkingPos"))
 				{
-					DimensionBlockPos linkingPos = new DimensionBlockPos(masterPos, world);
-					CompoundNBT linkingNBT = new CompoundNBT();
-					linkingNBT.put("master", linkingPos.toNBT());
-					linkingNBT.put("offset", NBTUtil.writeBlockPos(offsetHere));
-					stack.getOrCreateTag().put("linkingPos", linkingNBT);
-					CompoundNBT targetNbt = new CompoundNBT();
-					targetHere.writeToNBT(targetNbt);
-					ItemNBTHelper.setTagCompound(stack, "targettingInfo", targetNbt);
+					nbt.putString("linkingDim", world.getDimension().getType().getRegistryName().toString());
+					nbt.put("linkingPos", cpHere.createTag());
+					nbt.put("linkingOffset", NBTUtil.writeBlockPos(offsetHere));
 				}
 				else
 				{
-					CompoundNBT linkNBT = stack.getOrCreateTag().getCompound("linkingPos");
-					DimensionBlockPos linkPos = new DimensionBlockPos(linkNBT.getCompound("master"));
-					BlockPos offsetLink = NBTUtil.readBlockPos(linkNBT.getCompound("offset"));
-					TileEntity tileEntityLinkingPos = world.getTileEntity(linkPos.pos);
-					int distanceSq = (int)Math.ceil(linkPos.pos.distanceSq(masterPos));
+					ConnectionPoint cpLink = new ConnectionPoint(nbt.getCompound("linkingPos"));
+					ResourceLocation linkDimension = new ResourceLocation(nbt.getString("linkingDim"));
+					BlockPos linkOffset = NBTUtil.readBlockPos(nbt.getCompound("linkingOffset"));
+					TileEntity tileEntityLinkingPos = world.getTileEntity(cpLink.getPosition());
+					int distanceSq = (int)Math.ceil(cpLink.getPosition().distanceSq(masterPos));
 					int maxLengthSq = coil.getMaxLength(stack); //not squared yet
 					maxLengthSq *= maxLengthSq;
-					if(linkPos.dimension!=world.getDimension().getType())
+					if(!linkDimension.equals(world.getDimension().getType().getRegistryName()))
 						player.sendStatusMessage(new TranslationTextComponent(Lib.CHAT_WARN+"wrongDimension"), true);
-					else if(linkPos.pos.equals(masterPos))
+					else if(cpLink.getPosition().equals(masterPos))
 						player.sendStatusMessage(new TranslationTextComponent(Lib.CHAT_WARN+"sameConnection"), true);
 					else if(distanceSq > maxLengthSq)
 						player.sendStatusMessage(new TranslationTextComponent(Lib.CHAT_WARN+"tooFar"), true);
@@ -688,15 +634,12 @@ public class ApiUtils
 					{
 						TargetingInfo targetLink = TargetingInfo.readFromNBT(ItemNBTHelper.getTagCompound(stack, "targettingInfo"));
 						if(!(tileEntityLinkingPos instanceof IImmersiveConnectable))
-						{
 							player.sendStatusMessage(new TranslationTextComponent(Lib.CHAT_WARN+"invalidPoint"), true);
-						}
 						else
 						{
 							IImmersiveConnectable iicLink = (IImmersiveConnectable)tileEntityLinkingPos;
-							ConnectionPoint cpLink = iicLink.getTargetedPoint(targetLink, offsetLink);
-							if(!((IImmersiveConnectable)tileEntityLinkingPos).canConnectCable(wire, cpLink, offsetLink)||
-									!((IImmersiveConnectable)tileEntityLinkingPos).getConnectionMaster(wire, targetLink).equals(linkPos.pos)||
+							if(!((IImmersiveConnectable)tileEntityLinkingPos).canConnectCable(wire, cpLink, linkOffset)||
+									!((IImmersiveConnectable)tileEntityLinkingPos).getConnectionMaster(wire, targetLink).equals(cpLink.getPosition())||
 									!coil.canConnectCable(stack, tileEntityLinkingPos))
 							{
 								player.sendStatusMessage(new TranslationTextComponent(Lib.CHAT_WARN+"invalidPoint"), true);
@@ -723,23 +666,20 @@ public class ApiUtils
 									Set<BlockPos> ignore = new HashSet<>();
 									ignore.addAll(iicHere.getIgnored(iicLink));
 									ignore.addAll(iicLink.getIgnored(iicHere));
-									BlockPos.MutableBlockPos failedReason = new BlockPos.MutableBlockPos();
+									Set<BlockPos> failedReasons = new HashSet<>();
 									Connection tempConn = new Connection(wire, cpHere, cpLink);
 									Vec3d start = iicHere.getConnectionOffset(tempConn, cpHere);
 									Vec3d end = iicLink.getConnectionOffset(tempConn, cpLink);
-									boolean canSee = ApiUtils.raytraceAlongCatenaryRelative(tempConn, (p) -> {
-										if(ignore.contains(p.getLeft()))
-											return false;
-										BlockState state = world.getBlockState(p.getLeft());
-										if(ApiUtils.preventsConnection(world, p.getLeft(), state, p.getMiddle(), p.getRight()))
+									ApiUtils.raytraceAlongCatenaryRelative(tempConn, (p) -> {
+										if(!ignore.contains(p.getLeft()))
 										{
-											failedReason.setPos(p.getLeft());
-											return true;
+											BlockState state = world.getBlockState(p.getLeft());
+											if(ApiUtils.preventsConnection(world, p.getLeft(), state, p.getMiddle(), p.getRight()))
+												failedReasons.add(p.getLeft());
 										}
-										return false;
 									}, (p) -> {
-									}, start, end.add(new Vec3d(linkPos.pos.subtract(masterPos))));
-									if(canSee)
+									}, start, end.add(new Vec3d(cpLink.getPosition().subtract(masterPos))));
+									if(failedReasons.isEmpty())
 									{
 										Connection conn = new Connection(wire, cpHere, cpLink);
 										net.addConnection(conn);
@@ -756,16 +696,16 @@ public class ApiUtils
 										BlockState state = world.getBlockState(masterPos);
 										world.notifyBlockUpdate(masterPos, state, state, 3);
 										((TileEntity)iicLink).markDirty();
-										world.addBlockEvent(linkPos.pos, ((TileEntity)iicLink).getBlockState().getBlock(), -1, 0);
-										state = world.getBlockState(linkPos.pos);
-										world.notifyBlockUpdate(linkPos.pos, state, state, 3);
+										world.addBlockEvent(cpLink.getPosition(), tileEntityLinkingPos.getBlockState().getBlock(), -1, 0);
+										state = world.getBlockState(cpLink.getPosition());
+										world.notifyBlockUpdate(cpLink.getPosition(), state, state, 3);
 									}
 									else
 									{
 										player.sendStatusMessage(new TranslationTextComponent(Lib.CHAT_WARN+"cantSee"), true);
 										ImmersiveEngineering.packetHandler.send(
-												PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(failedReason)),
-												new MessageObstructedConnection(tempConn, failedReason, player.world));
+												PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(failedReasons.iterator().next())),
+												new MessageObstructedConnection(tempConn, failedReasons));
 									}
 								}
 							}
@@ -774,6 +714,7 @@ public class ApiUtils
 					ItemNBTHelper.remove(stack, "linkingPos");
 					ItemNBTHelper.remove(stack, "targettingInfo");
 				}
+			}
 			return ActionResultType.SUCCESS;
 		}
 		return ActionResultType.PASS;
@@ -797,61 +738,14 @@ public class ApiUtils
 			throw new RuntimeException("Recipe Inputs must always be ItemStack, Item, Block or ResourceLocation (tag name), "+input+" is invalid");
 	}
 
-	public static IngredientStack createIngredientStack(Object input)
+	public static boolean hasPlayerIngredient(PlayerEntity player, IngredientWithSize ingredient)
 	{
-		if(input instanceof IngredientStack)
-			return (IngredientStack)input;
-		else if(input instanceof ItemStack)
-			return new IngredientStack((ItemStack)input);
-		else if(input instanceof Item)
-			return new IngredientStack(new ItemStack((Item)input));
-		else if(input instanceof Block)
-			return new IngredientStack(new ItemStack((Block)input));
-		else if(input instanceof Ingredient)
-			return new IngredientStack(Arrays.asList(((Ingredient)input).getMatchingStacks()));
-		else if(input instanceof Tag)
-			return new IngredientStack(((Tag)input).getId());
-		else if(input instanceof List)
-		{
-			if (!((List)input).isEmpty())
-			{
-				if(((List)input).get(0) instanceof ItemStack)
-					return new IngredientStack(((List<ItemStack>)input));
-				else if(((List)input).get(0) instanceof ResourceLocation)
-				{
-					List<ItemStack> itemList = new ArrayList<>();
-					for(ResourceLocation s : ((List<ResourceLocation>)input))
-						itemList.addAll(getItemsInTag(s));
-					return new IngredientStack(itemList);
-				}
-			}
-			else
-				return new IngredientStack(ItemStack.EMPTY);
-		}
-		else if(input instanceof ItemStack[])
-			return new IngredientStack(Arrays.asList((ItemStack[])input));
-		else if(input instanceof ResourceLocation[])
-		{
-			ArrayList<ItemStack> itemList = new ArrayList<>();
-			for(ResourceLocation s : ((ResourceLocation[])input))
-				itemList.addAll(getItemsInTag(s));
-			return new IngredientStack(itemList);
-		}
-		else if(input instanceof ResourceLocation)
-			return new IngredientStack((ResourceLocation)input);
-		else if(input instanceof FluidStack)
-			return new IngredientStack((FluidStack)input);
-		throw new RuntimeException("Recipe Ingredients must always be ItemStack, Item, Block, List<ItemStack>, ResourceLocation (Tag name) or FluidStack; "+input+" is invalid");
-	}
-
-	public static boolean hasPlayerIngredient(PlayerEntity player, IngredientStack ingredient)
-	{
-		int amount = ingredient.inputSize;
+		int amount = ingredient.getCount();
 		ItemStack itemstack;
 		for(Hand hand : Hand.values())
 		{
 			itemstack = player.getHeldItem(hand);
-			if(ingredient.matchesItemStackIgnoringSize(itemstack))
+			if(ingredient.test(itemstack))
 			{
 				amount -= itemstack.getCount();
 				if(amount <= 0)
@@ -861,7 +755,7 @@ public class ApiUtils
 		for(int i = 0; i < player.inventory.getSizeInventory(); i++)
 		{
 			itemstack = player.inventory.getStackInSlot(i);
-			if(ingredient.matchesItemStackIgnoringSize(itemstack))
+			if(ingredient.test(itemstack))
 			{
 				amount -= itemstack.getCount();
 				if(amount <= 0)
@@ -871,14 +765,14 @@ public class ApiUtils
 		return amount <= 0;
 	}
 
-	public static void consumePlayerIngredient(PlayerEntity player, IngredientStack ingredient)
+	public static void consumePlayerIngredient(PlayerEntity player, IngredientWithSize ingredient)
 	{
-		int amount = ingredient.inputSize;
+		int amount = ingredient.getCount();
 		ItemStack itemstack;
 		for(Hand hand : Hand.values())
 		{
 			itemstack = player.getHeldItem(hand);
-			if(ingredient.matchesItemStackIgnoringSize(itemstack))
+			if(ingredient.testIgnoringSize(itemstack))
 			{
 				int taken = Math.min(amount, itemstack.getCount());
 				amount -= taken;
@@ -892,7 +786,7 @@ public class ApiUtils
 		for(int i = 0; i < player.inventory.getSizeInventory(); i++)
 		{
 			itemstack = player.inventory.getStackInSlot(i);
-			if(ingredient.matchesItemStackIgnoringSize(itemstack))
+			if(ingredient.testIgnoringSize(itemstack))
 			{
 				int taken = Math.min(amount, itemstack.getCount());
 				amount -= taken;
@@ -922,8 +816,8 @@ public class ApiUtils
 	{
 		for(AxisAlignedBB aabb : state.getCollisionShape(worldIn, pos).toBoundingBoxList())
 		{
-			aabb = aabb.offset(-pos.getX(), -pos.getY(), -pos.getZ()).grow(1e-5);
-			if(aabb.contains(a)||aabb.contains(b))
+			aabb = aabb.grow(1e-5);
+			if(aabb.contains(a)||aabb.contains(b)||aabb.rayTrace(a, b).isPresent())
 				return true;
 		}
 		return false;
@@ -989,37 +883,33 @@ public class ApiUtils
 
 	public static void addFutureServerTask(World world, Runnable task, boolean forceFuture)
 	{
-		if(forceFuture)
-			new Thread(() -> addFutureServerTask(world, task)).start();
-		else
-			addFutureServerTask(world, task);
-	}
-	public static void addFutureServerTask(World world, Runnable task)
-	{
 		LogicalSide side = world.isRemote?LogicalSide.CLIENT: LogicalSide.SERVER;
 		//TODO this sometimes causes NPEs?
-		ThreadTaskExecutor<?> tmp = LogicalSidedProvider.WORKQUEUE.get(side);
-		tmp.deferTask(task);
+		ThreadTaskExecutor<? super TickDelayedTask> tmp = LogicalSidedProvider.WORKQUEUE.get(side);
+		if(forceFuture)
+		{
+			int tick;
+			if(world.isRemote)
+				tick = 0;
+			else
+				tick = ((MinecraftServer)tmp).getTickCounter();
+			tmp.enqueue(new TickDelayedTask(tick, task));
+		}
+		else
+			tmp.deferTask(task);
+	}
+
+	public static void addFutureServerTask(World world, Runnable task)
+	{
+		addFutureServerTask(world, task, false);
 	}
 
 	public static void moveConnectionEnd(Connection conn, ConnectionPoint currEnd, ConnectionPoint newEnd, World world)
 	{
-		//TODO too lazy to move this to ConnPoints right now :)
-		//ConnectionPoint fixedPos = conn.getOtherEnd(currEnd);
-		//LocalWireNetwork net = GlobalWireNetwork.getNetwork(world).getLocalNet(newEnd);
-		//IImmersiveConnectable otherSide = net.getConnector(fixedPos);
-		//Vec3d start = ApiUtils.getVecForIICAt(net, fixedPos, conn);
-		//Vec3d end = ApiUtils.getVecForIICAt(net, currEnd, conn);
-		//if(otherSide==null||otherSide.moveConnectionTo(conn, newEnd))
-		{
-			//TODO
-			//ImmersiveNetHandler.INSTANCE.removeConnection(world, conn, start, end);
-			//Connection newConn = new Connection(fixedPos, newEnd, conn.cableType, conn.length);
-			//ImmersiveNetHandler.INSTANCE.addConnection(world, fixedPos, newConn);
-			//ImmersiveNetHandler.INSTANCE.addConnection(world, newEnd,
-			//		new Connection(newEnd, fixedPos, conn.cableType, conn.length));
-			//ImmersiveNetHandler.INSTANCE.addBlockData(world, newConn);
-		}
+		ConnectionPoint fixedPos = conn.getOtherEnd(currEnd);
+		GlobalWireNetwork globalNet = GlobalWireNetwork.getNetwork(world);
+		globalNet.removeConnection(conn);
+		globalNet.addConnection(new Connection(conn.type, fixedPos, newEnd));
 	}
 
 	public static <T> LazyOptional<T> constantOptional(T val)
@@ -1064,28 +954,25 @@ public class ApiUtils
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public static Function<BakedQuad, BakedQuad> transformQuad(Matrix4 mat, @Nullable VertexFormat ignored,
-															   Int2IntFunction colorMultiplier)
+	public static Function<BakedQuad, BakedQuad> transformQuad(TRSRTransformation transform, Int2IntFunction colorMultiplier)
 	{
-		return new QuadTransformer(mat, colorMultiplier);
+		return new QuadTransformer(transform, colorMultiplier);
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	private static class QuadTransformer implements Function<BakedQuad, BakedQuad>
 	{
-		private final Matrix4 transform;
-		private final Matrix4 normalTransform;
+		@Nonnull
+		private final TRSRTransformation transform;
 		@Nullable
 		private final Int2IntFunction colorTransform;
 		private UnpackedBakedQuad.Builder currentQuadBuilder;
 		private final Map<VertexFormat, IVertexConsumer> consumers = new HashMap<>();
 
-		private QuadTransformer(Matrix4 transform, @Nullable Int2IntFunction colorTransform)
+		private QuadTransformer(TRSRTransformation transform, @Nullable Int2IntFunction colorTransform)
 		{
 			this.transform = transform;
 			this.colorTransform = colorTransform;
-			this.normalTransform = transform.copy();
-			normalTransform.transpose().invert();
 		}
 
 		@Override
@@ -1136,9 +1023,10 @@ public class ApiUtils
 				@Override
 				public void setQuadOrientation(@Nonnull Direction orientation)
 				{
-					Vec3d newFront = normalTransform.apply(new Vec3d(orientation.getDirectionVec()));
-					Direction newOrientation = Direction.getFacingFromVector((float)newFront.x, (float)newFront.y,
-							(float)newFront.z);
+					Vec3i normal = orientation.getDirectionVec();
+					Vector3f newFront = new Vector3f(normal.getX(), normal.getY(), normal.getZ());
+					transform.transformNormal(newFront);
+					Direction newOrientation = Direction.getFacingFromVector(newFront.x, newFront.y, newFront.z);
 					currentQuadBuilder.setQuadOrientation(newOrientation);
 				}
 
@@ -1159,15 +1047,17 @@ public class ApiUtils
 				{
 					if(element==posPosFinal&&transform!=null)
 					{
-						Vec3d newPos = transform.apply(new Vec3d(data[0], data[1], data[2]));
+						Vector4f newPos = new Vector4f(data[0], data[1], data[2], 1);
+						transform.transformPosition(newPos);
 						data = new float[3];
 						data[0] = (float)newPos.x;
 						data[1] = (float)newPos.y;
 						data[2] = (float)newPos.z;
 					}
-					else if(element==normPosFinal&&normalTransform!=null)
+					else if(element==normPosFinal)
 					{
-						Vec3d newNormal = normalTransform.apply(new Vec3d(data[0], data[1], data[2]));
+						Vector3f newNormal = new Vector3f(data[0], data[1], data[2]);
+						transform.transformNormal(newNormal);
 						data = new float[3];
 						data[0] = (float)newNormal.x;
 						data[1] = (float)newNormal.y;

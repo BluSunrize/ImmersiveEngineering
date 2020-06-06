@@ -16,7 +16,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -25,12 +24,14 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -41,11 +42,9 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
 
-public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IDirectionalTile, IAdvancedCollisionBounds,
-		IAdvancedSelectionBounds, IHammerInteraction, IPlayerInteraction, IConveyorTile, IPropertyPassthrough,
+public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IStateBasedDirectional, ICollisionBounds,
+		ISelectionBounds, IHammerInteraction, IPlayerInteraction, IConveyorTile, IPropertyPassthrough,
 		ITickableTileEntity, IGeneralMultiblock
 {
 	private final IConveyorBelt conveyorBeltSubtype;
@@ -88,18 +87,15 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IDirecti
 	}
 
 	@Override
-	public Direction getFacing()
+	public EnumProperty<Direction> getFacingProperty()
 	{
-		BlockState state = getWorldNonnull().getBlockState(pos);
-		return state.get(ConveyorBlock.FACING);
+		return ConveyorBlock.FACING;
 	}
 
 	@Override
-	public void setFacing(Direction facing)
+	public Direction getFacing()
 	{
-		BlockState oldState = getWorldNonnull().getBlockState(pos);
-		BlockState newState = oldState.with(ConveyorBlock.FACING, facing);
-		getWorldNonnull().setBlockState(pos, newState);
+		return IStateBasedDirectional.super.getFacing();
 	}
 
 	@Override
@@ -115,7 +111,7 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IDirecti
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, float hitX, float hitY, float hitZ, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
 	{
 		return !entity.isSneaking();
 	}
@@ -137,6 +133,13 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IDirecti
 	public boolean isDummy()
 	{
 		return this.conveyorBeltSubtype!=null&&!this.conveyorBeltSubtype.isTicking();
+	}
+
+	@Nullable
+	@Override
+	public IGeneralMultiblock master()
+	{
+		return this;
 	}
 
 	@Override
@@ -197,29 +200,23 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IDirecti
 		return false;
 	}
 
-	@Override
-	public float[] getBlockBounds()
-	{
-		return new float[]{0, 0, 0, 1, .125f, 1};
-	}
-
-	private static final AxisAlignedBB COLISIONBB =
-			new AxisAlignedBB(0, 0, 0, 1, .125F, 1);
+	private static final VoxelShape COLISIONBB =
+			VoxelShapes.create(0, 0, 0, 1, .125F, 1);
 
 	@Override
-	public List<AxisAlignedBB> getAdvancedCollisionBounds()
+	public VoxelShape getCollisionShape()
 	{
 		if(conveyorBeltSubtype!=null)
-			return new ArrayList<>(conveyorBeltSubtype.getColisionBoxes());
-		return Lists.newArrayList(COLISIONBB);
+			return conveyorBeltSubtype.getCollisionShape();
+		return COLISIONBB;
 	}
 
 	@Override
-	public List<AxisAlignedBB> getAdvancedSelectionBounds()
+	public VoxelShape getSelectionShape()
 	{
 		if(conveyorBeltSubtype!=null)
-			return new ArrayList<>(conveyorBeltSubtype.getSelectionBoxes());
-		return Lists.newArrayList(COLISIONBB);
+			return conveyorBeltSubtype.getSelectionShape();
+		return COLISIONBB;
 	}
 
 	private LazyOptional<IItemHandler> insertionCap = registerCap(() -> new ConveyorInventoryHandler(this));

@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.api.tool;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.crafting.IngredientStack;
+import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.common.util.FakePlayerUtil;
 import blusunrize.immersiveengineering.common.util.Utils.InventoryCraftingFalse;
 import com.google.common.base.Preconditions;
@@ -148,16 +148,15 @@ public class AssemblerHandler
 				return createQueryFromItemStack(stacks[0]);
 			return new RecipeQuery(stacks, 1);
 		}
-		else if(o instanceof IngredientStack)
-			return new RecipeQuery(o, ((IngredientStack)o).inputSize);
 		return new RecipeQuery(o, 1);
 	}
 
 	public static RecipeQuery createQueryFromItemStack(ItemStack stack)
 	{
-		return FluidUtil.getFluidContained(stack)
-				.map(fluid -> new RecipeQuery(fluid, stack.getCount()))
-				.orElseGet(() -> new RecipeQuery(stack, stack.getCount()));
+		FluidStack fluidStack = FluidUtil.getFluidContained(stack).orElse(FluidStack.EMPTY);
+		if(!fluidStack.isEmpty())
+			return new RecipeQuery(fluidStack, stack.getCount());
+		return new RecipeQuery(stack, stack.getCount());
 	}
 
 	public static class RecipeQuery
@@ -166,7 +165,7 @@ public class AssemblerHandler
 		public int querySize;
 
 		/**
-		 * Valid types of Query are ItemStack, ItemStack[], ArrayList<ItemStack>, IngredientStack, String (OreDict Name) and FluidStack
+		 * Valid types of Query are ItemStack, ItemStack[], ArrayList<ItemStack>, IngredientWithSize, String (OreDict Name) and FluidStack
 		 */
 		public RecipeQuery(Object query, int querySize)
 		{
@@ -174,7 +173,7 @@ public class AssemblerHandler
 					query instanceof ItemStack||
 							query instanceof ItemStack[]||
 							query instanceof List||
-							query instanceof IngredientStack||
+							query instanceof IngredientWithSize||
 							query instanceof ResourceLocation||
 							query instanceof FluidStack,
 					query+" is not a valid ingredient!"

@@ -21,6 +21,8 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonObject;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.model.*;
@@ -34,6 +36,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.resources.IResourceManager;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -41,7 +44,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.ICustomModelLoader;
+import net.minecraftforge.client.model.IModelConfiguration;
+import net.minecraftforge.client.model.IModelLoader;
 import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.geometry.IModelGeometry;
 import net.minecraftforge.common.model.TRSRTransformation;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -59,7 +66,8 @@ public class ModelConveyor extends BakedIEModel
 	public static ResourceLocation[] rl_casing = {
 			new ResourceLocation(ImmersiveEngineering.MODID, "block/conveyor/casing_top"),
 			new ResourceLocation(ImmersiveEngineering.MODID, "block/conveyor/casing_side"),
-			new ResourceLocation(ImmersiveEngineering.MODID, "block/conveyor/casing_walls")
+			new ResourceLocation(ImmersiveEngineering.MODID, "block/conveyor/casing_walls"),
+			new ResourceLocation(ImmersiveEngineering.MODID, "block/conveyor/casing_full")
 	};
 
 	@Nullable
@@ -135,11 +143,9 @@ public class ModelConveyor extends BakedIEModel
 		TextureAtlasSprite tex_casing1 = ClientUtils.getSprite(rl_casing[1]);
 		TextureAtlasSprite tex_casing2 = ClientUtils.getSprite(rl_casing[2]);
 		float[] colour = {1, 1, 1, 1};
-		float[] colourStripes;
+		float[] colourStripes = {1, 1, 1, 1};
 		if(stripeColour!=null)
-			colourStripes = stripeColour.getColorComponentValues();
-		else
-			colourStripes = new float[]{1, 1, 1, 1};
+			System.arraycopy(stripeColour.getColorComponentValues(), 0, colourStripes, 0, 3);
 
 		/**
 		 * Bottom & Top
@@ -480,26 +486,36 @@ public class ModelConveyor extends BakedIEModel
 			return tileData;
 	}
 
-	public static class RawConveyorModel implements IUnbakedModel
+	public static class RawConveyorModel implements IModelGeometry<RawConveyorModel>
 	{
+
 		@Override
-		public Collection<ResourceLocation> getDependencies()
+		public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<ResourceLocation, TextureAtlasSprite> spriteGetter, ISprite sprite, VertexFormat format, ItemOverrideList overrides)
 		{
-			return ImmutableList.of();
+			return new ModelConveyor();
 		}
 
 		@Override
-		public Collection<ResourceLocation> getTextures(Function<ResourceLocation, IUnbakedModel> modelGetter, Set<String> missingTextureErrors)
+		public Collection<ResourceLocation> getTextureDependencies(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<String> missingTextureErrors)
 		{
 			//TODO?
 			return ImmutableList.of();
 		}
+	}
 
-		@Nullable
+	public static class ConveyorLoader implements IModelLoader<RawConveyorModel>
+	{
+		public static final ResourceLocation LOCATION = new ResourceLocation(ImmersiveEngineering.MODID, "models/conveyor");
+
 		@Override
-		public IBakedModel bake(ModelBakery bakery, Function<ResourceLocation, TextureAtlasSprite> spriteGetter, ISprite sprite, VertexFormat format)
+		public void onResourceManagerReload(IResourceManager resourceManager)
 		{
-			return new ModelConveyor();
+		}
+
+		@Override
+		public RawConveyorModel read(JsonDeserializationContext deserializationContext, JsonObject modelContents)
+		{
+			return new RawConveyorModel();
 		}
 	}
 }

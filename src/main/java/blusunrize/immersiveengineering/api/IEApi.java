@@ -33,7 +33,7 @@ public class IEApi
 	/**
 	 * A list of mod-ids, representing the mods an ore should be used from in order of priority
 	 */
-	public static List<String> modPreference;
+	public static List<? extends String> modPreference;
 
 	/**
 	 * This map caches the preferred ores for the given OreDict name
@@ -80,7 +80,7 @@ public class IEApi
 				return new ItemStack(getPreferredElementbyMod(BlockTags.getCollection().get(name).getAllElements()));
 			else
 				return ItemStack.EMPTY;
-		});
+		}).copy();
 	}
 
 	public static <T extends IForgeRegistryEntry<T>> T getPreferredElementbyMod(Collection<T> list)
@@ -98,19 +98,19 @@ public class IEApi
 		T preferredStack = null;
 		int currBest = modPreference.size();
 		for(T stack : list)
+		{
+			ResourceLocation rl = getName.apply(stack);
+			if(rl!=null)
 			{
-				ResourceLocation rl = getName.apply(stack);
-				if(rl!=null)
+				String modId = rl.getNamespace();
+				int idx = modPreference.indexOf(modId);
+				if(preferredStack==null||(idx >= 0&&idx < currBest))
 				{
-					String modId = rl.getNamespace();
-					int idx = modPreference.indexOf(modId);
-					if(idx >= 0&&idx < currBest)
-					{
-						preferredStack = stack;
-						currBest = idx;
-					}
+					preferredStack = stack;
+					currBest = idx;
 				}
 			}
+		}
 		return preferredStack;
 	}
 

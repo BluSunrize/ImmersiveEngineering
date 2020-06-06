@@ -24,6 +24,8 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
 
+//This still uses the old model loader system
+@Deprecated
 public class ModelData
 {
 	@Nonnull
@@ -83,6 +85,8 @@ public class ModelData
 		for(Entry<String, JsonElement> e : customData.entrySet())
 			if(!knownKeys.contains(e.getKey())&&!customBase.has(e.getKey()))
 				customBase.add(e.getKey(), e.getValue());
+		if(baseLocStr.contains(".obj")&&!customBase.has("flip-v"))
+			customBase.addProperty("flip-v", true);
 		if(customData.has("textures"))
 		{
 			JsonObject obj = customData.get("textures").getAsJsonObject();

@@ -1,0 +1,35 @@
+{
+  "parent": "immersiveengineering:main/connect_wire",
+  "display": {
+    "icon": {
+      "item": "immersiveengineering:fluid_pump"
+    },
+    "title": {
+      "translate": "advancement.immersiveengineering.craft_pump"
+    },
+    "description": {
+      "translate": "advancement.immersiveengineering.craft_pump.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "pump": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:fluid_pump"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "pump"
+    ]
+  ]
+}

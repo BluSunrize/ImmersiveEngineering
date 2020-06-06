@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
-import blusunrize.immersiveengineering.api.crafting.IngredientStack;
+import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchTileEntity;
 import blusunrize.immersiveengineering.common.gui.IESlot;
@@ -58,7 +58,7 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 	public void render(int mx, int my, float partial)
 	{
 		super.render(mx, my, partial);
-		for(int i = 0; i < ((ModWorkbenchContainer)container).slotCount; i++)
+		for(int i = 0; i < container.slotCount; i++)
 		{
 			Slot s = container.getSlot(i);
 			if(s instanceof IESlot.BlueprintOutput&&!s.getHasStack())
@@ -70,9 +70,9 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 						List<ITextComponent> tooltip = new ArrayList<>();
 						tooltip.add(recipe.output.getDisplayName().deepCopy().setStyle(new Style().setColor(recipe.output.getRarity().color)));
 						ArrayList<ItemStack> inputs = new ArrayList<ItemStack>();
-						for(IngredientStack stack : recipe.inputs)
+						for(IngredientWithSize stack : recipe.inputs)
 						{
-							ItemStack toAdd = Utils.copyStackWithAmount(stack.getRandomizedExampleStack(mc().player.ticksExisted), stack.inputSize);
+							ItemStack toAdd = Utils.copyStackWithAmount(stack.getRandomizedExampleStack(mc().player.ticksExisted), stack.getCount());
 							if(toAdd.isEmpty())
 								continue;
 							boolean isNew = true;
@@ -106,7 +106,7 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 		this.blit(guiLeft, guiTop, 0, 0, xSize, ySize);
 
 
-		for(int i = 0; i < ((ModWorkbenchContainer)container).slotCount; i++)
+		for(int i = 0; i < container.slotCount; i++)
 		{
 			Slot s = container.getSlot(i);
 			ClientUtils.drawColouredRect(guiLeft+s.xPos-1, guiTop+s.yPos-1, 17, 1, 0x77222222);
@@ -117,7 +117,7 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 		}
 
 		ItemRenderer itemRender = mc().getItemRenderer();
-		for(int i = 0; i < ((ModWorkbenchContainer)container).slotCount; i++)
+		for(int i = 0; i < container.slotCount; i++)
 		{
 			Slot s = container.getSlot(i);
 			if(s instanceof IESlot.BlueprintOutput&&!s.getHasStack())

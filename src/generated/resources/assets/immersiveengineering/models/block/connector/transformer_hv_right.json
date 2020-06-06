@@ -1,0 +1,14 @@
+{
+  "textures": {
+    "particle": "immersiveengineering:block/connector/transformer_hv"
+  },
+  "loader": "immersiveengineering:connector",
+  "base_model": {
+    "loader": "forge:obj",
+    "model": "immersiveengineering:models/block/connector/transformer_hv_right.obj",
+    "flip-v": true
+  },
+  "layers": [
+    "SOLID"
+  ]
+}

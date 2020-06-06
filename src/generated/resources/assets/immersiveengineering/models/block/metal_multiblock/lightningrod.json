@@ -1,0 +1,10 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "particle": "immersiveengineering:block/multiblocks/lightningrod"
+  },
+  "loader": "forge:obj",
+  "detectCullableFaces": false,
+  "model": "immersiveengineering:models/block/metal_multiblock/lightningrod.obj",
+  "flip-v": true
+}

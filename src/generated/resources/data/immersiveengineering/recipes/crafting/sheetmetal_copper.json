@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " p ",
+    "p p",
+    " p "
+  ],
+  "key": {
+    "p": {
+      "tag": "forge:plates/copper"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:sheetmetal_copper",
+    "count": 4
+  }
+}

@@ -1,22 +1,13 @@
 {
   "variants": {
-    "type=top,waterlogged=true": {
-      "model": "immersiveengineering:block/stone_decoration/blastbrick_reinforced_slab_top"
+    "type=top": {
+      "model": "immersiveengineering:block/slab_blastbrick_reinforced_top"
     },
-    "type=top,waterlogged=false": {
-      "model": "immersiveengineering:block/stone_decoration/blastbrick_reinforced_slab_top"
+    "type=bottom": {
+      "model": "immersiveengineering:block/slab_blastbrick_reinforced_bottom"
     },
-    "type=bottom,waterlogged=true": {
-      "model": "immersiveengineering:block/stone_decoration/blastbrick_reinforced_slab"
-    },
-    "type=bottom,waterlogged=false": {
-      "model": "immersiveengineering:block/stone_decoration/blastbrick_reinforced_slab"
-    },
-    "type=double,waterlogged=true": {
-      "model": "immersiveengineering:block/stone_decoration/blastbrick_reinforced"
-    },
-    "type=double,waterlogged=false": {
-      "model": "immersiveengineering:block/stone_decoration/blastbrick_reinforced"
+    "type=double": {
+      "model": "immersiveengineering:block/slab_blastbrick_reinforced_double"
     }
   }
 }

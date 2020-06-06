@@ -9,8 +9,10 @@
 package blusunrize.immersiveengineering.common.blocks.stone;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IActiveState;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IProcessTile;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
@@ -28,6 +30,8 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.IIntArray;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -35,7 +39,7 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import javax.annotation.Nullable;
 
 public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnaceTileEntity> implements IIEInventory,
-		IActiveState, IInteractionObjectIE, IProcessTile
+		IActiveState, IInteractionObjectIE, IProcessTile, IBlockBounds
 {
 	public static TileEntityType<BlastFurnaceTileEntity> TYPE;
 
@@ -69,9 +73,9 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 	}
 
 	@Override
-	public float[] getBlockBounds()
+	public VoxelShape getBlockBounds()
 	{
-		return null;
+		return VoxelShapes.fullCube();
 	}
 
 	@Override
@@ -122,7 +126,7 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 						BlastFurnaceRecipe recipe = getRecipe();
 						if(recipe!=null)
 						{
-							Utils.modifyInvStackSize(inventory, 0, -(recipe.input instanceof ItemStack?((ItemStack)recipe.input).getCount(): 1));
+							Utils.modifyInvStackSize(inventory, 0, -recipe.input.getCount());
 							if(!inventory.get(2).isEmpty())
 								inventory.get(2).grow(recipe.output.copy().getCount());
 							else
@@ -155,9 +159,9 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 
 			if(burnTime <= 0&&getRecipe()!=null)
 			{
-				if(BlastFurnaceRecipe.isValidBlastFuel(inventory.get(1)))
+				if(BlastFurnaceFuel.isValidBlastFuel(inventory.get(1)))
 				{
-					lastBurnTime = BlastFurnaceRecipe.getBlastFuelTime(inventory.get(1));
+					lastBurnTime = BlastFurnaceFuel.getBlastFuelTime(inventory.get(1));
 					burnTime += lastBurnTime;
 					Utils.modifyInvStackSize(inventory, 1, -1);
 					markContainingBlockForUpdate(null);
@@ -190,11 +194,8 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 		BlastFurnaceRecipe recipe = BlastFurnaceRecipe.findRecipe(inventory.get(0));
 		if(recipe==null)
 			return null;
-		if((inventory.get(0).getCount() >= ((recipe.input instanceof ItemStack)?((ItemStack)recipe.input).getCount(): 1)
-				&&inventory.get(2).isEmpty()||(ItemStack.areItemsEqual(inventory.get(2), recipe.output)&&
-				inventory.get(2).getCount()+recipe.output.getCount() <= getSlotLimit(2)))
-				&&(inventory.get(3).isEmpty()||(ItemStack.areItemsEqual(inventory.get(3), recipe.slag)&&
-				inventory.get(3).getCount()+recipe.slag.getCount() <= getSlotLimit(3))))
+		if((inventory.get(2).isEmpty()||(ItemStack.areItemsEqual(inventory.get(2), recipe.output)&&inventory.get(2).getCount()+recipe.output.getCount() <= getSlotLimit(2)))
+				&&(inventory.get(3).isEmpty()||(ItemStack.areItemsEqual(inventory.get(3), recipe.slag)&&inventory.get(3).getCount()+recipe.slag.getCount() <= getSlotLimit(3))))
 			return recipe;
 		return null;
 	}
@@ -269,7 +270,7 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 	@Override
 	public boolean isStackValid(int slot, ItemStack stack)
 	{
-		return slot==0?BlastFurnaceRecipe.findRecipe(stack)!=null: slot==1&&BlastFurnaceRecipe.isValidBlastFuel(stack);
+		return slot==0?BlastFurnaceRecipe.findRecipe(stack)!=null: slot==1&&BlastFurnaceFuel.isValidBlastFuel(stack);
 	}
 
 	@Override

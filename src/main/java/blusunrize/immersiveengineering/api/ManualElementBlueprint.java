@@ -43,11 +43,9 @@ public class ManualElementBlueprint extends SpecialManualElements
 	public void recalculateCraftingRecipes()
 	{
 		this.recipes.clear();
-		List<String> cmCategories = BlueprintCraftingRecipe.blueprintCategories;
-		ArrayListMultimap<String, BlueprintCraftingRecipe> cmRecipes = BlueprintCraftingRecipe.recipeList;
 
-		for(String category : cmCategories)
-			for(BlueprintCraftingRecipe recipe : cmRecipes.get(category))
+		for(String category : BlueprintCraftingRecipe.recipeCategories)
+			for(BlueprintCraftingRecipe recipe : BlueprintCraftingRecipe.findRecipes(category))
 				for(int iStack = 0; iStack < stacks.length; iStack++)
 				{
 					ItemStack output = stacks[iStack];
@@ -56,7 +54,7 @@ public class ManualElementBlueprint extends SpecialManualElements
 						int h = (int)Math.ceil(recipe.inputs.length/2f);
 						PositionedItemStack[] pIngredients = new PositionedItemStack[recipe.inputs.length+2];
 						for(int i = 0; i < recipe.inputs.length; i++)
-							pIngredients[i] = new PositionedItemStack(recipe.inputs[i].getSizedStackList(), 32+i%2*18, i/2*18);
+							pIngredients[i] = new PositionedItemStack(recipe.inputs[i].getMatchingStacks(), 32+i%2*18, i/2*18);
 						int middle = (int)(h/2f*18)-8;
 						pIngredients[pIngredients.length-2] = new PositionedItemStack(recipe.output, 86, middle);
 						pIngredients[pIngredients.length-1] = new PositionedItemStack(BlueprintCraftingRecipe.getTypedBlueprint(category), 8, middle);
@@ -137,19 +135,17 @@ public class ManualElementBlueprint extends SpecialManualElements
 		GlStateManager.enableBlend();
 		RenderHelper.disableStandardItemLighting();
 
-		if(!highlighted.isEmpty())
-			gui.renderTooltip(gui.getTooltipFromItem(highlighted), mouseX, mouseY);
+		this.renderHighlightedTooltip(gui, mouseX, mouseY);
 		GlStateManager.enableBlend();
 		RenderHelper.disableStandardItemLighting();
 	}
-
 
 	@Override
 	public boolean listForSearch(String searchTag)
 	{
 		for(PositionedItemStack[] recipe : this.recipes)
 			for(PositionedItemStack pStack : recipe)
-				for(ItemStack stack : pStack.displayList)
+				for(ItemStack stack : pStack.getDisplayList())
 					if(ManualUtils.listStack(searchTag, stack))
 						return true;
 		return false;
@@ -158,6 +154,10 @@ public class ManualElementBlueprint extends SpecialManualElements
 	@Override
 	public int getPixelsTaken()
 	{
-		return 0;//TODO
+		int maxY = 0;
+		for(PositionedItemStack[] recipe : recipes)
+			for(PositionedItemStack pstack : recipe)
+				maxY = Math.max(maxY, pstack.y);
+		return maxY+18;
 	}
 }

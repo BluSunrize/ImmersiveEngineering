@@ -8,7 +8,9 @@
 
 package blusunrize.immersiveengineering.client.models;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
+import blusunrize.immersiveengineering.api.crafting.StackWithChance;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
 import blusunrize.immersiveengineering.client.ClientUtils;
@@ -17,7 +19,8 @@ import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonObject;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -30,12 +33,16 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.IModelConfiguration;
+import net.minecraftforge.client.model.IModelLoader;
 import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.geometry.IModelGeometry;
 import net.minecraftforge.client.model.pipeline.LightUtil;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 import org.apache.commons.lang3.tuple.Pair;
@@ -51,16 +58,17 @@ import java.util.function.Function;
 @SuppressWarnings("deprecation")
 public class ModelCoresample extends BakedIEModel
 {
-	private static final List<BakedQuad> EMPTY_QUADS = Lists.newArrayList();
 	private static final Cache<String, ModelCoresample> modelCache = CacheBuilder.newBuilder()
 			.expireAfterAccess(60, TimeUnit.SECONDS)
 			.build();
 	private MineralMix mineral;
+	private final VertexFormat format;
 	private List<BakedQuad> bakedQuads;
 
-	public ModelCoresample(MineralMix mineral)
+	public ModelCoresample(MineralMix mineral, VertexFormat format)
 	{
 		this.mineral = mineral;
+		this.format = format;
 	}
 
 	public static void clearCache()
@@ -80,6 +88,7 @@ public class ModelCoresample extends BakedIEModel
 		if(bakedQuads==null||this.mineral==null)
 		{
 			bakedQuads = new ArrayList<>();
+			Exception cause = null;
 			try
 			{
 				float width = .25f;
@@ -89,29 +98,34 @@ public class ModelCoresample extends BakedIEModel
 				int pixelLength = 0;
 
 				Map<TextureAtlasSprite, Integer> textureOre = new HashMap<>();
-				if(mineral!=null&&mineral.oreOutput!=null&&!mineral.oreOutput.isEmpty())
+				TextureAtlasSprite textureStone;
+				if(mineral!=null)
 				{
-					for(int i = 0; i < mineral.oreOutput.size(); i++)
-						if(!mineral.oreOutput.get(i).isEmpty())
+					for(StackWithChance o : mineral.outputs)
+						if(!o.getStack().isEmpty())
 						{
-							int weight = Math.max(2, Math.round(16*mineral.recalculatedChances[i]));
-							Block b = Block.getBlockFromItem(mineral.oreOutput.get(i).getItem());
-							BlockState state = b!=Blocks.AIR?b.getDefaultState(): Blocks.STONE.getDefaultState();
+							int weight = Math.max(2, Math.round(16*o.getChance()));
+							Block b = Block.getBlockFromItem(o.getStack().getItem());
+							if(b==Blocks.AIR)
+								b = mineral.background;
+							BlockState state = b.getDefaultState();
 							IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes().getModel(state);
-							if(model!=null&&model.getParticleTexture()!=null)
-								textureOre.put(model.getParticleTexture(), weight);
+							textureOre.put(model.getParticleTexture(), weight);
 							pixelLength += weight;
 						}
+					IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes().getModel(mineral.background.getDefaultState());
+					textureStone = model.getParticleTexture();
 				}
 				else
+				{
 					pixelLength = 16;
-				TextureAtlasSprite textureStone = ClientUtils.getSprite(new ResourceLocation("block/stone"));
+					textureStone = ClientUtils.getSprite(new ResourceLocation("block/stone"));
+				}
 
-				Vec2f[] stoneUVs = {
-						new Vec2f(textureStone.getInterpolatedU(16*wOff), textureStone.getInterpolatedV(16*dOff)),
-						new Vec2f(textureStone.getInterpolatedU(16*wOff), textureStone.getInterpolatedV(16*(dOff+depth))),
-						new Vec2f(textureStone.getInterpolatedU(16*(wOff+width)), textureStone.getInterpolatedV(16*(dOff+depth))),
-						new Vec2f(textureStone.getInterpolatedU(16*(wOff+width)), textureStone.getInterpolatedV(16*dOff))};
+				double[] stoneUVs = {
+						16*wOff, 16*dOff,
+						16*(wOff+width), 16*(dOff+depth),
+				};
 
 				putVertexData(new Vec3d(0, -1, 0), new Vec3d[]{new Vec3d(wOff, 0, dOff),
 						new Vec3d(wOff+width, 0, dOff), new Vec3d(wOff+width, 0, dOff+depth),
@@ -121,13 +135,12 @@ public class ModelCoresample extends BakedIEModel
 						new Vec3d(wOff+width, 1, dOff)}, stoneUVs, textureStone, bakedQuads);
 				if(textureOre.isEmpty())
 				{
-					Vec2f[][] uvs = new Vec2f[4][];
+					double[][] uvs = new double[4][];
 					for(int j = 0; j < 4; j++)
-						uvs[j] = new Vec2f[]{
-								new Vec2f(textureStone.getInterpolatedU(j*4), textureStone.getInterpolatedV(0)),
-								new Vec2f(textureStone.getInterpolatedU(j*4), textureStone.getInterpolatedV(16)),
-								new Vec2f(textureStone.getInterpolatedU((j+1)*4), textureStone.getInterpolatedV(16)),
-								new Vec2f(textureStone.getInterpolatedU((j+1)*4), textureStone.getInterpolatedV(0))};
+						uvs[j] = new double[]{
+								j*4, 0,
+								(j+1)*4, 16,
+						};
 
 					putVertexData(new Vec3d(0, 0, -1), new Vec3d[]{
 							new Vec3d(wOff, 0, dOff),
@@ -162,13 +175,12 @@ public class ModelCoresample extends BakedIEModel
 					{
 						int weight = textureOre.get(sprite);
 						int v = weight > 8?16-weight: 8;
-						Vec2f[][] uvs = new Vec2f[4][];
+						double[][] uvs = new double[4][];
 						for(int j = 0; j < 4; j++)
-							uvs[j] = new Vec2f[]{
-									new Vec2f(sprite.getInterpolatedU(j*4), sprite.getInterpolatedV(v)),
-									new Vec2f(sprite.getInterpolatedU(j*4), sprite.getInterpolatedV(v+weight)),
-									new Vec2f(sprite.getInterpolatedU((j+1)*4), sprite.getInterpolatedV(v+weight)),
-									new Vec2f(sprite.getInterpolatedU((j+1)*4), sprite.getInterpolatedV(v))};
+							uvs[j] = new double[]{
+									j*4, v,
+									(j+1)*4, v+weight,
+							};
 
 						float h1 = weight/(float)pixelLength;
 						putVertexData(new Vec3d(0, 0, -1), new Vec3d[]{
@@ -201,29 +213,30 @@ public class ModelCoresample extends BakedIEModel
 			} catch(Exception e)
 			{
 				e.printStackTrace();
+				cause = e;
 			}
 			if(bakedQuads.isEmpty())
-				throw new RuntimeException("Empty quad list!");
+			{
+				if(cause!=null)
+					throw new RuntimeException("Empty quad list!", cause);
+				else
+					throw new RuntimeException("Empty quad list!");
+			}
 			return bakedQuads;
 		}
 		return bakedQuads;
 	}
 
-	protected final void putVertexData(Vec3d normal, Vec3d[] vertices, Vec2f[] uvs, TextureAtlasSprite sprite, List<BakedQuad> out)
+	protected final void putVertexData(Vec3d normal, Vec3d[] vertices, double[] uvs, TextureAtlasSprite sprite, List<BakedQuad> out)
 	{
-		UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(DefaultVertexFormats.ITEM);
-		builder.setQuadOrientation(Direction.getFacingFromVector(normal.x, normal.y, normal.z));
-		builder.setTexture(sprite);
-		for(int i = 0; i < vertices.length; i++)
-		{
-			builder.put(0, (float)vertices[i].x, (float)vertices[i].y, (float)vertices[i].z, 1);//Pos
-			float d = LightUtil.diffuseLight((float)normal.x, (float)normal.y, (float)normal.z);
-			builder.put(1, d, d, d, 1);//Colour
-			builder.put(2, uvs[i].x, uvs[i].y, 0, 1);//UV
-			builder.put(3, (float)normal.x, (float)normal.y, (float)normal.z, 0);//Normal
-			builder.put(4);//padding
-		}
-		out.add(builder.build());
+		float d = LightUtil.diffuseLight((float)normal.x, (float)normal.y, (float)normal.z);
+		BakedQuad quad = ClientUtils.createBakedQuad(format, vertices, Direction.getFacingFromVector(normal.x, normal.y, normal.z),
+				sprite,
+				uvs,
+				new float[]{d, d, d, 1},
+				false
+		);
+		out.add(quad);
 	}
 
 	@Override
@@ -278,9 +291,14 @@ public class ModelCoresample extends BakedIEModel
 					try
 					{
 						return modelCache.get(name, () -> {
-							for(MineralMix mix : ExcavatorHandler.mineralList.keySet())
-								if(name.equals(mix.name))
-									return new ModelCoresample(mix);
+							VertexFormat format;
+							if(originalModel instanceof ModelCoresample)
+								format = ((ModelCoresample)originalModel).format;
+							else
+								format = DefaultVertexFormats.ITEM;
+							for(MineralMix mix : ExcavatorHandler.mineralList.values())
+								if(name.equals(mix.getId().toString()))
+									return new ModelCoresample(mix, format);
 							throw new RuntimeException("Invalid mineral mix: "+name);
 						});
 					} catch(ExecutionException e)
@@ -314,25 +332,34 @@ public class ModelCoresample extends BakedIEModel
 		return Pair.of(this, id);
 	}
 
-	public static class RawCoresampleModel implements IUnbakedModel
+	public static class RawCoresampleModel implements IModelGeometry<RawCoresampleModel>
 	{
 		@Override
-		public Collection<ResourceLocation> getDependencies()
+		public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<ResourceLocation, TextureAtlasSprite> spriteGetter, ISprite sprite, VertexFormat format, ItemOverrideList overrides)
 		{
-			return ImmutableList.of();
+			return new ModelCoresample(null, format);
 		}
 
 		@Override
-		public Collection<ResourceLocation> getTextures(Function<ResourceLocation, IUnbakedModel> modelGetter, Set<String> missingTextureErrors)
+		public Collection<ResourceLocation> getTextureDependencies(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<String> missingTextureErrors)
 		{
 			return ImmutableList.of();
 		}
+	}
 
-		@Nullable
+	public static class CoresampleLoader implements IModelLoader<RawCoresampleModel>
+	{
+		public static final ResourceLocation LOCATION = new ResourceLocation(ImmersiveEngineering.MODID, "models/coresample");
+
 		@Override
-		public IBakedModel bake(ModelBakery bakery, Function<ResourceLocation, TextureAtlasSprite> spriteGetter, ISprite sprite, VertexFormat format)
+		public void onResourceManagerReload(IResourceManager resourceManager)
 		{
-			return new ModelCoresample(null);
+		}
+
+		@Override
+		public RawCoresampleModel read(JsonDeserializationContext deserializationContext, JsonObject modelContents)
+		{
+			return new RawCoresampleModel();
 		}
 	}
 }

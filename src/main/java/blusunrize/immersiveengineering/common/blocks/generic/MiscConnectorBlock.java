@@ -9,8 +9,11 @@
 package blusunrize.immersiveengineering.common.blocks.generic;
 
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import com.google.common.collect.ImmutableList;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.item.Item;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.IProperty;
 import net.minecraft.tileentity.TileEntity;
@@ -22,8 +25,10 @@ import net.minecraft.world.IBlockReader;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
+//TODO the constructors are a mess, maybe add a builder or something?
 public class MiscConnectorBlock extends ConnectorBlock
 {
 	public static final EnumProperty<Direction> DEFAULT_FACING_PROP = IEProperties.FACING_ALL;
@@ -46,7 +51,13 @@ public class MiscConnectorBlock extends ConnectorBlock
 
 	public MiscConnectorBlock(String name, Supplier<TileEntityType<?>> tileType, List<IProperty<?>> extraProps, List<BlockRenderLayer> layers)
 	{
-		super(name, extraProps.toArray(new IProperty[0]));
+		this(name, tileType, extraProps, layers, BlockItemIE::new);
+	}
+
+	public MiscConnectorBlock(String name, Supplier<TileEntityType<?>> tileType, List<IProperty<?>> extraProps,
+							  List<BlockRenderLayer> layers, BiFunction<Block, Item.Properties, Item> itemClass)
+	{
+		super(name, itemClass, extraProps.toArray(new IProperty[0]));
 		this.tileType = tileType;
 		if(!layers.isEmpty())
 			setBlockLayer(layers.toArray(new BlockRenderLayer[0]));

@@ -1,0 +1,14 @@
+{
+  "type": "immersiveengineering:arc_furnace",
+  "results": [
+    {
+      "tag": "forge:ingots/nickel"
+    }
+  ],
+  "additives": [],
+  "input": {
+    "tag": "forge:dusts/nickel"
+  },
+  "time": 100,
+  "energy": 51200
+}

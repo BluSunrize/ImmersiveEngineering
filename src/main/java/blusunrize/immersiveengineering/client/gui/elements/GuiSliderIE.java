@@ -37,6 +37,7 @@ public class GuiSliderIE extends GuiSlider
 			this.blit(x+width-4, y, 16, 128, 4, height);
 			for(int i = 0; i < width-8; i += 2)
 				this.blit(x+4+i, y, 13, 128, 2, height);
+			this.blit(this.x+2+(int)(this.sliderValue*(float)(this.width-2))-2, this.y, 20, 128, 4, 8);
 			//TODO this.mouseDragged(mc, mouseX, mouseY);
 			int color = 0xe0e0e0;
 			if(!this.active)
@@ -48,20 +49,9 @@ public class GuiSliderIE extends GuiSlider
 	}
 
 	@Override
-	public boolean mouseDragged(double cx, double cy, int button, double dx, double dy)
+	public void updateSlider()
 	{
-		if(this.visible)
-		{
-			if(this.dragging)
-			{
-				this.sliderValue = (cx-(this.x+4))/(float)(this.width-8);
-				updateSlider();
-			}
-			GlStateManager.color3f(1.0F, 1.0F, 1.0F);
-			this.blit(this.x+2+(int)(this.sliderValue*(float)(this.width-2))-2, this.y, 20, 128, 4, 8);
-			return true;
-		}
-		else
-			return false;
+		super.updateSlider();
+		onPress.onPress(this);
 	}
 }

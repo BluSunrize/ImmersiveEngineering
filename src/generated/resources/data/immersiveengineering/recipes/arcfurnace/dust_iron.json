@@ -1,0 +1,14 @@
+{
+  "type": "immersiveengineering:arc_furnace",
+  "results": [
+    {
+      "tag": "forge:ingots/iron"
+    }
+  ],
+  "additives": [],
+  "input": {
+    "tag": "forge:dusts/iron"
+  },
+  "time": 100,
+  "energy": 51200
+}

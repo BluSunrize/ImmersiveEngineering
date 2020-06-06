@@ -1,0 +1,24 @@
+{
+  "type": "immersiveengineering:turn_and_copy",
+  "pattern": [
+    "ici",
+    "cbc",
+    "ici"
+  ],
+  "key": {
+    "i": {
+      "tag": "forge:ingots/steel"
+    },
+    "c": {
+      "tag": "forge:ingots/copper"
+    },
+    "b": {
+      "item": "minecraft:water_bucket"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:radiator",
+    "count": 2
+  },
+  "quarter_turn": true
+}

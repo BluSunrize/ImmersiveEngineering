@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.items;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
@@ -54,11 +55,13 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceContext.FluidMode;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -84,7 +87,12 @@ import org.apache.commons.lang3.tuple.Triple;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.*;
+import javax.vecmath.Quat4f;
+import javax.vecmath.Vector3f;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import java.util.function.Supplier;
 
 public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem, IOBJModelCallback<ItemStack>, ITool
@@ -97,6 +105,72 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 		super("drill", withIEOBJRender().maxStackSize(1).setTEISR(() -> () -> IEOBJItemRenderer.INSTANCE), "DRILL");
 	}
 
+	/* ------------- CORE ITEM METHODS ------------- */
+
+	@Override
+	public boolean isTool(ItemStack item)
+	{
+		return true;
+	}
+
+	@Override
+	public int getItemEnchantability()
+	{
+		return 0;
+	}
+
+	@Nullable
+	@Override
+	public CompoundNBT getShareTag(ItemStack stack)
+	{
+		CompoundNBT ret = super.getShareTag(stack);
+		if(ret==null)
+			ret = new CompoundNBT();
+		else
+			ret = ret.copy();
+		ItemStack head = getHead(stack);
+		if(!head.isEmpty())
+			ret.put("head", head.write(new CompoundNBT()));
+		return ret;
+	}
+
+	@Override
+	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt)
+	{
+		if(!stack.isEmpty())
+			return new IEItemStackHandler(stack)
+			{
+				LazyOptional<IEItemFluidHandler> fluids = ApiUtils.constantOptional(new IEItemFluidHandler(stack, 2000));
+				LazyOptional<ShaderWrapper_Item> shaders = ApiUtils.constantOptional(new ShaderWrapper_Item(new ResourceLocation(ImmersiveEngineering.MODID, "drill"), stack));
+
+				@Nonnull
+				@Override
+				public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing)
+				{
+					if(capability==CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY)
+						return fluids.cast();
+					if(capability==CapabilityShader.SHADER_CAPABILITY)
+						return shaders.cast();
+					return super.getCapability(capability, facing);
+				}
+			};
+		return null;
+	}
+
+	@Override
+	public double getDurabilityForDisplay(ItemStack stack)
+	{
+		return (double)getHeadDamage(stack)/(double)getMaxHeadDamage(stack);
+	}
+
+	@Override
+	public boolean showDurabilityBar(ItemStack stack)
+	{
+		return getHeadDamage(stack) > 0;
+	}
+
+	/* ------------- WORKBENCH & INVENTORY ------------- */
+
 	@Override
 	public int getSlotCount(ItemStack stack)
 	{
@@ -104,16 +178,16 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 	}
 
 	@Override
-	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, Supplier<World> getWorld)
+	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, Supplier<World> getWorld, Supplier<PlayerEntity> getPlayer)
 	{
 		IItemHandler inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)
 				.orElseThrow(RuntimeException::new);
 		return new Slot[]
 				{
-						new IESlot.DrillHead(inv, 0, 98, 22),
-						new IESlot.Upgrades(container, inv, 1, 78, 52, "DRILL", stack, true, getWorld),
-						new IESlot.Upgrades(container, inv, 2, 98, 52, "DRILL", stack, true, getWorld),
-						new IESlot.Upgrades(container, inv, 3, 118, 52, "DRILL", stack, true, getWorld)
+						new IESlot.WithPredicate(inv, 0, 98, 22, (itemStack) -> itemStack.getItem() instanceof IDrillHead),
+						new IESlot.Upgrades(container, inv, 1, 78, 52, "DRILL", stack, true, getWorld, getPlayer),
+						new IESlot.Upgrades(container, inv, 2, 98, 52, "DRILL", stack, true, getWorld, getPlayer),
+						new IESlot.Upgrades(container, inv, 3, 118, 52, "DRILL", stack, true, getWorld, getPlayer)
 				};
 	}
 
@@ -124,9 +198,19 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 	}
 
 	@Override
-	public void recalculateUpgrades(ItemStack stack, World w)
+	public void removeFromWorkbench(PlayerEntity player, ItemStack stack)
 	{
-		super.recalculateUpgrades(stack, w);
+		LazyOptional<IItemHandler> invCap = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		invCap.ifPresent(inv -> {
+			if(!inv.getStackInSlot(0).isEmpty()&&!inv.getStackInSlot(1).isEmpty()&&!inv.getStackInSlot(2).isEmpty()&&!inv.getStackInSlot(3).isEmpty())
+				Utils.unlockIEAdvancement(player, "main/upgrade_drill");
+		});
+	}
+
+	@Override
+	public void recalculateUpgrades(ItemStack stack, World w, PlayerEntity player)
+	{
+		super.recalculateUpgrades(stack, w, player);
 		FluidStack fs = getFluid(stack);
 		if(fs!=null&&fs.getAmount() > this.getCapacity(stack, 2000))
 		{
@@ -146,166 +230,6 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 		}
 	}
 
-	@Override
-	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
-	{
-		list.add(IEItemFluidHandler.fluidItemInfoFlavor(getFluid(stack), getCapacity(stack, 2000)));
-		if(getHead(stack).isEmpty())
-			list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"drill.noHead"));
-		else
-		{
-			int maxDmg = getMaxHeadDamage(stack);
-			int dmg = maxDmg-getHeadDamage(stack);
-			float quote = dmg/(float)maxDmg;
-			String status = ""+(quote < .1?TextFormatting.RED: quote < .3?TextFormatting.GOLD: quote < .6?TextFormatting.YELLOW: TextFormatting.GREEN);
-			list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"drill.headDamage", status+dmg, maxDmg));
-		}
-	}
-
-	/*RENDER STUFF*/
-
-	//TODO is this still used by anything?
-	public static HashMap<UUID, Integer> animationTimer = new HashMap<>();
-
-	@Override
-	public boolean onEntitySwing(ItemStack stack, LivingEntity entity)
-	{
-		if(canDrillBeUsed(stack, entity))
-		{
-			if(!animationTimer.containsKey(entity.getUniqueID()))
-				animationTimer.put(entity.getUniqueID(), 40);
-			else if(animationTimer.get(entity.getUniqueID()) < 20)
-				animationTimer.put(entity.getUniqueID(), 20);
-		}
-		return true;
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	@Override
-	public TextureAtlasSprite getTextureReplacement(ItemStack stack, String material)
-	{
-		if(material.equals("head")&&!this.getHead(stack).isEmpty()&&this.getHead(stack).getItem() instanceof IDrillHead)
-		{
-			return ((IDrillHead)this.getHead(stack).getItem()).getDrillTexture(stack, this.getHead(stack));
-		}
-		return null;
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	@Override
-	public boolean shouldRenderGroup(ItemStack stack, String group)
-	{
-		if(group.equals("drill_frame")||group.equals("drill_grip"))
-			return true;
-		CompoundNBT upgrades = this.getUpgrades(stack);
-		if(group.equals("upgrade_waterproof"))
-			return upgrades.getBoolean("waterproof");
-		if(group.equals("upgrade_speed"))
-			return upgrades.getBoolean("oiled");
-		if(!this.getHead(stack).isEmpty())
-		{
-			if(group.equals("drill_head"))
-				return true;
-
-			if(group.equals("upgrade_damage0"))
-				return upgrades.getInt("damage") > 0;
-			if(group.equals("upgrade_damage1")||group.equals("upgrade_damage2"))
-				return upgrades.getInt("damage") > 1;
-			if(group.equals("upgrade_damage3")||group.equals("upgrade_damage4"))
-				return upgrades.getInt("damage") > 2;
-		}
-		return false;
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	@Override
-	public Optional<TRSRTransformation> applyTransformations(ItemStack stack, String group, Optional<TRSRTransformation> transform)
-	{
-		CompoundNBT upgrades = this.getUpgrades(stack);
-		if(group.equals("drill_head")&&upgrades.getInt("damage") <= 0)
-		{
-			Matrix4 mat = new Matrix4(transform.orElse(TRSRTransformation.identity()).getMatrixVec());
-			mat.translate(-.25f, 0, 0);
-			return Optional.of(new TRSRTransformation(mat.toMatrix4f()));
-		}
-		return transform;
-	}
-
-	private static final String[][] ROTATING = {
-			{"drill_head", "upgrade_damage0"},
-			{"upgrade_damage1", "upgrade_damage2"},
-			{"upgrade_damage3", "upgrade_damage4"}
-	};
-	private static final String[][] FIXED = {
-			{"upgrade_damage1", "upgrade_damage2", "upgrade_damage3", "upgrade_damage4"}
-	};
-
-	private boolean shouldRotate(LivingEntity entity, ItemStack stack, TransformType transform)
-	{
-		return entity!=null&&canDrillBeUsed(stack, entity)&&
-				(entity.getHeldItem(Hand.MAIN_HAND)==stack||entity.getHeldItem(Hand.OFF_HAND)==stack)&&
-				(transform==TransformType.FIRST_PERSON_RIGHT_HAND||transform==TransformType.FIRST_PERSON_LEFT_HAND||
-						transform==TransformType.THIRD_PERSON_RIGHT_HAND||transform==TransformType.THIRD_PERSON_LEFT_HAND);
-	}
-
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public String[][] getSpecialGroups(ItemStack stack, TransformType transform, LivingEntity entity)
-	{
-		if(shouldRotate(entity, stack, transform))
-			return ROTATING;
-		else
-			return FIXED;
-	}
-
-	private static final Matrix4 matAugers = new Matrix4().translate(.441f, 0, 0);
-
-	@Nonnull
-	@Override
-	public Matrix4 getTransformForGroups(ItemStack stack, String[] groups, TransformType transform, LivingEntity entity, Matrix4 mat, float partialTicks)
-	{
-		mat.setIdentity();
-		if(groups==FIXED[0])
-			return matAugers;
-		float angle = (entity.ticksExisted%60+partialTicks)/60f*(float)(2*Math.PI);
-		if("drill_head".equals(groups[0]))
-			mat.rotate(angle, 1, 0, 0);
-		else if("upgrade_damage1".equals(groups[0]))
-			mat.translate(.441f, 0, 0).rotate(angle, 0, 1, 0);
-		else if("upgrade_damage3".equals(groups[0]))
-			mat.translate(.441f, 0, 0).rotate(angle, 0, 0, 1);
-		return mat;
-	}
-
-	@Override
-	public double getDurabilityForDisplay(ItemStack stack)
-	{
-		return (double)getHeadDamage(stack)/(double)getMaxHeadDamage(stack);
-	}
-
-	@Override
-	public boolean showDurabilityBar(ItemStack stack)
-	{
-		return getHeadDamage(stack) > 0;
-	}
-
-	@Override
-	public UseAction getUseAction(ItemStack p_77661_1_)
-	{
-		return UseAction.BOW;
-	}
-
-	@Override
-	public void removeFromWorkbench(PlayerEntity player, ItemStack stack)
-	{
-		LazyOptional<IItemHandler> invCap = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-		invCap.ifPresent(inv -> {
-			if(!inv.getStackInSlot(0).isEmpty()&&!inv.getStackInSlot(1).isEmpty()&&!inv.getStackInSlot(2).isEmpty()&&!inv.getStackInSlot(3).isEmpty())
-				Utils.unlockIEAdvancement(player, "main/upgrade_drill");
-		});
-	}
-
-	/*INVENTORY STUFF*/
 	public ItemStack getHead(ItemStack drill)
 	{
 		if(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY==null)
@@ -330,18 +254,64 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 		((IItemHandlerModifiable)inv).setStackInSlot(0, head);
 	}
 
-	/*TOOL STUFF*/
+	/* ------------- NAME, TOOLTIP, SUB-ITEMS ------------- */
+
 	@Override
-	public boolean isTool(ItemStack item)
+	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
 	{
+		list.add(IEItemFluidHandler.fluidItemInfoFlavor(getFluid(stack), getCapacity(stack, 2000)));
+		if(getHead(stack).isEmpty())
+			list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"drill.noHead").setStyle(new Style().setColor(TextFormatting.GRAY)));
+		else
+		{
+			int maxDmg = getMaxHeadDamage(stack);
+			int dmg = maxDmg-getHeadDamage(stack);
+			float quote = dmg/(float)maxDmg;
+			TextFormatting status = quote < .1?TextFormatting.RED: quote < .3?TextFormatting.GOLD: quote < .6?TextFormatting.YELLOW: TextFormatting.GREEN;
+			list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"drill.headDamage").setStyle(new Style().setColor(TextFormatting.GRAY))
+					.appendText(" ")
+					.appendSibling(new TranslationTextComponent(Lib.DESC_INFO+"percent", (int)(quote*100)).setStyle(new Style().setColor(status))));
+		}
+	}
+
+	/* ------------- ATTRIBUTES ------------- */
+
+	@Override
+	public Multimap<String, AttributeModifier> getAttributeModifiers(EquipmentSlotType slot, ItemStack stack)
+	{
+		Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
+		if(slot==EquipmentSlotType.MAINHAND)
+		{
+			ItemStack head = getHead(stack);
+			if(!head.isEmpty()&&canDrillBeUsed(stack, null))
+			{
+				multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier", ((IDrillHead)head.getItem()).getAttackDamage(head)+getUpgrades(stack).getInt("damage"), Operation.ADDITION));
+				multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", -2.5D, Operation.ADDITION));
+			}
+		}
+		return multimap;
+	}
+
+	@Override
+	public UseAction getUseAction(ItemStack p_77661_1_)
+	{
+		return UseAction.BOW;
+	}
+
+	@Override
+	public boolean hitEntity(ItemStack stack, LivingEntity target, LivingEntity player)
+	{
+		consumeDurability(stack, target.getEntityWorld(), null, null, player);
 		return true;
 	}
 
-	public boolean canDrillBeUsed(ItemStack drill, LivingEntity player)
+	/* ------------- DIGGING ------------- */
+
+	public boolean canDrillBeUsed(ItemStack drill, @Nullable LivingEntity player)
 	{
-		if(player.areEyesInFluid(FluidTags.WATER)&&!getUpgrades(drill).getBoolean("waterproof"))
+		if(player!=null&&player.areEyesInFluid(FluidTags.WATER)&&!getUpgrades(drill).getBoolean("waterproof"))
 			return false;
-		return getFluid(drill)!=null;
+		return !getFluid(drill).isEmpty();
 	}
 
 	public int getMaxHeadDamage(ItemStack stack)
@@ -361,10 +331,26 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 		return getHeadDamage(stack) >= getMaxHeadDamage(stack)||getFluid(stack)==null||getFluid(stack).isEmpty();
 	}
 
-	@Override
-	public boolean hitEntity(ItemStack stack, LivingEntity target, LivingEntity player)
+	private void consumeDurability(ItemStack stack, World world, BlockState state, BlockPos pos, LivingEntity living)
 	{
-		return true;
+		if(state==null||state.getBlockHardness(world, pos)!=0.0f)
+		{
+			int dmg = state==null||ForgeHooks.isToolEffective(world, pos, stack)||isEffective(state.getMaterial())?1: 3;
+			ItemStack head = getHead(stack);
+			if(!head.isEmpty())
+			{
+
+				if(!getUpgrades(stack).getBoolean("oiled")||Utils.RAND.nextInt(4)==0)
+					((IDrillHead)head.getItem()).damageHead(head, dmg);
+				this.setHead(stack, head);
+				IFluidHandler handler = FluidUtil.getFluidHandler(stack).orElseThrow(RuntimeException::new);
+				handler.drain(1, FluidAction.EXECUTE);
+
+				Triple<ItemStack, ShaderRegistryEntry, ShaderCase> shader = ShaderRegistry.getStoredShaderAndCase(stack);
+				if(shader!=null)
+					shader.getMiddle().getEffectFunction().execute(world, shader.getLeft(), stack, shader.getRight().getShaderType().toString(), new Vec3d(pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5), null, .375f);
+			}
+		}
 	}
 
 	@Override
@@ -382,41 +368,11 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 						return true;
 					((IDrillHead)head.getItem()).afterBlockbreak(stack, head, (PlayerEntity)living);
 				}
-				if(!getUpgrades(stack).getBoolean("oiled")||Utils.RAND.nextInt(4)==0)
-					((IDrillHead)head.getItem()).damageHead(head, dmg);
-				this.setHead(stack, head);
-				IFluidHandler handler = FluidUtil.getFluidHandler(stack).orElseThrow(RuntimeException::new);
-				handler.drain(1, FluidAction.EXECUTE);
-
-				Triple<ItemStack, ShaderRegistryEntry, ShaderCase> shader = ShaderRegistry.getStoredShaderAndCase(stack);
-				if(shader!=null)
-					shader.getMiddle().getEffectFunction().execute(world, shader.getLeft(), stack, shader.getRight().getShaderType(), new Vec3d(pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5), null, .375f);
+				consumeDurability(stack, world, state, pos, living);
 			}
 		}
 
 		return true;
-	}
-
-	@Override
-	public int getItemEnchantability()
-	{
-		return 0;
-	}
-
-	@Override
-	public Multimap<String, AttributeModifier> getAttributeModifiers(EquipmentSlotType slot, ItemStack stack)
-	{
-		Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
-		if(slot==EquipmentSlotType.MAINHAND)
-		{
-			ItemStack head = getHead(stack);
-			if(!head.isEmpty())
-			{
-				multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier", ((IDrillHead)head.getItem()).getAttackDamage(head)+getUpgrades(stack).getInt("damage"), Operation.ADDITION));
-				multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", -2.5D, Operation.ADDITION));
-			}
-		}
-		return multimap;
 	}
 
 	@Override
@@ -477,7 +433,7 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 		World world = player.world;
 		if(player.isSneaking()||world.isRemote||!(player instanceof ServerPlayerEntity))
 			return false;
-		RayTraceResult mop = this.rayTrace(world, player, FluidMode.NONE);
+		RayTraceResult mop = rayTrace(world, player, FluidMode.NONE);
 		ItemStack head = getHead(stack);
 		if(mop==null||head.isEmpty()||this.isDrillBroken(stack))
 			return false;
@@ -523,6 +479,24 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 		return false;
 	}
 
+	/* ------------- FLUID ------------- */
+
+	@Override
+	public int getCapacity(ItemStack container, int baseCapacity)
+	{
+		return baseCapacity+getUpgrades(container).getInt("capacity");
+	}
+
+	@Override
+	public boolean allowFluid(ItemStack container, FluidStack fluid)
+	{
+		return fluid!=null&&DieselHandler.isValidDrillFuel(fluid.getFluid());
+	}
+
+	/* ------------- RENDERING ------------- */
+
+	public static HashMap<UUID, Integer> animationTimer = new HashMap<>();
+
 	@Override
 	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged)
 	{
@@ -540,52 +514,119 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 	}
 
 	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt)
+	public boolean onEntitySwing(ItemStack stack, LivingEntity entity)
 	{
-		if(!stack.isEmpty())
-			return new IEItemStackHandler(stack)
-			{
-				LazyOptional<IEItemFluidHandler> fluids = ApiUtils.constantOptional(new IEItemFluidHandler(stack, 2000));
-				LazyOptional<ShaderWrapper_Item> shaders = ApiUtils.constantOptional(new ShaderWrapper_Item("immersiveengineering:drill", stack));
+		if(canDrillBeUsed(stack, entity))
+		{
+			if(!animationTimer.containsKey(entity.getUniqueID()))
+				animationTimer.put(entity.getUniqueID(), 40);
+			else if(animationTimer.get(entity.getUniqueID()) < 20)
+				animationTimer.put(entity.getUniqueID(), 20);
+		}
+		return true;
+	}
 
-				@Nonnull
-				@Override
-				public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing)
-				{
-					if(capability==CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY)
-						return fluids.cast();
-					if(capability==CapabilityShader.SHADER_CAPABILITY)
-						return shaders.cast();
-					return super.getCapability(capability, facing);
-				}
-			};
+	@OnlyIn(Dist.CLIENT)
+	@Override
+	public TextureAtlasSprite getTextureReplacement(ItemStack stack, String group, String material)
+	{
+		if("head".equals(material)&&!this.getHead(stack).isEmpty()&&this.getHead(stack).getItem() instanceof IDrillHead)
+		{
+			return ((IDrillHead)this.getHead(stack).getItem()).getDrillTexture(stack, this.getHead(stack));
+		}
 		return null;
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	@Override
-	public int getCapacity(ItemStack container, int baseCapacity)
+	public boolean shouldRenderGroup(ItemStack stack, String group)
 	{
-		return baseCapacity+getUpgrades(container).getInt("capacity");
+		if(group.equals("drill_frame")||group.equals("drill_grip"))
+			return true;
+		CompoundNBT upgrades = this.getUpgrades(stack);
+		if(group.equals("upgrade_waterproof"))
+			return upgrades.getBoolean("waterproof");
+		if(group.equals("upgrade_speed"))
+			return upgrades.getBoolean("oiled");
+		if(!this.getHead(stack).isEmpty())
+		{
+			if(group.equals("drill_head"))
+				return true;
+
+			if(group.equals("upgrade_damage0"))
+				return upgrades.getInt("damage") > 0;
+			if(group.equals("upgrade_damage1")||group.equals("upgrade_damage2"))
+				return upgrades.getInt("damage") > 1;
+			if(group.equals("upgrade_damage3")||group.equals("upgrade_damage4"))
+				return upgrades.getInt("damage") > 2;
+		}
+		return false;
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	@Override
+	public TRSRTransformation applyTransformations(ItemStack stack, String group, TRSRTransformation transform)
+	{
+		CompoundNBT upgrades = this.getUpgrades(stack);
+		if(group.equals("drill_head")&&upgrades.getInt("damage") <= 0)
+		{
+			Matrix4 mat = new Matrix4(transform.getMatrixVec());
+			mat.translate(-.25f, 0, 0);
+			return new TRSRTransformation(mat.toMatrix4f());
+		}
+		return transform;
+	}
+
+	private static final String[][] ROTATING = {
+			{"drill_head", "upgrade_damage0"},
+			{"upgrade_damage1", "upgrade_damage2"},
+			{"upgrade_damage3", "upgrade_damage4"}
+	};
+	private static final String[][] FIXED = {
+			{"upgrade_damage1", "upgrade_damage2", "upgrade_damage3", "upgrade_damage4"}
+	};
+
+	private boolean shouldRotate(LivingEntity entity, ItemStack stack, TransformType transform)
+	{
+		return entity!=null&&canDrillBeUsed(stack, entity)&&
+				(entity.getHeldItem(Hand.MAIN_HAND)==stack||entity.getHeldItem(Hand.OFF_HAND)==stack)&&
+				(transform==TransformType.FIRST_PERSON_RIGHT_HAND||transform==TransformType.FIRST_PERSON_LEFT_HAND||
+						transform==TransformType.THIRD_PERSON_RIGHT_HAND||transform==TransformType.THIRD_PERSON_LEFT_HAND);
 	}
 
 	@Override
-	public boolean allowFluid(ItemStack container, FluidStack fluid)
+	@OnlyIn(Dist.CLIENT)
+	public String[][] getSpecialGroups(ItemStack stack, TransformType transform, LivingEntity entity)
 	{
-		return fluid!=null&&DieselHandler.isValidDrillFuel(fluid.getFluid());
-	}
-
-	@Nullable
-	@Override
-	public CompoundNBT getShareTag(ItemStack stack)
-	{
-		CompoundNBT ret = super.getShareTag(stack);
-		if(ret==null)
-			ret = new CompoundNBT();
+		if(shouldRotate(entity, stack, transform))
+			return ROTATING;
 		else
-			ret = ret.copy();
-		CompoundNBT tmp = new CompoundNBT();
-		getHead(stack).write(tmp);
-		ret.put("head", tmp);
-		return ret;
+			return FIXED;
+	}
+
+	private static final TRSRTransformation matAugers = new TRSRTransformation(new Vector3f(.441f, 0, 0), null, null, null);
+
+	@Nonnull
+	@Override
+	public TRSRTransformation getTransformForGroups(ItemStack stack, String[] groups, TransformType transform, LivingEntity entity, float partialTicks)
+	{
+		if(groups==FIXED[0])
+			return matAugers;
+		float angle = (entity.ticksExisted%60+partialTicks)/60f*(float)(2*Math.PI);
+		Quat4f rotation = null;
+		Vector3f translation = null;
+		if("drill_head".equals(groups[0]))
+			rotation = TRSRTransformation.quatFromXYZ(angle, 0, 0);
+		else if("upgrade_damage1".equals(groups[0]))
+		{
+			translation = new Vector3f(.441f, 0, 0);
+			rotation = TRSRTransformation.quatFromXYZ(0, angle, 0);
+		}
+		else if("upgrade_damage3".equals(groups[0]))
+		{
+			translation = new Vector3f(.441f, 0, 0);
+			rotation = TRSRTransformation.quatFromXYZ(0, 0, angle);
+		}
+		return new TRSRTransformation(translation, rotation, null, null);
 	}
 }

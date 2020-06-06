@@ -9,17 +9,16 @@
 package blusunrize.immersiveengineering.client.models.connection;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.client.models.ModelData;
+import blusunrize.immersiveengineering.client.models.connection.ConnectionLoader.ConnectorModel;
 import blusunrize.immersiveengineering.client.models.multilayer.MultiLayerModel;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.IUnbakedModel;
+import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.model.ModelBakery;
 import net.minecraft.client.renderer.texture.ISprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -27,21 +26,19 @@ import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.ICustomModelLoader;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
+import net.minecraftforge.client.model.IModelConfiguration;
+import net.minecraftforge.client.model.IModelLoader;
+import net.minecraftforge.client.model.ModelLoaderRegistry2;
+import net.minecraftforge.client.model.geometry.IModelGeometry;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Function;
 
-public class ConnectionLoader implements ICustomModelLoader
+public class ConnectionLoader implements IModelLoader<ConnectorModel>
 {
-	public static final String RESOURCE_LOCATION = "models/block/smartmodel/conn_";
-	public static final ResourceLocation DATA_BASED_LOC = new ResourceLocation(ImmersiveEngineering.MODID, "models/block/smartmodel/connector");
-	public static final ImmutableSet<BlockRenderLayer> ALL_LAYERS = ImmutableSet.copyOf(BlockRenderLayer.values());
-	public static Map<String, ImmutableMap<String, String>> textureReplacements = new HashMap<>();
-	public static Map<String, ResourceLocation> baseModels = new HashMap<>();
+	public static final ResourceLocation LOADER_NAME = new ResourceLocation(ImmersiveEngineering.MODID, "connector");
 
 	@Override
 	public void onResourceManagerReload(@Nonnull IResourceManager resourceManager)
@@ -49,165 +46,85 @@ public class ConnectionLoader implements ICustomModelLoader
 		BakedConnectionModel.cache.invalidateAll();
 	}
 
-	@Override
-	public boolean accepts(@Nonnull ResourceLocation modelLocation)
-	{
-		return modelLocation.equals(DATA_BASED_LOC)||modelLocation.getPath().contains(RESOURCE_LOCATION);
-	}
-
 	@Nonnull
 	@Override
-	public IUnbakedModel loadModel(@Nonnull ResourceLocation modelLocation)
+	public ConnectorModel read(@Nonnull JsonDeserializationContext deserializationContext, JsonObject modelContents)
 	{
-		if(modelLocation.equals(DATA_BASED_LOC))
-			return new ConnectorModel();
-		String resourcePath = modelLocation.getPath();
-		int pos = resourcePath.indexOf("conn_");
-		if(pos >= 0)
+		JsonObject baseModelData = modelContents.getAsJsonObject("base_model");
+		IModelGeometry<?> model;
+		ResourceLocation subloader;
+		if(baseModelData.has("loader"))
+			subloader = new ResourceLocation(baseModelData.get("loader").getAsString());
+		else
+			subloader = new ResourceLocation("minecraft", "elements");
+		model = ModelLoaderRegistry2.getModel(subloader, deserializationContext, baseModelData);
+		List<BlockRenderLayer> layers = ImmutableList.of(BlockRenderLayer.SOLID);
+		if(modelContents.has("layers")&&modelContents.get("layers").isJsonArray())
 		{
-			pos += 5;// length of "conn_"
-			String name = resourcePath.substring(pos);
-			ResourceLocation r = baseModels.get(name);
-			if(r!=null)
+			JsonArray arr = modelContents.get("layers").getAsJsonArray();
+			layers = new ArrayList<>(arr.size());
+			for(JsonElement ele : arr)
 			{
-				ImmutableMap<String, String> texRepl = ImmutableMap.of();
-				if(textureReplacements.containsKey(name))
-					texRepl = textureReplacements.get(name);
-				return new ConnectorModel(r, texRepl, ImmutableMap.of("flip-v", "true"), ALL_LAYERS);
+				if(ele.isJsonPrimitive()&&ele.getAsJsonPrimitive().isString())
+				{
+					String layerAsStr = ele.getAsString();
+					if(MultiLayerModel.LAYERS_BY_NAME.containsKey(layerAsStr))
+						layers.add(MultiLayerModel.LAYERS_BY_NAME.get(layerAsStr));
+					else
+						throw new RuntimeException("Invalid layer \""+layerAsStr+"\" in wire model");
+				}
+				else
+					throw new RuntimeException("Layers in wire models must be strings! Invalid value: "+ele.toString());
 			}
 		}
-		return ModelLoaderRegistry.getMissingModel();
+		return new ConnectorModel(model, layers);
 	}
 
-	public static class ConnectorModel implements IUnbakedModel
+	public static class ConnectorModel implements IModelGeometry<ConnectorModel>
 	{
 		private static final ResourceLocation WIRE_LOC = new ResourceLocation(ImmersiveEngineering.MODID.toLowerCase(Locale.ENGLISH)+":block/wire");
 		@Nullable
-		private final ModelData baseData;
+		private final IModelGeometry<?> baseModel;
 		@Nonnull
-		private final ImmutableSet<BlockRenderLayer> layers;
-		@Nonnull
-		private final ImmutableMap<String, String> externalTextures;
+		private final List<BlockRenderLayer> layers;
 
-		public ConnectorModel(@Nonnull ResourceLocation b, @Nonnull ImmutableMap<String, String> t,
-							  @Nonnull ImmutableMap<String, String> customBase, @Nonnull ImmutableSet<BlockRenderLayer> layers)
+		public ConnectorModel(@Nullable IModelGeometry<?> baseModel, @Nonnull List<BlockRenderLayer> layers)
 		{
-			this(new ModelData(b, ModelData.asJsonObject(customBase), t), layers, ImmutableMap.of());
-		}
-
-		public ConnectorModel(@Nonnull ResourceLocation b)
-		{
-			this(b, ImmutableMap.of(), ImmutableMap.of(), ALL_LAYERS);
-		}
-
-		public ConnectorModel()
-		{
-			baseData = null;
-			layers = ALL_LAYERS;
-			externalTextures = ImmutableMap.of();
-		}
-
-		public ConnectorModel(@Nullable ModelData newData, @Nonnull ImmutableSet<BlockRenderLayer> layers,
-							  @Nonnull ImmutableMap<String, String> externalTextures)
-		{
-			this.baseData = newData;
+			this.baseModel = baseModel;
 			this.layers = layers;
-			this.externalTextures = externalTextures;
 		}
 
-		@Nonnull
 		@Override
-		public Collection<ResourceLocation> getDependencies()
+		public IBakedModel bake(
+				IModelConfiguration owner,
+				ModelBakery bakery,
+				Function<ResourceLocation, TextureAtlasSprite> spriteGetter,
+				ISprite sprite,
+				VertexFormat format,
+				ItemOverrideList overrides)
 		{
-			if(baseData==null)
-				return ImmutableList.of();
-			baseData.attemptToLoad(false);
-			if(baseData.getModel()!=null)
-			{
-				List<ResourceLocation> ret = new ArrayList<>(baseData.getModel().getDependencies());
-				ret.add(0, baseData.location);
-				return ret;
-			}
+			IBakedModel base;
+			if(baseModel==null)
+				base = null;
 			else
-				return ImmutableList.of(baseData.location);
+				base = baseModel.bake(owner, bakery, spriteGetter, sprite, format, overrides);
+			return new BakedConnectionModel(base, layers);
 		}
 
-		@Nonnull
 		@Override
-		public Collection<ResourceLocation> getTextures(@Nonnull Function<ResourceLocation, IUnbakedModel> modelGetter,
-														@Nonnull Set<String> missingTextureErrors)
+		public Collection<ResourceLocation> getTextureDependencies(
+				IModelConfiguration owner,
+				Function<ResourceLocation, IUnbakedModel> modelGetter,
+				Set<String> missingTextureErrors)
 		{
-			if(baseData==null)
-				return ImmutableList.of();
-			baseData.attemptToLoad(false);
-			if(baseData.getModel()!=null)
-			{
-				List<ResourceLocation> ret = new ArrayList<>(baseData.getModel().getTextures(modelGetter, missingTextureErrors));
-				ret.add(WIRE_LOC);
-				return ret;
-			}
+			Collection<ResourceLocation> ret;
+			if(baseModel!=null)
+				ret = new ArrayList<>(
+						baseModel.getTextureDependencies(owner, modelGetter, missingTextureErrors));
 			else
-				return ImmutableList.of(WIRE_LOC);
-		}
-
-		@Nullable
-		@Override
-		public IBakedModel bake(@Nonnull ModelBakery bakery, @Nonnull Function<ResourceLocation, TextureAtlasSprite> spriteGetter,
-								@Nonnull ISprite sprite, @Nonnull VertexFormat format)
-		{
-			Preconditions.checkNotNull(baseData);
-			baseData.attemptToLoad(true);
-			Preconditions.checkNotNull(baseData.getModel());
-			return new BakedConnectionModel(baseData.getModel().bake(bakery, spriteGetter, sprite, format), layers);
-		}
-
-		private static final ImmutableSet<String> ownKeys = ImmutableSet.of("base", "custom", "textures", "layers");
-
-		@Nonnull
-		@Override
-		public IUnbakedModel process(ImmutableMap<String, String> customData)
-		{
-			if(customData==null||customData.isEmpty()||!customData.containsKey("base"))
-				return this;
-			JsonObject obj = ModelData.asJsonObject(customData);
-			ModelData newData = ModelData.fromJson(obj, ownKeys, "base", externalTextures);
-			Collection<BlockRenderLayer> layers = ALL_LAYERS;
-			if(obj.has("layers")&&obj.get("layers").isJsonArray())
-			{
-				JsonArray arr = obj.get("layers").getAsJsonArray();
-				layers = new ArrayList<>(arr.size());
-				for(JsonElement ele : arr)
-				{
-					if(ele.isJsonPrimitive()&&ele.getAsJsonPrimitive().isString())
-					{
-						String layerAsStr = ele.getAsString();
-						if(MultiLayerModel.LAYERS_BY_NAME.containsKey(layerAsStr))
-							layers.add(MultiLayerModel.LAYERS_BY_NAME.get(layerAsStr));
-						else
-							throw new RuntimeException("Invalid layer \""+layerAsStr+"\" in wire model");
-					}
-					else
-						throw new RuntimeException("Layers in wire models must be strings! Invalid value: "+ele.toString());
-				}
-			}
-			layers = ImmutableSet.copyOf(layers);
-			if(!newData.equals(baseData)||!layers.equals(this.layers))
-				return new ConnectorModel(newData, (ImmutableSet<BlockRenderLayer>)layers, externalTextures);
-			return this;
-		}
-
-		@Nonnull
-		@Override
-		public IUnbakedModel retexture(ImmutableMap<String, String> textures)
-		{
-			if(baseData!=null)
-			{
-				if(!textures.equals(baseData.textures)&&!(textures.isEmpty()&&!baseData.textures.isEmpty()))
-					return new ConnectorModel(new ModelData(baseData.location, baseData.data, textures), layers, textures);
-			}
-			else if(!externalTextures.equals(textures))
-				return new ConnectorModel(null, layers, textures);
-			return this;
+				ret = new ArrayList<>();
+			ret.add(WIRE_LOC);
+			return ret;
 		}
 	}
 }

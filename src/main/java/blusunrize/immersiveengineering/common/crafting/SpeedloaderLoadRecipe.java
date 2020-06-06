@@ -24,7 +24,6 @@ import javax.annotation.Nonnull;
 
 public class SpeedloaderLoadRecipe extends SpecialRecipe
 {
-	;
 	private final byte[] offsetPattern = {0, 1, 1, 1, 0, -1, -1, -1};
 
 	public SpeedloaderLoadRecipe(ResourceLocation resourceLocation)

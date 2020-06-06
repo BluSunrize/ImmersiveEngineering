@@ -10,16 +10,17 @@ package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.ComparableItemStack;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.util.ListUtils;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.fml.RegistryObject;
 
 import java.util.*;
-import java.util.function.Function;
 
 /**
  * @author BluSunrize - 07.01.2016
@@ -28,28 +29,38 @@ import java.util.function.Function;
  */
 public class MetalPressRecipe extends MultiblockRecipe
 {
+	public static IRecipeType<MetalPressRecipe> TYPE = IRecipeType.register(Lib.MODID+":metal_press");
+	public static RegistryObject<IERecipeSerializer<MetalPressRecipe>> SERIALIZER;
+
 	public static float energyModifier = 1;
 	public static float timeModifier = 1;
 
-	public final IngredientStack input;
+	public IngredientWithSize input;
 	public final ComparableItemStack mold;
 	public final ItemStack output;
 
-	public MetalPressRecipe(ItemStack output, Object input, ComparableItemStack mold, int energy)
+	public MetalPressRecipe(ResourceLocation id, ItemStack output, IngredientWithSize input, ComparableItemStack mold, int energy)
 	{
+		super(output, TYPE, id);
 		this.output = output;
-		this.input = ApiUtils.createIngredientStack(input);
+		this.input = input;
 		this.mold = mold;
 		this.totalProcessEnergy = (int)Math.floor(energy*energyModifier);
 		this.totalProcessTime = (int)Math.floor(120*timeModifier);
 
-		this.inputList = Lists.newArrayList(this.input);
+		setInputListWithSizes(Lists.newArrayList(this.input));
 		this.outputList = ListUtils.fromItem(this.output);
+	}
+
+	@Override
+	protected IERecipeSerializer<MetalPressRecipe> getIESerializer()
+	{
+		return SERIALIZER.get();
 	}
 
 	public MetalPressRecipe setInputSize(int size)
 	{
-		this.input.inputSize = size;
+		this.input = new IngredientWithSize(this.input.getBaseIngredient(), size);
 		return this;
 	}
 
@@ -65,7 +76,7 @@ public class MetalPressRecipe extends MultiblockRecipe
 
 	public boolean matches(ItemStack mold, ItemStack input, World world)
 	{
-		return this.input.matches(input);
+		return this.input.test(input);
 	}
 
 	public MetalPressRecipe getActualRecipe(ItemStack mold, ItemStack input, World world)
@@ -73,26 +84,23 @@ public class MetalPressRecipe extends MultiblockRecipe
 		return this;
 	}
 
-	public static ArrayListMultimap<ComparableItemStack, MetalPressRecipe> recipeList = ArrayListMultimap.create();
+	// Initialized by reload listener
+	public static Map<ResourceLocation, MetalPressRecipe> recipeList;
+	private static ArrayListMultimap<ComparableItemStack, MetalPressRecipe> recipesByMold;
 
-	public static MetalPressRecipe addRecipe(ItemStack output, Object input, ItemStack mold, int energy)
+	public static void updateRecipesByMold()
 	{
-		return addRecipe(output, input, ApiUtils.createComparableItemStack(mold, true), energy);
+		recipesByMold = ArrayListMultimap.create();
+		recipeList.values().forEach(recipe -> recipesByMold.put(recipe.mold, recipe));
 	}
 
-	public static MetalPressRecipe addRecipe(ItemStack output, Object input, ComparableItemStack mold, int energy)
-	{
-		MetalPressRecipe r = new MetalPressRecipe(output, input, mold, energy);
-		recipeList.put(mold, r);
-		return r;
-	}
 
 	public static MetalPressRecipe findRecipe(ItemStack mold, ItemStack input, World world)
 	{
 		if(mold.isEmpty()||input.isEmpty())
 			return null;
 		ComparableItemStack comp = ApiUtils.createComparableItemStack(mold, false);
-		List<MetalPressRecipe> list = recipeList.get(comp);
+		List<MetalPressRecipe> list = recipesByMold.get(comp);
 		for(MetalPressRecipe recipe : list)
 			if(recipe.matches(mold, input, world))
 				return recipe.getActualRecipe(mold, input, world);
@@ -102,10 +110,10 @@ public class MetalPressRecipe extends MultiblockRecipe
 	public static List<MetalPressRecipe> removeRecipes(ItemStack output)
 	{
 		List<MetalPressRecipe> list = new ArrayList<>();
-		Set<ComparableItemStack> keySet = new HashSet<>(recipeList.keySet());
+		Set<ComparableItemStack> keySet = new HashSet<>(recipesByMold.keySet());
 		for(ComparableItemStack mold : keySet)
 		{
-			Iterator<MetalPressRecipe> it = recipeList.get(mold).iterator();
+			Iterator<MetalPressRecipe> it = recipesByMold.get(mold).iterator();
 			while(it.hasNext())
 			{
 				MetalPressRecipe ir = it.next();
@@ -123,35 +131,12 @@ public class MetalPressRecipe extends MultiblockRecipe
 	{
 		if(itemStack.isEmpty())
 			return false;
-		return recipeList.containsKey(ApiUtils.createComparableItemStack(itemStack, false));
+		return recipesByMold.containsKey(ApiUtils.createComparableItemStack(itemStack, false));
 	}
 
 	@Override
 	public int getMultipleProcessTicks()
 	{
 		return 0;
-	}
-
-	public static HashMap<String, Function<CompoundNBT, MetalPressRecipe>> deserializers = new HashMap<>();
-
-	@Override
-	public CompoundNBT writeToNBT(CompoundNBT nbt)
-	{
-		nbt.put("input", input.writeToNBT(new CompoundNBT()));
-		nbt.put("mold", mold.writeToNBT(new CompoundNBT()));
-		return nbt;
-	}
-
-	public static MetalPressRecipe loadFromNBT(CompoundNBT nbt)
-	{
-		if(nbt.contains("type", NBT.TAG_STRING)&&deserializers.containsKey(nbt.getString("type")))
-			return deserializers.get(nbt.getString("type")).apply(nbt);
-		IngredientStack input = IngredientStack.readFromNBT(nbt.getCompound("input"));
-		ComparableItemStack mold = ComparableItemStack.readFromNBT(nbt.getCompound("mold"));
-		List<MetalPressRecipe> list = recipeList.get(mold);
-		for(MetalPressRecipe recipe : list)
-			if(recipe.input.equals(input))
-				return recipe;
-		return null;
 	}
 }

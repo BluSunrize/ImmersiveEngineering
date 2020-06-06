@@ -10,11 +10,11 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
-import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
-import blusunrize.immersiveengineering.api.crafting.IngredientStack;
+import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.tool.AssemblerHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttachable;
 import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
@@ -35,7 +35,10 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -55,8 +58,8 @@ import java.util.Iterator;
 import java.util.Set;
 
 //TODO powered MB or not?
-public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTileEntity, IMultiblockRecipe>
-		implements IInteractionObjectIE, IConveyorAttachable
+public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTileEntity, MultiblockRecipe>
+		implements IInteractionObjectIE, IConveyorAttachable, IBlockBounds
 {
 	public static TileEntityType<AssemblerTileEntity> TYPE;
 
@@ -286,9 +289,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 			AssemblerHandler.RecipeQuery recipeQuery = queries[i];
 			if(recipeQuery!=null&&recipeQuery.query!=null)
 			{
-				FluidStack fs = recipeQuery.query instanceof FluidStack?(FluidStack)recipeQuery.query:
-						(recipeQuery.query instanceof IngredientStack
-								&&((IngredientStack)recipeQuery.query).fluid!=null)?((IngredientStack)recipeQuery.query).fluid: null;
+				FluidStack fs = recipeQuery.query instanceof FluidStack?(FluidStack)recipeQuery.query: null;
 				int querySize = recipeQuery.querySize;
 				if(fs!=null)
 				{
@@ -358,7 +359,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 	}
 
 	@Override
-	public float[] getBlockBounds()
+	public VoxelShape getBlockBounds()
 	{
 		Set<BlockPos> fullBlocks = ImmutableSet.of(
 				new BlockPos(1, 1, 2),
@@ -367,7 +368,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 				new BlockPos(1, 2, 1)
 		);
 		if(posInMultiblock.getY()==0||fullBlocks.contains(posInMultiblock))
-			return new float[]{0, 0, 0, 1, 1, 1};
+			return VoxelShapes.create(0, 0, 0, 1, 1, 1);
 		float xMin = 0;
 		float yMin = 0;
 		float zMin = 0;
@@ -390,7 +391,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 			xMin = .1875f;
 		else if((posInMultiblock.getX()==0&&getFacing()==Direction.SOUTH)||(posInMultiblock.getX()==2&&getFacing()==Direction.NORTH))
 			xMax = .8125f;
-		return new float[]{xMin, yMin, zMin, xMax, yMax, zMax};
+		return VoxelShapes.create(xMin, yMin, zMin, xMax, yMax, zMax);
 	}
 
 	@Override
@@ -429,7 +430,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 	}
 
 	@Override
-	public boolean additionalCanProcessCheck(MultiblockProcess<IMultiblockRecipe> process)
+	public boolean additionalCanProcessCheck(MultiblockProcess<MultiblockRecipe> process)
 	{
 		return false;
 	}
@@ -452,7 +453,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 	}
 
 	@Override
-	public void onProcessFinish(MultiblockProcess<IMultiblockRecipe> process)
+	public void onProcessFinish(MultiblockProcess<MultiblockRecipe> process)
 	{
 	}
 
@@ -469,7 +470,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 	}
 
 	@Override
-	public float getMinProcessDistance(MultiblockProcess<IMultiblockRecipe> process)
+	public float getMinProcessDistance(MultiblockProcess<MultiblockRecipe> process)
 	{
 		return 0;
 	}
@@ -523,8 +524,8 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 	private LazyOptional<IItemHandler> extractionHandler = registerConstantCap(
 			new IEInventoryHandler(3, this, 18, false, true));
 
-	private static final BlockPos inputPos = new BlockPos(0, 1, 1);
-	private static final BlockPos outputPos = new BlockPos(2, 1, 1);
+	private static final BlockPos inputPos = new BlockPos(1, 1, 2);
+	private static final BlockPos outputPos = new BlockPos(1, 1, 0);
 	private static final Set<BlockPos> itemConnections = ImmutableSet.of(inputPos, outputPos);
 	@Nonnull
 	@Override
@@ -546,13 +547,13 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 
 
 	@Override
-	public IMultiblockRecipe findRecipeForInsertion(ItemStack inserting)
+	public MultiblockRecipe findRecipeForInsertion(ItemStack inserting)
 	{
 		return null;
 	}
 
 	@Override
-	protected IMultiblockRecipe readRecipeFromNBT(CompoundNBT tag)
+	protected MultiblockRecipe getRecipeForId(ResourceLocation id)
 	{
 		return null;
 	}

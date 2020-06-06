@@ -1,0 +1,30 @@
+{
+  "recipe": {
+    "type": "crafting",
+    "recipes": [
+      [
+        "crafting/revolver",
+        "crafting/gunpart_barrel",
+        "crafting/gunpart_drum",
+        "crafting/gunpart_hammer",
+        "crafting/wooden_grip"
+      ]
+    ]
+  },
+  "speedloader": {
+    "type": "crafting",
+    "recipe": "crafting/speedloader"
+  },
+  "bayonet": {
+    "type": "crafting",
+    "recipe": "crafting/toolupgrade_revolver_bayonet"
+  },
+  "extmag": {
+    "type": "crafting",
+    "recipe": "crafting/toolupgrade_revolver_magazine"
+  },
+  "tubes": {
+    "type": "crafting",
+    "recipe": "crafting/toolupgrade_revolver_electro"
+  }
+}

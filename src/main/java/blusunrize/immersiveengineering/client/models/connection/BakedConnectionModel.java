@@ -33,6 +33,8 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraftforge.client.MinecraftForgeClient;
+import net.minecraftforge.client.model.ModelLoader.White;
+import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
 
 import javax.annotation.Nonnull;
@@ -50,13 +52,14 @@ public class BakedConnectionModel extends BakedIEModel
 			.expireAfterAccess(2, TimeUnit.MINUTES)
 			.maximumSize(100)
 			.build();
+	@Nullable
 	private final IBakedModel base;
 	private final ImmutableSet<BlockRenderLayer> layers;
 
-	public BakedConnectionModel(IBakedModel basic, ImmutableSet<BlockRenderLayer> layers)
+	public BakedConnectionModel(@Nullable IBakedModel basic, Collection<BlockRenderLayer> layers)
 	{
 		base = basic;
-		this.layers = layers;
+		this.layers = ImmutableSet.copyOf(layers);
 	}
 
 	@Nonnull
@@ -86,8 +89,6 @@ public class BakedConnectionModel extends BakedIEModel
 			ModelKey key = new ModelKey(data, ad, orig.here);
 			try
 			{
-				//TODO
-				cache.invalidateAll();
 				IBakedModel ret = cache.get(key, () -> new AssembledBakedModel(key, textureAtlasSprite, base));
 				return ret.getQuads(state, null, rand, extraData);
 			} catch(ExecutionException e)
@@ -120,7 +121,10 @@ public class BakedConnectionModel extends BakedIEModel
 	@Override
 	public TextureAtlasSprite getParticleTexture()
 	{
-		return base.getParticleTexture();
+		if(base!=null)
+			return base.getParticleTexture();
+		else
+			return White.INSTANCE;
 	}
 
 	@Nonnull
@@ -132,7 +136,7 @@ public class BakedConnectionModel extends BakedIEModel
 
 	private List<BakedQuad> getBaseQuads(BlockRenderLayer currentLayer, BlockState state, Direction side, Random rand, IModelData data)
 	{
-		if(layers.contains(currentLayer)||currentLayer==null)
+		if(base!=null&&(layers.contains(currentLayer)||currentLayer==null))
 			return base.getQuads(state, side, rand, data);
 		return ImmutableList.of();
 	}
@@ -141,19 +145,20 @@ public class BakedConnectionModel extends BakedIEModel
 	@Override
 	public IModelData getModelData(@Nonnull IEnviromentBlockReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData)
 	{
-		return base.getModelData(world, pos, state, tileData);
+		if(base==null)
+			return EmptyModelData.INSTANCE;
+		else
+			return base.getModelData(world, pos, state, tileData);
 	}
 
 	public class AssembledBakedModel implements IBakedModel
 	{
-		IBakedModel basic;
 		ModelKey key;
 		List<BakedQuad>[] lists;
 		TextureAtlasSprite texture;
 
 		public AssembledBakedModel(ModelKey key, TextureAtlasSprite tex, IBakedModel b)
 		{
-			basic = b;
 			this.key = key;
 			texture = tex;
 		}
@@ -200,7 +205,7 @@ public class BakedConnectionModel extends BakedIEModel
 		@Override
 		public TextureAtlasSprite getParticleTexture()
 		{
-			return base.getParticleTexture();
+			throw new UnsupportedOperationException();
 		}
 
 		@Nonnull

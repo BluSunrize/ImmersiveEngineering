@@ -27,46 +27,43 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
-//TODO IWorldEventListener seems to be gone/hardcoded now, so we need an ASM hook for notifyBlockUpdate as well now. Or
-// a Forge PR.
 public class WireCollisions
 {
 	public static void handleEntityCollision(BlockPos p, Entity e)
 	{
-		if(!e.world.isRemote&&IEConfig.WIRES.enableWireDamage.get()&&e instanceof LivingEntity&&
+		if(!e.world.isRemote&&IEConfig.CACHED.wireDamage&&e instanceof LivingEntity&&
 				!e.isInvulnerableTo(IEDamageSources.wireShock)&&
 				!(e instanceof PlayerEntity&&((PlayerEntity)e).abilities.disableDamage))
 		{
 			GlobalWireNetwork global = GlobalWireNetwork.getNetwork(e.world);
 			WireCollisionData wireData = global.getCollisionData();
 			Collection<WireCollisionData.CollisionInfo> atBlock = wireData.getCollisionInfo(p);
-			if(atBlock!=null)
-				for(WireCollisionData.CollisionInfo info : atBlock)
-				{
-					LocalWireNetwork local = info.getLocalNet();
-					for(LocalNetworkHandler h : local.getAllHandlers())
-						if(h instanceof ICollisionHandler)
-							((ICollisionHandler)h).onCollided((LivingEntity)e, p, info);
-				}
+			for(CollisionInfo info : atBlock)
+			{
+				LocalWireNetwork local = info.getLocalNet();
+				for(LocalNetworkHandler h : local.getAllHandlers())
+					if(h instanceof ICollisionHandler)
+						((ICollisionHandler)h).onCollided((LivingEntity)e, p, info);
+			}
 		}
 	}
 
-	public void notifyBlockUpdate(@Nonnull World worldIn, @Nonnull BlockPos pos, @Nonnull BlockState oldState, @Nonnull BlockState newState, int flags)
+	public static void notifyBlockUpdate(@Nonnull World worldIn, @Nonnull BlockPos pos, @Nonnull BlockState oldState, @Nonnull BlockState newState, int flags)
 	{
-		if(!worldIn.isRemote&&(flags&1)!=0&&!newState.getCollisionShape(worldIn, pos).isEmpty())
+		if(IEConfig.CACHED.blocksBreakWires&&!worldIn.isRemote&&(flags&1)!=0&&!newState.getCollisionShape(worldIn, pos).isEmpty())
 		{
 			GlobalWireNetwork globalNet = GlobalWireNetwork.getNetwork(worldIn);
 			Collection<CollisionInfo> data = globalNet.getCollisionData().getCollisionInfo(pos);
-			if(data!=null)
+			if(!data.isEmpty())
 			{
-				Collection<Pair<Connection, BlockPos>> toBreak = new ArrayList<>();
+				Map<Connection, BlockPos> toBreak = new HashMap<>();
 				for(CollisionInfo info : data)
 					if(info.isInBlock)
 					{
@@ -85,11 +82,11 @@ public class WireCollisions
 									dropPos = dropPos.offset(f);
 									break;
 								}
-							toBreak.add(new ImmutablePair<>(info.conn, dropPos));
+							toBreak.put(info.conn, dropPos);
 						}
 					}
-				for(Pair<Connection, BlockPos> b : toBreak)
-					globalNet.removeAndDropConnection(b.getLeft(), b.getRight());
+				for(Entry<Connection, BlockPos> b : toBreak.entrySet())
+					globalNet.removeAndDropConnection(b.getKey(), b.getValue());
 			}
 		}
 	}

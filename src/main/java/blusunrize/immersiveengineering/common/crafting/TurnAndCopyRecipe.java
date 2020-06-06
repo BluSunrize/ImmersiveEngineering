@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
@@ -30,13 +31,13 @@ import java.util.regex.Pattern;
 
 public class TurnAndCopyRecipe extends ShapedRecipe
 {
-	private NonNullList<Ingredient> ingredientsQuarterTurn;
-	private NonNullList<Ingredient> ingredientsEighthTurn;
-	private int[] nbtCopyTargetSlot = null;
-	private Pattern nbtCopyPredicate = null;
-	private int lastMatch = 0;
-	private int lastStartX = 0;
-	private int lastStartY = 0;
+	protected NonNullList<Ingredient> ingredientsQuarterTurn;
+	protected NonNullList<Ingredient> ingredientsEighthTurn;
+	protected int[] nbtCopyTargetSlot = null;
+	protected Pattern nbtCopyPredicate = null;
+	protected int lastMatch = 0;
+	protected int lastStartX = 0;
+	protected int lastStartY = 0;
 
 	public TurnAndCopyRecipe(ResourceLocation id, String group, int width, int height, NonNullList<Ingredient> ingr,
 							 ItemStack output)
@@ -93,6 +94,7 @@ public class TurnAndCopyRecipe extends ShapedRecipe
 				if(!s.isEmpty()&&s.hasTag())
 					tag = ItemNBTHelper.combineTags(tag, s.getOrCreateTag(), nbtCopyPredicate);
 			}
+			out.setTag(tag);
 			return out;
 		}
 		else
@@ -191,7 +193,7 @@ public class TurnAndCopyRecipe extends ShapedRecipe
 	@Override
 	public IRecipeSerializer<?> getSerializer()
 	{
-		return TurnAndCopyRecipeSerializer.INSTANCE;
+		return RecipeSerializers.TURN_AND_COPY_SERIALIZER.get();
 	}
 
 	public boolean isQuarterTurn()

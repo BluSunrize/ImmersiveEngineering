@@ -8,7 +8,10 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
+import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
+import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
@@ -95,9 +98,10 @@ public class TurretRenderer extends TileEntityRenderer<TurretTileEntity>
 			GlStateManager.shadeModel(7424);
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 		worldRenderer.setTranslation(-.5, 0, -.5);
-		List<BakedQuad> quads = model.getQuads(state, null, Utils.RAND, new SinglePropertyModelData<>(new OBJState(Arrays.asList(parts), true),
-				Model.OBJ_STATE));
-		ClientUtils.renderModelTESRFancy(quads, worldRenderer, world, pos, !isFirst);
+		List<BakedQuad> quads = model.getQuads(state, null, Utils.RAND, new SinglePropertyModelData<>(
+				new IEObjState(VisibilityList.show(parts)),
+				Model.IE_OBJ_STATE));
+		ClientUtils.renderModelTESRFancy(quads, worldRenderer, world, pos, !isFirst, -1);
 		worldRenderer.setTranslation(0.0D, 0.0D, 0.0D);
 		tessellator.draw();
 		RenderHelper.enableStandardItemLighting();
