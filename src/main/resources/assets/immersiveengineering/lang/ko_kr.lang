@@ -635,12 +635,12 @@ desc.immersiveengineering.info.blockSide.connectFluid.-1=연결 없음
 desc.immersiveengineering.info.blockSide.connectFluid.0=유체 입력
 desc.immersiveengineering.info.blockSide.connectFluid.1=유체 출력
 
-desc.immersiveengineering.info.filter.oreDict=필터: 오어딕셔네리<br>오어딕셔네리 이름 기반으로 <br>아이템을 분류합니다.
-desc.immersiveengineering.info.filter.nbt=필터: NBT 데이퍼<br>NBT 데이터에 요청하여<br>아이템을 분류합니다.
-desc.immersiveengineering.info.filter.fuzzy=필터: 푸지<br>위험 정도를 무시하는 동안<br>아이템을 분류합니다.
+desc.immersiveengineering.info.filter.oreDict=필터: 광물사전<br>광물사전 이름을 기반으로 <br>아이템을 분류합니다.
+desc.immersiveengineering.info.filter.nbt=필터: NBT 데이터<br>NBT 데이터에 기반하여<br>아이템을 분류합니다.
+desc.immersiveengineering.info.filter.fuzzy=필터: 퍼지<br>위험 정도를 무시하는 동안<br>아이템을 분류합니다.
 
-desc.immersiveengineering.info.oreDict.off=오어딕셔네리: 사용 안 함
-desc.immersiveengineering.info.oreDict.on=오어딕셔네리: 사용함
+desc.immersiveengineering.info.oreDict.off=광물사전: 사용 안 함
+desc.immersiveengineering.info.oreDict.on=광물사전: 사용함
 
 desc.immersiveengineering.info.mininglvl.-1=없음
 desc.immersiveengineering.info.mininglvl.0=§7돌
@@ -868,7 +868,7 @@ chat.immersiveengineering.info.coreDrill.result.none=코어 견본이 가동되�
 chat.immersiveengineering.info.coreDrill.infinite=무한
 
 chat.immersiveengineering.info.pump.placeCobble.true=이 펌프는 이제 유체를 조약돌로 대체할 것입니다.
-chat.immersiveengineering.info.pump.placeCobble.false=이 펌프는 더 이상 유체 블록을 조약돌로 교체하지 않습니다. §6주의:§f 이는 지연을 유발할 수 있으며 많은 양의 유체를 취급할 때는 권장되지 않습니다!
+chat.immersiveengineering.info.pump.placeCobble.false=이 펌프는 더 이상 유체 블록을 조약돌로 교체하지 않습니다. §6주의:§f 이는 성능 저하 유발할 수 있으며 많은 양의 유체를 취급할 때는 권장되지 않습니다!
 chat.immersiveengineering.info.energyTransfered=지난%s$1 tick 동안 전송된 평균 에너지: %2$s Flux/t
 
 chat.immersiveengineering.command.available=§6사용 가능한 명령어:§r %1$s
@@ -889,7 +889,7 @@ chat.immersiveengineering.command.shaders.clear.help=§6사용법: /ie shaders c
 chat.immersiveengineering.command.shaders.clear.sucess='%1$s'에 수신된 셰이더가 제거되었습니다
 
 #SUBTITLES
-subtitle.immersiveengineering.dieselGenerator=정유 발전기가 시끄럽고 불쾌해하고 있습니다
+subtitle.immersiveengineering.dieselGenerator=정유 발전기 작동음
 subtitle.immersiveengineering.crusher=분해기는 광석을 분해시킵니다
 subtitle.immersiveengineering.metalPressPiston=금속 압축기 피스톤
 subtitle.immersiveengineering.metalPressSmash=금속 압축기 폭발
@@ -901,7 +901,7 @@ subtitle.immersiveengineering.sprayFire=인화성 유체 분무기
 subtitle.immersiveengineering.chargeFast=축전기 충전 중
 subtitle.immersiveengineering.chargeSlow=축전기 충전 중
 subtitle.immersiveengineering.spark=전기 스파크 발생
-subtitle.immersiveengineering.railgunFire=레일건 화재 발생
+subtitle.immersiveengineering.railgunFire=레일건 발사
 subtitle.immersiveengineering.tesla=테슬라 코일 제압
 subtitle.immersiveengineering.direSwitch=나이프스위치를 모방한 Direwolfe20
 
@@ -924,24 +924,24 @@ death.attack.ieRevolver_dragonsbreath.turret=%1$s이 포탑에 불타 사망했�
 death.attack.ieRevolver_homing=%1$s이 %2$s의 자동유도 탄환에 맞아 사망했습니다
 death.attack.ieRevolver_homing.item=%1$s이 %2$s의 %3$s로부터 발사된 자동유도 탄환에 맞아 사망했습니다
 death.attack.ieRevolver_homing.turret=%1$s이 총 포탑의 자동유도 탄환에 맞아 사망했습니다
-death.attack.ieRevolver_wolfpack=%1&s는 %2&s의 울프팩 회전에 의해 잘게 조각났습니다
-death.attack.ieRevolver_wolfpack.item=%1$s는 %3$s로부터 발사된 %2$s의 울프팩 회전에 의해 잘게 조각났습니다
-death.attack.ieRevolver_wolfpack.turret=%1$s는 총 포탑의 울프팩 회전에 의해 잘게 조각났습니다
+death.attack.ieRevolver_wolfpack=%1&s는 %2&s의 울프팩 탄환에 의해 잘게 조각났습니다
+death.attack.ieRevolver_wolfpack.item=%1$s는 %3$s로부터 발사된 %2$s의 울프팩 탄환에 의해 잘게 조각났습니다
+death.attack.ieRevolver_wolfpack.turret=%1$s는 총 포탑의 울프팩 탄환에 의해 잘게 조각났습니다
 death.attack.ieRevolver_silver=%1$s는 %2$s의 은 탄환에 맞아 정제되었습니다
-death.attack.ieRevolver_silver.item=%1$s는 %3$s에서 발사된 %2$s의 은 탄환에 맞아 정제되었습니다
+death.attack.ieRevolver_silver.item=%1$s는 %3$s에서 발사된 %2$s의 은 탄환에 맞아 정화되었습니다
 death.attack.ieRevolver_silver.turret=%1$s은 총 포탑의 은 탄환에 맞아 정제되었습니다
 death.attack.ieRevolver_potion=%1$s는 %2$s의 작은 유리병 투척으로 살해당했습니다
-death.attack.ieRevolver_potion.item=%1$s는 %3$s에서 발사된 %2$s의 작은 유리병 투척으로 살해당했습니다
-death.attack.ieRevolver_potion.turret=%1$s은 총 포탑의 작은 유리병 투척으로 살해당했습니다
+death.attack.ieRevolver_potion.item=%1$s는 %3$s에서 발사된 %2$s의 포션으로 살해당했습니다
+death.attack.ieRevolver_potion.turret=%1$s은 총 포탑의 포션으로 살해당했습니다
 
 death.attack.ieCrushed=%1$s가 충돌사당했습니다
 death.attack.ieAcid=%1$s가 산에 녹았습니다
 death.attack.ieRazorWire=%1$s가 레이저 전선에 의해 잘렸습니다
 death.attack.ieRazorShock=%1$s가 레이저 전선에 의해 충격사당했습니다
 death.attack.ieTesla=%1$s가 테슬라 코일에 데었습니다.
-death.attack.ieTeslaPrimary=%1$s가 테슬라 코일이 작동하는 주요 회로에 데었습니다.
+death.attack.ieTeslaPrimary=%1$s가 테슬라 코일의 주 회로를 건드렸습니다.
 death.attack.ieRailgun=%1$s거 %2$s의 레일건에 의해 산산조각났습니다.
-death.attack.ieWireShock=%1$s가 실시간 전선 주변을 충분히 주의하지 않았습니다.
+death.attack.ieWireShock=%1$s가 전기가 흐르는 전선에 충분한 주의를 기울이지 않았습니다.
 
 #ACHIEVEMENTS
 advancement.immersiveengineering:root=이머시브 엔지니어링
@@ -983,7 +983,7 @@ advancement.immersiveengineering:craftSkyhook=부커, 잡아!
 advancement.immersiveengineering:craftSkyhook.desc=엔지니어의 열기구 제작
 advancement.immersiveengineering:skyhookPro=스카이 라인 마스터
 advancement.immersiveengineering:skyhookPro.desc=열기구로 총 1km 주행
-advancement.immersiveengineering:craftChemthrower=뿌리고 기도하다.
+advancement.immersiveengineering:craftChemthrower=화학물질 난사
 advancement.immersiveengineering:craftChemthrower.desc=화학 투척기 제작
 advancement.immersiveengineering:craftRailgun=행운의 유산
 advancement.immersiveengineering:craftRailgun.desc=레일건 제작
@@ -1003,12 +1003,12 @@ advancement.immersiveengineering:mbExcavator.desc=굴착기 멀티블록 제작
 advancement.immersiveengineering:mbArcFurnace=핫 이슈
 advancement.immersiveengineering:mbArcFurnace.desc=아크 화로 멀티블록 제작
 
-advancement.immersiveengineering:secret_birthdayParty=노동자 생일날
-advancement.immersiveengineering:secret_birthdayParty.desc=축하를 간소하게...
+advancement.immersiveengineering:secret_birthdayParty=노동자의 생일날
+advancement.immersiveengineering:secret_birthdayParty.desc=성냥을 켜고...
 advancement.immersiveengineering:secret_luckOfTheDraw=추첨의 행운
 advancement.immersiveengineering:secret_luckOfTheDraw.desc=있음 혹은 없음
-advancement.immersiveengineering:secret_drillbreak=기가...드릴...차단기!!!
-advancement.immersiveengineering:secret_drillbreak.desc=내가 지옥에 왔어?!
+advancement.immersiveengineering:secret_drillbreak=기가...드릴...브레이커!!!
+advancement.immersiveengineering:secret_drillbreak.desc=내가 도대체 누구라고 생각한 거야?!
 
 
 
