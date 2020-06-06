@@ -1,0 +1,104 @@
+{
+  "uuid":["f34afdfb-996b-4020-b8a2-b740e2937b29"],
+  "tag":"fenrir", "flavour":"", "baseUpgrades":{"melee":10.0}, "renderAdditions":["bayonet_attachment","dev_bayonet","dev_scope"]
+}
+{
+  "uuid":["07c11943-628b-4671-a331-84899d08e538"],
+  "tag":"dev","flavour":"","baseUpgrades":{"bullets":10,"melee":10.0},"renderAdditions":["bayonet_attachment","dev_bayonet","dev_mag","dev_scope"]
+}
+{
+  "uuid":["48a16fc8-bc1f-4e72-84e9-7ec73b7d8ea1"],
+  "tag":"infinity","flavour":"","baseUpgrades":{"melee":10.0},"renderAdditions":["bayonet_attachment","player_bayonet"]
+}
+{
+  "uuid":["c550906b-cde3-4d90-97c8-24d9a0ac773e"],
+  "tag":"tesla","flavour":"","baseUpgrades":{"fancyAnimation":true},"renderAdditions":[]
+}
+
+{
+  "uuid":["e8b46b33-3e17-4b64-8d07-9af116df7d3b","58d506e2-7ee7-4774-8b22-c7a57eda488b","df0f4696-8a55-4777-b49d-6b38d6e1b501","79eb1269-7b59-46d1-8864-282882044e93"],
+  "tag":"sns","flavour":"","baseUpgrades":{"speed":0.3},"renderAdditions":["dev_scope"]
+}
+
+{
+  "uuid":["4f3a8d1e-33c1-44e7-bce8-e683027c7dac"],
+  "tag":"nerf","flavour":"","baseUpgrades":{"nerf":true,"melee":-1.0},"renderAdditions":[]
+}
+
+{
+  "uuid":["c2024e2a-dd76-4bc9-9ea3-b771f18f23b6"],
+  "tag":"earthshaker","flavour":"","baseUpgrades":{"melee":10.0},"renderAdditions":["bayonet_attachment","dev_bayonet"]
+}
+{
+  "uuid":["c2024e2a-dd76-4bc9-9ea3-b771f18f23b6","f34afdfb-996b-4020-b8a2-b740e2937b29"],
+  "tag":"oblivion","flavour":"","baseUpgrades":{"melee":10.0},"renderAdditions":["bayonet_attachment","dev_bayonet"]
+}
+{
+  "uuid":["c2024e2a-dd76-4bc9-9ea3-b771f18f23b6"],
+  "tag":"oathkeeper","flavour":"","baseUpgrades":{"melee":10.0},"renderAdditions":["bayonet_attachment","dev_bayonet"]
+}
+
+{
+  "uuid":["4ad51bb6-9612-457a-a143-a7ca01ed7107"],
+  "tag":"rose","flavour":"","baseUpgrades":{"melee":10.0},"renderAdditions":["bayonet_attachment","dev_bayonet"]
+}
+
+{
+  "uuid":["ca5a40eb-9f48-4b40-bb94-3e0f2d18c9a7"],
+  "tag":"bee","flavour":"","baseUpgrades":{"melee":10.0},"renderAdditions":[]
+}
+
+{
+  "uuid":["c2e83bd4-e8df-40d6-a639-58ba8b05401e"],
+  "tag":"warlord","flavour":"","baseUpgrades":{},"renderAdditions":["dev_scope"]
+}
+
+{
+  "uuid":["27672103-b8c7-400d-8817-49de433336dd"],
+  "tag":"superchief","flavour":"","baseUpgrades":{},"renderAdditions":[]
+}
+
+{
+  "uuid":["4f1b6e70-4a7d-45e0-a69e-3550d528cd89"],
+  "tag":"","flavour":"rommie","baseUpgrades":{},"renderAdditions":["dev_scope"]
+}
+
+{
+  "uuid":["1501b168-941a-4c8f-a729-4d317fc2e717"],
+  "tag":"noName","flavour":"","baseUpgrades":{},"renderAdditions":["bayonet_attachment","dev_bayonet","dev_scope"]
+}
+
+{
+  "uuid":["07c11943-628b-4671-a331-84899d08e538",
+    "58d506e2-7ee7-4774-8b22-c7a57eda488b",
+    "d3442da1-5173-4cc0-af9f-4af5cf296886",
+    "c2320ea5-f43f-4cc6-9aa9-d8336b177550",
+    "2af273f0-f7f8-4c05-a319-117e6bdc0fba",
+    "1c1a9096-4e85-4bc0-8833-8cd14df6a785",
+    "d487b13e-29ea-4b4a-991d-8b1a21904b2e",
+    "6b759514-251e-471b-886a-91b8b893777e"
+  ],
+  "tag":"patreonHazard","flavour":"","baseUpgrades":{},"renderAdditions":["dev_scope"]
+}
+
+{
+  "uuid":["f34afdfb-996b-4020-b8a2-b740e2937b29",
+    "4f1b6e70-4a7d-45e0-a69e-3550d528cd89",
+    "3c9b9448-d532-4745-9aac-509f38ff81d5",
+    "7dd988d3-8cb6-4d38-b6dd-4b425fa271d4",
+    "24e274b6-e4bd-4633-b1be-50fb50cb72cd",
+    "4efe7941-acc3-4ffd-ae6a-056c5200f4db"
+  ],
+  "tag":"patreonBlu_0","flavour":"","baseUpgrades":{"fancyAnimation":true},"renderAdditions":["bayonet_attachment"]
+}
+
+{
+  "uuid":["f34afdfb-996b-4020-b8a2-b740e2937b29",
+    "58d506e2-7ee7-4774-8b22-c7a57eda488b",
+    "d5d05952-c0fa-46c3-a9ba-0ba1afe30f2b",
+    "434bf509-ce83-4787-8176-32d202f8c6f6",
+    "c2320ea5-f43f-4cc6-9aa9-d8336b177550",
+    "e2453db9-9328-43c6-bc88-e9db4f3a9059"
+  ],
+  "tag":"patreonBlu_1","flavour":"","baseUpgrades":{"fancyAnimation":true},"renderAdditions":["bayonet_attachment","dev_scope"]
+}
