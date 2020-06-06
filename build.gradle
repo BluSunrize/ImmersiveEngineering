@@ -1,7 +1,7 @@
 import groovy.json.JsonOutput
 
 def mainVersion = "0.12"
-def buildNumber = "92"
+def buildNumber = "98"
 
 // For those who want the bleeding edge
 buildscript {
@@ -98,7 +98,7 @@ dependencies {
     compileOnly "mcjty.theoneprobe:TheOneProbe-1.12:1.12-1.+"//1.1x-1.4.4-55
     compileOnly "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.1.8.468"
     compileOnly "opencomputers:OpenComputers:MC1.12.2:1.7.2.67"//li.cil.oc:OpenComputers:MC1.12.1-1.7.0.+"
-    compileOnly "mcp.mobius.waila:Hwyla:1.8.20-B35_1.12"
+    compileOnly "hwyla:Hwyla:1.8.20:B35_1.12" //compileOnly "mcp.mobius.waila:Hwyla:1.8.20-B35_1.12"
     compileOnly 'industrial-craft:industrialcraft-2:release:ex112'//'net.industrial-craft:industrialcraft-2:2.8.+'
     compileOnly "de.ellpeck.actuallyadditions:ActuallyAdditions:1.12.2+"
     compileOnly 'baubles:Baubles:1.12:1.5.2'
