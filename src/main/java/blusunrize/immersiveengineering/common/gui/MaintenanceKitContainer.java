@@ -48,10 +48,10 @@ public class MaintenanceKitContainer extends ItemContainer
 		if(this.inv==null)
 			return 0;
 		//Don't rebind if the tool didn't change
-		if(world.isRemote)
+		if(world.isRemote&&!inv.getStackInSlot(0).isEmpty())
 			for(Slot slot : inventorySlots)
 				if(slot instanceof IESlot.Upgrades)
-					if(ItemStack.areItemsEqual(((IESlot.Upgrades)slot).upgradeableTool, inv.getStackInSlot(0)))
+					if(ItemStack.areItemStacksEqual(((IESlot.Upgrades)slot).upgradeableTool, inv.getStackInSlot(0)))
 						return this.internalSlots;
 		this.inventorySlots.clear();
 		this.inventoryItemStacks.clear();

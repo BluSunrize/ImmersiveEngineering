@@ -134,6 +134,7 @@ public abstract class ItemContainer extends Container implements Supplier<World>
 			return ItemStack.EMPTY;
 		ItemStack ret = super.slotClick(par1, par2, par3, par4EntityPlayer);
 		updatePlayerItem();
+		detectAndSendChanges();
 		return ret;
 	}
 
