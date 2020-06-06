@@ -1,8 +1,8 @@
-##### Version 0.15-99
+##### Version 0.15-99 - BUILT
 - Initial alpha release for Minecraft 1.15.2
 - Highlight the trigger block for multiblocks in the manual
 
-##### Version 0.14-97
+##### Version 0.14-97 - BUILT
 - Added fuel gauge for the buzzsaw (BluSunrize)
 - Added a covered version of the splitting conveyor (BluSunrize)
 - Added a steel hoe (BluSunrize)
