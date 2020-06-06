@@ -7,6 +7,7 @@
 - Fixed division by zero error in multiblock processes (Thonikum)
 - Fixed fluid evaporation in the nether when using the Jerrycan (BluSunrize)
 - Fixed windmills being stopped by snow (BluSunrize)
+- Fixed interaction between Sheetmetal Tanks and RFTools screens (BluSunrize)
 - Translations Added/Updated: ko_kr (yor42), jp_jp (karakufire), zh_cn (mcBegins2Snow), ru_ru (Shellyoung)
 
 ##### Version 0.12-92 - BUILT

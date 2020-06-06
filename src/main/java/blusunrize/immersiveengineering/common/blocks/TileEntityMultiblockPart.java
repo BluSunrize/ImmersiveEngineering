@@ -118,7 +118,7 @@ public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPar
 	@Override
 	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
 	{
-		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&facing!=null&&this.getAccessibleFluidTanks(facing).length > 0)
+		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&this.getAccessibleFluidTanks(facing).length > 0)
 			return true;
 		return super.hasCapability(capability, facing);
 	}
@@ -126,7 +126,7 @@ public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPar
 	@Override
 	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
 	{
-		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&facing!=null&&this.getAccessibleFluidTanks(facing).length > 0)
+		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&this.getAccessibleFluidTanks(facing).length > 0)
 			return (T)new MultiblockFluidWrapper(this, facing);
 		return super.getCapability(capability, facing);
 	}
@@ -135,7 +135,7 @@ public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPar
 	//		FLUID MANAGEMENT
 	//	=================================
 	@Nonnull
-	protected abstract IFluidTank[] getAccessibleFluidTanks(EnumFacing side);
+	protected abstract IFluidTank[] getAccessibleFluidTanks(@Nullable EnumFacing side);
 
 	protected abstract boolean canFillTankFrom(int iTank, EnumFacing side, FluidStack resource);
 
