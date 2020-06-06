@@ -8,11 +8,14 @@
 
 package blusunrize.immersiveengineering.common.entities;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.tool.ITeslaEntity;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTeslaCoil;
 import blusunrize.immersiveengineering.common.items.ItemFluorescentTube;
 import blusunrize.immersiveengineering.common.util.Utils;
+import elucent.albedo.lighting.ILightProvider;
+import elucent.albedo.lighting.Light;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.item.EntityItem;
@@ -30,7 +33,8 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-public class EntityFluorescentTube extends Entity implements ITeslaEntity
+@net.minecraftforge.fml.common.Optional.Interface(iface = "elucent.albedo.lighting.ILightProvider", modid = "albedo")
+public class EntityFluorescentTube extends Entity implements ITeslaEntity, ILightProvider
 {
 	private static final DataParameter<Boolean> dataMarker_active = EntityDataManager.createKey(EntityFluorescentTube.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Float> dataMarker_r = EntityDataManager.createKey(EntityFluorescentTube.class, DataSerializers.FLOAT);
@@ -181,5 +185,11 @@ public class EntityFluorescentTube extends Entity implements ITeslaEntity
 			return EnumActionResult.SUCCESS;
 		}
 		return super.applyPlayerInteraction(player, targetVec3, hand);
+	}
+
+	@Override
+	public Light provideLight()
+	{
+		return active?Light.builder().pos(this).radius(10f).color(rgb[0],rgb[1],rgb[2]).build():null;
 	}
 }
