@@ -789,13 +789,21 @@ public class Utils
 		if(fluidBlock!=null&&canPlace&&fluid.amount >= 1000)
 		{
 			boolean placed = false;
-			if((fluidBlock instanceof BlockFluidBase))
+			if(world.provider.doesWaterVaporize()&&fluid.getFluid().doesVaporize(fluid))
 			{
-				BlockFluidBase blockFluid = (BlockFluidBase)fluidBlock;
-				placed = world.setBlockState(pos, fluidBlock.getStateFromMeta(blockFluid.getMaxRenderHeightMeta()));
+				fluid.getFluid().vaporize(null, world, pos, fluid);
+				placed = true;
 			}
 			else
-				placed = world.setBlockState(pos, fluidBlock.getDefaultState());
+			{
+				if((fluidBlock instanceof BlockFluidBase))
+				{
+					BlockFluidBase blockFluid = (BlockFluidBase)fluidBlock;
+					placed = world.setBlockState(pos, fluidBlock.getStateFromMeta(blockFluid.getMaxRenderHeightMeta()));
+				}
+				else
+					placed = world.setBlockState(pos, fluidBlock.getDefaultState());
+			}
 			if(placed)
 				fluid.amount -= 1000;
 			return placed;
