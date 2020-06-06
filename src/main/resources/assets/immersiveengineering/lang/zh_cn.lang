@@ -196,12 +196,17 @@ tile.immersiveengineering.conveyor.immersiveengineering:conveyor.name=传送带
 tile.immersiveengineering.conveyor.immersiveengineering:uncontrolled.name=传送带
 tile.immersiveengineering.conveyor.immersiveengineering:uncontrolled.flavour=忽略红石控制
 tile.immersiveengineering.conveyor.immersiveengineering:dropper.name=卸货传送带
+tile.immersiveengineering.conveyor.immersiveengineering:droppercovered.name=绝缘卸货传送带
 tile.immersiveengineering.conveyor.immersiveengineering:vertical.name=垂直传送带
 tile.immersiveengineering.conveyor.immersiveengineering:splitter.name=分流传送带
 tile.immersiveengineering.conveyor.immersiveengineering:covered.name=绝缘传送带
 tile.immersiveengineering.conveyor.immersiveengineering:verticalcovered.name=绝缘垂直传送带
 tile.immersiveengineering.conveyor.immersiveengineering:extract.name=抽取传送带
 tile.immersiveengineering.conveyor.immersiveengineering:extractcovered.name=绝缘抽取传送带
+tile.immersiveengineering.conveyor.immersiveengineering:chute_iron.name=金属板料斗
+tile.immersiveengineering.conveyor.immersiveengineering:chute_steel.name=金属板料斗
+tile.immersiveengineering.conveyor.immersiveengineering:chute_aluminum.name=金属板料斗
+tile.immersiveengineering.conveyor.immersiveengineering:chute_copper.name=金属板料斗
 
 tile.immersiveengineering.metal_multiblock.metal_press.name=金属冲压机
 tile.immersiveengineering.metal_multiblock.crusher.name=粉碎机
@@ -432,6 +437,10 @@ item.immersiveengineering.fluorescent_tube.name=荧光管
 item.immersiveengineering.powerpack.name=电容背包
 item.immersiveengineering.shield.name=重型盾牌
 item.immersiveengineering.maintenance_kit.name=维护工具包
+item.immersiveengineering.steel_armor_head.name=钢头盔
+item.immersiveengineering.steel_armor_chest.name=钢胸甲
+item.immersiveengineering.steel_armor_legs.name=钢护腿
+item.immersiveengineering.steel_armor_feet.name=钢靴子
 
 item.immersiveengineering.map_orevein.name=矿脉地图
 
@@ -596,6 +605,7 @@ entity.Villager.immersiveengineering.engineer=结构工程师
 entity.Villager.immersiveengineering.machinist=机械师
 entity.Villager.immersiveengineering.electrician=电工
 entity.Villager.immersiveengineering.outfitter=皮肤商
+entity.Villager.immersiveengineering.gunsmith=军械工人
 
 key.immersiveengineering.magnetEquip=磁力护盾手套（双击）
 key.immersiveengineering.chemthrowerSwitch=切换化学液体罐
@@ -604,7 +614,8 @@ desc.immersiveengineering.info.attachedTo=连接从%1$s，%2$s，%3$s
 desc.immersiveengineering.info.attachedToDim=连接从%4$s世界的%1$s，%2$s，%3$s
 desc.immersiveengineering.info.energyStored=存储能量：%1$s Flux
 desc.immersiveengineering.info.energyStoredEU=存储能量：%1$s EU
-desc.immersiveengineering.info.blastFuelTime=高炉燃料热值：%1$s刻
+desc.immersiveengineering.info.blastFuelTime=高炉燃料热值：
+desc.immersiveengineering.info.seconds=%1$s秒
 desc.immersiveengineering.info.gasStored=存储气体：%1$s
 desc.immersiveengineering.info.colour=颜色：%1$s
 desc.immersiveengineering.info.day=%1$s天
@@ -701,6 +712,28 @@ desc.immersiveengineering.info.blueprint.specialBullet=特种子弹
 desc.immersiveengineering.info.blueprint.electrode=电弧炉电极
 
 desc.immersiveengineering.info.electrodeIntegrity=完整度
+
+desc.immersiveengineering.info.revolver.perk.cooldown=射速：%1$s%%
+desc.immersiveengineering.info.revolver.perk.cooldown.tier-3=缓慢 %1$s
+desc.immersiveengineering.info.revolver.perk.cooldown.tier-2=卡壳 %1$s
+desc.immersiveengineering.info.revolver.perk.cooldown.tier-1=生锈 %1$s
+desc.immersiveengineering.info.revolver.perk.cooldown.tier1=速射 %1$s
+desc.immersiveengineering.info.revolver.perk.cooldown.tier2=半自动枪机 %1$s
+desc.immersiveengineering.info.revolver.perk.cooldown.tier3=全自动枪机 %1$s
+desc.immersiveengineering.info.revolver.perk.noise=噪音：%1$s%%
+desc.immersiveengineering.info.revolver.perk.noise.tier-3=震耳欲聋 %1$s
+desc.immersiveengineering.info.revolver.perk.noise.tier-2=大声 %1$s
+desc.immersiveengineering.info.revolver.perk.noise.tier-1=吵闹 %1$s
+desc.immersiveengineering.info.revolver.perk.noise.tier1=低语 %1$s
+desc.immersiveengineering.info.revolver.perk.noise.tier2=沉默 %1$s
+desc.immersiveengineering.info.revolver.perk.noise.tier3=消音 %1$s
+desc.immersiveengineering.info.revolver.perk.luck=幸运：%1$s%%
+desc.immersiveengineering.info.revolver.perk.luck.tier-3=倒霉 %1$s
+desc.immersiveengineering.info.revolver.perk.luck.tier-2=不幸 %1$s
+desc.immersiveengineering.info.revolver.perk.luck.tier-1=不祥 %1$s
+desc.immersiveengineering.info.revolver.perk.luck.tier1=吉利 %1$s
+desc.immersiveengineering.info.revolver.perk.luck.tier2=幸运 %1$s
+desc.immersiveengineering.info.revolver.perk.luck.tier3=赌徒 %1$s
 
 desc.immersiveengineering.info.bullet.flareColour=信号颜色：%1$s
 
@@ -1368,6 +1401,8 @@ ie.manual.entry.conveyor4=垂直传送带可以贴在墙上，使垂直运输物
 ie.manual.entry.conveyor5=分流传送带的功能很简单，将运送来的物品和实体不断交替地分流到左右两侧，藉此可以让你的物品均匀地分配到多个工厂里。
 ie.manual.entry.conveyor6=绝缘传送带的工作方式与普通输送带一样，但是由一块脚手架覆盖，可防止玩家从其中拾取物品。<br>你可以用其他类型的脚手架或玻璃板右击以更换盖子的外观。
 ie.manual.entry.conveyor7=类似地，抽取传送带和垂直传送带都可以用脚手架覆盖，以实现“防拾起”的同样功能，同时仍能正常工作。
+ie.manual.entry.conveyor8=料斗是由金属板制成的简单结构，允许实体垂直下落。它们可以输入到低于它们的存储容器中，并由传送带或类似设备输入。它们里面的物品不会被玩家捡起，也不会对大多数形式的吸引力、磁性或魔法产生免疫。
+ie.manual.entry.conveyor9=用工程师锤潜行+右击，将料斗变成一个弯角，将实体导向侧面。
 
 ie.manual.entry.furnaceHeater.name=外置加热器
 ie.manual.entry.furnaceHeater.subtext=你现在可以用能量烹饪食物啦！
@@ -1427,6 +1462,7 @@ ie.manual.entry.revolver1=左轮手枪可装载不同类型的弹药。若想装
 ie.manual.entry.revolver2=通过在左轮上安插刺刀，你将得到一把近身格斗武器，让你能够在近距离造成和铁剑一样的伤害。
 ie.manual.entry.revolver3=扩充弹夹让你能够在左轮手枪中额外装填六发弹药。该弹夹无法被快速装弹器装填。
 ie.manual.entry.revolver4=加强电子管能够在弹药上附加电流。电击会在击中目标前一直保持（不要问它的工作原理）然后传递出去。目标会被眩晕不到一秒的时间同时他们装备的所有能量武器会受到轻微的能量流失。
+ie.manual.entry.revolver5=稀有的是，在探索村庄和与当地工程师进行交易时，你会发现左轮手枪有特殊的部件。这些部件具有某些固有的额外功能，当用于制造左轮手枪时，它们会将这些额外功能嵌入其中，影响§o射速§r、发出的§o噪音§r量，并增加持用者的§o幸运§r。
 
 ie.manual.entry.bullets.name=左轮弹药
 ie.manual.entry.bullets.subtext=
