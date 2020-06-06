@@ -1,10 +1,16 @@
 ##### Version 0.14-97
 - Added fuel gauge for the buzzsaw (BluSunrize)
+- Added a covered version of the splitting conveyor (BluSunrize)
+- Added a steel hoe (BluSunrize)
+- Changed buzzsaw blade quiver to keep the sawblades when removed (BluSunrize)
 - Fixed a crash triggered by other mod's automatic recipe unlocks (BluSunrize)
 - Fixed a crash with the wirecoil tooltips (Malte)
 - Fixed a crash when rendering coresamples with Optifine installed (Malte)
 - Fixed buzzsaw upgrade achievement not triggering (BluSunrize)
 - Fixed buzzsaw and drill not taking damage or requiring fuel when used as weapons (BluSunrize)
+- Fixed wrong transformations for steel tools (Malte)
+- Fixed fluid gauge for the drill going over (Malte)
+- Fixed broken recipe syncing (Malte)
 
 ##### Version 0.14-96 - BUILT
 - All IE recipes are now JSON based! (BluSunrize)

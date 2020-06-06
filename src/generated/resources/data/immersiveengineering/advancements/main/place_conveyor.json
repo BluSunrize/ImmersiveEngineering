@@ -28,6 +28,12 @@
         "block": "immersiveengineering:conveyor_extractcovered"
       }
     },
+    "splittercovered": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "block": "immersiveengineering:conveyor_splittercovered"
+      }
+    },
     "dropper": {
       "trigger": "minecraft:placed_block",
       "conditions": {
@@ -81,6 +87,7 @@
     [
       "extract",
       "extractcovered",
+      "splittercovered",
       "dropper",
       "covered",
       "vertical",

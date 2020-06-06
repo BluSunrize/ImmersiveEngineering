@@ -182,14 +182,14 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 	}
 
 	@Override
-	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, Supplier<World> getWorld)
+	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, Supplier<World> getWorld, Supplier<PlayerEntity> getPlayer)
 	{
 		IItemHandler inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)
 				.orElseThrow(RuntimeException::new);
 		return new Slot[]
 				{
-						new IESlot.Upgrades(container, inv, 18+0, 80, 32, "REVOLVER", stack, true, getWorld),
-						new IESlot.Upgrades(container, inv, 18+1, 100, 32, "REVOLVER", stack, true, getWorld)
+						new IESlot.Upgrades(container, inv, 18+0, 80, 32, "REVOLVER", stack, true, getWorld, getPlayer),
+						new IESlot.Upgrades(container, inv, 18+1, 100, 32, "REVOLVER", stack, true, getWorld, getPlayer)
 				};
 	}
 
@@ -572,7 +572,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 				}
 			}
 		}
-		this.recalculateUpgrades(stack, world);
+		this.recalculateUpgrades(stack, world, player);
 	}
 
 	public void applySpecialCrafting(ItemStack stack, SpecialRevolver r)

@@ -44,6 +44,9 @@
           "recipe": "crafting/conveyor_extractcovered"
         },
         {
+          "recipe": "crafting/conveyor_splittercovered"
+        },
+        {
           "recipe": "crafting/conveyor_verticalcovered"
         }
       ]

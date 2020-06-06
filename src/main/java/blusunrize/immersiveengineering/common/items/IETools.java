@@ -38,6 +38,12 @@ public class IETools
 		return init(ret, name);
 	}
 
+	public static HoeItem createHoe(IItemTier tier, String name)
+	{
+		HoeItem ret = new HoeItem(tier, 0.0F, toolProperties());
+		return init(ret, name);
+	}
+
 	private static <I extends Item> I init(I i, String name)
 	{
 		i.setRegistryName(ImmersiveEngineering.MODID, name);

@@ -58,7 +58,7 @@ public abstract class UpgradeableToolItem extends InternalStorageItem implements
 	}
 
 	@Override
-	public void recalculateUpgrades(ItemStack stack, World w)
+	public void recalculateUpgrades(ItemStack stack, World w, PlayerEntity player)
 	{
 		if(w.isRemote)
 			return;
@@ -102,5 +102,5 @@ public abstract class UpgradeableToolItem extends InternalStorageItem implements
 	public abstract boolean canModify(ItemStack stack);
 
 	@Override
-	public abstract Slot[] getWorkbenchSlots(Container container, ItemStack stack, Supplier<World> getWorld);
+	public abstract Slot[] getWorkbenchSlots(Container container, ItemStack stack, Supplier<World> getWorld, Supplier<PlayerEntity> getPlayer);
 }

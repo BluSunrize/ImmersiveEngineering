@@ -312,13 +312,13 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 	}
 
 	@Override
-	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, Supplier<World> getWorld)
+	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, Supplier<World> getWorld, Supplier<PlayerEntity> getPlayer)
 	{
 		LazyOptional<IItemHandler> inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		return new Slot[]
 				{
-						new IESlot.Upgrades(container, inv.orElseThrow(RuntimeException::new), 0, 80, 32, "CHEMTHROWER", stack, true, getWorld),
-						new IESlot.Upgrades(container, inv.orElseThrow(RuntimeException::new), 1, 100, 32, "CHEMTHROWER", stack, true, getWorld)
+						new IESlot.Upgrades(container, inv.orElseThrow(RuntimeException::new), 0, 80, 32, "CHEMTHROWER", stack, true, getWorld, getPlayer),
+						new IESlot.Upgrades(container, inv.orElseThrow(RuntimeException::new), 1, 100, 32, "CHEMTHROWER", stack, true, getWorld, getPlayer)
 				};
 	}
 

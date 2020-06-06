@@ -177,16 +177,16 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 	}
 
 	@Override
-	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, Supplier<World> getWorld)
+	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, Supplier<World> getWorld, Supplier<PlayerEntity> getPlayer)
 	{
 		IItemHandler inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)
 				.orElseThrow(RuntimeException::new);
 		return new Slot[]
 				{
 						new IESlot.WithPredicate(inv, 0, 98, 22, (itemStack) -> itemStack.getItem() instanceof IDrillHead),
-						new IESlot.Upgrades(container, inv, 1, 78, 52, "DRILL", stack, true, getWorld),
-						new IESlot.Upgrades(container, inv, 2, 98, 52, "DRILL", stack, true, getWorld),
-						new IESlot.Upgrades(container, inv, 3, 118, 52, "DRILL", stack, true, getWorld)
+						new IESlot.Upgrades(container, inv, 1, 78, 52, "DRILL", stack, true, getWorld, getPlayer),
+						new IESlot.Upgrades(container, inv, 2, 98, 52, "DRILL", stack, true, getWorld, getPlayer),
+						new IESlot.Upgrades(container, inv, 3, 118, 52, "DRILL", stack, true, getWorld, getPlayer)
 				};
 	}
 
@@ -207,9 +207,9 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 	}
 
 	@Override
-	public void recalculateUpgrades(ItemStack stack, World w)
+	public void recalculateUpgrades(ItemStack stack, World w, PlayerEntity player)
 	{
-		super.recalculateUpgrades(stack, w);
+		super.recalculateUpgrades(stack, w, player);
 		FluidStack fs = getFluid(stack);
 		if(fs!=null&&fs.getAmount() > this.getCapacity(stack, 2000))
 		{

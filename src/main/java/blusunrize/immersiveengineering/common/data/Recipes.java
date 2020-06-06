@@ -1745,12 +1745,14 @@ public class Recipes extends RecipeProvider
 		IItemProvider extract = ConveyorHandler.getBlock(ExtractConveyor.NAME);
 		IItemProvider extractCovered = ConveyorHandler.getBlock(ExtractCoveredConveyor.NAME);
 		IItemProvider splitter = ConveyorHandler.getBlock(SplitConveyor.NAME);
+		IItemProvider splitterCovered = ConveyorHandler.getBlock(SplitCoveredConveyor.NAME);
 		IItemProvider vertical = ConveyorHandler.getBlock(VerticalConveyor.NAME);
 		IItemProvider verticalCovered = ConveyorHandler.getBlock(VerticalCoveredConveyor.NAME);
-		addCoveyorCoveringRecipe(verticalCovered, vertical, out);
 		addCoveyorCoveringRecipe(covered, basic, out);
 		addCoveyorCoveringRecipe(dropperCovered, dropper, out);
 		addCoveyorCoveringRecipe(extractCovered, extract, out);
+		addCoveyorCoveringRecipe(splitterCovered, splitter, out);
+		addCoveyorCoveringRecipe(verticalCovered, vertical, out);
 		ShapedRecipeBuilder.shapedRecipe(basic, 8)
 				.patternLine("lll")
 				.patternLine("iri")
@@ -1902,6 +1904,14 @@ public class Recipes extends RecipeProvider
 				.key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
 				.addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot))
 				.build(out, toRL(toPath(Tools.steelShovel)));
+		ShapedRecipeBuilder.shapedRecipe(Tools.steelHoe)
+				.patternLine("ii")
+				.patternLine(" s")
+				.patternLine(" s")
+				.key('s', IETags.treatedStick)
+				.key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
+				.addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot))
+				.build(out, toRL(toPath(Tools.steelHoe)));
 		ShapedRecipeBuilder.shapedRecipe(Tools.steelSword)
 				.patternLine("i")
 				.patternLine("i")
