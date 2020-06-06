@@ -287,7 +287,7 @@ public class ImmersiveEngineering
 			try
 			{
 				IELogger.info("Attempting to download special revolvers from GitHub");
-				URL url = new URL("https://raw.githubusercontent.com/BluSunrize/ImmersiveEngineering/master/contributorRevolvers.json");
+				URL url = new URL("https://raw.githubusercontent.com/BluSunrize/ImmersiveEngineering/gh-pages/contributorRevolvers.json");
 				JsonStreamParser parser = new JsonStreamParser(new InputStreamReader(url.openStream()));
 				while(parser.hasNext())
 				{
