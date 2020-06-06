@@ -1904,6 +1904,14 @@ public class Recipes extends RecipeProvider
 				.key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
 				.addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot))
 				.build(out, toRL(toPath(Tools.steelShovel)));
+		ShapedRecipeBuilder.shapedRecipe(Tools.steelHoe)
+				.patternLine("ii")
+				.patternLine(" s")
+				.patternLine(" s")
+				.key('s', IETags.treatedStick)
+				.key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
+				.addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot))
+				.build(out, toRL(toPath(Tools.steelHoe)));
 		ShapedRecipeBuilder.shapedRecipe(Tools.steelSword)
 				.patternLine("i")
 				.patternLine("i")

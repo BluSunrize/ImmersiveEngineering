@@ -1,6 +1,7 @@
 ##### Version 0.14-97
 - Added fuel gauge for the buzzsaw (BluSunrize)
 - Added a covered version of the splitting conveyor (BluSunrize)
+- Added a steel hoe (BluSunrize)
 - Changed buzzsaw blade quiver to keep the sawblades when removed (BluSunrize)
 - Fixed a crash triggered by other mod's automatic recipe unlocks (BluSunrize)
 - Fixed a crash with the wirecoil tooltips (Malte)
