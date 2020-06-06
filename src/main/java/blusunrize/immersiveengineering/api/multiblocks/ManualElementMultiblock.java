@@ -66,7 +66,12 @@ public class ManualElementMultiblock extends SpecialManualElements
 		blockAccess = new MultiblockBlockAccess(renderInfo);
 		transX = 60+renderInfo.structureWidth/2F;
 		transY = 35+diagLength/2;
-		additionalTransform = forRotation(25, -45);
+		additionalTransform = new TransformationMatrix(
+				null,
+				new Quaternion(25, 0, 0, true),
+				null,
+				new Quaternion(0, -45, 0, true)
+		);
 		scale = multiblock.getManualScale();
 		yOffTotal = (int)(transY+scale*diagLength/2);
 	}
