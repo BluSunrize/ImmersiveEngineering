@@ -41,6 +41,16 @@ public interface IUpgradeableTool
 	void recalculateUpgrades(ItemStack stack, World w, PlayerEntity player);
 
 	/**
+	 * Called when an upgrade is removed, BEFORE recalculateUpgrades is called
+	 *
+	 * @return the upgrade removed
+	 */
+	default ItemStack removeUpgrade(ItemStack stack, PlayerEntity player, ItemStack upgrade)
+	{
+		return upgrade;
+	}
+
+	/**
 	 * @return false to prevent this item from being removed from the workbench. Used by blueprints for example.
 	 */
 	boolean canTakeFromWorkbench(ItemStack stack);

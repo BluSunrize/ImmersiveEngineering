@@ -231,6 +231,14 @@ public abstract class IESlot extends Slot
 		}
 
 		@Override
+		public ItemStack onTake(PlayerEntity thePlayer, ItemStack stack)
+		{
+			stack = ((IUpgradeableTool)upgradeableTool.getItem()).removeUpgrade(upgradeableTool, thePlayer, stack);
+			stack = super.onTake(thePlayer, stack);
+			return stack;
+		}
+
+		@Override
 		public void onSlotChanged()
 		{
 			super.onSlotChanged();

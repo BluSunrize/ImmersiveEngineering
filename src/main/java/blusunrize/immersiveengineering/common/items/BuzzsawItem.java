@@ -25,6 +25,8 @@ import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IAdvancedFluidItem;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IScrollwheel;
+import blusunrize.immersiveengineering.common.items.IEItems.Misc;
+import blusunrize.immersiveengineering.common.items.ToolUpgradeItem.ToolUpgrade;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.fluids.IEItemFluidHandler;
@@ -206,6 +208,22 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 	}
 
 	@Override
+	public ItemStack removeUpgrade(ItemStack stack, PlayerEntity player, ItemStack upgrade)
+	{
+		if(upgrade.getItem()==Misc.toolUpgrades.get(ToolUpgrade.BUZZSAW_SPAREBLADES))
+			for(int i = 1; i <= 2; i++)
+			{
+				ItemStack sawblade = getSawblade(stack, i);
+				if(!sawblade.isEmpty())
+				{
+					ItemNBTHelper.setItemStack(upgrade, "sawblade"+i, sawblade);
+					setSawblade(stack, ItemStack.EMPTY, i);
+				}
+			}
+		return upgrade;
+	}
+
+	@Override
 	public void removeFromWorkbench(PlayerEntity player, ItemStack stack)
 	{
 		LazyOptional<IItemHandler> invCap = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
@@ -219,6 +237,21 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 	public void recalculateUpgrades(ItemStack stack, World w, PlayerEntity player)
 	{
 		super.recalculateUpgrades(stack, w, player);
+		LazyOptional<IItemHandler> invCap = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		invCap.ifPresent(inv -> {
+			for(int iUpgrade = 1; iUpgrade <= 2; iUpgrade++)
+			{
+				ItemStack upgrade = inv.getStackInSlot(iUpgrade);
+				if(upgrade.getItem()==Misc.toolUpgrades.get(ToolUpgrade.BUZZSAW_SPAREBLADES))
+					for(int i = 1; i <= 2; i++)
+						if(ItemNBTHelper.hasKey(upgrade, "sawblade"+i))
+						{
+							ItemStack sawblade = ItemNBTHelper.getItemStack(upgrade, "sawblade"+i);
+							setSawblade(stack, sawblade, i);
+							ItemNBTHelper.remove(upgrade, "sawblade"+i);
+						}
+			}
+		});
 		FluidStack fs = getFluid(stack);
 		if(fs!=null&&fs.getAmount() > this.getCapacity(stack, 2000))
 		{
@@ -400,7 +433,7 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 
 	private void consumeDurability(ItemStack stack, World world, BlockState state, BlockPos pos, LivingEntity living)
 	{
-		if(state==null || state.getBlockHardness(world, pos)!=0.0f)
+		if(state==null||state.getBlockHardness(world, pos)!=0.0f)
 		{
 			int dmg = state==null||ForgeHooks.isToolEffective(world, pos, stack)||isEffective(stack, state.getMaterial())?1: 3;
 			ItemStack sawblade = getSawblade(stack);
@@ -591,7 +624,7 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 			@SubscribeEvent
 			public void onTick(TickEvent.WorldTickEvent event)
 			{
-				if(event.phase==Phase.START && event.world == world)
+				if(event.phase==Phase.START&&event.world==world)
 				{
 					breakFromList(closedList, 5, world, player, stack);
 					if(closedList.isEmpty())
