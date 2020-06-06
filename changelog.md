@@ -1,4 +1,4 @@
-##### Version 0.12-98
+##### Version 0.12-98 - BUILT
 - Added combat for XLFood to the cloche (LeoBeliik)
 - Added Albedo combat for the flueorescent tube (Pabilo8)
 - Added steel hoe (BluSunrize)
