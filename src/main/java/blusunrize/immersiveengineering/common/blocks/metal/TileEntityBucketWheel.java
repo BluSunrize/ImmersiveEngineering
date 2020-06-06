@@ -56,7 +56,7 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart<TileEntityBu
 		if(pos < 0)
 			return ItemStack.EMPTY;
 		ItemStack s = pos < 0?ItemStack.EMPTY: MultiblockBucketWheel.instance.getStructureManual()[pos/7][pos%7][0];
-		return s.copy();
+		return s==null?ItemStack.EMPTY:s.copy();
 	}
 
 	@Override
