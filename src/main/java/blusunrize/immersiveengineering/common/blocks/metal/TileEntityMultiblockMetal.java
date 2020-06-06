@@ -560,10 +560,11 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 				averageInsertion = multiblock.energyStorage.extractEnergy(averageInsertion, true);
 				if(averageInsertion > energyExtracted)
 				{
+					int possibleTicks;
 					if(energyPerTick > 0)
-						int possibleTicks = Math.min(averageInsertion/energyPerTick, Math.min(this.recipe.getMultipleProcessTicks(), this.maxTicks-this.processTick));
+						possibleTicks = Math.min(averageInsertion/energyPerTick, Math.min(this.recipe.getMultipleProcessTicks(), this.maxTicks-this.processTick));
 					else
-						int possibleTicks = Math.min(Math.min(this.recipe.getMultipleProcessTicks(), this.maxTicks-this.processTick));
+						possibleTicks = Math.min(this.recipe.getMultipleProcessTicks(), this.maxTicks-this.processTick);
 					if(possibleTicks > 1)
 					{
 						ticksAdded = possibleTicks;
