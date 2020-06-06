@@ -19,6 +19,8 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 
+import javax.annotation.Nonnull;
+
 public class ScaffoldingBlock extends IEBaseBlock.IELadderBlock
 {
 	private static final VoxelShape COLLISION_SHAPE = makeCuboidShape(1, 0, 1, 15, 16, 15);
@@ -31,20 +33,31 @@ public class ScaffoldingBlock extends IEBaseBlock.IELadderBlock
 		lightOpacity = 0;
 	}
 
+	@Nonnull
 	@Override
-	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
+	public VoxelShape getShape(@Nonnull BlockState state, @Nonnull IBlockReader worldIn, @Nonnull BlockPos pos, @Nonnull ISelectionContext context)
 	{
 		return VoxelShapes.fullCube();
 	}
 
+	private static final VoxelShape CHECK_SHAPE = VoxelShapes.create(0, -20, 0, 1, -19, 1);
+
+	@Nonnull
 	@Override
-	public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
+	public VoxelShape getCollisionShape(@Nonnull BlockState state, @Nonnull IBlockReader worldIn, @Nonnull BlockPos pos, ISelectionContext context)
 	{
-		return COLLISION_SHAPE;
+		// This checks if the entity for the context is above the given shape if the context is actually
+		// entity-related, and returns the last parameter otherwise. This is necessary to allow tracks/redstone etc to
+		// be placed on top of scaffolding while still making it climbable.
+		boolean checkForClimbing = context.func_216378_a(CHECK_SHAPE, pos, false);
+		if(checkForClimbing)
+			return COLLISION_SHAPE;
+		else
+			return VoxelShapes.fullCube();
 	}
 
 	@Override
-	public boolean isSideInvisible(BlockState state, BlockState adjState, Direction side)
+	public boolean isSideInvisible(@Nonnull BlockState state, BlockState adjState, @Nonnull Direction side)
 	{
 		return (adjState.getBlock() instanceof ScaffoldingBlock&&adjState.getMaterial()==state.getMaterial())
 				||super.isSideInvisible(state, adjState, side);
