@@ -714,8 +714,9 @@ public class ApiUtils
 							}
 						}
 					}
+					ItemNBTHelper.remove(stack, "linkingDim");
 					ItemNBTHelper.remove(stack, "linkingPos");
-					ItemNBTHelper.remove(stack, "targettingInfo");
+					ItemNBTHelper.remove(stack, "linkingOffset");
 				}
 			}
 			return ActionResultType.SUCCESS;

@@ -369,7 +369,7 @@ public class TransformerTileEntity extends ImmersiveConnectableTileEntity implem
 			cachedMirrored = mirrored;
 		}
 		else if(dummy!=2)
-			shape = VoxelShapes.empty();
+			shape = VoxelShapes.fullCube();
 		return shape;
 	}
 
