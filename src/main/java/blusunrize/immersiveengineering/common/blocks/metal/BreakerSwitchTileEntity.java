@@ -23,7 +23,6 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.TransformationMatrix;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -267,11 +266,9 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 	public TransformationMatrix applyTransformations(BlockState object, String group, TransformationMatrix transform)
 	{
 		return transform.compose(new TransformationMatrix(
-				new Vector3f(0.5F, 0, 0.5F),
-				new Quaternion(0, 180*rotation, 0, true),
+				null,
+				new Quaternion(0, 90*rotation, 0, true),
 				null, null
-		)).compose(new TransformationMatrix(
-				new Vector3f(-0.5F, 0, -0.5F), null, null, null
 		));
 	}
 
@@ -285,6 +282,7 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 	public void onDirectionalPlacement(Direction side, float hitX, float hitY, float hitZ, LivingEntity placer)
 	{
 		Direction f = Direction.SOUTH;
+		int rotationSign = -1;
 		if(side.getAxis()==Axis.Y)
 		{
 			float xFromMid = hitX-.5f;
@@ -294,10 +292,14 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 				f = xFromMid < 0?Direction.WEST: Direction.EAST;
 			else
 				f = zFromMid < 0?Direction.NORTH: Direction.SOUTH;
-			if((side==Direction.UP&&f.getAxis()==Axis.Z)||side==Direction.DOWN)
+			if(side==Direction.DOWN)
+			{
 				f = f.getOpposite();
+				rotationSign = 1;
+			}
 		}
-		rotation = f.getHorizontalIndex();
+		rotation = Direction.NORTH.getHorizontalIndex()+rotationSign*f.getHorizontalIndex();
+		rotation = (rotation+4)%4;
 	}
 
 	@Override
