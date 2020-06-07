@@ -50,7 +50,6 @@ public class MixerRenderer extends TileEntityRenderer<MixerTileEntity>
 			return;
 		IBakedModel model = dynamic.get(te.getFacing());
 
-		ClientUtils.bindAtlas();
 		matrixStack.push();
 		matrixStack.translate(.5, .5, .5);
 

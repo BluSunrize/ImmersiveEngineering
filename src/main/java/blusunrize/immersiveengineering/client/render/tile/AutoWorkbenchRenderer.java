@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
+import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity.MultiblockProcess;
@@ -78,9 +79,6 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 			return;
 		IBakedModel model = dynamic.get(te.getFacing());
 
-		//Initialize Tesselator and BufferBuilder
-		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder worldRenderer = tessellator.getBuffer();
 		//Outer GL Wrapping, initial translation
 		matrixStack.push();
 		matrixStack.translate(0.5, 0.5, 0.5);
@@ -183,7 +181,6 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 
 		}
 
-		ClientUtils.bindAtlas();
 		matrixStack.push();
 		ItemStack blueprintStack = te.inventory.get(0);
 		if(!blueprintStack.isEmpty())
@@ -215,7 +212,6 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 		renderModelPart(matrixStack, blockRenderer, bufferIn, te.getWorldNonnull(), state, model, blockPos, "pressLift");
 		matrixStack.translate(0, -liftPress, 0);
 
-		RenderHelper.enableStandardItemLighting();
 		matrixStack.pop();
 
 		switch(f)
@@ -305,10 +301,10 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 			{
 				//Width depends on distance
 				float lineWidth = playerDistanceSq < 6?3: playerDistanceSq < 25?2: playerDistanceSq < 40?1: .5f;
+				matrixStack.push();
 				matrixStack.translate(-.195, .125, .97);
 				matrixStack.rotate(new Quaternion(new Vector3f(1, 0, 0), -45, true));
-				float scale = .0375f/(blueprint.textureScale/16f);
-				matrixStack.push();
+				float scale = .5f/blueprint.textureScale;
 				matrixStack.scale(scale, -scale, scale);
 				matrixStack.translate(0.5, 0.5, 0.5);
 				blueprint.draw(lineWidth, matrixStack, bufferIn);
@@ -518,24 +514,21 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 		public void draw(float lineWidth, MatrixStack matrixStack, IRenderTypeBuffer buffer)
 		{
 			//Draw edges
-			IVertexBuilder bb = buffer.getBuffer(IERenderTypes.getLines(lineWidth));
-			Matrix4f mat = matrixStack.getLast().getMatrix();
+			IVertexBuilder baseBuilder = buffer.getBuffer(IERenderTypes.getLines(lineWidth));
+			TransformingVertexBuilder builder = new TransformingVertexBuilder(baseBuilder, matrixStack);
+			builder.setColor(1, 1, 1, 1);
 			for(Pair<Point, Point> line : lines)
 			{
-				bb.pos(mat, line.getKey().x, line.getKey().y, 0)
-						.color(1F, 1F, 1F, 1F)
+				builder.pos(line.getKey().x, line.getKey().y, 0)
 						.endVertex();
-				bb.pos(mat, line.getValue().x, line.getValue().y, 0)
-						.color(1F, 1F, 1F, 1F)
+				builder.pos(line.getValue().x, line.getValue().y, 0)
 						.endVertex();
 			}
 
 			if(lineWidth >= 1)//Draw shading if player is close enough
-			{
 				for(ShadeStyle style : areas.keySet())
 					for(Point pixel : areas.get(style))
-						style.drawShading(pixel, bb, mat);
-			}
+						style.drawShading(pixel, builder);
 		}
 	}
 
@@ -550,7 +543,7 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 			this.stripeDirection = stripeDirection;
 		}
 
-		void drawShading(Point pixel, IVertexBuilder builder, Matrix4f mat)
+		void drawShading(Point pixel, IVertexBuilder builder)
 		{
 			float step = 1/(float)stripeAmount;
 			float offset = step/2;
@@ -563,30 +556,30 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 			for(int i = 0; i < stripeAmount; i++)
 				if(stripeDirection==0)//vertical
 				{
-					builder.pos(mat, pixel.x+offset+step*i, pixel.y, 0).endVertex();
-					builder.pos(mat, pixel.x+offset+step*i, pixel.y+1, 0).endVertex();
+					builder.pos(pixel.x+offset+step*i, pixel.y, 0).endVertex();
+					builder.pos(pixel.x+offset+step*i, pixel.y+1, 0).endVertex();
 				}
 				else if(stripeDirection==1)//horizontal
 				{
-					builder.pos(mat, pixel.x, pixel.y+offset+step*i, 0).endVertex();
-					builder.pos(mat, pixel.x+1, pixel.y+offset+step*i, 0).endVertex();
+					builder.pos(pixel.x, pixel.y+offset+step*i, 0).endVertex();
+					builder.pos(pixel.x+1, pixel.y+offset+step*i, 0).endVertex();
 				}
 				else if(stripeDirection==2)//diagonal
 				{
 					if(i==stripeAmount-1&&stripeAmount%2==1)
 					{
-						builder.pos(mat, pixel.x, pixel.y+1, 0).endVertex();
-						builder.pos(mat, pixel.x+1, pixel.y, 0).endVertex();
+						builder.pos(pixel.x, pixel.y+1, 0).endVertex();
+						builder.pos(pixel.x+1, pixel.y, 0).endVertex();
 					}
 					else if(i%2==0)
 					{
-						builder.pos(mat, pixel.x, pixel.y+offset+step*(i/2), 0).endVertex();
-						builder.pos(mat, pixel.x+offset+step*(i/2), pixel.y, 0).endVertex();
+						builder.pos(pixel.x, pixel.y+offset+step*(i/2), 0).endVertex();
+						builder.pos(pixel.x+offset+step*(i/2), pixel.y, 0).endVertex();
 					}
 					else
 					{
-						builder.pos(mat, pixel.x+1-offset-step*(i/2), pixel.y+1, 0).endVertex();
-						builder.pos(mat, pixel.x+1, pixel.y+1-offset-step*(i/2), 0).endVertex();
+						builder.pos(pixel.x+1-offset-step*(i/2), pixel.y+1, 0).endVertex();
+						builder.pos(pixel.x+1, pixel.y+1-offset-step*(i/2), 0).endVertex();
 					}
 				}
 		}
