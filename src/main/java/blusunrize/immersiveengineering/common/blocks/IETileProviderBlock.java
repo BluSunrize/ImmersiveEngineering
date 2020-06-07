@@ -277,14 +277,21 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 		return super.onBlockActivated(state, world, pos, player, hand, hit);
 	}
 
+	@Nullable
+	private IProperty<Direction> findFacingProperty(BlockState state)
+	{
+		if(state.has(IEProperties.FACING_ALL))
+			return IEProperties.FACING_ALL;
+		else if(state.has(IEProperties.FACING_HORIZONTAL))
+			return IEProperties.FACING_HORIZONTAL;
+		else
+			return null;
+	}
+
 	@Override
 	public BlockState rotate(BlockState state, Rotation rot)
 	{
-		IProperty<Direction> facingProp = null;
-		if(state.has(IEProperties.FACING_ALL))
-			facingProp = IEProperties.FACING_ALL;
-		else if(state.has(IEProperties.FACING_HORIZONTAL))
-			facingProp = IEProperties.FACING_HORIZONTAL;
+		IProperty<Direction> facingProp = findFacingProperty(state);
 		if(facingProp!=null&&canRotate())
 		{
 			Direction currentDirection = state.get(facingProp);
@@ -299,6 +306,16 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 	{
 		if(state.has(IEProperties.MIRRORED)&&canRotate()&&mirrorIn==Mirror.LEFT_RIGHT)
 			return state.with(IEProperties.MIRRORED, !state.get(IEProperties.MIRRORED));
+		else
+		{
+			IProperty<Direction> facingProp = findFacingProperty(state);
+			if(facingProp!=null&&canRotate())
+			{
+				Direction currentDirection = state.get(facingProp);
+				Direction newDirection = mirrorIn.mirror(currentDirection);
+				return state.with(facingProp, newDirection);
+			}
+		}
 		return super.mirror(state, mirrorIn);
 	}
 

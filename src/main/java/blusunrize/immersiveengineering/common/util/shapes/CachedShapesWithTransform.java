@@ -66,6 +66,14 @@ public class CachedShapesWithTransform<ShapeKey, TransformKey> extends CachedVox
 				});
 	}
 
+	public static <T> CachedShapesWithTransform<T, Direction> createDirectional(Function<T, List<AxisAlignedBB>> create)
+	{
+		return new CachedShapesWithTransform<>(
+				create,
+				(key, box) -> Utils.transformAABB(box, key)
+		);
+	}
+
 	public static VoxelShape get(CachedShapesWithTransform<BlockPos, Pair<Direction, Boolean>> cache, MultiblockPartTileEntity<?> tile)
 	{
 		return cache.get(tile.posInMultiblock, Pair.of(tile.getFacing(), tile.getIsMirrored()));

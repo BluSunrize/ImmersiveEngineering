@@ -9,17 +9,26 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
+import blusunrize.immersiveengineering.common.blocks.metal.MetalPressTileEntity;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
+import net.minecraft.world.World;
+import net.minecraft.world.gen.feature.template.Template.BlockInfo;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -77,5 +86,32 @@ public class MetalPressMultiblock extends IETemplateMultiblock
 	public Direction untransformDirection(Direction transformed)
 	{
 		return transformed.rotateYCCW();
+	}
+
+	@Override
+	protected void replaceStructureBlock(BlockInfo info, World world, BlockPos actualPos, boolean mirrored, Direction clickDirection, Vec3i offsetFromMaster)
+	{
+		Direction mbDirection;
+		if(mirrored)
+			mbDirection = transformDirection(clickDirection);
+		else
+			mbDirection = transformDirection(clickDirection.getOpposite());
+		BlockState state = Multiblocks.metalPress.getDefaultState();
+		if(!offsetFromMaster.equals(Vec3i.NULL_VECTOR))
+			state = state.with(IEProperties.MULTIBLOCKSLAVE, true);
+		world.setBlockState(actualPos, state);
+		TileEntity curr = world.getTileEntity(actualPos);
+		if(curr instanceof MetalPressTileEntity)
+		{
+			MetalPressTileEntity tile = (MetalPressTileEntity)curr;
+			tile.formed = true;
+			tile.offsetToMaster = new BlockPos(offsetFromMaster);
+			tile.posInMultiblock = info.pos;
+			tile.setFacing(mbDirection);
+			tile.markDirty();
+			world.addBlockEvent(actualPos, world.getBlockState(actualPos).getBlock(), 255, 0);
+		}
+		else
+			IELogger.logger.error("Expected metal press TE at {} during placement", actualPos);
 	}
 }
