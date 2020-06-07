@@ -13,7 +13,6 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.OptionalDouble;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class IERenderTypes
 {
@@ -218,7 +217,7 @@ public class IERenderTypes
 	{
 		return wrapWithAdditional(
 				in,
-				type -> ImmersiveEngineering.MODID+":stencil_"+name+"_"+type+"_"+ref,
+				"stencil_"+name+"_"+ref,
 				() -> {
 					GL11.glEnable(GL11.GL_STENCIL_TEST);
 					RenderSystem.colorMask(false, false, false, false);
@@ -248,21 +247,31 @@ public class IERenderTypes
 	{
 		return wrapWithAdditional(
 				in,
-				type -> ImmersiveEngineering.MODID+":"+type+"_no_lighting",
+				"no_lighting",
 				RenderSystem::disableLighting,
 				RenderSystem::enableLighting
 		);
 	}
 
+	public static IRenderTypeBuffer disableCull(IRenderTypeBuffer in)
+	{
+		return wrapWithAdditional(
+				in,
+				"no_cull",
+				RenderSystem::disableCull,
+				RenderSystem::enableCull
+		);
+	}
+
 	private static IRenderTypeBuffer wrapWithAdditional(
 			IRenderTypeBuffer in,
-			Function<String, String> nameTransform,
+			String name,
 			Runnable setup,
 			Runnable teardown
 	)
 	{
 		return type -> in.getBuffer(new RenderType(
-				nameTransform.apply(type.toString()),
+				ImmersiveEngineering.MODID+":"+type+"_"+name,
 				type.getVertexFormat(),
 				type.getDrawMode(),
 				type.getBufferSize(),

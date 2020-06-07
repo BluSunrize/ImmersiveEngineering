@@ -18,7 +18,6 @@ import blusunrize.immersiveengineering.common.gui.ModWorkbenchContainer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.PlayerInventory;
@@ -125,14 +124,7 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 				ItemStack ghostStack = ((IESlot.BlueprintOutput)s).recipe.output;
 				if(!ghostStack.isEmpty())
 				{
-					this.setBlitOffset(200);
-					itemRender.zLevel = 200.0F;
-					FontRenderer font = ghostStack.getItem().getFontRenderer(ghostStack);
-					if(font==null)
-						font = this.font;
 					itemRender.renderItemAndEffectIntoGUI(ghostStack, guiLeft+s.xPos, guiTop+s.yPos);
-					this.setBlitOffset(0);
-					itemRender.zLevel = 0.0F;
 					RenderSystem.depthFunc(GL11.GL_GREATER);
 					ClientUtils.drawColouredRect(guiLeft+s.xPos+0, guiTop+s.yPos+0, 16, 16, 0xbb333333);
 					RenderSystem.depthFunc(GL11.GL_LEQUAL);

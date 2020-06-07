@@ -101,15 +101,13 @@ public class ModWorkbenchRenderer extends TileEntityRenderer<ModWorkbenchTileEnt
 				matrixStack.rotate(new Quaternion(new Vector3f(1, 0, 0), 90, true));
 				matrixStack.translate(-.875, 0, 0);
 				matrixStack.scale(.75f, .75f, .75f);
+				try
 				{
-					try
-					{
-						ClientUtils.mc().getItemRenderer().renderItem(stack, ItemCameraTransforms.TransformType.FIXED,
-								combinedLightIn, combinedOverlayIn, matrixStack, bufferIn);
-					} catch(Exception e)
-					{
-						e.printStackTrace();
-					}
+					ClientUtils.mc().getItemRenderer().renderItem(stack, ItemCameraTransforms.TransformType.FIXED,
+							combinedLightIn, combinedOverlayIn, matrixStack, bufferIn);
+				} catch(Exception e)
+				{
+					e.printStackTrace();
 				}
 				matrixStack.pop();
 			}

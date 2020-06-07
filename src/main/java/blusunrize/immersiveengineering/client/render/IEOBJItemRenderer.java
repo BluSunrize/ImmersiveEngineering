@@ -119,7 +119,8 @@ public class IEOBJItemRenderer extends ItemStackTileEntityRenderer
 				baseType = RenderType.getEntityTranslucent(atlas);
 			else
 				baseType = RenderType.getEntityCutout(atlas);
-			IVertexBuilder builder = buffer.getBuffer(quadsForLayer.layer.getRenderType(baseType));
+			RenderType actualType = quadsForLayer.layer.getRenderType(baseType);
+			IVertexBuilder builder = IERenderTypes.disableCull(buffer).getBuffer(actualType);
 			Vector4f color = quadsForLayer.layer.getColor();
 			for(BakedQuad quad : quadsForLayer.quadsInLayer)
 				addQuadWithAlpha(
