@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.ModelConveyor;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import blusunrize.immersiveengineering.common.util.shapes.CachedShapesWithTransform;
 import blusunrize.immersiveengineering.common.util.shapes.CachedVoxelShapes;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -57,20 +58,8 @@ public class VerticalCoveredConveyor extends VerticalConveyor
 		return true;
 	}
 
-	static final AxisAlignedBB[] topBounds = {
-			new AxisAlignedBB(0, 0, .75, 1, 1, 1),
-			new AxisAlignedBB(0, 0, 0, 1, 1, .25),
-			new AxisAlignedBB(.75, 0, 0, 1, 1, 1),
-			new AxisAlignedBB(0, 0, 0, .25, 1, 1)
-	};
-	static final AxisAlignedBB[] topBoundsCorner = {
-			new AxisAlignedBB(0, .75, .75, 1, 1, 1),
-			new AxisAlignedBB(0, .75, 0, 1, 1, .25),
-			new AxisAlignedBB(.75, .75, 0, 1, 1, 1),
-			new AxisAlignedBB(0, .75, 0, .25, 1, 1)
-	};
-
-	private static final CachedVoxelShapes<Pair<Boolean, Direction>> SHAPES = new CachedVoxelShapes<>(VerticalCoveredConveyor::getBoxes);
+	private static final CachedShapesWithTransform<Boolean, Direction> SHAPES =
+			CachedShapesWithTransform.createDirectional(VerticalCoveredConveyor::getBoxes);
 
 	@Override
 	public VoxelShape getCollisionShape()
@@ -78,15 +67,16 @@ public class VerticalCoveredConveyor extends VerticalConveyor
 		return SHAPES.get(Pair.of(renderBottomBelt(getTile(), getFacing()), getFacing()));
 	}
 
-	private static List<AxisAlignedBB> getBoxes(Pair<Boolean, Direction> key)
+	private static List<AxisAlignedBB> getBoxes(Boolean bottom)
 	{
 		List<AxisAlignedBB> list = new ArrayList<>();
-		boolean bottom = key.getLeft();
-		if(key.getRight().ordinal() > 1)
-		{
-			list.add(verticalBounds[key.getRight().ordinal()-2]);
-			list.add((bottom?topBoundsCorner: topBounds)[key.getRight().ordinal()-2]);
-		}
+		list.add(new AxisAlignedBB(0, 0, 0, 1, 1, .125f));
+		list.add(new AxisAlignedBB(0, 0, 0, 0.0625, 1, 1));
+		list.add(new AxisAlignedBB(0.9375, 0, 0, 1, 1, 1));
+		if(bottom)
+			list.add(new AxisAlignedBB(0, .75, .75, 1, 1, 1));
+		else
+			list.add(new AxisAlignedBB(0, 0, .75, 1, 1, 1));
 		if(bottom||list.isEmpty())
 			list.add(conveyorBounds.getBoundingBox());
 		return list;

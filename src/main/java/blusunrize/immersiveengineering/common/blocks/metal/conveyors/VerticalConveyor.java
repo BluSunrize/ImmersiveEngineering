@@ -17,7 +17,9 @@ import blusunrize.immersiveengineering.client.models.ModelConveyor;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import blusunrize.immersiveengineering.common.util.shapes.CachedShapesWithTransform;
 import blusunrize.immersiveengineering.common.util.shapes.CachedVoxelShapes;
+import com.google.common.collect.Lists;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -272,26 +274,19 @@ public class VerticalConveyor extends BasicConveyor
 			((ItemEntity)entity).setPickupDelay(10);
 	}
 
-	static final AxisAlignedBB[] verticalBounds = {
-			new AxisAlignedBB(0, 0, 0, 1, 1, .125f),
-			new AxisAlignedBB(0, 0, .875f, 1, 1, 1),
-			new AxisAlignedBB(0, 0, 0, .125f, 1, 1),
-			new AxisAlignedBB(.875f, 0, 0, 1, 1, 1)
-	};
-	private static final CachedVoxelShapes<Pair<Direction, Boolean>> SHAPES = new CachedVoxelShapes<>(VerticalConveyor::getShapes);
+	private static final CachedShapesWithTransform<Boolean, Direction> SHAPES =
+			CachedShapesWithTransform.createDirectional(VerticalConveyor::getShapes);
 
 	@Override
 	public VoxelShape getSelectionShape()
 	{
-		return SHAPES.get(Pair.of(getFacing(), renderBottomBelt(getTile(), getFacing())));
+		return getCollisionShape();
 	}
 
-	private static List<AxisAlignedBB> getShapes(Pair<Direction, Boolean> key)
+	private static List<AxisAlignedBB> getShapes(Boolean bottomBelt)
 	{
-		List<AxisAlignedBB> list = new ArrayList<>();
-		if(key.getLeft().ordinal() > 1)
-			list.add(verticalBounds[key.getLeft().ordinal()-2]);
-		if(key.getRight()||list.isEmpty())
+		List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0, 0, 0, 1, 1, .125f));
+		if(bottomBelt)
 			list.add(conveyorBounds.getBoundingBox());
 		return list;
 	}
@@ -299,7 +294,7 @@ public class VerticalConveyor extends BasicConveyor
 	@Override
 	public VoxelShape getCollisionShape()
 	{
-		return getSelectionShape();
+		return SHAPES.get(Pair.of(renderBottomBelt(getTile(), getFacing()), getFacing()));
 	}
 
 	@Override
