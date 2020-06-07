@@ -37,6 +37,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.model.*;
+import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.MissingTextureSprite;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -1304,5 +1305,18 @@ public class ClientUtils
 				return ModelRotation.X0_Y90;
 		}
 		throw new IllegalArgumentException(String.valueOf(d));
+	}
+
+	public static void renderItemWithOverlayIntoGUI(IRenderTypeBuffer buffer, MatrixStack transform,
+													ItemStack stack, int x, int y)
+	{
+		transform.push();
+		transform.translate(x, y, 100);
+		transform.translate(8, 8, 0);
+		transform.scale(1, -1, 1);
+		transform.scale(16, 16, 16);
+		mc().getItemRenderer().renderItem(stack, TransformType.GUI, 0xf000f0, OverlayTexture.NO_OVERLAY,
+				transform, buffer);
+		transform.pop();
 	}
 }

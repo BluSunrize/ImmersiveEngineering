@@ -597,25 +597,16 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 								if(drill)
 								{
 									ClientUtils.drawTexturedRect(builder, transform, -54, -73, 66, 72, 1, 1, 1, 1, 108/256f, 174/256f, 4/256f, 76/256f);
-									ItemRenderer ir = ClientUtils.mc().getItemRenderer();
 									ItemStack head = ((DrillItem)equipped.getItem()).getHead(equipped);
 									if(!head.isEmpty())
-									{
-										ir.renderItemIntoGUI(head, -51, -45);
-										ir.renderItemOverlayIntoGUI(head.getItem().getFontRenderer(head), head, -51, -45, null);
-										RenderHelper.disableStandardItemLighting();
-									}
+										ClientUtils.renderItemWithOverlayIntoGUI(buffer, transform, head, -51, -45);
 								}
 								else if(buzzsaw)
 								{
 									ClientUtils.drawTexturedRect(builder, transform, -54, -73, 66, 72, 1, 1, 1, 1, 108/256f, 174/256f, 4/256f, 76/256f);
-									ItemRenderer ir = ClientUtils.mc().getItemRenderer();
 									ItemStack blade = ((BuzzsawItem)equipped.getItem()).getSawblade(equipped);
 									if(!blade.isEmpty())
-									{
-										ir.renderItemIntoGUI(blade, -51, -45);
-										ir.renderItemOverlayIntoGUI(blade.getItem().getFontRenderer(blade), blade, -51, -45, null);
-									}
+										ClientUtils.renderItemWithOverlayIntoGUI(buffer, transform, blade, -51, -45);
 								}
 								else
 								{
