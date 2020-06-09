@@ -1,0 +1,140 @@
+:root {
+    --text-color: #555555;
+    --highlight-color: #d4804a;
+    --title-color: #f78034;
+    font-size: 30px;
+}
+
+@font-face {
+    font-family: 'MinecraftiaRegular';
+    src: url('../assets/MinecraftiaRegular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    font-family: 'MinecraftiaRegular';
+    font-weight: normal;
+    font-style: normal;
+    color: var(--text-color);
+}
+
+button {
+    font-size: 45px;
+    background-color: Transparent;
+    background-repeat: no-repeat;
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+    outline: none;
+}
+
+div.manual {
+    /*background-image: url('../assets/manual.png');*/
+    width: 830px;
+    height: 1000px;
+    margin: auto;
+    background-size: cover;
+    background-repeat: no-repeat;
+    image-rendering: crisp-edges; /*Firefox*/
+    image-rendering: pixelated; /*Chrome*/
+    background-position-x: center;
+    position: relative;
+}
+
+#page {
+    width: 830px;
+    /*height: 1000px;*/
+    image-rendering: -moz-crisp-edges; /* Firefox */
+    image-rendering: -webkit-crisp-edges; /* Safari */
+    image-rendering: pixelated; /* Chrome */
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    margin-left: 6%;
+    margin-top: 5.5%;
+    width: 75%;
+    height: 90%;
+    max-height: 90%;
+    position: absolute;
+    top: 0;
+}
+
+.content button.back {
+    width: 10%;
+    height: auto;
+    position: absolute;
+    left: -5%;
+}
+
+.content button.back::before {
+    content: '🡄';
+    color: var(--text-color);
+}
+
+.content button.back:hover::before {
+    color: var(--highlight-color);
+}
+
+/* Entry List */
+.content ul {
+    height: 100%;
+    list-style: none;
+    overflow: auto;
+}
+
+.content ul li:hover {
+    color: var(--highlight-color);
+    cursor: pointer;
+}
+
+/* Headlines */
+.content h2,
+.content h3 {
+    text-align: center;
+    color: var(--title-color);
+    margin: 0;
+}
+
+.content h2 {
+    font-weight: bold;
+}
+
+.content p {
+    margin: 0;
+}
+
+    /* Footer */
+footer {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+}
+footer button.off {
+    pointer-events: none;
+    opacity: 0;
+}
+footer button.page_prev::before {
+    content: '🡄';
+    color: var(--text-color);
+}
+footer button.page_next::before {
+    content: '🡆';
+    color: var(--text-color);
+}
+
+/* Pages */
+div.pages p {
+    margin-bottom: 0;
+}
+
+/* Links */
+.content p span.link {
+    text-decoration: underline;
+}
+.content p span.link:hover {
+    color: var(--highlight-color);
+    cursor: pointer;
+}
