@@ -124,7 +124,7 @@ public class IEOBJItemRenderer extends ItemStackTileEntityRenderer
 			Vector4f color = quadsForLayer.layer.getColor();
 			for(BakedQuad quad : quadsForLayer.quadsInLayer)
 				addQuadWithAlpha(
-						matrix.getLast(), quad, color, new int[]{light, light, light, light}, overlay, builder
+						matrix.getLast(), quad, color, light, overlay, builder
 				);
 			matrix.scale(1.01F, 1.01F, 1.01F);
 		}
@@ -132,30 +132,31 @@ public class IEOBJItemRenderer extends ItemStackTileEntityRenderer
 	}
 
 	private void addQuadWithAlpha(MatrixStack.Entry matrixEntryIn, BakedQuad quadIn, Vector4f color,
-								  int[] combinedLightsIn, int combinedOverlayIn, IVertexBuilder builder)
+								  int light, int combinedOverlayIn, IVertexBuilder builder)
 	{
-		int[] aint = quadIn.getVertexData();
+		int[] vertexData = quadIn.getVertexData();
 		Vec3i normalInt = quadIn.getFace().getDirectionVec();
 		Vector3f normal = new Vector3f(normalInt.getX(), normalInt.getY(), normalInt.getZ());
 		Matrix4f transform = matrixEntryIn.getMatrix();
 		normal.transform(matrixEntryIn.getNormal());
-		int i = 8;
-		int j = aint.length/8;
+
+		int intSize = DefaultVertexFormats.BLOCK.getIntegerSize();
+		int j = vertexData.length/intSize;
 
 		try(MemoryStack memorystack = MemoryStack.stackPush())
 		{
 			ByteBuffer bytebuffer = memorystack.malloc(DefaultVertexFormats.BLOCK.getSize());
 			IntBuffer intbuffer = bytebuffer.asIntBuffer();
 
-			for(int k = 0; k < j; ++k)
+			for(int i = 0; i < j; ++i)
 			{
 				intbuffer.clear();
-				intbuffer.put(aint, k*8, 8);
+				intbuffer.put(vertexData, i*intSize, intSize);
 				//TODO general formats?
 				float x = bytebuffer.getFloat(0);
 				float y = bytebuffer.getFloat(4);
 				float z = bytebuffer.getFloat(8);
-				int lightmapUV = builder.applyBakedLighting(combinedLightsIn[k], bytebuffer);
+				int lightmapUV = builder.applyBakedLighting(light, bytebuffer);
 				float texU = bytebuffer.getFloat(16);
 				float texV = bytebuffer.getFloat(20);
 				Vector4f vector4f = new Vector4f(x, y, z, 1.0F);
