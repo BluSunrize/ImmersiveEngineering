@@ -92,6 +92,11 @@ public class BlockStates extends BlockStateProvider
 		return b.getRegistryName().getPath();
 	}
 
+	public void simpleBlockItem(Block b, ModelFile model)
+	{
+		simpleBlockItem(b, new ConfiguredModel(model));
+	}
+
 	private void simpleBlockItem(Block b, ConfiguredModel model)
 	{
 		simpleBlock(b, model);
