@@ -140,18 +140,18 @@ public class IEOBJItemRenderer extends ItemStackTileEntityRenderer
 		Matrix4f transform = matrixEntryIn.getMatrix();
 		normal.transform(matrixEntryIn.getNormal());
 
-		int intSize = DefaultVertexFormats.BLOCK.getIntegerSize();
-		int j = vertexData.length/intSize;
+		int vertexSize = DefaultVertexFormats.BLOCK.getIntegerSize();
+		int numVertices = vertexData.length/vertexSize;
 
 		try(MemoryStack memorystack = MemoryStack.stackPush())
 		{
 			ByteBuffer bytebuffer = memorystack.malloc(DefaultVertexFormats.BLOCK.getSize());
 			IntBuffer intbuffer = bytebuffer.asIntBuffer();
 
-			for(int i = 0; i < j; ++i)
+			for(int i = 0; i < numVertices; ++i)
 			{
 				intbuffer.clear();
-				intbuffer.put(vertexData, i*intSize, intSize);
+				intbuffer.put(vertexData, i*vertexSize, vertexSize);
 				//TODO general formats?
 				float x = bytebuffer.getFloat(0);
 				float y = bytebuffer.getFloat(4);
