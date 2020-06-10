@@ -100,12 +100,12 @@ public class TextSplitter
 				{
 					String token = tokenTransform.apply(wordsAndSpaces[pos]);
 					int textWidth = getWidth(token);
-					if(currWidth+textWidth <= lineWidth||line.length()==0)
+					if(currWidth+textWidth <= lineWidth||currWidth==0)
 					{
 						pos++;
 						if(token.equals("<np>"))
 						{
-							if(!page.isEmpty()||!line.isEmpty())
+							if(!page.isEmpty()||currWidth > 0)
 								page.add(line);
 							break page;
 						}
@@ -139,7 +139,7 @@ public class TextSplitter
 								specialOnNextPage = true;
 							if(specialOnNextPage||pageFull)
 							{
-								if(!line.isEmpty())
+								if(currWidth > 0)
 									page.add(line);
 								if(specialOnNextPage)
 									pos--;

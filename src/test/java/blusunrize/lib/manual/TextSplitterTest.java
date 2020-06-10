@@ -12,6 +12,7 @@ public class TextSplitterTest
 {
 	private static final int LINE_LENGTH = 10;
 	private static final int LINES_PER_PAGE = 3;
+	private static final String ZERO_WIDTH_TEXT = "§b";
 	private static final SpecialManualElement HEIGHT_1 = new DummyElement(1);
 	private static final SpecialManualElement HEIGHT_10 = new DummyElement(10);
 	private TextSplitter splitter;
@@ -19,7 +20,13 @@ public class TextSplitterTest
 	@Before
 	public void createSplitter()
 	{
-		splitter = new TextSplitter(String::length, LINE_LENGTH, LINES_PER_PAGE, () -> 1, s -> s);
+		splitter = new TextSplitter(
+				s -> s.replace(ZERO_WIDTH_TEXT, "").length(),
+				LINE_LENGTH,
+				LINES_PER_PAGE,
+				() -> 1,
+				s -> s
+		);
 	}
 
 	private void assertLineCounts(int... lineCounts)
@@ -105,6 +112,15 @@ public class TextSplitterTest
 		splitter.split("abc def <&test>");
 		assertSpecialAt(1, HEIGHT_10);
 		assertSpecialAt(2, HEIGHT_1);
+		assertLineCounts(1, 0, 0);
+		assertLines("abc def");
+	}
+
+	@Test
+	public void testLongWordAfterZeroWidth()
+	{
+		splitter.split(ZERO_WIDTH_TEXT+" 0123456789ABCDEF");
+		//TODO
 		assertLineCounts(1, 0, 0);
 		assertLines("abc def");
 	}
