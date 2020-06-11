@@ -177,7 +177,7 @@ public class ConnectorProbeTileEntity extends ConnectorRedstoneTileEntity
 	{
 		if("glass".equals(group))
 			return MinecraftForgeClient.getRenderLayer()==RenderType.getTranslucent();
-		return MinecraftForgeClient.getRenderLayer()==RenderType.getSolid();
+		return MinecraftForgeClient.getRenderLayer()==RenderType.getCutout();
 	}
 
 	@OnlyIn(Dist.CLIENT)

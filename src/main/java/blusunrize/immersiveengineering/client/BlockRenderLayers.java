@@ -35,10 +35,6 @@ public class BlockRenderLayers
 				Connectors.getEnergyConnector(WireType.HV_CATEGORY, true),
 				rt -> rt==RenderType.getSolid()||rt==RenderType.getTranslucent()
 		);
-		RenderTypeLookup.setRenderLayer(
-				Connectors.connectorProbe,
-				rt -> rt==RenderType.getSolid()||rt==RenderType.getTranslucent()
-		);
 
 		for(MetalScaffoldingType type : MetalScaffoldingType.values())
 		{
@@ -54,7 +50,7 @@ public class BlockRenderLayers
 		);
 		RenderTypeLookup.setRenderLayer(
 				Connectors.connectorBundled,
-				rt -> rt==RenderType.getSolid()||rt==RenderType.getTranslucent()
+				rt -> rt==RenderType.getSolid()||rt==RenderType.getTranslucent()||rt==RenderType.getCutout()
 		);
 		RenderTypeLookup.setRenderLayer(
 				Connectors.connectorProbe,
