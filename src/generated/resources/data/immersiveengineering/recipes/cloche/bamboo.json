@@ -1,0 +1,19 @@
+{
+  "type": "immersiveengineering:cloche",
+  "results": [
+    {
+      "item": "minecraft:bamboo"
+    }
+  ],
+  "input": {
+    "item": "minecraft:bamboo"
+  },
+  "soil": {
+    "item": "minecraft:dirt"
+  },
+  "time": 560,
+  "render": {
+    "type": "stacking",
+    "block": "minecraft:bamboo"
+  }
+}

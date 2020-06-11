@@ -303,6 +303,12 @@ public class Recipes extends RecipeProvider
 				.setTime(560)
 				.setRender(new ClocheRenderReference("stacking", Blocks.CACTUS))
 				.build(out, toRL("cloche/cactus"));
+		ClocheRecipeBuilder.builder(Items.BAMBOO)
+				.addInput(Items.BAMBOO)
+				.addSoil(Blocks.DIRT)
+				.setTime(560)
+				.setRender(new ClocheRenderReference("stacking", Blocks.BAMBOO))
+				.build(out, toRL("cloche/bamboo"));
 		ClocheRecipeBuilder.builder(Items.CHORUS_FRUIT)
 				.addInput(Items.CHORUS_FLOWER)
 				.addSoil(Blocks.END_STONE)
