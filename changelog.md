@@ -1,9 +1,12 @@
 ##### Version 0.14-100
 - Added different sounds for blocks of different materials (BluSunrize)
+- Added "forge:ores" tag to all IE ores (Malte)
 - Re-Added packing and unpacking recipes for the metal press (BluSunrize)
 - Fixed bounding boxes for vertical covered conveyors (Malte)
 - Fixed metal press not forming when mirrored (Malte)
 - Fixed extracting conveyors not saving their extract direction (BluSunrize)
+- Fixed manual freezing when dealing with long tokens (Malte)
+- Fixed bounding boxes for some multiblocks (Malte)
 
 ##### Version 0.14-97 - BUILT
 - Added fuel gauge for the buzzsaw (BluSunrize)
