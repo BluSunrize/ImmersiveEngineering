@@ -1,5 +1,6 @@
 ##### Version 0.14-100
 - Added different sounds for blocks of different materials (BluSunrize)
+- Re-Added packing and unpacking recipes for the metal press (BluSunrize)
 - Fixed bounding boxes for vertical covered conveyors (Malte)
 - Fixed metal press not forming when mirrored (Malte)
 - Fixed extracting conveyors not saving their extract direction (BluSunrize)

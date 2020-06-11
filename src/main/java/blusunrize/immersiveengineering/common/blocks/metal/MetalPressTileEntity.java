@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBou
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
+import blusunrize.immersiveengineering.common.crafting.MetalPressPackingRecipes;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ListUtils;
@@ -212,6 +213,7 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 
 	private CapabilityReference<IItemHandler> outputCap = CapabilityReference.forTileEntity(this,
 			this::getOutputPos, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+
 	@Override
 	public void doProcessOutput(ItemStack output)
 	{
@@ -348,7 +350,10 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 	@Override
 	protected MetalPressRecipe getRecipeForId(ResourceLocation id)
 	{
-		return MetalPressRecipe.recipeList.get(id);
+		MetalPressRecipe recipe = MetalPressRecipe.recipeList.get(id);
+		if(recipe==null)
+			recipe = MetalPressPackingRecipes.getRecipeDelegate(id);
+		return recipe;
 	}
 
 	@Override
