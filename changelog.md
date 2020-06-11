@@ -2,6 +2,7 @@
 - Added different sounds for blocks of different materials (BluSunrize)
 - Fixed bounding boxes for vertical covered conveyors (Malte)
 - Fixed metal press not forming when mirrored (Malte)
+- Fixed extracting conveyors not saving their extract direction (BluSunrize)
 
 ##### Version 0.14-97 - BUILT
 - Added fuel gauge for the buzzsaw (BluSunrize)
