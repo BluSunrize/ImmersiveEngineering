@@ -58,6 +58,7 @@ class IEBlockTags extends BlockTagsProvider
 					Block ore = IEBlocks.Metals.ores.get(metal);
 					assert (tags.ore!=null&&ore!=null);
 					getBuilder(tags.ore).add(ore);
+					getBuilder(Tags.Blocks.ORES).add(tags.ore);
 				}
 			}
 			Block sheetmetal = IEBlocks.Metals.sheetmetal.get(metal);
