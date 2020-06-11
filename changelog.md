@@ -11,6 +11,7 @@
 - Fixed bounding boxes for some multiblocks (Malte)
 - Fixed visual connection of fluid pipes on refinery (BluSunrize)
 - Fixed silver bullets not doing extra damage to undead (BluSunrize)
+- Fixed missing recipes for the "Crafting Components" blueprint in the manual (BluSunrize)
 
 ##### Version 0.14-97 - BUILT
 - Added fuel gauge for the buzzsaw (BluSunrize)
