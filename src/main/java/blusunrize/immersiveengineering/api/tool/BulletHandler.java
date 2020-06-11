@@ -181,7 +181,7 @@ public class BulletHandler
 			this.textures = textures;
 		}
 
-		float getDamage(boolean headshot)
+		protected float getDamage(Entity hitEntity, boolean headshot)
 		{
 			return this.damage*(headshot?1.5f: 1f);
 		}
@@ -198,7 +198,7 @@ public class BulletHandler
 				Entity shooter = null;
 				if(shooterUUID!=null)
 					shooter = world.getPlayerByUuid(shooterUUID);
-				if(hitEntity.attackEntityFrom(damageSourceGetter.getSource(projectile, shooter, hitEntity), getDamage(headshot)))
+				if(hitEntity.attackEntityFrom(damageSourceGetter.getSource(projectile, shooter, hitEntity), getDamage(hitEntity, headshot)))
 				{
 					if(resetHurt)
 						hitEntity.hurtResistantTime = 0;

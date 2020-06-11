@@ -147,7 +147,16 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 				(projectile, shooter, hit) -> IEDamageSources.causeSilverDamage((RevolvershotEntity)projectile, shooter),
 				IEConfig.TOOLS.bulletDamage_Silver.get().floatValue(),
 				() -> BulletHandler.emptyCasing,
-				new ResourceLocation("immersiveengineering:item/bullet_silver")));
+				new ResourceLocation("immersiveengineering:item/bullet_silver")){
+			@Override
+			protected float getDamage(Entity hitEntity, boolean headshot)
+			{
+				float dmg = super.getDamage(hitEntity, headshot);
+				if(hitEntity instanceof LivingEntity && ((LivingEntity)hitEntity).isEntityUndead())
+					dmg *= 1.5;
+				return dmg;
+			}
+		});
 
 		BulletHandler.registerBullet(DRAGONS_BREATH, new BulletHandler.DamagingBullet(
 				(projectile, shooter, hit) -> IEDamageSources.causeDragonsbreathDamage((RevolvershotEntity)projectile, shooter),

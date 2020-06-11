@@ -10,6 +10,7 @@
 - Fixed manual freezing when dealing with long tokens (Malte)
 - Fixed bounding boxes for some multiblocks (Malte)
 - Fixed visual connection of fluid pipes on refinery (BluSunrize)
+- Fixed silver bullets not doing extra damage to undead (BluSunrize)
 
 ##### Version 0.14-97 - BUILT
 - Added fuel gauge for the buzzsaw (BluSunrize)
