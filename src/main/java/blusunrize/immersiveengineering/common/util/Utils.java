@@ -15,13 +15,17 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.items.HammerItem;
 import blusunrize.immersiveengineering.common.items.ScrewdriverItem;
 import blusunrize.immersiveengineering.common.items.WirecutterItem;
+import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.base.Charsets;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementManager;
 import net.minecraft.advancements.PlayerAdvancements;
@@ -74,7 +78,6 @@ import net.minecraft.world.storage.loot.conditions.LootConditionManager;
 import net.minecraft.world.storage.loot.functions.ILootFunction;
 import net.minecraft.world.storage.loot.functions.LootFunctionManager;
 import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.util.JsonUtils;
 import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -85,7 +88,6 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -1495,47 +1497,12 @@ public class Utils
 
 	public static AxisAlignedBB transformAABB(AxisAlignedBB original, Direction facing)
 	{
-		double minX = 0, minZ = 0, maxX = 0, maxZ = 0;
-		Direction right = facing.rotateY();
-		switch(facing)
-		{
-			case NORTH:
-				minZ = original.minZ;
-				maxZ = original.maxZ;
-				break;
-			case SOUTH:
-				minZ = 1-original.minZ;
-				maxZ = 1-original.maxZ;
-				break;
-			case WEST:
-				minX = original.minZ;
-				maxX = original.maxZ;
-				break;
-			case EAST:
-				minX = 1-original.minZ;
-				maxX = 1-original.maxZ;
-				break;
-		}
-		switch(right)
-		{
-			case EAST:
-				minX = original.minX;
-				maxX = original.maxX;
-				break;
-			case WEST:
-				minX = 1-original.minX;
-				maxX = 1-original.maxX;
-				break;
-			case SOUTH:
-				minZ = 1-original.minX;
-				maxZ = 1-original.maxX;
-				break;
-			case NORTH:
-				minZ = original.minX;
-				maxZ = original.maxX;
-				break;
-		}
-		return new AxisAlignedBB(minX, original.minY, minZ, maxX, original.maxY, maxZ);
+		Matrix4 mat = new Matrix4(facing);
+		Vec3d minOld = new Vec3d(original.minX, original.minY, original.minZ);
+		Vec3d maxOld = new Vec3d(original.maxX, original.maxY, original.maxZ);
+		Vec3d firstNew = mat.apply(minOld);
+		Vec3d secondNew = mat.apply(maxOld);
+		return new AxisAlignedBB(firstNew, secondNew);
 	}
 
 	public static List<AxisAlignedBB> flipBoxes(boolean flipFront, boolean flipRight, List<AxisAlignedBB> boxes)
