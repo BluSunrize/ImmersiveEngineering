@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "gcg",
+    "ddd",
+    "ppp"
+  ],
+  "key": {
+    "g": {
+      "tag": "forge:gunpowder"
+    },
+    "c": {
+      "item": "immersiveengineering:empty_casing"
+    },
+    "d": {
+      "tag": "forge:dyes/blue"
+    },
+    "p": {
+      "item": "minecraft:paper"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:blueprint",
+    "nbt": {
+      "blueprint": "bullet"
+    }
+  }
+}

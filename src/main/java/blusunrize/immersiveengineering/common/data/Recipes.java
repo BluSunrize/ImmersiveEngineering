@@ -2297,6 +2297,17 @@ public class Recipes extends RecipeProvider
 				.key('p', Items.PAPER)
 				.addCriterion("has_"+toPath(Items.PAPER), hasItem(Items.PAPER))
 				.build(buildBlueprint(out, "molds"), toRL("blueprint_molds"));
+		ShapedRecipeBuilder.shapedRecipe(Misc.blueprint)
+				.patternLine("gcg")
+				.patternLine("ddd")
+				.patternLine("ppp")
+				.key('g', Tags.Items.GUNPOWDER)
+				.key('c', Ingredients.emptyCasing)
+				.key('d', Tags.Items.DYES_BLUE)
+				//TODO tag?
+				.key('p', Items.PAPER)
+				.addCriterion("has_"+toPath(Items.PAPER), hasItem(Items.PAPER))
+				.build(buildBlueprint(out, "bullet"), toRL("blueprint_bullets"));
 
 		ShapedRecipeBuilder.shapedRecipe(Misc.blueprint)
 				.patternLine("ggg")

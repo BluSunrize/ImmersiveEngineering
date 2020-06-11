@@ -1,4 +1,8 @@
 {
+  "start": {
+    "type": "crafting",
+    "recipe": "crafting/blueprint_bullets"
+  },
   "empty": {
     "type": "crafting",
     "recipes": [
