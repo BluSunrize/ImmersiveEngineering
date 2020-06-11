@@ -3,6 +3,7 @@
 - Added "forge:ores" tag to all IE ores (Malte)
 - Re-Added packing and unpacking recipes for the metal press (BluSunrize)
 - Added cloche recipe to grow bamboo (BluSunrize)
+- Added composting for hempseeds (BluSunrize)
 - Fixed bounding boxes for vertical covered conveyors (Malte)
 - Fixed metal press not forming when mirrored (Malte)
 - Fixed extracting conveyors not saving their extract direction (BluSunrize)
