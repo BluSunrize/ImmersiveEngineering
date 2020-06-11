@@ -7,6 +7,7 @@
 - Fixed extracting conveyors not saving their extract direction (BluSunrize)
 - Fixed manual freezing when dealing with long tokens (Malte)
 - Fixed bounding boxes for some multiblocks (Malte)
+- Fixed visual connection of fluid pipes on refinery (BluSunrize)
 
 ##### Version 0.14-97 - BUILT
 - Added fuel gauge for the buzzsaw (BluSunrize)

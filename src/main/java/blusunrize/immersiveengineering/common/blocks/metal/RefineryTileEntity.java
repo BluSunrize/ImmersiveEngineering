@@ -348,7 +348,7 @@ public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTile
 	}
 
 
-	private static final BlockPos outputOffset = new BlockPos(0, 0, 2);
+	private static final BlockPos outputOffset = new BlockPos(2, 0, 2);
 	private static final Set<BlockPos> inputOffsets = ImmutableSet.of(
 			new BlockPos(0, 0, 1),
 			new BlockPos(4, 0, 1)
