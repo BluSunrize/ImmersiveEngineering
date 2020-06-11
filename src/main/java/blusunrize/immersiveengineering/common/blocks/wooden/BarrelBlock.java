@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalBarrelTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockReader;
@@ -44,9 +45,9 @@ public class BarrelBlock extends IETileProviderBlock
 	{
 		Block.Properties base;
 		if(metal)
-			base = Block.Properties.create(Material.IRON);
+			base = Block.Properties.create(Material.IRON).sound(SoundType.METAL);
 		else
-			base = Block.Properties.create(Material.WOOD);
+			base = Block.Properties.create(Material.WOOD).sound(SoundType.WOOD);
 		return base.hardnessAndResistance(2, 5);
 	}
 }

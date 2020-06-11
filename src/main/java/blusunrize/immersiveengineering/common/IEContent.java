@@ -65,6 +65,7 @@ import blusunrize.immersiveengineering.common.world.Villages;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityType;
 import net.minecraft.fluid.Fluid;
@@ -159,8 +160,8 @@ public class IEContent
 		fluidHerbicide = new IEFluid("herbicide", new ResourceLocation("immersiveengineering:block/fluid/herbicide_still"),
 				new ResourceLocation("immersiveengineering:block/fluid/herbicide_flow"), createBuilder(789, 1000));
 
-		Block.Properties storageProperties = Block.Properties.create(Material.IRON).hardnessAndResistance(5, 10);
-		Block.Properties sheetmetalProperties = Block.Properties.create(Material.IRON).hardnessAndResistance(3, 10);
+		Block.Properties storageProperties = Block.Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(5, 10);
+		Block.Properties sheetmetalProperties = Block.Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(3, 10);
 		ImmersiveEngineering.proxy.registerContainersAndScreens();
 		for(EnumMetals m : EnumMetals.values())
 		{
@@ -253,7 +254,7 @@ public class IEContent
 				stoneDecoProps, (b, p) -> null, IEProperties.FACING_HORIZONTAL)
 				.setNotNormalBlock();
 
-		Block.Properties standardWoodProperties = Block.Properties.create(Material.WOOD).hardnessAndResistance(2, 5);
+		Block.Properties standardWoodProperties = Block.Properties.create(Material.WOOD).sound(SoundType.WOOD).hardnessAndResistance(2, 5);
 		for(TreatedWoodStyles style : TreatedWoodStyles.values())
 		{
 			IEBaseBlock baseBlock = new IEBaseBlock("treated_wood_"+style.name().toLowerCase(), standardWoodProperties, BlockItemIE::new)
@@ -295,7 +296,7 @@ public class IEContent
 		Misc.fakeLight = new FakeLightBlock();
 
 
-		Block.Properties defaultMetalProperties = Block.Properties.create(Material.IRON).hardnessAndResistance(3, 15);
+		Block.Properties defaultMetalProperties = Block.Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(3, 15);
 		MetalDecoration.lvCoil = new IEBaseBlock("coil_lv", defaultMetalProperties, BlockItemIE::new);
 		MetalDecoration.mvCoil = new IEBaseBlock("coil_mv", defaultMetalProperties, BlockItemIE::new);
 		MetalDecoration.hvCoil = new IEBaseBlock("coil_hv", defaultMetalProperties, BlockItemIE::new);

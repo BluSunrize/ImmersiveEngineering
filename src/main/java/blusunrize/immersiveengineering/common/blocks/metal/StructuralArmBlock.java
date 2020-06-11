@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.state.IProperty;
 import net.minecraft.tileentity.TileEntity;
@@ -28,7 +29,7 @@ public class StructuralArmBlock extends IETileProviderBlock
 
 	public StructuralArmBlock(String name)
 	{
-		super(name, Properties.create(Material.IRON).hardnessAndResistance(3, 15),
+		super(name, Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(3, 15),
 				BlockItemIE::new, FACING);
 		setNotNormalBlock();
 		setBlockLayer(BlockRenderLayer.CUTOUT_MIPPED);

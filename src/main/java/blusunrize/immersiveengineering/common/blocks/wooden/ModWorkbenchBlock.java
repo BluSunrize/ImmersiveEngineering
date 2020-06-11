@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.state.IProperty;
 import net.minecraft.tileentity.TileEntity;
@@ -34,7 +35,7 @@ public class ModWorkbenchBlock extends IETileProviderBlock
 
 	public ModWorkbenchBlock(String name)
 	{
-		super(name, Block.Properties.create(Material.WOOD).hardnessAndResistance(2, 5), BlockItemIE::new,
+		super(name, Block.Properties.create(Material.WOOD).sound(SoundType.WOOD).hardnessAndResistance(2, 5), BlockItemIE::new,
 				DUMMY, FACING);
 		setNotNormalBlock();
 	}

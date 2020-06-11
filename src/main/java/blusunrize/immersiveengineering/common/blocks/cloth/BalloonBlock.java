@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.cloth;
 
 import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
@@ -26,6 +27,7 @@ public class BalloonBlock extends IETileProviderBlock
 	public BalloonBlock()
 	{
 		super("balloon", Properties.create(Material.WOOL)
+				.sound(SoundType.CLOTH)
 				.hardnessAndResistance(0.8F)
 				.lightValue(13), BlockItemBalloon::new);
 		setHasColours();
