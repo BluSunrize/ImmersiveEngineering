@@ -18,23 +18,21 @@ import blusunrize.immersiveengineering.client.models.obj.OBJHelper;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.TransformationMatrix;
+import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.lwjgl.system.MemoryStack;
 
-import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -123,52 +121,11 @@ public class IEOBJItemRenderer extends ItemStackTileEntityRenderer
 			IVertexBuilder builder = IERenderTypes.disableCull(buffer).getBuffer(actualType);
 			Vector4f color = quadsForLayer.layer.getColor();
 			for(BakedQuad quad : quadsForLayer.quadsInLayer)
-				addQuadWithAlpha(
-						matrix.getLast(), quad, color, light, overlay, builder
+				builder.addVertexData(
+						matrix.getLast(), quad, color.getX(), color.getY(), color.getZ(), color.getW(), light, overlay
 				);
 			matrix.scale(1.01F, 1.01F, 1.01F);
 		}
 		matrix.pop();
-	}
-
-	private void addQuadWithAlpha(MatrixStack.Entry matrixEntryIn, BakedQuad quadIn, Vector4f color,
-								  int light, int combinedOverlayIn, IVertexBuilder builder)
-	{
-		int[] vertexData = quadIn.getVertexData();
-		Vec3i normalInt = quadIn.getFace().getDirectionVec();
-		Vector3f normal = new Vector3f(normalInt.getX(), normalInt.getY(), normalInt.getZ());
-		Matrix4f transform = matrixEntryIn.getMatrix();
-		normal.transform(matrixEntryIn.getNormal());
-
-		int vertexSize = DefaultVertexFormats.BLOCK.getIntegerSize();
-		int numVertices = vertexData.length/vertexSize;
-
-		try(MemoryStack memorystack = MemoryStack.stackPush())
-		{
-			ByteBuffer bytebuffer = memorystack.malloc(DefaultVertexFormats.BLOCK.getSize());
-			IntBuffer intbuffer = bytebuffer.asIntBuffer();
-
-			for(int i = 0; i < numVertices; ++i)
-			{
-				intbuffer.clear();
-				intbuffer.put(vertexData, i*vertexSize, vertexSize);
-				//TODO general formats?
-				float x = bytebuffer.getFloat(0);
-				float y = bytebuffer.getFloat(4);
-				float z = bytebuffer.getFloat(8);
-				int lightmapUV = builder.applyBakedLighting(light, bytebuffer);
-				float texU = bytebuffer.getFloat(16);
-				float texV = bytebuffer.getFloat(20);
-				Vector4f vector4f = new Vector4f(x, y, z, 1.0F);
-				vector4f.transform(transform);
-				builder.applyBakedNormals(normal, bytebuffer, matrixEntryIn.getNormal());
-				builder.addVertex(
-						vector4f.getX(), vector4f.getY(), vector4f.getZ(),
-						color.getX(), color.getY(), color.getZ(), color.getW(),
-						texU, texV, combinedOverlayIn, lightmapUV,
-						normal.getX(), normal.getY(), normal.getZ()
-				);
-			}
-		}
 	}
 }
