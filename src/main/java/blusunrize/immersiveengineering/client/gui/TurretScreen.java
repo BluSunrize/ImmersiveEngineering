@@ -63,10 +63,13 @@ public abstract class TurretScreen extends IEContainerScreen<TurretContainer>
 					CompoundNBT tag = new CompoundNBT();
 					int listOffset = -1;
 					int rem = list.selectedOption;
-					tile.targetList.remove(rem);
-					tag.putInt("remove", rem);
-					listOffset = list.getOffset()-1;
-					handleButtonClick(tag, listOffset);
+					if(rem>=0)
+					{
+						tile.targetList.remove(rem);
+						tag.putInt("remove", rem);
+						listOffset = list.getOffset()-1;
+						handleButtonClick(tag, listOffset);
+					}
 				}, tile.targetList.toArray(new String[0]))
 				.setPadding(0, 0, 2, 2));
 		this.addButton(new GuiButtonIE(guiLeft+74, guiTop+84, 24, 16, I18n.format(Lib.GUI_CONFIG+"turret.add"), "immersiveengineering:textures/gui/turret.png", 176, 65,

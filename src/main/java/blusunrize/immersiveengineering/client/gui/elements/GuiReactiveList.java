@@ -194,16 +194,18 @@ public class GuiReactiveList extends Button
 	@Override
 	public boolean mouseClicked(double mx, double my, int key)
 	{
-		boolean b = super.mouseClicked(mx, my, key);
-		FontRenderer fr = ClientUtils.mc().fontRenderer;
 		selectedOption = -1;
-		if(b)
-		{
-			double mmY = my-this.y;
-			for(int i = 0; i < Math.min(perPage, entries.length); i++)
-				if(mmY >= i*fr.FONT_HEIGHT&&mmY < (i+1)*fr.FONT_HEIGHT)
-					selectedOption = offset+i;
-		}
+		if (this.active && this.visible)
+			if (this.isValidClickButton(key) && this.clicked(mx,my))
+			{
+
+				FontRenderer fr = ClientUtils.mc().fontRenderer;
+				double mmY = my-this.y;
+				for(int i = 0; i < Math.min(perPage, entries.length); i++)
+					if(mmY >= i*fr.FONT_HEIGHT&&mmY < (i+1)*fr.FONT_HEIGHT)
+						selectedOption = offset+i;
+			}
+		super.mouseClicked(mx, my, key);
 		return selectedOption!=-1;
 	}
 }

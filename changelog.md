@@ -18,6 +18,7 @@
 - Fixed crashes with coresamples created before IE 0.14-96 (Malte)
 - Fixed diesel generator not allowing levers to be attached (Malte)
 - Fixed turrets not firing at entities (BluSunrize)
+- Fixed a crash when clicking the list of names in the turret GUI (BluSunrize)
 
 ##### Version 0.14-97 - BUILT
 - Added fuel gauge for the buzzsaw (BluSunrize)
