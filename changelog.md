@@ -1,3 +1,8 @@
+##### Version 0.15-101
+ - Fixed hemp rendering as solid (Malte)
+ - Fix Optifine shader packs crashing with the IEOBJ item renderer (Vaelzan)
+ - Fix crashes when using the buzzsaw or drill (Malte)
+
 ##### Version 0.15-99 - BUILT
 - Initial alpha release for Minecraft 1.15.2
 - Highlight the trigger block for multiblocks in the manual
