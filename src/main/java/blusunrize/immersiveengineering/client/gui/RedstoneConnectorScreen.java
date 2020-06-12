@@ -25,6 +25,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.ArrayList;
+import java.util.function.Consumer;
 
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
@@ -59,30 +60,10 @@ public class RedstoneConnectorScreen extends ClientTileScreen<ConnectorRedstoneT
 		for(int i = 0; i < colorButtons.length; i++)
 		{
 			final DyeColor color = DyeColor.byId(i);
-			colorButtons[i] = new GuiButtonBoolean(guiLeft+22+(i%4*14), guiTop+44+(i/4*14), 12, 12, "", tileEntity.redstoneChannel.ordinal()==i,
-					"immersiveengineering:textures/gui/redstone_configuration.png", 194, 0, 1,
-					btn -> {
-						if(btn.getNextState())
-							tileEntity.redstoneChannel = color;
-						for(int j = 0; j < 16; j++)
-							if(j!=color.ordinal())
-								colorButtons[j].setStateByInt(0);
-					})
-			{
-				@Override
-				public void render(int mouseX, int mouseY, float partialTicks)
-				{
-					super.render(mouseX, mouseY, partialTicks);
-					if(this.visible)
-					{
-						int col = color.colorValue;
-						if(!getState())
-							col = ClientUtils.getDarkenedTextColour(col);
-						col = 0xff000000|col;
-						this.fillGradient(x+3, y+3, x+9, y+9, col, col);
-					}
-				}
-			};
+			colorButtons[i] = buildColorButton(colorButtons, guiLeft+22+(i%4*14), guiTop+44+(i/4*14),
+					tileEntity.redstoneChannel.ordinal()==i, color, btn -> {
+						tileEntity.redstoneChannel = color;
+					});
 			this.addButton(colorButtons[i]);
 		}
 	}
@@ -128,5 +109,33 @@ public class RedstoneConnectorScreen extends ClientTileScreen<ConnectorRedstoneT
 			ClientUtils.drawHoveringText(tooltip, mouseX, mouseY, font, guiLeft+xSize, -1);
 			RenderHelper.enableGUIStandardItemLighting();
 		}
+	}
+
+	public static GuiButtonBoolean buildColorButton(GuiButtonBoolean[] buttons, int posX, int posY, boolean active, DyeColor color, Consumer<GuiButtonBoolean> onClick)
+	{
+		return new GuiButtonBoolean(posX, posY, 12, 12, "", active,
+				"immersiveengineering:textures/gui/redstone_configuration.png", 194, 0, 1,
+				btn -> {
+					if(btn.getNextState())
+						onClick.accept((GuiButtonBoolean)btn);
+					for(int j = 0; j < buttons.length; j++)
+						if(j!=color.ordinal())
+							buttons[j].setStateByInt(0);
+				})
+		{
+			@Override
+			public void render(int mouseX, int mouseY, float partialTicks)
+			{
+				super.render(mouseX, mouseY, partialTicks);
+				if(this.visible)
+				{
+					int col = color.colorValue;
+					if(!getState())
+						col = ClientUtils.getDarkenedTextColour(col);
+					col = 0xff000000|col;
+					this.fillGradient(x+3, y+3, x+9, y+9, col, col);
+				}
+			}
+		};
 	}
 }

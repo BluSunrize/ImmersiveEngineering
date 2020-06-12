@@ -179,7 +179,7 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 		return true;
 	}
 
-	private void updateAfterConfigure()
+	protected void updateAfterConfigure()
 	{
 		markDirty();
 		globalNet.getLocalNet(pos)
