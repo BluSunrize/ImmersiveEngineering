@@ -124,6 +124,11 @@ public class RedstoneConnectorScreen extends ClientTileScreen<ConnectorRedstoneT
 				})
 		{
 			@Override
+			protected boolean isValidClickButton(int button) {
+				return button == 0 && !getState();
+			}
+
+			@Override
 			public void render(int mouseX, int mouseY, float partialTicks)
 			{
 				super.render(mouseX, mouseY, partialTicks);
