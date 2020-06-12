@@ -65,6 +65,10 @@ public class BlockRenderLayers
 		RenderTypeLookup.setRenderLayer(MetalDevices.fluidPipe, RenderType.getCutout());
 		RenderTypeLookup.setRenderLayer(MetalDevices.cloche, RenderType.getCutout());
 		RenderTypeLookup.setRenderLayer(MetalDevices.sampleDrill, RenderType.getCutout());
+		RenderTypeLookup.setRenderLayer(
+				MetalDevices.cloche,
+				rt -> rt==RenderType.getSolid()||rt==RenderType.getTranslucent()
+		);
 		RenderTypeLookup.setRenderLayer(MetalDecoration.slopeAlu, RenderType.getCutout());
 		RenderTypeLookup.setRenderLayer(MetalDecoration.slopeSteel, RenderType.getCutout());
 		for(Block b : MetalDevices.CONVEYORS.values())

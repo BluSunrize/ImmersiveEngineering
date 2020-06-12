@@ -8,14 +8,9 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
-import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
-import blusunrize.immersiveengineering.api.IEProperties.Model;
-import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
-import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.ClocheTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -36,14 +31,15 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.model.data.EmptyModelData;
-import net.minecraftforge.client.model.data.IModelData;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 
 public class ClocheRenderer extends TileEntityRenderer<ClocheTileEntity>
 {
-	private static HashMap<Direction, List<BakedQuad>> quads = new HashMap<>();
 	private static HashMap<BlockState, List<BakedQuad>> plantQuads = new HashMap<>();
 
 	public ClocheRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
@@ -58,18 +54,6 @@ public class ClocheRenderer extends TileEntityRenderer<ClocheTileEntity>
 			return;
 		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 		BlockPos blockPos = tile.getPos();
-		if(!quads.containsKey(tile.getFacing()))
-		{
-			BlockState state = tile.getWorld().getBlockState(blockPos);
-			if(state.getBlock()!=MetalDevices.cloche)
-				return;
-			IBakedModel model = blockRenderer.getBlockModelShapes().getModel(state);
-			//TODO use a multi layer model?
-			IModelData data = new SinglePropertyModelData<>(
-					new IEObjState(VisibilityList.show(Collections.singletonList("glass"))),
-					Model.IE_OBJ_STATE);
-			quads.put(tile.getFacing(), model.getQuads(state, null, Utils.RAND, data));
-		}
 		matrixStack.push();
 
 		ClocheRecipe recipe = tile.getRecipe();
@@ -107,15 +91,11 @@ public class ClocheRenderer extends TileEntityRenderer<ClocheTileEntity>
 			}
 			matrixStack.pop();
 		}
-
-		ClientUtils.renderModelTESRFast(quads.get(tile.getFacing()), bufferIn.getBuffer(RenderType.getTranslucent()),
-				matrixStack, combinedLightIn);
 		matrixStack.pop();
 	}
 
 	public static void reset()
 	{
-		quads.clear();
 		plantQuads.clear();
 	}
 }
