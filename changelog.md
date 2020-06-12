@@ -13,6 +13,8 @@
 - Fixed visual connection of fluid pipes on refinery (BluSunrize)
 - Fixed silver bullets not doing extra damage to undead (BluSunrize)
 - Fixed missing recipes for the "Crafting Components" blueprint in the manual (BluSunrize)
+- Fixed crashes with coresamples created before IE 0.14-96 (Malte)
+- Fixed diesel generator not allowing levers to be attached (Malte)
 
 ##### Version 0.14-97 - BUILT
 - Added fuel gauge for the buzzsaw (BluSunrize)
