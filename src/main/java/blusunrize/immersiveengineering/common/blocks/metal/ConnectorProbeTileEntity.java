@@ -125,20 +125,6 @@ public class ConnectorProbeTileEntity extends ConnectorRedstoneTileEntity
 	}
 
 	@Override
-	public boolean hammerUseSide(Direction side, PlayerEntity player, Vec3d hitVec)
-	{
-		if(!world.isRemote)
-		{
-			if(player.isSneaking())
-				redstoneChannel = DyeColor.byId(redstoneChannel.getId()+1);
-			else
-				redstoneChannelSending = DyeColor.byId(redstoneChannelSending.getId()+1);
-			updateAfterConfigure();
-		}
-		return true;
-	}
-
-	@Override
 	public void receiveMessageFromClient(CompoundNBT message)
 	{
 		if(message.contains("redstoneChannel"))

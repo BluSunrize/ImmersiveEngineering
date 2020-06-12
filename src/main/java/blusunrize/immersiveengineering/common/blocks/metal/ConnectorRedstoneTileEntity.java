@@ -53,7 +53,7 @@ import java.util.Collection;
 import static blusunrize.immersiveengineering.api.wires.WireType.REDSTONE_CATEGORY;
 
 public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity implements ITickableTileEntity, IStateBasedDirectional,
-		IRedstoneOutput, IHammerInteraction, IPlayerInteraction, IBlockBounds, IBlockOverlayText, IOBJModelCallback<BlockState>,
+		IRedstoneOutput, IPlayerInteraction, IBlockBounds, IBlockOverlayText, IOBJModelCallback<BlockState>,
 		IRedstoneConnector, INeighbourChangeTile
 {
 	public IOSideConfig ioMode = IOSideConfig.INPUT;
@@ -162,21 +162,6 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 			return true;
 		}
 		return false;
-	}
-
-	@Override
-	public boolean hammerUseSide(Direction side, PlayerEntity player, Vec3d hitVec)
-	{
-		if(!world.isRemote)
-		{
-			//Sneaking iterates through colours, normal hammerign toggles in and out
-			if(player.isSneaking())
-				redstoneChannel = DyeColor.byId(redstoneChannel.getId()+1);
-			else
-				ioMode = ioMode==IOSideConfig.INPUT?IOSideConfig.OUTPUT: IOSideConfig.INPUT;
-			updateAfterConfigure();
-		}
-		return true;
 	}
 
 	protected void updateAfterConfigure()
