@@ -15,6 +15,7 @@
 - Fixed missing recipes for the "Crafting Components" blueprint in the manual (BluSunrize)
 - Fixed crashes with coresamples created before IE 0.14-96 (Malte)
 - Fixed diesel generator not allowing levers to be attached (Malte)
+- Fixed turrets not firing at entities (BluSunrize)
 
 ##### Version 0.14-97 - BUILT
 - Added fuel gauge for the buzzsaw (BluSunrize)
