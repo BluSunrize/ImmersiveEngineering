@@ -16,7 +16,9 @@ import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nullable;
 import java.util.*;
-import java.util.function.*;
+import java.util.function.Function;
+import java.util.function.IntSupplier;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 @SuppressWarnings("WeakerAccess")
@@ -40,6 +42,7 @@ public class TextSplitter
 		this.pixelsPerPage = pageHeightPixel;
 		this.pixelsPerLine = pixelsPerLine;
 		this.tokenTransform = tokenTransform;
+		clearSpecialByAnchor();
 	}
 
 	public TextSplitter(ManualInstance m)
@@ -55,6 +58,7 @@ public class TextSplitter
 	public void clearSpecialByAnchor()
 	{
 		specialByAnchor.clear();
+		specialByAnchor.put(START, new HashMap<>());
 	}
 
 	public void addSpecialPage(String ref, int offset, SpecialManualElement element)
@@ -73,8 +77,7 @@ public class TextSplitter
 				e.recalculateCraftingRecipes();
 		List<List<String>> entry = new ArrayList<>();
 		Object2IntMap<String> pageByAnchor = new Object2IntOpenHashMap<>();
-		if(specialByAnchor.containsKey(START))
-			pageByAnchor.put(START, 0);
+		pageByAnchor.put(START, 0);
 		String[] wordsAndSpaces = splitWhitespace(in);
 		NextPageData pageOverflow = new NextPageData();
 		while(pageOverflow!=null&&pageOverflow.topLine!=null)
