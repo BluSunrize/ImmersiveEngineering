@@ -27,6 +27,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.server.ServerWorld;
@@ -158,7 +159,7 @@ public class LightningrodTileEntity extends MultiblockPartTileEntity<Lightningro
 	}
 
 	@Override
-	public VoxelShape getBlockBounds()
+	public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx)
 	{
 		if(new BlockPos(1, 2, 1).equals(posInMultiblock))
 			return VoxelShapes.create(-.125f, 0, -.125f, 1.125f, 1, 1.125f);

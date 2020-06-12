@@ -367,7 +367,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 		{
 			TileEntity te = world.getTileEntity(pos);
 			if(te instanceof ISelectionBounds)
-				return ((ISelectionBounds)te).getSelectionShape();
+				return ((ISelectionBounds)te).getSelectionShape(context);
 		}
 		return super.getShape(state, world, pos, context);
 	}
@@ -380,7 +380,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 		{
 			TileEntity te = world.getTileEntity(pos);
 			if(te instanceof ICollisionBounds)
-				return ((ICollisionBounds)te).getCollisionShape();
+				return ((ICollisionBounds)te).getCollisionShape(context);
 		}
 		return super.getCollisionShape(state, world, pos, context);
 	}
@@ -393,7 +393,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 		{
 			TileEntity te = world.getTileEntity(pos);
 			if(te instanceof ISelectionBounds)
-				return ((ISelectionBounds)te).getSelectionShape();
+				return ((ISelectionBounds)te).getSelectionShape(null);
 		}
 		return super.getRaytraceShape(state, world, pos);
 	}
@@ -406,7 +406,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof ISelectionBounds)
 		{
-			List<AxisAlignedBB> list = ((ISelectionBounds)te).getSelectionShape().toBoundingBoxList();
+			List<AxisAlignedBB> list = ((ISelectionBounds)te).getSelectionShape(null).toBoundingBoxList();
 			if(!list.isEmpty())
 			{
 				RayTraceResult min = null;

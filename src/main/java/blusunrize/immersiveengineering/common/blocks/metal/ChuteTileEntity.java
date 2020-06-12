@@ -34,6 +34,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.World;
@@ -42,6 +43,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
+import javax.annotation.Nullable;
 import javax.vecmath.Matrix4f;
 import java.util.*;
 
@@ -217,7 +219,7 @@ public class ChuteTileEntity extends IEBaseTileEntity implements IStateBasedDire
 	private static final CachedVoxelShapes<BoundingBoxKey> SHAPES = new CachedVoxelShapes<>(BoundingBoxKey::getBoxes);
 
 	@Override
-	public VoxelShape getCollisionShape()
+	public VoxelShape getCollisionShape(ISelectionContext ctx)
 	{
 		return SHAPES.get(new BoundingBoxKey(this));
 	}
@@ -278,7 +280,7 @@ public class ChuteTileEntity extends IEBaseTileEntity implements IStateBasedDire
 	static final VoxelShape selectionShape = VoxelShapes.create(0, 0, 0, 1, 1, 1);
 
 	@Override
-	public VoxelShape getSelectionShape()
+	public VoxelShape getSelectionShape(@Nullable ISelectionContext ctx)
 	{
 		return selectionShape;
 	}

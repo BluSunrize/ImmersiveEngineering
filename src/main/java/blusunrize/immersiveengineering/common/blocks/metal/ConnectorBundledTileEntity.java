@@ -31,9 +31,11 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collection;
 
 import static blusunrize.immersiveengineering.api.wires.WireType.REDSTONE_CATEGORY;
@@ -140,7 +142,7 @@ public class ConnectorBundledTileEntity extends ImmersiveConnectableTileEntity i
 	}
 
 	@Override
-	public VoxelShape getBlockBounds()
+	public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx)
 	{
 		float length = .625f;
 		float wMin = .3125f;

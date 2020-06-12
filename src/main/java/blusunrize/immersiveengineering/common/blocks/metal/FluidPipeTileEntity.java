@@ -48,6 +48,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
@@ -556,13 +557,13 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 	private static final CachedVoxelShapes<BoundingBoxKey> SHAPES = new CachedVoxelShapes<>(FluidPipeTileEntity::getBoxes);
 
 	@Override
-	public VoxelShape getCollisionShape()
+	public VoxelShape getCollisionShape(ISelectionContext ctx)
 	{
 		return SHAPES.get(new BoundingBoxKey(true, this));
 	}
 
 	@Override
-	public VoxelShape getSelectionShape()
+	public VoxelShape getSelectionShape(@Nullable ISelectionContext ctx)
 	{
 		return SHAPES.get(new BoundingBoxKey(false, this));
 	}

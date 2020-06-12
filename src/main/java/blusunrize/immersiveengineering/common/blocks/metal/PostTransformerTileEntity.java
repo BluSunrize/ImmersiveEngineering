@@ -24,6 +24,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 
@@ -214,7 +215,7 @@ public class PostTransformerTileEntity extends ImmersiveConnectableTileEntity im
 	}
 
 	@Override
-	public VoxelShape getBlockBounds()
+	public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx)
 	{
 		return VoxelShapes.create(
 				getFacing().getAxis()==Axis.Z?.25F: getFacing()==Direction.WEST?-.375F: .6875F,

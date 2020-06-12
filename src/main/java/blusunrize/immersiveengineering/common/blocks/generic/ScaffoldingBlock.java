@@ -24,6 +24,7 @@ import javax.annotation.Nonnull;
 public class ScaffoldingBlock extends IEBaseBlock.IELadderBlock
 {
 	private static final VoxelShape COLLISION_SHAPE = makeCuboidShape(1, 0, 1, 15, 16, 15);
+	public static final VoxelShape CHECK_SHAPE = VoxelShapes.create(0, -20, 0, 1, -19, 1);
 
 	public ScaffoldingBlock(String name, Properties material)
 	{
@@ -39,8 +40,6 @@ public class ScaffoldingBlock extends IEBaseBlock.IELadderBlock
 	{
 		return VoxelShapes.fullCube();
 	}
-
-	private static final VoxelShape CHECK_SHAPE = VoxelShapes.create(0, -20, 0, 1, -19, 1);
 
 	@Nonnull
 	@Override

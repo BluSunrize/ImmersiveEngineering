@@ -31,6 +31,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.World;
@@ -130,7 +131,7 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 
 
 	@Override
-	public VoxelShape getBlockBounds()
+	public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx)
 	{
 		if(posInMultiblock.getY()==1&&posInMultiblock.getX()%2==0)
 			return VoxelShapes.create(0, 0, 0, 1, .125f, 1);

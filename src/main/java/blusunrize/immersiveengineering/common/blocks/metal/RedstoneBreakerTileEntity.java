@@ -20,10 +20,12 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class RedstoneBreakerTileEntity extends BreakerSwitchTileEntity implements ITickableTileEntity
 {
@@ -56,7 +58,7 @@ public class RedstoneBreakerTileEntity extends BreakerSwitchTileEntity implement
 	}
 
 	@Override
-	public VoxelShape getBlockBounds()
+	public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx)
 	{
 		Vec3d start = new Vec3d(0, .125f, 0);
 		Vec3d end = new Vec3d(1, .875f, 1);

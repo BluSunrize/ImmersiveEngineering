@@ -16,7 +16,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.base.Preconditions;
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
@@ -30,6 +29,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.World;
@@ -204,7 +204,7 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IStateBa
 			VoxelShapes.create(0, 0, 0, 1, .125F, 1);
 
 	@Override
-	public VoxelShape getCollisionShape()
+	public VoxelShape getCollisionShape(ISelectionContext ctx)
 	{
 		if(conveyorBeltSubtype!=null)
 			return conveyorBeltSubtype.getCollisionShape();
@@ -212,7 +212,7 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IStateBa
 	}
 
 	@Override
-	public VoxelShape getSelectionShape()
+	public VoxelShape getSelectionShape(@Nullable ISelectionContext ctx)
 	{
 		if(conveyorBeltSubtype!=null)
 			return conveyorBeltSubtype.getSelectionShape();

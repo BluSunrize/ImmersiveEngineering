@@ -34,6 +34,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -348,33 +349,33 @@ public class IEBlockInterfaces
 	public interface IBlockBounds extends ISelectionBounds, ICollisionBounds
 	{
 		@Nonnull
-		VoxelShape getBlockBounds();
+		VoxelShape getBlockBounds(@Nullable ISelectionContext ctx);
 
 		@Nonnull
 		@Override
-		default VoxelShape getCollisionShape()
+		default VoxelShape getCollisionShape(ISelectionContext ctx)
 		{
-			return getBlockBounds();
+			return getBlockBounds(ctx);
 		}
 
 		@Nonnull
 		@Override
-		default VoxelShape getSelectionShape()
+		default VoxelShape getSelectionShape(@Nullable ISelectionContext ctx)
 		{
-			return getBlockBounds();
+			return getBlockBounds(ctx);
 		}
 	}
 
 	public interface ISelectionBounds
 	{
 		@Nonnull
-		VoxelShape getSelectionShape();
+		VoxelShape getSelectionShape(@Nullable ISelectionContext ctx);
 	}
 
 	public interface ICollisionBounds
 	{
 		@Nonnull
-		VoxelShape getCollisionShape();
+		VoxelShape getCollisionShape(ISelectionContext ctx);
 	}
 
 	//TODO move a lot of this to block states!
