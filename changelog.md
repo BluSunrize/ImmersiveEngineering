@@ -1,7 +1,8 @@
 ##### Version 0.15-101
  - Fixed hemp rendering as solid (Malte)
- - Fix Optifine shader packs crashing with the IEOBJ item renderer (Vaelzan)
- - Fix crashes when using the buzzsaw or drill (Malte)
+ - Fixed Optifine shader packs crashing with the IEOBJ item renderer (Vaelzan)
+ - Fixed crashes when using the buzzsaw or drill (Malte)
+ - Fixed missing connectors on feedthrough models (Malte)
 
 ##### Version 0.15-99 - BUILT
 - Initial alpha release for Minecraft 1.15.2

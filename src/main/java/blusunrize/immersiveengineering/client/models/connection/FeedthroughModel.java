@@ -352,7 +352,7 @@ public class FeedthroughModel extends BakedIEModel
 					case 1:
 						facing = facing.getOpposite();
 					case -1:
-						if(k.layer.equals(RenderType.getSolid().toString()))
+						if(k.layer==RenderType.getSolid())
 							quads.add(getConnQuads(facing, side, k.type, new Matrix4()));
 						break;
 					case Integer.MAX_VALUE:
