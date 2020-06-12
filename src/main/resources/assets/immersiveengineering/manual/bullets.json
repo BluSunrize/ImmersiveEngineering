@@ -76,6 +76,14 @@
       }
     ]
   },
+  "homing": {
+    "type": "blueprint",
+    "recipes": [
+      {
+        "item": "immersiveengineering:homing"
+      }
+    ]
+  },
   "wolfpack": {
     "type": "blueprint",
     "recipes": [

@@ -5,6 +5,7 @@
 - Added cloche recipe to grow bamboo (BluSunrize)
 - Added composting for hempseeds (BluSunrize)
 - Added missing recipe for the "Common Projectiles" blueprint (BluSunrize)
+- Re-Added homing bullets. These use eyes of ender now (BluSunrize)
 - Fixed bounding boxes for vertical covered conveyors (Malte)
 - Fixed metal press not forming when mirrored (Malte)
 - Fixed extracting conveyors not saving their extract direction (BluSunrize)

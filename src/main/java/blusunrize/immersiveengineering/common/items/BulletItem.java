@@ -65,6 +65,7 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 	public static final ResourceLocation POTION = new ResourceLocation(ImmersiveEngineering.MODID, "potion");
 	public static final ResourceLocation FLARE = new ResourceLocation(ImmersiveEngineering.MODID, "flare");
 	public static final ResourceLocation FIREWORK = new ResourceLocation(ImmersiveEngineering.MODID, "firework");
+	public static final ResourceLocation HOMING = new ResourceLocation(ImmersiveEngineering.MODID, "homing");
 	public static final ResourceLocation WOLFPACK = new ResourceLocation(ImmersiveEngineering.MODID, "wolfpack");
 	public static final ResourceLocation WOLFPACK_PART = new ResourceLocation(ImmersiveEngineering.MODID, "wolfpack_part");
 
@@ -147,12 +148,13 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 				(projectile, shooter, hit) -> IEDamageSources.causeSilverDamage((RevolvershotEntity)projectile, shooter),
 				IEConfig.TOOLS.bulletDamage_Silver.get().floatValue(),
 				() -> BulletHandler.emptyCasing,
-				new ResourceLocation("immersiveengineering:item/bullet_silver")){
+				new ResourceLocation("immersiveengineering:item/bullet_silver"))
+		{
 			@Override
 			protected float getDamage(Entity hitEntity, boolean headshot)
 			{
 				float dmg = super.getDamage(hitEntity, headshot);
-				if(hitEntity instanceof LivingEntity && ((LivingEntity)hitEntity).isEntityUndead())
+				if(hitEntity instanceof LivingEntity&&((LivingEntity)hitEntity).isEntityUndead())
 					dmg *= 1.5;
 				return dmg;
 			}
@@ -186,6 +188,9 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 		BulletHandler.registerBullet(FLARE, new FlareBullet());
 
 		BulletHandler.registerBullet(FIREWORK, new FireworkBullet());
+
+		BulletHandler.registerBullet(HOMING, new HomingBullet(IEConfig.TOOLS.bulletDamage_Homing.get().floatValue(),
+				new ResourceLocation("immersiveengineering:item/bullet_homing")));
 
 		BulletHandler.registerBullet(WOLFPACK, new WolfpackBullet());
 
@@ -329,7 +334,7 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 								}
 
 					}
-					else if(target instanceof EntityRayTraceResult && ((EntityRayTraceResult)target).getEntity() instanceof LivingEntity)
+					else if(target instanceof EntityRayTraceResult&&((EntityRayTraceResult)target).getEntity() instanceof LivingEntity)
 						for(EffectInstance p : effects)
 						{
 							if(p.getDuration() < 1)

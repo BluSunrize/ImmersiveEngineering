@@ -88,7 +88,7 @@ public class RevolvershotHomingEntity extends RevolvershotEntity
 		AxisAlignedBB aabb = new AxisAlignedBB(posX-r, posY-r, posZ-r, posX+r, posY+r, posZ+r);
 		LivingEntity target = null;
 		for(Object o : world.getEntitiesWithinAABB(LivingEntity.class, aabb))
-			if(o instanceof LivingEntity&&!o.equals(this.shootingEntity))
+			if(o instanceof LivingEntity&&!((LivingEntity)o).getUniqueID().equals(this.shootingEntity))
 				if(target==null||((LivingEntity)o).getDistanceSq(this) < target.getDistanceSq(this))
 					target = (LivingEntity)o;
 		return target;
