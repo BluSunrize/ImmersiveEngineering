@@ -430,6 +430,11 @@ public class Recipes extends RecipeProvider
 				.addInput(new IngredientWithSize(IETags.getTagsFor(EnumMetals.LEAD).nugget, 2))
 				.addInput(Items.ENDER_EYE)
 				.build(out, toRL("blueprint/bullet_homing"));
+		BlueprintCraftingRecipeBuilder.builder("specialBullet", BulletHandler.getBulletItem(BulletItem.WOLFPACK))
+				.addInput(BulletHandler.emptyShell)
+				.addInput(Tags.Items.GUNPOWDER)
+				.addInput(new IngredientWithSize(Ingredient.fromItems(BulletHandler.getBulletItem(BulletItem.HOMING)), 4))
+				.build(out, toRL("blueprint/bullet_wolfpack"));
 
 		BlueprintCraftingRecipeBuilder.builder("electrode", Misc.graphiteElectrode)
 				.addInput(new IngredientWithSize(IETags.hopGraphiteIngot, 4))
