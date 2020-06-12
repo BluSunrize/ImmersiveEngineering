@@ -964,6 +964,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 
 			}
 
+			transform.pop();
 			if(!stack.isEmpty()&&stack.getItem() instanceof DrillItem&&
 					((DrillItem)stack.getItem()).isEffective(world.getBlockState(rtr.getPos()).getMaterial()))
 			{
@@ -975,7 +976,6 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 					drawAdditionalBlockbreak(event, (PlayerEntity)player, event.getPartialTicks(), blocks);
 				}
 			}
-			transform.pop();
 		}
 	}
 
@@ -1154,19 +1154,24 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 
 	public static void drawAdditionalBlockbreak(DrawHighlightEvent ev, PlayerEntity player, float partialTicks, Collection<BlockPos> blocks)
 	{
+		Vec3d renderView = ev.getInfo().getProjectedView();
 		for(BlockPos pos : blocks)
 			ev.getContext().drawSelectionBox(
 					ev.getMatrix(),
 					ev.getBuffers().getBuffer(RenderType.getLines()),
 					player,
-					0, 0, 0,
+					renderView.x, renderView.y, renderView.z,
 					pos,
 					ClientUtils.mc().world.getBlockState(pos)
 			);
 
+		MatrixStack transform = ev.getMatrix();
+		transform.push();
+		transform.translate(-renderView.x, -renderView.y, -renderView.z);
 		PlayerController controllerMP = ClientUtils.mc().playerController;
 		if(controllerMP.isHittingBlock)
-			ClientUtils.drawBlockDamageTexture(ClientUtils.tes(), ev.getMatrix(), ClientUtils.tes().getBuffer(), player, partialTicks, player.world, blocks);
+			ClientUtils.drawBlockDamageTexture(transform, ev.getBuffers(), player, partialTicks, player.world, blocks);
+		transform.pop();
 	}
 
 	@SubscribeEvent

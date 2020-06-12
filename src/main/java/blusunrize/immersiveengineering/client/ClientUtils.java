@@ -28,6 +28,7 @@ import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.MatrixApplyingVertexBuilder;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
@@ -41,7 +42,6 @@ import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.MissingTextureSprite;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
@@ -63,7 +63,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.*;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
@@ -300,31 +299,18 @@ public class ClientUtils
 	}
 
 	//Cheers boni =P
-	public static void drawBlockDamageTexture(Tessellator tessellatorIn, MatrixStack matrix, BufferBuilder worldRendererIn, Entity entityIn, float partialTicks, World world, Collection<BlockPos> blocks)
+	public static void drawBlockDamageTexture(MatrixStack matrix, IRenderTypeBuffer buffers, Entity entityIn, float partialTicks, World world, Collection<BlockPos> blocks)
 	{
-		double d0 = entityIn.lastTickPosX+(entityIn.getPosX()-entityIn.lastTickPosX)*(double)partialTicks;
-		double d1 = entityIn.lastTickPosY+(entityIn.getPosY()-entityIn.lastTickPosY)*(double)partialTicks;
-		double d2 = entityIn.lastTickPosZ+(entityIn.getPosZ()-entityIn.lastTickPosZ)*(double)partialTicks;
-		TextureManager renderEngine = Minecraft.getInstance().textureManager;
 		int progress = (int)(Minecraft.getInstance().playerController.curBlockDamageMP*10f)-1; // 0-10
-		if(progress < 0)
+		if(progress < 0||progress >= ModelBakery.DESTROY_RENDER_TYPES.size())
 			return;
-		renderEngine.bindTexture(PlayerContainer.LOCATION_BLOCKS_TEXTURE);
-		//preRenderDamagedBlocks BEGIN
-		RenderSystem.blendFuncSeparate(774, 768, 1, 0);
-		RenderSystem.enableBlend();
-		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 0.5F);
-		RenderSystem.polygonOffset(-3.0F, -3.0F);
-		RenderSystem.enablePolygonOffset();
-		RenderSystem.alphaFunc(516, 0.1F);
-		RenderSystem.enableAlphaTest();
-		RenderSystem.pushMatrix();
-		//preRenderDamagedBlocks END
-		worldRendererIn.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-		worldRendererIn.pos(-d0, -d1-entityIn.getEyeHeight(), -d2);
-		//		worldRendererIn.markDirty();
+		BlockRendererDispatcher blockrendererdispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
 		for(BlockPos blockpos : blocks)
 		{
+			matrix.push();
+			matrix.translate(blockpos.getX(), blockpos.getY(), blockpos.getZ());
+			IVertexBuilder worldRendererIn = buffers.getBuffer(ModelBakery.DESTROY_RENDER_TYPES.get(progress));
+			worldRendererIn = new MatrixApplyingVertexBuilder(worldRendererIn, matrix.getLast());
 			Block block = world.getBlockState(blockpos).getBlock();
 			TileEntity te = world.getTileEntity(blockpos);
 			boolean hasBreak = block instanceof ChestBlock||block instanceof EnderChestBlock
@@ -334,24 +320,10 @@ public class ClientUtils
 			{
 				BlockState iblockstate = world.getBlockState(blockpos);
 				if(iblockstate.getMaterial()!=Material.AIR)
-				{
-					TextureAtlasSprite textureatlassprite = destroyBlockIcons[progress];
-					Preconditions.checkNotNull(textureatlassprite, "No destroy icon for "+progress);
-					BlockRendererDispatcher blockrendererdispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
-					blockrendererdispatcher.renderModel(iblockstate, blockpos, world, matrix, worldRendererIn, EmptyModelData.INSTANCE);
-				}
+					blockrendererdispatcher.renderBlockDamage(iblockstate, blockpos, world, matrix, worldRendererIn);
 			}
+			matrix.pop();
 		}
-		tessellatorIn.draw();
-		worldRendererIn.pos(0.0D, 0.0D, 0.0D);
-		// postRenderDamagedBlocks BEGIN
-		RenderSystem.disableAlphaTest();
-		RenderSystem.polygonOffset(0.0F, 0.0F);
-		RenderSystem.disablePolygonOffset();
-		RenderSystem.enableAlphaTest();
-		RenderSystem.depthMask(true);
-		RenderSystem.popMatrix();
-		// postRenderDamagedBlocks END
 	}
 
 	public static void drawColouredRect(int x, int y, int w, int h, int colour)
