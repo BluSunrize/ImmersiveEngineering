@@ -27,10 +27,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -38,6 +35,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -57,10 +55,9 @@ public class CoresampleItem extends IEBaseItem
 		DimensionChunkCoords coords = DimensionChunkCoords.readFromNBT(stack.getOrCreateTag().getCompound("coords"));
 		if(coords!=null)
 		{
-			if(ItemNBTHelper.hasKey(stack, "mineral"))
+			MineralMix mineral = getMix(stack);
+			if(mineral!=null)
 			{
-				ResourceLocation rl = new ResourceLocation(ItemNBTHelper.getString(stack, "mineral"));
-				MineralMix mineral = ExcavatorHandler.mineralList.get(rl);
 				String unloc = mineral.getTranslationKey();
 				String loc = I18n.format(unloc);
 				if(unloc.equals(loc))
@@ -143,4 +140,21 @@ public class CoresampleItem extends IEBaseItem
 		return super.onItemUse(ctx);
 	}
 
+	@Nullable
+	public static MineralMix getMix(ItemStack coresample)
+	{
+		try
+		{
+			if(ItemNBTHelper.hasKey(coresample, "mineral", NBT.TAG_STRING))
+			{
+				ResourceLocation rl = new ResourceLocation(ItemNBTHelper.getString(coresample, "mineral"));
+				return ExcavatorHandler.mineralList.get(rl);
+			}
+			else
+				return null;
+		} catch(ResourceLocationException x)
+		{
+			return null;
+		}
+	}
 }

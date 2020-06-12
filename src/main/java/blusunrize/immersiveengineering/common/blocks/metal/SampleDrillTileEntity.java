@@ -15,12 +15,14 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
+import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralWorldInfo;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
+import blusunrize.immersiveengineering.common.items.CoresampleItem;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
@@ -124,11 +126,13 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 		return process >= IEConfig.MACHINES.coredrill_time.get();
 	}
 
-	public String getVein()
+	@Nullable
+	public MineralMix getVein()
 	{
 		if(sample.isEmpty())
-			return "";
-		return sample.getOrCreateTag().getString("mineral");
+			return null;
+		else
+			return CoresampleItem.getMix(sample);
 	}
 
 	public int getExpectedVeinYield()
@@ -307,13 +311,13 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 	@Nullable
 	public String getVeinLocalizedName()
 	{
-		String name = getVein();
-		if(name==null||name.isEmpty())
+		MineralMix mineral = getVein();
+		if(mineral==null)
 			return null;
-		String unlocalizedName = Lib.DESC_INFO+"mineral."+name;
+		String unlocalizedName = Lib.DESC_INFO+"mineral."+mineral.getId();
 		String localizedName = I18n.format(unlocalizedName);
 		if(unlocalizedName.equals(localizedName))
-			return name;
+			return mineral.getId().toString();
 		return localizedName;
 	}
 

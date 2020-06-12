@@ -11,10 +11,10 @@ package blusunrize.immersiveengineering.common.blocks.stone;
 import blusunrize.immersiveengineering.api.DimensionChunkCoords;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
+import blusunrize.immersiveengineering.common.items.CoresampleItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
@@ -32,7 +32,6 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.VoxelShape;
@@ -203,12 +202,12 @@ public class CoresampleTileEntity extends IEBaseTileEntity implements IStateBase
 				overlay = new String[3];
 				CompoundNBT coordNBT = ItemNBTHelper.getTagCompound(coresample, "coords");
 				DimensionChunkCoords dimPos = DimensionChunkCoords.readFromNBT(coordNBT);
-				String dimName = ItemNBTHelper.getString(coresample, "dimension");
+				if(dimPos==null)
+					return new String[0];
 				overlay[0] = I18n.format(Lib.CHAT_INFO+"coresample.noMineral");
-				if(ItemNBTHelper.hasKey(coresample, "mineral"))
+				MineralMix mineral = CoresampleItem.getMix(coresample);
+				if(mineral!=null)
 				{
-					ResourceLocation rl = new ResourceLocation(ItemNBTHelper.getString(coresample, "mineral"));
-					MineralMix mineral = ExcavatorHandler.mineralList.get(rl);
 					String unloc = mineral.getTranslationKey();
 					String loc = I18n.format(unloc);
 					if(unloc.equals(loc))

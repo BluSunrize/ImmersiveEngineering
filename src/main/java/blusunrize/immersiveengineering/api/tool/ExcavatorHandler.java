@@ -20,11 +20,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.ResourceLocationException;
 import net.minecraft.util.SharedSeedRandom;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.fml.RegistryObject;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 /**
@@ -187,21 +189,28 @@ public class ExcavatorHandler
 			return tag;
 		}
 
+		@Nullable
 		public static MineralWorldInfo readFromNBT(CompoundNBT tag)
 		{
-			MineralWorldInfo info = new MineralWorldInfo();
-			if(tag.contains("mineral"))
+			try
 			{
-				ResourceLocation id = new ResourceLocation(tag.getString("mineral"));
-				info.mineral = mineralList.get(id);
-			}
-			if(tag.contains("mineralOverride"))
+				MineralWorldInfo info = new MineralWorldInfo();
+				if(tag.contains("mineral"))
+				{
+					ResourceLocation id = new ResourceLocation(tag.getString("mineral"));
+					info.mineral = mineralList.get(id);
+				}
+				if(tag.contains("mineralOverride"))
+				{
+					ResourceLocation id = new ResourceLocation(tag.getString("mineralOverride"));
+					info.mineralOverride = mineralList.get(id);
+				}
+				info.depletion = tag.getInt("depletion");
+				return info;
+			} catch(ResourceLocationException ex)
 			{
-				ResourceLocation id = new ResourceLocation(tag.getString("mineralOverride"));
-				info.mineralOverride = mineralList.get(id);
+				return null;
 			}
-			info.depletion = tag.getInt("depletion");
-			return info;
 		}
 	}
 
