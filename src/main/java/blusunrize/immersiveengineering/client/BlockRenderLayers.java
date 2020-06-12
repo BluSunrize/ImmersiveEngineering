@@ -89,6 +89,7 @@ public class BlockRenderLayers
 				rt -> rt==RenderType.getSolid()||rt==RenderType.getTranslucent()
 		);
 
+		RenderTypeLookup.setRenderLayer(Misc.hempPlant, RenderType.getCutout());
 		RenderTypeLookup.setRenderLayer(IEContent.fluidPotion, RenderType.getTranslucent());
 	}
 }
