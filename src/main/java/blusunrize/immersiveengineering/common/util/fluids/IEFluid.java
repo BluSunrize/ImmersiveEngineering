@@ -10,10 +10,8 @@ package blusunrize.immersiveengineering.common.util.fluids;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.IEContent;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FlowingFluidBlock;
-import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FlowingFluid;
 import net.minecraft.fluid.Fluid;
@@ -26,8 +24,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.IDataSerializer;
-import net.minecraft.state.IProperty;
-import net.minecraft.state.IStateHolder;
 import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
@@ -65,7 +61,7 @@ public class IEFluid extends FlowingFluid
 	protected IEFluid source;
 	@Nullable
 	protected final Consumer<FluidAttributes.Builder> buildAttributes;
-	public Block block;
+	public IEFluidBlock block;
 	protected Item bucket;
 
 	public IEFluid(String fluidName, ResourceLocation stillTex, ResourceLocation flowingTex)
@@ -93,31 +89,7 @@ public class IEFluid extends FlowingFluid
 		else
 		{
 			source = this;
-			this.block = new FlowingFluidBlock(() -> this.source, Block.Properties.create(Material.WATER))
-			{
-				@Override
-				protected void fillStateContainer(Builder<Block, BlockState> builder)
-				{
-					super.fillStateContainer(builder);
-					builder.add(IEFluid.this.getStateContainer().getProperties().toArray(new IProperty[0]));
-				}
-
-				@Override
-				public IFluidState getFluidState(BlockState state)
-				{
-					IFluidState baseState = super.getFluidState(state);
-					for(IProperty<?> prop : IEFluid.this.getStateContainer().getProperties())
-						if(prop!=FlowingFluidBlock.LEVEL)
-							baseState = withCopiedValue(prop, baseState, state);
-					return baseState;
-				}
-
-				private <T extends IStateHolder<T>, S extends Comparable<S>>
-				T withCopiedValue(IProperty<S> prop, T oldState, IStateHolder<?> copyFrom)
-				{
-					return oldState.with(prop, copyFrom.get(prop));
-				}
-			};
+			this.block = new IEFluidBlock(this);
 			this.block.setRegistryName(ImmersiveEngineering.MODID, fluidName+"_fluid_block");
 			IEContent.registeredIEBlocks.add(this.block);
 			this.bucket = new BucketItem(() -> this.source, new Item.Properties()
@@ -281,8 +253,6 @@ public class IEFluid extends FlowingFluid
 		return ret;
 	}
 
-	//TODO potion effects?
-
 	public static Consumer<FluidAttributes.Builder> createBuilder(int density, int viscosity)
 	{
 		return builder -> {
@@ -320,4 +290,5 @@ public class IEFluid extends FlowingFluid
 			return value.map(FluidStack::copy);
 		}
 	};
+
 }

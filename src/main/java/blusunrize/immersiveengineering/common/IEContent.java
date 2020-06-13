@@ -77,6 +77,7 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.potion.Effect;
+import net.minecraft.potion.Effects;
 import net.minecraft.tileentity.FurnaceTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -109,12 +110,12 @@ public class IEContent
 	public static List<Class<? extends TileEntity>> registeredIETiles = new ArrayList<>();
 	public static List<Fluid> registeredIEFluids = new ArrayList<>();
 
-	public static Fluid fluidCreosote;
-	public static Fluid fluidPlantoil;
-	public static Fluid fluidEthanol;
-	public static Fluid fluidBiodiesel;
-	public static Fluid fluidConcrete;
-	public static Fluid fluidHerbicide;
+	public static IEFluid fluidCreosote;
+	public static IEFluid fluidPlantoil;
+	public static IEFluid fluidEthanol;
+	public static IEFluid fluidBiodiesel;
+	public static IEFluid fluidConcrete;
+	public static IEFluid fluidHerbicide;
 	public static Fluid fluidPotion;
 
 	public static final Feature<OreFeatureConfig> ORE_RETROGEN = new OreRetrogenFeature(OreFeatureConfig::deserialize);
@@ -824,17 +825,11 @@ public class IEContent
 
 		DieselHandler.registerFuel(fluidBiodiesel, 125);
 		DieselHandler.registerDrillFuel(fluidBiodiesel);
-/*TODO
-		DieselHandler.registerFuel(FluidRegistry.getFluid("fuel"), 375);
-		DieselHandler.registerFuel(FluidRegistry.getFluid("diesel"), 175);
-		DieselHandler.registerDrillFuel(FluidRegistry.getFluid("fuel"));
-		DieselHandler.registerDrillFuel(FluidRegistry.getFluid("diesel"));
 
-		blockFluidCreosote.setPotionEffects(new EffectInstance(IEPotions.flammable, 100, 0));
-		blockFluidEthanol.setPotionEffects(new EffectInstance(Effects.NAUSEA, 40, 0));
-		blockFluidBiodiesel.setPotionEffects(new EffectInstance(IEPotions.flammable, 100, 1));
-		blockFluidConcrete.setPotionEffects(new EffectInstance(Effects.SLOWNESS, 20, 3, false, false));
- */
+		fluidCreosote.block.setEffect(IEPotions.flammable, 100, 0);
+		fluidEthanol.block.setEffect(Effects.NAUSEA, 70, 0);
+		fluidBiodiesel.block.setEffect(IEPotions.flammable, 100, 1);
+		fluidConcrete.block.setEffect(Effects.SLOWNESS, 20, 3);
 
 		ExcavatorHandler.mineralVeinCapacity = IEConfig.MACHINES.excavator_depletion.get();
 		ExcavatorHandler.mineralChance = IEConfig.MACHINES.excavator_chance.get();
@@ -904,18 +899,6 @@ public class IEContent
 	public static void postInit()
 	{
 		Villages.init();
-	}
-
-	public static void refreshFluidReferences()
-	{
-		/*TODO
-		fluidCreosote = FluidRegistry.getFluid("creosote");
-		fluidPlantoil = FluidRegistry.getFluid("plantoil");
-		fluidEthanol = FluidRegistry.getFluid("ethanol");
-		fluidBiodiesel = FluidRegistry.getFluid("biodiesel");
-		fluidConcrete = FluidRegistry.getFluid("concrete");
-		fluidPotion = FluidRegistry.getFluid("potion");
-		 */
 	}
 
 	public static <T extends TileEntity> void registerTile(Class<T> tile, Register<TileEntityType<?>> event, Block... valid)
