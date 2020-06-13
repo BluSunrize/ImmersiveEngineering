@@ -20,6 +20,7 @@
 - Fixed turrets not firing at entities (BluSunrize)
 - Fixed a crash when clicking the list of names in the turret GUI (BluSunrize)
 - Fixed vertical and splitting conveyors not inserting correctly (BluSunrize)
+- Fixed concrete recipe consuming the water bucket (BluSunrize)
 
 ##### Version 0.14-97 - BUILT
 - Added fuel gauge for the buzzsaw (BluSunrize)
