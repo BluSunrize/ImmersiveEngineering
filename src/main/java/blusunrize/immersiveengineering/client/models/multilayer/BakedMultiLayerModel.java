@@ -38,10 +38,10 @@ public class BakedMultiLayerModel extends BakedIEModel
 	{
 		this.models = models;
 		String[] preferences = {
-				RenderType.getSolid().toString(),
-				RenderType.getCutout().toString(),
-				RenderType.getCutoutMipped().toString(),
-				RenderType.getTranslucent().toString()
+				RenderType.getSolid().name,
+				RenderType.getCutout().name,
+				RenderType.getCutoutMipped().name,
+				RenderType.getTranslucent().name
 		};
 		for(String layer : preferences)
 			if(models.containsKey(layer))
@@ -64,10 +64,10 @@ public class BakedMultiLayerModel extends BakedIEModel
 				ret.addAll(model.getQuads(state, side, rand));
 			return ret.build();
 		}
-		else if(models.containsKey(current.toString()))
+		else if(models.containsKey(current.name))
 		{
 			ImmutableList.Builder<BakedQuad> ret = new Builder<>();
-			ret.addAll(models.get(current.toString()).getQuads(state, side, rand));
+			ret.addAll(models.get(current.name).getQuads(state, side, rand));
 			return ret.build();
 		}
 		else
