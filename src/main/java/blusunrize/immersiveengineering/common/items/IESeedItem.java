@@ -21,6 +21,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.PlantType;
+import net.minecraftforge.fml.DeferredWorkQueue;
 
 import javax.annotation.Nonnull;
 
@@ -32,7 +33,9 @@ public class IESeedItem extends IEBaseItem implements IPlantable
 	{
 		super("seed", new Properties());
 		this.cropBlock = cropBlock;
-		ComposterBlock.CHANCES.putIfAbsent(this, 0.3f);
+		DeferredWorkQueue.runLater(
+				() -> ComposterBlock.CHANCES.putIfAbsent(this, 0.3f)
+		);
 	}
 
 	@Nonnull
