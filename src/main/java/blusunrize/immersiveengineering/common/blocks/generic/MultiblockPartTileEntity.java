@@ -407,7 +407,8 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 			if(tile!=null)
 			{
 				boolean b = getWorldNonnull().getRedstonePowerFromNeighbors(tile.getPos()) > 0;
-				return redstoneControlInverted!=b;
+				if(redstoneControlInverted!=b)
+					return true;
 			}
 		}
 		return false;

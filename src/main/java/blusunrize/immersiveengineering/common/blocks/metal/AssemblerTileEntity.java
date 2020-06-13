@@ -407,8 +407,8 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 	public Set<BlockPos> getRedstonePos()
 	{
 		return ImmutableSet.of(
-				new BlockPos(1, 0, 0),
-				new BlockPos(1, 0, 2)
+				new BlockPos(0, 0, 1),
+				new BlockPos(2, 0, 1)
 		);
 	}
 
