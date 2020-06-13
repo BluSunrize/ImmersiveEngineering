@@ -12,6 +12,7 @@ package blusunrize.immersiveengineering.common.crafting;
 import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
+import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.RecipeManager;
@@ -62,6 +63,13 @@ public class RecipeReloadListener implements IResourceManagerReloadListener
 		BlueprintCraftingRecipe.updateRecipeCategories();
 
 		MetalPressRecipe.recipeList = filterRecipes(recipes, MetalPressRecipe.class, MetalPressRecipe.TYPE);
+		MetalPressRecipe unpackingRecipe = MetalPressPackingRecipes.getUnpackingContainer();
+		MetalPressRecipe packingRecipe2x2 = MetalPressPackingRecipes.get2x2PackingContainer();
+		MetalPressRecipe packingRecipe3x3 = MetalPressPackingRecipes.get3x3PackingContainer();
+		MetalPressRecipe.recipeList.put(unpackingRecipe.getId(), unpackingRecipe);
+		MetalPressRecipe.recipeList.put(packingRecipe2x2.getId(), packingRecipe2x2);
+		MetalPressRecipe.recipeList.put(packingRecipe3x3.getId(), packingRecipe3x3);
+		MetalPressPackingRecipes.CRAFTING_RECIPE_MAP = filterRecipes(recipes, ICraftingRecipe.class, IRecipeType.CRAFTING);
 		MetalPressRecipe.updateRecipesByMold();
 
 		ArcFurnaceRecipe.recipeList = filterRecipes(recipes, ArcFurnaceRecipe.class, ArcFurnaceRecipe.TYPE);

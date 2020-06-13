@@ -1,9 +1,15 @@
 package blusunrize.lib.manual;
 
 
+import blusunrize.immersiveengineering.common.util.IELogger;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.ints.IntArraySet;
+import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap.Entry;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
@@ -12,6 +18,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.IntSupplier;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 @SuppressWarnings("WeakerAccess")
@@ -24,20 +31,18 @@ public class TextSplitter
 	private final int lineWidth;
 	private final IntSupplier pixelsPerLine;
 	private final Map<String, Map<Integer, SpecialManualElement>> specialByAnchor = new HashMap<>();
-	private final Int2ObjectMap<SpecialManualElement> specialByPage = new Int2ObjectOpenHashMap<>();
-	private final List<List<String>> entry = new ArrayList<>();
 	private final Function<String, String> tokenTransform;
 	private final int pixelsPerPage;
-	private final Object2IntMap<String> pageByAnchor = new Object2IntOpenHashMap<>();
 
 	public TextSplitter(Function<String, Integer> w, int lineWidthPixel, int pageHeightPixel,
 						IntSupplier pixelsPerLine, Function<String, String> tokenTransform)
 	{
-		width = w;
+		this.width = w;
 		this.lineWidth = lineWidthPixel;
-		pixelsPerPage = pageHeightPixel;
+		this.pixelsPerPage = pageHeightPixel;
 		this.pixelsPerLine = pixelsPerLine;
 		this.tokenTransform = tokenTransform;
+		clearSpecialByAnchor();
 	}
 
 	public TextSplitter(ManualInstance m)
@@ -50,14 +55,10 @@ public class TextSplitter
 		this(s -> m.fontRenderer().getStringWidth(s), m.pageWidth, m.pageHeight, () -> m.fontRenderer().FONT_HEIGHT, tokenTransform);
 	}
 
-	public void clearSpecialByPage()
-	{
-		specialByPage.clear();
-	}
-
 	public void clearSpecialByAnchor()
 	{
 		specialByAnchor.clear();
+		specialByAnchor.put(START, new HashMap<>());
 	}
 
 	public void addSpecialPage(String ref, int offset, SpecialManualElement element)
@@ -69,126 +70,201 @@ public class TextSplitter
 		specialByAnchor.get(ref).put(offset, element);
 	}
 
-	// I added labels to all break statements to make it more readable
-	@SuppressWarnings({"UnnecessaryLabelOnBreakStatement", "UnusedLabel"})
-	public void split(String in)
+	public SplitResult split(String in)
 	{
 		for(Map<Integer, SpecialManualElement> forAnchor : specialByAnchor.values())
 			for(SpecialManualElement e : forAnchor.values())
 				e.recalculateCraftingRecipes();
-		clearSpecialByPage();
-		entry.clear();
+		List<List<String>> entry = new ArrayList<>();
+		Object2IntMap<String> pageByAnchor = new Object2IntOpenHashMap<>();
+		pageByAnchor.put(START, 0);
 		String[] wordsAndSpaces = splitWhitespace(in);
-		int pos = 0;
-		List<String> overflow = new ArrayList<>();
-		updateSpecials(START, 0);
-		String formattingFromPreviousLine = "";
-		entry:
-		while(pos < wordsAndSpaces.length||!overflow.isEmpty())
+		NextPageData pageOverflow = new NextPageData();
+		while(pageOverflow!=null&&pageOverflow.topLine!=null)
 		{
-			List<String> page = new ArrayList<>(overflow);
-			overflow.clear();
-			boolean forceNewPage = getLinesOnPage(entry.size()) <= 0;
-			page:
-			while(page.size() < getLinesOnPage(entry.size())&&pos < wordsAndSpaces.length)
-			{
-				String line = formattingFromPreviousLine;
-				formattingFromPreviousLine = "";
-				int currWidth = 0;
-				line:
-				while(pos < wordsAndSpaces.length&&currWidth < lineWidth)
-				{
-					String token = tokenTransform.apply(wordsAndSpaces[pos]);
-					int textWidth = getWidth(token);
-					if(currWidth+textWidth <= lineWidth||line.length()==0)
-					{
-						pos++;
-						if(token.equals("<np>"))
-						{
-							if(!page.isEmpty()||!line.isEmpty())
-								page.add(line);
-							break page;
-						}
-						else if(LINEBREAK.matcher(token).matches())
-						{
-							break line;
-						}
-						else if(token.startsWith("<&")&&token.endsWith(">"))
-						{
-							String id = token.substring(2, token.length()-1);
-							int pageForId = entry.size();
-							Map<Integer, SpecialManualElement> specialForId = specialByAnchor.get(id);
-							boolean specialOnNextPage = false;
-							boolean pageFull = false;
-							if(specialForId!=null&&specialForId.containsKey(0))
-							{
-								SpecialManualElement specialHere = specialForId.get(0);
-								//+1: Current line
-								if(page.size()+1 > getLinesOnPage(specialHere)&&
-										//Add long special elements on an empty page
-										!(page.isEmpty()&&getLinesOnPage(specialHere) <= 0))
-								{
-									pageForId++;
-									specialOnNextPage = true;
-								}
-								else
-									pageFull = page.size()+1 > getLinesOnPage(specialHere);
-							}
-							//New page if there is already a special element on this page
-							if(!specialOnNextPage&&updateSpecials(id, pageForId))
-								specialOnNextPage = true;
-							if(specialOnNextPage||pageFull)
-							{
-								if(!line.isEmpty())
-									page.add(line);
-								if(specialOnNextPage)
-									pos--;
-								forceNewPage = true;
-								break page;
-							}
-						}
-						else if(!Character.isWhitespace(token.charAt(0))||currWidth!=0)
-						{//Don't add whitespace at the start of a line
-							line += token;
-							currWidth += textWidth;
-						}
+			Page nextPage = parsePage(
+					pageOverflow,
+					wordsAndSpaces,
+					anchor -> noCollidingElements(anchor, entry.size(), pageByAnchor),
+					str -> {
+						Optional<SpecialManualElement> element = findElement(pageByAnchor, entry.size(), str);
+						return getLinesOnPage(element);
 					}
-					else
-					{
-						formattingFromPreviousLine = TextFormatting.getFormatString(line);
-						break line;
-					}
-				}
-				line = line.trim();
-				if(!page.isEmpty()||!line.isEmpty())
-					page.add(line);
-			}
-			int linesMax = getLinesOnPage(entry.size());
-			forceNewPage |= linesMax <= 0;
-			if(forceNewPage||!page.stream().allMatch(String::isEmpty))
-			{
-				if(page.size() > linesMax)
-				{
-					if(linesMax > 0)
-					{
-						overflow.addAll(page.subList(linesMax, page.size()));
-						page = page.subList(0, linesMax-1);
-					}
-					else
-						page = new ArrayList<>();
-				}
-				entry.add(page);
-			}
+			);
+			nextPage.anchor.ifPresent(anchor -> pageByAnchor.put(anchor, entry.size()));
+			entry.add(nextPage.lines);
+			pageOverflow = nextPage.nextPage;
 		}
+		//Replace nonbreaking space (used to enforce unusual formatting, like space at the start of a line)
+		//by a normal space that can be properly rendered
 		for(List<String> page : entry)
 			for(int i = 0; i < page.size(); ++i)
-				//Replace nonbreaking space (used to enforce unusual formatting, like space at the start of a line)
-				//by a normal space that can be properly rendered
 				page.set(i, page.get(i).replace('\u00A0', ' '));
-		specialByPage.keySet().stream().max(Comparator.naturalOrder()).ifPresent(maxPageWithSpecial -> {
-			while(entry.size() <= maxPageWithSpecial)
-				entry.add(new ArrayList<>());
-		});
+
+		// Create page to special element map
+		Int2ObjectMap<SpecialManualElement> specialByPage = new Int2ObjectOpenHashMap<>();
+		int maxPageWithSpecial = 0;
+		for(Entry<String> forAnchor : pageByAnchor.object2IntEntrySet())
+			for(Map.Entry<Integer, SpecialManualElement> element : getElements(forAnchor.getKey()).entrySet())
+			{
+				int page = forAnchor.getIntValue()+element.getKey();
+				Preconditions.checkState(!specialByPage.containsKey(page));
+				specialByPage.put(page, element.getValue());
+				if(page > maxPageWithSpecial)
+					maxPageWithSpecial = page;
+			}
+		// Add pages without text if there are special elements after the last text page
+		while(entry.size() <= maxPageWithSpecial)
+			entry.add(new ArrayList<>());
+		return new SplitResult(entry, pageByAnchor, specialByPage);
+	}
+
+	private boolean noCollidingElements(String newAnchor, int anchorPage, Object2IntMap<String> pageByAnchor)
+	{
+		IntSet newSpecials = new IntArraySet();
+		for(int offset : getElements(newAnchor).keySet())
+			newSpecials.add(offset+anchorPage);
+		for(Entry<String> e : pageByAnchor.object2IntEntrySet())
+			for(int offset : getElements(e.getKey()).keySet())
+				if(newSpecials.contains(e.getIntValue()+offset))
+					return false;
+		return true;
+	}
+
+	private Optional<SpecialManualElement> findElement(
+			Object2IntMap<String> pageByAnchor,
+			int newAnchorPage,
+			Optional<String> newAnchor
+	)
+	{
+		if(newAnchor.isPresent())
+		{
+			Map<Integer, SpecialManualElement> forNewAnchor = getElements(newAnchor.get());
+			if(forNewAnchor.containsKey(0))
+				return Optional.of(forNewAnchor.get(0));
+		}
+		for(Entry<String> e : pageByAnchor.object2IntEntrySet())
+		{
+			Map<Integer, SpecialManualElement> forAnchor = getElements(e.getKey());
+			int offset = newAnchorPage-e.getIntValue();
+			if(forAnchor.containsKey(offset))
+				return Optional.of(forAnchor.get(offset));
+		}
+		return Optional.empty();
+	}
+
+	private Map<Integer, SpecialManualElement> getElements(String anchor)
+	{
+		if(!specialByAnchor.containsKey(anchor))
+		{
+			IELogger.warn("Tried to access invalid key \""+anchor+"\"");
+			return ImmutableMap.of();
+		}
+		else
+			return specialByAnchor.get(anchor);
+	}
+
+	private Page parsePage(
+			NextPageData overflow,
+			String[] wordsAndSpaces,
+			Predicate<String> canPlaceAnchor,
+			Function<Optional<String>, Integer> getLines
+	)
+	{
+		List<String> page = new ArrayList<>();
+		NextLineData lineOverflow = overflow.topLine;
+		Optional<String> anchorOnPage = Optional.empty();
+		while(page.size() < getLines.apply(anchorOnPage)&&lineOverflow!=null)
+		{
+			Optional<String> finalAnchorOnPage = anchorOnPage;
+			Function<String, AnchorViability> getAnchorViability = anchor -> {
+				if(finalAnchorOnPage.isPresent())
+					return AnchorViability.NOT_VALID;
+				else if(!canPlaceAnchor.test(anchor))
+					return AnchorViability.NOT_VALID;
+				else if(page.size()+1 > getLines.apply(Optional.of(anchor)))
+					// Allow specials larger than the page only if nothing else is placed on that page
+					return AnchorViability.VALID_IF_ALONE;
+				else
+					return AnchorViability.VALID;
+			};
+			Line next = parseLine(lineOverflow, getAnchorViability, wordsAndSpaces);
+			if(next.anchorBeforeLine.isPresent())
+			{
+				String newAnchor = next.anchorBeforeLine.get();
+				AnchorViability viability = getAnchorViability.apply(newAnchor);
+				Preconditions.checkState(viability!=AnchorViability.NOT_VALID);
+				if(viability==AnchorViability.VALID_IF_ALONE&&!page.isEmpty())
+					break;
+				else
+					anchorOnPage = next.anchorBeforeLine;
+			}
+			if(!page.isEmpty()||!next.line.isEmpty())
+				page.add(next.line);
+			lineOverflow = next.overflow;
+			if(lineOverflow!=null&&lineOverflow.putOnNewPage)
+				break;
+		}
+		// Remove empty lines at the end of the page
+		while(!page.isEmpty()&&page.get(page.size()-1).trim().isEmpty())
+			page.remove(page.size()-1);
+		return new Page(page, anchorOnPage, lineOverflow);
+	}
+
+	private Line parseLine(NextLineData lastOverflow, Function<String, AnchorViability> canPlaceAnchor, String[] wordsAndSpaces)
+	{
+		StringBuilder lineBuilder = new StringBuilder(lastOverflow.formattingOverflow+lastOverflow.textOverflow);
+		int pos = lastOverflow.firstToken;
+		Optional<String> anchorBeforeLine = Optional.empty();
+		while(pos < wordsAndSpaces.length&&getWidth(lineBuilder.toString()) < lineWidth)
+		{
+			int currWidth = getWidth(lineBuilder.toString());
+			String token = tokenTransform.apply(wordsAndSpaces[pos]);
+			int textWidth = getWidth(token);
+			if(currWidth+textWidth <= lineWidth||currWidth==0)
+			{
+				if(token.equals("<np>"))
+					return new Line(lineBuilder.toString(), pos+1, true, anchorBeforeLine, "");
+				else if(LINEBREAK.matcher(token).matches())
+					return new Line(lineBuilder.toString(), pos+1, false, anchorBeforeLine, "");
+				else if(token.startsWith("<&")&&token.endsWith(">"))
+				{
+					String anchor = toAnchor(token);
+					AnchorViability allowed = canPlaceAnchor.apply(anchor);
+					if(allowed==AnchorViability.VALID_IF_ALONE&&lineBuilder.toString().isEmpty())
+						return new Line("", pos+1, true, Optional.of(anchor), "");
+					else if(allowed!=AnchorViability.VALID)
+						return new Line(lineBuilder.toString(), pos, true, Optional.empty(), "");
+					else
+						anchorBeforeLine = Optional.of(anchor);
+				}
+				else if(!Character.isWhitespace(token.charAt(0))||currWidth!=0)
+					//Don't add whitespace at the start of a line
+					lineBuilder.append(token);
+				pos++;
+			}
+			else
+				break;
+		}
+		String line = lineBuilder.toString().trim();
+		if(getWidth(line) > lineWidth)
+		{
+			// Split off surplus characters, this should only happen with words longer than one line
+			String upToWidth = "";
+			for(int i = 0; i < line.length()&&getWidth(upToWidth) < lineWidth; ++i)
+				upToWidth += line.charAt(i);
+			String overflow = line.substring(upToWidth.length());
+			return new Line(upToWidth, pos, false, anchorBeforeLine, overflow);
+		}
+		else if(pos < wordsAndSpaces.length)
+			return new Line(line, pos, false, anchorBeforeLine, "");
+		else
+			return new Line(line, null, anchorBeforeLine);
+	}
+
+	private String toAnchor(String token)
+	{
+		return token.substring(2, token.length()-1);
 	}
 
 	private int getWidth(String text)
@@ -210,37 +286,12 @@ public class TextSplitter
 		}
 	}
 
-	private int getLinesOnPage(int id)
-	{
-		return getLinesOnPage(specialByPage.get(id));
-	}
-
-	private int getLinesOnPage(@Nullable SpecialManualElement elementOnPage)
+	private int getLinesOnPage(Optional<SpecialManualElement> elementOnPage)
 	{
 		int pixels = pixelsPerPage;
-		if(elementOnPage!=null)
-			pixels = pixelsPerPage-elementOnPage.getPixelsTaken();
+		if(elementOnPage.isPresent())
+			pixels = pixelsPerPage-elementOnPage.get().getPixelsTaken();
 		return MathHelper.floor(pixels/(double)pixelsPerLine.getAsInt());
-	}
-
-	private boolean updateSpecials(String ref, int page)
-	{
-		if(specialByAnchor.containsKey(ref))
-		{
-			Int2ObjectMap<SpecialManualElement> specialByPageTmp = new Int2ObjectOpenHashMap<>();
-			for(Map.Entry<Integer, SpecialManualElement> entry : specialByAnchor.get(ref).entrySet())
-			{
-				int specialPage = page+entry.getKey();
-				if(specialByPage.containsKey(specialPage))
-					return true;
-				specialByPageTmp.put(specialPage, entry.getValue());
-			}
-			specialByPage.putAll(specialByPageTmp);
-		}
-		else if(!ref.equals(START)) //Default reference for page 0
-			System.out.println("WARNING: Reference "+ref+" was found, but no special pages were registered for it");
-		pageByAnchor.put(ref, page);
-		return false;
 	}
 
 	public static String[] splitWhitespace(String in)
@@ -297,23 +348,79 @@ public class TextSplitter
 		return ret;
 	}
 
-	public List<List<String>> getEntryText()
+	private static class Line
 	{
-		return entry;
+		private final String line;
+		private final NextLineData overflow;
+		private final Optional<String> anchorBeforeLine;
+
+		private Line(String line, NextLineData overflow, @Nullable Optional<String> anchorBeforeLine)
+		{
+			this.line = line;
+			this.overflow = overflow;
+			this.anchorBeforeLine = anchorBeforeLine;
+		}
+
+		public Line(String line, int firstToken, boolean endPageAfterLine, Optional<String> anchorBeforeLine, String textOverflow)
+		{
+			this(line, new NextLineData(firstToken, endPageAfterLine, TextFormatting.getFormatString(line), textOverflow), anchorBeforeLine);
+		}
 	}
 
-	public Int2ObjectMap<SpecialManualElement> getSpecials()
+	private static class NextLineData
 	{
-		return specialByPage;
+		private final int firstToken;
+		private final boolean putOnNewPage;
+		private final String formattingOverflow;
+		private final String textOverflow;
+
+		private NextLineData(int firstToken, boolean putOnNewPage, String formattingOverflow, String textOverflow)
+		{
+			this.firstToken = firstToken;
+			this.putOnNewPage = putOnNewPage;
+			this.formattingOverflow = formattingOverflow;
+			this.textOverflow = textOverflow;
+		}
 	}
 
-	public int getPageForAnchor(String anchor)
+	private static class Page
 	{
-		return pageByAnchor.getInt(anchor);
+		private final List<String> lines;
+		private final Optional<String> anchor;
+		private final NextPageData nextPage;
+
+		private Page(List<String> lines, Optional<String> anchor, NextPageData nextPage)
+		{
+			this.lines = lines;
+			this.anchor = anchor;
+			this.nextPage = nextPage;
+		}
+
+		public Page(List<String> page, Optional<String> anchor, NextLineData overflow)
+		{
+			this(page, anchor, overflow==null?null: new NextPageData(overflow));
+		}
 	}
 
-	public boolean hasAnchor(String anchor)
+	private static class NextPageData
 	{
-		return pageByAnchor.containsKey(anchor);
+		private final NextLineData topLine;
+
+		private NextPageData(NextLineData topLine)
+		{
+			this.topLine = topLine;
+		}
+
+		public NextPageData()
+		{
+			this(new NextLineData(0, false, "", ""));
+		}
+	}
+
+	private enum AnchorViability
+	{
+		NOT_VALID,
+		VALID,
+		VALID_IF_ALONE
 	}
 }

@@ -322,6 +322,7 @@ public class ExtractConveyor extends BasicConveyor
 		CompoundNBT nbt = super.writeConveyorNBT();
 		nbt.putInt("transferCooldown", transferCooldown);
 		nbt.putInt("transferTickrate", transferTickrate);
+		nbt.putInt("relativeExtractDir", relativeExtractDir.ordinal());
 		return nbt;
 	}
 
@@ -331,6 +332,9 @@ public class ExtractConveyor extends BasicConveyor
 		super.readConveyorNBT(nbt);
 		transferCooldown = nbt.getInt("transferCooldown");
 		transferTickrate = nbt.getInt("transferTickrate");
+		relativeExtractDir = Rotation.values()[nbt.getInt("relativeExtractDir")];
+		if(relativeExtractDir==Rotation.NONE)
+			relativeExtractDir = Rotation.CLOCKWISE_180;
 	}
 
 	private Direction getExtractDirection()

@@ -1,0 +1,21 @@
+{
+  "type": "immersiveengineering:blueprint",
+  "inputs": [
+    {
+      "item": "immersiveengineering:empty_shell"
+    },
+    {
+      "tag": "forge:gunpowder"
+    },
+    {
+      "count": 4,
+      "base_ingredient": {
+        "item": "immersiveengineering:homing"
+      }
+    }
+  ],
+  "category": "specialBullet",
+  "result": {
+    "item": "immersiveengineering:wolfpack"
+  }
+}

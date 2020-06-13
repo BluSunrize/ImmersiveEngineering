@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.items;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.ComposterBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
@@ -20,6 +21,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.PlantType;
+import net.minecraftforge.fml.DeferredWorkQueue;
 
 import javax.annotation.Nonnull;
 
@@ -31,6 +33,9 @@ public class IESeedItem extends IEBaseItem implements IPlantable
 	{
 		super("seed", new Properties());
 		this.cropBlock = cropBlock;
+		DeferredWorkQueue.runLater(
+				() -> ComposterBlock.CHANCES.putIfAbsent(this, 0.3f)
+		);
 	}
 
 	@Nonnull

@@ -17,6 +17,7 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.WorldSavedData;
+import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
@@ -35,9 +36,7 @@ public class IESaveData extends WorldSavedData
 	@Override
 	public void read(CompoundNBT nbt)
 	{
-		EventHandler.validateConnsNextTick = true;
-
-		ListNBT mineralList = nbt.getList("mineralDepletion", 10);
+		ListNBT mineralList = nbt.getList("mineralDepletion", NBT.TAG_COMPOUND);
 		ExcavatorHandler.mineralCache.clear();
 		for(int i = 0; i < mineralList.size(); i++)
 		{
@@ -46,19 +45,19 @@ public class IESaveData extends WorldSavedData
 			if(coords!=null)
 			{
 				MineralWorldInfo info = MineralWorldInfo.readFromNBT(tag.getCompound("info"));
-				ExcavatorHandler.mineralCache.put(coords, info);
+				if(info!=null)
+					ExcavatorHandler.mineralCache.put(coords, info);
 			}
 		}
 
-
-		ListNBT receivedShaderList = nbt.getList("receivedShaderList", 10);
+		ListNBT receivedShaderList = nbt.getList("receivedShaderList", NBT.TAG_COMPOUND);
 		for(int i = 0; i < receivedShaderList.size(); i++)
 		{
 			CompoundNBT tag = receivedShaderList.getCompound(i);
 			UUID player = tag.getUniqueId("player");
 			ShaderRegistry.receivedShaders.get(player).clear();
 
-			ListNBT playerReceived = tag.getList("received", 8);
+			ListNBT playerReceived = tag.getList("received", NBT.TAG_STRING);
 			for(int j = 0; j < playerReceived.size(); j++)
 			{
 				String s = playerReceived.getString(j);

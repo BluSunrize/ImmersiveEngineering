@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.BlockItemUseContext;
@@ -35,6 +36,7 @@ public class LanternBlock extends IEBaseBlock implements IHasObjProperty
 	public LanternBlock(String name)
 	{
 		super(name, Properties.create(Material.IRON)
+						.sound(SoundType.METAL)
 						.hardnessAndResistance(3, 15)
 						.lightValue(14).notSolid(),
 				BlockItem::new,

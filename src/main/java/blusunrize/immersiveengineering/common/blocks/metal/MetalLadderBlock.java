@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.items.HammerItem;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.LadderBlock;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.util.Direction;
@@ -62,7 +63,7 @@ public class MetalLadderBlock extends LadderBlock
 
 	public MetalLadderBlock(CoverType type)
 	{
-		super(Properties.create(Material.IRON).hardnessAndResistance(3, 15));
+		super(Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(3, 15));
 		this.type = type;
 		setRegistryName(new ResourceLocation(ImmersiveEngineering.MODID, "metal_ladder_"+type.name().toLowerCase()));
 

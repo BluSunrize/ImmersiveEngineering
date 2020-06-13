@@ -45,6 +45,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -140,7 +141,7 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 			markContainingBlockForUpdate(null);
 
 		int energy = IEConfig.MACHINES.turret_consumption.get();
-		if(world.getRedstonePowerFromNeighbors(getPos()) > 0^redstoneControlInverted)
+		if((world.getRedstonePowerFromNeighbors(getPos()) > 0)^redstoneControlInverted)
 		{
 			if(energyStorage.extractEnergy(energy, true)==energy)
 			{
@@ -344,7 +345,7 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 	}
 
 	@Override
-	public VoxelShape getBlockBounds()
+	public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx)
 	{
 		if(!isDummy())
 			return VoxelShapes.fullCube();

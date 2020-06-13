@@ -14,7 +14,7 @@
     },
     "create_bp": {
         "type": "crafting",
-        "recipe": "blueprint_components"
+        "recipe": "crafting/blueprint_components"
     },
     "tubes": {
         "type": "blueprint",

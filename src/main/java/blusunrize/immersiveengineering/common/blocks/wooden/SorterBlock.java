@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockReader;
@@ -25,7 +26,7 @@ public class SorterBlock extends IETileProviderBlock
 
 	public SorterBlock(String name, boolean fluid)
 	{
-		super(name, Block.Properties.create(Material.WOOD).hardnessAndResistance(2F, 5F),
+		super(name, Block.Properties.create(Material.WOOD).sound(SoundType.WOOD).hardnessAndResistance(2F, 5F),
 				BlockItemIE::new);
 		this.fluid = fluid;
 	}

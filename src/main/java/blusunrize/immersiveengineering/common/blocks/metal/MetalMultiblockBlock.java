@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.IEMultiblockBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.state.IProperty;
 import net.minecraft.tileentity.TileEntity;
@@ -29,7 +30,7 @@ public class MetalMultiblockBlock extends IEMultiblockBlock
 
 	public MetalMultiblockBlock(String name, Supplier<TileEntityType<?>> te, IProperty<?>... additionalProperties)
 	{
-		super(name, Block.Properties.create(Material.IRON).hardnessAndResistance(3, 15).notSolid(),
+		super(name, Block.Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(3, 15).notSolid(),
 				ArrayUtils.addAll(additionalProperties,
 						IEProperties.MIRRORED));
 		tileType = te;

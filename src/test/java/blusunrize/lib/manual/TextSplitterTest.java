@@ -12,6 +12,7 @@ public class TextSplitterTest
 {
 	private static final int LINE_LENGTH = 10;
 	private static final int LINES_PER_PAGE = 3;
+	private static final String ZERO_WIDTH_TEXT = "§b";
 	private static final SpecialManualElement HEIGHT_1 = new DummyElement(1);
 	private static final SpecialManualElement HEIGHT_10 = new DummyElement(10);
 	private TextSplitter splitter;
@@ -19,82 +20,88 @@ public class TextSplitterTest
 	@Before
 	public void createSplitter()
 	{
-		splitter = new TextSplitter(String::length, LINE_LENGTH, LINES_PER_PAGE, () -> 1, s -> s);
+		splitter = new TextSplitter(
+				s -> s.replace(ZERO_WIDTH_TEXT, "").length(),
+				LINE_LENGTH,
+				LINES_PER_PAGE,
+				() -> 1,
+				s -> s
+		);
 	}
 
-	private void assertLineCounts(int... lineCounts)
+	private void assertLineCounts(SplitResult result, int... lineCounts)
 	{
-		List<List<String>> output = splitter.getEntryText();
+		List<List<String>> output = result.entry;
 		int[] actualSizes = output.stream().mapToInt(List::size).toArray();
 		Assert.assertArrayEquals("Split result: "+output, lineCounts, actualSizes);
 	}
 
-	private void assertLines(String... lines)
+	private void assertLines(SplitResult result, String... lines)
 	{
-		List<List<String>> output = splitter.getEntryText();
+		List<List<String>> output = result.entry;
 		String[] actualLines = output.stream().flatMap(List::stream).toArray(String[]::new);
 		Assert.assertArrayEquals("Split result: "+output, lines, actualLines);
 	}
 
-	private void assertSpecialAt(int page, SpecialManualElement expected)
+	private void assertSpecialAt(SplitResult result, int page, SpecialManualElement expected)
 	{
-		Assert.assertEquals(splitter.getSpecials().toString(), expected, splitter.getSpecials().get(page));
+		Assert.assertEquals(result.specialByPage.toString(), expected, result.specialByPage.get(page));
 	}
 
 	@Test
 	public void testBasicSplitting()
 	{
-		splitter.split("12345 123456\nabc defghi ABC");
-		assertLineCounts(3, 1);
-		assertLines("12345", "123456", "abc defghi", "ABC");
+		SplitResult result = splitter.split("12345 123456\nabc defghi ABC");
+		assertLineCounts(result, 3, 1);
+		assertLines(result, "12345", "123456", "abc defghi", "ABC");
 	}
 
 	@Test
 	public void testLongWord()
 	{
-		splitter.split("abc aaaaaaa 0123456789 0123456789ABC");
-		assertLineCounts(3, 1);
-		assertLines("abc", "aaaaaaa", "0123456789", "0123456789ABC");
+		SplitResult result = splitter.split("abc aaaaaaa 0123456789 0123456789ABC");
+		assertLineCounts(result, 3, 2);
+		assertLines(result, "abc", "aaaaaaa", "0123456789", "0123456789", "ABC");
 	}
 
 	@Test
 	public void testSpecialElementAtStart()
 	{
 		splitter.addSpecialPage("start", 0, HEIGHT_1);
-		splitter.split("abc def "+"ghi jkl "+"mno");
-		assertLineCounts(2, 1);
-		assertSpecialAt(0, HEIGHT_1);
-		assertLines("abc def", "ghi jkl", "mno");
+		SplitResult result = splitter.split("abc def "+"ghi jkl "+"mno");
+		assertLineCounts(result, 2, 1);
+		assertSpecialAt(result, 0, HEIGHT_1);
+		assertLines(result, "abc def", "ghi jkl", "mno");
 	}
 
 	@Test
 	public void testSpecialElementAtEnd()
 	{
 		splitter.addSpecialPage("test", 0, HEIGHT_1);
-		splitter.split("abc def "+"ghi jkl "+"mno <&test>");
-		assertLineCounts(3, 0);
-		assertSpecialAt(1, HEIGHT_1);
-		assertLines("abc def", "ghi jkl", "mno");
+		SplitResult result = splitter.split("abc def "+"ghi jkl "+"mno <&test>");
+		assertLineCounts(result, 3, 0);
+		assertSpecialAt(result, 1, HEIGHT_1);
+		assertLines(result, "abc def", "ghi jkl", "mno");
 	}
 
 	@Test
 	public void testSpecialElementNearEnd()
 	{
 		splitter.addSpecialPage("test", 0, HEIGHT_1);
-		splitter.split("abc def "+"ghi jkl "+"<&test>mno");
-		assertLineCounts(2, 1);
-		assertSpecialAt(1, HEIGHT_1);
-		assertLines("abc def", "ghi jkl", "mno");
+		SplitResult result = splitter.split("abc def "+"ghi jkl "+"<&test>mno");
+		assertLineCounts(result, 2, 1);
+		assertSpecialAt(result, 1, HEIGHT_1);
+		assertLines(result, "abc def", "ghi jkl", "mno");
 	}
 
 	@Test
 	public void testLongSpecialElement()
 	{
 		splitter.addSpecialPage("test", 0, HEIGHT_10);
-		splitter.split("abc <&test> def");
-		assertLineCounts(1, 0, 1);
-		assertSpecialAt(1, HEIGHT_10);
-		assertLines("abc", "def");
+		SplitResult result = splitter.split("abc <&test> def");
+		assertLineCounts(result, 1, 0, 1);
+		assertSpecialAt(result, 1, HEIGHT_10);
+		assertLines(result, "abc", "def");
 	}
 
 	@Test
@@ -102,11 +109,21 @@ public class TextSplitterTest
 	{
 		splitter.addSpecialPage("test", 0, HEIGHT_10);
 		splitter.addSpecialPage("test", 1, HEIGHT_1);
-		splitter.split("abc def <&test>");
-		assertSpecialAt(1, HEIGHT_10);
-		assertSpecialAt(2, HEIGHT_1);
-		assertLineCounts(1, 0, 0);
-		assertLines("abc def");
+		SplitResult result = splitter.split("abc def <&test>");
+		assertSpecialAt(result, 1, HEIGHT_10);
+		assertSpecialAt(result, 2, HEIGHT_1);
+		assertLineCounts(result, 1, 0, 0);
+		assertLines(result, "abc def");
+	}
+
+	@Test
+	public void testLongWordAfterZeroWidth()
+	{
+		final String longWordA = "0123456789";
+		final String longWordB = "ABCDEF";
+		SplitResult result = splitter.split(ZERO_WIDTH_TEXT+" "+longWordA+longWordB);
+		assertLineCounts(result, 2);
+		assertLines(result, ZERO_WIDTH_TEXT+longWordA, ZERO_WIDTH_TEXT+longWordB);
 	}
 
 	private static class DummyElement extends SpecialManualElement

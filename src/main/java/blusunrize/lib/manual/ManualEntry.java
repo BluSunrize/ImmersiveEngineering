@@ -15,6 +15,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.systems.RenderSystem;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.item.ItemStack;
@@ -47,6 +48,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 	private final ResourceLocation location;
 	private List<String[]> linkData;
 	private Int2ObjectMap<SpecialManualElement> specials;
+	private Object2IntMap<String> anchorPoints;
 
 	private ManualEntry(ManualInstance m, TextSplitter splitter, Function<TextSplitter, String[]> getContent,
 						ResourceLocation location)
@@ -68,9 +70,10 @@ public class ManualEntry implements Comparable<ManualEntry>
 			subtext = parts[1];
 			String[] tmp = {parts[2]};//I want pointers/references... They would make this easier
 			linkData = ManualUtils.prepareEntryForLinks(tmp);
-			splitter.split(manual.formatText(tmp[0]));
-			specials = splitter.getSpecials();
-			List<List<String>> text = splitter.getEntryText();
+			SplitResult result = splitter.split(manual.formatText(tmp[0]));
+			specials = result.specialByPage;
+			anchorPoints = result.pageByAnchor;
+			List<List<String>> text = result.entry;
 			pages = new ArrayList<>(text.size());
 			for(int i = 0; i < text.size(); i++)
 			{
@@ -171,12 +174,12 @@ public class ManualEntry implements Comparable<ManualEntry>
 
 	public int getPageForAnchor(String anchor)
 	{
-		return splitter.getPageForAnchor(anchor);
+		return anchorPoints.getInt(anchor);
 	}
 
 	public boolean hasAnchor(String anchor)
 	{
-		return splitter.hasAnchor(anchor);
+		return anchorPoints.containsKey(anchor);
 	}
 
 	public Tree.AbstractNode<ResourceLocation, ManualEntry> getTreeNode()

@@ -26,6 +26,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.storage.loot.LootContext;
 import net.minecraftforge.common.capabilities.Capability;
@@ -76,7 +77,7 @@ public class ShaderBannerTileEntity extends IEBaseTileEntity implements IBlockBo
 
 	@Nonnull
 	@Override
-	public VoxelShape getBlockBounds()
+	public VoxelShape getBlockBounds(ISelectionContext ctx)
 	{
 		if(this.wall)
 			return WALL_SHAPES.get(getState().get(ShaderBannerWallBlock.FACING));

@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.entities.IEExplosiveEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.TNTBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.LivingEntity;
@@ -32,7 +33,7 @@ public class GunpowderBarrelBlock extends TNTBlock
 
 	public GunpowderBarrelBlock(String name)
 	{
-		super(Block.Properties.create(Material.WOOD).hardnessAndResistance(2, 5));
+		super(Block.Properties.create(Material.WOOD).sound(SoundType.WOOD).hardnessAndResistance(2, 5));
 		setRegistryName(ImmersiveEngineering.MODID, name);
 		IEContent.registeredIEBlocks.add(this);
 		IEContent.registeredIEItems.add(new BlockItemIE(this));

@@ -303,6 +303,12 @@ public class Recipes extends RecipeProvider
 				.setTime(560)
 				.setRender(new ClocheRenderReference("stacking", Blocks.CACTUS))
 				.build(out, toRL("cloche/cactus"));
+		ClocheRecipeBuilder.builder(Items.BAMBOO)
+				.addInput(Items.BAMBOO)
+				.addSoil(Blocks.DIRT)
+				.setTime(560)
+				.setRender(new ClocheRenderReference("stacking", Blocks.BAMBOO))
+				.build(out, toRL("cloche/bamboo"));
 		ClocheRecipeBuilder.builder(Items.CHORUS_FRUIT)
 				.addInput(Items.CHORUS_FLOWER)
 				.addSoil(Blocks.END_STONE)
@@ -418,6 +424,17 @@ public class Recipes extends RecipeProvider
 				.addInput(IETags.getTagsFor(EnumMetals.ALUMINUM).dust)
 				.addInput(Tags.Items.DYES_YELLOW)
 				.build(out, toRL("blueprint/bullet_flare_yellow"));
+		BlueprintCraftingRecipeBuilder.builder("specialBullet", BulletHandler.getBulletItem(BulletItem.HOMING))
+				.addInput(BulletHandler.emptyCasing)
+				.addInput(Tags.Items.GUNPOWDER)
+				.addInput(new IngredientWithSize(IETags.getTagsFor(EnumMetals.LEAD).nugget, 2))
+				.addInput(Items.ENDER_EYE)
+				.build(out, toRL("blueprint/bullet_homing"));
+		BlueprintCraftingRecipeBuilder.builder("specialBullet", BulletHandler.getBulletItem(BulletItem.WOLFPACK))
+				.addInput(BulletHandler.emptyShell)
+				.addInput(Tags.Items.GUNPOWDER)
+				.addInput(new IngredientWithSize(Ingredient.fromItems(BulletHandler.getBulletItem(BulletItem.HOMING)), 4))
+				.build(out, toRL("blueprint/bullet_wolfpack"));
 
 		BlueprintCraftingRecipeBuilder.builder("electrode", Misc.graphiteElectrode)
 				.addInput(new IngredientWithSize(IETags.hopGraphiteIngot, 4))
@@ -2291,6 +2308,17 @@ public class Recipes extends RecipeProvider
 				.key('p', Items.PAPER)
 				.addCriterion("has_"+toPath(Items.PAPER), hasItem(Items.PAPER))
 				.build(buildBlueprint(out, "molds"), toRL("blueprint_molds"));
+		ShapedRecipeBuilder.shapedRecipe(Misc.blueprint)
+				.patternLine("gcg")
+				.patternLine("ddd")
+				.patternLine("ppp")
+				.key('g', Tags.Items.GUNPOWDER)
+				.key('c', Ingredients.emptyCasing)
+				.key('d', Tags.Items.DYES_BLUE)
+				//TODO tag?
+				.key('p', Items.PAPER)
+				.addCriterion("has_"+toPath(Items.PAPER), hasItem(Items.PAPER))
+				.build(buildBlueprint(out, "bullet"), toRL("blueprint_bullets"));
 
 		ShapedRecipeBuilder.shapedRecipe(Misc.blueprint)
 				.patternLine("ggg")

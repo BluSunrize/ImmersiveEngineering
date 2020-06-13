@@ -3,6 +3,29 @@
  - Fixed Optifine shader packs crashing with the IEOBJ item renderer (Vaelzan)
  - Fixed crashes when using the buzzsaw or drill (Malte)
  - Fixed missing connectors on feedthrough models (Malte)
+ - Also includes the changes from 0.14-100
+
+##### Version 0.14-100
+- Added different sounds for blocks of different materials (BluSunrize)
+- Added "forge:ores" tag to all IE ores (Malte)
+- Re-Added packing and unpacking recipes for the metal press (BluSunrize)
+- Added cloche recipe to grow bamboo (BluSunrize)
+- Added composting for hempseeds (BluSunrize)
+- Added missing recipe for the "Common Projectiles" blueprint (BluSunrize)
+- Re-Added homing cartridges, these use eyes of ender now (BluSunrize)
+- Re-Added a recipe for wolfpack cartridges; also buffed their damage (requires a fresh config file) (BluSunrize)
+- Fixed bounding boxes for vertical covered conveyors (Malte)
+- Fixed metal press not forming when mirrored (Malte)
+- Fixed extracting conveyors not saving their extract direction (BluSunrize)
+- Fixed manual freezing when dealing with long tokens (Malte)
+- Fixed bounding boxes for some multiblocks (Malte)
+- Fixed visual connection of fluid pipes on refinery (BluSunrize)
+- Fixed silver bullets not doing extra damage to undead (BluSunrize)
+- Fixed missing recipes for the "Crafting Components" blueprint in the manual (BluSunrize)
+- Fixed crashes with coresamples created before IE 0.14-96 (Malte)
+- Fixed diesel generator not allowing levers to be attached (Malte)
+- Fixed turrets not firing at entities (BluSunrize)
+- Fixed a crash when clicking the list of names in the turret GUI (BluSunrize)
 
 ##### Version 0.15-99 - BUILT
 - Initial alpha release for Minecraft 1.15.2

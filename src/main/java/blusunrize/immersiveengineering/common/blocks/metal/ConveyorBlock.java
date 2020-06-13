@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorTile;
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -43,7 +44,7 @@ public class ConveyorBlock extends IETileProviderBlock
 	public ConveyorBlock(ResourceLocation type)
 	{
 		super(ConveyorHandler.getRegistryNameFor(type).getPath(),
-				Properties.create(Material.IRON).hardnessAndResistance(3.0F, 15.0F).notSolid(),
+				Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(3.0F, 15.0F).notSolid(),
 				BlockItemIE::new, FACING);
 		this.typeName = type;
 		lightOpacity = 0;

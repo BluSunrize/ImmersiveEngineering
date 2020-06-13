@@ -11,10 +11,9 @@ package blusunrize.immersiveengineering.client.models;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.crafting.StackWithChance;
-import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.items.CoresampleItem;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -54,14 +53,15 @@ import java.util.function.Function;
 @SuppressWarnings("deprecation")
 public class ModelCoresample extends BakedIEModel
 {
-	private static final Cache<String, ModelCoresample> modelCache = CacheBuilder.newBuilder()
+	private static final Cache<MineralMix, ModelCoresample> modelCache = CacheBuilder.newBuilder()
 			.expireAfterAccess(60, TimeUnit.SECONDS)
 			.build();
+	@Nullable
 	private MineralMix mineral;
 	private final VertexFormat format;
 	private List<BakedQuad> bakedQuads;
 
-	public ModelCoresample(MineralMix mineral, VertexFormat format)
+	public ModelCoresample(@Nullable MineralMix mineral, VertexFormat format)
 	{
 		this.mineral = mineral;
 		this.format = format;
@@ -279,29 +279,23 @@ public class ModelCoresample extends BakedIEModel
 		@Override
 		public IBakedModel getModelWithOverrides(IBakedModel originalModel, ItemStack stack, @Nullable World worldIn, @Nullable LivingEntity entityIn)
 		{
-			if(ItemNBTHelper.hasKey(stack, "mineral"))
+			MineralMix mineral = CoresampleItem.getMix(stack);
+			if(mineral!=null)
 			{
-				String name = ItemNBTHelper.getString(stack, "mineral");
-				if(!name.isEmpty())
+				try
 				{
-					try
-					{
-						return modelCache.get(name, () -> {
-							VertexFormat format;
-							if(originalModel instanceof ModelCoresample)
-								format = ((ModelCoresample)originalModel).format;
-							else
-								format = DefaultVertexFormats.BLOCK;
-							for(MineralMix mix : ExcavatorHandler.mineralList.values())
-								if(name.equals(mix.getId().toString()))
-									return new ModelCoresample(mix, format);
-							throw new RuntimeException("Invalid mineral mix: "+name);
-						});
-					} catch(ExecutionException e)
+					return modelCache.get(mineral, () -> {
+						VertexFormat format;
+						if(originalModel instanceof ModelCoresample)
+							format = ((ModelCoresample)originalModel).format;
+						else
+							format = DefaultVertexFormats.BLOCK;
+						return new ModelCoresample(mineral, format);
+					});
+				} catch(ExecutionException e)
 					{
 						throw new RuntimeException(e);
 					}
-				}
 			}
 			return originalModel;
 		}

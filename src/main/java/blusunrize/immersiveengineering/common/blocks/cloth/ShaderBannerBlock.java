@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.cloth;
 import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
@@ -25,7 +26,7 @@ public abstract class ShaderBannerBlock extends IETileProviderBlock
 {
 	public ShaderBannerBlock(String name, IProperty... stateProps)
 	{
-		super(name, Block.Properties.create(Material.WOOL).doesNotBlockMovement().notSolid(), (b, p) -> null, stateProps);
+		super(name, Block.Properties.create(Material.WOOL).sound(SoundType.CLOTH).doesNotBlockMovement().notSolid(), (b, p) -> null, stateProps);
 	}
 
 	@Nullable

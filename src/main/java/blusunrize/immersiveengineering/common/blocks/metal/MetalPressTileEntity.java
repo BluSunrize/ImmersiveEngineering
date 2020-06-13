@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBou
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
+import blusunrize.immersiveengineering.common.crafting.MetalPressPackingRecipes;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ListUtils;
@@ -30,6 +31,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.World;
@@ -129,7 +131,7 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 
 
 	@Override
-	public VoxelShape getBlockBounds()
+	public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx)
 	{
 		if(posInMultiblock.getY()==1&&posInMultiblock.getX()%2==0)
 			return VoxelShapes.create(0, 0, 0, 1, .125f, 1);
@@ -212,6 +214,7 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 
 	private CapabilityReference<IItemHandler> outputCap = CapabilityReference.forTileEntity(this,
 			this::getOutputPos, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+
 	@Override
 	public void doProcessOutput(ItemStack output)
 	{
@@ -348,7 +351,10 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 	@Override
 	protected MetalPressRecipe getRecipeForId(ResourceLocation id)
 	{
-		return MetalPressRecipe.recipeList.get(id);
+		MetalPressRecipe recipe = MetalPressRecipe.recipeList.get(id);
+		if(recipe==null)
+			recipe = MetalPressPackingRecipes.getRecipeDelegate(id);
+		return recipe;
 	}
 
 	@Override

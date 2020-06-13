@@ -65,6 +65,7 @@ import blusunrize.immersiveengineering.common.world.Villages;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityType;
 import net.minecraft.fluid.Fluid;
@@ -144,6 +145,12 @@ public class IEContent
 		ConveyorHandler.registerConveyorHandler(ExtractCoveredConveyor.NAME, ExtractCoveredConveyor.class, ExtractCoveredConveyor::new);
 		ConveyorHandler.registerConveyorHandler(SplitCoveredConveyor.NAME, SplitCoveredConveyor.class, SplitCoveredConveyor::new);
 		ConveyorHandler.registerSubstitute(new ResourceLocation(MODID, "conveyor"), new ResourceLocation(MODID, "uncontrolled"));
+		/*SHADERS*/
+		ShaderRegistry.rarityWeightMap.put(Rarity.COMMON, 9);
+		ShaderRegistry.rarityWeightMap.put(Rarity.UNCOMMON, 7);
+		ShaderRegistry.rarityWeightMap.put(Rarity.RARE, 5);
+		ShaderRegistry.rarityWeightMap.put(Rarity.EPIC, 3);
+		ShaderRegistry.rarityWeightMap.put(Lib.RARITY_MASTERWORK, 1);
 
 		fluidCreosote = new IEFluid("creosote", new ResourceLocation("immersiveengineering:block/fluid/creosote_still"),
 				new ResourceLocation("immersiveengineering:block/fluid/creosote_flow"), createBuilder(1100, 3000));
@@ -158,8 +165,8 @@ public class IEContent
 		fluidHerbicide = new IEFluid("herbicide", new ResourceLocation("immersiveengineering:block/fluid/herbicide_still"),
 				new ResourceLocation("immersiveengineering:block/fluid/herbicide_flow"), createBuilder(789, 1000));
 
-		Block.Properties storageProperties = Block.Properties.create(Material.IRON).hardnessAndResistance(5, 10);
-		Block.Properties sheetmetalProperties = Block.Properties.create(Material.IRON).hardnessAndResistance(3, 10);
+		Block.Properties storageProperties = Block.Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(5, 10);
+		Block.Properties sheetmetalProperties = Block.Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(3, 10);
 		ImmersiveEngineering.proxy.registerContainersAndScreens();
 		for(EnumMetals m : EnumMetals.values())
 		{
@@ -250,7 +257,7 @@ public class IEContent
 		StoneDecoration.coresample = new GenericTileBlock("coresample", () -> CoresampleTileEntity.TYPE,
 				stoneDecoPropsNotSolid, (b, p) -> null, IEProperties.FACING_HORIZONTAL);
 
-		Block.Properties standardWoodProperties = Block.Properties.create(Material.WOOD).hardnessAndResistance(2, 5);
+		Block.Properties standardWoodProperties = Block.Properties.create(Material.WOOD).sound(SoundType.WOOD).hardnessAndResistance(2, 5);
 		Block.Properties standardWoodPropertiesNotSolid = Block.Properties.create(Material.WOOD).hardnessAndResistance(2, 5).notSolid();
 		for(TreatedWoodStyles style : TreatedWoodStyles.values())
 		{
@@ -292,7 +299,7 @@ public class IEContent
 		Misc.fakeLight = new FakeLightBlock();
 
 
-		Block.Properties defaultMetalProperties = Block.Properties.create(Material.IRON).hardnessAndResistance(3, 15);
+		Block.Properties defaultMetalProperties = Block.Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(3, 15);
 		Block.Properties metalPropertiesNotSolid = Block.Properties.create(Material.IRON).hardnessAndResistance(3, 15).notSolid();
 		MetalDecoration.lvCoil = new IEBaseBlock("coil_lv", defaultMetalProperties, BlockItemIE::new);
 		MetalDecoration.mvCoil = new IEBaseBlock("coil_mv", defaultMetalProperties, BlockItemIE::new);
@@ -488,8 +495,6 @@ public class IEContent
 			IEItems.Misc.toolUpgrades.put(upgrade, new ToolUpgradeItem(upgrade));
 		IEItems.Misc.jerrycan = new JerrycanItem();
 		IEItems.Misc.shader = new ShaderItem();
-		for(Rarity r : Rarity.values())
-			IEItems.Misc.shaderBag.put(r, new ShaderBagItem(r));
 		IEItems.Misc.blueprint = new EngineersBlueprintItem();
 		IEItems.Misc.earmuffs = new EarmuffsItem();
 		for(EquipmentSlotType slot : EquipmentSlotType.values())
@@ -559,6 +564,8 @@ public class IEContent
 	@SubscribeEvent
 	public static void registerItems(RegistryEvent.Register<Item> event)
 	{
+		for(Rarity r : ShaderRegistry.rarityWeightMap.keySet())
+			IEItems.Misc.shaderBag.put(r, new ShaderBagItem(r));
 		checkNonNullNames(registeredIEItems);
 		for(Item item : registeredIEItems)
 			event.getRegistry().register(item);

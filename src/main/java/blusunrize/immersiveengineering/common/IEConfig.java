@@ -527,8 +527,8 @@ public class IEConfig
 			bulletDamage_Buck = addNonNegative(builder, "bulletDamage_buck", 2, "The amount of base damage a single part of buckshot inflicts");
 			bulletDamage_Dragon = addNonNegative(builder, "bulletDamage_dragon", 3, "The amount of base damage a dragon breath cartridge inflicts");
 			bulletDamage_Homing = addNonNegative(builder, "bulletDamage_homing", 10, "The amount of base damage a homing cartridge inflicts");
-			bulletDamage_Wolfpack = addNonNegative(builder, "bulletDamage_wolfpack", 6, "The amount of base damage a wolfpack cartridge inflicts");
-			bulletDamage_WolfpackPart = addNonNegative(builder, "bulletDamage_wolfpack_part", 4, "The amount of base damage the sub-projectiles of a  wolfpack cartridge inflicts");
+			bulletDamage_Wolfpack = addNonNegative(builder, "bulletDamage_wolfpack", 4, "The amount of base damage a wolfpack cartridge inflicts");
+			bulletDamage_WolfpackPart = addNonNegative(builder, "bulletDamage_wolfpack_part", 8, "The amount of base damage the sub-projectiles of a  wolfpack cartridge inflicts");
 			bulletDamage_Silver = addNonNegative(builder, "bulletDamage_silver", 10, "The amount of damage a silver bullet inflicts");
 			bulletDamage_Potion = addNonNegative(builder, "bulletDamage_phial", 1, "The amount of base damage a phial cartridge inflicts");
 			earDefenders_SoundBlacklist = builder

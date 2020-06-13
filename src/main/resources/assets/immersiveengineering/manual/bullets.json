@@ -1,4 +1,8 @@
 {
+  "start": {
+    "type": "crafting",
+    "recipe": "crafting/blueprint_bullets"
+  },
   "empty": {
     "type": "crafting",
     "recipes": [
@@ -69,6 +73,14 @@
     "recipes": [
       {
         "item": "immersiveengineering:flare"
+      }
+    ]
+  },
+  "homing": {
+    "type": "blueprint",
+    "recipes": [
+      {
+        "item": "immersiveengineering:homing"
       }
     ]
   },

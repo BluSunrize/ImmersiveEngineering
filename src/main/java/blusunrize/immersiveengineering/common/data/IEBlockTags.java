@@ -22,6 +22,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.data.BlockTagsProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.tags.BlockTags;
+import net.minecraftforge.common.Tags;
 
 class IEBlockTags extends BlockTagsProvider
 {
@@ -56,6 +57,7 @@ class IEBlockTags extends BlockTagsProvider
 					Block ore = IEBlocks.Metals.ores.get(metal);
 					assert (tags.ore!=null&&ore!=null);
 					getBuilder(tags.ore).add(ore);
+					getBuilder(Tags.Blocks.ORES).add(tags.ore);
 				}
 			}
 			Block sheetmetal = IEBlocks.Metals.sheetmetal.get(metal);
