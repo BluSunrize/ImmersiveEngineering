@@ -146,6 +146,12 @@ public class IEContent
 		ConveyorHandler.registerConveyorHandler(ExtractCoveredConveyor.NAME, ExtractCoveredConveyor.class, ExtractCoveredConveyor::new);
 		ConveyorHandler.registerConveyorHandler(SplitCoveredConveyor.NAME, SplitCoveredConveyor.class, SplitCoveredConveyor::new);
 		ConveyorHandler.registerSubstitute(new ResourceLocation(MODID, "conveyor"), new ResourceLocation(MODID, "uncontrolled"));
+		/*SHADERS*/
+		ShaderRegistry.rarityWeightMap.put(Rarity.COMMON, 9);
+		ShaderRegistry.rarityWeightMap.put(Rarity.UNCOMMON, 7);
+		ShaderRegistry.rarityWeightMap.put(Rarity.RARE, 5);
+		ShaderRegistry.rarityWeightMap.put(Rarity.EPIC, 3);
+		ShaderRegistry.rarityWeightMap.put(Lib.RARITY_MASTERWORK, 1);
 
 		fluidCreosote = new IEFluid("creosote", new ResourceLocation("immersiveengineering:block/fluid/creosote_still"),
 				new ResourceLocation("immersiveengineering:block/fluid/creosote_flow"), createBuilder(1100, 3000));
@@ -504,8 +510,6 @@ public class IEContent
 			IEItems.Misc.toolUpgrades.put(upgrade, new ToolUpgradeItem(upgrade));
 		IEItems.Misc.jerrycan = new JerrycanItem();
 		IEItems.Misc.shader = new ShaderItem();
-		for(Rarity r : Rarity.values())
-			IEItems.Misc.shaderBag.put(r, new ShaderBagItem(r));
 		IEItems.Misc.blueprint = new EngineersBlueprintItem();
 		IEItems.Misc.earmuffs = new EarmuffsItem();
 		for(EquipmentSlotType slot : EquipmentSlotType.values())
@@ -581,6 +585,8 @@ public class IEContent
 	@SubscribeEvent
 	public static void registerItems(RegistryEvent.Register<Item> event)
 	{
+		for(Rarity r : ShaderRegistry.rarityWeightMap.keySet())
+			IEItems.Misc.shaderBag.put(r, new ShaderBagItem(r));
 		checkNonNullNames(registeredIEItems);
 		for(Item item : registeredIEItems)
 			event.getRegistry().register(item);

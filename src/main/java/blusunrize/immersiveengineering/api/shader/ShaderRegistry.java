@@ -8,14 +8,10 @@
 
 package blusunrize.immersiveengineering.api.shader;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.IETags;
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.impl.*;
-import blusunrize.immersiveengineering.common.IERecipes;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
@@ -44,24 +40,16 @@ public class ShaderRegistry
 	public static List<ResourceLocation> chestLootShaders = new ArrayList<>();
 
 	/**
-	 * A map of EnumRarities to weight for grab bag distribution
+	 * A map of EnumRarities to weight for grab bag distribution.<br>
+	 * Shader bags will only be added for rarities existing in this map when the item register event
+	 * is fired
 	 */
 	public static Map<Rarity, Integer> rarityWeightMap = new HashMap<>();
-
-	static
-	{
-		rarityWeightMap.put(Rarity.COMMON, 9);
-		rarityWeightMap.put(Rarity.UNCOMMON, 7);
-		rarityWeightMap.put(Rarity.RARE, 5);
-		rarityWeightMap.put(Rarity.EPIC, 3);
-		rarityWeightMap.put(Lib.RARITY_MASTERWORK, 1);
-	}
 
 	/**
 	 * A list of EnumRarities sorted by their weight
 	 */
 	public static List<Rarity> sortedRarityMap = new ArrayList<>();
-
 
 	/**
 	 * A map of player names to received shaders. Saved with worlddata. Designed to prioritize shaders the player has not yet received
