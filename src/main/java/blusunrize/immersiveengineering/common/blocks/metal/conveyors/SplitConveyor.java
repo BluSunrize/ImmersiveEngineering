@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirectio
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorTile;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.ModelConveyor;
+import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.client.renderer.model.BakedQuad;
@@ -19,6 +20,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -29,6 +31,8 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 import java.util.List;
 
@@ -70,13 +74,25 @@ public class SplitConveyor extends BasicConveyor
 	public void handleInsertion(ItemEntity entity, ConveyorDirection conDir, double distX, double distZ)
 	{
 		String nbtKey = "immersiveengineering:conveyorDir"+Integer.toHexString(getTile().getPos().hashCode());
-		if(entity.getPersistentData().contains(nbtKey, NBT.TAG_INT))
+		if(entity.getPersistentData().contains(nbtKey, NBT.TAG_INT)&&!getTile().getWorld().isRemote)
 		{
 			Direction redirect = Direction.values()[entity.getPersistentData().getInt(nbtKey)];
 			BlockPos nextPos = getTile().getPos().offset(redirect);
 			double distNext = Math.abs((redirect.getAxis()==Axis.Z?nextPos.getZ(): nextPos.getX())+.5-(redirect.getAxis()==Axis.Z?entity.posZ: entity.posX));
-			if(distNext < .7)
-				super.handleInsertion(entity, conDir, distX, distZ);
+			TileEntity inventoryTile = getTile().getWorld().getTileEntity(nextPos);
+			if(distNext < .7&&inventoryTile!=null&&!(inventoryTile instanceof IConveyorTile))
+			{
+				ItemStack stack = entity.getItem();
+				if(!stack.isEmpty())
+				{
+					CapabilityReference<IItemHandler> insert = CapabilityReference.forNeighbor(getTile(), CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, redirect);
+					ItemStack ret = Utils.insertStackIntoInventory(insert, stack, false);
+					if(ret.isEmpty())
+						entity.remove();
+					else if(ret.getCount() < stack.getCount())
+						entity.setItem(ret);
+				}
+			}
 		}
 	}
 

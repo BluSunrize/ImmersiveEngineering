@@ -19,6 +19,7 @@
 - Fixed diesel generator not allowing levers to be attached (Malte)
 - Fixed turrets not firing at entities (BluSunrize)
 - Fixed a crash when clicking the list of names in the turret GUI (BluSunrize)
+- Fixed vertical and splitting conveyors not inserting correctly (BluSunrize)
 
 ##### Version 0.14-97 - BUILT
 - Added fuel gauge for the buzzsaw (BluSunrize)
