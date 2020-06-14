@@ -23,7 +23,6 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.font.IEFontReloadListener;
 import blusunrize.immersiveengineering.client.font.IEFontRender;
-import blusunrize.immersiveengineering.client.font.NixieFontRender;
 import blusunrize.immersiveengineering.client.fx.FluidSplashParticle.Data;
 import blusunrize.immersiveengineering.client.fx.FractalParticle;
 import blusunrize.immersiveengineering.client.fx.IEParticles;
@@ -753,6 +752,16 @@ public class ClientProxy extends CommonProxy
 	public void openManual()
 	{
 		Minecraft.getInstance().displayGuiScreen(ManualHelper.getManual().getGui());
+	}
+
+	@Override
+	public void openTileScreen(ResourceLocation guiId, TileEntity tileEntity)
+	{
+		if(guiId==Lib.GUIID_RedstoneConnector&&tileEntity instanceof ConnectorRedstoneTileEntity)
+			Minecraft.getInstance().displayGuiScreen(new RedstoneConnectorScreen((ConnectorRedstoneTileEntity)tileEntity, tileEntity.getBlockState().getBlock().getNameTextComponent()));
+
+		if(guiId==Lib.GUIID_RedstoneProbe&&tileEntity instanceof ConnectorProbeTileEntity)
+			Minecraft.getInstance().displayGuiScreen(new RedstoneProbeScreen((ConnectorProbeTileEntity)tileEntity, tileEntity.getBlockState().getBlock().getNameTextComponent()));
 	}
 
 	@Override

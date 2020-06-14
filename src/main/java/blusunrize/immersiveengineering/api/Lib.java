@@ -66,6 +66,8 @@ public class Lib
 	public static final ResourceLocation GUIID_FluidSorter = new ResourceLocation(MODID, "fluidsorter");
 	public static final ResourceLocation GUIID_Cloche = new ResourceLocation(MODID, "cloche");
 	public static final ResourceLocation GUIID_ToolboxBlock = new ResourceLocation(MODID, "toolboxblock");
+	public static final ResourceLocation GUIID_RedstoneConnector = new ResourceLocation(MODID, "redstoneconnector");
+	public static final ResourceLocation GUIID_RedstoneProbe = new ResourceLocation(MODID, "redstoneprobe");
 	//Items
 	public static final ResourceLocation GUIID_Manual = new ResourceLocation(MODID, "manual");
 	public static final ResourceLocation GUIID_Revolver = new ResourceLocation(MODID, "revolver");

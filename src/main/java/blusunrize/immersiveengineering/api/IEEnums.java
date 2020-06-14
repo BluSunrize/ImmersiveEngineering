@@ -9,6 +9,8 @@
 package blusunrize.immersiveengineering.api;
 
 import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.Locale;
 
@@ -38,6 +40,11 @@ public class IEEnums
 		public String getTextureName()
 		{
 			return texture;
+		}
+
+		public ITextComponent getTextComponent()
+		{
+			return new TranslationTextComponent(Lib.DESC_INFO+"blockSide.io."+getName());
 		}
 
 		public static IOSideConfig next(IOSideConfig current)

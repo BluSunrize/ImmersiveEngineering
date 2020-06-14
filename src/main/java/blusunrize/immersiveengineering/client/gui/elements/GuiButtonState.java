@@ -41,6 +41,11 @@ public class GuiButtonState<E> extends GuiButtonIE
 		return this.states[getNextStateInt()];
 	}
 
+	public void setStateByInt(int state)
+	{
+		this.state = state;
+	}
+
 	public E getState()
 	{
 		return this.states[this.state];
