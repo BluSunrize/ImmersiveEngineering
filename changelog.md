@@ -8,6 +8,7 @@
 - Re-Added homing cartridges, these use eyes of ender now (BluSunrize)
 - Re-Added a recipe for wolfpack cartridges; also buffed their damage (requires a fresh config file) (BluSunrize)
 - Added a mixer recipe for concrete, using slag (BluSunrize)
+- Changed textures on kinetic dynamo to better represent its ability to output on all sides (BluSunrize)
 - Fixed bounding boxes for vertical covered conveyors (Malte)
 - Fixed metal press not forming when mirrored (Malte)
 - Fixed extracting conveyors not saving their extract direction (BluSunrize)

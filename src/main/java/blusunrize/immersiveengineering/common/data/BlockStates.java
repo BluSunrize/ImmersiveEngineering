@@ -542,8 +542,8 @@ public class BlockStates extends BlockStateProvider
 		createPump();
 		{
 			ModelFile kineticDynamo = withExistingParent("kinetic_dynamo", mcLoc("block/cube"))
-					.texture("down", modLoc("block/metal_device/dynamo_bottom"))
-					.texture("south", modLoc("block/metal_device/dynamo_bottom"))
+					.texture("down", modLoc("block/metal_device/dynamo_top"))
+					.texture("south", modLoc("block/metal_device/dynamo_top"))
 					.texture("up", modLoc("block/metal_device/dynamo_top"))
 					.texture("north", modLoc("block/metal_device/dynamo_front"))
 					.texture("west", modLoc("block/metal_device/dynamo_side"))
