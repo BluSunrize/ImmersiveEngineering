@@ -909,7 +909,7 @@ public class Recipes extends RecipeProvider
 		addCornerStraightMiddle(StoneDecoration.blastbrick, 3,
 				makeIngredient(Tags.Items.INGOTS_NETHER_BRICK),
 				makeIngredient(Tags.Items.INGOTS_BRICK),
-				makeIngredient(Items.BLAZE_POWDER),
+				makeIngredient(Blocks.MAGMA_BLOCK),
 				out);
 		addSandwich(StoneDecoration.hempcrete, 6,
 				makeIngredient(IETags.clay),
