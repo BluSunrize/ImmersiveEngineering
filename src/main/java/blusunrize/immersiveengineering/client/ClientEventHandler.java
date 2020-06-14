@@ -447,6 +447,9 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		if(ClientUtils.mc().player!=null&&event.getType()==RenderGameOverlayEvent.ElementType.TEXT)
 		{
 			PlayerEntity player = ClientUtils.mc().player;
+			int rightOffset = 0;
+			if(ClientUtils.mc().gameSettings.showSubtitles)
+				rightOffset += 100;
 
 			for(Hand hand : Hand.values())
 				if(!player.getHeldItem(hand).isEmpty())
@@ -491,7 +494,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 							int bulletAmount = ((IBulletContainer)equipped.getItem()).getBulletCount(equipped);
 							HandSide side = hand==Hand.MAIN_HAND?player.getPrimaryHand(): player.getPrimaryHand().opposite();
 							boolean right = side==HandSide.RIGHT;
-							float dx = right?scaledWidth-32-48: 48;
+							float dx = right?scaledWidth-rightOffset-32-48: 48;
 							float dy = scaledHeight-64;
 							GlStateManager.pushMatrix();
 							GlStateManager.enableRescaleNormal();
@@ -546,7 +549,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						float scale = 2f;
 						GlStateManager.pushMatrix();
 						GlStateManager.enableBlend();
-						GlStateManager.translated(scaledWidth-80, scaledHeight-30, 0);
+						GlStateManager.translated(scaledWidth-rightOffset-80, scaledHeight-30, 0);
 						GlStateManager.scalef(scale, scale, 1);
 						ClientProxy.nixieFont.drawString((chargeLevel < 10?"0": "")+chargeLevel, 0, 0, Lib.colour_nixieTubeText);
 						GlStateManager.scalef(1/scale, 1/scale, 1);
@@ -559,7 +562,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						boolean buzzsaw = equipped.getItem() instanceof BuzzsawItem;
 						ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
 						GlStateManager.color3f(1, 1, 1);
-						float dx = scaledWidth-16;
+						float dx = scaledWidth-rightOffset-16;
 						float dy = scaledHeight;
 						GlStateManager.pushMatrix();
 						GlStateManager.translated(dx, dy, 0);
@@ -641,7 +644,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 							ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
 							GlStateManager.color3f(1, 1, 1);
 							boolean boundLeft = (player.getPrimaryHand()==HandSide.RIGHT)==(hand==Hand.OFF_HAND);
-							float dx = boundLeft?16: (scaledWidth-16-64);
+							float dx = boundLeft?16: (scaledWidth-rightOffset-16-64);
 							float dy = scaledHeight;
 							GlStateManager.pushMatrix();
 							GlStateManager.enableBlend();

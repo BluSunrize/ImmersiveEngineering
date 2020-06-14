@@ -29,6 +29,7 @@
 - Fixed assembler ignoring redstone signals (Malte)
 - Fixed mining levels for ores and storage blocks (Malte)
 - Fixed fluids not applying effects to entities in them (Malte)
+- Fixed IE hud elements overlapping with subtitles (BluSunrize)
 
 ##### Version 0.14-97 - BUILT
 - Added fuel gauge for the buzzsaw (BluSunrize)
