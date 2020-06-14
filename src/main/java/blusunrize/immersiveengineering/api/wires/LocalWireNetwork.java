@@ -15,7 +15,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
-import com.google.common.collect.MultimapBuilder;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
@@ -43,6 +42,7 @@ public class LocalWireNetwork implements IWorldTickable
 	//package private to allow GlobalWireNetwork#validate to read this
 	final Object2IntMap<ResourceLocation> handlerUserCount = new Object2IntOpenHashMap<>();
 	private List<Runnable> runNextTick = new ArrayList<>();
+	private boolean isValid = true;
 
 	public LocalWireNetwork(CompoundNBT subnet, GlobalWireNetwork globalNet)
 	{
@@ -404,5 +404,15 @@ public class LocalWireNetwork implements IWorldTickable
 			}
 		if(hasMoreAtSameBlock)
 			removeConnector(cp.getPosition());
+	}
+
+	public void setInvalid()
+	{
+		isValid = false;
+	}
+
+	public boolean isValid()
+	{
+		return isValid;
 	}
 }

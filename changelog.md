@@ -15,6 +15,11 @@
 - Added missing recipe for the "Common Projectiles" blueprint (BluSunrize)
 - Re-Added homing cartridges, these use eyes of ender now (BluSunrize)
 - Re-Added a recipe for wolfpack cartridges; also buffed their damage (requires a fresh config file) (BluSunrize)
+- Added a mixer recipe for concrete, using slag (BluSunrize)
+- Changed textures on kinetic dynamo to better represent its ability to output on all sides (BluSunrize)
+- Changed recipe for blast bricks to use magma blocks instead of blaze powder, making it available on peaceful (BluSunrize)
+- Changed redstone and probe connectors to be configured with the Engineer's Screwdriver instead of Hammer (BluSunrize)
+- Changed plated shield to store more energy and consume less of it for its upgrades (BluSunrize)
 - Fixed bounding boxes for vertical covered conveyors (Malte)
 - Fixed metal press not forming when mirrored (Malte)
 - Fixed extracting conveyors not saving their extract direction (BluSunrize)
@@ -27,6 +32,14 @@
 - Fixed diesel generator not allowing levers to be attached (Malte)
 - Fixed turrets not firing at entities (BluSunrize)
 - Fixed a crash when clicking the list of names in the turret GUI (BluSunrize)
+- Fixed vertical and splitting conveyors not inserting correctly (BluSunrize)
+- Fixed concrete recipe consuming the water bucket (BluSunrize)
+- Fixed shader bags causing registry mismatches (Malte)
+- Fixed assembler ignoring redstone signals (Malte)
+- Fixed mining levels for ores and storage blocks (Malte)
+- Fixed fluids not applying effects to entities in them (Malte)
+- Fixed IE hud elements overlapping with subtitles (BluSunrize)
+- Improved performance of wire-damage code (Malte)
 
 ##### Version 0.15-99 - BUILT
 - Initial alpha release for Minecraft 1.15.2

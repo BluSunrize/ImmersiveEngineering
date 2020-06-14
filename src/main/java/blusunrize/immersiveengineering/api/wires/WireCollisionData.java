@@ -79,6 +79,7 @@ public class WireCollisionData
 		@Nonnull
 		public final Connection conn;
 		public final boolean isInBlock;
+		private LocalWireNetwork cachedLocalNet;
 
 		public CollisionInfo(@Nonnull Vec3d intersectA, @Nonnull Vec3d intersectB, @Nonnull Connection conn,
 							 boolean isInBlock)
@@ -91,7 +92,9 @@ public class WireCollisionData
 
 		public LocalWireNetwork getLocalNet()
 		{
-			return net.getLocalNet(conn.getEndA());
+			if(cachedLocalNet==null||!cachedLocalNet.isValid())
+				cachedLocalNet = net.getLocalNet(conn.getEndA());
+			return cachedLocalNet;
 		}
 
 		@Override

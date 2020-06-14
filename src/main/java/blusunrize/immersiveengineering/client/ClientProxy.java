@@ -654,6 +654,16 @@ public class ClientProxy extends CommonProxy
 	}
 
 	@Override
+	public void openTileScreen(ResourceLocation guiId, TileEntity tileEntity)
+	{
+		if(guiId==Lib.GUIID_RedstoneConnector&&tileEntity instanceof ConnectorRedstoneTileEntity)
+			Minecraft.getInstance().displayGuiScreen(new RedstoneConnectorScreen((ConnectorRedstoneTileEntity)tileEntity, tileEntity.getBlockState().getBlock().getNameTextComponent()));
+
+		if(guiId==Lib.GUIID_RedstoneProbe&&tileEntity instanceof ConnectorProbeTileEntity)
+			Minecraft.getInstance().displayGuiScreen(new RedstoneProbeScreen((ConnectorProbeTileEntity)tileEntity, tileEntity.getBlockState().getBlock().getNameTextComponent()));
+	}
+
+	@Override
 	public void registerContainersAndScreens()
 	{
 		super.registerContainersAndScreens();

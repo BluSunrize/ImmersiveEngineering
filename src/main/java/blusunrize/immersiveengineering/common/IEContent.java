@@ -9,10 +9,7 @@
 package blusunrize.immersiveengineering.common;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.CapabilitySkyhookData;
-import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.api.IETags;
-import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.*;
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
@@ -42,7 +39,6 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
 import blusunrize.immersiveengineering.common.blocks.stone.*;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
-import blusunrize.immersiveengineering.common.crafting.ArcRecyclingThreadHandler;
 import blusunrize.immersiveengineering.common.crafting.IngredientFluidStack;
 import blusunrize.immersiveengineering.common.entities.*;
 import blusunrize.immersiveengineering.common.items.*;
@@ -62,9 +58,11 @@ import blusunrize.immersiveengineering.common.wires.IEWireTypes;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import blusunrize.immersiveengineering.common.world.OreRetrogenFeature;
 import blusunrize.immersiveengineering.common.world.Villages;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityType;
@@ -79,6 +77,7 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.potion.Effect;
+import net.minecraft.potion.Effects;
 import net.minecraft.tileentity.FurnaceTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -86,6 +85,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
+import net.minecraftforge.common.ToolType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.RegistryEvent.MissingMappings.Mapping;
 import net.minecraftforge.event.RegistryEvent.Register;
@@ -109,12 +109,12 @@ public class IEContent
 	public static List<Class<? extends TileEntity>> registeredIETiles = new ArrayList<>();
 	public static List<Fluid> registeredIEFluids = new ArrayList<>();
 
-	public static Fluid fluidCreosote;
-	public static Fluid fluidPlantoil;
-	public static Fluid fluidEthanol;
-	public static Fluid fluidBiodiesel;
-	public static Fluid fluidConcrete;
-	public static Fluid fluidHerbicide;
+	public static IEFluid fluidCreosote;
+	public static IEFluid fluidPlantoil;
+	public static IEFluid fluidEthanol;
+	public static IEFluid fluidBiodiesel;
+	public static IEFluid fluidConcrete;
+	public static IEFluid fluidHerbicide;
 	public static Fluid fluidPotion;
 
 	public static final Feature<OreFeatureConfig> ORE_RETROGEN = new OreRetrogenFeature(OreFeatureConfig::deserialize);
@@ -165,9 +165,29 @@ public class IEContent
 		fluidHerbicide = new IEFluid("herbicide", new ResourceLocation("immersiveengineering:block/fluid/herbicide_still"),
 				new ResourceLocation("immersiveengineering:block/fluid/herbicide_flow"), createBuilder(789, 1000));
 
-		Block.Properties storageProperties = Block.Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(5, 10);
 		Block.Properties sheetmetalProperties = Block.Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(3, 10);
 		ImmersiveEngineering.proxy.registerContainersAndScreens();
+
+		Map<EnumMetals, Integer> oreMiningLevels = ImmutableMap.<EnumMetals, Integer>builder()
+				.put(EnumMetals.COPPER, 1)
+				.put(EnumMetals.ALUMINUM, 1)
+				.put(EnumMetals.LEAD, 2)
+				.put(EnumMetals.SILVER, 2)
+				.put(EnumMetals.NICKEL, 2)
+				.put(EnumMetals.URANIUM, 2)
+				.build();
+		Map<EnumMetals, Integer> storageMiningLevels = ImmutableMap.<EnumMetals, Integer>builder()
+				.put(EnumMetals.COPPER, 1)
+				.put(EnumMetals.ALUMINUM, 1)
+				.put(EnumMetals.LEAD, 2)
+				.put(EnumMetals.SILVER, 2)
+				.put(EnumMetals.NICKEL, 2)
+				.put(EnumMetals.URANIUM, 2)
+				.put(EnumMetals.CONSTANTAN, 2)
+				.put(EnumMetals.ELECTRUM, 2)
+				.put(EnumMetals.STEEL, 2)
+				.build();
+
 		for(EnumMetals m : EnumMetals.values())
 		{
 			String name = m.tagName();
@@ -181,12 +201,19 @@ public class IEContent
 			addSlabFor(sheetmetal);
 			if(m.shouldAddOre())
 			{
-				ore = new IEBaseBlock("ore_"+name, Block.Properties.create(Material.ROCK)
-						.hardnessAndResistance(3, 5), BlockItemIE::new);
+				ore = new IEBaseBlock("ore_"+name,
+						Block.Properties.create(Material.ROCK)
+								.hardnessAndResistance(3, 5)
+								.harvestTool(ToolType.PICKAXE)
+								.harvestLevel(oreMiningLevels.get(m)), BlockItemIE::new);
 			}
 			if(!m.isVanillaMetal())
 			{
-				storage = new IEBaseBlock("storage_"+name, storageProperties, BlockItemIE::new);
+				storage = new IEBaseBlock("storage_"+name, Block.Properties.create(Material.IRON)
+						.sound(SoundType.METAL)
+						.hardnessAndResistance(5, 10)
+						.harvestTool(ToolType.PICKAXE)
+						.harvestLevel(storageMiningLevels.get(m)), BlockItemIE::new);
 				nugget = new IEBaseItem("nugget_"+name);
 				ingot = new IEBaseItem("ingot_"+name);
 				addSlabFor((IEBaseBlock)storage);
@@ -569,7 +596,6 @@ public class IEContent
 		checkNonNullNames(registeredIEItems);
 		for(Item item : registeredIEItems)
 			event.getRegistry().register(item);
-		registerOres();
 	}
 
 	@SubscribeEvent
@@ -740,94 +766,8 @@ public class IEContent
 		registerTile(FakeLightTileEntity.class, event, Misc.fakeLight);
 	}
 
-	public static void registerOres()
-	{
-		/*ORE DICTIONARY*/
-		/*TODO
-		registerToOreDict("ore", blockOre);
-		registerToOreDict("block", blockStorage);
-		registerToOreDict("slab", blockStorageSlabs);
-		registerToOreDict("blockSheetmetal", blockSheetmetal);
-		registerToOreDict("slabSheetmetal", blockSheetmetalSlabs);
-		registerToOreDict("", itemMetal);
-		OreDictionary.registerOre("stickTreatedWood", new ItemStack(itemMaterial, 1, 0));
-		OreDictionary.registerOre("stickIron", new ItemStack(itemMaterial, 1, 1));
-		OreDictionary.registerOre("stickSteel", new ItemStack(itemMaterial, 1, 2));
-		OreDictionary.registerOre("stickAluminum", new ItemStack(itemMaterial, 1, 3));
-		OreDictionary.registerOre("fiberHemp", new ItemStack(itemMaterial, 1, 4));
-		OreDictionary.registerOre("fabricHemp", new ItemStack(itemMaterial, 1, 5));
-		OreDictionary.registerOre("fuelCoke", new ItemStack(itemMaterial, 1, 6));
-		OreDictionary.registerOre("itemSlag", new ItemStack(itemMaterial, 1, 7));
-		OreDictionary.registerOre("dustCoke", new ItemStack(itemMaterial, 1, 17));
-		OreDictionary.registerOre("dustHOPGraphite", new ItemStack(itemMaterial, 1, 18));
-		OreDictionary.registerOre("ingotHOPGraphite", new ItemStack(itemMaterial, 1, 19));
-		OreDictionary.registerOre("wireCopper", new ItemStack(itemMaterial, 1, 20));
-		OreDictionary.registerOre("wireElectrum", new ItemStack(itemMaterial, 1, 21));
-		OreDictionary.registerOre("wireAluminum", new ItemStack(itemMaterial, 1, 22));
-		OreDictionary.registerOre("wireSteel", new ItemStack(itemMaterial, 1, 23));
-		OreDictionary.registerOre("dustSaltpeter", new ItemStack(itemMaterial, 1, 24));
-		OreDictionary.registerOre("dustSulfur", new ItemStack(itemMaterial, 1, 25));
-		OreDictionary.registerOre("electronTube", new ItemStack(itemMaterial, 1, 26));
-
-		OreDictionary.registerOre("plankTreatedWood", new ItemStack(blockTreatedWood, 1, OreDictionary.WILDCARD_VALUE));
-		OreDictionary.registerOre("slabTreatedWood", new ItemStack(blockTreatedWoodSlabs, 1, OreDictionary.WILDCARD_VALUE));
-		OreDictionary.registerOre("fenceTreatedWood", new ItemStack(blockWoodenDecoration, 1, BlockTypes_WoodenDecoration.FENCE.getMeta()));
-		OreDictionary.registerOre("scaffoldingTreatedWood", new ItemStack(blockWoodenDecoration, 1, BlockTypes_WoodenDecoration.SCAFFOLDING.getMeta()));
-		OreDictionary.registerOre("blockFuelCoke", new ItemStack(blockStoneDecoration, 1, BlockTypes_StoneDecoration.COKE.getMeta()));
-		OreDictionary.registerOre("concrete", new ItemStack(blockStoneDecoration, 1, BlockTypes_StoneDecoration.CONCRETE.getMeta()));
-		OreDictionary.registerOre("concrete", new ItemStack(blockStoneDecoration, 1, BlockTypes_StoneDecoration.CONCRETE_TILE.getMeta()));
-		OreDictionary.registerOre("fenceSteel", new ItemStack(blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.STEEL_FENCE.getMeta()));
-		OreDictionary.registerOre("fenceAluminum", new ItemStack(blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.ALUMINUM_FENCE.getMeta()));
-		OreDictionary.registerOre("scaffoldingSteel", new ItemStack(blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta()));
-		OreDictionary.registerOre("scaffoldingSteel", new ItemStack(blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_1.getMeta()));
-		OreDictionary.registerOre("scaffoldingSteel", new ItemStack(blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_2.getMeta()));
-		OreDictionary.registerOre("scaffoldingAluminum", new ItemStack(blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_0.getMeta()));
-		OreDictionary.registerOre("scaffoldingAluminum", new ItemStack(blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_1.getMeta()));
-		OreDictionary.registerOre("scaffoldingAluminum", new ItemStack(blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_2.getMeta()));
-		//Vanilla OreDict
-		OreDictionary.registerOre("blockClay", new ItemStack(Blocks.CLAY));
-		OreDictionary.registerOre("bricksStone", new ItemStack(Blocks.STONEBRICK));
-		OreDictionary.registerOre("blockIce", new ItemStack(Blocks.ICE));
-		OreDictionary.registerOre("blockPackedIce", new ItemStack(Blocks.PACKED_ICE));
-		OreDictionary.registerOre("craftingTableWood", new ItemStack(Blocks.CRAFTING_TABLE));
-		OreDictionary.registerOre("rodBlaze", new ItemStack(Items.BLAZE_ROD));
-		OreDictionary.registerOre("charcoal", new ItemStack(Items.COAL, 1, 1));
-		 */
-	}
-
-	private static ArcRecyclingThreadHandler arcRecycleThread;
-
 	public static void init()
 	{
-
-		/*ARC FURNACE RECYCLING*/
-		/*TODO move to world loading?
-		if(IEConfig.MACHINES.arcfurnace_recycle.get())
-		{
-			arcRecycleThread = new ArcRecyclingThreadHandler();
-			arcRecycleThread.start();
-		}
-		 */
-
-		/*MINING LEVELS*/
-		/*TODO
-		Metals.ores.get(EnumMetals.COPPER).setHarvestLevel("pickaxe", 1);
-		Metals.ores.get(EnumMetals.ALUMINUM).setHarvestLevel("pickaxe", 1);
-		Metals.ores.get(EnumMetals.LEAD).setHarvestLevel("pickaxe", 2);
-		Metals.ores.get(EnumMetals.SILVER).setHarvestLevel("pickaxe", 2);
-		Metals.ores.get(EnumMetals.NICKEL).setHarvestLevel("pickaxe", 2);
-		Metals.ores.get(EnumMetals.URANIUM).setHarvestLevel("pickaxe", 2);
-		blockStorage.setHarvestLevel("pickaxe", 1, blockStorage.getStateFromMeta(BlockTypes_MetalsIE.COPPER.getMeta()));
-		blockStorage.setHarvestLevel("pickaxe", 1, blockStorage.getStateFromMeta(BlockTypes_MetalsIE.ALUMINUM.getMeta()));
-		blockStorage.setHarvestLevel("pickaxe", 2, blockStorage.getStateFromMeta(BlockTypes_MetalsIE.LEAD.getMeta()));
-		blockStorage.setHarvestLevel("pickaxe", 2, blockStorage.getStateFromMeta(BlockTypes_MetalsIE.SILVER.getMeta()));
-		blockStorage.setHarvestLevel("pickaxe", 2, blockStorage.getStateFromMeta(BlockTypes_MetalsIE.NICKEL.getMeta()));
-		blockStorage.setHarvestLevel("pickaxe", 2, blockStorage.getStateFromMeta(BlockTypes_MetalsIE.URANIUM.getMeta()));
-		blockStorage.setHarvestLevel("pickaxe", 2, blockStorage.getStateFromMeta(BlockTypes_MetalsIE.CONSTANTAN.getMeta()));
-		blockStorage.setHarvestLevel("pickaxe", 2, blockStorage.getStateFromMeta(BlockTypes_MetalsIE.ELECTRUM.getMeta()));
-		blockStorage.setHarvestLevel("pickaxe", 2, blockStorage.getStateFromMeta(BlockTypes_MetalsIE.STEEL.getMeta()));
-		 */
-
 		/*WORLDGEN*/
 		addConfiguredWorldgen(Metals.ores.get(EnumMetals.COPPER), "copper", IEConfig.ORES.ore_copper);
 		addConfiguredWorldgen(Metals.ores.get(EnumMetals.ALUMINUM), "bauxite", IEConfig.ORES.ore_bauxite);
@@ -869,17 +809,11 @@ public class IEContent
 
 		DieselHandler.registerFuel(fluidBiodiesel, 125);
 		DieselHandler.registerDrillFuel(fluidBiodiesel);
-/*TODO
-		DieselHandler.registerFuel(FluidRegistry.getFluid("fuel"), 375);
-		DieselHandler.registerFuel(FluidRegistry.getFluid("diesel"), 175);
-		DieselHandler.registerDrillFuel(FluidRegistry.getFluid("fuel"));
-		DieselHandler.registerDrillFuel(FluidRegistry.getFluid("diesel"));
 
-		blockFluidCreosote.setPotionEffects(new EffectInstance(IEPotions.flammable, 100, 0));
-		blockFluidEthanol.setPotionEffects(new EffectInstance(Effects.NAUSEA, 40, 0));
-		blockFluidBiodiesel.setPotionEffects(new EffectInstance(IEPotions.flammable, 100, 1));
-		blockFluidConcrete.setPotionEffects(new EffectInstance(Effects.SLOWNESS, 20, 3, false, false));
- */
+		fluidCreosote.block.setEffect(IEPotions.flammable, 100, 0);
+		fluidEthanol.block.setEffect(Effects.NAUSEA, 70, 0);
+		fluidBiodiesel.block.setEffect(IEPotions.flammable, 100, 1);
+		fluidConcrete.block.setEffect(Effects.SLOWNESS, 20, 3);
 
 		ExcavatorHandler.mineralVeinCapacity = IEConfig.MACHINES.excavator_depletion.get();
 		ExcavatorHandler.mineralChance = IEConfig.MACHINES.excavator_chance.get();
@@ -929,35 +863,16 @@ public class IEContent
 		MultiblockHandler.registerMultiblock(IEMultiblocks.SHEETMETAL_TANK);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.EXCAVATOR_DEMO);
 
-		/*VILLAGE*/
-		/*TODO
-		IEVillagerHandler.initIEVillagerHouse();
-		IEVillagerHandler.initIEVillagerTrades();
-		 */
-
-		/*LOOT*/
-		/*TODO
-		if(IEConfig.villagerHouse)
-			LootTables.register(VillageEngineersHouse.woodenCrateLoot);
-		for(ResourceLocation rl : EventHandler.lootInjections)
-			LootTables.register(rl);
-		*/
-
 		/*BLOCK ITEMS FROM CRATES*/
-		/*TODO
 		IEApi.forbiddenInCrates.add((stack) -> {
-			if(stack.getItem()==IEContent.itemToolbox)
+			if(stack.getItem()==Tools.toolbox)
 				return true;
-			if(stack.getItem()==IEContent.itemToolbox)
+			if(stack.getItem()==WoodenDevices.crate.asItem())
 				return true;
-			if(OreDictionary.itemMatches(new ItemStack(IEContent.blockWoodenDevice0, 1, 0), stack, true))
+			if(stack.getItem()==WoodenDevices.reinforcedCrate.asItem())
 				return true;
-			if(OreDictionary.itemMatches(new ItemStack(IEContent.blockWoodenDevice0, 1, 5), stack, true))
-				return true;
-			return stack.getItem() instanceof ItemShulkerBox;
+			return Block.getBlockFromItem(stack.getItem()) instanceof ShulkerBoxBlock;
 		});
-		 */
-
 
 		FluidPipeTileEntity.initCovers();
 		LocalNetworkHandler.register(EnergyTransferHandler.ID, EnergyTransferHandler.class);
@@ -968,111 +883,6 @@ public class IEContent
 	public static void postInit()
 	{
 		Villages.init();
-		/*POTIONS*/
-		try
-		{
-			/*TODO
-			//Blame Forge for this mess. They stopped ATs from working on MixPredicate and its fields by modifying them with patches
-			//without providing a usable way to look up the vanilla potion recipes
-			String mixPredicateName = "net.minecraft.potion.PotionHelper$MixPredicate";
-			Class<?> mixPredicateClass = Class.forName(mixPredicateName);
-			Field output = ReflectionHelper.findField(mixPredicateClass,
-					ObfuscationReflectionHelper.remapFieldNames(mixPredicateName, "field_185200_c"));
-			Field reagent = ReflectionHelper.findField(mixPredicateClass,
-					ObfuscationReflectionHelper.remapFieldNames(mixPredicateName, "field_185199_b"));
-			Field input = ReflectionHelper.findField(mixPredicateClass,
-					ObfuscationReflectionHelper.remapFieldNames(mixPredicateName, "field_185198_a"));
-			output.setAccessible(true);
-			reagent.setAccessible(true);
-			input.setAccessible(true);
-			for(Object mixPredicate : PotionHelper.POTION_TYPE_CONVERSIONS)
-				//noinspection unchecked
-				MixerRecipePotion.registerPotionRecipe(((IRegistryDelegate<Potion>)output.get(mixPredicate)).get(),
-						((IRegistryDelegate<Potion>)input.get(mixPredicate)).get(),
-						ApiUtils.createIngredientStack(reagent.get(mixPredicate)));
-			 */
-		} catch(Exception x)
-		{
-			x.printStackTrace();
-		}
-		if(arcRecycleThread!=null)
-		{
-			try
-			{
-				arcRecycleThread.join();
-				arcRecycleThread.finishUp();
-			} catch(InterruptedException e)
-			{
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public static void refreshFluidReferences()
-	{
-		/*TODO
-		fluidCreosote = FluidRegistry.getFluid("creosote");
-		fluidPlantoil = FluidRegistry.getFluid("plantoil");
-		fluidEthanol = FluidRegistry.getFluid("ethanol");
-		fluidBiodiesel = FluidRegistry.getFluid("biodiesel");
-		fluidConcrete = FluidRegistry.getFluid("concrete");
-		fluidPotion = FluidRegistry.getFluid("potion");
-		 */
-	}
-
-	public static void registerToOreDict(String type, IEBaseItem item, int... metas)
-	{
-		/*TODO
-		if(metas==null||metas.length < 1)
-		{
-			for(int meta = 0; meta < item.getSubNames().length; meta++)
-				if(!item.isMetaHidden(meta))
-				{
-					String name = item.getSubNames()[meta];
-					name = createOreDictName(name);
-					if(type!=null&&!type.isEmpty())
-						name = name.substring(0, 1).toUpperCase()+name.substring(1);
-					OreDictionary.registerOre(type+name, new ItemStack(item, 1, meta));
-				}
-		}
-		else
-		{
-			for(int meta : metas)
-				if(!item.isMetaHidden(meta))
-				{
-					String name = item.getSubNames()[meta];
-					name = createOreDictName(name);
-					if(type!=null&&!type.isEmpty())
-						name = name.substring(0, 1).toUpperCase()+name.substring(1);
-					OreDictionary.registerOre(type+name, new ItemStack(item, 1, meta));
-				}
-		}
-		 */
-	}
-
-	private static String createOreDictName(String name)
-	{
-		String upperName = name.toUpperCase();
-		StringBuilder sb = new StringBuilder();
-		boolean nextCapital = false;
-		for(int i = 0; i < name.length(); i++)
-		{
-			if(name.charAt(i)=='_')
-			{
-				nextCapital = true;
-			}
-			else
-			{
-				char nextChar = name.charAt(i);
-				if(nextCapital)
-				{
-					nextChar = upperName.charAt(i);
-					nextCapital = false;
-				}
-				sb.append(nextChar);
-			}
-		}
-		return sb.toString();
 	}
 
 	public static <T extends TileEntity> void registerTile(Class<T> tile, Register<TileEntityType<?>> event, Block... valid)
@@ -1089,7 +899,7 @@ public class IEContent
 				e.printStackTrace();
 			}
 			return null;
-		}, validSet, null);//TODO where do I get a Type<T> from?
+		}, validSet, null);
 		type.setRegistryName(MODID, s);
 		event.getRegistry().register(type);
 		try

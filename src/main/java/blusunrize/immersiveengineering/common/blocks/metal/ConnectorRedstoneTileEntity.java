@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.wires.Connection;
@@ -19,6 +20,7 @@ import blusunrize.immersiveengineering.api.wires.redstone.RedstoneNetworkHandler
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectorBlock;
+import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import blusunrize.immersiveengineering.common.util.SafeChunkUtils;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.BlockState;
@@ -29,11 +31,13 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.DyeColor;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -51,7 +55,7 @@ import java.util.Collection;
 import static blusunrize.immersiveengineering.api.wires.WireType.REDSTONE_CATEGORY;
 
 public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity implements ITickableTileEntity, IStateBasedDirectional,
-		IRedstoneOutput, IHammerInteraction, IBlockBounds, IBlockOverlayText, IOBJModelCallback<BlockState>,
+		IRedstoneOutput, IPlayerInteraction, IBlockBounds, IBlockOverlayText, IOBJModelCallback<BlockState>,
 		IRedstoneConnector, INeighbourChangeTile
 {
 	public IOSideConfig ioMode = IOSideConfig.INPUT;
@@ -152,23 +156,24 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 	}
 
 	@Override
-	public boolean hammerUseSide(Direction side, PlayerEntity player, Vec3d hitVec)
+	public boolean interact(Direction side, PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
-		if(!world.isRemote)
+		if(heldItem.getItem()==Tools.screwdriver)
 		{
-			//Sneaking iterates through colours, normal hammerign toggles in and out
-			if(player.isSneaking())
-				redstoneChannel = DyeColor.byId(redstoneChannel.getId()+1);
-			else
-				ioMode = ioMode==IOSideConfig.INPUT?IOSideConfig.OUTPUT: IOSideConfig.INPUT;
-			markDirty();
-			globalNet.getLocalNet(pos)
-					.getHandler(RedstoneNetworkHandler.ID, RedstoneNetworkHandler.class)
-					.updateValues();
-			this.markContainingBlockForUpdate(null);
-			world.addBlockEvent(getPos(), this.getBlockState().getBlock(), 254, 0);
+			ImmersiveEngineering.proxy.openTileScreen(Lib.GUIID_RedstoneConnector, this);
+			return true;
 		}
-		return true;
+		return false;
+	}
+
+	protected void updateAfterConfigure()
+	{
+		markDirty();
+		globalNet.getLocalNet(pos)
+				.getHandler(RedstoneNetworkHandler.ID, RedstoneNetworkHandler.class)
+				.updateValues();
+		this.markContainingBlockForUpdate(null);
+		world.addBlockEvent(getPos(), this.getBlockState().getBlock(), 254, 0);
 	}
 
 	@Override
@@ -207,6 +212,15 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 		return false;
 	}
 
+	@Override
+	public void receiveMessageFromClient(CompoundNBT message)
+	{
+		if(message.contains("ioMode"))
+			ioMode = IOSideConfig.VALUES[message.getInt("ioMode")];
+		if(message.contains("redstoneChannel"))
+			redstoneChannel = DyeColor.byId(message.getInt("redstoneChannel"));
+		updateAfterConfigure();
+	}
 
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)

@@ -272,7 +272,6 @@ public class ImmersiveEngineering
 				IESaveData.setInstance(worldData);
 			}
 		}
-		IEContent.refreshFluidReferences();
 	}
 
 	public static ItemGroup itemGroup = new ItemGroup(MODID)

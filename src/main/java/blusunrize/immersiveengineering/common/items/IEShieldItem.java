@@ -133,7 +133,7 @@ public class IEShieldItem extends UpgradeableToolItem implements IIEEnergyItem, 
 		boolean blocking = ent instanceof LivingEntity&&((LivingEntity)ent).isActiveItemStackBlocking();
 		if(!inHand||!blocking)//Don't recharge if in use, to avoid flickering
 		{
-			if(getUpgrades(stack).contains("flash_cooldown", NBT.TAG_INT)&&this.extractEnergy(stack, 20, true)==20)
+			if(getUpgrades(stack).contains("flash_cooldown", NBT.TAG_INT)&&this.extractEnergy(stack, 10, true)==10)
 			{
 				this.extractEnergy(stack, 20, false);
 				int cooldown = getUpgrades(stack).getInt("flash_cooldown");
@@ -142,7 +142,7 @@ public class IEShieldItem extends UpgradeableToolItem implements IIEEnergyItem, 
 				else
 					getUpgrades(stack).putInt("flash_cooldown", cooldown);
 			}
-			if(getUpgrades(stack).contains("shock_cooldown", NBT.TAG_INT)&&this.extractEnergy(stack, 20, true)==20)
+			if(getUpgrades(stack).contains("shock_cooldown", NBT.TAG_INT)&&this.extractEnergy(stack, 10, true)==10)
 			{
 				this.extractEnergy(stack, 20, false);
 				int cooldown = getUpgrades(stack).getInt("shock_cooldown");
@@ -210,7 +210,7 @@ public class IEShieldItem extends UpgradeableToolItem implements IIEEnergyItem, 
 	@Override
 	public int getMaxEnergyStored(ItemStack container)
 	{
-		return (getUpgrades(container).getBoolean("flash")||getUpgrades(container).getBoolean("shock"))?1600: 0;
+		return (getUpgrades(container).getBoolean("flash")||getUpgrades(container).getBoolean("shock"))?3200: 0;
 	}
 
 	@Override

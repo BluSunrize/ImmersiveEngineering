@@ -125,6 +125,8 @@ public class TurnAndCopyRecipe extends ShapedRecipe
 					if(!handlerLazy.isPresent())
 						remains.set(transposedI, ForgeHooks.getContainerItem(s));
 				}
+				else
+					remains.set(transposedI, ForgeHooks.getContainerItem(s));
 			}
 		return remains;
 	}

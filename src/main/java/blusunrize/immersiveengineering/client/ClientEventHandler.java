@@ -442,6 +442,10 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			MatrixStack transform = new MatrixStack();
 			IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
 
+			int rightOffset = 0;
+			if(ClientUtils.mc().gameSettings.showSubtitles)
+				rightOffset += 100;
+
 			for(Hand hand : Hand.values())
 				if(!player.getHeldItem(hand).isEmpty())
 				{
@@ -489,7 +493,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 							int bulletAmount = ((IBulletContainer)equipped.getItem()).getBulletCount(equipped);
 							HandSide side = hand==Hand.MAIN_HAND?player.getPrimaryHand(): player.getPrimaryHand().opposite();
 							boolean right = side==HandSide.RIGHT;
-							float dx = right?scaledWidth-32-48: 48;
+							float dx = right?scaledWidth-rightOffset-32-48: 48;
 							float dy = scaledHeight-64;
 							transform.push();
 							transform.push();
@@ -546,7 +550,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						int chargeLevel = duration < 72000?Math.min(99, (int)(duration/(float)chargeTime*100)): 0;
 						float scale = 2f;
 						transform.push();
-						transform.translate(scaledWidth-80, scaledHeight-30, 0);
+						transform.translate(scaledWidth-rightOffset-80, scaledHeight-30, 0);
 						transform.scale(scale, scale, 1);
 						ClientProxy.nixieFont.renderString(
 								(chargeLevel < 10?"0": "")+chargeLevel, 0, 0, Lib.colour_nixieTubeText,
@@ -560,7 +564,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						boolean drill = equipped.getItem() instanceof DrillItem;
 						boolean buzzsaw = equipped.getItem() instanceof BuzzsawItem;
 						IVertexBuilder builder = buffer.getBuffer(IERenderTypes.getGui(rl("textures/gui/hud_elements.png")));
-						float dx = scaledWidth-16;
+						float dx = scaledWidth-rightOffset-16;
 						float dy = scaledHeight;
 						transform.push();
 						transform.translate(dx, dy, 0);
@@ -636,7 +640,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						{
 							IVertexBuilder builder = buffer.getBuffer(IERenderTypes.getGui(rl("textures/gui/hud_elements.png")));
 							boolean boundLeft = (player.getPrimaryHand()==HandSide.RIGHT)==(hand==Hand.OFF_HAND);
-							float dx = boundLeft?16: (scaledWidth-16-64);
+							float dx = boundLeft?16: (scaledWidth-rightOffset-16-64);
 							float dy = scaledHeight;
 							transform.push();
 							transform.translate(dx, dy, 0);

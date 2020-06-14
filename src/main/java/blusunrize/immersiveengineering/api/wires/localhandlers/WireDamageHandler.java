@@ -63,9 +63,9 @@ public class WireDamageHandler extends LocalNetworkHandler implements ICollision
 			rayRes = Optional.empty();
 		else
 			rayRes = includingExtra.rayTrace(info.intersectA, info.intersectB);
-		if(endpointsInEntity||rayRes.isPresent())
+		Map<ConnectionPoint, EnergyConnector> sources = energyHandler.getSources();
+		if(!sources.isEmpty()&&(endpointsInEntity||rayRes.isPresent()))
 		{
-			Map<ConnectionPoint, EnergyConnector> sources = energyHandler.getSources();
 			Object2IntMap<ConnectionPoint> available = getAvailableEnergy(sources);
 			Map<ConnectionPoint, Path> paths = new HashMap<>();
 			int totalAvailable = 0;
@@ -91,12 +91,13 @@ public class WireDamageHandler extends LocalNetworkHandler implements ICollision
 					//Consume energy
 					double factor = actualDamage/maxPossibleDamage;
 					Object2DoubleMap<Connection> transferred = energyHandler.getTransferredNextTick();
-					for(Entry<ConnectionPoint, EnergyConnector> source : sources.entrySet())
+					for(Object2IntMap.Entry<ConnectionPoint> entry : available.object2IntEntrySet())
 					{
-						Path path = paths.get(source.getKey());
-						int availableFromSource = available.getInt(source.getKey());
+						Path path = paths.get(entry.getKey());
+						int availableFromSource = entry.getIntValue();
 						double energyFromSource = availableFromSource*factor;
-						source.getValue().extractEnergy(MathHelper.ceil(energyFromSource));
+						EnergyConnector source = sources.get(entry.getKey());
+						source.extractEnergy(MathHelper.ceil(energyFromSource));
 						for(Connection c : path.conns)
 							transferred.mergeDouble(c, energyFromSource, Double::sum);
 					}
@@ -109,7 +110,11 @@ public class WireDamageHandler extends LocalNetworkHandler implements ICollision
 	{
 		Object2IntMap<ConnectionPoint> ret = new Object2IntOpenHashMap<>();
 		for(Entry<ConnectionPoint, EnergyConnector> c : sources.entrySet())
-			ret.put(c.getKey(), c.getValue().getAvailableEnergy());
+		{
+			int energy = c.getValue().getAvailableEnergy();
+			if(energy > 0)
+				ret.put(c.getKey(), energy);
+		}
 		return ret;
 	}
 

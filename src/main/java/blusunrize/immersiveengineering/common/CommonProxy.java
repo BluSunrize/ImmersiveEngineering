@@ -26,6 +26,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.Vec3d;
@@ -168,6 +169,10 @@ public class CommonProxy
 	public void openManual()
 	{
 
+	}
+
+	public void openTileScreen(ResourceLocation guiId, TileEntity tileEntity)
+	{
 	}
 
 	public void registerContainersAndScreens()

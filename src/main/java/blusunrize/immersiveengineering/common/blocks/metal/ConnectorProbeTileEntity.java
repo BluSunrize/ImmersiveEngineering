@@ -8,10 +8,11 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
-import blusunrize.immersiveengineering.api.wires.redstone.RedstoneNetworkHandler;
+import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.RenderType;
@@ -20,9 +21,11 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.item.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.DyeColor;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -41,7 +44,7 @@ import java.util.List;
 
 public class ConnectorProbeTileEntity extends ConnectorRedstoneTileEntity
 {
-	private DyeColor redstoneChannelSending = DyeColor.WHITE;
+	public DyeColor redstoneChannelSending = DyeColor.WHITE;
 	private int lastOutput = 0;
 	public static TileEntityType<ConnectorProbeTileEntity> TYPE;
 
@@ -113,22 +116,24 @@ public class ConnectorProbeTileEntity extends ConnectorRedstoneTileEntity
 	}
 
 	@Override
-	public boolean hammerUseSide(Direction side, PlayerEntity player, Vec3d hitVec)
+	public boolean interact(Direction side, PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
-		if(!world.isRemote)
+		if(heldItem.getItem()==Tools.screwdriver)
 		{
-			if(player.isSneaking())
-				redstoneChannel = DyeColor.byId(redstoneChannel.getId()+1);
-			else
-				redstoneChannelSending = DyeColor.byId(redstoneChannelSending.getId()+1);
-			markDirty();
-			globalNet.getLocalNet(pos)
-					.getHandler(RedstoneNetworkHandler.ID, RedstoneNetworkHandler.class)
-					.updateValues();
-			this.markContainingBlockForUpdate(null);
-			world.addBlockEvent(getPos(), this.getBlockState().getBlock(), 254, 0);
+			ImmersiveEngineering.proxy.openTileScreen(Lib.GUIID_RedstoneProbe, this);
+			return true;
 		}
-		return true;
+		return false;
+	}
+
+	@Override
+	public void receiveMessageFromClient(CompoundNBT message)
+	{
+		if(message.contains("redstoneChannel"))
+			redstoneChannel = DyeColor.byId(message.getInt("redstoneChannel"));
+		if(message.contains("redstoneChannelSending"))
+			redstoneChannelSending = DyeColor.byId(message.getInt("redstoneChannelSending"));
+		updateAfterConfigure();
 	}
 
 	@Override
