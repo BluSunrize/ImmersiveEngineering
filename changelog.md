@@ -10,6 +10,7 @@
 - Added a mixer recipe for concrete, using slag (BluSunrize)
 - Changed textures on kinetic dynamo to better represent its ability to output on all sides (BluSunrize)
 - Changed recipe for blast bricks to use magma blocks instead of blaze powder, making it available on peaceful (BluSunrize)
+- Changed redstone and probe connectors to be configured with the Engineer's Screwdriver instead of Hammer (BluSunrize)
 - Fixed bounding boxes for vertical covered conveyors (Malte)
 - Fixed metal press not forming when mirrored (Malte)
 - Fixed extracting conveyors not saving their extract direction (BluSunrize)
@@ -24,6 +25,10 @@
 - Fixed a crash when clicking the list of names in the turret GUI (BluSunrize)
 - Fixed vertical and splitting conveyors not inserting correctly (BluSunrize)
 - Fixed concrete recipe consuming the water bucket (BluSunrize)
+- Fixed shader bags causing registry mismatches (Malte)
+- Fixed assembler ignoring redstone signals (Malte)
+- Fixed mining levels for ores and storage blocks (Malte)
+- Fixed fluids not applying effects to entities in them (Malte)
 
 ##### Version 0.14-97 - BUILT
 - Added fuel gauge for the buzzsaw (BluSunrize)
