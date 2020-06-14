@@ -11,6 +11,7 @@
 - Changed textures on kinetic dynamo to better represent its ability to output on all sides (BluSunrize)
 - Changed recipe for blast bricks to use magma blocks instead of blaze powder, making it available on peaceful (BluSunrize)
 - Changed redstone and probe connectors to be configured with the Engineer's Screwdriver instead of Hammer (BluSunrize)
+- Changed plated shield to store more energy and consume less of it for its upgrades (BluSunrize)
 - Fixed bounding boxes for vertical covered conveyors (Malte)
 - Fixed metal press not forming when mirrored (Malte)
 - Fixed extracting conveyors not saving their extract direction (BluSunrize)
