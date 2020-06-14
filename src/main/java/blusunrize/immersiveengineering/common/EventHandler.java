@@ -31,8 +31,6 @@ import blusunrize.immersiveengineering.common.items.IEShieldItem;
 import blusunrize.immersiveengineering.common.network.MessageMinecartShaderSync;
 import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamageSource;
-import it.unimi.dsi.fastutil.longs.LongArrayList;
-import it.unimi.dsi.fastutil.longs.LongList;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
@@ -214,14 +212,11 @@ public class EventHandler
 			ImmersiveEngineering.packetHandler.sendToServer(new MessageMinecartShaderSync(event.getEntity(), null));
 	}
 
-	private LongList tickTimes = new LongArrayList();
-
 	@SubscribeEvent
 	public void onWorldTick(WorldTickEvent event)
 	{
 		if(event.phase==TickEvent.Phase.START&&!event.world.isRemote)
 		{
-			//TODO implement for the new system if (validateConnsNextTick)...
 			DimensionType dim = event.world.getDimension().getType();
 			GlobalWireNetwork.getNetwork(event.world).tick();
 

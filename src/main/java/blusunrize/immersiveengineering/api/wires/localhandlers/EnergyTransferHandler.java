@@ -37,7 +37,7 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 	private Object2DoubleMap<Connection> transferredLastTick = new Object2DoubleOpenHashMap<>();
 	private final Map<ConnectionPoint, EnergyConnector> sources = new HashMap<>();
 	private final Map<ConnectionPoint, EnergyConnector> sinks = new HashMap<>();
-	private boolean uninitialised = true;
+	private boolean sourceSinkMapInitialized = true;
 
 	public EnergyTransferHandler(LocalWireNetwork net)
 	{
@@ -84,8 +84,6 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 	@Override
 	public void update(World w)
 	{
-		if(uninitialised)
-			calcPaths();
 		transferPower();
 		burnOverloaded(w);
 		transferredLastTick = transferredNextTick;
@@ -116,43 +114,32 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 		transferredLastTick.clear();
 		sinks.clear();
 		sources.clear();
-		uninitialised = true;
+		sourceSinkMapInitialized = false;
+		energyPaths.clear();
 	}
 
 	public Map<ConnectionPoint, EnergyConnector> getSources()
 	{
-		if(uninitialised)
-			calcPaths();
+		updateSourcesAndSinks();
 		return sources;
 	}
 
 	@Nullable
 	public Path getPath(ConnectionPoint source, ConnectionPoint sink)
 	{
-		if(uninitialised)
-			calcPaths();
-		if(sources.containsKey(source)&&sinks.containsKey(sink))
-			return energyPaths.get(source, sink);
-		else
-		{
-			final Path[] ret = {null};
+		if(!energyPaths.containsRow(source))
 			runDijkstraWithSource(source, p -> {
-				if(p.end.equals(sink))
-				{
-					ret[0] = p;
-					return true;
-				}
-				else
-					return false;
+				energyPaths.put(source, p.end, p);
+				return false;
 			});
-			return ret[0];
-		}
+		return energyPaths.get(source, sink);
 	}
 
-	private void calcPaths()
+	private void updateSourcesAndSinks()
 	{
-		uninitialised = false;
-		energyPaths.clear();
+		if(sourceSinkMapInitialized)
+			return;
+		sourceSinkMapInitialized = true;
 		for(ConnectionPoint cp : net.getConnectionPoints())
 		{
 			IImmersiveConnectable iic = net.getConnector(cp);
@@ -165,13 +152,6 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 					sources.put(cp, energyIIC);
 			}
 		}
-		if(sources.isEmpty()||sinks.isEmpty())
-			return;
-		for(ConnectionPoint source : sources.keySet())
-			runDijkstraWithSource(source, p -> {
-				energyPaths.put(source, p.end, p);
-				return false;
-			});
 	}
 
 	private void runDijkstraWithSource(ConnectionPoint source, Predicate<Path> stopAfter)

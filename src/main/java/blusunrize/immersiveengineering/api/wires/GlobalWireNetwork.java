@@ -9,12 +9,9 @@
 package blusunrize.immersiveengineering.api.wires;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.wires.localhandlers.ILocalHandlerProvider;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.wires.WireSyncManager;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.MultimapBuilder;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArraySet;
@@ -33,6 +30,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -41,9 +39,9 @@ import static blusunrize.immersiveengineering.common.util.SafeChunkUtils.isChunk
 
 public class GlobalWireNetwork implements ITickableTileEntity
 {
-	private Map<ConnectionPoint, LocalWireNetwork> localNets = new HashMap<>();
-	private WireCollisionData collisionData = new WireCollisionData(this);
-	private World world;
+	private final Map<ConnectionPoint, LocalWireNetwork> localNets = new HashMap<>();
+	private final WireCollisionData collisionData = new WireCollisionData(this);
+	private final World world;
 
 	@Nonnull
 	public static GlobalWireNetwork getNetwork(World w)
@@ -104,7 +102,7 @@ public class GlobalWireNetwork implements ITickableTileEntity
 		}
 		WireLogger.logger.info("Result: {}, to set: {}", joined, toSet);
 		for(ConnectionPoint p : toSet)
-			localNets.put(p, joined);
+			putLocalNet(p, joined);
 		joined.addConnection(conn);
 		WireSyncManager.onConnectionAdded(conn, world);
 		validateNextTick = true;
@@ -157,11 +155,12 @@ public class GlobalWireNetwork implements ITickableTileEntity
 		for(LocalWireNetwork net : newNets)
 			if(net!=oldNet)
 				for(ConnectionPoint p : net.getConnectionPoints())
-					localNets.put(p, net);
+					putLocalNet(p, net);
 	}
 
 	public void readFromNBT(CompoundNBT nbt)
 	{
+		localNets.values().forEach(LocalWireNetwork::setInvalid);
 		localNets.clear();
 		ListNBT locals = nbt.getList("locals", NBT.TAG_COMPOUND);
 		for(INBT b : locals)
@@ -170,7 +169,7 @@ public class GlobalWireNetwork implements ITickableTileEntity
 			LocalWireNetwork localNet = new LocalWireNetwork(subnet, this);
 			WireLogger.logger.info("Loading net {}", localNet);
 			for(ConnectionPoint p : localNet.getConnectionPoints())
-				localNets.put(p, localNet);
+				putLocalNet(p, localNet);
 		}
 	}
 
@@ -222,7 +221,7 @@ public class GlobalWireNetwork implements ITickableTileEntity
 			if(local!=null)
 			{
 				WireLogger.logger.info("Removing");
-				localNets.remove(c);
+				putLocalNet(c, null);
 				netsToRemoveFrom.add(local);
 				if(iicPos!=null)
 					Preconditions.checkState(iicPos.equals(c.getPosition()));
@@ -438,5 +437,16 @@ public class GlobalWireNetwork implements ITickableTileEntity
 				cpsAtInvalid.add(cp);
 		for(ConnectionPoint toRemove : cpsAtInvalid)
 			removeCP(toRemove);
+	}
+
+	private void putLocalNet(ConnectionPoint cp, @Nullable LocalWireNetwork net)
+	{
+		LocalWireNetwork oldNet = localNets.get(cp);
+		if(oldNet!=null)
+			oldNet.setInvalid();
+		if(net!=null)
+			localNets.put(cp, net);
+		else
+			localNets.remove(cp);
 	}
 }
