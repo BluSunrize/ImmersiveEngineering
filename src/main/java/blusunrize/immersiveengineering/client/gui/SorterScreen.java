@@ -59,7 +59,7 @@ public class SorterScreen extends IEContainerScreen<SorterContainer>
 					String[] split = I18n.format(Lib.DESC_INFO+"filter."+(type==0?"oreDict": type==1?"nbt": "fuzzy")).split("<br>");
 					for(int i = 0; i < split.length; i++)
 						tooltip.add(new StringTextComponent(split[i]).setStyle(new Style().setColor(i==0?TextFormatting.WHITE: TextFormatting.GRAY)));
-					ClientUtils.drawHoveringText(tooltip, mx, my, font, guiLeft+xSize, -1);
+					ClientUtils.drawHoveringText(tooltip, mx, my, font, width, height);
 				}
 		}
 	}

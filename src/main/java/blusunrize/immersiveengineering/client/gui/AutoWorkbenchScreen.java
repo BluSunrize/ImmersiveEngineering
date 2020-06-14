@@ -82,7 +82,7 @@ public class AutoWorkbenchScreen extends IEContainerScreen<AutoWorkbenchContaine
 			tooltip.add(new StringTextComponent(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" IF"));
 
 		if(!tooltip.isEmpty())
-			ClientUtils.drawHoveringText(tooltip, mx, my, font, guiLeft+xSize, -1);
+			ClientUtils.drawHoveringText(tooltip, mx, my, font, width, height);
 	}
 
 

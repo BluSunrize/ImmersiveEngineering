@@ -79,7 +79,7 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 						ClientUtils.addFluidTooltip(tile.filters[side][i], tooltip, 0);
 				}
 		if(!tooltip.isEmpty())
-			ClientUtils.drawHoveringText(tooltip, mx, my, font, guiLeft+xSize, -1);
+			ClientUtils.drawHoveringText(tooltip, mx, my, font, width, height);
 	}
 
 	@Override

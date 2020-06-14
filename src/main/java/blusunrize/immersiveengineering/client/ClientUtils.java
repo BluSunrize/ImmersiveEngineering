@@ -49,7 +49,6 @@ import net.minecraft.client.renderer.vertex.VertexFormatElement.Type;
 import net.minecraft.client.renderer.vertex.VertexFormatElement.Usage;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.client.util.ITooltipFlag.TooltipFlags;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.client.util.InputMappings.Input;
 import net.minecraft.entity.Entity;
@@ -484,25 +483,6 @@ public class ClientUtils
 		drawColouredRect(x+8-w/2, y+8-h/2, w, h, 0x77111111);
 		drawColouredRect(x+8-w/2, y+8+h/2, w+1, 1, 0x77999999);
 		drawColouredRect(x+8+w/2, y+8-h/2, 1, h, 0x77999999);
-	}
-
-	public static void renderToolTip(ItemStack stack, int x, int y)
-	{
-		List list = stack.getTooltip(mc().player, mc().gameSettings.advancedItemTooltips?TooltipFlags.ADVANCED: TooltipFlags.NORMAL);
-
-		for(int k = 0; k < list.size(); ++k)
-			if(k==0)
-				list.set(k, stack.getRarity().color+(String)list.get(k));
-			else
-				list.set(k, TextFormatting.GRAY+(String)list.get(k));
-
-		FontRenderer font = stack.getItem().getFontRenderer(stack);
-		drawHoveringText(list, x, y, (font==null?font(): font));
-	}
-
-	public static void drawHoveringText(List<ITextComponent> list, int x, int y, FontRenderer font)
-	{
-		drawHoveringText(list, x, y, font, -1, -1);
 	}
 
 	public static void drawHoveringText(List<ITextComponent> list, int x, int y, FontRenderer font, int xSize, int ySize)

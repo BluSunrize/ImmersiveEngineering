@@ -118,7 +118,7 @@ public class ItemBatcherScreen extends IEContainerScreen<ItemBatcherContainer>
 			}
 
 		if(!tooltip.isEmpty())
-			ClientUtils.drawHoveringText(tooltip, mx, my, font, guiLeft+xSize, -1);
+			ClientUtils.drawHoveringText(tooltip, mx, my, font, width, height);
 	}
 
 	@Override

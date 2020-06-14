@@ -47,7 +47,7 @@ public class ToolboxScreen extends IEContainerScreen<ToolboxContainer>
 		if(ss!=null)
 			tooltip.add(new TranslationTextComponent(Lib.DESC_INFO+"toolbox."+ss).setStyle(new Style().setColor(TextFormatting.GRAY)));
 		if(!tooltip.isEmpty())
-			ClientUtils.drawHoveringText(tooltip, mx, my, font, guiLeft+xSize, -1);
+			ClientUtils.drawHoveringText(tooltip, mx, my, font, width, height);
 	}
 
 	@Override

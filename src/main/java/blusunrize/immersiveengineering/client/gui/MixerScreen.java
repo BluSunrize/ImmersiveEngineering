@@ -100,7 +100,7 @@ public class MixerScreen extends IEContainerScreen<MixerContainer>
 		if(mx >= guiLeft+106&&mx <= guiLeft+136&&my >= guiTop+61&&my <= guiTop+77)
 			tooltip.add(new TranslationTextComponent(Lib.GUI_CONFIG+"mixer.output"+(tile.outputAll?"All": "Single")));
 		if(!tooltip.isEmpty())
-			ClientUtils.drawHoveringText(tooltip, mx, my, font, guiLeft+xSize, -1);
+			ClientUtils.drawHoveringText(tooltip, mx, my, font, width, height);
 	}
 
 	@Override

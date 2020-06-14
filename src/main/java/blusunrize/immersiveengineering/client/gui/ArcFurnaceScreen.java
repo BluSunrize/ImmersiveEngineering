@@ -50,7 +50,7 @@ public class ArcFurnaceScreen extends IEContainerScreen<ArcFurnaceContainer>
 			tooltip.add(new TranslationTextComponent(Lib.GUI_CONFIG+"arcfurnace.distribute"));
 
 		if(!tooltip.isEmpty())
-			ClientUtils.drawHoveringText(tooltip, mx, my, font, guiLeft+xSize, -1);
+			ClientUtils.drawHoveringText(tooltip, mx, my, font, width, height);
 	}
 
 

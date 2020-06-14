@@ -3,6 +3,7 @@
  - Fixed Optifine shader packs crashing with the IEOBJ item renderer (Vaelzan)
  - Fixed crashes when using the buzzsaw or drill (Malte)
  - Fixed missing connectors on feedthrough models (Malte)
+ - Fixed missing tooltips in various GUIs (Malte)
  - Also includes the changes from 0.14-100
 
 ##### Version 0.14-100
