@@ -1,3 +1,6 @@
+##### Version 0.14-102 - BUILT
+- Fixed wires no longer transferring energy after release 100 (Malte)
+
 ##### Version 0.15-101 - BUILT
  - Fixed hemp rendering as solid (Malte)
  - Fixed Optifine shader packs crashing with the IEOBJ item renderer (Vaelzan)
@@ -6,7 +9,7 @@
  - Fixed missing tooltips in various GUIs (Malte)
  - Also includes the changes from 0.14-100
 
-##### Version 0.14-100
+##### Version 0.14-100 - BUILT
 - Added different sounds for blocks of different materials (BluSunrize)
 - Added "forge:ores" tag to all IE ores (Malte)
 - Re-Added packing and unpacking recipes for the metal press (BluSunrize)
