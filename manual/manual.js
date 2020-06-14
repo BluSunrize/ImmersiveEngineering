@@ -72,6 +72,14 @@ function switch_to_entry() {
             let div_pages = $('<div class="pages"></div>');
             result['pages'].forEach((page, page_nr) => {
                 let div_singlepage = $(`<div class="page_${page_nr}"></div>`);
+
+                // append special elements
+                for (let anchor of page['anchors'])
+                    if (result['specials'][anchor]) {
+                        div_singlepage.append(build_special_element(result['specials'][anchor]));
+                    }
+
+                // append paragraphs
                 let lines = page['text'].split('\n');
                 for (let line of lines) {
                     div_singlepage.append(parse_line(line));
@@ -140,4 +148,19 @@ function parse_line(line) {
     // Add the rest
     paragraph.append(`<span>${line.substr(last_index)}</span>`);
     return paragraph;
+}
+
+function build_special_element(special_element) {
+    console.log('add special element ');
+    console.log(special_element);
+    if (special_element['type'] === 'crafting') {
+        let container = $(`<div class="crafting_container" grid_height="${special_element['height']}"></div>`);
+        for(let recipe of special_element['recipes']){
+            let recipe_div = $(`<div class="recipe" grid_height="${special_element['height']}" grid_width="${special_element['width']}"></div>`);
+            recipe_div.append('crafting recipe for '+JSON.stringify(recipe['output']));
+            container.append(recipe_div);
+        }
+        return container;
+    }
+    return null;
 }

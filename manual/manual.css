@@ -102,24 +102,33 @@ div.manual {
     font-weight: bold;
 }
 
+/* Content */
 .content p {
     margin: 0;
 }
 
-    /* Footer */
+/* Special Elements */
+.crafting_container[grid_height="3"] {
+    height: 18.75%;
+}
+
+/* Footer */
 footer {
     margin-top: auto;
     display: flex;
     justify-content: space-between;
 }
+
 footer button.off {
     pointer-events: none;
     opacity: 0;
 }
+
 footer button.page_prev::before {
     content: '🡄';
     color: var(--text-color);
 }
+
 footer button.page_next::before {
     content: '🡆';
     color: var(--text-color);
@@ -134,6 +143,7 @@ div.pages p {
 .content p span.link {
     text-decoration: underline;
 }
+
 .content p span.link:hover {
     color: var(--highlight-color);
     cursor: pointer;
