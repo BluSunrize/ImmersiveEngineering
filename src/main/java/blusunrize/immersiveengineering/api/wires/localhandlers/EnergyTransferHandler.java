@@ -26,6 +26,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.function.Predicate;
 
 public class EnergyTransferHandler extends LocalNetworkHandler implements IWorldTickable
@@ -115,7 +116,6 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 		sinks.clear();
 		sources.clear();
 		sourceSinkMapInitialized = false;
-		energyPaths.clear();
 	}
 
 	public Map<ConnectionPoint, EnergyConnector> getSources()
@@ -195,25 +195,27 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 
 	private void transferPower()
 	{
-		for(ConnectionPoint sourceCp : energyPaths.rowKeySet())
+		updateSourcesAndSinks();
+		for(Entry<ConnectionPoint, EnergyConnector> sourceEntry : sources.entrySet())
 		{
-			EnergyConnector source = sources.get(sourceCp);
+			ConnectionPoint sourceCp = sourceEntry.getKey();
+			EnergyConnector source = sourceEntry.getValue();
 			int available = source.getAvailableEnergy();
 			if(available <= 0)
 				continue;
 			double maxSum = 0;
 			Object2DoubleMap<Path> maxOut = new Object2DoubleOpenHashMap<>();
-			for(Path p : energyPaths.row(sourceCp).values())
-				if(p.isPathToSink)
-				{
-					EnergyConnector end = sinks.get(p.end);
-					int requested = end.getRequestedEnergy();
-					if(requested <= 0)
-						continue;
-					double requiredAtSource = Math.min(requested/(1-p.loss), available);
-					maxOut.put(p, requiredAtSource);
-					maxSum += requiredAtSource;
-				}
+			for(Entry<ConnectionPoint, EnergyConnector> sinkEntry : sinks.entrySet())
+			{
+				Path p = getPath(sourceCp, sinkEntry.getKey());
+				EnergyConnector sink = sinkEntry.getValue();
+				int requested = sink.getRequestedEnergy();
+				if(requested <= 0)
+					continue;
+				double requiredAtSource = Math.min(requested/(1-p.loss), available);
+				maxOut.put(p, requiredAtSource);
+				maxSum += requiredAtSource;
+			}
 			double allowedFactor = Math.min(1, available/maxSum);
 			for(Path p : maxOut.keySet())
 			{
