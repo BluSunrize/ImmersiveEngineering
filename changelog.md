@@ -1,3 +1,6 @@
+##### Version 0.15-103 - BUILT
+- Fixed wires no longer transferring energy after release 101 (Malte)
+
 ##### Version 0.14-102 - BUILT
 - Fixed wires no longer transferring energy after release 100 (Malte)
 
