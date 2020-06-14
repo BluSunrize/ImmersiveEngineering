@@ -746,6 +746,13 @@ public class Recipes extends RecipeProvider
 				.addInput(IETags.clay)
 				.setEnergy(3200)
 				.build(out, toRL("mixer/concrete"));
+		MixerRecipeBuilder.builder(IEContent.fluidConcrete, 500)
+				.addFluid(Fluids.WATER, 500)
+				.addInput(new IngredientWithSize(IETags.slag, 2))
+				.addInput(Tags.Items.GRAVEL)
+				.addInput(IETags.clay)
+				.setEnergy(3200)
+				.build(out, toRL("mixer/concrete"));
 	}
 
 	private void mineralMixes(@Nonnull Consumer<IFinishedRecipe> out)
