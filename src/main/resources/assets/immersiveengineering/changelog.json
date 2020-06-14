@@ -1,5 +1,4 @@
 {
     "0.15-99": "- Initial alpha release for Minecraft 1.15.2\n- Highlight the trigger block for multiblocks in the manual",
-    "0.15-101": " - Fixed hemp rendering as solid (Malte)\n - Fixed Optifine shader packs crashing with the IEOBJ item renderer (Vaelzan)\n - Fixed crashes when using the buzzsaw or drill (Malte)\n - Fixed missing connectors on feedthrough models (Malte)\n - Fixed missing tooltips in various GUIs (Malte)\n - Also includes the changes from 0.14-100",
-    "0.15-103": "- Fixed wires no longer transferring energy after release 101 (Malte)"
+    "0.15-101": " - Fixed hemp rendering as solid (Malte)\n - Fixed Optifine shader packs crashing with the IEOBJ item renderer (Vaelzan)\n - Fixed crashes when using the buzzsaw or drill (Malte)\n - Fixed missing connectors on feedthrough models (Malte)\n - Fixed missing tooltips in various GUIs (Malte)\n - Also includes the changes from 0.14-100"
 }
