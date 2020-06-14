@@ -13,8 +13,8 @@
         "1.12.2-recommended": "0.12-89",
         "1.14.4-latest": "0.14-97",
         "1.14.4-recommended": "0.14-97",
-        "1.15.2-latest": "0.15-99",
-        "1.15.2-recommended": "0.15-99"
+        "1.15.2-latest": "0.15-101",
+        "1.15.2-recommended": "0.15-101"
     },
     "1.8.9": {
         "0.8-24": "- massive shoutout to Malte for figuring out some proper wire rendering! :D\n- added compat for DenseOres (crushing/smelting) \n- fixed lanterns not emitting light\n- fixed silver bullets causing a crash\n- fixed gunpowder barrels crashing because of a duplicate datamarker\n- fixed gunpowder barrels dropping from explosions\n- fixed CokeOvens not interacting with hoppers\n- fixed wires not outputting to RF-only receivers (thanks Malte)\n- fixed connections on HV relays (thanks Malte)\n- fixed a crash caused by hammering the top/bottom of a wooden post\n- fixed the stackoverflow in sheetmetal tanks\n- fixed the themoelectric gen crashing (thanks Malte)\n- fixed the waterwheels breaking more other wheels (thanks Malte)\n- fixed textures on stone slabs (thanks Malte)",
@@ -96,6 +96,7 @@
         "0.14-97": "- Added fuel gauge for the buzzsaw (BluSunrize)\n- Added a covered version of the splitting conveyor (BluSunrize)\n- Added a steel hoe (BluSunrize)\n- Changed buzzsaw blade quiver to keep the sawblades when removed (BluSunrize)\n- Fixed a crash triggered by other mod's automatic recipe unlocks (BluSunrize)\n- Fixed a crash with the wirecoil tooltips (Malte)\n- Fixed a crash when rendering coresamples with Optifine installed (Malte)\n- Fixed buzzsaw upgrade achievement not triggering (BluSunrize)\n- Fixed buzzsaw and drill not taking damage or requiring fuel when used as weapons (BluSunrize)\n- Fixed wrong transformations for steel tools (Malte)\n- Fixed fluid gauge for the drill going over (Malte)\n- Fixed broken recipe syncing (Malte)"
     },
     "1.15.2": {
-        "0.15-99": "- Initial alpha release for Minecraft 1.15.2\n- Highlight the trigger block for multiblocks in the manual"
+        "0.15-99": "- Initial alpha release for Minecraft 1.15.2\n- Highlight the trigger block for multiblocks in the manual",
+        "0.15-101": " - Fixed hemp rendering as solid (Malte)\n - Fixed Optifine shader packs crashing with the IEOBJ item renderer (Vaelzan)\n - Fixed crashes when using the buzzsaw or drill (Malte)\n - Fixed missing connectors on feedthrough models (Malte)\n - Fixed missing tooltips in various GUIs (Malte)\n - Also includes the changes from 0.14-100"
     }
 }
