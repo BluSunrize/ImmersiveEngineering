@@ -135,7 +135,8 @@ public class FeedthroughTileEntity extends ImmersiveConnectableTileEntity implem
 		{
 			LootContext.Builder builder = new LootContext.Builder(context.getWorld())
 					.withNullableParameter(LootParameters.TOOL, context.get(LootParameters.TOOL))
-					.withNullableParameter(LootParameters.THIS_ENTITY, context.get(LootParameters.THIS_ENTITY));
+					.withNullableParameter(LootParameters.THIS_ENTITY, context.get(LootParameters.THIS_ENTITY))
+					.withNullableParameter(LootParameters.POSITION, context.get(LootParameters.POSITION));
 			return Utils.getDrops(stateForMiddle, builder);
 		}
 		else
@@ -148,7 +149,6 @@ public class FeedthroughTileEntity extends ImmersiveConnectableTileEntity implem
 	@Override
 	public ItemStack getPickBlock(@Nullable PlayerEntity player, BlockState state, RayTraceResult rayRes)
 	{
-		WireApi.FeedthroughModelInfo info = INFOS.get(reference);
 		if(offset==0)
 			return Utils.getPickBlock(stateForMiddle, rayRes, player);
 		return ITileDrop.super.getPickBlock(player, state, rayRes);
