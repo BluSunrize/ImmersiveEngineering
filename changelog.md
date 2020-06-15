@@ -1,3 +1,6 @@
+##### Version 0.14-104 - BUILT
+- Fixed feedthroughs not dropping the middle block when it's broken (Malte)
+
 ##### Version 0.14-102 - BUILT
 - Fixed wires no longer transferring energy after release 100 (Malte)
 
