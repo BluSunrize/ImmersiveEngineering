@@ -1,3 +1,7 @@
+##### Version 0.15-105
+- Fixed invisible connectors with Optifine (Malte)
+- Also includes the changes from 0.14-104
+
 ##### Version 0.14-104
 - Fixed feedthroughs not dropping the middle block when it's broken (Malte)
 

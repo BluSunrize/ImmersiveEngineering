@@ -139,7 +139,7 @@ public class BakedConnectionModel extends BakedIEModel
 
 	private List<BakedQuad> getBaseQuads(RenderType currentLayer, BlockState state, Direction side, Random rand, IModelData data)
 	{
-		if(base!=null&&(currentLayer==null||layers.contains(currentLayer.toString())))
+		if(base!=null&&(currentLayer==null||layers.contains(currentLayer.name)))
 			return base.getQuads(state, side, rand, data);
 		return ImmutableList.of();
 	}
