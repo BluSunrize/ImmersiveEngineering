@@ -1,4 +1,4 @@
-##### Version 0.14-104 - BUILT
+##### Version 0.14-104
 - Fixed feedthroughs not dropping the middle block when it's broken (Malte)
 
 ##### Version 0.14-102 - BUILT
