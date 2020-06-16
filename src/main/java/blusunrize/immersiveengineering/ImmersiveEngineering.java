@@ -67,16 +67,15 @@ public class ImmersiveEngineering
 	public static final String MODID = "immersiveengineering";
 	public static final String MODNAME = "Immersive Engineering";
 	public static final String VERSION = "${version}";
-	public static final String NETWORK_VERSION = "1";
 	@SuppressWarnings("Convert2MethodRef")
 	public static CommonProxy proxy = DistExecutor.runForDist(() -> () -> new ClientProxy(),
 			() -> () -> new CommonProxy());
 
 	public static final SimpleChannel packetHandler = NetworkRegistry.ChannelBuilder
 			.named(new ResourceLocation(MODID, "main"))
-			.networkProtocolVersion(() -> NETWORK_VERSION)
-			.serverAcceptedVersions(NETWORK_VERSION::equals)
-			.clientAcceptedVersions(NETWORK_VERSION::equals)
+			.networkProtocolVersion(() -> VERSION)
+			.serverAcceptedVersions(VERSION::equals)
+			.clientAcceptedVersions(VERSION::equals)
 			.simpleChannel();
 
 	public ImmersiveEngineering()
