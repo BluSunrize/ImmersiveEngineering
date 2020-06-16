@@ -46,7 +46,7 @@ import static blusunrize.immersiveengineering.api.IEProperties.FACING_ALL;
 
 public class FeedthroughMultiblock implements IMultiblock
 {
-	private static final ITextComponent ARBITRARY_SOLID = new TranslationTextComponent("tile.immersiveengineering.arb_solid.name");
+	private static final ITextComponent ARBITRARY_SOLID = new TranslationTextComponent("block.immersiveengineering.arb_solid");
 	public static FeedthroughMultiblock instance = new FeedthroughMultiblock();
 	static List<BlockInfo> structure = new ArrayList<>();
 
