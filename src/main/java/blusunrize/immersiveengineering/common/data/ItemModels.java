@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.client.models.ModelConveyor.ConveyorLoade
 import blusunrize.immersiveengineering.client.models.ModelCoresample.CoresampleLoader;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
+import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.CoverType;
 import blusunrize.immersiveengineering.common.data.models.LoadedModelBuilder;
 import blusunrize.immersiveengineering.common.data.models.LoadedModelProvider;
 import blusunrize.immersiveengineering.common.items.IEItems;
@@ -24,7 +25,6 @@ import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import blusunrize.immersiveengineering.common.items.IEItems.Weapons;
 import blusunrize.immersiveengineering.common.util.fluids.IEFluid;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.fluid.Fluid;
@@ -160,6 +160,10 @@ public class ItemModels extends LoadedModelProvider
 
 		obj(MetalDecoration.lantern, modLoc("block/lantern_inventory.obj"))
 				.transforms(modLoc("item/block"));
+		addLayeredItemModel(
+				MetalDecoration.metalLadder.get(CoverType.NONE).asItem(),
+				rl("block/metal_decoration/metal_ladder")
+		);
 	}
 
 	private void createWoodenModels()

@@ -3,6 +3,8 @@
 - Fixed IE allowing clients to join servers with mismatched IE versions (Malte)
 - Fixed diesel generators still not allowing levers to be placed in all cases (Malte)
 - Fixed toolbox facing the wrong way when placed (Malte)
+- Fixed transforms for non-covered metal ladders (Malte)
+- Fixed translation of the middle block of feedthroughs (Malte)
 
 ##### Version 0.14-102 - BUILT
 - Fixed wires no longer transferring energy after release 100 (Malte)
