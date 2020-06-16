@@ -16,7 +16,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = "0.15-104" + getBuildNumber()
+version = "0.15-105" + getBuildNumber()
 group = 'blusunrize.immersiveengineering' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'ImmersiveEngineering'
 
