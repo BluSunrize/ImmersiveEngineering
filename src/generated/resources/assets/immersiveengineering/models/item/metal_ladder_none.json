@@ -1,3 +1,6 @@
 {
-  "parent": "immersiveengineering:block/metal_ladder"
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "immersiveengineering:block/metal_decoration/metal_ladder"
+  }
 }

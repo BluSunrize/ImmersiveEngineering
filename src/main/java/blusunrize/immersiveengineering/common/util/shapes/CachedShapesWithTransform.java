@@ -48,19 +48,23 @@ public class CachedShapesWithTransform<ShapeKey, TransformKey> extends CachedVox
 	createForMultiblock(Function<BlockPos, List<AxisAlignedBB>> create)
 	{
 		return new CachedShapesWithTransform<>(create,
-				(key, box) -> {
-					AxisAlignedBB mirrored = box;
-					if(key.getRight())
-						mirrored = new AxisAlignedBB(
-								1-box.minX,
-								box.minY,
-								box.minZ,
-								1-box.maxX,
-								box.maxY,
-								box.maxZ
-						);
-					return Utils.transformAABB(mirrored, key.getLeft());
-				});
+				(key, box) -> withFacingAndMirror(box, key.getLeft(), key.getRight())
+		);
+	}
+
+	public static AxisAlignedBB withFacingAndMirror(AxisAlignedBB in, Direction d, boolean mirror)
+	{
+		AxisAlignedBB mirrored = in;
+		if(mirror)
+			mirrored = new AxisAlignedBB(
+					1-in.minX,
+					in.minY,
+					in.minZ,
+					1-in.maxX,
+					in.maxY,
+					in.maxZ
+			);
+		return Utils.transformAABB(mirrored, d);
 	}
 
 	public static <T> CachedShapesWithTransform<T, Direction> createDirectional(Function<T, List<AxisAlignedBB>> create)

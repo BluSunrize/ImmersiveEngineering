@@ -411,7 +411,6 @@ public class BlockStates extends BlockStateProvider
 			createDirectionalBlock(none, IEProperties.FACING_HORIZONTAL, noneModel);
 			createDirectionalBlock(alu, IEProperties.FACING_HORIZONTAL, aluModel);
 			createDirectionalBlock(steel, IEProperties.FACING_HORIZONTAL, steelModel);
-			itemModels.put(none, noneModel);
 			itemModels.put(alu, aluModel);
 			itemModels.put(steel, steelModel);
 		}
@@ -962,7 +961,7 @@ public class BlockStates extends BlockStateProvider
 		}
 		else
 			parent = new ResourceLocation(ImmersiveEngineering.MODID, "block/ie_ladder");
-		textures.put("ladder", new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_decoration/metal_ladder"));
+		textures.put("ladder", rl("block/metal_decoration/metal_ladder"));
 		LoadedModelBuilder ret = loadedModels.withExistingParent(name, parent);
 		if(bottomTop!=null)
 			ret.transforms(rl("item/block"));

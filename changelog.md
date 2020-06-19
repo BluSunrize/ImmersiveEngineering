@@ -4,6 +4,11 @@
 
 ##### Version 0.14-104
 - Fixed feedthroughs not dropping the middle block when it's broken (Malte)
+- Fixed IE allowing clients to join servers with mismatched IE versions (Malte)
+- Fixed diesel generators still not allowing levers to be placed in all cases (Malte)
+- Fixed toolbox facing the wrong way when placed (Malte)
+- Fixed transforms for non-covered metal ladders (Malte)
+- Fixed translation of the middle block of feedthroughs (Malte)
 
 ##### Version 0.15-103 - BUILT
 - Fixed wires no longer transferring energy after release 101 (Malte)

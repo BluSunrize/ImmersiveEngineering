@@ -186,7 +186,7 @@ public class ToolboxTileEntity extends IEBaseTileEntity implements IStateBasedDi
 	@Override
 	public boolean mirrorFacingOnPlacement(LivingEntity placer)
 	{
-		return false;
+		return true;
 	}
 
 	@Override

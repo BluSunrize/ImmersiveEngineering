@@ -254,9 +254,10 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 		VoxelShape base = CachedShapesWithTransform.get(SHAPES, this);
 		if(isRedstonePos()&&ctx!=null&&!ctx.func_216378_a(ScaffoldingBlock.CHECK_SHAPE, pos, false))
 		{
-			AxisAlignedBB box = Utils.transformAABB(
-					new AxisAlignedBB(0, 0, 0, 0.0625, 1, 1),
-					getFacing()
+			AxisAlignedBB box = CachedShapesWithTransform.withFacingAndMirror(
+					new AxisAlignedBB(0.9375, 0, 0, 1, 1, 1),
+					getFacing(),
+					getIsMirrored()
 			);
 			base = VoxelShapes.or(base, VoxelShapes.create(box));
 		}
