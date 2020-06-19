@@ -1,5 +1,6 @@
 ##### Version 0.15-105
 - Fixed invisible connectors with Optifine (Malte)
+- Fixed metal ladders rendering as solid (Malte)
 - Also includes the changes from 0.14-104
 
 ##### Version 0.14-104
