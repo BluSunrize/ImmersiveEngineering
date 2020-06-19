@@ -6,6 +6,7 @@ import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
 import blusunrize.immersiveengineering.common.blocks.generic.ConnectorBlock;
+import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.CoverType;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import net.minecraft.block.Block;
 import net.minecraft.block.SlabBlock;
@@ -88,6 +89,11 @@ public class BlockRenderLayers
 				Cloth.balloon,
 				rt -> rt==RenderType.getSolid()||rt==RenderType.getTranslucent()
 		);
+		for(CoverType cover : CoverType.values())
+			RenderTypeLookup.setRenderLayer(
+					MetalDecoration.metalLadder.get(cover),
+					RenderType.getCutout()
+			);
 
 		RenderTypeLookup.setRenderLayer(Misc.hempPlant, RenderType.getCutout());
 		RenderTypeLookup.setRenderLayer(IEContent.fluidPotion, RenderType.getTranslucent());

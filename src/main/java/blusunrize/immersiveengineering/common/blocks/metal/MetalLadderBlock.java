@@ -63,7 +63,12 @@ public class MetalLadderBlock extends LadderBlock
 
 	public MetalLadderBlock(CoverType type)
 	{
-		super(Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(3, 15));
+		super(
+				Properties.create(Material.IRON)
+						.sound(SoundType.METAL)
+						.hardnessAndResistance(3, 15)
+						.notSolid()
+		);
 		this.type = type;
 		setRegistryName(new ResourceLocation(ImmersiveEngineering.MODID, "metal_ladder_"+type.name().toLowerCase()));
 
