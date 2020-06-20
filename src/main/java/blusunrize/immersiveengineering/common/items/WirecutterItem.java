@@ -73,12 +73,6 @@ public class WirecutterItem extends IEBaseItem implements ITool
 		return true;
 	}
 
-//	@Override
-//	public int getMaxDamageIE(ItemStack stack)
-//	{
-//		return IEConfig.TOOLS.cutterDurabiliy.get();
-//	}
-
 	@Override
 	public boolean isEnchantable(@Nonnull ItemStack stack)
 	{
