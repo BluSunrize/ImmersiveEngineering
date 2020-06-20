@@ -76,7 +76,7 @@ public class CommandMineral
 		}).then(
 				Commands.argument("location", ColumnPosArgument.columnPos())
 						.executes(command -> {
-							ColumnPos pos = command.getArgument("location", ColumnPos.class);
+							ColumnPos pos = ColumnPosArgument.func_218101_a(command, "location");
 							getMineral(command, pos.x, pos.z);
 							return Command.SINGLE_SUCCESS;
 						})
@@ -106,7 +106,7 @@ public class CommandMineral
 		}).then(
 				Commands.argument("location", ColumnPosArgument.columnPos())
 						.executes(command -> {
-							ColumnPos pos = command.getArgument("location", ColumnPos.class);
+							ColumnPos pos = ColumnPosArgument.func_218101_a(command, "location");
 							setMineral(command, pos.x, pos.z);
 							return Command.SINGLE_SUCCESS;
 						})
@@ -139,7 +139,7 @@ public class CommandMineral
 		}).then(
 				Commands.argument("location", ColumnPosArgument.columnPos())
 						.executes(command -> {
-							ColumnPos pos = command.getArgument("location", ColumnPos.class);
+							ColumnPos pos = ColumnPosArgument.func_218101_a(command, "location");
 							setMineralDepletion(command, pos.x, pos.z);
 							return Command.SINGLE_SUCCESS;
 						})
