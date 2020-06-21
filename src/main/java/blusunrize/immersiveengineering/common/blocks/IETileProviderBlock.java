@@ -263,8 +263,6 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 			boolean b = ((IPlayerInteraction)tile).interact(side, player, hand, heldItem, hitX, hitY, hitZ);
 			if(b)
 				return ActionResultType.SUCCESS;
-			else
-				return ActionResultType.FAIL;
 		}
 		if(tile instanceof IInteractionObjectIE&&hand==Hand.MAIN_HAND&&!player.isSneaking())
 		{

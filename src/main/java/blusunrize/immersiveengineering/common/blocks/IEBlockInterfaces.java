@@ -295,6 +295,7 @@ public class IEBlockInterfaces
 
 	public interface IPlayerInteraction
 	{
+		//TODO should really return ActionResultType
 		boolean interact(Direction side, PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ);
 	}
 
