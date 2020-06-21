@@ -11,8 +11,10 @@ package blusunrize.immersiveengineering.common.blocks.plant;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
+import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.EnumProperty;
@@ -20,6 +22,7 @@ import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
@@ -199,5 +202,11 @@ public class HempBlock extends BushBlock implements IGrowable
 		}
 		if(growth==EnumHempGrowth.BOTTOM4&&world.isAirBlock(pos.add(0, 1, 0)))
 			world.setBlockState(pos.add(0, 1, 0), state.with(GROWTH, EnumHempGrowth.TOP0));
+	}
+
+	@Override
+	public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player)
+	{
+		return new ItemStack(Misc.hempSeeds);
 	}
 }
