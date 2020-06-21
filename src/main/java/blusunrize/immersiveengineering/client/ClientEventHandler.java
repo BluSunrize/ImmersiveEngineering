@@ -904,7 +904,8 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						angle = player.ticksExisted%80/40d;
 					double stepDistance = (cw180?2: 4)*Math.PI;
 					angle = -(angle-Math.sin(angle*stepDistance)/stepDistance)*Math.PI;
-					drawCircularRotationArrows(buffer, transform, (float) angle, rotation==Rotation.COUNTERCLOCKWISE_90, cw180);
+					drawCircularRotationArrows(buffer, transform, (float)angle, rotation==Rotation.COUNTERCLOCKWISE_90, cw180);
+					transform.pop();
 					transform.pop();
 				}
 			}
