@@ -5,6 +5,11 @@
 - Fixed toolbox facing the wrong way when placed (Malte)
 - Fixed transforms for non-covered metal ladders (Malte)
 - Fixed translation of the middle block of feedthroughs (Malte)
+- Fixed coresamples not marking maps (Malte)
+- Fixed "pick block" not working correctly on hemp (Malte)
+- Fixed mineral commands not working with specified coordinates (Malte)
+- Fixed item duplication when repairing hammers or wirecutters (Malte)
+- Cleaned up some wire network code (Malte)
 
 ##### Version 0.14-102 - BUILT
 - Fixed wires no longer transferring energy after release 100 (Malte)

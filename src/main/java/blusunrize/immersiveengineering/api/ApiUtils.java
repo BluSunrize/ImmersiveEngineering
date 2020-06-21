@@ -666,19 +666,8 @@ public class ApiUtils
 									Set<BlockPos> ignore = new HashSet<>();
 									ignore.addAll(iicHere.getIgnored(iicLink));
 									ignore.addAll(iicLink.getIgnored(iicHere));
-									Set<BlockPos> failedReasons = new HashSet<>();
 									Connection tempConn = new Connection(wire, cpHere, cpLink);
-									Vec3d start = iicHere.getConnectionOffset(tempConn, cpHere);
-									Vec3d end = iicLink.getConnectionOffset(tempConn, cpLink);
-									ApiUtils.raytraceAlongCatenaryRelative(tempConn, (p) -> {
-										if(!ignore.contains(p.getLeft()))
-										{
-											BlockState state = world.getBlockState(p.getLeft());
-											if(ApiUtils.preventsConnection(world, p.getLeft(), state, p.getMiddle(), p.getRight()))
-												failedReasons.add(p.getLeft());
-										}
-									}, (p) -> {
-									}, start, end.add(new Vec3d(cpLink.getPosition().subtract(masterPos))));
+									Set<BlockPos> failedReasons = findObstructingBlocks(world, tempConn, ignore);
 									if(failedReasons.isEmpty())
 									{
 										Connection conn = new Connection(wire, cpHere, cpLink);
@@ -719,6 +708,28 @@ public class ApiUtils
 			return ActionResultType.SUCCESS;
 		}
 		return ActionResultType.PASS;
+	}
+
+	public static Set<BlockPos> findObstructingBlocks(World world, Connection conn, Set<BlockPos> ignore)
+	{
+		TileEntity teA = world.getTileEntity(conn.getEndA().getPosition());
+		TileEntity teB = world.getTileEntity(conn.getEndB().getPosition());
+		Set<BlockPos> obstructions = new HashSet<>();
+		if(teA instanceof IImmersiveConnectable&&teB instanceof IImmersiveConnectable)
+		{
+			Vec3d start = ((IImmersiveConnectable)teA).getConnectionOffset(conn, conn.getEndA());
+			Vec3d end = ((IImmersiveConnectable)teB).getConnectionOffset(conn, conn.getEndB());
+			ApiUtils.raytraceAlongCatenaryRelative(conn, (p) -> {
+				if(!ignore.contains(p.getLeft()))
+				{
+					BlockState state = world.getBlockState(p.getLeft());
+					if(ApiUtils.preventsConnection(world, p.getLeft(), state, p.getMiddle(), p.getRight()))
+						obstructions.add(p.getLeft());
+				}
+			}, (p) -> {
+			}, start, end.add(new Vec3d(conn.getEndB().getPosition().subtract(conn.getEndA().getPosition()))));
+		}
+		return obstructions;
 	}
 
 	public static Object convertToValidRecipeInput(Object input)
