@@ -14,6 +14,8 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.common.util.Constants.NBT;
 
+import javax.annotation.Nullable;
+
 public class DimensionChunkCoords extends ChunkPos
 {
 	public DimensionType dimension;
@@ -58,6 +60,7 @@ public class DimensionChunkCoords extends ChunkPos
 		return tag;
 	}
 
+	@Nullable
 	public static DimensionChunkCoords readFromNBT(CompoundNBT tag)
 	{
 		if(tag.contains("dim", NBT.TAG_STRING)&&tag.contains("x", NBT.TAG_INT)&&tag.contains("z", NBT.TAG_INT))

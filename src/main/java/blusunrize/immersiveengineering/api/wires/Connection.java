@@ -33,28 +33,43 @@ public class Connection
 	private CatenaryData catData;
 	boolean blockDataGenerated = false;
 
-	public Connection(@Nonnull WireType type, @Nonnull ConnectionPoint endA, @Nonnull ConnectionPoint endB)
+	private Connection(@Nonnull WireType type, @Nonnull ConnectionPoint endA, @Nonnull ConnectionPoint endB, boolean internal)
 	{
 		this.type = type;
+		if(endA.compareTo(endB) < 0)
+		{
+			ConnectionPoint tmp = endA;
+			endA = endB;
+			endB = tmp;
+		}
 		this.endA = endA;
 		this.endB = endB;
-		this.internal = false;
+		this.internal = internal;
+	}
+
+	public Connection(@Nonnull WireType type, @Nonnull ConnectionPoint endA, @Nonnull ConnectionPoint endB)
+	{
+		this(type, endA, endB, false);
 	}
 
 	public Connection(BlockPos pos, int idA, int idB)
 	{
-		this.type = WireType.INTERNAL_CONNECTION;
-		this.endA = new ConnectionPoint(pos, idA);
-		this.endB = new ConnectionPoint(pos, idB);
-		this.internal = true;
+		this(
+				WireType.INTERNAL_CONNECTION,
+				new ConnectionPoint(pos, idA),
+				new ConnectionPoint(pos, idB),
+				true
+		);
 	}
 
 	public Connection(CompoundNBT nbt)
 	{
-		type = WireType.getValue(nbt.getString("type"));
-		endA = new ConnectionPoint(nbt.getCompound("endA"));
-		endB = new ConnectionPoint(nbt.getCompound("endB"));
-		internal = nbt.getBoolean("internal");
+		this(
+				WireType.getValue(nbt.getString("type")),
+				new ConnectionPoint(nbt.getCompound("endA")),
+				new ConnectionPoint(nbt.getCompound("endB")),
+				nbt.getBoolean("internal")
+		);
 	}
 
 	public ConnectionPoint getOtherEnd(ConnectionPoint known)
@@ -236,6 +251,20 @@ public class Connection
 		return result;
 	}
 
+	public ConnectionPoint[] getEnds()
+	{
+		return new ConnectionPoint[]{
+				endA,
+				endB
+		};
+	}
+
+	/**
+	 * This is no longer needed in 1.14+, since connections are the same object for both directions now
+	 *
+	 * @deprecated
+	 */
+	@Deprecated
 	public boolean hasSameConnectors(Connection other)
 	{
 		return (endA.equals(other.endA)&&endB.equals(other.endB))

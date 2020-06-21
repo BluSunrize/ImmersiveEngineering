@@ -22,15 +22,17 @@ public class WireCollisionData
 {
 	private final Multimap<BlockPos, CollisionInfo> blockToWires = HashMultimap.create();
 	private final GlobalWireNetwork net;
+	private final boolean isRemote;
 
-	public WireCollisionData(GlobalWireNetwork net)
+	WireCollisionData(GlobalWireNetwork net, boolean isRemote)
 	{
 		this.net = net;
+		this.isRemote = isRemote;
 	}
 
 	public void addConnection(Connection conn)
 	{
-		if(!conn.isInternal())
+		if(!isRemote&&!conn.isInternal())
 		{
 			WireLogger.logger.info("Adding block data for {}", conn);
 			if(!conn.blockDataGenerated)
@@ -50,7 +52,7 @@ public class WireCollisionData
 	public void removeConnection(Connection conn)
 	{
 		WireLogger.logger.info("Removing block data for {}", conn);
-		if(conn.blockDataGenerated)
+		if(!isRemote&&conn.blockDataGenerated)
 		{
 			WireLogger.logger.info("Raytracing for removal of {}", conn);
 			ApiUtils.raytraceAlongCatenary(conn.getCatenaryData(), conn.getEndA().getPosition(),
@@ -92,7 +94,7 @@ public class WireCollisionData
 
 		public LocalWireNetwork getLocalNet()
 		{
-			if(cachedLocalNet==null||!cachedLocalNet.isValid())
+			if(cachedLocalNet==null||!cachedLocalNet.isValid(conn.getEndA()))
 				cachedLocalNet = net.getLocalNet(conn.getEndA());
 			return cachedLocalNet;
 		}

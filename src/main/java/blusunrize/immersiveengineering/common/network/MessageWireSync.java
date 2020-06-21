@@ -80,7 +80,7 @@ public class MessageWireSync implements IMessage
 			GlobalWireNetwork globalNet = GlobalWireNetwork.getNetwork(w);
 			if(added)
 				globalNet.addConnection(new Connection(type, start, end));
-			else
+			else if(globalNet.getNullableLocalNet(start)!=null&&globalNet.getNullableLocalNet(end)!=null)
 				globalNet.removeConnection(new Connection(type, start, end));
 			TileEntity startTE = w.getTileEntity(start.getPosition());
 			if(startTE!=null)
@@ -93,5 +93,6 @@ public class MessageWireSync implements IMessage
 			state = w.getBlockState(end.getPosition());
 			w.notifyBlockUpdate(end.getPosition(), state, state, 3);
 		});
+		context.get().setPacketHandled(true);
 	}
 }

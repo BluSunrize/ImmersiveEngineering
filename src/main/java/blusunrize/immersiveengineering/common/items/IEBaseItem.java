@@ -104,4 +104,15 @@ public class IEBaseItem extends Item implements IColouredItem
 	{
 		return ImmersiveEngineering.proxy.useIEOBJRenderer(new Properties());
 	}
+
+	@Override
+	public boolean isRepairable(@Nonnull ItemStack stack)
+	{
+		return false;
+	}
+
+	public boolean isIERepairable(@Nonnull ItemStack stack)
+	{
+		return super.isRepairable(stack);
+	}
 }

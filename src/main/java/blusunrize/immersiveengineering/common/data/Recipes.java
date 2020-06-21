@@ -25,8 +25,11 @@ import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.Cove
 import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
-import blusunrize.immersiveengineering.common.crafting.*;
+import blusunrize.immersiveengineering.common.crafting.HammerCrushingRecipeBuilder;
 import blusunrize.immersiveengineering.common.crafting.IEConfigConditionSerializer.ConditionIEConfig;
+import blusunrize.immersiveengineering.common.crafting.IngredientFluidStack;
+import blusunrize.immersiveengineering.common.crafting.RevolverAssemblyRecipeBuilder;
+import blusunrize.immersiveengineering.common.crafting.TurnAndCopyRecipeBuilder;
 import blusunrize.immersiveengineering.common.data.resources.RecipeMetals;
 import blusunrize.immersiveengineering.common.data.resources.RecipeMetals.AlloyProperties;
 import blusunrize.immersiveengineering.common.data.resources.RecipeOres;
@@ -177,6 +180,8 @@ public class Recipes extends RecipeProvider
 				.build(out, ImmersiveEngineering.MODID+":earmuffs_attach");
 		CustomRecipeBuilder.customRecipe(RecipeSerializers.JERRYCAN_REFILL.get())
 				.build(out, ImmersiveEngineering.MODID+":jerrycan_refill");
+		CustomRecipeBuilder.customRecipe(RecipeSerializers.IE_REPAIR.get())
+				.build(out, ImmersiveEngineering.MODID+":ie_item_repair");
 		addRGBRecipe(out, toRL("curtain_colour"), Ingredient.fromItems(Cloth.curtain), "colour");
 
 		recipesBlast(out);

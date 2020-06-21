@@ -64,10 +64,17 @@ public class IEConfig
 									"Use with care and backups and only when suspecting corrupted data.",
 							"This option will check and load all connection endpoints and may slow down the world loading process.")
 					.define("sanitizeConnections", false);
+			builder.push("debug");
 			enableWireLogger = builder
 					.comment("Enable detailed logging for the wire network. This can be useful for developers to track"+
 							" down issues related to wires.")
 					.define("enableWireLogger", false);
+			validateNet = builder
+					.comment("Run sanity checks on the wire network after every interaction. This will cause a decent "+
+							"amount of lag and a lot of log spam if the wire network isn't fully intact. Only enable "+
+							"when asked to by an IE developer.")
+					.define("validateNets", false);
+			builder.pop();
 			List<Integer> defaultTransferRates = Lists.newArrayList(2048, 8192, 32768, 0, 0, 0);
 			wireTransferRate = builder
 					.comment("The transfer rates in Flux/t for the wire tiers (copper, electrum, HV, Structural Rope, Cable & Redstone (no transfer) )")
@@ -94,6 +101,7 @@ public class IEConfig
 
 		public final BooleanValue sanitizeConnections;
 		public final BooleanValue enableWireLogger;
+		public final BooleanValue validateNet;
 		public final ConfigValue<List<? extends Integer>> wireTransferRate;
 		public final ConfigValue<List<? extends Double>> wireLossRatio;
 		public final ConfigValue<List<? extends Integer>> wireColouration;
