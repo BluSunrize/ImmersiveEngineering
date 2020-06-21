@@ -26,7 +26,6 @@ import blusunrize.immersiveengineering.common.items.CoresampleItem;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
-import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockState;
@@ -148,8 +147,7 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 		ItemStack stack = new ItemStack(Misc.coresample);
 		ItemNBTHelper.putLong(stack, "timestamp", world.getGameTime());
 		DimensionChunkCoords dimCoords = new DimensionChunkCoords(world.dimension.getType(), chunkX, chunkZ);
-		ItemNBTHelper.setTagCompound(stack, "coords", dimCoords.writeToNBT());
-		IELogger.logger.info("Created basic sample: {}", stack);
+		CoresampleItem.setCoords(stack, dimCoords);
 		if(info==null)
 			return stack;
 		if(info.mineralOverride!=null)

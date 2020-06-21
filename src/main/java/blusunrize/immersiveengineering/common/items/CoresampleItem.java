@@ -52,7 +52,7 @@ public class CoresampleItem extends IEBaseItem
 	@OnlyIn(Dist.CLIENT)
 	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
 	{
-		DimensionChunkCoords coords = DimensionChunkCoords.readFromNBT(stack.getOrCreateTag().getCompound("coords"));
+		DimensionChunkCoords coords = getCoords(stack);
 		if(coords!=null)
 		{
 			MineralMix mineral = getMix(stack);
@@ -156,5 +156,19 @@ public class CoresampleItem extends IEBaseItem
 		{
 			return null;
 		}
+	}
+
+	@Nullable
+	public static DimensionChunkCoords getCoords(@Nullable ItemStack stack)
+	{
+		if(stack!=null&&stack.hasTag())
+			return DimensionChunkCoords.readFromNBT(stack.getOrCreateTag().getCompound("coords"));
+		else
+			return null;
+	}
+
+	public static void setCoords(ItemStack stack, DimensionChunkCoords coords)
+	{
+		stack.getOrCreateTag().put("coords", coords.writeToNBT());
 	}
 }

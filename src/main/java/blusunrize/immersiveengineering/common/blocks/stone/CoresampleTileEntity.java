@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.items.CoresampleItem;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.resources.I18n;
@@ -43,7 +42,6 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.storage.MapData;
 import net.minecraft.world.storage.MapDecoration;
 import net.minecraft.world.storage.loot.LootContext;
-import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -106,6 +104,7 @@ public class CoresampleTileEntity extends IEBaseTileEntity implements IStateBase
 	@Override
 	public boolean interact(Direction side, PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
+		DimensionChunkCoords coords = CoresampleItem.getCoords(coresample);
 		if(player.isSneaking())
 		{
 			if(!world.isRemote)
@@ -118,15 +117,14 @@ public class CoresampleTileEntity extends IEBaseTileEntity implements IStateBase
 			}
 			return true;
 		}
-		else if(!heldItem.isEmpty()&&heldItem.getItem()==Items.FILLED_MAP&&ItemNBTHelper.hasKey(coresample, "coords"))
+		else if(!heldItem.isEmpty()&&heldItem.getItem()==Items.FILLED_MAP&&coords!=null)
 		{
 			if(!world.isRemote)
 			{
 				MapData mapData = FilledMapItem.getMapData(heldItem, player.getEntityWorld());
 				if(mapData!=null)
 				{
-					int[] coords = ItemNBTHelper.getIntArray(coresample, "coords");
-					String ident = "ie:coresample_"+coords[0]+";"+coords[1]+";"+coords[2];
+					String ident = "ie:coresample_"+coords.toString();
 					CompoundNBT mapTagCompound = heldItem.getOrCreateTag();
 					ListNBT nbttaglist = mapTagCompound.getList("Decorations", 10);
 
@@ -142,8 +140,8 @@ public class CoresampleTileEntity extends IEBaseTileEntity implements IStateBase
 						}
 					}
 
-					double sampleX = coords[1]*16+8.5;
-					double sampleZ = coords[2]*16+8.5;
+					double sampleX = coords.x*16+8.5;
+					double sampleZ = coords.z*16+8.5;
 
 					int mapScale = 1<<mapData.scale;
 					float distX = (float)(sampleX-mapData.xCenter)/(float)mapScale;
@@ -196,15 +194,12 @@ public class CoresampleTileEntity extends IEBaseTileEntity implements IStateBase
 	@Override
 	public String[] getOverlayText(PlayerEntity player, RayTraceResult mop, boolean hammer)
 	{
-		if(coresample!=null&&ItemNBTHelper.hasKey(coresample, "coords", NBT.TAG_COMPOUND))
+		DimensionChunkCoords dimPos = CoresampleItem.getCoords(coresample);
+		if(dimPos!=null)
 		{
 			if(overlay==null)
 			{
 				overlay = new String[3];
-				CompoundNBT coordNBT = ItemNBTHelper.getTagCompound(coresample, "coords");
-				DimensionChunkCoords dimPos = DimensionChunkCoords.readFromNBT(coordNBT);
-				if(dimPos==null)
-					return new String[0];
 				overlay[0] = I18n.format(Lib.CHAT_INFO+"coresample.noMineral");
 				MineralMix mineral = CoresampleItem.getMix(coresample);
 				if(mineral!=null)
