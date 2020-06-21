@@ -9,11 +9,12 @@
 package blusunrize.immersiveengineering.api.wires;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.wires.localhandlers.ILocalHandlerProvider;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.wires.WireSyncManager;
 import com.google.common.base.Preconditions;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import com.google.common.collect.HashMultiset;
+import com.google.common.collect.Multiset;
 import it.unimi.dsi.fastutil.objects.ObjectArraySet;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.item.ItemEntity;
@@ -33,6 +34,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static blusunrize.immersiveengineering.common.util.SafeChunkUtils.getSafeTE;
 import static blusunrize.immersiveengineering.common.util.SafeChunkUtils.isChunkSafe;
@@ -40,7 +42,7 @@ import static blusunrize.immersiveengineering.common.util.SafeChunkUtils.isChunk
 public class GlobalWireNetwork implements ITickableTileEntity
 {
 	private final Map<ConnectionPoint, LocalWireNetwork> localNets = new HashMap<>();
-	private final WireCollisionData collisionData = new WireCollisionData(this);
+	private final WireCollisionData collisionData;
 	private final World world;
 
 	@Nonnull
@@ -54,55 +56,29 @@ public class GlobalWireNetwork implements ITickableTileEntity
 	public GlobalWireNetwork(World w)
 	{
 		world = w;
+		collisionData = new WireCollisionData(this, w.isRemote);
 	}
 
 	public void addConnection(Connection conn)
 	{
 		ConnectionPoint posA = conn.getEndA();
 		ConnectionPoint posB = conn.getEndB();
-		IImmersiveConnectable iicA = getLocalNet(posA).getConnector(posA.getPosition());
-		IImmersiveConnectable iicB = getLocalNet(posB).getConnector(posB.getPosition());
-		LocalWireNetwork netA = getNullableLocalNet(posA);
-		LocalWireNetwork netB = getNullableLocalNet(posB);
-		Collection<ConnectionPoint> toSet = new ArrayList<>(2);
+		LocalWireNetwork netA = getLocalNet(posA);
+		LocalWireNetwork netB = getLocalNet(posB);
 		LocalWireNetwork joined;
-		if(netA==null&&netB==null)
-		{
-			WireLogger.logger.info("null-null");
-			joined = new LocalWireNetwork(this);
-			toSet.add(posA);
-			toSet.add(posB);
-			joined.loadConnector(posA, iicA);
-			joined.loadConnector(posB, iicB);
-		}
-		else if(netA==null)
-		{
-			WireLogger.logger.info("null-non");
-			toSet.add(posA);
-			joined = netB;
-			joined.loadConnector(posA, iicA);
-		}
-		else if(netB==null)
-		{
-			WireLogger.logger.info("non-null");
-			toSet.add(posB);
-			joined = netA;
-			joined.loadConnector(posB, iicB);
-		}
-		else if(netA!=netB)
+		if(netA!=netB)
 		{
 			WireLogger.logger.info("non-non-different: {} and {}", netA, netB);
 			joined = netA.merge(netB);
-			toSet = joined.getConnectionPoints();
+			for(ConnectionPoint p : joined.getConnectionPoints())
+				putLocalNet(p, joined);
 		}
 		else
 		{
 			WireLogger.logger.info("non-non-same");
 			joined = netA;
 		}
-		WireLogger.logger.info("Result: {}, to set: {}", joined, toSet);
-		for(ConnectionPoint p : toSet)
-			putLocalNet(p, joined);
+		WireLogger.logger.info("Result: {}", joined);
 		joined.addConnection(conn);
 		WireSyncManager.onConnectionAdded(conn, world);
 		validateNextTick = true;
@@ -129,11 +105,14 @@ public class GlobalWireNetwork implements ITickableTileEntity
 
 	public void removeConnection(Connection c)
 	{
-		if(!world.isRemote)
-			collisionData.removeConnection(c);
-		LocalWireNetwork oldNet = localNets.get(c.getEndA());
-		if(oldNet==null||oldNet.getConnector(c.getEndB())==null)
+		collisionData.removeConnection(c);
+		LocalWireNetwork oldNet = getNullableLocalNet(c.getEndA());
+		if(oldNet==null)
+		{
+			Preconditions.checkState(getNullableLocalNet(c.getEndB())==null);
 			return;
+		}
+		Preconditions.checkNotNull(oldNet.getConnector(c.getEndB()));
 		oldNet.removeConnection(c);
 		splitNet(oldNet);
 		WireSyncManager.onConnectionRemoved(c, world);
@@ -153,9 +132,8 @@ public class GlobalWireNetwork implements ITickableTileEntity
 	{
 		Collection<LocalWireNetwork> newNets = oldNet.split();
 		for(LocalWireNetwork net : newNets)
-			if(net!=oldNet)
-				for(ConnectionPoint p : net.getConnectionPoints())
-					putLocalNet(p, net);
+			for(ConnectionPoint p : net.getConnectionPoints())
+				putLocalNet(p, net);
 	}
 
 	public void readFromNBT(CompoundNBT nbt)
@@ -192,11 +170,13 @@ public class GlobalWireNetwork implements ITickableTileEntity
 
 	public LocalWireNetwork getLocalNet(ConnectionPoint pos)
 	{
-		return localNets.computeIfAbsent(pos, p -> {
-			LocalWireNetwork ret = new LocalWireNetwork(this);
-			ret.loadConnector(pos, new IICProxy(world.dimension.getType(), pos.getPosition()));
-			return ret;
+		LocalWireNetwork ret = localNets.computeIfAbsent(pos, p -> {
+			LocalWireNetwork newNet = new LocalWireNetwork(this);
+			newNet.addConnector(pos, new IICProxy(world.dimension.getType(), pos.getPosition()));
+			return newNet;
 		});
+		Preconditions.checkState(ret.isValid(pos), "%s is not a valid net", ret);
+		return ret;
 	}
 
 	public LocalWireNetwork getNullableLocalNet(BlockPos pos)
@@ -242,21 +222,21 @@ public class GlobalWireNetwork implements ITickableTileEntity
 		if(validating)
 			WireLogger.logger.error("Adding a connector during validation!");
 		boolean isNew = false;
+		Set<LocalWireNetwork> loadedInNets = new HashSet<>();
 		for(ConnectionPoint cp : iic.getConnectionPoints())
 		{
 			if(getNullableLocalNet(cp)==null)
 				isNew = true;
 			LocalWireNetwork local = getLocalNet(cp);
-			local.loadConnector(cp, iic);
+			if(loadedInNets.add(local))
+				local.loadConnector(cp.getPosition(), iic, false);
 		}
 		if(isNew&&!world.isRemote)
-		{
 			for(Connection c : iic.getInternalConnections())
 			{
 				Preconditions.checkArgument(c.isInternal(), "Internal connection for "+iic+"was not marked as internal!");
 				addConnection(c);
 			}
-		}
 		ApiUtils.addFutureServerTask(w, () -> {
 			for(ConnectionPoint cp : iic.getConnectionPoints())
 				for(Connection c : getLocalNet(cp).getConnections(cp))
@@ -304,17 +284,16 @@ public class GlobalWireNetwork implements ITickableTileEntity
 
 	public void onConnectorUnload(BlockPos pos, IImmersiveConnectable iic)
 	{
-		Set<LocalWireNetwork> added = new HashSet<>();
+		Set<LocalWireNetwork> handledNets = new HashSet<>();
 		for(ConnectionPoint connectionPoint : iic.getConnectionPoints())
 		{
 			LocalWireNetwork local = getLocalNet(connectionPoint);
-			if(added.add(local))
-				local.unloadConnector(pos, iic);
+			if(handledNets.add(local))
+				local.unloadConnector(pos);
 		}
-		if(!world.isRemote)
-			for(ConnectionPoint cp : iic.getConnectionPoints())
-				for(Connection c : getLocalNet(cp).getConnections(cp))
-					collisionData.removeConnection(c);
+		for(ConnectionPoint cp : iic.getConnectionPoints())
+			for(Connection c : getLocalNet(cp).getConnections(cp))
+				collisionData.removeConnection(c);
 		validateNextTick = true;
 	}
 
@@ -340,7 +319,7 @@ public class GlobalWireNetwork implements ITickableTileEntity
 
 	private void validate()
 	{
-		if(world.isRemote||!IEConfig.WIRES.enableWireLogger.get())
+		if(world.isRemote||!IEConfig.WIRES.validateNet.get())
 		{
 			WireLogger.logger.info("Skipping validation!");
 			return;
@@ -355,7 +334,9 @@ public class GlobalWireNetwork implements ITickableTileEntity
 		validating = true;
 		localNets.values().stream().distinct().forEach(
 				(local) -> {
-					Object2IntMap<ResourceLocation> handlers = new Object2IntOpenHashMap<>();
+					Map<ResourceLocation, Multiset<ILocalHandlerProvider>> handlerUsers = new HashMap<>();
+					Function<ResourceLocation, Multiset<ILocalHandlerProvider>> getHandler = rl ->
+							handlerUsers.computeIfAbsent(rl, r -> HashMultiset.create());
 					for(ConnectionPoint cp : local.getConnectionPoints())
 					{
 						IImmersiveConnectable iic = local.getConnector(cp);
@@ -365,7 +346,7 @@ public class GlobalWireNetwork implements ITickableTileEntity
 							continue;
 						}
 						for(ResourceLocation rl : iic.getRequestedHandlers())
-							handlers.put(rl, handlers.getInt(rl)+1);
+							getHandler.apply(rl).add(iic);
 						if(localNets.get(cp)!=local)
 							WireLogger.logger.warn("{} has net {}, but is in net {}", cp, localNets.get(cp), local);
 						else
@@ -379,19 +360,19 @@ public class GlobalWireNetwork implements ITickableTileEntity
 											c.getOtherEnd(cp));
 								if(c.isPositiveEnd(cp))
 									for(ResourceLocation rl : c.type.getRequestedHandlers())
-										handlers.put(rl, handlers.getInt(rl)+1);
+										getHandler.apply(rl).add(c.type);
 							}
 					}
-					for(ResourceLocation rl : handlers.keySet())
+					for(ResourceLocation rl : handlerUsers.keySet())
 					{
-						int countInNet = local.handlerUserCount.getInt(rl);
-						int actualCount = handlers.getInt(rl);
-						if(countInNet!=actualCount)
-							WireLogger.logger.warn("Expected to find {} users of {}, but found {}", countInNet, rl, actualCount);
+						Multiset<ILocalHandlerProvider> actual = local.handlerUsers.get(rl);
+						Multiset<ILocalHandlerProvider> expected = handlerUsers.get(rl);
+						if(!actual.equals(expected))
+							WireLogger.logger.warn("Expected users for {}: {}, but found {}", rl, expected, actual);
 					}
-					for(ResourceLocation rl : local.handlerUserCount.keySet())
-						if(!handlers.containsKey(rl))
-							WireLogger.logger.warn("Found no users for {}, but net expects {}", rl, local.handlerUserCount.getInt(rl));
+					for(ResourceLocation rl : local.handlerUsers.keySet())
+						if(!handlerUsers.containsKey(rl))
+							WireLogger.logger.warn("Found no users for {}, but net expects {}", rl, local.handlerUsers.get(rl));
 					for(BlockPos p : local.getConnectors())
 						if(isChunkSafe(world, p))
 						{
@@ -442,8 +423,11 @@ public class GlobalWireNetwork implements ITickableTileEntity
 	private void putLocalNet(ConnectionPoint cp, @Nullable LocalWireNetwork net)
 	{
 		LocalWireNetwork oldNet = localNets.get(cp);
-		if(oldNet!=null)
+		if(oldNet!=null&&net!=null&&oldNet.isValid(cp))
+		{
+			WireLogger.logger.info("Marking {} as invalid", oldNet);
 			oldNet.setInvalid();
+		}
 		if(net!=null)
 			localNets.put(cp, net);
 		else

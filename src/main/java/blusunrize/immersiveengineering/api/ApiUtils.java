@@ -848,7 +848,7 @@ public class ApiUtils
 			for(CollisionInfo wireInfo : infoAtPos)
 			{
 				Connection c = wireInfo.conn;
-				if(ignored==null||!c.hasSameConnectors(ignored))
+				if(!c.equals(ignored))
 				{
 					Vec3d startRelative = start.add(-pos.getX(), -pos.getY(), -pos.getZ());
 					Vec3d across = wireInfo.intersectB.subtract(wireInfo.intersectA);

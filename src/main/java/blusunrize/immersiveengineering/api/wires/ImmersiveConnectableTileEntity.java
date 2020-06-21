@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.api.wires;
 
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties.ConnectionModelData;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.TargetingInfo;
@@ -159,7 +160,7 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 	{
 		super.onLoad();
 		WireLogger.logger.info("Loading connector at {}", pos);
-		globalNet.onConnectorLoad(this, world);
+		ApiUtils.addFutureServerTask(world, () -> globalNet.onConnectorLoad(this, world), true);
 	}
 
 	@Override

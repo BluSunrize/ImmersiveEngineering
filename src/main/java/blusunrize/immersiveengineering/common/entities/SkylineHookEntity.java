@@ -321,7 +321,7 @@ public class SkylineHookEntity extends Entity
 		if(possible!=null)
 		{
 			Vec3d look = player.getLookVec();
-			line = possible.stream().filter(c -> !c.hasSameConnectors(connection))
+			line = possible.stream().filter(c -> !c.equals(connection))
 					.max(Comparator.comparingDouble(c -> {
 						c.generateCatenaryData(world);
 						double factor;
