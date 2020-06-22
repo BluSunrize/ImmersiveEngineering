@@ -18,6 +18,8 @@ import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
@@ -175,5 +177,19 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 	public Collection<ConnectionPoint> getConnectionPoints()
 	{
 		return ImmutableList.of(new ConnectionPoint(pos, 0));
+	}
+
+	private final Int2ObjectMap<LocalWireNetwork> cachedLocalNets = new Int2ObjectArrayMap<>();
+
+	protected LocalWireNetwork getLocalNet(int cpIndex)
+	{
+		LocalWireNetwork ret = cachedLocalNets.get(cpIndex);
+		ConnectionPoint cp = new ConnectionPoint(getPos(), cpIndex);
+		if(ret==null||!ret.isValid(cp))
+		{
+			ret = globalNet.getLocalNet(cp);
+			cachedLocalNets.put(cpIndex, ret);
+		}
+		return ret;
 	}
 }

@@ -81,6 +81,8 @@ public class GlobalWireNetwork implements ITickableTileEntity
 		WireLogger.logger.info("Result: {}", joined);
 		joined.addConnection(conn);
 		WireSyncManager.onConnectionAdded(conn, world);
+		if(!(joined.getConnector(posA) instanceof IICProxy)&&!(joined.getConnector(posB) instanceof IICProxy))
+			collisionData.addConnection(conn);
 		validateNextTick = true;
 	}
 
@@ -418,6 +420,14 @@ public class GlobalWireNetwork implements ITickableTileEntity
 				cpsAtInvalid.add(cp);
 		for(ConnectionPoint toRemove : cpsAtInvalid)
 			removeCP(toRemove);
+	}
+
+	public void updateCatenaryData(Connection conn)
+	{
+		collisionData.removeConnection(conn);
+		conn.resetCatenaryData();
+		conn.generateCatenaryData(world);
+		collisionData.addConnection(conn);
 	}
 
 	private void putLocalNet(ConnectionPoint cp, @Nullable LocalWireNetwork net)

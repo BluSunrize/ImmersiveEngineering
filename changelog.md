@@ -9,6 +9,8 @@
 - Fixed "pick block" not working correctly on hemp (Malte)
 - Fixed mineral commands not working with specified coordinates (Malte)
 - Fixed item duplication when repairing hammers or wirecutters (Malte)
+- Fixed rotating and inverting the breaker switch with a hammer (Malte)
+- Fixed wires not updating correctly when rotating a redstone breaker (Malte)
 - Cleaned up some wire network code (Malte)
 
 ##### Version 0.14-102 - BUILT

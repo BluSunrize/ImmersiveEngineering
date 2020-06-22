@@ -227,6 +227,11 @@ public class Connection
 		return Preconditions.checkNotNull(catData);
 	}
 
+	void resetCatenaryData()
+	{
+		catData = null;
+	}
+
 	@Override
 	public boolean equals(Object o)
 	{
