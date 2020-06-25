@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.crafting.ClocheFertilizer;
 import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.client.ClientUtils;
@@ -224,7 +225,7 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 					ItemStack fertilizer = inventory.get(SLOT_FERTILIZER);
 					if(!fertilizer.isEmpty())
 					{
-						float itemMod = ClocheRecipe.getFertilizerGrowthModifier(fertilizer);
+						float itemMod = ClocheFertilizer.getFertilizerGrowthModifier(fertilizer);
 						if(itemMod > 0)
 						{
 							fertilizerMod *= itemMod;
@@ -423,7 +424,7 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 	public boolean isStackValid(int slot, ItemStack stack)
 	{
 		if(slot==SLOT_FERTILIZER)
-			return ClocheRecipe.isValidFertilizer(stack);
+			return ClocheFertilizer.isValidFertilizer(stack);
 		else
 			return true;
 	}

@@ -9,10 +9,7 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
-import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
-import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
-import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
+import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
@@ -576,7 +573,7 @@ public abstract class IESlot extends Slot
 			if(itemStack.isEmpty())
 				return false;
 			if(type==SLOT_FERTILIZER)
-				return ClocheRecipe.isValidFertilizer(itemStack);
+				return ClocheFertilizer.isValidFertilizer(itemStack);
 			return true;
 		}
 	}
