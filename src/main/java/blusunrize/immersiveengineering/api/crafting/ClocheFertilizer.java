@@ -16,18 +16,22 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.RegistryObject;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
-public class ClocheFertilizer
+public class ClocheFertilizer extends IESerializableRecipe
 {
-	public static List<ClocheFertilizer> fertilizerList = new ArrayList<>();
+	public static IRecipeType<ClocheFertilizer> TYPE = IRecipeType.register(Lib.MODID+":fertilizer");
+	public static RegistryObject<IERecipeSerializer<ClocheFertilizer>> SERIALIZER;
+
+	// Initialized by reload listener
+	public static Map<ResourceLocation, ClocheFertilizer> fertilizerList;
 
 	public final Ingredient input;
 	public final float growthModifier;
 
-	public ClocheFertilizer(Ingredient input, float growthModifier)
+	public ClocheFertilizer(ResourceLocation id, Ingredient input, float growthModifier)
 	{
+		super(ItemStack.EMPTY, TYPE, id);
 		this.input = input;
 		this.growthModifier = growthModifier;
 	}
@@ -37,9 +41,21 @@ public class ClocheFertilizer
 		return growthModifier;
 	}
 
+	@Override
+	protected IERecipeSerializer<ClocheFertilizer> getIESerializer()
+	{
+		return SERIALIZER.get();
+	}
+
+	@Override
+	public ItemStack getRecipeOutput()
+	{
+		return ItemStack.EMPTY;
+	}
+
 	public static float getFertilizerGrowthModifier(ItemStack stack)
 	{
-		for(ClocheFertilizer e : ClocheFertilizer.fertilizerList)
+		for(ClocheFertilizer e : ClocheFertilizer.fertilizerList.values())
 			if(e.input.test(stack))
 				return e.getGrowthModifier();
 		return 0;
