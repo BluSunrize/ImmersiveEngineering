@@ -52,16 +52,18 @@ class IEBlockTags extends BlockTagsProvider
 			{
 				Block storage = IEBlocks.Metals.storage.get(metal);
 				getBuilder(tags.storage).add(storage);
+				getBuilder(Tags.Blocks.STORAGE_BLOCKS).add(storage);
 				if(metal.shouldAddOre())
 				{
 					Block ore = IEBlocks.Metals.ores.get(metal);
 					assert (tags.ore!=null&&ore!=null);
 					getBuilder(tags.ore).add(ore);
-					getBuilder(Tags.Blocks.ORES).add(tags.ore);
+					getBuilder(Tags.Blocks.ORES).add(ore);
 				}
 			}
 			Block sheetmetal = IEBlocks.Metals.sheetmetal.get(metal);
 			getBuilder(tags.sheetmetal).add(sheetmetal);
+			getBuilder(IETags.sheetmetals).add(sheetmetal);
 		}
 		for(TreatedWoodStyles style : TreatedWoodStyles.values())
 		{

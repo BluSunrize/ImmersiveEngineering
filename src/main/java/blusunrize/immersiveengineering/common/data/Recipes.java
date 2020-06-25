@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.data;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IETags;
+import blusunrize.immersiveengineering.api.crafting.ClocheFertilizer;
 import blusunrize.immersiveengineering.api.crafting.ClocheRenderFunction.ClocheRenderReference;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.builders.*;
@@ -244,6 +245,10 @@ public class Recipes extends RecipeProvider
 
 	private void recipesCloche(@Nonnull Consumer<IFinishedRecipe> out)
 	{
+		ClocheFertilizerBuilder.builder(1.25f)
+				.addInput(Items.BONE_MEAL)
+				.build(out, toRL("fertilizer/bone_meal"));
+
 		ClocheRecipeBuilder.builder(new ItemStack(Items.WHEAT, 2))
 				.addResult(new ItemStack(Items.WHEAT_SEEDS, 1))
 				.addInput(Items.WHEAT_SEEDS)

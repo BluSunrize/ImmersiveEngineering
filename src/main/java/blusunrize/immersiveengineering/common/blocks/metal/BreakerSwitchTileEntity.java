@@ -147,18 +147,28 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 	@Override
 	public boolean hammerUseSide(Direction side, PlayerEntity player, Vec3d hitVec)
 	{
-		if(!world.isRemote)
+		if(player.isSneaking())
 		{
-			if(player.isSneaking())
+			final boolean oldPassing = allowEnergyToPass();
+			inverted = !inverted;
+			if(!world.isRemote)
 			{
-				inverted = !inverted;
 				ChatUtils.sendServerNoSpamMessages(player, new TranslationTextComponent(Lib.CHAT_INFO+"rsSignal."+(inverted?"invertedOn": "invertedOff")));
 				notifyNeighbours();
-				updateConductivity();
+				if(oldPassing!=allowEnergyToPass())
+					updateConductivity();
 			}
-			else
-				rotation = (rotation+3)%4;
 		}
+		else
+		{
+			rotation = (rotation+3)%4;
+			for(ConnectionPoint cp : getConnectionPoints())
+				for(Connection c : getLocalNet(cp.getIndex()).getConnections(cp))
+					if(!c.isInternal())
+						globalNet.updateCatenaryData(c);
+		}
+		markDirty();
+		markContainingBlockForUpdate(getBlockState());
 		return true;
 	}
 
@@ -173,8 +183,10 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 			world.addBlockEvent(getPos(), getBlockState().getBlock(), active?1: 0, 0);
 			notifyNeighbours();
 			updateConductivity();
+			return true;
 		}
-		return true;
+		else
+			return false;
 	}
 
 	protected void updateConductivity()

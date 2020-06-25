@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "immersiveengineering:nugget_copper",
+    "immersiveengineering:nugget_aluminum",
+    "immersiveengineering:nugget_lead",
+    "immersiveengineering:nugget_silver",
+    "immersiveengineering:nugget_nickel",
+    "immersiveengineering:nugget_uranium",
+    "immersiveengineering:nugget_constantan",
+    "immersiveengineering:nugget_electrum",
+    "immersiveengineering:nugget_steel"
+  ]
+}

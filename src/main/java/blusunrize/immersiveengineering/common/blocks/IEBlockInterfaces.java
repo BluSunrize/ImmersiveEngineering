@@ -14,7 +14,6 @@ import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.gui.GuiHandler;
-import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.base.Preconditions;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.TransformationMatrix;
@@ -178,7 +177,6 @@ public class IEBlockInterfaces
 					throw new IllegalArgumentException("Invalid facing limitation: "+limit);
 			}
 
-			IELogger.logger.debug("Setting facing to {}", f);
 			return mirrorFacingOnPlacement(placer)?f.getOpposite(): f;
 		}
 

@@ -46,6 +46,7 @@ public class IETags
 	public static final Tag<Block> coalCokeBlock = createBlockTag(getStorageBlock("coal_coke"));
 	public static final Tag<Block> scaffoldingSteel = createBlockTag(rl("scaffoldings/steel"));
 	public static final Tag<Block> scaffoldingAlu = createBlockTag(rl("scaffoldings/aluminum"));
+	public static final Tag<Block> sheetmetals = createBlockTag(forgeLoc("sheetmetals"));
 	//IE Items
 	public static final Tag<Item> treatedStick = new ItemTags.Wrapper(getRod("treated_wood"));
 	public static final Tag<Item> ironRod = new ItemTags.Wrapper(getRod("iron"));
@@ -65,6 +66,7 @@ public class IETags
 	public static final Tag<Item> steelWire = new ItemTags.Wrapper(getWire("steel"));
 	public static final Tag<Item> saltpeterDust = new ItemTags.Wrapper(getDust("saltpeter"));
 	public static final Tag<Item> sulfurDust = new ItemTags.Wrapper(getDust("sulfur"));
+	public static final Tag<Item> plates = new ItemTags.Wrapper(forgeLoc("plates"));
 
 	static
 	{

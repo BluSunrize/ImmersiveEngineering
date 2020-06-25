@@ -33,7 +33,6 @@ public class ClocheRecipe extends IESerializableRecipe
 
 	// Initialized by reload listener
 	public static Map<ResourceLocation, ClocheRecipe> recipeList;
-	public static List<ClocheFertilizer> fertilizerList = new ArrayList<>();
 	private static List<Pair<Ingredient, ResourceLocation>> soilTextureList = new ArrayList<>();
 
 	public ClocheRecipe(ResourceLocation id, List<ItemStack> outputs, Ingredient seed, Ingredient soil, int time, ClocheRenderReference renderReference)
@@ -72,56 +71,6 @@ public class ClocheRecipe extends IESerializableRecipe
 				return recipe;
 		}
 		return null;
-	}
-
-	/* ========== FERTILIZER ========== */
-
-	public static class ClocheFertilizer
-	{
-		public final Ingredient input;
-		public final float growthModifier;
-
-		public ClocheFertilizer(Ingredient input, float growthModifier)
-		{
-			this.input = input;
-			this.growthModifier = growthModifier;
-		}
-
-		public float getGrowthModifier()
-		{
-			return growthModifier;
-		}
-	}
-
-	/**
-	 * Registers a fertilizer along with its growth modifier
-	 *
-	 * @param input
-	 * @param growthModifer
-	 * @return the finished ClocheFertilizer object, or null if registration failed
-	 */
-	public static ClocheFertilizer addFertilizer(Ingredient input, float growthModifer)
-	{
-		ClocheFertilizer entry = new ClocheFertilizer(input, growthModifer);
-		if(entry.input!=null)
-		{
-			fertilizerList.add(entry);
-			return entry;
-		}
-		return null;
-	}
-
-	public static float getFertilizerGrowthModifier(ItemStack stack)
-	{
-		for(ClocheFertilizer e : fertilizerList)
-			if(e.input.test(stack))
-				return e.getGrowthModifier();
-		return 0;
-	}
-
-	public static boolean isValidFertilizer(ItemStack stack)
-	{
-		return getFertilizerGrowthModifier(stack) > 0;
 	}
 
 	/* ========== SOIL TEXTURE ========== */

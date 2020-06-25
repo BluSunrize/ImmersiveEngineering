@@ -216,7 +216,7 @@ public class LocalWireNetwork implements IWorldTickable
 			if(conns!=null)
 				success = conns.remove(c);
 			if(!success)
-				WireLogger.logger.info("Failed to remove {} from {}", c, c.getEndB());
+				WireLogger.logger.error("Failed to remove {} from {}", c, c.getEndB());
 		}
 		for(ConnectionPoint end : new ConnectionPoint[]{c.getEndA(), c.getEndB()})
 		{
@@ -265,13 +265,19 @@ public class LocalWireNetwork implements IWorldTickable
 		Preconditions.checkNotNull(connA, conn.getEndA().getPosition());
 		IImmersiveConnectable connB = connectors.get(conn.getEndB().getPosition());
 		Preconditions.checkNotNull(connB, conn.getEndB().getPosition());
+		if(connections.get(conn.getEndA()).stream().anyMatch(c -> c.getOtherEnd(conn.getEndA()).equals(conn.getEndB())))
+		{
+			WireLogger.logger.error("Tried to add a duplicate connection from {} ({}) to {} ({})",
+					conn.getEndA(), connA,
+					conn.getEndB(), connB
+			);
+			return;
+		}
 		connections.get(conn.getEndA()).add(conn);
 		connections.get(conn.getEndB()).add(conn);
 		for(LocalNetworkHandler h : handlers.values())
 			h.onConnectionAdded(conn);
 		addRequestedHandlers(conn.type);
-		if(!(connA instanceof IICProxy)&&!(connB instanceof IICProxy))
-			globalNet.getCollisionData().addConnection(conn);
 	}
 
 	private void removeHandlersFor(ILocalHandlerProvider iic)

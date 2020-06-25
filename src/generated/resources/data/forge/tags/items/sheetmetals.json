@@ -1,0 +1,16 @@
+{
+  "replace": false,
+  "values": [
+    "immersiveengineering:sheetmetal_copper",
+    "immersiveengineering:sheetmetal_aluminum",
+    "immersiveengineering:sheetmetal_lead",
+    "immersiveengineering:sheetmetal_silver",
+    "immersiveengineering:sheetmetal_nickel",
+    "immersiveengineering:sheetmetal_uranium",
+    "immersiveengineering:sheetmetal_constantan",
+    "immersiveengineering:sheetmetal_electrum",
+    "immersiveengineering:sheetmetal_steel",
+    "immersiveengineering:sheetmetal_iron",
+    "immersiveengineering:sheetmetal_gold"
+  ]
+}
