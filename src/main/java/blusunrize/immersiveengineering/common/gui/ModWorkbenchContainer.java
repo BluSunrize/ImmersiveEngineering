@@ -52,12 +52,6 @@ public class ModWorkbenchContainer extends IEBaseContainer<ModWorkbenchTileEntit
 
 	public void rebindSlots()
 	{
-		//Don't rebind if the tool didn't change
-		if(world.isRemote)
-			for(Slot slot : inventorySlots)
-				if(slot instanceof IESlot.Upgrades)
-					if(ItemStack.areItemStacksEqual(((IESlot.Upgrades)slot).upgradeableTool, inv.getStackInSlot(0)))
-						return;
 		this.inventorySlots.clear();
 		this.inventoryItemStacks.clear();
 		this.addSlot(new IESlot.ModWorkbench(this, this.inv, 0, 24, 22, 1));
