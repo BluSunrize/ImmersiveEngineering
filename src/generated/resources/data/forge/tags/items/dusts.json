@@ -1,0 +1,16 @@
+{
+  "replace": false,
+  "values": [
+    "immersiveengineering:dust_copper",
+    "immersiveengineering:dust_aluminum",
+    "immersiveengineering:dust_lead",
+    "immersiveengineering:dust_silver",
+    "immersiveengineering:dust_nickel",
+    "immersiveengineering:dust_uranium",
+    "immersiveengineering:dust_constantan",
+    "immersiveengineering:dust_electrum",
+    "immersiveengineering:dust_steel",
+    "immersiveengineering:dust_iron",
+    "immersiveengineering:dust_gold"
+  ]
+}

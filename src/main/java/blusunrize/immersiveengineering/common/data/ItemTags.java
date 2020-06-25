@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.data;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.IETags.MetalTags;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.items.IEItems.Metals;
 import net.minecraft.data.DataGenerator;
@@ -40,10 +41,17 @@ class ItemTags extends ItemTagsProvider
 			if(!metal.isVanillaMetal())
 			{
 				getBuilder(tags.ingot).add(ingot);
+				getBuilder(Tags.Items.INGOTS).add(ingot);
 				getBuilder(tags.nugget).add(nugget);
+				getBuilder(Tags.Items.NUGGETS).add(nugget);
+				getBuilder(Tags.Items.STORAGE_BLOCKS).add(IEBlocks.Metals.storage.get(metal).asItem());
+				if(metal.shouldAddOre())
+					getBuilder(Tags.Items.ORES).add(IEBlocks.Metals.ores.get(metal).asItem());
 			}
 			getBuilder(tags.plate).add(plate);
+			getBuilder(IETags.plates).add(plate);
 			getBuilder(tags.dust).add(dust);
+			getBuilder(Tags.Items.DUSTS).add(dust);
 		}
 
 		IETags.forAllBlocktags(this::copy);
