@@ -108,6 +108,8 @@ public class ModWorkbenchContainer extends IEBaseContainer<ModWorkbenchTileEntit
 					this.addSlot(new Slot(this.inv, i+1, i%2==0?74: 92, 21+(i/2)*18));
 				slotCount++;
 			}
+			if(inventoryBPoutput!=null)
+				inventoryBPoutput.updateOutputs(inv);
 		}
 		bindPlayerInv(inventoryPlayer);
 		ImmersiveEngineering.proxy.reInitGui();
