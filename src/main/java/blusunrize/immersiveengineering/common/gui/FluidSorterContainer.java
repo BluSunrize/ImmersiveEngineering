@@ -41,7 +41,9 @@ public class FluidSorterContainer extends IEBaseContainer<FluidSorterTileEntity>
 	@Override
 	public boolean canInteractWith(@Nonnull PlayerEntity player)
 	{
-		if(tile instanceof IInteractionObjectIE&&!((IInteractionObjectIE)tile).canUseGui(player))
+		if(tile==null)
+			return false;
+		if(!((IInteractionObjectIE)tile).canUseGui(player))
 			return false;
 		return !tile.isRemoved()&&tile.getDistanceSq(player.getPosX(), player.getPosY(), player.getPosZ()) < 64;
 	}

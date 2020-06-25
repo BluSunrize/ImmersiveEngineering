@@ -124,6 +124,7 @@ public class SorterScreen extends IEContainerScreen<SorterContainer>
 		{
 			if(this.visible)
 			{
+				ClientUtils.bindTexture("immersiveengineering:textures/gui/sorter.png");
 				RenderSystem.color3f(1.0F, 1.0F, 1.0F);
 				isHovered = mx >= this.x&&my >= this.y&&mx < this.x+this.width&&my < this.y+this.height;
 				RenderSystem.enableBlend();

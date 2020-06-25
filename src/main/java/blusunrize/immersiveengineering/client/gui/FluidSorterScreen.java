@@ -17,7 +17,6 @@ import blusunrize.immersiveengineering.common.blocks.wooden.FluidSorterTileEntit
 import blusunrize.immersiveengineering.common.gui.FluidSorterContainer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -25,6 +24,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
@@ -36,8 +36,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
 import java.util.ArrayList;
-
-import static blusunrize.immersiveengineering.common.data.IEDataGenerator.rl;
+import java.util.List;
 
 public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 {
@@ -56,7 +55,7 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 	public void render(int mx, int my, float partial)
 	{
 		super.render(mx, my, partial);
-		ArrayList<ITextComponent> tooltip = new ArrayList<>();
+		List<ITextComponent> tooltip = new ArrayList<>();
 		for(Widget button : this.buttons)
 		{
 			if(button instanceof ButtonSorter)
@@ -112,34 +111,37 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float f, int mx, int my)
 	{
-		IRenderTypeBuffer.Impl buffers = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
-		MatrixStack transform = new MatrixStack();
-		IVertexBuilder builder = buffers.getBuffer(IERenderTypes.getGui(rl("textures/gui/sorter.png")));
+		ClientUtils.bindTexture("immersiveengineering:textures/gui/sorter.png");
 		this.blit(guiLeft, guiTop, 0, 0, xSize, ySize);
+		{
+			IRenderTypeBuffer.Impl buffers = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
+			MatrixStack transform = new MatrixStack();
+			IVertexBuilder builder = buffers.getBuffer(IERenderTypes.getGui(PlayerContainer.LOCATION_BLOCKS_TEXTURE));
+			for(int side = 0; side < 6; side++)
+				for(int i = 0; i < 8; i++)
+					if(!tile.filters[side][i].isEmpty())
+					{
+						TextureAtlasSprite sprite = ClientUtils.getSprite(tile.filters[side][i].getFluid().getAttributes().getStillTexture(tile.filters[side][i]));
+						if(sprite!=null)
+						{
+							int x = guiLeft+4+(side/2)*58+(i < 3?i*18: i > 4?(i-5)*18: i==3?0: 36);
+							int y = guiTop+22+(side%2)*76+(i < 3?0: i > 4?36: 18);
+							int col = tile.filters[side][i].getFluid().getAttributes().getColor(tile.filters[side][i]);
+							ClientUtils.drawTexturedRect(
+									builder, transform, x, y, 16, 16,
+									(col >> 16&255)/255.0f, (col >> 8&255)/255.0f, (col&255)/255.0f, 1,
+									sprite.getMinU(), sprite.getMaxU(), sprite.getMinV(), sprite.getMaxV());
+						}
+					}
+			buffers.finish();
+		}
 		for(int side = 0; side < 6; side++)
 		{
-			ClientUtils.bindAtlas();
-			for(int i = 0; i < 8; i++)
-				if(tile.filters[side][i]!=null)
-				{
-					TextureAtlasSprite sprite = ClientUtils.getSprite(tile.filters[side][i].getFluid().getAttributes().getStillTexture(tile.filters[side][i]));
-					if(sprite!=null)
-					{
-						int x = guiLeft+4+(side/2)*58+(i < 3?i*18: i > 4?(i-5)*18: i==3?0: 36);
-						int y = guiTop+22+(side%2)*76+(i < 3?0: i > 4?36: 18);
-						int col = tile.filters[side][i].getFluid().getAttributes().getColor(tile.filters[side][i]);
-						RenderSystem.color3f((col >> 16&255)/255.0f, (col >> 8&255)/255.0f, (col&255)/255.0f);
-						ClientUtils.drawTexturedRect(builder, transform, x, y, 16, 16, 1, 1, 1, 1, sprite.getMinU(), sprite.getMaxU(), sprite.getMinV(), sprite.getMaxV());
-					}
-				}
 			int x = guiLeft+30+(side/2)*58;
 			int y = guiTop+44+(side%2)*76;
 			String s = I18n.format("desc.immersiveengineering.info.blockSide."+Direction.byIndex(side).toString()).substring(0, 1);
-			RenderSystem.enableBlend();
 			ClientUtils.font().drawStringWithShadow(s, x-(ClientUtils.font().getStringWidth(s)/2), y, 0xaacccccc);
 		}
-		ClientUtils.bindTexture("immersiveengineering:textures/gui/sorter.png");
-		buffers.finish();
 	}
 
 	@Override
