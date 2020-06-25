@@ -548,7 +548,7 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 				transl,
 				ClientUtils.degreeToQuaterion(pitch, yaw, roll),
 				null, null
-		);
+		).blockCornerToCenter();
 	}
 
 	@OnlyIn(Dist.CLIENT)
