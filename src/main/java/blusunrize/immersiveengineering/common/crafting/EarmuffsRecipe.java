@@ -19,6 +19,7 @@ import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ArmorItem;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
@@ -26,12 +27,25 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 import javax.annotation.Nonnull;
 import java.util.List;
+import java.util.Map;
 
 public class EarmuffsRecipe implements ICraftingRecipe
 {
+	/**
+	 * Copy this map from SheepEntity since a) the accessor method is client-only and b) ATs somehow don't seem to
+	 * work for the field
+	 */
+	private static final Map<DyeColor, float[]> DYE_TO_RGB;
+
+	static
+	{
+		DYE_TO_RGB = ObfuscationReflectionHelper.getPrivateValue(SheepEntity.class, null, "field_175514_bm");
+	}
+
 	private final ResourceLocation id;
 
 	public EarmuffsRecipe(ResourceLocation rl)
@@ -93,7 +107,7 @@ public class EarmuffsRecipe implements ICraftingRecipe
 				}
 				else if(Utils.isDye(stackInSlot))
 				{
-					float[] afloat = SheepEntity.getDyeRgb(Utils.getDye(stackInSlot));
+					float[] afloat = DYE_TO_RGB.get(Utils.getDye(stackInSlot));
 					int r = (int)(afloat[0]*255.0F);
 					int g = (int)(afloat[1]*255.0F);
 					int b = (int)(afloat[2]*255.0F);
