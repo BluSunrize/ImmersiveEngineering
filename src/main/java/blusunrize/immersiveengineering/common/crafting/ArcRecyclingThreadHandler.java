@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -159,10 +160,17 @@ public class ArcRecyclingThreadHandler extends Thread
 
 	public static RecyclingCalculation getRecycleCalculation(ItemStack stack, IRecipe<?> recipe)
 	{
+		// Check if recipe output is among the items that have fixed returns
+		Pair<ItemStack, Double> brokenDown = ApiUtils.breakStackIntoPreciseIngots(stack);
+		if(brokenDown!=null&&ArcFurnaceRecipe.isValidRecyclingOutput(brokenDown.getLeft())&&brokenDown.getRight() > 0)
+			return new RecyclingCalculation(recipe, Utils.copyStackWithAmount(stack, 1),
+					ImmutableMap.of(brokenDown.getLeft(), brokenDown.getRight()));
+
+		// Else check recipe inputs
 		NonNullList<Ingredient> inputs = recipe.getIngredients();
 		if(!inputs.isEmpty())
 		{
-			int inputSize = stack.getCount();
+			int resultCount = stack.getCount();
 			Map<ItemStack, Integer> missingSub = new HashMap<>();
 			Map<ItemStack, Double> outputs = new IdentityHashMap<>();
 			for(Ingredient in : inputs)
@@ -175,7 +183,7 @@ public class ArcRecyclingThreadHandler extends Thread
 						return null;
 					}
 
-					Pair<ItemStack, Double> brokenDown = ApiUtils.breakStackIntoPreciseIngots(inputStack);
+					brokenDown = ApiUtils.breakStackIntoPreciseIngots(inputStack);
 					if(brokenDown==null)
 					{
 						if(ArcFurnaceRecipe.canRecycle(inputStack)&&ArcFurnaceRecipe.isValidRecyclingOutput(inputStack))
@@ -211,7 +219,7 @@ public class ArcRecyclingThreadHandler extends Thread
 				}
 			Map<ItemStack, Double> outputScaled = new IdentityHashMap<>(outputs.size());
 			for(Entry<ItemStack, Double> e : outputs.entrySet())
-				outputScaled.put(e.getKey(), e.getValue()/inputSize);
+				outputScaled.put(e.getKey(), e.getValue()/resultCount);
 			if(!outputs.isEmpty()||!missingSub.isEmpty())
 			{
 				ItemStack in = Utils.copyStackWithAmount(stack, 1);
@@ -219,7 +227,7 @@ public class ArcRecyclingThreadHandler extends Thread
 						, outputScaled);
 				if(!missingSub.isEmpty())
 					for(ItemStack s : missingSub.keySet())
-						calc.queriedSubcomponents.put(s, (double)missingSub.get(s)/inputSize);
+						calc.queriedSubcomponents.put(s, (double)missingSub.get(s)/resultCount);
 				return calc;
 			}
 		}
