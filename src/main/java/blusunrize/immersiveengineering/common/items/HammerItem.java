@@ -91,42 +91,6 @@ public class HammerItem extends IEBaseItem implements ITool
 		}
 	}
 
-	@Nonnull
-	@Override
-	public ActionResultType onItemUse(ItemUseContext context)
-	{
-		World world = context.getWorld();
-		BlockPos pos = context.getPos();
-		Direction side = context.getFace();
-		TileEntity tile = world.getTileEntity(pos);
-		if(!world.isRemote)
-		{
-			PlayerEntity player = context.getPlayer();
-			if(tile instanceof IConfigurableSides)
-			{
-				Direction activeSide = ((player!=null)&&player.isSneaking())?side.getOpposite(): side;
-				if(((IConfigurableSides)tile).toggleSide(activeSide, player))
-					return ActionResultType.SUCCESS;
-				else
-					return ActionResultType.FAIL;
-			}
-			else
-			{
-				boolean rotate = !(tile instanceof IDirectionalTile)&&!(tile instanceof IHammerInteraction);
-				if(!rotate&&tile instanceof IDirectionalTile)
-					rotate = ((IDirectionalTile)tile).canHammerRotate(side, context.getHitVec().subtract(new Vec3d(pos)), player);
-				if(rotate&&RotationUtil.rotateBlock(world, pos, player!=null&&(player.isSneaking()!=side.equals(Direction.DOWN))))
-					return ActionResultType.SUCCESS;
-				else if(!rotate&&tile instanceof IHammerInteraction)
-				{
-					if(((IHammerInteraction)tile).hammerUseSide(side, player, context.getHitVec()))
-						return ActionResultType.SUCCESS;
-				}
-			}
-		}
-		return ActionResultType.PASS;
-	}
-
 	@Override
 	public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context)
 	{
@@ -134,6 +98,10 @@ public class HammerItem extends IEBaseItem implements ITool
 		BlockPos pos = context.getPos();
 		PlayerEntity player = context.getPlayer();
 		Direction side = context.getFace();
+
+		/*
+			Multiblock Handling
+		 */
 		ResourceLocation[] permittedMultiblocks = null;
 		ResourceLocation[] interdictedMultiblocks = null;
 		if(ItemNBTHelper.hasKey(stack, "multiblockPermission"))
@@ -181,6 +149,32 @@ public class HammerItem extends IEBaseItem implements ITool
 					return ActionResultType.SUCCESS;
 				}
 			}
+
+		/*
+			Side Configs & Rotation Handling
+		 */
+		TileEntity tile = world.getTileEntity(pos);
+		if(tile instanceof IConfigurableSides)
+		{
+			Direction activeSide = ((player!=null)&&player.isSneaking())?side.getOpposite(): side;
+			if(((IConfigurableSides)tile).toggleSide(activeSide, player))
+				return ActionResultType.SUCCESS;
+			else
+				return ActionResultType.FAIL;
+		}
+		else
+		{
+			boolean rotate = !(tile instanceof IDirectionalTile)&&!(tile instanceof IHammerInteraction);
+			if(!rotate&&tile instanceof IDirectionalTile)
+				rotate = ((IDirectionalTile)tile).canHammerRotate(side, context.getHitVec().subtract(new Vec3d(pos)), player);
+			if(rotate&&RotationUtil.rotateBlock(world, pos, player!=null&&(player.isSneaking()!=side.equals(Direction.DOWN))))
+				return ActionResultType.SUCCESS;
+			else if(!rotate&&tile instanceof IHammerInteraction)
+			{
+				if(((IHammerInteraction)tile).hammerUseSide(side, player, context.getHitVec()))
+					return ActionResultType.SUCCESS;
+			}
+		}
 		return ActionResultType.PASS;
 	}
 
