@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.wires.IWireCoil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ShearsItem;
 import net.minecraft.item.ToolItem;
 import net.minecraft.world.World;
 
@@ -31,6 +32,7 @@ public class ToolboxHandler
 	{
 		tools.add((s) -> (s.getItem() instanceof ITool&&((ITool)s.getItem()).isTool(s)));
 		tools.add((s) -> (s.getItem() instanceof ToolItem));
+		tools.add((s) -> (s.getItem() instanceof ShearsItem));
 		foods.add((s) -> (s.getItem().isFood()));
 		wiring.add((s, w) -> (s.getItem() instanceof IWireCoil));
 		wiring.add((s, w) ->

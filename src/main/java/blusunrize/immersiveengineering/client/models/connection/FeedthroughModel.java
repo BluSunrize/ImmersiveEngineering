@@ -305,6 +305,8 @@ public class FeedthroughModel extends BakedIEModel
 		{
 			WireType w = WireType.getValue(ItemNBTHelper.getString(stack, WIRE));
 			BlockState state = NBTUtil.readBlockState(ItemNBTHelper.getTagCompound(stack, MIDDLE_STATE));
+			if(state.getBlock()==Blocks.AIR)
+				state = Blocks.BOOKSHELF.getDefaultState();
 			init(new FeedthroughCacheKey(w, state, Integer.MAX_VALUE, Direction.NORTH, null),
 					i -> mc().getItemColors().getColor(stack, i));
 		}

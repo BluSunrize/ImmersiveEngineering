@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.api.tool;
 
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.Block;
+import net.minecraft.block.ConcretePowderBlock;
 import net.minecraft.block.FireBlock;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.monster.BlazeEntity;
@@ -242,9 +243,18 @@ public class ChemthrowerHandler
 			if(!(mop instanceof BlockRayTraceResult))
 				return;
 			BlockRayTraceResult rtr = (BlockRayTraceResult)mop;
-			Block b = world.getBlockState(rtr.getPos().offset(rtr.getFace())).getBlock();
+			// Interactions with block at target position
+			BlockPos pos = rtr.getPos();
+			Block b = world.getBlockState(pos).getBlock();
+			if(b instanceof ConcretePowderBlock)
+				world.setBlockState(pos, ((ConcretePowderBlock)b).solidifiedState, 3);
+
+			// Interactions with block at offset position
+			pos = rtr.getPos().offset(rtr.getFace());
+			b = world.getBlockState(pos).getBlock();
 			if(b instanceof FireBlock)
-				world.removeBlock(rtr.getPos().offset(rtr.getFace()), false);
+				world.removeBlock(pos, false);
+
 		}
 	}
 
