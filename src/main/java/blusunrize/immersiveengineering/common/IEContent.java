@@ -243,9 +243,9 @@ public class IEContent
 			IEItems.Metals.ingots.put(m, ingot);
 			IEItems.Metals.dusts.put(m, dust);
 		}
-		Block.Properties stoneDecoProps = Block.Properties.create(Material.ROCK).hardnessAndResistance(2, 10);
-		Block.Properties stoneDecoPropsNotSolid = Block.Properties.create(Material.ROCK).hardnessAndResistance(2, 10).notSolid();
-		Block.Properties stoneDecoLeadedProps = Block.Properties.create(Material.ROCK).hardnessAndResistance(2, 180);
+		Block.Properties stoneDecoProps = Block.Properties.create(Material.ROCK).sound(SoundType.STONE).hardnessAndResistance(2, 10);
+		Block.Properties stoneDecoPropsNotSolid = Block.Properties.create(Material.ROCK).sound(SoundType.STONE).hardnessAndResistance(2, 10).notSolid();
+		Block.Properties stoneDecoLeadedProps = Block.Properties.create(Material.ROCK).sound(SoundType.STONE).hardnessAndResistance(2, 180);
 
 		StoneDecoration.cokebrick = new IEBaseBlock("cokebrick", stoneDecoProps, BlockItemIE::new);
 		StoneDecoration.blastbrick = new IEBaseBlock("blastbrick", stoneDecoProps, BlockItemIE::new);
@@ -285,7 +285,7 @@ public class IEContent
 				stoneDecoPropsNotSolid, (b, p) -> null, IEProperties.FACING_HORIZONTAL);
 
 		Block.Properties standardWoodProperties = Block.Properties.create(Material.WOOD).sound(SoundType.WOOD).hardnessAndResistance(2, 5);
-		Block.Properties standardWoodPropertiesNotSolid = Block.Properties.create(Material.WOOD).hardnessAndResistance(2, 5).notSolid();
+		Block.Properties standardWoodPropertiesNotSolid = Block.Properties.create(Material.WOOD).sound(SoundType.WOOD).hardnessAndResistance(2, 5).notSolid();
 		for(TreatedWoodStyles style : TreatedWoodStyles.values())
 		{
 			IEBaseBlock baseBlock = new IEBaseBlock("treated_wood_"+style.name().toLowerCase(), standardWoodProperties, BlockItemIE::new)
@@ -327,7 +327,7 @@ public class IEContent
 
 
 		Block.Properties defaultMetalProperties = Block.Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(3, 15);
-		Block.Properties metalPropertiesNotSolid = Block.Properties.create(Material.IRON).hardnessAndResistance(3, 15).notSolid();
+		Block.Properties metalPropertiesNotSolid = Block.Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(3, 15).notSolid();
 		MetalDecoration.lvCoil = new IEBaseBlock("coil_lv", defaultMetalProperties, BlockItemIE::new);
 		MetalDecoration.mvCoil = new IEBaseBlock("coil_mv", defaultMetalProperties, BlockItemIE::new);
 		MetalDecoration.hvCoil = new IEBaseBlock("coil_hv", defaultMetalProperties, BlockItemIE::new);

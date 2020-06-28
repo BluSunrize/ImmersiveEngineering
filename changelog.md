@@ -2,6 +2,7 @@
 - Fixed invisible connectors with Optifine (Malte)
 - Fixed metal ladders rendering as solid (Malte)
 - Fixed shield rendering in 3rd person (BluSunrize)
+- Fixed incorrect sounds on certain blocks (BluSunrize)
 - Also includes the changes from 0.14-104
 
 ##### Version 0.14-104
