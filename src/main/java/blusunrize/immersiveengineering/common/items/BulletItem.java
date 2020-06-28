@@ -238,8 +238,6 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 	@OnlyIn(Dist.CLIENT)
 	public String getModelCacheKey(ItemStack stack)
 	{
-		if(ItemNBTHelper.hasKey(stack, "bullet"))
-			return ItemNBTHelper.getString(stack, "bullet");
 		return null;
 	}
 

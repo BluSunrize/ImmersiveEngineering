@@ -9,13 +9,13 @@
 package blusunrize.immersiveengineering.common.world;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.DimensionChunkCoords;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralWorldInfo;
+import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
@@ -383,7 +383,7 @@ public class Villages
 		public MerchantOffer getOffer(Entity trader, Random rand)
 		{
 			return new MerchantOffer(
-					ApiUtils.copyStackWithAmount(this.buyingItem, this.buyAmounts.getPrice(rand)),
+					ItemUtils.copyStackWithAmount(this.buyingItem, this.buyAmounts.getPrice(rand)),
 					new ItemStack(Items.EMERALD),
 					//TODO adjust values for individual trades
 					maxUses, xp, 0.05f);
@@ -424,7 +424,7 @@ public class Villages
 			if(i < 0)
 			{
 				buying = new ItemStack(Items.EMERALD);
-				selling = ApiUtils.copyStackWithAmount(sellingItem, -i);
+				selling = ItemUtils.copyStackWithAmount(sellingItem, -i);
 			}
 			else
 			{

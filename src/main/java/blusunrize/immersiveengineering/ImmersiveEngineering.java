@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
+import blusunrize.immersiveengineering.api.utils.TagUtils;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.ClientProxy;
 import blusunrize.immersiveengineering.common.*;
@@ -142,12 +143,12 @@ public class ImmersiveEngineering
 				||stack.getItem()==Molds.moldUnpacking
 		);
 		// Blocks, Plates, Rods, Wires, Gears, Scaffoldings, Fences
-		ArcFurnaceRecipe.allowItemForRecycling(stack -> ApiUtils.isPlate(stack)
-				||ApiUtils.isMetalComponent(stack, "rods/")
-				||ApiUtils.isMetalComponent(stack, "wires/")
-				||ApiUtils.isMetalComponent(stack, "gears/")
-				||ApiUtils.isMetalComponent(stack, "scaffoldings/")
-				||ApiUtils.isMetalComponent(stack, "fences/"));
+		ArcFurnaceRecipe.allowItemForRecycling(stack -> TagUtils.isPlate(stack)
+				||TagUtils.isInPrefixedTag(stack, "rods/")
+				||TagUtils.isInPrefixedTag(stack, "wires/")
+				||TagUtils.isInPrefixedTag(stack, "gears/")
+				||TagUtils.isInPrefixedTag(stack, "scaffoldings/")
+				||TagUtils.isInPrefixedTag(stack, "fences/"));
 		// Prevent tools used during crafting to be recycled as components
 		ArcFurnaceRecipe.makeItemInvalidRecyclingOutput(stack -> stack.getItem() instanceof HammerItem
 				||stack.getItem() instanceof WirecutterItem||stack.getItem() instanceof ScrewdriverItem);

@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.client.models;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.render.IEBipedLayerRenderer;
 import blusunrize.immersiveengineering.common.items.PowerpackItem;
@@ -228,7 +228,7 @@ public class ModelPowerpack<T extends LivingEntity> extends ModelIEArmorBase<T>
 						double y = armLength*Math.cos(angleX);
 						double z = armLength*Math.sin(angleX);
 
-						return ApiUtils.getConnectionCatenary(new Vec3d(.484375, -.75, .25), new Vec3d(x, -y, z), 1.5);
+						return WireUtils.getConnectionCatenary(new Vec3d(.484375, -.75, .25), new Vec3d(x, -y, z), 1.5);
 					});
 				} catch(Exception e)
 				{

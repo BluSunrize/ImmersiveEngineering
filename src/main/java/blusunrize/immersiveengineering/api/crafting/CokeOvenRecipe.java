@@ -8,8 +8,8 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.ResourceLocation;
@@ -59,7 +59,7 @@ public class CokeOvenRecipe extends IESerializableRecipe
 	public static CokeOvenRecipe findRecipe(ItemStack input)
 	{
 		for(CokeOvenRecipe recipe : recipeList.values())
-			if(ApiUtils.stackMatchesObject(input, recipe.input))
+			if(ItemUtils.stackMatchesObject(input, recipe.input))
 				return recipe;
 		return null;
 	}

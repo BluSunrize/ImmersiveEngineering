@@ -9,9 +9,9 @@
 package blusunrize.immersiveengineering.common.blocks.metal.conveyors;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
+import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
@@ -232,7 +232,7 @@ public class ExtractConveyor extends BasicConveyor
 				BlockPos neighbour = getTile().getPos().offset(this.getExtractDirection());
 				if(!world.isAirBlock(neighbour))
 				{
-					LazyOptional<IItemHandler> cap = ApiUtils.findItemHandlerAtPos(world, neighbour, this.getExtractDirection().getOpposite(), true);
+					LazyOptional<IItemHandler> cap = CapabilityUtils.findItemHandlerAtPos(world, neighbour, this.getExtractDirection().getOpposite(), true);
 					cap.ifPresent(itemHandler ->
 					{
 						for(int i = 0; i < itemHandler.getSlots(); i++)

@@ -9,13 +9,13 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
+import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -162,7 +162,7 @@ public class WirecutterItem extends IEBaseItem implements ITool
 		if(!world.isRemote)
 		{
 			double reachDistance = player.getAttribute(PlayerEntity.REACH_DISTANCE).getValue();
-			Connection target = ApiUtils.getTargetConnection(world, player, null, reachDistance);
+			Connection target = WireUtils.getTargetConnection(world, player, null, reachDistance);
 			if(target!=null)
 			{
 				GlobalWireNetwork.getNetwork(world).removeAndDropConnection(target, player.getPosition());

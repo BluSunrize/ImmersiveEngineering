@@ -8,10 +8,10 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.wires.*;
+import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
@@ -87,11 +87,11 @@ public class TransformerTileEntity extends ImmersiveConnectableTileEntity implem
 	{
 		super.readCustomNBT(nbt, descPacket);
 		if(nbt.contains("leftType"))
-			leftType = ApiUtils.getWireTypeFromNBT(nbt, "leftType");
+			leftType = WireUtils.getWireTypeFromNBT(nbt, "leftType");
 		else
 			leftType = null;
 		if(nbt.contains("rightType"))
-			rightType = ApiUtils.getWireTypeFromNBT(nbt, "rightType");
+			rightType = WireUtils.getWireTypeFromNBT(nbt, "rightType");
 		else
 			rightType = null;
 		dummy = nbt.getInt("dummy");

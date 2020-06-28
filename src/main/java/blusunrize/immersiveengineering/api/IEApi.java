@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.api;
 
+import blusunrize.immersiveengineering.api.utils.TagUtils;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Effect;
@@ -74,9 +75,9 @@ public class IEApi
 	{
 		return oreOutputPreference.computeIfAbsent(name, rl ->
 		{
-			if(ApiUtils.isNonemptyItemTag(name))
+			if(TagUtils.isNonemptyItemTag(name))
 				return new ItemStack(getPreferredElementbyMod(ItemTags.getCollection().get(name).getAllElements()));
-			else if(ApiUtils.isNonemptyBlockTag(name))
+			else if(TagUtils.isNonemptyBlockTag(name))
 				return new ItemStack(getPreferredElementbyMod(BlockTags.getCollection().get(name).getAllElements()));
 			else
 				return ItemStack.EMPTY;

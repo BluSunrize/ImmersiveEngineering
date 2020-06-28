@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.util.inventory;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.common.items.InternalStorageItem;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -74,7 +74,7 @@ public class IEItemStackHandler extends ItemStackHandler implements ICapabilityP
 	}
 
 	//TODO invalidate the LazyOptional objects after use?
-	private LazyOptional<IItemHandler> thisOpt = ApiUtils.constantOptional(this);
+	private LazyOptional<IItemHandler> thisOpt = CapabilityUtils.constantOptional(this);
 
 	@Nonnull
 	@Override

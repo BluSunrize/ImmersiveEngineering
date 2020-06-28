@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.items.HammerItem;
@@ -225,20 +224,6 @@ public class Utils
 		return uuid;
 	}
 
-	public static BlockPos toCC(Object object)
-	{
-		return ApiUtils.toBlockPos(object);
-	}
-
-	public static DirectionalBlockPos toDirCC(Object object, Direction direction)
-	{
-		if(object instanceof BlockPos)
-			return new DirectionalBlockPos((BlockPos)object, direction);
-		if(object instanceof TileEntity)
-			return new DirectionalBlockPos(((TileEntity)object).getPos(), direction);
-		return null;
-	}
-
 	public static boolean isBlockAt(World world, BlockPos pos, Block b)
 	{
 		return world.getBlockState(pos).getBlock()==b;
@@ -248,13 +233,6 @@ public class Utils
 	{
 		BlockState state = world.getBlockState(pos);
 		return state.getBlock().isIn(tag);
-	}
-
-	public static boolean canFenceConnectTo(IBlockReader world, BlockPos pos, Direction facing)
-	{
-		BlockPos other = pos.offset(facing);
-		BlockState state = world.getBlockState(other);
-		return ((FenceBlock)Blocks.ACACIA_FENCE).func_220111_a(state, Block.hasSolidSide(state, world, pos, facing), facing);
 	}
 
 	public static int generatePlayerInfluencedInt(int median, int deviation, PlayerEntity player, boolean isBad, double luckScale)
