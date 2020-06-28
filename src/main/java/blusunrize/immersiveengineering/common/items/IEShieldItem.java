@@ -273,8 +273,7 @@ public class IEShieldItem extends UpgradeableToolItem implements IIEEnergyItem, 
 				else if(cameraTransformType==TransformType.THIRD_PERSON_LEFT_HAND)
 				{
 					mat.rotate(new Quaternion(-0.52359F, 1, 0, false));
-					mat.rotate(new Quaternion(0, 0.78539F, 0, false));
-					mat.translate(.1875, .3125, .5625);
+					mat.translate(.1875, .3125, .75);
 				}
 			}
 	}
