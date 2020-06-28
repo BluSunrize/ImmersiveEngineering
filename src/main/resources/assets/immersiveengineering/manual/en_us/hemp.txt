@@ -5,5 +5,5 @@ The seeds can be obtained by breaking tall grass.<np>
 <&fabric_recipe>Tough Fabric is a resilient weave made from hemp fiber. It's used to create <link;generator;Improved Windmills;sail_recipe> as well as <link;balloon;Balloons;start> and <link;this;Jump Cushions;cushion_recipe>.<np>
 <&cushion_recipe>Jump Cushions are simple blocks created from tough fabric and inflated with air. They are capable of absorbing impacts and prevent falldamage when landed upon, but, unlike slime blocks, will not bounce you back up.<np>
 <&curtain_recipe>Strip Curtains are pieces of fabric that are mounted to doorframes or other openings to serve in blocking the view.
-When an entity passes through them, they will emit a redstone signal. Rightclick them with the hammer to enable strong signals.
+When an entity passes through them, they will emit a redstone signal. Rightclick them with an Engineer's Screwdriver to enable strong signals.
 They can be dyed in the same way leather armor can.

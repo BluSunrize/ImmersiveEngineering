@@ -301,6 +301,11 @@ public class IEBlockInterfaces
 		boolean hammerUseSide(Direction side, PlayerEntity player, Vec3d hitVec);
 	}
 
+	public interface IScrewdriverInteraction
+	{
+		boolean screwdriverUseSide(Direction side, PlayerEntity player, Vec3d hitVec);
+	}
+
 	public interface IPlacementInteraction
 	{
 		void onTilePlaced(World world, BlockPos pos, BlockState state, Direction side, float hitX, float hitY, float hitZ, LivingEntity placer, ItemStack stack);

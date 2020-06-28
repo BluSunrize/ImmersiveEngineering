@@ -61,7 +61,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInternalFluxHandler, IHasDummyBlocks,
-		IStateBasedDirectional, IBlockBounds, IHammerInteraction
+		IStateBasedDirectional, IBlockBounds, IScrewdriverInteraction
 {
 	public static TileEntityType<TeslaCoilTileEntity> TYPE;
 
@@ -398,13 +398,13 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 	}
 
 	@Override
-	public boolean hammerUseSide(Direction side, PlayerEntity player, Vec3d hitVec)
+	public boolean screwdriverUseSide(Direction side, PlayerEntity player, Vec3d hitVec)
 	{
 		if(isDummy())
 		{
 			TileEntity te = world.getTileEntity(getPos().offset(getFacing(), -1));
 			if(te instanceof TeslaCoilTileEntity)
-				return ((TeslaCoilTileEntity)te).hammerUseSide(side, player, hitVec);
+				return ((TeslaCoilTileEntity)te).screwdriverUseSide(side, player, hitVec);
 			return false;
 		}
 		if(!world.isRemote)

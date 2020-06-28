@@ -7,6 +7,7 @@
 - Cleaned up some wire network code (Malte)
 - Changed hammer to allow rotating Redstone Repeaters (experimental, might break stuff) (BluSunrize)
 - Changed buzzsaw to take less damage when breaking leaves (BluSunrize)
+- Changed various blocks to have their redstone interaction configured by the Screwdriver instead of the Hammer (BluSunrize)
 - Fixed feedthroughs not dropping the middle block when it's broken (Malte)
 - Fixed IE allowing clients to join servers with mismatched IE versions (Malte)
 - Fixed diesel generators still not allowing levers to be placed in all cases (Malte)

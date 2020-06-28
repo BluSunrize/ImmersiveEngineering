@@ -220,6 +220,19 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 	}
 
 	@Override
+	public boolean screwdriverUseSide(Direction side, PlayerEntity player, World w, BlockPos pos, BlockRayTraceResult hit)
+	{
+		TileEntity tile = w.getTileEntity(pos);
+		if(tile instanceof IScrewdriverInteraction)
+		{
+			boolean b = ((IScrewdriverInteraction)tile).screwdriverUseSide(side, player, hit.getHitVec());
+			if(b)
+				return true;
+		}
+		return super.screwdriverUseSide(side, player, w, pos, hit);
+	}
+
+	@Override
 	public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit)
 	{
 		final Direction side = hit.getFace();

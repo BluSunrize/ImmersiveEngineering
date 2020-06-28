@@ -55,7 +55,7 @@ import java.util.Collection;
 import static blusunrize.immersiveengineering.api.wires.WireType.REDSTONE_CATEGORY;
 
 public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity implements ITickableTileEntity, IStateBasedDirectional,
-		IRedstoneOutput, IPlayerInteraction, IBlockBounds, IBlockOverlayText, IOBJModelCallback<BlockState>,
+		IRedstoneOutput, IScrewdriverInteraction, IBlockBounds, IBlockOverlayText, IOBJModelCallback<BlockState>,
 		IRedstoneConnector, INeighbourChangeTile
 {
 	public IOSideConfig ioMode = IOSideConfig.INPUT;
@@ -156,14 +156,10 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 	}
 
 	@Override
-	public boolean interact(Direction side, PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	public boolean screwdriverUseSide(Direction side, PlayerEntity player, Vec3d hitVec)
 	{
-		if(heldItem.getItem()==Tools.screwdriver)
-		{
-			ImmersiveEngineering.proxy.openTileScreen(Lib.GUIID_RedstoneConnector, this);
-			return true;
-		}
-		return false;
+		ImmersiveEngineering.proxy.openTileScreen(Lib.GUIID_RedstoneConnector, this);
+		return true;
 	}
 
 	protected void updateAfterConfigure()

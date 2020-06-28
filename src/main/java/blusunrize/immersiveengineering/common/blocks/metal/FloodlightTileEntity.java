@@ -58,8 +58,8 @@ import java.util.Iterator;
 import java.util.List;
 
 public class FloodlightTileEntity extends ImmersiveConnectableTileEntity implements ITickableTileEntity, IAdvancedDirectionalTile,
-		IHammerInteraction, ISpawnInterdiction, IBlockBounds, IActiveState, IOBJModelCallback<BlockState>,
-		EnergyConnector, IStateBasedDirectional
+		IHammerInteraction, IScrewdriverInteraction, ISpawnInterdiction, IBlockBounds, IActiveState,
+		IOBJModelCallback<BlockState>, EnergyConnector, IStateBasedDirectional
 {
 	public static TileEntityType<FloodlightTileEntity> TYPE;
 
@@ -421,22 +421,23 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 			double hitX = hitVec.x;
 			double hitY = hitVec.y;
 			double hitZ = hitVec.z;
-			if(player.isSneaking()&&side!=this.getFacing())
-			{
-				boolean base = this.getFacing()==Direction.DOWN?hitY >= .8125: this.getFacing()==Direction.UP?hitY <= .1875: this.getFacing()==Direction.NORTH?hitZ >= .8125: this.getFacing()==Direction.UP?hitZ <= .1875: this.getFacing()==Direction.WEST?hitX >= .8125: hitX <= .1875;
-				if(base)
-				{
-					redstoneControlInverted = !redstoneControlInverted;
-					ChatUtils.sendServerNoSpamMessages(player, new TranslationTextComponent(Lib.CHAT_INFO+"rsControl."+(redstoneControlInverted?"invertedOn": "invertedOff")));
-					markDirty();
-					this.markContainingBlockForUpdate(null);
-					return true;
-				}
-			}
 			if(side.getAxis()==this.getFacing().getAxis())
 				turnY(player.isSneaking(), false);
 			else
 				turnX(player.isSneaking(), false);
+		}
+		return true;
+	}
+
+	@Override
+	public boolean screwdriverUseSide(Direction side, PlayerEntity player, Vec3d hitVec)
+	{
+		if(!world.isRemote)
+		{
+			redstoneControlInverted = !redstoneControlInverted;
+			ChatUtils.sendServerNoSpamMessages(player, new TranslationTextComponent(Lib.CHAT_INFO+"rsControl."+(redstoneControlInverted?"invertedOn": "invertedOff")));
+			markDirty();
+			this.markContainingBlockForUpdate(null);
 		}
 		return true;
 	}

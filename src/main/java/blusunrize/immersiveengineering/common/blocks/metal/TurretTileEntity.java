@@ -63,7 +63,7 @@ import java.util.List;
 import java.util.UUID;
 
 public abstract class TurretTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInternalFluxHandler, IIEInventory,
-		IHasDummyBlocks, ITileDrop, IStateBasedDirectional, IBlockBounds, IInteractionObjectIE, IEntityProof, IHammerInteraction, IHasObjProperty
+		IHasDummyBlocks, ITileDrop, IStateBasedDirectional, IBlockBounds, IInteractionObjectIE, IEntityProof, IScrewdriverInteraction, IHasObjProperty
 {
 	public FluxStorage energyStorage = new FluxStorage(16000);
 	public boolean redstoneControlInverted = false;
@@ -375,13 +375,13 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 	}
 
 	@Override
-	public boolean hammerUseSide(Direction side, PlayerEntity player, Vec3d hitVec)
+	public boolean screwdriverUseSide(Direction side, PlayerEntity player, Vec3d hitVec)
 	{
 		if(isDummy())
 		{
 			TileEntity te = world.getTileEntity(getPos().down());
 			if(te instanceof TurretTileEntity)
-				return ((TurretTileEntity)te).hammerUseSide(side, player, hitVec);
+				return ((TurretTileEntity)te).screwdriverUseSide(side, player, hitVec);
 			return false;
 		}
 		if(player.isSneaking()&&!world.isRemote)
