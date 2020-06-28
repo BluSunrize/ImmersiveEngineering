@@ -68,6 +68,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.EffectInstance;
@@ -360,9 +361,34 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		}
 	}
 
+	private static void handleSubtitleOffset(boolean pre)
+	{
+		float offset = 0;
+		PlayerEntity player = ClientUtils.mc().player;
+		for(Hand hand : Hand.values())
+			if(!player.getHeldItem(hand).isEmpty())
+			{
+				Item equipped = player.getHeldItem(hand).getItem();
+				if(equipped instanceof RevolverItem||equipped instanceof SpeedloaderItem)
+					offset = 50f;
+				else if(equipped instanceof DrillItem||equipped instanceof ChemthrowerItem||equipped instanceof BuzzsawItem)
+					offset = 50f;
+				else if(equipped instanceof RailgunItem || equipped instanceof IEShieldItem)
+					offset = 20f;
+			}
+		if(offset!=0)
+		{
+			if(pre)
+				offset *= -1;
+			GlStateManager.translatef(0, offset, 0);
+		}
+	}
+
 	@SubscribeEvent
 	public void onRenderOverlayPre(RenderGameOverlayEvent.Pre event)
 	{
+		if(event.getType()==RenderGameOverlayEvent.ElementType.SUBTITLES)
+			handleSubtitleOffset(true);
 		if(ZoomHandler.isZooming&&event.getType()==RenderGameOverlayEvent.ElementType.CROSSHAIRS)
 		{
 			event.setCanceled(true);
@@ -444,13 +470,12 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	{
 		int scaledWidth = ClientUtils.mc().mainWindow.getScaledWidth();
 		int scaledHeight = ClientUtils.mc().mainWindow.getScaledHeight();
+
+		if(event.getType()==RenderGameOverlayEvent.ElementType.SUBTITLES)
+			handleSubtitleOffset(false);
 		if(ClientUtils.mc().player!=null&&event.getType()==RenderGameOverlayEvent.ElementType.TEXT)
 		{
 			PlayerEntity player = ClientUtils.mc().player;
-			int rightOffset = 0;
-			if(ClientUtils.mc().gameSettings.showSubtitles)
-				rightOffset += 100;
-
 			for(Hand hand : Hand.values())
 				if(!player.getHeldItem(hand).isEmpty())
 				{
@@ -494,7 +519,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 							int bulletAmount = ((IBulletContainer)equipped.getItem()).getBulletCount(equipped);
 							HandSide side = hand==Hand.MAIN_HAND?player.getPrimaryHand(): player.getPrimaryHand().opposite();
 							boolean right = side==HandSide.RIGHT;
-							float dx = right?scaledWidth-rightOffset-32-48: 48;
+							float dx = right?scaledWidth-32-48: 48;
 							float dy = scaledHeight-64;
 							GlStateManager.pushMatrix();
 							GlStateManager.enableRescaleNormal();
@@ -549,7 +574,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						float scale = 2f;
 						GlStateManager.pushMatrix();
 						GlStateManager.enableBlend();
-						GlStateManager.translated(scaledWidth-rightOffset-80, scaledHeight-30, 0);
+						GlStateManager.translated(scaledWidth-80, scaledHeight-30, 0);
 						GlStateManager.scalef(scale, scale, 1);
 						ClientProxy.nixieFont.drawString((chargeLevel < 10?"0": "")+chargeLevel, 0, 0, Lib.colour_nixieTubeText);
 						GlStateManager.scalef(1/scale, 1/scale, 1);
@@ -562,7 +587,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						boolean buzzsaw = equipped.getItem() instanceof BuzzsawItem;
 						ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
 						GlStateManager.color3f(1, 1, 1);
-						float dx = scaledWidth-rightOffset-16;
+						float dx = scaledWidth-16;
 						float dy = scaledHeight;
 						GlStateManager.pushMatrix();
 						GlStateManager.translated(dx, dy, 0);
@@ -644,7 +669,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 							ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
 							GlStateManager.color3f(1, 1, 1);
 							boolean boundLeft = (player.getPrimaryHand()==HandSide.RIGHT)==(hand==Hand.OFF_HAND);
-							float dx = boundLeft?16: (scaledWidth-rightOffset-16-64);
+							float dx = boundLeft?16: (scaledWidth-16-64);
 							float dy = scaledHeight;
 							GlStateManager.pushMatrix();
 							GlStateManager.enableBlend();
