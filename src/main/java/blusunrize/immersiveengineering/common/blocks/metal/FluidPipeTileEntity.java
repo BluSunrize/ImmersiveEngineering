@@ -456,14 +456,29 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 		@Override
 		public FluidStack drain(FluidStack resource, FluidAction doDrain)
 		{
-			return FluidStack.EMPTY;
+			return this.drain(resource.getAmount(), doDrain);
 		}
 
 		@Nonnull
 		@Override
 		public FluidStack drain(int maxDrain, FluidAction doDrain)
 		{
-			return FluidStack.EMPTY;
+			if(maxDrain <= 0)
+				return FluidStack.EMPTY;
+
+			ArrayList<DirectionalFluidOutput> outputList = new ArrayList<>(getConnectedFluidHandlers(pipe.getPos(), pipe.world));
+			if(outputList.size() < 1)
+				return FluidStack.EMPTY;
+
+			BlockPos ccFrom = new BlockPos(pipe.getPos().offset(facing));
+			outputList.removeIf(output -> ccFrom.equals(Utils.toCC(output.containingTile)));
+
+			int chosen = outputList.size()==1?0: Utils.RAND.nextInt(outputList.size());
+			DirectionalFluidOutput output = outputList.get(chosen);
+			FluidStack available = output.output.drain(maxDrain, FluidAction.SIMULATE);
+			int limit = getTranferrableAmount(available, output);
+			int actualTake = Math.min(limit, maxDrain);
+			return output.output.drain(actualTake, doDrain);
 		}
 	}
 
@@ -643,6 +658,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 		{
 			return Objects.hash(collisions, connections, availableConnections, hasCover, connectionStyles);
 		}
+
 	}
 
 	public static HashMap<String, IEObjState> cachedOBJStates = new HashMap<>();

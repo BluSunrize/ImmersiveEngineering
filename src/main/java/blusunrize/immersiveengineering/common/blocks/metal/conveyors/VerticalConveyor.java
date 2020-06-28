@@ -16,9 +16,7 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.ModelConveyor;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
-import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.shapes.CachedShapesWithTransform;
-import blusunrize.immersiveengineering.common.util.shapes.CachedVoxelShapes;
 import com.google.common.collect.Lists;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.Quaternion;
@@ -45,7 +43,6 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -89,7 +86,13 @@ public class VerticalConveyor extends BasicConveyor
 		String key = ConveyorHandler.reverseClassRegistry.get(this.getClass()).toString();
 		key += "f"+getFacing().ordinal();
 		key += "a"+(isActive()?1: 0);
-		key += "b"+(renderBottomBelt(getTile(), getFacing())?("1"+(renderBottomWall(getTile(), getFacing(), 0)?"1": "0")+(renderBottomWall(getTile(), getFacing(), 1)?"1": "0")): "000");
+		if(renderBottomBelt(getTile(), getFacing()))
+		{
+			key += "b";
+			key += isInwardConveyor(getTile(), getFacing().getOpposite())?"1": "0";
+			key += renderBottomWall(getTile(), getFacing(), 0)?"1": "0";
+			key += renderBottomWall(getTile(), getFacing(), 1)?"1": "0";
+		}
 		key += "c"+getDyeColour();
 		if(allowCovers()&&cover!=Blocks.AIR)
 			key += "s"+cover.getRegistryName();

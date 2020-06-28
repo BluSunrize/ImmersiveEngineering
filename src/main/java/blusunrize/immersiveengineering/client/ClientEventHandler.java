@@ -69,6 +69,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.EffectInstance;
@@ -350,9 +351,34 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		}
 	}
 
+	private static void handleSubtitleOffset(boolean pre)
+	{
+		float offset = 0;
+		PlayerEntity player = ClientUtils.mc().player;
+		for(Hand hand : Hand.values())
+			if(!player.getHeldItem(hand).isEmpty())
+			{
+				Item equipped = player.getHeldItem(hand).getItem();
+				if(equipped instanceof RevolverItem||equipped instanceof SpeedloaderItem)
+					offset = 50f;
+				else if(equipped instanceof DrillItem||equipped instanceof ChemthrowerItem||equipped instanceof BuzzsawItem)
+					offset = 50f;
+				else if(equipped instanceof RailgunItem || equipped instanceof IEShieldItem)
+					offset = 20f;
+			}
+		if(offset!=0)
+		{
+			if(pre)
+				offset *= -1;
+			GlStateManager.translatef(0, offset, 0);
+		}
+	}
+
 	@SubscribeEvent
 	public void onRenderOverlayPre(RenderGameOverlayEvent.Pre event)
 	{
+		if(event.getType()==RenderGameOverlayEvent.ElementType.SUBTITLES)
+			handleSubtitleOffset(true);
 		if(ZoomHandler.isZooming&&event.getType()==RenderGameOverlayEvent.ElementType.CROSSHAIRS)
 		{
 			event.setCanceled(true);
@@ -436,6 +462,9 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	{
 		int scaledWidth = ClientUtils.mc().getMainWindow().getScaledWidth();
 		int scaledHeight = ClientUtils.mc().getMainWindow().getScaledHeight();
+
+		if(event.getType()==RenderGameOverlayEvent.ElementType.SUBTITLES)
+			handleSubtitleOffset(false);
 		if(ClientUtils.mc().player!=null&&event.getType()==RenderGameOverlayEvent.ElementType.TEXT)
 		{
 			PlayerEntity player = ClientUtils.mc().player;
@@ -493,7 +522,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 							int bulletAmount = ((IBulletContainer)equipped.getItem()).getBulletCount(equipped);
 							HandSide side = hand==Hand.MAIN_HAND?player.getPrimaryHand(): player.getPrimaryHand().opposite();
 							boolean right = side==HandSide.RIGHT;
-							float dx = right?scaledWidth-rightOffset-32-48: 48;
+							float dx = right?scaledWidth-32-48: 48;
 							float dy = scaledHeight-64;
 							transform.push();
 							transform.push();
@@ -640,7 +669,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						{
 							IVertexBuilder builder = buffer.getBuffer(IERenderTypes.getGui(rl("textures/gui/hud_elements.png")));
 							boolean boundLeft = (player.getPrimaryHand()==HandSide.RIGHT)==(hand==Hand.OFF_HAND);
-							float dx = boundLeft?16: (scaledWidth-rightOffset-16-64);
+							float dx = boundLeft?16: (scaledWidth-16-64);
 							float dy = scaledHeight;
 							transform.push();
 							transform.translate(dx, dy, 0);
