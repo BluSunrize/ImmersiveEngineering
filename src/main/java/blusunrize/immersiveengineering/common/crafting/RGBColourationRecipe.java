@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.crafting;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Lists;
-import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.ICraftingRecipe;
@@ -89,7 +88,7 @@ public class RGBColourationRecipe implements ICraftingRecipe
 				}
 				else if(Utils.isDye(stackInSlot))
 				{
-					float[] afloat = SheepEntity.getDyeRgb(Utils.getDye(stackInSlot));
+					float[] afloat = Utils.getDye(stackInSlot).getColorComponentValues();
 					int r = (int)(afloat[0]*255.0F);
 					int g = (int)(afloat[1]*255.0F);
 					int b = (int)(afloat[2]*255.0F);
