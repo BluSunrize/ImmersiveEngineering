@@ -466,7 +466,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 				return FluidStack.EMPTY;
 
 			BlockPos ccFrom = new BlockPos(pipe.getPos().offset(facing));
-			outputList.removeIf(output -> ccFrom.equals(Utils.toCC(output.containingTile)));
+			outputList.removeIf(output -> ccFrom.equals(output.containingTile.getPos()));
 
 			int chosen = outputList.size()==1?0: Utils.RAND.nextInt(outputList.size());
 			DirectionalFluidOutput output = outputList.get(chosen);
