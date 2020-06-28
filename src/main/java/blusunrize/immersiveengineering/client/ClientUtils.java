@@ -16,10 +16,7 @@ import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.client.models.SmartLightingQuad;
 import blusunrize.immersiveengineering.common.IEConfig;
-import blusunrize.immersiveengineering.common.items.ChemthrowerItem;
-import blusunrize.immersiveengineering.common.items.DrillItem;
-import blusunrize.immersiveengineering.common.items.RailgunItem;
-import blusunrize.immersiveengineering.common.items.RevolverItem;
+import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.fluids.IEFluid;
@@ -456,7 +453,20 @@ public class ClientUtils
 						else
 						{
 							model.bipedRightArm.rotateAngleX = -.87266f;
-							model.bipedRightArm.rotateAngleY = -0.52360f;
+							model.bipedRightArm.rotateAngleY = -.52360f;
+						}
+					}
+					else if(heldItem.getItem() instanceof BuzzsawItem)
+					{
+						if(right)
+						{
+							model.bipedLeftArm.rotateAngleX = -.87266f;
+							model.bipedLeftArm.rotateAngleY = .78539f;
+						}
+						else
+						{
+							model.bipedRightArm.rotateAngleX = -.87266f;
+							model.bipedRightArm.rotateAngleY = -.78539f;
 						}
 					}
 					else if(heldItem.getItem() instanceof RailgunItem)
