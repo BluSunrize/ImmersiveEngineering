@@ -160,6 +160,7 @@ public class CokeOvenTileEntity extends MultiblockPartTileEntity<CokeOvenTileEnt
 						Utils.modifyInvStackSize(inventory, EMPTY_CONTAINER_SLOT, -filledContainer.getCount());
 					}
 					markDirty();
+					this.markContainingBlockForUpdate(null);
 				}
 			}
 
