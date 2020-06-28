@@ -85,12 +85,17 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 		super.writeCustomNBT(nbt, descPacket);
 	}
 
+	public BlockPos getWheelCenterPos()
+	{
+		return this.getBlockPosForPos(wheelCenterOffset);
+	}
+
 	@Override
 	public int getComparatorInputOverride()
 	{
 		if(!this.isRedstonePos())
 			return 0;
-		BlockPos wheelPos = this.getBlockPosForPos(wheelCenterOffset);
+		BlockPos wheelPos = getWheelCenterPos();
 		if(world.isBlockLoaded(wheelPos)&&world.getTileEntity(wheelPos) instanceof BucketWheelTileEntity)
 		{
 			MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(world, wheelPos.getX() >> 4, wheelPos.getZ() >> 4);

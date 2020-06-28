@@ -11,11 +11,16 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
+import blusunrize.immersiveengineering.common.blocks.metal.ExcavatorTileEntity;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -25,6 +30,23 @@ public class ExcavatorMultiblock extends IETemplateMultiblock
 	{
 		super(new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/excavator"),
 				new BlockPos(1, 1, 5), new BlockPos(1, 1, 5), () -> Multiblocks.excavator.getDefaultState());
+	}
+
+	@Override
+	public boolean createStructure(World world, BlockPos pos, Direction side, PlayerEntity player)
+	{
+		final boolean excavatorFormed = super.createStructure(world, pos, side, player);
+		if(excavatorFormed)
+		{
+			// Try to also form the bucket wheel
+			TileEntity clickedTE = world.getTileEntity(pos);
+			if(clickedTE instanceof ExcavatorTileEntity)
+			{
+				BlockPos wheelCenter = ((ExcavatorTileEntity)clickedTE).getWheelCenterPos();
+				IEMultiblocks.BUCKET_WHEEL.createStructure(world, wheelCenter, side.rotateY(), player);
+			}
+		}
+		return excavatorFormed;
 	}
 
 	@Override
