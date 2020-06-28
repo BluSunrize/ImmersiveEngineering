@@ -436,6 +436,8 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 		if(state==null||state.getBlockHardness(world, pos)!=0.0f)
 		{
 			int dmg = state==null||ForgeHooks.isToolEffective(world, pos, stack)||isEffective(stack, state.getMaterial())?1: 3;
+			if(state.isIn(BlockTags.LEAVES) && Utils.RAND.nextInt(10)!=0)
+				return;
 			ItemStack sawblade = getSawblade(stack);
 			if(!sawblade.isEmpty())
 			{
