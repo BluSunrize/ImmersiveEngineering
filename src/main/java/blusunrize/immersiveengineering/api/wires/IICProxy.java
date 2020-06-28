@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.api.wires;
 
 import blusunrize.immersiveengineering.api.TargetingInfo;
-import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import net.minecraft.nbt.CompoundNBT;
@@ -59,7 +58,7 @@ public class IICProxy implements IImmersiveConnectable
 		if(!(te instanceof IImmersiveConnectable))
 			throw new IllegalArgumentException("Can't create an IICProxy for a null/non-IIC TileEntity");
 		dim = te.getWorld().getDimension().getType();
-		pos = Utils.toCC(te);
+		pos = te.getPos();
 		internalConns = Lists.newArrayList(((IImmersiveConnectable)te).getInternalConnections());
 		points = new ArrayList<>(((IImmersiveConnectable)te).getConnectionPoints());
 	}

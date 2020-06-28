@@ -9,8 +9,8 @@
 package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
+import blusunrize.immersiveengineering.api.utils.IngredientUtils;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -91,7 +91,7 @@ public class MessageShaderManual implements IMessage
 				else if(key==MessageType.SPAWN&&args.length > 0)
 				{
 					if(!player.abilities.isCreativeMode)
-						ApiUtils.consumePlayerIngredient(player, ShaderRegistry.shaderRegistry.get(args[0]).replicationCost);
+						IngredientUtils.consumePlayerIngredient(player, ShaderRegistry.shaderRegistry.get(args[0]).replicationCost);
 					ItemStack shaderStack = new ItemStack(ShaderRegistry.itemShader);
 					ItemNBTHelper.putString(shaderStack, "shader_name", args[0].toString());
 					ItemEntity entityitem = player.dropItem(shaderStack, false);

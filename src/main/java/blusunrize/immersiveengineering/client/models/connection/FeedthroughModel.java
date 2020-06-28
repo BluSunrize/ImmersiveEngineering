@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.client.models.connection;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
+import blusunrize.immersiveengineering.api.utils.QuadTransformer;
 import blusunrize.immersiveengineering.api.wires.WireApi;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.ClientUtils;
@@ -34,7 +35,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Vector3f;
-import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -340,7 +340,7 @@ public class FeedthroughModel extends BakedIEModel
 					case 0:
 						if(k.layer==null||k.baseState.getBlock().canRenderInLayer(k.baseState, k.layer))
 						{
-							Function<BakedQuad, BakedQuad> tintTransformer = ApiUtils.transformQuad(TRSRTransformation.identity(),
+							Function<BakedQuad, BakedQuad> tintTransformer = new QuadTransformer(TRSRTransformation.identity(),
 									colorMultiplier);
 							quads.add(model.getQuads(k.baseState, side, Utils.RAND, EmptyModelData.INSTANCE)
 									.stream()
@@ -395,7 +395,7 @@ public class FeedthroughModel extends BakedIEModel
 			List<BakedQuad> conn = new ArrayList<>(model.getQuads(null, side, Utils.RAND, EmptyModelData.INSTANCE));
 			if(side==facing)
 				conn.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, vertices, Direction.UP, info.tex, info.uvs, WHITE, false));
-			Function<BakedQuad, BakedQuad> transf = ApiUtils.transformQuad(new TRSRTransformation(mat.toMatrix4f()), null);//I hope no one uses tint index for connectors
+			Function<BakedQuad, BakedQuad> transf = new QuadTransformer(new TRSRTransformation(mat.toMatrix4f()), null);//I hope no one uses tint index for connectors
 			if(transf!=null)
 				return conn.stream().map(transf).collect(Collectors.toList());
 			else

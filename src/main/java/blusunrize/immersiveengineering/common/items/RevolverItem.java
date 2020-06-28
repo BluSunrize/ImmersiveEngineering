@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
@@ -19,6 +18,7 @@ import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryEntry;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.api.tool.ITool;
+import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
@@ -157,7 +157,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 		if(!stack.isEmpty())
 			return new IEItemStackHandler(stack)
 			{
-				final LazyOptional<ShaderWrapper_Item> shaders = ApiUtils.constantOptional(
+				final LazyOptional<ShaderWrapper_Item> shaders = CapabilityUtils.constantOptional(
 						new ShaderWrapper_Item(new ResourceLocation(ImmersiveEngineering.MODID, "revolver"), stack));
 
 				@Nonnull
@@ -396,7 +396,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 			if(getShootCooldown(revolver) > 0||ItemNBTHelper.hasKey(revolver, "reload"))
 				return new ActionResult<>(ActionResultType.PASS, revolver);
 			NonNullList<ItemStack> bullets = getBullets(revolver);
-			if(!bullets.get(0).isEmpty()&&bullets.get(0).getItem() instanceof BulletItem&&ItemNBTHelper.hasKey(bullets.get(0), "bullet"))
+			if(!bullets.get(0).isEmpty()&&bullets.get(0).getItem() instanceof BulletItem)
 			{
 				Triple<ItemStack, ShaderRegistryEntry, ShaderCase> shader = ShaderRegistry.getStoredShaderAndCase(revolver);
 				if(shader!=null)
@@ -498,7 +498,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 				ItemStack b = inv.getStackInSlot(i);
 				boolean isValid = true;
 				if(!allowCasing)
-					isValid = b.getItem() instanceof BulletItem&&ItemNBTHelper.hasKey(b, "bullet");
+					isValid = b.getItem() instanceof BulletItem;
 				if(!b.isEmpty()&&isValid)
 					return false;
 			}

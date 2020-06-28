@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
@@ -20,6 +19,7 @@ import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryEntry;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.api.tool.ITool;
+import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.common.gui.IESlot;
@@ -140,8 +140,8 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 		if(!stack.isEmpty())
 			return new IEItemStackHandler(stack)
 			{
-				LazyOptional<IEItemFluidHandler> fluids = ApiUtils.constantOptional(new IEItemFluidHandler(stack, 2000));
-				LazyOptional<ShaderWrapper_Item> shaders = ApiUtils.constantOptional(new ShaderWrapper_Item(new ResourceLocation(ImmersiveEngineering.MODID, "drill"), stack));
+				LazyOptional<IEItemFluidHandler> fluids = CapabilityUtils.constantOptional(new IEItemFluidHandler(stack, 2000));
+				LazyOptional<ShaderWrapper_Item> shaders = CapabilityUtils.constantOptional(new ShaderWrapper_Item(new ResourceLocation(ImmersiveEngineering.MODID, "drill"), stack));
 
 				@Nonnull
 				@Override

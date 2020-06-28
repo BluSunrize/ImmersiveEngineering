@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
@@ -217,7 +218,7 @@ public class SiloTileEntity extends MultiblockPartTileEntity<SiloTileEntity> imp
 			else
 			{
 				int maxSize = Math.min(silo.storageAmount, silo.identStack.getMaxStackSize());
-				return ApiUtils.copyStackWithAmount(silo.identStack, maxSize);
+				return ItemUtils.copyStackWithAmount(silo.identStack, maxSize);
 			}
 		}
 

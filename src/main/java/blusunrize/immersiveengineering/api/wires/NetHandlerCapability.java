@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.api.wires;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
@@ -56,7 +56,7 @@ public class NetHandlerCapability
 		public Provider(World w)
 		{
 			net = new GlobalWireNetwork(w);
-			netOpt = ApiUtils.constantOptional(net);
+			netOpt = CapabilityUtils.constantOptional(net);
 		}
 
 		@Nonnull

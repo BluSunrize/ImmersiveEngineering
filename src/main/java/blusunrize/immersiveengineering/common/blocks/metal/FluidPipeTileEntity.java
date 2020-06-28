@@ -399,7 +399,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 			HashMap<DirectionalFluidOutput, Integer> sorting = new HashMap<>();
 			for(DirectionalFluidOutput output : outputList)
 			{
-				BlockPos cc = Utils.toCC(output.containingTile);
+				BlockPos cc = output.containingTile.getPos();
 				if(!cc.equals(ccFrom)&&pipe.world.isBlockLoaded(cc)&&!pipe.equals(output.containingTile))
 				{
 					int limit = getTranferrableAmount(resource, output);

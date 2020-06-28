@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.client.models.obj;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.ComparableItemStack;
 import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
@@ -199,7 +198,7 @@ public class IESmartObjModel implements IBakedModel
 												 @Nullable World world, @Nullable LivingEntity entity)
 		{
 			tempEntityStatic = entity;
-			ComparableItemStack comp = ApiUtils.createComparableItemStack(stack, false, true);
+			ComparableItemStack comp = ComparableItemStack.create(stack, false, true);
 			if(comp==null)
 				return originalModel;
 			IBakedModel model = cachedBakedItemModels.getIfPresent(comp);

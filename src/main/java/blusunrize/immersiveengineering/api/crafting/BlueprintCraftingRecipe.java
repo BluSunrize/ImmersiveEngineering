@@ -8,8 +8,8 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.ListUtils;
@@ -152,7 +152,7 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 					if(ingr.test(queryStack))
 					{
 						int taken = Math.min(queryStack.getCount(), inputSize);
-						consumed.add(ApiUtils.copyStackWithAmount(queryStack, taken));
+						consumed.add(ItemUtils.copyStackWithAmount(queryStack, taken));
 						if(taken >= queryStack.getCount()&&queryStack.getItem().hasContainerItem(queryStack))
 							query.set(i, queryStack.getItem().getContainerItem(queryStack));
 						else

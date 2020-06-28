@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.api;
 
+import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import net.minecraft.nbt.INBT;
@@ -73,7 +74,7 @@ public class CapabilitySkyhookData
 	public static class SimpleSkyhookProvider implements ICapabilityProvider
 	{
 		SkyhookUserData data = new SkyhookUserData();
-		LazyOptional<SkyhookUserData> opt = ApiUtils.constantOptional(data);
+		LazyOptional<SkyhookUserData> opt = CapabilityUtils.constantOptional(data);
 
 		@Nonnull
 		@Override

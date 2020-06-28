@@ -8,8 +8,8 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.common.util.ListUtils;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
@@ -60,7 +60,7 @@ public class BottlingMachineRecipe extends MultiblockRecipe
 	{
 		if(!input.isEmpty()&&fluid!=null)
 			for(BottlingMachineRecipe recipe : recipeList.values())
-				if(ApiUtils.stackMatchesObject(input, recipe.input)&&fluid.containsFluid(recipe.fluidInput))
+				if(ItemUtils.stackMatchesObject(input, recipe.input)&&fluid.containsFluid(recipe.fluidInput))
 					return recipe;
 		return null;
 	}

@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.wires;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.wires.LocalWireNetwork;
@@ -16,6 +15,7 @@ import blusunrize.immersiveengineering.api.wires.WireCollisionData;
 import blusunrize.immersiveengineering.api.wires.WireCollisionData.CollisionInfo;
 import blusunrize.immersiveengineering.api.wires.localhandlers.ICollisionHandler;
 import blusunrize.immersiveengineering.api.wires.localhandlers.LocalNetworkHandler;
+import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -74,7 +74,7 @@ public class WireCollisions
 						if(Utils.isVecInBlock(vecB, pos, info.conn.getEndB().getPosition(), 1e-3))
 							continue;
 						BlockPos dropPos = pos;
-						if(ApiUtils.preventsConnection(worldIn, pos, newState, info.intersectA, info.intersectB))
+						if(WireUtils.preventsConnection(worldIn, pos, newState, info.intersectA, info.intersectB))
 						{
 							for(Direction f : Direction.VALUES)
 								if(worldIn.isAirBlock(pos.offset(f)))

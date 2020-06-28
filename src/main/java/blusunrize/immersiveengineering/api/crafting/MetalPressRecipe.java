@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.ComparableItemStack;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.util.ListUtils;
@@ -99,7 +98,7 @@ public class MetalPressRecipe extends MultiblockRecipe
 	{
 		if(mold.isEmpty()||input.isEmpty())
 			return null;
-		ComparableItemStack comp = ApiUtils.createComparableItemStack(mold, false);
+		ComparableItemStack comp = ComparableItemStack.create(mold, false);
 		List<MetalPressRecipe> list = recipesByMold.get(comp);
 		for(MetalPressRecipe recipe : list)
 			if(recipe.matches(mold, input, world))
@@ -131,7 +130,7 @@ public class MetalPressRecipe extends MultiblockRecipe
 	{
 		if(itemStack.isEmpty())
 			return false;
-		return recipesByMold.containsKey(ApiUtils.createComparableItemStack(itemStack, false));
+		return recipesByMold.containsKey(ComparableItemStack.create(itemStack, false));
 	}
 
 	@Override
