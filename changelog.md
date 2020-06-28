@@ -3,6 +3,7 @@
 - Added IE's metal items to various generic tags (Malte)
 - Added holding animation for the buzzsaw (BluSunrize)
 - Added the ability for the chemthrower to hydrate vanilla concrete powder (BluSunrize)
+- Added the ability for fluidpipes to extract from tanks (experimental, might break stuff) (BluSunrize) 
 - Cleaned up some wire network code (Malte)
 - Changed hammer to allow rotating Redstone Repeaters (experimental, might break stuff) (BluSunrize)
 - Changed buzzsaw to take less damage when breaking leaves (BluSunrize)
@@ -25,6 +26,7 @@
 - Fixed shears not counting as tools for the toolbox (BluSunrize)
 - Fixed rendering and boundingboxes on vertical conveyors (BluSunrize)
 - Fixed IE hud elements overlapping with subtitles, but this time better (BluSunrize)
+- Translations Added/Updated: ru_ru (Sergo 467)
 
 ##### Version 0.14-102 - BUILT
 - Fixed wires no longer transferring energy after release 100 (Malte)
