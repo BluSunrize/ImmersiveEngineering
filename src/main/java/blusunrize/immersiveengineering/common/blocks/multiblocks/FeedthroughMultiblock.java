@@ -71,8 +71,8 @@ public class FeedthroughMultiblock implements IMultiblock
 		if(renderStack==null||renderStack.isEmpty())
 			renderStack = new ItemStack(Connectors.feedthrough);
 
-		GlStateManager.translated(.5, .5, 1.5);
-		GlStateManager.rotated(-45, 0, 1, 0);
+		GlStateManager.translated(1.5, .5, 0.5);
+		GlStateManager.rotated(45, 0, 1, 0);
 		GlStateManager.rotated(-30, 1, 0, 0);
 		GlStateManager.scaled(1.75, 1.75, 1.75);
 

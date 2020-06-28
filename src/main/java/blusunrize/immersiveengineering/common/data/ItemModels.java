@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.models.ModelConveyor.ConveyorLoader;
 import blusunrize.immersiveengineering.client.models.ModelCoresample.CoresampleLoader;
+import blusunrize.immersiveengineering.client.models.connection.FeedthroughLoader;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.CoverType;
@@ -341,6 +342,8 @@ public class ItemModels extends LoadedModelProvider
 				.transforms(rl("item/block"));
 		obj(MetalDevices.floodlight, rl("block/metal_device/floodlight.obj.ie"))
 				.transforms(rl("item/floodlight"));
+		getBuilder(Connectors.feedthrough)
+				.loader(FeedthroughLoader.LOCATION);
 	}
 
 	private LoadedModelBuilder obj(IItemProvider item, ResourceLocation model)

@@ -34,7 +34,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Vector3f;
-import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -305,6 +304,8 @@ public class FeedthroughModel extends BakedIEModel
 		{
 			WireType w = WireType.getValue(ItemNBTHelper.getString(stack, WIRE));
 			BlockState state = NBTUtil.readBlockState(ItemNBTHelper.getTagCompound(stack, MIDDLE_STATE));
+			if(state.getBlock()==Blocks.AIR)
+				state = Blocks.BOOKSHELF.getDefaultState();
 			init(new FeedthroughCacheKey(w, state, Integer.MAX_VALUE, Direction.NORTH, null),
 					i -> mc().getItemColors().getColor(stack, i));
 		}
