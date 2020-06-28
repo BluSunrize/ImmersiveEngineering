@@ -1,4 +1,10 @@
 ##### Version 0.14-104
+- Added JSON "recipes" for Cloche Fertilizer (BluSunrize)
+- Added IE's metal items to various generic tags (Malte)
+- Added holding animation for the buzzsaw (BluSunrize)
+- Added the ability for the chemthrower to hydrate vanilla concrete powder (BluSunrize)
+- Cleaned up some wire network code (Malte)
+- Change hammer to allow rotating Redstone Repeaters (experimental, might break stuff) (BluSunrize)
 - Fixed feedthroughs not dropping the middle block when it's broken (Malte)
 - Fixed IE allowing clients to join servers with mismatched IE versions (Malte)
 - Fixed diesel generators still not allowing levers to be placed in all cases (Malte)
@@ -11,7 +17,13 @@
 - Fixed item duplication when repairing hammers or wirecutters (Malte)
 - Fixed rotating and inverting the breaker switch with a hammer (Malte)
 - Fixed wires not updating correctly when rotating a redstone breaker (Malte)
-- Cleaned up some wire network code (Malte)
+- Fixed desyncing in the workbench (Malte)
+- Fixed crash related to dyeing earmuffs (Malte)
+- Fixed dupebug related to wire recycling (BluSunrize)
+- Fixed coke oven desync when not processing (BluSunrize)
+- Fixed shears not counting as tools for the toolbox (BluSunrize)
+- Fixed rendering and boundingboxes on vertical conveyors (BluSunrize)
+- Fixed IE hud elements overlapping with subtitles, but this time better (BluSunrize)
 
 ##### Version 0.14-102 - BUILT
 - Fixed wires no longer transferring energy after release 100 (Malte)
