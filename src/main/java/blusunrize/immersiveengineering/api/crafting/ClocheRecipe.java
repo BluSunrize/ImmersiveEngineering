@@ -1,8 +1,8 @@
 package blusunrize.immersiveengineering.api.crafting;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.ClocheRenderFunction.ClocheRenderReference;
+import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -67,7 +67,7 @@ public class ClocheRecipe extends IESerializableRecipe
 	{
 		for(ClocheRecipe recipe : recipeList.values())
 		{
-			if(ApiUtils.stackMatchesObject(seed, recipe.seed)&&ApiUtils.stackMatchesObject(soil, recipe.soil))
+			if(ItemUtils.stackMatchesObject(seed, recipe.seed)&&ItemUtils.stackMatchesObject(soil, recipe.soil))
 				return recipe;
 		}
 		return null;

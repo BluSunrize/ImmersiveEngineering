@@ -30,6 +30,18 @@ public class ComparableItemStack
 			copy();
 	}
 
+	public static ComparableItemStack create(ItemStack stack, boolean copy)
+	{
+		return create(stack, copy, stack.hasTag()&&!stack.getOrCreateTag().isEmpty());
+	}
+
+	public static ComparableItemStack create(ItemStack stack, boolean copy, boolean useNbt)
+	{
+		ComparableItemStack comp = new ComparableItemStack(stack, copy);
+		comp.setUseNBT(useNbt);
+		return comp;
+	}
+
 	public void copy()
 	{
 		stack = stack.copy();

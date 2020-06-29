@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.client.models.connection;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
+import blusunrize.immersiveengineering.api.utils.QuadTransformer;
 import blusunrize.immersiveengineering.api.wires.WireApi;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.ClientUtils;
@@ -306,6 +307,8 @@ public class FeedthroughModel extends BakedIEModel
 		{
 			WireType w = WireType.getValue(ItemNBTHelper.getString(stack, WIRE));
 			BlockState state = NBTUtil.readBlockState(ItemNBTHelper.getTagCompound(stack, MIDDLE_STATE));
+			if(state.getBlock()==Blocks.AIR)
+				state = Blocks.BOOKSHELF.getDefaultState();
 			init(new FeedthroughCacheKey(w, state, Integer.MAX_VALUE, Direction.NORTH, null),
 					i -> mc().getItemColors().getColor(stack, i));
 		}
@@ -341,7 +344,7 @@ public class FeedthroughModel extends BakedIEModel
 					case 0:
 						if(k.layer==null||RenderTypeLookup.canRenderInLayer(k.baseState, k.layer))
 						{
-							Function<BakedQuad, BakedQuad> tintTransformer = ApiUtils.transformQuad(TransformationMatrix.identity(),
+							Function<BakedQuad, BakedQuad> tintTransformer = new QuadTransformer(TransformationMatrix.identity(),
 									colorMultiplier);
 							quads.add(model.getQuads(k.baseState, side, Utils.RAND, EmptyModelData.INSTANCE)
 									.stream()
@@ -396,7 +399,7 @@ public class FeedthroughModel extends BakedIEModel
 			List<BakedQuad> conn = new ArrayList<>(model.getQuads(null, side, Utils.RAND, EmptyModelData.INSTANCE));
 			if(side==facing)
 				conn.add(ClientUtils.createBakedQuad(DefaultVertexFormats.BLOCK, vertices, Direction.UP, info.tex, info.uvs, WHITE, false));
-			Function<BakedQuad, BakedQuad> transf = ApiUtils.transformQuad(new TransformationMatrix(mat.toMatrix4f()), null);//I hope no one uses tint index for connectors
+			Function<BakedQuad, BakedQuad> transf = new QuadTransformer(new TransformationMatrix(mat.toMatrix4f()), null);//I hope no one uses tint index for connectors
 			if(transf!=null)
 				return conn.stream().map(transf).collect(Collectors.toList());
 			else

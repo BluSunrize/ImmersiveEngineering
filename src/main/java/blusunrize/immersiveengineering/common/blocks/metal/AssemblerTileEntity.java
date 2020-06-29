@@ -8,11 +8,11 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.tool.AssemblerHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttachable;
+import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
@@ -312,7 +312,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 				while(it.hasNext())
 				{
 					ItemStack next = it.next();
-					if(!next.isEmpty()&&ApiUtils.stackMatchesObject(next, recipeQuery.query, true))
+					if(!next.isEmpty()&&ItemUtils.stackMatchesObject(next, recipeQuery.query, true))
 					{
 						int taken = Math.min(querySize, next.getCount());
 						ItemStack forGrid = next.split(taken);

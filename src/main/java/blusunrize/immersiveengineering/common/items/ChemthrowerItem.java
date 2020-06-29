@@ -9,13 +9,13 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Item;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
 import blusunrize.immersiveengineering.api.tool.ITool;
+import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.common.IEConfig;
@@ -121,11 +121,11 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 		if(player.isSneaking())
 		{
 			if(!world.isRemote)
-				ItemNBTHelper.putBoolean(stack, "ignite", !ItemNBTHelper.getBoolean(stack, "ignite"));
+				setIgniteEnable(stack, !isIgniteEnable(stack));
 		}
 		else
 			player.setActiveHand(hand);
-		return new ActionResult(ActionResultType.SUCCESS, stack);
+		return new ActionResult<>(ActionResultType.SUCCESS, stack);
 	}
 
 	@Override
@@ -150,7 +150,7 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 					scatter -= .025f;
 				}
 
-				boolean ignite = ChemthrowerHandler.isFlammable(fs.getFluid())&&ItemNBTHelper.getBoolean(stack, "ignite");
+				boolean ignite = ChemthrowerHandler.isFlammable(fs.getFluid())&&isIgniteEnable(stack);
 				for(int i = 0; i < split; i++)
 				{
 					Vec3d vecDir = v.add(player.getRNG().nextGaussian()*scatter, player.getRNG().nextGaussian()*scatter, player.getRNG().nextGaussian()*scatter);
@@ -275,8 +275,8 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 		if(!stack.isEmpty())
 			return new IEItemStackHandler(stack)
 			{
-				LazyOptional<IEItemFluidHandler> fluids = ApiUtils.constantOptional(new IEItemFluidHandler(stack, 2000));
-				LazyOptional<ShaderWrapper_Item> shaders = ApiUtils.constantOptional(new ShaderWrapper_Item(new ResourceLocation(ImmersiveEngineering.MODID, "chemthrower"), stack));
+				LazyOptional<IEItemFluidHandler> fluids = CapabilityUtils.constantOptional(new IEItemFluidHandler(stack, 2000));
+				LazyOptional<ShaderWrapper_Item> shaders = CapabilityUtils.constantOptional(new ShaderWrapper_Item(new ResourceLocation(ImmersiveEngineering.MODID, "chemthrower"), stack));
 
 				@Nonnull
 				@Override
@@ -326,5 +326,15 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 	public boolean isTool(ItemStack item)
 	{
 		return true;
+	}
+
+	public static void setIgniteEnable(ItemStack chemthrower, boolean enabled)
+	{
+		chemthrower.getOrCreateTag().putBoolean("ignite", enabled);
+	}
+
+	public static boolean isIgniteEnable(ItemStack chemthrower)
+	{
+		return ItemNBTHelper.getBoolean(chemthrower, "ignite");
 	}
 }

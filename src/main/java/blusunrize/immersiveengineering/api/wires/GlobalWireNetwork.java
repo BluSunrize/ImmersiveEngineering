@@ -443,4 +443,10 @@ public class GlobalWireNetwork implements ITickableTileEntity
 		else
 			localNets.remove(cp);
 	}
+
+	public IImmersiveConnectable getConnector(ConnectionPoint cpB)
+	{
+		LocalWireNetwork local = getNullableLocalNet(cpB);
+		return Preconditions.checkNotNull(local).getConnector(cpB);
+	}
 }

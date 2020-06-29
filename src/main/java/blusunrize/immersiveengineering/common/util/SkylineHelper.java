@@ -9,10 +9,10 @@
 package blusunrize.immersiveengineering.common.util;
 
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.Connection.CatenaryData;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
+import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
 import com.google.common.collect.ImmutableSet;
@@ -49,13 +49,13 @@ public class SkylineHelper
 	public static void spawnHook(LivingEntity player, Connection connection, Hand hand,
 								 boolean limitSpeed)
 	{
-
 		if(!player.world.isRemote)
 		{
+			GlobalWireNetwork global = GlobalWireNetwork.getNetwork(player.world);
 			ConnectionPoint cpA = connection.getEndA();
 			ConnectionPoint cpB = connection.getEndB();
-			IImmersiveConnectable iicB = ApiUtils.toIIC(cpB, player.world);
-			IImmersiveConnectable iicA = ApiUtils.toIIC(cpA, player.world);
+			IImmersiveConnectable iicB = global.getConnector(cpB);
+			IImmersiveConnectable iicA = global.getConnector(cpA);
 			Vec3d vStart = new Vec3d(cpA.getPosition());
 			Vec3d vEnd = new Vec3d(cpB.getPosition());
 

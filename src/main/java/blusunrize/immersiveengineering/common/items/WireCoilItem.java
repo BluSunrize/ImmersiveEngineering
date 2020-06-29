@@ -8,24 +8,18 @@
 
 package blusunrize.immersiveengineering.common.items;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.DimensionBlockPos;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.IWireCoil;
 import blusunrize.immersiveengineering.api.wires.WireType;
+import blusunrize.immersiveengineering.api.wires.utils.WirecoilUtils;
+import blusunrize.immersiveengineering.api.wires.utils.WirecoilUtils.WireLink;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.ActionResultType;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -63,21 +57,18 @@ public class WireCoilItem extends IEBaseItem implements IWireCoil
 			list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"coil.construction0"));
 			list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"coil.construction1"));
 		}
-		if(stack.hasTag()&&stack.getOrCreateTag().contains("linkingPos", NBT.TAG_COMPOUND))
+		if(WirecoilUtils.hasWireLink(stack))
 		{
-			CompoundNBT nbt = stack.getOrCreateTag();
-			ConnectionPoint cpLink = new ConnectionPoint(nbt.getCompound("linkingPos"));
-			ResourceLocation linkDimension = new ResourceLocation(nbt.getString("linkingDim"));
-			BlockPos pos = cpLink.getPosition();
-			list.add(new TranslationTextComponent(Lib.DESC_INFO+"attachedToDim", pos.getX(),
-					pos.getY(), pos.getZ(), linkDimension));
+			WireLink link = WireLink.readFromItem(stack);
+			list.add(new TranslationTextComponent(Lib.DESC_INFO+"attachedToDim", link.cp.getX(),
+					link.cp.getY(), link.cp.getZ(), link.dimension));
 		}
 	}
 
 	@Override
 	public ActionResultType onItemUse(ItemUseContext ctx)
 	{
-		return ApiUtils.doCoilUse(this, ctx.getPlayer(), ctx.getWorld(), ctx.getPos(), ctx.getHand(), ctx.getFace(),
+		return WirecoilUtils.doCoilUse(this, ctx.getPlayer(), ctx.getWorld(), ctx.getPos(), ctx.getHand(), ctx.getFace(),
 				(float)ctx.getHitVec().x, (float)ctx.getHitVec().y, (float)ctx.getHitVec().z);
 	}
 }

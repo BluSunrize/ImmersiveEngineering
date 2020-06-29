@@ -8,12 +8,12 @@
 
 package blusunrize.immersiveengineering.common.items;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.CapabilitySkyhookData.SkyhookStatus;
 import blusunrize.immersiveengineering.api.CapabilitySkyhookData.SkyhookUserData;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.api.wires.Connection;
+import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -147,7 +147,7 @@ public class SkyhookItem extends UpgradeableToolItem implements ITool
 		if(data.getStatus()!=SkyhookStatus.HOLDING_CONNECTING)
 			return;
 		World world = player.world;
-		Connection con = ApiUtils.getConnectionMovedThrough(world, player);
+		Connection con = WireUtils.getConnectionMovedThrough(world, player);
 		if(con!=null)
 			SkylineHelper.spawnHook(player, con, player.getActiveHand(), shouldLimitSpeed(stack));
 	}

@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
@@ -19,6 +18,7 @@ import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryEntry;
 import blusunrize.immersiveengineering.api.tool.ITool;
+import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
@@ -26,6 +26,7 @@ import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IAdvancedFluidItem;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IScrollwheel;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
+import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import blusunrize.immersiveengineering.common.items.ToolUpgradeItem.ToolUpgrade;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -142,8 +143,8 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 		if(!stack.isEmpty())
 			return new IEItemStackHandler(stack)
 			{
-				LazyOptional<IEItemFluidHandler> fluids = ApiUtils.constantOptional(new IEItemFluidHandler(stack, 2000));
-				LazyOptional<ShaderWrapper_Item> shaders = ApiUtils.constantOptional(new ShaderWrapper_Item(new ResourceLocation(ImmersiveEngineering.MODID, "buzzsaw"), stack));
+				LazyOptional<IEItemFluidHandler> fluids = CapabilityUtils.constantOptional(new IEItemFluidHandler(stack, 2000));
+				LazyOptional<ShaderWrapper_Item> shaders = CapabilityUtils.constantOptional(new ShaderWrapper_Item(new ResourceLocation(ImmersiveEngineering.MODID, "buzzsaw"), stack));
 
 				@Nonnull
 				@Override
@@ -184,7 +185,7 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 	{
 		IItemHandler inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)
 				.orElseThrow(RuntimeException::new);
-		if(getUpgrades(stack).getBoolean("spareblades"))
+		if(hasQuiverUpgrade(stack))
 			return new Slot[]
 					{
 							new IESlot.WithPredicate(inv, 0, 88, 22, (itemStack) -> sawblades.contains(itemStack.getItem())),
@@ -381,7 +382,7 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 	@Override
 	public void onScrollwheel(ItemStack stack, boolean forward)
 	{
-		if(getUpgrades(stack).getBoolean("spareblades"))
+		if(hasQuiverUpgrade(stack))
 		{
 			ItemStack sawblade = getSawblade(stack);
 			ItemStack spare1 = getSawblade(stack, 1);
@@ -758,11 +759,11 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 		if("upgrade_launcher".equals(group))
 			return upgrades.getBoolean("launcher");
 		if("upgrade_blades0".equals(group))
-			return upgrades.getBoolean("spareblades");
+			return hasQuiverUpgrade(stack);
 		if("upgrade_blades1".equals(group))
-			return upgrades.getBoolean("spareblades")&&!this.getSawblade(stack, 1).isEmpty();
+			return hasQuiverUpgrade(stack)&&!this.getSawblade(stack, 1).isEmpty();
 		if("upgrade_blades2".equals(group))
-			return upgrades.getBoolean("spareblades")&&!this.getSawblade(stack, 2).isEmpty();
+			return hasQuiverUpgrade(stack)&&!this.getSawblade(stack, 2).isEmpty();
 		return true;
 	}
 
@@ -819,5 +820,10 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 				new Vector3f(0.60945f, 0, 0),
 				new Quaternion(0, angle, 0, false),
 				null, null);
+	}
+
+	public static boolean hasQuiverUpgrade(ItemStack stack)
+	{
+		return ((BuzzsawItem)Tools.buzzsaw).getUpgrades(stack).getBoolean("spareblades");
 	}
 }

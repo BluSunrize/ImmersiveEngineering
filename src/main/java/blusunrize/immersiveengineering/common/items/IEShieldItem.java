@@ -9,11 +9,11 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Item;
+import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.common.gui.IESlot;
@@ -72,10 +72,10 @@ public class IEShieldItem extends UpgradeableToolItem implements IIEEnergyItem, 
 		if(!stack.isEmpty())
 			return new IEItemStackHandler(stack)
 			{
-				final LazyOptional<EnergyHelper.ItemEnergyStorage> energyStorage = ApiUtils.constantOptional(
+				final LazyOptional<EnergyHelper.ItemEnergyStorage> energyStorage = CapabilityUtils.constantOptional(
 						new EnergyHelper.ItemEnergyStorage(stack)
 				);
-				final LazyOptional<ShaderWrapper_Item> shaders = ApiUtils.constantOptional(
+				final LazyOptional<ShaderWrapper_Item> shaders = CapabilityUtils.constantOptional(
 						new ShaderWrapper_Item(new ResourceLocation(ImmersiveEngineering.MODID, "shield"), stack)
 				);
 

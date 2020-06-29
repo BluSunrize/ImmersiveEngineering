@@ -8,8 +8,8 @@
 
 package blusunrize.immersiveengineering.client.models.obj;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import net.minecraft.client.renderer.TransformationMatrix;
+import blusunrize.immersiveengineering.api.utils.QuadTransformer;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.util.Direction;
@@ -34,7 +34,7 @@ public class QuadListAdder implements IModelBuilder<QuadListAdder>
 	{
 		this.output = output;
 		this.outputFace = outputFace;
-		this.transform = ApiUtils.transformQuad(transform, x -> x);
+		this.transform = new QuadTransformer(transform, x -> x);
 	}
 
 	public QuadListAdder(Consumer<BakedQuad> output, TransformationMatrix transform)

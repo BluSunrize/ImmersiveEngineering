@@ -254,7 +254,6 @@ public class ChemthrowerHandler
 			b = world.getBlockState(pos).getBlock();
 			if(b instanceof FireBlock)
 				world.removeBlock(pos, false);
-
 		}
 	}
 

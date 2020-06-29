@@ -1,7 +1,6 @@
 package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.ManualElementBlueprint;
 import blusunrize.immersiveengineering.api.ManualHelper;
@@ -16,6 +15,7 @@ import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryEntry;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
+import blusunrize.immersiveengineering.api.utils.TagUtils;
 import blusunrize.immersiveengineering.client.manual.IEManualInstance;
 import blusunrize.immersiveengineering.client.manual.ShaderManualElement;
 import blusunrize.immersiveengineering.common.IEContent;
@@ -394,7 +394,7 @@ public class IEManual
 				if(entry.getKey() instanceof ResourceLocation)
 				{
 					ResourceLocation key = (ResourceLocation)entry.getKey();
-					if(ApiUtils.isNonemptyItemTag(key))
+					if(TagUtils.isNonemptyItemTag(key))
 					{
 						ItemStack is = IEApi.getPreferredTagStack(key);
 						if(!is.isEmpty())

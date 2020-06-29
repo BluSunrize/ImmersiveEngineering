@@ -20,9 +20,9 @@ import blusunrize.immersiveengineering.api.tool.ZoomHandler;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.Connection.RenderData;
-import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.IWireCoil;
 import blusunrize.immersiveengineering.api.wires.WireType;
+import blusunrize.immersiveengineering.api.wires.utils.WirecoilUtils;
 import blusunrize.immersiveengineering.client.fx.FractalParticle;
 import blusunrize.immersiveengineering.client.gui.BlastFurnaceScreen;
 import blusunrize.immersiveengineering.client.gui.RevolverScreen;
@@ -481,11 +481,10 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 					ItemStack equipped = player.getHeldItem(hand);
 					if(ItemStack.areItemsEqual(new ItemStack(Tools.voltmeter), equipped)||equipped.getItem() instanceof IWireCoil)
 					{
-						if(equipped.hasTag()&&equipped.getOrCreateTag().contains("linkingPos", NBT.TAG_COMPOUND))
+						if(WirecoilUtils.hasWireLink(equipped))
 						{
-							CompoundNBT link = equipped.getOrCreateTag().getCompound("linkingPos");
-							ConnectionPoint cp = new ConnectionPoint(link);
-							BlockPos pos = cp.getPosition();
+							WirecoilUtils.WireLink link = WirecoilUtils.WireLink.readFromItem(equipped);
+							BlockPos pos = link.cp.getPosition();
 							String s = I18n.format(Lib.DESC_INFO+"attachedTo", pos.getX(), pos.getY(), pos.getZ());
 							int col = WireType.ELECTRUM.getColour(null);
 							if(equipped.getItem() instanceof IWireCoil)
@@ -644,7 +643,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 								else
 								{
 									ClientUtils.drawTexturedRect(builder, transform, -41, -73, 53, 72, 1, 1, 1, 1, 8/256f, 61/256f, 4/256f, 76/256f);
-									boolean ignite = ItemNBTHelper.getBoolean(equipped, "ignite");
+									boolean ignite = ChemthrowerItem.isIgniteEnable(equipped);
 									ClientUtils.drawTexturedRect(builder, transform, -32, -43, 12, 12, 1, 1, 1, 1, 66/256f, 78/256f, (ignite?21: 9)/256f, (ignite?33: 21)/256f);
 
 									ClientUtils.drawTexturedRect(builder, transform, -100, -20, 64, 16, 1, 1, 1, 1, 0/256f, 64/256f, 76/256f, 92/256f);

@@ -8,11 +8,11 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
+import blusunrize.immersiveengineering.api.utils.TagUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
@@ -68,7 +68,7 @@ public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 		int nuggetOut = (int)((scaledOut-(int)scaledOut)*9);
 		if(nuggetOut > 0)
 		{
-			String[] type = ApiUtils.getMetalComponentTypeAndMetal(e.getKey(), "ingots");
+			String[] type = TagUtils.getMatchingPrefixAndRemaining(e.getKey(), "ingots");
 			if(type!=null)
 			{
 				ItemStack nuggets = IEApi.getPreferredTagStack(IETags.getNugget(type[1]));

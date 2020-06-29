@@ -9,9 +9,9 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.wires.*;
+import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Connectors;
 import blusunrize.immersiveengineering.common.blocks.metal.FeedthroughTileEntity;
@@ -74,7 +74,7 @@ public class FeedthroughMultiblock implements IMultiblock
 		if(renderStack==null||renderStack.isEmpty())
 			renderStack = new ItemStack(Connectors.feedthrough);
 
-		transform.translate(.5, .5, 1.5);
+		transform.translate(1.5, .5, .5);
 		transform.rotate(new Quaternion(0, 45, 0, true));
 		transform.rotate(new Quaternion(-30, 0, 0, true));
 		transform.scale(1.75F, 1.75F, 1.75F);
@@ -223,7 +223,7 @@ public class FeedthroughMultiblock implements IMultiblock
 										 ConnectionPoint newCommon)
 	{
 		for(Connection c : ImmutableSet.copyOf(conns))
-			ApiUtils.moveConnectionEnd(c, oldCommon, newCommon, world);
+			WireUtils.moveConnectionEnd(c, oldCommon, newCommon, world);
 	}
 
 	@Nullable

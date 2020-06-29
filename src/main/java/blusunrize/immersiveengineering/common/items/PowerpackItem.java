@@ -8,8 +8,8 @@
 
 package blusunrize.immersiveengineering.common.items;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.client.ClientProxy;
 import blusunrize.immersiveengineering.client.models.ModelPowerpack;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
@@ -110,7 +110,7 @@ public class PowerpackItem extends IEBaseItem implements IIEEnergyItem
 		if(!stack.isEmpty())
 			return new ICapabilityProvider()
 			{
-				final LazyOptional<EnergyHelper.ItemEnergyStorage> energyStorage = ApiUtils.constantOptional(
+				final LazyOptional<EnergyHelper.ItemEnergyStorage> energyStorage = CapabilityUtils.constantOptional(
 						new EnergyHelper.ItemEnergyStorage(stack));
 
 				@Nonnull

@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.api.shader;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
@@ -121,7 +121,7 @@ public class CapabilityShader
 			return this.shader;
 		}
 
-		private LazyOptional<ShaderWrapper> opt = ApiUtils.constantOptional(this);
+		private LazyOptional<ShaderWrapper> opt = CapabilityUtils.constantOptional(this);
 
 		@Override
 		public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing)

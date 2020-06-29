@@ -8,10 +8,10 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal.conveyors;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorTile;
+import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.TrapDoorBlock;
 import net.minecraft.entity.item.ItemEntity;
@@ -52,7 +52,7 @@ public class DropConveyor extends BasicConveyor
 
 		LazyOptional<IItemHandler> cap = LazyOptional.empty();
 		if(contact&&!(inventoryTile instanceof IConveyorTile))
-			cap = ApiUtils.findItemHandlerAtPos(getTile().getWorld(), posDown, Direction.UP, true);
+			cap = CapabilityUtils.findItemHandlerAtPos(getTile().getWorld(), posDown, Direction.UP, true);
 
 			if(cap.isPresent())
 				cap.ifPresent(itemHandler ->
