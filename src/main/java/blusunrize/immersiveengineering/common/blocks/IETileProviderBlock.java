@@ -343,8 +343,8 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 		if(!world.isRemote)
 		{
 			TileEntity tile = world.getTileEntity(pos);
-			if(tile instanceof INeighbourChangeTile&&!tile.getWorld().isRemote)
-				((INeighbourChangeTile)tile).onNeighborBlockChange(fromPos);
+			if(tile instanceof IEBaseTileEntity)
+				((IEBaseTileEntity)tile).onNeighborBlockChange(fromPos);
 		}
 	}
 

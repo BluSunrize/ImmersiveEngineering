@@ -11,7 +11,10 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICollisionBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISelectionBounds;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.collect.ImmutableList;
@@ -47,7 +50,7 @@ import java.util.function.Consumer;
 import static blusunrize.immersiveengineering.client.ClientUtils.putVertexData;
 import static net.minecraft.util.Direction.*;
 
-public class StructuralArmTileEntity extends IEBaseTileEntity implements IOBJModelCallback<BlockState>, INeighbourChangeTile,
+public class StructuralArmTileEntity extends IEBaseTileEntity implements IOBJModelCallback<BlockState>,
 		IDirectionalTile, ICollisionBounds, ISelectionBounds, IBlockBounds
 {
 	public static TileEntityType<StructuralArmTileEntity> TYPE;
@@ -90,6 +93,7 @@ public class StructuralArmTileEntity extends IEBaseTileEntity implements IOBJMod
 	@Override
 	public void onNeighborBlockChange(BlockPos otherPos)
 	{
+		super.onNeighborBlockChange(otherPos);
 		if(world.isRemote)
 			return;
 		boolean positive;

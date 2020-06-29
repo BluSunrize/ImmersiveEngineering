@@ -103,7 +103,7 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 			shouldUpdate = false;
 		}
 
-		enabled = (controllingComputers > 0&&computerOn)||(world.getRedstonePowerFromNeighbors(getPos()) > 0^redstoneControlInverted);
+		enabled = (controllingComputers > 0&&computerOn)||(isRSPowered()^redstoneControlInverted);
 		if(energyStorage >= (!activeBeforeTick?energyDraw*10: energyDraw)&&enabled&&switchCooldown <= 0)
 		{
 			energyStorage -= energyDraw;

@@ -84,7 +84,7 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 			return;
 		}
 
-		boolean powered = world.getRedstonePowerFromNeighbors(getPos()) > 0;
+		boolean powered = isRSPowered();
 		final boolean prevActive = active;
 		int totalTime = IEConfig.MACHINES.coredrill_time.get();
 		int consumption = IEConfig.MACHINES.coredrill_consumption.get();

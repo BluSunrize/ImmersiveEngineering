@@ -56,7 +56,7 @@ import static blusunrize.immersiveengineering.api.wires.WireType.REDSTONE_CATEGO
 
 public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity implements ITickableTileEntity, IStateBasedDirectional,
 		IRedstoneOutput, IScrewdriverInteraction, IBlockBounds, IBlockOverlayText, IOBJModelCallback<BlockState>,
-		IRedstoneConnector, INeighbourChangeTile
+		IRedstoneConnector
 {
 	public IOSideConfig ioMode = IOSideConfig.INPUT;
 	public DyeColor redstoneChannel = DyeColor.WHITE;
@@ -137,7 +137,7 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 
 	protected int getLocalRS()
 	{
-		int val = SafeChunkUtils.getRedstonePowerFromNeighbors(world, pos);
+		int val = getMaxRSInput();
 		if(val==0)
 		{
 			for(Direction f : Direction.BY_HORIZONTAL_INDEX)
@@ -307,6 +307,7 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 	@Override
 	public void onNeighborBlockChange(BlockPos otherPos)
 	{
+		super.onNeighborBlockChange(otherPos);
 		if(isRSInput())
 			rsDirty = true;
 	}

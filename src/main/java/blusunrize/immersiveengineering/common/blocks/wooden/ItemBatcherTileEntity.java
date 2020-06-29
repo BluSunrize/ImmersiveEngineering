@@ -117,7 +117,7 @@ public class ItemBatcherTileEntity extends IEBaseTileEntity implements ITickable
 
 	protected boolean isActive()
 	{
-		return world.getRedstonePowerFromNeighbors(getPos()) <= 0;
+		return !isRSPowered();
 	}
 
 	protected boolean isFilterMatched(int slot)

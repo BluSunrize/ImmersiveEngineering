@@ -78,7 +78,7 @@ import static java.util.Collections.newSetFromMap;
 //TODO use cap references
 public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe, IAdvancedHasObjProperty,
 		IOBJModelCallback<BlockState>, IColouredTile, IPlayerInteraction, IHammerInteraction, IPlacementInteraction,
-		ISelectionBounds, ICollisionBounds, IAdditionalDrops, INeighbourChangeTile
+		ISelectionBounds, ICollisionBounds, IAdditionalDrops
 {
 	public static TileEntityType<FluidPipeTileEntity> TYPE;
 
@@ -334,6 +334,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 	@Override
 	public void onNeighborBlockChange(BlockPos otherPos)
 	{
+		super.onNeighborBlockChange(otherPos);
 		Direction dir = Direction.getFacingFromVector(otherPos.getX()-pos.getX(),
 				otherPos.getY()-pos.getY(), otherPos.getZ()-pos.getZ());
 		if(updateConnectionByte(dir))

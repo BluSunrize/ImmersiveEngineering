@@ -458,11 +458,6 @@ public class IEBlockInterfaces
 		int[] getCurrentProcessesMax();
 	}
 
-	public interface INeighbourChangeTile
-	{
-		void onNeighborBlockChange(BlockPos otherPos);
-	}
-
 	public interface IPropertyPassthrough
 	{
 	}

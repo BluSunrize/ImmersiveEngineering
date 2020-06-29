@@ -523,7 +523,7 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 
 	public boolean canRun(int energyDrain)
 	{
-		return (world.getRedstonePowerFromNeighbors(getPos()) > 0^redstoneControlInverted)&&energyStorage.getEnergyStored() >= energyDrain;
+		return (isRSPowered()^redstoneControlInverted)&&energyStorage.getEnergyStored() >= energyDrain;
 	}
 
 	public static class LightningAnimation

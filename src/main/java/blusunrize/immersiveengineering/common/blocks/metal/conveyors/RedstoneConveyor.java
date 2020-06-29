@@ -8,14 +8,12 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal.conveyors;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.client.render.tile.DynamicModel;
-import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableMap;
@@ -79,7 +77,7 @@ public class RedstoneConveyor extends BasicConveyor
 	@Override
 	public boolean isActive()
 	{
-		return getTile().getWorld().getRedstonePowerFromNeighbors(getTile().getPos()) <= 0;
+		return !isPowered();
 	}
 
 	@Override

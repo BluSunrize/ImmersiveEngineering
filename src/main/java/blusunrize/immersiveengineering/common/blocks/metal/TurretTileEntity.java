@@ -141,7 +141,7 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 			markContainingBlockForUpdate(null);
 
 		int energy = IEConfig.MACHINES.turret_consumption.get();
-		if((world.getRedstonePowerFromNeighbors(getPos()) > 0)^redstoneControlInverted)
+		if(isRSPowered()^redstoneControlInverted)
 		{
 			if(energyStorage.extractEnergy(energy, true)==energy)
 			{
