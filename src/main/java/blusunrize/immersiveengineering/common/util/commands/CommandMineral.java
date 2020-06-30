@@ -9,9 +9,9 @@
 package blusunrize.immersiveengineering.common.util.commands;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
-import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
-import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralWorldInfo;
+import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
+import blusunrize.immersiveengineering.api.excavator.MineralMix;
+import blusunrize.immersiveengineering.api.excavator.MineralWorldInfo;
 import blusunrize.immersiveengineering.common.IESaveData;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.StringReader;
@@ -58,7 +58,7 @@ public class CommandMineral
 		list.executes(command -> {
 			StringBuilder s = new StringBuilder();
 			int i = 0;
-			for(MineralMix mm : ExcavatorHandler.mineralList.values())
+			for(MineralMix mm : MineralMix.mineralList.values())
 				s.append((i++) > 0?", ": "").append(mm.getId());
 			command.getSource().sendFeedback(new StringTextComponent(s.toString()), true);
 			return Command.SINGLE_SUCCESS;
@@ -167,7 +167,7 @@ public class CommandMineral
 		public MineralMix parse(StringReader reader) throws CommandSyntaxException
 		{
 			String name = reader.readQuotedString();//TODO does this work properly?
-			for(MineralMix mm : ExcavatorHandler.mineralList.values())
+			for(MineralMix mm : MineralMix.mineralList.values())
 				if(mm.getId().toString().equalsIgnoreCase(name))
 					return mm;
 			throw invalidVein.create(name);
@@ -176,14 +176,14 @@ public class CommandMineral
 		@Override
 		public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder)
 		{
-			return ISuggestionProvider.suggest(ExcavatorHandler.mineralList.values().stream().map(mix -> "\""+mix.getId()+"\""), builder);
+			return ISuggestionProvider.suggest(MineralMix.mineralList.values().stream().map(mix -> "\""+mix.getId()+"\""), builder);
 		}
 
 		@Override
 		public Collection<String> getExamples()
 		{
 			List<String> ret = new ArrayList<>();
-			for(MineralMix mix : ExcavatorHandler.mineralList.values())
+			for(MineralMix mix : MineralMix.mineralList.values())
 			{
 				ret.add("\""+mix.getId()+"\"");
 				if(ret.size() > 5)

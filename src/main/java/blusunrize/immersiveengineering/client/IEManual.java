@@ -13,8 +13,7 @@ import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryEntry;
-import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
-import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
+import blusunrize.immersiveengineering.api.excavator.MineralMix;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
 import blusunrize.immersiveengineering.client.manual.IEManualInstance;
 import blusunrize.immersiveengineering.client.manual.ShaderManualElement;
@@ -272,7 +271,7 @@ public class IEManual
 
 	private static String[] setupMineralEntry(TextSplitter splitter)
 	{
-		List<MineralMix> mineralsToAdd = new ArrayList<>(ExcavatorHandler.mineralList.values());
+		List<MineralMix> mineralsToAdd = new ArrayList<>(MineralMix.mineralList.values());
 		Function<MineralMix, String> toName = mineral -> {
 			String translationKey = mineral.getTranslationKey();
 			String localizedName = I18n.format(translationKey);

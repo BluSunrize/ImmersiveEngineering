@@ -11,8 +11,8 @@ package blusunrize.immersiveengineering.common.items;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.DimensionChunkCoords;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
-import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
+import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
+import blusunrize.immersiveengineering.api.excavator.MineralMix;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.StoneDecoration;
@@ -148,7 +148,7 @@ public class CoresampleItem extends IEBaseItem
 			if(ItemNBTHelper.hasKey(coresample, "mineral", NBT.TAG_STRING))
 			{
 				ResourceLocation rl = new ResourceLocation(ItemNBTHelper.getString(coresample, "mineral"));
-				return ExcavatorHandler.mineralList.get(rl);
+				return MineralMix.mineralList.get(rl);
 			}
 			else
 				return null;

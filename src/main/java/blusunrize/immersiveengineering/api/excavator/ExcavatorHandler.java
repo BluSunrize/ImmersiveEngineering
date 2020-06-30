@@ -1,32 +1,19 @@
 /*
  * BluSunrize
- * Copyright (c) 2017
+ * Copyright (c) 2020
  *
  * This code is licensed under "Blu's License of Common Sense"
  * Details can be found in the license file in the root folder of this project
+ *
  */
 
-package blusunrize.immersiveengineering.api.tool;
+package blusunrize.immersiveengineering.api.excavator;
 
 import blusunrize.immersiveengineering.api.DimensionChunkCoords;
-import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
-import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
-import blusunrize.immersiveengineering.api.crafting.StackWithChance;
 import blusunrize.immersiveengineering.common.IESaveData;
-import com.google.common.collect.ImmutableSet;
-import net.minecraft.block.Block;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.ResourceLocationException;
 import net.minecraft.util.SharedSeedRandom;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
-import net.minecraftforge.fml.RegistryObject;
 
-import javax.annotation.Nullable;
 import java.util.*;
 
 /**
@@ -36,10 +23,6 @@ import java.util.*;
  */
 public class ExcavatorHandler
 {
-	/**
-	 * A HashMap of MineralMixes and their rarity (Integer out of 100)
-	 */
-	public static Map<ResourceLocation, MineralMix> mineralList = new HashMap<>();
 	public static HashMap<DimensionChunkCoords, MineralWorldInfo> mineralCache = new HashMap<DimensionChunkCoords, MineralWorldInfo>();
 	public static int mineralVeinCapacity = 0;
 	public static double mineralChance = 0;
@@ -107,113 +90,6 @@ public class ExcavatorHandler
 		IESaveData.setDirty();
 	}
 
-	public static class MineralMix extends IESerializableRecipe
-	{
-		public static IRecipeType<MineralMix> TYPE = IRecipeType.register(Lib.MODID+":mineral_mix");
-		public static RegistryObject<IERecipeSerializer<MineralMix>> SERIALIZER;
-
-		public final StackWithChance[] outputs;
-		public final int weight;
-		public final float failChance;
-		public final ImmutableSet<DimensionType> dimensions;
-		public final Block background;
-
-		public MineralMix(ResourceLocation id, StackWithChance[] outputs, int weight, float failChance, DimensionType[] dimensions, Block background)
-		{
-			super(ItemStack.EMPTY, TYPE, id);
-			this.weight = weight;
-			this.failChance = failChance;
-			this.outputs = outputs;
-			this.dimensions = ImmutableSet.copyOf(dimensions);
-			this.background = background;
-		}
-
-		@Override
-		protected IERecipeSerializer<MineralMix> getIESerializer()
-		{
-			return SERIALIZER.get();
-		}
-
-		@Override
-		public ItemStack getRecipeOutput()
-		{
-			return ItemStack.EMPTY;
-		}
-
-		public String getPlainName()
-		{
-			String path = getId().getPath();
-			return path.substring(path.lastIndexOf("/")+1);
-		}
-
-		public String getTranslationKey()
-		{
-			return Lib.DESC_INFO+"mineral."+getPlainName();
-		}
-
-		public ItemStack getRandomOre(Random rand)
-		{
-			float r = rand.nextFloat();
-			for(StackWithChance o : outputs)
-				if(o.getChance() >= 0)
-				{
-					r -= o.getChance();
-					if(r < 0)
-						return o.getStack();
-				}
-			return ItemStack.EMPTY;
-		}
-
-		public boolean validDimension(DimensionType dim)
-		{
-			if(dimensions!=null&&!dimensions.isEmpty())
-				return dimensions.contains(dim);
-			return true;
-		}
-	}
-
-	public static class MineralWorldInfo
-	{
-		public MineralMix mineral;
-		public MineralMix mineralOverride;
-		public int depletion;
-
-		public CompoundNBT writeToNBT()
-		{
-			CompoundNBT tag = new CompoundNBT();
-			if(mineral!=null)
-				tag.putString("mineral", mineral.getId().toString());
-			if(mineralOverride!=null)
-				tag.putString("mineralOverride", mineralOverride.getId().toString());
-			tag.putInt("depletion", depletion);
-			return tag;
-		}
-
-		@Nullable
-		public static MineralWorldInfo readFromNBT(CompoundNBT tag)
-		{
-			try
-			{
-				MineralWorldInfo info = new MineralWorldInfo();
-				if(tag.contains("mineral"))
-				{
-					ResourceLocation id = new ResourceLocation(tag.getString("mineral"));
-					info.mineral = mineralList.get(id);
-				}
-				if(tag.contains("mineralOverride"))
-				{
-					ResourceLocation id = new ResourceLocation(tag.getString("mineralOverride"));
-					info.mineralOverride = mineralList.get(id);
-				}
-				info.depletion = tag.getInt("depletion");
-				return info;
-			} catch(ResourceLocationException ex)
-			{
-				return null;
-			}
-		}
-	}
-
 	public static class MineralSelection
 	{
 		private final int totalWeight;
@@ -234,7 +110,7 @@ public class ExcavatorHandler
 
 			int weight = 0;
 			this.validMinerals = new HashSet<>();
-			for(MineralMix e : mineralList.values())
+			for(MineralMix e : MineralMix.mineralList.values())
 				if(e.validDimension(chunkCoords.dimension)&&!surrounding.contains(e))
 				{
 					validMinerals.add(e);

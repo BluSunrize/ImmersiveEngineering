@@ -15,8 +15,7 @@ import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
-import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
-import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
+import blusunrize.immersiveengineering.api.excavator.MineralMix;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
@@ -870,7 +869,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 							}
 							if(mineral!=null)
 							{
-								MineralMix mix = ExcavatorHandler.mineralList.get(new ResourceLocation(mineral));
+								MineralMix mix = MineralMix.mineralList.get(new ResourceLocation(mineral));
 								if(mix!=null)
 									font.drawStringWithShadow(I18n.format(mix.getTranslationKey()), scaledWidth/2-8, scaledHeight/2+8, 0xffffff);
 							}

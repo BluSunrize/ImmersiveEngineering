@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.api;
 
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
-import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
+import blusunrize.immersiveengineering.api.excavator.MineralMix;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.common.blocks.metal.FeedthroughTileEntity.FeedthroughData;
 import com.google.common.collect.ImmutableList;
