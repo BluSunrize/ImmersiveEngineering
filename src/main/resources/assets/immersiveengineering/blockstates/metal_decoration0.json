@@ -7,9 +7,9 @@
 	},
 	"variants":
 	{
-		"inventory,type=coil_lv": [{"model": "immersiveengineering:ie_pillar", "textures": { "side": "immersiveengineering:blocks/metal_decoration0_coil_lv_side", "top": "immersiveengineering:blocks/metal_decoration0_coil_lv_top", "bottom": "immersiveengineering:blocks/metal_decoration0_coil_lv_top"}}],
-		"inventory,type=coil_mv": [{"model": "immersiveengineering:ie_pillar", "textures": { "side": "immersiveengineering:blocks/metal_decoration0_coil_mv_side", "top": "immersiveengineering:blocks/metal_decoration0_coil_mv_top", "bottom": "immersiveengineering:blocks/metal_decoration0_coil_mv_top"}}],
-		"inventory,type=coil_hv": [{"model": "immersiveengineering:ie_pillar", "textures": { "side": "immersiveengineering:blocks/metal_decoration0_coil_hv_side", "top": "immersiveengineering:blocks/metal_decoration0_coil_hv_top", "bottom": "immersiveengineering:blocks/metal_decoration0_coil_hv_top"}}],
+		"inventory,type=coil_lv": [{"model": "minecraft:cube_column", "textures": { "side": "immersiveengineering:blocks/metal_decoration0_coil_lv_side", "end": "immersiveengineering:blocks/metal_decoration0_coil_lv_top"}}],
+		"inventory,type=coil_mv": [{"model": "minecraft:cube_column", "textures": { "side": "immersiveengineering:blocks/metal_decoration0_coil_mv_side", "end": "immersiveengineering:blocks/metal_decoration0_coil_mv_top"}}],
+		"inventory,type=coil_hv": [{"model": "minecraft:cube_column", "textures": { "side": "immersiveengineering:blocks/metal_decoration0_coil_hv_side", "end": "immersiveengineering:blocks/metal_decoration0_coil_hv_top"}}],
 		"inventory,type=rs_engineering": [{"textures": { "all": "immersiveengineering:blocks/metal_decoration0_redstone_engineering" }}],
 		"inventory,type=light_engineering": [{ "textures": { "all": "immersiveengineering:blocks/metal_decoration0_light_engineering" }}],
 		"inventory,type=heavy_engineering": [{"textures": { "all": "immersiveengineering:blocks/metal_decoration0_heavy_engineering" }}],
@@ -17,15 +17,9 @@
 		"inventory,type=radiator": [{"textures": { "all": "immersiveengineering:blocks/metal_decoration0_radiator" }}],
 		"type":
 		{
-			"coil_lv": {
-				"model": "immersiveengineering:ie_pillar",
-				"textures": { "side": "immersiveengineering:blocks/metal_decoration0_coil_lv_side", "top": "immersiveengineering:blocks/metal_decoration0_coil_lv_top", "bottom": "immersiveengineering:blocks/metal_decoration0_coil_lv_top"}},
-			"coil_mv": {
-				"model": "immersiveengineering:ie_pillar",
-				"textures": { "side": "immersiveengineering:blocks/metal_decoration0_coil_mv_side", "top": "immersiveengineering:blocks/metal_decoration0_coil_mv_top", "bottom": "immersiveengineering:blocks/metal_decoration0_coil_mv_top"}},
-			"coil_hv": {
-				"model": "immersiveengineering:ie_pillar",
-				"textures": { "side": "immersiveengineering:blocks/metal_decoration0_coil_hv_side", "top": "immersiveengineering:blocks/metal_decoration0_coil_hv_top", "bottom": "immersiveengineering:blocks/metal_decoration0_coil_hv_top"}},
+			"coil_lv": {"model": "minecraft:cube_column", "textures": { "side": "immersiveengineering:blocks/metal_decoration0_coil_hv_side", "end": "immersiveengineering:blocks/metal_decoration0_coil_hv_top"}},
+			"coil_mv": {"model": "minecraft:cube_column", "textures": { "side": "immersiveengineering:blocks/metal_decoration0_coil_mv_side", "end": "immersiveengineering:blocks/metal_decoration0_coil_mv_top"}},
+			"coil_hv": {"model": "minecraft:cube_column", "textures": { "side": "immersiveengineering:blocks/metal_decoration0_coil_hv_side", "end": "immersiveengineering:blocks/metal_decoration0_coil_hv_top"}},
 			"rs_engineering": {"textures": { "all": "immersiveengineering:blocks/metal_decoration0_redstone_engineering"}},
 			"light_engineering": {"textures": { "all": "immersiveengineering:blocks/metal_decoration0_light_engineering"}},
 			"heavy_engineering": {"textures": { "all": "immersiveengineering:blocks/metal_decoration0_heavy_engineering"}},
