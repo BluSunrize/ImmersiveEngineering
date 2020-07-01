@@ -22,7 +22,6 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.ChunkStatus;
-import net.minecraft.world.chunk.IChunk;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.GenerationSettings;
@@ -39,8 +38,6 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.world.ChunkDataEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
@@ -49,7 +46,6 @@ import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-@EventBusSubscriber(modid = ImmersiveEngineering.MODID, bus = Bus.MOD)
 public class IEWorldGen
 {
 	public static Map<String, ConfiguredFeature<?>> features = new HashMap<>();
@@ -101,7 +97,7 @@ public class IEWorldGen
 	}
 
 	@SubscribeEvent
-	public static void chunkLoad(ChunkDataEvent.Load event)
+	public void chunkLoad(ChunkDataEvent.Load event)
 	{
 		if(event.getChunk().getStatus()==ChunkStatus.FULL)
 		{
@@ -168,7 +164,7 @@ public class IEWorldGen
 	private static CountRangeInIEDimensions COUNT_RANGE_IE;
 
 	@SubscribeEvent
-	public static void registerPlacements(RegistryEvent.Register<Placement<?>> ev)
+	public void registerPlacements(RegistryEvent.Register<Placement<?>> ev)
 	{
 		COUNT_RANGE_IE = new CountRangeInIEDimensions(CountRangeConfig::deserialize);
 		COUNT_RANGE_IE.setRegistryName(ImmersiveEngineering.MODID, "count_range_in_ie_dimensions");
