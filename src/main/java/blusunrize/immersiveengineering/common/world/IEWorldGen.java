@@ -89,15 +89,16 @@ public class IEWorldGen
 	}
 
 	@SubscribeEvent
-	public void chunkSave(ChunkDataEvent.Save event)
+	public void chunkDataSave(ChunkDataEvent.Save event)
 	{
+		CompoundNBT levelTag = event.getData().getCompound("Level");
 		CompoundNBT nbt = new CompoundNBT();
-		event.getData().put("ImmersiveEngineering", nbt);
+		levelTag.put("ImmersiveEngineering", nbt);
 		nbt.putBoolean(IEConfig.ORES.retrogen_key.get(), true);
 	}
 
 	@SubscribeEvent
-	public void chunkLoad(ChunkDataEvent.Load event)
+	public void chunkDataLoad(ChunkDataEvent.Load event)
 	{
 		if(event.getChunk().getStatus()==ChunkStatus.FULL)
 		{
