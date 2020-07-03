@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.common.IESaveData;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.ResourceLocationException;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ColumnPos;
 
 import javax.annotation.Nullable;
@@ -45,6 +46,15 @@ public class MineralVein
 	public int getRadius()
 	{
 		return radius;
+	}
+
+	// exponential growth of the fail chance depending on the distance from the center of the vein
+	public double getFailChance(BlockPos pos)
+	{
+		double dX = pos.getX()-this.pos.x;
+		double dZ = pos.getZ()-this.pos.z;
+		double d = dX*dX+dZ*dZ;
+		return Math.pow(d, 0.5)*0.5;
 	}
 
 	public int getDepletion()

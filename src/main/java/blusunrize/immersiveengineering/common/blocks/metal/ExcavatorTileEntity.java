@@ -185,9 +185,11 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 								else if(mineral!=null)
 								{
 									ItemStack ore = mineral.getRandomOre(Utils.RAND);
-									float configChance = Utils.RAND.nextFloat();
-									float failChance = Utils.RAND.nextFloat();
-									if(!ore.isEmpty()&&configChance > IEConfig.MACHINES.excavator_fail_chance.get()&&failChance > mineral.failChance)
+									// if random number of 0-1 is smaller than the distance based fail chance of the vein
+									boolean distanceFail = Utils.RAND.nextFloat() < mineralVein.getFailChance(wheelPos);
+									// if random number of 0-1 is smaller than the fail chance of the specific mineral
+									boolean mineralFail = Utils.RAND.nextFloat() < mineral.failChance;
+									if(!ore.isEmpty()&&!distanceFail&&!mineralFail)
 									{
 										wheel.digStacks.set(targetDown, ore);
 										wheel.markDirty();

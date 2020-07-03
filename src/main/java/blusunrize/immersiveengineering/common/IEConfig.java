@@ -312,9 +312,6 @@ public class IEConfig
 			excavator_chance = builder
 					.comment("The chance that a given chunk will contain a mineral vein.")
 					.defineInRange("excavator_chance", .2, 1e-3, 1);
-			excavator_fail_chance = builder
-					.comment("The chance that the Excavator will not dig up an ore with the currently downward-facing bucket.")
-					.defineInRange("excavator_fail_chance", .05, 0, 1);
 			excavator_depletion = builder
 					.comment("The maximum amount of yield one can get out of a chunk with the excavator. Set a number smaller than zero to make it infinite")
 					.defineInRange("excavator_depletion", 38400, -1, Integer.MAX_VALUE);
@@ -429,7 +426,6 @@ public class IEConfig
 		public final DoubleValue excavator_speed;
 		public final BooleanValue excavator_particles;
 		public final DoubleValue excavator_chance;
-		public final DoubleValue excavator_fail_chance;
 		public final IntValue excavator_depletion;
 		public final ConfigValue<List<? extends String>> excavator_dimBlacklist;
 
