@@ -99,6 +99,7 @@ import net.minecraft.world.storage.MapData;
 import net.minecraftforge.client.ForgeIngameGui;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
@@ -833,14 +834,14 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 							cursorH *= 128;
 							cursorV *= 128;
 
-							String mineral = null;
+							ListNBT minerals = null;
 							double lastDist = Double.MAX_VALUE;
 							ListNBT nbttaglist = frameItem.getTag().getList("Decorations", 10);
 							for(INBT inbt : nbttaglist)
 							{
 								CompoundNBT tagCompound = (CompoundNBT)inbt;
 								String id = tagCompound.getString("id");
-								if(id.startsWith("ie:coresample_")&&tagCompound.contains("mineral"))
+								if(id.startsWith("ie:coresample_")&&tagCompound.contains("minerals"))
 								{
 									double sampleX = tagCompound.getDouble("x");
 									double sampleZ = tagCompound.getDouble("z");
@@ -864,16 +865,17 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 									if(dist < 10&&dist < lastDist)
 									{
 										lastDist = dist;
-										mineral = tagCompound.getString("mineral");
+										minerals = tagCompound.getList("minerals", NBT.TAG_STRING);
 									}
 								}
 							}
-							if(mineral!=null)
-							{
-								MineralMix mix = MineralMix.mineralList.get(new ResourceLocation(mineral));
-								if(mix!=null)
-									font.drawStringWithShadow(I18n.format(mix.getTranslationKey()), scaledWidth/2-8, scaledHeight/2+8, 0xffffff);
-							}
+							if(minerals!=null)
+								for(int i = 0; i < minerals.size(); i++)
+								{
+									MineralMix mix = MineralMix.mineralList.get(new ResourceLocation(minerals.getString(i)));
+									if(mix!=null)
+										font.drawStringWithShadow(I18n.format(mix.getTranslationKey()), scaledWidth/2+8, scaledHeight/2+8+i*font.FONT_HEIGHT, 0xffffff);
+								}
 						}
 					}
 				}

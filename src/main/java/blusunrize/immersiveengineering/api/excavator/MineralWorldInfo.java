@@ -49,4 +49,9 @@ public class MineralWorldInfo
 	{
 		return mineralVeins;
 	}
+
+	public int getTotalWeight()
+	{
+		return totalWeight;
+	}
 }
