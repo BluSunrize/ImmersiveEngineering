@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.wooden.SorterTileEntity;
 import blusunrize.immersiveengineering.common.gui.SorterContainer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.widget.button.Button;
@@ -25,6 +26,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +48,7 @@ public class SorterScreen extends IEContainerScreen<SorterContainer>
 	}
 
 	@Override
-	public void render(int mx, int my, float partial)
+	public void render(MatrixStack transform, int mx, int my, float partial)
 	{
 		super.render(mx, my, partial);
 		for(Widget button : this.buttons)
@@ -59,25 +61,25 @@ public class SorterScreen extends IEContainerScreen<SorterContainer>
 					String[] split = I18n.format(Lib.DESC_INFO+"filter."+(type==0?"oreDict": type==1?"nbt": "fuzzy")).split("<br>");
 					for(int i = 0; i < split.length; i++)
 						tooltip.add(new StringTextComponent(split[i]).setStyle(new Style().setColor(i==0?TextFormatting.WHITE: TextFormatting.GRAY)));
-					ClientUtils.drawHoveringText(tooltip, mx, my, font, width, height);
+					GuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
 				}
 		}
 	}
 
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float f, int mx, int my)
+	protected void func_230450_a_(MatrixStack transform, float f, int mx, int my)
 	{
 		RenderSystem.color3f(1.0F, 1.0F, 1.0F);
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/sorter.png");
-		this.blit(guiLeft, guiTop, 0, 0, xSize, ySize);
+		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
 		for(int side = 0; side < 6; side++)
 		{
 			int x = guiLeft+30+(side/2)*58;
 			int y = guiTop+44+(side%2)*76;
 			String s = I18n.format("desc.immersiveengineering.info.blockSide."+Direction.byIndex(side).toString()).substring(0, 1);
 			RenderSystem.enableBlend();
-			ClientUtils.font().drawStringWithShadow(s, x-(ClientUtils.font().getStringWidth(s)/2), y, 0xaacccccc);
+			ClientUtils.font().drawStringWithShadow(transform, s, x-(ClientUtils.font().getStringWidth(s)/2), y, 0xaacccccc);
 		}
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/sorter.png");
 	}
@@ -115,12 +117,12 @@ public class SorterScreen extends IEContainerScreen<SorterContainer>
 
 		public ButtonSorter(int x, int y, int type, IPressable handler)
 		{
-			super(x, y, 18, 18, "", handler);
+			super(x, y, 18, 18, StringTextComponent.field_240750_d_, handler);
 			this.type = type;
 		}
 
 		@Override
-		public void render(int mx, int my, float partialTicks)
+		public void render(MatrixStack transform, int mx, int my, float partialTicks)
 		{
 			if(this.visible)
 			{
@@ -129,7 +131,7 @@ public class SorterScreen extends IEContainerScreen<SorterContainer>
 				isHovered = mx >= this.x&&my >= this.y&&mx < this.x+this.width&&my < this.y+this.height;
 				RenderSystem.enableBlend();
 				RenderSystem.blendFuncSeparate(SRC_ALPHA, ONE_MINUS_SRC_ALPHA, ONE, ZERO);
-				this.blit(this.x, this.y, 176+type*18, (active?3: 21), this.width, this.height);
+				this.blit(transform, this.x, this.y, 176+type*18, (active?3: 21), this.width, this.height);
 			}
 		}
 	}

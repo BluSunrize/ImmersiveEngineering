@@ -15,12 +15,14 @@ import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTi
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity.MultiblockProcessInMachine;
 import blusunrize.immersiveengineering.common.blocks.metal.ArcFurnaceTileEntity;
 import blusunrize.immersiveengineering.common.gui.ArcFurnaceContainer;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import java.util.ArrayList;
 
@@ -40,9 +42,9 @@ public class ArcFurnaceScreen extends IEContainerScreen<ArcFurnaceContainer>
 	}
 
 	@Override
-	public void render(int mx, int my, float partial)
+	public void render(MatrixStack transform, int mx, int my, float partial)
 	{
-		super.render(mx, my, partial);
+		super.render(transform, mx, my, partial);
 		ArrayList<ITextComponent> tooltip = new ArrayList<>();
 		if(mx > guiLeft+157&&mx < guiLeft+164&&my > guiTop+22&&my < guiTop+68)
 			tooltip.add(new StringTextComponent(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" IF"));
@@ -50,15 +52,15 @@ public class ArcFurnaceScreen extends IEContainerScreen<ArcFurnaceContainer>
 			tooltip.add(new TranslationTextComponent(Lib.GUI_CONFIG+"arcfurnace.distribute"));
 
 		if(!tooltip.isEmpty())
-			ClientUtils.drawHoveringText(tooltip, mx, my, font, width, height);
+			GuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
 	}
 
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float f, int mx, int my)
+	protected void func_230450_a_(MatrixStack transform, float f, int mx, int my)
 	{
 		ClientUtils.bindTexture(texture);
-		this.blit(guiLeft, guiTop, 0, 0, xSize, ySize);
+		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
 
 		for(MultiblockProcess process : tile.processQueue)
 			if(process instanceof MultiblockProcessInMachine)
@@ -66,7 +68,7 @@ public class ArcFurnaceScreen extends IEContainerScreen<ArcFurnaceContainer>
 				float mod = process.processTick/(float)process.maxTicks;
 				int slot = ((MultiblockProcessInMachine)process).getInputSlots()[0];
 				int h = (int)Math.max(1, mod*16);
-				this.blit(guiLeft+27+slot%3*21, guiTop+34+slot/3*18+(16-h), 176, 16-h, 2, h);
+				this.blit(transform, guiLeft+27+slot%3*21, guiTop+34+slot/3*18+(16-h), 176, 16-h, 2, h);
 			}
 
 		int stored = (int)(46*(tile.getEnergyStored(null)/(float)tile.getMaxEnergyStored(null)));
@@ -78,7 +80,7 @@ public class ArcFurnaceScreen extends IEContainerScreen<ArcFurnaceContainer>
 	{
 		super.init();
 		Minecraft mc = mc();
-		distributeButton = new GuiButtonIE(guiLeft+10, guiTop+10, 16, 16, "", texture, 179, 0,
+		distributeButton = new GuiButtonIE(guiLeft+10, guiTop+10, 16, 16, StringTextComponent.field_240750_d_, texture, 179, 0,
 				btn -> {
 					if(mc.player!=null&&mc.player.inventory.getItemStack().isEmpty())
 						autoSplitStacks();

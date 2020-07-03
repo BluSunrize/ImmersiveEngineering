@@ -9,6 +9,7 @@
 package blusunrize.lib.manual;
 
 import blusunrize.lib.manual.gui.ManualScreen;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
@@ -67,14 +68,14 @@ public class ManualElementItem extends SpecialManualElements
 	}
 
 	@Override
-	public void render(ManualScreen gui, int x, int y, int mx, int my)
+	public void render(MatrixStack transform, ManualScreen gui, int x, int y, int mx, int my)
 	{
 		RenderHelper.enableStandardItemLighting();
 		highlighted = ItemStack.EMPTY;
 		int length = stacks.size();
 		if(length > 0)
 		{
-			RenderSystem.scalef(scale, scale, scale);
+			transform.scale(scale, scale, scale);
 			for(int line = 0; line < lines; line++)
 			{
 				int perLine = line==lines-1?itemsLastLine: line%2==0?longLineLen: shortLineLen;
@@ -93,20 +94,20 @@ public class ManualElementItem extends SpecialManualElements
 						highlighted = stacks.get(item);
 				}
 			}
-			RenderSystem.scalef(1/scale, 1/scale, 1/scale);
+			transform.scale(1/scale, 1/scale, 1/scale);
 		}
 		RenderHelper.disableStandardItemLighting();
 		RenderSystem.disableRescaleNormal();
 		RenderSystem.enableBlend();
 
-		this.renderHighlightedTooltip(gui, mx, my);
+		this.renderHighlightedTooltip(transform, gui, mx, my);
 	}
 
 	@Override
 	public boolean listForSearch(String searchTag)
 	{
 		for(ItemStack stack : stacks)
-			if(stack.getDisplayName().getFormattedText().toLowerCase(Locale.ENGLISH).contains(searchTag))
+			if(stack.getDisplayName().getString().toLowerCase(Locale.ENGLISH).contains(searchTag))
 				return true;
 		return false;
 	}

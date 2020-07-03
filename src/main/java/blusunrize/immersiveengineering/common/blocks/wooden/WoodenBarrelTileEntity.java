@@ -130,9 +130,9 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 			IOSideConfig opposite = sideConfig.getOrDefault(brtr.getFace().getOpposite(), NONE);
 			return new String[]{
 					I18n.format(Lib.DESC_INFO+"blockSide.facing")
-							+": "+I18n.format(Lib.DESC_INFO+"blockSide.connectFluid."+side.getName()),
+							+": "+I18n.format(Lib.DESC_INFO+"blockSide.connectFluid."+side.func_176610_l()),
 					I18n.format(Lib.DESC_INFO+"blockSide.opposite")
-							+": "+I18n.format(Lib.DESC_INFO+"blockSide.connectFluid."+opposite.getName())
+							+": "+I18n.format(Lib.DESC_INFO+"blockSide.connectFluid."+opposite.func_176610_l())
 			};
 		}
 		return null;

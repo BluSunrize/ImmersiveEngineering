@@ -82,7 +82,7 @@ public class DrillheadItem extends IEBaseItem implements IDrillHead
 	@Override
 	public boolean getIsRepairable(ItemStack stack, ItemStack material)
 	{
-		return perms.repairMaterial.contains(material.getItem());
+		return perms.repairMaterial.func_230235_a_(material.getItem());
 	}
 
 	@Override

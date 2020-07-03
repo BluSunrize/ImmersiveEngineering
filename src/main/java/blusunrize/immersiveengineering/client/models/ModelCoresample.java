@@ -30,13 +30,13 @@ import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.IModelLoader;
 import net.minecraftforge.client.model.data.IModelData;
@@ -274,10 +274,9 @@ public class ModelCoresample extends BakedIEModel
 
 	ItemOverrideList overrideList = new ItemOverrideList()
 	{
-
 		@Nullable
 		@Override
-		public IBakedModel getModelWithOverrides(IBakedModel originalModel, ItemStack stack, @Nullable World worldIn, @Nullable LivingEntity entityIn)
+		public IBakedModel func_239290_a_(IBakedModel originalModel, ItemStack stack, @Nullable ClientWorld worldIn, @Nullable LivingEntity entityIn)
 		{
 			MineralMix mineral = CoresampleItem.getMix(stack);
 			if(mineral!=null)

@@ -33,6 +33,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.DimensionType;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -260,7 +261,7 @@ public class IEManual
 	}
 
 	private static Supplier<ManualElementTable> addDynamicTable(
-			Supplier<SortedMap<String, Integer>> getContents,
+			Supplier<SortedMap<ITextComponent, Integer>> getContents,
 			String valueType
 	)
 	{

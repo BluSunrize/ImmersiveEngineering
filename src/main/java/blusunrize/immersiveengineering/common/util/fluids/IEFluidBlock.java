@@ -71,8 +71,8 @@ public class IEFluidBlock extends FlowingFluidBlock
 		return baseState;
 	}
 
-	private <T extends StateHolder<T>, S extends Comparable<S>>
-	T withCopiedValue(Property<S> prop, T oldState, StateHolder<?> copyFrom)
+	private <T extends StateHolder<?, T>, S extends Comparable<S>>
+	T withCopiedValue(Property<S> prop, T oldState, StateHolder<?, ?> copyFrom)
 	{
 		return oldState.with(prop, copyFrom.get(prop));
 	}

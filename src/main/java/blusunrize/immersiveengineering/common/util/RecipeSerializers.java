@@ -14,7 +14,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class RecipeSerializers
 {
-	public static final DeferredRegister<IRecipeSerializer<?>> RECIPE_SERIALIZERS = new DeferredRegister<>(ForgeRegistries.RECIPE_SERIALIZERS, ImmersiveEngineering.MODID);
+	public static final DeferredRegister<IRecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, ImmersiveEngineering.MODID);
 
 	public static final RegistryObject<SpecialRecipeSerializer<SpeedloaderLoadRecipe>> SPEEDLOADER_LOAD = RECIPE_SERIALIZERS.register(
 			"crafting_special_speedloader_load", () -> new SpecialRecipeSerializer<>(SpeedloaderLoadRecipe::new)

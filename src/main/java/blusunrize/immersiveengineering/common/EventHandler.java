@@ -54,7 +54,6 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
-import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.LootTableLoadEvent;
@@ -368,7 +367,10 @@ public class EventHandler
 						{
 							if(((TileEntity)interdictor).isRemoved()||((TileEntity)interdictor).getWorld()==null)
 								it.remove();
-							else if(((TileEntity)interdictor).getDistanceSq(event.getEntity().getPosX(), event.getEntity().getPosY(), event.getEntity().getPosZ()) <= interdictor.getInterdictionRangeSquared())
+							else if(
+									Vector3d.func_237491_b_(((TileEntity)interdictor).getPos()).squareDistanceTo(event.getEntity().getPositionVec())
+											<= interdictor.getInterdictionRangeSquared()
+							)
 								event.setCanceled(true);
 						}
 						else if(interdictor instanceof Entity)

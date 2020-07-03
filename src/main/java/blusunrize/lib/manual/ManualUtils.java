@@ -64,22 +64,22 @@ public class ManualUtils
 	public static boolean isInTag(ItemStack stack, ResourceLocation tag)
 	{
 		ITag<Item> itemTag = ItemTags.getCollection().get(tag);
-		if(itemTag!=null&&itemTag.contains(stack.getItem()))
+		if(itemTag!=null&&itemTag.func_230235_a_(stack.getItem()))
 			return true;
 		ITag<Block> blockTag = BlockTags.getCollection().get(tag);
-		return blockTag!=null&&blockTag.contains(Block.getBlockFromItem(stack.getItem()));
+		return blockTag!=null&&blockTag.func_230235_a_(Block.getBlockFromItem(stack.getItem()));
 	}
 
 	public static boolean isNonemptyItemTag(ResourceLocation name)
 	{
 		ITag<Item> t = ItemTags.getCollection().getTagMap().get(name);
-		return t!=null&&!t.getAllElements().isEmpty();
+		return t!=null&&!t.func_230236_b_().isEmpty();
 	}
 
 	public static boolean isNonemptyBlockTag(ResourceLocation name)
 	{
 		ITag<Block> t = BlockTags.getCollection().getTagMap().get(name);
-		return t!=null&&!t.getAllElements().isEmpty();
+		return t!=null&&!t.func_230236_b_().isEmpty();
 	}
 
 	public static boolean isNonemptyBlockOrItemTag(ResourceLocation name)
@@ -325,7 +325,7 @@ public class ManualUtils
 	/**
 	 * Custom implementation of drawing a split string because Mojang's doesn't reset text colour between lines >___>
 	 */
-	public static void drawSplitString(FontRenderer fontRenderer, List<String> text, int x, int y, int colour)
+	public static void drawSplitString(MatrixStack transform, FontRenderer fontRenderer, List<String> text, int x, int y, int colour)
 	{
 		/*
 		fontRenderer.resetStyles();
@@ -364,7 +364,7 @@ public class ManualUtils
 		//TODO Do we still need all of ^ or does this simplistic implementation (based on the 1.14 Mojang version) work?
 		for(String s : text)
 		{
-			fontRenderer.drawString(s, x, y, colour);
+			fontRenderer.drawString(transform, s, x, y, colour);
 			y += fontRenderer.FONT_HEIGHT;
 		}
 	}
@@ -478,6 +478,6 @@ public class ManualUtils
 
 	public static boolean listStack(String search, ItemStack stack)
 	{
-		return stack.getDisplayName().getFormattedText().toLowerCase(Locale.ENGLISH).contains(search);
+		return stack.getDisplayName().getString().toLowerCase(Locale.ENGLISH).contains(search);
 	}
 }

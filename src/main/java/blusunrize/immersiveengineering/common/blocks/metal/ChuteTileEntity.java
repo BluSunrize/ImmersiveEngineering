@@ -8,12 +8,12 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorTile;
+import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.IESounds;
@@ -175,7 +175,7 @@ public class ChuteTileEntity extends IEBaseTileEntity implements IStateBasedDire
 				inventoryTile = world.getTileEntity(invPos);
 				if(!world.isRemote&&inventoryTile!=null&&!(inventoryTile instanceof IConveyorTile))
 				{
-					LazyOptional<IItemHandler> cap = ApiUtils.findItemHandlerAtPos(world, invPos, getFacing().getOpposite(), true);
+					LazyOptional<IItemHandler> cap = CapabilityUtils.findItemHandlerAtPos(world, invPos, getFacing().getOpposite(), true);
 					cap.ifPresent(itemHandler -> {
 						ItemStack stack = itemEntity.getItem();
 						ItemStack temp = ItemHandlerHelper.insertItem(itemHandler, stack.copy(), true);

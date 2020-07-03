@@ -21,10 +21,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.DimensionType;
@@ -80,7 +77,7 @@ public class WirecoilUtils
 					int distanceSq = (int)Math.ceil(otherLink.cp.getPosition().distanceSq(masterPos));
 					int maxLengthSq = coil.getMaxLength(stack); //not squared yet
 					maxLengthSq *= maxLengthSq;
-					if(!otherLink.dimension.equals(world.getDimension().getType().getRegistryName()))
+					if(!otherLink.dimension.equals(world.func_234922_V_().func_240901_a_()))
 						player.sendStatusMessage(new TranslationTextComponent(Lib.CHAT_WARN+"wrongDimension"), true);
 					else if(otherLink.cp.getPosition().equals(masterPos))
 						player.sendStatusMessage(new TranslationTextComponent(Lib.CHAT_WARN+"sameConnection"), true);
@@ -179,10 +176,11 @@ public class WirecoilUtils
 
 		public static WireLink create(ConnectionPoint cp, World world, BlockPos offset, TargetingInfo info)
 		{
-			DimensionType dimType = world.getDimension().getType();
+			//TODO is this correct?
+			RegistryKey<DimensionType> dimType = world.func_234922_V_();
 			return new WireLink(
 					cp,
-					Objects.requireNonNull(dimType.getRegistryName()),
+					Objects.requireNonNull(dimType.func_240901_a_()),
 					offset,
 					info
 			);

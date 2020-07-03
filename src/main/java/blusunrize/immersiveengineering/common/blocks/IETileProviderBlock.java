@@ -87,9 +87,9 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 	protected BlockState getInitDefaultState()
 	{
 		BlockState ret = super.getInitDefaultState();
-		if(ret.getProperties().contains(IEProperties.FACING_ALL))
+		if(ret.func_235901_b_(IEProperties.FACING_ALL))
 			ret = ret.with(IEProperties.FACING_ALL, getDefaultFacing());
-		else if(ret.getProperties().contains(IEProperties.FACING_HORIZONTAL))
+		else if(ret.func_235901_b_(IEProperties.FACING_HORIZONTAL))
 			ret = ret.with(IEProperties.FACING_HORIZONTAL, getDefaultFacing());
 		return ret;
 	}
@@ -234,7 +234,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 		TileEntity tile = world.getTileEntity(pos);
 		if(tile instanceof IDirectionalTile&&Utils.isHammer(heldItem)&&((IDirectionalTile)tile).canHammerRotate(
 				side,
-				hit.getHitVec().subtract(new Vector3d(pos)),
+				hit.getHitVec().subtract(Vector3d.func_237491_b_(pos)),
 				player)&&!world.isRemote)
 		{
 			Direction f = ((IDirectionalTile)tile).getFacing();
@@ -282,9 +282,9 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 	@Nullable
 	private Property<Direction> findFacingProperty(BlockState state)
 	{
-		if(state.has(IEProperties.FACING_ALL))
+		if(state.func_235901_b_(IEProperties.FACING_ALL))
 			return IEProperties.FACING_ALL;
-		else if(state.has(IEProperties.FACING_HORIZONTAL))
+		else if(state.func_235901_b_(IEProperties.FACING_HORIZONTAL))
 			return IEProperties.FACING_HORIZONTAL;
 		else
 			return null;
@@ -306,7 +306,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 	@Override
 	public BlockState mirror(BlockState state, Mirror mirrorIn)
 	{
-		if(state.has(IEProperties.MIRRORED)&&canRotate()&&mirrorIn==Mirror.LEFT_RIGHT)
+		if(state.func_235901_b_(IEProperties.MIRRORED)&&canRotate()&&mirrorIn==Mirror.LEFT_RIGHT)
 			return state.with(IEProperties.MIRRORED, !state.get(IEProperties.MIRRORED));
 		else
 		{

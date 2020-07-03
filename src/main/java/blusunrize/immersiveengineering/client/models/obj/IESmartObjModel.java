@@ -34,6 +34,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -43,7 +44,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.TransformationMatrix;
 import net.minecraft.util.math.vector.Vector4f;
 import net.minecraft.world.IBlockDisplayReader;
-import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.IModelBuilder;
 import net.minecraftforge.client.model.IModelConfiguration;
@@ -80,7 +80,6 @@ public class IESmartObjModel implements IBakedModel
 	BlockState tempState;
 	public LivingEntity tempEntity;
 	public static LivingEntity tempEntityStatic;
-	public TransformType lastCameraTransform;
 	public boolean isDynamic;
 
 	public final OBJModel baseModel;
@@ -116,7 +115,6 @@ public class IESmartObjModel implements IBakedModel
 	@Override
 	public IBakedModel handlePerspective(TransformType cameraTransformType, MatrixStack mat)
 	{
-		this.lastCameraTransform = cameraTransformType;
 		TransformationMatrix matrix =
 				PerspectiveMapWrapper.getTransforms(owner.getCombinedTransform()).getOrDefault(cameraTransformType, TransformationMatrix.identity());
 
@@ -192,8 +190,8 @@ public class IESmartObjModel implements IBakedModel
 	ItemOverrideList overrideList = new ItemOverrideList()
 	{
 		@Override
-		public IBakedModel getModelWithOverrides(@Nonnull IBakedModel originalModel, @Nonnull ItemStack stack,
-												 @Nullable World world, @Nullable LivingEntity entity)
+		public IBakedModel func_239290_a_(@Nonnull IBakedModel originalModel, @Nonnull ItemStack stack,
+												 @Nullable ClientWorld world, @Nullable LivingEntity entity)
 		{
 			tempEntityStatic = entity;
 			ComparableItemStack comp = ComparableItemStack.create(stack, false, true);

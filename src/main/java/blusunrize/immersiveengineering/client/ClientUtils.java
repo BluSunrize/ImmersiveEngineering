@@ -56,14 +56,12 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.*;
 import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fml.client.gui.GuiUtils;
 import org.apache.commons.compress.utils.IOUtils;
 import org.lwjgl.opengl.GL11;
 
@@ -141,7 +139,7 @@ public class ClientUtils
 
 	public static FontRenderer unicodeFontRender()
 	{
-		return mc().getFontResourceManager().getFontRenderer(new ResourceLocation(ImmersiveEngineering.MODID, "unicode"));
+		return mc().fontResourceMananger.getFontRenderer(new ResourceLocation(ImmersiveEngineering.MODID, "unicode"));
 	}
 
 	public enum TimestampFormat
@@ -320,7 +318,7 @@ public class ClientUtils
 			matrix.push();
 			matrix.translate(blockpos.getX(), blockpos.getY(), blockpos.getZ());
 			IVertexBuilder worldRendererIn = buffers.getBuffer(ModelBakery.DESTROY_RENDER_TYPES.get(progress));
-			worldRendererIn = new MatrixApplyingVertexBuilder(worldRendererIn, matrix.getLast());
+			worldRendererIn = new MatrixApplyingVertexBuilder(worldRendererIn, matrix.getLast().getMatrix(), matrix.getLast().getNormal());
 			Block block = world.getBlockState(blockpos).getBlock();
 			TileEntity te = world.getTileEntity(blockpos);
 			boolean hasBreak = block instanceof ChestBlock||block instanceof EnderChestBlock
@@ -496,26 +494,17 @@ public class ClientUtils
 		drawColouredRect(x+8+w/2, y+8-h/2, 1, h, 0x77999999);
 	}
 
-	public static void drawHoveringText(List<ITextComponent> list, int x, int y, FontRenderer font, int xSize, int ySize)
+	public static void handleGuiTank(MatrixStack transform, IFluidTank tank, int x, int y, int w, int h, int oX, int oY, int oW, int oH, int mX, int mY, String originalTexture, List<ITextComponent> tooltip)
 	{
-		List<String> textTooltip = new ArrayList<>(list.size());
-		for(ITextComponent c : list)
-			textTooltip.add(c.getFormattedText());
-		GuiUtils.drawHoveringText(textTooltip, x, y, xSize, ySize, -1, font);
+		handleGuiTank(transform, tank.getFluid(), tank.getCapacity(), x, y, w, h, oX, oY, oW, oH, mX, mY, originalTexture, tooltip);
 	}
 
-	public static void handleGuiTank(IFluidTank tank, int x, int y, int w, int h, int oX, int oY, int oW, int oH, int mX, int mY, String originalTexture, List<ITextComponent> tooltip)
-	{
-		handleGuiTank(tank.getFluid(), tank.getCapacity(), x, y, w, h, oX, oY, oW, oH, mX, mY, originalTexture, tooltip);
-	}
-
-	public static void handleGuiTank(FluidStack fluid, int capacity, int x, int y, int w, int h, int oX, int oY, int oW, int oH, int mX, int mY, String originalTexture, List<ITextComponent> tooltip)
+	public static void handleGuiTank(MatrixStack transform, FluidStack fluid, int capacity, int x, int y, int w, int h, int oX, int oY, int oW, int oH, int mX, int mY, String originalTexture, List<ITextComponent> tooltip)
 	{
 		if(tooltip==null)
 		{
-			RenderSystem.pushMatrix();
+			transform.push();
 			IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
-			MatrixStack transform = new MatrixStack();
 			if(fluid!=null&&fluid.getFluid()!=null)
 			{
 				int fluidHeight = (int)(h*(fluid.getAmount()/(float)capacity));
@@ -527,7 +516,7 @@ public class ClientUtils
 			RenderType renderType = IERenderTypes.getGui(new ResourceLocation(originalTexture));
 			drawTexturedRect(buffer.getBuffer(renderType), transform, x+xOff, y+yOff, oW, oH, 256f, oX, oX+oW, oY, oY+oH);
 			buffer.finish(renderType);
-			RenderSystem.popMatrix();
+			transform.pop();
 		}
 		else
 		{
@@ -793,7 +782,8 @@ public class ClientUtils
 		BakedQuadBuilder builder = new BakedQuadBuilder(sprite);
 		builder.setQuadOrientation(facing);
 		builder.setApplyDiffuseLighting(true);
-		Vector3d faceNormal = new Vector3d(facing.getDirectionVec());
+		Vector3i normalInt = facing.getDirectionVec();
+		Vector3d faceNormal = new Vector3d(normalInt.getX(), normalInt.getY(), normalInt.getZ());
 		int vId = invert?3: 0;
 		int u = vId > 1?2: 0;
 		putVertexData(format, builder, vertices[vId], faceNormal, uvs[u], uvs[1], sprite, colour, alpha[vId]);

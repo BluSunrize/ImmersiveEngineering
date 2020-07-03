@@ -46,7 +46,7 @@ public abstract class DynamicModel<T>
 			ResourceLocation baseLoc = new ResourceLocation(ImmersiveEngineering.MODID, "dynamic/"+desc);
 			for(Direction d : Direction.BY_HORIZONTAL_INDEX)
 			{
-				names.put(d, new ModelResourceLocation(baseLoc, d.getName()));
+				names.put(d, new ModelResourceLocation(baseLoc, d.func_176610_l()));
 				DynamicModelLoader.requestModel(
 						DynamicModel.getRequest(type, name, (int)d.getHorizontalAngle()+180),
 						names.get(d));

@@ -166,7 +166,7 @@ public class HammerItem extends IEBaseItem implements ITool
 		{
 			boolean rotate = !(tile instanceof IDirectionalTile)&&!(tile instanceof IHammerInteraction);
 			if(!rotate&&tile instanceof IDirectionalTile)
-				rotate = ((IDirectionalTile)tile).canHammerRotate(side, context.getHitVec().subtract(new Vector3d(pos)), player);
+				rotate = ((IDirectionalTile)tile).canHammerRotate(side, context.getHitVec().subtract(Vector3d.func_237491_b_(pos)), player);
 			if(rotate&&RotationUtil.rotateBlock(world, pos, player!=null&&(player.isSneaking()!=side.equals(Direction.DOWN))))
 				return ActionResultType.SUCCESS;
 			else if(!rotate&&tile instanceof IHammerInteraction)
@@ -220,9 +220,12 @@ public class HammerItem extends IEBaseItem implements ITool
 	}
 
 	@Override
-	public boolean itemInteractionForEntity(ItemStack stack, PlayerEntity player, LivingEntity entity, Hand hand)
+	public ActionResultType itemInteractionForEntity(ItemStack stack, PlayerEntity player, LivingEntity entity, Hand hand)
 	{
-		return !player.world.isRemote&&RotationUtil.rotateEntity(entity, player);
+		if (!player.world.isRemote&&RotationUtil.rotateEntity(entity, player))
+			return ActionResultType.SUCCESS;
+		else
+			return ActionResultType.PASS;
 	}
 
 	@Nonnull

@@ -37,7 +37,7 @@ public class FakeLightBlock extends IETileProviderBlock
 {
 	public FakeLightBlock()
 	{
-		super("fake_light", Properties.create(Material.AIR).notSolid(), (b, p) -> null);
+		super("fake_light", Properties.create(Material.AIR).notSolid().func_235838_a_(b -> 15), (b, p) -> null);
 	}
 
 	@Override
@@ -69,13 +69,6 @@ public class FakeLightBlock extends IETileProviderBlock
 	{
 		return new FakeLightTileEntity();
 	}
-
-	@Override
-	public int getLightValue(BlockState state)
-	{
-		return 15;
-	}
-
 
 	public static class FakeLightTileEntity extends IEBaseTileEntity implements ITickableTileEntity, ISpawnInterdiction
 	{

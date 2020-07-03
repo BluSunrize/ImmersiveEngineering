@@ -64,7 +64,7 @@ public class TeslaCoilRenderer extends TileEntityRenderer<TeslaCoilTileEntity>
 			builder.pos(sub.x-tileX, sub.y-tileY, sub.z-tileZ).endVertex();
 		}
 
-		Vector3d end = (animation.targetEntity!=null?animation.targetEntity.getPositionVector(): animation.targetPos).add(-tileX, -tileY, -tileZ);
+		Vector3d end = (animation.targetEntity!=null?animation.targetEntity.getPositionVec(): animation.targetPos).add(-tileX, -tileY, -tileZ);
 		builder.pos(end.x, end.y, end.z).endVertex();
 	}
 }

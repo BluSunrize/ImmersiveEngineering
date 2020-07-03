@@ -136,7 +136,7 @@ public class RailgunShotEntity extends IEProjectileEntity
 				Entity hit = ((EntityRayTraceResult)mop).getEntity();
 				if(getAmmoProperties()!=null)
 				{
-					Entity shooter = getShooter();
+					Entity shooter = func_234616_v_();
 					if(!getAmmoProperties().overrideHitEntity(hit, shooter))
 						hit.attackEntityFrom(IEDamageSources.causeRailgunDamage(this, shooter),
 								(float)(getAmmoProperties().damage*IEConfig.TOOLS.railgun_damage.get()));

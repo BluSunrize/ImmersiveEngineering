@@ -49,7 +49,7 @@ public class GlobalWireNetwork implements ITickableTileEntity
 	public static GlobalWireNetwork getNetwork(World w)
 	{
 		if(!w.getCapability(NetHandlerCapability.NET_CAPABILITY).isPresent())
-			throw new RuntimeException("No net handler found for dimension "+w.getDimension().getType().getRegistryName()+", remote: "+w.isRemote);
+			throw new RuntimeException("No net handler found for dimension "+w.func_234922_V_().func_240901_a_()+", remote: "+w.isRemote);
 		return Objects.requireNonNull(w.getCapability(NetHandlerCapability.NET_CAPABILITY).orElse(null));
 	}
 

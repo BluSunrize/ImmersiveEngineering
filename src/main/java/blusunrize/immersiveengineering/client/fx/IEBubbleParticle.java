@@ -9,8 +9,8 @@
 package blusunrize.immersiveengineering.client.fx;
 
 import net.minecraft.client.particle.*;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particles.BasicParticleType;
-import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -20,7 +20,7 @@ import javax.annotation.Nonnull;
 @OnlyIn(Dist.CLIENT)
 public class IEBubbleParticle extends SpriteTexturedParticle
 {
-	public IEBubbleParticle(World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn, double ySpeedIn, double zSpeedIn)
+	public IEBubbleParticle(ClientWorld worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn, double ySpeedIn, double zSpeedIn)
 	{
 		super(worldIn, xCoordIn, yCoordIn, zCoordIn);
 		this.setSize(0.02F, 0.02F);
@@ -44,9 +44,9 @@ public class IEBubbleParticle extends SpriteTexturedParticle
 		{
 			this.motionY += 0.002D;
 			this.move(this.motionX, this.motionY, this.motionZ);
-			this.motionX *= (double)0.85F;
-			this.motionY *= (double)0.85F;
-			this.motionZ *= (double)0.85F;
+			this.motionX *= 0.85F;
+			this.motionY *= 0.85F;
+			this.motionZ *= 0.85F;
 		}
 	}
 
@@ -66,7 +66,7 @@ public class IEBubbleParticle extends SpriteTexturedParticle
 			this.texture = p_i50227_1_;
 		}
 
-		public Particle makeParticle(BasicParticleType typeIn, World worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
+		public Particle makeParticle(BasicParticleType typeIn, ClientWorld worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
 		{
 			IEBubbleParticle bubbleparticle = new IEBubbleParticle(worldIn, x, y, z, xSpeed, ySpeed, zSpeed);
 			bubbleparticle.selectSpriteRandomly(this.texture);

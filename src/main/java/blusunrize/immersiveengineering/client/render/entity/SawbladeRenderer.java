@@ -57,7 +57,7 @@ public class SawbladeRenderer extends EntityRenderer<SawbladeEntity>
 		IVertexBuilder builder = bufferIn.getBuffer(RenderType.getEntityTranslucent(SAWBLADE));
 
 		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
-		BlockPos blockPos = entity.getPosition();
+		BlockPos blockPos = entity.func_233580_cy_();
 		BlockState state = entity.getEntityWorld().getBlockState(blockPos);
 		IBakedModel model = this.model.get(null);
 		IEObjState objState = new IEObjState(VisibilityList.show("blade"));

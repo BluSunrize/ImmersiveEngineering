@@ -9,10 +9,12 @@
 package blusunrize.lib.manual;
 
 import blusunrize.lib.manual.gui.ManualScreen;
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.util.text.ITextProperties;
+import net.minecraft.util.text.StringTextComponent;
 
 import java.util.List;
 
@@ -81,7 +83,8 @@ public class ManualElementTable extends SpecialManualElements
 							if(localizedTable[i][j]!=null)
 							{
 								int w = Math.max(10, 120-(j > 0?textOff[j-1]-x: 0));
-								int l = manual.fontRenderer().listFormattedStringToWidth(localizedTable[i][j], w).size();
+								ITextProperties textProp = new StringTextComponent(localizedTable[i][j]);
+								int l = manual.fontRenderer().func_238425_b_(textProp, w).size();
 								if(j!=0)
 									yOff += l*(manual.fontRenderer().FONT_HEIGHT+1);
 							}
@@ -94,12 +97,12 @@ public class ManualElementTable extends SpecialManualElements
 	}
 
 	@Override
-	public void render(ManualScreen gui, int x, int y, int mx, int my)
+	public void render(MatrixStack transform, ManualScreen gui, int x, int y, int mx, int my)
 	{
 		if(localizedTable!=null)
 		{
 			int col = manual.getHighlightColour()|0xff000000;
-			AbstractGui.fill(x, y-2, x+120, y-1, col);
+			AbstractGui.fill(transform, x, y-2, x+120, y-1, col);
 
 			int yOff = 0;
 			for(String[] line : localizedTable)
@@ -111,8 +114,9 @@ public class ManualElementTable extends SpecialManualElements
 						{
 							int xx = textOff.length > 0&&j > 0?textOff[j-1]: x;
 							int w = Math.max(10, 120-(j > 0?textOff[j-1]-x: 0));
-							manual.fontRenderer().drawSplitString(line[j], xx, y+yOff, w, manual.getTextColour());
-							int lines = manual.fontRenderer().listFormattedStringToWidth(line[j], w).size();
+							ITextProperties lineTextProperties = ITextProperties.func_240652_a_(line[j]);
+							manual.fontRenderer().func_238418_a_(lineTextProperties, xx, y+yOff, w, manual.getTextColour());
+							int lines = manual.fontRenderer().func_238425_b_(lineTextProperties, w).size();
 							if(lines > height)
 								height = lines;
 						}
@@ -120,11 +124,11 @@ public class ManualElementTable extends SpecialManualElements
 					if(horizontalBars)
 					{
 						float scale = .5f;
-						RenderSystem.scalef(1, scale, 1);
+						transform.scale(1, scale, 1);
 						int barHeight = (int)((y+yOff+height*manual.fontRenderer().FONT_HEIGHT)/scale);
-						AbstractGui.fill(x, barHeight, x+120, barHeight+1,
+						AbstractGui.fill(transform, x, barHeight, x+120, barHeight+1,
 								manual.getTextColour()|0xff000000);
-						RenderSystem.scalef(1, 1/scale, 1);
+						transform.scale(1, 1/scale, 1);
 					}
 
 					yOff += height*(manual.fontRenderer().FONT_HEIGHT+1);
@@ -132,7 +136,7 @@ public class ManualElementTable extends SpecialManualElements
 
 			if(bars!=null)
 				for(int i = 0; i < bars.length; i++)
-					AbstractGui.fill(textOff[i]-4, y-4, textOff[i]-3, y+yOff, col);
+					AbstractGui.fill(transform, textOff[i]-4, y-4, textOff[i]-3, y+yOff, col);
 		}
 	}
 

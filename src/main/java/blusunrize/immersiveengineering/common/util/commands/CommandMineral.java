@@ -71,7 +71,7 @@ public class CommandMineral
 		LiteralArgumentBuilder<CommandSource> get = Commands.literal("get");
 		get.requires(source -> source.hasPermissionLevel(2)).executes(command -> {
 			ServerPlayerEntity player = command.getSource().asPlayer();
-			getMineral(command, player.getPosition().getX() >> 4, player.getPosition().getZ() >> 4);
+			getMineral(command, player.func_241140_K_().getX() >> 4, player.func_241140_K_().getZ() >> 4);
 			return Command.SINGLE_SUCCESS;
 		}).then(
 				Commands.argument("location", ColumnPosArgument.columnPos())
@@ -101,7 +101,7 @@ public class CommandMineral
 		RequiredArgumentBuilder<CommandSource, MineralMix> mineralArg = Commands.argument("mineral", new MineralArgument());
 		mineralArg.requires(source -> source.hasPermissionLevel(2)).executes(command -> {
 			ServerPlayerEntity player = command.getSource().asPlayer();
-			setMineral(command, player.getPosition().getX() >> 4, player.getPosition().getZ() >> 4);
+			setMineral(command, player.func_241140_K_().getX() >> 4, player.func_241140_K_().getZ() >> 4);
 			return Command.SINGLE_SUCCESS;
 		}).then(
 				Commands.argument("location", ColumnPosArgument.columnPos())
@@ -134,7 +134,7 @@ public class CommandMineral
 				IntegerArgumentType.integer(-1, 100));
 		mineralArg.requires(source -> source.hasPermissionLevel(2)).executes(command -> {
 			ServerPlayerEntity player = command.getSource().asPlayer();
-			setMineralDepletion(command, player.getPosition().getX() >> 4, player.getPosition().getZ() >> 4);
+			setMineralDepletion(command, player.func_241140_K_().getX() >> 4, player.func_241140_K_().getZ() >> 4);
 			return Command.SINGLE_SUCCESS;
 		}).then(
 				Commands.argument("location", ColumnPosArgument.columnPos())

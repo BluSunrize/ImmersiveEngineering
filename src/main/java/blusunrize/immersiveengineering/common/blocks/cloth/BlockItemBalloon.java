@@ -39,7 +39,7 @@ public class BlockItemBalloon extends BlockItemIE
 			increaseOffset(itemStackIn);
 		else
 		{
-			Vector3d pos = playerIn.getPositionVector().add(0, playerIn.getEyeHeight(), 0).add(playerIn.getLookVec());
+			Vector3d pos = playerIn.getPositionVec().add(0, playerIn.getEyeHeight(), 0).add(playerIn.getLookVec());
 			BlockPos bPos = new BlockPos(pos);
 			CompoundNBT nbt = itemStackIn.getOrCreateTag();
 			int offset = nbt.getByte("offset");

@@ -11,12 +11,14 @@ package blusunrize.immersiveengineering.client.gui.elements;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import com.google.common.base.Preconditions;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.util.text.ITextComponent;
 
 public class GuiButtonIE extends Button
 {
@@ -24,7 +26,7 @@ public class GuiButtonIE extends Button
 	protected final int texU;
 	protected final int texV;
 
-	public GuiButtonIE(int x, int y, int w, int h, String name, String texture, int u, int v, IIEPressable handler)
+	public GuiButtonIE(int x, int y, int w, int h, ITextComponent name, String texture, int u, int v, IIEPressable handler)
 	{
 		super(x, y, w, h, name, handler);
 		this.texture = texture;
@@ -46,7 +48,7 @@ public class GuiButtonIE extends Button
 	}
 
 	@Override
-	public void render(int mouseX, int mouseY, float partialTicks)
+	public void render(MatrixStack transform, int mouseX, int mouseY, float partialTicks)
 	{
 		if(this.visible)
 		{
@@ -59,17 +61,17 @@ public class GuiButtonIE extends Button
 			RenderSystem.blendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
 			RenderSystem.blendFunc(770, 771);
 			if(hoverOffset!=null&&this.isHovered)
-				this.blit(x, y, texU+hoverOffset[0], texV+hoverOffset[1], width, height);
+				this.blit(transform, x, y, texU+hoverOffset[0], texV+hoverOffset[1], width, height);
 			else
-				this.blit(x, y, texU, texV, width, height);
-			if(!getMessage().isEmpty())
+				this.blit(transform, x, y, texU, texV, width, height);
+			if(!getMessage().getString().isEmpty())
 			{
 				int txtCol = 0xE0E0E0;
 				if(!this.active)
 					txtCol = 0xA0A0A0;
 				else if(this.isHovered)
 					txtCol = Lib.COLOUR_I_ImmersiveOrange;
-				this.drawCenteredString(fontrenderer, getMessage(), this.x+this.width/2, this.y+(this.height-8)/2, txtCol);
+				this.drawCenteredString(transform, fontrenderer, getMessage(), this.x+this.width/2, this.y+(this.height-8)/2, txtCol);
 			}
 		}
 	}

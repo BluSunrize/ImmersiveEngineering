@@ -389,7 +389,7 @@ public class StructuralArmTileEntity extends IEBaseTileEntity implements IOBJMod
 		float[] colour = {1, 1, 1, 1};
 		BakedQuadBuilder builder = new BakedQuadBuilder(sprite);
 		builder.setQuadOrientation(facing);
-		Vector3d faceNormal = new Vector3d(facing.getDirectionVec());
+		Vector3d faceNormal = Vector3d.func_237491_b_(facing.getDirectionVec());
 		int vertexId = invert?3: 0;
 		double v = onCeiling?16-leftV: 0;
 		putVertexData(format, builder, vertices[vertexId], faceNormal, vertexId > 1?16: 0, v, sprite, colour, 1);

@@ -32,7 +32,6 @@ import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -78,6 +77,7 @@ import net.minecraft.util.math.vector.Vector4f;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidStack;
@@ -111,7 +111,7 @@ public class Utils
 	public static boolean isInTag(ItemStack stack, ResourceLocation tagName)
 	{
 		ITag<Item> tag = ItemTags.getCollection().get(tagName);
-		return tag!=null&&tag.contains(stack.getItem());
+		return tag!=null&&tag.func_230235_a_(stack.getItem());
 	}
 
 	public static boolean compareItemNBT(ItemStack stack1, ItemStack stack2)
@@ -138,22 +138,22 @@ public class Utils
 
 	public static final BiMap<ResourceLocation, DyeColor> DYES_BY_TAG =
 			ImmutableBiMap.<ResourceLocation, DyeColor>builder()
-					.put(Tags.Items.DYES_BLACK.getId(), DyeColor.BLACK)
-					.put(Tags.Items.DYES_RED.getId(), DyeColor.RED)
-					.put(Tags.Items.DYES_GREEN.getId(), DyeColor.GREEN)
-					.put(Tags.Items.DYES_BROWN.getId(), DyeColor.BROWN)
-					.put(Tags.Items.DYES_BLUE.getId(), DyeColor.BLUE)
-					.put(Tags.Items.DYES_PURPLE.getId(), DyeColor.PURPLE)
-					.put(Tags.Items.DYES_CYAN.getId(), DyeColor.CYAN)
-					.put(Tags.Items.DYES_LIGHT_GRAY.getId(), DyeColor.LIGHT_GRAY)
-					.put(Tags.Items.DYES_GRAY.getId(), DyeColor.GRAY)
-					.put(Tags.Items.DYES_PINK.getId(), DyeColor.PINK)
-					.put(Tags.Items.DYES_LIME.getId(), DyeColor.LIME)
-					.put(Tags.Items.DYES_YELLOW.getId(), DyeColor.YELLOW)
-					.put(Tags.Items.DYES_LIGHT_BLUE.getId(), DyeColor.LIGHT_BLUE)
-					.put(Tags.Items.DYES_MAGENTA.getId(), DyeColor.MAGENTA)
-					.put(Tags.Items.DYES_ORANGE.getId(), DyeColor.ORANGE)
-					.put(Tags.Items.DYES_WHITE.getId(), DyeColor.WHITE)
+					.put(Tags.Items.DYES_BLACK.func_230234_a_(), DyeColor.BLACK)
+					.put(Tags.Items.DYES_RED.func_230234_a_(), DyeColor.RED)
+					.put(Tags.Items.DYES_GREEN.func_230234_a_(), DyeColor.GREEN)
+					.put(Tags.Items.DYES_BROWN.func_230234_a_(), DyeColor.BROWN)
+					.put(Tags.Items.DYES_BLUE.func_230234_a_(), DyeColor.BLUE)
+					.put(Tags.Items.DYES_PURPLE.func_230234_a_(), DyeColor.PURPLE)
+					.put(Tags.Items.DYES_CYAN.func_230234_a_(), DyeColor.CYAN)
+					.put(Tags.Items.DYES_LIGHT_GRAY.func_230234_a_(), DyeColor.LIGHT_GRAY)
+					.put(Tags.Items.DYES_GRAY.func_230234_a_(), DyeColor.GRAY)
+					.put(Tags.Items.DYES_PINK.func_230234_a_(), DyeColor.PINK)
+					.put(Tags.Items.DYES_LIME.func_230234_a_(), DyeColor.LIME)
+					.put(Tags.Items.DYES_YELLOW.func_230234_a_(), DyeColor.YELLOW)
+					.put(Tags.Items.DYES_LIGHT_BLUE.func_230234_a_(), DyeColor.LIGHT_BLUE)
+					.put(Tags.Items.DYES_MAGENTA.func_230234_a_(), DyeColor.MAGENTA)
+					.put(Tags.Items.DYES_ORANGE.func_230234_a_(), DyeColor.ORANGE)
+					.put(Tags.Items.DYES_WHITE.func_230234_a_(), DyeColor.WHITE)
 					.build();
 
 	public static final BiMap<ITag<Item>, Item> WOOL_DYE_BIMAP =
@@ -182,7 +182,7 @@ public class Utils
 		if(stack.isEmpty())
 			return null;
 		Collection<ResourceLocation> owners = ItemTags.getCollection().getOwningTags(stack.getItem());
-		if(owners.contains(Tags.Items.DYES.getId()))
+		if(owners.contains(Tags.Items.DYES.func_230234_a_()))
 		{
 			for(ResourceLocation tag : owners)
 				if(DYES_BY_TAG.containsKey(tag))
@@ -241,7 +241,7 @@ public class Utils
 		int number = player.getRNG().nextInt(deviation);
 		if(isBad)
 			number = -number;
-		number += (int)(luckScale*player.getAttribute(SharedMonsterAttributes.LUCK).getValue());
+		number += (int)(luckScale*player.getLuck());
 
 		return median+Math.min(number, deviation);
 	}
@@ -368,7 +368,7 @@ public class Utils
 		float f8 = f3*f5;
 		double d3 = 5.0D;
 		if(living instanceof PlayerEntity)
-			d3 = living.getAttribute(PlayerEntity.REACH_DISTANCE).getValue();
+			d3 = living.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue();
 
 		Vector3d vec31 = vec3.add((double)f7*d3, (double)f6*d3, (double)f8*d3);
 		RayTraceContext ctx = new RayTraceContext(vec3, vec31, BlockMode.COLLIDER, fluidMode, living);
@@ -418,7 +418,7 @@ public class Utils
 				maxInArray(start.x, endLow.x, endHigh.x), maxInArray(start.y, endLow.y, endHigh.y), maxInArray(start.z, endLow.z, endHigh.z));
 
 		List<LivingEntity> list = world.getEntitiesWithinAABB(LivingEntity.class, box);
-		list.removeIf(e -> !isPointInCone(dirNorm, radius, length, truncationLength, e.getPositionVector().subtract(start)));
+		list.removeIf(e -> !isPointInCone(dirNorm, radius, length, truncationLength, e.getPositionVec().subtract(start)));
 		return list;
 	}
 
@@ -541,7 +541,7 @@ public class Utils
 			if(vec3d!=null)
 			{
 				Vector3d vec3d1 = entity.getLook(1.0F);
-				Vector3d vec3d2 = vec3d.subtractReverse(entity.getPositionVector()).normalize();
+				Vector3d vec3d2 = vec3d.subtractReverse(entity.getPositionVec()).normalize();
 				vec3d2 = new Vector3d(vec3d2.x, 0.0D, vec3d2.z);
 				return vec3d2.dotProduct(vec3d1) < 0;
 			}
@@ -692,7 +692,7 @@ public class Utils
 			boolean flag1 = material.isReplaceable();
 			if(worldIn.isAirBlock(posIn)||flag||flag1||blockstate.getBlock() instanceof ILiquidContainer&&((ILiquidContainer)blockstate.getBlock()).canContainFluid(worldIn, posIn, blockstate, fluid))
 			{
-				if(worldIn.dimension.doesWaterVaporize()&&fluid.isIn(FluidTags.WATER))
+				if(worldIn.func_230315_m_().func_236040_e_()&&fluid.isIn(FluidTags.WATER))
 				{
 					int i = posIn.getX();
 					int j = posIn.getY();
@@ -914,7 +914,7 @@ public class Utils
 	{
 		int val = 0;
 		final int prime = 31;
-		for(Property<?> n : state.getProperties())
+		for(Property<?> n : state.func_235904_r_())
 		{
 			Object o = state.get(n);
 			val = prime*val+Objects.hash(o);
@@ -1320,8 +1320,8 @@ public class Utils
 	private static final Gson GSON_INSTANCE = (new GsonBuilder()).registerTypeAdapter(RandomValueRange.class, new RandomValueRange.Serializer())
 			.registerTypeAdapter(LootPool.class, new LootPool.Serializer()).registerTypeAdapter(LootTable.class, new LootTable.Serializer())
 			//TODO .registerTypeHierarchyAdapter(ILootGenerator.class, new ILootGenerator.Serializer())
-			.registerTypeHierarchyAdapter(ILootFunction.class, new LootFunctionManager.Serializer())
-			.registerTypeHierarchyAdapter(ILootCondition.class, new LootConditionManager.Serializer())
+			.registerTypeHierarchyAdapter(ILootFunction.class, LootFunctionManager.func_237450_a_())
+			.registerTypeHierarchyAdapter(ILootCondition.class, LootConditionManager.func_237474_a_())
 			.registerTypeHierarchyAdapter(LootContext.EntityTarget.class, new LootContext.EntityTarget.Serializer()).create();
 
 	public static LootTable loadBuiltinLootTable(ResourceLocation resource, LootTableManager lootTableManager)
@@ -1401,7 +1401,7 @@ public class Utils
 		HashMap<String, Object> ret = new HashMap<>();
 		if(tank!=null&&tank.getFluid()!=null)
 		{
-			ret.put("name", tank.getFluid().getDisplayName().getFormattedText());
+			ret.put("name", tank.getFluid().getDisplayName().getString());
 			ret.put("amount", tank.getFluidAmount());
 			ret.put("capacity", tank.getCapacity());
 			ret.put("hasTag", tank.getFluid().hasTag());
@@ -1414,7 +1414,7 @@ public class Utils
 		HashMap<String, Object> ret = new HashMap<>();
 		if(!stack.isEmpty())
 		{
-			ret.put("name", stack.getDisplayName().getFormattedText());
+			ret.put("name", stack.getDisplayName().getString());
 			ret.put("amount", stack.getAmount());
 			ret.put("hasTag", stack.hasTag());
 		}

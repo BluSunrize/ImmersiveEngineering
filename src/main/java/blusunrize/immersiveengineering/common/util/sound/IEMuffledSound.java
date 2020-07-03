@@ -84,19 +84,19 @@ public class IEMuffledSound implements ISound
 	}
 
 	@Override
-	public float getX()
+	public double getX()
 	{
 		return originalSound.getX();
 	}
 
 	@Override
-	public float getY()
+	public double getY()
 	{
 		return originalSound.getY();
 	}
 
 	@Override
-	public float getZ()
+	public double getZ()
 	{
 		return originalSound.getZ();
 	}

@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.gui.ModWorkbenchContainer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderHelper;
@@ -28,6 +29,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 import net.minecraftforge.items.ItemHandlerHelper;
 import org.lwjgl.opengl.GL11;
 
@@ -54,7 +56,7 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 	}
 
 	@Override
-	public void render(int mx, int my, float partial)
+	public void render(MatrixStack transform, int mx, int my, float partial)
 	{
 		super.render(mx, my, partial);
 		for(int i = 0; i < container.slotCount; i++)
@@ -89,7 +91,7 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 							tooltip.add(new StringTextComponent(ss.getCount()+"x ").appendSibling(ss.getDisplayName())
 									.setStyle(new Style().setColor(TextFormatting.GRAY)));
 
-						ClientUtils.drawHoveringText(tooltip, mx, my, font, width, height);
+						GuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
 						RenderHelper.enableStandardItemLighting();
 					}
 			}
@@ -98,11 +100,11 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float f, int mx, int my)
+	protected void func_230450_a_(MatrixStack transform, float f, int mx, int my)
 	{
 		RenderSystem.color3f(1.0F, 1.0F, 1.0F);
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/workbench.png");
-		this.blit(guiLeft, guiTop, 0, 0, xSize, ySize);
+		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
 
 
 		for(int i = 0; i < container.slotCount; i++)

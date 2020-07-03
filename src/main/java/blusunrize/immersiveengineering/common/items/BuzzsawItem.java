@@ -42,9 +42,10 @@ import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -348,18 +349,18 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 	/* ------------- ATTRIBUTES ------------- */
 
 	@Override
-	public Multimap<String, AttributeModifier> getAttributeModifiers(EquipmentSlotType slot, ItemStack stack)
+	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlotType slot, ItemStack stack)
 	{
-		Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
+		Multimap<Attribute, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
 		if(slot==EquipmentSlotType.MAINHAND)
 		{
 			ItemStack sawblade = getSawblade(stack);
 			if(!sawblade.isEmpty()&&canBuzzsawBeUsed(stack, null))
 			{
-				multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(),
+				multimap.put(Attributes.field_233823_f_,
 						new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier",
 								((SawbladeItem)sawblade.getItem()).getSawbladeDamage(), Operation.ADDITION));
-				multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(),
+				multimap.put(Attributes.field_233825_h_,
 						new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", -2.5D, Operation.ADDITION));
 			}
 		}

@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -60,8 +59,8 @@ public class SkylineHelper
 			ConnectionPoint cpB = connection.getEndB();
 			IImmersiveConnectable iicB = global.getConnector(cpB);
 			IImmersiveConnectable iicA = global.getConnector(cpA);
-			Vector3d vStart = new Vector3d(cpA.getPosition());
-			Vector3d vEnd = new Vector3d(cpB.getPosition());
+			Vector3d vStart = Vector3d.func_237491_b_(cpA.getPosition());
+			Vector3d vEnd = Vector3d.func_237491_b_(cpB.getPosition());
 
 			if(iicB!=null)
 				vStart = Utils.addVectors(vStart, iicB.getConnectionOffset(connection, cpB));
@@ -88,7 +87,7 @@ public class SkylineHelper
 			double horSpeed = totalSpeed/Math.sqrt(1+slopeAtPos*slopeAtPos);
 			SkylineHookEntity hook = new SkylineHookEntity(player.world, connection, cpA, linePos, hand, horSpeed, limitSpeed);
 			IELogger.logger.info("Speed keeping: Player {}, wire {}, Pos: {}", playerMovement, extendedWire,
-					hook.getPositionVector());
+					hook.getPositionVec());
 			if(hook.isValidPosition(hook.getPosX(), hook.getPosY(), hook.getPosZ(), player))
 			{
 				double vertSpeed = Math.sqrt(totalSpeed*totalSpeed-horSpeed*horSpeed);
@@ -125,7 +124,7 @@ public class SkylineHelper
 	{
 		List<VoxelShape> list = Lists.newArrayList();
 		getBlockCollisionBoxes(entityIn, aabb, list, w, ignored);
-		w.getEmptyCollisionShapes(entityIn, aabb, ImmutableSet.of()).forEach(list::add);
+		w.getCollisionShapes(entityIn, aabb).forEach(list::add);
 		return list;
 	}
 

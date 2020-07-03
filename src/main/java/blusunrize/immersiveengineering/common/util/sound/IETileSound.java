@@ -126,19 +126,19 @@ public class IETileSound implements ITickableSound
 	}
 
 	@Override
-	public float getX()
+	public double getX()
 	{
 		return tileX;
 	}
 
 	@Override
-	public float getY()
+	public double getY()
 	{
 		return tileY;
 	}
 
 	@Override
-	public float getZ()
+	public double getZ()
 	{
 		return tileZ;
 	}

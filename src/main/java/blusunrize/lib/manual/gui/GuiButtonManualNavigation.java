@@ -9,8 +9,10 @@
 package blusunrize.lib.manual.gui;
 
 import blusunrize.lib.manual.ManualUtils;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.util.text.StringTextComponent;
 
 import static com.mojang.blaze3d.platform.GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA;
 import static com.mojang.blaze3d.platform.GlStateManager.DestFactor.ZERO;
@@ -24,13 +26,13 @@ public class GuiButtonManualNavigation extends Button
 
 	public GuiButtonManualNavigation(ManualScreen gui, int x, int y, int w, int h, int type, IPressable handler)
 	{
-		super(x, y, type >= 4?10: Math.min(type < 2?16: 10, w), type >= 4?10: Math.min(type < 2?10: 16, h), "", handler);
+		super(x, y, type >= 4?10: Math.min(type < 2?16: 10, w), type >= 4?10: Math.min(type < 2?10: 16, h), StringTextComponent.field_240750_d_, handler);
 		this.gui = gui;
 		this.type = type;
 	}
 
 	@Override
-	public void renderButton(int mx, int my, float partial)
+	public void renderButton(MatrixStack transform, int mx, int my, float partial)
 	{
 		ManualUtils.bindTexture(gui.texture);
 		RenderSystem.color3f(1.0F, 1.0F, 1.0F);
@@ -41,6 +43,6 @@ public class GuiButtonManualNavigation extends Button
 		int v = 216+(type==0?0: type==1?10: type==2?(16-height): type==3?0: type==4||type==5?10: 0);
 		if(isHovered)
 			v += 20;
-		this.blit(this.x, this.y, u, v, width, height);
+		this.blit(transform, this.x, this.y, u, v, width, height);
 	}
 }

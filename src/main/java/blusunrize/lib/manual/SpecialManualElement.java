@@ -9,6 +9,7 @@
 package blusunrize.lib.manual;
 
 import blusunrize.lib.manual.gui.ManualScreen;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.item.ItemStack;
 
@@ -21,7 +22,7 @@ public abstract class SpecialManualElement
 
 	public abstract void onOpened(ManualScreen gui, int x, int y, List<Button> buttons);
 
-	public abstract void render(ManualScreen gui, int x, int y, int mouseX, int mouseY);
+	public abstract void render(MatrixStack transform, ManualScreen gui, int x, int y, int mouseX, int mouseY);
 
 	public abstract void mouseDragged(int x, int y, double clickX, double clickY, double mx, double my, double lastX,
 									  double lastY, int mouseButton);

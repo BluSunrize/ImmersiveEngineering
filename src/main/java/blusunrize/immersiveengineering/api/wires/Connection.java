@@ -187,10 +187,10 @@ public class Connection
 		if(hasCatenaryData())
 			basic = getCatenaryData().getPoint(pos);
 		else
-			basic = new Vector3d(endB.getPosition().subtract(endA.getPosition())).scale(pos);
+			basic = Vector3d.func_237491_b_(endB.getPosition().subtract(endA.getPosition())).scale(pos);
 		Vector3d add = Vector3d.ZERO;
 		if(endB.equals(from))
-			add = new Vector3d(endA.getPosition().subtract(endB.getPosition()));
+			add = Vector3d.func_237491_b_(endA.getPosition().subtract(endB.getPosition()));
 		return basic.add(add);
 	}
 

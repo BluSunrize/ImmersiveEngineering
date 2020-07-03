@@ -11,6 +11,7 @@ import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.IParticleData.IDeserializer;
@@ -18,7 +19,6 @@ import net.minecraft.particles.ParticleType;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.tuple.Pair;
@@ -46,7 +46,7 @@ public class FractalParticle extends Particle
 	private float[] colourOut;
 	private float[] colourIn;
 
-	public FractalParticle(World world, double x, double y, double z, double speedX, double speedY, double speedZ, Vector3d direction, double scale, int maxAge, int points, float[] colourOut, float[] colourIn)
+	public FractalParticle(ClientWorld world, double x, double y, double z, double speedX, double speedY, double speedZ, Vector3d direction, double scale, int maxAge, int points, float[] colourOut, float[] colourIn)
 	{
 		super(world, x, y, z, speedX, speedY, speedZ);
 		this.maxAge = maxAge;
@@ -75,7 +75,7 @@ public class FractalParticle extends Particle
 		}
 	}
 
-	public FractalParticle(World world, double x, double y, double z, Vector3d direction, double scale, float[] colourOut, float[] colourIn)
+	public FractalParticle(ClientWorld world, double x, double y, double z, Vector3d direction, double scale, float[] colourOut, float[] colourIn)
 	{
 		this(world, x, y, z, 0, 0, 0, direction, scale, 10, 16, colourOut, colourIn);
 	}
@@ -269,7 +269,7 @@ public class FractalParticle extends Particle
 
 		@Nullable
 		@Override
-		public Particle makeParticle(Data typeIn, World worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
+		public Particle makeParticle(Data typeIn, ClientWorld worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
 		{
 			return new FractalParticle(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, typeIn.direction, typeIn.scale,
 					typeIn.maxAge, typeIn.points, typeIn.colourOut, typeIn.colourIn);

@@ -151,7 +151,7 @@ public class IEExplosion extends Explosion
 							FluidState ifluidstate = this.world.getFluidState(blockpos);
 							if(!iblockstate.isAir(world, blockpos)||!ifluidstate.isEmpty())
 							{
-								float f2 = Math.max(iblockstate.getExplosionResistance(world, blockpos, getExplosivePlacedBy(), this), ifluidstate.getExplosionResistance(world, blockpos, getExplosivePlacedBy(), this));
+								float f2 = Math.max(iblockstate.getExplosionResistance(world, blockpos, this), ifluidstate.getExplosionResistance(world, blockpos, this));
 								if(this.getExplosivePlacedBy()!=null)
 								{
 									f2 = this.getExplosivePlacedBy().getExplosionResistance(this, this.world, blockpos, iblockstate, ifluidstate, f2);

@@ -110,5 +110,11 @@ public class SteelArmorItem extends ArmorItem
 		{
 			return 1.0f;
 		}
+
+		@Override
+		public float func_230304_f_()
+		{
+			return 0;
+		}
 	}
 }

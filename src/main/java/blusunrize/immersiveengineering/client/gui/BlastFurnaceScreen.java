@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.gui.BlastFurnaceContainer;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
@@ -22,21 +23,21 @@ public class BlastFurnaceScreen extends IEContainerScreen<BlastFurnaceContainer>
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float f, int mx, int my)
+	protected void func_230450_a_(MatrixStack transform, float f, int mx, int my)
 	{
 		RenderSystem.color3f(1.0F, 1.0F, 1.0F);
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/blast_furnace.png");
-		this.blit(guiLeft, guiTop, 0, 0, xSize, ySize);
+		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
 
 		if(container.state.getLastBurnTime() > 0)
 		{
 			int h = (int)(12*(container.state.getBurnTime()/(float)container.state.getLastBurnTime()));
-			this.blit(guiLeft+56, guiTop+37+12-h, 179, 1+12-h, 9, h);
+			this.blit(transform, guiLeft+56, guiTop+37+12-h, 179, 1+12-h, 9, h);
 		}
 		if(container.state.getMaxProcess() > 0)
 		{
 			int w = (int)(22*((container.state.getMaxProcess()-container.state.getProcess())/(float)container.state.getMaxProcess()));
-			this.blit(guiLeft+76, guiTop+35, 177, 14, w, 16);
+			this.blit(transform, guiLeft+76, guiTop+35, 177, 14, w, 16);
 		}
 	}
 }

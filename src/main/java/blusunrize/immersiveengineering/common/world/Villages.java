@@ -67,14 +67,11 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -139,8 +136,8 @@ public class Villages
 	@Mod.EventBusSubscriber(modid = MODID, bus = Bus.MOD)
 	public static class Registers
 	{
-		public static final DeferredRegister<PointOfInterestType> POINTS_OF_INTEREST = new DeferredRegister<>(ForgeRegistries.POI_TYPES, ImmersiveEngineering.MODID);
-		public static final DeferredRegister<VillagerProfession> PROFESSIONS = new DeferredRegister<>(ForgeRegistries.PROFESSIONS, ImmersiveEngineering.MODID);
+		public static final DeferredRegister<PointOfInterestType> POINTS_OF_INTEREST = DeferredRegister.create(ForgeRegistries.POI_TYPES, ImmersiveEngineering.MODID);
+		public static final DeferredRegister<VillagerProfession> PROFESSIONS = DeferredRegister.create(ForgeRegistries.PROFESSIONS, ImmersiveEngineering.MODID);
 
 		// TODO: Add more workstations. We need a different one for each profession
 		public static final RegistryObject<PointOfInterestType> POI_CRAFTINGTABLE = POINTS_OF_INTEREST.register(
@@ -196,7 +193,7 @@ public class Villages
 		private static Collection<BlockState> assembleStates(Block block)
 		{
 			return block.getStateContainer().getValidStates().stream().filter(blockState -> {
-				if(blockState.has(IEProperties.MULTIBLOCKSLAVE))
+				if(blockState.func_235901_b_(IEProperties.MULTIBLOCKSLAVE))
 					return !blockState.get(IEProperties.MULTIBLOCKSLAVE);
 				return true;
 			}).collect(Collectors.toList());
@@ -407,7 +404,7 @@ public class Villages
 		public MerchantOffer getOffer(Entity trader, @Nonnull Random random)
 		{
 			World world = trader.getEntityWorld();
-			BlockPos merchantPos = trader.getPosition();
+			BlockPos merchantPos = trader.func_233580_cy_();
 
 			int cX = merchantPos.getX() >> 4;
 			int cZ = merchantPos.getZ() >> 4;

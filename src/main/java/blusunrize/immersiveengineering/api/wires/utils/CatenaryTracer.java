@@ -157,7 +157,7 @@ public class CatenaryTracer
 	{
 		for(BlockPos p : positions)
 		{
-			Vector3d posVec = new Vector3d(p);
+			Vector3d posVec = new Vector3d(p.getX(), p.getY(), p.getZ());
 			Vector3d startRel = start.subtract(posVec);
 			Vector3d endRel = end.subtract(posVec);
 			BlockPos realPos = p.add(offset);

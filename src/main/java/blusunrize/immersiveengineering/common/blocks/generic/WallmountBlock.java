@@ -124,7 +124,7 @@ public class WallmountBlock extends IEBaseBlock
 		VERT_UP;
 
 		@Override
-		public String getName()
+		public String func_176610_l()
 		{
 			return name().toLowerCase(Locale.ENGLISH);
 		}
@@ -174,7 +174,7 @@ public class WallmountBlock extends IEBaseBlock
 		@Override
 		public String toString()
 		{
-			return getName();
+			return func_176610_l();
 		}
 	}
 }

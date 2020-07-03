@@ -10,13 +10,14 @@ package blusunrize.lib.manual.gui;
 
 import blusunrize.lib.manual.ManualInstance.ManualLink;
 import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
 import java.util.List;
 
 public class GuiButtonManualLink extends Button
@@ -29,7 +30,7 @@ public class GuiButtonManualLink extends Button
 
 	public GuiButtonManualLink(ManualScreen gui, int x, int y, int w, int h, @Nullable ManualLink link, String localized)
 	{
-		super(x, y, w, h, "", btn -> {
+		super(x, y, w, h, StringTextComponent.field_240750_d_, btn -> {
 			if(link!=null)
 				link.changePage(gui, true);
 		});
@@ -41,28 +42,28 @@ public class GuiButtonManualLink extends Button
 	}
 
 	@Override
-	public void render(int mx, int my, float partialTicks)
+	public void render(MatrixStack transform, int mx, int my, float partialTicks)
 	{
 		Minecraft mc = Minecraft.getInstance();
 		isHovered = mx >= this.x&&my >= this.y&&mx < this.x+this.width&&my < this.y+this.height;
 		if(isHovered)
 		{
-			drawHovered(mc, true, mx, my);
+			drawHovered(transform, mc, true, mx, my);
 			for(GuiButtonManualLink btn : otherParts)
 				if(btn!=this)
-					btn.drawHovered(mc, false, mx, my);
+					btn.drawHovered(transform, mc, false, mx, my);
 		}
 	}
 
-	private void drawHovered(Minecraft mc, boolean mouse, int mx, int my)
+	private void drawHovered(MatrixStack transform, Minecraft mc, boolean mouse, int mx, int my)
 	{
 		FontRenderer font = gui.manual.fontRenderer();
-		font.drawString(localized, x, y, gui.manual.getHighlightColour());
-		List<String> tooltip;
+		font.drawString(transform, localized, x, y, gui.manual.getHighlightColour());
+		String tooltip;
 		if(link!=null)
-			tooltip = Collections.singletonList(gui.manual.formatLink(link));
+			tooltip = gui.manual.formatLink(link);
 		else
-			tooltip = Collections.singletonList("Invalid link");
-		gui.renderTooltip(tooltip, mx+8, my+4, font);
+			tooltip = "Invalid link";
+		gui.renderTooltip(transform, ImmutableList.of(new StringTextComponent(tooltip)), mx+8, my+4, font);
 	}
 }

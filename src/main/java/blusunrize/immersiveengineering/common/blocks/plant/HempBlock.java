@@ -104,7 +104,7 @@ public class HempBlock extends BushBlock implements IGrowable
 	@Override
 	public PlantType getPlantType(IBlockReader world, BlockPos pos)
 	{
-		return PlantType.Crop;
+		return PlantType.CROP;
 	}
 
 	private static final EnumMap<EnumHempGrowth, VoxelShape> shapes = new EnumMap<>(EnumHempGrowth.class);

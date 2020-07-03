@@ -33,6 +33,7 @@ import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.MissingTextureSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.BlockItem;
@@ -46,7 +47,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.TransformationMatrix;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockDisplayReader;
-import net.minecraft.world.World;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.IModelLoader;
 import net.minecraftforge.client.model.data.IModelData;
@@ -429,7 +429,7 @@ public class ModelConveyor extends BakedIEModel
 	{
 		@Nullable
 		@Override
-		public IBakedModel getModelWithOverrides(@Nonnull IBakedModel originalModel, @Nonnull ItemStack stack, @Nullable World world, @Nullable LivingEntity entity)
+		public IBakedModel func_239290_a_(@Nonnull IBakedModel originalModel, @Nonnull ItemStack stack, @Nullable ClientWorld world, @Nullable LivingEntity entity)
 		{
 			String key = "default";
 			if(stack.getItem() instanceof BlockItem)

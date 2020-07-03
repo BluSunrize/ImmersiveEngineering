@@ -14,6 +14,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.vector.Vector3d;
 
 public class TileInventory implements IInventory
 {
@@ -101,7 +102,7 @@ public class TileInventory implements IInventory
 	{
 		if(tile instanceof IInteractionObjectIE&&!((IInteractionObjectIE)tile).canUseGui(player))
 			return false;
-		return !tile.isRemoved()&&tile.getDistanceSq(player.getPosX(), player.getPosY(), player.getPosZ()) < 64;
+		return !tile.isRemoved()&&Vector3d.func_237491_b_(tile.getPos()).squareDistanceTo(player.getPositionVec()) < 64;
 	}
 
 	@Override

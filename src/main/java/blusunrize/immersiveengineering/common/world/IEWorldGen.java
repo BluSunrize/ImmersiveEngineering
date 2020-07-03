@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.util.IELogger;
-import com.mojang.datafixers.Dynamic;
+import com.mojang.serialization.Codec;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
@@ -23,7 +23,6 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.GenerationSettings;
 import net.minecraft.world.gen.GenerationStage.Decoration;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.Feature;
@@ -46,7 +45,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 @EventBusSubscriber(modid = ImmersiveEngineering.MODID, bus = Bus.MOD)
@@ -183,7 +181,7 @@ public class IEWorldGen
 	{
 		private final CountRange countRange;
 
-		public CountRangeInIEDimensions(Function<Dynamic<?>, ? extends CountRangeConfig> configFactoryIn)
+		public CountRangeInIEDimensions(Codec<CountRangeConfig> configFactoryIn)
 		{
 			super(configFactoryIn);
 			this.countRange = new CountRange(configFactoryIn);
@@ -192,7 +190,7 @@ public class IEWorldGen
 		@Nonnull
 		@Override
 		public Stream<BlockPos> getPositions(@Nonnull IWorld worldIn,
-											 @Nonnull ChunkGenerator<? extends GenerationSettings> generatorIn,
+											 @Nonnull ChunkGenerator generatorIn,
 											 @Nonnull Random random, @Nonnull CountRangeConfig configIn, @Nonnull BlockPos pos)
 		{
 			DimensionType d = worldIn.getDimension().getType();

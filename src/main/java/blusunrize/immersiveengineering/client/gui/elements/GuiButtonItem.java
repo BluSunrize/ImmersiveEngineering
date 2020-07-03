@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.client.gui.elements;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -16,6 +17,7 @@ import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.StringTextComponent;
 
 public class GuiButtonItem extends Button
 {
@@ -24,13 +26,13 @@ public class GuiButtonItem extends Button
 
 	public GuiButtonItem(int x, int y, ItemStack stack, boolean state, IPressable handler)
 	{
-		super(x, y, 18, 18, "", handler);
+		super(x, y, 18, 18, StringTextComponent.field_240750_d_, handler);
 		this.state = state;
 		this.item = stack;
 	}
 
 	@Override
-	public void render(int mouseX, int mouseY, float partialTicks)
+	public void render(MatrixStack transform, int mouseX, int mouseY, float partialTicks)
 	{
 		if(this.visible)
 		{
@@ -40,7 +42,7 @@ public class GuiButtonItem extends Button
 			RenderSystem.enableBlend();
 			RenderSystem.blendFuncSeparate(770, 771, 1, 0);
 			RenderSystem.blendFunc(770, 771);
-			this.blit(x, y, 24+(state?18: 0), 128, width, height);
+			this.blit(transform, x, y, 24+(state?18: 0), 128, width, height);
 			//TODO this.mouseDragged(mc, mouseX, mouseY);
 
 			if(!item.isEmpty())

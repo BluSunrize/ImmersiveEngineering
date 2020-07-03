@@ -1027,17 +1027,17 @@ public class BlockStates extends BlockStateProvider
 		Preconditions.checkArgument(layers.length > 0);
 		final Property<Direction> facingProp;
 		final int xForHorizontal;
-		if(b.getDefaultState().has(IEProperties.FACING_ALL))
+		if(b.getDefaultState().func_235901_b_(IEProperties.FACING_ALL))
 		{
 			facingProp = IEProperties.FACING_ALL;
 			xForHorizontal = 90;
 		}
-		else if(b.getDefaultState().has(IEProperties.FACING_TOP_DOWN))
+		else if(b.getDefaultState().func_235901_b_(IEProperties.FACING_TOP_DOWN))
 		{
 			facingProp = IEProperties.FACING_TOP_DOWN;
 			xForHorizontal = 90;
 		}
-		else if(b.getDefaultState().has(IEProperties.FACING_HORIZONTAL))
+		else if(b.getDefaultState().func_235901_b_(IEProperties.FACING_HORIZONTAL))
 		{
 			facingProp = IEProperties.FACING_HORIZONTAL;
 			xForHorizontal = 0;
@@ -1047,7 +1047,7 @@ public class BlockStates extends BlockStateProvider
 			facingProp = null;
 			xForHorizontal = 0;
 		}
-		Preconditions.checkState(facingProp==null||b.getDefaultState().has(facingProp),
+		Preconditions.checkState(facingProp==null||b.getDefaultState().func_235901_b_(facingProp),
 				b+" does not have "+facingProp);
 		VariantBlockStateBuilder builder = getVariantBuilder(b);
 		forEachState(builder.partialState(), additional, map -> {
@@ -1204,7 +1204,7 @@ public class BlockStates extends BlockStateProvider
 		VariantBlockStateBuilder builder = getVariantBuilder(Misc.hempPlant);
 		for(EnumHempGrowth g : EnumHempGrowth.values())
 		{
-			ModelFile model = models().withExistingParent("block/hemp/"+g.getName(),
+			ModelFile model = models().withExistingParent("block/hemp/"+g.func_176610_l(),
 					new ResourceLocation("block/crop"))
 					.texture("crop", g.getTextureName());
 			builder.partialState()
@@ -1217,7 +1217,7 @@ public class BlockStates extends BlockStateProvider
 	{
 		BlockModelBuilder builder = models().withExistingParent(outName, modLoc("block/ie_six_sides"));
 		for(Direction d : Direction.VALUES)
-			builder.texture(d.getName(), new ResourceLocation(baseTexName.getNamespace(),
+			builder.texture(d.func_176610_l(), new ResourceLocation(baseTexName.getNamespace(),
 					baseTexName.getPath()+"_"+d.ordinal()));
 		builder.texture("particle", new ResourceLocation(baseTexName.getNamespace(),
 				baseTexName.getPath()+"_0"));

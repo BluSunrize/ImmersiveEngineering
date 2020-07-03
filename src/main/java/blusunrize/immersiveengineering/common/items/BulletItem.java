@@ -38,7 +38,6 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
@@ -339,7 +338,7 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 								p = new EffectInstance(p.getPotion(), 1);
 							((LivingEntity)((EntityRayTraceResult)target).getEntity()).addPotionEffect(p);
 						}
-				world.playEvent(2002, new BlockPos(bullet), PotionUtils.getPotionColor(potionType));
+				world.playEvent(2002, bullet.func_233580_cy_(), PotionUtils.getPotionColor(potionType));
 			}
 		}
 

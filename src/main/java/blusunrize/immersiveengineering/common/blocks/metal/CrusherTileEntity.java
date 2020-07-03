@@ -300,7 +300,7 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 			CrusherTileEntity master = master();
 			if(master==null)
 				return;
-			Vector3d center = new Vector3d(master.getPos()).add(.5, .75, .5);
+			Vector3d center = Vector3d.func_237489_a_(master.getPos()).add(0, 0.25, 0);
 			AxisAlignedBB crusherInternal = new AxisAlignedBB(center.x-1.0625, center.y, center.z-1.0625, center.x+1.0625, center.y+1.25, center.z+1.0625);
 			if(!entity.getBoundingBox().intersects(crusherInternal))
 				return;

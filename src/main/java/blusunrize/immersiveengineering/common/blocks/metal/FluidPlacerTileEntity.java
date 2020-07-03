@@ -14,31 +14,26 @@ import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
-import net.minecraft.block.*;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.IWaterLoggable;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.FlowingFluid;
-import net.minecraft.fluid.Fluid;
 import net.minecraft.item.BucketItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.DispenserTileEntity;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
@@ -200,7 +195,7 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickable
 	{
 		CompoundNBT sideConfigNBT = nbt.getCompound("sideConfig");
 		for(Direction d : Direction.VALUES)
-			sideConfig.put(d, IOSideConfig.VALUES[sideConfigNBT.getInt(d.getName())]);
+			sideConfig.put(d, IOSideConfig.VALUES[sideConfigNBT.getInt(d.func_176610_l())]);
 		tank.readFromNBT(nbt.getCompound("tank"));
 		if(descPacket)
 			this.markContainingBlockForUpdate(null);
@@ -211,7 +206,7 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickable
 	{
 		CompoundNBT sideConfigNBT = new CompoundNBT();
 		for(Direction d : Direction.VALUES)
-			sideConfigNBT.putInt(d.getName(), sideConfig.get(d).ordinal());
+			sideConfigNBT.putInt(d.func_176610_l(), sideConfig.get(d).ordinal());
 		nbt.put("sideConfig", sideConfigNBT);
 		nbt.put("tank", tank.writeToNBT(new CompoundNBT()));
 	}
@@ -255,9 +250,9 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickable
 			IOSideConfig j = sideConfig.get(brtr.getFace().getOpposite());
 			return new String[]{
 					I18n.format(Lib.DESC_INFO+"blockSide.facing")
-							+": "+I18n.format(Lib.DESC_INFO+"blockSide.connectFluid."+i.getName()),
+							+": "+I18n.format(Lib.DESC_INFO+"blockSide.connectFluid."+i.func_176610_l()),
 					I18n.format(Lib.DESC_INFO+"blockSide.opposite")
-							+": "+I18n.format(Lib.DESC_INFO+"blockSide.connectFluid."+j.getName())
+							+": "+I18n.format(Lib.DESC_INFO+"blockSide.connectFluid."+j.func_176610_l())
 			};
 		}
 		return null;

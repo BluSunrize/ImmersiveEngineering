@@ -19,12 +19,12 @@ import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.TransformationMatrix;
-import net.minecraft.world.World;
 import net.minecraftforge.client.model.BakedModelWrapper;
 import net.minecraftforge.client.model.ItemLayerModel;
 import net.minecraftforge.client.model.data.IModelData;
@@ -117,7 +117,7 @@ public class ModelItemDynamicOverride extends BakedIEModel
 	{
 		@Nullable
 		@Override
-		public IBakedModel getModelWithOverrides(@Nonnull IBakedModel originalModel, ItemStack stack, @Nullable World worldIn, @Nullable LivingEntity entityIn)
+		public IBakedModel func_239290_a_(@Nonnull IBakedModel originalModel, ItemStack stack, @Nullable ClientWorld worldIn, @Nullable LivingEntity entityIn)
 		{
 			if(!stack.isEmpty()&&stack.getItem() instanceof IEItemInterfaces.ITextureOverride)
 			{

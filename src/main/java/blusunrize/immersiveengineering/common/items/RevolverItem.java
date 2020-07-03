@@ -38,9 +38,10 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -244,29 +245,29 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 	/* ------------- ATTRIBUTES, UPDATE, RIGHTCLICK ------------- */
 
 	@Override
-	public Multimap<String, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot, ItemStack stack)
+	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot, ItemStack stack)
 	{
-		Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
+		Multimap<Attribute, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
 		if(slot==EquipmentSlotType.MAINHAND)
 		{
 			if(getUpgrades(stack).getBoolean("fancyAnimation"))
-				multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -2, Operation.ADDITION));
+				multimap.put(Attributes.field_233825_h_, new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -2, Operation.ADDITION));
 			double melee = getUpgradeValue_d(stack, "melee");
 			if(melee!=0)
 			{
-				multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", melee, Operation.ADDITION));
-				multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -2.4000000953674316D, Operation.ADDITION));
+				multimap.put(Attributes.field_233823_f_, new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", melee, Operation.ADDITION));
+				multimap.put(Attributes.field_233825_h_, new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -2.4000000953674316D, Operation.ADDITION));
 			}
 		}
 		if(slot.getSlotType()==Group.HAND)
 		{
 			double speed = getUpgradeValue_d(stack, "speed");
 			if(speed!=0)
-				multimap.put(SharedMonsterAttributes.MOVEMENT_SPEED.getName(), new AttributeModifier(speedModUUID, "Weapon modifier", speed, Operation.MULTIPLY_BASE));
+				multimap.put(Attributes.field_233821_d_, new AttributeModifier(speedModUUID, "Weapon modifier", speed, Operation.MULTIPLY_BASE));
 
 			double luck = getUpgradeValue_d(stack, RevolverPerk.LUCK.getNBTKey());
 			if(luck!=0)
-				multimap.put(SharedMonsterAttributes.LUCK.getName(), new AttributeModifier(luckModUUID, "Weapon modifier", luck, Operation.ADDITION));
+				multimap.put(Attributes.field_233828_k_, new AttributeModifier(luckModUUID, "Weapon modifier", luck, Operation.ADDITION));
 		}
 		return multimap;
 	}

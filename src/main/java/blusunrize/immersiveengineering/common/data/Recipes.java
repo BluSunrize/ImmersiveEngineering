@@ -57,6 +57,7 @@ import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.tags.ITag;
+import net.minecraft.tags.ITag.INamedTag;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
@@ -206,7 +207,7 @@ public class Recipes extends RecipeProvider
 				.setTime(300)
 				.build(out, toRL("blastfurnace/fuel_charcoal"));
 		BlastFurnaceFuelBuilder.builder(IETags.getItemTag(IETags.charCoalBlocks))
-				.addCondition(new NotCondition(new TagEmptyCondition(IETags.charCoalBlocks.getId())))
+				.addCondition(new NotCondition(new TagEmptyCondition(IETags.charCoalBlocks.func_230234_a_())))
 				.setTime(10*300)
 				.build(out, toRL("blastfurnace/fuel_charcoal_block"));
 
@@ -2825,7 +2826,7 @@ public class Recipes extends RecipeProvider
 	}
 
 	@Nonnull
-	private Ingredient makeIngredientFromBlock(ITag<Block> in)
+	private Ingredient makeIngredientFromBlock(INamedTag<Block> in)
 	{
 		ITag<Item> itemTag = IETags.getItemTag(in);
 		if(itemTag==null)

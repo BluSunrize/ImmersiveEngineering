@@ -274,7 +274,7 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 						f = dz < 0?Direction.NORTH: Direction.SOUTH;
 				}
 				double verticalOffset = 1+Utils.RAND.nextDouble()*.25;
-				Vector3d coilPos = new Vector3d(getPos()).add(.5, .5, .5);
+				Vector3d coilPos = Vector3d.func_237489_a_(getPos());
 				//Vertical offset
 				coilPos = coilPos.add(getFacing().getXOffset()*verticalOffset, getFacing().getYOffset()*verticalOffset, getFacing().getZOffset()*verticalOffset);
 				//offset to direction
@@ -328,7 +328,7 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 		}
 
 		double verticalOffset = 1+Utils.RAND.nextDouble()*.25;
-		Vector3d coilPos = new Vector3d(getPos()).add(.5, .5, .5);
+		Vector3d coilPos = Vector3d.func_237489_a_(getPos());
 		//Vertical offset
 		coilPos = coilPos.add(getFacing().getXOffset()*verticalOffset, getFacing().getYOffset()*verticalOffset, getFacing().getZOffset()*verticalOffset);
 		//offset to direction
@@ -337,7 +337,7 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 		f = DirectionUtils.rotateAround(f, getFacing().getAxis());
 		double dShift = (Utils.RAND.nextDouble()-.5)*.75;
 		coilPos = coilPos.add(f.getXOffset()*dShift, f.getYOffset()*dShift, f.getZOffset()*dShift);
-		addAnimation(new LightningAnimation(coilPos, new Vector3d(getPos()).add(tx, ty, tz)));
+		addAnimation(new LightningAnimation(coilPos, Vector3d.func_237491_b_(getPos()).add(tx, ty, tz)));
 //		world.playSound(null, getPos(), IESounds.tesla, SoundCategory.BLOCKS,2.5f, .5f + Utils.RAND.nextFloat());
 		world.playSound(getPos().getX(), getPos().getY(), getPos().getZ(), IESounds.tesla, SoundCategory.BLOCKS, 2.5F, 0.5F+Utils.RAND.nextFloat(), true);
 	}
@@ -555,7 +555,7 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 			if(subPoints.isEmpty()||animationTimer==0)
 				return true;
 			boolean b = false;
-			Vector3d end = targetEntity!=null?targetEntity.getPositionVector(): targetPos;
+			Vector3d end = targetEntity!=null?targetEntity.getPositionVec(): targetPos;
 			if(prevTarget!=null)
 				b = prevTarget.distanceTo(end) > 1;
 			prevTarget = end;
@@ -565,7 +565,7 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 		public void createLightning(Random rand)
 		{
 			subPoints.clear();
-			Vector3d end = targetEntity!=null?targetEntity.getPositionVector(): targetPos;
+			Vector3d end = targetEntity!=null?targetEntity.getPositionVec(): targetPos;
 			Vector3d dist = end.subtract(startPos);
 			double points = 12;
 			for(int i = 0; i < points; i++)

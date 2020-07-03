@@ -93,12 +93,12 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 
 	public static void initCovers()
 	{
-		validPipeCovers.add(IETags.scaffoldingAlu::contains);
-		validPipeCovers.add(IETags.scaffoldingSteel::contains);
+		validPipeCovers.add(IETags.scaffoldingAlu::func_230235_a_);
+		validPipeCovers.add(IETags.scaffoldingSteel::func_230235_a_);
 		validPipeCovers.add(input -> input==WoodenDecoration.treatedScaffolding);
 
-		climbablePipeCovers.add(IETags.scaffoldingAlu::contains);
-		climbablePipeCovers.add(IETags.scaffoldingSteel::contains);
+		climbablePipeCovers.add(IETags.scaffoldingAlu::func_230235_a_);
+		climbablePipeCovers.add(IETags.scaffoldingSteel::func_230235_a_);
 		climbablePipeCovers.add(input -> input==WoodenDecoration.treatedScaffolding);
 	}
 
@@ -1025,7 +1025,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 	{
 		if(world.isRemote)
 			return true;
-		hitVec = hitVec.subtract(new Vector3d(pos));
+		hitVec = hitVec.subtract(Vector3d.func_237491_b_(pos));
 		Direction fd = side;
 		List<AxisAlignedBB> boxes = getBoxes(new BoundingBoxKey(true, this));
 		for(AxisAlignedBB box : boxes)

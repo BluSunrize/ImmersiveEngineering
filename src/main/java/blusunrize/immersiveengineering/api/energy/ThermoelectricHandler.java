@@ -12,6 +12,7 @@ import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tags.ITag;
+import net.minecraft.util.text.ITextComponent;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -54,16 +55,19 @@ public class ThermoelectricHandler
 		return -1;
 	}
 
-	public static SortedMap<String, Integer> getThermalValuesSorted(boolean inverse)
+	public static SortedMap<ITextComponent, Integer> getThermalValuesSorted(boolean inverse)
 	{
-		SortedMap<String, Integer> existingMap = new TreeMap<>(
-				inverse?Comparator.<String>reverseOrder(): Comparator.<String>reverseOrder()
+		SortedMap<ITextComponent, Integer> existingMap = new TreeMap<>(
+				Comparator.comparing(
+						ITextComponent::getString,
+						inverse?Comparator.reverseOrder(): Comparator.reverseOrder()
+				)
 		);
 		for(ThermoelectricSource ingr : temperatureMap)
 		{
 			Optional<Block> exampleOpt = ingr.getExample.get();
 			exampleOpt.ifPresent(example ->
-					existingMap.put(new ItemStack(example).getDisplayName().getFormattedText(), ingr.temperature));
+					existingMap.put(new ItemStack(example).getDisplayName(), ingr.temperature));
 		}
 		return existingMap;
 	}
@@ -82,7 +86,7 @@ public class ThermoelectricHandler
 		public ThermoelectricSource(ITag<Block> tag, int temperature, TemperatureScale scale)
 		{
 			this(b -> b.isIn(tag), temperature, () -> {
-				Collection<Block> allMatching = tag.getAllElements();
+				Collection<Block> allMatching = tag.func_230236_b_();
 				return allMatching.stream().findAny();
 			}, scale);
 		}

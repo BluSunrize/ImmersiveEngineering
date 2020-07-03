@@ -73,7 +73,7 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 		this.setLocationAndAngles(x, y, z, yaw, pitch);
 		this.setPosition(this.getPosX(), this.getPosY(), this.getPosZ());
 		setMotion(ax, ay, az);
-		this.shootingEntity = living!=null?living.getUniqueID(): UUID.randomUUID();
+		setShooter(living);
 		this.setShooterSynced();
 		Vector3d motion = getMotion();
 		this.shoot(motion.x, motion.y, motion.z, 2*1.5F, 1.0F);
@@ -117,7 +117,7 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 	@Override
 	public void tick()
 	{
-		if(this.getShooter()==null&&this.world.isRemote)
+		if(this.func_234616_v_()==null&&this.world.isRemote)
 			this.shootingEntity = getShooterSynced();
 
 		this.baseTick();
@@ -227,7 +227,7 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 					this.onImpact(blockHit);
 					this.stuckIn = blockHit.getPos();
 					this.inBlockState = this.world.getBlockState(blockHit.getPos());
-					setMotion(blockHit.getHitVec().subtract(getPositionVector()));
+					setMotion(blockHit.getHitVec().subtract(getPositionVec()));
 					float f2 = (float)getMotion().length();
 					Vector3d motion = getMotion();
 					this.setPosition(
@@ -294,7 +294,7 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 		{
 			boolean flag = this.pickupStatus==AbstractArrowEntity.PickupStatus.ALLOWED
 					||this.pickupStatus==AbstractArrowEntity.PickupStatus.CREATIVE_ONLY&&player.abilities.isCreativeMode
-					||this.getNoClip()&&this.getShooter().getUniqueID()==player.getUniqueID();
+					||this.getNoClip()&&this.func_234616_v_().getUniqueID()==player.getUniqueID();
 			if(this.pickupStatus==AbstractArrowEntity.PickupStatus.ALLOWED
 					&&!player.inventory.addItemStackToInventory(this.getArrowStack()))
 				flag = false;

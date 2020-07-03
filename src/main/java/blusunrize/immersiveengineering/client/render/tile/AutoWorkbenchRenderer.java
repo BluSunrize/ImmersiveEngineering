@@ -294,7 +294,7 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 			}
 
 		//Blueprint
-		double playerDistanceSq = ClientUtils.mc().player.getDistanceSq(new Vector3d(blockPos));
+		double playerDistanceSq = ClientUtils.mc().player.getDistanceSq(Vector3d.func_237489_a_(blockPos));
 
 		if(!blueprintStack.isEmpty()&&playerDistanceSq < 1000)
 		{

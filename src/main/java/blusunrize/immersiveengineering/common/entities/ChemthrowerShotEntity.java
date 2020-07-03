@@ -116,7 +116,7 @@ public class ChemthrowerShotEntity extends IEProjectileEntity
 	{
 		if(this.getFluid()==null&&this.world.isRemote)
 			this.fluid = getFluidSynced();
-		BlockState state = world.getBlockState(getPosition());
+		BlockState state = world.getBlockState(func_233580_cy_());
 		Block b = state.getBlock();
 		if(b!=null&&this.canIgnite()&&(state.getMaterial()==Material.FIRE||state.getMaterial()==Material.LAVA))
 			this.setFire(6);
@@ -143,7 +143,7 @@ public class ChemthrowerShotEntity extends IEProjectileEntity
 			if(effect!=null)
 			{
 				ItemStack thrower = ItemStack.EMPTY;
-				PlayerEntity shooter = (PlayerEntity)this.getShooter();
+				PlayerEntity shooter = (PlayerEntity)this.func_234616_v_();
 				if(shooter!=null)
 					thrower = shooter.getHeldItem(Hand.MAIN_HAND);
 

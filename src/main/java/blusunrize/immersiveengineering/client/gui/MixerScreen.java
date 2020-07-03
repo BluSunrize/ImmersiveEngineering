@@ -29,6 +29,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,9 +63,9 @@ public class MixerScreen extends IEContainerScreen<MixerContainer>
 	}
 
 	@Override
-	public void render(int mx, int my, float partial)
+	public void render(MatrixStack transform, int mx, int my, float partial)
 	{
-		super.render(mx, my, partial);
+		super.render(transform, mx, my, partial);
 		List<ITextComponent> tooltip = new ArrayList<>();
 
 		if(mx >= guiLeft+76&&mx <= guiLeft+134&&my >= guiTop+11&&my <= guiTop+58)
@@ -100,18 +101,17 @@ public class MixerScreen extends IEContainerScreen<MixerContainer>
 		if(mx >= guiLeft+106&&mx <= guiLeft+136&&my >= guiTop+61&&my <= guiTop+77)
 			tooltip.add(new TranslationTextComponent(Lib.GUI_CONFIG+"mixer.output"+(tile.outputAll?"All": "Single")));
 		if(!tooltip.isEmpty())
-			ClientUtils.drawHoveringText(tooltip, mx, my, font, width, height);
+			GuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float f, int mx, int my)
+	protected void func_230450_a_(MatrixStack transform, float f, int mx, int my)
 	{
-		MatrixStack transform = new MatrixStack();
 		transform.push();
 		IRenderTypeBuffer.Impl buffers = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
 		RenderSystem.color3f(1.0F, 1.0F, 1.0F);
 		ClientUtils.bindTexture(rl("textures/gui/mixer.png").toString());
-		this.blit(guiLeft, guiTop, 0, 0, xSize, ySize);
+		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
 
 		for(MultiblockProcess<MixerRecipe> process : tile.processQueue)
 			if(process instanceof PoweredMultiblockTileEntity.MultiblockProcessInMachine)
@@ -120,7 +120,7 @@ public class MixerScreen extends IEContainerScreen<MixerContainer>
 				for(int slot : ((MultiblockProcessInMachine<?>)process).getInputSlots())
 				{
 					int h = (int)Math.max(1, mod*16);
-					this.blit(guiLeft+24+slot%2*21, guiTop+7+slot/2*18+(16-h), 176, 16-h, 2, h);
+					this.blit(transform, guiLeft+24+slot%2*21, guiTop+7+slot/2*18+(16-h), 176, 16-h, 2, h);
 				}
 			}
 

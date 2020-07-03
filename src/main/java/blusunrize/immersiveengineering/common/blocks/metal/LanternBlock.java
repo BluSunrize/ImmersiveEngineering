@@ -38,7 +38,7 @@ public class LanternBlock extends IEBaseBlock implements IHasObjProperty
 		super(name, Properties.create(Material.IRON)
 						.sound(SoundType.METAL)
 						.hardnessAndResistance(3, 15)
-						.lightValue(14).notSolid(),
+						.func_235838_a_(b -> 14).notSolid(),
 				BlockItem::new,
 				FACING);
 	}

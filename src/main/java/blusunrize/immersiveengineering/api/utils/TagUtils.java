@@ -29,10 +29,10 @@ public class TagUtils
 		if(!isNonemptyBlockOrItemTag(oreName))
 			return false;
 		ITag<Item> itemTag = ItemTags.getCollection().get(oreName);
-		if(itemTag!=null&&itemTag.getAllElements().contains(stack.getItem()))
+		if(itemTag!=null&&itemTag.func_230236_b_().contains(stack.getItem()))
 			return true;
 		ITag<Block> blockTag = BlockTags.getCollection().get(oreName);
-		return blockTag!=null&&blockTag.getAllElements()
+		return blockTag!=null&&blockTag.func_230236_b_()
 				.stream()
 				.map(IItemProvider::asItem)
 				.anyMatch(i -> stack.getItem()==i);
@@ -41,13 +41,13 @@ public class TagUtils
 	public static boolean isNonemptyItemTag(ResourceLocation name)
 	{
 		ITag<Item> t = ItemTags.getCollection().getTagMap().get(name);
-		return t!=null&&!t.getAllElements().isEmpty();
+		return t!=null&&!t.func_230236_b_().isEmpty();
 	}
 
 	public static boolean isNonemptyBlockTag(ResourceLocation name)
 	{
 		ITag<Block> t = BlockTags.getCollection().getTagMap().get(name);
-		return t!=null&&!t.getAllElements().isEmpty();
+		return t!=null&&!t.func_230236_b_().isEmpty();
 	}
 
 	public static boolean isNonemptyBlockOrItemTag(ResourceLocation name)
@@ -66,7 +66,7 @@ public class TagUtils
 	private static <T extends IItemProvider> void addItemsInTag(NonNullList<ItemStack> out, ITag<T> in)
 	{
 		if(in!=null)
-			in.getAllElements().stream()
+			in.func_230236_b_().stream()
 					.map(ItemStack::new)
 					.forEach(out::add);
 	}

@@ -36,7 +36,7 @@ public class IETickableSound extends TickableSound
 		if(!this.isDonePlaying())
 			if(this.tickFunction.get())
 			{
-				this.donePlaying = true;
+				this.func_239509_o_();
 				this.onDoneFunction.accept(this);
 			}
 	}

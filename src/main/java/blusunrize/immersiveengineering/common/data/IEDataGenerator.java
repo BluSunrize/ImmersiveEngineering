@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.data;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.common.IERecipes;
+import net.minecraft.data.BlockTagsProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -28,8 +28,9 @@ public class IEDataGenerator
 		if(event.includeServer())
 		{
 			gen.addProvider(new Recipes(gen));
-			gen.addProvider(new IEBlockTags(gen));
-			gen.addProvider(new ItemTags(gen));
+			BlockTagsProvider blockTags = new IEBlockTags(gen);
+			gen.addProvider(blockTags);
+			gen.addProvider(new ItemTags(gen, blockTags));
 			gen.addProvider(new BlockLoot(gen));
 			gen.addProvider(new GeneralLoot(gen));
 			LoadedModels loadedModels = new LoadedModels(gen, event.getExistingFileHelper());

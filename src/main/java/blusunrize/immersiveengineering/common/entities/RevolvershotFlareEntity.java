@@ -107,7 +107,7 @@ public class RevolvershotFlareEntity extends RevolvershotEntity
 		{
 			setMotion(0, -.1, 0);
 			spawnParticles();
-			lightPos = this.getPosition();
+			lightPos = this.func_233580_cy_();
 			for(int i = 0; i < 128; i++)
 				if(world.isAirBlock(lightPos))
 					lightPos = lightPos.down();

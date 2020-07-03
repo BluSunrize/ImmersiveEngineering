@@ -12,7 +12,6 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap.Entry;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -363,7 +362,8 @@ public class TextSplitter
 
 		public Line(String line, int firstToken, boolean endPageAfterLine, Optional<String> anchorBeforeLine, String textOverflow)
 		{
-			this(line, new NextLineData(firstToken, endPageAfterLine, TextFormatting.getFormatString(line), textOverflow), anchorBeforeLine);
+			//TODO fix (should be noticed in unit tests)
+			this(line, new NextLineData(firstToken, endPageAfterLine, /*TextFormatting.getFormatString(line)*/"", textOverflow), anchorBeforeLine);
 		}
 	}
 

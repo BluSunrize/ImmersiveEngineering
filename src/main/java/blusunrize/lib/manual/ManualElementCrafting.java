@@ -183,14 +183,13 @@ public class ManualElementCrafting extends SpecialManualElements
 	}
 
 	@Override
-	public void render(ManualScreen gui, int x, int y, int mx, int my)
+	public void render(MatrixStack transform, ManualScreen gui, int x, int y, int mx, int my)
 	{
 		RenderSystem.enableRescaleNormal();
 		RenderHelper.enableStandardItemLighting();
 
 		int totalYOff = 0;
 		highlighted = ItemStack.EMPTY;
-		MatrixStack transform = new MatrixStack();
 		for(int i = 0; i < recipeRows.length; i++)
 		{
 			List<PositionedItemStack[]> rList = this.recipeLayout[i];
@@ -202,7 +201,7 @@ public class ManualElementCrafting extends SpecialManualElements
 					{
 						if(pstack.x > maxX)
 							maxX = pstack.x;
-						AbstractGui.fill(x+pstack.x, y+totalYOff+pstack.y, x+pstack.x+16, y+totalYOff+pstack.y+16, 0x33666666);
+						AbstractGui.fill(transform, x+pstack.x, y+totalYOff+pstack.y, x+pstack.x+16, y+totalYOff+pstack.y+16, 0x33666666);
 					}
 
 				IRenderTypeBuffer.Impl buffers = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
@@ -234,7 +233,7 @@ public class ManualElementCrafting extends SpecialManualElements
 			}
 		}
 
-		this.renderHighlightedTooltip(gui, mx, my);
+		this.renderHighlightedTooltip(transform, gui, mx, my);
 	}
 
 	@Override

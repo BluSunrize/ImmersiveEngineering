@@ -178,11 +178,10 @@ public class ManualElementMultiblock extends SpecialManualElements
 	}
 
 	@Override
-	public void render(ManualScreen gui, int x, int y, int mouseX, int mouseY)
+	public void render(MatrixStack transform, ManualScreen gui, int x, int y, int mouseX, int mouseY)
 	{
 		if(multiblock.getStructure()!=null)
 		{
-			MatrixStack transform = new MatrixStack();
 			IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
 			try
 			{
@@ -258,17 +257,9 @@ public class ManualElementMultiblock extends SpecialManualElements
 
 			if(componentTooltip!=null)
 			{
-				manual.fontRenderer().drawString("?", 116, yOffTotal/2-4, manual.getTextColour());
+				manual.fontRenderer().drawString(transform, "?", 116, yOffTotal/2-4, manual.getTextColour());
 				if(mouseX >= 116&&mouseX < 122&&mouseY >= yOffTotal/2-4&&mouseY < yOffTotal/2+4)
-				{
-					List<String> asStrings = new ArrayList<>();
-					for(ITextComponent iTextComponent : componentTooltip)
-					{
-						String formattedText = iTextComponent.getFormattedText();
-						asStrings.add(formattedText);
-					}
-					gui.renderTooltip(asStrings, mouseX, mouseY, manual.fontRenderer());
-				}
+					gui.renderTooltip(transform, componentTooltip, mouseX, mouseY, manual.fontRenderer());
 			}
 		}
 	}
@@ -322,7 +313,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 			for(Entry<BlockPos, BlockInfo> p : data.data.entrySet())
 				if(p.getValue().nbt!=null&&!p.getValue().nbt.isEmpty())
 				{
-					TileEntity te = TileEntity.create(p.getValue().nbt);
+					TileEntity te = TileEntity.func_235657_b_(p.getValue().state, p.getValue().nbt);
 					if(te!=null)
 					{
 						te.cachedBlockState = p.getValue().state;

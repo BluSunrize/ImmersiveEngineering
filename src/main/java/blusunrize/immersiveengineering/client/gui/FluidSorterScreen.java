@@ -34,6 +34,7 @@ import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,9 +53,9 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 	}
 
 	@Override
-	public void render(int mx, int my, float partial)
+	public void render(MatrixStack transform, int mx, int my, float partial)
 	{
-		super.render(mx, my, partial);
+		super.render(transform, mx, my, partial);
 		List<ITextComponent> tooltip = new ArrayList<>();
 		for(Widget button : this.buttons)
 		{
@@ -78,7 +79,7 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 						ClientUtils.addFluidTooltip(tile.filters[side][i], tooltip, 0);
 				}
 		if(!tooltip.isEmpty())
-			ClientUtils.drawHoveringText(tooltip, mx, my, font, width, height);
+			GuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
 	}
 
 	@Override
@@ -109,13 +110,12 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float f, int mx, int my)
+	protected void func_230450_a_(MatrixStack transform, float f, int mx, int my)
 	{
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/sorter.png");
-		this.blit(guiLeft, guiTop, 0, 0, xSize, ySize);
+		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
 		{
 			IRenderTypeBuffer.Impl buffers = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
-			MatrixStack transform = new MatrixStack();
 			IVertexBuilder builder = buffers.getBuffer(IERenderTypes.getGui(PlayerContainer.LOCATION_BLOCKS_TEXTURE));
 			for(int side = 0; side < 6; side++)
 				for(int i = 0; i < 8; i++)
@@ -140,7 +140,7 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 			int x = guiLeft+30+(side/2)*58;
 			int y = guiTop+44+(side%2)*76;
 			String s = I18n.format("desc.immersiveengineering.info.blockSide."+Direction.byIndex(side).toString()).substring(0, 1);
-			ClientUtils.font().drawStringWithShadow(s, x-(ClientUtils.font().getStringWidth(s)/2), y, 0xaacccccc);
+			ClientUtils.font().drawStringWithShadow(transform, s, x-(ClientUtils.font().getStringWidth(s)/2), y, 0xaacccccc);
 		}
 	}
 

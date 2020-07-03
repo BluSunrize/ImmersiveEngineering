@@ -97,19 +97,19 @@ public class SkyhookSound implements ITickableSound
 	}
 
 	@Override
-	public float getX()
+	public double getX()
 	{
 		return (float)hook.getPosX();
 	}
 
 	@Override
-	public float getY()
+	public double getY()
 	{
 		return (float)hook.getPosY();
 	}
 
 	@Override
-	public float getZ()
+	public double getZ()
 	{
 		return (float)hook.getPosZ();
 	}

@@ -13,6 +13,8 @@ import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectorBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.state.Property;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockReader;
 
 import java.util.function.Supplier;
 
@@ -25,7 +27,7 @@ public class ElectricLanternBlock extends MiscConnectorBlock
 	}
 
 	@Override
-	public int getLightValue(BlockState state)
+	public int getLightValue(BlockState state, IBlockReader world, BlockPos pos)
 	{
 		return state.get(IEProperties.ACTIVE)?15: 0;
 	}

@@ -187,7 +187,7 @@ public class IEWireTypes
 		@Override
 		public double getBasicLossRate(Connection c)
 		{
-			double length = Math.sqrt(c.getEndA().getPosition().distanceSq(new Vector3d(c.getEndB().getPosition()), false));
+			double length = Math.sqrt(c.getEndA().getPosition().distanceSq(Vector3d.func_237491_b_(c.getEndB().getPosition()), false));
 			return getLossRatio()*length/getMaxLength();
 		}
 

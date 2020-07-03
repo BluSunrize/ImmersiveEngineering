@@ -43,7 +43,7 @@ public class IEOBJItemRenderer extends ItemStackTileEntityRenderer
 	public static final ItemStackTileEntityRenderer INSTANCE = new IEOBJItemRenderer();
 
 	@Override
-	public void render(ItemStack stack, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn,
+	public void func_239207_a_(ItemStack stack, TransformType transformType, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn,
 					   int combinedLightIn, int combinedOverlayIn)
 	{
 		float partialTicks = mc().getRenderPartialTicks();
@@ -77,7 +77,6 @@ public class IEOBJItemRenderer extends ItemStackTileEntityRenderer
 				for(String g : OBJHelper.getGroups(obj.baseModel).keySet())
 					if(callback.shouldRenderGroup(stack, g))
 						visible.add(g);
-				TransformType transformType = obj.lastCameraTransform;
 				for(String[] groups : callback.getSpecialGroups(stack, transformType, IESmartObjModel.tempEntityStatic))
 				{
 					TransformationMatrix mat = callback.getTransformForGroups(stack, groups, transformType, mc().player,

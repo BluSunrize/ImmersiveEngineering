@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
@@ -153,8 +152,8 @@ public class ImmersiveEngineering
 		ArcFurnaceRecipe.makeItemInvalidRecyclingOutput(stack -> stack.getItem() instanceof HammerItem
 				||stack.getItem() instanceof WirecutterItem||stack.getItem() instanceof ScrewdriverItem);
 		// Ignore bricks
-		ArcFurnaceRecipe.makeItemInvalidRecyclingOutput(stack -> ApiUtils.isIngot(stack)
-				&&Objects.requireNonNull(ApiUtils.getMetalComponentTypeAndMetal(stack, "ingots"))[1].contains("brick"));
+		ArcFurnaceRecipe.makeItemInvalidRecyclingOutput(stack -> TagUtils.isIngot(stack)
+				&&Objects.requireNonNull(TagUtils.getMatchingPrefixAndRemaining(stack, "ingots"))[1].contains("brick"));
 
 
 		new ThreadContributorSpecialsDownloader();

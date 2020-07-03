@@ -355,7 +355,7 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBloc
 				for(Direction f : Direction.BY_HORIZONTAL_INDEX)
 					if(hasConnection(upperState, f, world, upperPos))
 					{
-						String name = f.getOpposite().getName();
+						String name = f.getOpposite().func_176610_l();
 						if(i==2)//Arms
 						{
 							BlockPos armPos = upperPos.offset(f);
@@ -426,7 +426,7 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBloc
 		}
 
 		@Override
-		public String getName()
+		public String func_176610_l()
 		{
 			return name().toLowerCase(Locale.ENGLISH);
 		}

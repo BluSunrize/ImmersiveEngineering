@@ -17,15 +17,14 @@ import blusunrize.immersiveengineering.common.blocks.wooden.ItemBatcherTileEntit
 import blusunrize.immersiveengineering.common.blocks.wooden.ItemBatcherTileEntity.BatchMode;
 import blusunrize.immersiveengineering.common.gui.ItemBatcherContainer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.*;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import java.util.ArrayList;
 
@@ -51,8 +50,9 @@ public class ItemBatcherScreen extends IEContainerScreen<ItemBatcherContainer>
 		mc().keyboardListener.enableRepeatEvents(true);
 
 		this.buttons.clear();
-		buttonBatchMode = new GuiButtonState<>(guiLeft+7, guiTop+92, 18, 18, "", ItemBatcherTileEntity.BatchMode.values(),
-				tile.batchMode.ordinal(), "immersiveengineering:textures/gui/item_batcher.png", 176, 36, 1,
+		buttonBatchMode = new GuiButtonState<>(guiLeft+7, guiTop+92, 18, 18, StringTextComponent.field_240750_d_,
+				ItemBatcherTileEntity.BatchMode.values(), tile.batchMode.ordinal(), "immersiveengineering:textures/gui/item_batcher.png",
+				176, 36, 1,
 				btn -> {
 					CompoundNBT tag = new CompoundNBT();
 					tile.batchMode = btn.getNextState();
@@ -87,19 +87,19 @@ public class ItemBatcherScreen extends IEContainerScreen<ItemBatcherContainer>
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
+	protected void func_230451_b_(MatrixStack transform, int mouseX, int mouseY)
 	{
 		TileEntity te = container.tile;
-		this.font.drawString(I18n.format("block.immersiveengineering.item_batcher"), 8, 6, 0x190b06);
+		this.font.drawString(transform, I18n.format("block.immersiveengineering.item_batcher"), 8, 6, 0x190b06);
 
-		this.font.drawString(I18n.format(Lib.GUI_CONFIG+"item_batcher.filter"), 8, 20, 0xE0E0E0);
-		this.font.drawString(I18n.format(Lib.GUI_CONFIG+"item_batcher.buffer"), 8, 49, 0xE0E0E0);
+		this.font.drawString(transform, I18n.format(Lib.GUI_CONFIG+"item_batcher.filter"), 8, 20, 0xE0E0E0);
+		this.font.drawString(transform, I18n.format(Lib.GUI_CONFIG+"item_batcher.buffer"), 8, 49, 0xE0E0E0);
 	}
 
 	@Override
-	public void render(int mx, int my, float partial)
+	public void render(MatrixStack transform, int mx, int my, float partial)
 	{
-		super.render(mx, my, partial);
+		super.render(transform, mx, my, partial);
 		ArrayList<ITextComponent> tooltip = new ArrayList<>();
 
 		if(buttonBatchMode.isHovered())
@@ -118,15 +118,15 @@ public class ItemBatcherScreen extends IEContainerScreen<ItemBatcherContainer>
 			}
 
 		if(!tooltip.isEmpty())
-			ClientUtils.drawHoveringText(tooltip, mx, my, font, width, height);
+			GuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float f, int mx, int my)
+	protected void func_230450_a_(MatrixStack transform, float f, int mx, int my)
 	{
 		RenderSystem.color3f(1.0F, 1.0F, 1.0F);
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/item_batcher.png");
 		// Background
-		this.blit(guiLeft, guiTop, 0, 0, xSize, ySize);
+		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
 	}
 }

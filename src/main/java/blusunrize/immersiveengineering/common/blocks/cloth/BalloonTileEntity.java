@@ -243,7 +243,7 @@ public class BalloonTileEntity extends ConnectorStructuralTileEntity implements 
 	{
 		if(entity instanceof AbstractArrowEntity)
 		{
-			Vector3d pos = new Vector3d(getPos()).add(.5, .5, .5);
+			Vector3d pos = Vector3d.func_237489_a_(getPos());
 			world.playSound(null, pos.x, pos.y, pos.z, SoundEvents.ENTITY_FIREWORK_ROCKET_BLAST,
 					SoundCategory.BLOCKS, 1.5f, 0.7f);
 			world.removeBlock(getPos(), false);

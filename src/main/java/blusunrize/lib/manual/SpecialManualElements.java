@@ -10,6 +10,7 @@ package blusunrize.lib.manual;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.lib.manual.gui.ManualScreen;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.item.ItemStack;
@@ -58,13 +59,13 @@ public abstract class SpecialManualElements extends SpecialManualElement
 	{
 	}
 
-	protected void renderHighlightedTooltip(ManualScreen gui, int mx, int my)
+	protected void renderHighlightedTooltip(MatrixStack transform, ManualScreen gui, int mx, int my)
 	{
 		if(!highlighted.isEmpty())
 		{
 			FontRenderer font = highlighted.getItem().getFontRenderer(highlighted);
 			GuiUtils.preItemToolTip(highlighted);
-			gui.renderTooltip(gui.getTooltipFromItem(highlighted), mx, my, font!=null?font: ClientUtils.font());
+			gui.renderTooltip(transform, gui.getTooltipFromItem(highlighted), mx, my, font!=null?font: ClientUtils.font());
 			GuiUtils.postItemToolTip();
 		}
 	}

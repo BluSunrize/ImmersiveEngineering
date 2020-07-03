@@ -10,17 +10,17 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonBoolean;
 import blusunrize.immersiveengineering.common.blocks.metal.ConnectorProbeTileEntity;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
-import net.minecraft.client.renderer.RenderHelper;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.item.DyeColor;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import java.util.ArrayList;
 
@@ -77,16 +77,16 @@ public class RedstoneProbeScreen extends ClientTileScreen<ConnectorProbeTileEnti
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(int mouseX, int mouseY, float partialTick)
+	protected void func_230450_a_(MatrixStack transform, int mouseX, int mouseY, float partialTick)
 	{
 
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY, float partialTick)
+	protected void func_230451_b_(MatrixStack transform, int mouseX, int mouseY, float partialTick)
 	{
-		this.font.drawString(new TranslationTextComponent(Lib.GUI_CONFIG+"redstone_color_sending").getFormattedText(), guiLeft, guiTop, DyeColor.WHITE.getTextColor());
-		this.font.drawString(new TranslationTextComponent(Lib.GUI_CONFIG+"redstone_color_receiving").getFormattedText(), guiLeft+116, guiTop, DyeColor.WHITE.getTextColor());
+		this.font.drawString(transform, new TranslationTextComponent(Lib.GUI_CONFIG+"redstone_color_sending").getFormattedText(), guiLeft, guiTop, DyeColor.WHITE.getTextColor());
+		this.font.drawString(transform, new TranslationTextComponent(Lib.GUI_CONFIG+"redstone_color_receiving").getFormattedText(), guiLeft+116, guiTop, DyeColor.WHITE.getTextColor());
 
 		ArrayList<ITextComponent> tooltip = new ArrayList<>();
 		for(int i = 0; i < colorButtonsSend.length; i++)
@@ -98,6 +98,6 @@ public class RedstoneProbeScreen extends ClientTileScreen<ConnectorProbeTileEnti
 			}
 
 		if(!tooltip.isEmpty())
-			ClientUtils.drawHoveringText(tooltip, mouseX, mouseY, font, width, height);
+			GuiUtils.drawHoveringText(transform, tooltip, mouseX, mouseY, width, height, -1, font);
 	}
 }

@@ -28,7 +28,7 @@ public class BalloonBlock extends IETileProviderBlock
 		super("balloon", Properties.create(Material.WOOL)
 				.sound(SoundType.CLOTH)
 				.hardnessAndResistance(0.8F)
-				.lightValue(13)
+				.func_235838_a_(s -> 13)
 				.notSolid(), BlockItemBalloon::new);
 		setHasColours();
 		setLightOpacity(0);

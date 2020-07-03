@@ -12,6 +12,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidUtil;
@@ -65,7 +66,7 @@ public class BarrelMinecartEntity extends IEMinecartEntity<WoodenBarrelTileEntit
 	}
 
 	@Override
-	public boolean processInitialInteract(PlayerEntity player, Hand hand)
+	public ActionResultType processInitialInteract(PlayerEntity player, Hand hand)
 	{
 		if(super.processInitialInteract(player, hand)) return true;
 		ItemStack itemstack = player.getHeldItem(hand);

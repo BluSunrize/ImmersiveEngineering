@@ -16,13 +16,13 @@ import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
-import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
@@ -34,12 +34,12 @@ import java.util.List;
 
 public class IICProxy implements IImmersiveConnectable
 {
-	private DimensionType dim;
+	private RegistryKey<DimensionType> dim;
 	private BlockPos pos;
 	private List<Connection> internalConns;
 	private List<ConnectionPoint> points;
 
-	public IICProxy(DimensionType dimension, BlockPos pos, Collection<Connection> internal,
+	public IICProxy(RegistryKey<DimensionType> dimension, BlockPos pos, Collection<Connection> internal,
 					Collection<ConnectionPoint> points)
 	{
 		dim = dimension;
@@ -48,7 +48,7 @@ public class IICProxy implements IImmersiveConnectable
 		this.points = new ArrayList<>(points);
 	}
 
-	public IICProxy(DimensionType dimension, BlockPos pos)
+	public IICProxy(RegistryKey<DimensionType> dimension, BlockPos pos)
 	{
 		this(dimension, pos, ImmutableList.of(), ImmutableList.of());
 	}
@@ -57,7 +57,7 @@ public class IICProxy implements IImmersiveConnectable
 	{
 		if(!(te instanceof IImmersiveConnectable))
 			throw new IllegalArgumentException("Can't create an IICProxy for a null/non-IIC TileEntity");
-		dim = te.getWorld().getDimension().getType();
+		dim = te.getWorld().func_234922_V_();
 		pos = te.getPos();
 		internalConns = Lists.newArrayList(((IImmersiveConnectable)te).getInternalConnections());
 		points = new ArrayList<>(((IImmersiveConnectable)te).getConnectionPoints());
@@ -74,7 +74,7 @@ public class IICProxy implements IImmersiveConnectable
 		return pos;
 	}
 
-	public DimensionType getDimension()
+	public RegistryKey<DimensionType> getDimension()
 	{
 		return dim;
 	}

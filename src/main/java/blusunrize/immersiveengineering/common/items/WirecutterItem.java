@@ -165,7 +165,7 @@ public class WirecutterItem extends IEBaseItem implements ITool
 			Connection target = WireUtils.getTargetConnection(world, player, null, reachDistance);
 			if(target!=null)
 			{
-				GlobalWireNetwork.getNetwork(world).removeAndDropConnection(target, player.getPosition());
+				GlobalWireNetwork.getNetwork(world).removeAndDropConnection(target, player.func_233580_cy_());
 				damageStack(stack, player, hand);
 			}
 		}

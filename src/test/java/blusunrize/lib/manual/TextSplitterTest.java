@@ -1,6 +1,7 @@
 package blusunrize.lib.manual;
 
 import blusunrize.lib.manual.gui.ManualScreen;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.widget.button.Button;
 import org.junit.Assert;
 import org.junit.Before;
@@ -147,7 +148,7 @@ public class TextSplitterTest
 		}
 
 		@Override
-		public void render(ManualScreen gui, int x, int y, int mouseX, int mouseY)
+		public void render(MatrixStack transform, ManualScreen gui, int x, int y, int mouseX, int mouseY)
 		{
 		}
 

@@ -29,7 +29,7 @@ public class MessageNoSpamChatComponents implements IMessage
 		int l = buf.readInt();
 		chatMessages = new ITextComponent[l];
 		for(int i = 0; i < l; i++)
-			chatMessages[i] = ITextComponent.Serializer.fromJson(buf.readString(1000));
+			chatMessages[i] = ITextComponent.Serializer.func_240643_a_(buf.readString(1000));
 	}
 
 	@Override

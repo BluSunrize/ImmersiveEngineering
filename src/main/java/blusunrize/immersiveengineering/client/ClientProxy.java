@@ -80,6 +80,7 @@ import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Container;
@@ -519,7 +520,7 @@ public class ClientProxy extends CommonProxy
 				}
 
 				Particle particle = new BreakingParticle.Factory().makeParticle(new ItemParticleData(ParticleTypes.ITEM, stack),
-						tile.getWorldNonnull(), x, y, z, mX, mY, mZ);
+						(ClientWorld) tile.getWorldNonnull(), x, y, z, mX, mY, mZ);
 				mc().particles.addEffect(particle);
 			}
 		}
@@ -657,10 +658,10 @@ public class ClientProxy extends CommonProxy
 	public void openTileScreen(ResourceLocation guiId, TileEntity tileEntity)
 	{
 		if(guiId==Lib.GUIID_RedstoneConnector&&tileEntity instanceof ConnectorRedstoneTileEntity)
-			Minecraft.getInstance().displayGuiScreen(new RedstoneConnectorScreen((ConnectorRedstoneTileEntity)tileEntity, tileEntity.getBlockState().getBlock().getNameTextComponent()));
+			Minecraft.getInstance().displayGuiScreen(new RedstoneConnectorScreen((ConnectorRedstoneTileEntity)tileEntity, tileEntity.getBlockState().getBlock().func_235333_g_()));
 
 		if(guiId==Lib.GUIID_RedstoneProbe&&tileEntity instanceof ConnectorProbeTileEntity)
-			Minecraft.getInstance().displayGuiScreen(new RedstoneProbeScreen((ConnectorProbeTileEntity)tileEntity, tileEntity.getBlockState().getBlock().getNameTextComponent()));
+			Minecraft.getInstance().displayGuiScreen(new RedstoneProbeScreen((ConnectorProbeTileEntity)tileEntity, tileEntity.getBlockState().getBlock().func_235333_g_()));
 	}
 
 	@Override

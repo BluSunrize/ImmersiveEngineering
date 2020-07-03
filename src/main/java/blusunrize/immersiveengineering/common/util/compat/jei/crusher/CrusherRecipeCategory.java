@@ -93,10 +93,10 @@ public class CrusherRecipeCategory extends IERecipeCategory<CrusherRecipe>
 			);
 			RenderSystem.color4f(1, 1, 1, 1);
 		}
-		RenderSystem.pushMatrix();
-		RenderSystem.scalef(3f, 3f, 1);
+		transform.push();
+		transform.scale(3f, 3f, 1);
 		this.getIcon().draw(8, 0);
-		RenderSystem.popMatrix();
+		transform.pop();
 	}
 
 	private List<StackWithChance> getValidSecondaryOutputs(CrusherRecipe recipe)

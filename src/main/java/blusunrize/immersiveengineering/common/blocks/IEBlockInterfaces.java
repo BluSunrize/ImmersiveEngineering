@@ -228,7 +228,7 @@ public class IEBlockInterfaces
 		default Direction getFacing()
 		{
 			BlockState state = getState();
-			if(state.has(getFacingProperty()))
+			if(state.func_235901_b_(getFacingProperty()))
 				return state.get(getFacingProperty());
 			else
 				return Direction.NORTH;
@@ -312,7 +312,7 @@ public class IEBlockInterfaces
 		default boolean getIsActive()
 		{
 			BlockState state = getState();
-			if(state.has(IEProperties.ACTIVE))
+			if(state.func_235901_b_(IEProperties.ACTIVE))
 				return state.get(IEProperties.ACTIVE);
 			else
 				return false;
@@ -331,7 +331,7 @@ public class IEBlockInterfaces
 		default boolean getIsMirrored()
 		{
 			BlockState state = getState();
-			if(state.has(IEProperties.MIRRORED))
+			if(state.func_235901_b_(IEProperties.MIRRORED))
 				return state.get(IEProperties.MIRRORED);
 			else
 				return false;
@@ -396,7 +396,7 @@ public class IEBlockInterfaces
 		default boolean isDummy()
 		{
 			BlockState state = getState();
-			if(state.has(IEProperties.MULTIBLOCKSLAVE))
+			if(state.func_235901_b_(IEProperties.MULTIBLOCKSLAVE))
 				return state.get(IEProperties.MULTIBLOCKSLAVE);
 			else
 				return true;

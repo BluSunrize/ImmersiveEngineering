@@ -166,7 +166,7 @@ public class IEShieldItem extends UpgradeableToolItem implements IIEEnergyItem, 
 		{
 			Vector3d look = player.getLookVec();
 			//Offsets Player position by look backwards, then truncates cone at 1
-			List<LivingEntity> targets = Utils.getTargetsInCone(player.getEntityWorld(), player.getPositionVector().subtract(look), player.getLookVec().scale(9), 1.57079f, .5f);
+			List<LivingEntity> targets = Utils.getTargetsInCone(player.getEntityWorld(), player.getPositionVec().subtract(look), player.getLookVec().scale(9), 1.57079f, .5f);
 			for(LivingEntity t : targets)
 				if(!player.equals(t))
 				{

@@ -22,6 +22,7 @@ import blusunrize.lib.manual.SpecialManualElements;
 import blusunrize.lib.manual.gui.GuiButtonManual;
 import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.ManualScreen;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
@@ -162,7 +163,7 @@ public class ShaderManualElement extends SpecialManualElements
 	}
 
 	@Override
-	public void render(ManualScreen gui, int x, int y, int mouseX, int mouseY)
+	public void render(MatrixStack transform, ManualScreen gui, int x, int y, int mouseX, int mouseY)
 	{
 		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 		RenderHelper.enableStandardItemLighting();
@@ -183,7 +184,7 @@ public class ShaderManualElement extends SpecialManualElements
 		GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 
 		int w = manual.fontRenderer().getStringWidth(this.name);
-		manual.fontRenderer().drawString(this.name, x+60-w/2, y+24, manual.getTextColour());
+		manual.fontRenderer().drawString(transform, this.name, x+60-w/2, y+24, manual.getTextColour());
 		if(this.text!=null&&!this.text.isEmpty())
 			manual.fontRenderer().drawSplitString(this.text, x, y+38, 120, manual.getTextColour());
 

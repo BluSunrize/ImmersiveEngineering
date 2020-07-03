@@ -24,6 +24,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
@@ -95,6 +96,8 @@ public class WireUtils
 		{
 			Vector3d start = ((IImmersiveConnectable)teA).getConnectionOffset(conn, conn.getEndA());
 			Vector3d end = ((IImmersiveConnectable)teB).getConnectionOffset(conn, conn.getEndB());
+			Vector3i offsetEndInt = conn.getEndB().getPosition().subtract(conn.getEndA().getPosition());
+			Vector3d offsetEnd = new Vector3d(offsetEndInt.getX(), offsetEndInt.getY(), offsetEndInt.getZ());
 			ApiUtils.raytraceAlongCatenaryRelative(conn, (p) -> {
 				if(!ignore.contains(p.getLeft()))
 				{
@@ -103,7 +106,7 @@ public class WireUtils
 						obstructions.add(p.getLeft());
 				}
 			}, (p) -> {
-			}, start, end.add(new Vector3d(conn.getEndB().getPosition().subtract(conn.getEndA().getPosition()))));
+			}, start, end.add(offsetEnd));
 		}
 		return obstructions;
 	}

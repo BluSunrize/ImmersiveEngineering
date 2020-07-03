@@ -12,10 +12,11 @@ import blusunrize.lib.manual.ManualEntry;
 import blusunrize.lib.manual.ManualUtils;
 import blusunrize.lib.manual.Tree;
 import blusunrize.lib.manual.Tree.AbstractNode;
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.StringTextComponent;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -40,7 +41,7 @@ public class ClickableList extends Button
 				  @Nonnull List<Tree.AbstractNode<ResourceLocation, ManualEntry>> nodes,
 				  Consumer<Tree.AbstractNode<ResourceLocation, ManualEntry>> handler)
 	{
-		super(x, y, w, h, "", btn -> {
+		super(x, y, w, h, StringTextComponent.field_240750_d_, btn -> {
 		});
 		this.gui = gui;
 		this.textScale = textScale;
@@ -55,26 +56,25 @@ public class ClickableList extends Button
 	}
 
 	@Override
-	public void render(int mx, int my, float partialTicks)
+	public void render(MatrixStack transform, int mx, int my, float partialTicks)
 	{
 		if(!visible)
 			return;
 		FontRenderer fr = gui.manual.fontRenderer();
 
 		int mmY = my-this.y;
-		RenderSystem.pushMatrix();
-		RenderSystem.scalef(textScale, textScale, textScale);
-		RenderSystem.translatef(x/textScale, y/textScale, 0);
+		transform.push();
+		transform.scale(textScale, textScale, textScale);
+		transform.translate(x/textScale, y/textScale, 0);
 		isHovered = mx >= x&&mx < x+width&&my >= y&&my < y+height;
 		for(int i = 0; i < Math.min(perPage, headers.length); i++)
 		{
-			RenderSystem.color3f(1, 1, 1);
 			int col = gui.manual.getTextColour();
 			boolean currEntryHovered = isHovered&&mmY >= i*getFontHeight()&&mmY < (i+1)*getFontHeight();
 			if(currEntryHovered)
 				col = gui.manual.getHighlightColour();
 			if(i!=0)
-				RenderSystem.translatef(0, getFontHeight(), 0);
+				transform.translate(0, getFontHeight(), 0);
 			int j = offset+i;
 			if(j > headers.length-1)
 				j = headers.length-1;
@@ -82,13 +82,12 @@ public class ClickableList extends Button
 			if(isCategory[j])
 			{
 				ManualUtils.bindTexture(gui.texture);
-				RenderSystem.enableBlend();
-				this.blit(0, 0, 11, 226+(currEntryHovered?20: 0), 5, 10);
+				this.blit(transform, 0, 0, 11, 226+(currEntryHovered?20: 0), 5, 10);
 			}
-			fr.drawString(s, isCategory[j]?7: 0, 0, col);
+			fr.drawString(transform, s, isCategory[j]?7: 0, 0, col);
 		}
-		RenderSystem.scalef(1/textScale, 1/textScale, 1/textScale);
-		RenderSystem.popMatrix();
+		transform.scale(1/textScale, 1/textScale, 1/textScale);
+		transform.pop();
 		if(maxOffset > 0)
 		{
 			final int minVisibleBlack = 0x1B<<24;
@@ -98,8 +97,8 @@ public class ClickableList extends Button
 			final float heightBottomRel = (offset*getFontHeight()+getHeight())/totalHeight;
 			final int heightTopAbs = (int)(heightTopRel*getHeight());
 			final int heightBottomAbs = (int)(heightBottomRel*getHeight());
-			fill(x+width, y, x+width+8, y+height, minVisibleBlack);
-			fill(x+width+1, y+heightTopAbs, x+width+7, y+heightBottomAbs, mainBarBlack);
+			fill(transform, x+width, y, x+width+8, y+height, minVisibleBlack);
+			fill(transform, x+width+1, y+heightTopAbs, x+width+7, y+heightBottomAbs, mainBarBlack);
 		}
 	}
 

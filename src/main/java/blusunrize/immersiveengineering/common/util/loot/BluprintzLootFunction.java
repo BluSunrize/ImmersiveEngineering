@@ -4,7 +4,6 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonSerializationContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootContext;
 import net.minecraft.loot.LootFunction;
@@ -36,12 +35,6 @@ public class BluprintzLootFunction extends LootFunction
 		protected Serializer()
 		{
 			super(new ResourceLocation(ImmersiveEngineering.MODID, "secret_bluprintz"), BluprintzLootFunction.class);
-		}
-
-		@Override
-		public void serialize(@Nonnull JsonObject object, @Nonnull BluprintzLootFunction functionClazz, @Nonnull JsonSerializationContext serializationContext)
-		{
-			super.serialize(object, functionClazz, serializationContext);
 		}
 
 		@Override
