@@ -31,7 +31,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
@@ -83,13 +83,13 @@ public class FluorescentTubeEntity extends Entity implements ITeslaEntity
 		this.prevPosX = this.getPosX();
 		this.prevPosY = this.getPosY();
 		this.prevPosZ = this.getPosZ();
-		Vec3d motion = getMotion();
+		Vector3d motion = getMotion();
 		motion = motion.add(0, -.4, 0);
 		this.move(MoverType.SELF, motion);
 		motion = motion.scale(0.98);
 
 		if(this.onGround)
-			motion = new Vec3d(motion.x*0.7, motion.y*-0.5, motion.z*0.7);
+			motion = new Vector3d(motion.x*0.7, motion.y*-0.5, motion.z*0.7);
 		if(firstTick&&!world.isRemote&&rgb!=null)
 		{
 			dataManager.set(dataMarker_r, rgb[0]);
@@ -184,7 +184,7 @@ public class FluorescentTubeEntity extends Entity implements ITeslaEntity
 
 	@Nonnull
 	@Override
-	public ActionResultType applyPlayerInteraction(PlayerEntity player, Vec3d targetVec3, Hand hand)
+	public ActionResultType applyPlayerInteraction(PlayerEntity player, Vector3d targetVec3, Hand hand)
 	{
 		if(Utils.isHammer(player.getHeldItem(hand)))
 		{

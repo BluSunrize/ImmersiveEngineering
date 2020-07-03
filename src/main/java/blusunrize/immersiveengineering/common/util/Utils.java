@@ -30,7 +30,6 @@ import net.minecraft.advancements.AdvancementManager;
 import net.minecraft.advancements.PlayerAdvancements;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -40,8 +39,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.fluid.FlowingFluid;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.fluid.IFluidState;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryHelper;
@@ -53,14 +52,20 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.loot.*;
+import net.minecraft.loot.LootContext.Builder;
+import net.minecraft.loot.conditions.ILootCondition;
+import net.minecraft.loot.conditions.LootConditionManager;
+import net.minecraft.loot.functions.ILootFunction;
+import net.minecraft.loot.functions.LootFunctionManager;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.Property;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.Direction.Axis;
@@ -68,15 +73,11 @@ import net.minecraft.util.math.*;
 import net.minecraft.util.math.RayTraceContext.BlockMode;
 import net.minecraft.util.math.RayTraceContext.FluidMode;
 import net.minecraft.util.math.RayTraceResult.Type;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector4f;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraft.world.storage.loot.*;
-import net.minecraft.world.storage.loot.LootContext.Builder;
-import net.minecraft.world.storage.loot.conditions.ILootCondition;
-import net.minecraft.world.storage.loot.conditions.LootConditionManager;
-import net.minecraft.world.storage.loot.functions.ILootFunction;
-import net.minecraft.world.storage.loot.functions.LootFunctionManager;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidStack;
@@ -109,7 +110,7 @@ public class Utils
 
 	public static boolean isInTag(ItemStack stack, ResourceLocation tagName)
 	{
-		Tag<Item> tag = ItemTags.getCollection().get(tagName);
+		ITag<Item> tag = ItemTags.getCollection().get(tagName);
 		return tag!=null&&tag.contains(stack.getItem());
 	}
 
@@ -155,8 +156,8 @@ public class Utils
 					.put(Tags.Items.DYES_WHITE.getId(), DyeColor.WHITE)
 					.build();
 
-	public static final BiMap<Tag<Item>, Item> WOOL_DYE_BIMAP =
-			ImmutableBiMap.<Tag<Item>, Item>builder()
+	public static final BiMap<ITag<Item>, Item> WOOL_DYE_BIMAP =
+			ImmutableBiMap.<ITag<Item>, Item>builder()
 					.put(Tags.Items.DYES_BLACK, Items.BLACK_WOOL)
 					.put(Tags.Items.DYES_RED, Items.RED_WOOL)
 					.put(Tags.Items.DYES_GREEN, Items.GREEN_WOOL)
@@ -229,7 +230,7 @@ public class Utils
 		return world.getBlockState(pos).getBlock()==b;
 	}
 
-	public static boolean isOreBlockAt(World world, BlockPos pos, Tag<Block> tag)
+	public static boolean isOreBlockAt(World world, BlockPos pos, ITag<Block> tag)
 	{
 		BlockState state = world.getBlockState(pos);
 		return state.getBlock().isIn(tag);
@@ -358,7 +359,7 @@ public class Utils
 		double d0 = living.prevPosX+(living.getPosX()-living.prevPosX)*(double)f;
 		double d1 = living.prevPosY+(living.getPosY()-living.prevPosY)*(double)f+(double)(world.isRemote?living.getEyeHeight()-(living instanceof PlayerEntity?((PlayerEntity)living).getEyeHeight(): 0): living.getEyeHeight()); // isRemote check to revert changes to ray trace position due to adding the eye height clientside and player yOffset differences
 		double d2 = living.prevPosZ+(living.getPosZ()-living.prevPosZ)*(double)f;
-		Vec3d vec3 = new Vec3d(d0, d1, d2);
+		Vector3d vec3 = new Vector3d(d0, d1, d2);
 		float f3 = MathHelper.cos(-f2*(float)Math.PI/180-(float)Math.PI);
 		float f4 = MathHelper.sin(-f2*(float)Math.PI/180-(float)Math.PI);
 		float f5 = -MathHelper.cos(-f1*(float)Math.PI/180);
@@ -369,12 +370,12 @@ public class Utils
 		if(living instanceof PlayerEntity)
 			d3 = living.getAttribute(PlayerEntity.REACH_DISTANCE).getValue();
 
-		Vec3d vec31 = vec3.add((double)f7*d3, (double)f6*d3, (double)f8*d3);
+		Vector3d vec31 = vec3.add((double)f7*d3, (double)f6*d3, (double)f8*d3);
 		RayTraceContext ctx = new RayTraceContext(vec3, vec31, BlockMode.COLLIDER, fluidMode, living);
 		return world.rayTraceBlocks(ctx);
 	}
 
-	public static boolean canBlocksSeeOther(World world, BlockPos cc0, BlockPos cc1, Vec3d pos0, Vec3d pos1)
+	public static boolean canBlocksSeeOther(World world, BlockPos cc0, BlockPos cc1, Vector3d pos0, Vector3d pos1)
 	{
 		HashSet<BlockPos> inter = rayTrace(pos0, pos1, world);
 		Iterator<BlockPos> it = inter.iterator();
@@ -387,7 +388,7 @@ public class Utils
 		return true;
 	}
 
-	public static Vec3d getLivingFrontPos(LivingEntity entity, double offset, double height, HandSide hand, boolean useSteppedYaw, float partialTicks)
+	public static Vector3d getLivingFrontPos(LivingEntity entity, double offset, double height, HandSide hand, boolean useSteppedYaw, float partialTicks)
 	{
 		double offsetX = hand==HandSide.LEFT?-.3125: hand==HandSide.RIGHT?.3125: 0;
 
@@ -401,17 +402,17 @@ public class Utils
 		float pitchCos = -MathHelper.cos(-pitch*(float)Math.PI/180);
 		float pitchSin = MathHelper.sin(-pitch*(float)Math.PI/180);
 
-		return new Vec3d(entity.getPosX()+offsetX*yawCos+offset*pitchCos*yawSin, entity.getPosY()+offset*pitchSin+height, entity.getPosZ()+offset*pitchCos*yawCos-offsetX*yawSin);
+		return new Vector3d(entity.getPosX()+offsetX*yawCos+offset*pitchCos*yawSin, entity.getPosY()+offset*pitchSin+height, entity.getPosZ()+offset*pitchCos*yawCos-offsetX*yawSin);
 	}
 
-	public static List<LivingEntity> getTargetsInCone(World world, Vec3d start, Vec3d dir, float spreadAngle, float truncationLength)
+	public static List<LivingEntity> getTargetsInCone(World world, Vector3d start, Vector3d dir, float spreadAngle, float truncationLength)
 	{
 		double length = dir.length();
-		Vec3d dirNorm = dir.normalize();
+		Vector3d dirNorm = dir.normalize();
 		double radius = Math.tan(spreadAngle/2)*length;
 
-		Vec3d endLow = start.add(dir).subtract(radius, radius, radius);
-		Vec3d endHigh = start.add(dir).add(radius, radius, radius);
+		Vector3d endLow = start.add(dir).subtract(radius, radius, radius);
+		Vector3d endHigh = start.add(dir).add(radius, radius, radius);
 
 		AxisAlignedBB box = new AxisAlignedBB(minInArray(start.x, endLow.x, endHigh.x), minInArray(start.y, endLow.y, endHigh.y), minInArray(start.z, endLow.z, endHigh.z),
 				maxInArray(start.x, endLow.x, endHigh.x), maxInArray(start.y, endLow.y, endHigh.y), maxInArray(start.z, endLow.z, endHigh.z));
@@ -421,17 +422,17 @@ public class Utils
 		return list;
 	}
 
-	public static boolean isPointInConeByAngle(Vec3d start, Vec3d normDirection, double aperture, double length, Vec3d relativePoint)
+	public static boolean isPointInConeByAngle(Vector3d start, Vector3d normDirection, double aperture, double length, Vector3d relativePoint)
 	{
 		return isPointInCone(normDirection, Math.tan(aperture/2)*length, length, 0, relativePoint);
 	}
 
-	public static boolean isPointInCone(Vec3d start, Vec3d normDirection, double radius, double length, Vec3d relativePoint)
+	public static boolean isPointInCone(Vector3d start, Vector3d normDirection, double radius, double length, Vector3d relativePoint)
 	{
 		return isPointInCone(normDirection, radius, length, 0, relativePoint);
 	}
 
-	public static boolean isPointInConeByAngle(Vec3d start, Vec3d normDirection, float aperture, double length, float truncationLength, Vec3d relativePoint)
+	public static boolean isPointInConeByAngle(Vector3d start, Vector3d normDirection, float aperture, double length, float truncationLength, Vector3d relativePoint)
 	{
 		return isPointInCone(normDirection, Math.tan(aperture/2)*length, length, truncationLength, relativePoint);
 	}
@@ -445,29 +446,29 @@ public class Utils
 	 * @param truncationLength optional lenght at which the cone is truncated (flat tip)
 	 * @param relativePoint    point to be checked, relative to {@code start}
 	 */
-	public static boolean isPointInCone(Vec3d normDirection, double radius, double length, float truncationLength, Vec3d relativePoint)
+	public static boolean isPointInCone(Vector3d normDirection, double radius, double length, float truncationLength, Vector3d relativePoint)
 	{
 		double projectedDist = relativePoint.dotProduct(normDirection); //Orthogonal projection, establishing point's distance on cone direction vector
 		if(projectedDist < truncationLength||projectedDist > length) //If projected distance is before truncation or beyond length, point not contained
 			return false;
 
 		double radiusAtDist = projectedDist/length*radius; //Radius of the cone at the projected distance
-		Vec3d orthVec = relativePoint.subtract(normDirection.scale(projectedDist)); //Orthogonal vector between point and cone direction
+		Vector3d orthVec = relativePoint.subtract(normDirection.scale(projectedDist)); //Orthogonal vector between point and cone direction
 
 		return orthVec.lengthSquared() < (radiusAtDist*radiusAtDist); //Check if Vector's length is shorter than radius -> point in cone
 	}
 
-	public static boolean isPointInTriangle(Vec3d tA, Vec3d tB, Vec3d tC, Vec3d point)
+	public static boolean isPointInTriangle(Vector3d tA, Vector3d tB, Vector3d tC, Vector3d point)
 	{
 		//Distance vectors to A (focuspoint of triangle)
-		Vec3d v0 = tC.subtract(tA);
-		Vec3d v1 = tB.subtract(tA);
-		Vec3d v2 = point.subtract(tA);
+		Vector3d v0 = tC.subtract(tA);
+		Vector3d v1 = tB.subtract(tA);
+		Vector3d v2 = point.subtract(tA);
 
 		return isPointInTriangle(v0, v1, v2);
 	}
 
-	private static boolean isPointInTriangle(Vec3d leg0, Vec3d leg1, Vec3d targetVec)
+	private static boolean isPointInTriangle(Vector3d leg0, Vector3d leg1, Vector3d targetVec)
 	{
 		//Dot products
 		double dot00 = leg0.dotProduct(leg0);
@@ -484,13 +485,13 @@ public class Utils
 		return (u >= 0)&&(v >= 0)&&(u+v < 1);
 	}
 
-	private static Vec3d getVectorForRotation(float pitch, float yaw)
+	private static Vector3d getVectorForRotation(float pitch, float yaw)
 	{
 		float f = MathHelper.cos(-yaw*(float)Math.PI/180-(float)Math.PI);
 		float f1 = MathHelper.sin(-yaw*(float)Math.PI/180-(float)Math.PI);
 		float f2 = -MathHelper.cos(-pitch*(float)Math.PI/180);
 		float f3 = MathHelper.sin(-pitch*(float)Math.PI/180);
-		return new Vec3d((double)(f1*f2), (double)f3, (double)(f*f2));
+		return new Vector3d((double)(f1*f2), (double)f3, (double)(f*f2));
 	}
 
 	public static void attractEnemies(LivingEntity target, float radius)
@@ -536,26 +537,26 @@ public class Utils
 	{
 		if(!damageSourceIn.isUnblockable()&&entity.isActiveItemStackBlocking())
 		{
-			Vec3d vec3d = damageSourceIn.getDamageLocation();
+			Vector3d vec3d = damageSourceIn.getDamageLocation();
 			if(vec3d!=null)
 			{
-				Vec3d vec3d1 = entity.getLook(1.0F);
-				Vec3d vec3d2 = vec3d.subtractReverse(entity.getPositionVector()).normalize();
-				vec3d2 = new Vec3d(vec3d2.x, 0.0D, vec3d2.z);
+				Vector3d vec3d1 = entity.getLook(1.0F);
+				Vector3d vec3d2 = vec3d.subtractReverse(entity.getPositionVector()).normalize();
+				vec3d2 = new Vector3d(vec3d2.x, 0.0D, vec3d2.z);
 				return vec3d2.dotProduct(vec3d1) < 0;
 			}
 		}
 		return false;
 	}
 
-	public static Vec3d getFlowVector(World world, BlockPos pos)
+	public static Vector3d getFlowVector(World world, BlockPos pos)
 	{
 		BlockState bState = world.getBlockState(pos);
-		IFluidState fState = bState.getFluidState();
+		FluidState fState = bState.getFluidState();
 		return fState.getFlow(world, pos);
 	}
 
-	public static Vec3d addVectors(Vec3d vec0, Vec3d vec1)
+	public static Vector3d addVectors(Vector3d vec0, Vector3d vec1)
 	{
 		return vec0.add(vec1.x, vec1.y, vec1.z);
 	}
@@ -580,7 +581,7 @@ public class Utils
 		return max;
 	}
 
-	public static boolean isVecInEntityHead(LivingEntity entity, Vec3d vec)
+	public static boolean isVecInEntityHead(LivingEntity entity, Vector3d vec)
 	{
 		if(entity.getHeight()/entity.getWidth() < 2)//Crude check to see if the entity is bipedal or at least upright (this should work for blazes)
 			return false;
@@ -661,7 +662,7 @@ public class Utils
 	public static FluidStack drainFluidBlock(World world, BlockPos pos, FluidAction action)
 	{
 		BlockState b = world.getBlockState(pos);
-		IFluidState f = b.getFluidState();
+		FluidState f = b.getFluidState();
 
 		if(f.isSource()&&b.getBlock() instanceof IBucketPickupHandler)
 		{
@@ -913,7 +914,7 @@ public class Utils
 	{
 		int val = 0;
 		final int prime = 31;
-		for(IProperty<?> n : state.getProperties())
+		for(Property<?> n : state.getProperties())
 		{
 			Object o = state.get(n);
 			val = prime*val+Objects.hash(o);
@@ -957,7 +958,7 @@ public class Utils
 	t=(DxBx+DyBy+DzBz)/(Bx**2+By**2+Bz**2)
 	 =D*B/|B|**2
 	 */
-	public static double getCoeffForMinDistance(Vec3d point, Vec3d line, Vec3d across)
+	public static double getCoeffForMinDistance(Vector3d point, Vector3d line, Vector3d across)
 	{
 		if(across.x==0&&across.z==0)
 		{
@@ -965,12 +966,12 @@ public class Utils
 		}
 		else
 		{
-			Vec3d delta = point.subtract(line);
+			Vector3d delta = point.subtract(line);
 			return delta.dotProduct(across)/across.lengthSquared();
 		}
 	}
 
-	public static boolean isVecInBlock(Vec3d vec3d, BlockPos pos, BlockPos offset, double eps)
+	public static boolean isVecInBlock(Vector3d vec3d, BlockPos pos, BlockPos offset, double eps)
 	{
 		return vec3d.x >= pos.getX()-offset.getX()-eps&&
 				vec3d.x <= pos.getX()-offset.getX()+1+eps&&
@@ -980,16 +981,16 @@ public class Utils
 				vec3d.z <= pos.getZ()-offset.getZ()+1+eps;
 	}
 
-	public static Vec3d withCoordinate(Vec3d vertex, Axis axis, double value)
+	public static Vector3d withCoordinate(Vector3d vertex, Axis axis, double value)
 	{
 		switch(axis)
 		{
 			case X:
-				return new Vec3d(value, vertex.y, vertex.z);
+				return new Vector3d(value, vertex.y, vertex.z);
 			case Y:
-				return new Vec3d(vertex.x, value, vertex.z);
+				return new Vector3d(vertex.x, value, vertex.z);
 			case Z:
-				return new Vec3d(vertex.x, vertex.y, value);
+				return new Vector3d(vertex.x, vertex.y, value);
 		}
 		return vertex;
 	}
@@ -1025,27 +1026,27 @@ public class Utils
 		}
 	}
 
-	public static HashSet<BlockPos> rayTrace(Vec3d start, Vec3d end, World world)
+	public static HashSet<BlockPos> rayTrace(Vector3d start, Vector3d end, World world)
 	{
 		return rayTrace(start, end, world, (p) -> {
 		});
 	}
 
-	public static HashSet<BlockPos> rayTrace(Vec3d start, Vec3d end, World world, Consumer<BlockPos> out)
+	public static HashSet<BlockPos> rayTrace(Vector3d start, Vector3d end, World world, Consumer<BlockPos> out)
 	{
 		HashSet<BlockPos> ret = new HashSet<BlockPos>();
 		HashSet<BlockPos> checked = new HashSet<BlockPos>();
 		// x
 		if(start.x > end.x)
 		{
-			Vec3d tmp = start;
+			Vector3d tmp = start;
 			start = end;
 			end = tmp;
 		}
 		double min = start.x;
 		double dif = end.x-min;
 		double lengthAdd = Math.ceil(min)-start.x;
-		Vec3d mov = start.subtract(end);
+		Vector3d mov = start.subtract(end);
 		if(mov.x!=0)
 		{
 			mov = scalarProd(mov, 1/mov.x);
@@ -1056,7 +1057,7 @@ public class Utils
 		{
 			if(start.y > end.y)
 			{
-				Vec3d tmp = start;
+				Vector3d tmp = start;
 				start = end;
 				end = tmp;
 			}
@@ -1074,7 +1075,7 @@ public class Utils
 		{
 			if(start.z > end.z)
 			{
-				Vec3d tmp = start;
+				Vector3d tmp = start;
 				start = end;
 				end = tmp;
 			}
@@ -1099,19 +1100,19 @@ public class Utils
 		return ret;
 	}
 
-	private static void ray(double dif, Vec3d mov, Vec3d start, double lengthAdd, HashSet<BlockPos> ret, World world, HashSet<BlockPos> checked, Consumer<BlockPos> out)
+	private static void ray(double dif, Vector3d mov, Vector3d start, double lengthAdd, HashSet<BlockPos> ret, World world, HashSet<BlockPos> checked, Consumer<BlockPos> out)
 	{
 		//Do NOT set this to true unless for debugging. Causes blocks to be placed along the traced ray
 		boolean place = false;
 		double standartOff = .0625;
 		for(int i = 0; i < dif; i++)
 		{
-			Vec3d pos = addVectors(start, scalarProd(mov, i+lengthAdd+standartOff));
-			Vec3d posNext = addVectors(start,
+			Vector3d pos = addVectors(start, scalarProd(mov, i+lengthAdd+standartOff));
+			Vector3d posNext = addVectors(start,
 					scalarProd(mov, i+1+lengthAdd+standartOff));
-			Vec3d posPrev = addVectors(start,
+			Vector3d posPrev = addVectors(start,
 					scalarProd(mov, i+lengthAdd-standartOff));
-			Vec3d posVeryPrev = addVectors(start,
+			Vector3d posVeryPrev = addVectors(start,
 					scalarProd(mov, i-1+lengthAdd-standartOff));
 
 			BlockPos blockPos = new BlockPos((int)Math.floor(pos.x),
@@ -1142,12 +1143,12 @@ public class Utils
 		}
 	}
 
-	public static Vec3d scalarProd(Vec3d v, double s)
+	public static Vector3d scalarProd(Vector3d v, double s)
 	{
-		return new Vec3d(v.x*s, v.y*s, v.z*s);
+		return new Vector3d(v.x*s, v.y*s, v.z*s);
 	}
 
-	public static BlockPos rayTraceForFirst(Vec3d start, Vec3d end, World w, Set<BlockPos> ignore)
+	public static BlockPos rayTraceForFirst(Vector3d start, Vector3d end, World w, Set<BlockPos> ignore)
 	{
 		HashSet<BlockPos> trace = rayTrace(start, end, w);
 		for(BlockPos cc : ignore)
@@ -1478,10 +1479,10 @@ public class Utils
 	public static AxisAlignedBB transformAABB(AxisAlignedBB original, Direction facing)
 	{
 		Matrix4 mat = new Matrix4(facing);
-		Vec3d minOld = new Vec3d(original.minX, original.minY, original.minZ);
-		Vec3d maxOld = new Vec3d(original.maxX, original.maxY, original.maxZ);
-		Vec3d firstNew = mat.apply(minOld);
-		Vec3d secondNew = mat.apply(maxOld);
+		Vector3d minOld = new Vector3d(original.minX, original.minY, original.minZ);
+		Vector3d maxOld = new Vector3d(original.maxX, original.maxY, original.maxZ);
+		Vector3d firstNew = mat.apply(minOld);
+		Vector3d secondNew = mat.apply(maxOld);
 		return new AxisAlignedBB(firstNew, secondNew);
 	}
 
@@ -1539,7 +1540,7 @@ public class Utils
 
 		@Nonnull
 		@Override
-		public IFluidState getFluidState(@Nonnull BlockPos blockPos)
+		public FluidState getFluidState(@Nonnull BlockPos blockPos)
 		{
 			return getBlockState(blockPos).getFluidState();
 		}

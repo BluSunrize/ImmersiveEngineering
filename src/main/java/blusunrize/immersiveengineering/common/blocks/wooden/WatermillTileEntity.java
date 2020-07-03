@@ -31,7 +31,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -42,7 +42,7 @@ public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTi
 	public static TileEntityType<WatermillTileEntity> TYPE;
 	public int[] offset = {0, 0};
 	public float rotation = 0;
-	private Vec3d rotationVec = null;
+	private Vector3d rotationVec = null;
 	public boolean canTurn = false;
 	public boolean multiblock = false;
 	public float prevRotation = 0;
@@ -162,13 +162,13 @@ public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTi
 		rotationVec = null;
 	}
 
-	public Vec3d getRotationVec()
+	public Vector3d getRotationVec()
 	{
 		if(rotationVec==null)
 		{
-			rotationVec = new Vec3d(0, 0, 0);
-			Vec3d dirHoz = getHorizontalVec();
-			Vec3d dirVer = getVerticalVec();
+			rotationVec = new Vector3d(0, 0, 0);
+			Vector3d dirHoz = getHorizontalVec();
+			Vector3d dirVer = getVerticalVec();
 			rotationVec = Utils.addVectors(rotationVec, dirHoz);
 			rotationVec = Utils.addVectors(rotationVec, dirVer);
 			//			world.addBlockEvent(xCoord, yCoord, zCoord, getBlockState(), (int)((float)rotationVec.xCoord*10000f), (int)((float)rotationVec.zCoord*10000f));
@@ -176,9 +176,9 @@ public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTi
 		return rotationVec;
 	}
 
-	private Vec3d getHorizontalVec()
+	private Vector3d getHorizontalVec()
 	{
-		Vec3d dir = new Vec3d(0, 0, 0);
+		Vector3d dir = new Vector3d(0, 0, 0);
 		boolean faceZ = getFacing().ordinal() <= 3;
 		dir = Utils.addVectors(dir, Utils.getFlowVector(world, getPos().add(-(faceZ?1: 0), +3, -(faceZ?0: 1))));
 		dir = Utils.addVectors(dir, Utils.getFlowVector(world, getPos().add(0, +3, 0)));
@@ -196,17 +196,17 @@ public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTi
 		return dir;
 	}
 
-	private Vec3d getVerticalVec()
+	private Vector3d getVerticalVec()
 	{
-		Vec3d dir = new Vec3d(0, 0, 0);
+		Vector3d dir = new Vector3d(0, 0, 0);
 
-		Vec3d dirNeg = new Vec3d(0, 0, 0);
+		Vector3d dirNeg = new Vector3d(0, 0, 0);
 		dirNeg = Utils.addVectors(dirNeg, Utils.getFlowVector(world, getPos().add(-(getFacing().getAxis()==Axis.Z?2: 0), 2, -(getFacing().getAxis()==Axis.Z?0: 2))));
 		dirNeg = Utils.addVectors(dirNeg, Utils.getFlowVector(world, getPos().add(-(getFacing().getAxis()==Axis.Z?3: 0), 1, -(getFacing().getAxis()==Axis.Z?0: 3))));
 		dirNeg = Utils.addVectors(dirNeg, Utils.getFlowVector(world, getPos().add(-(getFacing().getAxis()==Axis.Z?3: 0), 0, -(getFacing().getAxis()==Axis.Z?0: 3))));
 		dirNeg = Utils.addVectors(dirNeg, Utils.getFlowVector(world, getPos().add(-(getFacing().getAxis()==Axis.Z?3: 0), -1, -(getFacing().getAxis()==Axis.Z?0: 3))));
 		dirNeg = Utils.addVectors(dirNeg, Utils.getFlowVector(world, getPos().add(-(getFacing().getAxis()==Axis.Z?2: 0), -2, -(getFacing().getAxis()==Axis.Z?0: 2))));
-		Vec3d dirPos = new Vec3d(0, 0, 0);
+		Vector3d dirPos = new Vector3d(0, 0, 0);
 		dirPos = Utils.addVectors(dirPos, Utils.getFlowVector(world, getPos().add((getFacing().getAxis()==Axis.Z?2: 0), 2, (getFacing().getAxis()==Axis.Z?0: 2))));
 		dirPos = Utils.addVectors(dirPos, Utils.getFlowVector(world, getPos().add((getFacing().getAxis()==Axis.Z?3: 0), 1, (getFacing().getAxis()==Axis.Z?0: 3))));
 		dirPos = Utils.addVectors(dirPos, Utils.getFlowVector(world, getPos().add((getFacing().getAxis()==Axis.Z?3: 0), 0, (getFacing().getAxis()==Axis.Z?0: 3))));
@@ -227,7 +227,7 @@ public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTi
 	@Override
 	public boolean receiveClientEvent(int id, int arg)
 	{
-		rotationVec = new Vec3d(id/10000f, 0, arg/10000f);
+		rotationVec = new Vector3d(id/10000f, 0, arg/10000f);
 		return true;
 	}
 
@@ -284,7 +284,7 @@ public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTi
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
 	{
 		return false;
 	}

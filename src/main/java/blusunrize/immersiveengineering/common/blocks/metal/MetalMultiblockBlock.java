@@ -14,7 +14,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.Property;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.world.IBlockReader;
@@ -28,7 +28,7 @@ public class MetalMultiblockBlock extends IEMultiblockBlock
 {
 	private final Supplier<TileEntityType<?>> tileType;
 
-	public MetalMultiblockBlock(String name, Supplier<TileEntityType<?>> te, IProperty<?>... additionalProperties)
+	public MetalMultiblockBlock(String name, Supplier<TileEntityType<?>> te, Property<?>... additionalProperties)
 	{
 		super(name, Block.Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(3, 15).notSolid(),
 				ArrayUtils.addAll(additionalProperties,

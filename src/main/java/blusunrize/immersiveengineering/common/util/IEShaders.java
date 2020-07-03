@@ -20,11 +20,11 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.Rarity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector4f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.DistExecutor;
@@ -106,9 +106,9 @@ public class IEShaders
 			);
 			addLayer(ikelos, "1_4", 0xff5f646a);
 			ikelos.setEffectFunction((world, shader, item, shaderType, pos, dir, scale) -> {
-				ImmersiveEngineering.proxy.spawnFractalFX(world, pos.x, pos.y, pos.z, dir!=null?dir: new Vec3d(0, 1, 0), scale, 2, null);
-				ImmersiveEngineering.proxy.spawnFractalFX(world, pos.x, pos.y, pos.z, dir!=null?dir: new Vec3d(0, 0, 1), scale, 2, null);
-				ImmersiveEngineering.proxy.spawnFractalFX(world, pos.x, pos.y, pos.z, dir!=null?dir: new Vec3d(1, 0, 0), scale, 2, null);
+				ImmersiveEngineering.proxy.spawnFractalFX(world, pos.x, pos.y, pos.z, dir!=null?dir: new Vector3d(0, 1, 0), scale, 2, null);
+				ImmersiveEngineering.proxy.spawnFractalFX(world, pos.x, pos.y, pos.z, dir!=null?dir: new Vector3d(0, 0, 1), scale, 2, null);
+				ImmersiveEngineering.proxy.spawnFractalFX(world, pos.x, pos.y, pos.z, dir!=null?dir: new Vector3d(1, 0, 0), scale, 2, null);
 			});
 		});
 

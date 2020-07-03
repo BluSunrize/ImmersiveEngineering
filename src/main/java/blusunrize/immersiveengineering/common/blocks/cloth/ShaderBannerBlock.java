@@ -15,7 +15,7 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.Property;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockReader;
 
@@ -24,7 +24,7 @@ import javax.annotation.Nullable;
 
 public abstract class ShaderBannerBlock extends IETileProviderBlock
 {
-	public ShaderBannerBlock(String name, IProperty... stateProps)
+	public ShaderBannerBlock(String name, Property... stateProps)
 	{
 		super(name, Block.Properties.create(Material.WOOL).sound(SoundType.CLOTH).doesNotBlockMovement().notSolid(), (b, p) -> null, stateProps);
 	}

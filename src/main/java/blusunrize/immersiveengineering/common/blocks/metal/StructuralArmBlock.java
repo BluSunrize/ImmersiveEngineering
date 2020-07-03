@@ -14,7 +14,7 @@ import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.Property;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.world.IBlockReader;
@@ -24,7 +24,7 @@ import javax.annotation.Nullable;
 
 public class StructuralArmBlock extends IETileProviderBlock
 {
-	public static final IProperty<Direction> FACING = IEProperties.FACING_HORIZONTAL;
+	public static final Property<Direction> FACING = IEProperties.FACING_HORIZONTAL;
 
 	public StructuralArmBlock(String name)
 	{

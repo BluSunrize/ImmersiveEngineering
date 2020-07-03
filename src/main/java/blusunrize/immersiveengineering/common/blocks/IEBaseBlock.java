@@ -22,13 +22,13 @@ import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.Property;
 import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
@@ -43,10 +43,10 @@ import java.util.function.BiFunction;
 
 public class IEBaseBlock extends Block implements IIEBlock
 {
-	protected static IProperty[] tempProperties;
+	protected static Property[] tempProperties;
 
 	public final String name;
-	public final IProperty[] additionalProperties;
+	public final Property[] additionalProperties;
 	boolean isHidden;
 	boolean hasFlavour;
 	//TODO wtf is variable opacity?
@@ -55,7 +55,7 @@ public class IEBaseBlock extends Block implements IIEBlock
 	protected boolean canHammerHarvest;
 	protected final boolean notNormalBlock;
 
-	public IEBaseBlock(String name, Block.Properties blockProps, BiFunction<Block, Item.Properties, Item> createItemBlock, IProperty... additionalProperties)
+	public IEBaseBlock(String name, Block.Properties blockProps, BiFunction<Block, Item.Properties, Item> createItemBlock, Property... additionalProperties)
 	{
 		super(setTempProperties(blockProps, additionalProperties));
 		this.notNormalBlock = !isSolid(getDefaultState());
@@ -79,15 +79,15 @@ public class IEBaseBlock extends Block implements IIEBlock
 	//TODO do we still need this hackyness?
 	protected static Block.Properties setTempProperties(Properties blockProps, Object[] additionalProperties)
 	{
-		List<IProperty<?>> propList = new ArrayList<>();
+		List<Property<?>> propList = new ArrayList<>();
 		for(Object o : additionalProperties)
 		{
-			if(o instanceof IProperty)
-				propList.add((IProperty<?>)o);
-			if(o instanceof IProperty[])
-				propList.addAll(Arrays.asList(((IProperty<?>[])o)));
+			if(o instanceof Property)
+				propList.add((Property<?>)o);
+			if(o instanceof Property[])
+				propList.addAll(Arrays.asList(((Property<?>[])o)));
 		}
-		tempProperties = propList.toArray(new IProperty[0]);
+		tempProperties = propList.toArray(new Property[0]);
 		return blockProps.variableOpacity();
 	}
 
@@ -191,7 +191,7 @@ public class IEBaseBlock extends Block implements IIEBlock
 	}
 
 	@SuppressWarnings("unchecked")
-	protected <V extends Comparable<V>> BlockState applyProperty(BlockState in, IProperty<V> prop, Object val)
+	protected <V extends Comparable<V>> BlockState applyProperty(BlockState in, Property<V> prop, Object val)
 	{
 		return in.with(prop, (V)val);
 	}
@@ -280,7 +280,7 @@ public class IEBaseBlock extends Block implements IIEBlock
 	public abstract static class IELadderBlock extends IEBaseBlock
 	{
 		public IELadderBlock(String name, Block.Properties material,
-							 BiFunction<Block, Item.Properties, Item> itemBlock, IProperty... additionalProperties)
+							 BiFunction<Block, Item.Properties, Item> itemBlock, Property... additionalProperties)
 		{
 			super(name, material, itemBlock, additionalProperties);
 		}
@@ -303,9 +303,9 @@ public class IEBaseBlock extends Block implements IIEBlock
 		{
 			if(entityIn instanceof LivingEntity&&!((LivingEntity)entityIn).isOnLadder())
 			{
-				Vec3d motion = entityIn.getMotion();
+				Vector3d motion = entityIn.getMotion();
 				float maxMotion = 0.15F;
-				motion = new Vec3d(
+				motion = new Vector3d(
 						MathHelper.clamp(motion.x, -maxMotion, maxMotion),
 						Math.max(motion.y, -maxMotion),
 						MathHelper.clamp(motion.z, -maxMotion, maxMotion)
@@ -314,9 +314,9 @@ public class IEBaseBlock extends Block implements IIEBlock
 				entityIn.fallDistance = 0.0F;
 
 				if(motion.y < 0&&entityIn instanceof PlayerEntity&&entityIn.isSneaking())
-					motion = new Vec3d(motion.x, 0, motion.z);
+					motion = new Vector3d(motion.x, 0, motion.z);
 				else if(entityIn.collidedHorizontally)
-					motion = new Vec3d(motion.x, 0.2, motion.z);
+					motion = new Vector3d(motion.x, 0.2, motion.z);
 				entityIn.setMotion(motion);
 			}
 		}

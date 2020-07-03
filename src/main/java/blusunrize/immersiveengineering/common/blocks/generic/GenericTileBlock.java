@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.Item;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.Property;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.world.IBlockReader;
@@ -27,13 +27,13 @@ public class GenericTileBlock extends IETileProviderBlock
 {
 	private final Supplier<TileEntityType<?>> tileType;
 
-	public GenericTileBlock(String name, Supplier<TileEntityType<?>> tileType, Properties blockProps, IProperty<?>... stateProps)
+	public GenericTileBlock(String name, Supplier<TileEntityType<?>> tileType, Properties blockProps, Property<?>... stateProps)
 	{
 		this(name, tileType, blockProps, BlockItemIE::new, stateProps);
 	}
 
 	public GenericTileBlock(String name, Supplier<TileEntityType<?>> tileType, Properties blockProps,
-							BiFunction<Block, Item.Properties, Item> itemBlock, IProperty<?>... stateProps)
+							BiFunction<Block, Item.Properties, Item> itemBlock, Property<?>... stateProps)
 	{
 		super(name, blockProps, itemBlock, stateProps);
 		this.tileType = tileType;

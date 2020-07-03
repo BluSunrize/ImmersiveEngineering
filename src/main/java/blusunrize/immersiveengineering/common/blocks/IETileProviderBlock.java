@@ -27,14 +27,18 @@ import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.Property;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.Direction.AxisDirection;
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
@@ -59,7 +63,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 	private boolean hasColours = false;
 
 	public IETileProviderBlock(String name, Block.Properties blockProps, BiFunction<Block, Item.Properties, Item> itemBlock,
-							   IProperty... stateProps)
+							   Property... stateProps)
 	{
 		super(name, blockProps, itemBlock, stateProps);
 	}
@@ -230,7 +234,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 		TileEntity tile = world.getTileEntity(pos);
 		if(tile instanceof IDirectionalTile&&Utils.isHammer(heldItem)&&((IDirectionalTile)tile).canHammerRotate(
 				side,
-				hit.getHitVec().subtract(new Vec3d(pos)),
+				hit.getHitVec().subtract(new Vector3d(pos)),
 				player)&&!world.isRemote)
 		{
 			Direction f = ((IDirectionalTile)tile).getFacing();
@@ -276,7 +280,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 	}
 
 	@Nullable
-	private IProperty<Direction> findFacingProperty(BlockState state)
+	private Property<Direction> findFacingProperty(BlockState state)
 	{
 		if(state.has(IEProperties.FACING_ALL))
 			return IEProperties.FACING_ALL;
@@ -289,7 +293,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 	@Override
 	public BlockState rotate(BlockState state, Rotation rot)
 	{
-		IProperty<Direction> facingProp = findFacingProperty(state);
+		Property<Direction> facingProp = findFacingProperty(state);
 		if(facingProp!=null&&canRotate())
 		{
 			Direction currentDirection = state.get(facingProp);
@@ -306,7 +310,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 			return state.with(IEProperties.MIRRORED, !state.get(IEProperties.MIRRORED));
 		else
 		{
-			IProperty<Direction> facingProp = findFacingProperty(state);
+			Property<Direction> facingProp = findFacingProperty(state);
 			if(facingProp!=null&&canRotate())
 			{
 				Direction currentDirection = state.get(facingProp);
@@ -401,7 +405,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 	//TODO remove? Vanilla knows about the advanced bounds now...
 	@Nullable
 	@Override
-	public RayTraceResult getRayTraceResult(BlockState state, World world, BlockPos pos, Vec3d start, Vec3d end, RayTraceResult original)
+	public RayTraceResult getRayTraceResult(BlockState state, World world, BlockPos pos, Vector3d start, Vector3d end, RayTraceResult original)
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof ISelectionBounds)

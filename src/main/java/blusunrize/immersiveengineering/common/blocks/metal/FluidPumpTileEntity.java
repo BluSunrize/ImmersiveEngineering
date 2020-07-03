@@ -29,8 +29,8 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tags.FluidTags;
@@ -133,7 +133,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 						int connectedSources = 0;
 						for(Direction f2 : Direction.BY_HORIZONTAL_INDEX)
 						{
-							IFluidState waterState = world.getFluidState(getPos().offset(f).offset(f2));
+							FluidState waterState = world.getFluidState(getPos().offset(f).offset(f2));
 							if(waterState.getFluid().isIn(FluidTags.WATER)&&waterState.isSource())
 								connectedSources++;
 						}

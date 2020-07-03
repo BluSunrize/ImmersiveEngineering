@@ -91,7 +91,7 @@ import net.minecraft.particles.ItemParticleData;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.resources.IReloadableResourceManager;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.Property;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
@@ -100,7 +100,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -397,14 +397,14 @@ public class ClientProxy extends CommonProxy
 		Minecraft.getInstance().getItemRenderer().getItemModelMesher().register(item, new ModelResourceLocation(path, renderCase));
 	}
 
-	public static String getPropertyString(Map<IProperty, Comparable> propertyMap)
+	public static String getPropertyString(Map<Property, Comparable> propertyMap)
 	{
 		StringBuilder stringbuilder = new StringBuilder();
-		for(Entry<IProperty, Comparable> entry : propertyMap.entrySet())
+		for(Entry<Property, Comparable> entry : propertyMap.entrySet())
 		{
 			if(stringbuilder.length()!=0)
 				stringbuilder.append(",");
-			IProperty iproperty = entry.getKey();
+			Property iproperty = entry.getKey();
 			Comparable comparable = entry.getValue();
 			stringbuilder.append(iproperty.getName());
 			stringbuilder.append("=");
@@ -545,7 +545,7 @@ public class ClientProxy extends CommonProxy
 	}
 
 	@Override
-	public void spawnFractalFX(World world, double x, double y, double z, Vec3d direction, double scale, int prefixColour, float[][] colour)
+	public void spawnFractalFX(World world, double x, double y, double z, Vector3d direction, double scale, int prefixColour, float[][] colour)
 	{
 		if(prefixColour >= 0)
 			colour = prefixColour==1?FractalParticle.COLOUR_ORANGE: prefixColour==2?FractalParticle.COLOUR_RED: FractalParticle.COLOUR_LIGHTNING;

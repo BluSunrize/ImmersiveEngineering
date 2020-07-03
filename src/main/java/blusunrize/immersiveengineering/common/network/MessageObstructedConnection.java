@@ -14,7 +14,7 @@ import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.ClientEventHandler;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
@@ -25,7 +25,7 @@ import java.util.function.Supplier;
 
 public class MessageObstructedConnection implements IMessage
 {
-	private Vec3d start, end;
+	private Vector3d start, end;
 	private BlockPos startB, endB;
 	private Collection<BlockPos> blocking;
 	private WireType wireType;
@@ -42,8 +42,8 @@ public class MessageObstructedConnection implements IMessage
 
 	public MessageObstructedConnection(PacketBuffer buf)
 	{
-		start = new Vec3d(buf.readDouble(), buf.readDouble(), buf.readDouble());
-		end = new Vec3d(buf.readDouble(), buf.readDouble(), buf.readDouble());
+		start = new Vector3d(buf.readDouble(), buf.readDouble(), buf.readDouble());
+		end = new Vector3d(buf.readDouble(), buf.readDouble(), buf.readDouble());
 		startB = buf.readBlockPos();
 		endB = buf.readBlockPos();
 		int count = buf.readInt();

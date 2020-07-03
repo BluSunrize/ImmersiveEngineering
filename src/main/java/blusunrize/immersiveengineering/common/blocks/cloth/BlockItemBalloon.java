@@ -20,7 +20,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
@@ -39,7 +39,7 @@ public class BlockItemBalloon extends BlockItemIE
 			increaseOffset(itemStackIn);
 		else
 		{
-			Vec3d pos = playerIn.getPositionVector().add(0, playerIn.getEyeHeight(), 0).add(playerIn.getLookVec());
+			Vector3d pos = playerIn.getPositionVector().add(0, playerIn.getEyeHeight(), 0).add(playerIn.getLookVec());
 			BlockPos bPos = new BlockPos(pos);
 			CompoundNBT nbt = itemStackIn.getOrCreateTag();
 			int offset = nbt.getByte("offset");

@@ -28,8 +28,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.gen.feature.template.Template.BlockInfo;
 import net.minecraftforge.common.capabilities.Capability;
@@ -57,7 +57,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	// stores the world time at which this block can only be disassembled by breaking the block associated with this TE.
 	// This prevents half/duplicate disassembly when working with the drill or TCon hammers
 	public long onlyLocalDissassembly = -1;
-	protected final Vec3i structureDimensions;
+	protected final Vector3i structureDimensions;
 	protected final boolean hasRedstoneControl;
 	protected boolean redstoneControlInverted = false;
 	//Absent means no controlling computers
@@ -99,7 +99,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
 	{
 		return false;
 	}
@@ -287,7 +287,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	@Nullable
 	public T master()
 	{
-		if(offsetToMaster.equals(Vec3i.NULL_VECTOR))
+		if(offsetToMaster.equals(Vector3i.NULL_VECTOR))
 			return (T)this;
 		// Used to provide tile-dependant drops after disassembly
 		if(tempMasterTE!=null)
@@ -311,7 +311,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	@Override
 	public boolean isDummy()
 	{
-		return !offsetToMaster.equals(Vec3i.NULL_VECTOR);
+		return !offsetToMaster.equals(Vector3i.NULL_VECTOR);
 	}
 
 	public BlockState getOriginalBlock()
@@ -374,7 +374,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	}
 
 	@Override
-	public boolean hammerUseSide(Direction side, PlayerEntity player, Vec3d hitVec)
+	public boolean hammerUseSide(Direction side, PlayerEntity player, Vector3d hitVec)
 	{
 		if(!world.isRemote)
 		{

@@ -1,12 +1,12 @@
 package blusunrize.immersiveengineering.client.models.obj;
 
 import com.google.common.base.Preconditions;
-import net.minecraft.client.renderer.TransformationMatrix;
-import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.Vec2f;
+import net.minecraft.util.math.vector.TransformationMatrix;
+import net.minecraft.util.math.vector.Vector2f;
+import net.minecraft.util.math.vector.Vector4f;
 import net.minecraftforge.client.model.obj.MaterialLibrary;
 import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.client.model.obj.OBJModel.ModelGroup;
@@ -62,7 +62,7 @@ public class OBJHelper
 		return get(OBJModel2_parts, model);
 	}
 
-	public static List<Vec2f> getTexCoords(OBJModel model)
+	public static List<Vector2f> getTexCoords(OBJModel model)
 	{
 		return get(OBJModel2_texCoords, model);
 	}

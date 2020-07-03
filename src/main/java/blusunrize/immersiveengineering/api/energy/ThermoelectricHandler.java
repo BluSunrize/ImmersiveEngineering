@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.api.energy;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -36,12 +36,12 @@ public class ThermoelectricHandler
 		temperatureMap.add(new ThermoelectricSource(b, value, TemperatureScale.KELVIN));
 	}
 
-	public static void registerSourceInKelvin(Tag<Block> tag, int value)
+	public static void registerSourceInKelvin(ITag<Block> tag, int value)
 	{
 		temperatureMap.add(new ThermoelectricSource(tag, value, TemperatureScale.KELVIN));
 	}
 
-	public static void registerSourceInCelsius(Tag<Block> tag, int value)
+	public static void registerSourceInCelsius(ITag<Block> tag, int value)
 	{
 		temperatureMap.add(new ThermoelectricSource(tag, value, TemperatureScale.CELSIUS));
 	}
@@ -79,7 +79,7 @@ public class ThermoelectricHandler
 			this(b2 -> b2==b, temperature, () -> Optional.of(b), s);
 		}
 
-		public ThermoelectricSource(Tag<Block> tag, int temperature, TemperatureScale scale)
+		public ThermoelectricSource(ITag<Block> tag, int temperature, TemperatureScale scale)
 		{
 			this(b -> b.isIn(tag), temperature, () -> {
 				Collection<Block> allMatching = tag.getAllElements();

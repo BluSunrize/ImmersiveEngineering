@@ -38,7 +38,7 @@ import net.minecraft.item.Rarity;
 import net.minecraft.item.UseAction;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.*;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
@@ -138,7 +138,7 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 			int consumed = IEConfig.TOOLS.chemthrower_consumption.get();
 			if(consumed*duration <= fs.getAmount())
 			{
-				Vec3d v = player.getLookVec();
+				Vector3d v = player.getLookVec();
 				int split = 8;
 				boolean isGas = fs.getFluid().getAttributes().isGaseous()||ChemthrowerHandler.isGas(fs.getFluid());
 
@@ -153,7 +153,7 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 				boolean ignite = ChemthrowerHandler.isFlammable(fs.getFluid())&&isIgniteEnable(stack);
 				for(int i = 0; i < split; i++)
 				{
-					Vec3d vecDir = v.add(player.getRNG().nextGaussian()*scatter, player.getRNG().nextGaussian()*scatter, player.getRNG().nextGaussian()*scatter);
+					Vector3d vecDir = v.add(player.getRNG().nextGaussian()*scatter, player.getRNG().nextGaussian()*scatter, player.getRNG().nextGaussian()*scatter);
 					ChemthrowerShotEntity chem = new ChemthrowerShotEntity(player.world, player, vecDir.x*0.25, vecDir.y*0.25, vecDir.z*0.25, fs);
 
 					// Apply momentum from the player.

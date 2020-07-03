@@ -60,7 +60,9 @@ import net.minecraft.block.Block;
 import net.minecraft.client.audio.ITickableSound;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.multiplayer.PlayerController;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.IHasHead;
@@ -81,6 +83,8 @@ import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.*;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
@@ -89,7 +93,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.client.gui.ForgeIngameGui;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
@@ -903,7 +906,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			IRenderTypeBuffer buffer = event.getBuffers();
 			BlockRayTraceResult rtr = (BlockRayTraceResult)event.getTarget();
 			BlockPos pos = rtr.getPos();
-			Vec3d renderView = event.getInfo().getProjectedView();
+			Vector3d renderView = event.getInfo().getProjectedView();
 			transform.push();
 			transform.translate(-renderView.x, -renderView.y, -renderView.z);
 			transform.translate(pos.getX(), pos.getY(), pos.getZ());
@@ -992,7 +995,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				float yFromMid = side.getAxis()==Axis.Y?0: (float)rtr.getHitVec().y-pos.getY()-.5f;
 				float zFromMid = side.getAxis()==Axis.Z?0: (float)rtr.getHitVec().z-pos.getZ()-.5f;
 				float max = Math.max(Math.abs(yFromMid), Math.max(Math.abs(xFromMid), Math.abs(zFromMid)));
-				Vec3d dir = new Vec3d(max==Math.abs(xFromMid)?Math.signum(xFromMid): 0, max==Math.abs(yFromMid)?Math.signum(yFromMid): 0, max==Math.abs(zFromMid)?Math.signum(zFromMid): 0);
+				Vector3d dir = new Vector3d(max==Math.abs(xFromMid)?Math.signum(xFromMid): 0, max==Math.abs(yFromMid)?Math.signum(yFromMid): 0, max==Math.abs(zFromMid)?Math.signum(zFromMid): 0);
 				drawBlockOverlayArrow(mat, buffers, dir, side, targetedBB);
 
 			}
@@ -1140,15 +1143,15 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 
 	private final static float[][] arrowCoords = {{0, .375f}, {.3125f, .0625f}, {.125f, .0625f}, {.125f, -.375f}, {-.125f, -.375f}, {-.125f, .0625f}, {-.3125f, .0625f}};
 
-	public static void drawBlockOverlayArrow(Matrix4f transform, IRenderTypeBuffer buffers, Vec3d directionVec,
+	public static void drawBlockOverlayArrow(Matrix4f transform, IRenderTypeBuffer buffers, Vector3d directionVec,
 											 Direction side, AxisAlignedBB targetedBB)
 	{
-		Vec3d[] translatedPositions = new Vec3d[arrowCoords.length];
+		Vector3d[] translatedPositions = new Vector3d[arrowCoords.length];
 		Matrix4 mat = new Matrix4();
-		Vec3d defaultDir = side.getAxis()==Axis.Y?new Vec3d(0, 0, 1): new Vec3d(0, 1, 0);
+		Vector3d defaultDir = side.getAxis()==Axis.Y?new Vector3d(0, 0, 1): new Vector3d(0, 1, 0);
 		directionVec = directionVec.normalize();
 		double angle = Math.acos(defaultDir.dotProduct(directionVec));
-		Vec3d axis = defaultDir.crossProduct(directionVec);
+		Vector3d axis = defaultDir.crossProduct(directionVec);
 		mat.rotate(angle, axis.x, axis.y, axis.z);
 		if(side.getAxis()==Axis.Z)
 			mat.rotate(Math.PI/2, 1, 0, 0).rotate(Math.PI, 0, 1, 0);
@@ -1156,19 +1159,19 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			mat.rotate(Math.PI/2, 0, 0, 1).rotate(Math.PI/2, 0, 1, 0);
 		for(int i = 0; i < translatedPositions.length; i++)
 		{
-			Vec3d vec = mat.apply(new Vec3d(arrowCoords[i][0], 0, arrowCoords[i][1])).add(.5, .5, .5);
+			Vector3d vec = mat.apply(new Vector3d(arrowCoords[i][0], 0, arrowCoords[i][1])).add(.5, .5, .5);
 			if(targetedBB!=null)
-				vec = new Vec3d(side==Direction.WEST?targetedBB.minX-.002: side==Direction.EAST?targetedBB.maxX+.002: vec.x, side==Direction.DOWN?targetedBB.minY-.002: side==Direction.UP?targetedBB.maxY+.002: vec.y, side==Direction.NORTH?targetedBB.minZ-.002: side==Direction.SOUTH?targetedBB.maxZ+.002: vec.z);
+				vec = new Vector3d(side==Direction.WEST?targetedBB.minX-.002: side==Direction.EAST?targetedBB.maxX+.002: vec.x, side==Direction.DOWN?targetedBB.minY-.002: side==Direction.UP?targetedBB.maxY+.002: vec.y, side==Direction.NORTH?targetedBB.minZ-.002: side==Direction.SOUTH?targetedBB.maxZ+.002: vec.z);
 			translatedPositions[i] = vec;
 		}
 
 		IVertexBuilder triBuilder = buffers.getBuffer(IERenderTypes.TRANSLUCENT_TRIANGLES);
-		Vec3d center = translatedPositions[0];
+		Vector3d center = translatedPositions[0];
 		for(int i = 2; i < translatedPositions.length; i++)
 		{
-			Vec3d point = translatedPositions[i];
-			Vec3d prevPoint = translatedPositions[i-1];
-			for(Vec3d p : new Vec3d[]{center, prevPoint, point})
+			Vector3d point = translatedPositions[i];
+			Vector3d prevPoint = translatedPositions[i-1];
+			for(Vector3d p : new Vector3d[]{center, prevPoint, point})
 				triBuilder.pos(transform, (float)p.x, (float)p.y, (float)p.z)
 						.color(Lib.COLOUR_F_ImmersiveOrange[0], Lib.COLOUR_F_ImmersiveOrange[1], Lib.COLOUR_F_ImmersiveOrange[2], 0.4F)
 						.endVertex();
@@ -1176,7 +1179,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		IVertexBuilder lineBuilder = buffers.getBuffer(IERenderTypes.TRANSLUCENT_LINES);
 		for(int i = 0; i <= translatedPositions.length; i++)
 		{
-			Vec3d point = translatedPositions[i%translatedPositions.length];
+			Vector3d point = translatedPositions[i%translatedPositions.length];
 			int max = i==0||i==translatedPositions.length?1: 2;
 			for(int j = 0; j < max; ++j)
 				lineBuilder.pos(transform, (float)point.x, (float)point.y, (float)point.z)
@@ -1187,7 +1190,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 
 	public static void drawAdditionalBlockbreak(DrawHighlightEvent ev, PlayerEntity player, float partialTicks, Collection<BlockPos> blocks)
 	{
-		Vec3d renderView = ev.getInfo().getProjectedView();
+		Vector3d renderView = ev.getInfo().getProjectedView();
 		for(BlockPos pos : blocks)
 			ev.getContext().drawSelectionBox(
 					ev.getMatrix(),
@@ -1225,7 +1228,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		float partial = event.getPartialTicks();
 		MatrixStack transform = event.getMatrixStack();
 		transform.push();
-		Vec3d renderView = ClientUtils.mc().gameRenderer.getActiveRenderInfo().getProjectedView();
+		Vector3d renderView = ClientUtils.mc().gameRenderer.getActiveRenderInfo().getProjectedView();
 		transform.translate(-renderView.x, -renderView.y, -renderView.z);
 		IRenderTypeBuffer.Impl buffers = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
 		if(!FractalParticle.PARTICLE_FRACTAL_DEQUE.isEmpty())
@@ -1300,13 +1303,13 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				Matrix4f mat = transform.getLast().getMatrix();
 				int time = entry.getValue().getValue().get();
 				float alpha = (float)Math.min((2+Math.sin(time*Math.PI/40))/3, time/20F);
-				Vec3d prev = conn.getPoint(0, conn.getEndA());
+				Vector3d prev = conn.getPoint(0, conn.getEndA());
 				for(int i = 0; i < RenderData.POINTS_PER_WIRE; i++)
 				{
 					builder.pos(mat, (float)prev.x, (float)prev.y, (float)prev.z)
 							.color(1, 0, 0, alpha).endVertex();
 					alpha = (float)Math.min((2+Math.sin((time+(i+1)*8)*Math.PI/40))/3, time/20F);
-					Vec3d next = conn.getPoint((i+1)/(double)RenderData.POINTS_PER_WIRE, conn.getEndA());
+					Vector3d next = conn.getPoint((i+1)/(double)RenderData.POINTS_PER_WIRE, conn.getEndA());
 					builder.pos(mat, (float)next.x, (float)next.y, (float)next.z)
 							.color(1, 0, 0, alpha).endVertex();
 					prev = next;

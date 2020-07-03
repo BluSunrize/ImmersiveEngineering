@@ -11,7 +11,7 @@ package blusunrize.lib.manual;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.IItemProvider;
 
 import java.util.ArrayList;
@@ -54,8 +54,8 @@ public class PositionedItemStack
 			displayList.addAll(Arrays.asList(((IngredientWithSize)stack).getMatchingStacks()));
 		else if(stack instanceof List&&!((List)stack).isEmpty())
 			displayList.addAll((List<ItemStack>)this.stack);
-		else if(stack instanceof Tag)
-			((Tag<?>)stack).getAllElements().stream()
+		else if(stack instanceof ITag)
+			((ITag<?>)stack).getAllElements().stream()
 					.map(o -> ((IItemProvider)o).asItem())
 					.map(ItemStack::new)
 					.forEach(displayList::add);

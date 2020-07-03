@@ -35,7 +35,7 @@ public class IEOBJModel implements IModelGeometry<IEOBJModel>
 	}
 
 	@Override
-	public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter,
+	public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<RenderMaterial, TextureAtlasSprite> spriteGetter,
 							IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation)
 	{
 		IBakedModel baseBaked = base.bake(owner, bakery, spriteGetter, modelTransform, overrides, modelLocation);
@@ -43,7 +43,7 @@ public class IEOBJModel implements IModelGeometry<IEOBJModel>
 	}
 
 	@Override
-	public Collection<Material> getTextures(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors)
+	public Collection<RenderMaterial> getTextures(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors)
 	{
 		return base.getTextures(owner, modelGetter, missingTextureErrors);
 	}

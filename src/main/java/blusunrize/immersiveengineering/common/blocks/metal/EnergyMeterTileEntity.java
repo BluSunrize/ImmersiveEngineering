@@ -40,10 +40,10 @@ import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.util.text.TranslationTextComponent;
 
 import javax.annotation.Nonnull;
@@ -118,7 +118,7 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 	}
 
 	@Override
-	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vec3i offset)
+	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vector3i offset)
 	{
 		if(isDummy())
 		{
@@ -152,7 +152,7 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 
 	@Nullable
 	@Override
-	public ConnectionPoint getTargetedPoint(TargetingInfo info, Vec3i offset)
+	public ConnectionPoint getTargetedPoint(TargetingInfo info, Vector3i offset)
 	{
 		ConnectionPoint targetByHit;
 		if(getFacing().getAxis()==Axis.X)
@@ -188,12 +188,12 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 	}
 
 	@Override
-	public Vec3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
+	public Vector3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
 		if(getFacing().getAxis()==Axis.X)
-			return new Vec3d(.5, 1.4375, here.getIndex()==0?.8125: .1875);
+			return new Vector3d(.5, 1.4375, here.getIndex()==0?.8125: .1875);
 		else
-			return new Vec3d(here.getIndex()==0?.8125: .1875, 1.4375, .5);
+			return new Vector3d(here.getIndex()==0?.8125: .1875, 1.4375, .5);
 	}
 
 	@Nullable
@@ -283,7 +283,7 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
 	{
 		return false;
 	}

@@ -1,8 +1,8 @@
 package blusunrize.immersiveengineering.client.models;
 
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.model.IModelTransform;
+import net.minecraft.util.math.vector.TransformationMatrix;
 import net.minecraftforge.client.model.SimpleModelTransform;
 
 import javax.annotation.Nonnull;

@@ -32,6 +32,8 @@ import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.LootContext;
+import net.minecraft.loot.LootParameters;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
@@ -44,13 +46,11 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.storage.loot.LootContext;
-import net.minecraft.world.storage.loot.LootParameters;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -109,7 +109,7 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 
 		if(target!=null)
 		{
-			Vec3d delta = getGunToTargetVec(target);
+			Vector3d delta = getGunToTargetVec(target);
 			double dSq = delta.lengthSquared();
 			if(dSq > range*range)
 				this.target = null;
@@ -181,8 +181,8 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 
 	private boolean canShootEntity(LivingEntity entity)
 	{
-		Vec3d start = getGunPosition();
-		Vec3d end = getTargetVector(entity);
+		Vector3d start = getGunPosition();
+		Vector3d end = getTargetVector(entity);
 		//Don't shoot through walls
 		if(Utils.rayTraceForFirst(start, end, world, Collections.singleton(getPos().up()))
 				!=null)
@@ -199,17 +199,17 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 		return true;
 	}
 
-	protected Vec3d getTargetVector(LivingEntity e)
+	protected Vector3d getTargetVector(LivingEntity e)
 	{
-		return new Vec3d(e.getPosX(), e.getPosY()+.5*e.getEyeHeight(), e.getPosZ());
+		return new Vector3d(e.getPosX(), e.getPosY()+.5*e.getEyeHeight(), e.getPosZ());
 	}
 
-	protected Vec3d getGunPosition()
+	protected Vector3d getGunPosition()
 	{
-		return new Vec3d(pos.getX()+.5, pos.getY()+1.375, pos.getZ()+.5);
+		return new Vector3d(pos.getX()+.5, pos.getY()+1.375, pos.getZ()+.5);
 	}
 
-	protected Vec3d getGunToTargetVec(LivingEntity target)
+	protected Vector3d getGunToTargetVec(LivingEntity target)
 	{
 		//target-gun
 		return getGunPosition().subtractReverse(getTargetVector(target));
@@ -375,7 +375,7 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 	}
 
 	@Override
-	public boolean hammerUseSide(Direction side, PlayerEntity player, Vec3d hitVec)
+	public boolean hammerUseSide(Direction side, PlayerEntity player, Vector3d hitVec)
 	{
 		if(isDummy())
 		{
@@ -456,7 +456,7 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
 	{
 		return false;
 	}

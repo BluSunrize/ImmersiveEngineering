@@ -17,7 +17,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
@@ -84,7 +84,7 @@ public class TurretChemTileEntity extends TurretTileEntity
 			{
 				tank.drain(consumed, FluidAction.EXECUTE);
 				this.energyStorage.extractEnergy(energy, false);
-				Vec3d v = getGunToTargetVec(target).normalize();
+				Vector3d v = getGunToTargetVec(target).normalize();
 
 				int split = 8;
 				boolean isGas = fs.getFluid().getAttributes().isGaseous()||ChemthrowerHandler.isGas(fs.getFluid());
@@ -99,8 +99,8 @@ public class TurretChemTileEntity extends TurretTileEntity
 				boolean ignite = ChemthrowerHandler.isFlammable(fs.getFluid())&&this.ignite;
 				for(int i = 0; i < split; i++)
 				{
-					Vec3d vecDir = v.add(Utils.RAND.nextGaussian()*scatter, Utils.RAND.nextGaussian()*scatter, Utils.RAND.nextGaussian()*scatter);
-					Vec3d throwerPos = getGunPosition();
+					Vector3d vecDir = v.add(Utils.RAND.nextGaussian()*scatter, Utils.RAND.nextGaussian()*scatter, Utils.RAND.nextGaussian()*scatter);
+					Vector3d throwerPos = getGunPosition();
 					ChemthrowerShotEntity chem = new ChemthrowerShotEntity(world, throwerPos.x+v.x*0.875, throwerPos.y+v.y*0.875,
 							throwerPos.z+v.z*0.875, 0, 0, 0, fs);
 					chem.setMotion(vecDir.scale(range));

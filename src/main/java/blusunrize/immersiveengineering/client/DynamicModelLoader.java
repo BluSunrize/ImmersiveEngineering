@@ -17,12 +17,12 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
+import net.minecraft.util.math.vector.TransformationMatrix;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -45,7 +45,7 @@ import java.util.Set;
 @EventBusSubscriber(value = Dist.CLIENT, modid = ImmersiveEngineering.MODID, bus = Bus.MOD)
 public class DynamicModelLoader
 {
-	private static Set<Material> requestedTextures = new HashSet<>();
+	private static Set<RenderMaterial> requestedTextures = new HashSet<>();
 	private static Set<ResourceLocation> manualTextureRequests = new HashSet<>();
 	private static final Multimap<ModelWithTransforms, ModelResourceLocation> requestedModels = HashMultimap.create();
 	private static Map<ModelWithTransforms, IUnbakedModel> unbakedModels = new HashMap<>();
@@ -102,7 +102,7 @@ public class DynamicModelLoader
 		IELogger.logger.debug("Stitching textures!");
 		for(ResourceLocation rl : manualTextureRequests)
 			evt.addSprite(rl);
-		for(Material rl : requestedTextures)
+		for(RenderMaterial rl : requestedTextures)
 			evt.addSprite(rl.getTextureLocation());
 	}
 

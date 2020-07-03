@@ -39,10 +39,10 @@ import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.GameRules;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -331,29 +331,29 @@ public class BasicConveyor implements IConveyorBelt
 			float[] colour = {1, 1, 1, 1};
 			Matrix4 matrix = new Matrix4(facing);
 
-			Function<Vec3d[], Vec3d[]> vertexTransformer = conDir==ConveyorDirection.HORIZONTAL?vertices -> vertices: vertices -> {
-				Vec3d[] ret = new Vec3d[vertices.length];
+			Function<Vector3d[], Vector3d[]> vertexTransformer = conDir==ConveyorDirection.HORIZONTAL?vertices -> vertices: vertices -> {
+				Vector3d[] ret = new Vector3d[vertices.length];
 				for(int i = 0; i < ret.length; i++)
-					ret[i] = new Vec3d(vertices[i].x, vertices[i].y+(vertices[i].z==(conDir==ConveyorDirection.UP?0: 1)?1: 0), vertices[i].z);
+					ret[i] = new Vector3d(vertices[i].x, vertices[i].y+(vertices[i].z==(conDir==ConveyorDirection.UP?0: 1)?1: 0), vertices[i].z);
 				return ret;
 			};
 
-			baseModel.addAll(ClientUtils.createBakedBox(new Vec3d(0, .75f, 0), new Vec3d(1, 1, 1), matrix, facing, vertexTransformer, getSprite, colour));
+			baseModel.addAll(ClientUtils.createBakedBox(new Vector3d(0, .75f, 0), new Vector3d(1, 1, 1), matrix, facing, vertexTransformer, getSprite, colour));
 
 			if(getTile()==null||this.renderWall(getFacing(), 0))
-				baseModel.addAll(ClientUtils.createBakedBox(new Vec3d(0, .1875f, 0), new Vec3d(.0625f, .75f, 1), matrix, facing, vertexTransformer, getSpriteHorizontal, colour));
+				baseModel.addAll(ClientUtils.createBakedBox(new Vector3d(0, .1875f, 0), new Vector3d(.0625f, .75f, 1), matrix, facing, vertexTransformer, getSpriteHorizontal, colour));
 			else
 			{
-				baseModel.addAll(ClientUtils.createBakedBox(new Vec3d(0, .1875f, 0), new Vec3d(.0625f, .75f, .0625f), matrix, facing, getSpriteHorizontal, colour));
-				baseModel.addAll(ClientUtils.createBakedBox(new Vec3d(0, .1875f, .9375f), new Vec3d(.0625f, .75f, 1), matrix, facing, getSpriteHorizontal, colour));
+				baseModel.addAll(ClientUtils.createBakedBox(new Vector3d(0, .1875f, 0), new Vector3d(.0625f, .75f, .0625f), matrix, facing, getSpriteHorizontal, colour));
+				baseModel.addAll(ClientUtils.createBakedBox(new Vector3d(0, .1875f, .9375f), new Vector3d(.0625f, .75f, 1), matrix, facing, getSpriteHorizontal, colour));
 			}
 
 			if(getTile()==null||this.renderWall(getFacing(), 1))
-				baseModel.addAll(ClientUtils.createBakedBox(new Vec3d(.9375f, .1875f, 0), new Vec3d(1, .75f, 1), matrix, facing, vertexTransformer, getSpriteHorizontal, colour));
+				baseModel.addAll(ClientUtils.createBakedBox(new Vector3d(.9375f, .1875f, 0), new Vector3d(1, .75f, 1), matrix, facing, vertexTransformer, getSpriteHorizontal, colour));
 			else
 			{
-				baseModel.addAll(ClientUtils.createBakedBox(new Vec3d(.9375f, .1875f, 0), new Vec3d(1, .75f, .0625f), matrix, facing, getSpriteHorizontal, colour));
-				baseModel.addAll(ClientUtils.createBakedBox(new Vec3d(.9375f, .1875f, .9375f), new Vec3d(1, .75f, 1), matrix, facing, getSpriteHorizontal, colour));
+				baseModel.addAll(ClientUtils.createBakedBox(new Vector3d(.9375f, .1875f, 0), new Vector3d(1, .75f, .0625f), matrix, facing, getSpriteHorizontal, colour));
+				baseModel.addAll(ClientUtils.createBakedBox(new Vector3d(.9375f, .1875f, .9375f), new Vector3d(1, .75f, 1), matrix, facing, getSpriteHorizontal, colour));
 			}
 		}
 	}

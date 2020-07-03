@@ -23,11 +23,15 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.CubeCoordinateIterator;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
@@ -56,28 +60,28 @@ public class SkylineHelper
 			ConnectionPoint cpB = connection.getEndB();
 			IImmersiveConnectable iicB = global.getConnector(cpB);
 			IImmersiveConnectable iicA = global.getConnector(cpA);
-			Vec3d vStart = new Vec3d(cpA.getPosition());
-			Vec3d vEnd = new Vec3d(cpB.getPosition());
+			Vector3d vStart = new Vector3d(cpA.getPosition());
+			Vector3d vEnd = new Vector3d(cpB.getPosition());
 
 			if(iicB!=null)
 				vStart = Utils.addVectors(vStart, iicB.getConnectionOffset(connection, cpB));
 			if(iicA!=null)
 				vEnd = Utils.addVectors(vEnd, iicA.getConnectionOffset(connection, cpA));
 
-			Vec3d pos = player.getEyePosition(0);
-			Vec3d across = new Vec3d(vEnd.x-vStart.x, vEnd.y-vStart.y, vEnd.z-vStart.z);
+			Vector3d pos = player.getEyePosition(0);
+			Vector3d across = new Vector3d(vEnd.x-vStart.x, vEnd.y-vStart.y, vEnd.z-vStart.z);
 			double linePos = Utils.getCoeffForMinDistance(pos, vStart, across);
 			connection.generateCatenaryData(player.world);
 			CatenaryData catData = connection.getCatenaryData();
 
-			Vec3d playerMovement = new Vec3d(player.getMotion().x, player.getMotion().y,
+			Vector3d playerMovement = new Vector3d(player.getMotion().x, player.getMotion().y,
 					player.getMotion().z);
 			double slopeAtPos = connection.getSlope(linePos, cpA);
-			Vec3d extendedWire;
+			Vector3d extendedWire;
 			if(catData.isVertical())
-				extendedWire = new Vec3d(0, catData.getHorLength(), 0);
+				extendedWire = new Vector3d(0, catData.getHorLength(), 0);
 			else
-				extendedWire = new Vec3d(catData.getDeltaX(), slopeAtPos*catData.getHorLength(), catData.getDeltaZ());
+				extendedWire = new Vector3d(catData.getDeltaX(), slopeAtPos*catData.getHorLength(), catData.getDeltaZ());
 			extendedWire = extendedWire.normalize();
 
 			double totalSpeed = playerMovement.dotProduct(extendedWire);

@@ -23,7 +23,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.Property;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -35,14 +35,14 @@ import java.util.function.BiFunction;
 
 public abstract class ConnectorBlock extends IETileProviderBlock
 {
-	public ConnectorBlock(String name, BiFunction<Block, Item.Properties, Item> item, IProperty... additional)
+	public ConnectorBlock(String name, BiFunction<Block, Item.Properties, Item> item, Property... additional)
 	{
 		super(name, Block.Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(3.0F, 15.0F).notSolid(),
 				item, additional);
 		lightOpacity = 0;
 	}
 
-	public ConnectorBlock(String name, IProperty... additional)
+	public ConnectorBlock(String name, Property... additional)
 	{
 		this(name, BlockItemIE::new, additional);
 	}

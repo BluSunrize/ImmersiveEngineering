@@ -43,17 +43,17 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
+import net.minecraft.loot.LootPool;
+import net.minecraft.loot.TableLootEntry;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
-import net.minecraft.world.storage.loot.LootPool;
-import net.minecraft.world.storage.loot.TableLootEntry;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -331,11 +331,11 @@ public class EventHandler
 	@SubscribeEvent
 	public void onLivingJump(LivingJumpEvent event)
 	{
-		Vec3d motion = event.getEntity().getMotion();
+		Vector3d motion = event.getEntity().getMotion();
 		if(event.getEntityLiving().getActivePotionEffect(IEPotions.sticky)!=null)
 			motion = motion.subtract(0, (event.getEntityLiving().getActivePotionEffect(IEPotions.sticky).getAmplifier()+1)*0.3F, 0);
 		else if(event.getEntityLiving().getActivePotionEffect(IEPotions.concreteFeet)!=null)
-			motion = Vec3d.ZERO;
+			motion = Vector3d.ZERO;
 		event.getEntity().setMotion(motion);
 	}
 

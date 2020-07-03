@@ -24,7 +24,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.data.IModelData;
 
@@ -98,7 +98,7 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 
 	@Nullable
 	@Override
-	public ConnectionPoint getTargetedPoint(TargetingInfo info, Vec3i offset)
+	public ConnectionPoint getTargetedPoint(TargetingInfo info, Vector3i offset)
 	{
 		return new ConnectionPoint(pos, 0);
 	}

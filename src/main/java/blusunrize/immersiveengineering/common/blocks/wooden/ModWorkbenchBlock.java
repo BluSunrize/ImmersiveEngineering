@@ -16,7 +16,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.Property;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Mirror;
@@ -30,8 +30,8 @@ import javax.annotation.Nullable;
 
 public class ModWorkbenchBlock extends IETileProviderBlock
 {
-	public static final IProperty<Direction> FACING = IEProperties.FACING_HORIZONTAL;
-	public static final IProperty<Boolean> DUMMY = IEProperties.MULTIBLOCKSLAVE;
+	public static final Property<Direction> FACING = IEProperties.FACING_HORIZONTAL;
+	public static final Property<Boolean> DUMMY = IEProperties.MULTIBLOCKSLAVE;
 
 	public ModWorkbenchBlock(String name)
 	{

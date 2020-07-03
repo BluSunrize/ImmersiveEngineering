@@ -19,9 +19,6 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.shapes.CachedShapesWithTransform;
 import com.google.common.collect.Lists;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.renderer.Quaternion;
-import net.minecraft.client.renderer.TransformationMatrix;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.Entity;
@@ -35,8 +32,11 @@ import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.util.math.vector.TransformationMatrix;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -156,7 +156,7 @@ public class VerticalConveyor extends BasicConveyor
 	}
 
 	@Override
-	public Vec3d getDirection(Entity entity)
+	public Vector3d getDirection(Entity entity)
 	{
 		BlockPos posWall = getTile().getPos().offset(getFacing());
 		double d = .625+entity.getWidth();
@@ -198,7 +198,7 @@ public class VerticalConveyor extends BasicConveyor
 		BlockPos upForward = getTile().getPos().add(0, 1, 0);
 		if(contact&&!(Utils.getExistingTileEntity(getTile().getWorld(), upForward) instanceof IConveyorTile))
 			vY *= 2.25;
-		return new Vec3d(vX, vY, vZ);
+		return new Vector3d(vX, vY, vZ);
 	}
 
 	//TODO memory leaks?
@@ -230,7 +230,7 @@ public class VerticalConveyor extends BasicConveyor
 				entity.fallDistance = 0;
 			else
 				entity.fallDistance *= .9;
-			Vec3d vec = getDirection(entity);
+			Vector3d vec = getDirection(entity);
 			entity.setMotion(vec);
 
 			if(!contact)

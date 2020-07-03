@@ -14,7 +14,6 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.items.IEItems.Tools;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
@@ -26,7 +25,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.ResourceLocation;
@@ -173,7 +172,7 @@ public class DrillheadItem extends IEBaseItem implements IDrillHead
 		public static final Set<DrillHeadPerm> ALL_PERMS = new HashSet<>();
 
 		final String name;
-		final Tag<Item> repairMaterial;
+		final ITag<Item> repairMaterial;
 		final int drillSize;
 		final int drillDepth;
 		final int drillLevel;
@@ -184,7 +183,7 @@ public class DrillheadItem extends IEBaseItem implements IDrillHead
 		@OnlyIn(Dist.CLIENT)
 		public TextureAtlasSprite sprite;
 
-		public DrillHeadPerm(String name, Tag<Item> repairMaterial, int drillSize, int drillDepth, int drillLevel, float drillSpeed, int drillAttack, int maxDamage, ResourceLocation texture)
+		public DrillHeadPerm(String name, ITag<Item> repairMaterial, int drillSize, int drillDepth, int drillLevel, float drillSpeed, int drillAttack, int maxDamage, ResourceLocation texture)
 		{
 			this.name = name;
 			this.repairMaterial = repairMaterial;

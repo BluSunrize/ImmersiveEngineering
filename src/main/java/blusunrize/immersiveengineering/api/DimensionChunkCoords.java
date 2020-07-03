@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.api;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.DimensionType;
 import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nullable;

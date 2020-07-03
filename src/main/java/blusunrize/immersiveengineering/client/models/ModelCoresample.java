@@ -35,7 +35,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.IModelLoader;
@@ -123,12 +123,12 @@ public class ModelCoresample extends BakedIEModel
 						16*(wOff+width), 16*(dOff+depth),
 				};
 
-				putVertexData(new Vec3d(0, -1, 0), new Vec3d[]{new Vec3d(wOff, 0, dOff),
-						new Vec3d(wOff+width, 0, dOff), new Vec3d(wOff+width, 0, dOff+depth),
-						new Vec3d(wOff, 0, dOff+depth)}, stoneUVs, textureStone, bakedQuads);
-				putVertexData(new Vec3d(0, 1, 0), new Vec3d[]{new Vec3d(wOff, 1, dOff),
-						new Vec3d(wOff, 1, dOff+depth), new Vec3d(wOff+width, 1, dOff+depth),
-						new Vec3d(wOff+width, 1, dOff)}, stoneUVs, textureStone, bakedQuads);
+				putVertexData(new Vector3d(0, -1, 0), new Vector3d[]{new Vector3d(wOff, 0, dOff),
+						new Vector3d(wOff+width, 0, dOff), new Vector3d(wOff+width, 0, dOff+depth),
+						new Vector3d(wOff, 0, dOff+depth)}, stoneUVs, textureStone, bakedQuads);
+				putVertexData(new Vector3d(0, 1, 0), new Vector3d[]{new Vector3d(wOff, 1, dOff),
+						new Vector3d(wOff, 1, dOff+depth), new Vector3d(wOff+width, 1, dOff+depth),
+						new Vector3d(wOff+width, 1, dOff)}, stoneUVs, textureStone, bakedQuads);
 				if(textureOre.isEmpty())
 				{
 					double[][] uvs = new double[4][];
@@ -138,30 +138,30 @@ public class ModelCoresample extends BakedIEModel
 								(j+1)*4, 16,
 						};
 
-					putVertexData(new Vec3d(0, 0, -1), new Vec3d[]{
-							new Vec3d(wOff, 0, dOff),
-							new Vec3d(wOff, 1, dOff),
-							new Vec3d(wOff+width, 1, dOff),
-							new Vec3d(wOff+width, 0, dOff)
+					putVertexData(new Vector3d(0, 0, -1), new Vector3d[]{
+							new Vector3d(wOff, 0, dOff),
+							new Vector3d(wOff, 1, dOff),
+							new Vector3d(wOff+width, 1, dOff),
+							new Vector3d(wOff+width, 0, dOff)
 					}, uvs[0], textureStone, bakedQuads);
-					putVertexData(new Vec3d(0, 0, 1), new Vec3d[]{
-							new Vec3d(wOff+width, 0, dOff+depth),
-							new Vec3d(wOff+width, 1, dOff+depth),
-							new Vec3d(wOff, 1, dOff+depth),
-							new Vec3d(wOff, 0, dOff+depth)
+					putVertexData(new Vector3d(0, 0, 1), new Vector3d[]{
+							new Vector3d(wOff+width, 0, dOff+depth),
+							new Vector3d(wOff+width, 1, dOff+depth),
+							new Vector3d(wOff, 1, dOff+depth),
+							new Vector3d(wOff, 0, dOff+depth)
 					}, uvs[2], textureStone, bakedQuads);
-					putVertexData(new Vec3d(-1, 0, 0), new Vec3d[]{
-									new Vec3d(wOff, 0, dOff+depth),
-									new Vec3d(wOff, 1, dOff+depth),
-									new Vec3d(wOff, 1, dOff),
-									new Vec3d(wOff, 0, dOff)
+					putVertexData(new Vector3d(-1, 0, 0), new Vector3d[]{
+									new Vector3d(wOff, 0, dOff+depth),
+									new Vector3d(wOff, 1, dOff+depth),
+									new Vector3d(wOff, 1, dOff),
+									new Vector3d(wOff, 0, dOff)
 							},
 							uvs[3], textureStone, bakedQuads);
-					putVertexData(new Vec3d(1, 0, 0), new Vec3d[]{
-							new Vec3d(wOff+width, 0, dOff),
-							new Vec3d(wOff+width, 1, dOff),
-							new Vec3d(wOff+width, 1, dOff+depth),
-							new Vec3d(wOff+width, 0, dOff+depth)
+					putVertexData(new Vector3d(1, 0, 0), new Vector3d[]{
+							new Vector3d(wOff+width, 0, dOff),
+							new Vector3d(wOff+width, 1, dOff),
+							new Vector3d(wOff+width, 1, dOff+depth),
+							new Vector3d(wOff+width, 0, dOff+depth)
 					}, uvs[1], textureStone, bakedQuads);
 				}
 				else
@@ -179,29 +179,29 @@ public class ModelCoresample extends BakedIEModel
 							};
 
 						float h1 = weight/(float)pixelLength;
-						putVertexData(new Vec3d(0, 0, -1), new Vec3d[]{
-								new Vec3d(wOff, h, dOff),
-								new Vec3d(wOff, h+h1, dOff),
-								new Vec3d(wOff+width, h+h1, dOff),
-								new Vec3d(wOff+width, h, dOff)
+						putVertexData(new Vector3d(0, 0, -1), new Vector3d[]{
+								new Vector3d(wOff, h, dOff),
+								new Vector3d(wOff, h+h1, dOff),
+								new Vector3d(wOff+width, h+h1, dOff),
+								new Vector3d(wOff+width, h, dOff)
 						}, uvs[0], sprite, bakedQuads);
-						putVertexData(new Vec3d(0, 0, 1), new Vec3d[]{
-								new Vec3d(wOff+width, h, dOff+depth),
-								new Vec3d(wOff+width, h+h1, dOff+depth),
-								new Vec3d(wOff, h+h1, dOff+depth),
-								new Vec3d(wOff, h, dOff+depth)
+						putVertexData(new Vector3d(0, 0, 1), new Vector3d[]{
+								new Vector3d(wOff+width, h, dOff+depth),
+								new Vector3d(wOff+width, h+h1, dOff+depth),
+								new Vector3d(wOff, h+h1, dOff+depth),
+								new Vector3d(wOff, h, dOff+depth)
 						}, uvs[2], sprite, bakedQuads);
-						putVertexData(new Vec3d(-1, 0, 0), new Vec3d[]{
-								new Vec3d(wOff, h, dOff+depth),
-								new Vec3d(wOff, h+h1, dOff+depth),
-								new Vec3d(wOff, h+h1, dOff),
-								new Vec3d(wOff, h, dOff)
+						putVertexData(new Vector3d(-1, 0, 0), new Vector3d[]{
+								new Vector3d(wOff, h, dOff+depth),
+								new Vector3d(wOff, h+h1, dOff+depth),
+								new Vector3d(wOff, h+h1, dOff),
+								new Vector3d(wOff, h, dOff)
 						}, uvs[3], sprite, bakedQuads);
-						putVertexData(new Vec3d(1, 0, 0), new Vec3d[]{
-								new Vec3d(wOff+width, h, dOff),
-								new Vec3d(wOff+width, h+h1, dOff),
-								new Vec3d(wOff+width, h+h1, dOff+depth),
-								new Vec3d(wOff+width, h, dOff+depth)
+						putVertexData(new Vector3d(1, 0, 0), new Vector3d[]{
+								new Vector3d(wOff+width, h, dOff),
+								new Vector3d(wOff+width, h+h1, dOff),
+								new Vector3d(wOff+width, h+h1, dOff+depth),
+								new Vector3d(wOff+width, h, dOff+depth)
 						}, uvs[1], sprite, bakedQuads);
 						h += h1;
 					}
@@ -223,7 +223,7 @@ public class ModelCoresample extends BakedIEModel
 		return bakedQuads;
 	}
 
-	protected final void putVertexData(Vec3d normal, Vec3d[] vertices, double[] uvs, TextureAtlasSprite sprite, List<BakedQuad> out)
+	protected final void putVertexData(Vector3d normal, Vector3d[] vertices, double[] uvs, TextureAtlasSprite sprite, List<BakedQuad> out)
 	{
 		float d = LightUtil.diffuseLight((float)normal.x, (float)normal.y, (float)normal.z);
 		BakedQuad quad = ClientUtils.createBakedQuad(format, vertices, Direction.getFacingFromVector(normal.x, normal.y, normal.z),
@@ -329,13 +329,13 @@ public class ModelCoresample extends BakedIEModel
 	public static class RawCoresampleModel implements IModelGeometry<RawCoresampleModel>
 	{
 		@Override
-		public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation)
+		public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<RenderMaterial, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation)
 		{
 			return new ModelCoresample(null, DefaultVertexFormats.BLOCK);
 		}
 
 		@Override
-		public Collection<Material> getTextures(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<com.mojang.datafixers.util.Pair<String, String>> missingTextureErrors)
+		public Collection<RenderMaterial> getTextures(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<com.mojang.datafixers.util.Pair<String, String>> missingTextureErrors)
 		{
 			return ImmutableList.of();
 		}

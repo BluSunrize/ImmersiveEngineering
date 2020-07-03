@@ -22,13 +22,7 @@ import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.client.renderer.vertex.VertexFormatElement;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
@@ -37,13 +31,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.concurrent.ThreadTaskExecutor;
 import net.minecraft.util.concurrent.TickDelayedTask;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.TransformationMatrix;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -294,23 +289,23 @@ public class ApiUtils
 	}
 
 	@Deprecated
-	public static Vec3d getVecForIICAt(LocalWireNetwork net, ConnectionPoint pos, Connection conn, boolean fromOtherEnd)
+	public static Vector3d getVecForIICAt(LocalWireNetwork net, ConnectionPoint pos, Connection conn, boolean fromOtherEnd)
 	{
 		return WireUtils.getVecForIICAt(net, pos, conn, fromOtherEnd);
 	}
 
-	public static Vec3d addVectors(Vec3d vec0, Vec3d vec1)
+	public static Vector3d addVectors(Vector3d vec0, Vector3d vec1)
 	{
 		return vec0.add(vec1.x, vec1.y, vec1.z);
 	}
 
 	@Deprecated
-	public static Vec3d[] getConnectionCatenary(Vec3d start, Vec3d end, double slack)
+	public static Vector3d[] getConnectionCatenary(Vector3d start, Vector3d end, double slack)
 	{
 		return WireUtils.getConnectionCatenary(start, end, slack);
 	}
 
-	public static double getDim(Vec3d vec, int dim)
+	public static double getDim(Vector3d vec, int dim)
 	{
 		return dim==0?vec.x: (dim==1?vec.y: vec.z);
 	}
@@ -322,29 +317,29 @@ public class ApiUtils
 	}
 
 	@Deprecated
-	public static Vec3d offsetDim(Vec3d p, int dim, double amount)
+	public static Vector3d offsetDim(Vector3d p, int dim, double amount)
 	{
 		return p.add(dim==0?amount: 0, dim==1?amount: 0, dim==2?amount: 0);
 	}
 
 	@Deprecated
-	public static void raytraceAlongCatenary(Connection conn, LocalWireNetwork net, Consumer<Triple<BlockPos, Vec3d, Vec3d>> in,
-											 Consumer<Triple<BlockPos, Vec3d, Vec3d>> close)
+	public static void raytraceAlongCatenary(Connection conn, LocalWireNetwork net, Consumer<Triple<BlockPos, Vector3d, Vector3d>> in,
+											 Consumer<Triple<BlockPos, Vector3d, Vector3d>> close)
 	{
 		WireUtils.raytraceAlongCatenary(conn, net, in, close);
 	}
 
 	@Deprecated
-	public static void raytraceAlongCatenaryRelative(Connection conn, Consumer<Triple<BlockPos, Vec3d, Vec3d>> in,
-													 Consumer<Triple<BlockPos, Vec3d, Vec3d>> close, Vec3d vStart,
-													 Vec3d vEnd)
+	public static void raytraceAlongCatenaryRelative(Connection conn, Consumer<Triple<BlockPos, Vector3d, Vector3d>> in,
+													 Consumer<Triple<BlockPos, Vector3d, Vector3d>> close, Vector3d vStart,
+													 Vector3d vEnd)
 	{
 		WireUtils.raytraceAlongCatenaryRelative(conn, in, close, vStart, vEnd);
 	}
 
 	@Deprecated
-	public static void raytraceAlongCatenary(CatenaryData data, BlockPos offset, Consumer<Triple<BlockPos, Vec3d, Vec3d>> in,
-											 Consumer<Triple<BlockPos, Vec3d, Vec3d>> close)
+	public static void raytraceAlongCatenary(CatenaryData data, BlockPos offset, Consumer<Triple<BlockPos, Vector3d, Vector3d>> in,
+											 Consumer<Triple<BlockPos, Vector3d, Vector3d>> close)
 	{
 		WireUtils.raytraceAlongCatenary(data, offset, in, close);
 	}
@@ -370,8 +365,8 @@ public class ApiUtils
 	@Deprecated
 	public static Object convertToValidRecipeInput(Object input)
 	{
-		if(input instanceof Tag)
-			input = ((Tag)input).getId();
+		if(input instanceof ITag)
+			input = ((ITag)input).getId();
 		if(input instanceof ItemStack)
 			return input;
 		else if(input instanceof Item)
@@ -413,7 +408,7 @@ public class ApiUtils
 	}
 
 	@Deprecated
-	public static boolean preventsConnection(World worldIn, BlockPos pos, BlockState state, Vec3d a, Vec3d b)
+	public static boolean preventsConnection(World worldIn, BlockPos pos, BlockState state, Vector3d a, Vector3d b)
 	{
 		return WireUtils.preventsConnection(worldIn, pos, state, a, b);
 	}
@@ -422,8 +417,8 @@ public class ApiUtils
 	public static void knockbackNoSource(LivingEntity entity, double strength, double xRatio, double zRatio)
 	{
 		entity.isAirBorne = true;
-		Vec3d motionOld = entity.getMotion();
-		Vec3d toAdd = (new Vec3d(xRatio, 0.0D, zRatio)).normalize().scale(strength);
+		Vector3d motionOld = entity.getMotion();
+		Vector3d toAdd = (new Vector3d(xRatio, 0.0D, zRatio)).normalize().scale(strength);
 		entity.setMotion(
 				motionOld.x/2.0D-toAdd.x,
 				entity.onGround?Math.min(0.4D, motionOld.y/2.0D+strength): motionOld.y,
@@ -431,7 +426,7 @@ public class ApiUtils
 	}
 
 	@Deprecated
-	public static Connection raytraceWires(World world, Vec3d start, Vec3d end, @Nullable Connection ignored)
+	public static Connection raytraceWires(World world, Vector3d start, Vector3d end, @Nullable Connection ignored)
 	{
 		return WireUtils.raytraceWires(world, start, end, ignored);
 	}

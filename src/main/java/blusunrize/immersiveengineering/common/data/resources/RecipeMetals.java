@@ -13,8 +13,8 @@ import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import net.minecraft.item.Item;
+import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 
 import java.util.ArrayList;
@@ -72,9 +72,9 @@ public enum RecipeMetals
 
 	private final String name;
 	private final boolean isNative;
-	private final Tag<Item> ingot;
-	private final Tag<Item> dust;
-	private final Tag<Item> ore;
+	private final ITag<Item> ingot;
+	private final ITag<Item> dust;
+	private final ITag<Item> ore;
 	private final AlloyProperties alloyProperties;
 	private final SecondaryOutput[] secondaryOutputs;
 
@@ -111,17 +111,17 @@ public enum RecipeMetals
 		return isNative;
 	}
 
-	public Tag<Item> getIngot()
+	public ITag<Item> getIngot()
 	{
 		return ingot;
 	}
 
-	public Tag<Item> getDust()
+	public ITag<Item> getDust()
 	{
 		return dust;
 	}
 
-	public Tag<Item> getOre()
+	public ITag<Item> getOre()
 	{
 		return ore;
 	}

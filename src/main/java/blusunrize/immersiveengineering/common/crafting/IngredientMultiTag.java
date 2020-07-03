@@ -16,8 +16,8 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.RecipeItemHelper;
+import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -34,7 +34,7 @@ import java.util.stream.Stream;
  */
 public class IngredientMultiTag extends Ingredient
 {
-	private List<Tag<Item>> tags;
+	private List<ITag<Item>> tags;
 	private IntList itemIds = null;
 	private ItemStack[] array = null;
 
@@ -49,7 +49,7 @@ public class IngredientMultiTag extends Ingredient
 	private int totalSize()
 	{
 		int i = 0;
-		for(Tag<Item> list : tags)
+		for(ITag<Item> list : tags)
 			i += list.getAllElements().size();
 		return i;
 	}
@@ -61,7 +61,7 @@ public class IngredientMultiTag extends Ingredient
 		if(array==null||this.array.length!=totalSize())
 		{
 			NonNullList<ItemStack> lst = NonNullList.create();
-			for(Tag<Item> list : tags)
+			for(ITag<Item> list : tags)
 				for(Item stack : list.getAllElements())
 					stack.getItem().fillItemGroup(ItemGroup.SEARCH, lst);
 			this.array = lst.toArray(new ItemStack[0]);
@@ -78,7 +78,7 @@ public class IngredientMultiTag extends Ingredient
 		{
 			this.itemIds = new IntArrayList(totalSize());
 
-			for(Tag<Item> list : tags)
+			for(ITag<Item> list : tags)
 				for(Item item : list.getAllElements())
 					this.itemIds.add(RecipeItemHelper.pack(new ItemStack(item)));
 			this.itemIds.sort(IntComparators.NATURAL_COMPARATOR);
@@ -94,7 +94,7 @@ public class IngredientMultiTag extends Ingredient
 		if(input==null)
 			return false;
 
-		for(Tag<Item> list : tags)
+		for(ITag<Item> list : tags)
 			if(list.contains(input.getItem()))
 				return true;
 

@@ -26,7 +26,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -58,7 +58,7 @@ public class WireDamageHandler extends LocalNetworkHandler implements ICollision
 		AxisAlignedBB eAabb = e.getBoundingBox();
 		AxisAlignedBB includingExtra = eAabb.grow(extra).offset(-pos.getX(), -pos.getY(), -pos.getZ());
 		boolean endpointsInEntity = includingExtra.contains(info.intersectA)||includingExtra.contains(info.intersectB);
-		Optional<Vec3d> rayRes;
+		Optional<Vector3d> rayRes;
 		if(endpointsInEntity)
 			rayRes = Optional.empty();
 		else
@@ -86,7 +86,7 @@ public class WireDamageHandler extends LocalNetworkHandler implements ICollision
 				if(dmg.apply(e))
 				{
 					final float actualDamage = dmg.dmg;
-					Vec3d v = e.getLookVec();
+					Vector3d v = e.getLookVec();
 					ApiUtils.knockbackNoSource(e, actualDamage/KNOCKBACK_PER_DAMAGE, v.x, v.z);
 					//Consume energy
 					double factor = actualDamage/maxPossibleDamage;

@@ -1,11 +1,11 @@
 package blusunrize.immersiveengineering.common.util.chickenbones;
 
 import net.minecraft.client.renderer.GLAllocation;
-import net.minecraft.client.renderer.Matrix4f;
-import net.minecraft.client.renderer.TransformationMatrix;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.util.math.vector.TransformationMatrix;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 
 import javax.annotation.Nullable;
 import java.math.BigDecimal;
@@ -327,22 +327,22 @@ public class Matrix4
 		mat.multiply(this);
 	}
 
-	private Vec3d mult3x3(Vec3d vec)
+	private Vector3d mult3x3(Vector3d vec)
 	{
 		double x = m00*vec.x+m01*vec.y+m02*vec.z;
 		double y = m10*vec.x+m11*vec.y+m12*vec.z;
 		double z = m20*vec.x+m21*vec.y+m22*vec.z;
-		return new Vec3d(x, y, z);
+		return new Vector3d(x, y, z);
 	}
 
 	public Vector3f apply(Vector3f vec)
 	{
-		Vec3d input = new Vec3d(vec.getX(), vec.getY(), vec.getZ());
-		Vec3d output = apply(input);
+		Vector3d input = new Vector3d(vec.getX(), vec.getY(), vec.getZ());
+		Vector3d output = apply(input);
 		return new Vector3f((float)output.x, (float)output.y, (float)output.z);
 	}
 
-	public Vec3d apply(Vec3d vec)
+	public Vector3d apply(Vector3d vec)
 	{
 		return mult3x3(vec).add(m03, m13, m23);
 	}

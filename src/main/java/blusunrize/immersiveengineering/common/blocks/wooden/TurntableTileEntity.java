@@ -24,7 +24,7 @@ import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Direction.AxisDirection;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 public class TurntableTileEntity extends IEBaseTileEntity implements IStateBasedDirectional, INeighbourChangeTile, IHammerInteraction
 {
@@ -103,7 +103,7 @@ public class TurntableTileEntity extends IEBaseTileEntity implements IStateBased
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
 	{
 		return !entity.isSneaking();
 	}
@@ -115,7 +115,7 @@ public class TurntableTileEntity extends IEBaseTileEntity implements IStateBased
 	}
 
 	@Override
-	public boolean hammerUseSide(Direction side, PlayerEntity player, Vec3d hitVec)
+	public boolean hammerUseSide(Direction side, PlayerEntity player, Vector3d hitVec)
 	{
 		Direction facing = getFacing();
 		if(player.isSneaking()&&side.getAxis()!=facing.getAxis())

@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.IItemProvider;
 
 public class BlastFurnaceRecipeBuilder extends IEFinishedRecipe<BlastFurnaceRecipeBuilder>
@@ -33,7 +33,7 @@ public class BlastFurnaceRecipeBuilder extends IEFinishedRecipe<BlastFurnaceReci
 		return new BlastFurnaceRecipeBuilder().addResult(result);
 	}
 
-	public static BlastFurnaceRecipeBuilder builder(Tag<Item> result, int count)
+	public static BlastFurnaceRecipeBuilder builder(ITag<Item> result, int count)
 	{
 		return new BlastFurnaceRecipeBuilder().addResult(new IngredientWithSize(result, count));
 	}
@@ -49,7 +49,7 @@ public class BlastFurnaceRecipeBuilder extends IEFinishedRecipe<BlastFurnaceReci
 		return addItem("slag", itemStack);
 	}
 
-	public BlastFurnaceRecipeBuilder addSlag(Tag<Item> tag, int count)
+	public BlastFurnaceRecipeBuilder addSlag(ITag<Item> tag, int count)
 	{
 		return addIngredient("slag", new IngredientWithSize(tag, count));
 	}

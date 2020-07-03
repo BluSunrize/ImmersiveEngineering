@@ -13,8 +13,8 @@ import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -28,10 +28,10 @@ public class TagUtils
 	{
 		if(!isNonemptyBlockOrItemTag(oreName))
 			return false;
-		Tag<Item> itemTag = ItemTags.getCollection().get(oreName);
+		ITag<Item> itemTag = ItemTags.getCollection().get(oreName);
 		if(itemTag!=null&&itemTag.getAllElements().contains(stack.getItem()))
 			return true;
-		Tag<Block> blockTag = BlockTags.getCollection().get(oreName);
+		ITag<Block> blockTag = BlockTags.getCollection().get(oreName);
 		return blockTag!=null&&blockTag.getAllElements()
 				.stream()
 				.map(IItemProvider::asItem)
@@ -40,13 +40,13 @@ public class TagUtils
 
 	public static boolean isNonemptyItemTag(ResourceLocation name)
 	{
-		Tag<Item> t = ItemTags.getCollection().getTagMap().get(name);
+		ITag<Item> t = ItemTags.getCollection().getTagMap().get(name);
 		return t!=null&&!t.getAllElements().isEmpty();
 	}
 
 	public static boolean isNonemptyBlockTag(ResourceLocation name)
 	{
-		Tag<Block> t = BlockTags.getCollection().getTagMap().get(name);
+		ITag<Block> t = BlockTags.getCollection().getTagMap().get(name);
 		return t!=null&&!t.getAllElements().isEmpty();
 	}
 
@@ -63,7 +63,7 @@ public class TagUtils
 		return ret;
 	}
 
-	private static <T extends IItemProvider> void addItemsInTag(NonNullList<ItemStack> out, Tag<T> in)
+	private static <T extends IItemProvider> void addItemsInTag(NonNullList<ItemStack> out, ITag<T> in)
 	{
 		if(in!=null)
 			in.getAllElements().stream()

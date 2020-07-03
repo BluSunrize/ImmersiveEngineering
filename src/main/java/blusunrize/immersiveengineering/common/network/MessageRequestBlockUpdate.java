@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.network;
 import blusunrize.immersiveengineering.common.EventHandler;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.DimensionType;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 import org.apache.commons.lang3.tuple.ImmutablePair;

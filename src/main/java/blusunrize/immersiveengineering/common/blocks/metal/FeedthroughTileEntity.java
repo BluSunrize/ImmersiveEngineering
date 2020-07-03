@@ -14,6 +14,8 @@ import net.minecraft.block.Blocks;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.LootContext;
+import net.minecraft.loot.LootParameters;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.state.EnumProperty;
@@ -22,13 +24,11 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.storage.loot.LootContext;
-import net.minecraft.world.storage.loot.LootParameters;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3i;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -79,7 +79,7 @@ public class FeedthroughTileEntity extends ImmersiveConnectableTileEntity implem
 	}
 
 	@Override
-	public Vec3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
+	public Vector3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
 		double l = INFOS.get(reference).connOffset;
 		int factor;
@@ -87,12 +87,12 @@ public class FeedthroughTileEntity extends ImmersiveConnectableTileEntity implem
 			factor = 1;
 		else
 			factor = -1;
-		return new Vec3d(.5+(.5+l)*getFacing().getXOffset()*factor, .5+(.5+l)*getFacing().getYOffset()*factor,
+		return new Vector3d(.5+(.5+l)*getFacing().getXOffset()*factor, .5+(.5+l)*getFacing().getYOffset()*factor,
 				.5+(.5+l)*getFacing().getZOffset()*factor);
 	}
 
 	@Override
-	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vec3i offset)
+	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vector3i offset)
 	{
 		if(!WireApi.canMix(reference, cableType))
 			return false;
@@ -174,7 +174,7 @@ public class FeedthroughTileEntity extends ImmersiveConnectableTileEntity implem
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
 	{
 		return false;
 	}
@@ -255,7 +255,7 @@ public class FeedthroughTileEntity extends ImmersiveConnectableTileEntity implem
 
 	@Nullable
 	@Override
-	public ConnectionPoint getTargetedPoint(TargetingInfo info, Vec3i offset)
+	public ConnectionPoint getTargetedPoint(TargetingInfo info, Vector3i offset)
 	{
 		if(offset.equals(getFacing().getDirectionVec()))
 			return getPositivePoint();

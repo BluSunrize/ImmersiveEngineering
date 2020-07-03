@@ -11,8 +11,8 @@ package blusunrize.immersiveengineering.common.data.resources;
 
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import net.minecraft.item.Item;
+import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 
@@ -31,7 +31,7 @@ public class SecondaryOutput
 		this.conditions = new ICondition[0];
 	}
 
-	public SecondaryOutput(Tag<Item> tag, float chance)
+	public SecondaryOutput(ITag<Item> tag, float chance)
 	{
 		this(new IngredientWithSize(tag), chance);
 		this.conditions = new ICondition[]{getTagCondition(tag)};

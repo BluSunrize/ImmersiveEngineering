@@ -10,14 +10,14 @@ package blusunrize.immersiveengineering.common.blocks.cloth;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import net.minecraft.block.BlockState;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.Property;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 
 public class ShaderBannerWallBlock extends ShaderBannerBlock
 {
-	public static final IProperty<Direction> FACING = IEProperties.FACING_HORIZONTAL;
+	public static final Property<Direction> FACING = IEProperties.FACING_HORIZONTAL;
 
 	public ShaderBannerWallBlock()
 	{

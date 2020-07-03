@@ -31,7 +31,11 @@ import net.minecraft.potion.Effects;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.EntityRayTraceResult;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -94,7 +98,7 @@ public class RevolvershotEntity extends IEProjectileEntity
 	{
 		this(eType, world, living, living.getPosX()+ax, living.getPosY()+living.getEyeHeight()+ay, living.getPosZ()+az, ax, ay, az, type);
 		setShooterSynced();
-		setMotion(Vec3d.ZERO);
+		setMotion(Vector3d.ZERO);
 	}
 
 	@OnlyIn(Dist.CLIENT)

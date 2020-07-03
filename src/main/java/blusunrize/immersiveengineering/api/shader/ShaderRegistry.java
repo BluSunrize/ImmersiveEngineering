@@ -19,7 +19,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.tuple.Triple;
 
@@ -66,7 +66,7 @@ public class ShaderRegistry
 	/**
 	 * The deafault cost for replicating a shader. Prices are multiplied with 10-rarity level. Prices can be adjusted for every registry entry
 	 */
-	public static Tag<Item> defaultReplicationCost = IETags.getTagsFor(EnumMetals.SILVER).dust;
+	public static ITag<Item> defaultReplicationCost = IETags.getTagsFor(EnumMetals.SILVER).dust;
 	/**
 	 * A HashMap to set default texture bounds for the additional layers of a shadercase. Saves you the trouble of redfining them for every shader. See {@link ShaderLayer#setTextureBounds(double... bounds)}.
 	 */

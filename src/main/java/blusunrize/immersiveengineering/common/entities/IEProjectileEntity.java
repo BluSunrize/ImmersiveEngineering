@@ -25,6 +25,7 @@ import net.minecraft.util.math.RayTraceContext.BlockMode;
 import net.minecraft.util.math.RayTraceContext.FluidMode;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -74,7 +75,7 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 		setMotion(ax, ay, az);
 		this.shootingEntity = living!=null?living.getUniqueID(): UUID.randomUUID();
 		this.setShooterSynced();
-		Vec3d motion = getMotion();
+		Vector3d motion = getMotion();
 		this.shoot(motion.x, motion.y, motion.z, 2*1.5F, 1.0F);
 	}
 
@@ -164,8 +165,8 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 				return;
 			}
 
-			Vec3d currentPos = new Vec3d(this.getPosX(), this.getPosY(), this.getPosZ());
-			Vec3d nextPos = new Vec3d(this.getPosX(), this.getPosY(), this.getPosZ()).add(getMotion());
+			Vector3d currentPos = new Vector3d(this.getPosX(), this.getPosY(), this.getPosZ());
+			Vector3d nextPos = new Vector3d(this.getPosX(), this.getPosY(), this.getPosZ()).add(getMotion());
 			RayTraceResult mop = this.world.rayTraceBlocks(new RayTraceContext(currentPos, nextPos, BlockMode.COLLIDER,
 					FluidMode.NONE, this));
 
@@ -184,7 +185,7 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 					{
 						float f = 0.3F;
 						AxisAlignedBB axisalignedbb = entity1.getBoundingBox().grow((double)f, (double)f, (double)f);
-						Optional<Vec3d> movingobjectposition1 = axisalignedbb.rayTrace(currentPos, nextPos);
+						Optional<Vector3d> movingobjectposition1 = axisalignedbb.rayTrace(currentPos, nextPos);
 
 						if(movingobjectposition1.isPresent())
 						{
@@ -228,7 +229,7 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 					this.inBlockState = this.world.getBlockState(blockHit.getPos());
 					setMotion(blockHit.getHitVec().subtract(getPositionVector()));
 					float f2 = (float)getMotion().length();
-					Vec3d motion = getMotion();
+					Vector3d motion = getMotion();
 					this.setPosition(
 							this.getPosX()-motion.x/(double)f2*0.05,
 							this.getPosY()-motion.y/(double)f2*0.05,

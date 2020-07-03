@@ -88,7 +88,7 @@ public class ConnectionLoader implements IModelLoader<ConnectorModel>
 		public IBakedModel bake(
 				IModelConfiguration owner,
 				ModelBakery bakery,
-				Function<Material, TextureAtlasSprite> spriteGetter,
+				Function<RenderMaterial, TextureAtlasSprite> spriteGetter,
 				IModelTransform modelTransform,
 				ItemOverrideList overrides,
 				ResourceLocation modelLocation)
@@ -102,15 +102,15 @@ public class ConnectionLoader implements IModelLoader<ConnectorModel>
 		}
 
 		@Override
-		public Collection<Material> getTextures(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors)
+		public Collection<RenderMaterial> getTextures(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors)
 		{
-			Collection<Material> ret;
+			Collection<RenderMaterial> ret;
 			if(baseModel!=null)
 				ret = new ArrayList<>(
 						baseModel.getTextures(owner, modelGetter, missingTextureErrors));
 			else
 				ret = new ArrayList<>();
-			ret.add(new Material(PlayerContainer.LOCATION_BLOCKS_TEXTURE, WIRE_LOC));
+			ret.add(new RenderMaterial(PlayerContainer.LOCATION_BLOCKS_TEXTURE, WIRE_LOC));
 			return ret;
 		}
 	}

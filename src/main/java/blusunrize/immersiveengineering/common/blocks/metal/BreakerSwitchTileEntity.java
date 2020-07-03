@@ -21,8 +21,6 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.Quaternion;
-import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -34,11 +32,13 @@ import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.util.math.vector.TransformationMatrix;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.util.text.TranslationTextComponent;
 
 import javax.annotation.Nonnull;
@@ -70,7 +70,7 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 
 	@Nullable
 	@Override
-	public ConnectionPoint getTargetedPoint(TargetingInfo info, Vec3i offset)
+	public ConnectionPoint getTargetedPoint(TargetingInfo info, Vector3i offset)
 	{
 		Matrix4 mat = new Matrix4()
 				.setIdentity()
@@ -78,14 +78,14 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 				.rotate(-Math.PI/2*rotation, 0, 0, 1)
 				.translate(-.5, -.5, 0)
 				.multiply(Matrix4.inverseFacing(getFacing()));
-		Vec3d transformedHit = mat.apply(new Vec3d(info.hitX, info.hitY, info.hitZ));
+		Vector3d transformedHit = mat.apply(new Vector3d(info.hitX, info.hitY, info.hitZ));
 		IELogger.logger.info("Transformed hit: {}, original: {}", transformedHit,
-				new Vec3d(info.hitX, info.hitY, info.hitZ));
+				new Vector3d(info.hitX, info.hitY, info.hitZ));
 		return new ConnectionPoint(pos, transformedHit.x > 0.5?RIGHT_INDEX: LEFT_INDEX);
 	}
 
 	@Override
-	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vec3i offset)
+	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vector3i offset)
 	{
 		if(HV_CATEGORY.equals(cableType.getCategory())&&!canTakeHV())
 			return false;
@@ -136,16 +136,16 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 	}
 
 	@Override
-	public Vec3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
+	public Vector3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
 		Matrix4 mat = new Matrix4(getFacing());
 		mat.translate(.5, .5, 0).rotate(Math.PI/2*rotation, 0, 0, 1).translate(-.5, -.5, 0);
 		boolean isLeft = here.getIndex()==LEFT_INDEX;
-		return mat.apply(new Vec3d(isLeft?.25: .75, .5, .125));
+		return mat.apply(new Vector3d(isLeft?.25: .75, .5, .125));
 	}
 
 	@Override
-	public boolean hammerUseSide(Direction side, PlayerEntity player, Vec3d hitVec)
+	public boolean hammerUseSide(Direction side, PlayerEntity player, Vector3d hitVec)
 	{
 		if(player.isSneaking())
 		{
@@ -234,7 +234,7 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
 	{
 		return false;
 	}
@@ -248,8 +248,8 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 	@Override
 	public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx)
 	{
-		Vec3d start = new Vec3d(.25, .1875, 0);
-		Vec3d end = new Vec3d(.75, .8125, .5);
+		Vector3d start = new Vector3d(.25, .1875, 0);
+		Vector3d end = new Vector3d(.75, .8125, .5);
 		Matrix4 mat = new Matrix4(getFacing());
 		mat.translate(.5, .5, 0).rotate(Math.PI/2*rotation, 0, 0, 1).translate(-.5, -.5, 0);
 		start = mat.apply(start);

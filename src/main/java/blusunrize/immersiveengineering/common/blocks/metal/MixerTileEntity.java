@@ -32,9 +32,9 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -113,7 +113,7 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 					if(fs!=null)
 					{
 						float amount = tank.getFluidAmount()/(float)tank.getCapacity()*1.125f;
-						Vec3d partPos = new Vec3d(getPos().getX()+.5f+getFacing().getXOffset()*.5f+(getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY()).getXOffset()*.5f, getPos().getY()-.0625f+amount, getPos().getZ()+.5f+getFacing().getZOffset()*.5f+(getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY()).getZOffset()*.5f);
+						Vector3d partPos = new Vector3d(getPos().getX()+.5f+getFacing().getXOffset()*.5f+(getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY()).getXOffset()*.5f, getPos().getY()-.0625f+amount, getPos().getZ()+.5f+getFacing().getZOffset()*.5f+(getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY()).getZOffset()*.5f);
 						float r = Utils.RAND.nextFloat()*.8125f;
 						float angleRad = (float)Math.toRadians(animation_agitator);
 						partPos = partPos.add(r*Math.cos(angleRad), 0, r*Math.sin(angleRad));

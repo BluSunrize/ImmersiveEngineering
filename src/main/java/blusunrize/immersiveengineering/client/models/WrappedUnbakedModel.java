@@ -36,14 +36,14 @@ public abstract class WrappedUnbakedModel implements IUnbakedModel
 	}
 
 	@Override
-	public Collection<Material> getTextures(Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors)
+	public Collection<RenderMaterial> getTextures(Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors)
 	{
 		return base.getTextures(modelGetter, missingTextureErrors);
 	}
 
 	@Nullable
 	@Override
-	public IBakedModel bakeModel(ModelBakery modelBakeryIn, Function<Material, TextureAtlasSprite> spriteGetterIn, IModelTransform transformIn, ResourceLocation locationIn)
+	public IBakedModel bakeModel(ModelBakery modelBakeryIn, Function<RenderMaterial, TextureAtlasSprite> spriteGetterIn, IModelTransform transformIn, ResourceLocation locationIn)
 	{
 		return base.bakeModel(modelBakeryIn, spriteGetterIn, transformIn, locationIn);
 	}

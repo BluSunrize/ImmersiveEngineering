@@ -20,7 +20,6 @@ import blusunrize.immersiveengineering.common.entities.FluorescentTubeEntity;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -34,7 +33,8 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector4f;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -67,7 +67,7 @@ public class FluorescentTubeItem extends IEBaseItem implements IConfigurableTool
 			if(!world.isRemote)
 			{
 				ItemStack stack = ctx.getItem();
-				Vec3d look = player.getLookVec();
+				Vector3d look = player.getLookVec();
 				float angle = (float)Math.toDegrees(Math.atan2(look.x, look.z));
 				FluorescentTubeEntity tube = new FluorescentTubeEntity(world, stack.copy(), angle);
 				tube.setPosition(ctx.getHitVec().x, ctx.getHitVec().y+1.5, ctx.getHitVec().z);

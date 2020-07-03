@@ -56,7 +56,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
@@ -583,7 +584,7 @@ public class ClientUtils
 		return quat;
 	}
 
-	private static final Vec3d fadingOffset = new Vec3d(.0001F, .0001F, .0001F);
+	private static final Vector3d fadingOffset = new Vector3d(.0001F, .0001F, .0001F);
 	private static float[] alphaFirst2Fading = {0, 0, 1, 1};
 	private static float[] alphaNoFading = {1, 1, 1, 1};
 
@@ -595,10 +596,10 @@ public class ClientUtils
 		};
 		if(data==null)
 			return ret;
-		Vec3d dir = Vec3d.ZERO;
-		Vec3d cross = Vec3d.ZERO;
+		Vector3d dir = Vector3d.ZERO;
+		Vector3d cross = Vector3d.ZERO;
 
-		Vec3d up = new Vec3d(0, 1, 0);
+		Vector3d up = new Vector3d(0, 1, 0);
 		for(Connection.RenderData connData : data)
 		{
 			int color = connData.color;
@@ -612,8 +613,8 @@ public class ClientUtils
 				boolean fading = i==connData.pointsToRender-1&&connData.pointsToRender <= RenderData.POINTS_PER_WIRE;
 				List<BakedQuad> curr = ret[fading?1: 0];
 				int j = i-1;
-				Vec3d current = connData.getPoint(i);
-				Vec3d previous = connData.getPoint(j);
+				Vector3d current = connData.getPoint(i);
+				Vector3d previous = connData.getPoint(j);
 				if(fading)
 				{
 					current = current.add(fadingOffset);
@@ -627,8 +628,8 @@ public class ClientUtils
 					cross = cross.scale(radius/cross.length());
 				}
 				else
-					cross = new Vec3d(radius, 0, 0);
-				Vec3d[] vertices = {current.add(cross),
+					cross = new Vector3d(radius, 0, 0);
+				Vector3d[] vertices = {current.add(cross),
 						current.subtract(cross),
 						previous.subtract(cross),
 						previous.add(cross)};
@@ -641,8 +642,8 @@ public class ClientUtils
 					cross = cross.scale(radius/cross.length());
 				}
 				else
-					cross = new Vec3d(0, 0, radius);
-				vertices = new Vec3d[]{current.add(cross),
+					cross = new Vector3d(0, 0, radius);
+				vertices = new Vector3d[]{current.add(cross),
 						current.subtract(cross),
 						previous.subtract(cross),
 						previous.add(cross)};
@@ -656,10 +657,10 @@ public class ClientUtils
 	public static int getVertexCountForSide(ConnectionPoint start, Connection conn, int totalPoints)
 	{
 		List<Integer> crossings = new ArrayList<>();
-		Vec3d lastPoint = conn.getPoint(0, start);
+		Vector3d lastPoint = conn.getPoint(0, start);
 		for(int i = 1; i <= totalPoints; i++)
 		{
-			Vec3d current = conn.getPoint(i/(double)totalPoints, start);
+			Vector3d current = conn.getPoint(i/(double)totalPoints, start);
 			if(crossesChunkBoundary(current, lastPoint, start.getPosition()))
 				crossings.add(i);
 			lastPoint = current;
@@ -674,44 +675,44 @@ public class ClientUtils
 			return greater?totalPoints+1: 0;
 	}
 
-	public static Vec3d[] applyMatrixToVertices(TransformationMatrix matrix, Vec3d... vertices)
+	public static Vector3d[] applyMatrixToVertices(TransformationMatrix matrix, Vector3d... vertices)
 	{
 		if(matrix==null)
 			return vertices;
-		Vec3d[] ret = new Vec3d[vertices.length];
+		Vector3d[] ret = new Vector3d[vertices.length];
 		for(int i = 0; i < ret.length; i++)
 		{
 			Vector4f vec = new Vector4f((float)vertices[i].x, (float)vertices[i].y, (float)vertices[i].z, 1);
 			matrix.transformPosition(vec);
 			vec.perspectiveDivide();
-			ret[i] = new Vec3d(vec.getX(), vec.getY(), vec.getZ());
+			ret[i] = new Vector3d(vec.getX(), vec.getY(), vec.getZ());
 		}
 		return ret;
 	}
 
-	public static Set<BakedQuad> createBakedBox(Vec3d from, Vec3d to, Matrix4 matrix, Function<Direction, TextureAtlasSprite> textureGetter, float[] colour)
+	public static Set<BakedQuad> createBakedBox(Vector3d from, Vector3d to, Matrix4 matrix, Function<Direction, TextureAtlasSprite> textureGetter, float[] colour)
 	{
 		return createBakedBox(from, to, matrix, Direction.NORTH, textureGetter, colour);
 	}
 
-	public static Set<BakedQuad> createBakedBox(Vec3d from, Vec3d to, Matrix4 matrix, Direction facing, Function<Direction, TextureAtlasSprite> textureGetter, float[] colour)
+	public static Set<BakedQuad> createBakedBox(Vector3d from, Vector3d to, Matrix4 matrix, Direction facing, Function<Direction, TextureAtlasSprite> textureGetter, float[] colour)
 	{
 		return createBakedBox(from, to, matrix, facing, vertices -> vertices, textureGetter, colour);
 	}
 
 	@Nonnull
-	public static Set<BakedQuad> createBakedBox(Vec3d from, Vec3d to, Matrix4 matrixIn, Direction facing, Function<Vec3d[], Vec3d[]> vertexTransformer, Function<Direction, TextureAtlasSprite> textureGetter, float[] colour)
+	public static Set<BakedQuad> createBakedBox(Vector3d from, Vector3d to, Matrix4 matrixIn, Direction facing, Function<Vector3d[], Vector3d[]> vertexTransformer, Function<Direction, TextureAtlasSprite> textureGetter, float[] colour)
 	{
 		TransformationMatrix matrix = matrixIn.toTransformationMatrix();
 		HashSet<BakedQuad> quads = new HashSet<>();
 		if(vertexTransformer==null)
 			vertexTransformer = v -> v;
 
-		Vec3d[] vertices = {
-				new Vec3d(from.x, from.y, from.z),
-				new Vec3d(from.x, from.y, to.z),
-				new Vec3d(to.x, from.y, to.z),
-				new Vec3d(to.x, from.y, from.z)
+		Vector3d[] vertices = {
+				new Vector3d(from.x, from.y, from.z),
+				new Vector3d(from.x, from.y, to.z),
+				new Vector3d(to.x, from.y, to.z),
+				new Vector3d(to.x, from.y, from.z)
 		};
 		TextureAtlasSprite sprite = textureGetter.apply(Direction.DOWN);
 		if(sprite!=null)
@@ -719,18 +720,18 @@ public class ClientUtils
 
 		for(int i = 0; i < vertices.length; i++)
 		{
-			Vec3d v = vertices[i];
-			vertices[i] = new Vec3d(v.x, to.y, v.z);
+			Vector3d v = vertices[i];
+			vertices[i] = new Vector3d(v.x, to.y, v.z);
 		}
 		sprite = textureGetter.apply(Direction.UP);
 		if(sprite!=null)
 			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.BLOCK, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(Direction.UP, facing), sprite, new double[]{from.x*16, from.z*16, to.x*16, to.z*16}, colour, false));
 
-		vertices = new Vec3d[]{
-				new Vec3d(to.x, to.y, from.z),
-				new Vec3d(to.x, from.y, from.z),
-				new Vec3d(from.x, from.y, from.z),
-				new Vec3d(from.x, to.y, from.z)
+		vertices = new Vector3d[]{
+				new Vector3d(to.x, to.y, from.z),
+				new Vector3d(to.x, from.y, from.z),
+				new Vector3d(from.x, from.y, from.z),
+				new Vector3d(from.x, to.y, from.z)
 		};
 		sprite = textureGetter.apply(Direction.NORTH);
 		if(sprite!=null)
@@ -738,18 +739,18 @@ public class ClientUtils
 
 		for(int i = 0; i < vertices.length; i++)
 		{
-			Vec3d v = vertices[i];
-			vertices[i] = new Vec3d(v.x, v.y, to.z);
+			Vector3d v = vertices[i];
+			vertices[i] = new Vector3d(v.x, v.y, to.z);
 		}
 		sprite = textureGetter.apply(Direction.SOUTH);
 		if(sprite!=null)
 			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.BLOCK, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(Direction.SOUTH, facing), sprite, new double[]{to.x*16, 16-to.y*16, from.x*16, 16-from.y*16}, colour, true));
 
-		vertices = new Vec3d[]{
-				new Vec3d(from.x, to.y, to.z),
-				new Vec3d(from.x, from.y, to.z),
-				new Vec3d(from.x, from.y, from.z),
-				new Vec3d(from.x, to.y, from.z)
+		vertices = new Vector3d[]{
+				new Vector3d(from.x, to.y, to.z),
+				new Vector3d(from.x, from.y, to.z),
+				new Vector3d(from.x, from.y, from.z),
+				new Vector3d(from.x, to.y, from.z)
 		};
 		sprite = textureGetter.apply(Direction.WEST);
 		if(sprite!=null)
@@ -757,8 +758,8 @@ public class ClientUtils
 
 		for(int i = 0; i < vertices.length; i++)
 		{
-			Vec3d v = vertices[i];
-			vertices[i] = new Vec3d(to.x, v.y, v.z);
+			Vector3d v = vertices[i];
+			vertices[i] = new Vector3d(to.x, v.y, v.z);
 		}
 		sprite = textureGetter.apply(Direction.EAST);
 		if(sprite!=null)
@@ -767,32 +768,32 @@ public class ClientUtils
 		return quads;
 	}
 
-	public static BakedQuad createBakedQuad(VertexFormat format, Vec3d[] vertices, Direction facing, TextureAtlasSprite sprite, float[] colour, boolean invert, float[] alpha)
+	public static BakedQuad createBakedQuad(VertexFormat format, Vector3d[] vertices, Direction facing, TextureAtlasSprite sprite, float[] colour, boolean invert, float[] alpha)
 	{
 		return createBakedQuad(format, vertices, facing, sprite, new double[]{0, 0, 16, 16}, colour, invert, alpha);
 	}
 
-	public static BakedQuad createSmartLightingBakedQuad(VertexFormat format, Vec3d[] vertices, Direction facing, TextureAtlasSprite sprite, float[] colour, boolean invert, float[] alpha, BlockPos base)
+	public static BakedQuad createSmartLightingBakedQuad(VertexFormat format, Vector3d[] vertices, Direction facing, TextureAtlasSprite sprite, float[] colour, boolean invert, float[] alpha, BlockPos base)
 	{
 		return createBakedQuad(format, vertices, facing, sprite, new double[]{0, 0, 16, 16}, colour, invert, alpha, true, base);
 	}
 
-	public static BakedQuad createBakedQuad(VertexFormat format, Vec3d[] vertices, Direction facing, TextureAtlasSprite sprite, double[] uvs, float[] colour, boolean invert)
+	public static BakedQuad createBakedQuad(VertexFormat format, Vector3d[] vertices, Direction facing, TextureAtlasSprite sprite, double[] uvs, float[] colour, boolean invert)
 	{
 		return createBakedQuad(format, vertices, facing, sprite, uvs, colour, invert, alphaNoFading);
 	}
 
-	public static BakedQuad createBakedQuad(VertexFormat format, Vec3d[] vertices, Direction facing, TextureAtlasSprite sprite, double[] uvs, float[] colour, boolean invert, float[] alpha)
+	public static BakedQuad createBakedQuad(VertexFormat format, Vector3d[] vertices, Direction facing, TextureAtlasSprite sprite, double[] uvs, float[] colour, boolean invert, float[] alpha)
 	{
 		return createBakedQuad(format, vertices, facing, sprite, uvs, colour, invert, alpha, false, null);
 	}
 
-	public static BakedQuad createBakedQuad(VertexFormat format, Vec3d[] vertices, Direction facing, TextureAtlasSprite sprite, double[] uvs, float[] colour, boolean invert, float[] alpha, boolean smartLighting, BlockPos basePos)
+	public static BakedQuad createBakedQuad(VertexFormat format, Vector3d[] vertices, Direction facing, TextureAtlasSprite sprite, double[] uvs, float[] colour, boolean invert, float[] alpha, boolean smartLighting, BlockPos basePos)
 	{
 		BakedQuadBuilder builder = new BakedQuadBuilder(sprite);
 		builder.setQuadOrientation(facing);
 		builder.setApplyDiffuseLighting(true);
-		Vec3d faceNormal = new Vec3d(facing.getDirectionVec());
+		Vector3d faceNormal = new Vector3d(facing.getDirectionVec());
 		int vId = invert?3: 0;
 		int u = vId > 1?2: 0;
 		putVertexData(format, builder, vertices[vId], faceNormal, uvs[u], uvs[1], sprite, colour, alpha[vId]);
@@ -809,7 +810,7 @@ public class ClientUtils
 		return smartLighting?new SmartLightingQuad(tmp.getVertexData(), -1, facing, sprite, basePos): tmp;
 	}
 
-	public static void putVertexData(VertexFormat format, BakedQuadBuilder builder, Vec3d pos, Vec3d faceNormal, double u, double v, TextureAtlasSprite sprite, float[] colour, float alpha)
+	public static void putVertexData(VertexFormat format, BakedQuadBuilder builder, Vector3d pos, Vector3d faceNormal, double u, double v, TextureAtlasSprite sprite, float[] colour, float alpha)
 	{
 		for(int e = 0; e < format.getElements().size(); e++)
 			switch(format.getElements().get(e).getUsage())
@@ -848,7 +849,7 @@ public class ClientUtils
 		return Minecraft.getInstance().getAtlasSpriteGetter(PlayerContainer.LOCATION_BLOCKS_TEXTURE).apply(MissingTextureSprite.getLocation());
 	}
 
-	public static boolean crossesChunkBoundary(Vec3d start, Vec3d end, BlockPos offset)
+	public static boolean crossesChunkBoundary(Vector3d start, Vector3d end, BlockPos offset)
 	{
 		if(crossesChunkBorderSingleDim(start.x, end.x, offset.getX()))
 			return true;
@@ -1114,13 +1115,13 @@ public class ClientUtils
 					quadCoords[i][2] = Float.intBitsToFloat(vData[size*i+posOffset+2]);
 				}
 				//generate the normal vector
-				Vec3d side1 = new Vec3d(quadCoords[1][0]-quadCoords[3][0],
+				Vector3d side1 = new Vector3d(quadCoords[1][0]-quadCoords[3][0],
 						quadCoords[1][1]-quadCoords[3][1],
 						quadCoords[1][2]-quadCoords[3][2]);
-				Vec3d side2 = new Vec3d(quadCoords[2][0]-quadCoords[0][0],
+				Vector3d side2 = new Vector3d(quadCoords[2][0]-quadCoords[0][0],
 						quadCoords[2][1]-quadCoords[0][1],
 						quadCoords[2][2]-quadCoords[0][2]);
-				Vec3d normal = side1.crossProduct(side2);
+				Vector3d normal = side1.crossProduct(side2);
 				normal = normal.normalize();
 				// calculate the final light values and do the rendering
 				int l1 = getLightValue(neighbourBrightness[1], normalizationFactors[1], light&255, normal);
@@ -1139,7 +1140,7 @@ public class ClientUtils
 		}
 	}
 
-	private static int getLightValue(int[] neighbourBrightness, float[] normalizationFactors, int localBrightness, Vec3d normal)
+	private static int getLightValue(int[] neighbourBrightness, float[] normalizationFactors, int localBrightness, Vector3d normal)
 	{
 		//calculate the dot product between the required light vector and the normal of the quad
 		// quad brightness is proportional to this value, see https://github.com/ssloy/tinyrenderer/wiki/Lesson-2:-Triangle-rasterization-and-back-face-culling#flat-shading-render

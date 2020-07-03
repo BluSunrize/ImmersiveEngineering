@@ -14,8 +14,8 @@ import blusunrize.immersiveengineering.api.wires.localhandlers.ILocalHandlerProv
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3i;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -45,7 +45,7 @@ public interface IImmersiveConnectable extends ILocalHandlerProvider
 	/**
 	 * @return whether you can connect the given CableType to the tile
 	 */
-	boolean canConnectCable(WireType cableType, ConnectionPoint target, Vec3i offset);
+	boolean canConnectCable(WireType cableType, ConnectionPoint target, Vector3i offset);
 
 	/**
 	 * fired when a cable is attached, use to limit the cables attached to one type
@@ -53,7 +53,7 @@ public interface IImmersiveConnectable extends ILocalHandlerProvider
 	void connectCable(WireType cableType, ConnectionPoint target, IImmersiveConnectable other, ConnectionPoint otherTarget);
 
 	@Nullable
-	ConnectionPoint getTargetedPoint(TargetingInfo info, Vec3i offset);
+	ConnectionPoint getTargetedPoint(TargetingInfo info, Vector3i offset);
 
 	/**
 	 * fired for every not-simulated energy packet passing through. Used for energy meter and stuff
@@ -96,7 +96,7 @@ public interface IImmersiveConnectable extends ILocalHandlerProvider
 	/**
 	 * @return Where the cable should attach
 	 */
-	Vec3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here);
+	Vector3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here);
 
 	/**
 	 * returns a set of Blocks to be ignored when raytracing

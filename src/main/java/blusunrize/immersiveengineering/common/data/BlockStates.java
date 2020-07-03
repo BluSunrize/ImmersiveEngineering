@@ -42,7 +42,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourcePackType;
 import net.minecraft.state.EnumProperty;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.Property;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.ResourceLocation;
@@ -835,14 +835,14 @@ public class BlockStates extends BlockStateProvider
 				));
 	}
 
-	private void createRotatedBlock(Block block, Function<PartialBlockstate, ModelFile> model, IProperty<Direction> facing,
-									List<IProperty<?>> additionalProps)
+	private void createRotatedBlock(Block block, Function<PartialBlockstate, ModelFile> model, Property<Direction> facing,
+									List<Property<?>> additionalProps)
 	{
 		createRotatedBlock(block, model, facing, additionalProps, 0, 180);
 	}
 
-	private void createRotatedBlock(Block block, Function<PartialBlockstate, ModelFile> model, IProperty<Direction> facing,
-									List<IProperty<?>> additionalProps, int offsetRotX, int offsetRotY)
+	private void createRotatedBlock(Block block, Function<PartialBlockstate, ModelFile> model, Property<Direction> facing,
+									List<Property<?>> additionalProps, int offsetRotX, int offsetRotY)
 	{
 		VariantBlockStateBuilder stateBuilder = getVariantBuilder(block);
 		forEachState(stateBuilder.partialState(), additionalProps, state -> {
@@ -885,8 +885,8 @@ public class BlockStates extends BlockStateProvider
 		createMultiblock(b, masterModel, null, IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL, null, 180);
 	}
 
-	private void createMultiblock(Block b, ModelFile masterModel, @Nullable ModelFile mirroredModel, IProperty<Boolean> isSlave,
-								  EnumProperty<Direction> facing, @Nullable IProperty<Boolean> mirroredState, int rotationOffset)
+	private void createMultiblock(Block b, ModelFile masterModel, @Nullable ModelFile mirroredModel, Property<Boolean> isSlave,
+								  EnumProperty<Direction> facing, @Nullable Property<Boolean> mirroredState, int rotationOffset)
 	{
 		String objLoc = ((ModelBuilder<?>)masterModel).toJson().get("model").getAsString();
 		objLoc = objLoc.substring(0, objLoc.indexOf(':')+1)+objLoc.substring(objLoc.indexOf('/')+1);
@@ -897,8 +897,8 @@ public class BlockStates extends BlockStateProvider
 				)));
 	}
 
-	private void createMultiblock(Block b, ModelFile masterModel, @Nullable ModelFile mirroredModel, IProperty<Boolean> isSlave,
-								  EnumProperty<Direction> facing, @Nullable IProperty<Boolean> mirroredState, int rotationOffset,
+	private void createMultiblock(Block b, ModelFile masterModel, @Nullable ModelFile mirroredModel, Property<Boolean> isSlave,
+								  EnumProperty<Direction> facing, @Nullable Property<Boolean> mirroredState, int rotationOffset,
 								  ResourceLocation particleTex)
 	{
 		Preconditions.checkArgument((mirroredModel==null)==(mirroredState==null));
@@ -970,7 +970,7 @@ public class BlockStates extends BlockStateProvider
 		return ret;
 	}
 
-	private void createDirectionalBlock(Block b, IProperty<Direction> prop, ModelFile model)
+	private void createDirectionalBlock(Block b, Property<Direction> prop, ModelFile model)
 	{
 		VariantBlockStateBuilder builder = getVariantBuilder(b);
 		for(Direction d : Direction.BY_HORIZONTAL_INDEX)
@@ -998,8 +998,8 @@ public class BlockStates extends BlockStateProvider
 		}
 	}
 
-	private <T extends Comparable<T>> void forEach(PartialBlockstate base, IProperty<T> prop,
-												   List<IProperty<?>> remaining, Consumer<PartialBlockstate> out)
+	private <T extends Comparable<T>> void forEach(PartialBlockstate base, Property<T> prop,
+												   List<Property<?>> remaining, Consumer<PartialBlockstate> out)
 	{
 		for(T value : prop.getAllowedValues())
 			forEachState(base, remaining, map -> {
@@ -1008,12 +1008,12 @@ public class BlockStates extends BlockStateProvider
 			});
 	}
 
-	private void forEachState(PartialBlockstate base, List<IProperty<?>> props, Consumer<PartialBlockstate> out)
+	private void forEachState(PartialBlockstate base, List<Property<?>> props, Consumer<PartialBlockstate> out)
 	{
 		if(props.size() > 0)
 		{
-			List<IProperty<?>> remaining = props.subList(1, props.size());
-			IProperty<?> main = props.get(0);
+			List<Property<?>> remaining = props.subList(1, props.size());
+			Property<?> main = props.get(0);
 			forEach(base, main, remaining, out);
 		}
 		else
@@ -1022,10 +1022,10 @@ public class BlockStates extends BlockStateProvider
 
 	private void createConnector(Block b, Function<PartialBlockstate, ResourceLocation> model,
 								 Function<PartialBlockstate, ImmutableMap<String, ResourceLocation>> textures,
-								 List<IProperty<?>> additional, RenderType... layers)
+								 List<Property<?>> additional, RenderType... layers)
 	{
 		Preconditions.checkArgument(layers.length > 0);
-		final IProperty<Direction> facingProp;
+		final Property<Direction> facingProp;
 		final int xForHorizontal;
 		if(b.getDefaultState().has(IEProperties.FACING_ALL))
 		{
@@ -1176,7 +1176,7 @@ public class BlockStates extends BlockStateProvider
 
 	private void createConnector(Block b, Function<PartialBlockstate, ResourceLocation> model,
 								 ImmutableMap<String, ResourceLocation> textures,
-								 List<IProperty<?>> additional, RenderType... layers)
+								 List<Property<?>> additional, RenderType... layers)
 	{
 		createConnector(b, model, state -> textures, additional, layers);
 	}

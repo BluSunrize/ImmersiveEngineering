@@ -18,7 +18,7 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.Property;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
@@ -31,7 +31,7 @@ import java.util.Map;
 
 public class LanternBlock extends IEBaseBlock implements IHasObjProperty
 {
-	private static final IProperty<Direction> FACING = IEProperties.FACING_ALL;
+	private static final Property<Direction> FACING = IEProperties.FACING_ALL;
 
 	public LanternBlock(String name)
 	{

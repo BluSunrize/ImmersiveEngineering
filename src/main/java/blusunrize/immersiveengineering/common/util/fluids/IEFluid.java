@@ -15,7 +15,7 @@ import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FlowingFluid;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.IFluidState;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.item.BucketItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -134,7 +134,7 @@ public class IEFluid extends FlowingFluid
 	}
 
 	@Override
-	protected boolean canDisplace(IFluidState p_215665_1_, IBlockReader p_215665_2_, BlockPos p_215665_3_, Fluid fluidIn, Direction direction)
+	protected boolean canDisplace(FluidState p_215665_1_, IBlockReader p_215665_2_, BlockPos p_215665_3_, Fluid fluidIn, Direction direction)
 	{
 		return direction==Direction.DOWN&&!isEquivalentTo(fluidIn);
 	}
@@ -159,19 +159,19 @@ public class IEFluid extends FlowingFluid
 	}
 
 	@Override
-	protected BlockState getBlockState(IFluidState state)
+	protected BlockState getBlockState(FluidState state)
 	{
 		return block.getDefaultState().with(FlowingFluidBlock.LEVEL, getLevelFromState(state));
 	}
 
 	@Override
-	public boolean isSource(IFluidState state)
+	public boolean isSource(FluidState state)
 	{
 		return state.getFluid()==source;
 	}
 
 	@Override
-	public int getLevel(IFluidState p_207192_1_)
+	public int getLevel(FluidState p_207192_1_)
 	{
 		if(isSource(p_207192_1_))
 			return 8;
@@ -232,7 +232,7 @@ public class IEFluid extends FlowingFluid
 		IEFluid ret = new IEFluid(fluidName, stillTex, flowingTex, buildAttributes, false)
 		{
 			@Override
-			protected void fillStateContainer(Builder<Fluid, IFluidState> builder)
+			protected void fillStateContainer(Builder<Fluid, FluidState> builder)
 			{
 				super.fillStateContainer(builder);
 				builder.add(LEVEL_1_8);

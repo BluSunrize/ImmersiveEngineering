@@ -21,7 +21,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import org.junit.Test;
 
 import java.util.HashSet;
@@ -36,7 +36,7 @@ public class CatenaryTracerTest
 {
 	private static final BlockPos OFFSET = new BlockPos(1, 2, 3);
 
-	private void testIntegerIntersections(Vec3d start, Vec3d end, double slack, double... expected)
+	private void testIntegerIntersections(Vector3d start, Vector3d end, double slack, double... expected)
 	{
 		CatenaryTracer ct = create(start, end, slack);
 		ct.calculateIntegerIntersections();
@@ -46,13 +46,13 @@ public class CatenaryTracerTest
 	@Test
 	public void calculateIntegerIntersections()
 	{
-		testIntegerIntersections(new Vec3d(.5, .9, -.5), new Vec3d(.5, .9, .5), 0.001, 0, 0.5, 1);
+		testIntegerIntersections(new Vector3d(.5, .9, -.5), new Vector3d(.5, .9, .5), 0.001, 0, 0.5, 1);
 		//Diagonal
-		testIntegerIntersections(new Vec3d(-.5, .9, -.5), new Vec3d(.5, .9, .5), 0.001, 0, 0.5, 1);
+		testIntegerIntersections(new Vector3d(-.5, .9, -.5), new Vector3d(.5, .9, .5), 0.001, 0, 0.5, 1);
 		//Vertical
-		testIntegerIntersections(new Vec3d(0.5, -0.5, 0.5), new Vec3d(0.5, 0.5, 0.5), 0.001, 0, 0.5, 1);
+		testIntegerIntersections(new Vector3d(0.5, -0.5, 0.5), new Vector3d(0.5, 0.5, 0.5), 0.001, 0, 0.5, 1);
 		//Y intersections
-		CatenaryTracer ct = create(new Vec3d(0.1, 0.01, 0.5), new Vec3d(0.9, 0.01, 0.5), 0.05);
+		CatenaryTracer ct = create(new Vector3d(0.1, 0.01, 0.5), new Vector3d(0.9, 0.01, 0.5), 0.05);
 		ct.calculateIntegerIntersections();
 		assertTrue(ct.integerIntersections.contains(0));
 		assertTrue(ct.integerIntersections.contains(1));
@@ -64,7 +64,7 @@ public class CatenaryTracerTest
 		//Only one branch exists
 		for(int i = 0; i < 2; ++i)
 		{
-			ct = create(new Vec3d(0.1+0.8*i, 0.5, 0.5), new Vec3d(0.9-0.8*i, 5.5, 0.5), 0.0005);
+			ct = create(new Vector3d(0.1+0.8*i, 0.5, 0.5), new Vector3d(0.9-0.8*i, 5.5, 0.5), 0.0005);
 			ct.calculateIntegerIntersections();
 			assertTrue(ct.integerIntersections.contains(0));
 			assertTrue(ct.integerIntersections.contains(1));
@@ -77,11 +77,11 @@ public class CatenaryTracerTest
 	{
 		//TODO more tests?
 		{
-			CatenaryTracer ct = create(new Vec3d(0.5, 0.125, 0.75), new Vec3d(1.5, 0.125, 0.75), 0.005);
+			CatenaryTracer ct = create(new Vector3d(0.5, 0.125, 0.75), new Vector3d(1.5, 0.125, 0.75), 0.005);
 			ct.calculateIntegerIntersections();
 			ct.forEachSegment(segment -> {
 				double[] minDist = {Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE};
-				for(Vec3d p : new Vec3d[]{segment.relativeSegmentStart, segment.relativeSegmentEnd})
+				for(Vector3d p : new Vector3d[]{segment.relativeSegmentStart, segment.relativeSegmentEnd})
 				{
 					assertEquals(0.75+OFFSET.getZ(), p.z+segment.mainPos.getZ(), 1e-3);
 					for(int i = 0; i < 3; ++i)
@@ -98,7 +98,7 @@ public class CatenaryTracerTest
 		}
 		{
 			Object2IntMap<BlockPos> inCounts = new Object2IntOpenHashMap<>();
-			CatenaryTracer ct = create(new Vec3d(0.5, 0.5, 0.5), new Vec3d(-0.5, 0.5, -0.5), 0.005);
+			CatenaryTracer ct = create(new Vector3d(0.5, 0.5, 0.5), new Vector3d(-0.5, 0.5, -0.5), 0.005);
 			ct.calculateIntegerIntersections();
 			ct.forEachSegment(seg -> {
 				if(seg.inBlock)
@@ -117,9 +117,9 @@ public class CatenaryTracerTest
 		}
 	}
 
-	private void testForEachCloseCoord(Vec3d center, double eps, Set<BlockPos> expected)
+	private void testForEachCloseCoord(Vector3d center, double eps, Set<BlockPos> expected)
 	{
-		CatenaryTracer ct = create(Vec3d.ZERO, new Vec3d(0, 0, 1), 0.01);
+		CatenaryTracer ct = create(Vector3d.ZERO, new Vector3d(0, 0, 1), 0.01);
 		Set<BlockPos> actual = new HashSet<>();
 		ct.forEachCloseCoordinate(center, eps, actual::add);
 		assertEquals(new HashSet<>(expected), actual);
@@ -139,13 +139,13 @@ public class CatenaryTracerTest
 			for(int y = -1; y <= 1; ++y)
 				for(int z = -1; z <= 1; ++z)
 					cube3.add(new BlockPos(x, y, z));
-		testForEachCloseCoord(new Vec3d(0.5, 0.5, 0.5), 0.1, center);
-		testForEachCloseCoord(Vec3d.ZERO, 0.5, cube2);
-		testForEachCloseCoord(new Vec3d(0.5, 0.5, 0.5), 0.5, center);
-		testForEachCloseCoord(new Vec3d(0.5, 0.5, 0.5), 0.500001, cube3);
+		testForEachCloseCoord(new Vector3d(0.5, 0.5, 0.5), 0.1, center);
+		testForEachCloseCoord(Vector3d.ZERO, 0.5, cube2);
+		testForEachCloseCoord(new Vector3d(0.5, 0.5, 0.5), 0.5, center);
+		testForEachCloseCoord(new Vector3d(0.5, 0.5, 0.5), 0.500001, cube3);
 	}
 
-	private CatenaryTracer create(Vec3d start, Vec3d end, double slack)
+	private CatenaryTracer create(Vector3d start, Vector3d end, double slack)
 	{
 		WireType type = new TestWiretype(slack);
 		Connection conn = new Connection(

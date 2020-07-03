@@ -15,7 +15,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.Item;
 import net.minecraft.state.EnumProperty;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.Property;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
@@ -38,15 +38,15 @@ public class MiscConnectorBlock extends ConnectorBlock
 		this(name, tileType, ImmutableList.of(IEProperties.FACING_ALL), BlockItemIE::new);
 	}
 
-	public MiscConnectorBlock(String name, Supplier<TileEntityType<?>> tileType, IProperty<?>... extraProperties)
+	public MiscConnectorBlock(String name, Supplier<TileEntityType<?>> tileType, Property<?>... extraProperties)
 	{
 		this(name, tileType, ImmutableList.copyOf(extraProperties), BlockItemIE::new);
 	}
 
-	public MiscConnectorBlock(String name, Supplier<TileEntityType<?>> tileType, List<IProperty<?>> extraProps,
+	public MiscConnectorBlock(String name, Supplier<TileEntityType<?>> tileType, List<Property<?>> extraProps,
 							  BiFunction<Block, Item.Properties, Item> itemClass)
 	{
-		super(name, itemClass, extraProps.toArray(new IProperty[0]));
+		super(name, itemClass, extraProps.toArray(new Property[0]));
 		this.tileType = tileType;
 	}
 

@@ -27,8 +27,6 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.TransformationMatrix;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -39,11 +37,13 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.math.vector.TransformationMatrix;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -177,11 +177,11 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 			float yRotation = rotY;
 			double angleX = Math.toRadians(rotX);
 
-			Vec3d[] rays = {
-					/*Straight*/new Vec3d(0, 0, 1),
-					/*U,D,L,R*/new Vec3d(0, 0, 1), new Vec3d(0, 0, 1), new Vec3d(0, 0, 1), new Vec3d(0, 0, 1),
-					/*Intermediate*/new Vec3d(0, 0, 1), new Vec3d(0, 0, 1), new Vec3d(0, 0, 1), new Vec3d(0, 0, 1),
-					/*Diagonal*/new Vec3d(0, 0, 1), new Vec3d(0, 0, 1), new Vec3d(0, 0, 1), new Vec3d(0, 0, 1)};
+			Vector3d[] rays = {
+					/*Straight*/new Vector3d(0, 0, 1),
+					/*U,D,L,R*/new Vector3d(0, 0, 1), new Vector3d(0, 0, 1), new Vector3d(0, 0, 1), new Vector3d(0, 0, 1),
+					/*Intermediate*/new Vector3d(0, 0, 1), new Vector3d(0, 0, 1), new Vector3d(0, 0, 1), new Vector3d(0, 0, 1),
+					/*Diagonal*/new Vector3d(0, 0, 1), new Vector3d(0, 0, 1), new Vector3d(0, 0, 1), new Vector3d(0, 0, 1)};
 			Matrix4 mat = new Matrix4();
 			if(getFacing()==Direction.DOWN)
 				mat.scale(1, -1, 1);
@@ -245,14 +245,14 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 		this.lightsToBeRemoved.addAll(tempRemove);
 	}
 
-	public void placeLightAlongVector(Vec3d vec, int offset, ArrayList<BlockPos> checklist)
+	public void placeLightAlongVector(Vector3d vec, int offset, ArrayList<BlockPos> checklist)
 	{
-		Vec3d light = new Vec3d(getPos()).add(.5, .75, .5);
+		Vector3d light = new Vector3d(getPos()).add(.5, .75, .5);
 		int range = 32;
 		HashSet<BlockPos> ignore = new HashSet<BlockPos>();
 		ignore.add(getPos());
 		BlockPos hit = Utils.rayTraceForFirst(Utils.addVectors(vec, light), light.add(vec.x*range, vec.y*range, vec.z*range), world, ignore);
-		double maxDistance = hit!=null?new Vec3d(hit).add(.5, .75, .5).squareDistanceTo(light): range*range;
+		double maxDistance = hit!=null?new Vector3d(hit).add(.5, .75, .5).squareDistanceTo(light): range*range;
 		for(int i = 1+offset; i <= range; i++)
 		{
 			BlockPos target = getPos().add(Math.round(vec.x*i), Math.round(vec.y*i), Math.round(vec.z*i));
@@ -361,13 +361,13 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 	}
 
 	@Override
-	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vec3i offset)
+	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vector3i offset)
 	{
 		return WireType.LV_CATEGORY.equals(cableType.getCategory());
 	}
 
 	@Override
-	public Vec3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
+	public Vector3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
 		BlockPos other = con==null?pos: con.getOtherEnd(here).getPosition();
 		int xDif = other.getX()-pos.getX();
@@ -396,7 +396,7 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 				z = (Math.abs(zDif) > Math.abs(yDif))?(zDif >= 0)?.9375: .0625: .5;
 				break;
 		}
-		return new Vec3d(x, y, z);
+		return new Vector3d(x, y, z);
 	}
 
 	@Override
@@ -413,7 +413,7 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 	}
 
 	@Override
-	public boolean hammerUseSide(Direction side, PlayerEntity player, Vec3d hitVec)
+	public boolean hammerUseSide(Direction side, PlayerEntity player, Vector3d hitVec)
 	{
 		if(!world.isRemote)
 		{
@@ -459,7 +459,7 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
 	{
 		return false;
 	}

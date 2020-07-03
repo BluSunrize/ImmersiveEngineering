@@ -25,16 +25,16 @@ import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.Enchantments;
-import net.minecraft.state.IProperty;
+import net.minecraft.loot.*;
+import net.minecraft.loot.LootTable.Builder;
+import net.minecraft.loot.conditions.BlockStateProperty;
+import net.minecraft.loot.conditions.ILootCondition;
+import net.minecraft.loot.conditions.SurvivesExplosion;
+import net.minecraft.loot.functions.ApplyBonus;
+import net.minecraft.state.Property;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.storage.loot.*;
-import net.minecraft.world.storage.loot.LootTable.Builder;
-import net.minecraft.world.storage.loot.conditions.BlockStateProperty;
-import net.minecraft.world.storage.loot.conditions.ILootCondition;
-import net.minecraft.world.storage.loot.conditions.SurvivesExplosion;
-import net.minecraft.world.storage.loot.functions.ApplyBonus;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
@@ -215,7 +215,7 @@ public class BlockLoot extends LootGenerator
 				.acceptFunction(ApplyBonus.binomialWithBonusCount(ench, prob, extra));
 	}
 
-	private <T extends Comparable<T> & IStringSerializable> ILootCondition.IBuilder propertyIs(Block b, IProperty<T> prop, T value)
+	private <T extends Comparable<T> & IStringSerializable> ILootCondition.IBuilder propertyIs(Block b, Property<T> prop, T value)
 	{
 		return BlockStateProperty.builder(b)
 				.fromProperties(

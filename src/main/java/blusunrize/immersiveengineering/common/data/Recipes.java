@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.data;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IETags;
-import blusunrize.immersiveengineering.api.crafting.ClocheFertilizer;
 import blusunrize.immersiveengineering.api.crafting.ClocheRenderFunction.ClocheRenderReference;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.builders.*;
@@ -57,11 +56,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.DimensionType;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;
@@ -513,7 +512,7 @@ public class Recipes extends RecipeProvider
 			}
 
 			// Plate
-			Tag<Item> plate = new ItemTags.Wrapper(IETags.getPlate(metal.getName()));
+			ITag<Item> plate = new ItemTags.Wrapper(IETags.getPlate(metal.getName()));
 			pressBuilder = MetalPressRecipeBuilder.builder(Molds.moldPlate, plate, 1);
 			if(!metal.isNative())
 				pressBuilder.addCondition(getTagCondition(metal.getIngot())).addCondition(getTagCondition(plate));
@@ -522,7 +521,7 @@ public class Recipes extends RecipeProvider
 					.build(out, toRL("metalpress/plate_"+metal.getName()));
 
 			// Gear
-			Tag<Item> gear = new ItemTags.Wrapper(IETags.getGear(metal.getName()));
+			ITag<Item> gear = new ItemTags.Wrapper(IETags.getGear(metal.getName()));
 			pressBuilder = MetalPressRecipeBuilder.builder(Molds.moldGear, gear, 1);
 			if(!metal.isNative())
 				pressBuilder.addCondition(getTagCondition(metal.getIngot()));
@@ -532,7 +531,7 @@ public class Recipes extends RecipeProvider
 					.build(out, toRL("metalpress/gear_"+metal.getName()));
 
 			// Rod
-			Tag<Item> rods = new ItemTags.Wrapper(IETags.getRod(metal.getName()));
+			ITag<Item> rods = new ItemTags.Wrapper(IETags.getRod(metal.getName()));
 			pressBuilder = MetalPressRecipeBuilder.builder(Molds.moldRod, rods, 2);
 			if(!metal.isNative())
 				pressBuilder.addCondition(getTagCondition(metal.getIngot()));
@@ -542,7 +541,7 @@ public class Recipes extends RecipeProvider
 					.build(out, toRL("metalpress/rod_"+metal.getName()));
 
 			// Wire
-			Tag<Item> wire = new ItemTags.Wrapper(IETags.getWire(metal.getName()));
+			ITag<Item> wire = new ItemTags.Wrapper(IETags.getWire(metal.getName()));
 			pressBuilder = MetalPressRecipeBuilder.builder(Molds.moldWire, wire, 2);
 			if(!metal.isNative())
 				pressBuilder.addCondition(getTagCondition(metal.getIngot()));
@@ -682,7 +681,7 @@ public class Recipes extends RecipeProvider
 				.setEnergy(4800)
 				.build(out, toRL("crusher/coke_block"));
 
-		Tag<Item> coal_dust = new ItemTags.Wrapper(IETags.getDust("coal"));
+		ITag<Item> coal_dust = new ItemTags.Wrapper(IETags.getDust("coal"));
 		CrusherRecipeBuilder.builder(coal_dust, 1)
 				.addCondition(getTagCondition(coal_dust))
 				.addInput(Items.COAL)
@@ -768,29 +767,29 @@ public class Recipes extends RecipeProvider
 	private void mineralMixes(@Nonnull Consumer<IFinishedRecipe> out)
 	{
 		// Metals
-		Tag<Item> iron = Tags.Items.ORES_IRON;
-		Tag<Item> gold = Tags.Items.ORES_GOLD;
-		Tag<Item> copper = IETags.getItemTag(IETags.getTagsFor(EnumMetals.COPPER).ore);
-		Tag<Item> aluminum = IETags.getItemTag(IETags.getTagsFor(EnumMetals.ALUMINUM).ore);
-		Tag<Item> lead = IETags.getItemTag(IETags.getTagsFor(EnumMetals.LEAD).ore);
-		Tag<Item> silver = IETags.getItemTag(IETags.getTagsFor(EnumMetals.SILVER).ore);
-		Tag<Item> nickel = IETags.getItemTag(IETags.getTagsFor(EnumMetals.NICKEL).ore);
-		Tag<Item> uranium = IETags.getItemTag(IETags.getTagsFor(EnumMetals.URANIUM).ore);
-		Tag<Item> tin = new ItemTags.Wrapper(IETags.getOre("tin"));
-		Tag<Item> titanium = new ItemTags.Wrapper(IETags.getOre("titanium"));
-		Tag<Item> thorium = new ItemTags.Wrapper(IETags.getOre("thorium"));
-		Tag<Item> tungsten = new ItemTags.Wrapper(IETags.getOre("tungsten"));
-		Tag<Item> manganese = new ItemTags.Wrapper(IETags.getOre("manganese"));
-		Tag<Item> platinum = new ItemTags.Wrapper(IETags.getOre("platinum"));
-		Tag<Item> paladium = new ItemTags.Wrapper(IETags.getOre("paladium"));
-		Tag<Item> mercury = new ItemTags.Wrapper(IETags.getOre("mercury"));
+		ITag<Item> iron = Tags.Items.ORES_IRON;
+		ITag<Item> gold = Tags.Items.ORES_GOLD;
+		ITag<Item> copper = IETags.getItemTag(IETags.getTagsFor(EnumMetals.COPPER).ore);
+		ITag<Item> aluminum = IETags.getItemTag(IETags.getTagsFor(EnumMetals.ALUMINUM).ore);
+		ITag<Item> lead = IETags.getItemTag(IETags.getTagsFor(EnumMetals.LEAD).ore);
+		ITag<Item> silver = IETags.getItemTag(IETags.getTagsFor(EnumMetals.SILVER).ore);
+		ITag<Item> nickel = IETags.getItemTag(IETags.getTagsFor(EnumMetals.NICKEL).ore);
+		ITag<Item> uranium = IETags.getItemTag(IETags.getTagsFor(EnumMetals.URANIUM).ore);
+		ITag<Item> tin = new ItemTags.Wrapper(IETags.getOre("tin"));
+		ITag<Item> titanium = new ItemTags.Wrapper(IETags.getOre("titanium"));
+		ITag<Item> thorium = new ItemTags.Wrapper(IETags.getOre("thorium"));
+		ITag<Item> tungsten = new ItemTags.Wrapper(IETags.getOre("tungsten"));
+		ITag<Item> manganese = new ItemTags.Wrapper(IETags.getOre("manganese"));
+		ITag<Item> platinum = new ItemTags.Wrapper(IETags.getOre("platinum"));
+		ITag<Item> paladium = new ItemTags.Wrapper(IETags.getOre("paladium"));
+		ITag<Item> mercury = new ItemTags.Wrapper(IETags.getOre("mercury"));
 		// Gems & Dusts
-		Tag<Item> sulfur = IETags.sulfurDust;
-		Tag<Item> phosphorus = new ItemTags.Wrapper(IETags.getDust("phosphorus"));
-		Tag<Item> redstone = Tags.Items.ORES_REDSTONE;
-		Tag<Item> emerald = Tags.Items.ORES_EMERALD;
+		ITag<Item> sulfur = IETags.sulfurDust;
+		ITag<Item> phosphorus = new ItemTags.Wrapper(IETags.getDust("phosphorus"));
+		ITag<Item> redstone = Tags.Items.ORES_REDSTONE;
+		ITag<Item> emerald = Tags.Items.ORES_EMERALD;
 		Block prismarine = Blocks.PRISMARINE;
-		Tag<Item> aquamarine = new ItemTags.Wrapper(IETags.getGem("aquamarine"));
+		ITag<Item> aquamarine = new ItemTags.Wrapper(IETags.getGem("aquamarine"));
 
 		// Common things
 		MineralMixBuilder.builder(DimensionType.OVERWORLD)
@@ -2674,7 +2673,7 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL(toPath(Misc.cartMetalBarrel)));
 	}
 
-	private void addArmor(Tag<Item> input, Map<EquipmentSlotType, Item> items, String name, Consumer<IFinishedRecipe> out)
+	private void addArmor(ITag<Item> input, Map<EquipmentSlotType, Item> items, String name, Consumer<IFinishedRecipe> out)
 	{
 		Item head = items.get(EquipmentSlotType.HEAD);
 		Item chest = items.get(EquipmentSlotType.CHEST);
@@ -2708,7 +2707,7 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL(toPath(feet)));
 	}
 
-	private void add3x3Conversion(IItemProvider bigItem, Tag<Item> bigTag, IItemProvider smallItem, Tag<Item> smallTag, Consumer<IFinishedRecipe> out)
+	private void add3x3Conversion(IItemProvider bigItem, ITag<Item> bigTag, IItemProvider smallItem, ITag<Item> smallTag, Consumer<IFinishedRecipe> out)
 	{
 		ShapedRecipeBuilder.shapedRecipe(bigItem)
 				.key('s', smallTag)
@@ -2820,15 +2819,15 @@ public class Recipes extends RecipeProvider
 	}
 
 	@Nonnull
-	private Ingredient makeIngredient(Tag<Item> in)
+	private Ingredient makeIngredient(ITag<Item> in)
 	{
 		return Ingredient.fromTag(in);
 	}
 
 	@Nonnull
-	private Ingredient makeIngredientFromBlock(Tag<Block> in)
+	private Ingredient makeIngredientFromBlock(ITag<Block> in)
 	{
-		Tag<Item> itemTag = IETags.getItemTag(in);
+		ITag<Item> itemTag = IETags.getItemTag(in);
 		if(itemTag==null)
 			//TODO this currently does not work, the tag collection is not initialized in data gen mode
 			itemTag = ItemTags.getCollection().getTagMap().get(in.getId());
@@ -2836,7 +2835,7 @@ public class Recipes extends RecipeProvider
 		return makeIngredient(itemTag);
 	}
 
-	public static ICondition getTagCondition(Tag<?> tag)
+	public static ICondition getTagCondition(ITag<?> tag)
 	{
 		return new NotCondition(new TagEmptyCondition(tag.getId()));
 	}

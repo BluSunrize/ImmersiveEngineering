@@ -13,7 +13,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
@@ -75,15 +75,15 @@ public class WireCollisionData
 	public class CollisionInfo
 	{
 		@Nonnull
-		public final Vec3d intersectA;
+		public final Vector3d intersectA;
 		@Nonnull
-		public final Vec3d intersectB;
+		public final Vector3d intersectB;
 		@Nonnull
 		public final Connection conn;
 		public final boolean isInBlock;
 		private LocalWireNetwork cachedLocalNet;
 
-		public CollisionInfo(@Nonnull Vec3d intersectA, @Nonnull Vec3d intersectB, @Nonnull Connection conn,
+		public CollisionInfo(@Nonnull Vector3d intersectA, @Nonnull Vector3d intersectB, @Nonnull Connection conn,
 							 boolean isInBlock)
 		{
 			this.intersectA = intersectA;

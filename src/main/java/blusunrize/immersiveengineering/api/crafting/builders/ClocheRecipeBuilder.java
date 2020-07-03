@@ -16,7 +16,7 @@ import com.google.common.base.Preconditions;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.IItemProvider;
 
 public class ClocheRecipeBuilder extends IEFinishedRecipe<ClocheRecipeBuilder>
@@ -39,7 +39,7 @@ public class ClocheRecipeBuilder extends IEFinishedRecipe<ClocheRecipeBuilder>
 		return new ClocheRecipeBuilder().addResult(result);
 	}
 
-	public static ClocheRecipeBuilder builder(Tag<Item> result, int count)
+	public static ClocheRecipeBuilder builder(ITag<Item> result, int count)
 	{
 		return new ClocheRecipeBuilder().addResult(new IngredientWithSize(result, count));
 	}

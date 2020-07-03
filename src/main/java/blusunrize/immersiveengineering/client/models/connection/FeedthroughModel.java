@@ -37,8 +37,6 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
-import net.minecraft.client.renderer.TransformationMatrix;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -50,8 +48,10 @@ import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.ILightReader;
+import net.minecraft.util.math.vector.TransformationMatrix;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.world.IBlockDisplayReader;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.ModelLoader;
@@ -116,7 +116,7 @@ public class FeedthroughModel extends BakedIEModel
 
 	@Nonnull
 	@Override
-	public IModelData getModelData(@Nonnull ILightReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData)
+	public IModelData getModelData(@Nonnull IBlockDisplayReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData)
 	{
 		List<IModelData> ret = new ArrayList<>();
 		ret.add(tileData);
@@ -297,9 +297,9 @@ public class FeedthroughModel extends BakedIEModel
 	private static class SpecificFeedthroughModel extends FeedthroughModel
 	{
 		private static final float[] WHITE = {1, 1, 1, 1};
-		private static final Vec3d[] vertices = {
-				new Vec3d(.75F, .001F, .75F), new Vec3d(.75F, .001F, .25F),
-				new Vec3d(.25F, .001F, .25F), new Vec3d(.25F, .001F, .75F)
+		private static final Vector3d[] vertices = {
+				new Vector3d(.75F, .001F, .75F), new Vector3d(.75F, .001F, .25F),
+				new Vector3d(.25F, .001F, .25F), new Vector3d(.25F, .001F, .75F)
 		};
 		List<List<BakedQuad>> quads = new ArrayList<>(6);
 

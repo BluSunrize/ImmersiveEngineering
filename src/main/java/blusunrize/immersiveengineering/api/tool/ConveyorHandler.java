@@ -17,7 +17,6 @@ import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
@@ -32,9 +31,10 @@ import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.math.vector.TransformationMatrix;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -366,7 +366,7 @@ public class ConveyorHandler
 		/**
 		 * @return a vector representing the movement applied to the entity
 		 */
-		default Vec3d getDirection(Entity entity)
+		default Vector3d getDirection(Entity entity)
 		{
 			ConveyorDirection conveyorDirection = getConveyorDirection();
 			BlockPos pos = getTile().getPos();
@@ -399,7 +399,7 @@ public class ConveyorHandler
 					vX = 0.1D*vBase;
 			}
 
-			return new Vec3d(vX, vY, vZ);
+			return new Vector3d(vX, vY, vZ);
 		}
 
 		default void onEntityCollision(Entity entity)
@@ -411,7 +411,7 @@ public class ConveyorHandler
 			float heightLimit = conveyorDirection==ConveyorDirection.HORIZONTAL?.25f: 1f;
 			if(entity!=null&&entity.isAlive()&&!(entity instanceof PlayerEntity&&entity.isSneaking())&&entity.getPosY()-pos.getY() >= 0&&entity.getPosY()-pos.getY() < heightLimit)
 			{
-				Vec3d vec = this.getDirection(entity);
+				Vector3d vec = this.getDirection(entity);
 				if(entity.fallDistance < 3)
 					entity.fallDistance = 0;
 				entity.setMotion(vec);

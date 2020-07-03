@@ -15,14 +15,18 @@ import blusunrize.immersiveengineering.common.blocks.metal.DieselGeneratorTileEn
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.BlockRendererDispatcher;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.client.model.data.EmptyModelData;
 
 public class DieselGeneratorRenderer extends TileEntityRenderer<DieselGeneratorTileEntity>
@@ -53,7 +57,7 @@ public class DieselGeneratorRenderer extends TileEntityRenderer<DieselGeneratorT
 		matrixStack.translate(0, .6875, 0);
 		matrixStack.translate(0.5, 0, 0.5);
 
-		matrixStack.rotate(new Quaternion(new Vector3f(new Vec3d(te.getFacing().getDirectionVec())),
+		matrixStack.rotate(new Quaternion(new Vector3f(new Vector3d(te.getFacing().getDirectionVec())),
 				te.animation_fanRotation+(te.animation_fanRotationStep*partialTicks), true));
 		matrixStack.translate(-0.5, 0, -0.5);
 

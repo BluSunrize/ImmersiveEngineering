@@ -8,8 +8,8 @@
 
 package blusunrize.immersiveengineering.common.util.loot;
 
-import net.minecraft.world.storage.loot.LootEntryManager;
-import net.minecraft.world.storage.loot.functions.LootFunctionManager;
+import net.minecraft.loot.LootEntryManager;
+import net.minecraft.loot.functions.LootFunctionManager;
 
 /**
  * @author BluSunrize - 16.08.2018

@@ -20,8 +20,6 @@ import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.shapes.CachedVoxelShapes;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.Matrix4f;
-import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
@@ -35,10 +33,12 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.util.math.vector.TransformationMatrix;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
@@ -81,7 +81,7 @@ public class ChuteTileEntity extends IEBaseTileEntity implements IStateBasedDire
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
 	{
 		return !entity.isSneaking();
 	}
@@ -133,7 +133,7 @@ public class ChuteTileEntity extends IEBaseTileEntity implements IStateBasedDire
 					return;
 				if(!glitched)
 				{
-					Vec3d oldPos = entity.getPositionVec();
+					Vector3d oldPos = entity.getPositionVec();
 					double py = entity.getHeight() > 1?getPos().getY()+.125: entity.getPosY();
 					entity.setPosition(target.getX()+.5, py, target.getZ()+.5);
 					if(entity.isEntityInsideOpaqueBlock())
@@ -358,7 +358,7 @@ public class ChuteTileEntity extends IEBaseTileEntity implements IStateBasedDire
 	}
 
 	@Override
-	public boolean hammerUseSide(Direction side, PlayerEntity player, Vec3d hitVec)
+	public boolean hammerUseSide(Direction side, PlayerEntity player, Vector3d hitVec)
 	{
 		if(player.isSneaking())
 		{

@@ -22,8 +22,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.crafting.CraftingHelper;
@@ -207,7 +206,7 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<R>> implements IFinishe
 			return addIngredient(generateSafeInputKey(), itemStacks);
 	}
 
-	public R addInput(Tag<Item> tag)
+	public R addInput(ITag<Item> tag)
 	{
 		if(inputArray!=null)
 			return addMultiInput(Ingredient.fromTag(tag));
@@ -267,7 +266,7 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<R>> implements IFinishe
 		return addIngredient(key, Ingredient.fromStacks(itemStacks));
 	}
 
-	public R addIngredient(String key, Tag<Item> tag)
+	public R addIngredient(String key, ITag<Item> tag)
 	{
 		return addIngredient(key, Ingredient.fromTag(tag));
 	}

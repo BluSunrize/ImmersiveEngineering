@@ -18,8 +18,7 @@ import net.minecraft.block.FourWayBlock;
 import net.minecraft.state.Property;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
-import net.minecraft.util.math.Vec3i;
-import org.apache.commons.lang3.tuple.ImmutablePair;
+import net.minecraft.util.math.vector.Vector3i;
 
 import java.util.List;
 
@@ -94,8 +93,8 @@ public class IEMultiblocks
 		SQUEEZER = new SqueezerMultiblock();
 		EXCAVATOR_DEMO = new UnionMultiblock(new ResourceLocation(ImmersiveEngineering.MODID, "excavator_demo"),
 				ImmutableList.of(
-						new TransformedMultiblock(EXCAVATOR, Vec3i.NULL_VECTOR, Rotation.NONE),
-						new TransformedMultiblock(BUCKET_WHEEL, new Vec3i(1, -2, 4), Rotation.COUNTERCLOCKWISE_90)
+						new TransformedMultiblock(EXCAVATOR, Vector3i.NULL_VECTOR, Rotation.NONE),
+						new TransformedMultiblock(BUCKET_WHEEL, new Vector3i(1, -2, 4), Rotation.COUNTERCLOCKWISE_90)
 				));
 	}
 }

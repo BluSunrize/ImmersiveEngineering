@@ -14,8 +14,8 @@ import com.google.common.base.Preconditions;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.Tags.Blocks;
 
@@ -30,43 +30,43 @@ import static blusunrize.immersiveengineering.common.data.IEDataGenerator.rl;
 public class IETags
 {
 
-	private static final Map<Tag<Block>, Tag<Item>> toItemTag = new HashMap<>();
+	private static final Map<ITag<Block>, ITag<Item>> toItemTag = new HashMap<>();
 	private static final Map<EnumMetals, MetalTags> metals = new HashMap<>();
 
 	//Vanilla
-	public static final Tag<Item> clay = new ItemTags.Wrapper(forgeLoc("clay"));
-	public static final Tag<Block> clayBlock = createBlockTag(getStorageBlock("clay"));
-	public static final Tag<Item> charCoal = new ItemTags.Wrapper(forgeLoc("charcoal"));
-	public static final Tag<Block> glowstoneBlock = createBlockTag(getStorageBlock("glowstone"));
+	public static final ITag<Item> clay = new ItemTags.Wrapper(forgeLoc("clay"));
+	public static final ITag<Block> clayBlock = createBlockTag(getStorageBlock("clay"));
+	public static final ITag<Item> charCoal = new ItemTags.Wrapper(forgeLoc("charcoal"));
+	public static final ITag<Block> glowstoneBlock = createBlockTag(getStorageBlock("glowstone"));
 	//Other mods
-	public static final Tag<Block> charCoalBlocks = createBlockTag(getStorageBlock("charcoal"));
+	public static final ITag<Block> charCoalBlocks = createBlockTag(getStorageBlock("charcoal"));
 	//IE Blocks
-	public static final Tag<Block> treatedWood = createBlockTag(forgeLoc("treated_wood"));
-	public static final Tag<Block> treatedWoodSlab = createBlockTag(forgeLoc("treated_wood_slab"));
-	public static final Tag<Block> coalCokeBlock = createBlockTag(getStorageBlock("coal_coke"));
-	public static final Tag<Block> scaffoldingSteel = createBlockTag(rl("scaffoldings/steel"));
-	public static final Tag<Block> scaffoldingAlu = createBlockTag(rl("scaffoldings/aluminum"));
-	public static final Tag<Block> sheetmetals = createBlockTag(forgeLoc("sheetmetals"));
+	public static final ITag<Block> treatedWood = createBlockTag(forgeLoc("treated_wood"));
+	public static final ITag<Block> treatedWoodSlab = createBlockTag(forgeLoc("treated_wood_slab"));
+	public static final ITag<Block> coalCokeBlock = createBlockTag(getStorageBlock("coal_coke"));
+	public static final ITag<Block> scaffoldingSteel = createBlockTag(rl("scaffoldings/steel"));
+	public static final ITag<Block> scaffoldingAlu = createBlockTag(rl("scaffoldings/aluminum"));
+	public static final ITag<Block> sheetmetals = createBlockTag(forgeLoc("sheetmetals"));
 	//IE Items
-	public static final Tag<Item> treatedStick = new ItemTags.Wrapper(getRod("treated_wood"));
-	public static final Tag<Item> ironRod = new ItemTags.Wrapper(getRod("iron"));
-	public static final Tag<Item> steelRod = new ItemTags.Wrapper(getRod("steel"));
-	public static final Tag<Item> metalRods = new ItemTags.Wrapper(getRod("all_metal"));
-	public static final Tag<Item> aluminumRod = new ItemTags.Wrapper(getRod("aluminum"));
-	public static final Tag<Item> fiberHemp = new ItemTags.Wrapper(forgeLoc("fiber_hemp"));
-	public static final Tag<Item> fabricHemp = new ItemTags.Wrapper(forgeLoc("fabric_hemp"));
-	public static final Tag<Item> coalCoke = new ItemTags.Wrapper(forgeLoc("coal_coke"));
-	public static final Tag<Item> slag = new ItemTags.Wrapper(forgeLoc("slag"));
-	public static final Tag<Item> coalCokeDust = new ItemTags.Wrapper(getDust("coal_coke"));
-	public static final Tag<Item> hopGraphiteDust = new ItemTags.Wrapper(getDust("hop_graphite"));
-	public static final Tag<Item> hopGraphiteIngot = new ItemTags.Wrapper(getIngot("hop_graphite"));
-	public static final Tag<Item> copperWire = new ItemTags.Wrapper(getWire("copper"));
-	public static final Tag<Item> electrumWire = new ItemTags.Wrapper(getWire("electrum"));
-	public static final Tag<Item> aluminumWire = new ItemTags.Wrapper(getWire("aluminum"));
-	public static final Tag<Item> steelWire = new ItemTags.Wrapper(getWire("steel"));
-	public static final Tag<Item> saltpeterDust = new ItemTags.Wrapper(getDust("saltpeter"));
-	public static final Tag<Item> sulfurDust = new ItemTags.Wrapper(getDust("sulfur"));
-	public static final Tag<Item> plates = new ItemTags.Wrapper(forgeLoc("plates"));
+	public static final ITag<Item> treatedStick = new ItemTags.Wrapper(getRod("treated_wood"));
+	public static final ITag<Item> ironRod = new ItemTags.Wrapper(getRod("iron"));
+	public static final ITag<Item> steelRod = new ItemTags.Wrapper(getRod("steel"));
+	public static final ITag<Item> metalRods = new ItemTags.Wrapper(getRod("all_metal"));
+	public static final ITag<Item> aluminumRod = new ItemTags.Wrapper(getRod("aluminum"));
+	public static final ITag<Item> fiberHemp = new ItemTags.Wrapper(forgeLoc("fiber_hemp"));
+	public static final ITag<Item> fabricHemp = new ItemTags.Wrapper(forgeLoc("fabric_hemp"));
+	public static final ITag<Item> coalCoke = new ItemTags.Wrapper(forgeLoc("coal_coke"));
+	public static final ITag<Item> slag = new ItemTags.Wrapper(forgeLoc("slag"));
+	public static final ITag<Item> coalCokeDust = new ItemTags.Wrapper(getDust("coal_coke"));
+	public static final ITag<Item> hopGraphiteDust = new ItemTags.Wrapper(getDust("hop_graphite"));
+	public static final ITag<Item> hopGraphiteIngot = new ItemTags.Wrapper(getIngot("hop_graphite"));
+	public static final ITag<Item> copperWire = new ItemTags.Wrapper(getWire("copper"));
+	public static final ITag<Item> electrumWire = new ItemTags.Wrapper(getWire("electrum"));
+	public static final ITag<Item> aluminumWire = new ItemTags.Wrapper(getWire("aluminum"));
+	public static final ITag<Item> steelWire = new ItemTags.Wrapper(getWire("steel"));
+	public static final ITag<Item> saltpeterDust = new ItemTags.Wrapper(getDust("saltpeter"));
+	public static final ITag<Item> sulfurDust = new ItemTags.Wrapper(getDust("sulfur"));
+	public static final ITag<Item> plates = new ItemTags.Wrapper(forgeLoc("plates"));
 
 	static
 	{
@@ -74,7 +74,7 @@ public class IETags
 			metals.put(m, new MetalTags(m));
 	}
 
-	public static Tag<Item> getItemTag(Tag<Block> blockTag)
+	public static ITag<Item> getItemTag(ITag<Block> blockTag)
 	{
 		Preconditions.checkArgument(toItemTag.containsKey(blockTag));
 		return toItemTag.get(blockTag);
@@ -85,16 +85,16 @@ public class IETags
 		return metals.get(metal);
 	}
 
-	private static Tag<Block> createBlockTag(ResourceLocation name)
+	private static ITag<Block> createBlockTag(ResourceLocation name)
 	{
-		Tag<Block> blockTag = new BlockTags.Wrapper(name);
+		ITag<Block> blockTag = new BlockTags.Wrapper(name);
 		toItemTag.put(blockTag, new ItemTags.Wrapper(name));
 		return blockTag;
 	}
 
-	public static void forAllBlocktags(BiConsumer<Tag<Block>, Tag<Item>> out)
+	public static void forAllBlocktags(BiConsumer<ITag<Block>, ITag<Item>> out)
 	{
-		for(Entry<Tag<Block>, Tag<Item>> entry : toItemTag.entrySet())
+		for(Entry<ITag<Block>, ITag<Item>> entry : toItemTag.entrySet())
 		{
 			out.accept(entry.getKey(), entry.getValue());
 		}
@@ -102,19 +102,19 @@ public class IETags
 
 	public static class MetalTags
 	{
-		public final Tag<Item> ingot;
-		public final Tag<Item> nugget;
-		public final Tag<Item> plate;
-		public final Tag<Item> dust;
-		public final Tag<Block> storage;
-		public final Tag<Block> sheetmetal;
+		public final ITag<Item> ingot;
+		public final ITag<Item> nugget;
+		public final ITag<Item> plate;
+		public final ITag<Item> dust;
+		public final ITag<Block> storage;
+		public final ITag<Block> sheetmetal;
 		@Nullable
-		public final Tag<Block> ore;
+		public final ITag<Block> ore;
 
 		private MetalTags(EnumMetals m)
 		{
 			String name = m.tagName();
-			Tag<Block> ore = null;
+			ITag<Block> ore = null;
 			if(m.shouldAddOre())
 				ore = createBlockTag(getOre(name));
 			if(!m.isVanillaMetal())

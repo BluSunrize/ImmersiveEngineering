@@ -25,7 +25,7 @@ import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.EffectType;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Set;
@@ -126,7 +126,7 @@ public class IEPotions
 			if(this==IEPotions.slippery)
 			{
 				if(living.onGround)
-					living.moveRelative(0, new Vec3d(0, 1, 0.005));
+					living.moveRelative(0, new Vector3d(0, 1, 0.005));
 				EquipmentSlotType hand = living.getRNG().nextBoolean()?EquipmentSlotType.MAINHAND: EquipmentSlotType.OFFHAND;
 				if(!living.world.isRemote&&living.getRNG().nextInt(300)==0&&!living.getItemStackFromSlot(hand).isEmpty())
 				{

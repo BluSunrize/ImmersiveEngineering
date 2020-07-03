@@ -16,10 +16,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.DimensionType;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 
@@ -85,12 +85,12 @@ public class MineralMixBuilder extends IEFinishedRecipe<MineralMixBuilder>
 		return this;
 	}
 
-	public MineralMixBuilder addOre(Tag<Item> tag, float chance)
+	public MineralMixBuilder addOre(ITag<Item> tag, float chance)
 	{
 		return addOre(new IngredientWithSize(tag), chance, null);
 	}
 
-	public MineralMixBuilder addOre(Tag<Item> tag, float chance, ICondition condition)
+	public MineralMixBuilder addOre(ITag<Item> tag, float chance, ICondition condition)
 	{
 		return addOre(new IngredientWithSize(tag), chance, condition);
 	}

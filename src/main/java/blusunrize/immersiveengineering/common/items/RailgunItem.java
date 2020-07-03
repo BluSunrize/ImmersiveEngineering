@@ -32,7 +32,6 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
@@ -43,7 +42,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.UseAction;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.*;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.TransformationMatrix;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -207,7 +207,7 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 			Triple<ItemStack, ShaderRegistryEntry, ShaderCase> shader = ShaderRegistry.getStoredShaderAndCase(stack);
 			if(shader!=null)
 			{
-				Vec3d pos = Utils.getLivingFrontPos(user, .4375, user.getHeight()*.75, user.getActiveHand()==Hand.MAIN_HAND?user.getPrimaryHand(): user.getPrimaryHand().opposite(), false, 1);
+				Vector3d pos = Utils.getLivingFrontPos(user, .4375, user.getHeight()*.75, user.getActiveHand()==Hand.MAIN_HAND?user.getPrimaryHand(): user.getPrimaryHand().opposite(), false, 1);
 				shader.getMiddle().getEffectFunction().execute(user.world, shader.getLeft(), stack, shader.getRight().getShaderType().toString(), pos, null, .0625f);
 			}
 		}
@@ -230,7 +230,7 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 				ItemStack ammo = findAmmo((PlayerEntity)user);
 				if(!ammo.isEmpty())
 				{
-					Vec3d vec = user.getLookVec();
+					Vector3d vec = user.getLookVec();
 					float speed = 20;
 					RailgunShotEntity shot = new RailgunShotEntity(user.world, user, vec.x*speed, vec.y*speed, vec.z*speed, Utils.copyStackWithAmount(ammo, 1));
 					ammo.shrink(1);
@@ -244,10 +244,10 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 					Triple<ItemStack, ShaderRegistryEntry, ShaderCase> shader = ShaderRegistry.getStoredShaderAndCase(stack);
 					if(shader!=null)
 					{
-						Vec3d pos = Utils.getLivingFrontPos(user, .75, user.getHeight()*.75, user.getActiveHand()==Hand.MAIN_HAND?user.getPrimaryHand(): user.getPrimaryHand().opposite(), false, 1);
+						Vector3d pos = Utils.getLivingFrontPos(user, .75, user.getHeight()*.75, user.getActiveHand()==Hand.MAIN_HAND?user.getPrimaryHand(): user.getPrimaryHand().opposite(), false, 1);
 						shader.getMiddle().getEffectFunction().execute(world, shader.getLeft(), stack,
 								shader.getRight().getShaderType().toString(), pos,
-								Vec3d.fromPitchYaw(user.getPitchYaw()), .125f);
+								Vector3d.fromPitchYaw(user.getPitchYaw()), .125f);
 					}
 				}
 			}

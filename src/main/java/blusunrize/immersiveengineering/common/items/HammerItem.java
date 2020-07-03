@@ -40,7 +40,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.*;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
@@ -166,7 +166,7 @@ public class HammerItem extends IEBaseItem implements ITool
 		{
 			boolean rotate = !(tile instanceof IDirectionalTile)&&!(tile instanceof IHammerInteraction);
 			if(!rotate&&tile instanceof IDirectionalTile)
-				rotate = ((IDirectionalTile)tile).canHammerRotate(side, context.getHitVec().subtract(new Vec3d(pos)), player);
+				rotate = ((IDirectionalTile)tile).canHammerRotate(side, context.getHitVec().subtract(new Vector3d(pos)), player);
 			if(rotate&&RotationUtil.rotateBlock(world, pos, player!=null&&(player.isSneaking()!=side.equals(Direction.DOWN))))
 				return ActionResultType.SUCCESS;
 			else if(!rotate&&tile instanceof IHammerInteraction)
