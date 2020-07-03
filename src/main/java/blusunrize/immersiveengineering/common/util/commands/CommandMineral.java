@@ -9,10 +9,7 @@
 package blusunrize.immersiveengineering.common.util.commands;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.excavator.MineralMix;
-import blusunrize.immersiveengineering.api.excavator.MineralWorldInfo;
-import blusunrize.immersiveengineering.common.IESaveData;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
@@ -31,7 +28,6 @@ import net.minecraft.command.arguments.ColumnPosArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.ColumnPos;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.ArrayList;
@@ -87,12 +83,13 @@ public class CommandMineral
 	private static void getMineral(CommandContext<CommandSource> context, int xChunk, int zChunk)
 	{
 		CommandSource sender = context.getSource();
-		MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(sender.getWorld(),
-				xChunk, zChunk);
-		sender.sendFeedback(new TranslationTextComponent(Lib.CHAT_COMMAND+"mineral.get",
-				TextFormatting.GOLD+(info.mineral!=null?info.mineral.getId().toString(): "null")+TextFormatting.RESET,
-				TextFormatting.GOLD+(info.mineralOverride!=null?info.mineralOverride.getId().toString(): "null")+TextFormatting.RESET,
-				TextFormatting.GOLD+(""+info.depletion)+TextFormatting.RESET), true);
+		// TODO
+//		MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(sender.getWorld(),
+//				xChunk, zChunk);
+//		sender.sendFeedback(new TranslationTextComponent(Lib.CHAT_COMMAND+"mineral.get",
+//				TextFormatting.GOLD+(info.mineral!=null?info.mineral.getId().toString(): "null")+TextFormatting.RESET,
+//				TextFormatting.GOLD+(info.mineralOverride!=null?info.mineralOverride.getId().toString(): "null")+TextFormatting.RESET,
+//				TextFormatting.GOLD+(""+info.depletion)+TextFormatting.RESET), true);
 	}
 
 	private static LiteralArgumentBuilder<CommandSource> setMineral()
@@ -118,13 +115,14 @@ public class CommandMineral
 	private static void setMineral(CommandContext<CommandSource> context, int xChunk, int zChunk)
 	{
 		CommandSource sender = context.getSource();
-		MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(sender.getWorld(),
-				xChunk, zChunk);
-		MineralMix mineral = context.getArgument("mineral", MineralMix.class);
-		info.mineralOverride = mineral;
-		IESaveData.setDirty();
-		sender.sendFeedback(new TranslationTextComponent(Lib.CHAT_COMMAND+
-				"mineral.set.sucess", mineral.getId()), true);
+		// TODO
+//		MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(sender.getWorld(),
+//				xChunk, zChunk);
+//		MineralMix mineral = context.getArgument("mineral", MineralMix.class);
+//		info.mineralOverride = mineral;
+//		IESaveData.setDirty();
+//		sender.sendFeedback(new TranslationTextComponent(Lib.CHAT_COMMAND+
+//				"mineral.set.sucess", mineral.getId()), true);
 	}
 
 	private static LiteralArgumentBuilder<CommandSource> setMineralDepletion()
@@ -151,9 +149,10 @@ public class CommandMineral
 	private static void setMineralDepletion(CommandContext<CommandSource> context, int xChunk, int zChunk)
 	{
 		CommandSource sender = context.getSource();
-		MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(sender.getWorld(), xChunk, zChunk);
-		int depl = context.getArgument("depletion", Integer.class);
-		info.depletion = depl;
+		// TODO
+//		MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(sender.getWorld(), xChunk, zChunk);
+//		int depl = context.getArgument("depletion", Integer.class);
+//		info.depletion = depl;
 		//sender.sendMessage(new TextComponentTranslation(Lib.CHAT_COMMAND+CommandMineral.this.getName()+".setDepletion.sucess",
 		//TODO localization on the server?		(depl < 0?I18n.translateToLocal(Lib.CHAT_INFO+"coreDrill.infinite"): Integer.toString(depl))));
 	}

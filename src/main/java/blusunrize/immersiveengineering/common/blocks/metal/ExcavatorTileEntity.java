@@ -11,8 +11,9 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
-import blusunrize.immersiveengineering.api.excavator.MineralMix;
 import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
+import blusunrize.immersiveengineering.api.excavator.MineralMix;
+import blusunrize.immersiveengineering.api.excavator.MineralVein;
 import blusunrize.immersiveengineering.api.excavator.MineralWorldInfo;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
@@ -99,10 +100,14 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 		BlockPos wheelPos = getWheelCenterPos();
 		if(world.isBlockLoaded(wheelPos)&&world.getTileEntity(wheelPos) instanceof BucketWheelTileEntity)
 		{
-			MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(world, wheelPos.getX() >> 4, wheelPos.getZ() >> 4);
+			MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(world, wheelPos);
 			if(info==null)
 				return 0;
-			float remain = (ExcavatorHandler.mineralVeinCapacity-info.depletion)/(float)ExcavatorHandler.mineralVeinCapacity;
+			final long[] totalDepletion = {0};
+			List<Pair<MineralVein, Integer>> veins = info.getAllVeins();
+			veins.forEach(pair -> totalDepletion[0] += pair.getLeft().getDepletion());
+			totalDepletion[0] /= veins.size();
+			float remain = (ExcavatorHandler.mineralVeinCapacity-totalDepletion[0])/(float)ExcavatorHandler.mineralVeinCapacity;
 			return MathHelper.floor(Math.max(remain, 0)*15);
 		}
 		return 0;
@@ -153,7 +158,8 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 
 				if(!isRSDisabled())
 				{
-					MineralMix mineral = ExcavatorHandler.getRandomMineral(world, wheelPos.getX() >> 4, wheelPos.getZ() >> 4);
+					MineralVein mineralVein = ExcavatorHandler.getRandomMineral(world, wheelPos);
+					MineralMix mineral = mineralVein!=null?mineralVein.getActualMineral(): null;
 
 					int consumed = IEConfig.MACHINES.excavator_consumption.get();
 					int extracted = energyStorage.extractEnergy(consumed, true);
@@ -187,7 +193,7 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 										wheel.markDirty();
 										this.markContainingBlockForUpdate(null);
 									}
-									ExcavatorHandler.depleteMinerals(world, wheelPos.getX() >> 4, wheelPos.getZ() >> 4);
+									mineralVein.deplete();
 								}
 								if(!wheel.digStacks.get(targetDown).isEmpty())
 								{

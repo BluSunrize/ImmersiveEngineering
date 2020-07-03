@@ -13,8 +13,6 @@ import blusunrize.immersiveengineering.api.DimensionChunkCoords;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
-import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
-import blusunrize.immersiveengineering.api.excavator.MineralWorldInfo;
 import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
@@ -28,7 +26,6 @@ import blusunrize.immersiveengineering.common.items.IEItems.Metals;
 import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import blusunrize.immersiveengineering.common.items.RevolverItem;
 import blusunrize.immersiveengineering.common.items.ToolUpgradeItem.ToolUpgrade;
-import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -51,7 +48,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.village.PointOfInterestType;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.jigsaw.JigsawManager;
@@ -60,8 +56,6 @@ import net.minecraft.world.gen.feature.jigsaw.JigsawPattern.PlacementBehaviour;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
 import net.minecraft.world.gen.feature.jigsaw.SingleJigsawPiece;
 import net.minecraft.world.gen.feature.structure.*;
-import net.minecraft.world.storage.MapData;
-import net.minecraft.world.storage.MapDecoration.Type;
 import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.RegistryObject;
@@ -454,9 +448,12 @@ public class Villages
 			int cX = merchantPos.getX() >> 4;
 			int cZ = merchantPos.getZ() >> 4;
 			DimensionChunkCoords chunkCoords = null;
+			// TODO
+			/*
 			for(int i = 0; i < 8; i++) //Let's just try this a maximum of 8 times before I give up
 			{
 				chunkCoords = new DimensionChunkCoords(world.getDimension().getType(), cX+(random.nextInt(32)-16)*2, cZ+(random.nextInt(32)-16)*2);
+
 				if(!ExcavatorHandler.mineralCache.containsKey(chunkCoords))
 					break;
 				else
@@ -482,6 +479,7 @@ public class Villages
 				return new MerchantOffer(new ItemStack(Items.EMERALD, 8+random.nextInt(8)),
 						new ItemStack(Metals.ingots.get(EnumMetals.COPPER)), selling, 0, 16, 30, 0.5F);
 			}
+			 */
 			return null;
 		}
 	}

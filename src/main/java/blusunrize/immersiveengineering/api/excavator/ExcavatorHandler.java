@@ -9,12 +9,20 @@
 
 package blusunrize.immersiveengineering.api.excavator;
 
-import blusunrize.immersiveengineering.api.DimensionChunkCoords;
 import blusunrize.immersiveengineering.common.IESaveData;
-import net.minecraft.util.SharedSeedRandom;
+import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.collect.ArrayListMultimap;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.ColumnPos;
 import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.gen.INoiseGenerator;
+import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nullable;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author BluSunrize - 03.06.2015
@@ -23,71 +31,121 @@ import java.util.*;
  */
 public class ExcavatorHandler
 {
-	public static HashMap<DimensionChunkCoords, MineralWorldInfo> mineralCache = new HashMap<DimensionChunkCoords, MineralWorldInfo>();
+	private static final ArrayListMultimap<DimensionType, MineralVein> MINERAL_VEIN_LIST = ArrayListMultimap.create();
+	private static final HashMap<ColumnPos, MineralWorldInfo> MINERAL_INFO_CACHE = new HashMap<>();
 	public static int mineralVeinCapacity = 0;
 	public static double mineralChance = 0;
+	public static INoiseGenerator noiseGenerator;
 
-	public static MineralMix getRandomMineral(World world, int chunkX, int chunkZ)
+	@Nullable
+	public static MineralVein getRandomMineral(World world, BlockPos pos)
 	{
 		if(world.isRemote)
 			return null;
-		MineralWorldInfo info = getMineralWorldInfo(world, chunkX, chunkZ);
-		if(info==null||(info.mineral==null&&info.mineralOverride==null))
-			return null;
-
-		if(mineralVeinCapacity >= 0&&info.depletion > mineralVeinCapacity)
-			return null;
-
-		return info.mineralOverride!=null?info.mineralOverride: info.mineral;
+		MineralWorldInfo info = getMineralWorldInfo(world, pos);
+		return info.getMineralVein(Utils.RAND);
 	}
 
-	public static MineralWorldInfo getMineralWorldInfo(World world, int chunkX, int chunkZ)
+	public static ArrayListMultimap<DimensionType, MineralVein> getMineralVeinList()
 	{
-		return getMineralWorldInfo(world, new DimensionChunkCoords(world.getDimension().getType(), chunkX, chunkZ), false);
+		return MINERAL_VEIN_LIST;
 	}
 
-	public static MineralWorldInfo getMineralWorldInfo(World world, DimensionChunkCoords chunkCoords, boolean guaranteed)
+	public static MineralWorldInfo getMineralWorldInfo(World world, BlockPos pos)
 	{
 		if(world.isRemote)
 			return null;
-		MineralWorldInfo worldInfo = mineralCache.get(chunkCoords);
+		ColumnPos columnPos = new ColumnPos(pos);
+		MineralWorldInfo worldInfo = MINERAL_INFO_CACHE.get(columnPos);
 		if(worldInfo==null)
 		{
+			List<Pair<MineralVein, Double>> inVeins = new ArrayList<>();
+			double totalSaturation = 0;
 			MineralMix mix = null;
-			Random r = SharedSeedRandom.seedSlimeChunk(chunkCoords.x, chunkCoords.z, world.getSeed(), 940610990913L);
-			double dd = r.nextDouble();
-
-			boolean empty = !guaranteed&&dd > mineralChance;
-			if(!empty)
+			// Iterate all known veins
+			for(MineralVein vein : MINERAL_VEIN_LIST.get(world.getDimension().getType()))
 			{
-				MineralSelection selection = new MineralSelection(chunkCoords, 2);
+				int dX = vein.getPos().x-columnPos.x;
+				int dZ = vein.getPos().z-columnPos.z;
+				int d = dX*dX+dZ*dZ;
+				double rSq = vein.getRadius()*vein.getRadius();
+				if(d < rSq)
+				{
+					double saturation = 1-(d/rSq);
+					inVeins.add(Pair.of(vein, saturation));
+					totalSaturation += saturation;
+				}
+			}
+			final double finalTotalSaturation = totalSaturation;
+			worldInfo = new MineralWorldInfo(inVeins.stream()
+					.map(pair -> Pair.of(pair.getLeft(), (int)(pair.getRight()/finalTotalSaturation*1000)))
+					.collect(Collectors.toList())
+			);
+			MINERAL_INFO_CACHE.put(columnPos, worldInfo);
+		}
+		return worldInfo;
+	}
+
+	public static void generatePotentialVein(DimensionType dimension, ChunkPos chunkpos, Random rand)
+	{
+		int xStart = chunkpos.getXStart();
+		int zStart = chunkpos.getZStart();
+		double d0 = 0.0625D;
+		boolean containsVein = false;
+		ColumnPos pos = null;
+		iteratechunk:
+		for(int xx = 0; xx < 16; ++xx)
+			for(int zz = 0; zz < 16; ++zz)
+			{
+				double noise = noiseGenerator.noiseAt((xStart+xx)*d0, (zStart+zz)*d0, d0, xx*d0);
+				//System.out.println("Noise at "+chunkpos+" is "+Utils.formatDouble(noise, "0.00000"));
+				if(Math.abs(noise)-0.45 > mineralChance)
+				{
+//					System.out.println("THERE IS A MINERAL VEIN AT "+chunkpos+" with noise "+Utils.formatDouble(noise, "0.00000"));
+//					double noise2 = noiseGenerator.noiseAt((xStart+xx)*d0, (zStart+zz)*d0, d0, xx*d0);
+//					double noise3 = noiseGenerator.noiseAt((xStart+xx)*d0, (zStart+zz)*d0, d0, xx*d0);
+//					System.out.println("  Secondary Noise "+Utils.formatDouble(noise2, "0.00000"));
+//					System.out.println("  Tertiary Noise "+Utils.formatDouble(noise3, "0.00000"));
+					containsVein = true;
+					pos = new ColumnPos(xStart+xx, zStart+zz);
+					break iteratechunk;
+				}
+			}
+		if(containsVein)
+		{
+			ColumnPos finalPos = pos;
+			int radius = 8+rand.nextInt(32);
+			int radiusSq = radius*radius;
+			boolean crossover = MINERAL_VEIN_LIST.get(dimension).stream().anyMatch(vein -> {
+				int dx = vein.getPos().x-finalPos.x;
+				int dz = vein.getPos().z-finalPos.z;
+				return dx*dx+dz*dz < vein.getRadius()*vein.getRadius()||dx*dx+dz*dz < radiusSq;
+			});
+			if(!crossover)
+			{
+				MineralMix mineralMix = null;
+				MineralSelection selection = new MineralSelection(dimension, 2);
 				if(selection.getTotalWeight() > 0)
 				{
-					int weight = selection.getRandomWeight(r);
+					int weight = selection.getRandomWeight(rand);
 					for(MineralMix e : selection.getMinerals())
 					{
 						weight -= e.weight;
 						if(weight < 0)
 						{
-							mix = e;
+							mineralMix = e;
 							break;
 						}
 					}
 				}
+				if(mineralMix!=null)
+				{
+					MineralVein vein = new MineralVein(pos, mineralMix, radius);
+					MINERAL_VEIN_LIST.put(dimension, vein);
+					IESaveData.setDirty();
+				}
 			}
-			worldInfo = new MineralWorldInfo();
-			worldInfo.mineral = mix;
-			mineralCache.put(chunkCoords, worldInfo);
-			IESaveData.setDirty();
 		}
-		return worldInfo;
-	}
-
-	public static void depleteMinerals(World world, int chunkX, int chunkZ)
-	{
-		MineralWorldInfo info = getMineralWorldInfo(world, chunkX, chunkZ);
-		info.depletion++;
-		IESaveData.setDirty();
 	}
 
 	public static class MineralSelection
@@ -95,23 +153,23 @@ public class ExcavatorHandler
 		private final int totalWeight;
 		private final Set<MineralMix> validMinerals;
 
-		public MineralSelection(DimensionChunkCoords chunkCoords, int radius)
+		public MineralSelection(DimensionType dimension, int radius)
 		{
 			Set<MineralMix> surrounding = new HashSet<>();
-			for(int xx = -radius; xx <= radius; xx++)
-				for(int zz = -radius; zz <= radius; zz++)
-					if(xx!=0||zz!=0)
-					{
-						DimensionChunkCoords offset = chunkCoords.withOffset(xx, zz);
-						MineralWorldInfo worldInfo = mineralCache.get(offset);
-						if(worldInfo!=null&&worldInfo.mineral!=null)
-							surrounding.add(worldInfo.mineral);
-					}
+//			for(int xx = -radius; xx <= radius; xx++)
+//				for(int zz = -radius; zz <= radius; zz++)
+//					if(xx!=0||zz!=0)
+//					{
+//						DimensionChunkCoords offset = chunkCoords.withOffset(xx, zz);
+//						MineralWorldInfo worldInfo = mineralCache.get(offset);
+//						if(worldInfo!=null&&worldInfo.mineral!=null)
+//							surrounding.add(worldInfo.mineral);
+//					}
 
 			int weight = 0;
 			this.validMinerals = new HashSet<>();
 			for(MineralMix e : MineralMix.mineralList.values())
-				if(e.validDimension(chunkCoords.dimension)&&!surrounding.contains(e))
+				if(e.validDimension(dimension)&&!surrounding.contains(e))
 				{
 					validMinerals.add(e);
 					weight += e.weight;
@@ -134,5 +192,4 @@ public class ExcavatorHandler
 			return this.validMinerals;
 		}
 	}
-
 }

@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
-import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.ClientProxy;
@@ -39,9 +38,7 @@ import net.minecraft.item.*;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SharedSeedRandom;
 import net.minecraft.world.dimension.DimensionType;
-import net.minecraft.world.gen.PerlinNoiseGenerator;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.DistExecutor;
@@ -275,7 +272,6 @@ public class ImmersiveEngineering
 			{
 				IESaveData worldData = world.getSavedData().getOrCreate(IESaveData::new, IESaveData.dataName);
 				IESaveData.setInstance(worldData);
-				ExcavatorHandler.noiseGenerator = new PerlinNoiseGenerator(new SharedSeedRandom(world.getSeed()), 1);
 			}
 		}
 	}

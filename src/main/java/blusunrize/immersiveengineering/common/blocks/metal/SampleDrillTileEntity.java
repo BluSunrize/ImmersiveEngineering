@@ -100,9 +100,7 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 				process++;
 				if(process >= totalTime)
 				{
-					int cx = getPos().getX() >> 4;
-					int cz = getPos().getZ() >> 4;
-					MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(world, cx, cz);
+					MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(world, getPos());
 					this.sample = createCoreSample(world, (getPos().getX() >> 4), (getPos().getZ() >> 4), info);
 				}
 				this.markDirty();
@@ -148,18 +146,19 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 		ItemNBTHelper.putLong(stack, "timestamp", world.getGameTime());
 		DimensionChunkCoords dimCoords = new DimensionChunkCoords(world.dimension.getType(), chunkX, chunkZ);
 		CoresampleItem.setCoords(stack, dimCoords);
-		if(info==null)
-			return stack;
-		if(info.mineralOverride!=null)
-			ItemNBTHelper.putString(stack, "mineral", info.mineralOverride.getId().toString());
-		else if(info.mineral!=null)
-			ItemNBTHelper.putString(stack, "mineral", info.mineral.getId().toString());
-		else
-			return stack;
-		if(ExcavatorHandler.mineralVeinCapacity < 0||info.depletion < 0)
-			ItemNBTHelper.putBoolean(stack, "infinite", true);
-		else
-			ItemNBTHelper.putInt(stack, "depletion", info.depletion);
+		// TODO
+//		if(info==null)
+//			return stack;
+//		if(info.mineralOverride!=null)
+//			ItemNBTHelper.putString(stack, "mineral", info.mineralOverride.getId().toString());
+//		else if(info.mineral!=null)
+//			ItemNBTHelper.putString(stack, "mineral", info.mineral.getId().toString());
+//		else
+//			return stack;
+//		if(ExcavatorHandler.mineralVeinCapacity < 0||info.depletion < 0)
+//			ItemNBTHelper.putBoolean(stack, "infinite", true);
+//		else
+//			ItemNBTHelper.putInt(stack, "depletion", info.depletion);
 		return stack;
 	}
 

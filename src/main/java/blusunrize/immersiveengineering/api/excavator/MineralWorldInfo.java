@@ -9,50 +9,44 @@
 
 package blusunrize.immersiveengineering.api.excavator;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.ResourceLocationException;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Random;
 
 public class MineralWorldInfo
 {
-	public MineralMix mineral;
-	public MineralMix mineralOverride;
-	public int depletion;
+	private final List<Pair<MineralVein, Integer>> mineralVeins;
+	private final int totalWeight;
 
-	public CompoundNBT writeToNBT()
+	public MineralWorldInfo(List<Pair<MineralVein, Integer>> mineralVeins)
 	{
-		CompoundNBT tag = new CompoundNBT();
-		if(mineral!=null)
-			tag.putString("mineral", mineral.getId().toString());
-		if(mineralOverride!=null)
-			tag.putString("mineralOverride", mineralOverride.getId().toString());
-		tag.putInt("depletion", depletion);
-		return tag;
+		this.mineralVeins = mineralVeins;
+		this.totalWeight = mineralVeins.stream().map(Pair::getRight).reduce(Integer::sum).orElse(0);
 	}
 
 	@Nullable
-	public static MineralWorldInfo readFromNBT(CompoundNBT tag)
+	public MineralVein getMineralVein(Random rand)
 	{
-		try
-		{
-			MineralWorldInfo info = new MineralWorldInfo();
-			if(tag.contains("mineral"))
-			{
-				ResourceLocation id = new ResourceLocation(tag.getString("mineral"));
-				info.mineral = MineralMix.mineralList.get(id);
-			}
-			if(tag.contains("mineralOverride"))
-			{
-				ResourceLocation id = new ResourceLocation(tag.getString("mineralOverride"));
-				info.mineralOverride = MineralMix.mineralList.get(id);
-			}
-			info.depletion = tag.getInt("depletion");
-			return info;
-		} catch(ResourceLocationException ex)
-		{
+		MineralVein vein = null;
+		if(this.totalWeight==0)
 			return null;
+		int weight = rand.nextInt(this.totalWeight);
+		for(Pair<MineralVein, Integer> pair : this.mineralVeins)
+		{
+			weight -= pair.getRight();
+			if(weight < 0)
+			{
+				vein = pair.getLeft();
+				break;
+			}
 		}
+		return vein;
+	}
+
+	public List<Pair<MineralVein, Integer>> getAllVeins()
+	{
+		return mineralVeins;
 	}
 }

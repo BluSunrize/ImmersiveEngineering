@@ -13,9 +13,11 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
+import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
+import blusunrize.immersiveengineering.api.excavator.MineralMix;
+import blusunrize.immersiveengineering.api.excavator.MineralVein;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
-import blusunrize.immersiveengineering.api.excavator.MineralMix;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
@@ -57,6 +59,7 @@ import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import net.minecraft.block.Block;
 import net.minecraft.client.audio.ITickableSound;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.multiplayer.PlayerController;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.LivingRenderer;
@@ -91,6 +94,7 @@ import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.storage.MapData;
 import net.minecraftforge.client.ForgeIngameGui;
 import net.minecraftforge.client.event.*;
@@ -114,10 +118,7 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
@@ -1280,6 +1281,55 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		if(!chunkBorders&&ClientUtils.mc().objectMouseOver instanceof BlockRayTraceResult&&
 				ClientUtils.mc().world.getTileEntity(((BlockRayTraceResult)ClientUtils.mc().objectMouseOver).getPos()) instanceof SampleDrillTileEntity)
 			chunkBorders = true;
+
+		if(Screen.hasShiftDown())
+		{
+			Tessellator tessellator = Tessellator.getInstance();
+			BufferBuilder BufferBuilder = tessellator.getBuffer();
+			double px = TileEntityRendererDispatcher.staticPlayerX;
+			double py = TileEntityRendererDispatcher.staticPlayerY;
+			double pz = TileEntityRendererDispatcher.staticPlayerZ;
+			GlStateManager.disableTexture();
+			GlStateManager.enableBlend();
+			GlStateManager.disableCull();
+			GlStateManager.blendFuncSeparate(770, 771, 1, 0);
+			GlStateManager.shadeModel(GL11.GL_SMOOTH);
+			GlStateManager.lineWidth(5f);
+			for(MineralVein vein : ExcavatorHandler.getMineralVeinList().get(DimensionType.OVERWORLD))
+			{
+				ColumnPos pos = vein.getPos();
+				Random cRand = new Random(pos.asLong());
+				float r = cRand.nextFloat();
+				float g = cRand.nextFloat();
+				float b = cRand.nextFloat();
+
+				BufferBuilder.setTranslation(pos.x-px, 0-py, pos.z-pz);
+				BufferBuilder.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
+				BufferBuilder.pos(0, 0, 0).color(r, g, b, .5f).endVertex();
+				BufferBuilder.pos(0, 128, 0).color(r, g, b, .5f).endVertex();
+				tessellator.draw();
+
+				int radius = vein.getRadius();
+				float angle;
+				double x1;
+				double z1;
+				BufferBuilder.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
+				for(int p = 0; p < 12; p++)
+				{
+					angle = 360.0f/12*p;
+					x1 = radius*Math.cos(angle*Math.PI/180);
+					z1 = radius*Math.sin(angle*Math.PI/180);
+					BufferBuilder.pos(x1, 70, z1).color(r, g, b, .25f).endVertex();
+				}
+				tessellator.draw();
+
+				BufferBuilder.setTranslation(0, 0, 0);
+			}
+			GlStateManager.shadeModel(GL11.GL_FLAT);
+			GlStateManager.enableCull();
+			GlStateManager.disableBlend();
+			GlStateManager.enableTexture();
+		}
 
 		float partial = event.getPartialTicks();
 		double px = TileEntityRendererDispatcher.staticPlayerX;
