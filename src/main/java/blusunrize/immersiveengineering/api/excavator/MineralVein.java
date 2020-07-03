@@ -52,6 +52,11 @@ public class MineralVein
 		return depletion;
 	}
 
+	public void setDepletion(int depletion)
+	{
+		this.depletion = depletion;
+	}
+
 	public void deplete()
 	{
 		depletion++;

@@ -8,13 +8,16 @@
 
 package blusunrize.immersiveengineering.common;
 
+import blusunrize.immersiveengineering.api.DimensionChunkCoords;
 import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
+import blusunrize.immersiveengineering.api.excavator.MineralMix;
 import blusunrize.immersiveengineering.api.excavator.MineralVein;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.ColumnPos;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -36,20 +39,6 @@ public class IESaveData extends WorldSavedData
 	@Override
 	public void read(CompoundNBT nbt)
 	{
-		// Legacy, using mineralDepletion key
-//		ListNBT mineralList = nbt.getList("mineralDepletion", NBT.TAG_COMPOUND);
-//		ExcavatorHandler.mineralCache.clear();
-//		for(int i = 0; i < mineralList.size(); i++)
-//		{
-//			CompoundNBT tag = mineralList.getCompound(i);
-//			DimensionChunkCoords coords = DimensionChunkCoords.readFromNBT(tag);
-//			if(coords!=null)
-//			{
-//				MineralWorldInfo info = MineralWorldInfo.readFromNBT(tag.getCompound("info"));
-//				if(info!=null)
-//					ExcavatorHandler.mineralCache.put(coords, info);
-//			}
-//		}
 		ListNBT dimensionList = nbt.getList("mineralVeins", NBT.TAG_COMPOUND);
 		ExcavatorHandler.getMineralVeinList().clear();
 		for(int i = 0; i < dimensionList.size(); i++)
@@ -63,6 +52,29 @@ public class IESaveData extends WorldSavedData
 				ExcavatorHandler.getMineralVeinList().putAll(dimensionType,
 						mineralList.stream().map(inbt -> MineralVein.readFromNBT((CompoundNBT)inbt))
 								.collect(Collectors.toList()));
+			}
+		}
+		// Legacy, using mineralDepletion key
+		if(nbt.contains("mineralDepletion", NBT.TAG_LIST))
+		{
+			ListNBT oldList = nbt.getList("mineralDepletion", NBT.TAG_COMPOUND);
+			for(int i = 0; i < oldList.size(); i++)
+			{
+				CompoundNBT tag = oldList.getCompound(i);
+				CompoundNBT mineralInfo = tag.getCompound("info");
+				if(mineralInfo.contains("mineral", NBT.TAG_STRING))
+				{
+					MineralMix mineral = MineralMix.mineralList.get(new ResourceLocation(mineralInfo.getString("mineral")));
+					DimensionChunkCoords oldCoords = DimensionChunkCoords.readFromNBT(tag);
+					int depletion = mineralInfo.getInt("depletion");
+					if(mineral!=null)
+					{
+						ColumnPos convertedPos = new ColumnPos(oldCoords.getXStart()+8, oldCoords.getZStart()+8);
+						MineralVein convertedVein = new MineralVein(convertedPos, mineral, 8);
+						convertedVein.setDepletion(depletion);
+						ExcavatorHandler.getMineralVeinList().put(oldCoords.dimension, convertedVein);
+					}
+				}
 			}
 		}
 
