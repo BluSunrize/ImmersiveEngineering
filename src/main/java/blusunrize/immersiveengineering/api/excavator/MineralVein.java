@@ -75,7 +75,7 @@ public class MineralVein
 
 	public boolean isDepleted()
 	{
-		return ExcavatorHandler.mineralVeinCapacity==0||getDepletion() < ExcavatorHandler.mineralVeinCapacity;
+		return ExcavatorHandler.mineralVeinYield==0||getDepletion() < ExcavatorHandler.mineralVeinYield;
 	}
 
 	public MineralMix getMineralOverride()

@@ -33,7 +33,7 @@ public class ExcavatorHandler
 {
 	private static final ArrayListMultimap<DimensionType, MineralVein> MINERAL_VEIN_LIST = ArrayListMultimap.create();
 	private static final HashMap<ColumnPos, MineralWorldInfo> MINERAL_INFO_CACHE = new HashMap<>();
-	public static int mineralVeinCapacity = 0;
+	public static int mineralVeinYield = 0;
 	public static double initialVeinDepletion = 0;
 	public static double mineralNoiseThreshold = 0;
 	public static INoiseGenerator noiseGenerator;
@@ -139,7 +139,7 @@ public class ExcavatorHandler
 					MineralVein vein = new MineralVein(pos, mineralMix, radius);
 					// generate initial depletion
 					if(initialVeinDepletion > 0)
-						vein.setDepletion((int)(mineralVeinCapacity*(rand.nextDouble()*initialVeinDepletion)));
+						vein.setDepletion((int)(mineralVeinYield*(rand.nextDouble()*initialVeinDepletion)));
 					MINERAL_VEIN_LIST.put(dimension, vein);
 					IESaveData.setDirty();
 				}

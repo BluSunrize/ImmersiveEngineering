@@ -832,7 +832,7 @@ public class IEContent
 		fluidBiodiesel.block.setEffect(IEPotions.flammable, 100, 1);
 		fluidConcrete.block.setEffect(Effects.SLOWNESS, 20, 3);
 
-		ExcavatorHandler.mineralVeinCapacity = IEConfig.MACHINES.excavator_yield.get();
+		ExcavatorHandler.mineralVeinYield = IEConfig.MACHINES.excavator_yield.get();
 		ExcavatorHandler.initialVeinDepletion = IEConfig.MACHINES.excavator_initial_depletion.get();
 		ExcavatorHandler.mineralNoiseThreshold = IEConfig.MACHINES.excavator_theshold.get();
 

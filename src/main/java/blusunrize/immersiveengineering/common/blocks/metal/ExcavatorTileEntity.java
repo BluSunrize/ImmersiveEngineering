@@ -103,13 +103,13 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 			MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(world, wheelPos);
 			if(info==null)
 				return 0;
-			if(ExcavatorHandler.mineralVeinCapacity==0)
+			if(ExcavatorHandler.mineralVeinYield==0)
 				return 15;
 			final long[] totalDepletion = {0};
 			List<Pair<MineralVein, Integer>> veins = info.getAllVeins();
 			veins.forEach(pair -> totalDepletion[0] += pair.getLeft().getDepletion());
 			totalDepletion[0] /= veins.size();
-			float remain = (ExcavatorHandler.mineralVeinCapacity-totalDepletion[0])/(float)ExcavatorHandler.mineralVeinCapacity;
+			float remain = (ExcavatorHandler.mineralVeinYield-totalDepletion[0])/(float)ExcavatorHandler.mineralVeinYield;
 			return MathHelper.floor(Math.max(remain, 0)*15);
 		}
 		return 0;

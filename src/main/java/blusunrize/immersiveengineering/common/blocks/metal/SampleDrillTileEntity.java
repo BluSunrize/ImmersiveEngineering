@@ -132,7 +132,7 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 	{
 		if(sample.isEmpty())
 			return -1;
-		return ExcavatorHandler.mineralVeinCapacity-sample.getOrCreateTag().getInt("depletion");
+		return ExcavatorHandler.mineralVeinYield-sample.getOrCreateTag().getInt("depletion");
 	}
 
 	@Nonnull
