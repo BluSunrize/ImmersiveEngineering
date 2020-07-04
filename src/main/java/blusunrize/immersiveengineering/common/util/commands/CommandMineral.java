@@ -106,14 +106,15 @@ public class CommandMineral
 				component.appendSibling(new TranslationTextComponent(vein.getActualMineral().getTranslationKey()));
 				ret.appendSibling(component.applyTextStyle(TextFormatting.GRAY));
 				component = new StringTextComponent("\n  ");
-				component.appendSibling(new TranslationTextComponent(Lib.CHAT_COMMAND+"mineral.get.pos", vein.getPos().x, vein.getPos().z));
+				component.appendSibling(new TranslationTextComponent(Lib.CHAT_COMMAND+"mineral.get.pos",
+						vein.getPos().x, vein.getPos().z, vein.getRadius()));
 				component.appendText("\n  ");
 				if(ExcavatorHandler.mineralVeinYield==0)
 					component.appendSibling(new TranslationTextComponent(Lib.DESC_INFO+"coresample.infinite"));
 				else
 					component.appendSibling(new TranslationTextComponent(Lib.DESC_INFO+"coresample.yield",
 							ExcavatorHandler.mineralVeinYield-vein.getDepletion()));
-				ret.appendSibling(component.applyTextStyle(TextFormatting.DARK_GRAY));
+				ret.appendSibling(component.applyTextStyle(TextFormatting.GRAY));
 			}
 		}
 		sender.sendFeedback(ret, true);

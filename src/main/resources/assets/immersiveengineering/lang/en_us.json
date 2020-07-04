@@ -449,7 +449,7 @@
   "chat.immersiveengineering.info.energyTransfered": "Average energy transferred over the last %1$s ticks: %2$s Flux/t",
   "chat.immersiveengineering.command.mineral.get": "Minerals found at %1$s, %2$s",
   "chat.immersiveengineering.command.mineral.get.none": "No minerals found at %1$s, %2$s",
-  "chat.immersiveengineering.command.mineral.get.pos": "Centered at %1$s, %2$s",
+  "chat.immersiveengineering.command.mineral.get.pos": "Centered at %1$s, %2$s, radius %3$s",
   "chat.immersiveengineering.command.mineral.put.invalidMineral": "§cInvalid Mineral, '%1$s' is not a valid identifier. Use '/ie mineral list' for a list of all identifiers.§r",
   "chat.immersiveengineering.command.mineral.put.success": "Mineral vein '%1$s' with radius %2$s placed at %3$s, %4$s",
   "chat.immersiveengineering.command.mineral.setDepletion.noMineral": "No minerals present at %1$s, %2$s",
