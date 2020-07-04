@@ -9,9 +9,10 @@
 package blusunrize.immersiveengineering.common.world;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.DimensionChunkCoords;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
+import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
+import blusunrize.immersiveengineering.api.excavator.MineralVein;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.api.wires.WireType;
@@ -48,6 +49,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.village.PointOfInterestType;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.jigsaw.JigsawManager;
@@ -56,6 +58,8 @@ import net.minecraft.world.gen.feature.jigsaw.JigsawPattern.PlacementBehaviour;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
 import net.minecraft.world.gen.feature.jigsaw.SingleJigsawPiece;
 import net.minecraft.world.gen.feature.structure.*;
+import net.minecraft.world.storage.MapData;
+import net.minecraft.world.storage.MapDecoration.Type;
 import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.RegistryObject;
@@ -69,10 +73,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
@@ -433,6 +434,7 @@ public class Villages
 	private static class OreveinMapForEmeralds implements ITrade
 	{
 		public PriceInterval value;
+		private static final int SEARCH_RADIUS = 32*16;
 
 		public OreveinMapForEmeralds()
 		{
@@ -444,42 +446,29 @@ public class Villages
 		{
 			World world = trader.getEntityWorld();
 			BlockPos merchantPos = trader.getPosition();
-
-			int cX = merchantPos.getX() >> 4;
-			int cZ = merchantPos.getZ() >> 4;
-			DimensionChunkCoords chunkCoords = null;
-			// TODO
-			/*
+			List<MineralVein> veins = new ArrayList<>();
 			for(int i = 0; i < 8; i++) //Let's just try this a maximum of 8 times before I give up
 			{
-				chunkCoords = new DimensionChunkCoords(world.getDimension().getType(), cX+(random.nextInt(32)-16)*2, cZ+(random.nextInt(32)-16)*2);
-
-				if(!ExcavatorHandler.mineralCache.containsKey(chunkCoords))
-					break;
-				else
-					chunkCoords = null;
+				int offX = random.nextInt(SEARCH_RADIUS*2)-SEARCH_RADIUS;
+				int offZ = random.nextInt(SEARCH_RADIUS*2)-SEARCH_RADIUS;
+				MineralVein vein = ExcavatorHandler.getRandomMineral(world, merchantPos.add(offX,0,offZ));
+				if(vein!=null&&!veins.contains(vein))
+					veins.add(vein);
 			}
-
-			if(chunkCoords!=null)
+			if(veins.size() > 0)
 			{
-				MineralWorldInfo mineralWorldInfo = ExcavatorHandler.getMineralWorldInfo(world, chunkCoords, true);
-				if(mineralWorldInfo==null||mineralWorldInfo.mineral==null)
-				{
-					if(!world.isRemote)
-						IELogger.logger.error("Null "+(mineralWorldInfo==null?"WorldInfo": "Mineral")+" on building Cartographer trade.");
-					return null;
-				}
-				BlockPos blockPos = new BlockPos(chunkCoords.getXStart()+8, 64, chunkCoords.getZStart()+8);
+				// lowest weight first, to pick the rarest vein
+				veins.sort(Comparator.comparingInt(o -> o.getMineral().weight));
+				MineralVein vein = veins.get(0);
+				BlockPos blockPos = new BlockPos(vein.getPos().x, 64, vein.getPos().z);
 				ItemStack selling = FilledMapItem.setupNewMap(world, blockPos.getX(), blockPos.getZ(), (byte)1, true, true);
 				FilledMapItem.renderBiomePreviewMap(world, selling);
 				MapData.addTargetDecoration(selling, blockPos, "ie:coresample_treasure", Type.TARGET_POINT);
-				selling.setDisplayName(new TranslationTextComponent("item.immersiveengineering.map_orevein.name"));
-				ItemNBTHelper.setLore(selling, mineralWorldInfo.mineral.getId().getPath());
-
+				selling.setDisplayName(new TranslationTextComponent("item.immersiveengineering.map_orevein"));
+				ItemNBTHelper.setLore(selling, new TranslationTextComponent(vein.getMineral().getTranslationKey()));
 				return new MerchantOffer(new ItemStack(Items.EMERALD, 8+random.nextInt(8)),
-						new ItemStack(Metals.ingots.get(EnumMetals.COPPER)), selling, 0, 16, 30, 0.5F);
+						new ItemStack(Metals.ingots.get(EnumMetals.STEEL), 4+random.nextInt(8)), selling, 0, 1, 30, 0.5F);
 			}
-			 */
 			return null;
 		}
 	}
