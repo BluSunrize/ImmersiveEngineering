@@ -155,7 +155,7 @@ public class CommandMineral
 		}
 		else
 			sender.sendFeedback(new TranslationTextComponent(Lib.CHAT_COMMAND+
-					"mineral.put.invalidMineral", mineral.getId()), true);
+					"mineral.put.invalid_mineral", mineral.getId()), true);
 	}
 
 	private static LiteralArgumentBuilder<CommandSource> setMineralDepletion()
@@ -188,11 +188,11 @@ public class CommandMineral
 				pair.getLeft().setDepletion(depletion);
 			IESaveData.setDirty();
 			sender.sendFeedback(new TranslationTextComponent(Lib.CHAT_COMMAND+
-					"mineral.setDepletion.success", depletion), true);
+					"mineral.set_depletion.success", depletion), true);
 		}
 		else
 			sender.sendFeedback(new TranslationTextComponent(Lib.CHAT_COMMAND+
-					"mineral.setDepletion.noMineral", pos.x, pos.z), true);
+					"mineral.set_depletion.no_mineral", pos.x, pos.z), true);
 	}
 
 	private static ColumnPos columnPos(Vec3d vec)
