@@ -103,6 +103,8 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 			MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(world, wheelPos);
 			if(info==null)
 				return 0;
+			if(ExcavatorHandler.mineralVeinCapacity==0)
+				return 15;
 			final long[] totalDepletion = {0};
 			List<Pair<MineralVein, Integer>> veins = info.getAllVeins();
 			veins.forEach(pair -> totalDepletion[0] += pair.getLeft().getDepletion());
@@ -184,17 +186,8 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 								}
 								else if(mineral!=null)
 								{
-									ItemStack ore = mineral.getRandomOre(Utils.RAND);
-									// if random number of 0-1 is smaller than the distance based fail chance of the vein
-									boolean distanceFail = Utils.RAND.nextFloat() < mineralVein.getFailChance(wheelPos);
-									// if random number of 0-1 is smaller than the fail chance of the specific mineral
-									boolean mineralFail = Utils.RAND.nextFloat() < mineral.failChance;
-									if(!ore.isEmpty()&&!distanceFail&&!mineralFail)
-									{
-										wheel.digStacks.set(targetDown, ore);
-										wheel.markDirty();
-										this.markContainingBlockForUpdate(null);
-									}
+									// Extracted to a method, to allow for early exiting
+									fillBucket(mineralVein, mineral, wheelPos, wheel, targetDown);
 									mineralVein.deplete();
 								}
 								if(!wheel.digStacks.get(targetDown).isEmpty())
@@ -320,6 +313,24 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 			}
 		}
 		return ItemStack.EMPTY;
+	}
+
+	private void fillBucket(MineralVein mineralVein, MineralMix mineralMix, BlockPos wheelPos, BucketWheelTileEntity wheel, int targetDown)
+	{
+		if(mineralVein.isDepleted())
+			return;
+		ItemStack ore = mineralMix.getRandomOre(Utils.RAND);
+		if(ore.isEmpty())
+			return;
+		// if random number of 0-1 is smaller than the fail chance of the specific mineral
+		if(Utils.RAND.nextFloat() < mineralMix.failChance)
+			return;
+		// if random number of 0-1 is smaller than the distance based fail chance of the vein
+		if(Utils.RAND.nextFloat() < mineralVein.getFailChance(wheelPos))
+			return;
+		wheel.digStacks.set(targetDown, ore);
+		wheel.markDirty();
+		this.markContainingBlockForUpdate(null);
 	}
 
 	private static final CachedShapesWithTransform<BlockPos, Pair<Direction, Boolean>> SHAPES =

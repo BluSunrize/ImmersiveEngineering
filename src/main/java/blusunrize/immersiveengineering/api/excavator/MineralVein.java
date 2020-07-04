@@ -73,6 +73,11 @@ public class MineralVein
 		IESaveData.setDirty();
 	}
 
+	public boolean isDepleted()
+	{
+		return ExcavatorHandler.mineralVeinCapacity==0||getDepletion() < ExcavatorHandler.mineralVeinCapacity;
+	}
+
 	public MineralMix getMineralOverride()
 	{
 		return mineralOverride;

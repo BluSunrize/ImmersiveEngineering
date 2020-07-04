@@ -85,8 +85,11 @@ public class CoresampleItem extends IEBaseItem
 					if(showYield)
 					{
 						component = new StringTextComponent("  ");
-						component.appendSibling(new TranslationTextComponent(Lib.DESC_INFO+"coresample.yield",
-								ExcavatorHandler.mineralVeinCapacity-tag.getInt("depletion")));
+						if(ExcavatorHandler.mineralVeinCapacity==0)
+							component.appendSibling(new TranslationTextComponent(Lib.DESC_INFO+"coresample.infinite"));
+						else
+							component.appendSibling(new TranslationTextComponent(Lib.DESC_INFO+"coresample.yield",
+									ExcavatorHandler.mineralVeinCapacity-tag.getInt("depletion")));
 						list.add(component.applyTextStyle(TextFormatting.DARK_GRAY));
 					}
 				});

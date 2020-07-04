@@ -312,9 +312,9 @@ public class IEConfig
 			excavator_theshold = builder
 					.comment("The threshold the perlin noise has to cross for a mineral vein to be generated. Higher means less likely.")
 					.defineInRange("excavator_chance", .9, 0, 1);
-			excavator_depletion = builder
+			excavator_yield = builder
 					.comment("The maximum amount of yield one can get out of a chunk with the excavator. Set a number smaller than zero to make it infinite")
-					.defineInRange("excavator_depletion", 38400, -1, Integer.MAX_VALUE);
+					.defineInRange("excavator_yield", 38400, -1, Integer.MAX_VALUE);
 			excavator_dimBlacklist = builder
 					.comment("List of dimensions that can't contain minerals. Default: The End.")
 					.defineList("excavator_dimBlacklist", ImmutableList.of(DimensionType.THE_END.getRegistryName().toString()),
@@ -426,7 +426,7 @@ public class IEConfig
 		public final DoubleValue excavator_speed;
 		public final BooleanValue excavator_particles;
 		public final DoubleValue excavator_theshold;
-		public final IntValue excavator_depletion;
+		public final IntValue excavator_yield;
 		public final ConfigValue<List<? extends String>> excavator_dimBlacklist;
 
 		public static class MachineRecipeConfig
