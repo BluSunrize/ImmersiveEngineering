@@ -54,7 +54,7 @@ public class MineralVein
 		double dX = pos.getX()-this.pos.x;
 		double dZ = pos.getZ()-this.pos.z;
 		double d = (dX*dX+dZ*dZ)/(radius*radius);
-		return (-2*Math.pow(d, 3))+(3*Math.pow(d, 2));
+		return d*d*(-2*d+3);
 	}
 
 	public int getDepletion()
