@@ -29,6 +29,7 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -41,6 +42,9 @@ import static blusunrize.immersiveengineering.common.util.SafeChunkUtils.isChunk
 
 public class GlobalWireNetwork implements ITickableTileEntity
 {
+	private static World cachedClientWorld;
+	private static GlobalWireNetwork cachedClientNet;
+
 	private final Map<ConnectionPoint, LocalWireNetwork> localNets = new HashMap<>();
 	private final WireCollisionData collisionData;
 	private final World world;
@@ -48,9 +52,22 @@ public class GlobalWireNetwork implements ITickableTileEntity
 	@Nonnull
 	public static GlobalWireNetwork getNetwork(World w)
 	{
-		if(!w.getCapability(NetHandlerCapability.NET_CAPABILITY).isPresent())
+		LazyOptional<GlobalWireNetwork> netOpt = w.getCapability(NetHandlerCapability.NET_CAPABILITY);
+		if(!netOpt.isPresent())
+		{
+			//TODO figure out whether this is a forge bug or not
+			if(w.isRemote)
+			{
+				if(w!=cachedClientWorld)
+				{
+					cachedClientWorld = w;
+					cachedClientNet = new GlobalWireNetwork(w);
+				}
+				return cachedClientNet;
+			}
 			throw new RuntimeException("No net handler found for dimension "+w.func_234922_V_().func_240901_a_()+", remote: "+w.isRemote);
-		return Objects.requireNonNull(w.getCapability(NetHandlerCapability.NET_CAPABILITY).orElse(null));
+		}
+		return Objects.requireNonNull(netOpt.orElse(null));
 	}
 
 	public GlobalWireNetwork(World w)

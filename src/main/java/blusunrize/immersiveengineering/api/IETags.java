@@ -38,8 +38,6 @@ public class IETags
 	public static final INamedTag<Block> clayBlock = createBlockTag(getStorageBlock("clay"));
 	public static final INamedTag<Item> charCoal = createItemWrapper(forgeLoc("charcoal"));
 	public static final INamedTag<Block> glowstoneBlock = createBlockTag(getStorageBlock("glowstone"));
-	//Other mods
-	public static final INamedTag<Block> charCoalBlocks = createBlockTag(getStorageBlock("charcoal"));
 	//IE Blocks
 	public static final INamedTag<Block> treatedWood = createBlockTag(forgeLoc("treated_wood"));
 	public static final INamedTag<Block> treatedWoodSlab = createBlockTag(forgeLoc("treated_wood_slab"));

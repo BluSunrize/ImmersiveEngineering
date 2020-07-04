@@ -26,6 +26,7 @@ import org.apache.commons.lang3.tuple.Triple;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Supplier;
 
 public class ShaderRegistry
 {
@@ -96,7 +97,7 @@ public class ShaderRegistry
 		return shaderRegistry.get(name)
 				.setCrateLoot(loot)
 				.setBagLoot(bags)
-				.setReplicationCost(new IngredientWithSize(Ingredient.fromTag(defaultReplicationCost), 10-rarityWeightMap.get(rarity)));
+				.setReplicationCost(() -> new IngredientWithSize(Ingredient.fromTag(defaultReplicationCost), 10-rarityWeightMap.get(rarity)));
 	}
 
 	public static <T extends ShaderCase> T registerShaderCase(ResourceLocation name, T shader, Rarity rarity)
@@ -623,7 +624,7 @@ public class ShaderRegistry
 		public String info_set;
 		public String info_reference;
 		public String info_details;
-		public IngredientWithSize replicationCost;
+		public Supplier<IngredientWithSize> replicationCost;
 
 		public IShaderEffectFunction effectFunction;
 		private static final IShaderEffectFunction DEFAULT_EFFECT = (world, shader, item, shaderType, pos, dir, scale) -> {
@@ -726,7 +727,7 @@ public class ShaderRegistry
 			return this;
 		}
 
-		public ShaderRegistryEntry setReplicationCost(@Nonnull IngredientWithSize replicationCost)
+		public ShaderRegistryEntry setReplicationCost(@Nonnull Supplier<IngredientWithSize> replicationCost)
 		{
 			this.replicationCost = replicationCost;
 			return this;

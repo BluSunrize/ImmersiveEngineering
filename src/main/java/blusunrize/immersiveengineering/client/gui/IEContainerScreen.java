@@ -27,6 +27,7 @@ public abstract class IEContainerScreen<C extends Container> extends ContainerSc
 	@Override
 	public void render(MatrixStack transform, int mouseX, int mouseY, float partialTicks)
 	{
+		this.field_238745_s_ = this.ySize-94;
 		this.renderBackground(transform);
 		super.render(transform, mouseX, mouseY, partialTicks);
 		//TODO this.renderHoveredToolTip(transform, mouseX, mouseY);

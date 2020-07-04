@@ -8,35 +8,42 @@
 
 package blusunrize.immersiveengineering.api.tool;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import net.minecraft.entity.Entity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.tags.ITag;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class RailgunHandler
 {
-	public static List<Pair<Ingredient, RailgunProjectileProperties>> projectilePropertyMap = new ArrayList<>();
+	public static List<Pair<Supplier<Ingredient>, RailgunProjectileProperties>> projectilePropertyMap = new ArrayList<>();
 
-	public static RailgunProjectileProperties registerProjectileProperties(Ingredient stack, double damage, double gravity)
+	public static RailgunProjectileProperties registerProjectileProperties(Supplier<Ingredient> stack, double damage, double gravity)
 	{
 		RailgunProjectileProperties properties = new RailgunProjectileProperties(damage, gravity);
 		projectilePropertyMap.add(Pair.of(stack, properties));
 		return properties;
 	}
 
+	public static RailgunProjectileProperties registerProjectileProperties(ITag<Item> tag, double damage, double gravity)
+	{
+		return registerProjectileProperties(() -> Ingredient.fromTag(tag), damage, gravity);
+	}
+
 	public static RailgunProjectileProperties registerProjectileProperties(ItemStack stack, double damage, double gravity)
 	{
-		return registerProjectileProperties(Ingredient.fromStacks(stack), damage, gravity);
+		return registerProjectileProperties(() -> Ingredient.fromStacks(stack), damage, gravity);
 	}
 
 	public static RailgunProjectileProperties getProjectileProperties(ItemStack stack)
 	{
-		for(Pair<Ingredient, RailgunProjectileProperties> pair : projectilePropertyMap)
-			if(pair.getLeft().test(stack))
+		for(Pair<Supplier<Ingredient>, RailgunProjectileProperties> pair : projectilePropertyMap)
+			if(pair.getLeft().get().test(stack))
 				return pair.getRight();
 		return null;
 	}

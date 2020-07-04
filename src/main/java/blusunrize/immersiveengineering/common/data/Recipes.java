@@ -79,6 +79,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
 
+import static blusunrize.immersiveengineering.api.IETags.getStorageBlock;
 import static blusunrize.immersiveengineering.common.data.DataGenUtils.createItemWrapper;
 
 public class Recipes extends RecipeProvider
@@ -209,8 +210,9 @@ public class Recipes extends RecipeProvider
 		BlastFurnaceFuelBuilder.builder(IETags.charCoal)
 				.setTime(300)
 				.build(out, toRL("blastfurnace/fuel_charcoal"));
-		BlastFurnaceFuelBuilder.builder(IETags.getItemTag(IETags.charCoalBlocks))
-				.addCondition(new NotCondition(new TagEmptyCondition(IETags.charCoalBlocks.func_230234_a_())))
+		INamedTag<Item> charCoalBlocks = createItemWrapper(getStorageBlock("charcoal"));
+		BlastFurnaceFuelBuilder.builder(charCoalBlocks)
+				.addCondition(new NotCondition(new TagEmptyCondition(charCoalBlocks.func_230234_a_())))
 				.setTime(10*300)
 				.build(out, toRL("blastfurnace/fuel_charcoal_block"));
 

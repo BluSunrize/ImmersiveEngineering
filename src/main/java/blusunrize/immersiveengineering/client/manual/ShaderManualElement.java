@@ -76,7 +76,7 @@ public class ShaderManualElement extends SpecialManualElements
 
 		shaderItem = new ItemStack(ShaderRegistry.itemShader);
 		shaderItem.getOrCreateTag().putString("shader_name", shader.getName().toString());
-		replicationCost = shader.replicationCost;
+		replicationCost = shader.replicationCost.get();
 
 		if(unlocked)
 		{
