@@ -18,6 +18,8 @@ import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileE
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.shapes.CachedShapesWithTransform;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -33,7 +35,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -42,6 +43,7 @@ import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 public class BucketWheelTileEntity extends MultiblockPartTileEntity<BucketWheelTileEntity> implements
 		IOBJModelCallback<BlockState>, IBlockBounds
@@ -196,35 +198,45 @@ public class BucketWheelTileEntity extends MultiblockPartTileEntity<BucketWheelT
 		return renderAABB;
 	}
 
+	private static CachedShapesWithTransform<BlockPos, Direction> SHAPES = CachedShapesWithTransform.createDirectional(BucketWheelTileEntity::getBoxes);
+
 	@Override
 	public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx)
 	{
+		return SHAPES.get(posInMultiblock, getFacing());
+	}
+
+	private static List<AxisAlignedBB> getBoxes(BlockPos posInMultiblock)
+	{
+		final AxisAlignedBB ret;
 		if(ImmutableSet.of(
 				new BlockPos(3, 0, 0),
 				new BlockPos(2, 1, 0),
 				new BlockPos(4, 1, 0)
 		).contains(posInMultiblock))
-			return VoxelShapes.create(0, .25f, 0, 1, 1, 1);
+			ret = new AxisAlignedBB(0, .25f, 0, 1, 1, 1);
 		else if(ImmutableSet.of(
 				new BlockPos(3, 6, 0),
 				new BlockPos(2, 5, 0),
 				new BlockPos(4, 5, 0)
 		).contains(posInMultiblock))
-			return VoxelShapes.create(0, 0, 0, 1, .75f, 1);
+			ret = new AxisAlignedBB(0, 0, 0, 1, .75f, 1);
 		else if(new BlockPos(0, 3, 0).equals(posInMultiblock))
-			return VoxelShapes.create(getFacing()==Direction.NORTH?.25f: 0, 0, getFacing()==Direction.WEST?.25f: 0, getFacing()==Direction.SOUTH?.75f: 1, 1, getFacing()==Direction.EAST?.75f: 1);
+			ret = new AxisAlignedBB(.25f, 0, 0, 1, 1, 1);
 		else if(new BlockPos(6, 3, 0).equals(posInMultiblock))
-			return VoxelShapes.create(getFacing()==Direction.SOUTH?.25f: 0, 0, getFacing()==Direction.EAST?.25f: 0, getFacing()==Direction.NORTH?.75f: 1, 1, getFacing()==Direction.WEST?.75f: 1);
+			ret = new AxisAlignedBB(0, 0, 0, .75f, 1, 1);
 		else if(ImmutableSet.of(
 				new BlockPos(1, 2, 0),
 				new BlockPos(1, 4, 0)
 		).contains(posInMultiblock))
-			return VoxelShapes.create(getFacing()==Direction.NORTH?.25f: 0, 0, getFacing()==Direction.WEST?.25f: 0, getFacing()==Direction.SOUTH?.75f: 1, 1, getFacing()==Direction.EAST?.75f: 1);
+			ret = new AxisAlignedBB(.25f, 0, 0, 1, 1, 1);
 		else if(ImmutableSet.of(
 				new BlockPos(5, 2, 0),
 				new BlockPos(5, 4, 0)
 		).contains(posInMultiblock))
-			return VoxelShapes.create(getFacing()==Direction.SOUTH?.25f: 0, 0, getFacing()==Direction.EAST?.25f: 0, getFacing()==Direction.NORTH?.75f: 1, 1, getFacing()==Direction.WEST?.75f: 1);
-		return VoxelShapes.create(0, 0, 0, 1, 1, 1);
+			ret = new AxisAlignedBB(0, 0, 0, .75f, 1, 1);
+		else
+			ret = new AxisAlignedBB(0, 0, 0, 1, 1, 1);
+		return ImmutableList.of(ret);
 	}
 }

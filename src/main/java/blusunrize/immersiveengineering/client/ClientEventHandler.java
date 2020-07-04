@@ -754,7 +754,6 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 									int w = ClientUtils.font().getStringWidth(s);
 									ClientUtils.font().renderString(
 											s, scaledWidth/2-w/2,
-											//TODO PORTME use proper font height
 											scaledHeight/2-4-text.length*(ClientUtils.font().FONT_HEIGHT+2)+
 													(i++)*(ClientUtils.font().FONT_HEIGHT+2), col,
 											false, transform.getLast().getMatrix(), buffer, false,

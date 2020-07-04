@@ -30,7 +30,7 @@ public abstract class IEContainerScreen<C extends Container> extends ContainerSc
 		this.field_238745_s_ = this.ySize-94;
 		this.renderBackground(transform);
 		super.render(transform, mouseX, mouseY, partialTicks);
-		//TODO this.renderHoveredToolTip(transform, mouseX, mouseY);
+		this.func_230459_a_(transform, mouseX, mouseY);
 	}
 
 	public void fullInit()

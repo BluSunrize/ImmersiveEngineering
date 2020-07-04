@@ -18,7 +18,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
@@ -70,6 +69,5 @@ public class SampleDrillRenderer extends TileEntityRenderer<SampleDrillTileEntit
 		blockRenderer.getBlockModelRenderer().renderModel(tile.getWorldNonnull(), model, state, tile.getPos(), matrixStack,
 				bufferIn.getBuffer(RenderType.getSolid()), true, tile.getWorld().rand, 0, combinedOverlayIn, EmptyModelData.INSTANCE);
 		matrixStack.pop();
-		RenderHelper.enableStandardItemLighting();
 	}
 }

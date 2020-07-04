@@ -56,10 +56,7 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.*;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
 import net.minecraftforge.fluids.FluidStack;
@@ -1276,9 +1273,11 @@ public class ClientUtils
 		transform.pop();
 	}
 
-	public static <T extends ITextComponent> T applyFormat(T component, TextFormatting... color) {
-		for (TextFormatting format : color)
-			component.getStyle().func_240712_a_(format);
-		return component;
+	public static IFormattableTextComponent applyFormat(ITextComponent component, TextFormatting... color)
+	{
+		Style style = component.getStyle();
+		for(TextFormatting format : color)
+			style = style.func_240712_a_(format);
+		return component.func_230531_f_().func_230530_a_(style);
 	}
 }
