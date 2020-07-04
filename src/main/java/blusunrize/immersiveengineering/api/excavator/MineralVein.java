@@ -53,7 +53,7 @@ public class MineralVein
 	{
 		double dX = pos.getX()-this.pos.x;
 		double dZ = pos.getZ()-this.pos.z;
-		double d = dX*dX+dZ*dZ;
+		double d = (dX*dX+dZ*dZ) / (radius*radius);
 		return Math.pow(d, 0.5)*0.5;
 	}
 
@@ -75,7 +75,7 @@ public class MineralVein
 
 	public boolean isDepleted()
 	{
-		return ExcavatorHandler.mineralVeinYield==0||getDepletion() < ExcavatorHandler.mineralVeinYield;
+		return ExcavatorHandler.mineralVeinYield==0||getDepletion() >= ExcavatorHandler.mineralVeinYield;
 	}
 
 	public MineralMix getMineralOverride()
