@@ -21,6 +21,7 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
@@ -75,10 +76,10 @@ public class BlockItemBalloon extends BlockItemIE
 	@Override
 	public ITextComponent getDisplayName(ItemStack stack)
 	{
-		ITextComponent ret = super.getDisplayName(stack);
+		IFormattableTextComponent ret = super.getDisplayName(stack).func_230532_e_();
 		CompoundNBT nbt = stack.getOrCreateTag();
 		if(nbt.getByte("offset")!=0)
-			ret.appendText(" (+"+nbt.getByte("offset")+")");
+			ret.func_240702_b_(" (+"+nbt.getByte("offset")+")");
 		return ret;
 	}
 

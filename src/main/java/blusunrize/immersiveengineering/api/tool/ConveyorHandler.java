@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.api.tool;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBeltTileEntity;
@@ -382,7 +382,7 @@ public class ConveyorHandler
 				vY = -0.07*vBase;
 
 			if(conveyorDirection!=ConveyorDirection.HORIZONTAL)
-				entity.onGround = false;
+				entity.func_230245_c_(false);
 
 			if(getFacing()==Direction.WEST||getFacing()==Direction.EAST)
 			{
@@ -470,7 +470,7 @@ public class ConveyorHandler
 			if(inventoryTile instanceof IConveyorTile||!contact)
 				return;
 
-			LazyOptional<IItemHandler> cap = ApiUtils.findItemHandlerAtPos(world, invPos, getFacing().getOpposite(), true);
+			LazyOptional<IItemHandler> cap = CapabilityUtils.findItemHandlerAtPos(world, invPos, getFacing().getOpposite(), true);
 			cap.ifPresent(itemHandler -> {
 				ItemStack stack = entity.getItem();
 				ItemStack temp = ItemHandlerHelper.insertItem(itemHandler, stack.copy(), true);

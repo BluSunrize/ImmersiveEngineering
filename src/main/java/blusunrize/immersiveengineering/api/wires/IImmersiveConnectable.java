@@ -8,9 +8,9 @@
 
 package blusunrize.immersiveengineering.api.wires;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.wires.localhandlers.ILocalHandlerProvider;
+import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.util.math.BlockPos;
@@ -103,7 +103,7 @@ public interface IImmersiveConnectable extends ILocalHandlerProvider
 	 */
 	default Set<BlockPos> getIgnored(IImmersiveConnectable other)
 	{
-		return ImmutableSet.of(ApiUtils.toBlockPos(this));
+		return ImmutableSet.of(WireUtils.toBlockPos(this));
 	}
 
 	Collection<ConnectionPoint> getConnectionPoints();

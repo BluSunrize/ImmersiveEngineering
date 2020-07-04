@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.api.multiblocks;
 
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
+import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.ManualUtils;
@@ -81,9 +82,11 @@ public class ManualElementMultiblock extends SpecialManualElements
 		yOffTotal = (int)(transY+scale*diagLength/2);
 	}
 
-	private static final ITextComponent greenTick = new StringTextComponent("\u2713")
-			.setStyle(new Style().setColor(TextFormatting.GREEN).setBold(true))
-			.appendSibling(new StringTextComponent(" "));
+	private static final ITextComponent greenTick = ClientUtils.applyFormat(
+			new StringTextComponent("\u2713"),
+			TextFormatting.GREEN, TextFormatting.BOLD
+	)
+			.func_240702_b_(" ");
 
 	@Override
 	public void onOpened(ManualScreen gui, int x, int y, List<Button> pageButtons)
@@ -156,22 +159,22 @@ public class ManualElementMultiblock extends SpecialManualElements
 					if(indent > 0)
 						for(int ii = 0; ii < indent; ii++)
 							sIndent.append("0");
-					ITextComponent s;
+					IFormattableTextComponent s;
 					if(hasItems[ss])
-						s = greenTick.deepCopy();
+						s = greenTick.func_230531_f_();
 					else
 						s = new StringTextComponent(hasAnyItems?"   ": "");
-					s.appendSibling(
-							new StringTextComponent(sIndent.toString()+req.getCount()+"x ")
-									.setStyle(new Style().setColor(TextFormatting.GRAY))
-					);
+					s.func_230529_a_(ClientUtils.applyFormat(
+							new StringTextComponent(sIndent.toString()+req.getCount()+"x "),
+									TextFormatting.GRAY
+					));
 					if(!req.isEmpty())
-						s.appendSibling(
-								req.getDisplayName().deepCopy()
-										.setStyle(new Style().setColor(req.getRarity().color))
-						);
+						s.func_230529_a_(ClientUtils.applyFormat(
+								req.getDisplayName().func_230531_f_(),
+										req.getRarity().color
+						));
 					else
-						s.appendSibling(new StringTextComponent("???"));
+						s.func_240702_b_("???");
 					componentTooltip.add(s);
 				}
 		}

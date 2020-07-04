@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
 import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
+import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.common.IEConfig;
@@ -40,7 +41,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.*;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -79,7 +79,7 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 		{
 			ITextComponent add = IEItemFluidHandler.fluidItemInfoFlavor(ItemNBTHelper.getFluidStack(stack, FluidHandlerItemStack.FLUID_NBT_KEY+(i > 0?i: "")), cap);
 			if(i > 0)
-				add.setStyle(new Style().setColor(TextFormatting.GRAY));
+				add.getStyle().func_240712_a_(TextFormatting.GRAY);
 			list.add(add);
 		}
 	}
@@ -91,8 +91,8 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 			FluidAttributes attr = fs.getFluid().getAttributes();
 			TextFormatting rarity = attr.getRarity()==Rarity.COMMON?TextFormatting.GRAY:
 					attr.getRarity().color;
-			return new TranslationTextComponent(Lib.DESC_FLAVOUR+"fluidStack", attr.getDisplayName(fs),
-					fs.getAmount(), capacity).setStyle(new Style().setColor(rarity));
+			return ClientUtils.applyFormat(new TranslationTextComponent(Lib.DESC_FLAVOUR+"fluidStack", attr.getDisplayName(fs),
+					fs.getAmount(), capacity), rarity);
 		}
 		else
 			return new TranslationTextComponent(Lib.DESC_FLAVOUR+"drill.empty");
@@ -160,7 +160,7 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 					chem.setMotion(player.getMotion().add(vecDir.scale(range)));
 
 					// Apply a small amount of backforce.
-					if(!player.onGround)
+					if(!player.func_233570_aj_())
 						player.setMotion(player.getMotion().subtract(vecDir.scale(0.0025*range)));
 					if(ignite)
 						chem.setFire(10);

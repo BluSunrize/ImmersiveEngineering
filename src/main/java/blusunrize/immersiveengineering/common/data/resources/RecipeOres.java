@@ -14,8 +14,9 @@ import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tags.ITag;
-import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.ITag.INamedTag;
+
+import static blusunrize.immersiveengineering.common.data.DataGenUtils.createItemWrapper;
 
 /**
  * An Enum of  non-metal ores from Vanilla, IE and other mods. Used for generating Crusher recipes
@@ -32,14 +33,14 @@ public enum RecipeOres
 
 	private final String name;
 	private final boolean isNative;
-	private final ITag<Item> ore;
+	private final INamedTag<Item> ore;
 	private final IngredientWithSize output;
 	private final SecondaryOutput[] secondaryOutputs;
 
 	RecipeOres(String name, boolean isNative, IngredientWithSize output, SecondaryOutput... secondaryOutputs)
 	{
 		this.name = name;
-		this.ore = new ItemTags.Wrapper(IETags.getOre(name));
+		this.ore = createItemWrapper(IETags.getOre(name));
 		this.isNative = isNative;
 		this.output = output;
 		this.secondaryOutputs = secondaryOutputs;
@@ -61,7 +62,7 @@ public enum RecipeOres
 		return isNative;
 	}
 
-	public ITag<Item> getOre()
+	public INamedTag<Item> getOre()
 	{
 		return ore;
 	}

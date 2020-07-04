@@ -20,6 +20,7 @@ import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryE
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
+import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.common.gui.IESlot;
@@ -64,7 +65,6 @@ import net.minecraft.util.math.vector.TransformationMatrix;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -261,16 +261,22 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 	{
 		list.add(IEItemFluidHandler.fluidItemInfoFlavor(getFluid(stack), getCapacity(stack, 2000)));
 		if(getHead(stack).isEmpty())
-			list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"drill.noHead").setStyle(new Style().setColor(TextFormatting.GRAY)));
+			list.add(ClientUtils.applyFormat(
+					new TranslationTextComponent(Lib.DESC_FLAVOUR+"drill.noHead"),
+					TextFormatting.GRAY
+			));
 		else
 		{
 			int maxDmg = getMaxHeadDamage(stack);
 			int dmg = maxDmg-getHeadDamage(stack);
 			float quote = dmg/(float)maxDmg;
 			TextFormatting status = quote < .1?TextFormatting.RED: quote < .3?TextFormatting.GOLD: quote < .6?TextFormatting.YELLOW: TextFormatting.GREEN;
-			list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"drill.headDamage").setStyle(new Style().setColor(TextFormatting.GRAY))
-					.appendText(" ")
-					.appendSibling(new TranslationTextComponent(Lib.DESC_INFO+"percent", (int)(quote*100)).setStyle(new Style().setColor(status))));
+			list.add(ClientUtils.applyFormat(new TranslationTextComponent(Lib.DESC_FLAVOUR+"drill.headDamage"), TextFormatting.GRAY)
+					.func_240702_b_(" ")
+					.func_230529_a_(ClientUtils.applyFormat(
+							new TranslationTextComponent(Lib.DESC_INFO+"percent", (int)(quote*100)),
+							status
+					)));
 		}
 	}
 

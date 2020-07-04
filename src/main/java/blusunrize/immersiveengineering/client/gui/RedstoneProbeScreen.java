@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonBoolean;
 import blusunrize.immersiveengineering.common.blocks.metal.ConnectorProbeTileEntity;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
@@ -17,7 +18,6 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.item.DyeColor;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
@@ -85,16 +85,18 @@ public class RedstoneProbeScreen extends ClientTileScreen<ConnectorProbeTileEnti
 	@Override
 	protected void func_230451_b_(MatrixStack transform, int mouseX, int mouseY, float partialTick)
 	{
-		this.font.drawString(transform, new TranslationTextComponent(Lib.GUI_CONFIG+"redstone_color_sending").getFormattedText(), guiLeft, guiTop, DyeColor.WHITE.getTextColor());
-		this.font.drawString(transform, new TranslationTextComponent(Lib.GUI_CONFIG+"redstone_color_receiving").getFormattedText(), guiLeft+116, guiTop, DyeColor.WHITE.getTextColor());
+		this.font.drawString(transform, new TranslationTextComponent(Lib.GUI_CONFIG+"redstone_color_sending").getString(), guiLeft, guiTop, DyeColor.WHITE.getTextColor());
+		this.font.drawString(transform, new TranslationTextComponent(Lib.GUI_CONFIG+"redstone_color_receiving").getString(), guiLeft+116, guiTop, DyeColor.WHITE.getTextColor());
 
 		ArrayList<ITextComponent> tooltip = new ArrayList<>();
 		for(int i = 0; i < colorButtonsSend.length; i++)
 			if(colorButtonsSend[i].isHovered()||colorButtonsReceive[i].isHovered())
 			{
 				tooltip.add(new TranslationTextComponent(Lib.GUI_CONFIG+"redstone_color"));
-				tooltip.add(new TranslationTextComponent("color.minecraft."+DyeColor.byId(i).getTranslationKey())
-						.setStyle(new Style().setColor(TextFormatting.GRAY)));
+				tooltip.add(ClientUtils.applyFormat(
+						new TranslationTextComponent("color.minecraft."+DyeColor.byId(i).getTranslationKey()),
+						TextFormatting.GRAY
+				));
 			}
 
 		if(!tooltip.isEmpty())

@@ -58,7 +58,7 @@ public class IEBaseBlock extends Block implements IIEBlock
 	public IEBaseBlock(String name, Block.Properties blockProps, BiFunction<Block, Item.Properties, Item> createItemBlock, Property... additionalProperties)
 	{
 		super(setTempProperties(blockProps, additionalProperties));
-		this.notNormalBlock = !isSolid(getDefaultState());
+		this.notNormalBlock = !getDefaultState().isSolid();
 		this.name = name;
 
 		this.additionalProperties = Arrays.copyOf(tempProperties, tempProperties.length);
@@ -162,20 +162,6 @@ public class IEBaseBlock extends Block implements IIEBlock
 	public boolean propagatesSkylightDown(BlockState p_200123_1_, IBlockReader p_200123_2_, BlockPos p_200123_3_)
 	{
 		return notNormalBlock||super.propagatesSkylightDown(p_200123_1_, p_200123_2_, p_200123_3_);
-	}
-
-	@Override
-	@SuppressWarnings("deprecation")
-	public boolean causesSuffocation(BlockState state, IBlockReader worldIn, BlockPos pos)
-	{
-		return !notNormalBlock;
-	}
-
-	@Override
-	@SuppressWarnings("deprecation")
-	public boolean isNormalCube(BlockState state, IBlockReader world, BlockPos pos)
-	{
-		return !notNormalBlock;
 	}
 
 	@Override

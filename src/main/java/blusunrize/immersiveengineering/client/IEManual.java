@@ -313,7 +313,7 @@ public class IEManual
 										.format(sorted.getChance()*100)
 										.replaceAll("\\G0", "\u00A0")
 						).append("% ")
-						.append(sorted.getStack().getDisplayName().getFormattedText());
+						.append(sorted.getStack().getDisplayName().getString());
 				sortedOres.add(sorted.getStack());
 			}
 			splitter.addSpecialPage(mineral.getId().toString(), 0, new ManualElementItem(ManualHelper.getManual(), sortedOres));
@@ -399,7 +399,7 @@ public class IEManual
 					{
 						ItemStack is = IEApi.getPreferredTagStack(key);
 						if(!is.isEmpty())
-							item = is.getDisplayName().getFormattedText();
+							item = is.getDisplayName().getString();
 					}
 				}
 

@@ -138,7 +138,7 @@ public class ApiUtils
 		Vector3d toAdd = (new Vector3d(xRatio, 0.0D, zRatio)).normalize().scale(strength);
 		entity.setMotion(
 				motionOld.x/2.0D-toAdd.x,
-				entity.onGround?Math.min(0.4D, motionOld.y/2.0D+strength): motionOld.y,
+				entity.func_233570_aj_()?Math.min(0.4D, motionOld.y/2.0D+strength): motionOld.y,
 				motionOld.z/2.0D-toAdd.z);
 	}
 	public static void addFutureServerTask(World world, Runnable task, boolean forceFuture)

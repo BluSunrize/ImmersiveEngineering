@@ -128,7 +128,7 @@ public class RevolvershotFlareEntity extends RevolvershotEntity
 				if(mop instanceof EntityRayTraceResult)
 				{
 					Entity hit = ((EntityRayTraceResult)mop).getEntity();
-					if(!hit.isImmuneToFire())
+					if(!hit.func_230279_az_())
 						hit.setFire(8);
 				}
 				else if(mop instanceof BlockRayTraceResult)

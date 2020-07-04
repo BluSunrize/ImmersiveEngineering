@@ -10,11 +10,13 @@ package blusunrize.immersiveengineering.common.blocks;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.IEContent;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
+import net.minecraft.state.properties.SlabType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
@@ -28,7 +30,9 @@ public class BlockIESlab<T extends Block & IIEBlock> extends SlabBlock implement
 
 	public BlockIESlab(String name, Properties props, Function<Block, Item> itemBlock, T base)
 	{
-		super(props);
+		super(props
+				.func_235842_b_(causesSuffocation(base))
+				.func_235828_a_(isNormalCube(base)));
 		ResourceLocation registryName = new ResourceLocation(ImmersiveEngineering.MODID, name);
 		setRegistryName(registryName);
 
@@ -47,7 +51,7 @@ public class BlockIESlab<T extends Block & IIEBlock> extends SlabBlock implement
 	@Override
 	public boolean isLadder(BlockState state, IWorldReader world, BlockPos pos, LivingEntity entity)
 	{
-		double relativeEntityPosition = entity.getPosition().getY()-pos.getY();
+		double relativeEntityPosition = entity.getPositionVec().getY()-pos.getY();
 		switch(state.get(SlabBlock.TYPE))
 		{
 			case TOP:
@@ -85,17 +89,15 @@ public class BlockIESlab<T extends Block & IIEBlock> extends SlabBlock implement
 		return super.propagatesSkylightDown(state, reader, pos)||base.propagatesSkylightDown(state, reader, pos);
 	}
 
-	@Override
-	@SuppressWarnings("deprecation")
-	public boolean causesSuffocation(BlockState state, IBlockReader worldIn, BlockPos pos)
+	public static AbstractBlock.IPositionPredicate causesSuffocation(Block base)
 	{
-		return super.causesSuffocation(state, worldIn, pos)&&base.causesSuffocation(state, worldIn, pos);
+		return (state, world, pos) ->
+			base.getDefaultState().isSuffocating(world, pos) && state.get(TYPE) == SlabType.DOUBLE;
 	}
 
-	@Override
-	@SuppressWarnings("deprecation")
-	public boolean isNormalCube(BlockState state, IBlockReader worldIn, BlockPos pos)
+	public static AbstractBlock.IPositionPredicate isNormalCube(Block base)
 	{
-		return super.isNormalCube(state, worldIn, pos)&&base.isNormalCube(state, worldIn, pos);
+		return (state, world, pos) ->
+				base.getDefaultState().isNormalCube(world, pos) && state.get(TYPE) == SlabType.DOUBLE;
 	}
 }

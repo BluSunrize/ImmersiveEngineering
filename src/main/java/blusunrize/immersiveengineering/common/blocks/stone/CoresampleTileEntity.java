@@ -32,6 +32,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
@@ -159,7 +160,7 @@ public class CoresampleTileEntity extends IEBaseTileEntity implements IStateBase
 						mapTagCompound.put("Decorations", nbttaglist);
 					}
 					else
-						player.sendMessage(new TranslationTextComponent(Lib.CHAT_INFO+"coresample.mapFail"));
+						player.sendMessage(new TranslationTextComponent(Lib.CHAT_INFO+"coresample.mapFail"), Util.field_240973_b_);
 				}
 			}
 			return true;

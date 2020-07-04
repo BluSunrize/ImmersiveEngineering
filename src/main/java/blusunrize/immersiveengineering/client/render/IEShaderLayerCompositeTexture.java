@@ -130,8 +130,8 @@ public class IEShaderLayerCompositeTexture extends Texture
 									int pre = finalTexture.getPixelRGBA(u, v) >> 24&255;
 
 									// if we just set it, we also set alpha values, we gotta blend it
-									//finalTexture.setPixelRGBA(u, v, i2);
-									finalTexture.blendPixel(u, v, i2);
+									finalTexture.setPixelRGBA(u, v, i2);
+									//TODO does this still exist? finalTexture.blendPixel(u, v, i2);
 
 									// if the image was blank, or the resulting alpha is lower than how it started,
 									// we fix it.

@@ -30,7 +30,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -63,10 +62,15 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 				if(mx > button.x&&mx < button.x+18&&my > button.y&&my < button.y+18)
 				{
 					String[] split = I18n.format(Lib.DESC_INFO+"filter.nbt").split("<br>");
-					Style white = new Style().setColor(TextFormatting.WHITE);
-					Style gray = new Style().setColor(TextFormatting.WHITE);
 					for(int i = 0; i < split.length; i++)
-						tooltip.add(new StringTextComponent(split[i]).setStyle(i==0?white: gray));
+					{
+						ITextComponent component = new StringTextComponent(split[i]);
+						if (i==0)
+							component.getStyle().func_240712_a_(TextFormatting.WHITE);
+						else
+							component.getStyle().func_240712_a_(TextFormatting.GRAY);
+						tooltip.add(component);
+					}
 				}
 		}
 		for(int side = 0; side < 6; side++)

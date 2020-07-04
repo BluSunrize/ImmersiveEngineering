@@ -11,11 +11,11 @@ package blusunrize.immersiveengineering.common.blocks;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientProxy;
+import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.BlockItemUseContext;
@@ -23,7 +23,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -72,19 +71,22 @@ public class BlockItemIE extends BlockItem
 			if(ieBlock.hasFlavour())
 			{
 				String flavourKey = Lib.DESC_FLAVOUR+ieBlock.getNameForFlavour();
-				tooltip.add(new TranslationTextComponent(flavourKey).setStyle(new Style().setColor(TextFormatting.GRAY)));
+				tooltip.add(ClientUtils.applyFormat(new TranslationTextComponent(flavourKey),
+						TextFormatting.GRAY));
 			}
 		}
 		super.addInformation(stack, world, tooltip, advanced);
 		if(ItemNBTHelper.hasKey(stack, "energyStorage"))
-			tooltip.add(new TranslationTextComponent(Lib.DESC_INFO+"energyStored",
-					ItemNBTHelper.getInt(stack, "energyStorage")).setStyle(new Style().setColor(TextFormatting.GRAY)));
+			tooltip.add(ClientUtils.applyFormat(new TranslationTextComponent(Lib.DESC_INFO+"energyStored",
+							ItemNBTHelper.getInt(stack, "energyStorage")),
+					TextFormatting.GRAY));
 		if(ItemNBTHelper.hasKey(stack, "tank"))
 		{
 			FluidStack fs = FluidStack.loadFluidStackFromNBT(ItemNBTHelper.getTagCompound(stack, "tank"));
 			if(fs!=null)
-				tooltip.add(new TranslationTextComponent(Lib.DESC_INFO+"fluidStored",
-						fs.getDisplayName(), fs.getAmount()).setStyle(new Style().setColor(TextFormatting.GRAY)));
+				tooltip.add(ClientUtils.applyFormat(
+						new TranslationTextComponent(Lib.DESC_INFO+"fluidStored", fs.getDisplayName(), fs.getAmount()),
+						TextFormatting.GRAY));
 		}
 	}
 

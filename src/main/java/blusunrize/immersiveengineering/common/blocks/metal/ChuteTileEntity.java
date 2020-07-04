@@ -129,7 +129,7 @@ public class ChuteTileEntity extends IEBaseTileEntity implements IStateBasedDire
 			if(entity.getWidth() > 0.75||entity.getHeight() > 0.75)
 			{
 				// We're not going to redirect into a colliding block
-				if(world.getBlockState(target).causesSuffocation(world, target))
+				if(world.getBlockState(target).isSuffocating(world, target))
 					return;
 				if(!glitched)
 				{

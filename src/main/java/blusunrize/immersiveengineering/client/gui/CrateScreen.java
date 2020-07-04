@@ -14,7 +14,6 @@ import blusunrize.immersiveengineering.common.gui.CrateContainer;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.ITextComponent;
 
 public class CrateScreen extends IEContainerScreen<CrateContainer>
@@ -28,8 +27,8 @@ public class CrateScreen extends IEContainerScreen<CrateContainer>
 	@Override
 	protected void func_230451_b_(MatrixStack transform, int mouseX, int mouseY)
 	{
-		TileEntity te = container.tile;
-		this.font.drawString(transform, ((WoodenCrateTileEntity)te).getDisplayName().getFormattedText(),
+		WoodenCrateTileEntity te = container.tile;
+		this.font.drawString(transform, te.getDisplayName().getUnformattedComponentText(),
 				8, 6, 0x190b06);
 	}
 

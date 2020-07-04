@@ -409,7 +409,7 @@ public class EventHandler
 						{
 							if(((TileEntity)interdictor).isRemoved()||((TileEntity)interdictor).getWorld()==null)
 								it.remove();
-							else if(((TileEntity)interdictor).getDistanceSq(event.getEntity().getPosX(), event.getEntity().getPosY(), event.getEntity().getPosZ()) <= interdictor.getInterdictionRangeSquared())
+							else if(Vector3d.func_237489_a_(((TileEntity)interdictor).getPos()).squareDistanceTo(event.getEntity().getPositionVec()) <= interdictor.getInterdictionRangeSquared())
 								event.setResult(Event.Result.DENY);
 						}
 						else if(interdictor instanceof Entity)

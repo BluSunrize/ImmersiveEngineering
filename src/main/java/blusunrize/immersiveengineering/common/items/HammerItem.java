@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
 import blusunrize.immersiveengineering.api.tool.ITool;
+import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
@@ -41,7 +42,10 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.*;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
@@ -86,8 +90,10 @@ public class HammerItem extends IEBaseItem implements ITool
 		{
 			list.add(new StringTextComponent(s));
 			for(int i = 0; i < tagList.size(); i++)
-				list.add(new TranslationTextComponent(Lib.DESC_INFO+"multiblock."+tagList.getString(i))
-						.setStyle(new Style().setColor(TextFormatting.DARK_GRAY)));
+				list.add(ClientUtils.applyFormat(
+						new TranslationTextComponent(Lib.DESC_INFO+"multiblock."+tagList.getString(i)),
+						TextFormatting.DARK_GRAY
+				));
 		}
 	}
 

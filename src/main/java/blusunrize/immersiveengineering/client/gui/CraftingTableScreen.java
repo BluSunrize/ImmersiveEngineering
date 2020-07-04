@@ -29,7 +29,7 @@ public class CraftingTableScreen extends IEContainerScreen<CraftingTableContaine
 	protected void func_230451_b_(MatrixStack transform, int mouseX, int mouseY)
 	{
 		TileEntity te = container.tile;
-		this.font.drawString(transform, ((CraftingTableTileEntity)te).getDisplayName().getFormattedText(),
+		this.font.drawString(transform, ((CraftingTableTileEntity)te).getDisplayName().getString(),
 				8, 6, 0x190b06);
 	}
 

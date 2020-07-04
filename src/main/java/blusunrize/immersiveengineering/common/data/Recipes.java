@@ -78,6 +78,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
 
+import static blusunrize.immersiveengineering.common.data.DataGenUtils.createItemWrapper;
+
 public class Recipes extends RecipeProvider
 {
 	private final Path ADV_ROOT;
@@ -513,7 +515,7 @@ public class Recipes extends RecipeProvider
 			}
 
 			// Plate
-			ITag<Item> plate = new ItemTags.Wrapper(IETags.getPlate(metal.getName()));
+			INamedTag<Item> plate = createItemWrapper(IETags.getPlate(metal.getName()));
 			pressBuilder = MetalPressRecipeBuilder.builder(Molds.moldPlate, plate, 1);
 			if(!metal.isNative())
 				pressBuilder.addCondition(getTagCondition(metal.getIngot())).addCondition(getTagCondition(plate));
@@ -522,7 +524,7 @@ public class Recipes extends RecipeProvider
 					.build(out, toRL("metalpress/plate_"+metal.getName()));
 
 			// Gear
-			ITag<Item> gear = new ItemTags.Wrapper(IETags.getGear(metal.getName()));
+			INamedTag<Item> gear = createItemWrapper(IETags.getGear(metal.getName()));
 			pressBuilder = MetalPressRecipeBuilder.builder(Molds.moldGear, gear, 1);
 			if(!metal.isNative())
 				pressBuilder.addCondition(getTagCondition(metal.getIngot()));
@@ -532,7 +534,7 @@ public class Recipes extends RecipeProvider
 					.build(out, toRL("metalpress/gear_"+metal.getName()));
 
 			// Rod
-			ITag<Item> rods = new ItemTags.Wrapper(IETags.getRod(metal.getName()));
+			INamedTag<Item> rods = createItemWrapper(IETags.getRod(metal.getName()));
 			pressBuilder = MetalPressRecipeBuilder.builder(Molds.moldRod, rods, 2);
 			if(!metal.isNative())
 				pressBuilder.addCondition(getTagCondition(metal.getIngot()));
@@ -542,7 +544,7 @@ public class Recipes extends RecipeProvider
 					.build(out, toRL("metalpress/rod_"+metal.getName()));
 
 			// Wire
-			ITag<Item> wire = new ItemTags.Wrapper(IETags.getWire(metal.getName()));
+			INamedTag<Item> wire = createItemWrapper(IETags.getWire(metal.getName()));
 			pressBuilder = MetalPressRecipeBuilder.builder(Molds.moldWire, wire, 2);
 			if(!metal.isNative())
 				pressBuilder.addCondition(getTagCondition(metal.getIngot()));
@@ -682,7 +684,7 @@ public class Recipes extends RecipeProvider
 				.setEnergy(4800)
 				.build(out, toRL("crusher/coke_block"));
 
-		ITag<Item> coal_dust = new ItemTags.Wrapper(IETags.getDust("coal"));
+		INamedTag<Item> coal_dust = createItemWrapper(IETags.getDust("coal"));
 		CrusherRecipeBuilder.builder(coal_dust, 1)
 				.addCondition(getTagCondition(coal_dust))
 				.addInput(Items.COAL)
@@ -768,29 +770,29 @@ public class Recipes extends RecipeProvider
 	private void mineralMixes(@Nonnull Consumer<IFinishedRecipe> out)
 	{
 		// Metals
-		ITag<Item> iron = Tags.Items.ORES_IRON;
-		ITag<Item> gold = Tags.Items.ORES_GOLD;
-		ITag<Item> copper = IETags.getItemTag(IETags.getTagsFor(EnumMetals.COPPER).ore);
-		ITag<Item> aluminum = IETags.getItemTag(IETags.getTagsFor(EnumMetals.ALUMINUM).ore);
-		ITag<Item> lead = IETags.getItemTag(IETags.getTagsFor(EnumMetals.LEAD).ore);
-		ITag<Item> silver = IETags.getItemTag(IETags.getTagsFor(EnumMetals.SILVER).ore);
-		ITag<Item> nickel = IETags.getItemTag(IETags.getTagsFor(EnumMetals.NICKEL).ore);
-		ITag<Item> uranium = IETags.getItemTag(IETags.getTagsFor(EnumMetals.URANIUM).ore);
-		ITag<Item> tin = new ItemTags.Wrapper(IETags.getOre("tin"));
-		ITag<Item> titanium = new ItemTags.Wrapper(IETags.getOre("titanium"));
-		ITag<Item> thorium = new ItemTags.Wrapper(IETags.getOre("thorium"));
-		ITag<Item> tungsten = new ItemTags.Wrapper(IETags.getOre("tungsten"));
-		ITag<Item> manganese = new ItemTags.Wrapper(IETags.getOre("manganese"));
-		ITag<Item> platinum = new ItemTags.Wrapper(IETags.getOre("platinum"));
-		ITag<Item> paladium = new ItemTags.Wrapper(IETags.getOre("paladium"));
-		ITag<Item> mercury = new ItemTags.Wrapper(IETags.getOre("mercury"));
+		INamedTag<Item> iron = Tags.Items.ORES_IRON;
+		INamedTag<Item> gold = Tags.Items.ORES_GOLD;
+		INamedTag<Item> copper = IETags.getItemTag(IETags.getTagsFor(EnumMetals.COPPER).ore);
+		INamedTag<Item> aluminum = IETags.getItemTag(IETags.getTagsFor(EnumMetals.ALUMINUM).ore);
+		INamedTag<Item> lead = IETags.getItemTag(IETags.getTagsFor(EnumMetals.LEAD).ore);
+		INamedTag<Item> silver = IETags.getItemTag(IETags.getTagsFor(EnumMetals.SILVER).ore);
+		INamedTag<Item> nickel = IETags.getItemTag(IETags.getTagsFor(EnumMetals.NICKEL).ore);
+		INamedTag<Item> uranium = IETags.getItemTag(IETags.getTagsFor(EnumMetals.URANIUM).ore);
+		INamedTag<Item> tin = createItemWrapper(IETags.getOre("tin"));
+		INamedTag<Item> titanium = createItemWrapper(IETags.getOre("titanium"));
+		INamedTag<Item> thorium = createItemWrapper(IETags.getOre("thorium"));
+		INamedTag<Item> tungsten = createItemWrapper(IETags.getOre("tungsten"));
+		INamedTag<Item> manganese = createItemWrapper(IETags.getOre("manganese"));
+		INamedTag<Item> platinum = createItemWrapper(IETags.getOre("platinum"));
+		INamedTag<Item> paladium = createItemWrapper(IETags.getOre("paladium"));
+		INamedTag<Item> mercury = createItemWrapper(IETags.getOre("mercury"));
 		// Gems & Dusts
-		ITag<Item> sulfur = IETags.sulfurDust;
-		ITag<Item> phosphorus = new ItemTags.Wrapper(IETags.getDust("phosphorus"));
-		ITag<Item> redstone = Tags.Items.ORES_REDSTONE;
-		ITag<Item> emerald = Tags.Items.ORES_EMERALD;
+		INamedTag<Item> sulfur = IETags.sulfurDust;
+		INamedTag<Item> phosphorus = createItemWrapper(IETags.getDust("phosphorus"));
+		INamedTag<Item> redstone = Tags.Items.ORES_REDSTONE;
+		INamedTag<Item> emerald = Tags.Items.ORES_EMERALD;
 		Block prismarine = Blocks.PRISMARINE;
-		ITag<Item> aquamarine = new ItemTags.Wrapper(IETags.getGem("aquamarine"));
+		INamedTag<Item> aquamarine = createItemWrapper(IETags.getGem("aquamarine"));
 
 		// Common things
 		MineralMixBuilder.builder(DimensionType.OVERWORLD)
@@ -2831,19 +2833,19 @@ public class Recipes extends RecipeProvider
 		ITag<Item> itemTag = IETags.getItemTag(in);
 		if(itemTag==null)
 			//TODO this currently does not work, the tag collection is not initialized in data gen mode
-			itemTag = ItemTags.getCollection().getTagMap().get(in.getId());
-		Preconditions.checkNotNull(itemTag, "Failed to convert block tag "+in.getId()+" to item tag");
+			itemTag = ItemTags.getCollection().getTagMap().get(in.func_230234_a_());
+		Preconditions.checkNotNull(itemTag, "Failed to convert block tag "+in.func_230234_a_()+" to item tag");
 		return makeIngredient(itemTag);
 	}
 
-	public static ICondition getTagCondition(ITag<?> tag)
+	public static ICondition getTagCondition(INamedTag<?> tag)
 	{
-		return new NotCondition(new TagEmptyCondition(tag.getId()));
+		return new NotCondition(new TagEmptyCondition(tag.func_230234_a_()));
 	}
 
 	public static ICondition getTagCondition(ResourceLocation tag)
 	{
-		return getTagCondition(new ItemTags.Wrapper(tag));
+		return getTagCondition(createItemWrapper(tag));
 	}
 
 	/**

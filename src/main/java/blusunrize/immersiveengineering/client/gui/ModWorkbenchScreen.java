@@ -27,7 +27,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -58,7 +57,7 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 	@Override
 	public void render(MatrixStack transform, int mx, int my, float partial)
 	{
-		super.render(mx, my, partial);
+		super.render(transform, mx, my, partial);
 		for(int i = 0; i < container.slotCount; i++)
 		{
 			Slot s = container.getSlot(i);
@@ -69,8 +68,11 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 					if(isPointInRegion(s.xPos, s.yPos, 16, 16, mx, my))
 					{
 						List<ITextComponent> tooltip = new ArrayList<>();
-						tooltip.add(recipe.output.getDisplayName().deepCopy().setStyle(new Style().setColor(recipe.output.getRarity().color)));
-						ArrayList<ItemStack> inputs = new ArrayList<ItemStack>();
+						tooltip.add(ClientUtils.applyFormat(
+								recipe.output.getDisplayName().func_230532_e_(),
+								recipe.output.getRarity().color
+						));
+						List<ItemStack> inputs = new ArrayList<>();
 						for(IngredientWithSize stack : recipe.inputs)
 						{
 							ItemStack toAdd = Utils.copyStackWithAmount(stack.getRandomizedExampleStack(mc().player.ticksExisted), stack.getCount());
@@ -88,8 +90,10 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 								inputs.add(toAdd.copy());
 						}
 						for(ItemStack ss : inputs)
-							tooltip.add(new StringTextComponent(ss.getCount()+"x ").appendSibling(ss.getDisplayName())
-									.setStyle(new Style().setColor(TextFormatting.GRAY)));
+							tooltip.add(ClientUtils.applyFormat(
+									new StringTextComponent(ss.getCount()+"x ").func_230529_a_(ss.getDisplayName()),
+									TextFormatting.GRAY
+							));
 
 						GuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
 						RenderHelper.enableStandardItemLighting();

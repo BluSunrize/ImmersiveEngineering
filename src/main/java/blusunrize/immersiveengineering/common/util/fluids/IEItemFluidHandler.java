@@ -9,11 +9,11 @@
 package blusunrize.immersiveengineering.common.util.fluids;
 
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IAdvancedFluidItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fluids.FluidAttributes;
@@ -34,10 +34,15 @@ public class IEItemFluidHandler extends FluidHandlerItemStack
 		{
 			FluidAttributes attr = fluid.getFluid().getAttributes();
 			TextFormatting rarity = attr.getRarity()==Rarity.COMMON?TextFormatting.GRAY: attr.getRarity().color;
-			return new TranslationTextComponent(Lib.DESC_FLAVOUR+"fluidStack", fluid.getDisplayName(), fluid.getAmount(), fluidCapacity)
-					.setStyle(new Style().setColor(rarity));
+			return ClientUtils.applyFormat(
+					new TranslationTextComponent(Lib.DESC_FLAVOUR+"fluidStack", fluid.getDisplayName(), fluid.getAmount(), fluidCapacity),
+					rarity
+			);
 		}
-		return new TranslationTextComponent(Lib.DESC_FLAVOUR+"drill.empty").setStyle(new Style().setColor(TextFormatting.GRAY));
+		return ClientUtils.applyFormat(
+				new TranslationTextComponent(Lib.DESC_FLAVOUR+"drill.empty"),
+				TextFormatting.GRAY
+		);
 	}
 
 	public IEItemFluidHandler(ItemStack container, int capacity)

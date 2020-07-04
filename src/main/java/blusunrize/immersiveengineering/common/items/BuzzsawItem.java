@@ -68,7 +68,6 @@ import net.minecraft.util.math.vector.TransformationMatrix;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -327,16 +326,22 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 	{
 		list.add(IEItemFluidHandler.fluidItemInfoFlavor(getFluid(stack), getCapacity(stack, 2000)));
 		if(getSawblade(stack).isEmpty())
-			list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"buzzsaw.noBlade").setStyle(new Style().setColor(TextFormatting.GRAY)));
+			list.add(ClientUtils.applyFormat(
+					new TranslationTextComponent(Lib.DESC_FLAVOUR+"buzzsaw.noBlade"),
+					TextFormatting.GRAY
+			));
 		else
 		{
 			int maxDmg = getMaxBladeDamage(stack);
 			int dmg = maxDmg-getBladeDamage(stack);
 			float quote = dmg/(float)maxDmg;
 			TextFormatting status = (quote < .1?TextFormatting.RED: quote < .3?TextFormatting.GOLD: quote < .6?TextFormatting.YELLOW: TextFormatting.GREEN);
-			list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"buzzsaw.bladeDamage").setStyle(new Style().setColor(TextFormatting.GRAY))
-					.appendText(" ")
-					.appendSibling(new TranslationTextComponent(Lib.DESC_INFO+"percent", (int)(quote*100)).setStyle(new Style().setColor(status))));
+			list.add(ClientUtils.applyFormat(new TranslationTextComponent(Lib.DESC_FLAVOUR+"buzzsaw.bladeDamage"), TextFormatting.GRAY)
+					.func_240702_b_(" ")
+					.func_230529_a_(ClientUtils.applyFormat(
+							new TranslationTextComponent(Lib.DESC_INFO+"percent", (int)(quote*100)),
+							status
+					)));
 		}
 	}
 

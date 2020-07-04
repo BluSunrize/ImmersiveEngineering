@@ -16,7 +16,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
@@ -34,7 +33,7 @@ public class ToolboxBlockScreen extends IEContainerScreen<ToolboxBlockContainer>
 	@Override
 	public void render(MatrixStack transform, int mx, int my, float partial)
 	{
-		super.render(mx, my, partial);
+		super.render(transform, mx, my, partial);
 		ArrayList<ITextComponent> tooltip = new ArrayList<>();
 		int slot = -1;
 		for(int i = 0; i < ((ToolboxBlockContainer)this.container).slotCount; i++)
@@ -47,7 +46,10 @@ public class ToolboxBlockScreen extends IEContainerScreen<ToolboxBlockContainer>
 		if(slot >= 0)
 			ss = slot < 3?"food": slot < 10?"tool": slot < 16?"wire": "any";
 		if(ss!=null)
-			tooltip.add(new TranslationTextComponent(Lib.DESC_INFO+"toolbox."+ss).setStyle(new Style().setColor(TextFormatting.GRAY)));
+			tooltip.add(ClientUtils.applyFormat(
+					new TranslationTextComponent(Lib.DESC_INFO+"toolbox."+ss),
+					TextFormatting.GRAY
+			));
 		if(!tooltip.isEmpty())
 			GuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
 	}

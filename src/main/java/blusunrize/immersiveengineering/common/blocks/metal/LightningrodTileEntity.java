@@ -20,6 +20,7 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.effect.LightningBoltEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
@@ -30,7 +31,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 
@@ -86,9 +87,10 @@ public class LightningrodTileEntity extends MultiblockPartTileEntity<Lightningro
 				{
 					this.energyStorage.setEnergy(IEConfig.MACHINES.lightning_output.get());
 					BlockPos pos = fenceNet.get(Utils.RAND.nextInt(fenceNet.size()));
-					LightningBoltEntity entityLightningBolt = new LightningBoltEntity(world, pos.getX(), pos.getY(), pos.getZ(), true);
-					((ServerWorld)world).addLightningBolt(entityLightningBolt);
-					world.addEntity(entityLightningBolt);
+					LightningBoltEntity lightningboltentity = EntityType.LIGHTNING_BOLT.create(world);
+					lightningboltentity.func_233576_c_(Vector3d.func_237492_c_(pos));
+					lightningboltentity.func_233623_a_(true);
+					world.addEntity(lightningboltentity);
 				}
 			}
 		}

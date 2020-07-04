@@ -119,7 +119,7 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 		{
 			String s = null;
 			if(!tank.getFluid().isEmpty())
-				s = tank.getFluid().getDisplayName().getFormattedText()+": "+tank.getFluidAmount()+"mB";
+				s = tank.getFluid().getDisplayName().getString()+": "+tank.getFluidAmount()+"mB";
 			else
 				s = I18n.format(Lib.GUI+"empty");
 			return new String[]{s};

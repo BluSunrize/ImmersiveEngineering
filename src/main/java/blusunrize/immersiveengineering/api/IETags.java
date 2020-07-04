@@ -13,9 +13,7 @@ import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import com.google.common.base.Preconditions;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ITag.INamedTag;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.Tags.Blocks;
 
@@ -25,6 +23,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.BiConsumer;
 
+import static blusunrize.immersiveengineering.common.data.DataGenUtils.createBlockWrapper;
+import static blusunrize.immersiveengineering.common.data.DataGenUtils.createItemWrapper;
 import static blusunrize.immersiveengineering.common.data.IEDataGenerator.rl;
 
 public class IETags
@@ -34,9 +34,9 @@ public class IETags
 	private static final Map<EnumMetals, MetalTags> metals = new HashMap<>();
 
 	//Vanilla
-	public static final INamedTag<Item> clay = new ItemTags.Wrapper(forgeLoc("clay"));
+	public static final INamedTag<Item> clay = createItemWrapper(forgeLoc("clay"));
 	public static final INamedTag<Block> clayBlock = createBlockTag(getStorageBlock("clay"));
-	public static final INamedTag<Item> charCoal = new ItemTags.Wrapper(forgeLoc("charcoal"));
+	public static final INamedTag<Item> charCoal = createItemWrapper(forgeLoc("charcoal"));
 	public static final INamedTag<Block> glowstoneBlock = createBlockTag(getStorageBlock("glowstone"));
 	//Other mods
 	public static final INamedTag<Block> charCoalBlocks = createBlockTag(getStorageBlock("charcoal"));
@@ -48,25 +48,25 @@ public class IETags
 	public static final INamedTag<Block> scaffoldingAlu = createBlockTag(rl("scaffoldings/aluminum"));
 	public static final INamedTag<Block> sheetmetals = createBlockTag(forgeLoc("sheetmetals"));
 	//IE Items
-	public static final INamedTag<Item> treatedStick = new ItemTags.Wrapper(getRod("treated_wood"));
-	public static final INamedTag<Item> ironRod = new ItemTags.Wrapper(getRod("iron"));
-	public static final INamedTag<Item> steelRod = new ItemTags.Wrapper(getRod("steel"));
-	public static final INamedTag<Item> metalRods = new ItemTags.Wrapper(getRod("all_metal"));
-	public static final INamedTag<Item> aluminumRod = new ItemTags.Wrapper(getRod("aluminum"));
-	public static final INamedTag<Item> fiberHemp = new ItemTags.Wrapper(forgeLoc("fiber_hemp"));
-	public static final INamedTag<Item> fabricHemp = new ItemTags.Wrapper(forgeLoc("fabric_hemp"));
-	public static final INamedTag<Item> coalCoke = new ItemTags.Wrapper(forgeLoc("coal_coke"));
-	public static final INamedTag<Item> slag = new ItemTags.Wrapper(forgeLoc("slag"));
-	public static final INamedTag<Item> coalCokeDust = new ItemTags.Wrapper(getDust("coal_coke"));
-	public static final INamedTag<Item> hopGraphiteDust = new ItemTags.Wrapper(getDust("hop_graphite"));
-	public static final INamedTag<Item> hopGraphiteIngot = new ItemTags.Wrapper(getIngot("hop_graphite"));
-	public static final INamedTag<Item> copperWire = new ItemTags.Wrapper(getWire("copper"));
-	public static final INamedTag<Item> electrumWire = new ItemTags.Wrapper(getWire("electrum"));
-	public static final INamedTag<Item> aluminumWire = new ItemTags.Wrapper(getWire("aluminum"));
-	public static final INamedTag<Item> steelWire = new ItemTags.Wrapper(getWire("steel"));
-	public static final INamedTag<Item> saltpeterDust = new ItemTags.Wrapper(getDust("saltpeter"));
-	public static final INamedTag<Item> sulfurDust = new ItemTags.Wrapper(getDust("sulfur"));
-	public static final INamedTag<Item> plates = new ItemTags.Wrapper(forgeLoc("plates"));
+	public static final INamedTag<Item> treatedStick = createItemWrapper(getRod("treated_wood"));
+	public static final INamedTag<Item> ironRod = createItemWrapper(getRod("iron"));
+	public static final INamedTag<Item> steelRod = createItemWrapper(getRod("steel"));
+	public static final INamedTag<Item> metalRods = createItemWrapper(getRod("all_metal"));
+	public static final INamedTag<Item> aluminumRod = createItemWrapper(getRod("aluminum"));
+	public static final INamedTag<Item> fiberHemp = createItemWrapper(forgeLoc("fiber_hemp"));
+	public static final INamedTag<Item> fabricHemp = createItemWrapper(forgeLoc("fabric_hemp"));
+	public static final INamedTag<Item> coalCoke = createItemWrapper(forgeLoc("coal_coke"));
+	public static final INamedTag<Item> slag = createItemWrapper(forgeLoc("slag"));
+	public static final INamedTag<Item> coalCokeDust = createItemWrapper(getDust("coal_coke"));
+	public static final INamedTag<Item> hopGraphiteDust = createItemWrapper(getDust("hop_graphite"));
+	public static final INamedTag<Item> hopGraphiteIngot = createItemWrapper(getIngot("hop_graphite"));
+	public static final INamedTag<Item> copperWire = createItemWrapper(getWire("copper"));
+	public static final INamedTag<Item> electrumWire = createItemWrapper(getWire("electrum"));
+	public static final INamedTag<Item> aluminumWire = createItemWrapper(getWire("aluminum"));
+	public static final INamedTag<Item> steelWire = createItemWrapper(getWire("steel"));
+	public static final INamedTag<Item> saltpeterDust = createItemWrapper(getDust("saltpeter"));
+	public static final INamedTag<Item> sulfurDust = createItemWrapper(getDust("sulfur"));
+	public static final INamedTag<Item> plates = createItemWrapper(forgeLoc("plates"));
 
 	static
 	{
@@ -87,8 +87,8 @@ public class IETags
 
 	private static INamedTag<Block> createBlockTag(ResourceLocation name)
 	{
-		INamedTag<Block> blockTag = new BlockTags.Wrapper(name);
-		toItemTag.put(blockTag, new ItemTags.Wrapper(name));
+		INamedTag<Block> blockTag = createBlockWrapper(name);
+		toItemTag.put(blockTag, createItemWrapper(name));
 		return blockTag;
 	}
 
@@ -130,10 +130,10 @@ public class IETags
 			else
 				throw new RuntimeException("Unkown vanilla metal: "+m.name());
 			sheetmetal = createBlockTag(getSheetmetalBlock(name));
-			nugget = new ItemTags.Wrapper(getNugget(name));
-			ingot = new ItemTags.Wrapper(getIngot(name));
-			plate = new ItemTags.Wrapper(getPlate(name));
-			dust = new ItemTags.Wrapper(getDust(name));
+			nugget = createItemWrapper(getNugget(name));
+			ingot = createItemWrapper(getIngot(name));
+			plate = createItemWrapper(getPlate(name));
+			dust = createItemWrapper(getDust(name));
 			this.ore = ore;
 		}
 	}

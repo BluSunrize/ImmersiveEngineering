@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
-import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resources.I18n;
@@ -64,7 +63,7 @@ public class EngineersBlueprintItem extends IEBaseItem
 				BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(key);
 				if(recipes.length > 0)
 					for(BlueprintCraftingRecipe recipe : recipes)
-						list.add(new StringTextComponent(" ").appendSibling(recipe.output.getDisplayName()));
+						list.add(new StringTextComponent(" ").func_230529_a_(recipe.output.getDisplayName()));
 			}
 			else
 				list.add(new TranslationTextComponent(Lib.DESC_INFO+"blueprint.creates0"));

@@ -12,11 +12,10 @@ package blusunrize.immersiveengineering.common.data.resources;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import net.minecraft.item.Item;
 import net.minecraft.tags.ITag;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 
-import static blusunrize.immersiveengineering.common.data.Recipes.getTagCondition;
+import static blusunrize.immersiveengineering.common.data.DataGenUtils.createItemWrapper;
 
 public class SecondaryOutput
 {
@@ -39,7 +38,7 @@ public class SecondaryOutput
 
 	public SecondaryOutput(ResourceLocation tag, float chance)
 	{
-		this(new ItemTags.Wrapper(tag), chance);
+		this(createItemWrapper(tag), chance);
 	}
 
 	public IngredientWithSize getItem()

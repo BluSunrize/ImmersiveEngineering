@@ -1,8 +1,13 @@
 package blusunrize.immersiveengineering.common.data;
 
 import com.google.common.base.Preconditions;
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
 import net.minecraft.resources.IResource;
 import net.minecraft.resources.ResourcePackType;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ITag.INamedTag;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.generators.ExistingFileHelper;
 import org.apache.commons.io.IOUtils;
@@ -71,5 +76,13 @@ public class DataGenUtils
 		String basePath = base.getPath();
 		String lastDir = basePath.substring(0, basePath.lastIndexOf('/')+1);
 		return new ResourceLocation(base.getNamespace(), lastDir+relativePath);
+	}
+
+	public static INamedTag<Item> createItemWrapper(ResourceLocation name) {
+		return ItemTags.makeWrapperTag(name.toString());
+	}
+
+	public static INamedTag<Block> createBlockWrapper(ResourceLocation name) {
+		return BlockTags.makeWrapperTag(name.toString());
 	}
 }

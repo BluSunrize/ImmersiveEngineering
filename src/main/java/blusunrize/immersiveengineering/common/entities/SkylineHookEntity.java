@@ -495,7 +495,7 @@ public class SkylineHookEntity extends Entity
 		if(getMotion().y < 0)
 		{
 			passenger.fallDistance = SkylineHelper.fallDistanceFromSpeed(getMotion().y);
-			passenger.onGround = false;
+			passenger.func_230245_c_(false);
 		}
 		passenger.getCapability(SKYHOOK_USER_DATA, Direction.UP).ifPresent(SkyhookUserData::release);
 		if(hand!=null&&passenger instanceof PlayerEntity)

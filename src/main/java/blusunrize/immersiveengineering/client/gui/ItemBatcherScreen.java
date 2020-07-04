@@ -23,7 +23,10 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.text.*;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import java.util.ArrayList;
@@ -105,16 +108,20 @@ public class ItemBatcherScreen extends IEContainerScreen<ItemBatcherContainer>
 		if(buttonBatchMode.isHovered())
 		{
 			tooltip.add(new TranslationTextComponent(Lib.GUI_CONFIG+"item_batcher.batchmode"));
-			tooltip.add(new TranslationTextComponent(Lib.GUI_CONFIG+"item_batcher.batchmode."+buttonBatchMode.getState().name())
-					.setStyle(new Style().setColor(TextFormatting.GRAY)));
+			tooltip.add(ClientUtils.applyFormat(
+					new TranslationTextComponent(Lib.GUI_CONFIG+"item_batcher.batchmode."+buttonBatchMode.getState().name()),
+					TextFormatting.GRAY
+			));
 		}
 
 		for(GuiButtonDyeColor b : buttonsRedstone)
 			if(b.isHovered())
 			{
 				tooltip.add(new TranslationTextComponent(Lib.GUI_CONFIG+"item_batcher.redstone_color"));
-				tooltip.add(new TranslationTextComponent("color.minecraft."+b.getState().getTranslationKey())
-						.setStyle(new Style().setColor(TextFormatting.GRAY)));
+				tooltip.add(ClientUtils.applyFormat(
+						new TranslationTextComponent("color.minecraft."+b.getState().getTranslationKey()),
+						TextFormatting.GRAY
+				));
 			}
 
 		if(!tooltip.isEmpty())

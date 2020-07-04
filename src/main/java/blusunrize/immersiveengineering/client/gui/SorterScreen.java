@@ -24,7 +24,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
@@ -50,7 +49,7 @@ public class SorterScreen extends IEContainerScreen<SorterContainer>
 	@Override
 	public void render(MatrixStack transform, int mx, int my, float partial)
 	{
-		super.render(mx, my, partial);
+		super.render(transform, mx, my, partial);
 		for(Widget button : this.buttons)
 		{
 			if(button instanceof ButtonSorter)
@@ -60,7 +59,10 @@ public class SorterScreen extends IEContainerScreen<SorterContainer>
 					int type = ((ButtonSorter)button).type;
 					String[] split = I18n.format(Lib.DESC_INFO+"filter."+(type==0?"oreDict": type==1?"nbt": "fuzzy")).split("<br>");
 					for(int i = 0; i < split.length; i++)
-						tooltip.add(new StringTextComponent(split[i]).setStyle(new Style().setColor(i==0?TextFormatting.WHITE: TextFormatting.GRAY)));
+						tooltip.add(ClientUtils.applyFormat(
+								new StringTextComponent(split[i]),
+								i==0?TextFormatting.WHITE: TextFormatting.GRAY
+						));
 					GuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
 				}
 		}

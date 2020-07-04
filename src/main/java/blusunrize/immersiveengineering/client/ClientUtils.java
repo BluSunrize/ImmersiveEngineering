@@ -57,7 +57,10 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.*;
-import net.minecraft.util.text.*;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
 import net.minecraftforge.fluids.FluidStack;
@@ -528,8 +531,10 @@ public class ClientUtils
 	public static void addFluidTooltip(FluidStack fluid, List<ITextComponent> tooltip, int tankCapacity)
 	{
 		if(!fluid.isEmpty())
-			tooltip.add(fluid.getDisplayName().setStyle(
-					new Style().setColor(fluid.getFluid().getAttributes().getRarity(fluid).color)));
+			tooltip.add(applyFormat(
+					fluid.getDisplayName(),
+					fluid.getFluid().getAttributes().getRarity(fluid).color
+			));
 		else
 			tooltip.add(new TranslationTextComponent("gui.immersiveengineering.empty"));
 		if(fluid.getFluid() instanceof IEFluid)
@@ -541,21 +546,19 @@ public class ClientUtils
 				tooltip.add(new TranslationTextComponent(Lib.DESC_INFO+"holdShiftForInfo"));
 			else
 			{
-				Style darkGray = new Style().setColor(TextFormatting.DARK_GRAY);
 				//TODO translation keys
-				tooltip.add(new StringTextComponent("Fluid Registry: "+fluid.getFluid().getRegistryName()).setStyle(darkGray));
-				tooltip.add(new StringTextComponent("Density: "+fluid.getFluid().getAttributes().getDensity(fluid)).setStyle(darkGray));
-				tooltip.add(new StringTextComponent("Temperature: "+fluid.getFluid().getAttributes().getTemperature(fluid)).setStyle(darkGray));
-				tooltip.add(new StringTextComponent("Viscosity: "+fluid.getFluid().getAttributes().getViscosity(fluid)).setStyle(darkGray));
-				tooltip.add(new StringTextComponent("NBT Data: "+fluid.getTag()).setStyle(darkGray));
+				tooltip.add(applyFormat(new StringTextComponent("Fluid Registry: "+fluid.getFluid().getRegistryName()), TextFormatting.DARK_GRAY));
+				tooltip.add(applyFormat(new StringTextComponent("Density: "+fluid.getFluid().getAttributes().getDensity(fluid)), TextFormatting.DARK_GRAY));
+				tooltip.add(applyFormat(new StringTextComponent("Temperature: "+fluid.getFluid().getAttributes().getTemperature(fluid)), TextFormatting.DARK_GRAY));
+				tooltip.add(applyFormat(new StringTextComponent("Viscosity: "+fluid.getFluid().getAttributes().getViscosity(fluid)), TextFormatting.DARK_GRAY));
+				tooltip.add(applyFormat(new StringTextComponent("NBT Data: "+fluid.getTag()), TextFormatting.DARK_GRAY));
 			}
 		}
 
-		Style gray = new Style().setColor(TextFormatting.GRAY);
 		if(tankCapacity > 0)
-			tooltip.add(new StringTextComponent(fluid.getAmount()+"/"+tankCapacity+"mB").setStyle(gray));
+			tooltip.add(applyFormat(new StringTextComponent(fluid.getAmount()+"/"+tankCapacity+"mB"), TextFormatting.GRAY));
 		else
-			tooltip.add(new StringTextComponent(fluid.getAmount()+"mB").setStyle(gray));
+			tooltip.add(applyFormat(new StringTextComponent(fluid.getAmount()+"mB"), TextFormatting.GRAY));
 	}
 
 	public static Quaternion degreeToQuaterion(double x, double y, double z)
@@ -1271,5 +1274,11 @@ public class ClientUtils
 		mc().getItemRenderer().renderItem(stack, TransformType.GUI, 0xf000f0, OverlayTexture.NO_OVERLAY,
 				transform, buffer);
 		transform.pop();
+	}
+
+	public static <T extends ITextComponent> T applyFormat(T component, TextFormatting... color) {
+		for (TextFormatting format : color)
+			component.getStyle().func_240712_a_(format);
+		return component;
 	}
 }

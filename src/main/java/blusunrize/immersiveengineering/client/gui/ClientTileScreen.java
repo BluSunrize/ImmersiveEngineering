@@ -51,6 +51,6 @@ public abstract class ClientTileScreen<T extends TileEntity> extends Screen
 		super.render(transform, mx, my, partial);
 
 		// Foreground
-		drawGuiContainerForegroundLayer(mx, my, partial);
+		func_230451_b_(transform, mx, my, partial);
 	}
 }

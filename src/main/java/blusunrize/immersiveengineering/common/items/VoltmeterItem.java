@@ -30,6 +30,7 @@ import net.minecraft.item.ItemUseContext;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -129,7 +130,7 @@ public class VoltmeterItem extends IEBaseItem implements ITool
 								player.sendMessage(new TranslationTextComponent(
 										Lib.CHAT_INFO+"averageLoss",
 										Utils.formatDouble(energyPath.loss*100, "###.000")
-								));
+								), Util.field_240973_b_);
 						}
 					}
 				}

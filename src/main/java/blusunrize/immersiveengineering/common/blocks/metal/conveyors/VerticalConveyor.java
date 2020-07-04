@@ -225,7 +225,7 @@ public class VerticalConveyor extends BasicConveyor
 			double treshold = .9;
 			boolean contact = distY < treshold;
 
-			entity.onGround = false;
+			entity.func_230245_c_(false);
 			if(entity.fallDistance < 3)
 				entity.fallDistance = 0;
 			else

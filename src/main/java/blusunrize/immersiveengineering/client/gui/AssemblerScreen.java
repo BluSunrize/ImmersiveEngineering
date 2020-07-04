@@ -24,7 +24,10 @@ import net.minecraft.client.util.ITooltipFlag.TooltipFlags;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.*;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import java.util.ArrayList;
@@ -56,7 +59,7 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerContainer>
 		for(int i = 0; i < 3; ++i)
 		{
 			final int id = i;
-			this.addButton(new GuiButtonIE(guiLeft+11+i*59, guiTop+67, 10, 10, "", texture, 230, 50,
+			this.addButton(new GuiButtonIE(guiLeft+11+i*59, guiTop+67, 10, 10, StringTextComponent.field_240750_d_, texture, 230, 50,
 					btn -> sendButtonClick.accept(id))
 					.setHoverOffset(0, 10));
 		}
@@ -87,7 +90,7 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerContainer>
 					tooltip.add(tile.patterns[i].inv.get(9).getDisplayName());
 					tile.patterns[i].inv.get(9).getItem().addInformation(tile.patterns[i].inv.get(9), ClientUtils.mc().world, tooltip, TooltipFlags.NORMAL);
 					for(int j = 0; j < tooltip.size(); j++)
-						tooltip.get(j).setStyle(new Style().setColor(j==0?tile.patterns[i].inv.get(9).getRarity().color: TextFormatting.GRAY));
+						tooltip.get(j).getStyle().func_240712_a_(j==0?tile.patterns[i].inv.get(9).getRarity().color: TextFormatting.GRAY);
 				}
 
 		if(((mx >= guiLeft+11&&mx < guiLeft+21)||(mx >= guiLeft+69&&mx < guiLeft+79)||(mx >= guiLeft+127&&mx < guiLeft+137))&&my > guiTop+67&&my < guiTop+77)

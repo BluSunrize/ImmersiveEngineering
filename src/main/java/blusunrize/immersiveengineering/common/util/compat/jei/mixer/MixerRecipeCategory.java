@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
@@ -76,10 +77,10 @@ public class MixerRecipeCategory extends IERecipeCategory<MixerRecipe>
 	}
 
 	@Override
-	public void draw(MixerRecipe recipe, double mouseX, double mouseY)
+	public void draw(MixerRecipe recipe, MatrixStack transform, double mouseX, double mouseY)
 	{
-		tankTexture.draw(40, 0);
-		arrowDrawable.draw(117, 19);
+		tankTexture.draw(transform, 40, 0);
+		arrowDrawable.draw(transform, 117, 19);
 		ClientUtils.drawSlot(138, 17, 16, 47);
 	}
 

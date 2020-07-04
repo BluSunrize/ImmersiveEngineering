@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.api.wires;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
 import com.google.common.base.Preconditions;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
@@ -116,8 +116,8 @@ public class Connection
 	{
 		LocalWireNetwork net = GlobalWireNetwork.getNetwork(world).getLocalNet(endA);
 		Preconditions.checkState(net==GlobalWireNetwork.getNetwork(world).getLocalNet(endB), endA+" and "+endB+" are in different local nets?");
-		Vector3d vecA = ApiUtils.getVecForIICAt(net, endA, this, false);
-		Vector3d vecB = ApiUtils.getVecForIICAt(net, endB, this, true);
+		Vector3d vecA = WireUtils.getVecForIICAt(net, endA, this, false);
+		Vector3d vecB = WireUtils.getVecForIICAt(net, endB, this, true);
 		generateCatenaryData(vecA, vecB);
 	}
 

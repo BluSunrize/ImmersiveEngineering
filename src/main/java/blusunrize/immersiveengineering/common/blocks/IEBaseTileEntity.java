@@ -16,7 +16,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.Blockstat
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPropertyPassthrough;
-import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import net.minecraft.block.BlockState;
@@ -57,9 +56,9 @@ public abstract class IEBaseTileEntity extends TileEntity implements BlockstateP
 	}
 
 	@Override
-	public void read(CompoundNBT nbt)
+	public void func_230337_a_(BlockState state, CompoundNBT nbt)
 	{
-		super.read(nbt);
+		super.func_230337_a_(state, nbt);
 		this.readCustomNBT(nbt, false);
 	}
 

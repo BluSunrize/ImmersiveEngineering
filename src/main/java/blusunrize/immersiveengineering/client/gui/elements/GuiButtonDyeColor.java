@@ -10,12 +10,13 @@ package blusunrize.immersiveengineering.client.gui.elements;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.item.DyeColor;
+import net.minecraft.util.text.ITextComponent;
 
 public class GuiButtonDyeColor extends GuiButtonState<DyeColor>
 {
 	public GuiButtonDyeColor(int x, int y, String name, DyeColor initialColor, IIEPressable<GuiButtonState<DyeColor>> handler)
 	{
-		super(x, y, 8, 8, name, DyeColor.values(), initialColor.ordinal(), "immersiveengineering:textures/gui/hud_elements.png", 0, 128, -1, handler);
+		super(x, y, 8, 8, ITextComponent.func_241827_a_(name), DyeColor.values(), initialColor.ordinal(), "immersiveengineering:textures/gui/hud_elements.png", 0, 128, -1, handler);
 	}
 
 	@Override

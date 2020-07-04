@@ -13,14 +13,14 @@ import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import net.minecraft.item.Item;
-import net.minecraft.tags.ITag;
-import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.ITag.INamedTag;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static blusunrize.immersiveengineering.common.data.DataGenUtils.createItemWrapper;
 import static blusunrize.immersiveengineering.common.data.Recipes.getTagCondition;
 
 /**
@@ -57,12 +57,12 @@ public enum RecipeMetals
 	OSMIUM("osmium", false, true),
 	BRONZE("bronze", false,
 			new AlloyProperties(4, new IngredientWithSize(IETags.getTagsFor(EnumMetals.COPPER).ingot, 3),
-					new IngredientWithSize(new net.minecraft.tags.ItemTags.Wrapper(IETags.getIngot("tin"))))
+					new IngredientWithSize(createItemWrapper(IETags.getIngot("tin"))))
 					.addConditions(getTagCondition(IETags.getIngot("tin")))
 	),
 	BRASS("brass", false,
 			new AlloyProperties(4, new IngredientWithSize(IETags.getTagsFor(EnumMetals.COPPER).ingot, 3),
-					new IngredientWithSize(new net.minecraft.tags.ItemTags.Wrapper(IETags.getIngot("zinc"))))
+					new IngredientWithSize(createItemWrapper(IETags.getIngot("zinc"))))
 					.addConditions(getTagCondition(IETags.getIngot("zinc")))
 	),
 	INVAR("invar", false,
@@ -72,19 +72,19 @@ public enum RecipeMetals
 
 	private final String name;
 	private final boolean isNative;
-	private final ITag<Item> ingot;
-	private final ITag<Item> dust;
-	private final ITag<Item> ore;
+	private final INamedTag<Item> ingot;
+	private final INamedTag<Item> dust;
+	private final INamedTag<Item> ore;
 	private final AlloyProperties alloyProperties;
 	private final SecondaryOutput[] secondaryOutputs;
 
 	RecipeMetals(String name, boolean isNative, boolean hasOre, AlloyProperties alloyProperties, SecondaryOutput... secondaryOutputs)
 	{
 		this.name = name;
-		this.ingot = new ItemTags.Wrapper(IETags.getIngot(name));
-		this.dust = new ItemTags.Wrapper(IETags.getDust(name));
+		this.ingot = createItemWrapper(IETags.getIngot(name));
+		this.dust = createItemWrapper(IETags.getDust(name));
 		this.isNative = isNative;
-		this.ore = !hasOre?null: new ItemTags.Wrapper(IETags.getOre(name));
+		this.ore = !hasOre?null: createItemWrapper(IETags.getOre(name));
 		this.alloyProperties = alloyProperties;
 		this.secondaryOutputs = secondaryOutputs;
 	}
@@ -111,17 +111,17 @@ public enum RecipeMetals
 		return isNative;
 	}
 
-	public ITag<Item> getIngot()
+	public INamedTag<Item> getIngot()
 	{
 		return ingot;
 	}
 
-	public ITag<Item> getDust()
+	public INamedTag<Item> getDust()
 	{
 		return dust;
 	}
 
-	public ITag<Item> getOre()
+	public INamedTag<Item> getOre()
 	{
 		return ore;
 	}

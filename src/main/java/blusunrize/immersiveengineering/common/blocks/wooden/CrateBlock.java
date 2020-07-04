@@ -13,12 +13,10 @@ import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorldReader;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -43,10 +41,10 @@ public class CrateBlock extends IETileProviderBlock
 	}
 
 	@Override
-	public float getExplosionResistance(BlockState state, IWorldReader world, BlockPos pos, @Nullable Entity exploder, Explosion explosion)
+	public float getExplosionResistance(BlockState state, IBlockReader world, BlockPos pos, Explosion explosion)
 	{
 		if(reinforced)
 			return 1200000;
-		return super.getExplosionResistance(state, world, pos, exploder, explosion);
+		return super.getExplosionResistance(state, world, pos, explosion);
 	}
 }

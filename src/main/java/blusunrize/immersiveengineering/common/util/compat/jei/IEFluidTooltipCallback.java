@@ -15,7 +15,6 @@ import net.minecraftforge.fluids.FluidStack;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author BluSunrize - 26.02.2017
@@ -23,18 +22,17 @@ import java.util.stream.Collectors;
 public class IEFluidTooltipCallback implements ITooltipCallback<FluidStack>
 {
 	@Override
-	public void onTooltip(int slotIndex, boolean input, FluidStack ingredient, List<String> tooltip)
+	public void onTooltip(int slotIndex, boolean input, FluidStack ingredient, List<ITextComponent> tooltip)
 	{
 		if(ingredient.getFluid() instanceof PotionFluid)
 		{
-			ArrayList<ITextComponent> fluidInfo = new ArrayList<>();
+			List<ITextComponent> fluidInfo = new ArrayList<>();
 			((PotionFluid)ingredient.getFluid()).addInformation(ingredient, fluidInfo);
 
-			List<String> tooltipAppend = fluidInfo.stream().map(ITextComponent::getFormattedText).collect(Collectors.toList());
 			if(tooltip.size() > 1)
-				tooltip.addAll(1, tooltipAppend);
+				tooltip.addAll(1, fluidInfo);
 			else
-				tooltip.addAll(tooltipAppend);
+				tooltip.addAll(fluidInfo);
 		}
 	}
 }

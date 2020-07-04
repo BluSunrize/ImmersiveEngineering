@@ -86,8 +86,8 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.text.ITextProperties;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -116,6 +116,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static blusunrize.immersiveengineering.common.data.IEDataGenerator.rl;
 
@@ -196,35 +197,50 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		{
 			ItemStack shader = wrapper.getShaderItem();
 			if(!shader.isEmpty())
-				event.getToolTip().add(shader.getDisplayName().setStyle(new Style().setColor(TextFormatting.DARK_GRAY)));
+				event.getToolTip().add(ClientUtils.applyFormat(
+						shader.getDisplayName(),
+						TextFormatting.DARK_GRAY
+				));
 		});
-		Style gray = new Style().setColor(TextFormatting.GRAY);
 		if(ItemNBTHelper.hasKey(event.getItemStack(), Lib.NBT_Earmuffs))
 		{
 			ItemStack earmuffs = ItemNBTHelper.getItemStack(event.getItemStack(), Lib.NBT_Earmuffs);
 			if(!earmuffs.isEmpty())
-				event.getToolTip().add(earmuffs.getDisplayName().setStyle(gray));
+				event.getToolTip().add(ClientUtils.applyFormat(
+						earmuffs.getDisplayName(),
+						TextFormatting.GRAY
+				));
 		}
 		if(ItemNBTHelper.hasKey(event.getItemStack(), Lib.NBT_Powerpack))
 		{
 			ItemStack powerpack = ItemNBTHelper.getItemStack(event.getItemStack(), Lib.NBT_Powerpack);
 			if(!powerpack.isEmpty())
 			{
-				event.getToolTip().add(powerpack.getDisplayName().setStyle(gray));
-				event.getToolTip().add(new StringTextComponent(EnergyHelper.getEnergyStored(powerpack)+"/"+EnergyHelper.getMaxEnergyStored(powerpack)+" IF")
-						.setStyle(gray));
+				event.getToolTip().add(ClientUtils.applyFormat(
+						powerpack.getDisplayName(),
+						TextFormatting.GRAY
+				));
+				event.getToolTip().add(ClientUtils.applyFormat(
+						new StringTextComponent(EnergyHelper.getEnergyStored(powerpack)+"/"+EnergyHelper.getMaxEnergyStored(powerpack)+" IF"),
+						TextFormatting.GRAY
+						));
 			}
 		}
 		if(ClientUtils.mc().currentScreen!=null
 				&&ClientUtils.mc().currentScreen instanceof BlastFurnaceScreen
 				&&BlastFurnaceFuel.isValidBlastFuel(event.getItemStack()))
-			event.getToolTip().add(new TranslationTextComponent("desc.immersiveengineering.info.blastFuelTime", BlastFurnaceFuel.getBlastFuelTime(event.getItemStack()))
-					.setStyle(gray));
+			event.getToolTip().add(ClientUtils.applyFormat(
+					new TranslationTextComponent("desc.immersiveengineering.info.blastFuelTime", BlastFurnaceFuel.getBlastFuelTime(event.getItemStack())),
+					TextFormatting.GRAY
+			));
 
 		if(IEConfig.GENERAL.tagTooltips.get()&&event.getFlags().isAdvanced())
 		{
 			for(ResourceLocation oid : ItemTags.getCollection().getOwningTags(event.getItemStack().getItem()))
-				event.getToolTip().add(new StringTextComponent(oid.toString()).setStyle(gray));
+				event.getToolTip().add(ClientUtils.applyFormat(
+						new StringTextComponent(oid.toString()),
+						TextFormatting.GRAY
+				));
 		}
 
 		if(event.getItemStack().getItem() instanceof IBulletContainer)
@@ -242,7 +258,10 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			if(bullets!=null)
 			{
 				int bulletAmount = ((IBulletContainer)stack.getItem()).getBulletCount(stack);
-				int line = event.getLines().size()-Utils.findSequenceInList(event.getLines(), BULLET_TOOLTIP, (a, b) -> b.endsWith(a));
+				List<String> linesString = event.getLines().stream()
+						.map(ITextProperties::getString)
+						.collect(Collectors.toList());
+				int line = event.getLines().size()-Utils.findSequenceInList(linesString, BULLET_TOOLTIP, (a, b) -> b.endsWith(a));
 
 				int currentX = event.getX();
 				int currentY = line > 0?event.getY()+(event.getHeight()+1-line*10): event.getY()-42;
@@ -653,7 +672,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 									ClientUtils.drawTexturedRect(builder, transform, -100, -20, 64, 16, 1, 1, 1, 1, 0/256f, 64/256f, 76/256f, 92/256f);
 									if(!fuel.isEmpty())
 									{
-										String name = ClientUtils.font().trimStringToWidth(fuel.getDisplayName().getFormattedText(), 50).trim();
+										String name = ClientUtils.font().func_238417_a_(fuel.getDisplayName(), 50).getString().trim();
 										ClientUtils.font().renderString(
 												name, -68-ClientUtils.font().getStringWidth(name)/2, -15, 0,
 												false, transform.getLast().getMatrix(), buffer, false,
@@ -813,7 +832,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		PlayerEntity player = ClientUtils.mc().player;
 		if(!player.getHeldItem(Hand.MAIN_HAND).isEmpty()&&player.getHeldItem(Hand.MAIN_HAND).getItem() instanceof IZoomTool)
 		{
-			if(player.isSneaking()&&player.onGround)
+			if(player.isSneaking()&&player.func_233570_aj_())
 			{
 				ItemStack equipped = player.getHeldItem(Hand.MAIN_HAND);
 				IZoomTool tool = (IZoomTool)equipped.getItem();

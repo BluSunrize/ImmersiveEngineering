@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.api.wires.utils;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.api.wires.Connection.CatenaryData;
 import blusunrize.immersiveengineering.api.wires.WireCollisionData.CollisionInfo;
@@ -98,11 +97,11 @@ public class WireUtils
 			Vector3d end = ((IImmersiveConnectable)teB).getConnectionOffset(conn, conn.getEndB());
 			Vector3i offsetEndInt = conn.getEndB().getPosition().subtract(conn.getEndA().getPosition());
 			Vector3d offsetEnd = new Vector3d(offsetEndInt.getX(), offsetEndInt.getY(), offsetEndInt.getZ());
-			ApiUtils.raytraceAlongCatenaryRelative(conn, (p) -> {
+			raytraceAlongCatenaryRelative(conn, (p) -> {
 				if(!ignore.contains(p.getLeft()))
 				{
 					BlockState state = world.getBlockState(p.getLeft());
-					if(ApiUtils.preventsConnection(world, p.getLeft(), state, p.getMiddle(), p.getRight()))
+					if(preventsConnection(world, p.getLeft(), state, p.getMiddle(), p.getRight()))
 						obstructions.add(p.getLeft());
 				}
 			}, (p) -> {

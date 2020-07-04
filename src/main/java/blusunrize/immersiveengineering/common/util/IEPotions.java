@@ -125,7 +125,7 @@ public class IEPotions
 		{
 			if(this==IEPotions.slippery)
 			{
-				if(living.onGround)
+				if(living.func_233570_aj_())
 					living.moveRelative(0, new Vector3d(0, 1, 0.005));
 				EquipmentSlotType hand = living.getRNG().nextBoolean()?EquipmentSlotType.MAINHAND: EquipmentSlotType.OFFHAND;
 				if(!living.world.isRemote&&living.getRNG().nextInt(300)==0&&!living.getItemStackFromSlot(hand).isEmpty())

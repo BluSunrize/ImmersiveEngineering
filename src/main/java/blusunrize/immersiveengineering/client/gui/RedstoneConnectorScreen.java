@@ -19,7 +19,10 @@ import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.item.DyeColor;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.*;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import java.util.ArrayList;
@@ -91,15 +94,20 @@ public class RedstoneConnectorScreen extends ClientTileScreen<ConnectorRedstoneT
 		if(buttonInOut.isHovered())
 		{
 			tooltip.add(new TranslationTextComponent(Lib.GUI_CONFIG+"redstone_iomode"));
-			tooltip.add(buttonInOut.getState().getTextComponent().setStyle(new Style().setColor(TextFormatting.GRAY)));
+			tooltip.add(ClientUtils.applyFormat(
+					buttonInOut.getState().getTextComponent(),
+					TextFormatting.GRAY
+			));
 		}
 
 		for(int i = 0; i < colorButtons.length; i++)
 			if(colorButtons[i].isHovered())
 			{
 				tooltip.add(new TranslationTextComponent(Lib.GUI_CONFIG+"redstone_color"));
-				tooltip.add(new TranslationTextComponent("color.minecraft."+DyeColor.byId(i).getTranslationKey())
-						.setStyle(new Style().setColor(TextFormatting.GRAY)));
+				tooltip.add(ClientUtils.applyFormat(
+						new TranslationTextComponent("color.minecraft."+DyeColor.byId(i).getTranslationKey()),
+						TextFormatting.GRAY
+						));
 			}
 
 		if(!tooltip.isEmpty())

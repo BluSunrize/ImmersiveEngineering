@@ -68,14 +68,15 @@ public class BarrelMinecartEntity extends IEMinecartEntity<WoodenBarrelTileEntit
 	@Override
 	public ActionResultType processInitialInteract(PlayerEntity player, Hand hand)
 	{
-		if(super.processInitialInteract(player, hand)) return true;
+		if(super.processInitialInteract(player, hand) == ActionResultType.SUCCESS)
+			return ActionResultType.SUCCESS;
 		ItemStack itemstack = player.getHeldItem(hand);
 		if(FluidUtil.getFluidHandler(itemstack).isPresent())
 		{
 			this.containedTileEntity.interact(null, player, hand, itemstack, 0, 0, 0);
-			return true;//always return true to avoid placing lava in the world
+			return ActionResultType.SUCCESS;//always return true to avoid placing lava in the world
 		}
-		return false;
+		return ActionResultType.PASS;
 	}
 
 	@Nonnull

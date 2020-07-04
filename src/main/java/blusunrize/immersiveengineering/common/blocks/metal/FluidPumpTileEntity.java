@@ -367,9 +367,9 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 			IOSideConfig j = sideConfig.get(brtr.getFace().getOpposite());
 			return new String[]{
 					I18n.format(Lib.DESC_INFO+"blockSide.facing")
-							+": "+I18n.format(Lib.DESC_INFO+"blockSide.connectFluid."+i.getName()),
+							+": "+I18n.format(Lib.DESC_INFO+"blockSide.connectFluid."+i.func_176610_l()),
 					I18n.format(Lib.DESC_INFO+"blockSide.opposite")
-							+": "+I18n.format(Lib.DESC_INFO+"blockSide.connectFluid."+j.getName())
+							+": "+I18n.format(Lib.DESC_INFO+"blockSide.connectFluid."+j.func_176610_l())
 			};
 		}
 		return null;
