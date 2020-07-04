@@ -315,6 +315,9 @@ public class IEConfig
 			excavator_yield = builder
 					.comment("The maximum amount of yield one can get out of a chunk with the excavator. Set a number smaller than zero to make it infinite")
 					.defineInRange("excavator_yield", 38400, -1, Integer.MAX_VALUE);
+			excavator_initial_depletion = builder
+					.comment("The maximum depletion a vein can start with, as a decimal value. When a vein generates, a random percentage up to this value is depleted from it")
+					.defineInRange("excavator_initial_depletion", .2, 0, 1);
 			excavator_dimBlacklist = builder
 					.comment("List of dimensions that can't contain minerals. Default: The End.")
 					.defineList("excavator_dimBlacklist", ImmutableList.of(DimensionType.THE_END.getRegistryName().toString()),
@@ -427,6 +430,7 @@ public class IEConfig
 		public final BooleanValue excavator_particles;
 		public final DoubleValue excavator_theshold;
 		public final IntValue excavator_yield;
+		public final DoubleValue excavator_initial_depletion;
 		public final ConfigValue<List<? extends String>> excavator_dimBlacklist;
 
 		public static class MachineRecipeConfig
