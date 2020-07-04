@@ -20,7 +20,6 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
@@ -161,33 +160,38 @@ public class CommandMineral
 	private static LiteralArgumentBuilder<CommandSource> setMineralDepletion()
 	{
 		LiteralArgumentBuilder<CommandSource> setDepletion = Commands.literal("setDepletion");
-		RequiredArgumentBuilder<CommandSource, Integer> mineralArg = Commands.argument("depletion",
-				IntegerArgumentType.integer(-1, 100));
-		mineralArg.requires(source -> source.hasPermissionLevel(2)).executes(command -> {
-			ServerPlayerEntity player = command.getSource().asPlayer();
-			setMineralDepletion(command, player.getPosition().getX() >> 4, player.getPosition().getZ() >> 4);
-			return Command.SINGLE_SUCCESS;
-		}).then(
-				Commands.argument("location", ColumnPosArgument.columnPos())
-						.executes(command -> {
-							ColumnPos pos = ColumnPosArgument.func_218101_a(command, "location");
-							setMineralDepletion(command, pos.x, pos.z);
+		setDepletion.requires(source -> source.hasPermissionLevel(2))
+				.then(Commands.argument("depletion", IntegerArgumentType.integer(0, ExcavatorHandler.mineralVeinYield))
+						.then(Commands.argument("pos", ColumnPosArgument.columnPos())
+								.executes(ctx -> {
+									setMineralDepletion(ctx, ColumnPosArgument.func_218101_a(ctx, "pos"));
+									return Command.SINGLE_SUCCESS;
+								}))
+						.executes(ctx -> {
+							setMineralDepletion(ctx, columnPos(ctx.getSource().getPos()));
 							return Command.SINGLE_SUCCESS;
 						})
-		);
-		setDepletion.then(mineralArg);
+				);
+
 		return setDepletion;
 	}
 
-	private static void setMineralDepletion(CommandContext<CommandSource> context, int xChunk, int zChunk)
+	private static void setMineralDepletion(CommandContext<CommandSource> context, ColumnPos pos)
 	{
 		CommandSource sender = context.getSource();
-		// TODO
-//		MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(sender.getWorld(), xChunk, zChunk);
-//		int depl = context.getArgument("depletion", Integer.class);
-//		info.depletion = depl;
-		//sender.sendMessage(new TextComponentTranslation(Lib.CHAT_COMMAND+CommandMineral.this.getName()+".setDepletion.sucess",
-		//TODO localization on the server?		(depl < 0?I18n.translateToLocal(Lib.CHAT_INFO+"coreDrill.infinite"): Integer.toString(depl))));
+		MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(sender.getWorld(), pos);
+		if(info!=null&&info.getTotalWeight() > 0)
+		{
+			int depletion = IntegerArgumentType.getInteger(context, "depletion");
+			for(Pair<MineralVein, Integer> pair : info.getAllVeins())
+				pair.getLeft().setDepletion(depletion);
+			IESaveData.setDirty();
+			sender.sendFeedback(new TranslationTextComponent(Lib.CHAT_COMMAND+
+					"mineral.setDepletion.success", depletion), true);
+		}
+		else
+			sender.sendFeedback(new TranslationTextComponent(Lib.CHAT_COMMAND+
+					"mineral.setDepletion.noMineral", pos.x, pos.z), true);
 	}
 
 	private static ColumnPos columnPos(Vec3d vec)
