@@ -24,7 +24,6 @@ public class MineralVein
 	private final MineralMix mineral;
 	private final int radius;
 	private int depletion;
-	private MineralMix mineralOverride;
 
 	public MineralVein(ColumnPos pos, MineralMix mineral, int radius)
 	{
@@ -78,23 +77,6 @@ public class MineralVein
 		return ExcavatorHandler.mineralVeinYield==0||getDepletion() >= ExcavatorHandler.mineralVeinYield;
 	}
 
-	public MineralMix getMineralOverride()
-	{
-		return mineralOverride;
-	}
-
-	public void setMineralOverride(MineralMix mineralOverride)
-	{
-		this.mineralOverride = mineralOverride;
-	}
-
-	public MineralMix getActualMineral()
-	{
-		if(getMineralOverride()!=null)
-			return getMineralOverride();
-		return getMineral();
-	}
-
 	public CompoundNBT writeToNBT()
 	{
 		CompoundNBT tag = new CompoundNBT();
@@ -103,8 +85,6 @@ public class MineralVein
 		tag.putString("mineral", mineral.getId().toString());
 		tag.putInt("radius", radius);
 		tag.putInt("depletion", depletion);
-		if(mineralOverride!=null)
-			tag.putString("mineralOverride", mineralOverride.getId().toString());
 		return tag;
 	}
 
@@ -118,12 +98,6 @@ public class MineralVein
 			int radius = tag.getInt("radius");
 			MineralVein info = new MineralVein(pos, MineralMix.mineralList.get(id), radius);
 			info.depletion = tag.getInt("depletion");
-
-			if(tag.contains("mineralOverride"))
-			{
-				id = new ResourceLocation(tag.getString("mineralOverride"));
-				info.mineralOverride = MineralMix.mineralList.get(id);
-			}
 			return info;
 		} catch(ResourceLocationException ex)
 		{

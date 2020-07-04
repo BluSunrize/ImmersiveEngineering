@@ -201,7 +201,7 @@ public class CoresampleItem extends IEBaseItem
 		veins.forEach(pair -> {
 			CompoundNBT tag = new CompoundNBT();
 			tag.putDouble("percentage", pair.getRight()/(double)info.getTotalWeight());
-			tag.putString("mineral", pair.getLeft().getActualMineral().getId().toString());
+			tag.putString("mineral", pair.getLeft().getMineral().getId().toString());
 			tag.putInt("depletion", pair.getLeft().getDepletion());
 			tag.putDouble("saturation", 1-pair.getLeft().getFailChance(pos));
 			nbtList.add(tag);

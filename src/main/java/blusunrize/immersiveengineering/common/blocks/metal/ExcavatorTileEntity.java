@@ -161,7 +161,7 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 				if(!isRSDisabled())
 				{
 					MineralVein mineralVein = ExcavatorHandler.getRandomMineral(world, wheelPos);
-					MineralMix mineral = mineralVein!=null?mineralVein.getActualMineral(): null;
+					MineralMix mineral = mineralVein!=null?mineralVein.getMineral(): null;
 
 					int consumed = IEConfig.MACHINES.excavator_consumption.get();
 					int extracted = energyStorage.extractEnergy(consumed, true);

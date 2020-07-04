@@ -103,7 +103,7 @@ public class CommandMineral
 				MineralVein vein = pair.getLeft();
 				double percentage = pair.getRight()/(double)info.getTotalWeight();
 				ITextComponent component = new StringTextComponent("\n "+Utils.formatDouble(percentage*100, "0.00")+"% ");
-				component.appendSibling(new TranslationTextComponent(vein.getActualMineral().getTranslationKey()));
+				component.appendSibling(new TranslationTextComponent(vein.getMineral().getTranslationKey()));
 				ret.appendSibling(component.applyTextStyle(TextFormatting.GRAY));
 				component = new StringTextComponent("\n  ");
 				component.appendSibling(new TranslationTextComponent(Lib.CHAT_COMMAND+"mineral.get.pos",
