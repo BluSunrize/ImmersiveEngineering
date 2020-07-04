@@ -463,7 +463,7 @@ public class Villages
 				BlockPos blockPos = new BlockPos(vein.getPos().x, 64, vein.getPos().z);
 				ItemStack selling = FilledMapItem.setupNewMap(world, blockPos.getX(), blockPos.getZ(), (byte)1, true, true);
 				FilledMapItem.renderBiomePreviewMap(world, selling);
-				MapData.addTargetDecoration(selling, blockPos, "ie:coresample_treasure", Type.TARGET_POINT);
+				MapData.addTargetDecoration(selling, blockPos, "ie:coresample_treasure", Type.RED_X);
 				selling.setDisplayName(new TranslationTextComponent("item.immersiveengineering.map_orevein"));
 				ItemNBTHelper.setLore(selling, new TranslationTextComponent(vein.getMineral().getTranslationKey()));
 				return new MerchantOffer(new ItemStack(Items.EMERALD, 8+random.nextInt(8)),
