@@ -73,10 +73,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.FilledMapItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
@@ -1297,18 +1294,22 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			GlStateManager.blendFuncSeparate(770, 771, 1, 0);
 			GlStateManager.shadeModel(GL11.GL_SMOOTH);
 			GlStateManager.lineWidth(5f);
+			List<ResourceLocation> keyList = new ArrayList<>(MineralMix.mineralList.keySet());
+			keyList.sort(Comparator.comparing(ResourceLocation::toString));
 			for(MineralVein vein : ExcavatorHandler.getMineralVeinList().get(DimensionType.OVERWORLD))
 			{
 				ColumnPos pos = vein.getPos();
-				Random cRand = new Random(pos.asLong());
-				float r = cRand.nextFloat();
-				float g = cRand.nextFloat();
-				float b = cRand.nextFloat();
+				int iC = keyList.indexOf(vein.getMineral().getId());
+				DyeColor color = DyeColor.values()[iC%16];
+				float[] rgb = color.getColorComponentValues();
+				float r = rgb[0];
+				float g = rgb[1];
+				float b = rgb[2];
 
 				BufferBuilder.setTranslation(pos.x-px, 0-py, pos.z-pz);
 				BufferBuilder.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
-				BufferBuilder.pos(0, 0, 0).color(r, g, b, .5f).endVertex();
-				BufferBuilder.pos(0, 128, 0).color(r, g, b, .5f).endVertex();
+				BufferBuilder.pos(0, 0, 0).color(r, g, b, .75f).endVertex();
+				BufferBuilder.pos(0, 128, 0).color(r, g, b, .75f).endVertex();
 				tessellator.draw();
 
 				int radius = vein.getRadius();
@@ -1321,7 +1322,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 					angle = 360.0f/12*p;
 					x1 = radius*Math.cos(angle*Math.PI/180);
 					z1 = radius*Math.sin(angle*Math.PI/180);
-					BufferBuilder.pos(x1, 70, z1).color(r, g, b, .25f).endVertex();
+					BufferBuilder.pos(x1, 70, z1).color(r, g, b, .75f).endVertex();
 				}
 				tessellator.draw();
 
