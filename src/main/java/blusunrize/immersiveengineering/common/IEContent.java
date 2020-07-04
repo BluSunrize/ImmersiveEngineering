@@ -833,7 +833,7 @@ public class IEContent
 		fluidConcrete.block.setEffect(Effects.SLOWNESS, 20, 3);
 
 		ExcavatorHandler.mineralVeinCapacity = IEConfig.MACHINES.excavator_depletion.get();
-		ExcavatorHandler.mineralChance = IEConfig.MACHINES.excavator_chance.get()*.25;
+		ExcavatorHandler.mineralNoiseThreshold = IEConfig.MACHINES.excavator_theshold.get();
 
 		ChemthrowerEffects.register();
 

@@ -309,9 +309,9 @@ public class IEConfig
 			excavator_particles = builder
 					.comment("Set this to false to disable the ridiculous amounts of particles the Excavator spawns")
 					.define("excavator_particles", true);
-			excavator_chance = builder
-					.comment("The chance that a given chunk will contain a mineral vein.")
-					.defineInRange("excavator_chance", .2, 1e-3, 1);
+			excavator_theshold = builder
+					.comment("The threshold the perlin noise has to cross for a mineral vein to be generated. Higher means less likely.")
+					.defineInRange("excavator_chance", .9, 0, 1);
 			excavator_depletion = builder
 					.comment("The maximum amount of yield one can get out of a chunk with the excavator. Set a number smaller than zero to make it infinite")
 					.defineInRange("excavator_depletion", 38400, -1, Integer.MAX_VALUE);
@@ -425,7 +425,7 @@ public class IEConfig
 		public final IntValue excavator_consumption;
 		public final DoubleValue excavator_speed;
 		public final BooleanValue excavator_particles;
-		public final DoubleValue excavator_chance;
+		public final DoubleValue excavator_theshold;
 		public final IntValue excavator_depletion;
 		public final ConfigValue<List<? extends String>> excavator_dimBlacklist;
 

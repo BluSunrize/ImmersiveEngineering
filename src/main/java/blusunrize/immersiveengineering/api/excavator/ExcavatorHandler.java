@@ -27,14 +27,14 @@ import java.util.stream.Collectors;
 /**
  * @author BluSunrize - 03.06.2015
  * <p>
- * The Handler for the Excavator. Chunk->Ore calculation is done here, as is registration
+ * The Handler for the Excavator. Generates veins upon world gen, stores them, and keeps a cache of queried positions
  */
 public class ExcavatorHandler
 {
 	private static final ArrayListMultimap<DimensionType, MineralVein> MINERAL_VEIN_LIST = ArrayListMultimap.create();
 	private static final HashMap<ColumnPos, MineralWorldInfo> MINERAL_INFO_CACHE = new HashMap<>();
 	public static int mineralVeinCapacity = 0;
-	public static double mineralChance = 0;
+	public static double mineralNoiseThreshold = 0;
 	public static INoiseGenerator noiseGenerator;
 
 	@Nullable
@@ -98,14 +98,9 @@ public class ExcavatorHandler
 			for(int zz = 0; zz < 16; ++zz)
 			{
 				double noise = noiseGenerator.noiseAt((xStart+xx)*d0, (zStart+zz)*d0, d0, xx*d0);
-				//System.out.println("Noise at "+chunkpos+" is "+Utils.formatDouble(noise, "0.00000"));
-				if(Math.abs(noise)-0.45 > mineralChance)
+				double chance = Math.abs(noise)/.55;
+				if(chance > mineralNoiseThreshold)
 				{
-//					System.out.println("THERE IS A MINERAL VEIN AT "+chunkpos+" with noise "+Utils.formatDouble(noise, "0.00000"));
-//					double noise2 = noiseGenerator.noiseAt((xStart+xx)*d0, (zStart+zz)*d0, d0, xx*d0);
-//					double noise3 = noiseGenerator.noiseAt((xStart+xx)*d0, (zStart+zz)*d0, d0, xx*d0);
-//					System.out.println("  Secondary Noise "+Utils.formatDouble(noise2, "0.00000"));
-//					System.out.println("  Tertiary Noise "+Utils.formatDouble(noise3, "0.00000"));
 					containsVein = true;
 					pos = new ColumnPos(xStart+xx, zStart+zz);
 					break iteratechunk;
@@ -114,7 +109,7 @@ public class ExcavatorHandler
 		if(containsVein)
 		{
 			ColumnPos finalPos = pos;
-			int radius = 8+rand.nextInt(32);
+			int radius = 12+rand.nextInt(32);
 			int radiusSq = radius*radius;
 			boolean crossover = MINERAL_VEIN_LIST.get(dimension).stream().anyMatch(vein -> {
 				int dx = vein.getPos().x-finalPos.x;
