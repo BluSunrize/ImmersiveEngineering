@@ -52,11 +52,16 @@ public class ExcavatorHandler
 		return MINERAL_VEIN_LIST;
 	}
 
+
 	public static MineralWorldInfo getMineralWorldInfo(World world, BlockPos pos)
+	{
+		return getMineralWorldInfo(world, new ColumnPos(pos));
+	}
+
+	public static MineralWorldInfo getMineralWorldInfo(World world, ColumnPos columnPos)
 	{
 		if(world.isRemote)
 			return null;
-		ColumnPos columnPos = new ColumnPos(pos);
 		MineralWorldInfo worldInfo = MINERAL_INFO_CACHE.get(columnPos);
 		if(worldInfo==null)
 		{
