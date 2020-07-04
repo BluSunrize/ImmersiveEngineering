@@ -30,7 +30,6 @@ public class GuiSliderIE extends Slider
 		{
 			ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
 			FontRenderer fontrenderer = Minecraft.getInstance().fontRenderer;
-			RenderSystem.color3f(1.0F, 1.0F, 1.0F);
 			isHovered = mouseX >= this.x&&mouseY >= this.y&&mouseX < this.x+this.width&&mouseY < this.y+this.height;
 			RenderSystem.enableBlend();
 			RenderSystem.blendFuncSeparate(770, 771, 1, 0);

@@ -106,7 +106,6 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 	@Override
 	protected void func_230450_a_(MatrixStack transform, float f, int mx, int my)
 	{
-		RenderSystem.color3f(1.0F, 1.0F, 1.0F);
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/workbench.png");
 		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
 
@@ -132,7 +131,7 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 				{
 					itemRender.renderItemAndEffectIntoGUI(ghostStack, guiLeft+s.xPos, guiTop+s.yPos);
 					RenderSystem.depthFunc(GL11.GL_GREATER);
-					ClientUtils.drawColouredRect(guiLeft+s.xPos+0, guiTop+s.yPos+0, 16, 16, 0xbb333333);
+					ClientUtils.drawColouredRect(guiLeft+s.xPos, guiTop+s.yPos, 16, 16, 0xbb333333);
 					RenderSystem.depthFunc(GL11.GL_LEQUAL);
 				}
 			}

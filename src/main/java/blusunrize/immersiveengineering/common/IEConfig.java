@@ -122,9 +122,6 @@ public class IEConfig
 			showTextOverlay = builder
 					.comment("Show the text overlay for various blocks, such as the configuration of capacitors or pumps")
 					.define("showTextOverlay", true);
-			nixietubeFont = builder
-					.comment("Set this to false to disable the super awesome looking nixie tube front for the voltmeter and other things")
-					.define("nixietubeFont", true);
 			//TODO unclear whether true or false enables rescaling
 			adjustManualScale = builder
 					.comment("Set this to false to disable the manual's forced change of GUI scale")
@@ -179,7 +176,6 @@ public class IEConfig
 
 		public final BooleanValue disableFancyTESR;
 		public final BooleanValue showTextOverlay;
-		public final BooleanValue nixietubeFont;
 		public final BooleanValue adjustManualScale;
 		public final BooleanValue badEyesight;
 		public final BooleanValue tagTooltips;

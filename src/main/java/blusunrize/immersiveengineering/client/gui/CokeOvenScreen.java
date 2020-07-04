@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.stone.CokeOvenTileEntity;
 import blusunrize.immersiveengineering.common.gui.CokeOvenContainer;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
@@ -43,7 +42,6 @@ public class CokeOvenScreen extends IEContainerScreen<CokeOvenContainer>
 	@Override
 	protected void func_230450_a_(MatrixStack transform, float f, int mx, int my)
 	{
-		RenderSystem.color3f(1.0F, 1.0F, 1.0F);
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/coke_oven.png");
 		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
 

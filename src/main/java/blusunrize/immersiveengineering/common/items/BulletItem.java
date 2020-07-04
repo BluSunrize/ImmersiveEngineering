@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
-import blusunrize.immersiveengineering.client.ClientProxy;
+import blusunrize.immersiveengineering.client.utils.FontUtils;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.entities.RevolvershotEntity;
 import blusunrize.immersiveengineering.common.entities.RevolvershotFlareEntity;
@@ -25,7 +25,6 @@ import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.AreaEffectCloudEntity;
 import net.minecraft.entity.Entity;
@@ -194,13 +193,6 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 		BulletHandler.registerBullet(WOLFPACK, new WolfpackBullet());
 
 		BulletHandler.registerBullet(WOLFPACK_PART, new WolfpackPartBullet());
-	}
-
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public FontRenderer getFontRenderer(ItemStack stack)
-	{
-		return ClientProxy.itemFont;
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -408,8 +400,11 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 		{
 			if(stack.getItem() instanceof IColouredItem)
 			{
-				String hexCol = Integer.toHexString(((IColouredItem)stack.getItem()).getColourForIEItem(stack, 1));
-				list.add(new TranslationTextComponent(Lib.DESC_INFO+"bullet.flareColour", "<hexcol="+hexCol+":#"+hexCol+">"));
+				int color = ((IColouredItem)stack.getItem()).getColourForIEItem(stack, 1);
+				list.add(FontUtils.withAppendColoredColour(
+						new TranslationTextComponent(Lib.DESC_INFO+"bullet.flareColour"),
+						color
+				));
 			}
 		}
 

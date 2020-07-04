@@ -28,6 +28,7 @@ import blusunrize.immersiveengineering.client.gui.BlastFurnaceScreen;
 import blusunrize.immersiveengineering.client.gui.RevolverScreen;
 import blusunrize.immersiveengineering.client.render.tile.AutoWorkbenchRenderer;
 import blusunrize.immersiveengineering.client.render.tile.AutoWorkbenchRenderer.BlueprintLines;
+import blusunrize.immersiveengineering.client.utils.FontUtils;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
 import blusunrize.immersiveengineering.common.IEConfig;
@@ -530,7 +531,8 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 					}
 					else if(equipped.getItem()==Misc.fluorescentTube)
 					{
-						String s = I18n.format("desc.immersiveengineering.info.colour", "#"+FluorescentTubeItem.hexColorString(equipped));
+						int color = FluorescentTubeItem.getRGBInt(equipped, 1);
+						String s = I18n.format(Lib.DESC_INFO+"colour") + "#"+FontUtils.hexColorString(color);
 						ClientUtils.font().renderString(s, scaledWidth/2-ClientUtils.font().getStringWidth(s)/2,
 								scaledHeight-ForgeIngameGui.left_height-20, FluorescentTubeItem.getRGBInt(equipped, 1),
 								true, transform.getLast().getMatrix(), buffer, false, 0, 0xf000f0
@@ -603,7 +605,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						transform.push();
 						transform.translate(scaledWidth-rightOffset-80, scaledHeight-30, 0);
 						transform.scale(scale, scale, 1);
-						ClientProxy.nixieFont.renderString(
+						ClientUtils.font().renderString(
 								(chargeLevel < 10?"0": "")+chargeLevel, 0, 0, Lib.colour_nixieTubeText,
 								true, transform.getLast().getMatrix(),
 								buffer, false, 0, 0xf000f0
@@ -742,19 +744,19 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 							int storage = receiver.getEnergyStored(side);
 							if(maxStorage > 0)
 								text = I18n.format(Lib.DESC_INFO+"energyStored", "<br>"+Utils.toScientificNotation(storage, "0##", 100000)+" / "+Utils.toScientificNotation(maxStorage, "0##", 100000)).split("<br>");
-							int col = IEConfig.GENERAL.nixietubeFont.get()?Lib.colour_nixieTubeText: 0xffffff;
+							int col = 0xffffff;
 							int i = 0;
 							RenderSystem.enableBlend();
 							for(String s : text)
 								if(s!=null)
 								{
 									s = s.trim();
-									int w = ClientProxy.nixieFontOptional.getStringWidth(s);
-									ClientProxy.nixieFontOptional.renderString(
+									int w = ClientUtils.font().getStringWidth(s);
+									ClientUtils.font().renderString(
 											s, scaledWidth/2-w/2,
 											//TODO PORTME use proper font height
-											scaledHeight/2-4-text.length*(ClientProxy.nixieFontOptional.FONT_HEIGHT+2)+
-													(i++)*(ClientProxy.nixieFontOptional.FONT_HEIGHT+2), col,
+											scaledHeight/2-4-text.length*(ClientUtils.font().FONT_HEIGHT+2)+
+													(i++)*(ClientUtils.font().FONT_HEIGHT+2), col,
 											false, transform.getLast().getMatrix(), buffer, false,
 											0, 0xf000f0
 									);
@@ -774,16 +776,14 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 					{
 						IBlockOverlayText overlayBlock = (IBlockOverlayText)tileEntity;
 						String[] text = overlayBlock.getOverlayText(ClientUtils.mc().player, mop, hammer);
-						boolean useNixie = overlayBlock.useNixieFont(ClientUtils.mc().player, mop);
 						if(text!=null&&text.length > 0)
 						{
-							FontRenderer font = useNixie?ClientProxy.nixieFontOptional: ClientUtils.font();
-							int col = (useNixie&&IEConfig.GENERAL.nixietubeFont.get())?Lib.colour_nixieTubeText: 0xffffff;
+							FontRenderer font = ClientUtils.font();
 							int i = 0;
 							for(String s : text)
 								if(s!=null)
 									font.renderString(
-											s, scaledWidth/2+8, scaledHeight/2+8+(i++)*font.FONT_HEIGHT, col, true,
+											s, scaledWidth/2+8, scaledHeight/2+8+(i++)*font.FONT_HEIGHT, 0xffffffff, true,
 											transform.getLast().getMatrix(), buffer, false, 0, 0xf000f0
 									);
 						}

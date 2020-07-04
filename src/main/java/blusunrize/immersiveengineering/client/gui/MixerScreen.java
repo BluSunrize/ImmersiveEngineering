@@ -20,7 +20,6 @@ import blusunrize.immersiveengineering.common.blocks.metal.MixerTileEntity;
 import blusunrize.immersiveengineering.common.gui.MixerContainer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.PlayerInventory;
@@ -109,7 +108,6 @@ public class MixerScreen extends IEContainerScreen<MixerContainer>
 	{
 		transform.push();
 		IRenderTypeBuffer.Impl buffers = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
-		RenderSystem.color3f(1.0F, 1.0F, 1.0F);
 		ClientUtils.bindTexture(rl("textures/gui/mixer.png").toString());
 		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
 

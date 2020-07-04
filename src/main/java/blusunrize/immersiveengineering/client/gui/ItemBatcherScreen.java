@@ -18,7 +18,6 @@ import blusunrize.immersiveengineering.common.blocks.wooden.ItemBatcherTileEntit
 import blusunrize.immersiveengineering.common.gui.ItemBatcherContainer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.nbt.CompoundNBT;
@@ -131,7 +130,6 @@ public class ItemBatcherScreen extends IEContainerScreen<ItemBatcherContainer>
 	@Override
 	protected void func_230450_a_(MatrixStack transform, float f, int mx, int my)
 	{
-		RenderSystem.color3f(1.0F, 1.0F, 1.0F);
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/item_batcher.png");
 		// Background
 		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);

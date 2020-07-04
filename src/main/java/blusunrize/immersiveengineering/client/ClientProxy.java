@@ -132,8 +132,6 @@ public class ClientProxy extends CommonProxy
 {
 	public static AtlasTexture revolverTextureMap;
 	public static final ResourceLocation revolverTextureResource = new ResourceLocation("textures/atlas/immersiveengineering/revolvers.png");
-	public static FontRenderer nixieFontOptional = Minecraft.getInstance().fontRenderer;
-	public static FontRenderer nixieFont = Minecraft.getInstance().fontRenderer;
 	public static FontRenderer itemFont = Minecraft.getInstance().fontRenderer;
 	public static KeyBinding keybind_magnetEquip = new KeyBinding("key.immersiveengineering.magnetEquip", GLFW.GLFW_KEY_S, "key.categories.gameplay");
 	public static KeyBinding keybind_chemthrowerSwitch = new KeyBinding("key.immersiveengineering.chemthrowerSwitch", -1, "key.categories.gameplay");

@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.client.gui.elements;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.Button;
@@ -111,7 +110,6 @@ public class GuiReactiveList extends Button
 
 		int mmY = my-this.y;
 		int strWidth = width-padding[2]-padding[3]-(needsSlider?6: 0);
-		RenderSystem.color3f(1, 1, 1);
 		if(needsSlider)
 		{
 			ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");

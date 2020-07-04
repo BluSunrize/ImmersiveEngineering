@@ -37,7 +37,6 @@ public class GuiButtonItem extends Button
 		if(this.visible)
 		{
 			ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
-			RenderSystem.color4f(1.0F, 1.0F, 1.0F, 0.5F);
 			this.isHovered = mouseX >= this.x&&mouseY >= this.y&&mouseX < this.x+this.width&&mouseY < this.y+this.height;
 			RenderSystem.enableBlend();
 			RenderSystem.blendFuncSeparate(770, 771, 1, 0);
@@ -57,10 +56,8 @@ public class GuiButtonItem extends Button
 				if(!state)
 				{
 					RenderHelper.enableStandardItemLighting();
-					RenderSystem.disableLighting();
 					RenderSystem.disableDepthTest();
 					ClientUtils.drawColouredRect(x+1, y+1, 16, 16, 0x77444444);
-					RenderSystem.enableLighting();
 					RenderSystem.enableDepthTest();
 				}
 				RenderHelper.disableStandardItemLighting();

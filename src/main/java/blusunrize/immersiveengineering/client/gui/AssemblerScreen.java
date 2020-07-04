@@ -105,7 +105,6 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerContainer>
 	@Override
 	protected void func_230450_a_(MatrixStack transform, float f, int mx, int my)
 	{
-		RenderSystem.color3f(1.0F, 1.0F, 1.0F);
 		ClientUtils.bindTexture(texture);
 		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
 
@@ -121,7 +120,6 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerContainer>
 			{
 				ItemStack stack = tile.patterns[i].inv.get(9);
 				transform.push();
-				RenderSystem.color3f(1.0F, 1.0F, 1.0F);
 				RenderHelper.disableStandardItemLighting();
 				FontRenderer font = null;
 				if(!stack.isEmpty())
@@ -131,10 +129,8 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerContainer>
 				itemRenderer.renderItemAndEffectIntoGUI(stack, guiLeft+27+i*58, guiTop+64);
 				itemRenderer.renderItemOverlayIntoGUI(font, stack, guiLeft+27+i*58, guiTop+64, TextFormatting.GRAY.toString()+stack.getCount());
 
-				RenderSystem.disableLighting();
 				RenderSystem.disableDepthTest();
 				ClientUtils.drawColouredRect(guiLeft+27+i*58, guiTop+64, 16, 16, 0x77444444);
-				RenderSystem.enableLighting();
 				RenderSystem.enableDepthTest();
 
 				transform.pop();

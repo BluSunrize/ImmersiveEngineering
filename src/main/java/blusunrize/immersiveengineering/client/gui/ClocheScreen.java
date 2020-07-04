@@ -57,7 +57,6 @@ public class ClocheScreen extends IEContainerScreen<ClocheContainer>
 	@Override
 	protected void func_230450_a_(MatrixStack transform, float f, int mx, int my)
 	{
-		RenderSystem.color3f(1.0F, 1.0F, 1.0F);
 		RenderSystem.enableBlend();
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/cloche.png");
 		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);

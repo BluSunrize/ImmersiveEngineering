@@ -72,7 +72,6 @@ public class SorterScreen extends IEContainerScreen<SorterContainer>
 	@Override
 	protected void func_230450_a_(MatrixStack transform, float f, int mx, int my)
 	{
-		RenderSystem.color3f(1.0F, 1.0F, 1.0F);
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/sorter.png");
 		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
 		for(int side = 0; side < 6; side++)
@@ -129,7 +128,6 @@ public class SorterScreen extends IEContainerScreen<SorterContainer>
 			if(this.visible)
 			{
 				ClientUtils.bindTexture("immersiveengineering:textures/gui/sorter.png");
-				RenderSystem.color3f(1.0F, 1.0F, 1.0F);
 				isHovered = mx >= this.x&&my >= this.y&&mx < this.x+this.width&&my < this.y+this.height;
 				RenderSystem.enableBlend();
 				RenderSystem.blendFuncSeparate(SRC_ALPHA, ONE_MINUS_SRC_ALPHA, ONE, ZERO);

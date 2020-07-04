@@ -55,7 +55,6 @@ public class GuiButtonIE extends Button
 			Minecraft mc = Minecraft.getInstance();
 			ClientUtils.bindTexture(texture);
 			FontRenderer fontrenderer = mc.fontRenderer;
-			RenderSystem.color3f(1.0F, 1.0F, 1.0F);
 			this.isHovered = isPressable(mouseX, mouseY);
 			RenderSystem.enableBlend();
 			RenderSystem.blendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);

@@ -85,8 +85,9 @@ public class RevolverScreen extends IEContainerScreen<RevolverContainer>
 		ItemRenderer ir = ClientUtils.mc().getItemRenderer();
 		int[][] slots = RevolverContainer.slotPositions[bulletAmount >= 18?2: bulletAmount > 8?1: 0];
 		transform.push();
-		RenderSystem.multMatrix(transform.getLast().getMatrix());
 		transform.translate(0, 0, 10);
+		RenderSystem.pushMatrix();
+		RenderSystem.multMatrix(transform.getLast().getMatrix());
 		for(int i = 0; i < bulletAmount; i++)
 		{
 			ItemStack b = bullets.get(i);
@@ -110,9 +111,10 @@ public class RevolverScreen extends IEContainerScreen<RevolverContainer>
 					x = ii==0?48: ii==1?29: ii==3?2: 10;
 					y = ii==1?57: ii==3?30: ii==4?11: 49;
 				}
-				ir.renderItemIntoGUI(b, x, y);
+				ir.renderItemAndEffectIntoGUI(b, x, y);
 			}
 		}
+		RenderSystem.popMatrix();
 		transform.pop();
 	}
 }
