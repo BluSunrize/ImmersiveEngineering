@@ -146,7 +146,7 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 	{
 		ItemStack stack = new ItemStack(Misc.coresample);
 		ItemNBTHelper.putLong(stack, "timestamp", world.getGameTime());
-		DimensionChunkCoords dimCoords = new DimensionChunkCoords(world.dimension.getType(), chunkX, chunkZ);
+		DimensionChunkCoords dimCoords = new DimensionChunkCoords(world, chunkX, chunkZ);
 		CoresampleItem.setCoords(stack, dimCoords);
 		if(info==null)
 			return stack;

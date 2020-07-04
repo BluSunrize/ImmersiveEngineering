@@ -123,13 +123,13 @@ public class RevolvershotEntity extends IEProjectileEntity
 
 		if(this.bulletType!=null)
 		{
-			bulletType.onHitTarget(world, mop, this.shootingEntity, this, headshot);
+			bulletType.onHitTarget(world, mop, this.field_234609_b_, this, headshot);
 			if(mop instanceof EntityRayTraceResult)
 			{
 				Entity hitEntity = ((EntityRayTraceResult)mop).getEntity();
 				if(headshot&&hitEntity instanceof LivingEntity&&((LivingEntity)hitEntity).isChild()&&((LivingEntity)hitEntity).getHealth() <= 0)
 				{
-					PlayerEntity shooter = world.getPlayerByUuid(shootingEntity);
+					PlayerEntity shooter = world.getPlayerByUuid(field_234609_b_);
 					if(shooter!=null)
 						Utils.unlockIEAdvancement(shooter, "main/secret_birthdayparty");
 					world.playSound(null, getPosX(), getPosY(), getPosZ(), IESounds.birthdayParty, SoundCategory.PLAYERS, 1.0F, 1.2F/(this.rand.nextFloat()*0.2F+0.9F));
@@ -143,8 +143,8 @@ public class RevolvershotEntity extends IEProjectileEntity
 		{
 			BlockPos hitPos = ((BlockRayTraceResult)mop).getPos();
 			BlockState state = this.world.getBlockState(hitPos);
-			if(state.getBlock().getMaterial(state)!=Material.AIR)
-				state.getBlock().onEntityCollision(state, this.world, hitPos, this);
+			if(state.getMaterial()!=Material.AIR)
+				state.onEntityCollision(this.world, hitPos, this);
 		}
 		this.remove();
 	}
@@ -157,7 +157,7 @@ public class RevolvershotEntity extends IEProjectileEntity
 		Entity hitEntity = ((EntityRayTraceResult)mop).getEntity();
 		if(bulletElectro&&hitEntity instanceof LivingEntity)
 		{
-			PlayerEntity shooter = world.getPlayerByUuid(shootingEntity);
+			PlayerEntity shooter = world.getPlayerByUuid(field_234609_b_);
 			float percentualDrain = .15f/(bulletType==null?1: bulletType.getProjectileCount(shooter));
 			((LivingEntity)hitEntity).addPotionEffect(new EffectInstance(Effects.SLOWNESS, 15, 4));
 			for(EquipmentSlotType slot : EquipmentSlotType.values())

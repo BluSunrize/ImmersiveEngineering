@@ -36,8 +36,12 @@ import com.google.gson.JsonStreamParser;
 import net.minecraft.item.*;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.resources.IReloadableResourceManager;
+import net.minecraft.resources.IResourceManager;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.DimensionType;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.DistExecutor;
@@ -108,7 +112,10 @@ public class ImmersiveEngineering
 
 
 		for(String b : IEConfig.ORES.oreDimBlacklist.get())
-			IEWorldGen.oreDimBlacklist.add(new ResourceLocation(b));
+			IEWorldGen.oreDimBlacklist.add(RegistryKey.func_240903_a_(
+					Registry.field_239698_ad_,
+					new ResourceLocation(b)
+			));
 		IEApi.modPreference = IEConfig.GENERAL.preferredOres.get();
 		IEApi.prefixToIngotMap.put("ingots", new Integer[]{1, 1});
 		IEApi.prefixToIngotMap.put("nuggets", new Integer[]{1, 9});
@@ -256,7 +263,8 @@ public class ImmersiveEngineering
 
 	public void serverAboutToStart(FMLServerAboutToStartEvent event)
 	{
-		event.getServer().getResourceManager().addReloadListener(new RecipeReloadListener());
+		IResourceManager resourceManager = event.getServer().getDataPackRegistries().func_240970_h_();
+		((IReloadableResourceManager)resourceManager).addReloadListener(new RecipeReloadListener());
 	}
 
 	public void serverStarted(FMLServerStartedEvent event)
@@ -264,7 +272,7 @@ public class ImmersiveEngineering
 		//TODO isn't this always true? if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
 		{
 			//TODO hardcoding DimensionType.OVERWORLD seems hacky/broken
-			ServerWorld world = event.getServer().getWorld(DimensionType.OVERWORLD);
+			ServerWorld world = event.getServer().getWorld(World.field_234918_g_);
 			if(!world.isRemote)
 			{
 				IESaveData worldData = world.getSavedData().getOrCreate(IESaveData::new, IESaveData.dataName);

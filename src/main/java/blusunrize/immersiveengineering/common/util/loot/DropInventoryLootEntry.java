@@ -9,6 +9,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootContext;
 import net.minecraft.loot.LootParameters;
+import net.minecraft.loot.LootPoolEntryType;
 import net.minecraft.loot.StandaloneLootEntry;
 import net.minecraft.loot.conditions.ILootCondition;
 import net.minecraft.loot.functions.ILootFunction;
@@ -23,6 +24,8 @@ import java.util.function.Consumer;
 
 public class DropInventoryLootEntry extends StandaloneLootEntry
 {
+	public static final ResourceLocation ID = new ResourceLocation(ImmersiveEngineering.MODID, "drop_inv");
+
 	protected DropInventoryLootEntry(int weightIn, int qualityIn, ILootCondition[] conditionsIn, ILootFunction[] functionsIn)
 	{
 		super(weightIn, qualityIn, conditionsIn, functionsIn);
@@ -62,13 +65,15 @@ public class DropInventoryLootEntry extends StandaloneLootEntry
 		return builder(DropInventoryLootEntry::new);
 	}
 
+	@Nonnull
+	@Override
+	public LootPoolEntryType func_230420_a_()
+	{
+		return IELootFunctions.dropInventory;
+	}
+
 	public static class Serializer extends StandaloneLootEntry.Serializer<DropInventoryLootEntry>
 	{
-		public Serializer()
-		{
-			super(new ResourceLocation(ImmersiveEngineering.MODID, "drop_inv"), DropInventoryLootEntry.class);
-		}
-
 		@Nonnull
 		@Override
 		protected DropInventoryLootEntry func_212829_b_(

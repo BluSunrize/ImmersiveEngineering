@@ -8,6 +8,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootContext;
 import net.minecraft.loot.LootParameters;
+import net.minecraft.loot.LootPoolEntryType;
 import net.minecraft.loot.StandaloneLootEntry;
 import net.minecraft.loot.conditions.ILootCondition;
 import net.minecraft.loot.functions.ILootFunction;
@@ -19,6 +20,8 @@ import java.util.function.Consumer;
 
 public class MBOriginalBlockLootEntry extends StandaloneLootEntry
 {
+	public static ResourceLocation ID = new ResourceLocation(ImmersiveEngineering.MODID, "multiblock_original_block");
+
 	protected MBOriginalBlockLootEntry(int weightIn, int qualityIn, ILootCondition[] conditionsIn, ILootFunction[] functionsIn)
 	{
 		super(weightIn, qualityIn, conditionsIn, functionsIn);
@@ -47,13 +50,14 @@ public class MBOriginalBlockLootEntry extends StandaloneLootEntry
 		return builder(MBOriginalBlockLootEntry::new);
 	}
 
+	@Override
+	public LootPoolEntryType func_230420_a_()
+	{
+		return IELootFunctions.multiblockOrigBlock;
+	}
+
 	public static class Serializer extends StandaloneLootEntry.Serializer<MBOriginalBlockLootEntry>
 	{
-		public Serializer()
-		{
-			super(new ResourceLocation(ImmersiveEngineering.MODID, "multiblock_original_block"), MBOriginalBlockLootEntry.class);
-		}
-
 		@Nonnull
 		@Override
 		protected MBOriginalBlockLootEntry func_212829_b_(

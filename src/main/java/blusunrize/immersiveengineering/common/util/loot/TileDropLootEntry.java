@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootContext;
 import net.minecraft.loot.LootParameters;
+import net.minecraft.loot.LootPoolEntryType;
 import net.minecraft.loot.StandaloneLootEntry;
 import net.minecraft.loot.conditions.ILootCondition;
 import net.minecraft.loot.functions.ILootFunction;
@@ -18,6 +19,7 @@ import java.util.function.Consumer;
 
 public class TileDropLootEntry extends StandaloneLootEntry
 {
+	public static final ResourceLocation ID = new ResourceLocation(ImmersiveEngineering.MODID, "tile_drop");
 
 	protected TileDropLootEntry(int weightIn, int qualityIn, ILootCondition[] conditionsIn, ILootFunction[] functionsIn)
 	{
@@ -40,14 +42,15 @@ public class TileDropLootEntry extends StandaloneLootEntry
 		return builder(TileDropLootEntry::new);
 	}
 
+	@Nonnull
+	@Override
+	public LootPoolEntryType func_230420_a_()
+	{
+		return IELootFunctions.tileDrop;
+	}
+
 	public static class Serializer extends StandaloneLootEntry.Serializer<TileDropLootEntry>
 	{
-
-		public Serializer()
-		{
-			super(new ResourceLocation(ImmersiveEngineering.MODID, "tile_drop"), TileDropLootEntry.class);
-		}
-
 		@Nonnull
 		@Override
 		protected TileDropLootEntry func_212829_b_(

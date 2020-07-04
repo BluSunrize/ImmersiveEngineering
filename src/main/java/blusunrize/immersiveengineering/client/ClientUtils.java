@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.client;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.Connection.RenderData;
@@ -142,7 +141,8 @@ public class ClientUtils
 
 	public static FontRenderer unicodeFontRender()
 	{
-		return mc().fontResourceMananger.getFontRenderer(new ResourceLocation(ImmersiveEngineering.MODID, "unicode"));
+		//TODO PORTME getFontRenderer(new ResourceLocation(ImmersiveEngineering.MODID, "unicode"));
+		return mc().fontResourceMananger.func_238548_a_();
 	}
 
 	public enum TimestampFormat

@@ -18,6 +18,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.network.IPacket;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.*;
@@ -39,6 +42,9 @@ import java.util.UUID;
 
 public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have to extend arrow or else it's all weird and broken >_>
 {
+	private static final DataParameter<Optional<UUID>> SHOOTER_PARAMETER =
+			EntityDataManager.createKey(IEProjectileEntity.class, DataSerializers.OPTIONAL_UNIQUE_ID);
+
 	protected BlockPos stuckIn = null;
 	protected BlockState inBlockState;
 	public boolean inGround;
@@ -93,18 +99,18 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 
 	public void setShooterSynced()
 	{
-		this.dataManager.set(field_212362_a, Optional.ofNullable(this.shootingEntity));
+		this.dataManager.set(SHOOTER_PARAMETER, Optional.ofNullable(this.field_234609_b_));
 	}
 
 	public UUID getShooterSynced()
 	{
-		Optional<UUID> s = this.dataManager.get(field_212362_a);
+		Optional<UUID> s = this.dataManager.get(SHOOTER_PARAMETER);
 		return s.orElse(null);
 	}
 
 	public UUID getShooterUUID()
 	{
-		return shootingEntity;
+		return field_234609_b_;
 	}
 
 	@Nonnull
@@ -118,7 +124,7 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 	public void tick()
 	{
 		if(this.func_234616_v_()==null&&this.world.isRemote)
-			this.shootingEntity = getShooterSynced();
+			this.field_234609_b_ = getShooterSynced();
 
 		this.baseTick();
 		BlockState localState;
@@ -181,7 +187,7 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 				for(int i = 0; i < list.size(); ++i)
 				{
 					Entity entity1 = (Entity)list.get(i);
-					if(entity1.canBeCollidedWith()&&(!entity1.getUniqueID().equals(this.shootingEntity)||this.ticksInAir > 5))
+					if(entity1.canBeCollidedWith()&&(!entity1.getUniqueID().equals(this.field_234609_b_)||this.ticksInAir > 5))
 					{
 						float f = 0.3F;
 						AxisAlignedBB axisalignedbb = entity1.getBoundingBox().grow((double)f, (double)f, (double)f);
@@ -210,9 +216,9 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 					if(!this.isBurning()&&this.canIgnite()&&entityHit.getEntity().isBurning())
 						this.setFire(3);
 					boolean allowHit = true;
-					if(shootingEntity!=null)
+					if(field_234609_b_!=null)
 					{
-						PlayerEntity shooter = world.getPlayerByUuid(shootingEntity);
+						PlayerEntity shooter = world.getPlayerByUuid(field_234609_b_);
 						if(shooter!=null&&entityHit.getEntity() instanceof PlayerEntity)
 							allowHit = shooter.canAttackPlayer((PlayerEntity)entityHit.getEntity());
 					}
@@ -349,8 +355,8 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 			nbt.put("inTile", NBTUtil.writeBlockState(inBlockState));
 		}
 		nbt.putByte("inGround", (byte)(this.inGround?1: 0));
-		if(this.shootingEntity!=null)
-			nbt.putUniqueId("shootingEntity", this.shootingEntity);
+		if(this.field_234609_b_!=null)
+			nbt.putUniqueId("field_234609_b_", this.field_234609_b_);
 
 	}
 
@@ -369,7 +375,7 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 			stuckIn = null;
 		}
 		this.inGround = nbt.getByte("inGround")==1;
-		this.shootingEntity = nbt.getUniqueId("shootingEntity");
+		this.field_234609_b_ = nbt.getUniqueId("field_234609_b_");
 	}
 
 	@Override

@@ -18,8 +18,6 @@ import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.wires.WireType;
-import blusunrize.immersiveengineering.client.font.IEFontReloadListener;
-import blusunrize.immersiveengineering.client.font.IEFontRender;
 import blusunrize.immersiveengineering.client.fx.FluidSplashParticle.Data;
 import blusunrize.immersiveengineering.client.fx.FractalParticle;
 import blusunrize.immersiveengineering.client.fx.IEParticles;
@@ -66,6 +64,7 @@ import com.mojang.authlib.GameProfile;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.IHasContainer;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.gui.ScreenManager.IScreenFactory;
@@ -133,9 +132,9 @@ public class ClientProxy extends CommonProxy
 {
 	public static AtlasTexture revolverTextureMap;
 	public static final ResourceLocation revolverTextureResource = new ResourceLocation("textures/atlas/immersiveengineering/revolvers.png");
-	public static IEFontRender nixieFontOptional;
-	public static IEFontRender nixieFont;
-	public static IEFontRender itemFont;
+	public static FontRenderer nixieFontOptional = Minecraft.getInstance().fontRenderer;
+	public static FontRenderer nixieFont = Minecraft.getInstance().fontRenderer;
+	public static FontRenderer itemFont = Minecraft.getInstance().fontRenderer;
 	public static KeyBinding keybind_magnetEquip = new KeyBinding("key.immersiveengineering.magnetEquip", GLFW.GLFW_KEY_S, "key.categories.gameplay");
 	public static KeyBinding keybind_chemthrowerSwitch = new KeyBinding("key.immersiveengineering.chemthrowerSwitch", -1, "key.categories.gameplay");
 
@@ -155,7 +154,7 @@ public class ClientProxy extends CommonProxy
 			ModelLoaderRegistry.registerLoader(MultiLayerLoader.LOCATION, new MultiLayerLoader());
 			ModelLoaderRegistry.registerLoader(FeedthroughLoader.LOCATION, new FeedthroughLoader());
 
-			((IReloadableResourceManager)mc().getResourceManager()).addReloadListener(new IEFontReloadListener());
+			//TODO ((IReloadableResourceManager)mc().getResourceManager()).addReloadListener(new IEFontReloadListener());
 		}
 	}
 

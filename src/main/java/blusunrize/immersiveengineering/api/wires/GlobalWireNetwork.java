@@ -115,7 +115,7 @@ public class GlobalWireNetwork implements ITickableTileEntity
 			return;
 		}
 		Preconditions.checkNotNull(oldNet.getConnector(c.getEndB()));
-		oldNet.removeConnection(c);
+		oldNet.removeConnection(c, world);
 		splitNet(oldNet);
 		WireSyncManager.onConnectionRemoved(c, world);
 	}
@@ -174,7 +174,7 @@ public class GlobalWireNetwork implements ITickableTileEntity
 	{
 		LocalWireNetwork ret = localNets.computeIfAbsent(pos, p -> {
 			LocalWireNetwork newNet = new LocalWireNetwork(this);
-			newNet.addConnector(pos, new IICProxy(world.dimension.getType(), pos.getPosition()));
+			newNet.addConnector(pos, new IICProxy(world.func_234923_W_(), pos.getPosition()));
 			return newNet;
 		});
 		Preconditions.checkState(ret.isValid(pos), "%s is not a valid net", ret);
@@ -409,7 +409,7 @@ public class GlobalWireNetwork implements ITickableTileEntity
 	{
 		LocalWireNetwork local = getNullableLocalNet(cp);
 		if(local!=null)
-			local.removeCP(cp);
+			local.removeCP(cp, world);
 	}
 
 	public void removeConnector(BlockPos pos)

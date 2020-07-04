@@ -94,6 +94,11 @@ public class MultiblockTrigger implements ICriterionTrigger<MultiblockTrigger.In
 			listeners.trigger(multiblock, hammer);
 	}
 
+	public static Instance create(ResourceLocation multiblock, ItemPredicate hammer)
+	{
+		return new Instance(multiblock, hammer, EntityPredicate.AndPredicate.field_234582_a_);
+	}
+
 	public static class Instance extends CriterionInstance
 	{
 		private final ResourceLocation multiblock;

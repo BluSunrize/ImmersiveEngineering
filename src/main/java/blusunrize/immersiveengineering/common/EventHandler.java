@@ -48,11 +48,11 @@ import net.minecraft.loot.TableLootEntry;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -71,7 +71,6 @@ import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.lang.reflect.Field;
@@ -80,9 +79,9 @@ import java.util.*;
 public class EventHandler
 {
 	//TODO move to a capability
-	public static final Map<DimensionType, Set<ISpawnInterdiction>> interdictionTiles = new HashMap<>();
+	public static final Map<RegistryKey<World>, Set<ISpawnInterdiction>> interdictionTiles = new HashMap<>();
 	public static HashSet<IEExplosion> currentExplosions = new HashSet<IEExplosion>();
-	public static final Queue<Pair<DimensionType, BlockPos>> requestedBlockUpdates = new LinkedList<>();
+	public static final Queue<Pair<RegistryKey<World>, BlockPos>> requestedBlockUpdates = new LinkedList<>();
 	public static final Set<TileEntity> REMOVE_FROM_TICKING = new HashSet<>();
 
 	private static final ResourceLocation TALL_GRASS_DROP = new ResourceLocation("minecraft", "blocks/tall_grass");
@@ -216,13 +215,12 @@ public class EventHandler
 	{
 		if(event.phase==TickEvent.Phase.START&&!event.world.isRemote)
 		{
-			DimensionType dim = event.world.getDimension().getType();
 			GlobalWireNetwork.getNetwork(event.world).tick();
 
 			if(!REMOVE_FROM_TICKING.isEmpty())
 			{
 				event.world.tickableTileEntities.removeAll(REMOVE_FROM_TICKING);
-				REMOVE_FROM_TICKING.removeIf((te) -> te.getWorld().getDimension().getType()==dim);
+				REMOVE_FROM_TICKING.removeIf((te) -> te.getWorld()==event.world);
 			}
 		}
 		if(event.phase==TickEvent.Phase.START)
@@ -238,22 +236,22 @@ public class EventHandler
 						itExplosion.remove();
 				}
 			}
-			while(!requestedBlockUpdates.isEmpty())
+			Iterator<Pair<RegistryKey<World>, BlockPos>> it = requestedBlockUpdates.iterator();
+			while(it.hasNext())
 			{
-				Pair<DimensionType, BlockPos> curr = requestedBlockUpdates.poll();
-				World w = DimensionManager.getWorld(ServerLifecycleHooks.getCurrentServer(), curr.getLeft(),
-						false, false);
-				if(w!=null)
+				Pair<RegistryKey<World>, BlockPos> curr = it.next();
+				if(curr.getLeft().equals(event.world.func_234923_W_()))
 				{
-					BlockState state = w.getBlockState(curr.getRight());
-					w.notifyBlockUpdate(curr.getRight(), state, state, 3);
+					BlockState state = event.world.getBlockState(curr.getRight());
+					event.world.notifyBlockUpdate(curr.getRight(), state, state, 3);
+					it.remove();
 				}
 			}
 		}
 	}
 
-	public static HashMap<UUID, CrusherTileEntity> crusherMap = new HashMap<UUID, CrusherTileEntity>();
-	public static HashSet<Class<? extends MobEntity>> listOfBoringBosses = new HashSet();
+	public static HashMap<UUID, CrusherTileEntity> crusherMap = new HashMap<>();
+	public static HashSet<Class<? extends MobEntity>> listOfBoringBosses = new HashSet<>();
 
 	static
 	{
@@ -356,7 +354,7 @@ public class EventHandler
 		{
 			synchronized(interdictionTiles)
 			{
-				Set<ISpawnInterdiction> dimSet = interdictionTiles.get(event.getEntity().world.getDimension().getType());
+				Set<ISpawnInterdiction> dimSet = interdictionTiles.get(event.getEntity().world.func_234923_W_());
 				if(dimSet!=null)
 				{
 					Iterator<ISpawnInterdiction> it = dimSet.iterator();
@@ -398,7 +396,7 @@ public class EventHandler
 		{
 			synchronized(interdictionTiles)
 			{
-				DimensionType dimension = event.getEntity().world.getDimension().getType();
+				RegistryKey<World> dimension = event.getEntity().world.func_234923_W_();
 				if(interdictionTiles.containsKey(dimension))
 				{
 					Iterator<ISpawnInterdiction> it = interdictionTiles.get(dimension).iterator();

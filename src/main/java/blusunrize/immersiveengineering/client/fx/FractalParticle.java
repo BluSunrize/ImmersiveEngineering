@@ -2,10 +2,13 @@ package blusunrize.immersiveengineering.client.fx;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
+import blusunrize.immersiveengineering.common.util.IECodecs;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.Particle;
@@ -36,6 +39,17 @@ import java.util.function.Consumer;
 @OnlyIn(Dist.CLIENT)
 public class FractalParticle extends Particle
 {
+	public static Codec<Data> CODEC = RecordCodecBuilder.create(
+			instance -> instance.group(
+					IECodecs.VECTOR3D.fieldOf("direction").forGetter(d -> d.direction),
+					Codec.DOUBLE.fieldOf("scale").forGetter(d -> d.scale),
+					Codec.INT.fieldOf("maxAge").forGetter(d -> d.maxAge),
+					Codec.INT.fieldOf("points").forGetter(d -> d.points),
+					IECodecs.COLOR4.fieldOf("outerColor").forGetter(d -> d.colourOut),
+					IECodecs.COLOR4.fieldOf("innerColor").forGetter(d -> d.colourIn)
+			).apply(instance, Data::new)
+	);
+
 	public static final Deque<FractalParticle> PARTICLE_FRACTAL_DEQUE = new ArrayDeque<>();
 
 	public static final float[][] COLOUR_RED = {{.79f, .31f, .31f, .5f}, {1, .97f, .87f, .75f}};
@@ -158,7 +172,6 @@ public class FractalParticle extends Particle
 
 	public static class Data implements IParticleData
 	{
-
 		private final Vector3d direction;
 		private final double scale;
 		private final int maxAge;

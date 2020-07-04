@@ -752,8 +752,9 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 									int w = ClientProxy.nixieFontOptional.getStringWidth(s);
 									ClientProxy.nixieFontOptional.renderString(
 											s, scaledWidth/2-w/2,
-											scaledHeight/2-4-text.length*(ClientProxy.nixieFontOptional.getFontHeight()+2)+
-													(i++)*(ClientProxy.nixieFontOptional.getFontHeight()+2), col,
+											//TODO PORTME use proper font height
+											scaledHeight/2-4-text.length*(ClientProxy.nixieFontOptional.FONT_HEIGHT+2)+
+													(i++)*(ClientProxy.nixieFontOptional.FONT_HEIGHT+2), col,
 											false, transform.getLast().getMatrix(), buffer, false,
 											0, 0xf000f0
 									);

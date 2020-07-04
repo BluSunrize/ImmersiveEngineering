@@ -39,25 +39,11 @@ public class TurntableBlock extends IETileProviderBlock
 	}
 
 	@Override
-	public boolean isNormalCube(BlockState state, IBlockReader world, BlockPos pos)
-	{
-		return false;
-	}
-
-	@Override
 	public boolean canProvidePower(BlockState state)
 	{
 		return false;
 	}
 
-/*	@Override
-	public BlockState rotate(BlockState state, IWorld world, BlockPos pos, Rotation direction)
-	{
-		Direction facing = state.get(IEProperties.FACING_ALL);
-		if(facing.getAxis()==Axis.Y)
-			world.getTileEntity(pos).rotate(direction);
-		return super.rotate(state, direction);
-	}*/
 
 	@Override
 	public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving)

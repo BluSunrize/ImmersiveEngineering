@@ -124,7 +124,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 				for(ConnectionPoint cp : ((IImmersiveConnectable)tile).getConnectionPoints())
 					getNetwork(world).removeAllConnectionsAt(cp, dropHandler);
 		}
-		tempTile.put(new DimensionBlockPos(pos, world.getDimension().getType()), tile);
+		tempTile.put(new DimensionBlockPos(pos, world), tile);
 		super.onReplaced(state, world, pos, newState, isMoving);
 	}
 

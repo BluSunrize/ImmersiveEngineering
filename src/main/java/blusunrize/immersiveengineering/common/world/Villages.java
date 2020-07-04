@@ -411,7 +411,7 @@ public class Villages
 			DimensionChunkCoords chunkCoords = null;
 			for(int i = 0; i < 8; i++) //Let's just try this a maximum of 8 times before I give up
 			{
-				chunkCoords = new DimensionChunkCoords(world.getDimension().getType(), cX+(random.nextInt(32)-16)*2, cZ+(random.nextInt(32)-16)*2);
+				chunkCoords = new DimensionChunkCoords(world, cX+(random.nextInt(32)-16)*2, cZ+(random.nextInt(32)-16)*2);
 				if(!ExcavatorHandler.mineralCache.containsKey(chunkCoords))
 					break;
 				else

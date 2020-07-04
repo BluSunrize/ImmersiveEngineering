@@ -134,7 +134,7 @@ public class FakeLightBlock extends IETileProviderBlock
 				synchronized(EventHandler.interdictionTiles)
 				{
 					Set<ISpawnInterdiction> forDim = EventHandler.interdictionTiles.computeIfAbsent(
-							world.getDimension().getType(), x -> new HashSet<>()
+							world.func_234923_W_(), x -> new HashSet<>()
 					);
 					forDim.add(this);
 				}

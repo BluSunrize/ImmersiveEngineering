@@ -114,7 +114,7 @@ public class VoltmeterItem extends IEBaseItem implements ITool
 			else
 			{
 				WireLink link = WireLink.readFromItem(stack);
-				if(link.dimension.equals(world.getDimension().getType().getRegistryName()))
+				if(link.dimension.equals(world.func_234923_W_()))
 				{
 					GlobalWireNetwork global = GlobalWireNetwork.getNetwork(world);
 					LocalWireNetwork netHere = global.getNullableLocalNet(cp);

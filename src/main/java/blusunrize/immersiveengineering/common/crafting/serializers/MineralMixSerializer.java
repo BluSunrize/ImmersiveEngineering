@@ -19,7 +19,9 @@ import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.DimensionType;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -59,9 +61,12 @@ public class MineralMixSerializer extends IERecipeSerializer<MineralMix>
 		int weight = JSONUtils.getInt(json, "weight");
 		float failChance = JSONUtils.getFloat(json, "fail_chance", 0);
 		array = json.getAsJsonArray("dimensions");
-		DimensionType[] dimensions = new DimensionType[array.size()];
+		List<RegistryKey<DimensionType>> dimensions = new ArrayList<>();
 		for(int i = 0; i < array.size(); i++)
-			dimensions[i] = DimensionType.byName(new ResourceLocation(array.get(i).getAsString()));
+			dimensions.add(RegistryKey.func_240903_a_(
+					Registry.field_239698_ad_,
+					new ResourceLocation(array.get(i).getAsString())
+			));
 		ResourceLocation rl = new ResourceLocation(JSONUtils.getString(json, "sample_background", "minecraft:stone"));
 		Block b = ForgeRegistries.BLOCKS.getValue(rl);
 		if(b==Blocks.AIR)
@@ -80,9 +85,12 @@ public class MineralMixSerializer extends IERecipeSerializer<MineralMix>
 		int weight = buffer.readInt();
 		float failChance = buffer.readFloat();
 		count = buffer.readInt();
-		DimensionType[] dimensions = new DimensionType[count];
+		List<RegistryKey<DimensionType>> dimensions = new ArrayList<>();
 		for(int i = 0; i < count; i++)
-			dimensions[i] = DimensionType.byName(buffer.readResourceLocation());
+			dimensions.add(RegistryKey.func_240903_a_(
+					Registry.field_239698_ad_,
+					buffer.readResourceLocation()
+			));
 		Block bg = ForgeRegistries.BLOCKS.getValue(buffer.readResourceLocation());
 		return new MineralMix(recipeId, outputs, weight, failChance, dimensions, bg);
 	}
@@ -96,8 +104,8 @@ public class MineralMixSerializer extends IERecipeSerializer<MineralMix>
 		buffer.writeInt(recipe.weight);
 		buffer.writeFloat(recipe.failChance);
 		buffer.writeInt(recipe.dimensions.size());
-		for(DimensionType dimension : recipe.dimensions)
-			buffer.writeResourceLocation(DimensionType.getKey(dimension));
+		for(RegistryKey<DimensionType> dimension : recipe.dimensions)
+			buffer.writeResourceLocation(dimension.func_240901_a_());
 		buffer.writeResourceLocation(ForgeRegistries.BLOCKS.getKey(recipe.background));
 	}
 }

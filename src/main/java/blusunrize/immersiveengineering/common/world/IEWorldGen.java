@@ -15,11 +15,13 @@ import blusunrize.immersiveengineering.common.util.IELogger;
 import com.mojang.serialization.Codec;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.DimensionType;
+import net.minecraft.world.ISeedReader;
 import net.minecraft.world.IWorld;
+import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.gen.ChunkGenerator;
@@ -52,7 +54,7 @@ public class IEWorldGen
 {
 	public static Map<String, ConfiguredFeature<?, ?>> features = new HashMap<>();
 	public static Map<String, ConfiguredFeature<?, ?>> retroFeatures = new HashMap<>();
-	public static List<ResourceLocation> oreDimBlacklist = new ArrayList<>();
+	public static List<RegistryKey<DimensionType>> oreDimBlacklist = new ArrayList<>();
 	public static Set<String> retrogenOres = new HashSet<>();
 
 	public static void addOreGen(String name, BlockState state, int maxVeinSize, int minY, int maxY, int chunkOccurence)
@@ -75,19 +77,19 @@ public class IEWorldGen
 
 	public void generateOres(Random random, int chunkX, int chunkZ, ServerWorld world, boolean newGeneration)
 	{
-		if(!oreDimBlacklist.contains(world.getDimension().getType().getRegistryName()))
+		if(!oreDimBlacklist.contains(world.func_234922_V_()))
 		{
 			if(newGeneration)
 			{
 				for(Entry<String, ConfiguredFeature<?, ?>> gen : features.entrySet())
-					gen.getValue().place(world, world.getChunkProvider().getChunkGenerator(), random, new BlockPos(16*chunkX, 0, 16*chunkZ));
+					gen.getValue().func_236265_a_(world, world.func_241112_a_(), world.getChunkProvider().getChunkGenerator(), random, new BlockPos(16*chunkX, 0, 16*chunkZ));
 			}
 			else
 			{
 				for(Entry<String, ConfiguredFeature<?, ?>> gen : retroFeatures.entrySet())
 				{
 					if(retrogenOres.contains("retrogen_"+gen.getKey()))
-						gen.getValue().place(world, world.getChunkProvider().getChunkGenerator(), random, new BlockPos(16*chunkX, 0, 16*chunkZ));
+						gen.getValue().func_236265_a_(world, world.func_241112_a_(), world.getChunkProvider().getChunkGenerator(), random, new BlockPos(16*chunkX, 0, 16*chunkZ));
 				}
 			}
 		}
@@ -107,12 +109,12 @@ public class IEWorldGen
 	{
 		if(event.getChunk().getStatus()==ChunkStatus.FULL)
 		{
-			DimensionType dimension = event.getChunk().getWorldForge().getDimension().getType();
 			if(!event.getData().getCompound("ImmersiveEngineering").contains(IEConfig.ORES.retrogen_key.get())&&
 					!retrogenOres.isEmpty())
 			{
 				if(IEConfig.ORES.retrogen_log_flagChunk.get())
 					IELogger.info("Chunk "+event.getChunk().getPos()+" has been flagged for Ore RetroGeneration by IE.");
+				RegistryKey<World> dimension = event.getChunk().getWorldForge().getWorld().func_234923_W_();
 				synchronized(retrogenChunks)
 				{
 					retrogenChunks.computeIfAbsent(dimension, d -> new ArrayList<>()).add(event.getChunk().getPos());
@@ -121,16 +123,16 @@ public class IEWorldGen
 		}
 	}
 
-	public static final Map<DimensionType, List<ChunkPos>> retrogenChunks = new HashMap<>();
+	public static final Map<RegistryKey<World>, List<ChunkPos>> retrogenChunks = new HashMap<>();
 
 	int indexToRemove = 0;
 
 	@SubscribeEvent
 	public void serverWorldTick(TickEvent.WorldTickEvent event)
 	{
-		if(event.side==LogicalSide.CLIENT||event.phase==TickEvent.Phase.START || !(event.world instanceof ServerWorld))
+		if(event.side==LogicalSide.CLIENT||event.phase==TickEvent.Phase.START||!(event.world instanceof ServerWorld))
 			return;
-		DimensionType dimension = event.world.getDimension().getType();
+		RegistryKey<World> dimension = event.world.func_234923_W_();
 		int counter = 0;
 		int remaining;
 		synchronized(retrogenChunks)
@@ -148,12 +150,12 @@ public class IEWorldGen
 					ChunkPos loc = chunks.get(indexToRemove);
 					if(event.world.chunkExists(loc.x, loc.z))
 					{
-						long worldSeed = event.world.getSeed();
+						long worldSeed = ((ISeedReader)event.world).getSeed();
 						Random fmlRandom = new Random(worldSeed);
 						long xSeed = (fmlRandom.nextLong() >> 3);
 						long zSeed = (fmlRandom.nextLong() >> 3);
 						fmlRandom.setSeed(xSeed*loc.x+zSeed*loc.z^worldSeed);
-						this.generateOres(fmlRandom, loc.x, loc.z, (ServerWorld) event.world, false);
+						this.generateOres(fmlRandom, loc.x, loc.z, (ServerWorld)event.world, false);
 						counter++;
 						chunks.remove(indexToRemove);
 					}
@@ -172,7 +174,7 @@ public class IEWorldGen
 	@SubscribeEvent
 	public static void registerPlacements(RegistryEvent.Register<Placement<?>> ev)
 	{
-		COUNT_RANGE_IE = new CountRangeInIEDimensions(CountRangeConfig::deserialize);
+		COUNT_RANGE_IE = new CountRangeInIEDimensions(CountRangeConfig.field_236485_a_);
 		COUNT_RANGE_IE.setRegistryName(ImmersiveEngineering.MODID, "count_range_in_ie_dimensions");
 		ev.getRegistry().register(COUNT_RANGE_IE);
 	}
@@ -193,8 +195,7 @@ public class IEWorldGen
 											 @Nonnull ChunkGenerator generatorIn,
 											 @Nonnull Random random, @Nonnull CountRangeConfig configIn, @Nonnull BlockPos pos)
 		{
-			DimensionType d = worldIn.getDimension().getType();
-			if(!oreDimBlacklist.contains(d.getRegistryName()))
+			if(!oreDimBlacklist.contains(worldIn.getWorld().func_234922_V_()))
 			{
 				return countRange.getPositions(worldIn, generatorIn, random, configIn, pos);
 			}

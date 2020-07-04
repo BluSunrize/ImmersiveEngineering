@@ -32,6 +32,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.DimensionType;
@@ -289,10 +290,10 @@ public class IEManual
 			if(mineral.dimensions!=null&&mineral.dimensions.size() > 0)
 			{
 				StringBuilder validDims = new StringBuilder();
-				for(DimensionType dim : mineral.dimensions)
+				for(RegistryKey<DimensionType> dim : mineral.dimensions)
 					validDims.append((validDims.length() > 0)?", ": "")
 							.append("<dim;")
-							.append(DimensionType.getKey(dim))
+							.append(dim.func_240901_a_())
 							.append(">");
 				dimensionString = I18n.format("ie.manual.entry.mineralsDimValid", toName.apply(mineral), validDims.toString());
 			}

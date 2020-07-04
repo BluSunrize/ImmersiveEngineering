@@ -9,21 +9,33 @@
 package blusunrize.immersiveengineering.api;
 
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.DimensionType;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nullable;
 
 public class DimensionChunkCoords extends ChunkPos
 {
-	public DimensionType dimension;
+	public RegistryKey<World> dimension;
 
-	public DimensionChunkCoords(DimensionType dimension, int x, int z)
+	public DimensionChunkCoords(RegistryKey<World> dimension, int x, int z)
 	{
 		super(x, z);
 		this.dimension = dimension;
+	}
+
+	public DimensionChunkCoords(RegistryKey<World> dimension, ChunkPos pos)
+	{
+		this(dimension, pos.x, pos.z);
+	}
+
+	public DimensionChunkCoords(World world, int chunkX, int chunkZ)
+	{
+		this(world.func_234923_W_(), chunkX, chunkZ);
 	}
 
 	@Override
@@ -54,7 +66,7 @@ public class DimensionChunkCoords extends ChunkPos
 	public CompoundNBT writeToNBT()
 	{
 		CompoundNBT tag = new CompoundNBT();
-		tag.putString("dim", dimension.getRegistryName().toString());
+		tag.putString("dim", dimension.func_240901_a_().toString());
 		tag.putInt("x", this.x);
 		tag.putInt("z", this.z);
 		return tag;
@@ -67,7 +79,7 @@ public class DimensionChunkCoords extends ChunkPos
 		{
 			String dimNameStr = tag.getString("dim");
 			ResourceLocation dimName = new ResourceLocation(dimNameStr);
-			DimensionType dimType = DimensionType.byName(dimName);
+			RegistryKey<World> dimType = RegistryKey.func_240903_a_(Registry.field_239699_ae_, dimName);
 			return new DimensionChunkCoords(dimType, tag.getInt("x"), tag.getInt("z"));
 		}
 		return null;

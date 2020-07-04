@@ -71,7 +71,7 @@ public class MessageMinecartShaderSync implements IMessage
 					return;
 				LazyOptional<ShaderWrapper> cap = entity.getCapability(CapabilityShader.SHADER_CAPABILITY);
 				cap.ifPresent(handler ->
-						ImmersiveEngineering.packetHandler.send(PacketDistributor.DIMENSION.with(world.getDimension()::getType),
+						ImmersiveEngineering.packetHandler.send(PacketDistributor.DIMENSION.with(world::func_234923_W_),
 								new MessageMinecartShaderSync(entity, handler))
 				);
 			});

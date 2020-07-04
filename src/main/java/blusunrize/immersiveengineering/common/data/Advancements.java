@@ -115,7 +115,7 @@ public class Advancements extends AdvancementProvider
 
 			Advancement blastfurnace = advancement(hammer, Multiblocks.blastFurnace, "mb_blastfurnace", FrameType.GOAL, true, true, false)
 					.withCriterion("blastfurnace",
-							new MultiblockTrigger.Instance(
+							MultiblockTrigger.create(
 									new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/blast_furnace"),
 									ItemPredicate.Builder.create().item(Tools.hammer).build()))
 					.register(consumer, "immersiveengineering:main/mb_blastfurnace");
@@ -218,49 +218,49 @@ public class Advancements extends AdvancementProvider
 
 			Advancement improvedblastfurnace = advancement(steel, Multiblocks.blastFurnaceAdv, "mb_improvedblastfurnace", FrameType.TASK, true, true, false)
 					.withCriterion("improvedblastfurnace",
-							new MultiblockTrigger.Instance(
+							MultiblockTrigger.create(
 									new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/improved_blast_furnace"),
 									ItemPredicate.Builder.create().item(Tools.hammer).build()))
 					.register(consumer, "immersiveengineering:main/mb_improvedblastfurnace");
 
 			Advancement metalpress = advancement(steel, Multiblocks.metalPress, "mb_metalpress", FrameType.TASK, true, true, false)
 					.withCriterion("metalpress",
-							new MultiblockTrigger.Instance(
+							MultiblockTrigger.create(
 									new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/metal_press"),
 									ItemPredicate.Builder.create().item(Tools.hammer).build()))
 					.register(consumer, "immersiveengineering:main/mb_metalpress");
 
 			Advancement silo = advancement(steel, Multiblocks.silo, "mb_silo", FrameType.TASK, true, true, false)
 					.withCriterion("silo",
-							new MultiblockTrigger.Instance(
+							MultiblockTrigger.create(
 									new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/silo"),
 									ItemPredicate.Builder.create().item(Tools.hammer).build()))
 					.register(consumer, "immersiveengineering:main/mb_silo");
 
 			Advancement crusher = advancement(steel, Multiblocks.crusher, "mb_crusher", FrameType.GOAL, true, true, false)
 					.withCriterion("crusher",
-							new MultiblockTrigger.Instance(
+							MultiblockTrigger.create(
 									new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/crusher"),
 									ItemPredicate.Builder.create().item(Tools.hammer).build()))
 					.register(consumer, "immersiveengineering:main/mb_crusher");
 
 			Advancement dieselgen = advancement(steel, Multiblocks.dieselGenerator, "mb_dieselgen", FrameType.GOAL, true, true, false)
 					.withCriterion("dieselgenerator",
-							new MultiblockTrigger.Instance(
+							MultiblockTrigger.create(
 									new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/diesel_generator"),
 									ItemPredicate.Builder.create().item(Tools.hammer).build()))
 					.register(consumer, "immersiveengineering:main/mb_dieselgen");
 
 			Advancement excavator = advancement(steel, Multiblocks.excavator, "mb_excavator", FrameType.CHALLENGE, true, true, false)
 					.withCriterion("excavator",
-							new MultiblockTrigger.Instance(
+							MultiblockTrigger.create(
 									new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/excavator"),
 									ItemPredicate.Builder.create().item(Tools.hammer).build()))
 					.register(consumer, "immersiveengineering:main/mb_excavator");
 
 			Advancement arcfurnace = advancement(steel, Multiblocks.arcFurnace, "mb_arcfurnace", FrameType.CHALLENGE, true, true, false)
 					.withCriterion("arcfurnace",
-							new MultiblockTrigger.Instance(
+							MultiblockTrigger.create(
 									new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/arcfurnace"),
 									ItemPredicate.Builder.create().item(Tools.hammer).build()))
 					.register(consumer, "immersiveengineering:main/mb_arcfurnace");

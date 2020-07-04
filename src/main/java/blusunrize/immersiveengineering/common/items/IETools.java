@@ -40,7 +40,7 @@ public class IETools
 
 	public static HoeItem createHoe(IItemTier tier, String name)
 	{
-		HoeItem ret = new HoeItem(tier, 0.0F, toolProperties());
+		HoeItem ret = new HoeItem(tier, 0, 0.0F, toolProperties());
 		return init(ret, name);
 	}
 

@@ -25,6 +25,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.data.IModelData;
 
@@ -61,13 +62,13 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 	}
 
 	@Override
-	public void removeCable(Connection connection, ConnectionPoint attachedPoint)
+	public void removeCable(IBlockReader world, Connection connection, ConnectionPoint attachedPoint)
 	{
 		this.markDirty();
-		if(world!=null)
+		if(this.world!=null)
 		{
-			BlockState state = world.getBlockState(pos);
-			world.notifyBlockUpdate(pos, state, state, 3);
+			BlockState state = this.world.getBlockState(pos);
+			this.world.notifyBlockUpdate(pos, state, state, 3);
 		}
 	}
 

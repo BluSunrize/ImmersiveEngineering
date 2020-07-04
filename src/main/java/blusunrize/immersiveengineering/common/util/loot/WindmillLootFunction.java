@@ -9,6 +9,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootContext;
 import net.minecraft.loot.LootFunction;
+import net.minecraft.loot.LootFunctionType;
 import net.minecraft.loot.LootParameters;
 import net.minecraft.loot.conditions.ILootCondition;
 import net.minecraft.loot.functions.ILootFunction;
@@ -19,6 +20,7 @@ import javax.annotation.Nonnull;
 
 public class WindmillLootFunction extends LootFunction
 {
+	public static final ResourceLocation ID = new ResourceLocation(ImmersiveEngineering.MODID, "windmill");
 
 	protected WindmillLootFunction(ILootCondition[] conditionsIn)
 	{
@@ -42,14 +44,14 @@ public class WindmillLootFunction extends LootFunction
 		return stack;
 	}
 
+	@Override
+	public LootFunctionType func_230425_b_()
+	{
+		return IELootFunctions.windmill;
+	}
+
 	public static class Serializer extends LootFunction.Serializer<WindmillLootFunction>
 	{
-
-		public Serializer()
-		{
-			super(new ResourceLocation(ImmersiveEngineering.MODID, "windmill"), WindmillLootFunction.class);
-		}
-
 		@Nonnull
 		@Override
 		public WindmillLootFunction deserialize(@Nonnull JsonObject object,

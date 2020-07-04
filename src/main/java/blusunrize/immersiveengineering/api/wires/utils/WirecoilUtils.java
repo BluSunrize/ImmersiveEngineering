@@ -23,15 +23,14 @@ import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 import static blusunrize.immersiveengineering.api.wires.utils.WireUtils.findObstructingBlocks;
@@ -162,11 +161,11 @@ public class WirecoilUtils
 	public static class WireLink
 	{
 		public final ConnectionPoint cp;
-		public final ResourceLocation dimension;
+		public final RegistryKey<World> dimension;
 		public final BlockPos offset;
 		public final TargetingInfo target;
 
-		public WireLink(ConnectionPoint cp, ResourceLocation dimension, BlockPos offset, TargetingInfo info)
+		public WireLink(ConnectionPoint cp, RegistryKey<World> dimension, BlockPos offset, TargetingInfo info)
 		{
 			this.cp = cp;
 			this.dimension = dimension;
@@ -176,11 +175,9 @@ public class WirecoilUtils
 
 		public static WireLink create(ConnectionPoint cp, World world, BlockPos offset, TargetingInfo info)
 		{
-			//TODO is this correct?
-			RegistryKey<DimensionType> dimType = world.func_234922_V_();
 			return new WireLink(
 					cp,
-					Objects.requireNonNull(dimType.func_240901_a_()),
+					world.func_234923_W_(),
 					offset,
 					info
 			);
@@ -204,7 +201,7 @@ public class WirecoilUtils
 			ResourceLocation dim = new ResourceLocation(nbt.getString("linkingDim"));
 			BlockPos offset = NBTUtil.readBlockPos(nbt.getCompound("linkingOffset"));
 			TargetingInfo info = TargetingInfo.readFromNBT(nbt.getCompound("linkingTarget"));
-			return new WireLink(cp, dim, offset, info);
+			return new WireLink(cp, RegistryKey.func_240903_a_(Registry.field_239699_ae_, dim), offset, info);
 		}
 	}
 

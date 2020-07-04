@@ -16,6 +16,7 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.world.IBlockReader;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -90,7 +91,7 @@ public interface IImmersiveConnectable extends ILocalHandlerProvider
 	 * used to reset the CableType limiter of the tile, provided it matches the given argument
 	 * acts as a wildcard, meaning if connection.CableType is null, you /always/ reset the limiter
 	 */
-	void removeCable(@Nullable Connection connection, ConnectionPoint attachedPoint);
+	void removeCable(IBlockReader world, @Nullable Connection connection, ConnectionPoint attachedPoint);
 
 
 	/**

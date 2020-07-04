@@ -215,7 +215,7 @@ public class CoresampleTileEntity extends IEBaseTileEntity implements IStateBase
 				String s0 = (dimPos.x*16)+", "+(dimPos.z*16);
 				String s1 = (dimPos.x*16+16)+", "+(dimPos.z*16+16);
 				//TODO
-				String name = dimPos.dimension.getRegistryName().getPath();
+				String name = dimPos.dimension.func_240901_a_().getPath();
 				if(name.toLowerCase(Locale.ENGLISH).startsWith("the_"))
 					name = name.substring(4);
 				overlay[1] = Utils.toCamelCase(name);

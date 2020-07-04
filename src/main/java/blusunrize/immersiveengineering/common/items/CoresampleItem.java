@@ -66,10 +66,10 @@ public class CoresampleItem extends IEBaseItem
 			}
 			else
 				list.add(new TranslationTextComponent(Lib.CHAT_INFO+"coresample.noMineral"));
-			if(world==null||world.getDimension().getType()!=coords.dimension)
+			if(world==null||world.func_234923_W_()!=coords.dimension)
 			{
 				World clientWorld = Minecraft.getInstance().world;
-				if(clientWorld!=null&&clientWorld.getDimension().getType()==coords.dimension)
+				if(clientWorld!=null&&clientWorld.func_234923_W_()==coords.dimension)
 					world = clientWorld;
 				else
 					world = null;
@@ -77,7 +77,7 @@ public class CoresampleItem extends IEBaseItem
 			String s0 = (coords.x*16)+", "+(coords.z*16);
 			String s1 = (coords.x*16+16)+", "+(coords.z*16+16);
 			//TODO
-			String s2 = coords.dimension.getRegistryName().getPath();
+			String s2 = coords.dimension.func_240901_a_().getPath();
 
 			if(s2.toLowerCase(Locale.ENGLISH).startsWith("the_"))
 				s2 = s2.substring(4);
