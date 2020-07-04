@@ -230,6 +230,7 @@
   "desc.immersiveengineering.info.coresample.pos": "Sample taken at %1$s, %2$s",
   "desc.immersiveengineering.info.coresample.mineral": "%1$s-Vein",
   "desc.immersiveengineering.info.coresample.noMineral": "No Mineral",
+  "desc.immersiveengineering.info.coresample.saturation": "Saturation: %1$s%%",
   "desc.immersiveengineering.info.coresample.yield": "Expected Yield: %1$s Ores",
   "desc.immersiveengineering.info.coresample.infinite": "Unlimited Yield",
   "desc.immersiveengineering.info.coresample.timestamp": "Sample taken %1$s ago",

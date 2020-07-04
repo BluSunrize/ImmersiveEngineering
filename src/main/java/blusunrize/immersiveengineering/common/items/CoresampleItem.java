@@ -79,11 +79,19 @@ public class CoresampleItem extends IEBaseItem
 				nbtList.forEach(inbt -> {
 					CompoundNBT tag = (CompoundNBT)inbt;
 					MineralMix mineral = MineralMix.mineralList.get(new ResourceLocation(tag.getString("mineral")));
-					ITextComponent component = new StringTextComponent(Utils.formatDouble(tag.getDouble("percentage")*100, "0.00")+"% ");
+					ITextComponent component = new StringTextComponent(
+							Utils.formatDouble(tag.getDouble("percentage")*100, "0.00")+"% "
+					);
 					component.appendSibling(new TranslationTextComponent(mineral.getTranslationKey()));
 					list.add(component.applyTextStyle(baseColor));
 					if(showYield)
 					{
+						component = new StringTextComponent("  ");
+						component.appendSibling(new TranslationTextComponent(Lib.DESC_INFO+"coresample.saturation",
+								Utils.formatDouble(tag.getDouble("saturation")*100, "0.00")
+						));
+						list.add(component.applyTextStyle(TextFormatting.DARK_GRAY));
+
 						component = new StringTextComponent("  ");
 						if(ExcavatorHandler.mineralVeinYield==0)
 							component.appendSibling(new TranslationTextComponent(Lib.DESC_INFO+"coresample.infinite"));
@@ -184,7 +192,7 @@ public class CoresampleItem extends IEBaseItem
 		return outList;
 	}
 
-	public static void setMineralInfo(ItemStack stack, MineralWorldInfo info)
+	public static void setMineralInfo(ItemStack stack, MineralWorldInfo info, BlockPos pos)
 	{
 		if(info==null)
 			return;
@@ -195,6 +203,7 @@ public class CoresampleItem extends IEBaseItem
 			tag.putDouble("percentage", pair.getRight()/(double)info.getTotalWeight());
 			tag.putString("mineral", pair.getLeft().getActualMineral().getId().toString());
 			tag.putInt("depletion", pair.getLeft().getDepletion());
+			tag.putDouble("saturation", 1-pair.getLeft().getFailChance(pos));
 			nbtList.add(tag);
 		});
 		stack.getOrCreateTag().put("mineralInfo", nbtList);

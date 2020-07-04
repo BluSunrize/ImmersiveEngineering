@@ -142,7 +142,7 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 		ItemNBTHelper.putLong(stack, "timestamp", world.getGameTime());
 		CoresampleItem.setDimenson(stack, world.getDimension().getType());
 		CoresampleItem.setCoords(stack, getPos());
-		CoresampleItem.setMineralInfo(stack, info);
+		CoresampleItem.setMineralInfo(stack, info, getPos());
 		return stack;
 	}
 
