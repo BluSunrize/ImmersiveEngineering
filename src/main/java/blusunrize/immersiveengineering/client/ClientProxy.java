@@ -147,8 +147,6 @@ public class ClientProxy extends CommonProxy
 			ModelLoaderRegistry.registerLoader(CoresampleLoader.LOCATION, new CoresampleLoader());
 			ModelLoaderRegistry.registerLoader(MultiLayerLoader.LOCATION, new MultiLayerLoader());
 			ModelLoaderRegistry.registerLoader(FeedthroughLoader.LOCATION, new FeedthroughLoader());
-
-			//TODO ((IReloadableResourceManager)mc().getResourceManager()).addReloadListener(new IEFontReloadListener());
 		}
 	}
 

@@ -27,8 +27,6 @@ import net.minecraft.util.JSONUtils;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.resource.IResourceType;
 import net.minecraftforge.resource.ISelectiveResourceReloadListener;
@@ -327,7 +325,6 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 
 	public void reload()
 	{
-		ManualScreen.forceUnicode(true);
 		AtomicInteger numErrors = new AtomicInteger(0);
 		getAllEntries().forEach(manualEntry -> {
 			try
@@ -344,7 +341,6 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 		contentTree.sortAll();
 		indexRecipes();
 		initialized = true;
-		ManualScreen.forceUnicode(false);
 	}
 
 	public abstract FontRenderer fontRenderer();
