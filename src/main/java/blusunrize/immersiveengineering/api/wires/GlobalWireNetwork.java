@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.api.wires;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.wires.localhandlers.ILocalHandlerProvider;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.wires.WireSyncManager;
@@ -29,6 +30,10 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -39,8 +44,12 @@ import java.util.function.Function;
 import static blusunrize.immersiveengineering.common.util.SafeChunkUtils.getSafeTE;
 import static blusunrize.immersiveengineering.common.util.SafeChunkUtils.isChunkSafe;
 
+@EventBusSubscriber(modid = Lib.MODID)
 public class GlobalWireNetwork implements ITickableTileEntity
 {
+	private static World lastServerWorld = null;
+	private static GlobalWireNetwork lastServerNet = null;
+
 	private final Map<ConnectionPoint, LocalWireNetwork> localNets = new HashMap<>();
 	private final WireCollisionData collisionData;
 	private final World world;
@@ -48,9 +57,30 @@ public class GlobalWireNetwork implements ITickableTileEntity
 	@Nonnull
 	public static GlobalWireNetwork getNetwork(World w)
 	{
-		if(!w.getCapability(NetHandlerCapability.NET_CAPABILITY).isPresent())
+		// This and onWorldUnload should only ever be called with non-remote worlds from the server thread, so this
+		// does not need any synchronization
+		if(!w.isRemote&&w==lastServerWorld)
+			return lastServerNet;
+		LazyOptional<GlobalWireNetwork> netOptional = w.getCapability(NetHandlerCapability.NET_CAPABILITY);
+		if(!netOptional.isPresent())
 			throw new RuntimeException("No net handler found for dimension "+w.getDimension().getType().getRegistryName()+", remote: "+w.isRemote);
-		return Objects.requireNonNull(w.getCapability(NetHandlerCapability.NET_CAPABILITY).orElse(null));
+		GlobalWireNetwork ret = Objects.requireNonNull(netOptional.orElse(null));
+		if(!w.isRemote)
+		{
+			lastServerWorld = w;
+			lastServerNet = ret;
+		}
+		return ret;
+	}
+
+	@SubscribeEvent
+	public static void onWorldUnload(WorldEvent.Unload ev)
+	{
+		if(ev.getWorld()==lastServerWorld)
+		{
+			lastServerNet = null;
+			lastServerWorld = null;
+		}
 	}
 
 	public GlobalWireNetwork(World w)
