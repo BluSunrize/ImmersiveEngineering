@@ -28,6 +28,9 @@
 - Fixed shears not counting as tools for the toolbox (BluSunrize)
 - Fixed rendering and boundingboxes on vertical conveyors (BluSunrize)
 - Fixed IE hud elements overlapping with subtitles, but this time better (BluSunrize)
+- Fixed height calculations for tables in the manual (Malte)
+- Fixed strip curtains not storing their strong/weak signal setting (Malte)
+- Implemented a few minor performance improvements (Malte)
 - Translations Added/Updated: ru_ru (Sergo 467)
 
 ##### Version 0.14-102 - BUILT
