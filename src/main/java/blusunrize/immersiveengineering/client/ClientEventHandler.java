@@ -89,7 +89,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.client.gui.ForgeIngameGui;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
@@ -469,7 +468,6 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		{
 			PlayerEntity player = ClientUtils.mc().player;
 			MatrixStack transform = new MatrixStack();
-			IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
 
 			int rightOffset = 0;
 			if(ClientUtils.mc().gameSettings.showSubtitles)
@@ -478,6 +476,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			for(Hand hand : Hand.values())
 				if(!player.getHeldItem(hand).isEmpty())
 				{
+					IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
 					ItemStack equipped = player.getHeldItem(hand);
 					if(ItemStack.areItemsEqual(new ItemStack(Tools.voltmeter), equipped)||equipped.getItem() instanceof IWireCoil)
 					{
@@ -738,6 +737,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 							RenderSystem.disableBlend();
 						}
 					}
+					buffer.finish();
 				}
 			if(ClientUtils.mc().objectMouseOver!=null)
 			{
@@ -756,17 +756,18 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 							FontRenderer font = useNixie?ClientProxy.nixieFontOptional: ClientUtils.font();
 							int col = (useNixie&&IEConfig.GENERAL.nixietubeFont.get())?Lib.colour_nixieTubeText: 0xffffff;
 							int i = 0;
+							IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
 							for(String s : text)
 								if(s!=null)
 									font.renderString(
 											s, scaledWidth/2+8, scaledHeight/2+8+(i++)*font.FONT_HEIGHT, col, true,
 											transform.getLast().getMatrix(), buffer, false, 0, 0xf000f0
 									);
+							buffer.finish();
 						}
 					}
 				}
 			}
-			buffer.finish();
 		}
 	}
 
