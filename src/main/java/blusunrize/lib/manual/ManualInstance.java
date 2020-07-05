@@ -26,6 +26,7 @@ import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.resource.IResourceType;
 import net.minecraftforge.resource.ISelectiveResourceReloadListener;
@@ -122,13 +123,13 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 		registerSpecialElement(new ResourceLocation(name.getNamespace(), "table"),
 				s -> {
 					JsonArray arr = JSONUtils.getJsonArray(s, "table");
-					String[][] table = new String[arr.size()][];
+					ITextComponent[][] table = new ITextComponent[arr.size()][];
 					for(int i = 0; i < table.length; i++)
 					{
 						JsonArray row = arr.get(i).getAsJsonArray();
-						table[i] = new String[row.size()];
+						table[i] = new ITextComponent[row.size()];
 						for(int j = 0; j < row.size(); j++)
-							table[i][j] = row.get(j).getAsString();
+							table[i][j] = ITextComponent.func_241827_a_(row.get(j).getAsString());
 					}
 					return new ManualElementTable(this, table, JSONUtils.getBoolean(s,
 							"horizontal_bars", false));
@@ -324,6 +325,7 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 
 	public void reload()
 	{
+		ManualScreen.forceUnicode(true);
 		AtomicInteger numErrors = new AtomicInteger(0);
 		getAllEntries().forEach(manualEntry -> {
 			try
@@ -340,6 +342,7 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 		contentTree.sortAll();
 		indexRecipes();
 		initialized = true;
+		ManualScreen.forceUnicode(false);
 	}
 
 	public abstract FontRenderer fontRenderer();

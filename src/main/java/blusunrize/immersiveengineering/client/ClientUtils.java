@@ -30,6 +30,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound.AttenuationType;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.fonts.FontResourceManager;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.model.BipedModel;
@@ -136,10 +137,16 @@ public class ClientUtils
 		return bufferedimage;
 	}
 
+	private static FontRenderer unicodeRenderer;
+
 	public static FontRenderer unicodeFontRender()
 	{
-		//TODO PORTME getFontRenderer(new ResourceLocation(ImmersiveEngineering.MODID, "unicode"));
-		return mc().fontResourceMananger.func_238548_a_();
+		if(unicodeRenderer==null)
+			unicodeRenderer = new FontRenderer(rl -> {
+				FontResourceManager resourceManager = Minecraft.getInstance().fontResourceMananger;
+				return resourceManager.field_238546_d_.get(Minecraft.field_238177_c_);
+			});
+		return unicodeRenderer;
 	}
 
 	public enum TimestampFormat

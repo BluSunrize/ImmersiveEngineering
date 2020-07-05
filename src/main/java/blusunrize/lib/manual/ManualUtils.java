@@ -327,41 +327,6 @@ public class ManualUtils
 	 */
 	public static void drawSplitString(MatrixStack transform, FontRenderer fontRenderer, List<String> text, int x, int y, int colour)
 	{
-		/*
-		fontRenderer.resetStyles();
-		fontRenderer.textColor = colour;
-		List<String> list = fontRenderer.listFormattedStringToWidth(string, width);
-		FloatBuffer currentGLColor = BufferUtils.createFloatBuffer(16);
-		int line = 0;
-		for(Iterator<String> iterator = list.iterator(); iterator.hasNext(); y += fontRenderer.FONT_HEIGHT)
-		{
-			String next = iterator.next();
-			if(line > 0)
-			{
-				int currentColour = fontRenderer.textColor;
-				GL11.glGetFloat(GL11.GL_CURRENT_COLOR, currentGLColor);
-				//Resetting colour if GL colour differs from textColor
-				//that case happens because the formatting reset does not reset textColor
-				int glColourRGBA = ((int)(currentGLColor.get(0)*255)<<16)+((int)(currentGLColor.get(1)*255)<<8)+((int)(currentGLColor.get(2)*255));
-				if(glColourRGBA!=currentColour)
-				{
-					int j = 0;
-					for(; j < fontRenderer.colorCode.length; j++)
-						if(fontRenderer.colorCode[j]==glColourRGBA)
-						{
-							String code = Integer.toHexString(j%16);
-							next = '\u00a7'+code+next;
-							break;
-						}
-				}
-			}
-			fontRenderer.drawString(next, x, y, colour, false);
-			++line;
-		}
-		return list.size();
-		 */
-
-		//TODO Do we still need all of ^ or does this simplistic implementation (based on the 1.14 Mojang version) work?
 		for(String s : text)
 		{
 			fontRenderer.drawString(transform, s, x, y, colour);

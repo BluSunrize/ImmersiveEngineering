@@ -267,7 +267,7 @@ public class IEManual
 	)
 	{
 		return () -> {
-			String[][] table = formatToTable_ItemIntMap(getContents.get(), valueType);
+			ITextComponent[][] table = formatToTable_ItemIntMap(getContents.get(), valueType);
 			return new ManualElementTable(ManualHelper.getManual(), table, false);
 		};
 	}
@@ -372,9 +372,9 @@ public class IEManual
 	{
 		String title = version.toString();
 		if(ahead)
-			title += I18n.format("ie.manual.newerVersion");
+			title += " - "+I18n.format("ie.manual.newerVersion");
 		else if(currVer.equals(version))
-			title += I18n.format("ie.manual.currentVersion");
+			title += " - "+I18n.format("ie.manual.currentVersion");
 
 		String text = changes.replace("\t", "  ");
 		ManualEntry.ManualEntryBuilder builder = new ManualEntryBuilder(ManualHelper.getManual());
@@ -383,37 +383,38 @@ public class IEManual
 		return builder.create();
 	}
 
-	static <T> String[][] formatToTable_ItemIntMap(Map<T, Integer> map, String valueType)
+	static <T> ITextComponent[][] formatToTable_ItemIntMap(Map<T, Integer> map, String valueType)
 	{
 		List<Entry<T, Integer>> sortedMapArray = new ArrayList<>(map.entrySet());
-		sortedMapArray.sort(Comparator.comparing(Entry::getValue));
-		ArrayList<String[]> list = new ArrayList<>();
+		sortedMapArray.sort(Entry.comparingByValue());
+		ArrayList<ITextComponent[]> list = new ArrayList<>();
 		try
 		{
 			for(Entry<T, Integer> entry : sortedMapArray)
 			{
-				String item = entry.getKey().toString();
-				if(entry.getKey() instanceof ResourceLocation)
+				ITextComponent item = null;
+				if(entry.getKey() instanceof ITextComponent)
+					item = (ITextComponent)entry.getKey();
+				else if(entry.getKey() instanceof ResourceLocation)
 				{
 					ResourceLocation key = (ResourceLocation)entry.getKey();
 					if(TagUtils.isNonemptyItemTag(key))
 					{
 						ItemStack is = IEApi.getPreferredTagStack(key);
 						if(!is.isEmpty())
-							item = is.getDisplayName().getString();
+							item = is.getDisplayName();
 					}
 				}
+				if(item==null)
+					item = ITextComponent.func_241827_a_(entry.getKey().toString());
 
-				if(item!=null)
-				{
-					int bt = entry.getValue();
-					String am = bt+" "+valueType;
-					list.add(new String[]{item, am});
-				}
+				int bt = entry.getValue();
+				ITextComponent am = ITextComponent.func_241827_a_(bt+" "+valueType);
+				list.add(new ITextComponent[]{item, am});
 			}
 		} catch(Exception e)
 		{
 		}
-		return list.toArray(new String[0][]);
+		return list.toArray(new ITextComponent[0][]);
 	}
 }

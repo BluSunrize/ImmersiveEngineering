@@ -12,22 +12,20 @@ import blusunrize.lib.manual.gui.ManualScreen;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.ITextProperties;
-import net.minecraft.util.text.StringTextComponent;
 
 import java.util.List;
 
 public class ManualElementTable extends SpecialManualElements
 {
-	private String[][] table;
-	private String[][] localizedTable;
+	private ITextComponent[][] table;
 	private int[] bars;
 	private boolean horizontalBars = false;
 	private int height;
 	private int[] textOff;
 
-	public ManualElementTable(ManualInstance manual, String[][] table, boolean horizontalBars)
+	public ManualElementTable(ManualInstance manual, ITextComponent[][] table, boolean horizontalBars)
 	{
 		super(manual);
 		this.table = table;
@@ -42,49 +40,38 @@ public class ManualElementTable extends SpecialManualElements
 		{
 			if(table!=null)
 			{
-				localizedTable = new String[table.length][];
-
 				bars = new int[1];
-				for(int i = 0; i < table.length; i++)
+				for(ITextComponent[] line : table)
 				{
-					localizedTable[i] = new String[table[i].length];
-					for(int j = 0; j < table[i].length; j++)
-						if(table[i][j]!=null)
-							localizedTable[i][j] = I18n.format(table[i][j]);
-
-					if(table[i].length-1 > bars.length)
+					if(line.length-1 > bars.length)
 					{
-						int[] newBars = new int[table[i].length-1];
+						int[] newBars = new int[line.length-1];
 						System.arraycopy(bars, 0, newBars, 0, bars.length);
 						bars = newBars;
 					}
-					for(int j = 0; j < table[i].length-1; j++)
+					for(int j = 0; j < line.length-1; j++)
 					{
-						int fl = manual.fontRenderer().getStringWidth(localizedTable[i][j]);
+						int fl = manual.fontRenderer().func_238414_a_(line[j]);
 						if(fl > bars[j])
 							bars[j] = fl;
 					}
 				}
-				textOff = new int[bars!=null?bars.length: 0];
-				if(bars!=null)
+				textOff = new int[bars.length];
+				int xx = x;
+				for(int i = 0; i < bars.length; i++)
 				{
-					int xx = x;
-					for(int i = 0; i < bars.length; i++)
-					{
-						xx += bars[i]+8;
-						textOff[i] = xx;
-					}
+					xx += bars[i]+8;
+					textOff[i] = xx;
 				}
 
 				int yOff = 0;
-				for(int i = 0; i < localizedTable.length; i++)
-					if(localizedTable[i]!=null)
-						for(int j = 0; j < localizedTable[i].length; j++)
-							if(localizedTable[i][j]!=null)
+				for(ITextComponent[] line : table)
+					if(line!=null)
+						for(int j = 0; j < line.length; j++)
+							if(line[j]!=null)
 							{
 								int w = Math.max(10, 120-(j > 0?textOff[j-1]-x: 0));
-								ITextProperties textProp = new StringTextComponent(localizedTable[i][j]);
-								int l = manual.fontRenderer().func_238425_b_(textProp, w).size();
+								int l = manual.fontRenderer().func_238425_b_(line[j], w).size();
 								if(j!=0)
 									yOff += l*(manual.fontRenderer().FONT_HEIGHT+1);
 							}
@@ -99,13 +86,13 @@ public class ManualElementTable extends SpecialManualElements
 	@Override
 	public void render(MatrixStack transform, ManualScreen gui, int x, int y, int mx, int my)
 	{
-		if(localizedTable!=null)
+		if(table!=null)
 		{
 			int col = manual.getHighlightColour()|0xff000000;
 			AbstractGui.fill(transform, x, y-2, x+120, y-1, col);
 
 			int yOff = 0;
-			for(String[] line : localizedTable)
+			for(ITextComponent[] line : table)
 				if(line!=null)
 				{
 					int height = 0;
@@ -114,11 +101,15 @@ public class ManualElementTable extends SpecialManualElements
 						{
 							int xx = textOff.length > 0&&j > 0?textOff[j-1]: x;
 							int w = Math.max(10, 120-(j > 0?textOff[j-1]-x: 0));
-							ITextProperties lineTextProperties = ITextProperties.func_240652_a_(line[j]);
-							manual.fontRenderer().func_238418_a_(lineTextProperties, xx, y+yOff, w, manual.getTextColour());
-							int lines = manual.fontRenderer().func_238425_b_(lineTextProperties, w).size();
-							if(lines > height)
-								height = lines;
+							List<ITextProperties> lines = manual.fontRenderer().func_238425_b_(line[j], w);
+							for(int i = 0; i < lines.size(); i++)
+							{
+								ITextProperties l = lines.get(i);
+								float yForLine = y+yOff+i*manual.fontRenderer().FONT_HEIGHT;
+								manual.fontRenderer().func_238422_b_(transform, l, xx, yForLine, manual.getTextColour());
+							}
+							if(lines.size() > height)
+								height = lines.size();
 						}
 
 					if(horizontalBars)

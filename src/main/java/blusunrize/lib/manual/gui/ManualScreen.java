@@ -14,6 +14,7 @@ import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.ManualInstance.ManualLink;
 import blusunrize.lib.manual.ManualUtils;
 import blusunrize.lib.manual.Tree.AbstractNode;
+import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
@@ -167,6 +168,7 @@ public class ManualScreen extends Screen
 	@Override
 	public void render(MatrixStack transform, int mouseX, int mouseY, float f)
 	{
+		forceUnicode(true);
 		manualTick++;
 		manual.entryRenderPre();
 
@@ -249,6 +251,8 @@ public class ManualScreen extends Screen
 		super.render(transform, mouseX, mouseY, f);
 		RenderSystem.enableBlend();
 		manual.entryRenderPost();
+		//TODO not false, but restore
+		forceUnicode(false);
 	}
 
 	@Override
@@ -482,5 +486,14 @@ public class ManualScreen extends Screen
 	public boolean isPauseScreen()
 	{
 		return false;
+	}
+
+	public static void forceUnicode(boolean unicode)
+	{
+		Minecraft.getInstance().fontResourceMananger.func_238551_a_(
+				unicode?
+						ImmutableMap.of(Minecraft.DEFAULT_FONT_RENDERER_NAME, Minecraft.field_238177_c_):
+						ImmutableMap.of()
+		);
 	}
 }

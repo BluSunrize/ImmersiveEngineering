@@ -55,7 +55,6 @@ public class ManualElementCrafting extends SpecialManualElements
 	{
 		if(Minecraft.getInstance().world==null)
 			return;
-		//TODO is this called on/after world loads?
 		this.providedItems.clear();
 		for(int iStack = 0; iStack < recipeRows.length; iStack++)
 		{
@@ -185,7 +184,6 @@ public class ManualElementCrafting extends SpecialManualElements
 	@Override
 	public void render(MatrixStack transform, ManualScreen gui, int x, int y, int mx, int my)
 	{
-		RenderSystem.enableRescaleNormal();
 		RenderHelper.enableStandardItemLighting();
 
 		int totalYOff = 0;
@@ -215,6 +213,8 @@ public class ManualElementCrafting extends SpecialManualElements
 		}
 
 		totalYOff = 0;
+		RenderSystem.pushMatrix();
+		RenderSystem.multMatrix(transform.getLast().getMatrix());
 		for(int i = 0; i < recipeRows.length; i++)
 		{
 			List<PositionedItemStack[]> rList = this.recipeLayout[i];
@@ -232,6 +232,7 @@ public class ManualElementCrafting extends SpecialManualElements
 				totalYOff += heightPixels[i]+8;
 			}
 		}
+		RenderSystem.popMatrix();
 
 		this.renderHighlightedTooltip(transform, gui, mx, my);
 	}

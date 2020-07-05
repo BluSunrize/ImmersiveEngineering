@@ -75,7 +75,10 @@ public class ManualElementItem extends SpecialManualElements
 		int length = stacks.size();
 		if(length > 0)
 		{
+			transform.push();
 			transform.scale(scale, scale, scale);
+			RenderSystem.pushMatrix();
+			RenderSystem.multMatrix(transform.getLast().getMatrix());
 			for(int line = 0; line < lines; line++)
 			{
 				int perLine = line==lines-1?itemsLastLine: line%2==0?longLineLen: shortLineLen;
@@ -94,10 +97,10 @@ public class ManualElementItem extends SpecialManualElements
 						highlighted = stacks.get(item);
 				}
 			}
-			transform.scale(1/scale, 1/scale, 1/scale);
+			RenderSystem.popMatrix();
+			transform.pop();
 		}
 		RenderHelper.disableStandardItemLighting();
-		RenderSystem.disableRescaleNormal();
 		RenderSystem.enableBlend();
 
 		this.renderHighlightedTooltip(transform, gui, mx, my);

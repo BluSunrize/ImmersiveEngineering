@@ -1,3 +1,7 @@
+##### Version 0.16-106
+- Initial port to 1.16
+- Also includes all changes from 0,15-105
+
 ##### Version 0.15-105
 - Fixed invisible connectors with Optifine (Malte)
 - Fixed metal ladders rendering as solid (Malte)

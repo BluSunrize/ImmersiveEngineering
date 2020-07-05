@@ -8,13 +8,11 @@ function initializeCoreMod() {
                 'methodDesc': '()V'
             },
             'transformer': function(method) {
-                //TODO PORTME
-                return method;
                 var ASMAPI = Java.type('net.minecraftforge.coremod.api.ASMAPI');
                 var VarInsnNode = Java.type('org.objectweb.asm.tree.VarInsnNode');
                 var opcodes = Java.type('org.objectweb.asm.Opcodes');
                 var callback = ASMAPI.listOf(
-                    new VarInsnNode(opcodes.ALOAD, 6),
+                    new VarInsnNode(opcodes.ALOAD, 4),
                     new VarInsnNode(opcodes.ALOAD, 0),
                     ASMAPI.buildMethodCall(
                         "blusunrize/immersiveengineering/common/wires/WireCollisions",
