@@ -26,6 +26,8 @@ import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.resource.IResourceType;
 import net.minecraftforge.resource.ISelectiveResourceReloadListener;
@@ -122,13 +124,13 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 		registerSpecialElement(new ResourceLocation(name.getNamespace(), "table"),
 				s -> {
 					JsonArray arr = JSONUtils.getJsonArray(s, "table");
-					String[][] table = new String[arr.size()][];
+					ITextComponent[][] table = new ITextComponent[arr.size()][];
 					for(int i = 0; i < table.length; i++)
 					{
 						JsonArray row = arr.get(i).getAsJsonArray();
-						table[i] = new String[row.size()];
+						table[i] = new ITextComponent[row.size()];
 						for(int j = 0; j < row.size(); j++)
-							table[i][j] = row.get(j).getAsString();
+							table[i][j] = new StringTextComponent(row.get(j).getAsString());
 					}
 					return new ManualElementTable(this, table, JSONUtils.getBoolean(s,
 							"horizontal_bars", false));

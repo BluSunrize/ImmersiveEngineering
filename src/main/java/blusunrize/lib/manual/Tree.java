@@ -145,12 +145,8 @@ public class Tree<NT extends Comparable<NT>, LT extends Comparable<LT>>
 		public InnerNode<NT, LT> getOrCreateSubnode(NT data, int weight)
 		{
 			for(AbstractNode<NT, LT> child : children)
-			{
 				if(!child.isLeaf()&&data.equals(child.getNodeData()))
-				{
 					return (InnerNode<NT, LT>)child;
-				}
-			}
 			return addNewSubnode(data, weight);
 		}
 
