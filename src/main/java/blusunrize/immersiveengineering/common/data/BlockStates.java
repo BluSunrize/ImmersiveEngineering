@@ -1052,7 +1052,7 @@ public class BlockStates extends BlockStateProvider
 		VariantBlockStateBuilder builder = getVariantBuilder(b);
 		forEachState(builder.partialState(), additional, map -> {
 			final List<String> layersList = Arrays.stream(layers)
-					.map(RenderType::toString) // toString is implemented as getName
+					.map(r -> r.name)
 					.collect(Collectors.toList());
 			if(facingProp!=null)
 			{
