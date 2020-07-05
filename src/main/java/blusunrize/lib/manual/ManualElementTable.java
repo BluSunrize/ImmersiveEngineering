@@ -14,9 +14,8 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.ITextProperties;
+import net.minecraft.util.text.StringTextComponent;
 
 import java.util.Arrays;
 import java.util.List;
@@ -31,7 +30,7 @@ public class ManualElementTable extends SpecialManualElements
 	private int[] textOff;
 
 	@Deprecated
-	public ManualElementTable(ManualInstance manual, ITextComponent[][] table, boolean horizontalBars)
+	public ManualElementTable(ManualInstance manual, String[][] table, boolean horizontalBars)
 	{
 		this(manual, Arrays.stream(table)
 						.map(a -> Arrays.stream(a)
@@ -82,11 +81,12 @@ public class ManualElementTable extends SpecialManualElements
 						{
 							int xx = textOff.length > 0&&j > 0?textOff[j-1]: x;
 							int w = Math.max(10, 120-(j > 0?textOff[j-1]-x: 0));
-							String lineText = line[j].getFormattedText();
-							manual.fontRenderer().drawSplitString(lineText, xx, y+yOff, w, manual.getTextColour());
-							int lines = manual.fontRenderer().listFormattedStringToWidth(lineText, w).size();
-							if(lines > height)
-								height = lines;
+							ITextComponent lineText = line[j];
+							List<ITextProperties> lines = manual.fontRenderer().func_238425_b_(lineText, w);
+							for(ITextProperties l : lines)
+								manual.fontRenderer().func_238422_b_(transform, l, xx, y+yOff, manual.getTextColour());
+							if(lines.size() > height)
+								height = lines.size();
 						}
 
 					if(horizontalBars)
@@ -123,7 +123,7 @@ public class ManualElementTable extends SpecialManualElements
 				bars = Arrays.copyOf(bars, tableLine.length-1);
 			for(int j = 0; j < tableLine.length-1; j++)
 			{
-				int fl = manual.fontRenderer().getStringWidth(tableLine[j].getFormattedText());
+				int fl = manual.fontRenderer().func_238414_a_(tableLine[j]);
 				if(fl > bars[j])
 					bars[j] = fl;
 			}
@@ -142,7 +142,7 @@ public class ManualElementTable extends SpecialManualElements
 					if(tableLine[j]!=null)
 					{
 						int w = Math.max(10, 120-(j > 0?textOff[j-1]: 0));
-						int l = manual.fontRenderer().listFormattedStringToWidth(tableLine[j].getFormattedText(), w).size();
+						int l = manual.fontRenderer().func_238425_b_(tableLine[j], w).size();
 						if(j!=0)
 							yOff += l*(manual.fontRenderer().FONT_HEIGHT+1);
 					}

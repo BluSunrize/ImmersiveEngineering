@@ -305,7 +305,7 @@ public class IEBlockInterfaces
 
 	public interface IScrewdriverInteraction
 	{
-		ActionResultType screwdriverUseSide(Direction side, PlayerEntity player, Vec3d hitVec);
+		ActionResultType screwdriverUseSide(Direction side, PlayerEntity player, Vector3d hitVec);
 	}
 
 	public interface IPlacementInteraction

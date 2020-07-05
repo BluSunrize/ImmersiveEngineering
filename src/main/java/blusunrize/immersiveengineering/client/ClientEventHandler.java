@@ -828,7 +828,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 							float mapRotation = (frameEntity.getRotation()%4)*1.5708f;
 
 							// Player hit vector, relative to frame block pos
-							Vec3d hitVec = mop.getHitVec().subtract(new Vec3d(frameEntity.getHangingPosition()));
+							Vector3d hitVec = mop.getHitVec().subtract(Vector3d.func_237491_b_(frameEntity.getHangingPosition()));
 							Direction frameDir = frameEntity.getHorizontalFacing();
 							double cursorH = 0;
 							double cursorV = 0;
@@ -883,7 +883,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 									byte b0 = (byte)((int)((double)(f*2.0F)+0.5D));
 									byte b1 = (byte)((int)((double)(f1*2.0F)+0.5D));
 									// Make it a vector, rotate it around the map center
-									Vec3d mapPos = new Vec3d(0, b1, b0);
+									Vector3d mapPos = new Vector3d(0, b1, b0);
 									mapPos = mapPos.rotatePitch(mapRotation);
 									// Turn it into a 0.0 to 128.0 offset
 									double offsetH = (mapPos.z/2.0F+64.0F);
@@ -903,7 +903,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 							{
 								MineralMix mix = ExcavatorHandler.mineralList.get(new ResourceLocation(mineral));
 								if(mix!=null)
-									font.drawStringWithShadow(I18n.format(mix.getTranslationKey()), scaledWidth/2-8, scaledHeight/2+8, 0xffffff);
+									font.drawStringWithShadow(transform, I18n.format(mix.getTranslationKey()), scaledWidth/2-8, scaledHeight/2+8, 0xffffff);
 							}
 						}
 					}
