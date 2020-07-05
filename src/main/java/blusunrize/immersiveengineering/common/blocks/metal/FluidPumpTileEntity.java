@@ -109,7 +109,14 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 		}
 
 		int consumption = IEConfig.MACHINES.pump_consumption.get();
-		if(world.getRedstonePowerFromNeighbors(getPos()) > 0||world.getRedstonePowerFromNeighbors(getPos().add(0, 1, 0)) > 0)
+		boolean hasRSSignal = isRSPowered();
+		if(!hasRSSignal)
+		{
+			TileEntity above = world.getTileEntity(getPos().up());
+			if(above instanceof FluidPumpTileEntity)
+				hasRSSignal = ((FluidPumpTileEntity)above).isRSPowered();
+		}
+		if(isRSPowered())
 		{
 			for(Direction f : Direction.values())
 				if(sideConfig.get(f)==IOSideConfig.INPUT)

@@ -19,10 +19,9 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBou
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Connectors;
 import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectorBlock;
-import blusunrize.immersiveengineering.common.util.EnergyHelper;
+import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
-import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableList;
@@ -33,7 +32,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -42,6 +40,8 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3i;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.event.RegistryEvent;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -79,6 +79,7 @@ public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity im
 	public int currentTickToNet = 0;
 	private FluxStorage storageToNet = new FluxStorage(getMaxInput(), getMaxInput(), getMaxInput());
 	private FluxStorage storageToMachine = new FluxStorage(getMaxInput(), getMaxInput(), getMaxInput());
+	private CapabilityReference<IEnergyStorage> output = CapabilityReference.forNeighbor(this, CapabilityEnergy.ENERGY, this::getFacing);
 
 	public EnergyConnectorTileEntity(TileEntityType<? extends EnergyConnectorTileEntity> type)
 	{
@@ -101,14 +102,11 @@ public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity im
 		if(!world.isRemote)
 		{
 			int maxOut = Math.min(storageToMachine.getEnergyStored(), getMaxOutput()-currentTickToMachine);
-			if(maxOut > 0)
+			if(maxOut > 0&&output.isPresent())
 			{
-				TileEntity target = Utils.getExistingTileEntity(world, pos.offset(getFacing()));
-				if(target!=null)
-				{
-					int inserted = EnergyHelper.insertFlux(target, getFacing().getOpposite(), maxOut, false);
-					storageToMachine.extractEnergy(inserted, false);
-				}
+				IEnergyStorage target = output.get();
+				int inserted = target.receiveEnergy(maxOut, false);
+				storageToMachine.extractEnergy(inserted, false);
 			}
 			currentTickToMachine = 0;
 			currentTickToNet = 0;
@@ -279,12 +277,12 @@ public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity im
 
 	public int getMaxInput()
 	{
-		return IEConfig.MACHINES.wireConnectorInput.get().get(getVoltageIndex());
+		return IEConfig.CACHED.connectorInputRates[getVoltageIndex()];
 	}
 
 	public int getMaxOutput()
 	{
-		return IEConfig.MACHINES.wireConnectorInput.get().get(getVoltageIndex());
+		return IEConfig.CACHED.connectorInputRates[getVoltageIndex()];
 	}
 
 	private static final Object2FloatMap<Pair<String, Boolean>> LENGTH = new Object2FloatAVLTreeMap<>();

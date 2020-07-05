@@ -34,7 +34,7 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 	public static final ResourceLocation ID = new ResourceLocation(ImmersiveEngineering.MODID, "energy_transfer");
 
 	private final Table<ConnectionPoint, ConnectionPoint, Path> energyPaths = HashBasedTable.create();
-	private Object2DoubleMap<Connection> transferredNextTick = new Object2DoubleOpenHashMap<>();
+	private Object2DoubleOpenHashMap<Connection> transferredNextTick = new Object2DoubleOpenHashMap<>();
 	private Object2DoubleMap<Connection> transferredLastTick = new Object2DoubleOpenHashMap<>();
 	private final Map<ConnectionPoint, EnergyConnector> sources = new HashMap<>();
 	private final Map<ConnectionPoint, EnergyConnector> sinks = new HashMap<>();
@@ -228,8 +228,7 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 					//TODO use Blu's loss formula
 					currentLoss += getBasicLoss(c);
 					double availableAtPoint = atSource*(1-currentLoss);
-					double transferred = transferredNextTick.getDouble(c);
-					transferredNextTick.put(c, transferred+availableAtPoint);
+					transferredNextTick.addTo(c, availableAtPoint);
 					if(!currentPoint.equals(p.end))
 					{
 						IImmersiveConnectable iic = net.getConnector(currentPoint);

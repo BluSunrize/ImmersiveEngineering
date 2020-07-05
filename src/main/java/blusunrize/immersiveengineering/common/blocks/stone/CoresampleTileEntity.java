@@ -155,6 +155,8 @@ public class CoresampleTileEntity extends IEBaseTileEntity implements IStateBase
 						tagCompound.putDouble("x", sampleX);
 						tagCompound.putDouble("z", sampleZ);
 						tagCompound.putDouble("rot", 180.0);
+						MineralMix mineral = CoresampleItem.getMix(coresample);
+						tagCompound.putString("mineral", mineral.getId().toString());
 
 						nbttaglist.add(tagCompound);
 						mapTagCompound.put("Decorations", nbttaglist);

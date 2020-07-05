@@ -50,7 +50,7 @@ public class FurnaceHeaterTileEntity extends IEBaseTileEntity implements ITickab
 		if(!world.isRemote)
 		{
 			boolean activeBeforeTick = getIsActive();
-			boolean redstonePower = world.getRedstonePowerFromNeighbors(getPos()) > 0;
+			boolean redstonePower = isRSPowered();
 			boolean newActive = activeBeforeTick;
 			if(activeBeforeTick&&!redstonePower)
 				newActive = false;

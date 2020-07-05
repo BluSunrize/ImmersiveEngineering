@@ -31,6 +31,7 @@ import net.minecraft.loot.LootParameters;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
@@ -302,6 +303,11 @@ public class IEBlockInterfaces
 		boolean hammerUseSide(Direction side, PlayerEntity player, Vector3d hitVec);
 	}
 
+	public interface IScrewdriverInteraction
+	{
+		ActionResultType screwdriverUseSide(Direction side, PlayerEntity player, Vec3d hitVec);
+	}
+
 	public interface IPlacementInteraction
 	{
 		void onTilePlaced(World world, BlockPos pos, BlockState state, Direction side, float hitX, float hitY, float hitZ, LivingEntity placer, ItemStack stack);
@@ -452,11 +458,6 @@ public class IEBlockInterfaces
 		int[] getCurrentProcessesStep();
 
 		int[] getCurrentProcessesMax();
-	}
-
-	public interface INeighbourChangeTile
-	{
-		void onNeighborBlockChange(BlockPos otherPos);
 	}
 
 	public interface IPropertyPassthrough

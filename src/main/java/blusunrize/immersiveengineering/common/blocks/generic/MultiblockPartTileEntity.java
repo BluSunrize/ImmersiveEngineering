@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMultiblock;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
+import blusunrize.immersiveengineering.common.util.SafeChunkUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -26,6 +27,7 @@ import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
@@ -46,7 +48,7 @@ import java.util.Optional;
 import java.util.Set;
 
 public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntity<T>> extends IEBaseTileEntity
-		implements ITickableTileEntity, IDirectionalTile, IGeneralMultiblock, IHammerInteraction, IMirrorAble
+		implements ITickableTileEntity, IDirectionalTile, IGeneralMultiblock, IScrewdriverInteraction, IMirrorAble
 {
 	public boolean formed = false;
 	//Position of this block according to the BlockInfo's returned by IMultiblock#getStructure
@@ -374,11 +376,11 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	}
 
 	@Override
-	public boolean hammerUseSide(Direction side, PlayerEntity player, Vector3d hitVec)
+	public ActionResultType screwdriverUseSide(Direction side, PlayerEntity player, Vector3d hitVec)
 	{
-		if(!world.isRemote)
+		if(this.isRedstonePos()&&hasRedstoneControl)
 		{
-			if(this.isRedstonePos()&&hasRedstoneControl)
+			if(!world.isRemote)
 			{
 				MultiblockPartTileEntity<T> master = master();
 				if(master!=null)
@@ -387,11 +389,11 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 					ChatUtils.sendServerNoSpamMessages(player, new TranslationTextComponent(Lib.CHAT_INFO+"rsControl."
 							+(master.redstoneControlInverted?"invertedOn": "invertedOff")));
 					this.updateMasterBlock(null, true);
-					return true;
 				}
 			}
+			return ActionResultType.SUCCESS;
 		}
-		return false;
+		return ActionResultType.PASS;
 	}
 
 	public boolean isRSDisabled()
@@ -406,7 +408,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 			T tile = this.getTileForPos(rsPos);
 			if(tile!=null)
 			{
-				boolean b = getWorldNonnull().getRedstonePowerFromNeighbors(tile.getPos()) > 0;
+				boolean b = tile.isRSPowered();
 				if(redstoneControlInverted!=b)
 					return true;
 			}
@@ -418,7 +420,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	public T getTileForPos(BlockPos targetPosInMB)
 	{
 		BlockPos target = getBlockPosForPos(targetPosInMB);
-		TileEntity tile = Utils.getExistingTileEntity(getWorldNonnull(), target);
+		TileEntity tile = SafeChunkUtils.getSafeTE(getWorldNonnull(), target);
 		if(this.getClass().isInstance(tile))
 			return (T)tile;
 		return null;

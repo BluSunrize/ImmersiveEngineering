@@ -70,7 +70,7 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickable
 	@Override
 	public void tick()
 	{
-		if(world.isRemote||world.getRedstonePowerFromNeighbors(getPos())!=0)
+		if(world.isRemote||isRSPowered())
 			return;
 
 		if(tickCount%16==0)

@@ -3,7 +3,7 @@
     "type": "crafting",
     "recipe": "crafting/tesla_coil"
   },
-  "tesla_stuff_recipes": {
+  "faraday_recipes": {
     "type": "crafting",
     "recipes": [
       [
@@ -18,11 +18,12 @@
         },
         {
           "recipe": "crafting/armor_faraday_head"
-        },
-        {
-          "recipe": "crafting/fluorescent_tube"
         }
       ]
     ]
+  },
+  "tube_recipes": {
+    "type": "crafting",
+    "recipe": "crafting/fluorescent_tube"
   }
 }

@@ -41,6 +41,7 @@ import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -63,7 +64,7 @@ import java.util.List;
 import java.util.UUID;
 
 public abstract class TurretTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInternalFluxHandler, IIEInventory,
-		IHasDummyBlocks, ITileDrop, IStateBasedDirectional, IBlockBounds, IInteractionObjectIE, IEntityProof, IHammerInteraction, IHasObjProperty
+		IHasDummyBlocks, ITileDrop, IStateBasedDirectional, IBlockBounds, IInteractionObjectIE, IEntityProof, IScrewdriverInteraction, IHasObjProperty
 {
 	public FluxStorage energyStorage = new FluxStorage(16000);
 	public boolean redstoneControlInverted = false;
@@ -141,7 +142,7 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 			markContainingBlockForUpdate(null);
 
 		int energy = IEConfig.MACHINES.turret_consumption.get();
-		if((world.getRedstonePowerFromNeighbors(getPos()) > 0)^redstoneControlInverted)
+		if(isRSPowered()^redstoneControlInverted)
 		{
 			if(energyStorage.extractEnergy(energy, true)==energy)
 			{
@@ -375,14 +376,14 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 	}
 
 	@Override
-	public boolean hammerUseSide(Direction side, PlayerEntity player, Vector3d hitVec)
+	public ActionResultType screwdriverUseSide(Direction side, PlayerEntity player, Vector3d hitVec)
 	{
 		if(isDummy())
 		{
 			TileEntity te = world.getTileEntity(getPos().down());
 			if(te instanceof TurretTileEntity)
-				return ((TurretTileEntity)te).hammerUseSide(side, player, hitVec);
-			return false;
+				return ((TurretTileEntity)te).screwdriverUseSide(side, player, hitVec);
+			return ActionResultType.FAIL;
 		}
 		if(player.isSneaking()&&!world.isRemote)
 		{
@@ -391,7 +392,7 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 			markDirty();
 			this.markContainingBlockForUpdate(null);
 		}
-		return true;
+		return ActionResultType.SUCCESS;
 	}
 
 	@Override

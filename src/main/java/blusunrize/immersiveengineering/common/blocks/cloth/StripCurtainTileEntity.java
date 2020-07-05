@@ -26,6 +26,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -44,7 +45,7 @@ import java.util.List;
 /**
  * @author BluSunrize - 01.10.2016
  */
-public class StripCurtainTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IRedstoneOutput, IHammerInteraction,
+public class StripCurtainTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IRedstoneOutput, IScrewdriverInteraction,
 		ICollisionBounds, IAdvancedDirectionalTile, IStateBasedDirectional, IColouredTile, ITileDrop, ISelectionBounds
 {
 	public static TileEntityType<StripCurtainTileEntity> TYPE;
@@ -125,12 +126,14 @@ public class StripCurtainTileEntity extends IEBaseTileEntity implements ITickabl
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		colour = nbt.getInt("colour");
+		this.strongSignal = nbt.getBoolean("strongSignal");
 	}
 
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		nbt.putInt("colour", colour);
+		nbt.putBoolean("strongSignal", this.strongSignal);
 	}
 
 	private static final AxisAlignedBB[] bounds = {
@@ -230,14 +233,14 @@ public class StripCurtainTileEntity extends IEBaseTileEntity implements ITickabl
 	}
 
 	@Override
-	public boolean hammerUseSide(Direction side, PlayerEntity player, Vector3d hitVec)
+	public ActionResultType screwdriverUseSide(Direction side, PlayerEntity player, Vector3d hitVec)
 	{
 		if(!world.isRemote)
 		{
 			strongSignal = !strongSignal;
 			ChatUtils.sendServerNoSpamMessages(player, new TranslationTextComponent(Lib.CHAT_INFO+"rsControl.strongSignal."+strongSignal));
 		}
-		return true;
+		return ActionResultType.SUCCESS;
 	}
 
 	public boolean isCeilingAttached()

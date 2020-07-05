@@ -8,16 +8,19 @@
 
 package blusunrize.immersiveengineering.client.models;
 
+import com.mojang.blaze3d.matrix.MatrixStack.Entry;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.client.renderer.vertex.VertexFormatElement.Type;
-import net.minecraft.client.renderer.vertex.VertexFormatElement.Usage;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockDisplayReader;
-import net.minecraftforge.client.model.pipeline.*;
+import net.minecraft.world.LightType;
+import net.minecraftforge.client.model.pipeline.BlockInfo;
+import net.minecraftforge.client.model.pipeline.IVertexConsumer;
+import net.minecraftforge.client.model.pipeline.QuadGatheringTransformer;
+import net.minecraftforge.client.model.pipeline.VertexLighterFlat;
 
 import java.lang.reflect.Field;
 
@@ -25,6 +28,7 @@ public class SmartLightingQuad extends BakedQuad
 {
 	private static Field parent;
 	private static Field blockInfo;
+	private static Field pose;
 
 	static
 	{
@@ -32,6 +36,8 @@ public class SmartLightingQuad extends BakedQuad
 		{
 			blockInfo = VertexLighterFlat.class.getDeclaredField("blockInfo");
 			blockInfo.setAccessible(true);
+			pose = VertexLighterFlat.class.getDeclaredField("pose");
+			pose.setAccessible(true);
 			parent = QuadGatheringTransformer.class.getDeclaredField("parent");
 			parent.setAccessible(true);
 		} catch(Exception x)
@@ -41,77 +47,62 @@ public class SmartLightingQuad extends BakedQuad
 	}
 
 	BlockPos blockPos;
-	int[][] relativePos;
-	boolean ignoreLight;
-	public static int staticBrightness;
 
 	public SmartLightingQuad(int[] vertexDataIn, int tintIndexIn, Direction faceIn, TextureAtlasSprite spriteIn, BlockPos p)
 	{
 		super(vertexDataIn, tintIndexIn, faceIn, spriteIn, false);
 		blockPos = p;
-		relativePos = new int[4][];
-		ignoreLight = false;
-		for(int i = 0; i < 4; i++)
-			relativePos[i] = new int[]{(int)Math.floor(Float.intBitsToFloat(vertexDataIn[7*i])),
-					(int)Math.floor(Float.intBitsToFloat(vertexDataIn[7*i+1])),
-					(int)Math.floor(Float.intBitsToFloat(vertexDataIn[7*i+2]))
-			};
-	}
-
-	public SmartLightingQuad(int[] vertexDataIn, int tintIndexIn, Direction faceIn, TextureAtlasSprite spriteIn)
-	{
-		super(vertexDataIn, tintIndexIn, faceIn, spriteIn, false);
-		ignoreLight = true;
 	}
 
 	@Override
 	public void pipe(IVertexConsumer consumer)
 	{
-		IBlockDisplayReader world = null;
-		BlockInfo info = null;
 		if(consumer instanceof VertexLighterFlat)
+			super.pipe(new SmartVertexLighter((VertexLighterFlat)consumer));
+		else
+			super.pipe(consumer);
+	}
+
+	private class SmartVertexLighter extends VertexLighterFlat
+	{
+
+		public SmartVertexLighter(VertexLighterFlat base)
 		{
+			super(Minecraft.getInstance().getBlockColors());
 			try
 			{
-				info = (BlockInfo)blockInfo.get(consumer);
-				world = info.getWorld();
-				consumer = (IVertexConsumer)parent.get(consumer);
-			} catch(Throwable e)
+				setParent((IVertexConsumer)SmartLightingQuad.parent.get(base));
+				setTransform((Entry)SmartLightingQuad.pose.get(base));
+				setVertexFormat(DefaultVertexFormats.BLOCK);
+				BlockInfo info = (BlockInfo)SmartLightingQuad.blockInfo.get(base);
+				setWorld(info.getWorld());
+				setState(info.getState());
+				setBlockPos(info.getBlockPos());
+				updateBlockInfo();
+			} catch(Exception x)
 			{
-				e.printStackTrace();
+				throw new RuntimeException(x);
 			}
 		}
-		consumer.setQuadOrientation(this.getFace());
-		if(this.hasTintIndex())
-			consumer.setQuadTint(this.getTintIndex());
-		float[] data = new float[4];
-		VertexFormat format = consumer.getVertexFormat();
-		int count = format.getElements().size();
-		int[] eMap = LightUtil.mapFormats(format, DefaultVertexFormats.BLOCK);
-		int itemCount = DefaultVertexFormats.BLOCK.getElements().size();
-		eMap[eMap.length-1] = 2;
-		for(int v = 0; v < 4; v++)
-			for(int e = 0; e < count; e++)
-				if(eMap[e]!=itemCount)
-				{
-					if(format.getElements().get(e).getUsage()==Usage.UV&&format.getElements().get(e).getType()==Type.SHORT)//lightmap is UV with 2 shorts
-					{
-						int brightness;
-						if(!ignoreLight&&world!=null)
-						{
-							BlockPos here = blockPos.add(relativePos[v][0], relativePos[v][1], relativePos[v][2]);
-							brightness = world.getLightSubtracted(here, 0);
-						}
-						else
-							brightness = staticBrightness;
-						data[0] = ((float)((brightness >> 0x04)&0xF)*0x20)/0xFFFF;
-						data[1] = ((float)((brightness >> 0x14)&0xF)*0x20)/0xFFFF;
-					}
-					else
-						LightUtil.unpack(this.getVertexData(), data, DefaultVertexFormats.BLOCK, v, eMap[e]);
-					consumer.put(e, data);
-				}
-				else
-					consumer.put(e, 0);
+
+		private byte oldLightmapLength;
+
+		@Override
+		protected void updateLightmap(float[] normal, float[] lightmap, float x, float y, float z)
+		{
+			ILightReader world = blockInfo.getWorld();
+			BlockPos here = blockPos.add(Math.floor(x-normal[0]/2+0.5), Math.floor(y-normal[1]/2+0.5), Math.floor(z-normal[2]/2+0.5));
+			lightmap[0] = world.getLightManager().getLightEngine(LightType.BLOCK).getLightFor(here)/(float)0xF;
+			lightmap[1] = world.getLightManager().getLightEngine(LightType.SKY).getLightFor(here)/(float)0xF;
+			oldLightmapLength = dataLength[lightmapIndex];
+			dataLength[lightmapIndex] = 0;
+		}
+
+		@Override
+		protected void updateColor(float[] normal, float[] color, float x, float y, float z, float tint, int multiplier)
+		{
+			dataLength[lightmapIndex] = oldLightmapLength;
+			super.updateColor(normal, color, x, y, z, tint, multiplier);
+		}
 	}
 }

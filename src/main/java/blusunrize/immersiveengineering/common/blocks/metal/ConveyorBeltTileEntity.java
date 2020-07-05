@@ -230,6 +230,13 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IStateBa
 		return super.getCapability(cap, side);
 	}
 
+	// Make public
+	@Override
+	public boolean isRSPowered()
+	{
+		return super.isRSPowered();
+	}
+
 	public static class ConveyorInventoryHandler implements IItemHandlerModifiable
 	{
 		ConveyorBeltTileEntity conveyor;

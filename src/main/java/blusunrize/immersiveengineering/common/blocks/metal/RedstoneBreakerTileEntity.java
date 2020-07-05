@@ -39,7 +39,7 @@ public class RedstoneBreakerTileEntity extends BreakerSwitchTileEntity implement
 	public void tick()
 	{
 		final boolean activeOld = getIsActive();
-		if(!world.isRemote&&(world.getRedstonePowerFromNeighbors(getPos()) > 0)==activeOld)
+		if(!world.isRemote&&(isRSPowered())==activeOld)
 		{
 			setActive(!activeOld);
 			updateConductivity();

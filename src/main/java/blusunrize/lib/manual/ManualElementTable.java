@@ -9,25 +9,44 @@
 package blusunrize.lib.manual;
 
 import blusunrize.lib.manual.gui.ManualScreen;
+import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.ITextProperties;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.OptionalInt;
 
 public class ManualElementTable extends SpecialManualElements
 {
 	private ITextComponent[][] table;
 	private int[] bars;
-	private boolean horizontalBars = false;
-	private int height;
+	private boolean horizontalBars;
+	private OptionalInt height = OptionalInt.empty();
 	private int[] textOff;
+
+	@Deprecated
+	public ManualElementTable(ManualInstance manual, ITextComponent[][] table, boolean horizontalBars)
+	{
+		this(manual, Arrays.stream(table)
+						.map(a -> Arrays.stream(a)
+								.map(StringTextComponent::new)
+								.toArray(ITextComponent[]::new)
+						)
+						.toArray(ITextComponent[][]::new),
+				horizontalBars
+		);
+	}
 
 	public ManualElementTable(ManualInstance manual, ITextComponent[][] table, boolean horizontalBars)
 	{
 		super(manual);
+		Preconditions.checkNotNull(table);
 		this.table = table;
 		this.horizontalBars = horizontalBars;
 	}
@@ -38,45 +57,7 @@ public class ManualElementTable extends SpecialManualElements
 		super.onOpened(gui, x, y, pageButtons);
 		try
 		{
-			if(table!=null)
-			{
-				bars = new int[1];
-				for(ITextComponent[] line : table)
-				{
-					if(line.length-1 > bars.length)
-					{
-						int[] newBars = new int[line.length-1];
-						System.arraycopy(bars, 0, newBars, 0, bars.length);
-						bars = newBars;
-					}
-					for(int j = 0; j < line.length-1; j++)
-					{
-						int fl = manual.fontRenderer().func_238414_a_(line[j]);
-						if(fl > bars[j])
-							bars[j] = fl;
-					}
-				}
-				textOff = new int[bars.length];
-				int xx = x;
-				for(int i = 0; i < bars.length; i++)
-				{
-					xx += bars[i]+8;
-					textOff[i] = xx;
-				}
-
-				int yOff = 0;
-				for(ITextComponent[] line : table)
-					if(line!=null)
-						for(int j = 0; j < line.length; j++)
-							if(line[j]!=null)
-							{
-								int w = Math.max(10, 120-(j > 0?textOff[j-1]-x: 0));
-								int l = manual.fontRenderer().func_238425_b_(line[j], w).size();
-								if(j!=0)
-									yOff += l*(manual.fontRenderer().FONT_HEIGHT+1);
-							}
-				height = yOff;
-			}
+			recalculateLayout();
 		} catch(Exception e)
 		{
 			e.printStackTrace();
@@ -101,15 +82,11 @@ public class ManualElementTable extends SpecialManualElements
 						{
 							int xx = textOff.length > 0&&j > 0?textOff[j-1]: x;
 							int w = Math.max(10, 120-(j > 0?textOff[j-1]-x: 0));
-							List<ITextProperties> lines = manual.fontRenderer().func_238425_b_(line[j], w);
-							for(int i = 0; i < lines.size(); i++)
-							{
-								ITextProperties l = lines.get(i);
-								float yForLine = y+yOff+i*manual.fontRenderer().FONT_HEIGHT;
-								manual.fontRenderer().func_238422_b_(transform, l, xx, yForLine, manual.getTextColour());
-							}
-							if(lines.size() > height)
-								height = lines.size();
+							String lineText = line[j].getFormattedText();
+							manual.fontRenderer().drawSplitString(lineText, xx, y+yOff, w, manual.getTextColour());
+							int lines = manual.fontRenderer().listFormattedStringToWidth(lineText, w).size();
+							if(lines > height)
+								height = lines;
 						}
 
 					if(horizontalBars)
@@ -137,10 +114,47 @@ public class ManualElementTable extends SpecialManualElements
 		return false;
 	}
 
+	private void recalculateLayout()
+	{
+		bars = new int[1];
+		for(ITextComponent[] tableLine : table)
+		{
+			if(tableLine.length-1 > bars.length)
+				bars = Arrays.copyOf(bars, tableLine.length-1);
+			for(int j = 0; j < tableLine.length-1; j++)
+			{
+				int fl = manual.fontRenderer().getStringWidth(tableLine[j].getFormattedText());
+				if(fl > bars[j])
+					bars[j] = fl;
+			}
+		}
+		textOff = new int[bars.length];
+		int xx = 0;
+		for(int i = 0; i < bars.length; i++)
+		{
+			xx += bars[i]+8;
+			textOff[i] = xx;
+		}
+		int yOff = 0;
+		for(ITextComponent[] tableLine : table)
+			if(tableLine!=null)
+				for(int j = 0; j < tableLine.length; j++)
+					if(tableLine[j]!=null)
+					{
+						int w = Math.max(10, 120-(j > 0?textOff[j-1]: 0));
+						int l = manual.fontRenderer().listFormattedStringToWidth(tableLine[j].getFormattedText(), w).size();
+						if(j!=0)
+							yOff += l*(manual.fontRenderer().FONT_HEIGHT+1);
+					}
+		height = OptionalInt.of(yOff);
+	}
+
 	@Override
 	public int getPixelsTaken()
 	{
-		return height;
+		if(!height.isPresent())
+			recalculateLayout();
+		return height.getAsInt();
 	}
 
 	@Override

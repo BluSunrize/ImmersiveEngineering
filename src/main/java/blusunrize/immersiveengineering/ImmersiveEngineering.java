@@ -100,6 +100,10 @@ public class ImmersiveEngineering
 		proxy.modConstruction();
 		//TODO FluidRegistry.enableUniversalBucket();
 		IngredientSerializers.init();
+
+		IEWorldGen ieWorldGen = new IEWorldGen();
+		MinecraftForge.EVENT_BUS.register(ieWorldGen);
+		FMLJavaModLoadingContext.get().getModEventBus().register(ieWorldGen);
 	}
 
 	public void setup(FMLCommonSetupEvent event)
@@ -169,7 +173,7 @@ public class ImmersiveEngineering
 
 		proxy.preInitEnd();
 		IEContent.init();
-		IEWorldGen ieWorldGen = new IEWorldGen();
+
 		if(IEConfig.ORES.ore_bauxite.retrogenEnabled.get())
 			IEWorldGen.retrogenOres.add("retrogen_bauxite");
 		if(IEConfig.ORES.ore_lead.retrogenEnabled.get())
@@ -182,8 +186,6 @@ public class ImmersiveEngineering
 			IEWorldGen.retrogenOres.add("retrogen_uranium");
 		if(IEConfig.ORES.ore_copper.retrogenEnabled.get())
 			IEWorldGen.retrogenOres.add("retrogen_copper");
-
-		MinecraftForge.EVENT_BUS.register(ieWorldGen);
 
 		MinecraftForge.EVENT_BUS.register(new EventHandler());
 		proxy.init();

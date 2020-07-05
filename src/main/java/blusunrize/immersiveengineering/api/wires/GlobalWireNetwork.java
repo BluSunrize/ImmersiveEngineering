@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.api.wires;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.wires.localhandlers.ILocalHandlerProvider;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.wires.WireSyncManager;
@@ -30,6 +31,10 @@ import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -40,8 +45,12 @@ import java.util.function.Function;
 import static blusunrize.immersiveengineering.common.util.SafeChunkUtils.getSafeTE;
 import static blusunrize.immersiveengineering.common.util.SafeChunkUtils.isChunkSafe;
 
+@EventBusSubscriber(modid = Lib.MODID)
 public class GlobalWireNetwork implements ITickableTileEntity
 {
+	private static World lastServerWorld = null;
+	private static GlobalWireNetwork lastServerNet = null;
+
 	private static World cachedClientWorld;
 	private static GlobalWireNetwork cachedClientNet;
 
@@ -52,10 +61,13 @@ public class GlobalWireNetwork implements ITickableTileEntity
 	@Nonnull
 	public static GlobalWireNetwork getNetwork(World w)
 	{
-		LazyOptional<GlobalWireNetwork> netOpt = w.getCapability(NetHandlerCapability.NET_CAPABILITY);
-		if(!netOpt.isPresent())
+		// This and onWorldUnload should only ever be called with non-remote worlds from the server thread, so this
+		// does not need any synchronization
+		if(!w.isRemote&&w==lastServerWorld)
+			return lastServerNet;
+		LazyOptional<GlobalWireNetwork> netOptional = w.getCapability(NetHandlerCapability.NET_CAPABILITY);
+		if(!netOptional.isPresent())
 		{
-			//TODO figure out whether this is a forge bug or not
 			if(w.isRemote)
 			{
 				if(w!=cachedClientWorld)
@@ -67,7 +79,23 @@ public class GlobalWireNetwork implements ITickableTileEntity
 			}
 			throw new RuntimeException("No net handler found for dimension "+w.func_234922_V_().func_240901_a_()+", remote: "+w.isRemote);
 		}
-		return Objects.requireNonNull(netOpt.orElse(null));
+		GlobalWireNetwork ret = Objects.requireNonNull(netOptional.orElse(null));
+		if(!w.isRemote)
+		{
+			lastServerWorld = w;
+			lastServerNet = ret;
+		}
+		return ret;
+	}
+
+	@SubscribeEvent
+	public static void onWorldUnload(WorldEvent.Unload ev)
+	{
+		if(ev.getWorld()==lastServerWorld)
+		{
+			lastServerNet = null;
+			lastServerWorld = null;
+		}
 	}
 
 	public GlobalWireNetwork(World w)

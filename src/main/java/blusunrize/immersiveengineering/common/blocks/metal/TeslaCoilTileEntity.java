@@ -38,6 +38,7 @@ import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.SoundCategory;
@@ -61,7 +62,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInternalFluxHandler, IHasDummyBlocks,
-		IStateBasedDirectional, IBlockBounds, IHammerInteraction
+		IStateBasedDirectional, IBlockBounds, IScrewdriverInteraction
 {
 	public static TileEntityType<TeslaCoilTileEntity> TYPE;
 
@@ -398,14 +399,14 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 	}
 
 	@Override
-	public boolean hammerUseSide(Direction side, PlayerEntity player, Vector3d hitVec)
+	public ActionResultType screwdriverUseSide(Direction side, PlayerEntity player, Vector3d hitVec)
 	{
 		if(isDummy())
 		{
 			TileEntity te = world.getTileEntity(getPos().offset(getFacing(), -1));
 			if(te instanceof TeslaCoilTileEntity)
-				return ((TeslaCoilTileEntity)te).hammerUseSide(side, player, hitVec);
-			return false;
+				return ((TeslaCoilTileEntity)te).screwdriverUseSide(side, player, hitVec);
+			return ActionResultType.PASS;
 		}
 		if(!world.isRemote)
 		{
@@ -431,7 +432,7 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 				this.markContainingBlockForUpdate(null);
 			}
 		}
-		return true;
+		return ActionResultType.SUCCESS;
 	}
 
 	@Override
@@ -523,7 +524,7 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 
 	public boolean canRun(int energyDrain)
 	{
-		return (world.getRedstonePowerFromNeighbors(getPos()) > 0^redstoneControlInverted)&&energyStorage.getEnergyStored() >= energyDrain;
+		return (isRSPowered()^redstoneControlInverted)&&energyStorage.getEnergyStored() >= energyDrain;
 	}
 
 	public static class LightningAnimation

@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
-import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.RenderType;
@@ -20,11 +19,10 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.item.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.DyeColor;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -116,14 +114,10 @@ public class ConnectorProbeTileEntity extends ConnectorRedstoneTileEntity
 	}
 
 	@Override
-	public boolean interact(Direction side, PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	public ActionResultType screwdriverUseSide(Direction side, PlayerEntity player, Vec3d hitVec)
 	{
-		if(heldItem.getItem()==Tools.screwdriver)
-		{
-			ImmersiveEngineering.proxy.openTileScreen(Lib.GUIID_RedstoneProbe, this);
-			return true;
-		}
-		return false;
+		ImmersiveEngineering.proxy.openTileScreen(Lib.GUIID_RedstoneProbe, this);
+		return ActionResultType.SUCCESS;
 	}
 
 	@Override

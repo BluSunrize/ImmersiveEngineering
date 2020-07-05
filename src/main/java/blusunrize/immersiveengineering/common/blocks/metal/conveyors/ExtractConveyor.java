@@ -208,11 +208,6 @@ public class ExtractConveyor extends BasicConveyor
 		return true;
 	}
 
-	private boolean isPowered(TileEntity tile)
-	{
-		return tile.getWorld().getRedstonePowerFromNeighbors(tile.getPos()) > 0;
-	}
-
 	@Override
 	public boolean isTicking()
 	{
@@ -228,7 +223,7 @@ public class ExtractConveyor extends BasicConveyor
 			{
 				this.transferCooldown--;
 			}
-			if(!isPowered(getTile())&&this.transferCooldown <= 0)
+			if(!isPowered()&&this.transferCooldown <= 0)
 			{
 				World world = getTile().getWorld();
 				BlockPos neighbour = getTile().getPos().offset(this.getExtractDirection());

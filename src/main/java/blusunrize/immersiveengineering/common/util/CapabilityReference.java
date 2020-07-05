@@ -16,6 +16,7 @@ import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.common.util.NonNullSupplier;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -33,6 +34,18 @@ public abstract class CapabilityReference<T>
 	public static <T> CapabilityReference<T> forRelative(TileEntity local, Capability<T> cap, Vector3i offset, Direction side)
 	{
 		return forTileEntity(local, () -> new DirectionalBlockPos(local.getPos().add(offset), side.getOpposite()), cap);
+	}
+
+	public static <T> CapabilityReference<T> forNeighbor(TileEntity local, Capability<T> cap, NonNullSupplier<Direction> side)
+	{
+		return forTileEntity(
+				local,
+				() -> {
+					Direction d = side.get();
+					return new DirectionalBlockPos(local.getPos().offset(d), d.getOpposite());
+				},
+				cap
+		);
 	}
 
 	public static <T> CapabilityReference<T> forNeighbor(TileEntity local, Capability<T> cap, @Nonnull Direction side)

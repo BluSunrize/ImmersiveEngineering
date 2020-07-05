@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDecoration;
+import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBeltTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
@@ -395,5 +396,14 @@ public class BasicConveyor implements IConveyorBelt
 					}
 		}
 		return false;
+	}
+
+	protected final boolean isPowered()
+	{
+		TileEntity te = getTile();
+		if(te instanceof ConveyorBeltTileEntity)
+			return ((ConveyorBeltTileEntity)te).isRSPowered();
+		else
+			return te.getWorld().getRedstonePowerFromNeighbors(te.getPos()) > 0;
 	}
 }

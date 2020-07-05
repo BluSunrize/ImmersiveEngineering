@@ -54,9 +54,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.WorldTickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -73,7 +74,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.lang.reflect.Field;
 import java.util.*;
 
 public class EventHandler
@@ -83,8 +83,6 @@ public class EventHandler
 	public static HashSet<IEExplosion> currentExplosions = new HashSet<IEExplosion>();
 	public static final Queue<Pair<RegistryKey<World>, BlockPos>> requestedBlockUpdates = new LinkedList<>();
 	public static final Set<TileEntity> REMOVE_FROM_TICKING = new HashSet<>();
-
-	private static final ResourceLocation TALL_GRASS_DROP = new ResourceLocation("minecraft", "blocks/tall_grass");
 
 	@SubscribeEvent
 	public void onLoad(WorldEvent.Load event)
@@ -159,48 +157,6 @@ public class EventHandler
 			new ResourceLocation(ImmersiveEngineering.MODID, "chests/stronghold_library"),
 			new ResourceLocation(ImmersiveEngineering.MODID, "chests/village_blacksmith")
 	);
-	private static Field f_lootEntries;
-
-	@SubscribeEvent
-	public void lootTableLoad(LootTableLoadEvent event)
-	{
-		if(event.getName().equals(TALL_GRASS_DROP))
-			event.getTable().addPool(LootPool.builder()
-					.addEntry(TableLootEntry.builder(new ResourceLocation(ImmersiveEngineering.MODID, "blocks/grass_drops")))
-					.name("ie_grass_drops").build());
-	}
-
-	/*TODO I think this can be done data-driven now?
-	@SubscribeEvent
-	public void lootLoad(LootTableLoadEvent event)
-	{
-		if(event.getName().getNamespace().equals("minecraft"))
-			for(ResourceLocation inject : lootInjections)
-				if(event.getName().getPath().equals(inject.getPath()))
-				{
-					LootPool injectPool = Utils.loadBuiltinLootTable(inject, event.getLootTableManager()).getPool("immersiveengineering_loot_inject");
-					LootPool mainPool = event.getTable().getPool("main");
-					if(injectPool!=null&&mainPool!=null)
-						try
-						{
-							if(f_lootEntries==null)
-							{
-								f_lootEntries = LootPool.class.getDeclaredField(ObfuscationReflectionHelper.findField(LootPool.class.getName(), "field_186453_a"));//field_186453_a is srg for lootEntries
-								f_lootEntries.setAccessible(true);
-							}
-							if(f_lootEntries!=null)
-							{
-								List<ILootGenerator> entryList = (List<ILootGenerator>)f_lootEntries.get(injectPool);
-								for(ILootGenerator entry : entryList)
-									mainPool.addEntry(entry);
-							}
-						} catch(Exception e)
-						{
-							e.printStackTrace();
-						}
-				}
-	}
-	 */
 
 	@SubscribeEvent
 	public void onEntityJoiningWorld(EntityJoinWorldEvent event)
