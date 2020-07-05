@@ -48,7 +48,7 @@ import java.util.Collection;
 import static blusunrize.immersiveengineering.api.wires.WireType.HV_CATEGORY;
 
 public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity implements IBlockBounds, IAdvancedDirectionalTile,
-		IActiveState, IHammerInteraction, IPlayerInteraction, IRedstoneOutput, IOBJModelCallback<BlockState>, IStateBasedDirectional
+		IActiveState, IHammerInteraction, IScrewdriverInteraction, IPlayerInteraction, IRedstoneOutput, IOBJModelCallback<BlockState>, IStateBasedDirectional
 {
 	public static TileEntityType<BreakerSwitchTileEntity> TYPE;
 
@@ -147,28 +147,28 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 	@Override
 	public boolean hammerUseSide(Direction side, PlayerEntity player, Vec3d hitVec)
 	{
-		if(player.isSneaking())
-		{
-			final boolean oldPassing = allowEnergyToPass();
-			inverted = !inverted;
-			if(!world.isRemote)
-			{
-				ChatUtils.sendServerNoSpamMessages(player, new TranslationTextComponent(Lib.CHAT_INFO+"rsSignal."+(inverted?"invertedOn": "invertedOff")));
-				notifyNeighbours();
-				if(oldPassing!=allowEnergyToPass())
-					updateConductivity();
-			}
-		}
-		else
-		{
-			rotation = (rotation+3)%4;
-			for(ConnectionPoint cp : getConnectionPoints())
-				for(Connection c : getLocalNet(cp.getIndex()).getConnections(cp))
-					if(!c.isInternal())
-						globalNet.updateCatenaryData(c);
-		}
+		rotation = (rotation+3)%4;
+		for(ConnectionPoint cp : getConnectionPoints())
+			for(Connection c : getLocalNet(cp.getIndex()).getConnections(cp))
+				if(!c.isInternal())
+					globalNet.updateCatenaryData(c);
 		markDirty();
 		markContainingBlockForUpdate(getBlockState());
+		return true;
+	}
+
+	@Override
+	public boolean screwdriverUseSide(Direction side, PlayerEntity player, Vec3d hitVec)
+	{
+		final boolean oldPassing = allowEnergyToPass();
+		inverted = !inverted;
+		if(!world.isRemote)
+		{
+			ChatUtils.sendServerNoSpamMessages(player, new TranslationTextComponent(Lib.CHAT_INFO+"rsSignal."+(inverted?"invertedOn": "invertedOff")));
+			notifyNeighbours();
+			if(oldPassing!=allowEnergyToPass())
+				updateConductivity();
+		}
 		return true;
 	}
 

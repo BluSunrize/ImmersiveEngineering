@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.blocks;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.items.HammerItem;
+import blusunrize.immersiveengineering.common.items.ScrewdriverItem;
 import blusunrize.immersiveengineering.common.items.WirecutterItem;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -269,12 +270,19 @@ public class IEBaseBlock extends Block implements IIEBlock
 		ItemStack activeStack = player.getHeldItem(hand);
 		if(activeStack.getToolTypes().contains(HammerItem.HAMMER_TOOL))
 			return hammerUseSide(hit.getFace(), player, world, pos, hit);
+		if(activeStack.getToolTypes().contains(ScrewdriverItem.SCREWDRIVER_TOOL))
+			return screwdriverUseSide(hit.getFace(), player, world, pos, hit);
 		return super.onBlockActivated(state, world, pos, player, hand, hit);
 	}
 
 	public ActionResultType hammerUseSide(Direction side, PlayerEntity player, World w, BlockPos pos, BlockRayTraceResult hit)
 	{
 		return ActionResultType.PASS;
+	}
+
+	public boolean screwdriverUseSide(Direction side, PlayerEntity player, World w, BlockPos pos, BlockRayTraceResult hit)
+	{
+		return false;
 	}
 
 	public abstract static class IELadderBlock extends IEBaseBlock

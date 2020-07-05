@@ -44,7 +44,7 @@ import java.util.List;
 /**
  * @author BluSunrize - 01.10.2016
  */
-public class StripCurtainTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IRedstoneOutput, IHammerInteraction,
+public class StripCurtainTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IRedstoneOutput, IScrewdriverInteraction,
 		ICollisionBounds, IAdvancedDirectionalTile, IStateBasedDirectional, IColouredTile, ITileDrop, ISelectionBounds
 {
 	public static TileEntityType<StripCurtainTileEntity> TYPE;
@@ -125,12 +125,14 @@ public class StripCurtainTileEntity extends IEBaseTileEntity implements ITickabl
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		colour = nbt.getInt("colour");
+		this.strongSignal = nbt.getBoolean("strongSignal");
 	}
 
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		nbt.putInt("colour", colour);
+		nbt.putBoolean("strongSignal", this.strongSignal);
 	}
 
 	private static final AxisAlignedBB[] bounds = {
@@ -230,7 +232,7 @@ public class StripCurtainTileEntity extends IEBaseTileEntity implements ITickabl
 	}
 
 	@Override
-	public boolean hammerUseSide(Direction side, PlayerEntity player, Vec3d hitVec)
+	public boolean screwdriverUseSide(Direction side, PlayerEntity player, Vec3d hitVec)
 	{
 		if(!world.isRemote)
 		{

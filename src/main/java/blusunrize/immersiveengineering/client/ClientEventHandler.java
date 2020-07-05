@@ -15,6 +15,8 @@ import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
+import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
+import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
@@ -67,11 +69,16 @@ import net.minecraft.client.renderer.entity.model.IHasHead;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.item.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.tags.ItemTags;
@@ -86,6 +93,7 @@ import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.storage.MapData;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.client.gui.ForgeIngameGui;
@@ -362,7 +370,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 					offset = 50f;
 				else if(equipped instanceof DrillItem||equipped instanceof ChemthrowerItem||equipped instanceof BuzzsawItem)
 					offset = 50f;
-				else if(equipped instanceof RailgunItem || equipped instanceof IEShieldItem)
+				else if(equipped instanceof RailgunItem||equipped instanceof IEShieldItem)
 					offset = 20f;
 			}
 		if(offset!=0)
@@ -743,9 +751,14 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			{
 				boolean hammer = !player.getHeldItem(Hand.MAIN_HAND).isEmpty()&&Utils.isHammer(player.getHeldItem(Hand.MAIN_HAND));
 				RayTraceResult mop = ClientUtils.mc().objectMouseOver;
-				if(mop instanceof BlockRayTraceResult)
+				ItemFrameEntity frameEntity = null;
+				if(mop instanceof EntityRayTraceResult&&((EntityRayTraceResult)mop).getEntity() instanceof ItemFrameEntity)
+					frameEntity = (ItemFrameEntity)((EntityRayTraceResult)mop).getEntity();
+				else if(mop instanceof BlockRayTraceResult)
 				{
-					TileEntity tileEntity = player.world.getTileEntity(((BlockRayTraceResult)mop).getPos());
+					BlockPos pos = ((BlockRayTraceResult)mop).getPos();
+					Direction face = ((BlockRayTraceResult)mop).getFace();
+					TileEntity tileEntity = player.world.getTileEntity(pos);
 					if(tileEntity instanceof IBlockOverlayText)
 					{
 						IBlockOverlayText overlayBlock = (IBlockOverlayText)tileEntity;
@@ -764,6 +777,110 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 											transform.getLast().getMatrix(), buffer, false, 0, 0xf000f0
 									);
 							buffer.finish();
+						}
+					}
+					else
+					{
+						List<ItemFrameEntity> list = player.world.getEntitiesWithinAABB(ItemFrameEntity.class,
+								new AxisAlignedBB(pos.offset(face)), entity -> entity!=null&&entity.getHorizontalFacing()==face);
+						if(list.size()==1)
+							frameEntity = list.get(0);
+					}
+				}
+
+				if(frameEntity!=null)
+				{
+					ItemStack frameItem = frameEntity.getDisplayedItem();
+					if(frameItem.getItem()==Items.FILLED_MAP&&ItemNBTHelper.hasKey(frameItem, "Decorations", 9))
+					{
+						World world = frameEntity.getEntityWorld();
+						MapData mapData = FilledMapItem.getMapData(frameItem, world);
+						if(mapData!=null)
+						{
+							FontRenderer font = ClientUtils.font();
+							// Map center is usually only calculated serverside, so we gotta do it manually
+							mapData.calculateMapCenter(world.getWorldInfo().getSpawnX(), world.getWorldInfo().getSpawnZ(), mapData.scale);
+							int mapScale = 1<<mapData.scale;
+							float mapRotation = (frameEntity.getRotation()%4)*1.5708f;
+
+							// Player hit vector, relative to frame block pos
+							Vec3d hitVec = mop.getHitVec().subtract(new Vec3d(frameEntity.getHangingPosition()));
+							Direction frameDir = frameEntity.getHorizontalFacing();
+							double cursorH = 0;
+							double cursorV = 0;
+							// Get a 0-1 cursor coordinate; this could be ternary operator, but switchcase is easier to read
+							switch(frameDir)
+							{
+								case DOWN:
+									cursorH = hitVec.x;
+									cursorV = 1-hitVec.z;
+									break;
+								case UP:
+									cursorH = hitVec.x;
+									cursorV = hitVec.z;
+									break;
+								case NORTH:
+									cursorH = 1-hitVec.x;
+									cursorV = 1-hitVec.y;
+									break;
+								case SOUTH:
+									cursorH = hitVec.x;
+									cursorV = 1-hitVec.y;
+									break;
+								case WEST:
+									cursorH = hitVec.z;
+									cursorV = 1-hitVec.y;
+									break;
+								case EAST:
+									cursorH = 1-hitVec.z;
+									cursorV = 1-hitVec.y;
+									break;
+							}
+							// Multiply it to the number scale vanilla maps use
+							cursorH *= 128;
+							cursorV *= 128;
+
+							String mineral = null;
+							double lastDist = Double.MAX_VALUE;
+							ListNBT nbttaglist = frameItem.getTag().getList("Decorations", 10);
+							for(INBT inbt : nbttaglist)
+							{
+								CompoundNBT tagCompound = (CompoundNBT)inbt;
+								String id = tagCompound.getString("id");
+								if(id.startsWith("ie:coresample_")&&tagCompound.contains("mineral"))
+								{
+									double sampleX = tagCompound.getDouble("x");
+									double sampleZ = tagCompound.getDouble("z");
+									// Map coordinates require some pretty funky maths. I tried to simplify this,
+									// and ran into issues that made highlighting fail on certain markers.
+									// This implementation works, so I just won't touch it again.
+									float f = (float)(sampleX-(double)mapData.xCenter)/(float)mapScale;
+									float f1 = (float)(sampleZ-(double)mapData.zCenter)/(float)mapScale;
+									byte b0 = (byte)((int)((double)(f*2.0F)+0.5D));
+									byte b1 = (byte)((int)((double)(f1*2.0F)+0.5D));
+									// Make it a vector, rotate it around the map center
+									Vec3d mapPos = new Vec3d(0, b1, b0);
+									mapPos = mapPos.rotatePitch(mapRotation);
+									// Turn it into a 0.0 to 128.0 offset
+									double offsetH = (mapPos.z/2.0F+64.0F);
+									double offsetV = (mapPos.y/2.0F+64.0F);
+									// Get cursor distance
+									double dH = cursorH-offsetH;
+									double dV = cursorV-offsetV;
+									double dist = dH*dH+dV*dV;
+									if(dist < 10&&dist < lastDist)
+									{
+										lastDist = dist;
+										mineral = tagCompound.getString("mineral");
+									}
+								}
+							}
+							if(mineral!=null)
+							{
+								MineralMix mix = ExcavatorHandler.mineralList.get(new ResourceLocation(mineral));
+								if(mix!=null)
+									font.drawStringWithShadow(I18n.format(mix.getTranslationKey()), scaledWidth/2-8, scaledHeight/2+8, 0xffffff);
+							}
 						}
 					}
 				}

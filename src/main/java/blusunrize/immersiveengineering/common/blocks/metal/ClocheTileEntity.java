@@ -118,7 +118,7 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 	public void tick()
 	{
 		ApiUtils.checkForNeedlessTicking(this);
-		if(dummy!=0||world.getRedstonePowerFromNeighbors(getPos()) > 0)
+		if(dummy!=0||isRSPowered())
 			return;
 		ItemStack seed = inventory.get(SLOT_SEED);
 		if(world.isRemote)

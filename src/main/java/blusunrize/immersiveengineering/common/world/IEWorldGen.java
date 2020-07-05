@@ -39,8 +39,6 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.world.ChunkDataEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
@@ -49,7 +47,6 @@ import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-@EventBusSubscriber(modid = ImmersiveEngineering.MODID, bus = Bus.MOD)
 public class IEWorldGen
 {
 	public static Map<String, ConfiguredFeature<?, ?>> features = new HashMap<>();
@@ -97,15 +94,16 @@ public class IEWorldGen
 	}
 
 	@SubscribeEvent
-	public void chunkSave(ChunkDataEvent.Save event)
+	public void chunkDataSave(ChunkDataEvent.Save event)
 	{
+		CompoundNBT levelTag = event.getData().getCompound("Level");
 		CompoundNBT nbt = new CompoundNBT();
-		event.getData().put("ImmersiveEngineering", nbt);
+		levelTag.put("ImmersiveEngineering", nbt);
 		nbt.putBoolean(IEConfig.ORES.retrogen_key.get(), true);
 	}
 
 	@SubscribeEvent
-	public static void chunkLoad(ChunkDataEvent.Load event)
+	public void chunkDataLoad(ChunkDataEvent.Load event)
 	{
 		if(event.getChunk().getStatus()==ChunkStatus.FULL)
 		{
@@ -172,7 +170,7 @@ public class IEWorldGen
 	private static CountRangeInIEDimensions COUNT_RANGE_IE;
 
 	@SubscribeEvent
-	public static void registerPlacements(RegistryEvent.Register<Placement<?>> ev)
+	public void registerPlacements(RegistryEvent.Register<Placement<?>> ev)
 	{
 		COUNT_RANGE_IE = new CountRangeInIEDimensions(CountRangeConfig::deserialize);
 		COUNT_RANGE_IE.setRegistryName(ImmersiveEngineering.MODID, "count_range_in_ie_dimensions");

@@ -16,9 +16,9 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.Blockstat
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPropertyPassthrough;
-import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
+import com.google.common.base.Preconditions;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundNBT;
@@ -50,6 +50,8 @@ public abstract class IEBaseTileEntity extends TileEntity implements BlockstateP
 	protected IGeneralMultiblock tempMasterTE;
 
 	private BlockState overrideBlockState = null;
+
+	private final EnumMap<Direction, Integer> redstoneBySide = new EnumMap<>(Direction.class);
 
 	public IEBaseTileEntity(TileEntityType<? extends TileEntity> type)
 	{
@@ -309,5 +311,49 @@ public abstract class IEBaseTileEntity extends TileEntity implements BlockstateP
 			return new CombinedModelData(base, new SinglePropertyModelData<>(this, Model.TILEENTITY_PASSTHROUGH));
 		else
 			return base;
+	}
+
+	@Override
+	public void setWorld(World worldIn)
+	{
+		super.setWorld(worldIn);
+		this.redstoneBySide.clear();
+	}
+
+	protected void onNeighborBlockChange(BlockPos otherPos)
+	{
+		BlockPos delta = otherPos.subtract(pos);
+		Direction side = Direction.func_218383_a(delta.getX(), delta.getY(), delta.getZ());
+		Preconditions.checkNotNull(side);
+		updateRSForSide(side);
+	}
+
+	private void updateRSForSide(Direction side)
+	{
+		int rsStrength = getWorldNonnull().getRedstonePower(pos.offset(side), side);
+		redstoneBySide.put(side, rsStrength);
+	}
+
+	protected int getRSInput(Direction from)
+	{
+		if(getWorldNonnull().isRemote||!redstoneBySide.containsKey(from))
+			updateRSForSide(from);
+		return redstoneBySide.get(from);
+	}
+
+	protected int getMaxRSInput()
+	{
+		int ret = 0;
+		for(Direction d : Direction.VALUES)
+			ret = Math.max(ret, getRSInput(d));
+		return ret;
+	}
+
+	protected boolean isRSPowered()
+	{
+		for(Direction d : Direction.VALUES)
+			if(getRSInput(d) > 0)
+				return true;
+		return false;
 	}
 }

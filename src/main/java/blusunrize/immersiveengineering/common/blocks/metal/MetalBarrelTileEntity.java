@@ -29,10 +29,8 @@ public class MetalBarrelTileEntity extends WoodenBarrelTileEntity
 	@Override
 	public void tick()
 	{
-		if(!world.isRemote&&world.getRedstonePowerFromNeighbors(getPos()) <= 0)
-		{
+		if(!world.isRemote&&!isRSPowered())
 			super.tick();
-		}
 	}
 
 	@Override

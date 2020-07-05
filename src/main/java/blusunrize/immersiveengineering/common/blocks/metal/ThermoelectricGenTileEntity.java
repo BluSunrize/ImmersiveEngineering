@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.INeighbourChangeTile;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxConnector;
@@ -31,7 +30,7 @@ import net.minecraft.util.math.BlockPos;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class ThermoelectricGenTileEntity extends IEBaseTileEntity implements ITickableTileEntity, INeighbourChangeTile, IIEInternalFluxConnector
+public class ThermoelectricGenTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInternalFluxConnector
 {
 	public static TileEntityType<ThermoelectricGenTileEntity> TYPE;
 
@@ -66,6 +65,7 @@ public class ThermoelectricGenTileEntity extends IEBaseTileEntity implements ITi
 	@Override
 	public void onNeighborBlockChange(BlockPos pos)
 	{
+		super.onNeighborBlockChange(pos);
 		recalculateEnergyOutput();
 	}
 

@@ -652,6 +652,7 @@ public class IEConfig
 	{
 		CACHED.wireLossRatio = toDoubleArray(WIRES.wireLossRatio);
 		CACHED.wireTransferRate = toIntArray(WIRES.wireTransferRate);
+		CACHED.connectorInputRates = toIntArray(MACHINES.wireConnectorInput);
 		CACHED.blocksBreakWires = WIRES.blocksBreakWires.get();
 		CACHED.wireDamage = WIRES.enableWireDamage.get();
 		Level wireLoggerLevel;
@@ -674,5 +675,6 @@ public class IEConfig
 		public int[] wireTransferRate;
 		public boolean blocksBreakWires;
 		public boolean wireDamage;
+		public int[] connectorInputRates;
 	}
 }

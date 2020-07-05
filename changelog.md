@@ -10,10 +10,12 @@
 - Added IE's metal items to various generic tags (Malte)
 - Added holding animation for the buzzsaw (BluSunrize)
 - Added the ability for the chemthrower to hydrate vanilla concrete powder (BluSunrize)
-- Added the ability for fluidpipes to extract from tanks (experimental, might break stuff) (BluSunrize) 
+- Added the ability for fluidpipes to extract from tanks (experimental, might break stuff) (BluSunrize)
+- Added mouseover for maps showing mineral locations (only works with NEW maps!) (BluSunrize)
 - Cleaned up some wire network code (Malte)
 - Changed hammer to allow rotating Redstone Repeaters (experimental, might break stuff) (BluSunrize)
 - Changed buzzsaw to take less damage when breaking leaves (BluSunrize)
+- Changed various blocks to have their redstone interaction configured by the Screwdriver instead of the Hammer (BluSunrize)
 - Fixed feedthroughs not dropping the middle block when it's broken (Malte)
 - Fixed IE allowing clients to join servers with mismatched IE versions (Malte)
 - Fixed diesel generators still not allowing levers to be placed in all cases (Malte)
@@ -33,6 +35,9 @@
 - Fixed shears not counting as tools for the toolbox (BluSunrize)
 - Fixed rendering and boundingboxes on vertical conveyors (BluSunrize)
 - Fixed IE hud elements overlapping with subtitles, but this time better (BluSunrize)
+- Fixed height calculations for tables in the manual (Malte)
+- Fixed strip curtains not storing their strong/weak signal setting (Malte)
+- Implemented a few minor performance improvements (Malte)
 - Translations Added/Updated: ru_ru (Sergo 467)
 
 ##### Version 0.15-103 - BUILT

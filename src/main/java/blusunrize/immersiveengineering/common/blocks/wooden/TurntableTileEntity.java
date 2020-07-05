@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.INeighbourChangeTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.util.RotationUtil;
 import net.minecraft.entity.LivingEntity;
@@ -26,7 +25,7 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
-public class TurntableTileEntity extends IEBaseTileEntity implements IStateBasedDirectional, INeighbourChangeTile, IHammerInteraction
+public class TurntableTileEntity extends IEBaseTileEntity implements IStateBasedDirectional, IHammerInteraction
 {
 	public static TileEntityType<TurntableTileEntity> TYPE;
 	//rotationMapping is rotating clockwise around the face of the turntable, starting at NORTH for top/bottom facing turntables and DOWN for sideways facing turntables
@@ -69,6 +68,7 @@ public class TurntableTileEntity extends IEBaseTileEntity implements IStateBased
 	@Override
 	public void onNeighborBlockChange(BlockPos otherPos)
 	{
+		super.onNeighborBlockChange(otherPos);
 		Direction facing = getFacing();
 		BlockPos difference = otherPos.subtract(pos);
 		Direction otherDir = Direction.getFacingFromVector(difference.getX(), difference.getY(), difference.getZ());
