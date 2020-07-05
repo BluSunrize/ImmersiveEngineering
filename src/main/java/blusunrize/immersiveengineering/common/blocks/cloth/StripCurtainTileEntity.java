@@ -125,12 +125,14 @@ public class StripCurtainTileEntity extends IEBaseTileEntity implements ITickabl
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		colour = nbt.getInt("colour");
+		this.strongSignal = nbt.getBoolean("strongSignal");
 	}
 
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		nbt.putInt("colour", colour);
+		nbt.putBoolean("strongSignal", this.strongSignal);
 	}
 
 	private static final AxisAlignedBB[] bounds = {
