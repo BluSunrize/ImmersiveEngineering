@@ -39,6 +39,7 @@ import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -375,14 +376,14 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 	}
 
 	@Override
-	public boolean screwdriverUseSide(Direction side, PlayerEntity player, Vec3d hitVec)
+	public ActionResultType screwdriverUseSide(Direction side, PlayerEntity player, Vec3d hitVec)
 	{
 		if(isDummy())
 		{
 			TileEntity te = world.getTileEntity(getPos().down());
 			if(te instanceof TurretTileEntity)
 				return ((TurretTileEntity)te).screwdriverUseSide(side, player, hitVec);
-			return false;
+			return ActionResultType.FAIL;
 		}
 		if(player.isSneaking()&&!world.isRemote)
 		{
@@ -391,7 +392,7 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 			markDirty();
 			this.markContainingBlockForUpdate(null);
 		}
-		return true;
+		return ActionResultType.SUCCESS;
 	}
 
 	@Override

@@ -314,16 +314,16 @@ public abstract class IEBaseTileEntity extends TileEntity implements BlockstateP
 	}
 
 	@Override
-	public void setWorld(World worldIn)
+	public void setWorldAndPos(World world, BlockPos pos)
 	{
-		super.setWorld(worldIn);
+		super.setWorldAndPos(world, pos);
 		this.redstoneBySide.clear();
 	}
 
 	protected void onNeighborBlockChange(BlockPos otherPos)
 	{
 		BlockPos delta = otherPos.subtract(pos);
-		Direction side = Direction.func_218383_a(delta.getX(), delta.getY(), delta.getZ());
+		Direction side = Direction.getFacingFromVector(delta.getX(), delta.getY(), delta.getZ());
 		Preconditions.checkNotNull(side);
 		updateRSForSide(side);
 	}

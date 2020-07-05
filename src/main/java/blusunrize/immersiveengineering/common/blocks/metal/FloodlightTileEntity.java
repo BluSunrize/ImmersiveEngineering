@@ -36,6 +36,7 @@ import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.BlockPos;
@@ -429,7 +430,7 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 	}
 
 	@Override
-	public boolean screwdriverUseSide(Direction side, PlayerEntity player, Vec3d hitVec)
+	public ActionResultType screwdriverUseSide(Direction side, PlayerEntity player, Vec3d hitVec)
 	{
 		if(!world.isRemote)
 		{
@@ -438,7 +439,7 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 			markDirty();
 			this.markContainingBlockForUpdate(null);
 		}
-		return true;
+		return ActionResultType.SUCCESS;
 	}
 
 	@Override

@@ -28,6 +28,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
@@ -304,7 +305,7 @@ public class IEBlockInterfaces
 
 	public interface IScrewdriverInteraction
 	{
-		boolean screwdriverUseSide(Direction side, PlayerEntity player, Vec3d hitVec);
+		ActionResultType screwdriverUseSide(Direction side, PlayerEntity player, Vec3d hitVec);
 	}
 
 	public interface IPlacementInteraction

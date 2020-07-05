@@ -280,9 +280,9 @@ public class IEBaseBlock extends Block implements IIEBlock
 		return ActionResultType.PASS;
 	}
 
-	public boolean screwdriverUseSide(Direction side, PlayerEntity player, World w, BlockPos pos, BlockRayTraceResult hit)
+	public ActionResultType screwdriverUseSide(Direction side, PlayerEntity player, World w, BlockPos pos, BlockRayTraceResult hit)
 	{
-		return false;
+		return ActionResultType.PASS;
 	}
 
 	public abstract static class IELadderBlock extends IEBaseBlock

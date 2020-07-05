@@ -27,6 +27,7 @@ import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -375,11 +376,11 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	}
 
 	@Override
-	public boolean screwdriverUseSide(Direction side, PlayerEntity player, Vec3d hitVec)
+	public ActionResultType screwdriverUseSide(Direction side, PlayerEntity player, Vec3d hitVec)
 	{
-		if(!world.isRemote)
+		if(this.isRedstonePos()&&hasRedstoneControl)
 		{
-			if(this.isRedstonePos()&&hasRedstoneControl)
+			if(!world.isRemote)
 			{
 				MultiblockPartTileEntity<T> master = master();
 				if(master!=null)
@@ -388,11 +389,11 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 					ChatUtils.sendServerNoSpamMessages(player, new TranslationTextComponent(Lib.CHAT_INFO+"rsControl."
 							+(master.redstoneControlInverted?"invertedOn": "invertedOff")));
 					this.updateMasterBlock(null, true);
-					return true;
 				}
 			}
+			return ActionResultType.SUCCESS;
 		}
-		return false;
+		return ActionResultType.PASS;
 	}
 
 	public boolean isRSDisabled()
