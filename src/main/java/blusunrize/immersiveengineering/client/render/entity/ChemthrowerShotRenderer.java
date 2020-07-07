@@ -33,10 +33,10 @@ public class ChemthrowerShotRenderer extends EntityRenderer<ChemthrowerShotEntit
 	public void doRender(ChemthrowerShotEntity entity, double x, double y, double z, float f0, float f1)
 	{
 		FluidStack f = entity.getFluid();
-		if(f==null)
+		if(f==null||f.isEmpty())
 		{
 			f = entity.getFluidSynced();
-			if(f==null)
+			if(f==null||f.isEmpty())
 				return;
 		}
 
