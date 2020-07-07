@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks;
 
-import blusunrize.immersiveengineering.api.DimensionBlockPos;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
@@ -40,21 +39,15 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
 import static blusunrize.immersiveengineering.api.wires.GlobalWireNetwork.getNetwork;
 
-@Mod.EventBusSubscriber
 public abstract class IETileProviderBlock extends IEBaseBlock implements IColouredBlock
 {
 	private boolean hasColours = false;
@@ -63,15 +56,6 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 							   Property... stateProps)
 	{
 		super(name, blockProps, itemBlock, stateProps);
-	}
-
-	private static final Map<DimensionBlockPos, TileEntity> tempTile = new HashMap<>();
-
-	@SubscribeEvent
-	public static void onTick(TickEvent.ServerTickEvent ev)
-	{
-		if(ev.phase==TickEvent.Phase.END)
-			tempTile.clear();
 	}
 
 	@Override
@@ -121,7 +105,6 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 				for(ConnectionPoint cp : ((IImmersiveConnectable)tile).getConnectionPoints())
 					getNetwork(world).removeAllConnectionsAt(cp, dropHandler);
 		}
-		tempTile.put(new DimensionBlockPos(pos, world), tile);
 		super.onReplaced(state, world, pos, newState, isMoving);
 	}
 

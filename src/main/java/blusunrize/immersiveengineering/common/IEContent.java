@@ -203,6 +203,7 @@ public class IEContent
 				ore = new IEBaseBlock("ore_"+name,
 						Block.Properties.create(Material.ROCK)
 								.hardnessAndResistance(3, 5)
+								.setRequiresTool()
 								.harvestTool(ToolType.PICKAXE)
 								.harvestLevel(oreMiningLevels.get(m)), BlockItemIE::new);
 			}
@@ -211,6 +212,7 @@ public class IEContent
 				storage = new IEBaseBlock("storage_"+name, Block.Properties.create(Material.IRON)
 						.sound(SoundType.METAL)
 						.hardnessAndResistance(5, 10)
+						.setRequiresTool()
 						.harvestTool(ToolType.PICKAXE)
 						.harvestLevel(storageMiningLevels.get(m)), BlockItemIE::new);
 				nugget = new IEBaseItem("nugget_"+name);
@@ -242,9 +244,22 @@ public class IEContent
 			IEItems.Metals.ingots.put(m, ingot);
 			IEItems.Metals.dusts.put(m, dust);
 		}
-		Block.Properties stoneDecoProps = Block.Properties.create(Material.ROCK).sound(SoundType.STONE).hardnessAndResistance(2, 10);
-		Block.Properties stoneDecoPropsNotSolid = Block.Properties.create(Material.ROCK).sound(SoundType.STONE).hardnessAndResistance(2, 10).notSolid();
-		Block.Properties stoneDecoLeadedProps = Block.Properties.create(Material.ROCK).sound(SoundType.STONE).hardnessAndResistance(2, 180);
+		Block.Properties stoneDecoProps = Block.Properties.create(Material.ROCK)
+				.sound(SoundType.STONE)
+				.setRequiresTool()
+				.harvestTool(ToolType.PICKAXE)
+				.hardnessAndResistance(2, 10);
+		Block.Properties stoneDecoPropsNotSolid = Block.Properties.create(Material.ROCK)
+				.sound(SoundType.STONE)
+				.setRequiresTool()
+				.harvestTool(ToolType.PICKAXE)
+				.hardnessAndResistance(2, 10)
+				.notSolid();
+		Block.Properties stoneDecoLeadedProps = Block.Properties.create(Material.ROCK)
+				.sound(SoundType.STONE)
+				.setRequiresTool()
+				.harvestTool(ToolType.PICKAXE)
+				.hardnessAndResistance(2, 180);
 
 		StoneDecoration.cokebrick = new IEBaseBlock("cokebrick", stoneDecoProps, BlockItemIE::new);
 		StoneDecoration.blastbrick = new IEBaseBlock("blastbrick", stoneDecoProps, BlockItemIE::new);
@@ -283,8 +298,13 @@ public class IEContent
 		StoneDecoration.coresample = new GenericTileBlock("coresample", () -> CoresampleTileEntity.TYPE,
 				stoneDecoPropsNotSolid, (b, p) -> null, IEProperties.FACING_HORIZONTAL);
 
-		Block.Properties standardWoodProperties = Block.Properties.create(Material.WOOD).sound(SoundType.WOOD).hardnessAndResistance(2, 5);
-		Block.Properties standardWoodPropertiesNotSolid = Block.Properties.create(Material.WOOD).sound(SoundType.WOOD).hardnessAndResistance(2, 5).notSolid();
+		Block.Properties standardWoodProperties = Block.Properties.create(Material.WOOD)
+				.sound(SoundType.WOOD)
+				.hardnessAndResistance(2, 5);
+		Block.Properties standardWoodPropertiesNotSolid = Block.Properties.create(Material.WOOD)
+				.sound(SoundType.WOOD)
+				.hardnessAndResistance(2, 5)
+				.notSolid();
 		for(TreatedWoodStyles style : TreatedWoodStyles.values())
 		{
 			IEBaseBlock baseBlock = new IEBaseBlock("treated_wood_"+style.name().toLowerCase(), standardWoodProperties, BlockItemIE::new)
@@ -325,8 +345,17 @@ public class IEContent
 		Misc.fakeLight = new FakeLightBlock();
 
 
-		Block.Properties defaultMetalProperties = Block.Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(3, 15);
-		Block.Properties metalPropertiesNotSolid = Block.Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(3, 15).notSolid();
+		Block.Properties defaultMetalProperties = Block.Properties.create(Material.IRON)
+				.sound(SoundType.METAL)
+				.setRequiresTool()
+				.harvestTool(ToolType.PICKAXE)
+				.hardnessAndResistance(3, 15);
+		Block.Properties metalPropertiesNotSolid = Block.Properties.create(Material.IRON)
+				.sound(SoundType.METAL)
+				.hardnessAndResistance(3, 15)
+				.setRequiresTool()
+				.harvestTool(ToolType.PICKAXE)
+				.notSolid();
 		MetalDecoration.lvCoil = new IEBaseBlock("coil_lv", defaultMetalProperties, BlockItemIE::new);
 		MetalDecoration.mvCoil = new IEBaseBlock("coil_mv", defaultMetalProperties, BlockItemIE::new);
 		MetalDecoration.hvCoil = new IEBaseBlock("coil_hv", defaultMetalProperties, BlockItemIE::new);
