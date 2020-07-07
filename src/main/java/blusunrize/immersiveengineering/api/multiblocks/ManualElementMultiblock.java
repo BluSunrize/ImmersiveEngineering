@@ -161,7 +161,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 							sIndent.append("0");
 					IFormattableTextComponent s;
 					if(hasItems[ss])
-						s = greenTick.func_230531_f_();
+						s = greenTick.deepCopy();
 					else
 						s = new StringTextComponent(hasAnyItems?"   ": "");
 					s.func_230529_a_(ClientUtils.applyFormat(
@@ -170,8 +170,8 @@ public class ManualElementMultiblock extends SpecialManualElements
 					));
 					if(!req.isEmpty())
 						s.func_230529_a_(ClientUtils.applyFormat(
-								req.getDisplayName().func_230531_f_(),
-										req.getRarity().color
+								req.getDisplayName().deepCopy(),
+								req.getRarity().color
 						));
 					else
 						s.func_240702_b_("???");
@@ -316,7 +316,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 			for(Entry<BlockPos, BlockInfo> p : data.data.entrySet())
 				if(p.getValue().nbt!=null&&!p.getValue().nbt.isEmpty())
 				{
-					TileEntity te = TileEntity.func_235657_b_(p.getValue().state, p.getValue().nbt);
+					TileEntity te = TileEntity.readTileEntity(p.getValue().state, p.getValue().nbt);
 					if(te!=null)
 					{
 						te.cachedBlockState = p.getValue().state;

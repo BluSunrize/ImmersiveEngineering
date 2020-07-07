@@ -41,7 +41,7 @@ public class ClickableList extends Button
 				  @Nonnull List<Tree.AbstractNode<ResourceLocation, ManualEntry>> nodes,
 				  Consumer<Tree.AbstractNode<ResourceLocation, ManualEntry>> handler)
 	{
-		super(x, y, w, h, StringTextComponent.field_240750_d_, btn -> {
+		super(x, y, w, h, StringTextComponent.EMPTY, btn -> {
 		});
 		this.gui = gui;
 		this.textScale = textScale;

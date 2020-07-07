@@ -117,7 +117,7 @@ public class ImmersiveEngineering
 
 		for(String b : IEConfig.ORES.oreDimBlacklist.get())
 			IEWorldGen.oreDimBlacklist.add(RegistryKey.func_240903_a_(
-					Registry.field_239698_ad_,
+					Registry.DIMENSION_TYPE_KEY,
 					new ResourceLocation(b)
 			));
 		IEApi.modPreference = IEConfig.GENERAL.preferredOres.get();

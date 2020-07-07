@@ -76,7 +76,7 @@ public class BlockItemBalloon extends BlockItemIE
 	@Override
 	public ITextComponent getDisplayName(ItemStack stack)
 	{
-		IFormattableTextComponent ret = super.getDisplayName(stack).func_230532_e_();
+		IFormattableTextComponent ret = super.getDisplayName(stack).deepCopy();
 		CompoundNBT nbt = stack.getOrCreateTag();
 		if(nbt.getByte("offset")!=0)
 			ret.func_240702_b_(" (+"+nbt.getByte("offset")+")");

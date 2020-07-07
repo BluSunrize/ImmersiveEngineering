@@ -330,7 +330,6 @@ public class ClientUtils
 			TileEntity te = world.getTileEntity(blockpos);
 			boolean hasBreak = block instanceof ChestBlock||block instanceof EnderChestBlock
 					||block instanceof AbstractSignBlock||block instanceof SkullBlock;
-			if(!hasBreak) hasBreak = te!=null&&te.canRenderBreaking();
 			if(!hasBreak)
 			{
 				BlockState iblockstate = world.getBlockState(blockpos);
@@ -1284,7 +1283,7 @@ public class ClientUtils
 	{
 		Style style = component.getStyle();
 		for(TextFormatting format : color)
-			style = style.func_240712_a_(format);
-		return component.func_230531_f_().func_230530_a_(style);
+			style = style.applyFormatting(format);
+		return component.deepCopy().func_230530_a_(style);
 	}
 }

@@ -59,10 +59,10 @@ public abstract class IEBaseTileEntity extends TileEntity implements BlockstateP
 	}
 
 	@Override
-	public void func_230337_a_(BlockState state, CompoundNBT nbt)
+	public void read(BlockState stateIn, CompoundNBT nbtIn)
 	{
-		super.func_230337_a_(state, nbt);
-		this.readCustomNBT(nbt, false);
+		super.read(stateIn, nbtIn);
+		this.readCustomNBT(nbtIn, false);
 	}
 
 	public abstract void readCustomNBT(CompoundNBT nbt, boolean descPacket);

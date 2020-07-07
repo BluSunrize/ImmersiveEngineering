@@ -30,9 +30,9 @@ public class IELootFunctions
 		bluprintz = LootFunctionManager.func_237451_a_(BluprintzLootFunction.ID.toString(), new BluprintzLootFunction.Serializer());
 		windmill = LootFunctionManager.func_237451_a_(WindmillLootFunction.ID.toString(), new WindmillLootFunction.Serializer());
 
-		dropInventory = LootEntryManager.func_237419_a_(DropInventoryLootEntry.ID.toString(), new DropInventoryLootEntry.Serializer());
-		tileDrop = LootEntryManager.func_237419_a_(TileDropLootEntry.ID.toString(), new TileDropLootEntry.Serializer());
-		multiblockOrigBlock = LootEntryManager.func_237419_a_(MBOriginalBlockLootEntry.ID.toString(), new MBOriginalBlockLootEntry.Serializer());
+		dropInventory = LootEntryManager.register(DropInventoryLootEntry.ID.toString(), new DropInventoryLootEntry.Serializer());
+		tileDrop = LootEntryManager.register(TileDropLootEntry.ID.toString(), new TileDropLootEntry.Serializer());
+		multiblockOrigBlock = LootEntryManager.register(MBOriginalBlockLootEntry.ID.toString(), new MBOriginalBlockLootEntry.Serializer());
 	}
 
 }

@@ -50,7 +50,7 @@ public abstract class TurretScreen extends IEContainerScreen<TurretContainer>
 	{
 		super.init();
 		mc().keyboardListener.enableRepeatEvents(true);
-		this.nameField = new TextFieldWidget(this.font, guiLeft+11, guiTop+88, 58, 12, StringTextComponent.field_240750_d_);
+		this.nameField = new TextFieldWidget(this.font, guiLeft+11, guiTop+88, 58, 12, StringTextComponent.EMPTY);
 		this.nameField.setTextColor(-1);
 		this.nameField.setDisabledTextColour(-1);
 		this.nameField.setEnableBackgroundDrawing(false);

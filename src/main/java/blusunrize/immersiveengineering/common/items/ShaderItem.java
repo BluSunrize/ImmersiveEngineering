@@ -165,7 +165,7 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, ITextureOverr
 	@Override
 	public ITextComponent getDisplayName(@Nonnull ItemStack stack)
 	{
-		IFormattableTextComponent itc = super.getDisplayName(stack).func_230531_f_();
+		IFormattableTextComponent itc = super.getDisplayName(stack).deepCopy();
 		ResourceLocation rl = getShaderName(stack);
 		if(rl!=null)
 			itc.func_240702_b_(": ")

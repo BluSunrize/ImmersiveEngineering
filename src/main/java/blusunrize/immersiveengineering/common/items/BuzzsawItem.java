@@ -362,10 +362,10 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 			ItemStack sawblade = getSawblade(stack);
 			if(!sawblade.isEmpty()&&canBuzzsawBeUsed(stack, null))
 			{
-				multimap.put(Attributes.field_233823_f_,
+				multimap.put(Attributes.ATTACK_DAMAGE,
 						new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier",
 								((SawbladeItem)sawblade.getItem()).getSawbladeDamage(), Operation.ADDITION));
-				multimap.put(Attributes.field_233825_h_,
+				multimap.put(Attributes.ATTACK_SPEED,
 						new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", -2.5D, Operation.ADDITION));
 			}
 		}

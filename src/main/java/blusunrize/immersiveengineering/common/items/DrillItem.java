@@ -291,8 +291,8 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 			ItemStack head = getHead(stack);
 			if(!head.isEmpty()&&canDrillBeUsed(stack, null))
 			{
-				multimap.put(Attributes.field_233823_f_, new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier", ((IDrillHead)head.getItem()).getAttackDamage(head)+getUpgrades(stack).getInt("damage"), Operation.ADDITION));
-				multimap.put(Attributes.field_233825_h_, new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", -2.5D, Operation.ADDITION));
+				multimap.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier", ((IDrillHead)head.getItem()).getAttackDamage(head)+getUpgrades(stack).getInt("damage"), Operation.ADDITION));
+				multimap.put(Attributes.ATTACK_SPEED, new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", -2.5D, Operation.ADDITION));
 			}
 		}
 		return multimap;

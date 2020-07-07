@@ -80,7 +80,7 @@ public class ArcFurnaceScreen extends IEContainerScreen<ArcFurnaceContainer>
 	{
 		super.init();
 		Minecraft mc = mc();
-		distributeButton = new GuiButtonIE(guiLeft+10, guiTop+10, 16, 16, StringTextComponent.field_240750_d_, texture, 179, 0,
+		distributeButton = new GuiButtonIE(guiLeft+10, guiTop+10, 16, 16, StringTextComponent.EMPTY, texture, 179, 0,
 				btn -> {
 					if(mc.player!=null&&mc.player.inventory.getItemStack().isEmpty())
 						autoSplitStacks();

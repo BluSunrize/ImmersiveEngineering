@@ -79,7 +79,10 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 		{
 			ITextComponent add = IEItemFluidHandler.fluidItemInfoFlavor(ItemNBTHelper.getFluidStack(stack, FluidHandlerItemStack.FLUID_NBT_KEY+(i > 0?i: "")), cap);
 			if(i > 0)
-				add.getStyle().func_240712_a_(TextFormatting.GRAY);
+				ClientUtils.applyFormat(
+						add,
+						TextFormatting.GRAY
+				);
 			list.add(add);
 		}
 	}

@@ -38,7 +38,7 @@ public class GuiReactiveList extends Button
 
 	public GuiReactiveList(Screen gui, int x, int y, int w, int h, IPressable handler, String... entries)
 	{
-		super(x, y, w, h, StringTextComponent.field_240750_d_, handler);
+		super(x, y, w, h, StringTextComponent.EMPTY, handler);
 		this.gui = gui;
 		this.entries = entries;
 		recalculateEntries();

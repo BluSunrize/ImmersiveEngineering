@@ -94,7 +94,7 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 		@Override
 		public boolean isFluidValid(FluidStack fluid)
 		{
-			return FluidTags.WATER.func_230235_a_(fluid.getFluid());
+			return FluidTags.WATER.contains(fluid.getFluid());
 		}
 	};
 	public FluxStorage energyStorage = new FluxStorage(16000, Math.max(256, IEConfig.MACHINES.cloche_consumption.get()));

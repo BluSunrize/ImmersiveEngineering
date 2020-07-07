@@ -37,7 +37,7 @@ public class FakeLightBlock extends IETileProviderBlock
 {
 	public FakeLightBlock()
 	{
-		super("fake_light", Properties.create(Material.AIR).notSolid().func_235838_a_(b -> 15), (b, p) -> null);
+		super("fake_light", Properties.create(Material.AIR).notSolid().setLightLevel(b -> 15), (b, p) -> null);
 	}
 
 	@Override

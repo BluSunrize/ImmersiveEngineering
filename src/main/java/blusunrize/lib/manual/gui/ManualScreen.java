@@ -146,7 +146,7 @@ public class ManualScreen extends Screen
 		if(textField)
 		{
 			mc.keyboardListener.enableRepeatEvents(true);
-			searchField = new TextFieldWidget(font, guiLeft+166, guiTop+78, 120, 12, StringTextComponent.field_240750_d_);
+			searchField = new TextFieldWidget(font, guiLeft+166, guiTop+78, 120, 12, StringTextComponent.EMPTY);
 			searchField.setTextColor(-1);
 			searchField.setDisabledTextColour(-1);
 			searchField.setEnableBackgroundDrawing(false);

@@ -141,7 +141,7 @@ public class IICProxy implements IImmersiveConnectable
 		List<ConnectionPoint> points = new ArrayList<>();
 		for(INBT c : pointNBT)
 			points.add(new ConnectionPoint((CompoundNBT)c));
-		return new IICProxy(RegistryKey.func_240903_a_(Registry.field_239699_ae_, new ResourceLocation(nbt.getString("dim"))),
+		return new IICProxy(RegistryKey.func_240903_a_(Registry.WORLD_KEY, new ResourceLocation(nbt.getString("dim"))),
 				NBTUtil.readBlockPos(nbt.getCompound("pos")), internal, points);
 	}
 

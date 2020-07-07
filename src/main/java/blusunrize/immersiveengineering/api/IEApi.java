@@ -76,9 +76,9 @@ public class IEApi
 		return oreOutputPreference.computeIfAbsent(name, rl ->
 		{
 			if(TagUtils.isNonemptyItemTag(name))
-				return new ItemStack(getPreferredElementbyMod(ItemTags.getCollection().get(name).func_230236_b_()));
+				return new ItemStack(getPreferredElementbyMod(ItemTags.getCollection().get(name).getAllElements()));
 			else if(TagUtils.isNonemptyBlockTag(name))
-				return new ItemStack(getPreferredElementbyMod(BlockTags.getCollection().get(name).func_230236_b_()));
+				return new ItemStack(getPreferredElementbyMod(BlockTags.getCollection().get(name).getAllElements()));
 			else
 				return ItemStack.EMPTY;
 		}).copy();

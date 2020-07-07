@@ -52,7 +52,7 @@ public class ItemBatcherScreen extends IEContainerScreen<ItemBatcherContainer>
 		mc().keyboardListener.enableRepeatEvents(true);
 
 		this.buttons.clear();
-		buttonBatchMode = new GuiButtonState<>(guiLeft+7, guiTop+92, 18, 18, StringTextComponent.field_240750_d_,
+		buttonBatchMode = new GuiButtonState<>(guiLeft+7, guiTop+92, 18, 18, StringTextComponent.EMPTY,
 				ItemBatcherTileEntity.BatchMode.values(), tile.batchMode.ordinal(), "immersiveengineering:textures/gui/item_batcher.png",
 				176, 36, 1,
 				btn -> {

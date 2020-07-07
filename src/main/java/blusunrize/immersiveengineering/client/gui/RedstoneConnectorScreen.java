@@ -50,7 +50,7 @@ public class RedstoneConnectorScreen extends ClientTileScreen<ConnectorRedstoneT
 
 		this.buttons.clear();
 
-		buttonInOut = new GuiButtonState<>(guiLeft+41, guiTop+20, 18, 18, StringTextComponent.field_240750_d_, new IOSideConfig[]{IOSideConfig.INPUT, IOSideConfig.OUTPUT},
+		buttonInOut = new GuiButtonState<>(guiLeft+41, guiTop+20, 18, 18, StringTextComponent.EMPTY, new IOSideConfig[]{IOSideConfig.INPUT, IOSideConfig.OUTPUT},
 				tileEntity.ioMode.ordinal()-1, "immersiveengineering:textures/gui/redstone_configuration.png", 176, 0, 1,
 				btn -> {
 					tileEntity.ioMode = btn.getNextState();

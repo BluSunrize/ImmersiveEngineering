@@ -162,7 +162,7 @@ public class CoresampleTileEntity extends IEBaseTileEntity implements IStateBase
 						mapTagCompound.put("Decorations", nbttaglist);
 					}
 					else
-						player.sendMessage(new TranslationTextComponent(Lib.CHAT_INFO+"coresample.mapFail"), Util.field_240973_b_);
+						player.sendMessage(new TranslationTextComponent(Lib.CHAT_INFO+"coresample.mapFail"), Util.DUMMY_UUID);
 				}
 			}
 			return true;

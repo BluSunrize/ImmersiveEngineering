@@ -32,7 +32,7 @@ public class IEEnums
 		}
 
 		@Override
-		public String func_176610_l()
+		public String getString()
 		{
 			return this.toString().toLowerCase(Locale.ENGLISH);
 		}
@@ -44,7 +44,7 @@ public class IEEnums
 
 		public ITextComponent getTextComponent()
 		{
-			return new TranslationTextComponent(Lib.DESC_INFO+"blockSide.io."+func_176610_l());
+			return new TranslationTextComponent(Lib.DESC_INFO+"blockSide.io."+getString());
 		}
 
 		public static IOSideConfig next(IOSideConfig current)

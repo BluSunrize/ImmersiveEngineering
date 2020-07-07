@@ -118,7 +118,7 @@ public class SorterScreen extends IEContainerScreen<SorterContainer>
 
 		public ButtonSorter(int x, int y, int type, IPressable handler)
 		{
-			super(x, y, 18, 18, StringTextComponent.field_240750_d_, handler);
+			super(x, y, 18, 18, StringTextComponent.EMPTY, handler);
 			this.type = type;
 		}
 

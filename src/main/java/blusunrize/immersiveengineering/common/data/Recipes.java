@@ -212,7 +212,7 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL("blastfurnace/fuel_charcoal"));
 		INamedTag<Item> charCoalBlocks = createItemWrapper(getStorageBlock("charcoal"));
 		BlastFurnaceFuelBuilder.builder(charCoalBlocks)
-				.addCondition(new NotCondition(new TagEmptyCondition(charCoalBlocks.func_230234_a_())))
+				.addCondition(new NotCondition(new TagEmptyCondition(charCoalBlocks.getName())))
 				.setTime(10*300)
 				.build(out, toRL("blastfurnace/fuel_charcoal_block"));
 
@@ -2838,14 +2838,14 @@ public class Recipes extends RecipeProvider
 		ITag<Item> itemTag = IETags.getItemTag(in);
 		if(itemTag==null)
 			//TODO this currently does not work, the tag collection is not initialized in data gen mode
-			itemTag = ItemTags.getCollection().getTagMap().get(in.func_230234_a_());
-		Preconditions.checkNotNull(itemTag, "Failed to convert block tag "+in.func_230234_a_()+" to item tag");
+			itemTag = ItemTags.getCollection().getTagMap().get(in.getName());
+		Preconditions.checkNotNull(itemTag, "Failed to convert block tag "+in.getName()+" to item tag");
 		return makeIngredient(itemTag);
 	}
 
 	public static ICondition getTagCondition(INamedTag<?> tag)
 	{
-		return new NotCondition(new TagEmptyCondition(tag.func_230234_a_()));
+		return new NotCondition(new TagEmptyCondition(tag.getName()));
 	}
 
 	public static ICondition getTagCondition(ResourceLocation tag)

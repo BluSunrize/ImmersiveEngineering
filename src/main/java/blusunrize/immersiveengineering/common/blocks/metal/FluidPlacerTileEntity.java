@@ -195,7 +195,7 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickable
 	{
 		CompoundNBT sideConfigNBT = nbt.getCompound("sideConfig");
 		for(Direction d : Direction.VALUES)
-			sideConfig.put(d, IOSideConfig.VALUES[sideConfigNBT.getInt(d.func_176610_l())]);
+			sideConfig.put(d, IOSideConfig.VALUES[sideConfigNBT.getInt(d.getString())]);
 		tank.readFromNBT(nbt.getCompound("tank"));
 		if(descPacket)
 			this.markContainingBlockForUpdate(null);
@@ -206,7 +206,7 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickable
 	{
 		CompoundNBT sideConfigNBT = new CompoundNBT();
 		for(Direction d : Direction.VALUES)
-			sideConfigNBT.putInt(d.func_176610_l(), sideConfig.get(d).ordinal());
+			sideConfigNBT.putInt(d.getString(), sideConfig.get(d).ordinal());
 		nbt.put("sideConfig", sideConfigNBT);
 		nbt.put("tank", tank.writeToNBT(new CompoundNBT()));
 	}
@@ -250,9 +250,9 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickable
 			IOSideConfig j = sideConfig.get(brtr.getFace().getOpposite());
 			return new String[]{
 					I18n.format(Lib.DESC_INFO+"blockSide.facing")
-							+": "+I18n.format(Lib.DESC_INFO+"blockSide.connectFluid."+i.func_176610_l()),
+							+": "+I18n.format(Lib.DESC_INFO+"blockSide.connectFluid."+i.getString()),
 					I18n.format(Lib.DESC_INFO+"blockSide.opposite")
-							+": "+I18n.format(Lib.DESC_INFO+"blockSide.connectFluid."+j.func_176610_l())
+							+": "+I18n.format(Lib.DESC_INFO+"blockSide.connectFluid."+j.getString())
 			};
 		}
 		return null;

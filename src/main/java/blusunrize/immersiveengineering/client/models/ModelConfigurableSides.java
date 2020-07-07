@@ -63,7 +63,7 @@ public class ModelConfigurableSides extends BakedIEModel
 			@Override
 			public String nameFromSide(Direction side, IOSideConfig cfg)
 			{
-				return side.getAxis()==Axis.Y?side.func_176610_l(): "side";
+				return side.getAxis()==Axis.Y?side.getString(): "side";
 			}
 		});
 		TYPES.put("side_vertical", new ITextureNamer()
@@ -258,7 +258,7 @@ public class ModelConfigurableSides extends BakedIEModel
 			for(Direction f : Direction.VALUES)
 				for(IOSideConfig cfg : IOSideConfig.values())
 				{
-					String key = f.func_176610_l()+"_"+cfg.getTextureName();
+					String key = f.getString()+"_"+cfg.getTextureName();
 					String tex = name+"_"+namer.getTextureName(f, cfg);
 					builder.put(key, new RenderMaterial(PlayerContainer.LOCATION_BLOCKS_TEXTURE, new ResourceLocation(tex)));
 				}
@@ -288,7 +288,7 @@ public class ModelConfigurableSides extends BakedIEModel
 				Map<IOSideConfig, TextureAtlasSprite> forSide = new EnumMap<>(IOSideConfig.class);
 				for(IOSideConfig cfg : IOSideConfig.values())
 				{
-					RenderMaterial rl = textures.get(f.func_176610_l()+"_"+cfg.getTextureName());
+					RenderMaterial rl = textures.get(f.getString()+"_"+cfg.getTextureName());
 					if(rl!=null)
 						forSide.put(cfg, spriteGetter.apply(rl));
 				}
@@ -321,7 +321,7 @@ public class ModelConfigurableSides extends BakedIEModel
 
 		default String nameFromSide(Direction side, IOSideConfig cfg)
 		{
-			return side.func_176610_l();
+			return side.getString();
 		}
 
 		default String nameFromCfg(Direction side, IOSideConfig cfg)

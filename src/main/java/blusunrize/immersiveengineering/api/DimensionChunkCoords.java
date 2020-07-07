@@ -79,7 +79,7 @@ public class DimensionChunkCoords extends ChunkPos
 		{
 			String dimNameStr = tag.getString("dim");
 			ResourceLocation dimName = new ResourceLocation(dimNameStr);
-			RegistryKey<World> dimType = RegistryKey.func_240903_a_(Registry.field_239699_ae_, dimName);
+			RegistryKey<World> dimType = RegistryKey.func_240903_a_(Registry.WORLD_KEY, dimName);
 			return new DimensionChunkCoords(dimType, tag.getInt("x"), tag.getInt("z"));
 		}
 		return null;

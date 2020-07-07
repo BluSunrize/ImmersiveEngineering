@@ -299,10 +299,10 @@ public class BasicConveyor implements IConveyorBelt
 
 	static
 	{
-		validCoveyorCovers.add(IETags.scaffoldingAlu::func_230235_a_);
-		validCoveyorCovers.add(IETags.scaffoldingSteel::func_230235_a_);
+		validCoveyorCovers.add(IETags.scaffoldingAlu::contains);
+		validCoveyorCovers.add(IETags.scaffoldingSteel::contains);
 		validCoveyorCovers.add(input -> input==WoodenDecoration.treatedScaffolding);
-		validCoveyorCovers.add(Tags.Blocks.GLASS::func_230235_a_);
+		validCoveyorCovers.add(Tags.Blocks.GLASS::contains);
 	}
 
 	protected void addCoverToQuads(List<BakedQuad> baseModel)

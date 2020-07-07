@@ -251,23 +251,23 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 		if(slot==EquipmentSlotType.MAINHAND)
 		{
 			if(getUpgrades(stack).getBoolean("fancyAnimation"))
-				multimap.put(Attributes.field_233825_h_, new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -2, Operation.ADDITION));
+				multimap.put(Attributes.ATTACK_SPEED, new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -2, Operation.ADDITION));
 			double melee = getUpgradeValue_d(stack, "melee");
 			if(melee!=0)
 			{
-				multimap.put(Attributes.field_233823_f_, new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", melee, Operation.ADDITION));
-				multimap.put(Attributes.field_233825_h_, new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -2.4000000953674316D, Operation.ADDITION));
+				multimap.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", melee, Operation.ADDITION));
+				multimap.put(Attributes.ATTACK_SPEED, new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -2.4000000953674316D, Operation.ADDITION));
 			}
 		}
 		if(slot.getSlotType()==Group.HAND)
 		{
 			double speed = getUpgradeValue_d(stack, "speed");
 			if(speed!=0)
-				multimap.put(Attributes.field_233821_d_, new AttributeModifier(speedModUUID, "Weapon modifier", speed, Operation.MULTIPLY_BASE));
+				multimap.put(Attributes.MOVEMENT_SPEED, new AttributeModifier(speedModUUID, "Weapon modifier", speed, Operation.MULTIPLY_BASE));
 
 			double luck = getUpgradeValue_d(stack, RevolverPerk.LUCK.getNBTKey());
 			if(luck!=0)
-				multimap.put(Attributes.field_233828_k_, new AttributeModifier(luckModUUID, "Weapon modifier", luck, Operation.ADDITION));
+				multimap.put(Attributes.LUCK, new AttributeModifier(luckModUUID, "Weapon modifier", luck, Operation.ADDITION));
 		}
 		return multimap;
 	}
@@ -891,7 +891,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 
 			int rarityTier = (int)Math.ceil(MathHelper.clamp(averageTier+3, 0, 6)/6*5);
 			Rarity rarity = rarityTier==5?Lib.RARITY_MASTERWORK: rarityTier==4?Rarity.EPIC: rarityTier==3?Rarity.RARE: rarityTier==2?Rarity.UNCOMMON: Rarity.COMMON;
-			return name.func_230531_f_().func_240699_a_(rarity.color);
+			return name.deepCopy().func_240699_a_(rarity.color);
 		}
 
 		public static int calculateTier(CompoundNBT perksTag)

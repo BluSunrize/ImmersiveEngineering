@@ -286,7 +286,7 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 			return null;
 		return new String[]{
 				I18n.format(Lib.DESC_INFO+"redstoneChannel", I18n.format("item.minecraft.firework_star."+redstoneChannel.getTranslationKey())),
-				I18n.format(Lib.DESC_INFO+"blockSide.io."+this.ioMode.func_176610_l())
+				I18n.format(Lib.DESC_INFO+"blockSide.io."+this.ioMode.getString())
 		};
 	}
 

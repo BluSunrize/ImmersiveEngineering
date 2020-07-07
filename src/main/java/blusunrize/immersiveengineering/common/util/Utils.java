@@ -111,7 +111,7 @@ public class Utils
 	public static boolean isInTag(ItemStack stack, ResourceLocation tagName)
 	{
 		ITag<Item> tag = ItemTags.getCollection().get(tagName);
-		return tag!=null&&tag.func_230235_a_(stack.getItem());
+		return tag!=null&&tag.contains(stack.getItem());
 	}
 
 	public static boolean compareItemNBT(ItemStack stack1, ItemStack stack2)
@@ -138,22 +138,22 @@ public class Utils
 
 	public static final BiMap<ResourceLocation, DyeColor> DYES_BY_TAG =
 			ImmutableBiMap.<ResourceLocation, DyeColor>builder()
-					.put(Tags.Items.DYES_BLACK.func_230234_a_(), DyeColor.BLACK)
-					.put(Tags.Items.DYES_RED.func_230234_a_(), DyeColor.RED)
-					.put(Tags.Items.DYES_GREEN.func_230234_a_(), DyeColor.GREEN)
-					.put(Tags.Items.DYES_BROWN.func_230234_a_(), DyeColor.BROWN)
-					.put(Tags.Items.DYES_BLUE.func_230234_a_(), DyeColor.BLUE)
-					.put(Tags.Items.DYES_PURPLE.func_230234_a_(), DyeColor.PURPLE)
-					.put(Tags.Items.DYES_CYAN.func_230234_a_(), DyeColor.CYAN)
-					.put(Tags.Items.DYES_LIGHT_GRAY.func_230234_a_(), DyeColor.LIGHT_GRAY)
-					.put(Tags.Items.DYES_GRAY.func_230234_a_(), DyeColor.GRAY)
-					.put(Tags.Items.DYES_PINK.func_230234_a_(), DyeColor.PINK)
-					.put(Tags.Items.DYES_LIME.func_230234_a_(), DyeColor.LIME)
-					.put(Tags.Items.DYES_YELLOW.func_230234_a_(), DyeColor.YELLOW)
-					.put(Tags.Items.DYES_LIGHT_BLUE.func_230234_a_(), DyeColor.LIGHT_BLUE)
-					.put(Tags.Items.DYES_MAGENTA.func_230234_a_(), DyeColor.MAGENTA)
-					.put(Tags.Items.DYES_ORANGE.func_230234_a_(), DyeColor.ORANGE)
-					.put(Tags.Items.DYES_WHITE.func_230234_a_(), DyeColor.WHITE)
+					.put(Tags.Items.DYES_BLACK.getName(), DyeColor.BLACK)
+					.put(Tags.Items.DYES_RED.getName(), DyeColor.RED)
+					.put(Tags.Items.DYES_GREEN.getName(), DyeColor.GREEN)
+					.put(Tags.Items.DYES_BROWN.getName(), DyeColor.BROWN)
+					.put(Tags.Items.DYES_BLUE.getName(), DyeColor.BLUE)
+					.put(Tags.Items.DYES_PURPLE.getName(), DyeColor.PURPLE)
+					.put(Tags.Items.DYES_CYAN.getName(), DyeColor.CYAN)
+					.put(Tags.Items.DYES_LIGHT_GRAY.getName(), DyeColor.LIGHT_GRAY)
+					.put(Tags.Items.DYES_GRAY.getName(), DyeColor.GRAY)
+					.put(Tags.Items.DYES_PINK.getName(), DyeColor.PINK)
+					.put(Tags.Items.DYES_LIME.getName(), DyeColor.LIME)
+					.put(Tags.Items.DYES_YELLOW.getName(), DyeColor.YELLOW)
+					.put(Tags.Items.DYES_LIGHT_BLUE.getName(), DyeColor.LIGHT_BLUE)
+					.put(Tags.Items.DYES_MAGENTA.getName(), DyeColor.MAGENTA)
+					.put(Tags.Items.DYES_ORANGE.getName(), DyeColor.ORANGE)
+					.put(Tags.Items.DYES_WHITE.getName(), DyeColor.WHITE)
 					.build();
 
 	public static final BiMap<ITag<Item>, Item> WOOL_DYE_BIMAP =
@@ -182,7 +182,7 @@ public class Utils
 		if(stack.isEmpty())
 			return null;
 		Collection<ResourceLocation> owners = ItemTags.getCollection().getOwningTags(stack.getItem());
-		if(owners.contains(Tags.Items.DYES.func_230234_a_()))
+		if(owners.contains(Tags.Items.DYES.getName()))
 		{
 			for(ResourceLocation tag : owners)
 				if(DYES_BY_TAG.containsKey(tag))

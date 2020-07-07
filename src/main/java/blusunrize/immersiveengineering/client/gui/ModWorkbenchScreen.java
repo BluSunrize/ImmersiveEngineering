@@ -69,7 +69,7 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 					{
 						List<ITextComponent> tooltip = new ArrayList<>();
 						tooltip.add(ClientUtils.applyFormat(
-								recipe.output.getDisplayName().func_230532_e_(),
+								recipe.output.getDisplayName().deepCopy(),
 								recipe.output.getRarity().color
 						));
 						List<ItemStack> inputs = new ArrayList<>();

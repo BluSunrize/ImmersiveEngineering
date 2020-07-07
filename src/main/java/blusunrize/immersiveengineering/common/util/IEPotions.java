@@ -50,15 +50,15 @@ public class IEPotions
 				0x690000, 0, false, 2, true, true);
 		sticky = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "sticky"), EffectType.HARMFUL,
 				0x9c6800, 0, false, 3, true, true)
-				.addAttributesModifier(Attributes.field_233821_d_, Utils.generateNewUUID().toString(), -0.5, Operation.MULTIPLY_TOTAL);
+				.addAttributesModifier(Attributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -0.5, Operation.MULTIPLY_TOTAL);
 		stunned = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "stunned"), EffectType.HARMFUL,
 				0x624a98, 0, false, 4, true, true);
 		concreteFeet = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "concrete_feet"), EffectType.HARMFUL,
 				0x624a98, 0, false, 5, true, true)
-				.addAttributesModifier(Attributes.field_233821_d_, Utils.generateNewUUID().toString(), -2D, Operation.MULTIPLY_TOTAL);
+				.addAttributesModifier(Attributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -2D, Operation.MULTIPLY_TOTAL);
 		flashed = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "flashed"), EffectType.HARMFUL,
 				0x624a98, 0, false, 6, true, true)
-				.addAttributesModifier(Attributes.field_233821_d_, Utils.generateNewUUID().toString(), -0.15, Operation.MULTIPLY_TOTAL);
+				.addAttributesModifier(Attributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -0.15, Operation.MULTIPLY_TOTAL);
 
 		IEApi.potions = new Effect[]{flammable, slippery, conductive, sticky, stunned, concreteFeet, flashed};
 	}

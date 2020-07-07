@@ -50,7 +50,7 @@ public class IngredientMultiTag extends Ingredient
 	{
 		int i = 0;
 		for(ITag<Item> list : tags)
-			i += list.func_230236_b_().size();
+			i += list.getAllElements().size();
 		return i;
 	}
 
@@ -62,7 +62,7 @@ public class IngredientMultiTag extends Ingredient
 		{
 			NonNullList<ItemStack> lst = NonNullList.create();
 			for(ITag<Item> list : tags)
-				for(Item stack : list.func_230236_b_())
+				for(Item stack : list.getAllElements())
 					stack.getItem().fillItemGroup(ItemGroup.SEARCH, lst);
 			this.array = lst.toArray(new ItemStack[0]);
 		}
@@ -79,7 +79,7 @@ public class IngredientMultiTag extends Ingredient
 			this.itemIds = new IntArrayList(totalSize());
 
 			for(ITag<Item> list : tags)
-				for(Item item : list.func_230236_b_())
+				for(Item item : list.getAllElements())
 					this.itemIds.add(RecipeItemHelper.pack(new ItemStack(item)));
 			this.itemIds.sort(IntComparators.NATURAL_COMPARATOR);
 		}
@@ -95,7 +95,7 @@ public class IngredientMultiTag extends Ingredient
 			return false;
 
 		for(ITag<Item> list : tags)
-			if(list.func_230235_a_(input.getItem()))
+			if(list.contains(input.getItem()))
 				return true;
 
 		return false;

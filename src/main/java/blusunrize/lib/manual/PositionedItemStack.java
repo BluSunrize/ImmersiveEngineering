@@ -55,7 +55,7 @@ public class PositionedItemStack
 		else if(stack instanceof List&&!((List)stack).isEmpty())
 			displayList.addAll((List<ItemStack>)this.stack);
 		else if(stack instanceof ITag)
-			((ITag<?>)stack).func_230236_b_().stream()
+			((ITag<?>)stack).getAllElements().stream()
 					.map(o -> ((IItemProvider)o).asItem())
 					.map(ItemStack::new)
 					.forEach(displayList::add);

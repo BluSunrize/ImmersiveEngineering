@@ -201,7 +201,7 @@ public class WirecoilUtils
 			ResourceLocation dim = new ResourceLocation(nbt.getString("linkingDim"));
 			BlockPos offset = NBTUtil.readBlockPos(nbt.getCompound("linkingOffset"));
 			TargetingInfo info = TargetingInfo.readFromNBT(nbt.getCompound("linkingTarget"));
-			return new WireLink(cp, RegistryKey.func_240903_a_(Registry.field_239699_ae_, dim), offset, info);
+			return new WireLink(cp, RegistryKey.func_240903_a_(Registry.WORLD_KEY, dim), offset, info);
 		}
 	}
 

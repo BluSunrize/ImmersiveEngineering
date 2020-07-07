@@ -31,8 +31,8 @@ public class BlockIESlab<T extends Block & IIEBlock> extends SlabBlock implement
 	public BlockIESlab(String name, Properties props, Function<Block, Item> itemBlock, T base)
 	{
 		super(props
-				.func_235842_b_(causesSuffocation(base))
-				.func_235828_a_(isNormalCube(base)));
+				.setSuffocates(causesSuffocation(base))
+				.setOpaque(isNormalCube(base)));
 		ResourceLocation registryName = new ResourceLocation(ImmersiveEngineering.MODID, name);
 		setRegistryName(registryName);
 

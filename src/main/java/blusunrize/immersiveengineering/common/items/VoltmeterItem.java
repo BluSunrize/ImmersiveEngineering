@@ -130,7 +130,7 @@ public class VoltmeterItem extends IEBaseItem implements ITool
 								player.sendMessage(new TranslationTextComponent(
 										Lib.CHAT_INFO+"averageLoss",
 										Utils.formatDouble(energyPath.loss*100, "###.000")
-								), Util.field_240973_b_);
+								), Util.DUMMY_UUID);
 						}
 					}
 				}

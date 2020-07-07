@@ -58,7 +58,7 @@ public class DimensionBlockPos
 	public DimensionBlockPos(CompoundNBT nbt)
 	{
 		this(NBTUtil.readBlockPos(nbt), RegistryKey.func_240903_a_(
-				Registry.field_239699_ae_,
+				Registry.WORLD_KEY,
 				new ResourceLocation(nbt.getString("dimension")
 				)));
 	}

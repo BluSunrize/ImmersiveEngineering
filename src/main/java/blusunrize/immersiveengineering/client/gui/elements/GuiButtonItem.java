@@ -26,7 +26,7 @@ public class GuiButtonItem extends Button
 
 	public GuiButtonItem(int x, int y, ItemStack stack, boolean state, IPressable handler)
 	{
-		super(x, y, 18, 18, StringTextComponent.field_240750_d_, handler);
+		super(x, y, 18, 18, StringTextComponent.EMPTY, handler);
 		this.state = state;
 		this.item = stack;
 	}

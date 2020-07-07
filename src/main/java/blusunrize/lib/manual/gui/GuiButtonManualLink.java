@@ -30,7 +30,7 @@ public class GuiButtonManualLink extends Button
 
 	public GuiButtonManualLink(ManualScreen gui, int x, int y, int w, int h, @Nullable ManualLink link, String localized)
 	{
-		super(x, y, w, h, StringTextComponent.field_240750_d_, btn -> {
+		super(x, y, w, h, StringTextComponent.EMPTY, btn -> {
 			if(link!=null)
 				link.changePage(gui, true);
 		});

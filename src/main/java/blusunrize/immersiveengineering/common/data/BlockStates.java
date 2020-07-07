@@ -1204,7 +1204,7 @@ public class BlockStates extends BlockStateProvider
 		VariantBlockStateBuilder builder = getVariantBuilder(Misc.hempPlant);
 		for(EnumHempGrowth g : EnumHempGrowth.values())
 		{
-			ModelFile model = models().withExistingParent("block/hemp/"+g.func_176610_l(),
+			ModelFile model = models().withExistingParent("block/hemp/"+g.getString(),
 					new ResourceLocation("block/crop"))
 					.texture("crop", g.getTextureName());
 			builder.partialState()
@@ -1217,7 +1217,7 @@ public class BlockStates extends BlockStateProvider
 	{
 		BlockModelBuilder builder = models().withExistingParent(outName, modLoc("block/ie_six_sides"));
 		for(Direction d : Direction.VALUES)
-			builder.texture(d.func_176610_l(), new ResourceLocation(baseTexName.getNamespace(),
+			builder.texture(d.getString(), new ResourceLocation(baseTexName.getNamespace(),
 					baseTexName.getPath()+"_"+d.ordinal()));
 		builder.texture("particle", new ResourceLocation(baseTexName.getNamespace(),
 				baseTexName.getPath()+"_0"));

@@ -26,7 +26,7 @@ public class GuiButtonManualNavigation extends Button
 
 	public GuiButtonManualNavigation(ManualScreen gui, int x, int y, int w, int h, int type, IPressable handler)
 	{
-		super(x, y, type >= 4?10: Math.min(type < 2?16: 10, w), type >= 4?10: Math.min(type < 2?10: 16, h), StringTextComponent.field_240750_d_, handler);
+		super(x, y, type >= 4?10: Math.min(type < 2?16: 10, w), type >= 4?10: Math.min(type < 2?10: 16, h), StringTextComponent.EMPTY, handler);
 		this.gui = gui;
 		this.type = type;
 	}

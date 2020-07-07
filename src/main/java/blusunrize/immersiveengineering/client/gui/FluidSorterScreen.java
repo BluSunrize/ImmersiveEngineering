@@ -65,10 +65,10 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 					for(int i = 0; i < split.length; i++)
 					{
 						ITextComponent component = new StringTextComponent(split[i]);
-						if (i==0)
-							component.getStyle().func_240712_a_(TextFormatting.WHITE);
-						else
-							component.getStyle().func_240712_a_(TextFormatting.GRAY);
+						ClientUtils.applyFormat(
+								component,
+								i==0?TextFormatting.WHITE: TextFormatting.GRAY
+						);
 						tooltip.add(component);
 					}
 				}

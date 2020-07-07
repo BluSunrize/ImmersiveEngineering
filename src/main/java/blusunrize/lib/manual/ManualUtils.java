@@ -64,22 +64,22 @@ public class ManualUtils
 	public static boolean isInTag(ItemStack stack, ResourceLocation tag)
 	{
 		ITag<Item> itemTag = ItemTags.getCollection().get(tag);
-		if(itemTag!=null&&itemTag.func_230235_a_(stack.getItem()))
+		if(itemTag!=null&&itemTag.contains(stack.getItem()))
 			return true;
 		ITag<Block> blockTag = BlockTags.getCollection().get(tag);
-		return blockTag!=null&&blockTag.func_230235_a_(Block.getBlockFromItem(stack.getItem()));
+		return blockTag!=null&&blockTag.contains(Block.getBlockFromItem(stack.getItem()));
 	}
 
 	public static boolean isNonemptyItemTag(ResourceLocation name)
 	{
 		ITag<Item> t = ItemTags.getCollection().getTagMap().get(name);
-		return t!=null&&!t.func_230236_b_().isEmpty();
+		return t!=null&&!t.getAllElements().isEmpty();
 	}
 
 	public static boolean isNonemptyBlockTag(ResourceLocation name)
 	{
 		ITag<Block> t = BlockTags.getCollection().getTagMap().get(name);
-		return t!=null&&!t.func_230236_b_().isEmpty();
+		return t!=null&&!t.getAllElements().isEmpty();
 	}
 
 	public static boolean isNonemptyBlockOrItemTag(ResourceLocation name)

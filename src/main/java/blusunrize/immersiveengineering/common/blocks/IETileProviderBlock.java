@@ -31,13 +31,11 @@ import net.minecraft.state.Property;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.Direction.AxisDirection;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.IBlockReader;
@@ -50,7 +48,6 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -413,40 +410,6 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 				return ((ISelectionBounds)te).getSelectionShape(null);
 		}
 		return super.getRaytraceShape(state, world, pos);
-	}
-
-	//TODO remove? Vanilla knows about the advanced bounds now...
-	@Nullable
-	@Override
-	public RayTraceResult getRayTraceResult(BlockState state, World world, BlockPos pos, Vector3d start, Vector3d end, RayTraceResult original)
-	{
-		TileEntity te = world.getTileEntity(pos);
-		if(te instanceof ISelectionBounds)
-		{
-			List<AxisAlignedBB> list = ((ISelectionBounds)te).getSelectionShape(null).toBoundingBoxList();
-			if(!list.isEmpty())
-			{
-				RayTraceResult min = null;
-				double minDist = Double.POSITIVE_INFINITY;
-				for(AxisAlignedBB aabb : list)
-				{
-					BlockRayTraceResult mop = VoxelShapes.create(aabb.offset(-pos.getX(), -pos.getY(), -pos.getZ()))
-							.rayTrace(start, end, pos);
-					if(mop!=null)
-					{
-						//double dist = mop.hitVec.squareDistanceTo(start);
-						double dist = mop.getHitVec().squareDistanceTo(start);
-						if(dist < minDist)
-						{
-							min = mop;
-							minDist = dist;
-						}
-					}
-				}
-				return min;
-			}
-		}
-		return original;
 	}
 
 	@Override
