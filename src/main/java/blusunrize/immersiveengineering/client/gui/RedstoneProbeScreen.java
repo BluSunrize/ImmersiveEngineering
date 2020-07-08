@@ -53,26 +53,22 @@ public class RedstoneProbeScreen extends ClientTileScreen<ConnectorProbeTileEnti
 			final DyeColor color = DyeColor.byId(i);
 			colorButtonsSend[i] = RedstoneConnectorScreen.buildColorButton(colorButtonsSend, guiLeft+20+(i%4*14), guiTop+10+(i/4*14),
 					tileEntity.redstoneChannelSending.ordinal()==i, color, btn -> {
-						tileEntity.redstoneChannelSending = color;
+						sendConfig("redstoneChannelSending", color);
 					});
 			this.addButton(colorButtonsSend[i]);
 
 			colorButtonsReceive[i] = RedstoneConnectorScreen.buildColorButton(colorButtonsReceive, guiLeft+136+(i%4*14), guiTop+10+(i/4*14),
 					tileEntity.redstoneChannel.ordinal()==i, color, btn -> {
-						tileEntity.redstoneChannel = color;
+						sendConfig("redstoneChannel", color);
 					});
 			this.addButton(colorButtonsReceive[i]);
 		}
 	}
 
-	@Override
-	public void onClose()
+	private void sendConfig(String key, DyeColor color)
 	{
-		super.onClose();
-
 		CompoundNBT message = new CompoundNBT();
-		message.putInt("redstoneChannel", tileEntity.redstoneChannel.getId());
-		message.putInt("redstoneChannelSending", tileEntity.redstoneChannelSending.ordinal());
+		message.putInt(key, color.getId());
 		ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tileEntity, message));
 	}
 
