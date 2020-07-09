@@ -172,15 +172,15 @@ public class BlastFurnaceAdvancedTileEntity extends BlastFurnaceTileEntity
 		if(ioOffsets.contains(posInMultiblock)&&capability==net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
 			BlastFurnaceAdvancedTileEntity master = (BlastFurnaceAdvancedTileEntity)master();
-			if(master==null)
-				return null;
-			if(inputOffset.equals(posInMultiblock)&&facing==Direction.UP)
-				return master.inputHandler.cast();
-			if(outputOffset.equals(posInMultiblock)&&facing==master.getFacing())
-				return master.outputHandler.cast();
-			if(slagOutputOffset.equals(posInMultiblock)&&facing==master.getFacing().getOpposite())
-				return master.slagHandler.cast();
-			return LazyOptional.empty();
+			if(master!=null)
+			{
+				if(inputOffset.equals(posInMultiblock)&&facing==Direction.UP)
+					return master.inputHandler.cast();
+				if(outputOffset.equals(posInMultiblock)&&facing==master.getFacing())
+					return master.outputHandler.cast();
+				if(slagOutputOffset.equals(posInMultiblock)&&facing==master.getFacing().getOpposite())
+					return master.slagHandler.cast();
+			}
 		}
 		return super.getCapability(capability, facing);
 	}
