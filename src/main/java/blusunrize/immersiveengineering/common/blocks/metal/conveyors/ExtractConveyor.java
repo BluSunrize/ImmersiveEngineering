@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -149,7 +148,7 @@ public class ExtractConveyor extends BasicConveyor
 	{
 		String key = super.getModelCacheKey();
 		key += "e"+this.getExtractDirection().ordinal();
-		key += "ex"+getExtensionIntoBlock(getTile());
+		key += "ex"+getCurrentExtension();
 		return key;
 	}
 
@@ -161,6 +160,11 @@ public class ExtractConveyor extends BasicConveyor
 	}
 
 	private boolean extensionRecursionLock = false;
+	private static final VoxelShape ALLOWED_MISSING_SHAPE = VoxelShapes.combine(
+			VoxelShapes.create(1/16., 1/16., 1/16., 15/16., 15/16., 15/16.),
+			VoxelShapes.fullCube(),
+			IBooleanFunction.NOT_SAME
+	);
 
 	/**
 	 * @return empty if the correct value can not be computed at this time. In this case, assume 0, but do not cache.
@@ -182,7 +186,8 @@ public class ExtractConveyor extends BasicConveyor
 			if(connectedTile!=null&&connectedTile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, this.getExtractDirection().getOpposite()).isPresent())
 			{
 				VoxelShape connectedShape = connected.getShape(world, neighbour);
-				if(Block.doesSideFillSquare(connectedShape, this.getExtractDirection().getOpposite()))
+				VoxelShape projected = connectedShape.project(this.getExtractDirection().getOpposite());
+				if(VoxelShapes.compare(projected, ALLOWED_MISSING_SHAPE, IBooleanFunction.OR))
 				{
 					AxisAlignedBB aabb = connectedShape.getBoundingBox();
 					switch(getExtractDirection())
