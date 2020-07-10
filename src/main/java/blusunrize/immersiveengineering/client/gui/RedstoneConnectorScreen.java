@@ -51,9 +51,8 @@ public class RedstoneConnectorScreen extends ClientTileScreen<ConnectorRedstoneT
 
 		buttonInOut = new GuiButtonState<>(guiLeft+41, guiTop+20, 18, 18, "", new IOSideConfig[]{IOSideConfig.INPUT, IOSideConfig.OUTPUT},
 				tileEntity.ioMode.ordinal()-1, "immersiveengineering:textures/gui/redstone_configuration.png", 176, 0, 1,
-				btn -> {
-					tileEntity.ioMode = btn.getNextState();
-				});
+				btn -> sendConfig("ioMode", btn.getNextState().ordinal())
+		);
 		this.addButton(buttonInOut);
 
 		colorButtons = new GuiButtonBoolean[16];
@@ -61,21 +60,15 @@ public class RedstoneConnectorScreen extends ClientTileScreen<ConnectorRedstoneT
 		{
 			final DyeColor color = DyeColor.byId(i);
 			colorButtons[i] = buildColorButton(colorButtons, guiLeft+22+(i%4*14), guiTop+44+(i/4*14),
-					tileEntity.redstoneChannel.ordinal()==i, color, btn -> {
-						tileEntity.redstoneChannel = color;
-					});
+					tileEntity.redstoneChannel.ordinal()==i, color, btn -> sendConfig("redstoneChannel", color.getId()));
 			this.addButton(colorButtons[i]);
 		}
 	}
 
-	@Override
-	public void onClose()
+	public void sendConfig(String key, int value)
 	{
-		super.onClose();
-
 		CompoundNBT message = new CompoundNBT();
-		message.putInt("ioMode", tileEntity.ioMode.ordinal());
-		message.putInt("redstoneChannel", tileEntity.redstoneChannel.getId());
+		message.putInt(key, value);
 		ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tileEntity, message));
 	}
 
