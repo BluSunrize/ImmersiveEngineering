@@ -52,4 +52,10 @@ public abstract class ClientTileScreen<T extends TileEntity> extends Screen
 		// Foreground
 		drawGuiContainerForegroundLayer(mx, my, partial);
 	}
+
+	@Override
+	public boolean isPauseScreen()
+	{
+		return false;
+	}
 }

@@ -86,9 +86,9 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 	public void update(World w)
 	{
 		transferPower();
-		burnOverloaded(w);
 		transferredLastTick = transferredNextTick;
 		transferredNextTick = new Object2DoubleOpenHashMap<>();
+		burnOverloaded(w);
 	}
 
 	/**
@@ -124,6 +124,9 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 		return sources;
 	}
 
+	/**
+	 * @return shortest (w.r.t. base loss) path from source to sink. null if there is no path with base loss <1
+	 */
 	@Nullable
 	public Path getPath(ConnectionPoint source, ConnectionPoint sink)
 	{
@@ -208,13 +211,16 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 			for(Entry<ConnectionPoint, EnergyConnector> sinkEntry : sinks.entrySet())
 			{
 				Path p = getPath(sourceCp, sinkEntry.getKey());
-				EnergyConnector sink = sinkEntry.getValue();
-				int requested = sink.getRequestedEnergy();
-				if(requested <= 0)
-					continue;
-				double requiredAtSource = Math.min(requested/(1-p.loss), available);
-				maxOut.put(p, requiredAtSource);
-				maxSum += requiredAtSource;
+				if(p!=null)
+				{
+					EnergyConnector sink = sinkEntry.getValue();
+					int requested = sink.getRequestedEnergy();
+					if(requested <= 0)
+						continue;
+					double requiredAtSource = Math.min(requested/(1-p.loss), available);
+					maxOut.put(p, requiredAtSource);
+					maxSum += requiredAtSource;
+				}
 			}
 			double allowedFactor = Math.min(1, available/maxSum);
 			for(Path p : maxOut.keySet())
@@ -249,9 +255,9 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 	private void burnOverloaded(World world)
 	{
 		List<Pair<Connection, Double>> toBurn = new ArrayList<>();
-		for(Connection c : transferredNextTick.keySet())
+		for(Connection c : transferredLastTick.keySet())
 		{
-			double transferred = transferredNextTick.getDouble(c);
+			double transferred = transferredLastTick.getDouble(c);
 			if(c.type instanceof IEnergyWire&&((IEnergyWire)c.type).shouldBurn(c, transferred))
 				toBurn.add(new ImmutablePair<>(c, transferred));
 		}

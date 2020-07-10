@@ -152,10 +152,13 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 						int[] inputAmounts = ((MultiblockProcessInMachine<ArcFurnaceRecipe>)process).getInputAmounts();
 						if(inputAmounts!=null)
 							for(int i = 0; i < inputSlots.length; i++)
-								if(usedInvSlots.containsKey(inputSlots[i]))
-									usedInvSlots.put(inputSlots[i], usedInvSlots.get(inputSlots[i])+inputAmounts[i]);
-								else
-									usedInvSlots.put(inputSlots[i], inputAmounts[i]);
+								if(inputAmounts[i] > 0)
+								{
+									if(usedInvSlots.containsKey(inputSlots[i]))
+										usedInvSlots.put(inputSlots[i], usedInvSlots.get(inputSlots[i])+inputAmounts[i]);
+									else
+										usedInvSlots.put(inputSlots[i], inputAmounts[i]);
+								}
 					}
 
 				NonNullList<ItemStack> additives = NonNullList.withSize(4, ItemStack.EMPTY);
@@ -182,8 +185,13 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 									this.addProcessToQueue(process, false);
 									int[] consumedAdditives = recipe.getConsumedAdditives(additives, true);
 									if(consumedAdditives!=null)
-										process.setInputAmounts(1, consumedAdditives[0], consumedAdditives[1], consumedAdditives[2], consumedAdditives[3]);
-									//							update = true;
+										process.setInputAmounts(
+												recipe.input.getCount(),
+												consumedAdditives[0],
+												consumedAdditives[1],
+												consumedAdditives[2],
+												consumedAdditives[3]
+										);
 								}
 							}
 						}
