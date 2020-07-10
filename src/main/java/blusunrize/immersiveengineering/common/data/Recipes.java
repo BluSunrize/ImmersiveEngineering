@@ -2032,7 +2032,7 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL(toPath(Tools.rockcutter)));
 
 		ShapedRecipeBuilder.shapedRecipe(Tools.surveyTools)
-				.patternLine("bhc")
+				.patternLine("cbh")
 				.patternLine("fff")
 				.key('b', Items.GLASS_BOTTLE)
 				.key('h', Tools.hammer)
