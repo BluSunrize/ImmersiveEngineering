@@ -47,7 +47,7 @@ public class MineralVein
 		return radius;
 	}
 
-	// exponential growth of the fail chance depending on the distance from the center of the vein
+	// fail chance grows with distance from the center of the vein
 	public double getFailChance(BlockPos pos)
 	{
 		double dX = pos.getX()-this.pos.x;
@@ -74,7 +74,7 @@ public class MineralVein
 
 	public boolean isDepleted()
 	{
-		return ExcavatorHandler.mineralVeinYield==0||getDepletion() >= ExcavatorHandler.mineralVeinYield;
+		return ExcavatorHandler.mineralVeinYield > 0&&getDepletion() >= ExcavatorHandler.mineralVeinYield;
 	}
 
 	public CompoundNBT writeToNBT()

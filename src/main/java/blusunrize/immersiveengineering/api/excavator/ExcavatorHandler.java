@@ -12,6 +12,7 @@ package blusunrize.immersiveengineering.api.excavator;
 import blusunrize.immersiveengineering.common.IESaveData;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.ColumnPos;
@@ -31,8 +32,8 @@ import java.util.stream.Collectors;
  */
 public class ExcavatorHandler
 {
-	private static final ArrayListMultimap<DimensionType, MineralVein> MINERAL_VEIN_LIST = ArrayListMultimap.create();
-	private static final HashMap<ColumnPos, MineralWorldInfo> MINERAL_INFO_CACHE = new HashMap<>();
+	private static final Multimap<DimensionType, MineralVein> MINERAL_VEIN_LIST = ArrayListMultimap.create();
+	private static final Map<ColumnPos, MineralWorldInfo> MINERAL_INFO_CACHE = new HashMap<>();
 	public static int mineralVeinYield = 0;
 	public static double initialVeinDepletion = 0;
 	public static double mineralNoiseThreshold = 0;
@@ -47,7 +48,7 @@ public class ExcavatorHandler
 		return info.getMineralVein(Utils.RAND);
 	}
 
-	public static ArrayListMultimap<DimensionType, MineralVein> getMineralVeinList()
+	public static Multimap<DimensionType, MineralVein> getMineralVeinList()
 	{
 		return MINERAL_VEIN_LIST;
 	}
@@ -97,35 +98,37 @@ public class ExcavatorHandler
 		int xStart = chunkpos.getXStart();
 		int zStart = chunkpos.getZStart();
 		double d0 = 0.0625D;
-		boolean containsVein = false;
 		ColumnPos pos = null;
-		iteratechunk:
+		double maxNoise = 0;
+
+		// Find highest noise value in chunk
 		for(int xx = 0; xx < 16; ++xx)
 			for(int zz = 0; zz < 16; ++zz)
 			{
 				double noise = noiseGenerator.noiseAt((xStart+xx)*d0, (zStart+zz)*d0, d0, xx*d0);
 				double chance = Math.abs(noise)/.55;
-				if(chance > mineralNoiseThreshold)
+				if(chance > mineralNoiseThreshold&&chance > maxNoise)
 				{
-					containsVein = true;
 					pos = new ColumnPos(xStart+xx, zStart+zz);
-					break iteratechunk;
+					maxNoise = chance;
 				}
 			}
-		if(containsVein)
+
+		if(pos!=null)
 		{
 			ColumnPos finalPos = pos;
 			int radius = 12+rand.nextInt(32);
 			int radiusSq = radius*radius;
 			boolean crossover = MINERAL_VEIN_LIST.get(dimension).stream().anyMatch(vein -> {
-				int dx = vein.getPos().x-finalPos.x;
-				int dz = vein.getPos().z-finalPos.z;
-				return dx*dx+dz*dz < vein.getRadius()*vein.getRadius()||dx*dx+dz*dz < radiusSq;
+				int dX = vein.getPos().x-finalPos.x;
+				int dZ = vein.getPos().z-finalPos.z;
+				int dSq = dX*dX+dZ*dZ;
+				return dSq < vein.getRadius()*vein.getRadius()||dSq < radiusSq;
 			});
 			if(!crossover)
 			{
 				MineralMix mineralMix = null;
-				MineralSelection selection = new MineralSelection(dimension, 2);
+				MineralSelection selection = new MineralSelection(dimension);
 				if(selection.getTotalWeight() > 0)
 				{
 					int weight = selection.getRandomWeight(rand);
@@ -157,23 +160,12 @@ public class ExcavatorHandler
 		private final int totalWeight;
 		private final Set<MineralMix> validMinerals;
 
-		public MineralSelection(DimensionType dimension, int radius)
+		public MineralSelection(DimensionType dimension)
 		{
-			Set<MineralMix> surrounding = new HashSet<>();
-//			for(int xx = -radius; xx <= radius; xx++)
-//				for(int zz = -radius; zz <= radius; zz++)
-//					if(xx!=0||zz!=0)
-//					{
-//						DimensionChunkCoords offset = chunkCoords.withOffset(xx, zz);
-//						MineralWorldInfo worldInfo = mineralCache.get(offset);
-//						if(worldInfo!=null&&worldInfo.mineral!=null)
-//							surrounding.add(worldInfo.mineral);
-//					}
-
 			int weight = 0;
 			this.validMinerals = new HashSet<>();
 			for(MineralMix e : MineralMix.mineralList.values())
-				if(e.validDimension(dimension)&&!surrounding.contains(e))
+				if(e.validDimension(dimension))
 				{
 					validMinerals.add(e);
 					weight += e.weight;
@@ -188,7 +180,7 @@ public class ExcavatorHandler
 
 		public int getRandomWeight(Random random)
 		{
-			return Math.abs(random.nextInt()%this.totalWeight);
+			return Math.abs(random.nextInt(this.totalWeight));
 		}
 
 		public Set<MineralMix> getMinerals()

@@ -289,29 +289,4 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 		return false;
 	}
 
-	/* TODO: I think these were for computer integration?
-	@Nullable
-	public String getVeinLocalizedName()
-	{
-		MineralMix mineral = getVein();
-		if(mineral==null)
-			return null;
-		String unlocalizedName = Lib.DESC_INFO+"mineral."+mineral.getId();
-		String localizedName = I18n.format(unlocalizedName);
-		if(unlocalizedName.equals(localizedName))
-			return mineral.getId().toString();
-		return localizedName;
-	}
-
-	public float getVeinIntegrity()
-	{
-		if(sample.isEmpty())
-			return 0;
-		else if(ItemNBTHelper.hasKey(sample, "infinite"))
-			return -1;
-		else if(ItemNBTHelper.hasKey(sample, "depletion"))
-			return 1-ItemNBTHelper.getInt(sample, "depletion")/(float)ExcavatorHandler.mineralVeinCapacity;
-		return 0;
-	}
-	*/
 }
