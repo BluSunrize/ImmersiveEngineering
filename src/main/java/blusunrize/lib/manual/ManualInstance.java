@@ -240,7 +240,8 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 
 	public void addEntry(InnerNode<ResourceLocation, ManualEntry> node, ManualEntry entry)
 	{
-		addEntry(node, entry, 0);
+		int nextPrio = node.getChildren().size();
+		addEntry(node, entry, nextPrio);
 	}
 
 	public void addEntry(InnerNode<ResourceLocation, ManualEntry> node, ManualEntry entry, int priority)
