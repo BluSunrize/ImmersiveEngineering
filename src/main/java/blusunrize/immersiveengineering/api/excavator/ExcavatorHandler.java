@@ -106,6 +106,7 @@ public class ExcavatorHandler
 			for(int zz = 0; zz < 16; ++zz)
 			{
 				double noise = noiseGenerator.noiseAt((xStart+xx)*d0, (zStart+zz)*d0, d0, xx*d0);
+				// Vanilla Perlin noise scales to 0.55, so we un-scale it
 				double chance = Math.abs(noise)/.55;
 				if(chance > mineralNoiseThreshold&&chance > maxNoise)
 				{
@@ -180,7 +181,7 @@ public class ExcavatorHandler
 
 		public int getRandomWeight(Random random)
 		{
-			return Math.abs(random.nextInt(this.totalWeight));
+			return random.nextInt(this.totalWeight);
 		}
 
 		public Set<MineralMix> getMinerals()
