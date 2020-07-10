@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.items;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.excavator.MineralVein;
-import blusunrize.immersiveengineering.common.IEConfig;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.util.ITooltipFlag;
@@ -74,7 +73,7 @@ public class SurveyToolsItem extends IEBaseItem
 	@Override
 	public UseAction getUseAction(ItemStack stack)
 	{
-		return UseAction.BLOCK;
+		return UseAction.BOW;
 	}
 
 	@Override
@@ -141,30 +140,36 @@ public class SurveyToolsItem extends IEBaseItem
 			return stack;
 		}
 
+		ITextComponent response;
 		// Get angle between postion->center vector and standard (south facing) vector
 		Vector2f vecToCenter = new Vector2f(vein.getPos().x-pos.getX(), vein.getPos().z-pos.getZ());
-		double angle = Math.toDegrees(Math.atan2(vecToCenter.y, vecToCenter.x));
-		int segment = (int)((angle+270)%360/45);
-
-		ITextComponent response;
-		switch(dataCount)
+		if(vecToCenter.x==0&&vecToCenter.y==0) // hit the vein center directly
+			response = new TranslationTextComponent(Lib.CHAT_INFO+"survey.hint.center",
+					new TranslationTextComponent(vein.getMineral().getTranslationKey()));
+		else
 		{
-			case 0: // hint at the type of vein
-				response = new TranslationTextComponent(Lib.CHAT_INFO+"survey.hint.1",
-						new TranslationTextComponent(vein.getMineral().getTranslationKey()));
-				break;
-			case 1: // hint at the direction
-				response = new TranslationTextComponent(Lib.CHAT_INFO+"survey.hint.2",
-						new TranslationTextComponent(vein.getMineral().getTranslationKey()),
-						new TranslationTextComponent(Lib.CHAT_INFO+"survey.direction."+segment));
-				break;
-			case 2: // hint at distance
-			default:
-				response = new TranslationTextComponent(Lib.CHAT_INFO+"survey.hint.3",
-						new TranslationTextComponent(vein.getMineral().getTranslationKey()),
-						Math.round(vecToCenter.length()),
-						new TranslationTextComponent(Lib.CHAT_INFO+"survey.direction."+segment));
-				break;
+			double angle = Math.toDegrees(Math.atan2(vecToCenter.y, vecToCenter.x));
+			int segment = (int)((angle+270)%360/45);
+
+			switch(dataCount)
+			{
+				case 0: // hint at the type of vein
+					response = new TranslationTextComponent(Lib.CHAT_INFO+"survey.hint.1",
+							new TranslationTextComponent(vein.getMineral().getTranslationKey()));
+					break;
+				case 1: // hint at the direction
+					response = new TranslationTextComponent(Lib.CHAT_INFO+"survey.hint.2",
+							new TranslationTextComponent(vein.getMineral().getTranslationKey()),
+							new TranslationTextComponent(Lib.CHAT_INFO+"survey.direction."+segment));
+					break;
+				case 2: // hint at distance
+				default:
+					response = new TranslationTextComponent(Lib.CHAT_INFO+"survey.hint.3",
+							new TranslationTextComponent(vein.getMineral().getTranslationKey()),
+							Math.round(vecToCenter.length()),
+							new TranslationTextComponent(Lib.CHAT_INFO+"survey.direction."+segment));
+					break;
+			}
 		}
 		// Send message to player
 		player.sendStatusMessage(response, true);

@@ -460,6 +460,7 @@
   "chat.immersiveengineering.info.survey.hint.1": "There are traces of %1$s here",
   "chat.immersiveengineering.info.survey.hint.2": "Traces of %1$s here indicate a vein towards the %2$s",
   "chat.immersiveengineering.info.survey.hint.3": "There is a %1$s vein about %2$s steps to the %3$s",
+  "chat.immersiveengineering.info.survey.hint.center": "There is a %1$s vein right here!",
   "chat.immersiveengineering.info.pump.placeCobble.true": "This pump will now replace fluids with cobblestone.",
   "chat.immersiveengineering.info.pump.placeCobble.false": "This pump will no longer replace fluid blocks with cobblestone. §6WARNING:§f This can cause lag and is not adviseable when dealing with large amounts of fluid!",
   "chat.immersiveengineering.info.energyTransfered": "Average energy transferred over the last %1$s ticks: %2$s Flux/t",
