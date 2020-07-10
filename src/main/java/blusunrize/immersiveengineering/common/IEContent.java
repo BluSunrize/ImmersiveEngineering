@@ -523,6 +523,7 @@ public class IEContent
 		Tools.buzzsaw = new BuzzsawItem();
 		Tools.sawblade = new SawbladeItem("sawblade", 10000, 8f, 9f);
 		Tools.rockcutter = new RockcutterItem("rockcutter", 5000, 5f, 9f);
+		Tools.surveyTools = new SurveyToolsItem();
 		Weapons.revolver = new RevolverItem();
 		Weapons.speedloader = new SpeedloaderItem();
 		Weapons.chemthrower = new ChemthrowerItem();
