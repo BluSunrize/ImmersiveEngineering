@@ -53,4 +53,10 @@ public abstract class ClientTileScreen<T extends TileEntity> extends Screen
 		// Foreground
 		func_230451_b_(transform, mx, my, partial);
 	}
+
+	@Override
+	public boolean isPauseScreen()
+	{
+		return false;
+	}
 }

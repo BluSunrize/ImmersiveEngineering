@@ -124,6 +124,7 @@ public class CapabilityShader
 		private LazyOptional<ShaderWrapper> opt = CapabilityUtils.constantOptional(this);
 
 		@Override
+		@Nonnull
 		public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing)
 		{
 			if(capability==SHADER_CAPABILITY)

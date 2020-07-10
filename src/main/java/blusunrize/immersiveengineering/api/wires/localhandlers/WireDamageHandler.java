@@ -73,8 +73,11 @@ public class WireDamageHandler extends LocalNetworkHandler implements ICollision
 			for(Object2IntMap.Entry<ConnectionPoint> entry : available.object2IntEntrySet())
 			{
 				Path path = energyHandler.getPath(entry.getKey(), target);
-				totalAvailable += entry.getIntValue()*(1-path.loss);
-				paths.put(entry.getKey(), path);
+				if(path!=null)
+				{
+					totalAvailable += entry.getIntValue()*(1-path.loss);
+					paths.put(entry.getKey(), path);
+				}
 			}
 			totalAvailable = Math.min(totalAvailable, shockWire.getTransferRate());
 

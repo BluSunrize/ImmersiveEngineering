@@ -305,8 +305,9 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 	@Override
 	public void onNeighborBlockChange(BlockPos otherPos)
 	{
+		int oldRSIn = getLocalRS();
 		super.onNeighborBlockChange(otherPos);
-		if(isRSInput())
+		if(isRSInput()&&oldRSIn!=getLocalRS())
 			rsDirty = true;
 	}
 }

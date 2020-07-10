@@ -106,7 +106,7 @@ public class VoltmeterItem extends IEBaseItem implements ITool
 			ConnectionPoint cp = ((IImmersiveConnectable)tileEntity).getTargetedPoint(targetingInfo, delta);
 			if(cp==null)
 				return ActionResultType.FAIL;
-			if(WirecoilUtils.hasWireLink(stack))
+			if(!WirecoilUtils.hasWireLink(stack))
 			{
 				WireLink link = WireLink.create(cp, world, delta, targetingInfo);
 				link.writeToItem(stack);
@@ -126,11 +126,15 @@ public class VoltmeterItem extends IEBaseItem implements ITool
 						if(energyHandler!=null)
 						{
 							Path energyPath = energyHandler.getPath(link.cp, cp);
+							double loss;
 							if(energyPath!=null)
-								player.sendMessage(new TranslationTextComponent(
-										Lib.CHAT_INFO+"averageLoss",
-										Utils.formatDouble(energyPath.loss*100, "###.000")
-								), Util.DUMMY_UUID);
+								loss = energyPath.loss;
+							else
+								loss = 1;
+							player.sendMessage(new TranslationTextComponent(
+									Lib.CHAT_INFO+"averageLoss",
+									Utils.formatDouble(loss*100, "###.000")
+							), Util.DUMMY_UUID);
 						}
 					}
 				}

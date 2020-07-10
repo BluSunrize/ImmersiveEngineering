@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -46,6 +45,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import java.util.List;
+import java.util.OptionalDouble;
 import java.util.function.Function;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
@@ -58,7 +58,7 @@ public class ExtractConveyor extends BasicConveyor
 	public static final ResourceLocation NAME = new ResourceLocation(MODID, "extract");
 	private int transferCooldown = -1;
 	private int transferTickrate = 8;
-	private float extension = -1;
+	private double extension = -1;
 	private Rotation relativeExtractDir = Rotation.CLOCKWISE_180;
 
 	public ExtractConveyor(TileEntity tile)
@@ -90,7 +90,7 @@ public class ExtractConveyor extends BasicConveyor
 		float[] colour = {1, 1, 1, 1};
 		Matrix4 matrix = new Matrix4(this.getExtractDirection());
 		TransformationMatrix tMatrix = matrix.toTransformationMatrix();
-		final float extend = getExtensionIntoBlock(getTile());
+		final double extend = getCurrentExtension();
 		this.extension = extend;
 
 		Function<Direction, TextureAtlasSprite> getCasingSprite = enumFacing -> enumFacing.getAxis()==Axis.Z?texture_steel: texture_casing;
@@ -150,7 +150,7 @@ public class ExtractConveyor extends BasicConveyor
 	{
 		String key = super.getModelCacheKey();
 		key += "e"+this.getExtractDirection().ordinal();
-		key += "ex"+getExtensionIntoBlock(getTile());
+		key += "ex"+getCurrentExtension();
 		return key;
 	}
 
@@ -161,11 +161,23 @@ public class ExtractConveyor extends BasicConveyor
 		return side!=this.getExtractDirection()&&super.renderWall(facing, wall);
 	}
 
-	private float getExtensionIntoBlock(TileEntity tile)
+	private boolean extensionRecursionLock = false;
+	private static final VoxelShape ALLOWED_MISSING_SHAPE = VoxelShapes.combine(
+			VoxelShapes.create(1/16., 1/16., 1/16., 15/16., 15/16., 15/16.),
+			VoxelShapes.fullCube(),
+			IBooleanFunction.NOT_SAME
+	);
+
+	/**
+	 * @return empty if the correct value can not be computed at this time. In this case, assume 0, but do not cache.
+	 * Otherwise an optional of the correct extension length.
+	 */
+	private OptionalDouble getExtensionIntoBlock(TileEntity tile)
 	{
-		float extend = 0;
-		if(tile==null||!tile.hasWorld())
-			return extend;
+		if(tile==null||!tile.hasWorld()||extensionRecursionLock)
+			return OptionalDouble.empty();
+		extensionRecursionLock = true;
+		double extend = 0;
 
 		World world = tile.getWorld();
 		BlockPos neighbour = tile.getPos().offset(this.getExtractDirection());
@@ -174,32 +186,37 @@ public class ExtractConveyor extends BasicConveyor
 			BlockState connected = world.getBlockState(neighbour);
 			TileEntity connectedTile = world.getTileEntity(neighbour);
 			if(connectedTile!=null&&connectedTile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, this.getExtractDirection().getOpposite()).isPresent())
-				if(Block.doesSideFillSquare(connected.getShape(world, neighbour), this.getExtractDirection().getOpposite()))
+			{
+				VoxelShape connectedShape = connected.getShape(world, neighbour);
+				VoxelShape projected = connectedShape.project(this.getExtractDirection().getOpposite());
+				if(VoxelShapes.compare(projected, ALLOWED_MISSING_SHAPE, IBooleanFunction.OR))
 				{
-					AxisAlignedBB aabb = connected.getShape(world, neighbour).getBoundingBox();
+					AxisAlignedBB aabb = connectedShape.getBoundingBox();
 					switch(getExtractDirection())
 					{
 						case NORTH:
-							extend = (float)(1-aabb.maxZ);
+							extend = 1-aabb.maxZ;
 							break;
 						case SOUTH:
-							extend = (float)aabb.minZ;
+							extend = aabb.minZ;
 							break;
 						case WEST:
-							extend = (float)(1-aabb.maxX);
+							extend = 1-aabb.maxX;
 							break;
 						case EAST:
-							extend = (float)aabb.minX;
+							extend = aabb.minX;
 							break;
 					}
-					if(extend > .25f)
-						return .25f;
-					float round = extend%.0625f;
+					if(extend > .25)
+						extend = 0.25;
+					double round = extend%.0625;
 					if(round < extend)
-						extend = round+.0625f;
+						extend = round+.0625;
 				}
+			}
 		}
-		return extend;
+		extensionRecursionLock = false;
+		return OptionalDouble.of(extend);
 	}
 
 	@Override
@@ -284,12 +301,27 @@ public class ExtractConveyor extends BasicConveyor
 		return false;
 	}
 
+	private double getCurrentExtension()
+	{
+		double extension;
+		if(this.extension >= 0)
+			extension = this.extension;
+		else
+		{
+			OptionalDouble optValue = getExtensionIntoBlock(getTile());
+			if(optValue.isPresent())
+				extension = this.extension = optValue.getAsDouble();
+			else
+				extension = 0;
+		}
+		return extension;
+	}
+
 	@Override
 	public VoxelShape getSelectionShape()
 	{
 		VoxelShape ret = conveyorBounds;
-		if(this.extension < 0)
-			this.extension = getExtensionIntoBlock(getTile());
+		double extension = getCurrentExtension();
 		VoxelShape extensionShape = null;
 		switch(getExtractDirection())
 		{

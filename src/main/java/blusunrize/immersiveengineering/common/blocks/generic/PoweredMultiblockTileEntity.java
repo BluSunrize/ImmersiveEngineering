@@ -191,6 +191,7 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 	IEForgeEnergyWrapper wrapper = new IEForgeEnergyWrapper(this, null);
 
 	@Override
+	@Nullable
 	public IEForgeEnergyWrapper getCapabilityWrapper(Direction facing)
 	{
 		if(this.formed&&this.isEnergyPos())

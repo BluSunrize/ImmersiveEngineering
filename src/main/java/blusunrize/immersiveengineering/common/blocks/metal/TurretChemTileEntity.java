@@ -75,7 +75,7 @@ public class TurretChemTileEntity extends TurretTileEntity
 	@Override
 	protected void activate()
 	{
-		FluidStack fs = this.tank.getFluid();
+		FluidStack fs = this.tank.getFluid().copy();
 		if(!fs.isEmpty())
 		{
 			int consumed = IEConfig.TOOLS.chemthrower_consumption.get();
@@ -110,10 +110,12 @@ public class TurretChemTileEntity extends TurretTileEntity
 						world.addEntity(chem);
 				}
 				if(tick%4==0)
+				{
 					if(ignite)
 						world.playSound(null, getPos(), IESounds.sprayFire, SoundCategory.BLOCKS, .5F, 1.5F);
 					else
 						world.playSound(null, getPos(), IESounds.spray, SoundCategory.BLOCKS, .5F, .75F);
+				}
 			}
 		}
 	}

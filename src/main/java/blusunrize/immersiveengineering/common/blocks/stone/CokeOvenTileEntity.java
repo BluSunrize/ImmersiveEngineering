@@ -319,9 +319,8 @@ public class CokeOvenTileEntity extends MultiblockPartTileEntity<CokeOvenTileEnt
 		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
 			CokeOvenTileEntity master = master();
-			if(master==null)
-				return null;
-			return master.invHandler.cast();
+			if(master!=null)
+				return master.invHandler.cast();
 		}
 		return super.getCapability(capability, facing);
 	}
