@@ -33,9 +33,10 @@ public class CoresampleRenderer extends TileEntityRenderer<CoresampleTileEntity>
 			return;
 
 		matrixStack.push();
-		matrixStack.translate(.5, .54864, .52903);
+		matrixStack.translate(.5, .5, .5);
 		matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), tile.getFacing()==Direction.NORTH?180: tile.getFacing()==Direction.WEST?-90: tile.getFacing()==Direction.EAST?90: 0, true));
 		matrixStack.rotate(new Quaternion(new Vector3f(1, 0, 0), -45, true));
+		matrixStack.translate(0, .04864, .02903);
 		ClientUtils.mc().getItemRenderer().renderItem(tile.coresample, TransformType.FIXED, combinedLightIn,
 				combinedOverlayIn, matrixStack, bufferIn);
 		matrixStack.pop();

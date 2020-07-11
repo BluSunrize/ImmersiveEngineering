@@ -8,13 +8,12 @@ import blusunrize.immersiveengineering.api.crafting.FermenterRecipe;
 import blusunrize.immersiveengineering.api.crafting.SqueezerRecipe;
 import blusunrize.immersiveengineering.api.crafting.StackWithChance;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
+import blusunrize.immersiveengineering.api.excavator.MineralMix;
 import blusunrize.immersiveengineering.api.multiblocks.ManualElementMultiblock;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryEntry;
-import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
-import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
 import blusunrize.immersiveengineering.client.manual.IEManualInstance;
 import blusunrize.immersiveengineering.client.manual.ShaderManualElement;
@@ -133,7 +132,17 @@ public class IEManual
 		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "introduction"));
 		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "hemp"));
 		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "ores"));
-		ieMan.addEntry(generalCat, handleMineralManual(ieMan));
+		{
+			ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());
+			builder.readFromFile(new ResourceLocation(MODID, "minerals"));
+			final Function<TextSplitter, String[]> parsedContent = builder.getContent;
+			builder.setContent(textSplitter -> {
+				String[] text = parsedContent.apply(textSplitter);
+				text[2] += IEManual.getMineralVeinTexts(textSplitter);
+				return text;
+			});
+			ieMan.addEntry(generalCat, builder.create());
+		}
 		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "alloys"));
 		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "components"));
 		ieMan.addEntry(generalCat, new ResourceLocation(MODID, "plates"));
@@ -250,17 +259,6 @@ public class IEManual
 		addChangelogToManual();
 	}
 
-
-	private static ManualEntry handleMineralManual(IEManualInstance ieManual)
-	{
-		ManualEntryBuilder builder = new ManualEntryBuilder(ieManual);
-		builder.addSpecialElement("drill", 0, new ManualElementCrafting(ieManual, new ResourceLocation(MODID, "crafting/sample_drill")));
-
-		builder.setContent(IEManual::setupMineralEntry);
-		builder.setLocation(new ResourceLocation(MODID, "minerals"));
-		return builder.create();
-	}
-
 	private static Supplier<ManualElementTable> addDynamicTable(
 			Supplier<SortedMap<String, Integer>> getContents,
 			String valueType
@@ -272,9 +270,11 @@ public class IEManual
 		};
 	}
 
-	private static String[] setupMineralEntry(TextSplitter splitter)
+	private static String getMineralVeinTexts(TextSplitter splitter)
 	{
-		List<MineralMix> mineralsToAdd = new ArrayList<>(ExcavatorHandler.mineralList.values());
+		StringBuilder text = new StringBuilder();
+
+		List<MineralMix> mineralsToAdd = new ArrayList<>(MineralMix.mineralList.values());
 		Function<MineralMix, String> toName = mineral -> {
 			String translationKey = mineral.getTranslationKey();
 			String localizedName = I18n.format(translationKey);
@@ -283,7 +283,6 @@ public class IEManual
 			return localizedName;
 		};
 		mineralsToAdd.sort((i1, i2) -> toName.apply(i1).compareToIgnoreCase(toName.apply(i2)));
-		StringBuilder entry = new StringBuilder(I18n.format("ie.manual.entry.mineral_main"));
 		for(MineralMix mineral : mineralsToAdd)
 		{
 			String dimensionString;
@@ -319,18 +318,14 @@ public class IEManual
 			}
 			splitter.addSpecialPage(mineral.getId().toString(), 0, new ManualElementItem(ManualHelper.getManual(), sortedOres));
 			String desc = I18n.format("ie.manual.entry.minerals_desc", dimensionString, outputString.toString());
-			if(entry.length() > 0)
-				entry.append("<np>");
-			entry.append("<&")
+			if(text.length() > 0)
+				text.append("<np>");
+			text.append("<&")
 					.append(mineral.getId())
 					.append(">")
 					.append(desc);
 		}
-		return new String[]{
-				I18n.format("ie.manual.entry.mineral_title"),
-				I18n.format("ie.manual.entry.mineral_subtitle"),
-				entry.toString()
-		};
+		return text.toString();
 	}
 
 	private static void addChangelogToManual()

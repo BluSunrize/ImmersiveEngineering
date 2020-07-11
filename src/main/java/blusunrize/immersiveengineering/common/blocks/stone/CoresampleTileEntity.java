@@ -8,16 +8,12 @@
 
 package blusunrize.immersiveengineering.common.blocks.stone;
 
-import blusunrize.immersiveengineering.api.DimensionChunkCoords;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.items.CoresampleItem;
-import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -31,6 +27,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
+import net.minecraft.util.math.ColumnPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.ISelectionContext;
@@ -39,19 +36,20 @@ import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.storage.MapData;
 import net.minecraft.world.storage.MapDecoration;
 import net.minecraft.world.storage.loot.LootContext;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class CoresampleTileEntity extends IEBaseTileEntity implements IStateBasedDirectional, ITileDrop, IPlayerInteraction,
 		IBlockOverlayText, IBlockBounds
 {
 	public static TileEntityType<CoresampleTileEntity> TYPE;
-	
+
 	public ItemStack coresample = ItemStack.EMPTY;
 
 	public CoresampleTileEntity()
@@ -104,7 +102,7 @@ public class CoresampleTileEntity extends IEBaseTileEntity implements IStateBase
 	@Override
 	public boolean interact(Direction side, PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
-		DimensionChunkCoords coords = CoresampleItem.getCoords(coresample);
+		ColumnPos coords = CoresampleItem.getCoords(coresample);
 		if(player.isSneaking())
 		{
 			if(!world.isRemote)
@@ -124,6 +122,12 @@ public class CoresampleTileEntity extends IEBaseTileEntity implements IStateBase
 				MapData mapData = FilledMapItem.getMapData(heldItem, player.getEntityWorld());
 				if(mapData!=null)
 				{
+					if(mapData.dimension!=DimensionType.byName(CoresampleItem.getDimenson(coresample)))
+					{
+						player.sendMessage(new TranslationTextComponent(Lib.CHAT_INFO+"coresample.mapDimension"));
+						return true;
+					}
+
 					String ident = "ie:coresample_"+coords.toString();
 					CompoundNBT mapTagCompound = heldItem.getOrCreateTag();
 					ListNBT nbttaglist = mapTagCompound.getList("Decorations", 10);
@@ -140,8 +144,8 @@ public class CoresampleTileEntity extends IEBaseTileEntity implements IStateBase
 						}
 					}
 
-					double sampleX = coords.x*16+8.5;
-					double sampleZ = coords.z*16+8.5;
+					double sampleX = coords.x+.5;
+					double sampleZ = coords.z+.5;
 
 					int mapScale = 1<<mapData.scale;
 					float distX = (float)(sampleX-mapData.xCenter)/(float)mapScale;
@@ -154,8 +158,7 @@ public class CoresampleTileEntity extends IEBaseTileEntity implements IStateBase
 						tagCompound.putDouble("x", sampleX);
 						tagCompound.putDouble("z", sampleZ);
 						tagCompound.putDouble("rot", 180.0);
-						MineralMix mineral = CoresampleItem.getMix(coresample);
-						tagCompound.putString("mineral", mineral.getId().toString());
+						tagCompound.put("minerals", CoresampleItem.getSimplifiedMineralList(coresample));
 
 						nbttaglist.add(tagCompound);
 						mapTagCompound.put("Decorations", nbttaglist);
@@ -196,35 +199,13 @@ public class CoresampleTileEntity extends IEBaseTileEntity implements IStateBase
 	@Override
 	public String[] getOverlayText(PlayerEntity player, RayTraceResult mop, boolean hammer)
 	{
-		DimensionChunkCoords dimPos = CoresampleItem.getCoords(coresample);
-		if(dimPos!=null)
+		if(overlay==null)
 		{
-			if(overlay==null)
-			{
-				overlay = new String[3];
-				overlay[0] = I18n.format(Lib.CHAT_INFO+"coresample.noMineral");
-				MineralMix mineral = CoresampleItem.getMix(coresample);
-				if(mineral!=null)
-				{
-					String unloc = mineral.getTranslationKey();
-					String loc = I18n.format(unloc);
-					if(unloc.equals(loc))
-						loc = mineral.getPlainName();
-					overlay[0] = TextFormatting.GOLD+I18n.format(Lib.CHAT_INFO+"coresample.mineral", loc);
-				}
-
-				String s0 = (dimPos.x*16)+", "+(dimPos.z*16);
-				String s1 = (dimPos.x*16+16)+", "+(dimPos.z*16+16);
-				//TODO
-				String name = dimPos.dimension.getRegistryName().getPath();
-				if(name.toLowerCase(Locale.ENGLISH).startsWith("the_"))
-					name = name.substring(4);
-				overlay[1] = Utils.toCamelCase(name);
-				overlay[2] = I18n.format(Lib.CHAT_INFO+"coresample.pos", s0, s1);
-			}
-			return overlay;
+			List<ITextComponent> list = new ArrayList<>();
+			CoresampleItem.getCoresampleInfo(coresample, list, TextFormatting.WHITE, world, false, false);
+			overlay = list.stream().map(ITextComponent::getFormattedText).toArray(String[]::new);
 		}
-		return new String[0];
+		return overlay;
 	}
 
 	@Override

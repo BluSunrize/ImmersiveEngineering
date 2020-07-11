@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.api;
 
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
-import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
+import blusunrize.immersiveengineering.api.excavator.MineralMix;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.common.blocks.metal.FeedthroughTileEntity.FeedthroughData;
 import com.google.common.collect.ImmutableList;
@@ -161,7 +161,7 @@ public class IEProperties
 		public static final ModelProperty<IEObjState> IE_OBJ_STATE = new ModelProperty<>();
 		public static final ModelProperty<Map<String, String>> TEXTURE_REMAP = new ModelProperty<>();
 		public static final ModelProperty<ConnectionModelData> CONNECTIONS = new ModelProperty<>();
-		public static final ModelProperty<MineralMix> MINERAL = new ModelProperty<>();
+		public static final ModelProperty<MineralMix[]> MINERAL = new ModelProperty<>();
 		public static final ModelProperty<IConveyorBelt> CONVEYOR = new ModelProperty<>();
 		public static final ModelProperty<FeedthroughData> FEEDTHROUGH = new ModelProperty<>();
 		public static final ModelProperty<Map<Direction, IOSideConfig>> SIDECONFIG = new ModelProperty<>();

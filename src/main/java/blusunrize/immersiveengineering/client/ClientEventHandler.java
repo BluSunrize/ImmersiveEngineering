@@ -13,10 +13,11 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
+import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
+import blusunrize.immersiveengineering.api.excavator.MineralMix;
+import blusunrize.immersiveengineering.api.excavator.MineralVein;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
-import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
-import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
@@ -61,6 +62,7 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.client.audio.ITickableSound;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.multiplayer.PlayerController;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.LivingRenderer;
@@ -72,10 +74,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.FilledMapItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
@@ -93,10 +92,12 @@ import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.storage.MapData;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.client.gui.ForgeIngameGui;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
@@ -840,14 +841,14 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 							cursorH *= 128;
 							cursorV *= 128;
 
-							String mineral = null;
+							ListNBT minerals = null;
 							double lastDist = Double.MAX_VALUE;
 							ListNBT nbttaglist = frameItem.getTag().getList("Decorations", 10);
 							for(INBT inbt : nbttaglist)
 							{
 								CompoundNBT tagCompound = (CompoundNBT)inbt;
 								String id = tagCompound.getString("id");
-								if(id.startsWith("ie:coresample_")&&tagCompound.contains("mineral"))
+								if(id.startsWith("ie:coresample_")&&tagCompound.contains("minerals"))
 								{
 									double sampleX = tagCompound.getDouble("x");
 									double sampleZ = tagCompound.getDouble("z");
@@ -871,16 +872,17 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 									if(dist < 10&&dist < lastDist)
 									{
 										lastDist = dist;
-										mineral = tagCompound.getString("mineral");
+										minerals = tagCompound.getList("minerals", NBT.TAG_STRING);
 									}
 								}
 							}
-							if(mineral!=null)
-							{
-								MineralMix mix = ExcavatorHandler.mineralList.get(new ResourceLocation(mineral));
-								if(mix!=null)
-									font.drawStringWithShadow(I18n.format(mix.getTranslationKey()), scaledWidth/2-8, scaledHeight/2+8, 0xffffff);
-							}
+							if(minerals!=null)
+								for(int i = 0; i < minerals.size(); i++)
+								{
+									MineralMix mix = MineralMix.mineralList.get(new ResourceLocation(minerals.getString(i)));
+									if(mix!=null)
+										font.drawStringWithShadow(I18n.format(mix.getTranslationKey()), scaledWidth/2+8, scaledHeight/2+8+i*font.FONT_HEIGHT, 0xffffff);
+								}
 						}
 					}
 				}
@@ -1328,17 +1330,61 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	@SubscribeEvent
 	public void onRenderWorldLastEvent(RenderWorldLastEvent event)
 	{
-		//Overlay renderer for the sample drill
-		boolean chunkBorders = false;
-		for(Hand hand : Hand.values())
-			if(ClientUtils.mc().player.getHeldItem(hand).getItem()==GameData.getBlockItemMap().get(MetalDevices.sampleDrill))
+		/* Debug for Mineral Veins. Causes concurrent modification errors, so only use for testing
+
+		if(Screen.hasShiftDown())
+		{
+			Tessellator tessellator = Tessellator.getInstance();
+			BufferBuilder BufferBuilder = tessellator.getBuffer();
+			double px = TileEntityRendererDispatcher.staticPlayerX;
+			double py = TileEntityRendererDispatcher.staticPlayerY;
+			double pz = TileEntityRendererDispatcher.staticPlayerZ;
+			GlStateManager.disableTexture();
+			GlStateManager.enableBlend();
+			GlStateManager.disableCull();
+			GlStateManager.blendFuncSeparate(770, 771, 1, 0);
+			GlStateManager.shadeModel(GL11.GL_SMOOTH);
+			GlStateManager.lineWidth(5f);
+			List<ResourceLocation> keyList = new ArrayList<>(MineralMix.mineralList.keySet());
+			keyList.sort(Comparator.comparing(ResourceLocation::toString));
+			for(MineralVein vein : ExcavatorHandler.getMineralVeinList().get(DimensionType.OVERWORLD))
 			{
-				chunkBorders = true;
-				break;
+				ColumnPos pos = vein.getPos();
+				int iC = keyList.indexOf(vein.getMineral().getId());
+				DyeColor color = DyeColor.values()[iC%16];
+				float[] rgb = color.getColorComponentValues();
+				float r = rgb[0];
+				float g = rgb[1];
+				float b = rgb[2];
+
+				BufferBuilder.setTranslation(pos.x-px, 0-py, pos.z-pz);
+				BufferBuilder.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
+				BufferBuilder.pos(0, 0, 0).color(r, g, b, .75f).endVertex();
+				BufferBuilder.pos(0, 128, 0).color(r, g, b, .75f).endVertex();
+				tessellator.draw();
+
+				int radius = vein.getRadius();
+				float angle;
+				double x1;
+				double z1;
+				BufferBuilder.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
+				for(int p = 0; p < 12; p++)
+				{
+					angle = 360.0f/12*p;
+					x1 = radius*Math.cos(angle*Math.PI/180);
+					z1 = radius*Math.sin(angle*Math.PI/180);
+					BufferBuilder.pos(x1, 70, z1).color(r, g, b, .75f).endVertex();
+				}
+				tessellator.draw();
+
+				BufferBuilder.setTranslation(0, 0, 0);
 			}
-		if(!chunkBorders&&ClientUtils.mc().objectMouseOver instanceof BlockRayTraceResult&&
-				ClientUtils.mc().world.getTileEntity(((BlockRayTraceResult)ClientUtils.mc().objectMouseOver).getPos()) instanceof SampleDrillTileEntity)
-			chunkBorders = true;
+			GlStateManager.shadeModel(GL11.GL_FLAT);
+			GlStateManager.enableCull();
+			GlStateManager.disableBlend();
+			GlStateManager.enableTexture();
+		}
+		*/
 
 		float partial = event.getPartialTicks();
 		MatrixStack transform = event.getMatrixStack();
@@ -1370,41 +1416,6 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 					render.accept(bb);
 			}
 			FractalParticle.PARTICLE_FRACTAL_DEQUE.clear();
-		}
-
-		if(chunkBorders)
-		{
-			transform.push();
-			PlayerEntity player = ClientUtils.mc().player;
-			int chunkX = (int)player.getPosX() >> 4<<4;
-			int chunkZ = (int)player.getPosZ() >> 4<<4;
-			int y = Math.min((int)player.getPosY()-2, 0);
-			float h = (float)Math.max(32, player.getPosY()-y+4);
-
-			float r = Lib.COLOUR_F_ImmersiveOrange[0];
-			float g = Lib.COLOUR_F_ImmersiveOrange[1];
-			float b = Lib.COLOUR_F_ImmersiveOrange[2];
-			transform.translate(chunkX, y+2, chunkZ);
-			IVertexBuilder bufferBuilder = buffers.getBuffer(IERenderTypes.CHUNK_MARKER);
-			Matrix4f mat = transform.getLast().getMatrix();
-			bufferBuilder.pos(mat, 0, 0, 0).color(r, g, b, .375f).endVertex();
-			bufferBuilder.pos(mat, 0, h, 0).color(r, g, b, .375f).endVertex();
-			bufferBuilder.pos(mat, 16, 0, 0).color(r, g, b, .375f).endVertex();
-			bufferBuilder.pos(mat, 16, h, 0).color(r, g, b, .375f).endVertex();
-			bufferBuilder.pos(mat, 16, 0, 16).color(r, g, b, .375f).endVertex();
-			bufferBuilder.pos(mat, 16, h, 16).color(r, g, b, .375f).endVertex();
-			bufferBuilder.pos(mat, 0, 0, 16).color(r, g, b, .375f).endVertex();
-			bufferBuilder.pos(mat, 0, h, 16).color(r, g, b, .375f).endVertex();
-
-			bufferBuilder.pos(mat, 0, 2, 0).color(r, g, b, .375f).endVertex();
-			bufferBuilder.pos(mat, 16, 2, 0).color(r, g, b, .375f).endVertex();
-			bufferBuilder.pos(mat, 0, 2, 0).color(r, g, b, .375f).endVertex();
-			bufferBuilder.pos(mat, 0, 2, 16).color(r, g, b, .375f).endVertex();
-			bufferBuilder.pos(mat, 0, 2, 16).color(r, g, b, .375f).endVertex();
-			bufferBuilder.pos(mat, 16, 2, 16).color(r, g, b, .375f).endVertex();
-			bufferBuilder.pos(mat, 16, 2, 0).color(r, g, b, .375f).endVertex();
-			bufferBuilder.pos(mat, 16, 2, 16).color(r, g, b, .375f).endVertex();
-			transform.pop();
 		}
 
 		if(!FAILED_CONNECTIONS.isEmpty())

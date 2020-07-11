@@ -9,29 +9,36 @@
 package blusunrize.immersiveengineering.common.world;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.util.IELogger;
+import com.google.common.collect.HashMultimap;
 import com.mojang.datafixers.Dynamic;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SharedSeedRandom;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.ChunkStatus;
+import net.minecraft.world.chunk.IChunk;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.GenerationSettings;
 import net.minecraft.world.gen.GenerationStage.Decoration;
+import net.minecraft.world.gen.PerlinNoiseGenerator;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
 import net.minecraft.world.gen.feature.OreFeatureConfig.FillerBlockType;
 import net.minecraft.world.gen.placement.ConfiguredPlacement;
 import net.minecraft.world.gen.placement.CountRange;
 import net.minecraft.world.gen.placement.CountRangeConfig;
+import net.minecraft.world.gen.placement.IPlacementConfig;
 import net.minecraft.world.gen.placement.Placement;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.RegistryEvent;
@@ -70,6 +77,11 @@ public class IEWorldGen
 						new ConfiguredPlacement<>(COUNT_RANGE_IE, new CountRangeConfig(chunkOccurence, minY, minY, maxY))
 				);
 		retroFeatures.put(name, retroFeature);
+
+		ConfiguredFeature<?> vein_feature = Biome.createDecoratedFeature(MINERAL_VEIN_FEATURE, new NoFeatureConfig(),
+				Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG);
+		for(Biome biome : ForgeRegistries.BIOMES.getValues())
+			biome.addFeature(Decoration.RAW_GENERATION, vein_feature);
 	}
 
 	public void generateOres(Random random, int chunkX, int chunkZ, ServerWorld world, boolean newGeneration)
@@ -168,6 +180,7 @@ public class IEWorldGen
 	}
 
 	private static CountRangeInIEDimensions COUNT_RANGE_IE;
+	private static FeatureMineralVein MINERAL_VEIN_FEATURE;
 
 	@SubscribeEvent
 	public void registerPlacements(RegistryEvent.Register<Placement<?>> ev)
@@ -175,6 +188,14 @@ public class IEWorldGen
 		COUNT_RANGE_IE = new CountRangeInIEDimensions(CountRangeConfig::deserialize);
 		COUNT_RANGE_IE.setRegistryName(ImmersiveEngineering.MODID, "count_range_in_ie_dimensions");
 		ev.getRegistry().register(COUNT_RANGE_IE);
+	}
+
+	@SubscribeEvent
+	public void registerFeatures(RegistryEvent.Register<Feature<?>> ev)
+	{
+		MINERAL_VEIN_FEATURE = new FeatureMineralVein(NoFeatureConfig::deserialize);
+		MINERAL_VEIN_FEATURE.setRegistryName(ImmersiveEngineering.MODID, "mineral_vein");
+		ev.getRegistry().register(MINERAL_VEIN_FEATURE);
 	}
 
 	private static class CountRangeInIEDimensions extends Placement<CountRangeConfig>
@@ -202,6 +223,33 @@ public class IEWorldGen
 			{
 				return Stream.empty();
 			}
+		}
+	}
+
+	private static class FeatureMineralVein extends Feature<NoFeatureConfig>
+	{
+		public static HashMultimap<DimensionType, ChunkPos> veinGeneratedChunks = HashMultimap.create();
+
+		public FeatureMineralVein(Function<Dynamic<?>, ? extends NoFeatureConfig> configFactoryIn)
+		{
+			super(configFactoryIn, false);
+		}
+
+		@Override
+		public boolean place(IWorld worldIn, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, NoFeatureConfig config)
+		{
+			if(ExcavatorHandler.noiseGenerator==null)
+				ExcavatorHandler.noiseGenerator = new PerlinNoiseGenerator(new SharedSeedRandom(worldIn.getSeed()), 1);
+
+			DimensionType dimension = worldIn.getDimension().getType();
+			IChunk chunk = worldIn.getChunk(pos);
+			if(!veinGeneratedChunks.containsEntry(dimension, chunk.getPos()))
+			{
+				veinGeneratedChunks.put(dimension, chunk.getPos());
+				ExcavatorHandler.generatePotentialVein(dimension, chunk.getPos(), rand);
+				return true;
+			}
+			return false;
 		}
 	}
 }
