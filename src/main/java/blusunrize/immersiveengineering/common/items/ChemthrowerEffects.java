@@ -147,7 +147,12 @@ public class ChemthrowerEffects
 					world.removeBlock(brtr.getPos(), false);
 				// turn grass & farmland to dirt
 				else if(hit.getBlock() instanceof SnowyDirtBlock||hit.getBlock() instanceof FarmlandBlock)
+				{
 					world.setBlockState(brtr.getPos(), Blocks.DIRT.getDefaultState());
+					BlockPos above = brtr.getPos().up();
+					if(world.getBlockState(above).getBlock() instanceof BushBlock)
+						world.removeBlock(above, false);
+				}
 
 				// Remove excess particles
 				AxisAlignedBB aabb = new AxisAlignedBB(brtr.getPos()).grow(.25);

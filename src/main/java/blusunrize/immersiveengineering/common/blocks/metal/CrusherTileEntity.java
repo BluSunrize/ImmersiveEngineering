@@ -35,10 +35,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
@@ -349,6 +346,18 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 		return ImmutableSet.of(
 				new BlockPos(0, 1, 2)
 		);
+	}
+
+	@Override
+	public int getComparatorInputOverride()
+	{
+		if(!this.isRedstonePos())
+			return 0;
+		CrusherTileEntity master = master();
+		if(master==null)
+			return 0;
+		float fill = master.processQueue.size()/(float)master.getProcessQueueMaxLength();
+		return MathHelper.floor(fill*14.0F)+(fill > 0?1: 0);
 	}
 
 	@Override
