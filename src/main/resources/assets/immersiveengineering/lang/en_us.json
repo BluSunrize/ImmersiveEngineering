@@ -1132,5 +1132,5 @@
   "ie.manual.entry.minerals_desc": "%1$s\nIt consists of %2$s.",
   "ie.manual.entry.mineralsDimValid": "§l%1$s§r is a mineral vein that can be found in the %2$s.",
   "ie.manual.entry.mineralsDimInvalid": "§l%1$s§r is a mineral vein that can be found anywhere but in the %2$s.",
-  "ie.manual.entry.mineralsDimAny": "§l%1$s§r is a mineral vein that can be found in any dimension.",
+  "ie.manual.entry.mineralsDimAny": "§l%1$s§r is a mineral vein that can be found in any dimension."
 }
