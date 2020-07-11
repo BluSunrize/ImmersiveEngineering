@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.client.utils.TextUtils;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
@@ -19,7 +20,6 @@ import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -32,6 +32,7 @@ import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -110,30 +111,20 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 	}
 
 	@Override
-	public String[] getOverlayText(PlayerEntity player, RayTraceResult rtr, boolean hammer)
+	public ITextComponent[] getOverlayText(PlayerEntity player, RayTraceResult rtr, boolean hammer)
 	{
-		if (!(rtr instanceof BlockRayTraceResult))
-			return new String[0];
-		BlockRayTraceResult brtr = (BlockRayTraceResult) rtr;
+		if(!(rtr instanceof BlockRayTraceResult))
+			return null;
+		BlockRayTraceResult brtr = (BlockRayTraceResult)rtr;
 		if(Utils.isFluidRelatedItemStack(player.getHeldItem(Hand.MAIN_HAND)))
-		{
-			String s = null;
-			if(!tank.getFluid().isEmpty())
-				s = tank.getFluid().getDisplayName().getString()+": "+tank.getFluidAmount()+"mB";
-			else
-				s = I18n.format(Lib.GUI+"empty");
-			return new String[]{s};
-		}
+			return new ITextComponent[]{
+					TextUtils.formatFluidStack(tank.getFluid())
+			};
 		if(hammer&&IEConfig.GENERAL.showTextOverlay.get()&&brtr.getFace().getAxis()==Axis.Y)
 		{
 			IOSideConfig side = sideConfig.getOrDefault(brtr.getFace(), NONE);
 			IOSideConfig opposite = sideConfig.getOrDefault(brtr.getFace().getOpposite(), NONE);
-			return new String[]{
-					I18n.format(Lib.DESC_INFO+"blockSide.facing")
-							+": "+I18n.format(Lib.DESC_INFO+"blockSide.connectFluid."+side.getString()),
-					I18n.format(Lib.DESC_INFO+"blockSide.opposite")
-							+": "+I18n.format(Lib.DESC_INFO+"blockSide.connectFluid."+opposite.getString())
-			};
+			return TextUtils.sideConfigWithOpposite(Lib.DESC_INFO+"blockSide.connectFluid.", side, opposite);
 		}
 		return null;
 	}

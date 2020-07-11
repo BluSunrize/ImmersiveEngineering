@@ -91,10 +91,7 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextProperties;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.MapData;
 import net.minecraftforge.client.event.*;
@@ -785,15 +782,15 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 					if(tileEntity instanceof IBlockOverlayText)
 					{
 						IBlockOverlayText overlayBlock = (IBlockOverlayText)tileEntity;
-						String[] text = overlayBlock.getOverlayText(ClientUtils.mc().player, mop, hammer);
+						ITextComponent[] text = overlayBlock.getOverlayText(ClientUtils.mc().player, mop, hammer);
 						if(text!=null&&text.length > 0)
 						{
 							FontRenderer font = ClientUtils.font();
 							int i = 0;
 							IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
-							for(String s : text)
+							for(ITextComponent s : text)
 								if(s!=null)
-									font.renderString(
+									font.func_238416_a_(
 											s, scaledWidth/2+8, scaledHeight/2+8+(i++)*font.FONT_HEIGHT, 0xffffffff, true,
 											transform.getLast().getMatrix(), buffer, false, 0, 0xf000f0
 									);

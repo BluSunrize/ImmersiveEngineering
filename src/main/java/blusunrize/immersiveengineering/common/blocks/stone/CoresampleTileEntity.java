@@ -194,16 +194,16 @@ public class CoresampleTileEntity extends IEBaseTileEntity implements IStateBase
 		this.coresample = stack.copy();
 	}
 
-	private String[] overlay = null;
+	private ITextComponent[] overlay = null;
 
 	@Override
-	public String[] getOverlayText(PlayerEntity player, RayTraceResult mop, boolean hammer)
+	public ITextComponent[] getOverlayText(PlayerEntity player, RayTraceResult mop, boolean hammer)
 	{
 		if(overlay==null)
 		{
 			List<ITextComponent> list = new ArrayList<>();
 			CoresampleItem.getCoresampleInfo(coresample, list, TextFormatting.WHITE, world, false, false);
-			overlay = list.stream().map(ITextComponent::getString).toArray(String[]::new);
+			overlay = list.toArray(new ITextComponent[0]);
 		}
 		return overlay;
 	}

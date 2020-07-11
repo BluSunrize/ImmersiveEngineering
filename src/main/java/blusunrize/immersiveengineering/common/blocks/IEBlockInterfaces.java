@@ -71,7 +71,8 @@ public class IEBlockInterfaces
 
 	public interface IBlockOverlayText
 	{
-		String[] getOverlayText(PlayerEntity player, RayTraceResult mop, boolean hammer);
+		@Nullable
+		ITextComponent[] getOverlayText(PlayerEntity player, RayTraceResult mop, boolean hammer);
 
 		boolean useNixieFont(PlayerEntity player, RayTraceResult mop);
 	}
