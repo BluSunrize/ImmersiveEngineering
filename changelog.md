@@ -1,4 +1,8 @@
 ##### Version 0.14-104
+- Added the new Mineral System! (BluSunrize)
+    - Minerals are no longer chunk based
+    - Survey Tools help discover veins
+    - Veins can overlap and produce multiple results!
 - Added JSON "recipes" for Cloche Fertilizer (BluSunrize)
 - Added IE's metal items to various generic tags (Malte)
 - Added holding animation for the buzzsaw (BluSunrize)
@@ -31,8 +35,11 @@
 - Fixed height calculations for tables in the manual (Malte)
 - Fixed strip curtains not storing their strong/weak signal setting (Malte)
 - Fixed crash when transferring energy through very-high-loss connections (Malte)
+- Fixed issues with hemp seeds not dropping (Malte)
+- Fixed crash with chemthrower (Malte)
+- Fixed crash with Mekanism (Malte)
 - Implemented a few minor performance improvements (Malte)
-- Translations Added/Updated: ru_ru (Sergo 467)
+- Translations Added/Updated: ru_ru (Sergo 467), pt_pt (Codified-Vexing)
 
 ##### Version 0.14-102 - BUILT
 - Fixed wires no longer transferring energy after release 100 (Malte)
