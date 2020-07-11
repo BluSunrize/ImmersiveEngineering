@@ -309,15 +309,15 @@ public class IEConfig
 			excavator_particles = builder
 					.comment("Set this to false to disable the ridiculous amounts of particles the Excavator spawns")
 					.define("excavator_particles", true);
-			excavator_chance = builder
-					.comment("The chance that a given chunk will contain a mineral vein.")
-					.defineInRange("excavator_chance", .2, 1e-3, 1);
-			excavator_fail_chance = builder
-					.comment("The chance that the Excavator will not dig up an ore with the currently downward-facing bucket.")
-					.defineInRange("excavator_fail_chance", .05, 0, 1);
-			excavator_depletion = builder
+			excavator_theshold = builder
+					.comment("The threshold the perlin noise has to cross for a mineral vein to be generated. Higher means less likely.")
+					.defineInRange("excavator_chance", .9, 0, 1);
+			excavator_yield = builder
 					.comment("The maximum amount of yield one can get out of a chunk with the excavator. Set a number smaller than zero to make it infinite")
-					.defineInRange("excavator_depletion", 38400, -1, Integer.MAX_VALUE);
+					.defineInRange("excavator_yield", 38400, -1, Integer.MAX_VALUE);
+			excavator_initial_depletion = builder
+					.comment("The maximum depletion a vein can start with, as a decimal value. When a vein generates, a random percentage up to this value is depleted from it")
+					.defineInRange("excavator_initial_depletion", .2, 0, 1);
 			excavator_dimBlacklist = builder
 					.comment("List of dimensions that can't contain minerals. Default: The End.")
 					.defineList("excavator_dimBlacklist", ImmutableList.of(DimensionType.THE_END.getRegistryName().toString()),
@@ -428,9 +428,9 @@ public class IEConfig
 		public final IntValue excavator_consumption;
 		public final DoubleValue excavator_speed;
 		public final BooleanValue excavator_particles;
-		public final DoubleValue excavator_chance;
-		public final DoubleValue excavator_fail_chance;
-		public final IntValue excavator_depletion;
+		public final DoubleValue excavator_theshold;
+		public final IntValue excavator_yield;
+		public final DoubleValue excavator_initial_depletion;
 		public final ConfigValue<List<? extends String>> excavator_dimBlacklist;
 
 		public static class MachineRecipeConfig

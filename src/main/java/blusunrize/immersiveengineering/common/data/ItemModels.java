@@ -222,6 +222,7 @@ public class ItemModels extends LoadedModelProvider
 				"tool_", mcLoc("item/handheld"), Tools.hammer, Tools.wirecutter, Tools.screwdriver,
 				Tools.manual, Tools.steelPick, Tools.steelShovel, Tools.steelAxe, Tools.steelHoe, Tools.steelSword
 		);
+		addItemModels("", Tools.surveyTools);
 		addItemModels("", IEItems.Misc.wireCoils.values().toArray(new Item[0]));
 		addItemModels("", IEItems.Misc.graphiteElectrode);
 		addItemModels("", IEItems.Misc.toolUpgrades.values().toArray(new Item[0]));

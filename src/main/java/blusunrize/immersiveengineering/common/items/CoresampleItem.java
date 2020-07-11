@@ -9,37 +9,48 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.DimensionChunkCoords;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
-import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
+import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
+import blusunrize.immersiveengineering.api.excavator.MineralMix;
+import blusunrize.immersiveengineering.api.excavator.MineralVein;
+import blusunrize.immersiveengineering.api.excavator.MineralWorldInfo;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.ClientUtils.TimestampFormat;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.StoneDecoration;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.util.*;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.StringNBT;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ColumnPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants.NBT;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 public class CoresampleItem extends IEBaseItem
 {
@@ -52,57 +63,76 @@ public class CoresampleItem extends IEBaseItem
 	@OnlyIn(Dist.CLIENT)
 	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
 	{
-		DimensionChunkCoords coords = getCoords(stack);
+		getCoresampleInfo(stack, list, TextFormatting.GRAY, world, true, true);
+	}
+
+	public static void getCoresampleInfo(ItemStack coresample, List<ITextComponent> list, TextFormatting baseColor, @Nullable World world, boolean showYield, boolean showTimestamp)
+	{
+		if(coresample.getOrCreateTag().contains("coords"))
+			list.add(new TranslationTextComponent(Lib.DESC_INFO+"coresample.outdated"));
+
+		ColumnPos coords = getCoords(coresample);
 		if(coords!=null)
 		{
-			MineralMix mineral = getMix(stack);
-			if(mineral!=null)
-			{
-				String unloc = mineral.getTranslationKey();
-				String loc = I18n.format(unloc);
-				if(unloc.equals(loc))
-					loc = mineral.getPlainName();
-				list.add(new TranslationTextComponent(Lib.CHAT_INFO+"coresample.mineral", loc));
-			}
+			ListNBT nbtList = coresample.getOrCreateTag().getList("mineralInfo", NBT.TAG_COMPOUND);
+			if(nbtList.size() > 0)
+				nbtList.forEach(inbt -> {
+					CompoundNBT tag = (CompoundNBT)inbt;
+					MineralMix mineral = MineralMix.mineralList.get(new ResourceLocation(tag.getString("mineral")));
+					ITextComponent component = new StringTextComponent(
+							Utils.formatDouble(tag.getDouble("percentage")*100, "0.00")+"% "
+					);
+					component.appendSibling(new TranslationTextComponent(mineral.getTranslationKey()));
+					list.add(component.applyTextStyle(baseColor));
+					if(showYield)
+					{
+						component = new StringTextComponent("  ");
+						component.appendSibling(new TranslationTextComponent(Lib.DESC_INFO+"coresample.saturation",
+								Utils.formatDouble(tag.getDouble("saturation")*100, "0.00")
+						));
+						list.add(component.applyTextStyle(TextFormatting.DARK_GRAY));
+
+						component = new StringTextComponent("  ");
+						if(ExcavatorHandler.mineralVeinYield==0)
+							component.appendSibling(new TranslationTextComponent(Lib.DESC_INFO+"coresample.infinite"));
+						else
+							component.appendSibling(new TranslationTextComponent(Lib.DESC_INFO+"coresample.yield",
+									ExcavatorHandler.mineralVeinYield-tag.getInt("depletion")));
+						list.add(component.applyTextStyle(TextFormatting.DARK_GRAY));
+					}
+				});
 			else
-				list.add(new TranslationTextComponent(Lib.CHAT_INFO+"coresample.noMineral"));
-			if(world==null||world.getDimension().getType()!=coords.dimension)
+				list.add(new TranslationTextComponent(Lib.DESC_INFO+"coresample.noMineral").applyTextStyle(baseColor));
+
+			ResourceLocation dimension = getDimenson(coresample);
+			if(dimension!=null)
 			{
-				World clientWorld = Minecraft.getInstance().world;
-				if(clientWorld!=null&&clientWorld.getDimension().getType()==coords.dimension)
-					world = clientWorld;
-				else
-					world = null;
+				String s2 = dimension.getPath();
+				if(s2.toLowerCase(Locale.ENGLISH).startsWith("the_"))
+					s2 = s2.substring(4);
+				list.add(new StringTextComponent(Utils.toCamelCase(s2)).applyTextStyle(baseColor));
 			}
-			String s0 = (coords.x*16)+", "+(coords.z*16);
-			String s1 = (coords.x*16+16)+", "+(coords.z*16+16);
-			//TODO
-			String s2 = coords.dimension.getRegistryName().getPath();
+			ColumnPos pos = getCoords(coresample);
+			if(pos!=null)
+				list.add(new TranslationTextComponent(Lib.DESC_INFO+"coresample.pos", pos.x, pos.z).applyTextStyle(baseColor));
 
-			if(s2.toLowerCase(Locale.ENGLISH).startsWith("the_"))
-				s2 = s2.substring(4);
-			list.add(new StringTextComponent(Utils.toCamelCase(s2)));
-			list.add(new TranslationTextComponent(Lib.CHAT_INFO+"coresample.pos", s0, s1, ""));
-
-			if(ItemNBTHelper.hasKey(stack, "infinite"))
-				list.add(new TranslationTextComponent(Lib.CHAT_INFO+"coresample.infinite"));
-			else if(ItemNBTHelper.hasKey(stack, "depletion"))
-				list.add(new TranslationTextComponent(Lib.CHAT_INFO+"coresample.yield", ExcavatorHandler.mineralVeinCapacity-ItemNBTHelper.getInt(stack, "depletion")));
-
-			boolean hasStamp = ItemNBTHelper.hasKey(stack, "timestamp");
-			if(hasStamp&&world!=null)
+			if(showTimestamp)
 			{
-				long timestamp = ItemNBTHelper.getLong(stack, "timestamp");
-				long dist = world.getGameTime()-timestamp;
-				if(dist < 0)
-					list.add(new StringTextComponent("Somehow this sample is dated in the future...are you a time traveller?!"));
+				boolean hasStamp = ItemNBTHelper.hasKey(coresample, "timestamp");
+				if(hasStamp&&world!=null)
+				{
+					long timestamp = ItemNBTHelper.getLong(coresample, "timestamp");
+					long dist = world.getGameTime()-timestamp;
+					if(dist < 0)
+						list.add(new StringTextComponent("Somehow this sample is dated in the future...are you a time traveller?!").applyTextStyle(TextFormatting.RED));
+					else
+						list.add(new TranslationTextComponent(Lib.DESC_INFO+"coresample.timestamp", ClientUtils.fomatTimestamp(dist, TimestampFormat.DHM)).applyTextStyle(baseColor));
+				}
+				else if(hasStamp)
+					list.add(new TranslationTextComponent(Lib.DESC_INFO+"coresample.timezone").applyTextStyle(baseColor));
 				else
-					list.add(new TranslationTextComponent(Lib.CHAT_INFO+"coresample.timestamp", ClientUtils.fomatTimestamp(dist, ClientUtils.TimestampFormat.DHM)));
+					list.add(new TranslationTextComponent(Lib.DESC_INFO+"coresample.noTimestamp").applyTextStyle(baseColor));
 			}
-			else if(hasStamp)
-				list.add(new TranslationTextComponent(Lib.CHAT_INFO+"coresample.timezone"));
-			else
-				list.add(new TranslationTextComponent(Lib.CHAT_INFO+"coresample.noTimestamp"));
 		}
 	}
 
@@ -140,35 +170,71 @@ public class CoresampleItem extends IEBaseItem
 		return super.onItemUse(ctx);
 	}
 
-	@Nullable
-	public static MineralMix getMix(ItemStack coresample)
+	public static MineralMix[] getMineralMixes(ItemStack coresample)
 	{
-		try
+		if(ItemNBTHelper.hasKey(coresample, "mineralInfo", NBT.TAG_LIST))
 		{
-			if(ItemNBTHelper.hasKey(coresample, "mineral", NBT.TAG_STRING))
-			{
-				ResourceLocation rl = new ResourceLocation(ItemNBTHelper.getString(coresample, "mineral"));
-				return ExcavatorHandler.mineralList.get(rl);
-			}
-			else
-				return null;
-		} catch(ResourceLocationException x)
-		{
-			return null;
+			ListNBT nbtList = coresample.getOrCreateTag().getList("mineralInfo", NBT.TAG_COMPOUND);
+			return nbtList.stream().map(inbt -> {
+				CompoundNBT tag = (CompoundNBT)inbt;
+				return MineralMix.mineralList.get(new ResourceLocation(tag.getString("mineral")));
+			}).filter(Objects::nonNull).toArray(MineralMix[]::new);
 		}
+		return new MineralMix[0];
+	}
+
+	public static ListNBT getSimplifiedMineralList(ItemStack coresample)
+	{
+		ListNBT outList = new ListNBT();
+		if(ItemNBTHelper.hasKey(coresample, "mineralInfo", NBT.TAG_LIST))
+			coresample.getOrCreateTag().getList("mineralInfo", NBT.TAG_COMPOUND).
+					forEach(inbt -> outList.add(new StringNBT(((CompoundNBT)inbt).getString("mineral"))));
+		return outList;
+	}
+
+	public static void setMineralInfo(ItemStack stack, MineralWorldInfo info, BlockPos pos)
+	{
+		if(info==null)
+			return;
+		List<Pair<MineralVein, Integer>> veins = info.getAllVeins();
+		ListNBT nbtList = new ListNBT();
+		veins.forEach(pair -> {
+			CompoundNBT tag = new CompoundNBT();
+			tag.putDouble("percentage", pair.getRight()/(double)info.getTotalWeight());
+			tag.putString("mineral", pair.getLeft().getMineral().getId().toString());
+			tag.putInt("depletion", pair.getLeft().getDepletion());
+			tag.putDouble("saturation", 1-pair.getLeft().getFailChance(pos));
+			nbtList.add(tag);
+		});
+		stack.getOrCreateTag().put("mineralInfo", nbtList);
 	}
 
 	@Nullable
-	public static DimensionChunkCoords getCoords(@Nullable ItemStack stack)
+	public static ColumnPos getCoords(@Nullable ItemStack stack)
 	{
-		if(stack!=null&&stack.hasTag())
-			return DimensionChunkCoords.readFromNBT(stack.getOrCreateTag().getCompound("coords"));
+		if(stack!=null&&stack.hasTag()&&stack.getOrCreateTag().contains("x"))
+			return new ColumnPos(stack.getOrCreateTag().getInt("x"), stack.getOrCreateTag().getInt("z"));
 		else
 			return null;
 	}
 
-	public static void setCoords(ItemStack stack, DimensionChunkCoords coords)
+	public static void setCoords(ItemStack stack, BlockPos pos)
 	{
-		stack.getOrCreateTag().put("coords", coords.writeToNBT());
+		stack.getOrCreateTag().putInt("x", pos.getX());
+		stack.getOrCreateTag().putInt("z", pos.getZ());
+	}
+
+	@Nullable
+	public static ResourceLocation getDimenson(ItemStack stack)
+	{
+		if(stack.hasTag()&&stack.getOrCreateTag().contains("dimension"))
+			return new ResourceLocation(stack.getOrCreateTag().getString("dimension"));
+		return null;
+	}
+
+
+	public static void setDimenson(ItemStack stack, DimensionType dimension)
+	{
+		stack.getOrCreateTag().putString("dimension", dimension.getRegistryName().toString());
 	}
 }

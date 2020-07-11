@@ -9,19 +9,22 @@
 package blusunrize.immersiveengineering.common;
 
 import blusunrize.immersiveengineering.api.DimensionChunkCoords;
+import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
+import blusunrize.immersiveengineering.api.excavator.MineralMix;
+import blusunrize.immersiveengineering.api.excavator.MineralVein;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
-import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
-import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralWorldInfo;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.ColumnPos;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nonnull;
-import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class IESaveData extends WorldSavedData
 {
@@ -36,17 +39,42 @@ public class IESaveData extends WorldSavedData
 	@Override
 	public void read(CompoundNBT nbt)
 	{
-		ListNBT mineralList = nbt.getList("mineralDepletion", NBT.TAG_COMPOUND);
-		ExcavatorHandler.mineralCache.clear();
-		for(int i = 0; i < mineralList.size(); i++)
+		ListNBT dimensionList = nbt.getList("mineralVeins", NBT.TAG_COMPOUND);
+		ExcavatorHandler.getMineralVeinList().clear();
+		for(int i = 0; i < dimensionList.size(); i++)
 		{
-			CompoundNBT tag = mineralList.getCompound(i);
-			DimensionChunkCoords coords = DimensionChunkCoords.readFromNBT(tag);
-			if(coords!=null)
+			CompoundNBT dimTag = dimensionList.getCompound(i);
+			ResourceLocation rl = new ResourceLocation(dimTag.getString("dimension"));
+			DimensionType dimensionType = DimensionType.byName(rl);
+			if(dimensionType!=null)
 			{
-				MineralWorldInfo info = MineralWorldInfo.readFromNBT(tag.getCompound("info"));
-				if(info!=null)
-					ExcavatorHandler.mineralCache.put(coords, info);
+				ListNBT mineralList = dimTag.getList("veins", NBT.TAG_COMPOUND);
+				ExcavatorHandler.getMineralVeinList().putAll(dimensionType,
+						mineralList.stream().map(inbt -> MineralVein.readFromNBT((CompoundNBT)inbt))
+								.collect(Collectors.toList()));
+			}
+		}
+		// Legacy, using mineralDepletion key
+		if(nbt.contains("mineralDepletion", NBT.TAG_LIST))
+		{
+			ListNBT oldList = nbt.getList("mineralDepletion", NBT.TAG_COMPOUND);
+			for(int i = 0; i < oldList.size(); i++)
+			{
+				CompoundNBT tag = oldList.getCompound(i);
+				CompoundNBT mineralInfo = tag.getCompound("info");
+				if(mineralInfo.contains("mineral", NBT.TAG_STRING))
+				{
+					MineralMix mineral = MineralMix.mineralList.get(new ResourceLocation(mineralInfo.getString("mineral")));
+					DimensionChunkCoords oldCoords = DimensionChunkCoords.readFromNBT(tag);
+					int depletion = mineralInfo.getInt("depletion");
+					if(mineral!=null)
+					{
+						ColumnPos convertedPos = new ColumnPos(oldCoords.getXStart()+8, oldCoords.getZStart()+8);
+						MineralVein convertedVein = new MineralVein(convertedPos, mineral, 8);
+						convertedVein.setDepletion(depletion);
+						ExcavatorHandler.getMineralVeinList().put(oldCoords.dimension, convertedVein);
+					}
+				}
 			}
 		}
 
@@ -71,15 +99,18 @@ public class IESaveData extends WorldSavedData
 	@Override
 	public CompoundNBT write(@Nonnull CompoundNBT nbt)
 	{
-		ListNBT mineralList = new ListNBT();
-		for(Map.Entry<DimensionChunkCoords, MineralWorldInfo> e : ExcavatorHandler.mineralCache.entrySet())
-			if(e.getKey()!=null&&e.getValue()!=null)
-			{
-				CompoundNBT tag = e.getKey().writeToNBT();
-				tag.put("info", e.getValue().writeToNBT());
-				mineralList.add(tag);
-			}
-		nbt.put("mineralDepletion", mineralList);
+		ListNBT dimensionList = new ListNBT();
+		for(DimensionType dimension : ExcavatorHandler.getMineralVeinList().keySet())
+		{
+			CompoundNBT dimTag = new CompoundNBT();
+			dimTag.putString("dimension", dimension.getRegistryName().toString());
+			ListNBT mineralList = new ListNBT();
+			for(MineralVein mineralVein : ExcavatorHandler.getMineralVeinList().get(dimension))
+				mineralList.add(mineralVein.writeToNBT());
+			dimTag.put("veins", mineralList);
+			dimensionList.add(dimTag);
+		}
+		nbt.put("mineralVeins", dimensionList);
 
 
 		ListNBT receivedShaderList = new ListNBT();
@@ -102,7 +133,8 @@ public class IESaveData extends WorldSavedData
 
 	public static void setDirty()
 	{
-		INSTANCE.markDirty();
+		if(INSTANCE!=null)
+			INSTANCE.markDirty();
 	}
 
 	public static void setInstance(IESaveData in)

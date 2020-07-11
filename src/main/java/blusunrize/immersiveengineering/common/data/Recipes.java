@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.data;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IETags;
-import blusunrize.immersiveengineering.api.crafting.ClocheFertilizer;
 import blusunrize.immersiveengineering.api.crafting.ClocheRenderFunction.ClocheRenderReference;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.builders.*;
@@ -57,6 +56,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.potion.PotionUtils;
+import net.minecraft.potion.Potions;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.IItemProvider;
@@ -2029,6 +2030,16 @@ public class Recipes extends RecipeProvider
 				.key('p', IETags.getTagsFor(EnumMetals.STEEL).plate)
 				.addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot))
 				.build(out, toRL(toPath(Tools.rockcutter)));
+
+		ShapedRecipeBuilder.shapedRecipe(Tools.surveyTools)
+				.patternLine("cbh")
+				.patternLine("fff")
+				.key('b', Items.GLASS_BOTTLE)
+				.key('h', Tools.hammer)
+				.key('c', Items.WRITABLE_BOOK)
+				.key('f', IETags.fabricHemp)
+				.addCriterion("has_"+toPath(Tools.hammer), hasItem(Tools.hammer))
+				.build(out, toRL(toPath(Tools.surveyTools)));
 	}
 
 	private void recipesIngredients(@Nonnull Consumer<IFinishedRecipe> out)
@@ -2382,7 +2393,8 @@ public class Recipes extends RecipeProvider
 				@Override
 				public void serialize(@Nonnull JsonObject json)
 				{
-					if(conditions.length>0){
+					if(conditions.length > 0)
+					{
 						JsonArray conditionArray = new JsonArray();
 						for(ICondition condition : conditions)
 							conditionArray.add(CraftingHelper.serialize(condition));
