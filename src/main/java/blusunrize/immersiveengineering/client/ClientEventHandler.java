@@ -1269,17 +1269,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	@SubscribeEvent
 	public void onRenderWorldLastEvent(RenderWorldLastEvent event)
 	{
-		//Overlay renderer for the sample drill
-		boolean chunkBorders = false;
-		for(Hand hand : Hand.values())
-			if(ClientUtils.mc().player.getHeldItem(hand).getItem()==GameData.getBlockItemMap().get(MetalDevices.sampleDrill))
-			{
-				chunkBorders = true;
-				break;
-			}
-		if(!chunkBorders&&ClientUtils.mc().objectMouseOver instanceof BlockRayTraceResult&&
-				ClientUtils.mc().world.getTileEntity(((BlockRayTraceResult)ClientUtils.mc().objectMouseOver).getPos()) instanceof SampleDrillTileEntity)
-			chunkBorders = true;
+		/* Debug for Mineral Veins. Causes concurrent modification errors, so only use for testing
 
 		if(Screen.hasShiftDown())
 		{
@@ -1333,6 +1323,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			GlStateManager.disableBlend();
 			GlStateManager.enableTexture();
 		}
+		*/
 
 		float partial = event.getPartialTicks();
 		double px = TileEntityRendererDispatcher.staticPlayerX;
@@ -1355,52 +1346,6 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				part.render(tessellator, tessellator.getBuffer(), partial);
 			tessellator.getBuffer().setTranslation(0, 0, 0);
 
-			GlStateManager.shadeModel(GL11.GL_FLAT);
-			GlStateManager.enableCull();
-			GlStateManager.disableBlend();
-			GlStateManager.enableTexture();
-		}
-
-		if(chunkBorders)
-		{
-			PlayerEntity player = ClientUtils.mc().player;
-			int chunkX = (int)player.posX >> 4<<4;
-			int chunkZ = (int)player.posZ >> 4<<4;
-			int y = Math.min((int)player.posY-2, 0);//TODO player.getEntityWorld().getChunk(new BlockPos(player.posX, 0, player.posZ)).getLowestHeight());
-			float h = (float)Math.max(32, player.posY-y+4);
-			Tessellator tessellator = Tessellator.getInstance();
-			BufferBuilder BufferBuilder = tessellator.getBuffer();
-
-			GlStateManager.disableTexture();
-			GlStateManager.enableBlend();
-			GlStateManager.disableCull();
-			GlStateManager.blendFuncSeparate(770, 771, 1, 0);
-			GlStateManager.shadeModel(GL11.GL_SMOOTH);
-			float r = Lib.COLOUR_F_ImmersiveOrange[0];
-			float g = Lib.COLOUR_F_ImmersiveOrange[1];
-			float b = Lib.COLOUR_F_ImmersiveOrange[2];
-			BufferBuilder.setTranslation(chunkX-px, y+2-py, chunkZ-pz);
-			GlStateManager.lineWidth(5f);
-			BufferBuilder.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
-			BufferBuilder.pos(0, 0, 0).color(r, g, b, .375f).endVertex();
-			BufferBuilder.pos(0, h, 0).color(r, g, b, .375f).endVertex();
-			BufferBuilder.pos(16, 0, 0).color(r, g, b, .375f).endVertex();
-			BufferBuilder.pos(16, h, 0).color(r, g, b, .375f).endVertex();
-			BufferBuilder.pos(16, 0, 16).color(r, g, b, .375f).endVertex();
-			BufferBuilder.pos(16, h, 16).color(r, g, b, .375f).endVertex();
-			BufferBuilder.pos(0, 0, 16).color(r, g, b, .375f).endVertex();
-			BufferBuilder.pos(0, h, 16).color(r, g, b, .375f).endVertex();
-
-			BufferBuilder.pos(0, 2, 0).color(r, g, b, .375f).endVertex();
-			BufferBuilder.pos(16, 2, 0).color(r, g, b, .375f).endVertex();
-			BufferBuilder.pos(0, 2, 0).color(r, g, b, .375f).endVertex();
-			BufferBuilder.pos(0, 2, 16).color(r, g, b, .375f).endVertex();
-			BufferBuilder.pos(0, 2, 16).color(r, g, b, .375f).endVertex();
-			BufferBuilder.pos(16, 2, 16).color(r, g, b, .375f).endVertex();
-			BufferBuilder.pos(16, 2, 0).color(r, g, b, .375f).endVertex();
-			BufferBuilder.pos(16, 2, 16).color(r, g, b, .375f).endVertex();
-			tessellator.draw();
-			BufferBuilder.setTranslation(0, 0, 0);
 			GlStateManager.shadeModel(GL11.GL_FLAT);
 			GlStateManager.enableCull();
 			GlStateManager.disableBlend();
