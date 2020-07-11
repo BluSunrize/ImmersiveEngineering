@@ -28,7 +28,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.chunk.IChunk;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.GenerationStage.Decoration;
 import net.minecraft.world.gen.PerlinNoiseGenerator;
@@ -37,6 +36,7 @@ import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
 import net.minecraft.world.gen.feature.OreFeatureConfig.FillerBlockType;
+import net.minecraft.world.gen.feature.structure.StructureManager;
 import net.minecraft.world.gen.placement.*;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.RegistryEvent;
@@ -49,6 +49,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class IEWorldGen
@@ -192,7 +193,7 @@ public class IEWorldGen
 	@SubscribeEvent
 	public void registerFeatures(RegistryEvent.Register<Feature<?>> ev)
 	{
-		MINERAL_VEIN_FEATURE = new FeatureMineralVein(NoFeatureConfig::deserialize);
+		MINERAL_VEIN_FEATURE = new FeatureMineralVein();
 		MINERAL_VEIN_FEATURE.setRegistryName(ImmersiveEngineering.MODID, "mineral_vein");
 		ev.getRegistry().register(MINERAL_VEIN_FEATURE);
 	}
@@ -226,25 +227,30 @@ public class IEWorldGen
 
 	private static class FeatureMineralVein extends Feature<NoFeatureConfig>
 	{
-		public static HashMultimap<DimensionType, ChunkPos> veinGeneratedChunks = HashMultimap.create();
+		public static HashMultimap<RegistryKey<World>, ChunkPos> veinGeneratedChunks = HashMultimap.create();
 
-		public FeatureMineralVein(Function<Dynamic<?>, ? extends NoFeatureConfig> configFactoryIn)
+		public FeatureMineralVein()
 		{
-			super(configFactoryIn);
+			super(NoFeatureConfig.field_236558_a_);
 		}
 
 		@Override
-		public boolean place(IWorld worldIn, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, NoFeatureConfig config)
+		public boolean func_230362_a_(@Nonnull ISeedReader worldIn, @Nonnull StructureManager p_230362_2_,
+									  @Nonnull ChunkGenerator p_230362_3_, @Nonnull Random random,
+									  @Nonnull BlockPos pos, @Nonnull NoFeatureConfig p_230362_6_)
 		{
 			if(ExcavatorHandler.noiseGenerator==null)
-				ExcavatorHandler.noiseGenerator = new PerlinNoiseGenerator(new SharedSeedRandom(worldIn.getSeed()), 0, 0);
+				ExcavatorHandler.noiseGenerator = new PerlinNoiseGenerator(
+						new SharedSeedRandom(worldIn.getSeed()),
+						IntStream.of(0)
+				);
 
-			DimensionType dimension = worldIn.getDimension().getType();
+			RegistryKey<World> dimension = worldIn.getWorld().func_234923_W_();
 			IChunk chunk = worldIn.getChunk(pos);
 			if(!veinGeneratedChunks.containsEntry(dimension, chunk.getPos()))
 			{
 				veinGeneratedChunks.put(dimension, chunk.getPos());
-				ExcavatorHandler.generatePotentialVein(dimension, chunk.getPos(), rand);
+				ExcavatorHandler.generatePotentialVein(worldIn.getWorld(), chunk.getPos(), random);
 				return true;
 			}
 			return false;

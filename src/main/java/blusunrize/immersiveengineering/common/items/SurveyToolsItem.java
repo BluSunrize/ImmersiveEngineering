@@ -24,10 +24,15 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.ActionResultType;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.ColumnPos;
 import net.minecraft.util.math.RayTraceContext.FluidMode;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.vector.Vector2f;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IWorldReader;
@@ -112,7 +117,7 @@ public class SurveyToolsItem extends IEBaseItem
 			return stack;
 		}
 
-		ListNBT data = getVeinData(stack, world.getDimension().getType().getRegistryName().toString(), vein.getPos());
+		ListNBT data = getVeinData(stack, world.func_234923_W_(), vein.getPos());
 		int dataCount = data.size();
 		/* I considered not giving any information after 3 surveys, but because the text is displayed above the action
 		 * bar and can't be brought back after it fades, that could lead to frustration
@@ -138,7 +143,7 @@ public class SurveyToolsItem extends IEBaseItem
 
 		ITextComponent response;
 		// Get angle between postion->center vector and standard (south facing) vector
-		Vec2f vecToCenter = new Vec2f(vein.getPos().x-pos.getX(), vein.getPos().z-pos.getZ());
+		Vector2f vecToCenter = new Vector2f(vein.getPos().x-pos.getX(), vein.getPos().z-pos.getZ());
 		if(vecToCenter.x==0&&vecToCenter.y==0) // hit the vein center directly
 			response = new TranslationTextComponent(Lib.CHAT_INFO+"survey.hint.center",
 					new TranslationTextComponent(vein.getMineral().getTranslationKey()));
@@ -186,14 +191,15 @@ public class SurveyToolsItem extends IEBaseItem
 
 	private static final String DATA_KEY = "veinData";
 
-	public static ListNBT getVeinData(ItemStack surveyTools, String dimension, ColumnPos veinPos)
+	public static ListNBT getVeinData(ItemStack surveyTools, RegistryKey<World> dimension, ColumnPos veinPos)
 	{
 		ListNBT list = surveyTools.getOrCreateTag().getList(DATA_KEY, NBT.TAG_COMPOUND);
 		CompoundNBT tag = null;
+		String dimString = dimension.func_240901_a_().toString();
 		for(INBT nbt : list)
 		{
 			CompoundNBT tmp = (CompoundNBT)nbt;
-			if(dimension.equals(tmp.getString("dimension"))&&tmp.getInt("x")==veinPos.x&&tmp.getInt("z")==veinPos.z)
+			if(dimString.equals(tmp.getString("dimension"))&&tmp.getInt("x")==veinPos.x&&tmp.getInt("z")==veinPos.z)
 			{
 				tag = tmp;
 				break;
@@ -202,7 +208,7 @@ public class SurveyToolsItem extends IEBaseItem
 		if(tag==null)
 		{
 			tag = new CompoundNBT();
-			tag.putString("dimension", dimension);
+			tag.putString("dimension", dimString);
 			tag.putInt("x", veinPos.x);
 			tag.putInt("z", veinPos.z);
 			list.add(tag);

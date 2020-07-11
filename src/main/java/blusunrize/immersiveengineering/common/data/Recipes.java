@@ -56,8 +56,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.potion.PotionUtils;
-import net.minecraft.potion.Potions;
+import net.minecraft.tags.ITag;
+import net.minecraft.tags.ITag.INamedTag;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.RegistryKey;
@@ -2692,7 +2692,7 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL(toPath(Misc.cartMetalBarrel)));
 	}
 
-	private void addArmor(ITag<Item> input, Map<EquipmentSlotType, Item> items, String name, Consumer<IFinishedRecipe> out)
+	private void addArmor(INamedTag<Item> input, Map<EquipmentSlotType, Item> items, String name, Consumer<IFinishedRecipe> out)
 	{
 		Item head = items.get(EquipmentSlotType.HEAD);
 		Item chest = items.get(EquipmentSlotType.CHEST);
@@ -2726,7 +2726,7 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL(toPath(feet)));
 	}
 
-	private void add3x3Conversion(IItemProvider bigItem, ITag<Item> bigTag, IItemProvider smallItem, ITag<Item> smallTag, Consumer<IFinishedRecipe> out)
+	private void add3x3Conversion(IItemProvider bigItem, INamedTag<Item> bigTag, IItemProvider smallItem, INamedTag<Item> smallTag, Consumer<IFinishedRecipe> out)
 	{
 		ShapedRecipeBuilder.shapedRecipe(bigItem)
 				.key('s', smallTag)

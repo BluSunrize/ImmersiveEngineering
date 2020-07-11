@@ -16,9 +16,11 @@ import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.ColumnPos;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.World;
 import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.common.util.Constants.NBT;
 
@@ -45,14 +47,11 @@ public class IESaveData extends WorldSavedData
 		{
 			CompoundNBT dimTag = dimensionList.getCompound(i);
 			ResourceLocation rl = new ResourceLocation(dimTag.getString("dimension"));
-			DimensionType dimensionType = DimensionType.byName(rl);
-			if(dimensionType!=null)
-			{
-				ListNBT mineralList = dimTag.getList("veins", NBT.TAG_COMPOUND);
-				ExcavatorHandler.getMineralVeinList().putAll(dimensionType,
-						mineralList.stream().map(inbt -> MineralVein.readFromNBT((CompoundNBT)inbt))
-								.collect(Collectors.toList()));
-			}
+			RegistryKey<World> dimensionType = RegistryKey.func_240903_a_(Registry.WORLD_KEY, rl);
+			ListNBT mineralList = dimTag.getList("veins", NBT.TAG_COMPOUND);
+			ExcavatorHandler.getMineralVeinList().putAll(dimensionType,
+					mineralList.stream().map(inbt -> MineralVein.readFromNBT((CompoundNBT)inbt))
+							.collect(Collectors.toList()));
 		}
 		// Legacy, using mineralDepletion key
 		if(nbt.contains("mineralDepletion", NBT.TAG_LIST))
@@ -100,10 +99,10 @@ public class IESaveData extends WorldSavedData
 	public CompoundNBT write(@Nonnull CompoundNBT nbt)
 	{
 		ListNBT dimensionList = new ListNBT();
-		for(DimensionType dimension : ExcavatorHandler.getMineralVeinList().keySet())
+		for(RegistryKey<World> dimension : ExcavatorHandler.getMineralVeinList().keySet())
 		{
 			CompoundNBT dimTag = new CompoundNBT();
-			dimTag.putString("dimension", dimension.getRegistryName().toString());
+			dimTag.putString("dimension", dimension.func_240901_a_().toString());
 			ListNBT mineralList = new ListNBT();
 			for(MineralVein mineralVein : ExcavatorHandler.getMineralVeinList().get(dimension))
 				mineralList.add(mineralVein.writeToNBT());

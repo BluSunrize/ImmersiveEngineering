@@ -30,18 +30,12 @@ import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ColumnPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.text.*;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -79,42 +73,42 @@ public class CoresampleItem extends IEBaseItem
 				nbtList.forEach(inbt -> {
 					CompoundNBT tag = (CompoundNBT)inbt;
 					MineralMix mineral = MineralMix.mineralList.get(new ResourceLocation(tag.getString("mineral")));
-					ITextComponent component = new StringTextComponent(
+					IFormattableTextComponent component = new StringTextComponent(
 							Utils.formatDouble(tag.getDouble("percentage")*100, "0.00")+"% "
 					);
-					component.appendSibling(new TranslationTextComponent(mineral.getTranslationKey()));
-					list.add(component.applyTextStyle(baseColor));
+					component.func_230529_a_(new TranslationTextComponent(mineral.getTranslationKey()));
+					list.add(component.func_240699_a_(baseColor));
 					if(showYield)
 					{
 						component = new StringTextComponent("  ");
-						component.appendSibling(new TranslationTextComponent(Lib.DESC_INFO+"coresample.saturation",
+						component.func_230529_a_(new TranslationTextComponent(Lib.DESC_INFO+"coresample.saturation",
 								Utils.formatDouble(tag.getDouble("saturation")*100, "0.00")
 						));
-						list.add(component.applyTextStyle(TextFormatting.DARK_GRAY));
+						list.add(component.func_240699_a_(TextFormatting.DARK_GRAY));
 
 						component = new StringTextComponent("  ");
 						if(ExcavatorHandler.mineralVeinYield==0)
-							component.appendSibling(new TranslationTextComponent(Lib.DESC_INFO+"coresample.infinite"));
+							component.func_230529_a_(new TranslationTextComponent(Lib.DESC_INFO+"coresample.infinite"));
 						else
-							component.appendSibling(new TranslationTextComponent(Lib.DESC_INFO+"coresample.yield",
+							component.func_230529_a_(new TranslationTextComponent(Lib.DESC_INFO+"coresample.yield",
 									ExcavatorHandler.mineralVeinYield-tag.getInt("depletion")));
-						list.add(component.applyTextStyle(TextFormatting.DARK_GRAY));
+						list.add(component.func_240699_a_(TextFormatting.DARK_GRAY));
 					}
 				});
 			else
-				list.add(new TranslationTextComponent(Lib.DESC_INFO+"coresample.noMineral").applyTextStyle(baseColor));
+				list.add(new TranslationTextComponent(Lib.DESC_INFO+"coresample.noMineral").func_240699_a_(baseColor));
 
-			ResourceLocation dimension = getDimenson(coresample);
+			RegistryKey<World> dimension = getDimension(coresample);
 			if(dimension!=null)
 			{
-				String s2 = dimension.getPath();
+				String s2 = dimension.func_240901_a_().getPath();
 				if(s2.toLowerCase(Locale.ENGLISH).startsWith("the_"))
 					s2 = s2.substring(4);
-				list.add(new StringTextComponent(Utils.toCamelCase(s2)).applyTextStyle(baseColor));
+				list.add(new StringTextComponent(Utils.toCamelCase(s2)).func_240699_a_(baseColor));
 			}
 			ColumnPos pos = getCoords(coresample);
 			if(pos!=null)
-				list.add(new TranslationTextComponent(Lib.DESC_INFO+"coresample.pos", pos.x, pos.z).applyTextStyle(baseColor));
+				list.add(new TranslationTextComponent(Lib.DESC_INFO+"coresample.pos", pos.x, pos.z).func_240699_a_(baseColor));
 
 			if(showTimestamp)
 			{
@@ -124,14 +118,14 @@ public class CoresampleItem extends IEBaseItem
 					long timestamp = ItemNBTHelper.getLong(coresample, "timestamp");
 					long dist = world.getGameTime()-timestamp;
 					if(dist < 0)
-						list.add(new StringTextComponent("Somehow this sample is dated in the future...are you a time traveller?!").applyTextStyle(TextFormatting.RED));
+						list.add(new StringTextComponent("Somehow this sample is dated in the future...are you a time traveller?!").func_240699_a_(TextFormatting.RED));
 					else
-						list.add(new TranslationTextComponent(Lib.DESC_INFO+"coresample.timestamp", ClientUtils.fomatTimestamp(dist, TimestampFormat.DHM)).applyTextStyle(baseColor));
+						list.add(new TranslationTextComponent(Lib.DESC_INFO+"coresample.timestamp", ClientUtils.fomatTimestamp(dist, TimestampFormat.DHM)).func_240699_a_(baseColor));
 				}
 				else if(hasStamp)
-					list.add(new TranslationTextComponent(Lib.DESC_INFO+"coresample.timezone").applyTextStyle(baseColor));
+					list.add(new TranslationTextComponent(Lib.DESC_INFO+"coresample.timezone").func_240699_a_(baseColor));
 				else
-					list.add(new TranslationTextComponent(Lib.DESC_INFO+"coresample.noTimestamp").applyTextStyle(baseColor));
+					list.add(new TranslationTextComponent(Lib.DESC_INFO+"coresample.noTimestamp").func_240699_a_(baseColor));
 			}
 		}
 	}
@@ -225,16 +219,19 @@ public class CoresampleItem extends IEBaseItem
 	}
 
 	@Nullable
-	public static ResourceLocation getDimenson(ItemStack stack)
+	public static RegistryKey<World> getDimension(ItemStack stack)
 	{
 		if(stack.hasTag()&&stack.getOrCreateTag().contains("dimension"))
-			return new ResourceLocation(stack.getOrCreateTag().getString("dimension"));
+		{
+			ResourceLocation name = new ResourceLocation(stack.getOrCreateTag().getString("dimension"));
+			return RegistryKey.func_240903_a_(Registry.WORLD_KEY, name);
+		}
 		return null;
 	}
 
 
-	public static void setDimenson(ItemStack stack, DimensionType dimension)
+	public static void setDimension(ItemStack stack, RegistryKey<World> dimension)
 	{
-		stack.getOrCreateTag().putString("dimension", dimension.getRegistryName().toString());
+		stack.getOrCreateTag().putString("dimension", dimension.func_240901_a_().toString());
 	}
 }

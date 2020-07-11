@@ -13,11 +13,12 @@ import blusunrize.immersiveengineering.common.IESaveData;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.ColumnPos;
+import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.INoiseGenerator;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -32,7 +33,7 @@ import java.util.stream.Collectors;
  */
 public class ExcavatorHandler
 {
-	private static final Multimap<DimensionType, MineralVein> MINERAL_VEIN_LIST = ArrayListMultimap.create();
+	private static final Multimap<RegistryKey<World>, MineralVein> MINERAL_VEIN_LIST = ArrayListMultimap.create();
 	private static final Map<ColumnPos, MineralWorldInfo> MINERAL_INFO_CACHE = new HashMap<>();
 	public static int mineralVeinYield = 0;
 	public static double initialVeinDepletion = 0;
@@ -48,7 +49,7 @@ public class ExcavatorHandler
 		return info.getMineralVein(Utils.RAND);
 	}
 
-	public static Multimap<DimensionType, MineralVein> getMineralVeinList()
+	public static Multimap<RegistryKey<World>, MineralVein> getMineralVeinList()
 	{
 		return MINERAL_VEIN_LIST;
 	}
@@ -70,7 +71,7 @@ public class ExcavatorHandler
 			double totalSaturation = 0;
 			MineralMix mix = null;
 			// Iterate all known veins
-			for(MineralVein vein : MINERAL_VEIN_LIST.get(world.getDimension().getType()))
+			for(MineralVein vein : MINERAL_VEIN_LIST.get(world.func_234923_W_()))
 			{
 				int dX = vein.getPos().x-columnPos.x;
 				int dZ = vein.getPos().z-columnPos.z;
@@ -93,7 +94,7 @@ public class ExcavatorHandler
 		return worldInfo;
 	}
 
-	public static void generatePotentialVein(DimensionType dimension, ChunkPos chunkpos, Random rand)
+	public static void generatePotentialVein(World world, ChunkPos chunkpos, Random rand)
 	{
 		int xStart = chunkpos.getXStart();
 		int zStart = chunkpos.getZStart();
@@ -120,7 +121,7 @@ public class ExcavatorHandler
 			ColumnPos finalPos = pos;
 			int radius = 12+rand.nextInt(32);
 			int radiusSq = radius*radius;
-			boolean crossover = MINERAL_VEIN_LIST.get(dimension).stream().anyMatch(vein -> {
+			boolean crossover = MINERAL_VEIN_LIST.get(world.func_234923_W_()).stream().anyMatch(vein -> {
 				int dX = vein.getPos().x-finalPos.x;
 				int dZ = vein.getPos().z-finalPos.z;
 				int dSq = dX*dX+dZ*dZ;
@@ -129,7 +130,7 @@ public class ExcavatorHandler
 			if(!crossover)
 			{
 				MineralMix mineralMix = null;
-				MineralSelection selection = new MineralSelection(dimension);
+				MineralSelection selection = new MineralSelection(world.func_234922_V_());
 				if(selection.getTotalWeight() > 0)
 				{
 					int weight = selection.getRandomWeight(rand);
@@ -149,7 +150,7 @@ public class ExcavatorHandler
 					// generate initial depletion
 					if(initialVeinDepletion > 0)
 						vein.setDepletion((int)(mineralVeinYield*(rand.nextDouble()*initialVeinDepletion)));
-					MINERAL_VEIN_LIST.put(dimension, vein);
+					MINERAL_VEIN_LIST.put(world.func_234923_W_(), vein);
 					IESaveData.setDirty();
 				}
 			}
@@ -161,7 +162,7 @@ public class ExcavatorHandler
 		private final int totalWeight;
 		private final Set<MineralMix> validMinerals;
 
-		public MineralSelection(DimensionType dimension)
+		public MineralSelection(RegistryKey<DimensionType> dimension)
 		{
 			int weight = 0;
 			this.validMinerals = new HashSet<>();

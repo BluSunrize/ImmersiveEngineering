@@ -28,6 +28,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.ColumnPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
@@ -37,7 +38,6 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.storage.MapData;
 import net.minecraft.world.storage.MapDecoration;
 
@@ -122,9 +122,9 @@ public class CoresampleTileEntity extends IEBaseTileEntity implements IStateBase
 				MapData mapData = FilledMapItem.getMapData(heldItem, player.getEntityWorld());
 				if(mapData!=null)
 				{
-					if(mapData.dimension!=DimensionType.byName(CoresampleItem.getDimenson(coresample)))
+					if(mapData.dimension!=CoresampleItem.getDimension(coresample))
 					{
-						player.sendMessage(new TranslationTextComponent(Lib.CHAT_INFO+"coresample.mapDimension"));
+						player.sendMessage(new TranslationTextComponent(Lib.CHAT_INFO+"coresample.mapDimension"), Util.DUMMY_UUID);
 						return true;
 					}
 
@@ -203,7 +203,7 @@ public class CoresampleTileEntity extends IEBaseTileEntity implements IStateBase
 		{
 			List<ITextComponent> list = new ArrayList<>();
 			CoresampleItem.getCoresampleInfo(coresample, list, TextFormatting.WHITE, world, false, false);
-			overlay = list.stream().map(ITextComponent::getFormattedText).toArray(String[]::new);
+			overlay = list.stream().map(ITextComponent::getString).toArray(String[]::new);
 		}
 		return overlay;
 	}
