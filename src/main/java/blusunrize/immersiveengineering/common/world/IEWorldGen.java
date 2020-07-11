@@ -35,11 +35,7 @@ import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
 import net.minecraft.world.gen.feature.OreFeatureConfig.FillerBlockType;
-import net.minecraft.world.gen.placement.ConfiguredPlacement;
-import net.minecraft.world.gen.placement.CountRange;
-import net.minecraft.world.gen.placement.CountRangeConfig;
-import net.minecraft.world.gen.placement.IPlacementConfig;
-import net.minecraft.world.gen.placement.Placement;
+import net.minecraft.world.gen.placement.*;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.TickEvent;
@@ -78,8 +74,10 @@ public class IEWorldGen
 				);
 		retroFeatures.put(name, retroFeature);
 
-		ConfiguredFeature<?> vein_feature = Biome.createDecoratedFeature(MINERAL_VEIN_FEATURE, new NoFeatureConfig(),
-				Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG);
+		ConfiguredFeature<?, ?> vein_feature = new ConfiguredFeature<>(MINERAL_VEIN_FEATURE, new NoFeatureConfig())
+				.withPlacement(
+						new ConfiguredPlacement<>(Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG)
+				);
 		for(Biome biome : ForgeRegistries.BIOMES.getValues())
 			biome.addFeature(Decoration.RAW_GENERATION, vein_feature);
 	}
@@ -140,7 +138,7 @@ public class IEWorldGen
 	@SubscribeEvent
 	public void serverWorldTick(TickEvent.WorldTickEvent event)
 	{
-		if(event.side==LogicalSide.CLIENT||event.phase==TickEvent.Phase.START || !(event.world instanceof ServerWorld))
+		if(event.side==LogicalSide.CLIENT||event.phase==TickEvent.Phase.START||!(event.world instanceof ServerWorld))
 			return;
 		DimensionType dimension = event.world.getDimension().getType();
 		int counter = 0;
@@ -165,7 +163,7 @@ public class IEWorldGen
 						long xSeed = (fmlRandom.nextLong() >> 3);
 						long zSeed = (fmlRandom.nextLong() >> 3);
 						fmlRandom.setSeed(xSeed*loc.x+zSeed*loc.z^worldSeed);
-						this.generateOres(fmlRandom, loc.x, loc.z, (ServerWorld) event.world, false);
+						this.generateOres(fmlRandom, loc.x, loc.z, (ServerWorld)event.world, false);
 						counter++;
 						chunks.remove(indexToRemove);
 					}
@@ -232,14 +230,14 @@ public class IEWorldGen
 
 		public FeatureMineralVein(Function<Dynamic<?>, ? extends NoFeatureConfig> configFactoryIn)
 		{
-			super(configFactoryIn, false);
+			super(configFactoryIn);
 		}
 
 		@Override
 		public boolean place(IWorld worldIn, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, NoFeatureConfig config)
 		{
 			if(ExcavatorHandler.noiseGenerator==null)
-				ExcavatorHandler.noiseGenerator = new PerlinNoiseGenerator(new SharedSeedRandom(worldIn.getSeed()), 1);
+				ExcavatorHandler.noiseGenerator = new PerlinNoiseGenerator(new SharedSeedRandom(worldIn.getSeed()), 0, 0);
 
 			DimensionType dimension = worldIn.getDimension().getType();
 			IChunk chunk = worldIn.getChunk(pos);

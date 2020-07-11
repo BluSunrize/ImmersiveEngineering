@@ -80,7 +80,7 @@ public class CommandMineral
 		}).then(
 				Commands.argument("location", ColumnPosArgument.columnPos())
 						.executes(command -> {
-							ColumnPos pos = ColumnPosArgument.func_218101_a(command, "location");
+							ColumnPos pos = ColumnPosArgument.fromBlockPos(command, "location");
 							getMineral(command, pos);
 							return Command.SINGLE_SUCCESS;
 						})
@@ -128,7 +128,7 @@ public class CommandMineral
 						.then(Commands.argument("radius", IntegerArgumentType.integer(8, 64))
 								.then(Commands.argument("pos", ColumnPosArgument.columnPos())
 										.executes(ctx -> {
-											putMineral(ctx, ColumnPosArgument.func_218101_a(ctx, "pos"));
+											putMineral(ctx, ColumnPosArgument.fromBlockPos(ctx, "pos"));
 											return Command.SINGLE_SUCCESS;
 										}))
 								.executes(ctx -> {
@@ -165,7 +165,7 @@ public class CommandMineral
 				.then(Commands.argument("depletion", IntegerArgumentType.integer(0, ExcavatorHandler.mineralVeinYield))
 						.then(Commands.argument("pos", ColumnPosArgument.columnPos())
 								.executes(ctx -> {
-									setMineralDepletion(ctx, ColumnPosArgument.func_218101_a(ctx, "pos"));
+									setMineralDepletion(ctx, ColumnPosArgument.fromBlockPos(ctx, "pos"));
 									return Command.SINGLE_SUCCESS;
 								}))
 						.executes(ctx -> {

@@ -42,6 +42,7 @@ import net.minecraftforge.client.model.IModelLoader;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
 import net.minecraftforge.client.model.pipeline.LightUtil;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -97,7 +98,7 @@ public class ModelCoresample extends BakedIEModel
 				TextureAtlasSprite textureStone = null;
 				if(minerals!=null&&minerals.length > 0)
 				{
-					int allocatedPx = 16 / minerals.length;
+					int allocatedPx = 16/minerals.length;
 					for(MineralMix mineral : minerals)
 					{
 						for(StackWithChance o : mineral.outputs)

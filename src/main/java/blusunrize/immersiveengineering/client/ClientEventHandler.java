@@ -68,6 +68,7 @@ import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.IHasHead;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -1330,62 +1331,6 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	@SubscribeEvent
 	public void onRenderWorldLastEvent(RenderWorldLastEvent event)
 	{
-		/* Debug for Mineral Veins. Causes concurrent modification errors, so only use for testing
-
-		if(Screen.hasShiftDown())
-		{
-			Tessellator tessellator = Tessellator.getInstance();
-			BufferBuilder BufferBuilder = tessellator.getBuffer();
-			double px = TileEntityRendererDispatcher.staticPlayerX;
-			double py = TileEntityRendererDispatcher.staticPlayerY;
-			double pz = TileEntityRendererDispatcher.staticPlayerZ;
-			GlStateManager.disableTexture();
-			GlStateManager.enableBlend();
-			GlStateManager.disableCull();
-			GlStateManager.blendFuncSeparate(770, 771, 1, 0);
-			GlStateManager.shadeModel(GL11.GL_SMOOTH);
-			GlStateManager.lineWidth(5f);
-			List<ResourceLocation> keyList = new ArrayList<>(MineralMix.mineralList.keySet());
-			keyList.sort(Comparator.comparing(ResourceLocation::toString));
-			for(MineralVein vein : ExcavatorHandler.getMineralVeinList().get(DimensionType.OVERWORLD))
-			{
-				ColumnPos pos = vein.getPos();
-				int iC = keyList.indexOf(vein.getMineral().getId());
-				DyeColor color = DyeColor.values()[iC%16];
-				float[] rgb = color.getColorComponentValues();
-				float r = rgb[0];
-				float g = rgb[1];
-				float b = rgb[2];
-
-				BufferBuilder.setTranslation(pos.x-px, 0-py, pos.z-pz);
-				BufferBuilder.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
-				BufferBuilder.pos(0, 0, 0).color(r, g, b, .75f).endVertex();
-				BufferBuilder.pos(0, 128, 0).color(r, g, b, .75f).endVertex();
-				tessellator.draw();
-
-				int radius = vein.getRadius();
-				float angle;
-				double x1;
-				double z1;
-				BufferBuilder.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
-				for(int p = 0; p < 12; p++)
-				{
-					angle = 360.0f/12*p;
-					x1 = radius*Math.cos(angle*Math.PI/180);
-					z1 = radius*Math.sin(angle*Math.PI/180);
-					BufferBuilder.pos(x1, 70, z1).color(r, g, b, .75f).endVertex();
-				}
-				tessellator.draw();
-
-				BufferBuilder.setTranslation(0, 0, 0);
-			}
-			GlStateManager.shadeModel(GL11.GL_FLAT);
-			GlStateManager.enableCull();
-			GlStateManager.disableBlend();
-			GlStateManager.enableTexture();
-		}
-		*/
-
 		float partial = event.getPartialTicks();
 		MatrixStack transform = event.getMatrixStack();
 		transform.push();
@@ -1417,6 +1362,45 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			}
 			FractalParticle.PARTICLE_FRACTAL_DEQUE.clear();
 		}
+
+		/* Debug for Mineral Veins. Causes concurrent modification errors, so only use for testing
+
+		if(Screen.hasShiftDown())
+		{
+			List<ResourceLocation> keyList = new ArrayList<>(MineralMix.mineralList.keySet());
+			keyList.sort(Comparator.comparing(ResourceLocation::toString));
+			for(MineralVein vein : ExcavatorHandler.getMineralVeinList().get(DimensionType.OVERWORLD))
+			{
+				transform.push();
+				ColumnPos pos = vein.getPos();
+				int iC = keyList.indexOf(vein.getMineral().getId());
+				DyeColor color = DyeColor.values()[iC%16];
+				float[] rgb = color.getColorComponentValues();
+				float r = rgb[0];
+				float g = rgb[1];
+				float b = rgb[2];
+				transform.translate(pos.x, 0, pos.z);
+				IVertexBuilder bufferBuilder = buffers.getBuffer(IERenderTypes.CHUNK_MARKER);
+				Matrix4f mat = transform.getLast().getMatrix();
+				bufferBuilder.pos(mat, 0, 0, 0).color(r, g, b, .75f).endVertex();
+				bufferBuilder.pos(mat, 0, 128, 0).color(r, g, b, .75f).endVertex();
+
+				bufferBuilder = buffers.getBuffer(IERenderTypes.VEIN_MARKER);
+				int radius = vein.getRadius();
+				float angle;
+				double x1;
+				double z1;
+				for(int p = 0; p < 12; p++)
+				{
+					angle = 360.0f/12*p;
+					x1 = radius*Math.cos(angle*Math.PI/180);
+					z1 = radius*Math.sin(angle*Math.PI/180);
+					bufferBuilder.pos(mat, (float)x1, 70, (float)z1).color(r, g, b, .75f).endVertex();
+				}
+				transform.pop();
+			}
+		}
+		*/
 
 		if(!FAILED_CONNECTIONS.isEmpty())
 		{

@@ -188,7 +188,7 @@ public class CoresampleItem extends IEBaseItem
 		ListNBT outList = new ListNBT();
 		if(ItemNBTHelper.hasKey(coresample, "mineralInfo", NBT.TAG_LIST))
 			coresample.getOrCreateTag().getList("mineralInfo", NBT.TAG_COMPOUND).
-					forEach(inbt -> outList.add(new StringNBT(((CompoundNBT)inbt).getString("mineral"))));
+					forEach(inbt -> outList.add(StringNBT.valueOf(((CompoundNBT)inbt).getString("mineral"))));
 		return outList;
 	}
 

@@ -26,11 +26,8 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.ColumnPos;
+import net.minecraft.util.math.*;
 import net.minecraft.util.math.RayTraceContext.FluidMode;
-import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IWorldReader;
@@ -39,7 +36,6 @@ import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.vecmath.Vector2f;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiPredicate;
@@ -142,7 +138,7 @@ public class SurveyToolsItem extends IEBaseItem
 
 		ITextComponent response;
 		// Get angle between postion->center vector and standard (south facing) vector
-		Vector2f vecToCenter = new Vector2f(vein.getPos().x-pos.getX(), vein.getPos().z-pos.getZ());
+		Vec2f vecToCenter = new Vec2f(vein.getPos().x-pos.getX(), vein.getPos().z-pos.getZ());
 		if(vecToCenter.x==0&&vecToCenter.y==0) // hit the vein center directly
 			response = new TranslationTextComponent(Lib.CHAT_INFO+"survey.hint.center",
 					new TranslationTextComponent(vein.getMineral().getTranslationKey()));
@@ -166,7 +162,7 @@ public class SurveyToolsItem extends IEBaseItem
 				default:
 					response = new TranslationTextComponent(Lib.CHAT_INFO+"survey.hint.3",
 							new TranslationTextComponent(vein.getMineral().getTranslationKey()),
-							Math.round(vecToCenter.length()),
+							Math.round(Math.sqrt(vecToCenter.x*vecToCenter.x+vecToCenter.y*vecToCenter.y)),
 							new TranslationTextComponent(Lib.CHAT_INFO+"survey.direction."+segment));
 					break;
 			}
@@ -182,7 +178,7 @@ public class SurveyToolsItem extends IEBaseItem
 		tag.putString("hint", ITextComponent.Serializer.toJson(response));
 		data.add(tag);
 
-		world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ITEM_BOOK_PAGE_TURN, SoundCategory.NEUTRAL, 1.0F, 1.0F+(world.rand.nextFloat()-world.rand.nextFloat())*0.4F);
+		world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ITEM_BOOK_PAGE_TURN, SoundCategory.NEUTRAL, 1.0F, 1.0F+(world.rand.nextFloat()-world.rand.nextFloat())*0.4F);
 		stack.attemptDamageItem(1, world.rand, player);
 
 		return stack;
