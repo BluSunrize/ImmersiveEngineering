@@ -12,6 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -162,12 +163,12 @@ public class ItemNBTHelper
 		return ItemStack.EMPTY;
 	}
 
-	public static void setLore(ItemStack stack, String... lore)
+	public static void setLore(ItemStack stack, ITextComponent... lore)
 	{
 		CompoundNBT displayTag = getTagCompound(stack, "display");
 		ListNBT list = new ListNBT();
-		for(String s : lore)
-			list.add(StringNBT.valueOf(s));
+		for(ITextComponent s : lore)
+			list.add(StringNBT.valueOf(ITextComponent.Serializer.toJson(s)));
 		displayTag.put("Lore", list);
 		setTagCompound(stack, "display", displayTag);
 	}

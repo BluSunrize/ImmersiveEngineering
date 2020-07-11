@@ -9,6 +9,7 @@ Note that many of IE's multiblocks feature comparator-functionality, as describe
 §lSilo: §rAs detailed in its <link;silo;manual entry>
 §lAssembler: §rOutputs a signal relative to the fill of the inventory.
 §lAutoWorkbench: §rOutputs a signal relative to the fill of the inventory.
+§lCrusher: §rOutputs a signal relative to the fill of the inventory.
 §lSqueezer: §rOutputs a signal relative to the fill of the inventory.
 §lFermenter: §rOutputs a signal relative to the fill of the inventory.
 §lExcavator: §rOutputs a signal relative to the remaining ore in the vein.

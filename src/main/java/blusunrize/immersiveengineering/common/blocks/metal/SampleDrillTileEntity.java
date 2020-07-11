@@ -9,14 +9,12 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.DimensionChunkCoords;
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
-import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
-import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
-import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralWorldInfo;
+import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
+import blusunrize.immersiveengineering.api.excavator.MineralMix;
+import blusunrize.immersiveengineering.api.excavator.MineralWorldInfo;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
@@ -29,7 +27,6 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxH
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
@@ -42,7 +39,6 @@ import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -100,10 +96,8 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 				process++;
 				if(process >= totalTime)
 				{
-					int cx = getPos().getX() >> 4;
-					int cz = getPos().getZ() >> 4;
-					MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(world, cx, cz);
-					this.sample = createCoreSample(world, (getPos().getX() >> 4), (getPos().getZ() >> 4), info);
+					MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(world, getPos());
+					this.sample = createCoreSample(info);
 				}
 				this.markDirty();
 				this.markContainingBlockForUpdate(null);
@@ -126,40 +120,29 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 	}
 
 	@Nullable
-	public MineralMix getVein()
+	public MineralMix[] getVein()
 	{
 		if(sample.isEmpty())
 			return null;
 		else
-			return CoresampleItem.getMix(sample);
+			return CoresampleItem.getMineralMixes(sample);
 	}
 
 	public int getExpectedVeinYield()
 	{
 		if(sample.isEmpty())
 			return -1;
-		return ExcavatorHandler.mineralVeinCapacity-sample.getOrCreateTag().getInt("depletion");
+		return ExcavatorHandler.mineralVeinYield-sample.getOrCreateTag().getInt("depletion");
 	}
 
 	@Nonnull
-	public ItemStack createCoreSample(World world, int chunkX, int chunkZ, @Nullable MineralWorldInfo info)
+	public ItemStack createCoreSample(@Nullable MineralWorldInfo info)
 	{
 		ItemStack stack = new ItemStack(Misc.coresample);
 		ItemNBTHelper.putLong(stack, "timestamp", world.getGameTime());
-		DimensionChunkCoords dimCoords = new DimensionChunkCoords(world, chunkX, chunkZ);
-		CoresampleItem.setCoords(stack, dimCoords);
-		if(info==null)
-			return stack;
-		if(info.mineralOverride!=null)
-			ItemNBTHelper.putString(stack, "mineral", info.mineralOverride.getId().toString());
-		else if(info.mineral!=null)
-			ItemNBTHelper.putString(stack, "mineral", info.mineral.getId().toString());
-		else
-			return stack;
-		if(ExcavatorHandler.mineralVeinCapacity < 0||info.depletion < 0)
-			ItemNBTHelper.putBoolean(stack, "infinite", true);
-		else
-			ItemNBTHelper.putInt(stack, "depletion", info.depletion);
+		CoresampleItem.setDimenson(stack, world.getDimension().getType());
+		CoresampleItem.setCoords(stack, getPos());
+		CoresampleItem.setMineralInfo(stack, info, getPos());
 		return stack;
 	}
 
@@ -306,27 +289,4 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 		return false;
 	}
 
-	@Nullable
-	public String getVeinLocalizedName()
-	{
-		MineralMix mineral = getVein();
-		if(mineral==null)
-			return null;
-		String unlocalizedName = Lib.DESC_INFO+"mineral."+mineral.getId();
-		String localizedName = I18n.format(unlocalizedName);
-		if(unlocalizedName.equals(localizedName))
-			return mineral.getId().toString();
-		return localizedName;
-	}
-
-	public float getVeinIntegrity()
-	{
-		if(sample.isEmpty())
-			return 0;
-		else if(ItemNBTHelper.hasKey(sample, "infinite"))
-			return -1;
-		else if(ItemNBTHelper.hasKey(sample, "depletion"))
-			return 1-ItemNBTHelper.getInt(sample, "depletion")/(float)ExcavatorHandler.mineralVeinCapacity;
-		return 0;
-	}
 }

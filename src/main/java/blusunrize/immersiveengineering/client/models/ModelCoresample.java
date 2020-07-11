@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.client.models;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.crafting.StackWithChance;
-import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
+import blusunrize.immersiveengineering.api.excavator.MineralMix;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.items.CoresampleItem;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
@@ -42,6 +42,7 @@ import net.minecraftforge.client.model.IModelLoader;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
 import net.minecraftforge.client.model.pipeline.LightUtil;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -53,17 +54,17 @@ import java.util.function.Function;
 @SuppressWarnings("deprecation")
 public class ModelCoresample extends BakedIEModel
 {
-	private static final Cache<MineralMix, ModelCoresample> modelCache = CacheBuilder.newBuilder()
+	private static final Cache<String, ModelCoresample> modelCache = CacheBuilder.newBuilder()
 			.expireAfterAccess(60, TimeUnit.SECONDS)
 			.build();
 	@Nullable
-	private MineralMix mineral;
+	private MineralMix[] minerals;
 	private final VertexFormat format;
 	private List<BakedQuad> bakedQuads;
 
-	public ModelCoresample(@Nullable MineralMix mineral, VertexFormat format)
+	public ModelCoresample(@Nullable MineralMix[] minerals, VertexFormat format)
 	{
-		this.mineral = mineral;
+		this.minerals = minerals;
 		this.format = format;
 	}
 
@@ -76,12 +77,12 @@ public class ModelCoresample extends BakedIEModel
 	@Override
 	public List<BakedQuad> getQuads(@Nullable BlockState coreState, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData)
 	{
-		MineralMix mineral;
+		MineralMix[] minerals;
 		if(extraData.hasProperty(Model.MINERAL))
-			mineral = extraData.getData(Model.MINERAL);
+			minerals = extraData.getData(Model.MINERAL);
 		else
-			mineral = this.mineral;
-		if(bakedQuads==null||this.mineral==null)
+			minerals = this.minerals;
+		if(bakedQuads==null||minerals==null)
 		{
 			bakedQuads = new ArrayList<>();
 			Exception cause = null;
@@ -93,24 +94,28 @@ public class ModelCoresample extends BakedIEModel
 				float dOff = (1-depth)/2;
 				int pixelLength = 0;
 
-				Map<TextureAtlasSprite, Integer> textureOre = new HashMap<>();
-				TextureAtlasSprite textureStone;
-				if(mineral!=null)
+				List<Pair<TextureAtlasSprite, Integer>> textureOre = new ArrayList<>();
+				TextureAtlasSprite textureStone = null;
+				if(minerals!=null&&minerals.length > 0)
 				{
-					for(StackWithChance o : mineral.outputs)
-						if(!o.getStack().isEmpty())
-						{
-							int weight = Math.max(2, Math.round(16*o.getChance()));
-							Block b = Block.getBlockFromItem(o.getStack().getItem());
-							if(b==Blocks.AIR)
-								b = mineral.background;
-							BlockState state = b.getDefaultState();
-							IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes().getModel(state);
-							textureOre.put(model.getParticleTexture(), weight);
-							pixelLength += weight;
-						}
-					IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes().getModel(mineral.background.getDefaultState());
-					textureStone = model.getParticleTexture();
+					int allocatedPx = 16/minerals.length;
+					for(MineralMix mineral : minerals)
+					{
+						for(StackWithChance o : mineral.outputs)
+							if(!o.getStack().isEmpty())
+							{
+								int weight = Math.round(allocatedPx*o.getChance());
+								Block b = Block.getBlockFromItem(o.getStack().getItem());
+								if(b==Blocks.AIR)
+									b = mineral.background;
+								BlockState state = b.getDefaultState();
+								IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes().getModel(state);
+								textureOre.add(Pair.of(model.getParticleTexture(), weight));
+								pixelLength += weight;
+							}
+						IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes().getModel(mineral.background.getDefaultState());
+						textureStone = model.getParticleTexture();
+					}
 				}
 				else
 				{
@@ -167,9 +172,10 @@ public class ModelCoresample extends BakedIEModel
 				else
 				{
 					float h = 0;
-					for(TextureAtlasSprite sprite : textureOre.keySet())
+					for(Pair<TextureAtlasSprite, Integer> pair : textureOre)
 					{
-						int weight = textureOre.get(sprite);
+						TextureAtlasSprite sprite = pair.getLeft();
+						int weight = pair.getRight();
 						int v = weight > 8?16-weight: 8;
 						double[][] uvs = new double[4][];
 						for(int j = 0; j < 4; j++)
@@ -278,23 +284,26 @@ public class ModelCoresample extends BakedIEModel
 		@Override
 		public IBakedModel func_239290_a_(IBakedModel originalModel, ItemStack stack, @Nullable ClientWorld worldIn, @Nullable LivingEntity entityIn)
 		{
-			MineralMix mineral = CoresampleItem.getMix(stack);
-			if(mineral!=null)
+			MineralMix[] minerals = CoresampleItem.getMineralMixes(stack);
+			if(minerals.length > 0)
 			{
 				try
 				{
-					return modelCache.get(mineral, () -> {
+					String cacheKey = "";
+					for(int i = 0; i < minerals.length; i++)
+						cacheKey += (i > 0?"_": "")+minerals[i].getId().toString();
+					return modelCache.get(cacheKey, () -> {
 						VertexFormat format;
 						if(originalModel instanceof ModelCoresample)
 							format = ((ModelCoresample)originalModel).format;
 						else
 							format = DefaultVertexFormats.BLOCK;
-						return new ModelCoresample(mineral, format);
+						return new ModelCoresample(minerals, format);
 					});
 				} catch(ExecutionException e)
-					{
-						throw new RuntimeException(e);
-					}
+				{
+					throw new RuntimeException(e);
+				}
 			}
 			return originalModel;
 		}

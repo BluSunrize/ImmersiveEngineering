@@ -105,6 +105,8 @@ public final class IEItems
 		public static Item buzzsaw;
 		public static Item sawblade;
 		public static Item rockcutter;
+
+		public static Item surveyTools;
 	}
 
 	public static final class Weapons

@@ -1,0 +1,22 @@
+{
+  "survey_tools": {
+    "type": "crafting",
+    "recipe": "crafting/survey_tools"
+  },
+  "sample_drill": {
+    "type": "crafting",
+    "recipe": "crafting/sample_drill"
+  },
+  "core_sample": {
+    "type": "item_display",
+    "item": {
+      "item": "immersiveengineering:coresample",
+      "nbt": {
+        "mineralInfo": [{
+          "mineral": "immersiveengineering:mineral/chalcopyrite",
+          "percentage": 1.0
+        }]
+      }
+    }
+  }
+}

@@ -29,7 +29,7 @@ public class BluprintzLootFunction extends LootFunction
 	public ItemStack doApply(ItemStack stack, @Nonnull LootContext context)
 	{
 		stack.setDisplayName(new StringTextComponent("Super Special BluPrintz"));
-		ItemNBTHelper.setLore(stack, "Congratulations!", "You have found an easter egg!");
+		ItemNBTHelper.setLore(stack, new StringTextComponent("Congratulations!"), new StringTextComponent("You have found an easter egg!"));
 		return stack;
 	}
 

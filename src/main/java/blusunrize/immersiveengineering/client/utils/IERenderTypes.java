@@ -23,6 +23,7 @@ public class IERenderTypes
 	public static final RenderType TRANSLUCENT_POSITION_COLOR;
 	public static final RenderType TRANSLUCENT_NO_DEPTH;
 	public static final RenderType CHUNK_MARKER;
+	public static final RenderType VEIN_MARKER;
 	public static final RenderType POSITION_COLOR_TEX_LIGHTMAP;
 	public static final RenderType POSITION_COLOR_LIGHTMAP;
 	protected static final RenderState.ShadeModelState SHADE_ENABLED = new RenderState.ShadeModelState(true);
@@ -103,6 +104,13 @@ public class IERenderTypes
 				ImmersiveEngineering.MODID+":chunk_marker",
 				DefaultVertexFormats.POSITION_COLOR,
 				GL11.GL_LINES,
+				256,//TODO is that a good value?
+				chunkMarkerState
+		);
+		VEIN_MARKER = RenderType.makeType(
+				ImmersiveEngineering.MODID+":vein_marker",
+				DefaultVertexFormats.POSITION_COLOR,
+				GL11.GL_LINE_LOOP,
 				256,//TODO is that a good value?
 				chunkMarkerState
 		);

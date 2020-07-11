@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.*;
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
+import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
@@ -535,6 +536,7 @@ public class IEContent
 		Tools.buzzsaw = new BuzzsawItem();
 		Tools.sawblade = new SawbladeItem("sawblade", 10000, 8f, 9f);
 		Tools.rockcutter = new RockcutterItem("rockcutter", 5000, 5f, 9f);
+		Tools.surveyTools = new SurveyToolsItem();
 		Weapons.revolver = new RevolverItem();
 		Weapons.speedloader = new SpeedloaderItem();
 		Weapons.chemthrower = new ChemthrowerItem();
@@ -843,8 +845,9 @@ public class IEContent
 		fluidBiodiesel.block.setEffect(IEPotions.flammable, 100, 1);
 		fluidConcrete.block.setEffect(Effects.SLOWNESS, 20, 3);
 
-		ExcavatorHandler.mineralVeinCapacity = IEConfig.MACHINES.excavator_depletion.get();
-		ExcavatorHandler.mineralChance = IEConfig.MACHINES.excavator_chance.get();
+		ExcavatorHandler.mineralVeinYield = IEConfig.MACHINES.excavator_yield.get();
+		ExcavatorHandler.initialVeinDepletion = IEConfig.MACHINES.excavator_initial_depletion.get();
+		ExcavatorHandler.mineralNoiseThreshold = IEConfig.MACHINES.excavator_theshold.get();
 
 		ChemthrowerEffects.register();
 

@@ -212,7 +212,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 	{
 		ManualInstance manual;
 		TextSplitter splitter;
-		Function<TextSplitter, String[]> getContent = null;
+		public Function<TextSplitter, String[]> getContent = null;
 		private ResourceLocation location;
 		private List<Triple<String, Integer, Supplier<? extends SpecialManualElement>>> hardcodedSpecials = new ArrayList<>();
 
