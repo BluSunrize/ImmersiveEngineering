@@ -14,7 +14,9 @@
         "1.14.4-latest": "0.14-104",
         "1.14.4-recommended": "0.14-104",
         "1.15.2-latest": "0.15-105",
-        "1.15.2-recommended": "0.15-105"
+        "1.15.2-recommended": "0.15-105",
+        "1.16.1-latest": "0.16-106",
+        "1.16.1-recommended": "0.16-106"
     },
     "1.8.9": {
         "0.8-24": "- massive shoutout to Malte for figuring out some proper wire rendering! :D\n- added compat for DenseOres (crushing/smelting) \n- fixed lanterns not emitting light\n- fixed silver bullets causing a crash\n- fixed gunpowder barrels crashing because of a duplicate datamarker\n- fixed gunpowder barrels dropping from explosions\n- fixed CokeOvens not interacting with hoppers\n- fixed wires not outputting to RF-only receivers (thanks Malte)\n- fixed connections on HV relays (thanks Malte)\n- fixed a crash caused by hammering the top/bottom of a wooden post\n- fixed the stackoverflow in sheetmetal tanks\n- fixed the themoelectric gen crashing (thanks Malte)\n- fixed the waterwheels breaking more other wheels (thanks Malte)\n- fixed textures on stone slabs (thanks Malte)",
@@ -103,5 +105,8 @@
         "0.15-101": " - Fixed hemp rendering as solid (Malte)\n - Fixed Optifine shader packs crashing with the IEOBJ item renderer (Vaelzan)\n - Fixed crashes when using the buzzsaw or drill (Malte)\n - Fixed missing connectors on feedthrough models (Malte)\n - Fixed missing tooltips in various GUIs (Malte)\n - Also includes the changes from 0.14-100",
         "0.15-103": "- Fixed wires no longer transferring energy after release 101 (Malte)",
         "0.15-105": "- Fixed invisible connectors with Optifine (Malte)\n- Fixed metal ladders rendering as solid (Malte)\n- Fixed shield rendering in 3rd person (BluSunrize)\n- Fixed incorrect sounds on certain blocks (BluSunrize)\n- Also includes the changes from 0.14-104"
+    },
+    "1.16.1": {
+        "0.16-106": "- Initial port to 1.16\n- Added mineral vein, crusher & arc furnace integration for the new Nether materials\n- Also includes all changes from 0.15-105"
     }
 }

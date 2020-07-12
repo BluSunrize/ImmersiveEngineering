@@ -1,7 +1,7 @@
-##### Version 0.16-106
+##### Version 0.16-106 - BUILT
 - Initial port to 1.16
 - Added mineral vein, crusher & arc furnace integration for the new Nether materials
-- Also includes all changes from 0,15-105
+- Also includes all changes from 0.15-105
 
 ##### Version 0.15-105 - BUILT
 - Fixed invisible connectors with Optifine (Malte)
