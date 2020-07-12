@@ -62,11 +62,13 @@ import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteractSpecific;
+import net.minecraftforge.event.furnace.FurnaceFuelBurnTimeEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fml.network.PacketDistributor;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -446,5 +448,15 @@ public class EventHandler
 			if(te instanceof MultiblockPartTileEntity)
 				((MultiblockPartTileEntity)te).onlyLocalDissassembly = event.getWorld().getWorldInfo().getGameTime();
 		}
+	}
+
+	@SubscribeEvent
+	public void onFurnaceBurnTime(FurnaceFuelBurnTimeEvent event)
+	{
+		if(Utils.isFluidRelatedItemStack(event.getItemStack()))
+			FluidUtil.getFluidContained(event.getItemStack()).ifPresent(fs -> {
+				if(!fs.isEmpty()&&fs.getFluid()==IEContent.fluidCreosote)
+					event.setBurnTime((int)(0.8*fs.getAmount()));
+			});
 	}
 }
