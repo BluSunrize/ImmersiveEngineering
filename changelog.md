@@ -3,14 +3,14 @@
 - Added mineral vein, crusher & arc furnace integration for the new Nether materials
 - Also includes all changes from 0,15-105
 
-##### Version 0.15-105
+##### Version 0.15-105 - BUILT
 - Fixed invisible connectors with Optifine (Malte)
 - Fixed metal ladders rendering as solid (Malte)
 - Fixed shield rendering in 3rd person (BluSunrize)
 - Fixed incorrect sounds on certain blocks (BluSunrize)
 - Also includes the changes from 0.14-104
 
-##### Version 0.14-104
+##### Version 0.14-104 - BUILT
 - Added the new Mineral System! (BluSunrize)
     - Minerals are no longer chunk based
     - Survey Tools help discover veins
