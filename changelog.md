@@ -1,4 +1,4 @@
-##### Version 0.15-105
+##### Version 0.15-105 - BUILT
 - Fixed invisible connectors with Optifine (Malte)
 - Fixed metal ladders rendering as solid (Malte)
 - Fixed shield rendering in 3rd person (BluSunrize)
