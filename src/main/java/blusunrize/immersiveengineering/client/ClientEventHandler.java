@@ -1273,6 +1273,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 
 		if(Screen.hasShiftDown())
 		{
+			DimensionType dimension = ClientUtils.mc().player.getEntityWorld().getDimension().getType();
 			Tessellator tessellator = Tessellator.getInstance();
 			BufferBuilder BufferBuilder = tessellator.getBuffer();
 			double px = TileEntityRendererDispatcher.staticPlayerX;
@@ -1286,7 +1287,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			GlStateManager.lineWidth(5f);
 			List<ResourceLocation> keyList = new ArrayList<>(MineralMix.mineralList.keySet());
 			keyList.sort(Comparator.comparing(ResourceLocation::toString));
-			for(MineralVein vein : ExcavatorHandler.getMineralVeinList().get(DimensionType.OVERWORLD))
+			for(MineralVein vein : ExcavatorHandler.getMineralVeinList().get(dimension))
 			{
 				ColumnPos pos = vein.getPos();
 				int iC = keyList.indexOf(vein.getMineral().getId());
