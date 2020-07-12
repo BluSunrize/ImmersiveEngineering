@@ -23,6 +23,7 @@ import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.pathfinding.PathType;
 import net.minecraft.state.Property;
 import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.util.*;
@@ -269,6 +270,12 @@ public class IEBaseBlock extends Block implements IIEBlock
 	public ActionResultType screwdriverUseSide(Direction side, PlayerEntity player, World w, BlockPos pos, BlockRayTraceResult hit)
 	{
 		return ActionResultType.PASS;
+	}
+
+	@Override
+	public boolean allowsMovement(BlockState state, IBlockReader worldIn, BlockPos pos, PathType type)
+	{
+		return false;
 	}
 
 	public abstract static class IELadderBlock extends IEBaseBlock

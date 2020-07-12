@@ -75,7 +75,10 @@ public class IEWorldGen
 						new ConfiguredPlacement<>(COUNT_RANGE_IE, new CountRangeConfig(chunkOccurence, minY, minY, maxY))
 				);
 		retroFeatures.put(name, retroFeature);
+	}
 
+	public static void registerMineralVeinGen()
+	{
 		ConfiguredFeature<?, ?> vein_feature = new ConfiguredFeature<>(MINERAL_VEIN_FEATURE, new NoFeatureConfig())
 				.withPlacement(
 						new ConfiguredPlacement<>(Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG)
