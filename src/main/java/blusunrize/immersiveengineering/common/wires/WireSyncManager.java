@@ -46,16 +46,7 @@ public class WireSyncManager
 	private static boolean shouldSendConnection(Connection conn, World w, ChunkPos pos, ServerPlayerEntity player, boolean add,
 												ConnectionPoint currEnd)
 	{
-		if(conn.isInternal())
-			return false;
-		ConnectionPoint other = conn.getOtherEnd(currEnd);
-		ChunkPos otherChunk = new ChunkPos(other.getPosition());
-		if(otherChunk.equals(pos))
-			return conn.isPositiveEnd(currEnd);
-		ServerChunkProvider chunkProvider = (ServerChunkProvider)w.getChunkProvider();
-		Stream<ServerPlayerEntity> watching = chunkProvider.chunkManager.getTrackingPlayers(otherChunk, false);
-		boolean playerTracking = watching.anyMatch(p -> p==player);
-		return add==playerTracking;
+		return !conn.isInternal()&&conn.isPositiveEnd(currEnd);
 	}
 
 	private static void addPlayersTrackingPoint(Set<ServerPlayerEntity> receivers, int x, int z, ServerWorld world)
