@@ -1367,9 +1367,10 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 
 		if(Screen.hasShiftDown())
 		{
+			DimensionType dimension = ClientUtils.mc().player.getEntityWorld().getDimension().getType();
 			List<ResourceLocation> keyList = new ArrayList<>(MineralMix.mineralList.keySet());
 			keyList.sort(Comparator.comparing(ResourceLocation::toString));
-			for(MineralVein vein : ExcavatorHandler.getMineralVeinList().get(DimensionType.OVERWORLD))
+			for(MineralVein vein : ExcavatorHandler.getMineralVeinList().get(dimension))
 			{
 				transform.push();
 				ColumnPos pos = vein.getPos();
