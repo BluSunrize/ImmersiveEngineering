@@ -4,26 +4,20 @@
     {
       "chance": 0.6,
       "output": {
-        "item": "minecraft:nether_quartz_ore"
+        "item": "minecraft:gravel"
       }
     },
     {
-      "chance": 0.2,
+      "chance": 0.4,
       "output": {
-        "item": "minecraft:nether_gold_ore"
-      }
-    },
-    {
-      "chance": 0.2,
-      "output": {
-        "tag": "forge:dusts/sulfur"
+        "item": "minecraft:ancient_debris"
       }
     }
   ],
   "dimensions": [
     "minecraft:the_nether"
   ],
-  "weight": 20,
-  "fail_chance": 0.15,
+  "weight": 8,
+  "fail_chance": 0.7,
   "sample_background": "minecraft:netherrack"
 }

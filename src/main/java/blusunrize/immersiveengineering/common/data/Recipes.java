@@ -628,6 +628,13 @@ public class Recipes extends RecipeProvider
 				.setEnergy(204800)
 				.build(out, toRL("arcfurnace/steel"));
 
+		ArcFurnaceRecipeBuilder.builder(Items.NETHERITE_SCRAP)
+				.addIngredient("input", Items.ANCIENT_DEBRIS)
+				.addSlag(IETags.slag, 1)
+				.setTime(100)
+				.setEnergy(512000)
+				.build(out, toRL("arcfurnace/netherite_scrap"));
+
 		/* BOTTLING */
 		BottlingMachineRecipeBuilder.builder(Items.WET_SPONGE)
 				.addInput(Items.SPONGE)
@@ -703,6 +710,11 @@ public class Recipes extends RecipeProvider
 				.addInput(ItemTags.WOOL)
 				.setEnergy(3200)
 				.build(out, toRL("crusher/wool"));
+
+		CrusherRecipeBuilder.builder(IETags.getTagsFor(EnumMetals.GOLD).dust, 2)
+				.addInput(Items.NETHER_GOLD_ORE)
+				.setEnergy(4200)
+				.build(out, toRL("crusher/nether_gold"));
 
 		/* SQUEEZER */
 		SqueezerRecipeBuilder.builder(IEContent.fluidPlantoil, 80)
@@ -881,12 +893,20 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL("mineral/beryl"));
 		// Nether
 		MineralMixBuilder.builder(nether)
-				.addOre(Blocks.NETHER_QUARTZ_ORE, .8f)
+				.addOre(Blocks.NETHER_QUARTZ_ORE, .6f)
+				.addOre(Blocks.NETHER_GOLD_ORE, .2f)
 				.addOre(sulfur, .2f)
 				.setWeight(20)
 				.setFailchance(.15f)
 				.setBackground(ForgeRegistries.BLOCKS.getKey(Blocks.NETHERRACK))
 				.build(out, toRL("mineral/mephitic_quarzite"));
+		MineralMixBuilder.builder(nether)
+				.addOre(Blocks.GRAVEL, .6f)
+				.addOre(Blocks.ANCIENT_DEBRIS, .4f)
+				.setWeight(8)
+				.setFailchance(.7f)
+				.setBackground(ForgeRegistries.BLOCKS.getKey(Blocks.NETHERRACK))
+				.build(out, toRL("mineral/archaic_digsite"));
 
 		// Compat
 		MineralMixBuilder.builder(overworld)
