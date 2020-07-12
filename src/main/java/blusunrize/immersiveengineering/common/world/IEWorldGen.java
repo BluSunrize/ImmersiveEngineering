@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.world;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
@@ -28,13 +29,11 @@ import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.chunk.IChunk;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.ChunkGenerator;
+import net.minecraft.world.gen.FlatGenerationSettings;
 import net.minecraft.world.gen.GenerationSettings;
 import net.minecraft.world.gen.GenerationStage.Decoration;
 import net.minecraft.world.gen.PerlinNoiseGenerator;
-import net.minecraft.world.gen.feature.ConfiguredFeature;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.NoFeatureConfig;
-import net.minecraft.world.gen.feature.OreFeatureConfig;
+import net.minecraft.world.gen.feature.*;
 import net.minecraft.world.gen.feature.OreFeatureConfig.FillerBlockType;
 import net.minecraft.world.gen.placement.CountRange;
 import net.minecraft.world.gen.placement.CountRangeConfig;
@@ -72,7 +71,10 @@ public class IEWorldGen
 		ConfiguredFeature<?> retroFeature = Biome.createDecoratedFeature(IEContent.ORE_RETROGEN, cfg, COUNT_RANGE_IE,
 				new CountRangeConfig(chunkOccurence, minY, minY, maxY));
 		retroFeatures.put(name, retroFeature);
+	}
 
+	public static void registerMineralVeinGen()
+	{
 		ConfiguredFeature<?> vein_feature = Biome.createDecoratedFeature(MINERAL_VEIN_FEATURE, new NoFeatureConfig(),
 				Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG);
 		for(Biome biome : ForgeRegistries.BIOMES.getValues())

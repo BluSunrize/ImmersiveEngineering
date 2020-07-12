@@ -793,6 +793,7 @@ public class IEContent
 		addConfiguredWorldgen(Metals.ores.get(EnumMetals.SILVER), "silver", IEConfig.ORES.ore_silver);
 		addConfiguredWorldgen(Metals.ores.get(EnumMetals.NICKEL), "nickel", IEConfig.ORES.ore_nickel);
 		addConfiguredWorldgen(Metals.ores.get(EnumMetals.URANIUM), "uranium", IEConfig.ORES.ore_uranium);
+		IEWorldGen.registerMineralVeinGen();
 
 		CapabilityShader.register();
 		NetHandlerCapability.register();
