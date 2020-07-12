@@ -906,7 +906,7 @@ public class Recipes extends RecipeProvider
 				.setWeight(8)
 				.setFailchance(.7f)
 				.setBackground(ForgeRegistries.BLOCKS.getKey(Blocks.NETHERRACK))
-				.build(out, toRL("mineral/archaic_digsite"));
+				.build(out, toRL("mineral/ancient_debris"));
 
 		// Compat
 		MineralMixBuilder.builder(overworld)
