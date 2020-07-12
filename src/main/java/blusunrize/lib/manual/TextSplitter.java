@@ -12,6 +12,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap.Entry;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -19,6 +20,8 @@ import java.util.function.Function;
 import java.util.function.IntSupplier;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
+
+import static net.minecraft.util.text.TextFormatting.RESET;
 
 @SuppressWarnings("WeakerAccess")
 public class TextSplitter
@@ -362,8 +365,36 @@ public class TextSplitter
 
 		public Line(String line, int firstToken, boolean endPageAfterLine, Optional<String> anchorBeforeLine, String textOverflow)
 		{
-			//TODO fix (should be noticed in unit tests)
-			this(line, new NextLineData(firstToken, endPageAfterLine, /*TextFormatting.getFormatString(line)*/"", textOverflow), anchorBeforeLine);
+			this(line, new NextLineData(firstToken, endPageAfterLine, getFormattingString(line), textOverflow), anchorBeforeLine);
+		}
+
+		//TODO refactor to use Style, and maybe ITextComponent
+		private static String getFormattingString(String stringIn)
+		{
+			StringBuilder ret = new StringBuilder();
+			int currentFormattingCode = -1;
+			int length = stringIn.length();
+
+			while((currentFormattingCode = stringIn.indexOf('\u00a7', currentFormattingCode+1))!=-1)
+			{
+				if(currentFormattingCode < length-1)
+				{
+					TextFormatting nextFormatting = TextFormatting.fromFormattingCode(stringIn.charAt(currentFormattingCode+1));
+					if(nextFormatting!=null)
+					{
+						if(nextFormatting!=RESET)
+						{
+							ret.append(nextFormatting);
+						}
+						else
+						{
+							ret.setLength(0);
+						}
+					}
+				}
+			}
+
+			return ret.toString();
 		}
 	}
 
