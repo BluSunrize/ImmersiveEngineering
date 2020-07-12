@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 public class ExcavatorHandler
 {
 	private static final Multimap<RegistryKey<World>, MineralVein> MINERAL_VEIN_LIST = ArrayListMultimap.create();
-	private static final Map<ColumnPos, MineralWorldInfo> MINERAL_INFO_CACHE = new HashMap<>();
+	private static final Map<Pair<RegistryKey<World>, ColumnPos>, MineralWorldInfo> MINERAL_INFO_CACHE = new HashMap<>();
 	public static int mineralVeinYield = 0;
 	public static double initialVeinDepletion = 0;
 	public static double mineralNoiseThreshold = 0;
@@ -64,14 +64,16 @@ public class ExcavatorHandler
 	{
 		if(world.isRemote)
 			return null;
-		MineralWorldInfo worldInfo = MINERAL_INFO_CACHE.get(columnPos);
+		RegistryKey<World> dimension = world.func_234923_W_();
+		Pair<RegistryKey<World>, ColumnPos> cacheKey = Pair.of(dimension, columnPos);
+		MineralWorldInfo worldInfo = MINERAL_INFO_CACHE.get(cacheKey);
 		if(worldInfo==null)
 		{
 			List<Pair<MineralVein, Double>> inVeins = new ArrayList<>();
 			double totalSaturation = 0;
 			MineralMix mix = null;
 			// Iterate all known veins
-			for(MineralVein vein : MINERAL_VEIN_LIST.get(world.func_234923_W_()))
+			for(MineralVein vein : MINERAL_VEIN_LIST.get(dimension))
 			{
 				int dX = vein.getPos().x-columnPos.x;
 				int dZ = vein.getPos().z-columnPos.z;
@@ -89,7 +91,7 @@ public class ExcavatorHandler
 					.map(pair -> Pair.of(pair.getLeft(), (int)(pair.getRight()/finalTotalSaturation*1000)))
 					.collect(Collectors.toList())
 			);
-			MINERAL_INFO_CACHE.put(columnPos, worldInfo);
+			MINERAL_INFO_CACHE.put(cacheKey, worldInfo);
 		}
 		return worldInfo;
 	}
