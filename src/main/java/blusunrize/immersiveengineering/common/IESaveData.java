@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common;
 
 import blusunrize.immersiveengineering.api.DimensionChunkCoords;
 import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
-import blusunrize.immersiveengineering.api.excavator.MineralMix;
 import blusunrize.immersiveengineering.api.excavator.MineralVein;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import net.minecraft.nbt.CompoundNBT;
@@ -64,16 +63,13 @@ public class IESaveData extends WorldSavedData
 				CompoundNBT mineralInfo = tag.getCompound("info");
 				if(mineralInfo.contains("mineral", NBT.TAG_STRING))
 				{
-					MineralMix mineral = MineralMix.mineralList.get(new ResourceLocation(mineralInfo.getString("mineral")));
+					ResourceLocation mineral = new ResourceLocation(mineralInfo.getString("mineral"));
 					DimensionChunkCoords oldCoords = DimensionChunkCoords.readFromNBT(tag);
 					int depletion = mineralInfo.getInt("depletion");
-					if(mineral!=null)
-					{
-						ColumnPos convertedPos = new ColumnPos(oldCoords.getXStart()+8, oldCoords.getZStart()+8);
-						MineralVein convertedVein = new MineralVein(convertedPos, mineral, 8);
-						convertedVein.setDepletion(depletion);
-						ExcavatorHandler.getMineralVeinList().put(oldCoords.dimension, convertedVein);
-					}
+					ColumnPos convertedPos = new ColumnPos(oldCoords.getXStart()+8, oldCoords.getZStart()+8);
+					MineralVein convertedVein = new MineralVein(convertedPos, mineral, 8);
+					convertedVein.setDepletion(depletion);
+					ExcavatorHandler.getMineralVeinList().put(oldCoords.dimension, convertedVein);
 				}
 			}
 		}

@@ -1,3 +1,12 @@
+##### Version 0.15-108
+- Also includes the changes from 0.14-107
+
+##### Version 0.14-107
+- Fixed dropping conveyors requiring a high redstone signal to work
+- Fixed calculation of expected yield on coresamples
+- Fixed potential crash on loading mineral veins
+- Fixed diesel generator forgetting about its redstone signal inversion
+
 ##### Version 0.15-105 - BUILT
 - Fixed invisible connectors with Optifine (Malte)
 - Fixed metal ladders rendering as solid (Malte)

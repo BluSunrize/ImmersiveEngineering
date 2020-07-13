@@ -147,7 +147,7 @@ public class CommandMineral
 		int radius = IntegerArgumentType.getInteger(context, "radius");
 		if(mineral!=null)
 		{
-			MineralVein vein = new MineralVein(pos, mineral, radius);
+			MineralVein vein = new MineralVein(pos, mineral.getId(), radius);
 			ExcavatorHandler.getMineralVeinList().put(sender.getWorld().getDimension().getType(), vein);
 			IESaveData.setDirty();
 			sender.sendFeedback(new TranslationTextComponent(Lib.CHAT_COMMAND+
