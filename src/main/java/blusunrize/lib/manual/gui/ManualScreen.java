@@ -27,6 +27,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.ITextProperties;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -297,7 +298,9 @@ public class ManualScreen extends Screen
 	public void renderTooltip(MatrixStack transform, List<? extends ITextProperties> text, int x, int y, FontRenderer font)
 	{
 		manual.tooltipRenderPre();
-		super.renderTooltip(transform, text, x, y, font);
+		// This should just be a super-call, but the super-call is currently causing issues (probably due to a broken
+		// Forge patch)
+		GuiUtils.drawHoveringText(transform, text, x, y, width, height, -1, font);
 		manual.tooltipRenderPost();
 	}
 
