@@ -1,3 +1,6 @@
+##### Version 0.14-107
+- Fixed dropping conveyors requiring a high redstone signal to work
+
 ##### Version 0.14-104 - BUILT
 - Added the new Mineral System! (BluSunrize)
     - Minerals are no longer chunk based
