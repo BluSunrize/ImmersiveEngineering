@@ -68,7 +68,6 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 	{
 		super.readCustomNBT(nbt, descPacket);
 		energyStorage.readFromNBT(nbt);
-		redstoneControlInverted = nbt.getBoolean("redstoneControlInverted");
 		ListNBT processNBT = nbt.getList("processQueue", 10);
 		processQueue.clear();
 		for(int i = 0; i < processNBT.size(); i++)
@@ -108,7 +107,6 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		energyStorage.writeToNBT(nbt);
-		nbt.putBoolean("redstoneControlInverted", redstoneControlInverted);
 		ListNBT processNBT = new ListNBT();
 		for(MultiblockProcess process : this.processQueue)
 			processNBT.add(writeProcessToNBT(process));

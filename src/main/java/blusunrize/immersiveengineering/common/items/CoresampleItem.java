@@ -88,7 +88,7 @@ public class CoresampleItem extends IEBaseItem
 
 						component = new StringTextComponent("  ");
 						int yield = ExcavatorHandler.mineralVeinYield-tag.getInt("depletion");
-						yield *= mineral.failChance;
+						yield *= (1-mineral.failChance);
 						if(ExcavatorHandler.mineralVeinYield==0)
 							component.func_230529_a_(new TranslationTextComponent(Lib.DESC_INFO+"coresample.infinite"));
 						else

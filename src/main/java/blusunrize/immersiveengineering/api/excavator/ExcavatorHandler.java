@@ -148,7 +148,7 @@ public class ExcavatorHandler
 				}
 				if(mineralMix!=null)
 				{
-					MineralVein vein = new MineralVein(pos, mineralMix, radius);
+					MineralVein vein = new MineralVein(pos, mineralMix.getId(), radius);
 					// generate initial depletion
 					if(initialVeinDepletion > 0)
 						vein.setDepletion((int)(mineralVeinYield*(rand.nextDouble()*initialVeinDepletion)));

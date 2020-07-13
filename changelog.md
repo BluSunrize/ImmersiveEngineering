@@ -1,3 +1,15 @@
+##### Version 0.16-109
+- Also includes the changes from 0.14-107
+
+##### Version 0.15-108
+- Also includes the changes from 0.14-107
+
+##### Version 0.14-107
+- Fixed dropping conveyors requiring a high redstone signal to work
+- Fixed calculation of expected yield on coresamples
+- Fixed potential crash on loading mineral veins
+- Fixed diesel generator forgetting about its redstone signal inversion
+
 ##### Version 0.16-106 - BUILT
 - Initial port to 1.16
 - Added mineral vein, crusher & arc furnace integration for the new Nether materials

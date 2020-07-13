@@ -122,6 +122,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 		formed = nbt.getBoolean("formed");
 		posInMultiblock = NBTUtil.readBlockPos(nbt.getCompound("posInMultiblock"));
 		offsetToMaster = NBTUtil.readBlockPos(nbt.getCompound("offset"));
+		redstoneControlInverted = nbt.getBoolean("redstoneControlInverted");
 	}
 
 	@Override
@@ -130,6 +131,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 		nbt.putBoolean("formed", formed);
 		nbt.put("posInMultiblock", NBTUtil.writeBlockPos(new BlockPos(posInMultiblock)));
 		nbt.put("offset", NBTUtil.writeBlockPos(new BlockPos(offsetToMaster)));
+		nbt.putBoolean("redstoneControlInverted", redstoneControlInverted);
 	}
 
 	private EnumMap<Direction, LazyOptional<IFluidHandler>> fluidCaps = new EnumMap<>(Direction.class);
