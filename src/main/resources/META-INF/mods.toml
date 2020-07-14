@@ -19,7 +19,7 @@ credits="All the great other Git Contributors, and the nerds on IRC!"
 [[dependencies.immersiveengineering]]
   modId="forge"
   mandatory=true
-  versionRange="[31.1.88,)"
+  versionRange="[32.0.66,)"
   ordering="NONE"
   side="BOTH"
 

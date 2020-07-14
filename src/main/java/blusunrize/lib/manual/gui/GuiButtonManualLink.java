@@ -64,6 +64,6 @@ public class GuiButtonManualLink extends Button
 			tooltip = gui.manual.formatLink(link);
 		else
 			tooltip = "Invalid link";
-		gui.renderTooltip(transform, ImmutableList.of(new StringTextComponent(tooltip)), mx+8, my+4, font);
+		gui.renderToolTip(transform, ImmutableList.of(new StringTextComponent(tooltip)), mx+8, my+4, font);
 	}
 }

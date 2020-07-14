@@ -65,7 +65,7 @@ public abstract class SpecialManualElements extends SpecialManualElement
 		{
 			FontRenderer font = highlighted.getItem().getFontRenderer(highlighted);
 			GuiUtils.preItemToolTip(highlighted);
-			gui.renderTooltip(transform, gui.getTooltipFromItem(highlighted), mx, my, font!=null?font: ClientUtils.font());
+			gui.renderToolTip(transform, gui.getTooltipFromItem(highlighted), mx, my, font!=null?font: ClientUtils.font());
 			GuiUtils.postItemToolTip();
 		}
 	}

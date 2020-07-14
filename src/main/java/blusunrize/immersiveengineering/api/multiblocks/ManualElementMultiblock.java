@@ -262,7 +262,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 			{
 				manual.fontRenderer().drawString(transform, "?", 116, yOffTotal/2-4, manual.getTextColour());
 				if(mouseX >= 116&&mouseX < 122&&mouseY >= yOffTotal/2-4&&mouseY < yOffTotal/2+4)
-					gui.renderTooltip(transform, componentTooltip, mouseX, mouseY, manual.fontRenderer());
+					gui.renderToolTip(transform, componentTooltip, mouseX, mouseY, manual.fontRenderer());
 			}
 		}
 	}
