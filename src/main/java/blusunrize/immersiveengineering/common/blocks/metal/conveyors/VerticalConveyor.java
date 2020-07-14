@@ -43,8 +43,6 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import javax.vecmath.Matrix4f;
 import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 
@@ -200,8 +198,7 @@ public class VerticalConveyor extends BasicConveyor
 		return new Vec3d(vX, vY, vZ);
 	}
 
-	//TODO memory leaks?
-	private Map<TileEntity, CapabilityReference<IItemHandler>> inserters = new WeakHashMap<>();
+	private CapabilityReference<IItemHandler> inserter;
 
 	@Override
 	public void onEntityCollision(Entity entity)
@@ -260,9 +257,9 @@ public class VerticalConveyor extends BasicConveyor
 							ItemStack stack = item.getItem();
 							if(!stack.isEmpty())
 							{
-								CapabilityReference<IItemHandler> insert = inserters.computeIfAbsent(getTile(),
-										te -> CapabilityReference.forNeighbor(te, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.UP));
-								ItemStack ret = Utils.insertStackIntoInventory(insert, stack, false);
+								if(inserter==null)
+									inserter = CapabilityReference.forNeighbor(getTile(), CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.UP);
+								ItemStack ret = Utils.insertStackIntoInventory(inserter, stack, false);
 								if(ret.isEmpty())
 									entity.remove();
 								else if(ret.getCount() < stack.getCount())
