@@ -36,14 +36,14 @@ import com.google.gson.JsonStreamParser;
 import net.minecraft.item.*;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.resources.IReloadableResourceManager;
-import net.minecraft.resources.IResourceManager;
+import net.minecraft.resources.DataPackRegistries;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -51,7 +51,6 @@ import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLFingerprintViolationEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
-import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -89,7 +88,7 @@ public class ImmersiveEngineering
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::loadComplete);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::wrongSignature);
 		MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
-		MinecraftForge.EVENT_BUS.addListener(this::serverAboutToStart);
+		MinecraftForge.EVENT_BUS.addListener(this::addReloadListeners);
 		MinecraftForge.EVENT_BUS.addListener(this::serverStarted);
 		RecipeSerializers.RECIPE_SERIALIZERS.register(FMLJavaModLoadingContext.get().getModEventBus());
 		Villages.Registers.POINTS_OF_INTEREST.register(FMLJavaModLoadingContext.get().getModEventBus());
@@ -263,10 +262,10 @@ public class ImmersiveEngineering
 		CommandHandler.registerServer(event.getCommandDispatcher());
 	}
 
-	public void serverAboutToStart(FMLServerAboutToStartEvent event)
+	public void addReloadListeners(AddReloadListenerEvent event)
 	{
-		IResourceManager resourceManager = event.getServer().getDataPackRegistries().func_240970_h_();
-		((IReloadableResourceManager)resourceManager).addReloadListener(new RecipeReloadListener());
+		DataPackRegistries dataPackRegistries = event.getDataPackRegistries();
+		event.addListener(new RecipeReloadListener(dataPackRegistries));
 	}
 
 	public void serverStarted(FMLServerStartedEvent event)

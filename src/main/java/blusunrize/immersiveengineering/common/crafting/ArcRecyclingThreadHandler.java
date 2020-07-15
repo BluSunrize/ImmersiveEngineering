@@ -182,7 +182,6 @@ public class ArcRecyclingThreadHandler extends Thread
 						IELogger.warn("Recipe has invalid inputs and will be ignored: "+recipe+" ("+recipe.getId()+")");
 						return null;
 					}
-
 					brokenDown = ApiUtils.breakStackIntoPreciseIngots(inputStack);
 					if(brokenDown==null)
 					{

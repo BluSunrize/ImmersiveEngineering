@@ -194,7 +194,7 @@ public class ClientProxy extends CommonProxy
 		MinecraftForge.EVENT_BUS.register(handler);
 		((IReloadableResourceManager)mc().getResourceManager()).addReloadListener(handler);
 
-		MinecraftForge.EVENT_BUS.register(new RecipeReloadListener());
+		MinecraftForge.EVENT_BUS.register(new RecipeReloadListener(null));
 
 		keybind_magnetEquip.setKeyConflictContext(new IKeyConflictContext()
 		{

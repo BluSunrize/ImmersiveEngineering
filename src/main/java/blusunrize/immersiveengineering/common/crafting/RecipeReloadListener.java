@@ -11,37 +11,63 @@ package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.api.excavator.MineralMix;
+import blusunrize.immersiveengineering.api.utils.TagUtils;
 import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.RecipeManager;
+import net.minecraft.resources.DataPackRegistries;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.resources.IResourceManagerReloadListener;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RecipesUpdatedEvent;
+import net.minecraftforge.event.TagsUpdatedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.thread.EffectiveSide;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/* We can't use ISelectiveResourceReloadListener because it references a client-only class which crashes servers
+ */
 public class RecipeReloadListener implements IResourceManagerReloadListener
 {
+	private final DataPackRegistries dataPackRegistries;
+
+	public RecipeReloadListener(DataPackRegistries dataPackRegistries)
+	{
+		this.dataPackRegistries = dataPackRegistries;
+	}
+
 	@Override
 	public void onResourceManagerReload(IResourceManager resourceManager)
 	{
-		if(EffectiveSide.get().isServer())
+		if(dataPackRegistries!=null)
 		{
-			buildRecipeLists(ServerLifecycleHooks.getCurrentServer().getRecipeManager());
+			RecipeManager recipeManager = dataPackRegistries.func_240967_e_();
+			buildRecipeLists(recipeManager);
+		}
+	}
+
+	RecipeManager clientRecipeManager;
+
+	@SubscribeEvent
+	public void onTagsUpdated(TagsUpdatedEvent event)
+	{
+		if(clientRecipeManager!=null)
+		{
+			TagUtils.ITEM_TAG_COLLECTION = ItemTags.getCollection();
+			TagUtils.BLOCK_TAG_COLLECTION = BlockTags.getCollection();
+			buildRecipeLists(clientRecipeManager);
 		}
 	}
 
 	@SubscribeEvent
 	public void onRecipesUpdated(RecipesUpdatedEvent event)
 	{
-		buildRecipeLists(event.getRecipeManager());
+		clientRecipeManager = event.getRecipeManager();
 	}
 
 	static void buildRecipeLists(RecipeManager recipeManager)
