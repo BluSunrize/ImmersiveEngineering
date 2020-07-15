@@ -9,12 +9,14 @@
 package blusunrize.immersiveengineering.api.tool;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBeltTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
+import blusunrize.immersiveengineering.common.util.SafeChunkUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.model.BakedQuad;
@@ -41,6 +43,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
+import org.apache.commons.lang3.mutable.MutableBoolean;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -409,11 +412,15 @@ public class ConveyorHandler
 			BlockPos pos = getTile().getPos();
 			ConveyorDirection conveyorDirection = getConveyorDirection();
 			float heightLimit = conveyorDirection==ConveyorDirection.HORIZONTAL?.25f: 1f;
+			IConveyorBelt outputBelt = getOutputConveyor();
+			boolean outputBlocked = outputBelt!=null&&outputBelt.isBlocked();
 			if(entity!=null&&entity.isAlive()&&!(entity instanceof PlayerEntity&&entity.isSneaking())&&entity.posY-pos.getY() >= 0&&entity.posY-pos.getY() < heightLimit)
 			{
 				Vec3d vec = this.getDirection(entity);
 				if(entity.fallDistance < 3)
 					entity.fallDistance = 0;
+				if(outputBlocked)
+					vec = new Vec3d(0, vec.y, 0);
 				entity.setMotion(vec);
 				double distX = Math.abs(pos.offset(getFacing()).getX()+.5-entity.posX);
 				double distZ = Math.abs(pos.offset(getFacing()).getZ()+.5-entity.posZ);
@@ -442,7 +449,7 @@ public class ConveyorHandler
 					ItemEntity item = (ItemEntity)entity;
 					if(!contact)
 					{
-						if(item.age > item.lifespan-60*20)
+						if(item.age > item.lifespan-60*20&&!outputBlocked)
 							item.setAgeToCreativeDespawnTime();
 					}
 					else
@@ -468,26 +475,55 @@ public class ConveyorHandler
 		{
 			if(getTile().getWorld().isRemote)
 				return;
-			BlockPos invPos = getTile().getPos().offset(getFacing()).add(0, (conDir==ConveyorDirection.UP?1: conDir==ConveyorDirection.DOWN?-1: 0), 0);
-			World world = getTile().getWorld();
-			boolean contact = getFacing().getAxis()==Axis.Z?distZ < .7: distX < .7;
-			TileEntity inventoryTile = Utils.getExistingTileEntity(world, invPos);
-			if(inventoryTile instanceof IConveyorTile||!contact)
-				return;
-
-			LazyOptional<IItemHandler> cap = ApiUtils.findItemHandlerAtPos(world, invPos, getFacing().getOpposite(), true);
-			cap.ifPresent(itemHandler -> {
-				ItemStack stack = entity.getItem();
-				ItemStack temp = ItemHandlerHelper.insertItem(itemHandler, stack.copy(), true);
-				if(temp.isEmpty()||temp.getCount() < stack.getCount())
+			MutableBoolean doneOutput = new MutableBoolean(false);
+			for(BlockPos invPos : getOutputPosByPriority())
+				if(!doneOutput.booleanValue())
 				{
-					temp = ItemHandlerHelper.insertItem(itemHandler, stack, false);
-					if(temp.isEmpty())
-						entity.remove();
-					else if(temp.getCount() < stack.getCount())
-						entity.setItem(temp);
+					World world = getTile().getWorld();
+					boolean contact = getFacing().getAxis()==Axis.Z?distZ < .7: distX < .7;
+					TileEntity inventoryTile = Utils.getExistingTileEntity(world, invPos);
+					if(inventoryTile instanceof IConveyorTile)
+						return;
+					else if(!contact)
+						continue;
+
+					LazyOptional<IItemHandler> cap = CapabilityUtils.findItemHandlerAtPos(world, invPos, getFacing().getOpposite(), true);
+					cap.ifPresent(itemHandler -> {
+						doneOutput.setTrue();
+						ItemStack stack = entity.getItem();
+						ItemStack temp = ItemHandlerHelper.insertItem(itemHandler, stack.copy(), true);
+						if(temp.isEmpty()||temp.getCount() < stack.getCount())
+						{
+							temp = ItemHandlerHelper.insertItem(itemHandler, stack, false);
+							if(temp.isEmpty())
+								entity.remove();
+							else if(temp.getCount() < stack.getCount())
+								entity.setItem(temp);
+						}
+					});
 				}
-			});
+		}
+
+		default List<BlockPos> getOutputPosByPriority()
+		{
+			ConveyorDirection conDir = getConveyorDirection();
+			return ImmutableList.of(
+					getTile().getPos()
+							.offset(getFacing())
+							.add(0, (conDir==ConveyorDirection.UP?1: conDir==ConveyorDirection.DOWN?-1: 0), 0)
+			);
+		}
+
+		@Nullable
+		default IConveyorBelt getOutputConveyor()
+		{
+			for(BlockPos pos : getOutputPosByPriority())
+			{
+				TileEntity outputTile = SafeChunkUtils.getSafeTE(getTile().getWorld(), pos);
+				if(outputTile instanceof IConveyorTile)
+					return ((IConveyorTile)outputTile).getConveyorSubtype();
+			}
+			return null;
 		}
 
 		default boolean isTicking()

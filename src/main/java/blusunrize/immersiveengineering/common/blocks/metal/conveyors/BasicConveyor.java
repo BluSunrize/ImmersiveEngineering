@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
-import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorTile;
 import blusunrize.immersiveengineering.api.utils.EntityCollisionTracker;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDecoration;
@@ -42,7 +41,6 @@ import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.VoxelShape;
@@ -130,10 +128,7 @@ public class BasicConveyor implements IConveyorBelt
 	public void onEntityCollision(Entity entity)
 	{
 		collisionTracker.onEntityCollided(entity);
-		BlockPos nextPos = getTile().getPos().offset(getFacing());
-		TileEntity nextTile = Utils.getExistingTileEntity(getTile().getWorld(), nextPos);
-		if(!(nextTile instanceof IConveyorTile)||!((IConveyorTile)nextTile).getConveyorSubtype().isBlocked())
-			IConveyorBelt.super.onEntityCollision(entity);
+		IConveyorBelt.super.onEntityCollision(entity);
 		if(allowCovers()&&entity instanceof ItemEntity)
 			((ItemEntity)entity).setPickupDelay(10);
 	}

@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.shapes.CachedShapesWithTransform;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.model.BakedQuad;
@@ -203,6 +204,7 @@ public class VerticalConveyor extends BasicConveyor
 	@Override
 	public void onEntityCollision(Entity entity)
 	{
+		collisionTracker.onEntityCollided(entity);
 		if(!isActive())
 			return;
 
@@ -217,6 +219,8 @@ public class VerticalConveyor extends BasicConveyor
 
 		if(entity!=null&&entity.isAlive()&&!(entity instanceof PlayerEntity&&entity.isSneaking()))
 		{
+			IConveyorBelt outputConveyor = getOutputConveyor();
+			boolean outputBlocked = outputConveyor!=null&&outputConveyor.isBlocked();
 			double distY = Math.abs(getTile().getPos().add(0, 1, 0).getY()+.5-entity.posY);
 			double treshold = .9;
 			boolean contact = distY < treshold;
@@ -227,6 +231,8 @@ public class VerticalConveyor extends BasicConveyor
 			else
 				entity.fallDistance *= .9;
 			Vec3d vec = getDirection(entity);
+			if(outputBlocked)
+				vec = new Vec3d(vec.x, 0, vec.z);
 			entity.setMotion(vec);
 
 			if(!contact)
@@ -273,6 +279,16 @@ public class VerticalConveyor extends BasicConveyor
 
 		if(allowCovers()&&entity instanceof ItemEntity)
 			((ItemEntity)entity).setPickupDelay(10);
+	}
+
+	@Override
+	public List<BlockPos> getOutputPosByPriority()
+	{
+		BlockPos pos = getTile().getPos();
+		return ImmutableList.of(
+				pos.up(),
+				pos.up().offset(getFacing())
+		);
 	}
 
 	private static final CachedShapesWithTransform<Boolean, Direction> SHAPES =
