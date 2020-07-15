@@ -41,7 +41,7 @@ public class MaintenanceKitScreen extends ToolModificationScreen<MaintenanceKitC
 		for(int i = 0; i < container.internalSlots; i++)
 		{
 			Slot s = container.getSlot(i);
-			ClientUtils.drawSlot(guiLeft+s.xPos, guiTop+s.yPos, 16, 16, 0x44);
+			ClientUtils.drawSlot(guiLeft+s.xPos, guiTop+s.yPos, 16, 16, 0x44, transform);
 		}
 	}
 }

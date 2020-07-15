@@ -81,7 +81,7 @@ public class MixerRecipeCategory extends IERecipeCategory<MixerRecipe>
 	{
 		tankTexture.draw(transform, 40, 0);
 		arrowDrawable.draw(transform, 117, 19);
-		ClientUtils.drawSlot(138, 17, 16, 47);
+		ClientUtils.drawSlot(138, 17, 16, 47, transform);
 	}
 
 }

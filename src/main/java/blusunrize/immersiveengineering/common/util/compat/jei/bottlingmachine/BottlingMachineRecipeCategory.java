@@ -69,7 +69,7 @@ public class BottlingMachineRecipeCategory extends IERecipeCategory<BottlingMach
 	@Override
 	public void draw(BottlingMachineRecipe recipe, MatrixStack transform, double mouseX, double mouseY)
 	{
-		ClientUtils.drawSlot(75, 15, 16, 48);
+		ClientUtils.drawSlot(75, 15, 16, 48, transform);
 
 		transform.push();
 		transform.scale(3, 3, 1);

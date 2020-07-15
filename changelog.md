@@ -1,5 +1,6 @@
 ##### Version 0.16-109
 - Fixed recipes not loading on dedicated servers (BluSunrize)
+- Fixed fluid tank backgrounds being wrongly offset in JEI (BluSunrize)
 - Also includes the changes from 0.14-107
 
 ##### Version 0.15-108

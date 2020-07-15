@@ -342,8 +342,13 @@ public class ClientUtils
 
 	public static void drawColouredRect(int x, int y, int w, int h, int colour)
 	{
+		drawColouredRect(x, y, w, h, colour, new MatrixStack());
+	}
+
+	public static void drawColouredRect(int x, int y, int w, int h, int colour, MatrixStack transform)
+	{
 		IRenderTypeBuffer.Impl buffers = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
-		drawColouredRect(x, y, w, h, colour, buffers, new MatrixStack());
+		drawColouredRect(x, y, w, h, colour, buffers, transform);
 		buffers.finish();
 	}
 
@@ -477,18 +482,18 @@ public class ClientUtils
 		}
 	}
 
-	public static void drawSlot(int x, int y, int w, int h)
+	public static void drawSlot(int x, int y, int w, int h, MatrixStack transform)
 	{
-		drawSlot(x, y, w, h, 0xff);
+		drawSlot(x, y, w, h, 0xff, transform);
 	}
 
-	public static void drawSlot(int x, int y, int w, int h, int alpha)
+	public static void drawSlot(int x, int y, int w, int h, int alpha, MatrixStack transform)
 	{
-		drawColouredRect(x+8-w/2, y+8-h/2-1, w, 1, (alpha<<24)+0x373737);
-		drawColouredRect(x+8-w/2-1, y+8-h/2-1, 1, h+1, (alpha<<24)+0x373737);
-		drawColouredRect(x+8-w/2, y+8-h/2, w, h, (alpha<<24)+0x8b8b8b);
-		drawColouredRect(x+8-w/2, y+8+h/2, w+1, 1, (alpha<<24)+0xffffff);
-		drawColouredRect(x+8+w/2, y+8-h/2, 1, h, (alpha<<24)+0xffffff);
+		drawColouredRect(x+8-w/2, y+8-h/2-1, w, 1, (alpha<<24)+0x373737, transform);
+		drawColouredRect(x+8-w/2-1, y+8-h/2-1, 1, h+1, (alpha<<24)+0x373737, transform);
+		drawColouredRect(x+8-w/2, y+8-h/2, w, h, (alpha<<24)+0x8b8b8b, transform);
+		drawColouredRect(x+8-w/2, y+8+h/2, w+1, 1, (alpha<<24)+0xffffff, transform);
+		drawColouredRect(x+8+w/2, y+8-h/2, 1, h, (alpha<<24)+0xffffff, transform);
 	}
 
 	public static void drawDarkSlot(int x, int y, int w, int h)
