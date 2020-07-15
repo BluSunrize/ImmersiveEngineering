@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
+import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorTile;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDecoration;
@@ -20,7 +21,10 @@ import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.shapes.CachedVoxelShapes;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -40,6 +44,7 @@ import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.VoxelShape;
@@ -122,12 +127,53 @@ public class BasicConveyor implements IConveyorBelt
 		return MetalDecoration.steelScaffolding.get(MetalScaffoldingType.STANDARD);
 	}
 
+	private static final int ticksInMemory = 10;
+	//TODO do not remember entities from long ago if no entity is touching the belt
+	private final List<IntSet> lastTicksEntities;
+	private int currentIndex = 0;
+	private long currentTick = 0;
+
+	{
+		ImmutableList.Builder<IntSet> b = ImmutableList.builder();
+		for(int i = 0; i < ticksInMemory; ++i)
+		{
+			b.add(new IntOpenHashSet());
+		}
+		lastTicksEntities = b.build();
+	}
+
 	@Override
 	public void onEntityCollision(Entity entity)
 	{
-		IConveyorBelt.super.onEntityCollision(entity);
+		long now = entity.world.getGameTime();
+		if(now!=currentTick)
+		{
+			currentIndex = (currentIndex+1)%ticksInMemory;
+			lastTicksEntities.get(currentIndex).clear();
+			currentTick = now;
+		}
+		lastTicksEntities.get(currentIndex).add(entity.getEntityId());
+		BlockPos nextPos = getTile().getPos().offset(getFacing());
+		TileEntity nextTile = Utils.getExistingTileEntity(getTile().getWorld(), nextPos);
+		if(!(nextTile instanceof IConveyorTile)||!((IConveyorTile)nextTile).getConveyorSubtype().isBlocked())
+			IConveyorBelt.super.onEntityCollision(entity);
 		if(allowCovers()&&entity instanceof ItemEntity)
 			((ItemEntity)entity).setPickupDelay(10);
+	}
+
+	@Override
+	public boolean isBlocked()
+	{
+		if(getTile().getWorld().getGameTime() <= currentTick+ticksInMemory+5L)
+		{
+			//TODO cache
+			IntSet union = new IntOpenHashSet();
+			for(IntSet tickSet : lastTicksEntities)
+				union.addAll(tickSet);
+			return union.size() > 2;
+		}
+		else
+			return false;
 	}
 
 	@Override

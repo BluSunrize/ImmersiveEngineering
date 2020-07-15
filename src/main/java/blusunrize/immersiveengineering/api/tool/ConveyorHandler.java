@@ -451,6 +451,11 @@ public class ConveyorHandler
 			}
 		}
 
+		default boolean isBlocked()
+		{
+			return false;
+		}
+
 		/**
 		 * Called when an item is inserted into the conveyor and deployed as an entity
 		 */
