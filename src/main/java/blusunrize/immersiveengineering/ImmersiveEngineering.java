@@ -44,6 +44,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -88,6 +89,7 @@ public class ImmersiveEngineering
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::loadComplete);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::wrongSignature);
 		MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
+		MinecraftForge.EVENT_BUS.addListener(this::registerCommands);
 		MinecraftForge.EVENT_BUS.addListener(this::addReloadListeners);
 		MinecraftForge.EVENT_BUS.addListener(this::serverStarted);
 		RecipeSerializers.RECIPE_SERIALIZERS.register(FMLJavaModLoadingContext.get().getModEventBus());
@@ -258,8 +260,12 @@ public class ImmersiveEngineering
 	public void serverStarting(FMLServerStartingEvent event)
 	{
 		proxy.serverStarting();
+	}
+
+	public void registerCommands(RegisterCommandsEvent event)
+	{
 		//TODO do client commands exist yet? I don't think so
-		CommandHandler.registerServer(event.getCommandDispatcher());
+		CommandHandler.registerServer(event.getDispatcher());
 	}
 
 	public void addReloadListeners(AddReloadListenerEvent event)
