@@ -18,6 +18,8 @@ import blusunrize.immersiveengineering.common.util.SafeChunkUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.entity.Entity;
@@ -43,7 +45,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
-import org.apache.commons.lang3.mutable.MutableBoolean;
+import org.apache.commons.lang3.mutable.MutableLong;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -69,6 +71,37 @@ public class ConveyorHandler
 
 	public static final Map<ResourceLocation, Block> conveyorBlocks = MetalDevices.CONVEYORS;
 	public static final ResourceLocation textureConveyorColour = new ResourceLocation("immersiveengineering:block/conveyor/colour");
+
+	// - Should work for multiple dimensions since the calls aren't "interleaved" for multiple dimensions
+	// - ThreadLocal to prevent issues with client vs server thread.
+	private static final IntSet entitiesHandledInCurrentTickClient = new IntOpenHashSet();
+	private static final MutableLong currentTickClient = new MutableLong();
+	private static final IntSet entitiesHandledInCurrentTickServer = new IntOpenHashSet();
+	private static final MutableLong currentTickServer = new MutableLong();
+
+	// Returns true iff the entity has not been handled before in this tick
+	public static boolean markEntityAsHandled(Entity e)
+	{
+		MutableLong currentTick;
+		IntSet entitiesHandledInCurrentTick;
+		if(e.world.isRemote)
+		{
+			currentTick = currentTickClient;
+			entitiesHandledInCurrentTick = entitiesHandledInCurrentTickClient;
+		}
+		else
+		{
+			currentTick = currentTickServer;
+			entitiesHandledInCurrentTick = entitiesHandledInCurrentTickServer;
+		}
+		long now = e.world.getGameTime();
+		if(now!=currentTick.getValue())
+		{
+			currentTick.setValue(now);
+			entitiesHandledInCurrentTick.clear();
+		}
+		return entitiesHandledInCurrentTick.add(e.getEntityId());
+	}
 
 	/**
 	 * @param key           A unique ResourceLocation to identify the conveyor by
@@ -366,35 +399,34 @@ public class ConveyorHandler
 			return new Direction[]{getFacing()};
 		}
 
+		@Deprecated
+		default Vec3d getDirection(Entity entity)
+		{
+			return getDirection(entity, false);
+		}
+
 		/**
 		 * @return a vector representing the movement applied to the entity
 		 */
-		default Vec3d getDirection(Entity entity)
+		default Vec3d getDirection(Entity entity, boolean outputBlocked)
 		{
 			ConveyorDirection conveyorDirection = getConveyorDirection();
 			BlockPos pos = getTile().getPos();
 
+			final Direction facing = getFacing();
 			double vBase = 1.15;
-			double vX = 0.1*vBase*getFacing().getXOffset();
+			double vX = 0.1*vBase*facing.getXOffset();
 			double vY = entity.getMotion().y;
-			double vZ = 0.1*vBase*getFacing().getZOffset();
+			double vZ = 0.1*vBase*facing.getZOffset();
 
-			if(conveyorDirection==ConveyorDirection.UP)
-				vY = 0.17D*vBase;
-			else if(conveyorDirection==ConveyorDirection.DOWN)
-				vY = -0.07*vBase;
-
-			if(conveyorDirection!=ConveyorDirection.HORIZONTAL)
-				entity.onGround = false;
-
-			if(getFacing()==Direction.WEST||getFacing()==Direction.EAST)
+			if(facing==Direction.WEST||facing==Direction.EAST)
 			{
 				if(entity.posZ > pos.getZ()+0.55D)
 					vZ = -0.1D*vBase;
 				else if(entity.posZ < pos.getZ()+0.45D)
 					vZ = 0.1D*vBase;
 			}
-			else if(getFacing()==Direction.NORTH||getFacing()==Direction.SOUTH)
+			else if(facing==Direction.NORTH||facing==Direction.SOUTH)
 			{
 				if(entity.posX > pos.getX()+0.55D)
 					vX = -0.1D*vBase;
@@ -402,25 +434,66 @@ public class ConveyorHandler
 					vX = 0.1D*vBase;
 			}
 
+			if(conveyorDirection!=ConveyorDirection.HORIZONTAL)
+			{
+				// Attempt to fix entity to the highest point under it
+				final Vec3d centerRelative = entity.getPositionVec()
+						.subtract(new Vec3d(pos))
+						.subtract(0.5+vX, 0.5, 0.5+vZ);
+				final double conveyorHeight = 2/16.;
+				final double centerOffsetInDirection = centerRelative.dotProduct(new Vec3d(facing.getDirectionVec()));
+				final double radius = entity.getSize(entity.getPose()).width/2;
+				final double maxEntityPos = centerOffsetInDirection+radius;
+				double maxCenterHeightUnderEntity = maxEntityPos+conveyorHeight;
+				if(conveyorDirection==ConveyorDirection.DOWN)
+					maxCenterHeightUnderEntity = -maxCenterHeightUnderEntity;
+				if(conveyorDirection==ConveyorDirection.UP)
+				{
+					if(maxCenterHeightUnderEntity > centerRelative.y||!outputBlocked)
+						vY = 0.17D*vBase;
+				}
+				else
+					vY = Math.signum(maxCenterHeightUnderEntity-centerRelative.y)*0.07*vBase;
+				entity.onGround = false;
+			}
+
 			return new Vec3d(vX, vY, vZ);
 		}
 
 		default void onEntityCollision(Entity entity)
 		{
-			if(!isActive())
+			if(!isActive()||entity==null)
 				return;
+			boolean hasBeenHandled = !markEntityAsHandled(entity);
 			BlockPos pos = getTile().getPos();
 			ConveyorDirection conveyorDirection = getConveyorDirection();
 			float heightLimit = conveyorDirection==ConveyorDirection.HORIZONTAL?.25f: 1f;
-			IConveyorBelt outputBelt = getOutputConveyor();
-			boolean outputBlocked = outputBelt!=null&&outputBelt.isBlocked();
-			if(entity!=null&&entity.isAlive()&&!(entity instanceof PlayerEntity&&entity.isSneaking())&&entity.posY-pos.getY() >= 0&&entity.posY-pos.getY() < heightLimit)
+			final boolean outputBlocked = isOutputBlocked();
+			if(entity.isAlive()&&!(entity instanceof PlayerEntity&&entity.isSneaking())&&entity.posY-pos.getY() >= 0&&entity.posY-pos.getY() < heightLimit)
 			{
-				Vec3d vec = this.getDirection(entity);
+				Vec3d vec = this.getDirection(entity, outputBlocked);
 				if(entity.fallDistance < 3)
 					entity.fallDistance = 0;
 				if(outputBlocked)
-					vec = new Vec3d(0, vec.y, 0);
+				{
+					double replacementX;
+					double replacementZ;
+					if(hasBeenHandled)
+					{
+						replacementX = entity.getMotion().x;
+						replacementZ = entity.getMotion().z;
+					}
+					else
+					{
+						replacementX = 0;
+						replacementZ = 0;
+					}
+					vec = new Vec3d(
+							replacementX,
+							vec.y,
+							replacementZ
+					);
+				}
 				entity.setMotion(vec);
 				double distX = Math.abs(pos.offset(getFacing()).getX()+.5-entity.posX);
 				double distZ = Math.abs(pos.offset(getFacing()).getZ()+.5-entity.posZ);
@@ -463,6 +536,12 @@ public class ConveyorHandler
 			return false;
 		}
 
+		default boolean isOutputBlocked()
+		{
+			IConveyorBelt outputBelt = getOutputConveyor();
+			return outputBelt!=null&&outputBelt.isBlocked();
+		}
+
 		/**
 		 * Called when an item is inserted into the conveyor and deployed as an entity
 		 */
@@ -475,49 +554,53 @@ public class ConveyorHandler
 		{
 			if(getTile().getWorld().isRemote)
 				return;
-			MutableBoolean doneOutput = new MutableBoolean(false);
-			for(BlockPos invPos : getOutputPosByPriority())
-				if(!doneOutput.booleanValue())
-				{
-					World world = getTile().getWorld();
-					boolean contact = getFacing().getAxis()==Axis.Z?distZ < .7: distX < .7;
-					TileEntity inventoryTile = Utils.getExistingTileEntity(world, invPos);
-					if(inventoryTile instanceof IConveyorTile)
-						return;
-					else if(!contact)
-						continue;
+			BlockPos invPos = getOutputInventory();
+			World world = getTile().getWorld();
+			boolean contact = getFacing().getAxis()==Axis.Z?distZ < .7: distX < .7;
+			TileEntity inventoryTile = Utils.getExistingTileEntity(world, invPos);
+			if(!contact||inventoryTile instanceof IConveyorTile)
+				return;
 
-					LazyOptional<IItemHandler> cap = CapabilityUtils.findItemHandlerAtPos(world, invPos, getFacing().getOpposite(), true);
-					cap.ifPresent(itemHandler -> {
-						doneOutput.setTrue();
-						ItemStack stack = entity.getItem();
-						ItemStack temp = ItemHandlerHelper.insertItem(itemHandler, stack.copy(), true);
-						if(temp.isEmpty()||temp.getCount() < stack.getCount())
-						{
-							temp = ItemHandlerHelper.insertItem(itemHandler, stack, false);
-							if(temp.isEmpty())
-								entity.remove();
-							else if(temp.getCount() < stack.getCount())
-								entity.setItem(temp);
-						}
-					});
+			LazyOptional<IItemHandler> cap = CapabilityUtils.findItemHandlerAtPos(world, invPos, getFacing().getOpposite(), true);
+			cap.ifPresent(itemHandler -> {
+				ItemStack stack = entity.getItem();
+				ItemStack temp = ItemHandlerHelper.insertItem(itemHandler, stack.copy(), true);
+				if(temp.isEmpty()||temp.getCount() < stack.getCount())
+				{
+					temp = ItemHandlerHelper.insertItem(itemHandler, stack, false);
+					if(temp.isEmpty())
+						entity.remove();
+					else if(temp.getCount() < stack.getCount())
+						entity.setItem(temp);
 				}
+			});
 		}
 
-		default List<BlockPos> getOutputPosByPriority()
+		default BlockPos getOutputInventory()
 		{
 			ConveyorDirection conDir = getConveyorDirection();
+			return getTile().getPos()
+					.offset(getFacing())
+					.add(0, (conDir==ConveyorDirection.UP?1: conDir==ConveyorDirection.DOWN?-1: 0), 0);
+		}
+
+		default List<BlockPos> getNextConveyorCandidates()
+		{
+			ConveyorDirection conDir = getConveyorDirection();
+			BlockPos basePos = getOutputInventory();
+			// Up and horizontal conveyors: handles changes to down
+			// Down conveyors: Handles changes to horizontal
+			BlockPos alternative = conDir==ConveyorDirection.DOWN?basePos.up(): basePos.down();
 			return ImmutableList.of(
-					getTile().getPos()
-							.offset(getFacing())
-							.add(0, (conDir==ConveyorDirection.UP?1: conDir==ConveyorDirection.DOWN?-1: 0), 0)
+					basePos,
+					alternative
 			);
 		}
 
 		@Nullable
 		default IConveyorBelt getOutputConveyor()
 		{
-			for(BlockPos pos : getOutputPosByPriority())
+			for(BlockPos pos : getNextConveyorCandidates())
 			{
 				TileEntity outputTile = SafeChunkUtils.getSafeTE(getTile().getWorld(), pos);
 				if(outputTile instanceof IConveyorTile)

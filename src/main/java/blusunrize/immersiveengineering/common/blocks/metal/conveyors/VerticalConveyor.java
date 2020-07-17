@@ -154,13 +154,13 @@ public class VerticalConveyor extends BasicConveyor
 	}
 
 	@Override
-	public Vec3d getDirection(Entity entity)
+	public Vec3d getDirection(Entity entity, boolean outputBlocked)
 	{
 		BlockPos posWall = getTile().getPos().offset(getFacing());
 		double d = .625+entity.getWidth();
 		double distToWall = Math.abs((getFacing().getAxis()==Axis.Z?posWall.getZ(): posWall.getX())+.5-(getFacing().getAxis()==Axis.Z?entity.posZ: entity.posX));
 		if(distToWall > d)
-			return super.getDirection(entity);
+			return super.getDirection(entity, outputBlocked);
 
 		double vBase = entity instanceof LivingEntity?1.5: 1.15;
 		double distY = Math.abs(getTile().getPos().add(0, 1, 0).getY()+.5-entity.posY);
@@ -219,8 +219,7 @@ public class VerticalConveyor extends BasicConveyor
 
 		if(entity!=null&&entity.isAlive()&&!(entity instanceof PlayerEntity&&entity.isSneaking()))
 		{
-			IConveyorBelt outputConveyor = getOutputConveyor();
-			boolean outputBlocked = outputConveyor!=null&&outputConveyor.isBlocked();
+			boolean outputBlocked = isOutputBlocked();
 			double distY = Math.abs(getTile().getPos().add(0, 1, 0).getY()+.5-entity.posY);
 			double treshold = .9;
 			boolean contact = distY < treshold;
@@ -230,9 +229,20 @@ public class VerticalConveyor extends BasicConveyor
 				entity.fallDistance = 0;
 			else
 				entity.fallDistance *= .9;
-			Vec3d vec = getDirection(entity);
-			if(outputBlocked)
-				vec = new Vec3d(vec.x, 0, vec.z);
+			Vec3d vec = getDirection(entity, outputBlocked);
+			boolean hasBeenHandled = !ConveyorHandler.markEntityAsHandled(entity);
+			if(outputBlocked&&entity.posY >= getTile().getPos().getY()+0.25)
+			{
+				double my;
+				if(entity.posY < entity.lastTickPosY)
+					my = entity.lastTickPosY-entity.posY;
+				else
+					my = entity.getMotion().y;
+				if(hasBeenHandled)
+					vec = new Vec3d(vec.x, my, vec.z);
+				else
+					vec = new Vec3d(0, my, 0);
+			}
 			entity.setMotion(vec);
 
 			if(!contact)
@@ -282,7 +292,13 @@ public class VerticalConveyor extends BasicConveyor
 	}
 
 	@Override
-	public List<BlockPos> getOutputPosByPriority()
+	public BlockPos getOutputInventory()
+	{
+		return getTile().getPos().up();
+	}
+
+	@Override
+	public List<BlockPos> getNextConveyorCandidates()
 	{
 		BlockPos pos = getTile().getPos();
 		return ImmutableList.of(

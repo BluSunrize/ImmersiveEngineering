@@ -261,6 +261,8 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IStateBa
 		@Override
 		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
 		{
+			if(conveyor.getConveyorSubtype().isBlocked())
+				return stack;
 			if(!simulate)
 			{
 				ItemEntity entity = new ItemEntity(conveyor.getWorldNonnull(), conveyor.getPos().getX()+.5, conveyor.getPos().getY()+.1875, conveyor.getPos().getZ()+.5, stack.copy());
