@@ -72,8 +72,7 @@ public class ConveyorHandler
 	public static final Map<ResourceLocation, Block> conveyorBlocks = MetalDevices.CONVEYORS;
 	public static final ResourceLocation textureConveyorColour = new ResourceLocation("immersiveengineering:block/conveyor/colour");
 
-	// - Should work for multiple dimensions since the calls aren't "interleaved" for multiple dimensions
-	// - ThreadLocal to prevent issues with client vs server thread.
+	// Should work for multiple dimensions since the calls aren't "interleaved" for multiple dimensions
 	private static final IntSet entitiesHandledInCurrentTickClient = new IntOpenHashSet();
 	private static final MutableLong currentTickClient = new MutableLong();
 	private static final IntSet entitiesHandledInCurrentTickServer = new IntOpenHashSet();
