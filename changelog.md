@@ -1,4 +1,10 @@
-##### Version 0.14-104
+##### Version 0.14-107
+- Fixed dropping conveyors requiring a high redstone signal to work
+- Fixed calculation of expected yield on coresamples
+- Fixed potential crash on loading mineral veins
+- Fixed diesel generator forgetting about its redstone signal inversion
+
+##### Version 0.14-104 - BUILT
 - Added the new Mineral System! (BluSunrize)
     - Minerals are no longer chunk based
     - Survey Tools help discover veins
