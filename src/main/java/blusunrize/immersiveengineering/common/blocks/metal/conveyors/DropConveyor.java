@@ -43,7 +43,7 @@ public class DropConveyor extends BasicConveyor
 	@Override
 	public void handleInsertion(ItemEntity entity, ConveyorDirection conDir, double distX, double distZ)
 	{
-		if(isPowered())
+		if(!isPowered())
 		{
 			BlockPos posDown = getTile().getPos().down();
 			TileEntity inventoryTile = getTile().getWorld().getTileEntity(posDown);
