@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.shapes.CachedShapesWithTransform;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.model.BakedQuad;
@@ -41,6 +42,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nonnull;
 import javax.vecmath.Matrix4f;
 import java.util.List;
 
@@ -153,13 +155,13 @@ public class VerticalConveyor extends BasicConveyor
 	}
 
 	@Override
-	public Vec3d getDirection(Entity entity)
+	public Vec3d getDirection(Entity entity, boolean outputBlocked)
 	{
 		BlockPos posWall = getTile().getPos().offset(getFacing());
 		double d = .625+entity.getWidth();
 		double distToWall = Math.abs((getFacing().getAxis()==Axis.Z?posWall.getZ(): posWall.getX())+.5-(getFacing().getAxis()==Axis.Z?entity.posZ: entity.posX));
 		if(distToWall > d)
-			return super.getDirection(entity);
+			return super.getDirection(entity, outputBlocked);
 
 		double vBase = entity instanceof LivingEntity?1.5: 1.15;
 		double distY = Math.abs(getTile().getPos().add(0, 1, 0).getY()+.5-entity.posY);
@@ -201,9 +203,12 @@ public class VerticalConveyor extends BasicConveyor
 	private CapabilityReference<IItemHandler> inserter;
 
 	@Override
-	public void onEntityCollision(Entity entity)
+	public void onEntityCollision(@Nonnull Entity entity)
 	{
-		if(!isActive())
+		collisionTracker.onEntityCollided(entity);
+		if(!isActive()||!entity.isAlive())
+			return;
+		if(entity instanceof PlayerEntity&&entity.isSneaking())
 			return;
 
 		BlockPos posWall = getTile().getPos().offset(getFacing());
@@ -215,56 +220,67 @@ public class VerticalConveyor extends BasicConveyor
 			return;
 		}
 
-		if(entity!=null&&entity.isAlive()&&!(entity instanceof PlayerEntity&&entity.isSneaking()))
+		boolean outputBlocked = isOutputBlocked();
+		double distY = Math.abs(getTile().getPos().add(0, 1, 0).getY()+.5-entity.posY);
+		double treshold = .9;
+		boolean contact = distY < treshold;
+
+		entity.onGround = false;
+		if(entity.fallDistance < 3)
+			entity.fallDistance = 0;
+		else
+			entity.fallDistance *= .9;
+		Vec3d vec = getDirection(entity, outputBlocked);
+		boolean hasBeenHandled = !ConveyorHandler.markEntityAsHandled(entity);
+		if(outputBlocked&&entity.posY >= getTile().getPos().getY()+0.25)
 		{
-			double distY = Math.abs(getTile().getPos().add(0, 1, 0).getY()+.5-entity.posY);
-			double treshold = .9;
-			boolean contact = distY < treshold;
-
-			entity.onGround = false;
-			if(entity.fallDistance < 3)
-				entity.fallDistance = 0;
+			double my;
+			if(entity.posY < entity.lastTickPosY)
+				my = entity.lastTickPosY-entity.posY;
 			else
-				entity.fallDistance *= .9;
-			Vec3d vec = getDirection(entity);
-			entity.setMotion(vec);
+				my = entity.getMotion().y;
+			if(hasBeenHandled)
+				vec = new Vec3d(vec.x, my, vec.z);
+			else
+				vec = new Vec3d(0, my, 0);
+		}
+		entity.setMotion(vec);
 
+		if(!contact)
+			ConveyorHandler.applyMagnetSupression(entity, (IConveyorTile)getTile());
+		else
+		{
+			BlockPos posTop = getTile().getPos().add(0, 1, 0);
+			if(!((getTile().getWorld().getTileEntity(posTop) instanceof IConveyorTile)||(getTile().getWorld().isAirBlock(posTop)&&(getTile().getWorld().getTileEntity(posTop.offset(getFacing())) instanceof IConveyorTile))))
+				ConveyorHandler.revertMagnetSupression(entity, (IConveyorTile)getTile());
+		}
+
+		if(entity instanceof ItemEntity)
+		{
+			ItemEntity item = (ItemEntity)entity;
 			if(!contact)
-				ConveyorHandler.applyMagnetSupression(entity, (IConveyorTile)getTile());
+			{
+				if(item.age > item.lifespan-60*20)
+					item.setAgeToCreativeDespawnTime();
+			}
 			else
 			{
-				BlockPos posTop = getTile().getPos().add(0, 1, 0);
-				if(!((getTile().getWorld().getTileEntity(posTop) instanceof IConveyorTile)||(getTile().getWorld().isAirBlock(posTop)&&(getTile().getWorld().getTileEntity(posTop.offset(getFacing())) instanceof IConveyorTile))))
-					ConveyorHandler.revertMagnetSupression(entity, (IConveyorTile)getTile());
-			}
-
-			if(entity instanceof ItemEntity)
-			{
-				ItemEntity item = (ItemEntity)entity;
-				if(!contact)
+				TileEntity inventoryTile;
+				inventoryTile = getTile().getWorld().getTileEntity(getTile().getPos().add(0, 1, 0));
+				if(!getTile().getWorld().isRemote)
 				{
-					if(item.age > item.lifespan-60*20)
-						item.setAgeToCreativeDespawnTime();
-				}
-				else
-				{
-					TileEntity inventoryTile;
-					inventoryTile = getTile().getWorld().getTileEntity(getTile().getPos().add(0, 1, 0));
-					if(!getTile().getWorld().isRemote)
+					if(inventoryTile!=null&&!(inventoryTile instanceof IConveyorTile))
 					{
-						if(inventoryTile!=null&&!(inventoryTile instanceof IConveyorTile))
+						ItemStack stack = item.getItem();
+						if(!stack.isEmpty())
 						{
-							ItemStack stack = item.getItem();
-							if(!stack.isEmpty())
-							{
-								if(inserter==null)
-									inserter = CapabilityReference.forNeighbor(getTile(), CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.UP);
-								ItemStack ret = Utils.insertStackIntoInventory(inserter, stack, false);
-								if(ret.isEmpty())
-									entity.remove();
-								else if(ret.getCount() < stack.getCount())
-									item.setItem(ret);
-							}
+							if(inserter==null)
+								inserter = CapabilityReference.forNeighbor(getTile(), CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.UP);
+							ItemStack ret = Utils.insertStackIntoInventory(inserter, stack, false);
+							if(ret.isEmpty())
+								entity.remove();
+							else if(ret.getCount() < stack.getCount())
+								item.setItem(ret);
 						}
 					}
 				}
@@ -273,6 +289,22 @@ public class VerticalConveyor extends BasicConveyor
 
 		if(allowCovers()&&entity instanceof ItemEntity)
 			((ItemEntity)entity).setPickupDelay(10);
+	}
+
+	@Override
+	public BlockPos getOutputInventory()
+	{
+		return getTile().getPos().up();
+	}
+
+	@Override
+	public List<BlockPos> getNextConveyorCandidates()
+	{
+		BlockPos pos = getTile().getPos();
+		return ImmutableList.of(
+				pos.up(),
+				pos.up().offset(getFacing())
+		);
 	}
 
 	private static final CachedShapesWithTransform<Boolean, Direction> SHAPES =
