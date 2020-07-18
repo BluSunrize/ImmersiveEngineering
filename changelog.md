@@ -1,5 +1,7 @@
 ##### Version 0.16-109
 - Requires Forge version 32.0.67 or later (BluSunrize)
+- Fixed formatting not persisting across linebreaks in the manual (Malte)
+- Fixed tooltips crashing in the manual (Malte)
 - Fixed recipes not loading on dedicated servers (BluSunrize)
 - Fixed fluid tank backgrounds being wrongly offset in JEI (BluSunrize)
 - Fixed revolver causing a crash with its attribute map (BluSunrize)
