@@ -1,4 +1,5 @@
 ##### Version 0.14-107
+- Changed keybindings to their have their own category "Immersive Engineering"
 - Fixed dropping conveyors requiring a high redstone signal to work
 - Fixed calculation of expected yield on coresamples
 - Fixed potential crash on loading mineral veins
