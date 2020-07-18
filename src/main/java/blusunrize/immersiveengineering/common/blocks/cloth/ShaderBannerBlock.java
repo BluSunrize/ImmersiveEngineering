@@ -26,7 +26,7 @@ public abstract class ShaderBannerBlock extends IETileProviderBlock
 {
 	public ShaderBannerBlock(String name, IProperty... stateProps)
 	{
-		super(name, Block.Properties.create(Material.WOOL).sound(SoundType.CLOTH).doesNotBlockMovement().notSolid(), (b, p) -> null, stateProps);
+		super(name, Block.Properties.create(Material.WOOL).hardnessAndResistance(1.0F).sound(SoundType.CLOTH).doesNotBlockMovement().notSolid(), (b, p) -> null, stateProps);
 	}
 
 	@Nullable

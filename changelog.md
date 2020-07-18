@@ -8,6 +8,7 @@
 - Fixed calculation of expected yield on coresamples (BluSunrize)
 - Fixed potential crash on loading mineral veins (BluSunrize)
 - Fixed diesel generator forgetting about its redstone signal inversion (BluSunrize)
+- Fixed shader dupe bug with banners (BluSunrize)
 
 ##### Version 0.15-105 - BUILT
 - Fixed invisible connectors with Optifine (Malte)
