@@ -459,17 +459,20 @@ public class ConveyorHandler
 			return new Vec3d(vX, vY, vZ);
 		}
 
-		default void onEntityCollision(Entity entity)
+		default void onEntityCollision(@Nonnull Entity entity)
 		{
-			if(!isActive()||entity==null)
+			if(!isActive()||!entity.isAlive())
 				return;
-			boolean hasBeenHandled = !markEntityAsHandled(entity);
-			BlockPos pos = getTile().getPos();
+			if(entity instanceof PlayerEntity&&entity.isSneaking())
+				return;
 			ConveyorDirection conveyorDirection = getConveyorDirection();
 			float heightLimit = conveyorDirection==ConveyorDirection.HORIZONTAL?.25f: 1f;
-			final boolean outputBlocked = isOutputBlocked();
-			if(entity.isAlive()&&!(entity instanceof PlayerEntity&&entity.isSneaking())&&entity.posY-pos.getY() >= 0&&entity.posY-pos.getY() < heightLimit)
+			BlockPos pos = getTile().getPos();
+			final double relativeHeight = entity.posY-pos.getY();
+			if(relativeHeight >= 0&&relativeHeight < heightLimit)
 			{
+				boolean hasBeenHandled = !markEntityAsHandled(entity);
+				final boolean outputBlocked = isOutputBlocked();
 				Vec3d vec = this.getDirection(entity, outputBlocked);
 				if(entity.fallDistance < 3)
 					entity.fallDistance = 0;

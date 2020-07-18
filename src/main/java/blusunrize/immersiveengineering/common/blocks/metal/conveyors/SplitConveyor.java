@@ -36,6 +36,7 @@ import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
@@ -99,12 +100,12 @@ public class SplitConveyor extends BasicConveyor
 	}
 
 	@Override
-	public void onEntityCollision(Entity entity)
+	public void onEntityCollision(@Nonnull Entity entity)
 	{
 		if(!isActive())
 			return;
 		Direction redirect = null;
-		if(entity!=null&&entity.isAlive())
+		if(entity.isAlive())
 		{
 			String nbtKey = "immersiveengineering:conveyorDir"+Integer.toHexString(getTile().getPos().hashCode());
 			if(entity.getPersistentData().contains(nbtKey, NBT.TAG_INT))

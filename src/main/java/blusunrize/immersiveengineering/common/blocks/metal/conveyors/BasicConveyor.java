@@ -54,6 +54,7 @@ import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Triple;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -125,7 +126,7 @@ public class BasicConveyor implements IConveyorBelt
 	}
 
 	@Override
-	public void onEntityCollision(Entity entity)
+	public void onEntityCollision(@Nonnull Entity entity)
 	{
 		collisionTracker.onEntityCollided(entity);
 		IConveyorBelt.super.onEntityCollision(entity);
