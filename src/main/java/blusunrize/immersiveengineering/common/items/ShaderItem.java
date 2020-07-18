@@ -111,16 +111,6 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, ITextureOverr
 			}
 			else if(tile instanceof ShaderBannerTileEntity)
 			{
-				ItemStack current = ((ShaderBannerTileEntity)tile).shader.getShaderItem();
-				if(!current.isEmpty()&&!world.isRemote&&(ctx.getPlayer()==null||!ctx.getPlayer().abilities.isCreativeMode))
-				{
-					double dx = pos.getX()+.5+ctx.getFace().getXOffset();
-					double dy = pos.getY()+.5+ctx.getFace().getYOffset();
-					double dz = pos.getZ()+.5+ctx.getFace().getZOffset();
-					ItemEntity entityitem = new ItemEntity(world, dx, dy, dz, current.copy());
-					entityitem.setDefaultPickupDelay();
-					world.addEntity(entityitem);
-				}
 				((ShaderBannerTileEntity)tile).shader.setShaderItem(Utils.copyStackWithAmount(ctx.getItem(), 1));
 				tile.markDirty();
 				return ActionResultType.SUCCESS;
