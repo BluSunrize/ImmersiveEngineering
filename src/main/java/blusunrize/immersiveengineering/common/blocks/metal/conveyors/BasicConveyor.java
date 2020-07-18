@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
+import blusunrize.immersiveengineering.api.utils.EntityCollisionTracker;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDecoration;
@@ -53,6 +54,7 @@ import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Triple;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -73,6 +75,7 @@ public class BasicConveyor implements IConveyorBelt
 	@Nullable
 	DyeColor dyeColour = null;
 	private final TileEntity tile;
+	protected final EntityCollisionTracker collisionTracker = new EntityCollisionTracker(10);
 
 	public BasicConveyor(TileEntity tile)
 	{
@@ -123,11 +126,18 @@ public class BasicConveyor implements IConveyorBelt
 	}
 
 	@Override
-	public void onEntityCollision(Entity entity)
+	public void onEntityCollision(@Nonnull Entity entity)
 	{
+		collisionTracker.onEntityCollided(entity);
 		IConveyorBelt.super.onEntityCollision(entity);
 		if(allowCovers()&&entity instanceof ItemEntity)
 			((ItemEntity)entity).setPickupDelay(10);
+	}
+
+	@Override
+	public boolean isBlocked()
+	{
+		return collisionTracker.getCollidedInRange(getTile().getWorld().getGameTime()) > 2;
 	}
 
 	@Override

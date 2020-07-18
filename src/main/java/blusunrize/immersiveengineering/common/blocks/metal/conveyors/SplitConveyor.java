@@ -13,8 +13,10 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorTile;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.ModelConveyor;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
+import blusunrize.immersiveengineering.common.util.SafeChunkUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -35,6 +37,7 @@ import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
@@ -98,12 +101,12 @@ public class SplitConveyor extends BasicConveyor
 	}
 
 	@Override
-	public void onEntityCollision(Entity entity)
+	public void onEntityCollision(@Nonnull Entity entity)
 	{
 		if(!isActive())
 			return;
 		Direction redirect = null;
-		if(entity!=null&&entity.isAlive())
+		if(entity.isAlive())
 		{
 			String nbtKey = "immersiveengineering:conveyorDir"+Integer.toHexString(getTile().getPos().hashCode());
 			if(entity.getPersistentData().contains(nbtKey, NBT.TAG_INT))
@@ -149,9 +152,9 @@ public class SplitConveyor extends BasicConveyor
 	}
 
 	@Override
-	public Vec3d getDirection(Entity entity)
+	public Vec3d getDirection(Entity entity, boolean outputBlocked)
 	{
-		Vec3d vec = super.getDirection(entity);
+		Vec3d vec = super.getDirection(entity, outputBlocked);
 		String nbtKey = "immersiveengineering:conveyorDir"+Integer.toHexString(getTile().getPos().hashCode());
 		if(!entity.getPersistentData().contains(nbtKey, NBT.TAG_INT))
 			return vec;
@@ -242,6 +245,34 @@ public class SplitConveyor extends BasicConveyor
 		}
 		super.modifyQuads(baseModel);
 		return baseModel;
+	}
+
+	@Override
+	public List<BlockPos> getNextConveyorCandidates()
+	{
+		BlockPos baseOutput = getTile().getPos().offset(getOutputFace());
+		return ImmutableList.of(
+				baseOutput,
+				baseOutput.down()
+		);
+	}
+
+	@Override
+	public boolean isOutputBlocked()
+	{
+		// Consider the belt blocked if at least one of the possible outputs is blocked
+		Direction outputFace = getOutputFace();
+		BlockPos here = getTile().getPos();
+		for(BlockPos outputPos : new BlockPos[]{
+				here.offset(outputFace, 1),
+				here.offset(outputFace, -1),
+		})
+		{
+			TileEntity tile = SafeChunkUtils.getSafeTE(getTile().getWorld(), outputPos);
+			if(tile instanceof IConveyorTile&&((IConveyorTile)tile).getConveyorSubtype().isBlocked())
+				return true;
+		}
+		return false;
 	}
 
 	private Direction getOutputFace()

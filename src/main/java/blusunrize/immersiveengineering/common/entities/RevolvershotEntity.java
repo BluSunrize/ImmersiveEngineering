@@ -139,8 +139,8 @@ public class RevolvershotEntity extends IEProjectileEntity
 		{
 			BlockPos hitPos = ((BlockRayTraceResult)mop).getPos();
 			BlockState state = this.world.getBlockState(hitPos);
-			if(state.getBlock().getMaterial(state)!=Material.AIR)
-				state.getBlock().onEntityCollision(state, this.world, hitPos, this);
+			if(state.getMaterial()!=Material.AIR)
+				state.onEntityCollision(this.world, hitPos, this);
 		}
 		this.remove();
 	}

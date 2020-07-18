@@ -2,10 +2,12 @@
 - Also includes the changes from 0.14-107
 
 ##### Version 0.14-107
-- Fixed dropping conveyors requiring a high redstone signal to work
-- Fixed calculation of expected yield on coresamples
-- Fixed potential crash on loading mineral veins
-- Fixed diesel generator forgetting about its redstone signal inversion
+- Changed conveyor behavior; any conveyor can only have 3 stacks of items on it (Malte)
+- Changed keybindings to their have their own category "Immersive Engineering" (BluSunrize)
+- Fixed dropping conveyors requiring a high redstone signal to work (BluSunrize)
+- Fixed calculation of expected yield on coresamples (BluSunrize)
+- Fixed potential crash on loading mineral veins (BluSunrize)
+- Fixed diesel generator forgetting about its redstone signal inversion (BluSunrize)
 
 ##### Version 0.15-105 - BUILT
 - Fixed invisible connectors with Optifine (Malte)

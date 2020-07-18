@@ -135,7 +135,7 @@ public class VerticalCoveredConveyor extends VerticalConveyor
 				if(q!=null&&q.func_187508_a()!=null&&q.getFace()!=null)
 					sprites.put(q.getFace(), q.func_187508_a());
 
-			Function<Direction, TextureAtlasSprite> getSprite = f -> sprites.containsKey(f)?sprites.get(f): sprite;
+			Function<Direction, TextureAtlasSprite> getSprite = f -> sprites.getOrDefault(f, sprite);
 
 			float[] colour = {1, 1, 1, 1};
 			Matrix4 matrix = new Matrix4(getFacing());
