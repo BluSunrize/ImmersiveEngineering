@@ -87,7 +87,7 @@ public class ShaderBannerTileEntity extends IEBaseTileEntity implements IBlockBo
 	@Override
 	public List<ItemStack> getTileDrops(LootContext context)
 	{
-		return ImmutableList.of(new ItemStack(Items.WHITE_BANNER, 1), this.shader.getShaderItem());
+		return ImmutableList.of(new ItemStack(Items.WHITE_BANNER, 1));
 	}
 
 	@Override
