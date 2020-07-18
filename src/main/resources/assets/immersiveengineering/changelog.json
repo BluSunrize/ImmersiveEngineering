@@ -1,3 +1,4 @@
 {
-    "0.16-106": "- Initial port to 1.16\n- Added mineral vein, crusher & arc furnace integration for the new Nether materials\n- Also includes all changes from 0.15-105"
+    "0.16-106": "- Initial port to 1.16\n- Added mineral vein, crusher & arc furnace integration for the new Nether materials\n- Also includes all changes from 0.15-105",
+    "0.16-109": "- Requires Forge version 32.0.67 or later (BluSunrize)\n- Fixed formatting not persisting across linebreaks in the manual (Malte)\n- Fixed tooltips crashing in the manual (Malte)\n- Fixed recipes not loading on dedicated servers (BluSunrize)\n- Fixed fluid tank backgrounds being wrongly offset in JEI (BluSunrize)\n- Fixed revolver causing a crash with its attribute map (BluSunrize)\n- Also includes the changes from 0.14-107"
 }

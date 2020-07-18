@@ -1,4 +1,4 @@
-##### Version 0.16-109
+##### Version 0.16-109 - BUILT
 - Requires Forge version 32.0.67 or later (BluSunrize)
 - Fixed formatting not persisting across linebreaks in the manual (Malte)
 - Fixed tooltips crashing in the manual (Malte)
