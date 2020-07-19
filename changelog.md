@@ -1,3 +1,9 @@
+##### Version 1.14.4-2.4-pre
+- Work in progress changes
+
+##### Version 1.14.4-2.4-110
+- Moved to new changelog system
+
 ##### Version 0.14-107 - BUILT
 - Changed conveyor behavior; any conveyor can only have 3 stacks of items on it (Malte)
 - Changed keybindings to their have their own category "Immersive Engineering" (BluSunrize)
@@ -212,7 +218,7 @@
 ##### Version 0.14-93 - BUILT
 - Initial alpha release for Minecraft 1.14.4
 
-##### Version 0.12-90
+##### Version 0.12-90 - BUILT
 - Items on conveyors now despawn after the usual time when stuck against a block (Malte)
 - Fixed wires sometimes attaching to the wrong parts of transformers (Malte)
 - Fixed wires connecting to the transformer when clicking on the lower blocks (Malte)
