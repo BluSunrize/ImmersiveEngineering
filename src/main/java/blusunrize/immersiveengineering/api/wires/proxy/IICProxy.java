@@ -1,16 +1,16 @@
 /*
  * BluSunrize
- * Copyright (c) 2017
+ * Copyright (c) 2020
  *
  * This code is licensed under "Blu's License of Common Sense"
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.api.wires;
+package blusunrize.immersiveengineering.api.wires.proxy;
 
 import blusunrize.immersiveengineering.api.TargetingInfo;
+import blusunrize.immersiveengineering.api.wires.*;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
@@ -34,10 +34,10 @@ import java.util.List;
 
 public class IICProxy implements IImmersiveConnectable
 {
-	private DimensionType dim;
-	private BlockPos pos;
-	private List<Connection> internalConns;
-	private List<ConnectionPoint> points;
+	private final DimensionType dim;
+	private final BlockPos pos;
+	private final List<Connection> internalConns;
+	private final List<ConnectionPoint> points;
 
 	public IICProxy(DimensionType dimension, BlockPos pos, Collection<Connection> internal,
 					Collection<ConnectionPoint> points)
@@ -51,16 +51,6 @@ public class IICProxy implements IImmersiveConnectable
 	public IICProxy(DimensionType dimension, BlockPos pos)
 	{
 		this(dimension, pos, ImmutableList.of(), ImmutableList.of());
-	}
-
-	public IICProxy(TileEntity te)
-	{
-		if(!(te instanceof IImmersiveConnectable))
-			throw new IllegalArgumentException("Can't create an IICProxy for a null/non-IIC TileEntity");
-		dim = te.getWorld().getDimension().getType();
-		pos = te.getPos();
-		internalConns = Lists.newArrayList(((IImmersiveConnectable)te).getInternalConnections());
-		points = new ArrayList<>(((IImmersiveConnectable)te).getConnectionPoints());
 	}
 
 	@Override
@@ -121,11 +111,6 @@ public class IICProxy implements IImmersiveConnectable
 	}
 
 	@Override
-	public void onEnergyPassthrough(int amount)
-	{
-	}
-
-	@Override
 	public Vec3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
 		return null;
@@ -170,6 +155,18 @@ public class IICProxy implements IImmersiveConnectable
 
 	@Override
 	public BlockPos getConnectionMaster(WireType cableType, TargetingInfo target)
+	{
+		return pos;
+	}
+
+	@Override
+	public boolean isProxy()
+	{
+		return true;
+	}
+
+	@Override
+	public BlockPos getPosition()
 	{
 		return pos;
 	}

@@ -148,7 +148,7 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 		for(ConnectionPoint cp : getConnectionPoints())
 			for(Connection c : getLocalNet(cp.getIndex()).getConnections(cp))
 				if(!c.isInternal())
-					globalNet.updateCatenaryData(c);
+					globalNet.updateCatenaryData(c, world);
 		markDirty();
 		markContainingBlockForUpdate(getBlockState());
 		return true;

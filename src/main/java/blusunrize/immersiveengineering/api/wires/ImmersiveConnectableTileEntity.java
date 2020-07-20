@@ -129,11 +129,15 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 			for(Connection c : conns)
 			{
 				ConnectionPoint other = c.getOtherEnd(cp);
-				if(!c.isInternal()&&!(globalNet.getLocalNet(other).getConnector(other) instanceof IICProxy))
+				if(!c.isInternal())
 				{
-					// generate subvertices
-					c.generateCatenaryData(world);
-					ret.add(c);
+					IImmersiveConnectable otherConnector = globalNet.getLocalNet(other).getConnector(other);
+					if(otherConnector!=null&&!otherConnector.isProxy())
+					{
+						// generate subvertices
+						c.generateCatenaryData(world);
+						ret.add(c);
+					}
 				}
 			}
 		}
@@ -191,5 +195,11 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 			cachedLocalNets.put(cpIndex, ret);
 		}
 		return ret;
+	}
+
+	@Override
+	public BlockPos getPosition()
+	{
+		return pos;
 	}
 }
