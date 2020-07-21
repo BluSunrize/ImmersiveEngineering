@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.wires.localhandlers.ILocalHandlerProv
 import blusunrize.immersiveengineering.api.wires.localhandlers.IWorldTickable;
 import blusunrize.immersiveengineering.api.wires.proxy.IICProxyProvider;
 import blusunrize.immersiveengineering.common.IEConfig;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.ImmutableList;
@@ -259,10 +260,9 @@ public class GlobalWireNetwork implements IWorldTickable
 		validateNextTick = true;
 	}
 
-	public void onConnectorLoad(IImmersiveConnectable iic, World w)
+	@VisibleForTesting
+	public void onConnectorLoad(IImmersiveConnectable iic, boolean remote)
 	{
-		if(validating)
-			WireLogger.logger.error("Adding a connector during validation!");
 		boolean isNew = false;
 		Set<LocalWireNetwork> loadedInNets = new HashSet<>();
 		for(ConnectionPoint cp : iic.getConnectionPoints())
@@ -273,13 +273,20 @@ public class GlobalWireNetwork implements IWorldTickable
 			if(loadedInNets.add(local))
 				local.loadConnector(cp.getPosition(), iic, false, this);
 		}
-		if(isNew&&!w.isRemote)
+		if(isNew&&!remote)
 			for(Connection c : iic.getInternalConnections())
 			{
 				Preconditions.checkArgument(c.isInternal(), "Internal connection for "+iic+"was not marked as internal!");
 				addConnection(c);
 			}
-		ApiUtils.addFutureServerTask(w, () -> {
+	}
+
+	public void onConnectorLoad(IImmersiveConnectable iic, World world)
+	{
+		if(validating)
+			WireLogger.logger.error("Adding a connector during validation!");
+		onConnectorLoad(iic, world.isRemote);
+		ApiUtils.addFutureServerTask(world, () -> {
 			for(ConnectionPoint cp : iic.getConnectionPoints())
 				for(Connection c : getLocalNet(cp).getConnections(cp))
 				{
@@ -290,8 +297,8 @@ public class GlobalWireNetwork implements IWorldTickable
 						IImmersiveConnectable iicEnd = otherLocal.getConnector(otherEnd);
 						if(!iicEnd.isProxy())
 						{
-							c.generateCatenaryData(w);
-							if(!w.isRemote)
+							c.generateCatenaryData(world);
+							if(!world.isRemote)
 							{
 								WireLogger.logger.info("Here: {}, other end: {}", iic, iicEnd);
 								collisionData.addConnection(c);
@@ -302,7 +309,7 @@ public class GlobalWireNetwork implements IWorldTickable
 		}, true);
 		validateNextTick = true;
 		//TODO this really should be somewhere else...
-		if(w.isRemote)
+		if(world.isRemote)
 		{
 			for(ConnectionPoint cp : iic.getConnectionPoints())
 			{
@@ -313,11 +320,11 @@ public class GlobalWireNetwork implements IWorldTickable
 					IImmersiveConnectable otherIIC = localNet.getConnector(otherEnd);
 					if(otherIIC instanceof TileEntity)
 						((TileEntity)otherIIC).requestModelDataUpdate();
-					BlockState state = w.getBlockState(otherEnd.getPosition());
-					w.notifyBlockUpdate(otherEnd.getPosition(), state, state, 3);
+					BlockState state = world.getBlockState(otherEnd.getPosition());
+					world.notifyBlockUpdate(otherEnd.getPosition(), state, state, 3);
 				}
-				BlockState state = w.getBlockState(cp.getPosition());
-				w.notifyBlockUpdate(cp.getPosition(), state, state, 3);
+				BlockState state = world.getBlockState(cp.getPosition());
+				world.notifyBlockUpdate(cp.getPosition(), state, state, 3);
 			}
 			if(iic instanceof TileEntity)
 				((TileEntity)iic).requestModelDataUpdate();

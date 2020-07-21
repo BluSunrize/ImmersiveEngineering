@@ -12,13 +12,12 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.WireType;
+import blusunrize.immersiveengineering.api.wires.testutils.DummyWireType;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import it.unimi.dsi.fastutil.doubles.DoubleAVLTreeSet;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -147,7 +146,7 @@ public class CatenaryTracerTest
 
 	private CatenaryTracer create(Vec3d start, Vec3d end, double slack)
 	{
-		WireType type = new TestWiretype(slack);
+		WireType type = new DummyWireType(slack);
 		Connection conn = new Connection(
 				type,
 				new ConnectionPoint(new BlockPos(start), 0),
@@ -156,61 +155,4 @@ public class CatenaryTracerTest
 		return new CatenaryTracer(conn.getCatenaryData(), OFFSET);
 	}
 
-	private static class TestWiretype extends WireType
-	{
-		private final double slack;
-
-		private TestWiretype(double slack)
-		{
-			this.slack = slack;
-		}
-
-		@Override
-		public String getUniqueName()
-		{
-			return "test wire";
-		}
-
-		@Override
-		public int getColour(Connection connection)
-		{
-			return 0;
-		}
-
-		@Override
-		public double getSlack()
-		{
-			return 1+slack;
-		}
-
-		@Override
-		public TextureAtlasSprite getIcon(Connection connection)
-		{
-			return null;
-		}
-
-		@Override
-		public int getMaxLength()
-		{
-			return 0;
-		}
-
-		@Override
-		public ItemStack getWireCoil(Connection con)
-		{
-			return null;
-		}
-
-		@Override
-		public double getRenderDiameter()
-		{
-			return 0;
-		}
-
-		@Override
-		public String getCategory()
-		{
-			return "TEST_WIRE";
-		}
-	}
 }
