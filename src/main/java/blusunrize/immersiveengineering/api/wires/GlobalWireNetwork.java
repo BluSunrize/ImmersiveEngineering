@@ -147,7 +147,13 @@ public class GlobalWireNetwork implements IWorldTickable
 		LocalWireNetwork oldNet = getNullableLocalNet(c.getEndA());
 		if(oldNet==null)
 		{
-			Preconditions.checkState(getNullableLocalNet(c.getEndB())==null);
+			Preconditions.checkState(
+					getNullableLocalNet(c.getEndB())==null,
+					"Found net at %s but not at %s while removing connection %s",
+					c.getEndB(),
+					c.getEndA(),
+					c
+			);
 			return;
 		}
 		Preconditions.checkNotNull(oldNet.getConnector(c.getEndB()));
@@ -236,7 +242,7 @@ public class GlobalWireNetwork implements IWorldTickable
 	{
 		WireLogger.logger.info("Removing {}", iic);
 		Set<LocalWireNetwork> netsToRemoveFrom = new ObjectArraySet<>();
-		BlockPos iicPos = null;
+		final BlockPos iicPos = iic.getPosition();
 		for(ConnectionPoint c : iic.getConnectionPoints())
 		{
 			WireLogger.logger.info("Sub-point {}", c);
@@ -246,15 +252,11 @@ public class GlobalWireNetwork implements IWorldTickable
 				WireLogger.logger.info("Removing");
 				putLocalNet(c, null);
 				netsToRemoveFrom.add(local);
-				if(iicPos!=null)
-					Preconditions.checkState(iicPos.equals(c.getPosition()));
-				else
-					iicPos = c.getPosition();
 			}
 		}
 		for(LocalWireNetwork net : netsToRemoveFrom)
 		{
-			net.removeConnector(Preconditions.checkNotNull(iicPos));
+			net.removeConnector(iicPos);
 			splitNet(net);
 		}
 		validateNextTick = true;
@@ -286,49 +288,55 @@ public class GlobalWireNetwork implements IWorldTickable
 		if(validating)
 			WireLogger.logger.error("Adding a connector during validation!");
 		onConnectorLoad(iic, world.isRemote);
-		ApiUtils.addFutureServerTask(world, () -> {
-			for(ConnectionPoint cp : iic.getConnectionPoints())
-				for(Connection c : getLocalNet(cp).getConnections(cp))
-				{
-					ConnectionPoint otherEnd = c.getOtherEnd(cp);
-					LocalWireNetwork otherLocal = getNullableLocalNet(otherEnd);
-					if(otherLocal!=null)
-					{
-						IImmersiveConnectable iicEnd = otherLocal.getConnector(otherEnd);
-						if(!iicEnd.isProxy())
-						{
-							c.generateCatenaryData(world);
-							if(!world.isRemote)
-							{
-								WireLogger.logger.info("Here: {}, other end: {}", iic, iicEnd);
-								collisionData.addConnection(c);
-							}
-						}
-					}
-				}
-		}, true);
+		ApiUtils.addFutureServerTask(world, () -> initializeConnectionsOn(iic, world), true);
 		validateNextTick = true;
 		//TODO this really should be somewhere else...
 		if(world.isRemote)
+			updateModelData(iic, world);
+	}
+
+	private void updateModelData(IImmersiveConnectable iic, World world)
+	{
+		for(ConnectionPoint cp : iic.getConnectionPoints())
 		{
-			for(ConnectionPoint cp : iic.getConnectionPoints())
+			LocalWireNetwork localNet = getLocalNet(cp);
+			for(Connection c : getLocalNet(cp).getConnections(cp))
 			{
-				LocalWireNetwork localNet = getLocalNet(cp);
-				for(Connection c : getLocalNet(cp).getConnections(cp))
-				{
-					ConnectionPoint otherEnd = c.getOtherEnd(cp);
-					IImmersiveConnectable otherIIC = localNet.getConnector(otherEnd);
-					if(otherIIC instanceof TileEntity)
-						((TileEntity)otherIIC).requestModelDataUpdate();
-					BlockState state = world.getBlockState(otherEnd.getPosition());
-					world.notifyBlockUpdate(otherEnd.getPosition(), state, state, 3);
-				}
-				BlockState state = world.getBlockState(cp.getPosition());
-				world.notifyBlockUpdate(cp.getPosition(), state, state, 3);
+				ConnectionPoint otherEnd = c.getOtherEnd(cp);
+				IImmersiveConnectable otherIIC = localNet.getConnector(otherEnd);
+				if(otherIIC instanceof TileEntity)
+					((TileEntity)otherIIC).requestModelDataUpdate();
+				BlockState state = world.getBlockState(otherEnd.getPosition());
+				world.notifyBlockUpdate(otherEnd.getPosition(), state, state, 3);
 			}
-			if(iic instanceof TileEntity)
-				((TileEntity)iic).requestModelDataUpdate();
+			BlockState state = world.getBlockState(cp.getPosition());
+			world.notifyBlockUpdate(cp.getPosition(), state, state, 3);
 		}
+		if(iic instanceof TileEntity)
+			((TileEntity)iic).requestModelDataUpdate();
+	}
+
+	private void initializeConnectionsOn(IImmersiveConnectable iic, World world)
+	{
+		for(ConnectionPoint cp : iic.getConnectionPoints())
+			for(Connection c : getLocalNet(cp).getConnections(cp))
+			{
+				ConnectionPoint otherEnd = c.getOtherEnd(cp);
+				LocalWireNetwork otherLocal = getNullableLocalNet(otherEnd);
+				if(otherLocal!=null)
+				{
+					IImmersiveConnectable iicEnd = otherLocal.getConnector(otherEnd);
+					if(!iicEnd.isProxy())
+					{
+						c.generateCatenaryData(world);
+						if(!world.isRemote)
+						{
+							WireLogger.logger.info("Here: {}, other end: {}", iic, iicEnd);
+							collisionData.addConnection(c);
+						}
+					}
+				}
+			}
 	}
 
 	public void onConnectorUnload(BlockPos pos, IImmersiveConnectable iic)

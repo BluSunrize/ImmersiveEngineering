@@ -138,15 +138,27 @@ public class LocalWireNetwork implements IWorldTickable
 			return ImmutableSet.of();
 	}
 
-	void addConnector(ConnectionPoint p, IImmersiveConnectable iic, GlobalWireNetwork globalNet)
+	void addConnector(ConnectionPoint cp, IImmersiveConnectable iic, GlobalWireNetwork globalNet)
 	{
-		Preconditions.checkState(!connections.containsKey(p));
-		connections.put(p, new ArrayList<>());
-		if(!connectors.containsKey(p.getPosition()))
-			loadConnector(p.getPosition(), iic, true, globalNet);
+		{
+			Collection<Connection> existing = connections.get(cp);
+			Preconditions.checkState(
+					existing==null,
+					"Adding connection point %s with connector %s to net %s, but already has %s",
+					cp, iic, this, existing
+			);
+		}
+		connections.put(cp, new ArrayList<>());
+		if(!connectors.containsKey(cp.getPosition()))
+			loadConnector(cp.getPosition(), iic, true, globalNet);
 		else
 		{
-			Preconditions.checkState(getConnector(p)==iic);
+			IImmersiveConnectable existing = getConnector(cp);
+			Preconditions.checkState(
+					existing==iic,
+					"Existing connector in net %s is %s, but expected %s",
+					this, existing, iic
+			);
 			addRequestedHandlers(iic, globalNet);
 		}
 	}
@@ -155,9 +167,17 @@ public class LocalWireNetwork implements IWorldTickable
 	{
 		IImmersiveConnectable existingIIC = connectors.get(p);
 		if(adding)
-			Preconditions.checkState(existingIIC==null);
+			Preconditions.checkState(
+					existingIIC==null,
+					"Adding connector %s at %s in net %s, but IIC %s already exists there",
+					iic, p, this, existingIIC
+			);
 		else
-			Preconditions.checkState(existingIIC.isProxy(), "Loading connector with current IIC "+existingIIC);
+			Preconditions.checkState(
+					existingIIC.isProxy(),
+					"Loading connector %s at %s in net %s, but current IIC is %s",
+					iic, p, this, existingIIC
+			);
 		connectors.put(p, iic);
 		for(ConnectionPoint cp : iic.getConnectionPoints())
 			if(connections.containsKey(cp))
@@ -168,17 +188,25 @@ public class LocalWireNetwork implements IWorldTickable
 			}
 	}
 
-	void unloadConnector(BlockPos p)
+	void unloadConnector(BlockPos pos)
 	{
-		IImmersiveConnectable iic = connectors.get(p);
-		Preconditions.checkState(iic!=null);
-		Preconditions.checkState(!iic.isProxy());
+		IImmersiveConnectable iic = connectors.get(pos);
+		Preconditions.checkState(
+				iic!=null,
+				"Unloading connector at %s in net %s, but no connector is stored",
+				pos, this
+		);
+		Preconditions.checkState(
+				!iic.isProxy(),
+				"Unloading connector at %s in %s, but is already a proxy",
+				pos, this
+		);
 		for(LocalNetworkHandler h : handlers.values())
-			h.onConnectorUnloaded(p, iic);
+			h.onConnectorUnloaded(pos, iic);
 		for(ConnectionPoint cp : iic.getConnectionPoints())
 			if(connections.containsKey(cp))
 				removeHandlersFor(iic);
-		connectors.put(p, proxyProvider.createFor(iic));
+		connectors.put(pos, proxyProvider.createFor(iic));
 	}
 
 	LocalWireNetwork merge(LocalWireNetwork other, Supplier<LocalWireNetwork> createNewNet)
