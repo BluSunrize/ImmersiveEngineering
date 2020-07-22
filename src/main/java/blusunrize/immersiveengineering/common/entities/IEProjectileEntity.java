@@ -85,6 +85,13 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 		this.shoot(motion.x, motion.y, motion.z, 2*1.5F, 1.0F);
 	}
 
+	@Override
+	protected void registerData()
+	{
+		super.registerData();
+		this.dataManager.register(SHOOTER_PARAMETER, Optional.empty());
+	}
+
 	@Nonnull
 	@Override
 	public EntitySize getSize(Pose p_213305_1_)

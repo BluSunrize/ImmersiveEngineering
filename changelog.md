@@ -1,5 +1,6 @@
 ##### Version 1.16.1-3.1-pre
 - Moved to new version numbering system
+- Fixed a crash with railgun & chemthrower projectiles
 
 ##### Version 1.15.2-3.1-pre
 - Moved to new version numbering system
