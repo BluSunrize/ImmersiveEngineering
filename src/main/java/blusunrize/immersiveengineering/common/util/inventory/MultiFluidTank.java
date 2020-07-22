@@ -17,7 +17,6 @@ import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -43,7 +42,7 @@ public class MultiFluidTank implements IFluidTank, IFluidHandler
 			for(int i = 0; i < tagList.size(); i++)
 			{
 				FluidStack fs = FluidStack.loadFluidStackFromNBT(tagList.getCompound(i));
-				if(fs!=null)
+				if(!fs.isEmpty())
 					this.fluids.add(fs);
 			}
 		}
@@ -54,7 +53,7 @@ public class MultiFluidTank implements IFluidTank, IFluidHandler
 	{
 		ListNBT tagList = new ListNBT();
 		for(FluidStack fs : this.fluids)
-			if(fs!=null)
+			if(!fs.isEmpty())
 				tagList.add(fs.writeToNBT(new CompoundNBT()));
 		nbt.put("fluids", tagList);
 		return nbt;
@@ -178,12 +177,12 @@ public class MultiFluidTank implements IFluidTank, IFluidHandler
 		return Utils.copyFluidStackWithAmount(removeFrom, amount, true);
 	}
 
-	@Nullable
+	@Nonnull
 	@Override
 	public FluidStack drain(int maxDrain, FluidAction doDrain)
 	{
 		if(this.fluids.isEmpty())
-			return null;
+			return FluidStack.EMPTY;
 		return drain(new FluidStack(getFluid(), maxDrain), doDrain);
 	}
 }
