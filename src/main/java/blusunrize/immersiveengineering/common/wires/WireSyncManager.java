@@ -12,6 +12,8 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.common.network.MessageWireSync;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
@@ -25,11 +27,16 @@ import net.minecraftforge.fml.network.PacketDistributor;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 @EventBusSubscriber(modid = ImmersiveEngineering.MODID)
 public class WireSyncManager implements IWireSyncManager
 {
+	//TODO does this work correctly when switching dimensions?
+	private static final Multimap<UUID, ChunkPos> watchedInLastTick = HashMultimap.create();
+	private static final Multimap<UUID, ChunkPos> unwatchedInLastTick = HashMultimap.create();
+
 	private static void sendMessagesForChunk(World w, ChunkPos pos, ServerPlayerEntity player, boolean add)
 	{
 		GlobalWireNetwork net = GlobalWireNetwork.getNetwork(w);
@@ -43,7 +50,23 @@ public class WireSyncManager implements IWireSyncManager
 	private static boolean shouldSendConnection(Connection conn, World w, ChunkPos pos, ServerPlayerEntity player, boolean add,
 												ConnectionPoint currEnd)
 	{
-		return !conn.isInternal()&&conn.isPositiveEnd(currEnd);
+		if(conn.isInternal())
+			return false;
+		ConnectionPoint other = conn.getOtherEnd(currEnd);
+		ChunkPos otherChunk = new ChunkPos(other.getPosition());
+		if(otherChunk.equals(pos))
+			return conn.isPositiveEnd(currEnd);
+		else if(add&&watchedInLastTick.containsEntry(player.getUniqueID(), otherChunk))
+			return false;
+		else if(!add&&unwatchedInLastTick.containsEntry(player.getUniqueID(), otherChunk))
+			return false;
+		else
+		{
+			ServerChunkProvider chunkProvider = (ServerChunkProvider)w.getChunkProvider();
+			Stream<ServerPlayerEntity> watchingOther = chunkProvider.chunkManager.getTrackingPlayers(otherChunk, false);
+			boolean playerTrackingOther = watchingOther.anyMatch(p -> p==player);
+			return add==playerTrackingOther;
+		}
 	}
 
 	private static void addPlayersTrackingPoint(Set<ServerPlayerEntity> receivers, int x, int z, ServerWorld world)
@@ -70,17 +93,25 @@ public class WireSyncManager implements IWireSyncManager
 	@SubscribeEvent
 	public static void onChunkWatch(ChunkWatchEvent.Watch ev)
 	{
-		//TODO this is a hack
+		watchedInLastTick.put(ev.getPlayer().getUniqueID(), ev.getPos());
+		unwatchedInLastTick.remove(ev.getPlayer().getUniqueID(), ev.getPos());
 		ApiUtils.addFutureServerTask(ev.getWorld(),
-				() -> sendMessagesForChunk(ev.getWorld(), ev.getPos(), ev.getPlayer(), true), true);
+				() -> {
+					watchedInLastTick.remove(ev.getPlayer().getUniqueID(), ev.getPos());
+					sendMessagesForChunk(ev.getWorld(), ev.getPos(), ev.getPlayer(), true);
+				}, true);
 	}
 
 	@SubscribeEvent
 	public static void onChunkUnWatch(ChunkWatchEvent.UnWatch ev)
 	{
-		//TODO this is a hack
+		unwatchedInLastTick.put(ev.getPlayer().getUniqueID(), ev.getPos());
+		watchedInLastTick.remove(ev.getPlayer().getUniqueID(), ev.getPos());
 		ApiUtils.addFutureServerTask(ev.getWorld(),
-				() -> sendMessagesForChunk(ev.getWorld(), ev.getPos(), ev.getPlayer(), false), true);
+				() -> {
+					unwatchedInLastTick.remove(ev.getPlayer().getUniqueID(), ev.getPos());
+					sendMessagesForChunk(ev.getWorld(), ev.getPos(), ev.getPlayer(), false);
+				}, true);
 	}
 
 	private final World world;
