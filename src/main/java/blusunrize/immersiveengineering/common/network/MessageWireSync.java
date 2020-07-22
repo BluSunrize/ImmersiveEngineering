@@ -75,7 +75,7 @@ public class MessageWireSync implements IMessage
 			World w = player.world;
 			IChunk startChunk = w.getChunk(start.getPosition().getX() >> 4, start.getPosition().getZ() >> 4, ChunkStatus.FULL, false);
 			if(startChunk==null)
-				WireLogger.logger.debug("Start chunk is null");
+				WireLogger.logger.warn("Start chunk is null");
 
 			GlobalWireNetwork globalNet = GlobalWireNetwork.getNetwork(w);
 			if(added)

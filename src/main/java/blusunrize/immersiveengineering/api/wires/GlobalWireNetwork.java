@@ -102,17 +102,14 @@ public class GlobalWireNetwork implements IWorldTickable
 		LocalWireNetwork joined;
 		if(netA!=netB)
 		{
-			WireLogger.logger.info("non-non-different: {} and {}", netA, netB);
 			joined = netA.merge(netB, () -> new LocalWireNetwork(this));
 			for(ConnectionPoint p : joined.getConnectionPoints())
 				putLocalNet(p, joined);
 		}
 		else
 		{
-			WireLogger.logger.info("non-non-same");
 			joined = netA;
 		}
-		WireLogger.logger.info("Result: {}", joined);
 		joined.addConnection(conn, this);
 		syncManager.onConnectionAdded(conn);
 		IImmersiveConnectable connA = joined.getConnector(posA);
@@ -156,7 +153,11 @@ public class GlobalWireNetwork implements IWorldTickable
 			);
 			return;
 		}
-		Preconditions.checkNotNull(oldNet.getConnector(c.getEndB()));
+		Preconditions.checkNotNull(
+				oldNet.getConnector(c.getEndB()),
+				"Removing connection %s from net %s, but does not have connector for %s",
+				c, oldNet, c.getEndB()
+		);
 		oldNet.removeConnection(c);
 		splitNet(oldNet);
 		syncManager.onConnectionRemoved(c);
@@ -240,16 +241,13 @@ public class GlobalWireNetwork implements IWorldTickable
 
 	public void removeConnector(IImmersiveConnectable iic)
 	{
-		WireLogger.logger.info("Removing {}", iic);
 		Set<LocalWireNetwork> netsToRemoveFrom = new ObjectArraySet<>();
 		final BlockPos iicPos = iic.getPosition();
 		for(ConnectionPoint c : iic.getConnectionPoints())
 		{
-			WireLogger.logger.info("Sub-point {}", c);
 			LocalWireNetwork local = getNullableLocalNet(c);
 			if(local!=null)
 			{
-				WireLogger.logger.info("Removing");
 				putLocalNet(c, null);
 				netsToRemoveFrom.add(local);
 			}
@@ -290,7 +288,6 @@ public class GlobalWireNetwork implements IWorldTickable
 		onConnectorLoad(iic, world.isRemote);
 		ApiUtils.addFutureServerTask(world, () -> initializeConnectionsOn(iic, world), true);
 		validateNextTick = true;
-		//TODO this really should be somewhere else...
 		if(world.isRemote)
 			updateModelData(iic, world);
 	}
@@ -377,10 +374,7 @@ public class GlobalWireNetwork implements IWorldTickable
 	private void validate(World world)
 	{
 		if(world.isRemote||!IEConfig.WIRES.validateNet.get())
-		{
-			WireLogger.logger.info("Skipping validation!");
 			return;
-		}
 		else
 			WireLogger.logger.info("Validating wire network...");
 		if(validating)
@@ -499,10 +493,11 @@ public class GlobalWireNetwork implements IWorldTickable
 			localNets.remove(cp);
 	}
 
-	public IImmersiveConnectable getConnector(ConnectionPoint cpB)
+	public IImmersiveConnectable getConnector(ConnectionPoint cp)
 	{
-		LocalWireNetwork local = getNullableLocalNet(cpB);
-		return Preconditions.checkNotNull(local).getConnector(cpB);
+		LocalWireNetwork local = getNullableLocalNet(cp);
+		return Preconditions.checkNotNull(local, "No local net at %s", cp)
+				.getConnector(cp);
 	}
 
 	public IICProxyProvider getProxyProvider()

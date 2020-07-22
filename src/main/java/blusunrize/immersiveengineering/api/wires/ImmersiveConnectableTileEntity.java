@@ -121,7 +121,7 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 			Collection<Connection> conns = local.getConnections(cp);
 			if(conns==null)
 			{
-				WireLogger.logger.debug("Aborting and returning empty data: null connections at {}", cp);
+				WireLogger.logger.warn("Aborting and returning empty data: null connections at {}", cp);
 				return new ConnectionModelData(ImmutableSet.of(), pos);
 			}
 			//TODO change model data to only include catenary (a, oX, oY) and number of vertices to render
@@ -140,7 +140,6 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 				}
 			}
 		}
-		WireLogger.logger.info("Model data has connections {}", ret);
 		return new ConnectionModelData(ret, pos);
 	}
 
