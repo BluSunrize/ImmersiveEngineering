@@ -1,3 +1,12 @@
+##### Version 1.16.1-3.1-pre
+- Moved to new version numbering system
+
+##### Version 1.15.2-3.1-pre
+- Moved to new version numbering system
+
+##### Version 1.14.4-3.1-pre
+- Moved to new version numbering system
+
 ##### Version 0.16-109 - BUILT
 - Requires Forge version 32.0.67 or later (BluSunrize)
 - Fixed formatting not persisting across linebreaks in the manual (Malte)
@@ -251,7 +260,7 @@
 ##### Version 0.14-93 - BUILT
 - Initial alpha release for Minecraft 1.14.4
 
-##### Version 0.12-90
+##### Version 0.12-90 - BUILT
 - Items on conveyors now despawn after the usual time when stuck against a block (Malte)
 - Fixed wires sometimes attaching to the wrong parts of transformers (Malte)
 - Fixed wires connecting to the transformer when clicking on the lower blocks (Malte)

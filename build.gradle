@@ -16,7 +16,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = "0.16-109" + getBuildNumber()
+version = "${version_minecraft}-${version_ie}-${getBuildNumber()}"
 group = 'blusunrize.immersiveengineering' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'ImmersiveEngineering'
 
@@ -173,9 +173,9 @@ String getBuildNumber() {
             commandLine 'git', 'rev-parse', '--short', 'HEAD'
             standardOutput = stdout
         }
-        return "-" + stdout.toString().trim()
+        return stdout.toString().trim()
     }
-    return ""
+    return "${version_buildnumber}"
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
@@ -241,6 +241,7 @@ class GenerateUpdateJSON extends DefaultTask {
     static def CURRENT_MC_VERSION = "1.16.1"
     static def CHANGELOG_FOR_MANUAL = "src/main/resources/assets/immersiveengineering/changelog.json"
     static def BUILT_SUFFIX = " - BUILT"
+    static def PRE_SUFFIX = "-pre"
     static def RECOMMENDED = "-recommended"
     static def LATEST = "-latest"
     static def CF_URL = "https://minecraft.curseforge.com/projects/immersive-engineering"
@@ -286,7 +287,13 @@ class GenerateUpdateJSON extends DefaultTask {
                 if (line.startsWith(VERSION_PREFIX)) {
                     if (currentVersion != null) {
                         String mainVer = currentVersion.substring(0, currentVersion.indexOf('-'))
-                        String mcVer = mcFromIEVersion[mainVer]
+                        String mcVer;
+                        // legacy versioning support
+                        if(mainVer.startsWith("0.")) {
+                            mcVer = mcFromIEVersion[mainVer]
+                        } else {
+                            mcVer = mainVer
+                        }
                         if (mcVer == null) {
                             throw new NullPointerException("Could not find MC version for "+currentVersion);
                         }
@@ -301,6 +308,8 @@ class GenerateUpdateJSON extends DefaultTask {
                     }
                     if (line.endsWith(BUILT_SUFFIX)) {
                         currentVersion = line.substring(VERSION_PREFIX.length(), line.length() - BUILT_SUFFIX.length())
+                    } else if (!line.endsWith(PRE_SUFFIX)) {
+                        currentVersion = line.substring(VERSION_PREFIX.length())
                     } else {
                         currentVersion = (String) null
                     }
