@@ -3,6 +3,7 @@
 - Fixed a crash with railgun & chemthrower projectiles (BluSunrize)
 - Fixed manual rendering for blueprint recipes (BluSunrize)
 - Fixed scaffolding causing a suffocation overlay (BluSunrize)
+- Fixed crashes with the drill & sawblade overlay (BluSunrize)
 
 ##### Version 1.15.2-3.1-pre
 - Moved to new version numbering system

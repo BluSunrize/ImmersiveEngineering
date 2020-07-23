@@ -1271,17 +1271,10 @@ public class ClientUtils
 		throw new IllegalArgumentException(String.valueOf(d));
 	}
 
-	public static void renderItemWithOverlayIntoGUI(IRenderTypeBuffer buffer, MatrixStack transform,
-													ItemStack stack, int x, int y)
+	public static void renderItemWithOverlayIntoGUI(ItemStack stack, int x, int y)
 	{
-		transform.push();
-		transform.translate(x, y, 100);
-		transform.translate(8, 8, 0);
-		transform.scale(1, -1, 1);
-		transform.scale(16, 16, 16);
-		mc().getItemRenderer().renderItem(stack, TransformType.GUI, 0xf000f0, OverlayTexture.NO_OVERLAY,
-				transform, buffer);
-		transform.pop();
+		mc().getItemRenderer().renderItemAndEffectIntoGUI(stack, x, y);
+		mc().getItemRenderer().renderItemOverlays(mc().fontRenderer, stack, x, y);
 	}
 
 	public static IFormattableTextComponent applyFormat(ITextComponent component, TextFormatting... color)
