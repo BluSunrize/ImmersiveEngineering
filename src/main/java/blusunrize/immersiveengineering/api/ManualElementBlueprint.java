@@ -113,7 +113,8 @@ public class ManualElementBlueprint extends SpecialManualElements
 			ManualUtils.drawTexturedRect(manual.texture, x+maxX-17, y+yOff/2-5, 16, 10, 0/256f, 16/256f, 226/256f, 236/256f);
 		}
 
-		transform.translate(0, 0, 300);
+		RenderSystem.pushMatrix();
+		RenderSystem.multMatrix(transform.getLast().getMatrix());
 		if(!recipes.isEmpty()&&recipePage >= 0&&recipePage < this.recipes.size())
 		{
 			for(PositionedItemStack pstack : recipes.get(recipePage))
@@ -127,15 +128,9 @@ public class ManualElementBlueprint extends SpecialManualElements
 							highlighted = pstack.getStack();
 					}
 		}
-
-		transform.translate(0, 0, -300);
-		RenderSystem.disableRescaleNormal();
-		RenderSystem.enableBlend();
-		RenderHelper.disableStandardItemLighting();
+		RenderSystem.popMatrix();
 
 		this.renderHighlightedTooltip(transform, gui, mouseX, mouseY);
-		RenderSystem.enableBlend();
-		RenderHelper.disableStandardItemLighting();
 	}
 
 	@Override
