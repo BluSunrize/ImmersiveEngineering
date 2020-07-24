@@ -74,7 +74,7 @@ public class MessageWireSync implements IMessage
 			PlayerEntity player = ImmersiveEngineering.proxy.getClientPlayer();
 			World w = player.world;
 			IChunk startChunk = w.getChunk(start.getPosition().getX() >> 4, start.getPosition().getZ() >> 4, ChunkStatus.FULL, false);
-			if(startChunk==null)
+			if(startChunk==null&&added)
 				WireLogger.logger.warn("Start chunk is null");
 
 			GlobalWireNetwork globalNet = GlobalWireNetwork.getNetwork(w);

@@ -13,6 +13,8 @@ import blusunrize.immersiveengineering.api.wires.WireType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
 
+import javax.annotation.Nonnull;
+
 public class DummyWireType extends WireType
 {
 	private final double slack;
@@ -64,6 +66,7 @@ public class DummyWireType extends WireType
 		return 0;
 	}
 
+	@Nonnull
 	@Override
 	public String getCategory()
 	{

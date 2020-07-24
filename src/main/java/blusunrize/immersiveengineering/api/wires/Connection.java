@@ -19,6 +19,7 @@ import net.minecraft.world.World;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Objects;
+import java.util.StringJoiner;
 
 public class Connection
 {
@@ -254,6 +255,18 @@ public class Connection
 		result = 31*result+endB.hashCode();
 		result = 31*result+(internal?1: 0);
 		return result;
+	}
+
+	@Override
+	public String toString()
+	{
+		StringJoiner ret = new StringJoiner(", ", Connection.class.getSimpleName()+"[", "]")
+				.add("type="+type)
+				.add("endA="+endA)
+				.add("endB="+endB);
+		if(internal)
+			ret.add("internal="+internal);
+		return ret.toString();
 	}
 
 	public ConnectionPoint[] getEnds()
