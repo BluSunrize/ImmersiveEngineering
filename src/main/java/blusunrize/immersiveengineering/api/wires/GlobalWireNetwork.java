@@ -11,10 +11,13 @@ package blusunrize.immersiveengineering.api.wires;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.wires.localhandlers.ILocalHandlerProvider;
+import blusunrize.immersiveengineering.api.wires.localhandlers.IWorldTickable;
+import blusunrize.immersiveengineering.api.wires.proxy.IICProxyProvider;
 import blusunrize.immersiveengineering.common.IEConfig;
-import blusunrize.immersiveengineering.common.wires.WireSyncManager;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultiset;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multiset;
 import it.unimi.dsi.fastutil.objects.ObjectArraySet;
 import net.minecraft.block.BlockState;
@@ -22,7 +25,6 @@ import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -45,14 +47,15 @@ import static blusunrize.immersiveengineering.common.util.SafeChunkUtils.getSafe
 import static blusunrize.immersiveengineering.common.util.SafeChunkUtils.isChunkSafe;
 
 @EventBusSubscriber(modid = Lib.MODID)
-public class GlobalWireNetwork implements ITickableTileEntity
+public class GlobalWireNetwork implements IWorldTickable
 {
 	private static World lastServerWorld = null;
 	private static GlobalWireNetwork lastServerNet = null;
 
 	private final Map<ConnectionPoint, LocalWireNetwork> localNets = new HashMap<>();
 	private final WireCollisionData collisionData;
-	private final World world;
+	private final IICProxyProvider proxyProvider;
+	private final IWireSyncManager syncManager;
 
 	@Nonnull
 	public static GlobalWireNetwork getNetwork(World w)
@@ -64,7 +67,7 @@ public class GlobalWireNetwork implements ITickableTileEntity
 		LazyOptional<GlobalWireNetwork> netOptional = w.getCapability(NetHandlerCapability.NET_CAPABILITY);
 		if(!netOptional.isPresent())
 			throw new RuntimeException("No net handler found for dimension "+w.getDimension().getType().getRegistryName()+", remote: "+w.isRemote);
-		GlobalWireNetwork ret = Objects.requireNonNull(netOptional.orElse(null));
+		GlobalWireNetwork ret = netOptional.orElseThrow(RuntimeException::new);
 		if(!w.isRemote)
 		{
 			lastServerWorld = w;
@@ -83,10 +86,11 @@ public class GlobalWireNetwork implements ITickableTileEntity
 		}
 	}
 
-	public GlobalWireNetwork(World w)
+	public GlobalWireNetwork(boolean remote, IICProxyProvider proxyProvider, IWireSyncManager syncManager)
 	{
-		world = w;
-		collisionData = new WireCollisionData(this, w.isRemote);
+		this.proxyProvider = proxyProvider;
+		collisionData = new WireCollisionData(this, remote);
+		this.syncManager = syncManager;
 	}
 
 	public void addConnection(Connection conn)
@@ -98,20 +102,19 @@ public class GlobalWireNetwork implements ITickableTileEntity
 		LocalWireNetwork joined;
 		if(netA!=netB)
 		{
-			WireLogger.logger.info("non-non-different: {} and {}", netA, netB);
-			joined = netA.merge(netB);
+			joined = netA.merge(netB, () -> new LocalWireNetwork(this));
 			for(ConnectionPoint p : joined.getConnectionPoints())
 				putLocalNet(p, joined);
 		}
 		else
 		{
-			WireLogger.logger.info("non-non-same");
 			joined = netA;
 		}
-		WireLogger.logger.info("Result: {}", joined);
-		joined.addConnection(conn);
-		WireSyncManager.onConnectionAdded(conn, world);
-		if(!(joined.getConnector(posA) instanceof IICProxy)&&!(joined.getConnector(posB) instanceof IICProxy))
+		joined.addConnection(conn, this);
+		syncManager.onConnectionAdded(conn);
+		IImmersiveConnectable connA = joined.getConnector(posA);
+		IImmersiveConnectable connB = joined.getConnector(posB);
+		if(connA!=null&&connB!=null&&!connA.isProxy()&&!connB.isProxy())
 			collisionData.addConnection(conn);
 		validateNextTick = true;
 	}
@@ -141,16 +144,26 @@ public class GlobalWireNetwork implements ITickableTileEntity
 		LocalWireNetwork oldNet = getNullableLocalNet(c.getEndA());
 		if(oldNet==null)
 		{
-			Preconditions.checkState(getNullableLocalNet(c.getEndB())==null);
+			Preconditions.checkState(
+					getNullableLocalNet(c.getEndB())==null,
+					"Found net at %s but not at %s while removing connection %s",
+					c.getEndB(),
+					c.getEndA(),
+					c
+			);
 			return;
 		}
-		Preconditions.checkNotNull(oldNet.getConnector(c.getEndB()));
+		Preconditions.checkNotNull(
+				oldNet.getConnector(c.getEndB()),
+				"Removing connection %s from net %s, but does not have connector for %s",
+				c, oldNet, c.getEndB()
+		);
 		oldNet.removeConnection(c);
 		splitNet(oldNet);
-		WireSyncManager.onConnectionRemoved(c, world);
+		syncManager.onConnectionRemoved(c);
 	}
 
-	public void removeAndDropConnection(Connection c, BlockPos dropAt)
+	public void removeAndDropConnection(Connection c, BlockPos dropAt, World world)
 	{
 		removeConnection(c);
 		double dx = dropAt.getX()+.5;
@@ -162,7 +175,7 @@ public class GlobalWireNetwork implements ITickableTileEntity
 
 	private void splitNet(LocalWireNetwork oldNet)
 	{
-		Collection<LocalWireNetwork> newNets = oldNet.split();
+		Collection<LocalWireNetwork> newNets = oldNet.split(this);
 		for(LocalWireNetwork net : newNets)
 			for(ConnectionPoint p : net.getConnectionPoints())
 				putLocalNet(p, net);
@@ -204,7 +217,12 @@ public class GlobalWireNetwork implements ITickableTileEntity
 	{
 		LocalWireNetwork ret = localNets.computeIfAbsent(pos, p -> {
 			LocalWireNetwork newNet = new LocalWireNetwork(this);
-			newNet.addConnector(pos, new IICProxy(world.dimension.getType(), pos.getPosition()));
+			IImmersiveConnectable proxy = proxyProvider.create(
+					pos.getPosition(),
+					ImmutableList.of(),
+					ImmutableList.of()
+			);
+			newNet.addConnector(pos, proxy, this);
 			return newNet;
 		});
 		Preconditions.checkState(ret.isValid(pos), "%s is not a valid net", ret);
@@ -223,36 +241,28 @@ public class GlobalWireNetwork implements ITickableTileEntity
 
 	public void removeConnector(IImmersiveConnectable iic)
 	{
-		WireLogger.logger.info("Removing {}", iic);
 		Set<LocalWireNetwork> netsToRemoveFrom = new ObjectArraySet<>();
-		BlockPos iicPos = null;
+		final BlockPos iicPos = iic.getPosition();
 		for(ConnectionPoint c : iic.getConnectionPoints())
 		{
-			WireLogger.logger.info("Sub-point {}", c);
 			LocalWireNetwork local = getNullableLocalNet(c);
 			if(local!=null)
 			{
-				WireLogger.logger.info("Removing");
 				putLocalNet(c, null);
 				netsToRemoveFrom.add(local);
-				if(iicPos!=null)
-					Preconditions.checkState(iicPos.equals(c.getPosition()));
-				else
-					iicPos = c.getPosition();
 			}
 		}
 		for(LocalWireNetwork net : netsToRemoveFrom)
 		{
-			net.removeConnector(Preconditions.checkNotNull(iicPos));
+			net.removeConnector(iicPos);
 			splitNet(net);
 		}
 		validateNextTick = true;
 	}
 
-	public void onConnectorLoad(IImmersiveConnectable iic, World w)
+	@VisibleForTesting
+	public void onConnectorLoad(IImmersiveConnectable iic, boolean remote)
 	{
-		if(validating)
-			WireLogger.logger.error("Adding a connector during validation!");
 		boolean isNew = false;
 		Set<LocalWireNetwork> loadedInNets = new HashSet<>();
 		for(ConnectionPoint cp : iic.getConnectionPoints())
@@ -261,57 +271,69 @@ public class GlobalWireNetwork implements ITickableTileEntity
 				isNew = true;
 			LocalWireNetwork local = getLocalNet(cp);
 			if(loadedInNets.add(local))
-				local.loadConnector(cp.getPosition(), iic, false);
+				local.loadConnector(cp.getPosition(), iic, false, this);
 		}
-		if(isNew&&!world.isRemote)
+		if(isNew&&!remote)
 			for(Connection c : iic.getInternalConnections())
 			{
 				Preconditions.checkArgument(c.isInternal(), "Internal connection for "+iic+"was not marked as internal!");
 				addConnection(c);
 			}
-		ApiUtils.addFutureServerTask(w, () -> {
-			for(ConnectionPoint cp : iic.getConnectionPoints())
-				for(Connection c : getLocalNet(cp).getConnections(cp))
+	}
+
+	public void onConnectorLoad(IImmersiveConnectable iic, World world)
+	{
+		if(validating)
+			WireLogger.logger.error("Adding a connector during validation!");
+		onConnectorLoad(iic, world.isRemote);
+		ApiUtils.addFutureServerTask(world, () -> initializeConnectionsOn(iic, world), true);
+		validateNextTick = true;
+		if(world.isRemote)
+			updateModelData(iic, world);
+	}
+
+	private void updateModelData(IImmersiveConnectable iic, World world)
+	{
+		for(ConnectionPoint cp : iic.getConnectionPoints())
+		{
+			LocalWireNetwork localNet = getLocalNet(cp);
+			for(Connection c : getLocalNet(cp).getConnections(cp))
+			{
+				ConnectionPoint otherEnd = c.getOtherEnd(cp);
+				IImmersiveConnectable otherIIC = localNet.getConnector(otherEnd);
+				if(otherIIC instanceof TileEntity)
+					((TileEntity)otherIIC).requestModelDataUpdate();
+				BlockState state = world.getBlockState(otherEnd.getPosition());
+				world.notifyBlockUpdate(otherEnd.getPosition(), state, state, 3);
+			}
+			BlockState state = world.getBlockState(cp.getPosition());
+			world.notifyBlockUpdate(cp.getPosition(), state, state, 3);
+		}
+		if(iic instanceof TileEntity)
+			((TileEntity)iic).requestModelDataUpdate();
+	}
+
+	private void initializeConnectionsOn(IImmersiveConnectable iic, World world)
+	{
+		for(ConnectionPoint cp : iic.getConnectionPoints())
+			for(Connection c : getLocalNet(cp).getConnections(cp))
+			{
+				ConnectionPoint otherEnd = c.getOtherEnd(cp);
+				LocalWireNetwork otherLocal = getNullableLocalNet(otherEnd);
+				if(otherLocal!=null)
 				{
-					ConnectionPoint otherEnd = c.getOtherEnd(cp);
-					LocalWireNetwork otherLocal = getNullableLocalNet(otherEnd);
-					if(otherLocal!=null)
+					IImmersiveConnectable iicEnd = otherLocal.getConnector(otherEnd);
+					if(!iicEnd.isProxy())
 					{
-						IImmersiveConnectable iicEnd = otherLocal.getConnector(otherEnd);
-						if(!(iicEnd instanceof IICProxy))
+						c.generateCatenaryData(world);
+						if(!world.isRemote)
 						{
-							c.generateCatenaryData(w);
-							if(!w.isRemote)
-							{
-								WireLogger.logger.info("Here: {}, other end: {}", iic, iicEnd);
-								collisionData.addConnection(c);
-							}
+							WireLogger.logger.info("Here: {}, other end: {}", iic, iicEnd);
+							collisionData.addConnection(c);
 						}
 					}
 				}
-		}, true);
-		validateNextTick = true;
-		//TODO this really should be somewhere else...
-		if(world.isRemote)
-		{
-			for(ConnectionPoint cp : iic.getConnectionPoints())
-			{
-				LocalWireNetwork localNet = getLocalNet(cp);
-				for(Connection c : getLocalNet(cp).getConnections(cp))
-				{
-					ConnectionPoint otherEnd = c.getOtherEnd(cp);
-					IImmersiveConnectable otherIIC = localNet.getConnector(otherEnd);
-					if(otherIIC instanceof TileEntity)
-						((TileEntity)otherIIC).requestModelDataUpdate();
-					BlockState state = world.getBlockState(otherEnd.getPosition());
-					world.notifyBlockUpdate(otherEnd.getPosition(), state, state, 3);
-				}
-				BlockState state = world.getBlockState(cp.getPosition());
-				world.notifyBlockUpdate(cp.getPosition(), state, state, 3);
 			}
-			if(iic instanceof TileEntity)
-				((TileEntity)iic).requestModelDataUpdate();
-		}
 	}
 
 	public void onConnectorUnload(BlockPos pos, IImmersiveConnectable iic)
@@ -332,11 +354,11 @@ public class GlobalWireNetwork implements ITickableTileEntity
 	private boolean validateNextTick = false;
 
 	@Override
-	public void tick()
+	public void update(World world)
 	{
 		if(validateNextTick)
 		{
-			validate();
+			validate(world);
 			validateNextTick = false;
 		}
 		Set<LocalWireNetwork> ticked = new HashSet<>();
@@ -349,13 +371,10 @@ public class GlobalWireNetwork implements ITickableTileEntity
 
 	boolean validating = false;
 
-	private void validate()
+	private void validate(World world)
 	{
 		if(world.isRemote||!IEConfig.WIRES.validateNet.get())
-		{
-			WireLogger.logger.info("Skipping validation!");
 			return;
-		}
 		else
 			WireLogger.logger.info("Validating wire network...");
 		if(validating)
@@ -452,7 +471,7 @@ public class GlobalWireNetwork implements ITickableTileEntity
 			removeCP(toRemove);
 	}
 
-	public void updateCatenaryData(Connection conn)
+	public void updateCatenaryData(Connection conn, World world)
 	{
 		collisionData.removeConnection(conn);
 		conn.resetCatenaryData();
@@ -474,9 +493,15 @@ public class GlobalWireNetwork implements ITickableTileEntity
 			localNets.remove(cp);
 	}
 
-	public IImmersiveConnectable getConnector(ConnectionPoint cpB)
+	public IImmersiveConnectable getConnector(ConnectionPoint cp)
 	{
-		LocalWireNetwork local = getNullableLocalNet(cpB);
-		return Preconditions.checkNotNull(local).getConnector(cpB);
+		LocalWireNetwork local = getNullableLocalNet(cp);
+		return Preconditions.checkNotNull(local, "No local net at %s", cp)
+				.getConnector(cp);
+	}
+
+	public IICProxyProvider getProxyProvider()
+	{
+		return proxyProvider;
 	}
 }

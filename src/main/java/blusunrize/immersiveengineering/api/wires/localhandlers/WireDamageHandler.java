@@ -39,9 +39,9 @@ public class WireDamageHandler extends LocalNetworkHandler implements ICollision
 
 	private static final double KNOCKBACK_PER_DAMAGE = 10;
 
-	public WireDamageHandler(LocalWireNetwork net)
+	public WireDamageHandler(LocalWireNetwork net, GlobalWireNetwork global)
 	{
-		super(net);
+		super(net, global);
 	}
 
 	@Override
@@ -123,7 +123,7 @@ public class WireDamageHandler extends LocalNetworkHandler implements ICollision
 
 	private EnergyTransferHandler getEnergyHandler()
 	{
-		return net.getHandler(EnergyTransferHandler.ID, EnergyTransferHandler.class);
+		return localNet.getHandler(EnergyTransferHandler.ID, EnergyTransferHandler.class);
 	}
 
 	@Override

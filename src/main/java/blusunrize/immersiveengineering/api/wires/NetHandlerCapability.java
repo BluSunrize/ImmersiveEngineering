@@ -9,6 +9,8 @@
 package blusunrize.immersiveengineering.api.wires;
 
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
+import blusunrize.immersiveengineering.api.wires.proxy.DefaultProxyProvider;
+import blusunrize.immersiveengineering.common.wires.WireSyncManager;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
@@ -55,7 +57,7 @@ public class NetHandlerCapability
 
 		public Provider(World w)
 		{
-			net = new GlobalWireNetwork(w);
+			net = new GlobalWireNetwork(w.isRemote, new DefaultProxyProvider(w), new WireSyncManager(w));
 			netOpt = CapabilityUtils.constantOptional(net);
 		}
 

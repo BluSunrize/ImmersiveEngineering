@@ -9,10 +9,7 @@
 package blusunrize.immersiveengineering.api.wires.redstone;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.wires.Connection;
-import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
-import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
-import blusunrize.immersiveengineering.api.wires.LocalWireNetwork;
+import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.api.wires.localhandlers.LocalNetworkHandler;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -22,18 +19,18 @@ public class RedstoneNetworkHandler extends LocalNetworkHandler
 	public static final ResourceLocation ID = new ResourceLocation(ImmersiveEngineering.MODID, "redstone");
 	private byte[] values = new byte[16];
 
-	public RedstoneNetworkHandler(LocalWireNetwork net)
+	public RedstoneNetworkHandler(LocalWireNetwork local, GlobalWireNetwork global)
 	{
-		super(net);
+		super(local, global);
 	}
 
 	@Override
 	public LocalNetworkHandler merge(LocalNetworkHandler other)
 	{
 		if(!(other instanceof RedstoneNetworkHandler))
-			return new RedstoneNetworkHandler(net);
+			return new RedstoneNetworkHandler(localNet, globalNet);
 		RedstoneNetworkHandler otherRS = (RedstoneNetworkHandler)other;
-		RedstoneNetworkHandler ret = new RedstoneNetworkHandler(net);
+		RedstoneNetworkHandler ret = new RedstoneNetworkHandler(localNet, globalNet);
 		for(int i = 0; i < 16; ++i)
 			ret.values[i] = (byte)Math.max(values[i], otherRS.values[i]);
 		return ret;
@@ -44,12 +41,12 @@ public class RedstoneNetworkHandler extends LocalNetworkHandler
 	{
 		if(!(iic instanceof IRedstoneConnector))
 			return;
-		net.addAsFutureTask(() -> {
+		localNet.addAsFutureTask(() -> {
 			IRedstoneConnector rsConn = (IRedstoneConnector)iic;
 			rsConn.updateInput(values, newCP);
-			for(ConnectionPoint cp : net.getConnectionPoints())
+			for(ConnectionPoint cp : localNet.getConnectionPoints())
 			{
-				IImmersiveConnectable here = net.getConnector(cp);
+				IImmersiveConnectable here = localNet.getConnector(cp);
 				if(here instanceof IRedstoneConnector)
 					((IRedstoneConnector)here).onChange(cp, this);
 			}
@@ -59,15 +56,15 @@ public class RedstoneNetworkHandler extends LocalNetworkHandler
 	public void updateValues()
 	{
 		values = new byte[16];
-		for(ConnectionPoint cp : net.getConnectionPoints())
+		for(ConnectionPoint cp : localNet.getConnectionPoints())
 		{
-			IImmersiveConnectable here = net.getConnector(cp);
+			IImmersiveConnectable here = localNet.getConnector(cp);
 			if(here instanceof IRedstoneConnector)
 				((IRedstoneConnector)here).updateInput(values, cp);
 		}
-		for(ConnectionPoint cp : net.getConnectionPoints())
+		for(ConnectionPoint cp : localNet.getConnectionPoints())
 		{
-			IImmersiveConnectable here = net.getConnector(cp);
+			IImmersiveConnectable here = localNet.getConnector(cp);
 			if(here instanceof IRedstoneConnector)
 				((IRedstoneConnector)here).onChange(cp, this);
 		}

@@ -201,12 +201,10 @@ public class WireUtils
 
 	public static Vec3d getVecForIICAt(LocalWireNetwork net, ConnectionPoint pos, Connection conn, boolean fromOtherEnd)
 	{
-		Vec3d offset = Vec3d.ZERO;
 		//Force loading
 		IImmersiveConnectable iicPos = net.getConnector(pos.getPosition());
-		Preconditions.checkArgument(!(iicPos instanceof IICProxy));
-		if(iicPos!=null)
-			offset = iicPos.getConnectionOffset(conn, pos);
+		Preconditions.checkArgument(iicPos!=null&&!iicPos.isProxy());
+		Vec3d offset = iicPos.getConnectionOffset(conn, pos);
 		if(fromOtherEnd)
 		{
 			BlockPos posA = pos.getPosition();
@@ -222,8 +220,8 @@ public class WireUtils
 			return (BlockPos)object;
 		if(object instanceof TileEntity)
 			return ((TileEntity)object).getPos();
-		if(object instanceof IICProxy)
-			return ((IICProxy)object).getPos();
+		if(object instanceof IImmersiveConnectable)
+			return ((IImmersiveConnectable)object).getPosition();
 		return null;
 	}
 

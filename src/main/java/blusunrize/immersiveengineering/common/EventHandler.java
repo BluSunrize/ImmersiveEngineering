@@ -172,7 +172,7 @@ public class EventHandler
 		if(event.phase==TickEvent.Phase.START&&!event.world.isRemote)
 		{
 			DimensionType dim = event.world.getDimension().getType();
-			GlobalWireNetwork.getNetwork(event.world).tick();
+			GlobalWireNetwork.getNetwork(event.world).update(event.world);
 
 			if(!REMOVE_FROM_TICKING.isEmpty())
 			{

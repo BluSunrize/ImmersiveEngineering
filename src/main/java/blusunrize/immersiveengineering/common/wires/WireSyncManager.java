@@ -10,11 +10,10 @@ package blusunrize.immersiveengineering.common.wires;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.wires.Connection;
-import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
-import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
-import blusunrize.immersiveengineering.api.wires.WireLogger;
+import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.common.network.MessageWireSync;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.SetMultimap;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
@@ -28,25 +27,38 @@ import net.minecraftforge.fml.network.PacketDistributor;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 @EventBusSubscriber(modid = ImmersiveEngineering.MODID)
-public class WireSyncManager
+public class WireSyncManager implements IWireSyncManager
 {
+	private static final SetMultimap<UUID, ChunkPos> wireWatchedChunksByPlayer = HashMultimap.create();
+
 	private static void sendMessagesForChunk(World w, ChunkPos pos, ServerPlayerEntity player, boolean add)
 	{
 		GlobalWireNetwork net = GlobalWireNetwork.getNetwork(w);
 		Collection<ConnectionPoint> connsInChunk = net.getAllConnectorsIn(pos);
 		for(ConnectionPoint cp : connsInChunk)
 			for(Connection conn : net.getLocalNet(cp).getConnections(cp))
-				if(shouldSendConnection(conn, w, pos, player, add, cp))
+				if(shouldSendConnection(conn, pos, player, add, cp))
+				{
+					WireLogger.logger.info("Sending connection {} ({}) for chunk change at {}", conn, add, pos);
 					ImmersiveEngineering.packetHandler.send(PacketDistributor.PLAYER.with(() -> player), new MessageWireSync(conn, add));
+				}
 	}
 
-	private static boolean shouldSendConnection(Connection conn, World w, ChunkPos pos, ServerPlayerEntity player, boolean add,
+	private static boolean shouldSendConnection(Connection conn, ChunkPos pos, ServerPlayerEntity player, boolean add,
 												ConnectionPoint currEnd)
 	{
-		return !conn.isInternal()&&conn.isPositiveEnd(currEnd);
+		if(conn.isInternal())
+			return false;
+		ConnectionPoint other = conn.getOtherEnd(currEnd);
+		ChunkPos otherChunk = new ChunkPos(other.getPosition());
+		if(otherChunk.equals(pos))
+			return conn.isPositiveEnd(currEnd);
+		else
+			return wireWatchedChunksByPlayer.containsEntry(player.getUniqueID(), otherChunk);
 	}
 
 	private static void addPlayersTrackingPoint(Set<ServerPlayerEntity> receivers, int x, int z, ServerWorld world)
@@ -70,31 +82,42 @@ public class WireSyncManager
 		}, true);
 	}
 
-	public static void onConnectionAdded(Connection c, World w)
-	{
-		if(!c.isInternal()&&!w.isRemote&&w instanceof ServerWorld)
-			sendToPlayersForConnection(new MessageWireSync(c, true), (ServerWorld)w, c);
-	}
-
-	public static void onConnectionRemoved(Connection c, World w)
-	{
-		if(!c.isInternal()&&!w.isRemote&&w instanceof ServerWorld)
-			sendToPlayersForConnection(new MessageWireSync(c, false), (ServerWorld)w, c);
-	}
-
 	@SubscribeEvent
 	public static void onChunkWatch(ChunkWatchEvent.Watch ev)
 	{
-		//TODO this is a hack
 		ApiUtils.addFutureServerTask(ev.getWorld(),
-				() -> sendMessagesForChunk(ev.getWorld(), ev.getPos(), ev.getPlayer(), true), true);
+				() -> {
+					wireWatchedChunksByPlayer.put(ev.getPlayer().getUniqueID(), ev.getPos());
+					sendMessagesForChunk(ev.getWorld(), ev.getPos(), ev.getPlayer(), true);
+				}, true);
 	}
 
 	@SubscribeEvent
 	public static void onChunkUnWatch(ChunkWatchEvent.UnWatch ev)
 	{
-		//TODO this is a hack
 		ApiUtils.addFutureServerTask(ev.getWorld(),
-				() -> sendMessagesForChunk(ev.getWorld(), ev.getPos(), ev.getPlayer(), false), true);
+				() -> {
+					wireWatchedChunksByPlayer.remove(ev.getPlayer().getUniqueID(), ev.getPos());
+					sendMessagesForChunk(ev.getWorld(), ev.getPos(), ev.getPlayer(), false);
+				}, true);
+	}
+
+	private final World world;
+
+	public WireSyncManager(World world)
+	{
+		this.world = world;
+	}
+
+	public void onConnectionAdded(Connection c)
+	{
+		if(!c.isInternal()&&!world.isRemote&&world instanceof ServerWorld)
+			sendToPlayersForConnection(new MessageWireSync(c, true), (ServerWorld)world, c);
+	}
+
+	public void onConnectionRemoved(Connection c)
+	{
+		if(!c.isInternal()&&!world.isRemote&&world instanceof ServerWorld)
+			sendToPlayersForConnection(new MessageWireSync(c, false), (ServerWorld)world, c);
 	}
 }

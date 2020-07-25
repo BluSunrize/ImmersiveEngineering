@@ -3,6 +3,7 @@
 
 ##### Version 1.14.4-3.1-pre
 - Moved to new version numbering system
+- Fixed crash with fluid pipes (BluSunrize)
 
 ##### Version 0.15-108 - BUILT
 - Also includes the changes from 0.14-107

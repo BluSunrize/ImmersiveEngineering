@@ -11,13 +11,13 @@ package blusunrize.immersiveengineering.api.wires;
 import blusunrize.immersiveengineering.api.wires.localhandlers.ILocalHandlerProvider;
 import blusunrize.immersiveengineering.api.wires.localhandlers.IWorldTickable;
 import blusunrize.immersiveengineering.api.wires.localhandlers.LocalNetworkHandler;
+import blusunrize.immersiveengineering.api.wires.proxy.IICProxyProvider;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.*;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -26,11 +26,11 @@ import net.minecraftforge.common.util.Constants.NBT;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.function.Supplier;
 
 public class LocalWireNetwork implements IWorldTickable
 {
-	//TODO do we need this?
-	private final GlobalWireNetwork globalNet;
+	private final IICProxyProvider proxyProvider;
 	private final Map<ConnectionPoint, Collection<Connection>> connections = new HashMap<>();
 	private final Map<BlockPos, IImmersiveConnectable> connectors = new HashMap<>();
 	//This is an array map since it will generally be tiny, and needs to be fast at those sizes
@@ -47,11 +47,11 @@ public class LocalWireNetwork implements IWorldTickable
 		ListNBT proxies = subnet.getList("proxies", NBT.TAG_COMPOUND);
 		for(INBT b : proxies)
 		{
-			IICProxy proxy = IICProxy.readFromNBT(((CompoundNBT)b).getCompound("proxy"));
+			IImmersiveConnectable proxy = proxyProvider.fromNBT(((CompoundNBT)b).getCompound("proxy"));
 			for(INBT p : ((CompoundNBT)b).getList("points", NBT.TAG_COMPOUND))
 			{
 				ConnectionPoint point = new ConnectionPoint((CompoundNBT)p);
-				addConnector(point, proxy);
+				addConnector(point, proxy, globalNet);
 			}
 		}
 		ListNBT wires = subnet.getList("wires", NBT.TAG_COMPOUND);
@@ -59,7 +59,7 @@ public class LocalWireNetwork implements IWorldTickable
 		{
 			Connection wire = new Connection((CompoundNBT)b);
 			if(connectors.containsKey(wire.getEndA().getPosition())&&connectors.containsKey(wire.getEndB().getPosition()))
-				addConnection(wire);
+				addConnection(wire, globalNet);
 			else
 				WireLogger.logger.error("Wire from {} to {}, but connector points are {}", wire.getEndA(), wire.getEndB(), connectors);
 		}
@@ -67,7 +67,7 @@ public class LocalWireNetwork implements IWorldTickable
 
 	public LocalWireNetwork(GlobalWireNetwork globalNet)
 	{
-		this.globalNet = globalNet;
+		this.proxyProvider = globalNet.getProxyProvider();
 	}
 
 	public CompoundNBT writeToNBT()
@@ -86,15 +86,15 @@ public class LocalWireNetwork implements IWorldTickable
 		for(BlockPos p : connectors.keySet())
 		{
 			IImmersiveConnectable iic = connectors.get(p);
-			IICProxy proxy = null;
-			if(iic instanceof IICProxy)
-				proxy = (IICProxy)iic;
-			else if(iic instanceof TileEntity)
-				proxy = new IICProxy((TileEntity)iic);
+			IImmersiveConnectable proxy = null;
+			if(iic.isProxy())
+				proxy = iic;
+			else
+				proxy = proxyProvider.createFor(iic);
 			if(proxy!=null)
 			{
 				CompoundNBT complete = new CompoundNBT();
-				complete.put("proxy", proxy.writeToNBT());
+				complete.put("proxy", proxyProvider.toNBT(proxy));
 				ListNBT cps = new ListNBT();
 				for(ConnectionPoint cp : connsByBlock.get(p))
 					cps.add(cp.createTag());
@@ -138,52 +138,80 @@ public class LocalWireNetwork implements IWorldTickable
 			return ImmutableSet.of();
 	}
 
-	void addConnector(ConnectionPoint p, IImmersiveConnectable iic)
+	void addConnector(ConnectionPoint cp, IImmersiveConnectable iic, GlobalWireNetwork globalNet)
 	{
-		Preconditions.checkState(!connections.containsKey(p));
-		connections.put(p, new ArrayList<>());
-		if(!connectors.containsKey(p.getPosition()))
-			loadConnector(p.getPosition(), iic, true);
+		{
+			Collection<Connection> existing = connections.get(cp);
+			Preconditions.checkState(
+					existing==null,
+					"Adding connection point %s with connector %s to net %s, but already has %s",
+					cp, iic, this, existing
+			);
+		}
+		connections.put(cp, new ArrayList<>());
+		if(!connectors.containsKey(cp.getPosition()))
+			loadConnector(cp.getPosition(), iic, true, globalNet);
 		else
 		{
-			Preconditions.checkState(getConnector(p)==iic);
-			addRequestedHandlers(iic);
+			IImmersiveConnectable existing = getConnector(cp);
+			Preconditions.checkState(
+					existing==iic,
+					"Existing connector in net %s is %s, but expected %s",
+					this, existing, iic
+			);
+			addRequestedHandlers(iic, globalNet);
 		}
 	}
 
-	void loadConnector(BlockPos p, IImmersiveConnectable iic, boolean adding)
+	void loadConnector(BlockPos p, IImmersiveConnectable iic, boolean adding, GlobalWireNetwork globalNet)
 	{
 		IImmersiveConnectable existingIIC = connectors.get(p);
 		if(adding)
-			Preconditions.checkState(existingIIC==null);
+			Preconditions.checkState(
+					existingIIC==null,
+					"Adding connector %s at %s in net %s, but IIC %s already exists there",
+					iic, p, this, existingIIC
+			);
 		else
-			Preconditions.checkState(existingIIC instanceof IICProxy, "Loading connector with current IIC "+existingIIC);
+			Preconditions.checkState(
+					existingIIC.isProxy(),
+					"Loading connector %s at %s in net %s, but current IIC is %s",
+					iic, p, this, existingIIC
+			);
 		connectors.put(p, iic);
 		for(ConnectionPoint cp : iic.getConnectionPoints())
 			if(connections.containsKey(cp))
 			{
-				addRequestedHandlers(iic);
+				addRequestedHandlers(iic, globalNet);
 				for(LocalNetworkHandler h : handlers.values())
 					h.onConnectorLoaded(cp, iic);
 			}
 	}
 
-	void unloadConnector(BlockPos p)
+	void unloadConnector(BlockPos pos)
 	{
-		IImmersiveConnectable iic = connectors.get(p);
-		Preconditions.checkState(iic!=null);
-		Preconditions.checkState(!(iic instanceof IICProxy));
+		IImmersiveConnectable iic = connectors.get(pos);
+		Preconditions.checkState(
+				iic!=null,
+				"Unloading connector at %s in net %s, but no connector is stored",
+				pos, this
+		);
+		Preconditions.checkState(
+				!iic.isProxy(),
+				"Unloading connector at %s in %s, but %s is already a proxy",
+				pos, this, iic
+		);
 		for(LocalNetworkHandler h : handlers.values())
-			h.onConnectorUnloaded(p, iic);
+			h.onConnectorUnloaded(pos, iic);
 		for(ConnectionPoint cp : iic.getConnectionPoints())
 			if(connections.containsKey(cp))
 				removeHandlersFor(iic);
-		connectors.put(p, new IICProxy((TileEntity)iic));
+		connectors.put(pos, proxyProvider.createFor(iic));
 	}
 
-	LocalWireNetwork merge(LocalWireNetwork other)
+	LocalWireNetwork merge(LocalWireNetwork other, Supplier<LocalWireNetwork> createNewNet)
 	{
-		LocalWireNetwork result = new LocalWireNetwork(globalNet);
+		LocalWireNetwork result = createNewNet.get();
 		for(LocalWireNetwork net : new LocalWireNetwork[]{this, other})
 		{
 			result.connectors.putAll(net.connectors);
@@ -191,7 +219,6 @@ public class LocalWireNetwork implements IWorldTickable
 		}
 		result.handlers.putAll(other.handlers);
 		other.handlerUsers.forEach((rl, h) -> result.handlerUsers.put(rl, HashMultiset.create(h)));
-		WireLogger.logger.info("Merging {} and {}", result.handlerUsers, handlerUsers);
 		for(Entry<ResourceLocation, LocalNetworkHandler> loc : handlers.entrySet())
 		{
 			result.handlers.merge(loc.getKey(), loc.getValue(), LocalNetworkHandler::merge);
@@ -199,9 +226,7 @@ public class LocalWireNetwork implements IWorldTickable
 				a.addAll(b);
 				return a;
 			});
-			WireLogger.logger.info("Merged {} to {}", loc.getKey(), result.handlers.get(loc.getKey()));
 		}
-		WireLogger.logger.info("Result: {}", result.handlerUsers);
 		for(Entry<ResourceLocation, LocalNetworkHandler> loc : result.handlers.entrySet())
 			loc.getValue().setLocalNet(result);
 		return result;
@@ -259,12 +284,12 @@ public class LocalWireNetwork implements IWorldTickable
 			h.onConnectorRemoved(p, iic);
 	}
 
-	void addConnection(Connection conn)
+	void addConnection(Connection conn, GlobalWireNetwork globalNet)
 	{
 		IImmersiveConnectable connA = connectors.get(conn.getEndA().getPosition());
-		Preconditions.checkNotNull(connA, conn.getEndA().getPosition());
+		Preconditions.checkNotNull(connA, "No connector at %s", conn.getEndA().getPosition());
 		IImmersiveConnectable connB = connectors.get(conn.getEndB().getPosition());
-		Preconditions.checkNotNull(connB, conn.getEndB().getPosition());
+		Preconditions.checkNotNull(connB, "No connector at %s", conn.getEndB().getPosition());
 		if(connections.get(conn.getEndA()).stream().anyMatch(c -> c.getOtherEnd(conn.getEndA()).equals(conn.getEndB())))
 		{
 			WireLogger.logger.error("Tried to add a duplicate connection from {} ({}) to {} ({})",
@@ -277,17 +302,24 @@ public class LocalWireNetwork implements IWorldTickable
 		connections.get(conn.getEndB()).add(conn);
 		for(LocalNetworkHandler h : handlers.values())
 			h.onConnectionAdded(conn);
-		addRequestedHandlers(conn.type);
+		addRequestedHandlers(conn.type, globalNet);
 	}
 
 	private void removeHandlersFor(ILocalHandlerProvider iic)
 	{
 		for(ResourceLocation loc : iic.getRequestedHandlers())
 		{
-			Preconditions.checkState(handlers.containsKey(loc), "Expected to find handler for "+loc+"(provided by "+iic+")");
+			Preconditions.checkState(
+					handlers.containsKey(loc),
+					"Expected to find handler for %s (provided by %s), only found %s",
+					loc, iic, handlers
+			);
 			Multiset<ILocalHandlerProvider> providers = getProvidersFor(loc);
-			Preconditions.checkState(providers.contains(iic), "Expected to find handler "+iic+" for "+loc
-					+". Found: "+providers);
+			Preconditions.checkState(
+					providers.contains(iic),
+					"Expected to find handler %s for %s. Found: %s",
+					iic, loc, providers
+			);
 			providers.remove(iic);
 			WireLogger.logger.info("Removing {} from handlers for {}. Remaining: {}", iic, loc, providers);
 			if(providers.isEmpty())
@@ -299,13 +331,13 @@ public class LocalWireNetwork implements IWorldTickable
 		}
 	}
 
-	private void addRequestedHandlers(ILocalHandlerProvider provider)
+	private void addRequestedHandlers(ILocalHandlerProvider provider, GlobalWireNetwork global)
 	{
 		for(ResourceLocation loc : provider.getRequestedHandlers())
 		{
 			getProvidersFor(loc).add(provider);
 			if(!handlers.containsKey(loc))
-				handlers.put(loc, LocalNetworkHandler.createHandler(loc, this));
+				handlers.put(loc, LocalNetworkHandler.createHandler(loc, this, global));
 			WireLogger.logger.info("Adding handler {} for {}", loc, provider);
 		}
 	}
@@ -321,7 +353,7 @@ public class LocalWireNetwork implements IWorldTickable
 	}
 
 	// Returns the nets that need to be changed
-	Collection<LocalWireNetwork> split()
+	Collection<LocalWireNetwork> split(GlobalWireNetwork globalNet)
 	{
 		Set<ConnectionPoint> toVisit = new HashSet<>(getConnectionPoints());
 		Collection<LocalWireNetwork> ret = new ArrayList<>();
@@ -337,15 +369,13 @@ public class LocalWireNetwork implements IWorldTickable
 				break;
 			LocalWireNetwork newNet = new LocalWireNetwork(globalNet);
 			for(ConnectionPoint p : inComponent)
-				newNet.addConnector(p, connectors.get(p.getPosition()));
+				newNet.addConnector(p, connectors.get(p.getPosition()), globalNet);
 			for(ConnectionPoint p : inComponent)
 				for(Connection c : getConnections(p))
 					if(c.isPositiveEnd(p))
-						newNet.addConnection(c);
+						newNet.addConnection(c, globalNet);
 			ret.add(newNet);
-			WireLogger.logger.info("Subnet after split: {}, users {}", newNet, newNet.handlerUsers);
 		}
-		WireLogger.logger.info("Split net! Now {} nets: {}", ret.size(), ret);
 		return ret;
 	}
 
@@ -381,11 +411,6 @@ public class LocalWireNetwork implements IWorldTickable
 	public IImmersiveConnectable getConnector(ConnectionPoint cp)
 	{
 		return getConnector(cp.getPosition());
-	}
-
-	public GlobalWireNetwork getGlobal()
-	{
-		return globalNet;
 	}
 
 	@Override

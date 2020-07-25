@@ -86,7 +86,7 @@ public class WireCollisions
 						}
 					}
 				for(Entry<Connection, BlockPos> b : toBreak.entrySet())
-					globalNet.removeAndDropConnection(b.getKey(), b.getValue());
+					globalNet.removeAndDropConnection(b.getKey(), b.getValue(), worldIn);
 			}
 		}
 	}
