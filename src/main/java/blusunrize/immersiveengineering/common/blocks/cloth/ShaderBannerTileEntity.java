@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICollisionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.Cloth;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
@@ -41,7 +42,6 @@ import java.util.Map;
 
 public class ShaderBannerTileEntity extends IEBaseTileEntity implements ICollisionBounds, ITileDrop
 {
-	public boolean wall = false;
 	public ShaderWrapper_Direct shader = new ShaderWrapper_Direct(new ResourceLocation(ImmersiveEngineering.MODID, "banner"));
 
 	public static TileEntityType<BannerTileEntity> TYPE;
@@ -61,7 +61,6 @@ public class ShaderBannerTileEntity extends IEBaseTileEntity implements ICollisi
 	@Override
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		this.wall = nbt.getBoolean("wall");
 		if(nbt.contains("shader", NBT.TAG_COMPOUND))
 		{
 			shader = new ShaderWrapper_Direct(new ResourceLocation(ImmersiveEngineering.MODID, "banner"));
@@ -72,7 +71,6 @@ public class ShaderBannerTileEntity extends IEBaseTileEntity implements ICollisi
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		nbt.putBoolean("wall", this.wall);
 		nbt.put("shader", shader.serializeNBT());
 	}
 
@@ -80,7 +78,7 @@ public class ShaderBannerTileEntity extends IEBaseTileEntity implements ICollisi
 	@Override
 	public VoxelShape getCollisionShape(ISelectionContext ctx)
 	{
-		if(this.wall)
+		if(getState().getBlock() == Cloth.shaderBannerWall)
 			return WALL_SHAPES.get(getState().get(ShaderBannerWallBlock.FACING));
 		return SHAPE;
 	}

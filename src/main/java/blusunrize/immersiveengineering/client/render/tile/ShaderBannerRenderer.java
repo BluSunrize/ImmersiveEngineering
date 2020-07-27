@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderLayer;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.render.IEShaderLayerCompositeTexture;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.Cloth;
 import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerStandingBlock;
 import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerTileEntity;
 import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerWallBlock;
@@ -37,7 +38,7 @@ public class ShaderBannerRenderer extends TileEntityRenderer<ShaderBannerTileEnt
 	{
 		long time = te.getWorldNonnull().getGameTime();
 		GlStateManager.pushMatrix();
-		if(!te.wall)
+		if(te.getState().getBlock() == Cloth.shaderBanner)
 		{
 			int orientation = te.getState().get(ShaderBannerStandingBlock.ROTATION);
 			GlStateManager.translated((float)x+0.5F, (float)y+0.5F, (float)z+0.5F);
