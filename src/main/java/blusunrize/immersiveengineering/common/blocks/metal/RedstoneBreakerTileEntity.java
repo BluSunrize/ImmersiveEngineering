@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.ITickableTileEntity;
@@ -80,13 +79,13 @@ public class RedstoneBreakerTileEntity extends BreakerSwitchTileEntity implement
 	}
 
 	@Override
-	public int getWeakRSOutput(BlockState state, Direction side)
+	public int getWeakRSOutput(@Nonnull Direction side)
 	{
 		return 0;
 	}
 
 	@Override
-	public int getStrongRSOutput(BlockState state, Direction side)
+	public int getStrongRSOutput(@Nonnull Direction side)
 	{
 		return 0;
 	}
@@ -98,7 +97,7 @@ public class RedstoneBreakerTileEntity extends BreakerSwitchTileEntity implement
 	}
 
 	@Override
-	public boolean canConnectRedstone(BlockState state, Direction side)
+	public boolean canConnectRedstone(@Nonnull Direction side)
 	{
 		return false;
 	}

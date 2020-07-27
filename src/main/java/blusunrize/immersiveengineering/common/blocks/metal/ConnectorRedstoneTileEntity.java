@@ -24,8 +24,6 @@ import blusunrize.immersiveengineering.common.util.SafeChunkUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.RedstoneWireBlock;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -84,7 +82,7 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 	}
 
 	@Override
-	public int getStrongRSOutput(BlockState state, Direction side)
+	public int getStrongRSOutput(@Nonnull Direction side)
 	{
 		if(!isRSOutput()||side!=this.getFacing().getOpposite())
 			return 0;
@@ -92,7 +90,7 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 	}
 
 	@Override
-	public int getWeakRSOutput(BlockState state, Direction side)
+	public int getWeakRSOutput(@Nonnull Direction side)
 	{
 		if(!isRSOutput())
 			return 0;
@@ -100,7 +98,7 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 	}
 
 	@Override
-	public boolean canConnectRedstone(BlockState state, Direction side)
+	public boolean canConnectRedstone(@Nonnull Direction side)
 	{
 		return true;
 	}
@@ -130,23 +128,8 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 	public void updateInput(byte[] signals, ConnectionPoint cp)
 	{
 		if(isRSInput())
-			signals[redstoneChannel.getId()] = (byte)Math.max(getLocalRS(), signals[redstoneChannel.getId()]);
+			signals[redstoneChannel.getId()] = (byte)Math.max(getMaxRSInput(), signals[redstoneChannel.getId()]);
 		rsDirty = false;
-	}
-
-	protected int getLocalRS()
-	{
-		int val = getMaxRSInput();
-		if(val==0)
-		{
-			for(Direction f : Direction.BY_HORIZONTAL_INDEX)
-			{
-				BlockState state = SafeChunkUtils.getBlockState(world, pos.offset(f));
-				if(state.getBlock()==Blocks.REDSTONE_WIRE&&state.get(RedstoneWireBlock.POWER) > val)
-					val = state.get(RedstoneWireBlock.POWER);
-			}
-		}
-		return val;
 	}
 
 	public boolean isRSOutput()
@@ -306,9 +289,9 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 	@Override
 	public void onNeighborBlockChange(BlockPos otherPos)
 	{
-		int oldRSIn = getLocalRS();
+		int oldRSIn = getMaxRSInput();
 		super.onNeighborBlockChange(otherPos);
-		if(isRSInput()&&oldRSIn!=getLocalRS())
+		if(isRSInput()&&oldRSIn!=getMaxRSInput())
 			rsDirty = true;
 	}
 }

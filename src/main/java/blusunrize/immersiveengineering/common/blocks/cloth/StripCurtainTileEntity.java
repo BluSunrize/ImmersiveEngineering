@@ -100,15 +100,15 @@ public class StripCurtainTileEntity extends IEBaseTileEntity implements ITickabl
 	}
 
 	@Override
-	public int getStrongRSOutput(BlockState state, Direction side)
+	public int getStrongRSOutput(@Nonnull Direction side)
 	{
 		if(!strongSignal)
 			return 0;
-		return getWeakRSOutput(state, getFacing());
+		return getWeakRSOutput(getFacing());
 	}
 
 	@Override
-	public int getWeakRSOutput(BlockState state, Direction side)
+	public int getWeakRSOutput(@Nonnull Direction side)
 	{
 		if(side==Direction.DOWN)
 			return 0;
@@ -116,7 +116,7 @@ public class StripCurtainTileEntity extends IEBaseTileEntity implements ITickabl
 	}
 
 	@Override
-	public boolean canConnectRedstone(BlockState state, Direction side)
+	public boolean canConnectRedstone(@Nonnull Direction side)
 	{
 		return false;
 	}
