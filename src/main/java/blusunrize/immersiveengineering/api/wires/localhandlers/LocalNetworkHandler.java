@@ -8,54 +8,46 @@
 
 package blusunrize.immersiveengineering.api.wires.localhandlers;
 
-import blusunrize.immersiveengineering.api.wires.Connection;
-import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
-import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
-import blusunrize.immersiveengineering.api.wires.LocalWireNetwork;
+import blusunrize.immersiveengineering.api.wires.*;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
 public abstract class LocalNetworkHandler
 {
-	private static final Map<ResourceLocation, Constructor<? extends LocalNetworkHandler>> TYPES = new HashMap<>();
+	private static final Map<ResourceLocation, ILocalHandlerConstructor> TYPES = new HashMap<>();
 
-	public static void register(ResourceLocation loc, Class<? extends LocalNetworkHandler> cl)
+	public static void register(ResourceLocation loc, ILocalHandlerConstructor constructor)
+	{
+		TYPES.put(loc, constructor);
+	}
+
+	//TODO make non-API?
+	public static LocalNetworkHandler createHandler(ResourceLocation type, LocalWireNetwork local, GlobalWireNetwork global)
 	{
 		try
 		{
-			TYPES.put(loc, cl.getConstructor(LocalWireNetwork.class));
-		} catch(NoSuchMethodException e)
+			return TYPES.get(type).create(local, global);
+		} catch(Exception e)
 		{
 			throw new RuntimeException(e);
 		}
 	}
 
-	public static LocalNetworkHandler createHandler(ResourceLocation type, LocalWireNetwork net)
-	{
-		try
-		{
-			return TYPES.get(type).newInstance(net);
-		} catch(InstantiationException|IllegalAccessException|InvocationTargetException e)
-		{
-			throw new RuntimeException(e);
-		}
-	}
+	protected LocalWireNetwork localNet;
+	protected final GlobalWireNetwork globalNet;
 
-	protected LocalWireNetwork net;
-
-	protected LocalNetworkHandler(LocalWireNetwork net)
+	protected LocalNetworkHandler(LocalWireNetwork net, GlobalWireNetwork global)
 	{
-		this.net = net;
+		this.localNet = net;
+		this.globalNet = global;
 	}
 
 	public void setLocalNet(LocalWireNetwork net)
 	{
-		this.net = net;
+		this.localNet = net;
 	}
 
 	public abstract LocalNetworkHandler merge(LocalNetworkHandler other);

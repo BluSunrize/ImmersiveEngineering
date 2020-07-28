@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.api.wires;
 
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties.ConnectionModelData;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.TargetingInfo;
@@ -123,22 +122,25 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 			Collection<Connection> conns = local.getConnections(cp);
 			if(conns==null)
 			{
-				WireLogger.logger.debug("Aborting and returning empty data: null connections at {}", cp);
+				WireLogger.logger.warn("Aborting and returning empty data: null connections at {}", cp);
 				return new ConnectionModelData(ImmutableSet.of(), pos);
 			}
 			//TODO change model data to only include catenary (a, oX, oY) and number of vertices to render
 			for(Connection c : conns)
 			{
 				ConnectionPoint other = c.getOtherEnd(cp);
-				if(!c.isInternal()&&!(globalNet.getLocalNet(other).getConnector(other) instanceof IICProxy))
+				if(!c.isInternal())
 				{
-					// generate subvertices
-					c.generateCatenaryData(world);
-					ret.add(c);
+					IImmersiveConnectable otherConnector = globalNet.getLocalNet(other).getConnector(other);
+					if(otherConnector!=null&&!otherConnector.isProxy())
+					{
+						// generate subvertices
+						c.generateCatenaryData(world);
+						ret.add(c);
+					}
 				}
 			}
 		}
-		WireLogger.logger.info("Model data has connections {}", ret);
 		return new ConnectionModelData(ret, pos);
 	}
 
@@ -163,7 +165,7 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 	{
 		super.onLoad();
 		WireLogger.logger.info("Loading connector at {}", pos);
-		ApiUtils.addFutureServerTask(world, () -> globalNet.onConnectorLoad(this, world), true);
+		globalNet.onConnectorLoad(this, world);
 	}
 
 	@Override
@@ -192,5 +194,11 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 			cachedLocalNets.put(cpIndex, ret);
 		}
 		return ret;
+	}
+
+	@Override
+	public BlockPos getPosition()
+	{
+		return pos;
 	}
 }

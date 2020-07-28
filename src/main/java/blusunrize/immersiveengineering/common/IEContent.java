@@ -913,9 +913,9 @@ public class IEContent
 		});
 
 		FluidPipeTileEntity.initCovers();
-		LocalNetworkHandler.register(EnergyTransferHandler.ID, EnergyTransferHandler.class);
-		LocalNetworkHandler.register(RedstoneNetworkHandler.ID, RedstoneNetworkHandler.class);
-		LocalNetworkHandler.register(WireDamageHandler.ID, WireDamageHandler.class);
+		LocalNetworkHandler.register(EnergyTransferHandler.ID, EnergyTransferHandler::new);
+		LocalNetworkHandler.register(RedstoneNetworkHandler.ID, RedstoneNetworkHandler::new);
+		LocalNetworkHandler.register(WireDamageHandler.ID, WireDamageHandler::new);
 	}
 
 	public static void postInit()

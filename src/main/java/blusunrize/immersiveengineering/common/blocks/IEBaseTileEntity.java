@@ -12,14 +12,14 @@ import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.client.utils.CombinedModelData;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.IEConfig;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.BlockstateProvider;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPropertyPassthrough;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
+import blusunrize.immersiveengineering.common.util.SafeChunkUtils;
 import com.google.common.base.Preconditions;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.RedstoneWireBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
@@ -331,6 +331,12 @@ public abstract class IEBaseTileEntity extends TileEntity implements BlockstateP
 	private void updateRSForSide(Direction side)
 	{
 		int rsStrength = getWorldNonnull().getRedstonePower(pos.offset(side), side);
+		if(rsStrength==0&&this instanceof IRedstoneOutput&&((IRedstoneOutput)this).canConnectRedstone(side))
+		{
+			BlockState state = SafeChunkUtils.getBlockState(world, pos.offset(side));
+			if(state.getBlock()==Blocks.REDSTONE_WIRE&&state.get(RedstoneWireBlock.POWER) > rsStrength)
+				rsStrength = state.get(RedstoneWireBlock.POWER);
+		}
 		redstoneBySide.put(side, rsStrength);
 	}
 

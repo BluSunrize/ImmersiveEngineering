@@ -153,7 +153,7 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 		for(ConnectionPoint cp : getConnectionPoints())
 			for(Connection c : getLocalNet(cp.getIndex()).getConnections(cp))
 				if(!c.isInternal())
-					globalNet.updateCatenaryData(c);
+					globalNet.updateCatenaryData(c, world);
 		markDirty();
 		markContainingBlockForUpdate(getBlockState());
 		return true;
@@ -260,19 +260,19 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 	}
 
 	@Override
-	public int getWeakRSOutput(BlockState state, Direction side)
+	public int getWeakRSOutput(@Nonnull Direction side)
 	{
 		return (getIsActive()^inverted)?15: 0;
 	}
 
 	@Override
-	public int getStrongRSOutput(BlockState state, Direction side)
+	public int getStrongRSOutput(@Nonnull Direction side)
 	{
 		return side.getOpposite()==getFacing()&&(getIsActive()^inverted)?15: 0;
 	}
 
 	@Override
-	public boolean canConnectRedstone(BlockState state, Direction side)
+	public boolean canConnectRedstone(@Nonnull Direction side)
 	{
 		return true;
 	}

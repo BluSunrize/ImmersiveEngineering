@@ -10,6 +10,7 @@
 
 ##### Version 1.14.4-3.1-pre
 - Moved to new version numbering system
+- Fixed crash with fluid pipes (BluSunrize)
 
 ##### Version 0.16-109 - BUILT
 - Requires Forge version 32.0.67 or later (BluSunrize)

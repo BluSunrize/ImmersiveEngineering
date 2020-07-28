@@ -113,4 +113,14 @@ public interface IImmersiveConnectable extends ILocalHandlerProvider
 	{
 		return ImmutableList.of();
 	}
+
+	default boolean isProxy()
+	{
+		return false;
+	}
+
+	default BlockPos getPosition()
+	{
+		return WireUtils.toBlockPos(this);
+	}
 }

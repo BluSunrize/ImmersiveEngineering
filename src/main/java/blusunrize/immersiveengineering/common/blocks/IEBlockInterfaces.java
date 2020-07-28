@@ -99,14 +99,14 @@ public class IEBlockInterfaces
 
 	public interface IRedstoneOutput
 	{
-		default int getWeakRSOutput(BlockState state, Direction side)
+		default int getWeakRSOutput(Direction side)
 		{
-			return getStrongRSOutput(state, side);
+			return getStrongRSOutput(side);
 		}
 
-		int getStrongRSOutput(BlockState state, Direction side);
+		int getStrongRSOutput(Direction side);
 
-		boolean canConnectRedstone(BlockState state, Direction side);
+		boolean canConnectRedstone(Direction side);
 	}
 
 	public interface IColouredBlock

@@ -419,7 +419,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof IEBlockInterfaces.IRedstoneOutput)
-			return ((IEBlockInterfaces.IRedstoneOutput)te).getWeakRSOutput(blockState, side);
+			return ((IEBlockInterfaces.IRedstoneOutput)te).getWeakRSOutput(side);
 		return 0;
 	}
 
@@ -429,7 +429,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof IEBlockInterfaces.IRedstoneOutput)
-			return ((IEBlockInterfaces.IRedstoneOutput)te).getStrongRSOutput(blockState, side);
+			return ((IEBlockInterfaces.IRedstoneOutput)te).getStrongRSOutput(side);
 		return 0;
 	}
 
@@ -445,7 +445,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof IEBlockInterfaces.IRedstoneOutput)
-			return ((IEBlockInterfaces.IRedstoneOutput)te).canConnectRedstone(state, side);
+			return ((IEBlockInterfaces.IRedstoneOutput)te).canConnectRedstone(side);
 		return false;
 	}
 
