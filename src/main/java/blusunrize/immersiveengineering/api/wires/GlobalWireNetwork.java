@@ -36,7 +36,6 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -53,8 +52,8 @@ public class GlobalWireNetwork implements IWorldTickable
 	private static World lastServerWorld = null;
 	private static GlobalWireNetwork lastServerNet = null;
 
-	private static World cachedClientWorld;
-	private static GlobalWireNetwork cachedClientNet;
+	private static World lastClientWorld;
+	private static GlobalWireNetwork lastClientNet;
 
 	private final Map<ConnectionPoint, LocalWireNetwork> localNets = new HashMap<>();
 	private final WireCollisionData collisionData;
@@ -68,25 +67,21 @@ public class GlobalWireNetwork implements IWorldTickable
 		// does not need any synchronization
 		if(!w.isRemote&&w==lastServerWorld)
 			return lastServerNet;
+		if(w.isRemote&&w==lastClientWorld)
+			return lastClientNet;
 		LazyOptional<GlobalWireNetwork> netOptional = w.getCapability(NetHandlerCapability.NET_CAPABILITY);
 		if(!netOptional.isPresent())
-		{
-			if(w.isRemote)
-			{
-				if(w!=cachedClientWorld)
-				{
-					cachedClientWorld = w;
-					cachedClientNet = new GlobalWireNetwork(w);
-				}
-				return cachedClientNet;
-			}
 			throw new RuntimeException("No net handler found for dimension "+w.func_234922_V_().func_240901_a_()+", remote: "+w.isRemote);
-		}
 		GlobalWireNetwork ret = netOptional.orElseThrow(RuntimeException::new);
 		if(!w.isRemote)
 		{
 			lastServerWorld = w;
 			lastServerNet = ret;
+		}
+		else
+		{
+			lastClientWorld = w;
+			lastClientNet = ret;
 		}
 		return ret;
 	}
@@ -173,7 +168,7 @@ public class GlobalWireNetwork implements IWorldTickable
 				"Removing connection %s from net %s, but does not have connector for %s",
 				c, oldNet, c.getEndB()
 		);
-		oldNet.removeConnection(c, world);
+		oldNet.removeConnection(c);
 		splitNet(oldNet);
 		syncManager.onConnectionRemoved(c);
 	}
@@ -473,7 +468,7 @@ public class GlobalWireNetwork implements IWorldTickable
 	{
 		LocalWireNetwork local = getNullableLocalNet(cp);
 		if(local!=null)
-			local.removeCP(cp, world);
+			local.removeCP(cp);
 	}
 
 	public void removeConnector(BlockPos pos)

@@ -4,6 +4,7 @@
 modLoader="javafml"
 loaderVersion="[25,)"
 issueTrackerURL="https://github.com/BluSunrize/ImmersiveEngineering/issues"
+license="Blu's License of Common Sense"
 
 [[mods]]
 modId="immersiveengineering"

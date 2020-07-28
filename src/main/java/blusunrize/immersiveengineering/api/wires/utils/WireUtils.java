@@ -206,7 +206,7 @@ public class WireUtils
 		//Force loading
 		IImmersiveConnectable iicPos = net.getConnector(pos.getPosition());
 		Preconditions.checkArgument(iicPos!=null&&!iicPos.isProxy());
-		Vec3d offset = iicPos.getConnectionOffset(conn, pos);
+		Vector3d offset = iicPos.getConnectionOffset(conn, pos);
 		if(fromOtherEnd)
 		{
 			BlockPos posA = pos.getPosition();

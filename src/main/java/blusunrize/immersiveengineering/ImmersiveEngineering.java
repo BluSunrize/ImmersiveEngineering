@@ -41,6 +41,8 @@ import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
+import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.placement.Placement;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
@@ -104,7 +106,8 @@ public class ImmersiveEngineering
 
 		IEWorldGen ieWorldGen = new IEWorldGen();
 		MinecraftForge.EVENT_BUS.register(ieWorldGen);
-		FMLJavaModLoadingContext.get().getModEventBus().register(ieWorldGen);
+		FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(Feature.class, ieWorldGen::registerFeatures);
+		FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(Placement.class, ieWorldGen::registerPlacements);
 	}
 
 	public void setup(FMLCommonSetupEvent event)

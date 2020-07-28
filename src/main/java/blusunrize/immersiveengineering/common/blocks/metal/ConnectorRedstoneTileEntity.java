@@ -24,7 +24,6 @@ import blusunrize.immersiveengineering.common.util.SafeChunkUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;

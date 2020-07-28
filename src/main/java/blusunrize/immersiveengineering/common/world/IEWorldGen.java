@@ -185,7 +185,6 @@ public class IEWorldGen
 	private static CountRangeInIEDimensions COUNT_RANGE_IE;
 	private static FeatureMineralVein MINERAL_VEIN_FEATURE;
 
-	@SubscribeEvent
 	public void registerPlacements(RegistryEvent.Register<Placement<?>> ev)
 	{
 		COUNT_RANGE_IE = new CountRangeInIEDimensions(CountRangeConfig.field_236485_a_);
@@ -193,7 +192,6 @@ public class IEWorldGen
 		ev.getRegistry().register(COUNT_RANGE_IE);
 	}
 
-	@SubscribeEvent
 	public void registerFeatures(RegistryEvent.Register<Feature<?>> ev)
 	{
 		MINERAL_VEIN_FEATURE = new FeatureMineralVein();

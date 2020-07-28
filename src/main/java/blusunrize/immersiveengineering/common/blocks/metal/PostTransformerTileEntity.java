@@ -27,7 +27,6 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3i;
-import net.minecraft.world.IBlockReader;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -141,7 +140,7 @@ public class PostTransformerTileEntity extends ImmersiveConnectableTileEntity im
 	}
 
 	@Override
-	public void removeCable(IBlockReader world, Connection connection, ConnectionPoint attachedPoint)
+	public void removeCable(Connection connection, ConnectionPoint attachedPoint)
 	{
 		WireType type = connection!=null?connection.type: null;
 		if(type==null)

@@ -20,7 +20,6 @@ import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 
@@ -233,7 +232,7 @@ public class LocalWireNetwork implements IWorldTickable
 		return result;
 	}
 
-	void removeConnection(Connection c, IBlockReader world)
+	void removeConnection(Connection c)
 	{
 		for(ConnectionPoint end : new ConnectionPoint[]{c.getEndA(), c.getEndB()})
 		{
@@ -248,7 +247,7 @@ public class LocalWireNetwork implements IWorldTickable
 		{
 			IImmersiveConnectable connector = connectors.get(end.getPosition());
 			if(connector!=null)
-				connector.removeCable(world, c, end);
+				connector.removeCable(c, end);
 		}
 		for(LocalNetworkHandler h : handlers.values())
 			h.onConnectionRemoved(c);
@@ -452,10 +451,10 @@ public class LocalWireNetwork implements IWorldTickable
 	}
 
 	// Internal use only, for network sanitization
-	void removeCP(ConnectionPoint cp, IBlockReader world)
+	void removeCP(ConnectionPoint cp)
 	{
 		for(Connection c : getConnections(cp).toArray(new Connection[0]))
-			removeConnection(c, world);
+			removeConnection(c);
 		connections.remove(cp);
 		boolean hasMoreAtSameBlock = true;
 		for(ConnectionPoint cp2 : connections.keySet())

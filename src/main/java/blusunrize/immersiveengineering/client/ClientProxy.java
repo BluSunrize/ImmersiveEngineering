@@ -110,7 +110,6 @@ import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
@@ -154,8 +153,8 @@ public class ClientProxy extends CommonProxy
 	public void preInit()
 	{
 		//TODO auto-detect old cards that don't support this?
-		if(IEConfig.GENERAL.stencilBufferEnabled.get())
-			DeferredWorkQueue.runLater(() -> Minecraft.getInstance().getFramebuffer().enableStencil());
+		//if(IEConfig.GENERAL.stencilBufferEnabled.get())
+		//	DeferredWorkQueue.runLater(() -> Minecraft.getInstance().getFramebuffer().enableStencil());
 
 		RenderingRegistry.registerEntityRenderingHandler(RevolvershotEntity.TYPE, RevolvershotRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(RevolvershotFlareEntity.TYPE, RevolvershotRenderer::new);

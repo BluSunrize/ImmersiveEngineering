@@ -123,11 +123,15 @@ public class DynamicModelLoader
 		}
 	}
 
-	@SubscribeEvent(priority = EventPriority.LOW)
-	public static void modelRegistry(ModelRegistryEvent evt)
+	@EventBusSubscriber(modid = ImmersiveEngineering.MODID, bus = Bus.FORGE)
+	public static class ForgeBusSubscriber
 	{
-		requestedTextures.clear();
-		unbakedModels.clear();
+		@SubscribeEvent(priority = EventPriority.LOW)
+		public static void modelRegistry(ModelRegistryEvent evt)
+		{
+			requestedTextures.clear();
+			unbakedModels.clear();
+		}
 	}
 
 	private static IUnbakedModel getVanillaModel(ResourceLocation loc)

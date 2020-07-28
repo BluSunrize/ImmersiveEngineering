@@ -9,20 +9,18 @@
 package blusunrize.immersiveengineering.api.wires.proxy;
 
 import blusunrize.immersiveengineering.api.TargetingInfo;
-import blusunrize.immersiveengineering.api.wires.*;
-import com.google.common.collect.ImmutableList;
+import blusunrize.immersiveengineering.api.wires.Connection;
+import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
+import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
+import blusunrize.immersiveengineering.api.wires.WireType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3i;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 
@@ -34,23 +32,18 @@ import java.util.List;
 
 public class IICProxy implements IImmersiveConnectable
 {
-	private final RegistryKey<World> dim;
+	private final World world;
 	private final BlockPos pos;
 	private final List<Connection> internalConns;
 	private final List<ConnectionPoint> points;
 
-	public IICProxy(RegistryKey<World> dimension, BlockPos pos, Collection<Connection> internal,
+	public IICProxy(World world, BlockPos pos, Collection<Connection> internal,
 					Collection<ConnectionPoint> points)
 	{
-		dim = dimension;
+		this.world = world;
 		this.pos = pos;
 		this.internalConns = new ArrayList<>(internal);
 		this.points = new ArrayList<>(points);
-	}
-
-	public IICProxy(RegistryKey<World> dimension, BlockPos pos)
-	{
-		this(dimension, pos, ImmutableList.of(), ImmutableList.of());
 	}
 
 	@Override
@@ -59,25 +52,15 @@ public class IICProxy implements IImmersiveConnectable
 		return internalConns;
 	}
 
-	public BlockPos getPos()
-	{
-		return pos;
-	}
-
-	public RegistryKey<World> getDimension()
-	{
-		return dim;
-	}
-
 	@Override
-	public void removeCable(IBlockReader world, Connection connection, ConnectionPoint attachedPoint)
+	public void removeCable(Connection connection, ConnectionPoint attachedPoint)
 	{
 		//TODO clean up
 		//this will load the chunk the TE is in for 1 tick since it needs to be notified about the removed wires
 		TileEntity te = world.getTileEntity(pos);
 		if(!(te instanceof IImmersiveConnectable))
 			return;
-		((IImmersiveConnectable)te).removeCable(world, connection, attachedPoint);
+		((IImmersiveConnectable)te).removeCable(connection, attachedPoint);
 	}
 
 	@Override
@@ -116,7 +99,7 @@ public class IICProxy implements IImmersiveConnectable
 		return points;
 	}
 
-	public static IICProxy readFromNBT(CompoundNBT nbt)
+	public static IICProxy readFromNBT(World world, CompoundNBT nbt)
 	{
 		ListNBT internalNBT = nbt.getList("internal", NBT.TAG_COMPOUND);
 		List<Connection> internal = new ArrayList<>(internalNBT.size());
@@ -126,14 +109,12 @@ public class IICProxy implements IImmersiveConnectable
 		List<ConnectionPoint> points = new ArrayList<>();
 		for(INBT c : pointNBT)
 			points.add(new ConnectionPoint((CompoundNBT)c));
-		return new IICProxy(RegistryKey.func_240903_a_(Registry.WORLD_KEY, new ResourceLocation(nbt.getString("dim"))),
-				NBTUtil.readBlockPos(nbt.getCompound("pos")), internal, points);
+		return new IICProxy(world, NBTUtil.readBlockPos(nbt.getCompound("pos")), internal, points);
 	}
 
 	public CompoundNBT writeToNBT()
 	{
 		CompoundNBT ret = new CompoundNBT();
-		ret.putString("dim", dim.func_240901_a_().toString());
 		ret.put("pos", NBTUtil.writeBlockPos(pos));
 		ListNBT points = new ListNBT();
 		for(ConnectionPoint cp : this.points)
