@@ -10,8 +10,12 @@ package blusunrize.lib.manual;
 
 import blusunrize.immersiveengineering.api.ManualHelper;
 import blusunrize.lib.manual.ManualElementImage.ManualImage;
+import blusunrize.lib.manual.ManualEntry.ManualEntryBuilder;
+import blusunrize.lib.manual.Tree.AbstractNode;
 import blusunrize.lib.manual.Tree.InnerNode;
+import blusunrize.lib.manual.Tree.Leaf;
 import blusunrize.lib.manual.gui.ManualScreen;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -22,6 +26,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.resources.IReloadableResourceManager;
+import net.minecraft.resources.IResource;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.NonNullList;
@@ -31,12 +36,18 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.resource.IResourceType;
 import net.minecraftforge.resource.ISelectiveResourceReloadListener;
+import org.apache.commons.lang3.mutable.MutableBoolean;
+import org.apache.commons.lang3.mutable.MutableInt;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.function.Consumer;
+import java.util.function.DoubleSupplier;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -46,6 +57,8 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 	public String texture;
 	private Map<ResourceLocation, Function<JsonObject, SpecialManualElement>> specialElements = new HashMap<>();
 	private final Tree<ResourceLocation, ManualEntry> contentTree;
+	private final List<Pair<List<ResourceLocation>, ManualEntry>> autoloadedEntries = new ArrayList<>();
+	private final List<List<ResourceLocation>> autoloadedSections = new ArrayList<>();
 	public Map<ResourceLocation, ManualEntry> contentsByName = new HashMap<>();
 	public final int pageWidth;
 	public final int pageHeight;
@@ -248,6 +261,11 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 
 	public void addEntry(InnerNode<ResourceLocation, ManualEntry> node, ManualEntry entry, int priority)
 	{
+		addEntry(node, entry, () -> priority);
+	}
+
+	public void addEntry(InnerNode<ResourceLocation, ManualEntry> node, ManualEntry entry, DoubleSupplier priority)
+	{
 		node.addNewLeaf(entry, priority);
 		contentsByName.put(entry.getLocation(), entry);
 		initialized = false;
@@ -262,11 +280,29 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 
 	public ManualEntry addEntry(InnerNode<ResourceLocation, ManualEntry> node, ResourceLocation source, int priority)
 	{
+		return addEntry(node, source, () -> priority);
+	}
+
+	public ManualEntry addEntry(InnerNode<ResourceLocation, ManualEntry> node, ResourceLocation source, DoubleSupplier priority)
+	{
 		ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());
 		builder.readFromFile(source);
 		ManualEntry entry = builder.create();
 		addEntry(node, entry, priority);
 		return entry;
+	}
+
+	public DoubleSupplier atOffsetFrom(InnerNode<ResourceLocation, ManualEntry> node, String baseEntry, double offset)
+	{
+		return atOffsetFrom(node, ManualUtils.getLocationForManual(baseEntry, this), offset);
+	}
+
+	public DoubleSupplier atOffsetFrom(InnerNode<ResourceLocation, ManualEntry> node, ResourceLocation baseEntry, double offset)
+	{
+		return () -> {
+			double baseWeight = findEntry(baseEntry, node).getWeight();
+			return baseWeight+offset;
+		};
 	}
 
 	@Nullable
@@ -327,7 +363,8 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 
 	public void reload()
 	{
-		AtomicInteger numErrors = new AtomicInteger(0);
+		cleanupOldAutoloadedEntries();
+		MutableInt numErrors = new MutableInt();
 		getAllEntries().forEach(manualEntry -> {
 			try
 			{
@@ -338,11 +375,131 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 				numErrors.incrementAndGet();
 			}
 		});
-		if(numErrors.get()!=0)
-			throw new RuntimeException(numErrors.get()+" manual entries failed to load, see log for details!");
+		numErrors.add(loadAutoEntries());
+		if(numErrors.intValue()!=0)
+			throw new RuntimeException(numErrors.intValue()+" manual entries failed to load, see log for details!");
 		contentTree.sortAll();
 		indexRecipes();
 		initialized = true;
+	}
+
+	private void cleanupOldAutoloadedEntries()
+	{
+		for(Pair<List<ResourceLocation>, ManualEntry> toRemove : autoloadedEntries)
+		{
+			getOrCreatePath(toRemove.getLeft(), p -> {
+			}).removeLeaf(toRemove.getRight());
+		}
+		for(List<ResourceLocation> toRemove : autoloadedSections)
+		{
+			List<ResourceLocation> parent = toRemove.subList(0, toRemove.size()-1);
+			getOrCreatePath(parent, p -> {
+				throw new RuntimeException(p.toString());
+			}).removeSubnode(toRemove.get(parent.size()));
+		}
+		autoloadedEntries.clear();
+		autoloadedSections.clear();
+	}
+
+	private int loadAutoEntries()
+	{
+		ResourceLocation autoLoc = ManualUtils.getLocationForManual("manual/autoload.json", this);
+		int failed = 0;
+		try
+		{
+			List<IResource> autoload = Minecraft.getInstance().getResourceManager().getAllResources(autoLoc);
+			for(IResource r : autoload)
+			{
+				JsonObject autoloadJson = JSONUtils.fromJson(new InputStreamReader(r.getInputStream()));
+				failed += autoloadEntriesFromJson(autoloadJson, new ArrayList<>());
+			}
+			return failed;
+		} catch(IOException e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
+
+	private int autoloadEntriesFromJson(JsonObject obj, List<ResourceLocation> backtrace)
+	{
+		final String entryListKey = "entry_list";
+		int failCount = 0;
+		if(obj.has(entryListKey))
+		{
+			JsonArray entriesOnLevel = obj.getAsJsonArray(entryListKey);
+			for(JsonElement e : entriesOnLevel)
+			{
+				MutableBoolean addedAny = new MutableBoolean(false);
+				InnerNode<ResourceLocation, ManualEntry> node = getOrCreatePath(backtrace, path -> {
+					if(!addedAny.booleanValue())
+						autoloadedSections.add(path);
+					addedAny.setTrue();
+				});
+				String source;
+				double weight;
+				if(e.isJsonObject())
+				{
+					source = e.getAsJsonObject().get("source").getAsString();
+					weight = e.getAsJsonObject().get("weight").getAsDouble();
+				}
+				else
+				{
+					source = e.getAsString();
+					weight = node.getChildren().size();
+				}
+				try
+				{
+					ManualEntryBuilder builder = new ManualEntryBuilder(this);
+					builder.readFromFile(ManualUtils.getLocationForManual(source, this));
+					ManualEntry entry = builder.create();
+					node.addNewLeaf(entry, () -> weight);
+					entry.refreshPages();
+					autoloadedEntries.add(Pair.of(backtrace, entry));
+				} catch(Exception x)
+				{
+					x.printStackTrace();
+					++failCount;
+				}
+			}
+		}
+		for(Entry<String, JsonElement> otherEntry : obj.entrySet())
+		{
+			if(entryListKey.equals(otherEntry.getKey()))
+				continue;
+			Preconditions.checkState(otherEntry.getValue().isJsonObject(), "At backtrace %s, key %s", backtrace, otherEntry.getKey());
+			backtrace.add(ManualUtils.getLocationForManual(otherEntry.getKey(), this));
+			failCount += autoloadEntriesFromJson(otherEntry.getValue().getAsJsonObject(), new ArrayList<>(backtrace));
+			backtrace.remove(backtrace.size()-1);
+		}
+		return failCount;
+	}
+
+	private Tree.InnerNode<ResourceLocation, ManualEntry> getOrCreatePath(List<ResourceLocation> path, Consumer<List<ResourceLocation>> onCreated)
+	{
+		InnerNode<ResourceLocation, ManualEntry> currentNode = getRoot();
+		List<ResourceLocation> currentPath = new ArrayList<>();
+		for(ResourceLocation inner : path)
+		{
+			currentPath.add(inner);
+			final InnerNode<ResourceLocation, ManualEntry> lastNode = currentNode;
+			currentNode = currentNode.getSubnode(inner).orElseGet(() -> {
+				onCreated.accept(new ArrayList<>(currentPath));
+				return lastNode.getOrCreateSubnode(inner);
+			});
+			Preconditions.checkNotNull(currentNode);
+		}
+		return currentNode;
+	}
+
+	public Leaf<ResourceLocation, ManualEntry> findEntry(ResourceLocation name, InnerNode<ResourceLocation, ManualEntry> parent)
+	{
+		for(AbstractNode<ResourceLocation, ManualEntry> child : parent.getChildren())
+		{
+			ResourceLocation loc = child.getLeafData().getLocation();
+			if(child.isLeaf()&&loc.equals(name))
+				return (Leaf<ResourceLocation, ManualEntry>)child;
+		}
+		throw new NoSuchElementException("Did not find a child with name "+name);
 	}
 
 	public abstract FontRenderer fontRenderer();
