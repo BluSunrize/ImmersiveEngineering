@@ -99,11 +99,8 @@ public class IEManual
 		IEManualInstance ieMan = ManualHelper.getManual();
 		InnerNode<ResourceLocation, ManualEntry> generalCat = ieMan.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
 				ManualHelper.CAT_GENERAL), 0);
-		ieMan.getRoot().getOrCreateSubnode(new ResourceLocation(MODID, ManualHelper.CAT_CONSTRUCTION), 10);
 		InnerNode<ResourceLocation, ManualEntry> energyCat = ieMan.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
 				ManualHelper.CAT_ENERGY), 20);
-		ieMan.getRoot().getOrCreateSubnode(new ResourceLocation(MODID, ManualHelper.CAT_TOOLS), 30);
-		ieMan.getRoot().getOrCreateSubnode(new ResourceLocation(MODID, ManualHelper.CAT_MACHINES), 40);
 		InnerNode<ResourceLocation, ManualEntry> heavyMachinesCat = ieMan.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
 				ManualHelper.CAT_HEAVYMACHINES), 50);
 

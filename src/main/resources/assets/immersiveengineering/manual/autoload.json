@@ -1,16 +1,6 @@
 {
-  "energy": {
-    "entry_list": [
-      "wiring",
-      "generator",
-      "breaker",
-      "current_transformer",
-      "redstone_wire",
-      "diesel_generator",
-      "lightning_rod"
-    ]
-  },
   "general": {
+    "category_weight": 0,
     "entry_list": [
       {
         "source": "introduction",
@@ -32,6 +22,7 @@
     ]
   },
   "construction": {
+    "category_weight": 10,
     "entry_list": [
       "treated_wood",
       "multiblocks",
@@ -46,7 +37,19 @@
       "tank"
     ]
   },
+  "energy": {
+    "entry_list": [
+      "wiring",
+      "generator",
+      "breaker",
+      "current_transformer",
+      "redstone_wire",
+      "diesel_generator",
+      "lightning_rod"
+    ]
+  },
   "tools": {
+    "category_weight": 30,
     "entry_list": [
       "toolbox",
       "jerrycan",
@@ -64,6 +67,7 @@
     ]
   },
   "machines": {
+    "category_weight": 40,
     "entry_list": [
       "conveyors",
       "item_router",

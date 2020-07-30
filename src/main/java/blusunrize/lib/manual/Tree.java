@@ -162,6 +162,11 @@ public class Tree<NT extends Comparable<NT>, LT extends Comparable<LT>>
 
 		public InnerNode<NT, LT> getOrCreateSubnode(NT data, int weight)
 		{
+			return getOrCreateSubnode(data, () -> weight);
+		}
+
+		public InnerNode<NT, LT> getOrCreateSubnode(NT data, DoubleSupplier weight)
+		{
 			return getSubnode(data)
 					.orElseGet(() -> addNewSubnode(data, weight));
 		}

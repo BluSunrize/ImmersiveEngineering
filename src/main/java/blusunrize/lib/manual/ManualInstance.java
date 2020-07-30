@@ -36,7 +36,6 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.resource.IResourceType;
 import net.minecraftforge.resource.ISelectiveResourceReloadListener;
-import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -388,14 +387,14 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 		for(Pair<List<ResourceLocation>, ManualEntry> toRemove : autoloadedEntries)
 		{
 			getOrCreatePath(toRemove.getLeft(), p -> {
-			}).removeLeaf(toRemove.getRight());
+			}, 0).removeLeaf(toRemove.getRight());
 		}
 		for(List<ResourceLocation> toRemove : autoloadedSections)
 		{
 			List<ResourceLocation> parent = toRemove.subList(0, toRemove.size()-1);
 			getOrCreatePath(parent, p -> {
 				throw new RuntimeException(p.toString());
-			}).removeSubnode(toRemove.get(parent.size()));
+			}, 0).removeSubnode(toRemove.get(parent.size()));
 		}
 		autoloadedEntries.clear();
 		autoloadedSections.clear();
@@ -423,49 +422,30 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 	private int autoloadEntriesFromJson(JsonObject obj, List<ResourceLocation> backtrace)
 	{
 		final String entryListKey = "entry_list";
-		int failCount = 0;
+		final String weightKey = "category_weight";
+		double catWeight;
+		if(obj.has(weightKey))
+			catWeight = obj.remove(weightKey).getAsDouble();
+		else
+			catWeight = 0;
+		InnerNode<ResourceLocation, ManualEntry> node = getOrCreatePath(backtrace, path -> {
+			boolean parentIsAutoloaded = false;
+			for(int i = 1; i <= path.size(); ++i)
+				if(autoloadedSections.contains(path.subList(0, i)))
+				{
+					parentIsAutoloaded = true;
+					break;
+				}
+			if(!parentIsAutoloaded)
+				autoloadedSections.add(path);
+		}, catWeight);
+		int failCount;
 		if(obj.has(entryListKey))
-		{
-			JsonArray entriesOnLevel = obj.getAsJsonArray(entryListKey);
-			for(JsonElement e : entriesOnLevel)
-			{
-				MutableBoolean addedAny = new MutableBoolean(false);
-				InnerNode<ResourceLocation, ManualEntry> node = getOrCreatePath(backtrace, path -> {
-					if(!addedAny.booleanValue())
-						autoloadedSections.add(path);
-					addedAny.setTrue();
-				});
-				String source;
-				double weight;
-				if(e.isJsonObject())
-				{
-					source = e.getAsJsonObject().get("source").getAsString();
-					weight = e.getAsJsonObject().get("weight").getAsDouble();
-				}
-				else
-				{
-					source = e.getAsString();
-					weight = node.getChildren().size();
-				}
-				try
-				{
-					ManualEntryBuilder builder = new ManualEntryBuilder(this);
-					builder.readFromFile(ManualUtils.getLocationForManual(source, this));
-					ManualEntry entry = builder.create();
-					node.addNewLeaf(entry, () -> weight);
-					entry.refreshPages();
-					autoloadedEntries.add(Pair.of(backtrace, entry));
-				} catch(Exception x)
-				{
-					x.printStackTrace();
-					++failCount;
-				}
-			}
-		}
+			failCount = loadEntriesInArray(obj.remove(entryListKey).getAsJsonArray(), backtrace, node);
+		else
+			failCount = 0;
 		for(Entry<String, JsonElement> otherEntry : obj.entrySet())
 		{
-			if(entryListKey.equals(otherEntry.getKey()))
-				continue;
 			Preconditions.checkState(otherEntry.getValue().isJsonObject(), "At backtrace %s, key %s", backtrace, otherEntry.getKey());
 			backtrace.add(ManualUtils.getLocationForManual(otherEntry.getKey(), this));
 			failCount += autoloadEntriesFromJson(otherEntry.getValue().getAsJsonObject(), new ArrayList<>(backtrace));
@@ -474,7 +454,43 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 		return failCount;
 	}
 
-	private Tree.InnerNode<ResourceLocation, ManualEntry> getOrCreatePath(List<ResourceLocation> path, Consumer<List<ResourceLocation>> onCreated)
+	private int loadEntriesInArray(JsonArray entriesOnLevel, List<ResourceLocation> backtrace, InnerNode<ResourceLocation, ManualEntry> mainNode)
+	{
+		int failCount = 0;
+		for(JsonElement e : entriesOnLevel)
+		{
+			String source;
+			double weight;
+			if(e.isJsonObject())
+			{
+				source = e.getAsJsonObject().get("source").getAsString();
+				weight = e.getAsJsonObject().get("weight").getAsDouble();
+			}
+			else
+			{
+				source = e.getAsString();
+				weight = mainNode.getChildren().size();
+			}
+			try
+			{
+				ManualEntryBuilder builder = new ManualEntryBuilder(this);
+				builder.readFromFile(ManualUtils.getLocationForManual(source, this));
+				ManualEntry entry = builder.create();
+				mainNode.addNewLeaf(entry, () -> weight);
+				entry.refreshPages();
+				autoloadedEntries.add(Pair.of(backtrace, entry));
+			} catch(Exception x)
+			{
+				x.printStackTrace();
+				++failCount;
+			}
+		}
+		return failCount;
+	}
+
+	private Tree.InnerNode<ResourceLocation, ManualEntry> getOrCreatePath(
+			List<ResourceLocation> path, Consumer<List<ResourceLocation>> onCreated, double newCatWeight
+	)
 	{
 		InnerNode<ResourceLocation, ManualEntry> currentNode = getRoot();
 		List<ResourceLocation> currentPath = new ArrayList<>();
@@ -484,7 +500,7 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 			final InnerNode<ResourceLocation, ManualEntry> lastNode = currentNode;
 			currentNode = currentNode.getSubnode(inner).orElseGet(() -> {
 				onCreated.accept(new ArrayList<>(currentPath));
-				return lastNode.getOrCreateSubnode(inner);
+				return lastNode.getOrCreateSubnode(inner, () -> newCatWeight);
 			});
 			Preconditions.checkNotNull(currentNode);
 		}
