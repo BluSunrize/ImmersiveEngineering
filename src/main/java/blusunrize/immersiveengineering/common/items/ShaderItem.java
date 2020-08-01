@@ -103,7 +103,6 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, ITextureOverr
 					tile = world.getTileEntity(pos);
 					if(tile instanceof ShaderBannerTileEntity)
 					{
-						((ShaderBannerTileEntity)tile).wall = wall;
 						((ShaderBannerTileEntity)tile).shader.setShaderItem(Utils.copyStackWithAmount(ctx.getItem(), 1));
 						tile.markDirty();
 						return ActionResultType.SUCCESS;
