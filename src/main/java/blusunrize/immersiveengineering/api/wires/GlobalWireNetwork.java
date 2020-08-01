@@ -107,9 +107,7 @@ public class GlobalWireNetwork implements IWorldTickable
 				putLocalNet(p, joined);
 		}
 		else
-		{
 			joined = netA;
-		}
 		joined.addConnection(conn, this);
 		syncManager.onConnectionAdded(conn);
 		IImmersiveConnectable connA = joined.getConnector(posA);
@@ -231,12 +229,15 @@ public class GlobalWireNetwork implements IWorldTickable
 
 	public LocalWireNetwork getNullableLocalNet(BlockPos pos)
 	{
-		return localNets.get(new ConnectionPoint(pos, 0));
+		return getNullableLocalNet(new ConnectionPoint(pos, 0));
 	}
 
 	public LocalWireNetwork getNullableLocalNet(ConnectionPoint pos)
 	{
-		return localNets.get(pos);
+		LocalWireNetwork ret = localNets.get(pos);
+		if(ret!=null)
+			Preconditions.checkState(ret.isValid(pos), "%s is not valid for position %s", ret, pos);
+		return ret;
 	}
 
 	public void removeConnector(IImmersiveConnectable iic)
