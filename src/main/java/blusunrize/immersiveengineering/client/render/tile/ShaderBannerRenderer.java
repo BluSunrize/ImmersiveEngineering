@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderLayer;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.render.IEShaderLayerCompositeTexture;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.Cloth;
 import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerStandingBlock;
 import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerTileEntity;
 import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerWallBlock;
@@ -56,8 +57,11 @@ public class ShaderBannerRenderer extends TileEntityRenderer<ShaderBannerTileEnt
 	{
 		long time = te.getWorldNonnull().getGameTime();
 		matrixStack.push();
-		if(!te.wall)
+
+		// Check which of the two blocks we are so we can calculate the orientation.
+		if(te.getState().getBlock() == Cloth.shaderBanner)
 		{
+			// Standing banner, we have 16 different rotations.
 			int orientation = te.getState().get(ShaderBannerStandingBlock.ROTATION);
 			matrixStack.translate(0.5F, 0.5F, 0.5F);
 			float f1 = (float)(orientation*360)/16.0F;
@@ -66,6 +70,9 @@ public class ShaderBannerRenderer extends TileEntityRenderer<ShaderBannerTileEnt
 		}
 		else
 		{
+			// Must be the wall banner, attaches to the side of the block with no support pillar.
+			assert te.getState().getBlock() == Cloth.shaderBannerWall;
+
 			Direction facing = te.getState().get(ShaderBannerWallBlock.FACING);
 			float rotation = facing.getHorizontalAngle();
 
