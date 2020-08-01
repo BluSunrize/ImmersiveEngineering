@@ -28,7 +28,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.data.IModelData;
-import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -38,7 +37,7 @@ import java.util.function.Consumer;
 public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity implements IImmersiveConnectable
 {
 	protected GlobalWireNetwork globalNet;
-	private static Map<BlockPos, Queue<Pair<LoadUnloadEvent, ImmersiveConnectableTileEntity>>> queuedEvents = new HashMap<>();
+	private static Map<BlockPos, Deque<EventQueueEntry>> queuedEvents = new HashMap<>();
 
 	public ImmersiveConnectableTileEntity(TileEntityType<? extends ImmersiveConnectableTileEntity> type)
 	{
@@ -181,43 +180,46 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 			ev.run(this);
 		else
 		{
-			Queue<Pair<LoadUnloadEvent, ImmersiveConnectableTileEntity>> queue = queuedEvents.get(pos);
+			Deque<EventQueueEntry> queue = queuedEvents.get(pos);
 			if(queue==null)
 			{
-				ApiUtils.addFutureServerTask(getWorldNonnull(), () -> processEvents(pos), true);
 				queue = new ArrayDeque<>();
 				queuedEvents.put(pos, queue);
 			}
-			queue.add(Pair.of(ev, this));
+			if(queue.isEmpty()||queue.getLast().tick!=world.getGameTime())
+				ApiUtils.addFutureServerTask(getWorldNonnull(), () -> processEvents(pos), true);
+			queue.add(new EventQueueEntry(ev, this, getWorldNonnull().getGameTime()));
 			WireLogger.logger.info("Queuing {} at {} (tile {})", ev, getPos(), this);
 		}
 	}
 
 	// Loading, unloading and removing is strange on the client, so we need to make sure we don't remove IICs from the
 	// net that shouldn't be. This fixes #4152
+	// In 1.16 this is even worse than in previous versions, with unload happening 1 tick after load when a TE is
+	// replaced.
 	private static void processEvents(BlockPos pos)
 	{
 		ImmersiveConnectableTileEntity toUnload = null;
 		List<ImmersiveConnectableTileEntity> loadedInTick = new ArrayList<>();
-		Queue<Pair<LoadUnloadEvent, ImmersiveConnectableTileEntity>> events = queuedEvents.get(pos);
-		for(Pair<LoadUnloadEvent, ImmersiveConnectableTileEntity> e : events)
+		Queue<EventQueueEntry> events = queuedEvents.get(pos);
+		for(EventQueueEntry e : events)
 		{
-			switch(e.getLeft())
+			switch(e.type)
 			{
 				case LOAD:
-					loadedInTick.add(e.getRight());
+					loadedInTick.add(e.tile);
 					break;
 				case UNLOAD:
 				case REMOVE:
-					boolean wasNew = loadedInTick.remove(e.getRight());
+					boolean wasNew = loadedInTick.remove(e.tile);
 					if(!wasNew)
 					{
 						Preconditions.checkState(
 								toUnload==null,
 								"Unloading two IICs at %s in the same tick: %s and %s, events %s",
-								e.getRight(), toUnload, events
+								e.tile, toUnload, events
 						);
-						toUnload = e.getRight();
+						toUnload = e.tile;
 					}
 					break;
 			}
@@ -225,7 +227,7 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 		Preconditions.checkState(
 				loadedInTick.size() < 2,
 				"Too many IICs loaded at %s in one tick: %s, queue is %s",
-				loadedInTick, events
+				pos, loadedInTick, events
 		);
 		if(toUnload!=null)
 		{
@@ -235,8 +237,22 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 				LoadUnloadEvent.REMOVE.run(toUnload);
 		}
 		if(!loadedInTick.isEmpty())
-			LoadUnloadEvent.LOAD.run(loadedInTick.get(0));
-		queuedEvents.remove(pos);
+		{
+			ImmersiveConnectableTileEntity loaded = loadedInTick.get(0);
+			IImmersiveConnectable currentLoaded = loaded.globalNet.getConnector(loaded.getConnectionPoints().iterator().next());
+			if(currentLoaded==null||currentLoaded.isProxy())
+			{
+				LoadUnloadEvent.LOAD.run(loaded);
+				queuedEvents.remove(pos);
+			}
+			else
+			{
+				events.clear();
+				events.add(new EventQueueEntry(LoadUnloadEvent.LOAD, loaded, loaded.getWorldNonnull().getGameTime()-1));
+			}
+		}
+		else
+			queuedEvents.remove(pos);
 	}
 
 	@Override
@@ -288,6 +304,30 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 		public String toString()
 		{
 			return name();
+		}
+	}
+
+	private static class EventQueueEntry
+	{
+		private final LoadUnloadEvent type;
+		private final ImmersiveConnectableTileEntity tile;
+		private final long tick;
+
+		private EventQueueEntry(LoadUnloadEvent type, ImmersiveConnectableTileEntity tile, long tick)
+		{
+			this.type = type;
+			this.tile = tile;
+			this.tick = tick;
+		}
+
+		@Override
+		public String toString()
+		{
+			return new StringJoiner(", ", EventQueueEntry.class.getSimpleName()+"[", "]")
+					.add("type="+type)
+					.add("tile="+tile)
+					.add("tick="+tick)
+					.toString();
 		}
 	}
 }
