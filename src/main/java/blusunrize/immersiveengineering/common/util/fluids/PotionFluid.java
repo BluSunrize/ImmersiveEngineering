@@ -128,7 +128,7 @@ public class PotionFluid extends Fluid
 	@Override
 	protected FluidAttributes createAttributes()
 	{
-		Builder builder = FluidAttributes.builder(rl("block/fluid/potion_still"), rl("block/fluid/potion_flowing"));
+		Builder builder = FluidAttributes.builder(rl("block/fluid/potion_still"), rl("block/fluid/potion_flow"));
 		return new PotionFluidAttributes(builder, this);
 	}
 
