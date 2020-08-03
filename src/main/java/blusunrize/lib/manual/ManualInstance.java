@@ -403,15 +403,22 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 	private int loadAutoEntries()
 	{
 		ResourceLocation autoLoc = ManualUtils.getLocationForManual("manual/autoload.json", this);
-		int failed = 0;
 		try
 		{
 			List<IResource> autoload = Minecraft.getInstance().getResourceManager().getAllResources(autoLoc);
+			NavigableSet<Pair<Double, JsonObject>> autoloadSources = new TreeSet<>(Comparator.comparingDouble(Pair::getLeft));
 			for(IResource r : autoload)
 			{
 				JsonObject autoloadJson = JSONUtils.fromJson(new InputStreamReader(r.getInputStream()));
-				failed += autoloadEntriesFromJson(autoloadJson, new ArrayList<>());
+				double priority = 0;
+				JsonElement priorityElement = autoloadJson.remove("autoload_priority");
+				if(priorityElement!=null)
+					priority = priorityElement.getAsDouble();
+				autoloadSources.add(Pair.of(priority, autoloadJson));
 			}
+			int failed = 0;
+			for(Pair<Double, JsonObject> p : autoloadSources.descendingSet())
+				failed += autoloadEntriesFromJson(p.getRight(), new ArrayList<>());
 			return failed;
 		} catch(IOException e)
 		{

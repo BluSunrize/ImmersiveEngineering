@@ -1,11 +1,9 @@
 {
+  "autoload_priority": 1,
   "general": {
     "category_weight": 0,
     "entry_list": [
-      {
-        "source": "introduction",
-        "weight": -1
-      },
+      "introduction",
       "hemp",
       "ores",
       "alloys",
