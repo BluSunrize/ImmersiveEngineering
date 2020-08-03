@@ -51,7 +51,7 @@ public class IEExplosion extends Explosion
 
 	public IEExplosion(World world, Entity igniter, double x, double y, double z, float size, boolean isFlaming, Mode damageTerrain)
 	{
-		super(world, igniter, x, y, z, size, isFlaming, damageTerrain);
+		super(world, igniter, null, null, x, y, z, size, isFlaming, damageTerrain);
 		this.dropChance = 1/size;
 		this.world = world;
 		damagesTerrain = damageTerrain;
