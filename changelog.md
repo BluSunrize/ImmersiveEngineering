@@ -1,6 +1,7 @@
 ##### Version 1.14.4-3.1-pre
 - Moved to new version numbering system
 - Fixed crash with fluid pipes (BluSunrize)
+- Fixed Hemp seeds not being plantable by various autoplanters (BluSunrize)
 
 ##### Version 0.14-107 - BUILT
 - Changed conveyor behavior; any conveyor can only have 3 stacks of items on it (Malte)
