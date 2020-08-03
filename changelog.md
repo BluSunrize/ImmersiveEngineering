@@ -1,5 +1,6 @@
 ##### Version 1.14.4-3.1-pre
 - Moved to new version numbering system
+- Added "Hero of the Village" rewards to villagers (BluSunrize)
 - Fixed crash with fluid pipes (BluSunrize)
 - Fixed Hemp seeds not being plantable by various autoplanters (BluSunrize)
 - Fixed Tesla Coils crashing when trying to zap blocks with no bounding boxes (BluSunrize)
