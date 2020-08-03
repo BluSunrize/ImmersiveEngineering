@@ -681,11 +681,11 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 							float dy = scaledHeight;
 							transform.push();
 							transform.translate(dx, dy, 0);
-							ClientUtils.drawTexturedRect(builder, transform, 0, -22, 64, 22, 0, 1, 1, 1, 1, 64/256f, 176/256f, 198/256f);
+							ClientUtils.drawTexturedRect(builder, transform, 0, -22, 64, 22, 1, 1, 1, 1, 0, 64/256f, 176/256f, 198/256f);
 
 							if(upgrades.getBoolean("flash"))
 							{
-								ClientUtils.drawTexturedRect(builder, transform, 11, -38, 16, 16, 11/256f, 1, 1, 1, 1, 27/256f, 160/256f, 176/256f);
+								ClientUtils.drawTexturedRect(builder, transform, 11, -38, 16, 16, 1, 1, 1, 1, 11/256f, 27/256f, 160/256f, 176/256f);
 								if(upgrades.contains("flash_cooldown"))
 								{
 									float h = upgrades.getInt("flash_cooldown")/40f*16;
