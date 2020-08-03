@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.Connection.RenderData;
@@ -317,9 +318,19 @@ public class ClientUtils
 		return bufferedimage;
 	}
 
+	private static FontRenderer unicodeFontRender;
+
+	static
+	{
+		IEApi.renderCacheClearers.add(() -> unicodeFontRender = null);
+	}
+
 	public static FontRenderer unicodeFontRender()
 	{
-		return mc().getFontResourceManager().getFontRenderer(new ResourceLocation(ImmersiveEngineering.MODID, "unicode"));
+		if(unicodeFontRender==null)
+			unicodeFontRender = mc().getFontResourceManager()
+					.getFontRenderer(new ResourceLocation(ImmersiveEngineering.MODID, "unicode"));
+		return unicodeFontRender;
 	}
 
 	public enum TimestampFormat
