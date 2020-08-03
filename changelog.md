@@ -5,6 +5,7 @@
 - Fixed Hemp seeds not being plantable by various autoplanters (BluSunrize)
 - Fixed Tesla Coils crashing when trying to zap blocks with no bounding boxes (BluSunrize)
 - Fixed rare concurrency exception with mineral veins (BluSunrize)
+- Fixed snow buildup stopping windmills (BluSunrize)
 
 ##### Version 0.14-107 - BUILT
 - Changed conveyor behavior; any conveyor can only have 3 stacks of items on it (Malte)
