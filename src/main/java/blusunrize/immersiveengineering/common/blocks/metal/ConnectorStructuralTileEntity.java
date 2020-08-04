@@ -100,11 +100,9 @@ public class ConnectorStructuralTileEntity extends ImmersiveConnectableTileEntit
 	public TransformationMatrix applyTransformations(BlockState object, String group, TransformationMatrix transform)
 	{
 		return transform.compose(new TransformationMatrix(
-				new Vector3f(-.5F, 0, -.5F),
+				new Vector3f(0, 0, 0),
 				new Quaternion(0, rotation, 0, true),
 				null, null
-		)).compose(new TransformationMatrix(
-				new Vector3f(0.5F, 0, 0.5F), null, null, null
 		));
 	}
 

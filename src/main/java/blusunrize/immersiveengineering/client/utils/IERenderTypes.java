@@ -278,23 +278,32 @@ public class IERenderTypes
 			Runnable teardown
 	)
 	{
-		return type -> in.getBuffer(new RenderType(
-				ImmersiveEngineering.MODID+":"+type+"_"+name,
-				type.getVertexFormat(),
-				type.getDrawMode(),
-				type.getBufferSize(),
-				type.isUseDelegate(),
-				false, // needsSorting is private and shouldn't be too relevant here
-				() -> {
-					type.setupRenderState();
-					setup.run();
-				},
-				() -> {
-					teardown.run();
-					type.clearRenderState();
-				}
-		)
-		{
-		});
+		return type -> {
+			if(type!=RenderType.getGlint()&&type!=RenderType.getEntityGlint())
+				return in.getBuffer(new RenderType(
+						ImmersiveEngineering.MODID+":"+type+"_"+name,
+						type.getVertexFormat(),
+						type.getDrawMode(),
+						type.getBufferSize(),
+						type.isUseDelegate(),
+						false, // needsSorting is private and shouldn't be too relevant here
+						() -> {
+							type.setupRenderState();
+							setup.run();
+						},
+						() -> {
+							teardown.run();
+							type.clearRenderState();
+						}
+				)
+				{
+				});
+			else
+				// Glint required a second, non-reference-equal vertex builder. Both receive the same data. Returning
+				// a dummy builder here will cause the glint to not be rendered, but prevents crashes. If rendering
+				// glint becomes important in situations using this method in the future this will need to be
+				// reimplemented.
+				return new DummyVertexBuilder();
+		};
 	}
 }
