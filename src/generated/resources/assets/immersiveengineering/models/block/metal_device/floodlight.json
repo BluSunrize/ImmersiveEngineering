@@ -6,11 +6,11 @@
   "base_model": {
     "loader": "immersiveengineering:ie_obj",
     "model": "immersiveengineering:models/block/metal_device/floodlight.obj.ie",
-    "flip-v": true
+    "flip-v": true,
+    "detectCullableFaces": false
   },
   "layers": [
     "TRANSLUCENT",
     "SOLID"
-  ],
-  "detectCullableFaces": false
+  ]
 }

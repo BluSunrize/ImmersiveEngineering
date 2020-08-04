@@ -6,10 +6,10 @@
   "base_model": {
     "loader": "forge:obj",
     "model": "immersiveengineering:models/block/connector/connector_hv.obj",
-    "flip-v": true
+    "flip-v": true,
+    "detectCullableFaces": false
   },
   "layers": [
     "SOLID"
-  ],
-  "detectCullableFaces": false
+  ]
 }

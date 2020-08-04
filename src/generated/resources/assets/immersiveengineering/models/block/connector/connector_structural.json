@@ -6,10 +6,10 @@
   "base_model": {
     "loader": "immersiveengineering:ie_obj",
     "model": "immersiveengineering:models/block/connector/connector_structural.obj.ie",
-    "flip-v": true
+    "flip-v": true,
+    "detectCullableFaces": false
   },
   "layers": [
     "SOLID"
-  ],
-  "detectCullableFaces": false
+  ]
 }

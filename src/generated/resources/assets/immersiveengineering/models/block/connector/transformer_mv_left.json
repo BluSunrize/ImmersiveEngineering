@@ -6,7 +6,8 @@
   "base_model": {
     "loader": "forge:obj",
     "model": "immersiveengineering:models/block/connector/transformer_mv_left.obj",
-    "flip-v": true
+    "flip-v": true,
+    "detectCullableFaces": false
   },
   "layers": [
     "SOLID"
