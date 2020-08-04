@@ -1,0 +1,25 @@
+{
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "immersiveengineering:armor_faraday_head"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "immersiveengineering:armor_faraday_chest"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "immersiveengineering:armor_faraday_legs"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "immersiveengineering:armor_faraday_feet"
+        }
+      ]
+    }
+  ]
+}

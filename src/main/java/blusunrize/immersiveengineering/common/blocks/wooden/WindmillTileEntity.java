@@ -12,13 +12,12 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.energy.IRotationAcceptor;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IReadOnPlacement;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.shapes.CachedVoxelShapes;
+import com.google.common.collect.Lists;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -33,12 +32,18 @@ import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.List;
+
 public class WindmillTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IStateBasedDirectional,
-		IReadOnPlacement, IPlayerInteraction, IHasObjProperty
+		IReadOnPlacement, IPlayerInteraction, IHasObjProperty, IBlockBounds
 {
 	public static TileEntityType<WindmillTileEntity> TYPE;
 	public float prevRotation = 0;
@@ -228,5 +233,22 @@ public class WindmillTileEntity extends IEBaseTileEntity implements ITickableTil
 	{
 		if(ItemNBTHelper.hasKey(stack, "sails"))
 			this.sails = ItemNBTHelper.getInt(stack, "sails");
+	}
+
+	private static final CachedVoxelShapes<Direction> SHAPES = new CachedVoxelShapes<>(WindmillTileEntity::getShape);
+
+	private static List<AxisAlignedBB> getShape(Direction key)
+	{
+		return Lists.newArrayList(
+				key.getAxis()==Axis.Z?new AxisAlignedBB(.0625, .0625, 0, .9375, .9375, 1):
+						new AxisAlignedBB(0, .0625, .0625, 1, .9375, .9375)
+		);
+	}
+
+	@Nonnull
+	@Override
+	public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx)
+	{
+		return SHAPES.get(this.getFacing());
 	}
 }

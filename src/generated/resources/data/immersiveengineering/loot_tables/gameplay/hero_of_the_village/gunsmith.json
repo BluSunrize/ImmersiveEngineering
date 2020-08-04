@@ -1,0 +1,25 @@
+{
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "immersiveengineering:silver"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "immersiveengineering:dragons_breath"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "immersiveengineering:homing"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "immersiveengineering:toolupgrade_revolver_magazine"
+        }
+      ]
+    }
+  ]
+}

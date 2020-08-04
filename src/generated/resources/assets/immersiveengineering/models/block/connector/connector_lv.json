@@ -7,10 +7,10 @@
   "base_model": {
     "loader": "forge:obj",
     "model": "immersiveengineering:models/block/connector/connector_lv.obj",
-    "flip-v": true
+    "flip-v": true,
+    "detectCullableFaces": false
   },
   "layers": [
     "solid"
-  ],
-  "detectCullableFaces": false
+  ]
 }

@@ -10,13 +10,18 @@ package blusunrize.immersiveengineering.common.data;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
+import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.data.loot.LootGenerator;
+import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.items.IEItems.Metals;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
+import blusunrize.immersiveengineering.common.items.ToolUpgradeItem.ToolUpgrade;
 import blusunrize.immersiveengineering.common.util.loot.BluprintzLootFunction;
+import blusunrize.immersiveengineering.common.world.Villages;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.Rarity;
@@ -77,6 +82,51 @@ public class GeneralLoot extends LootGenerator
 		builder.addLootPool(LootPool.builder().name("masterwork_shader").rolls(new ConstantRange(1))
 				.addEntry(createEntry(Misc.shaderBag.get(Lib.RARITY_MASTERWORK), 1, 1, 1)));
 		tables.put(IEDataGenerator.rl("advancements/shader_masterwork"), builder.build());
+
+		/* Add Hero of the Village Loot Tables */
+
+		builder = LootTable.builder();
+		builder.addLootPool(LootPool.builder().rolls(new ConstantRange(1))
+				.addEntry(createEntry(Ingredients.stickTreated))
+				.addEntry(createEntry(Ingredients.stickIron))
+				.addEntry(createEntry(Ingredients.stickSteel)));
+		tables.put(IEDataGenerator.rl("gameplay/hero_of_the_village/"+Villages.ENGINEER.getPath()), builder.build());
+
+		builder = LootTable.builder();
+		builder.addLootPool(LootPool.builder().rolls(new ConstantRange(1))
+				.addEntry(createEntry(Ingredients.componentIron))
+				.addEntry(createEntry(Ingredients.componentSteel)));
+		tables.put(IEDataGenerator.rl("gameplay/hero_of_the_village/"+Villages.MACHINIST.getPath()), builder.build());
+
+		builder = LootTable.builder();
+		builder.addLootPool(LootPool.builder().rolls(new ConstantRange(1))
+				.addEntry(createEntry(Misc.faradaySuit.get(EquipmentSlotType.HEAD)))
+				.addEntry(createEntry(Misc.faradaySuit.get(EquipmentSlotType.CHEST)))
+				.addEntry(createEntry(Misc.faradaySuit.get(EquipmentSlotType.LEGS)))
+				.addEntry(createEntry(Misc.faradaySuit.get(EquipmentSlotType.FEET))));
+		tables.put(IEDataGenerator.rl("gameplay/hero_of_the_village/"+Villages.ELECTRICIAN.getPath()), builder.build());
+
+		builder = LootTable.builder();
+		builder.addLootPool(LootPool.builder().rolls(new ConstantRange(1))
+				.addEntry(createEntry(Items.WHITE_BANNER))
+				.addEntry(createEntry(Items.ORANGE_BANNER))
+				.addEntry(createEntry(Items.GREEN_BANNER))
+				.addEntry(createEntry(Misc.shaderBag.get(Rarity.RARE)))
+				.addEntry(createEntry(Misc.shaderBag.get(Rarity.EPIC))));
+		tables.put(IEDataGenerator.rl("gameplay/hero_of_the_village/"+Villages.OUTFITTER.getPath()), builder.build());
+
+		builder = LootTable.builder();
+		builder.addLootPool(LootPool.builder().rolls(new ConstantRange(1))
+				.addEntry(createEntry(BulletHandler.getBulletItem(BulletItem.SILVER)))
+				.addEntry(createEntry(BulletHandler.getBulletItem(BulletItem.DRAGONS_BREATH)))
+				.addEntry(createEntry(BulletHandler.getBulletItem(BulletItem.HOMING)))
+				.addEntry(createEntry(Misc.toolUpgrades.get(ToolUpgrade.REVOLVER_MAGAZINE))));
+		tables.put(IEDataGenerator.rl("gameplay/hero_of_the_village/"+Villages.GUNSMITH.getPath()), builder.build());
+	}
+
+	private LootEntry.Builder<?> createEntry(IItemProvider item)
+	{
+		return ItemLootEntry.builder(item);
 	}
 
 	private LootEntry.Builder<?> createEntry(IItemProvider item, int weight, int min, int max)

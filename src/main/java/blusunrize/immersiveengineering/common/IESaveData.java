@@ -100,8 +100,11 @@ public class IESaveData extends WorldSavedData
 			CompoundNBT dimTag = new CompoundNBT();
 			dimTag.putString("dimension", dimension.func_240901_a_().toString());
 			ListNBT mineralList = new ListNBT();
-			for(MineralVein mineralVein : ExcavatorHandler.getMineralVeinList().get(dimension))
-				mineralList.add(mineralVein.writeToNBT());
+			synchronized(ExcavatorHandler.getMineralVeinList())
+			{
+				for(MineralVein mineralVein : ExcavatorHandler.getMineralVeinList().get(dimension))
+					mineralList.add(mineralVein.writeToNBT());
+			}
 			dimTag.put("veins", mineralList);
 			dimensionList.add(dimTag);
 		}

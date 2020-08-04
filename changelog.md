@@ -12,7 +12,15 @@
 
 ##### Version 1.14.4-3.1-pre
 - Moved to new version numbering system
+- Automatically load all manual entries listed in a central JSON (Malte)
+  - This allows resource packs to add entries to the manual
+- Added "Hero of the Village" rewards to villagers (BluSunrize)
 - Fixed crash with fluid pipes (BluSunrize)
+- Fixed Hemp seeds not being plantable by various autoplanters (BluSunrize)
+- Fixed Tesla Coils crashing when trying to zap blocks with no bounding boxes (BluSunrize)
+- Fixed rare concurrency exception with mineral veins (BluSunrize)
+- Fixed snow buildup stopping windmills (BluSunrize)
+- Fixed one of the rendering issues with transformers (BluSunrize)
 
 ##### Version 0.16-109 - BUILT
 - Requires Forge version 32.0.67 or later (BluSunrize)

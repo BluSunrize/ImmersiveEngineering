@@ -1,0 +1,17 @@
+{
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "immersiveengineering:component_iron"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "immersiveengineering:component_steel"
+        }
+      ]
+    }
+  ]
+}

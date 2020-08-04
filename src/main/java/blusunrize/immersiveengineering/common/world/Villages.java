@@ -38,6 +38,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.ai.brain.task.GiveHeroGiftsTask;
 import net.minecraft.entity.merchant.villager.AbstractVillagerEntity;
 import net.minecraft.entity.merchant.villager.VillagerProfession;
 import net.minecraft.entity.merchant.villager.VillagerTrades.ITrade;
@@ -112,6 +113,13 @@ public class Villages
 				),
 				JigsawPattern.PlacementBehaviour.RIGID
 		));
+
+		// Register gifts
+		GiveHeroGiftsTask.GIFTS.put(Registers.PROF_ENGINEER.get(), rl("gameplay/hero_of_the_village/engineer"));
+		GiveHeroGiftsTask.GIFTS.put(Registers.PROF_MACHINIST.get(), rl("gameplay/hero_of_the_village/machinist"));
+		GiveHeroGiftsTask.GIFTS.put(Registers.PROF_ELECTRICIAN.get(), rl("gameplay/hero_of_the_village/electrician"));
+		GiveHeroGiftsTask.GIFTS.put(Registers.PROF_OUTFITTER.get(), rl("gameplay/hero_of_the_village/outfitter"));
+		GiveHeroGiftsTask.GIFTS.put(Registers.PROF_GUNSMITH.get(), rl("gameplay/hero_of_the_village/gunsmith"));
 	}
 
 	private static void addToPool(ResourceLocation pool, ResourceLocation toAdd, int weight)
@@ -406,7 +414,7 @@ public class Villages
 			{
 				int offX = random.nextInt(SEARCH_RADIUS*2)-SEARCH_RADIUS;
 				int offZ = random.nextInt(SEARCH_RADIUS*2)-SEARCH_RADIUS;
-				MineralVein vein = ExcavatorHandler.getRandomMineral(world, merchantPos.add(offX,0,offZ));
+				MineralVein vein = ExcavatorHandler.getRandomMineral(world, merchantPos.add(offX, 0, offZ));
 				if(vein!=null&&!veins.contains(vein))
 					veins.add(vein);
 			}

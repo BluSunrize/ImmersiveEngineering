@@ -1104,6 +1104,7 @@ public class BlockStates extends BlockStateProvider
 			{
 				baseJson.addProperty("model", addModelsPrefix(modelLoc).toString());
 				baseJson.addProperty("flip-v", true);
+				baseJson.addProperty("detectCullableFaces", false);
 			}
 		}
 		ImmutableMap<String, ResourceLocation> texForState = textures.apply(state);
@@ -1121,7 +1122,6 @@ public class BlockStates extends BlockStateProvider
 			if(particleTex.charAt(0)=='#')
 				particleTex = texForState.get(particleTex.substring(1)).toString();
 			ret.texture("particle", particleTex);
-			ret.additional("detectCullableFaces", false);
 		}
 		return ret;
 	}

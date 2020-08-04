@@ -1,0 +1,21 @@
+{
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "immersiveengineering:stick_treated"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "immersiveengineering:stick_iron"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "immersiveengineering:stick_steel"
+        }
+      ]
+    }
+  ]
+}
