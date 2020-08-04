@@ -1,6 +1,7 @@
 ##### Version 1.15.2-3.1-pre
 - Moved to new version numbering system
-- Fixed broken HUD of the Heavy Plated Shield upgrades
+- Fixed broken HUD of the Heavy Plated Shield upgrades (BluSunrize)
+- Fixed rotation for structural connectors (BluSunrize)
 
 ##### Version 1.14.4-3.1-pre
 - Moved to new version numbering system
