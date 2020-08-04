@@ -18,11 +18,9 @@ import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapelessRecipe;
+import net.minecraft.item.crafting.*;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
@@ -30,6 +28,7 @@ import net.minecraftforge.common.crafting.IShapedRecipe;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class ManualElementCrafting extends SpecialManualElements
 {
@@ -55,7 +54,6 @@ public class ManualElementCrafting extends SpecialManualElements
 	{
 		if(Minecraft.getInstance().world==null)
 			return;
-		//TODO is this called on/after world loads?
 		this.providedItems.clear();
 		for(int iStack = 0; iStack < recipeRows.length; iStack++)
 		{
@@ -69,18 +67,29 @@ public class ManualElementCrafting extends SpecialManualElements
 					if(subStack instanceof PositionedItemStack[])
 						addFixedRecipe(iStack, (PositionedItemStack[])subStack);
 					else
-						for(IRecipe<?> recipe : Minecraft.getInstance().world.getRecipeManager().getRecipes())
-							if(recipe.getType()==IRecipeType.CRAFTING)
-								checkRecipe(recipe, subStack, iStack);
+						checkAllRecipesFor(subStack, iStack);
 				}
 			else
-				for(IRecipe<?> recipe : Minecraft.getInstance().world.getRecipeManager().getRecipes())
-					if(recipe.getType()==IRecipeType.CRAFTING)
-					checkRecipe(recipe, stack, iStack);
+				checkAllRecipesFor(stack, iStack);
 		}
 	}
 
-	private void checkRecipe(IRecipe<?> rec, Object stack, int recipeIndex)
+	private void checkAllRecipesFor(Object stack, int recipeIndex)
+	{
+		RecipeManager recipeManager = Minecraft.getInstance().world.getRecipeManager();
+		Map<ResourceLocation, IRecipe<CraftingInventory>> recipes = recipeManager.getRecipes(IRecipeType.CRAFTING);
+		if(stack instanceof ResourceLocation)
+		{
+			IRecipe<CraftingInventory> recipe = recipes.get(stack);
+			if(recipe!=null)
+				checkRecipe(recipe, stack, recipeIndex);
+		}
+		else
+			for(IRecipe<CraftingInventory> recipe : recipes.values())
+				checkRecipe(recipe, stack, recipeIndex);
+	}
+
+	private void checkRecipe(IRecipe<CraftingInventory> rec, Object stack, int recipeIndex)
 	{
 		boolean matches = !rec.getRecipeOutput().isEmpty()&&ManualUtils.stackMatchesObject(rec.getRecipeOutput(), stack);
 		if(!matches&&stack instanceof ResourceLocation&&stack.equals(rec.getId()))
@@ -216,7 +225,7 @@ public class ManualElementCrafting extends SpecialManualElements
 		}
 
 		totalYOff = 0;
-		for(int i = 0; i < recipeRows.length; i++)
+		for(int i = 0; i < recipeLayout.length; i++)
 		{
 			List<PositionedItemStack[]> rList = this.recipeLayout[i];
 			if(!rList.isEmpty()&&recipePage[i] >= 0&&recipePage[i] < rList.size())

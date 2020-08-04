@@ -1,0 +1,97 @@
+{
+  "autoload_priority": 1,
+  "general": {
+    "category_weight": 0,
+    "entry_list": [
+      "introduction",
+      "hemp",
+      "ores",
+      "alloys",
+      "components",
+      "plates",
+      "craftingtable",
+      "workbench",
+      "alloykiln",
+      "cokeoven",
+      "crude_blast_furnace",
+      "improved_blast_furnace",
+      "graphite",
+      "shader"
+    ]
+  },
+  "construction": {
+    "category_weight": 10,
+    "entry_list": [
+      "treated_wood",
+      "multiblocks",
+      "balloon",
+      "crate",
+      "barrel",
+      "metalconstruction",
+      "metal_barrel",
+      "concrete",
+      "lighting",
+      "silo",
+      "tank"
+    ]
+  },
+  "energy": {
+    "entry_list": [
+      "wiring",
+      "generator",
+      "breaker",
+      "current_transformer",
+      "redstone_wire",
+      "diesel_generator",
+      "lightning_rod"
+    ]
+  },
+  "tools": {
+    "category_weight": 30,
+    "entry_list": [
+      "toolbox",
+      "jerrycan",
+      "ear_defenders",
+      "buzzsaw",
+      "mining_drill",
+      "maintenance_kit",
+      "shield",
+      "revolver",
+      "bullets",
+      "chemthrower",
+      "skyhook",
+      "powerpack",
+      "railgun"
+    ]
+  },
+  "machines": {
+    "category_weight": 40,
+    "entry_list": [
+      "conveyors",
+      "item_router",
+      "item_batcher",
+      "turntable",
+      "fluid_transport",
+      "fluid_router",
+      "external_heater",
+      "charging_station",
+      "garden_cloche",
+      "tesla_coil",
+      "razor_wire",
+      "turrets"
+    ]
+  },
+  "heavymachines": {
+    "entry_list": [
+      "metal_press",
+      "crusher",
+      "assembler",
+      "refinery",
+      "mixer",
+      "bottling_machine",
+      "automated_workbench",
+      "arc_furnace",
+      "excavator"
+    ]
+  }
+}

@@ -19,13 +19,11 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.function.IntSupplier;
 import java.util.function.Predicate;
-import java.util.regex.Pattern;
 
 @SuppressWarnings("WeakerAccess")
 public class TextSplitter
 {
 	public static final String START = "start";
-	public static final Pattern LINEBREAK = Pattern.compile("[\\n\\r]+");
 
 	private final Function<String, Integer> width;
 	private final int lineWidth;
@@ -225,7 +223,7 @@ public class TextSplitter
 			{
 				if(token.equals("<np>"))
 					return new Line(lineBuilder.toString(), pos+1, true, anchorBeforeLine, "");
-				else if(LINEBREAK.matcher(token).matches())
+				else if(isLinebreak(token))
 					return new Line(lineBuilder.toString(), pos+1, false, anchorBeforeLine, "");
 				else if(token.startsWith("<&")&&token.endsWith(">"))
 				{
@@ -269,7 +267,7 @@ public class TextSplitter
 
 	private int getWidth(String text)
 	{
-		if(LINEBREAK.matcher(text).matches())
+		if(isLinebreak(text))
 			return 0;
 		switch(text)
 		{
@@ -346,6 +344,19 @@ public class TextSplitter
 				ret |= 0b10;
 		}
 		return ret;
+	}
+
+	private boolean isLinebreak(String s)
+	{
+		if(s.isEmpty())
+			return false;
+		for(int i = 0; i < s.length(); ++i)
+		{
+			char c = s.charAt(i);
+			if(c!='\n'&&c!='\r')
+				return false;
+		}
+		return true;
 	}
 
 	private static class Line
