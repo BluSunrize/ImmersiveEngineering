@@ -239,7 +239,8 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 		if(!loadedInTick.isEmpty())
 		{
 			ImmersiveConnectableTileEntity loaded = loadedInTick.get(0);
-			IImmersiveConnectable currentLoaded = loaded.globalNet.getConnector(loaded.getConnectionPoints().iterator().next());
+			ConnectionPoint testPoint = loaded.getConnectionPoints().iterator().next();
+			IImmersiveConnectable currentLoaded = loaded.globalNet.getLocalNet(testPoint).getConnector(testPoint);
 			if(currentLoaded==null||currentLoaded.isProxy())
 			{
 				LoadUnloadEvent.LOAD.run(loaded);

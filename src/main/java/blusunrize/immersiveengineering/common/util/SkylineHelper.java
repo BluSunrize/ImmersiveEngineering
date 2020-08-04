@@ -57,8 +57,8 @@ public class SkylineHelper
 			GlobalWireNetwork global = GlobalWireNetwork.getNetwork(player.world);
 			ConnectionPoint cpA = connection.getEndA();
 			ConnectionPoint cpB = connection.getEndB();
-			IImmersiveConnectable iicB = global.getConnector(cpB);
-			IImmersiveConnectable iicA = global.getConnector(cpA);
+			IImmersiveConnectable iicB = global.getExistingConnector(cpB);
+			IImmersiveConnectable iicA = global.getExistingConnector(cpA);
 			Vector3d vStart = Vector3d.func_237491_b_(cpA.getPosition());
 			Vector3d vEnd = Vector3d.func_237491_b_(cpB.getPosition());
 

@@ -504,7 +504,7 @@ public class GlobalWireNetwork implements IWorldTickable
 			localNets.remove(cp);
 	}
 
-	public IImmersiveConnectable getConnector(ConnectionPoint cp)
+	public IImmersiveConnectable getExistingConnector(ConnectionPoint cp)
 	{
 		LocalWireNetwork local = getNullableLocalNet(cp);
 		return Preconditions.checkNotNull(local, "No local net at %s", cp)
