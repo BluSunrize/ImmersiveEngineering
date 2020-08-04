@@ -8,72 +8,41 @@
 
 package blusunrize.immersiveengineering.common.items;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.common.IEContent;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ComposterBlock;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
+import net.minecraft.item.BlockItem;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.PlantType;
 import net.minecraftforge.fml.DeferredWorkQueue;
 
-import javax.annotation.Nonnull;
-
-public class IESeedItem extends IEBaseItem implements IPlantable
+public class IESeedItem extends BlockItem implements IPlantable
 {
-	private Block cropBlock;
-
 	public IESeedItem(Block cropBlock)
 	{
-		super("seed", new Properties());
-		this.cropBlock = cropBlock;
+		super(cropBlock, new Properties().group(ImmersiveEngineering.itemGroup));
+		setRegistryName(ImmersiveEngineering.MODID, "seed");
+		IEContent.registeredIEItems.add(this);
+
+		// Register for composting
 		DeferredWorkQueue.runLater(
 				() -> ComposterBlock.CHANCES.putIfAbsent(this, 0.3f)
 		);
 	}
 
-	@Nonnull
-	@Override
-	public ActionResultType onItemUse(ItemUseContext context)
-	{
-		World world = context.getWorld();
-		BlockPos pos = context.getPos();
-		ItemStack stack = context.getItem();
-		PlayerEntity player = context.getPlayer();
-		Direction side = context.getFace();
-		if(side!=Direction.UP)
-			return ActionResultType.PASS;
-		else if(player!=null&&player.canPlayerEdit(pos, side, stack)&&player.canPlayerEdit(pos.add(0, 1, 0), side, stack))
-		{
-			BlockState state = world.getBlockState(pos);
-			if(state.getBlock().canSustainPlant(state, world, pos, Direction.UP, this)&&world.isAirBlock(pos.add(0, 1, 0)))
-			{
-				world.setBlockState(pos.add(0, 1, 0), this.cropBlock.getDefaultState());
-				stack.shrink(1);
-				return ActionResultType.SUCCESS;
-			}
-			else
-				return ActionResultType.PASS;
-		}
-		else
-			return ActionResultType.PASS;
-	}
-
 	@Override
 	public PlantType getPlantType(IBlockReader world, BlockPos pos)
 	{
-		return ((IPlantable)cropBlock).getPlantType(world, pos);
+		return ((IPlantable)this.getBlock()).getPlantType(world, pos);
 	}
 
 	@Override
 	public BlockState getPlant(IBlockReader world, BlockPos pos)
 	{
-		return cropBlock.getDefaultState();
+		return this.getBlock().getDefaultState();
 	}
 }

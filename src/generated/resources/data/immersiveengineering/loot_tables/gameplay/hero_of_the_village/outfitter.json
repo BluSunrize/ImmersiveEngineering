@@ -1,0 +1,29 @@
+{
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:white_banner"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:orange_banner"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:green_banner"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "immersiveengineering:shader_bag_rare"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "immersiveengineering:shader_bag_epic"
+        }
+      ]
+    }
+  ]
+}

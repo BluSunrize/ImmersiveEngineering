@@ -192,7 +192,10 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 							if(!world.isAirBlock(targetBlock2))
 							{
 								BlockState state = world.getBlockState(targetBlock2);
-								AxisAlignedBB blockBounds = state.getShape(world, targetBlock2).getBoundingBox();
+								VoxelShape shape = state.getShape(world, targetBlock2);
+								if(shape.isEmpty())
+									continue;
+								AxisAlignedBB blockBounds = shape.getBoundingBox();
 								tL = getFacing().getAxis()==Axis.Y?(targetBlock2.getY()-getPos().getY()): getFacing().getAxis()==Axis.Z?(targetBlock2.getZ()-getPos().getZ()): (targetBlock2.getZ()-getPos().getZ());
 								Direction tempF = positiveFirst?getFacing(): getFacing().getOpposite();
 								if(tempF==Direction.UP)

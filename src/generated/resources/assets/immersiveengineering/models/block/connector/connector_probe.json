@@ -6,11 +6,11 @@
   "base_model": {
     "loader": "immersiveengineering:ie_obj",
     "model": "immersiveengineering:models/block/connector/connector_probe.obj.ie",
-    "flip-v": true
+    "flip-v": true,
+    "detectCullableFaces": false
   },
   "layers": [
     "CUTOUT",
     "TRANSLUCENT"
-  ],
-  "detectCullableFaces": false
+  ]
 }
