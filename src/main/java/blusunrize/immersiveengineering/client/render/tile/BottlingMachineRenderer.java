@@ -64,8 +64,7 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 		//Outer GL Wrapping, initial translation
 		matrixStack.push();
 		matrixStack.translate(.5, .5, .5);
-		if(te.getIsMirrored())
-			matrixStack.scale(te.getFacing().getXOffset()==0?-1: 1, 1, te.getFacing().getZOffset()==0?-1: 1);
+		bufferIn = TileRenderUtils.mirror(te, matrixStack, bufferIn);
 
 		//Item Displacement
 		float[][] itemDisplays = new float[te.bottlingProcessQueue.size()][];

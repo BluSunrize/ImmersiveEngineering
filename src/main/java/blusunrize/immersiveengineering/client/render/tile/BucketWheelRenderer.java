@@ -33,7 +33,6 @@ import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.data.IModelData;
 
@@ -83,9 +82,7 @@ public class BucketWheelRenderer extends TileEntityRenderer<BucketWheelTileEntit
 		matrixStack.push();
 
 		matrixStack.translate(.5, .5, .5);
-		Direction facing = tile.getFacing();
-		if(tile.getIsMirrored())
-			matrixStack.scale(facing.getAxis()==Axis.X?-1: 1, 1, facing.getAxis()==Axis.Z?-1: 1);
+		bufferIn = TileRenderUtils.mirror(tile, matrixStack, bufferIn);
 		float dir = tile.getFacing()==Direction.SOUTH?90: tile.getFacing()==Direction.NORTH?-90: tile.getFacing()==Direction.EAST?180: 0;
 		matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), dir, true));
 		float rot = tile.rotation+(float)(tile.active?IEConfig.MACHINES.excavator_speed.get()*partialTicks: 0);

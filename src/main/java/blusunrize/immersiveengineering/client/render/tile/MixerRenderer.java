@@ -53,9 +53,7 @@ public class MixerRenderer extends TileEntityRenderer<MixerTileEntity>
 		matrixStack.push();
 		matrixStack.translate(.5, .5, .5);
 
-		if(te.getIsMirrored())
-			matrixStack.scale(te.getFacing().getXOffset()==0?-1: 1, 1, te.getFacing().getZOffset()==0?-1: 1);
-
+		bufferIn = TileRenderUtils.mirror(te, matrixStack, bufferIn);
 		matrixStack.push();
 		matrixStack.translate(te.getFacing()==Direction.SOUTH||te.getFacing()==Direction.WEST?-.5: .5, 0, te.getFacing()==Direction.SOUTH||te.getFacing()==Direction.EAST?.5: -.5);
 		float agitator = te.animation_agitator-(!te.shouldRenderAsActive()?0: (1-partialTicks)*9f);
