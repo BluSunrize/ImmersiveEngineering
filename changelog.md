@@ -3,12 +3,15 @@
 - Fixed broken HUD of the Heavy Plated Shield upgrades (BluSunrize)
 - Fixed rotation for structural connectors (BluSunrize)
 
-##### Version 1.14.4-3.1-pre
+##### Version 1.14.4-3.1-110
 - Moved to new version numbering system
 - Automatically load all manual entries listed in a central JSON (Malte)
   - This allows resource packs to add entries to the manual
 - Added "Hero of the Village" rewards to villagers (BluSunrize)
+- Fixed various errors with wires (Malte)
 - Fixed crash with fluid pipes (BluSunrize)
+- Fixed bugs with cached redstone values (Malte)
+- Fixed crash related to shader banners (TeamSpen210)
 - Fixed Hemp seeds not being plantable by various autoplanters (BluSunrize)
 - Fixed Tesla Coils crashing when trying to zap blocks with no bounding boxes (BluSunrize)
 - Fixed rare concurrency exception with mineral veins (BluSunrize)
