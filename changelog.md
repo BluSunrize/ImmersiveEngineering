@@ -5,6 +5,9 @@
 - Fixed manual rendering for blueprint recipes (BluSunrize)
 - Fixed scaffolding causing a suffocation overlay (BluSunrize)
 - Fixed crashes with the drill & sawblade overlay (BluSunrize)
+- Fixed crashes with wires (Malte)
+- Fixed crashes with explosions (Malte)
+- Also includes the changes from 1.15.2-3.1-111
 
 ##### Version 1.15.2-3.1-111
 - Moved to new version numbering system
