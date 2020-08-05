@@ -266,7 +266,6 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 	public void addEntry(InnerNode<ResourceLocation, ManualEntry> node, ManualEntry entry, DoubleSupplier priority)
 	{
 		node.addNewLeaf(entry, priority);
-		contentsByName.put(entry.getLocation(), entry);
 		initialized = false;
 		ManualScreen.lastActiveManual = null;
 	}
@@ -378,6 +377,8 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 		if(numErrors.intValue()!=0)
 			throw new RuntimeException(numErrors.intValue()+" manual entries failed to load, see log for details!");
 		contentTree.sortAll();
+		contentsByName.clear();
+		contentTree.leafStream().forEach(e -> this.contentsByName.put(e.getLocation(), e));
 		indexRecipes();
 		initialized = true;
 	}
