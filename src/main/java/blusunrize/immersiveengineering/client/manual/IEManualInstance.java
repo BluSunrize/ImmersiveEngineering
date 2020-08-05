@@ -19,6 +19,7 @@ import blusunrize.lib.manual.ManualEntry;
 import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.Tree;
 import com.electronwill.nightconfig.core.Config;
+import com.google.common.base.Preconditions;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.resources.I18n;
@@ -321,6 +322,11 @@ public class IEManualInstance extends ManualInstance
 		String[] segment = rep.substring(0, rep.length()-1).split(splitKey);
 		if(segment.length < 3)
 			return "~ERROR0~";
+		Preconditions.checkState(
+				actualCfg.contains(segment[2]),
+				"Config key %s does not exist",
+				segment[2]
+		);
 		if(segment[1].equalsIgnoreCase("b"))
 		{
 			if(segment.length > 3)

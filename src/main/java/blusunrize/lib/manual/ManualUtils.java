@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.lib.manual.Tree.AbstractNode;
 import blusunrize.lib.manual.gui.GuiButtonManualLink;
 import blusunrize.lib.manual.gui.ManualScreen;
+import blusunrize.lib.manual.links.Link;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -32,7 +33,6 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.lwjgl.opengl.GL11;
@@ -159,105 +159,49 @@ public class ManualUtils
 		return distance;
 	}
 
-	private static final String THIS = "this";
+	public static final String THIS = "this";
 
-	//Pass a single-element String array, to allow multiple outputs
-	public static List<String[]> prepareEntryForLinks(String[] entryA)
+	public static void addLinkButtons(ManualEntry entry, ManualInstance manual, ManualScreen gui, List<String> text, int x, int y,
+									  List<Button> pageButtons, List<Link> repList)
 	{
-		final String format = TextFormatting.ITALIC.toString()+TextFormatting.UNDERLINE.toString();
-		String entry = entryA[0];
-		List<String[]> repList = new ArrayList<>();
-		int linksAdded = 0;
-		int start;
-		while((start = entry.indexOf("<link")) >= 0&&linksAdded < 50)
+		for(Link link : repList)
 		{
-			linksAdded++;
-			int end = entry.indexOf(">", start);
-			String rep = entry.substring(start, end+1);
-			String[] segment = rep.substring(0, rep.length()-1).split(";");
-			if(segment.length < 3)
-				break;
-			String anchor = segment.length > 3?segment[3]: TextSplitter.START;
-			String[] resultParts = segment[2].split("(?<= )");// Split and keep the whitespace at the end of the tokens
-			StringBuilder result = new StringBuilder();
-			List<String> forCompleteLink = new ArrayList<>(3*resultParts.length);
-			for(String resultPart : resultParts)
-			{
-				String part = format+resultPart;
-				forCompleteLink.add(part);
-				forCompleteLink.add(segment[1]);
-				forCompleteLink.add(anchor);
-				result.append(part);
-			}
-			repList.add(forCompleteLink.toArray(new String[0]));
-			entry = entry.substring(0, start)+result+TextFormatting.RESET.toString()+entry.substring(end+1);
-		}
-		entryA[0] = entry;
-		return repList;
-	}
-
-	public static void addLinks(ManualEntry entry, ManualInstance manual, ManualScreen gui, List<String> text, int x, int y,
-								List<Button> pageButtons, List<String[]> repList)
-	{
-		for(String[] repComplete : repList)
-		{
-			String[] rep = new String[3];
 			List<GuiButtonManualLink> parts = new ArrayList<>();
-			for(int i = 0; i < repComplete.length/3; i++)
-			{
-				System.arraycopy(repComplete, 3*i, rep, 0, 3);
+			for(String partText : link.getParts())
 				for(int line = 0; line < text.size(); line++)
 				{
 					String s = text.get(line);
 					int start;
-					if((start = s.indexOf(rep[0].trim())) >= 0)
+					if((start = s.indexOf(partText.trim())) >= 0)
 					{
-						String linkText = rep[0];
-						if(!s.substring(start).startsWith(rep[0]))//This can happen when whitespace is cut off at the end of a line
+						String linkText = partText;
+						if(!s.substring(start).startsWith(linkText))//This can happen when whitespace is cut off at the end of a line
 							linkText = linkText.trim();
 						int bx = manual.fontRenderer().getStringWidth(s.substring(0, start));
 						int by = line*manual.fontRenderer().FONT_HEIGHT;
-						ResourceLocation bkey = THIS.equals(rep[1])?entry.getLocation(): getLocationForManual(rep[1], manual);
+						ResourceLocation bkey = link.getTarget(entry);
 						int bw = manual.fontRenderer().getStringWidth(linkText);
-						String bAnchor = TextSplitter.START;
-						int bOffset = 0;
-						try
-						{
-							if(rep[2].contains("+"))
-							{
-								int plus = rep[2].indexOf('+');
-								bAnchor = rep[2].substring(0, plus);
-								bOffset = Integer.parseInt(rep[2].substring(plus+1));
-							}
-							else
-								bAnchor = rep[2];
-						} catch(Exception e)
-						{
-							e.printStackTrace();
-							throw new RuntimeException(e);
-						}
-						ManualInstance.ManualLink link;
+						ManualInstance.ManualLink outputLink;
 						ManualEntry bEntry = manual.getEntry(bkey);
-						if(bEntry!=null&&bEntry.hasAnchor(bAnchor))
-							link = new ManualInstance.ManualLink(bEntry, bAnchor, bOffset);
+						if(bEntry!=null&&bEntry.hasAnchor(link.getTargetAnchor()))
+							outputLink = new ManualInstance.ManualLink(bEntry, link.getTargetAnchor(), link.getTargetOffset());
 						else
 						{
 							if(bEntry==null)
 								IELogger.logger.error("Unknown manual entry: {} (link from {})", bkey, entry.getLocation());
-							else if(!bEntry.hasAnchor(bAnchor))
-								IELogger.logger.error("Unknown anchor {} in entry {} (link from {})", bAnchor, bkey,
+							else if(!bEntry.hasAnchor(link.getTargetAnchor()))
+								IELogger.logger.error("Unknown anchor {} in entry {} (link from {})", link.getTargetAnchor(), bkey,
 										entry.getLocation());
-							link = null;
+							outputLink = null;
 						}
 						GuiButtonManualLink btn = new GuiButtonManualLink(gui, x+bx, y+by, bw, (int)(manual.fontRenderer().FONT_HEIGHT*1.5),
-								link, linkText);
+								outputLink, linkText);
 						parts.add(btn);
 						pageButtons.add(btn);
 						text.set(line, s);
 						break;
 					}
 				}
-			}
 			for(GuiButtonManualLink btn : parts)
 				btn.otherParts = parts;
 		}
@@ -307,41 +251,6 @@ public class ManualUtils
 	 */
 	public static void drawSplitString(FontRenderer fontRenderer, List<String> text, int x, int y, int colour)
 	{
-		/*
-		fontRenderer.resetStyles();
-		fontRenderer.textColor = colour;
-		List<String> list = fontRenderer.listFormattedStringToWidth(string, width);
-		FloatBuffer currentGLColor = BufferUtils.createFloatBuffer(16);
-		int line = 0;
-		for(Iterator<String> iterator = list.iterator(); iterator.hasNext(); y += fontRenderer.FONT_HEIGHT)
-		{
-			String next = iterator.next();
-			if(line > 0)
-			{
-				int currentColour = fontRenderer.textColor;
-				GL11.glGetFloat(GL11.GL_CURRENT_COLOR, currentGLColor);
-				//Resetting colour if GL colour differs from textColor
-				//that case happens because the formatting reset does not reset textColor
-				int glColourRGBA = ((int)(currentGLColor.get(0)*255)<<16)+((int)(currentGLColor.get(1)*255)<<8)+((int)(currentGLColor.get(2)*255));
-				if(glColourRGBA!=currentColour)
-				{
-					int j = 0;
-					for(; j < fontRenderer.colorCode.length; j++)
-						if(fontRenderer.colorCode[j]==glColourRGBA)
-						{
-							String code = Integer.toHexString(j%16);
-							next = '\u00a7'+code+next;
-							break;
-						}
-				}
-			}
-			fontRenderer.drawString(next, x, y, colour, false);
-			++line;
-		}
-		return list.size();
-		 */
-
-		//TODO Do we still need all of ^ or does this simplistic implementation (based on the 1.14 Mojang version) work?
 		for(String s : text)
 		{
 			fontRenderer.drawString(s, x, y, colour);
