@@ -1,4 +1,4 @@
-##### Version 1.16.1-3.1-pre
+##### Version 1.16.1-3.1-112
 - Require Forge version 32.0.99 or later
 - Moved to new version numbering system
 - Fixed a crash with railgun & chemthrower projectiles (BluSunrize)
