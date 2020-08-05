@@ -1,4 +1,5 @@
 ##### Version 1.16.1-3.1-pre
+- Require Forge version 32.0.99 or later
 - Moved to new version numbering system
 - Fixed a crash with railgun & chemthrower projectiles (BluSunrize)
 - Fixed manual rendering for blueprint recipes (BluSunrize)
