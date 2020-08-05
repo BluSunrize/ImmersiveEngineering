@@ -141,7 +141,7 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 						target = Math.round(rot/360f*8)%8;
 				}
 
-				if(wheel.getFacing()!=fRot||wheel.getIsMirrored()!=this.getIsMirrored())
+				if(wheel.getFacing()!=fRot)
 				{
 					for(int h = -3; h <= 3; h++)
 						for(int w = -3; w <= 3; w++)
@@ -151,7 +151,6 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 							{
 								BucketWheelTileEntity bucketTE = (BucketWheelTileEntity)te;
 								bucketTE.setFacing(fRot);
-								bucketTE.setMirrored(this.getIsMirrored());
 								bucketTE.posInMultiblock = new BlockPos(6-bucketTE.posInMultiblock.getX(), bucketTE.posInMultiblock.getY(), bucketTE.posInMultiblock.getZ());
 								te.markDirty();
 								bucketTE.markContainingBlockForUpdate(null);

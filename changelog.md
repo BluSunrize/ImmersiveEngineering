@@ -1,3 +1,7 @@
+#### Version 1.15.2-3.1-pre
+ - Fixed mirrored machines rendering incorrectly (Malte)
+ - Fixed bucket wheels in mirrored excavators rendering incorrectly (Malte)
+
 ##### Version 1.15.2-3.1-111
 - Moved to new version numbering system
 - Fixed broken HUD of the Heavy Plated Shield upgrades (BluSunrize)
