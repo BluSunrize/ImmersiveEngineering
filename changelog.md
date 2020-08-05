@@ -1,4 +1,4 @@
-##### Version 1.14.4-3.1-pre
+##### Version 1.14.4-3.1-110
 - Moved to new version numbering system
 - Automatically load all manual entries listed in a central JSON (Malte)
   - This allows resource packs to add entries to the manual
