@@ -1,4 +1,4 @@
-##### Version 1.15.2-3.1-pre
+##### Version 1.15.2-3.1-111
 - Moved to new version numbering system
 - Fixed broken HUD of the Heavy Plated Shield upgrades (BluSunrize)
 - Fixed crash when bottling potions (Malte)

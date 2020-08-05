@@ -3,5 +3,6 @@
     "0.15-101": " - Fixed hemp rendering as solid (Malte)\n - Fixed Optifine shader packs crashing with the IEOBJ item renderer (Vaelzan)\n - Fixed crashes when using the buzzsaw or drill (Malte)\n - Fixed missing connectors on feedthrough models (Malte)\n - Fixed missing tooltips in various GUIs (Malte)\n - Also includes the changes from 0.14-100",
     "0.15-103": "- Fixed wires no longer transferring energy after release 101 (Malte)",
     "0.15-105": "- Fixed invisible connectors with Optifine (Malte)\n- Fixed metal ladders rendering as solid (Malte)\n- Fixed shield rendering in 3rd person (BluSunrize)\n- Fixed incorrect sounds on certain blocks (BluSunrize)\n- Also includes the changes from 0.14-104",
-    "0.15-108": "- Also includes the changes from 0.14-107"
+    "0.15-108": "- Also includes the changes from 0.14-107",
+    "1.15.2-3.1-111": "- Moved to new version numbering system\n- Fixed broken HUD of the Heavy Plated Shield upgrades (BluSunrize)\n- Fixed crash when bottling potions (Malte)\n- Fixed rotation for structural connectors (BluSunrize)\n- Also includes the changes from 1.14.4-3.1-110"
 }
