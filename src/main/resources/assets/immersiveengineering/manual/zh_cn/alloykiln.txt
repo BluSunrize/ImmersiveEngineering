@@ -1,4 +1,5 @@
-Alloy Kiln
-Mixin' Metals
-<&recipe>The Alloy Kiln is a simple furnace made out of heat resistant sandstone and bricks. Within it, temperatures are high enough to allow metals to be melted into a fluid state and mixed, creating an <link;alloys;alloy>.
-This allows the creation of important alloys like Electrum and Constantan without requiring the tedious mixing of dusts. <&multiblock>To form the Kiln, arrange 8 of the Kiln Bricks in a 2x2x2 cube, as shown above, and rightclick one of the sides' blocks with an Engineer's Hammer.
+合金窑
+金属混成
+<&recipe>这个简单的合金窑用一些耐热的砂石和砖块就可以搭建。在窑内，金属因高温而融化，继而混合成为<link;alloys;合金>.
+有了它，诸如琥珀金、康铜这样的重要合金就不需要每次都手动混合金属粉末来合成了。
+<&multiblock>像上图那样把八块窑砖搭成2x2x2的正方体，再用工程师锤右击任意面就可以造窑了。
