@@ -8,12 +8,10 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.blocks.wooden.WindmillTileEntity;
@@ -32,10 +30,8 @@ import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
@@ -45,9 +41,7 @@ import java.util.List;
 public class WindmillRenderer extends TileEntityRenderer<WindmillTileEntity>
 {
 	private static List<BakedQuad>[] quads = new List[9];
-	private final DynamicModel<Void> model = DynamicModel.createSimple(
-			new ResourceLocation(ImmersiveEngineering.MODID, "block/wooden_device/windmill.obj.ie"),
-			"windmill", ModelType.IE_OBJ);
+	public static DynamicModel<Void> MODEL;
 
 	@Override
 	public void render(WindmillTileEntity tile, double x, double y, double z, float partialTicks, int destroyStage)
@@ -62,7 +56,7 @@ public class WindmillRenderer extends TileEntityRenderer<WindmillTileEntity>
 			if(state.getBlock()!=WoodenDevices.windmill)
 				return;
 			state = state.with(IEProperties.FACING_HORIZONTAL, Direction.NORTH);
-			IBakedModel model = this.model.get(null);
+			IBakedModel model = this.MODEL.get(null);
 			List<String> parts = new ArrayList<>();
 			parts.add("base");
 			for(int i = 1; i <= tile.sails; i++)

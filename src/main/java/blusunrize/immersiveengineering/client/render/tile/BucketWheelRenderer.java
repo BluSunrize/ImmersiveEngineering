@@ -8,14 +8,11 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
-import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.client.models.obj.IESmartObjModel;
-import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
@@ -38,9 +35,7 @@ import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 import org.lwjgl.opengl.GL11;
 
 import java.util.HashMap;
@@ -50,9 +45,7 @@ import java.util.Map;
 @SuppressWarnings("deprecation")
 public class BucketWheelRenderer extends TileEntityRenderer<BucketWheelTileEntity>
 {
-	private final DynamicModel<Void> wheel = DynamicModel.createSimple(
-			new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/bucket_wheel.obj.ie"),
-			"bucket_wheel", ModelType.IE_OBJ);
+	public static DynamicModel<Void> WHEEL;
 
 	@Override
 	public void render(BucketWheelTileEntity tile, double x, double y, double z, float partialTicks, int destroyStage)
@@ -63,7 +56,7 @@ public class BucketWheelRenderer extends TileEntityRenderer<BucketWheelTileEntit
 		BlockState state = tile.getWorldNonnull().getBlockState(tile.getPos());
 		if(state.getBlock()!=Multiblocks.bucketWheel)
 			return;
-		IBakedModel model = wheel.get(null);
+		IBakedModel model = WHEEL.get(null);
 		Map<String, String> texMap = new HashMap<>();
 		List<String> list = Lists.newArrayList("bucketWheel");
 		synchronized(tile.digStacks)

@@ -8,10 +8,8 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity.MultiblockProcess;
@@ -30,7 +28,6 @@ import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import org.lwjgl.opengl.GL11;
@@ -39,10 +36,7 @@ import java.util.List;
 
 public class MetalPressRenderer extends TileEntityRenderer<MetalPressTileEntity>
 {
-	private final DynamicModel<Void> piston = DynamicModel.createSimple(
-			new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/metal_press_piston.obj"),
-			"metal_press_piston", ModelType.OBJ
-	);
+	public static DynamicModel<Void> PISTON;
 
 	@Override
 	public void render(MetalPressTileEntity te, double x, double y, double z, float partialTicks, int destroyStage)
@@ -55,7 +49,7 @@ public class MetalPressRenderer extends TileEntityRenderer<MetalPressTileEntity>
 		BlockState state = getWorld().getBlockState(blockPos);
 		if(state.getBlock()!=Multiblocks.metalPress)
 			return;
-		IBakedModel model = piston.get(null);
+		IBakedModel model = PISTON.get(null);
 
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder worldRenderer = tessellator.getBuffer();

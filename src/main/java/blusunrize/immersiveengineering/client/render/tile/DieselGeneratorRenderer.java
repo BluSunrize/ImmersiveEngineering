@@ -8,9 +8,7 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.DieselGeneratorTileEntity;
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -24,16 +22,13 @@ import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import org.lwjgl.opengl.GL11;
 
 public class DieselGeneratorRenderer extends TileEntityRenderer<DieselGeneratorTileEntity>
 {
-	private final DynamicModel<Direction> dynamic = DynamicModel.createSided(
-			new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/diesel_generator_fan.obj"),
-			"diesel_gen", ModelType.OBJ);
+	public static DynamicModel<Direction> FAN;
 
 	@Override
 	public void render(DieselGeneratorTileEntity te, double x, double y, double z, float partialTicks, int destroyStage)
@@ -46,7 +41,7 @@ public class DieselGeneratorRenderer extends TileEntityRenderer<DieselGeneratorT
 		BlockState state = getWorld().getBlockState(blockPos);
 		if(state.getBlock()!=Multiblocks.dieselGenerator)
 			return;
-		IBakedModel model = dynamic.get(te.getFacing());
+		IBakedModel model = FAN.get(te.getFacing());
 
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder worldRenderer = tessellator.getBuffer();

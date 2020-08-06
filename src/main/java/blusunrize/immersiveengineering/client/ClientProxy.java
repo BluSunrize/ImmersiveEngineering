@@ -164,6 +164,7 @@ public class ClientProxy extends CommonProxy
 			ModelLoaderRegistry2.registerLoader(FeedthroughLoader.LOCATION, new FeedthroughLoader());
 
 			((IReloadableResourceManager)mc().getResourceManager()).addReloadListener(new IEFontReloadListener());
+			requestModelsAndTextures();
 		}
 	}
 
@@ -809,5 +810,61 @@ public class ClientProxy extends CommonProxy
 	public Item.Properties useIEOBJRenderer(Item.Properties props)
 	{
 		return super.useIEOBJRenderer(props).setTEISR(() -> () -> IEOBJItemRenderer.INSTANCE);
+	}
+
+	private static void requestModelsAndTextures()
+	{
+		DynamicModelLoader.requestTexture(SawbladeRenderer.SAWBLADE);
+		DynamicModelLoader.requestTexture(ArcFurnaceRenderer.HOT_METLA_FLOW);
+		DynamicModelLoader.requestTexture(ArcFurnaceRenderer.HOT_METLA_STILL);
+
+		ArcFurnaceRenderer.ELECTRODES = DynamicModel.createSided(
+				new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/arc_furnace_electrodes.obj.ie"),
+				"arc_furnace_electrodes", ModelType.IE_OBJ
+		);
+		AutoWorkbenchRenderer.DYNAMIC = DynamicModel.createSided(
+				new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/auto_workbench_animated.obj.ie"),
+				"auto_workbench_animated", ModelType.IE_OBJ
+		);
+		BottlingMachineRenderer.DYNAMIC = DynamicModel.createSided(
+				new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/bottling_machine_animated.obj.ie"),
+				"bottling_machine", ModelType.IE_OBJ
+		);
+		BucketWheelRenderer.WHEEL = DynamicModel.createSimple(
+				new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/bucket_wheel.obj.ie"),
+				"bucket_wheel", ModelType.IE_OBJ
+		);
+		CrusherRenderer.BARREL = DynamicModel.createSided(
+				new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/crusher_drum.obj"),
+				"crusher_barrel", ModelType.OBJ
+		);
+		DieselGeneratorRenderer.FAN = DynamicModel.createSided(
+				new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/diesel_generator_fan.obj"),
+				"diesel_gen", ModelType.OBJ
+		);
+		MetalPressRenderer.PISTON = DynamicModel.createSimple(
+				new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/metal_press_piston.obj"),
+				"metal_press_piston", ModelType.OBJ
+		);
+		MixerRenderer.AGITATOR = DynamicModel.createSided(
+				new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/mixer_agitator.obj"),
+				"mixer", ModelType.OBJ
+		);
+		SampleDrillRenderer.DRILL = DynamicModel.createSimple(
+				new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_device/core_drill_center.obj"),
+				"sample_drill", ModelType.OBJ
+		);
+		SqueezerRenderer.PISTON = DynamicModel.createSided(
+				new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/squeezer_piston.obj"),
+				"squeezer", ModelType.OBJ
+		);
+		WatermillRenderer.MODEL = DynamicModel.createSimple(
+				new ResourceLocation(ImmersiveEngineering.MODID, "block/wooden_device/watermill.obj.ie"),
+				"watermill", ModelType.IE_OBJ
+		);
+		WindmillRenderer.MODEL = DynamicModel.createSimple(
+				new ResourceLocation(ImmersiveEngineering.MODID, "block/wooden_device/windmill.obj.ie"),
+				"windmill", ModelType.IE_OBJ
+		);
 	}
 }

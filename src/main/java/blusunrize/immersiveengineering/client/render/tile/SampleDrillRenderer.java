@@ -8,8 +8,6 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.SampleDrillTileEntity;
@@ -24,17 +22,13 @@ import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import org.lwjgl.opengl.GL11;
 
 public class SampleDrillRenderer extends TileEntityRenderer<SampleDrillTileEntity>
 {
-	private final DynamicModel<Void> drill = DynamicModel.createSimple(
-			new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_device/core_drill_center.obj"),
-			"sample_drill", ModelType.OBJ
-	);
+	public static DynamicModel<Void> DRILL;
 
 
 	@Override
@@ -46,7 +40,7 @@ public class SampleDrillRenderer extends TileEntityRenderer<SampleDrillTileEntit
 		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 		BlockState state = tile.getWorldNonnull().getBlockState(tile.getPos());
 		BlockPos blockPos = tile.getPos();
-		IBakedModel model = drill.get(null);
+		IBakedModel model = DRILL.get(null);
 		if(state.getBlock()!=MetalDevices.sampleDrill)
 			return;
 
