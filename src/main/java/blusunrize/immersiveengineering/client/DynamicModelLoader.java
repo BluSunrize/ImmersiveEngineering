@@ -34,7 +34,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -64,11 +63,8 @@ public class DynamicModelLoader
 				state = new SimpleUVModelTransform(ImmutableMap.copyOf(unbaked.getKey().transforms), conf.uvLock);
 			IBakedModel baked = unbaked.getValue().bakeModel(evt.getModelLoader(), ModelLoader.defaultTextureGetter(),
 					state, conf.name);
-			synchronized(requestedModels)
-			{
-				for(ModelResourceLocation mrl : requestedModels.get(unbaked.getKey()))
-					evt.getModelRegistry().put(mrl, baked);
-			}
+			for(ModelResourceLocation mrl : requestedModels.get(unbaked.getKey()))
+				evt.getModelRegistry().put(mrl, baked);
 		}
 	}
 
@@ -80,18 +76,14 @@ public class DynamicModelLoader
 		IELogger.logger.debug("Loading dynamic models");
 		try
 		{
-			//apparently this is needed to prevent CMEs. TODO Figure out the threads involved and how to solve this in a nicer way.
-			synchronized(requestedModels)
+			for(ModelWithTransforms reqModel : requestedModels.keySet())
 			{
-				for(ModelWithTransforms reqModel : requestedModels.keySet())
-				{
-					BlockModel model = ExpandedBlockModelDeserializer.INSTANCE.fromJson(reqModel.model.data, BlockModel.class);
-					Set<Pair<String, String>> missingTexErrors = new HashSet<>();
-					requestedTextures.addAll(model.getTextures(DynamicModelLoader::getVanillaModel, missingTexErrors));
-					if(!missingTexErrors.isEmpty())
-						throw new RuntimeException("Missing textures: "+missingTexErrors);
-					unbakedModels.put(reqModel, model);
-				}
+				BlockModel model = ExpandedBlockModelDeserializer.INSTANCE.fromJson(reqModel.model.data, BlockModel.class);
+				Set<Pair<String, String>> missingTexErrors = new HashSet<>();
+				requestedTextures.addAll(model.getTextures(DynamicModelLoader::getVanillaModel, missingTexErrors));
+				if(!missingTexErrors.isEmpty())
+					throw new RuntimeException("Missing textures: "+missingTexErrors);
+				unbakedModels.put(reqModel, model);
 			}
 		} catch(Exception x)
 		{
@@ -104,23 +96,6 @@ public class DynamicModelLoader
 			evt.addSprite(rl);
 		for(RenderMaterial rl : requestedTextures)
 			evt.addSprite(rl.getTextureLocation());
-	}
-
-	private static Class<? extends IUnbakedModel> VANILLA_MODEL_WRAPPER;
-	private static Field BASE_MODEL;
-
-	static
-	{
-		try
-		{
-			//TODO update?
-			VANILLA_MODEL_WRAPPER = (Class<? extends IUnbakedModel>)Class.forName("net.minecraftforge.client.model.ModelLoader$VanillaModelWrapper");
-			BASE_MODEL = VANILLA_MODEL_WRAPPER.getDeclaredField("model");
-			BASE_MODEL.setAccessible(true);
-		} catch(ClassNotFoundException|NoSuchFieldException e)
-		{
-			e.printStackTrace();
-		}
 	}
 
 	@EventBusSubscriber(modid = ImmersiveEngineering.MODID, bus = Bus.FORGE)
@@ -141,21 +116,7 @@ public class DynamicModelLoader
 				p_209273_0_.name = "generation marker";
 			});
 		else
-		{
-			IUnbakedModel wrapper = ModelLoader.defaultModelGetter().apply(loc);
-			if(VANILLA_MODEL_WRAPPER.isInstance(wrapper))
-			{
-				try
-				{
-					return (BlockModel)BASE_MODEL.get(wrapper);
-				} catch(IllegalAccessException e)
-				{
-					throw new RuntimeException(e);
-				}
-			}
-			else
-				return wrapper;
-		}
+			return ModelLoader.defaultModelGetter().apply(loc);
 	}
 
 	public static void requestTexture(ResourceLocation name)
@@ -171,10 +132,7 @@ public class DynamicModelLoader
 	public static void requestModel(ModelRequest reqModel, ModelResourceLocation name,
 									Map<TransformType, TransformationMatrix> transforms)
 	{
-		synchronized(requestedModels)
-		{
-			requestedModels.put(new ModelWithTransforms(reqModel, transforms), name);
-		}
+		requestedModels.put(new ModelWithTransforms(reqModel, transforms), name);
 	}
 
 	public static class ModelRequest
@@ -197,7 +155,8 @@ public class DynamicModelLoader
 			this.data.addProperty("loader", loader.toString());
 		}
 
-		public static ModelRequest ieObj(ResourceLocation loc, int rotY) {
+		public static ModelRequest ieObj(ResourceLocation loc, int rotY)
+		{
 			return withModel(loc, new ResourceLocation(ImmersiveEngineering.MODID, "ie_obj"), rotY);
 		}
 
