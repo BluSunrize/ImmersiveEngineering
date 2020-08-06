@@ -45,18 +45,14 @@ public class ArcFurnaceRenderer extends TileEntityRenderer<ArcFurnaceTileEntity>
 {
 	private TextureAtlasSprite hotMetal_flow = null;
 	private TextureAtlasSprite hotMetal_still = null;
-	private final DynamicModel<Direction> electrodes = DynamicModel.createSided(
-			new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/arc_furnace_electrodes.obj.ie"),
-			"arc_furnace_electrodes", ModelType.IE_OBJ);
 
-	private static final ResourceLocation HOT_METLA_STILL = new ResourceLocation(ImmersiveEngineering.MODID, "block/fluid/hot_metal_still");
-	private static final ResourceLocation HOT_METLA_FLOW = new ResourceLocation(ImmersiveEngineering.MODID, "block/fluid/hot_metal_flow");
+	public static DynamicModel<Direction> ELECTRODES;
+	public static final ResourceLocation HOT_METLA_STILL = new ResourceLocation(ImmersiveEngineering.MODID, "block/fluid/hot_metal_still");
+	public static final ResourceLocation HOT_METLA_FLOW = new ResourceLocation(ImmersiveEngineering.MODID, "block/fluid/hot_metal_flow");
 
 	public ArcFurnaceRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
 	{
 		super(rendererDispatcherIn);
-		DynamicModelLoader.requestTexture(HOT_METLA_FLOW);
-		DynamicModelLoader.requestTexture(HOT_METLA_STILL);
 	}
 
 	@Override
@@ -84,7 +80,7 @@ public class ArcFurnaceRenderer extends TileEntityRenderer<ArcFurnaceTileEntity>
 		BlockState state = te.getWorld().getBlockState(blockPos);
 		if(state.getBlock()!=Multiblocks.arcFurnace)
 			return;
-		IBakedModel model = electrodes.get(te.getFacing());
+		IBakedModel model = ELECTRODES.get(te.getFacing());
 		IEObjState objState = new IEObjState(VisibilityList.show(renderedParts));
 
 		matrixStack.push();

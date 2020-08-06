@@ -118,12 +118,7 @@ public class IEManual
 		{
 			ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());
 			builder.readFromFile(new ResourceLocation(MODID, "minerals"));
-			final Function<TextSplitter, String[]> parsedContent = builder.getContent;
-			builder.setContent(textSplitter -> {
-				String[] text = parsedContent.apply(textSplitter);
-				text[2] += IEManual.getMineralVeinTexts(textSplitter);
-				return text;
-			});
+			builder.appendText(IEManual::getMineralVeinTexts);
 			ieMan.addEntry(generalCat, builder.create(), ieMan.atOffsetFrom(generalCat, "ores", 0.5));
 		}
 		ResourceLocation blueprints = new ResourceLocation(MODID, "blueprints");
@@ -276,7 +271,8 @@ public class IEManual
 		CheckResult result = VersionChecker.getResult(ModLoadingContext.get().getActiveContainer().getModInfo());
 		if(result.status!=Status.PENDING&&result.status!=Status.FAILED)
 			for(Entry<ComparableVersion, String> e : result.changes.entrySet())
-				allChanges.put(e.getKey(), addVersionToManual(currIEVer, e.getKey(), e.getValue(), true));
+				if(!allChanges.containsKey(e.getKey()))
+					allChanges.put(e.getKey(), addVersionToManual(currIEVer, e.getKey(), e.getValue(), true));
 
 		ManualInstance ieMan = ManualHelper.getManual();
 		InnerNode<ResourceLocation, ManualEntry> updateCat = ieMan.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
@@ -287,15 +283,16 @@ public class IEManual
 
 	private static ManualEntry addVersionToManual(ComparableVersion currVer, ComparableVersion version, String changes, boolean ahead)
 	{
-		String title = version.toString();
-		if(ahead)
-			title += " - "+I18n.format("ie.manual.newerVersion");
-		else if(currVer.equals(version))
-			title += " - "+I18n.format("ie.manual.currentVersion");
-
 		String text = changes.replace("\t", "  ");
 		ManualEntry.ManualEntryBuilder builder = new ManualEntryBuilder(ManualHelper.getManual());
-		builder.setContent(title, "", text);
+		builder.setContent(() -> {
+			String title = version.toString();
+			if(ahead)
+				title += " - "+I18n.format("ie.manual.newerVersion");
+			else if(currVer.equals(version))
+				title += " - "+I18n.format("ie.manual.currentVersion");
+			return title;
+		}, () -> "", () -> text);
 		builder.setLocation(new ResourceLocation(MODID, "changelog_"+version.toString()));
 		return builder.create();
 	}

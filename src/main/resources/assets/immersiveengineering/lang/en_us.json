@@ -1135,11 +1135,10 @@
   "ie.manual.entry.minerals_desc": "%1$s\nIt consists of %2$s.",
   "ie.manual.entry.mineralsDimValid": "§l%1$s§r is a mineral vein that can be found in the %2$s.",
   "ie.manual.entry.mineralsDimInvalid": "§l%1$s§r is a mineral vein that can be found anywhere but in the %2$s.",
-  "ie.manual.entry.mineralsDimAny": "§l%1$s§r is a mineral vein that can be found in any dimension.",
   "ie.manual.entry.mineral_main": "The deposits of Ore found around your world are nothing new to you. What you have so far left out of consideration though are mineral veins, which contain a mix of different ores. Due to their wide and thin spread, the average miner can't find them, but a <link;excavator;§o§nspecial §o§nmachine§r> might be able to assist with that. <&drill>To find and determine minerals in the world, you will want to craft a Core Sample Drill. Supply the machine with power and rightclick it or use redstone to activate it. It drills into the chunk and extracts a core sample which shows if and what mineral was found and its yield. The Drill consumes <config;i;coredrill_consumption> Flux/t and takes <config;i;coredrill_time> ticks to fully retrieve and analyse a sample.<br><br>The sample can also be placed as a block by sneaking and rightclicking. Using a map on the sample block will set a marker for the chunk.<br><br>The following pages list every type of vein and the ores that can be retrieved from them.",
   "ie.manual.entry.mineral_title": "Mineral Deposits",
   "ie.manual.entry.mineral_subtitle": "Oresome",
-  "ie.manual.newerVersion": "New version",
-  "ie.manual.currentVersion": "Current version",
+  "ie.manual.newerVersion": " - New!",
+  "ie.manual.currentVersion": " - Current",
   "ie.manual.entry.mineralsDimAny": "§l%1$s§r is a mineral vein that can be found in any dimension."
 }

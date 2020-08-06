@@ -277,11 +277,6 @@ public class TextSplitter
 			case "<np>":
 				return 0;
 			default:
-				if(text.startsWith("<link;"))
-				{
-					text = text.substring(text.indexOf(';')+1);
-					text = text.substring(text.indexOf(';')+1, text.lastIndexOf(';'));
-				}
 				return width.apply(text);
 		}
 	}

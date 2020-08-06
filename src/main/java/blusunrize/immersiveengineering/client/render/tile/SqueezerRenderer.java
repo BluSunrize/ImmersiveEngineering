@@ -8,9 +8,6 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
-import blusunrize.immersiveengineering.client.utils.InvertingVertexBuffer;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.SqueezerTileEntity;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -24,15 +21,12 @@ import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.model.data.EmptyModelData;
 
 public class SqueezerRenderer extends TileEntityRenderer<SqueezerTileEntity>
 {
-	private final DynamicModel<Direction> dynamic = DynamicModel.createSided(
-			new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/squeezer_piston.obj"),
-			"squeezer", ModelType.OBJ);
+	public static DynamicModel<Direction> PISTON;
 
 	public SqueezerRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
 	{
@@ -50,16 +44,12 @@ public class SqueezerRenderer extends TileEntityRenderer<SqueezerTileEntity>
 		BlockState state = te.getWorld().getBlockState(blockPos);
 		if(state.getBlock()!=Multiblocks.squeezer)
 			return;
-		IBakedModel model = dynamic.get(te.getFacing());
+		IBakedModel model = PISTON.get(te.getFacing());
 
 		matrixStack.push();
 		matrixStack.translate(.5, .5, .5);
+		bufferIn = TileRenderUtils.mirror(te, matrixStack, bufferIn);
 		IVertexBuilder buffer = bufferIn.getBuffer(RenderType.getSolid());
-		if(te.getIsMirrored())
-		{
-			matrixStack.scale(te.getFacing().getXOffset()==0?-1: 1, 1, te.getFacing().getZOffset()==0?-1: 1);
-			buffer = new InvertingVertexBuffer(4, buffer);
-		}
 
 		float piston = te.animation_piston;
 		//Smoothstep! TODO partial ticks?

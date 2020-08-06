@@ -1,3 +1,7 @@
+#### Version 1.15.2-3.1-pre
+ - Fixed mirrored machines rendering incorrectly (Malte)
+ - Fixed bucket wheels in mirrored excavators rendering incorrectly (Malte)
+
 ##### Version 1.16.1-3.1-112
 - Require Forge version 32.0.99 or later
 - Moved to new version numbering system

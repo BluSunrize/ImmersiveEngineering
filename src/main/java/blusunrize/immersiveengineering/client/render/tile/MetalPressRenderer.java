@@ -8,10 +8,8 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity.MultiblockProcess;
@@ -29,7 +27,6 @@ import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3f;
@@ -39,10 +36,7 @@ import java.util.List;
 
 public class MetalPressRenderer extends TileEntityRenderer<MetalPressTileEntity>
 {
-	private final DynamicModel<Void> piston = DynamicModel.createSimple(
-			new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/metal_press_piston.obj"),
-			"metal_press_piston", ModelType.OBJ
-	);
+	public static DynamicModel<Void> PISTON;
 
 	public MetalPressRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
 	{
@@ -60,7 +54,7 @@ public class MetalPressRenderer extends TileEntityRenderer<MetalPressTileEntity>
 		BlockState state = te.getWorld().getBlockState(blockPos);
 		if(state.getBlock()!=Multiblocks.metalPress)
 			return;
-		IBakedModel model = piston.get(null);
+		IBakedModel model = PISTON.get(null);
 
 		matrixStack.push();
 		matrixStack.translate(.5, .5, .5);

@@ -8,13 +8,11 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.client.models.obj.IESmartObjModel;
-import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
@@ -35,8 +33,6 @@ import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.client.model.data.IModelData;
@@ -48,9 +44,7 @@ import java.util.Map;
 @SuppressWarnings("deprecation")
 public class BucketWheelRenderer extends TileEntityRenderer<BucketWheelTileEntity>
 {
-	private final DynamicModel<Void> wheel = DynamicModel.createSimple(
-			new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/bucket_wheel.obj.ie"),
-			"bucket_wheel", ModelType.IE_OBJ);
+	public static DynamicModel<Void> WHEEL;
 
 	public BucketWheelRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
 	{
@@ -66,7 +60,7 @@ public class BucketWheelRenderer extends TileEntityRenderer<BucketWheelTileEntit
 		BlockState state = tile.getWorldNonnull().getBlockState(tile.getPos());
 		if(state.getBlock()!=Multiblocks.bucketWheel)
 			return;
-		IBakedModel model = wheel.get(null);
+		IBakedModel model = WHEEL.get(null);
 		Map<String, String> texMap = new HashMap<>();
 		List<String> list = Lists.newArrayList("bucketWheel");
 		synchronized(tile.digStacks)
@@ -87,9 +81,7 @@ public class BucketWheelRenderer extends TileEntityRenderer<BucketWheelTileEntit
 		matrixStack.push();
 
 		matrixStack.translate(.5, .5, .5);
-		Direction facing = tile.getFacing();
-		if(tile.getIsMirrored())
-			matrixStack.scale(facing.getAxis()==Axis.X?-1: 1, 1, facing.getAxis()==Axis.Z?-1: 1);
+		bufferIn = TileRenderUtils.mirror(tile, matrixStack, bufferIn);
 		float dir = tile.getFacing()==Direction.SOUTH?90: tile.getFacing()==Direction.NORTH?-90: tile.getFacing()==Direction.EAST?180: 0;
 		matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), dir, true));
 		float rot = tile.rotation+(float)(tile.active?IEConfig.MACHINES.excavator_speed.get()*partialTicks: 0);

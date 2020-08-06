@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.DynamicModelLoader;
 import blusunrize.immersiveengineering.client.render.tile.DynamicModel;
 import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
@@ -43,12 +42,11 @@ public class SawbladeRenderer extends EntityRenderer<SawbladeEntity>
 			new ResourceLocation(ImmersiveEngineering.MODID, "item/buzzsaw_diesel.obj.ie"),
 			"sawblade_entity", ModelType.IE_OBJ);
 
-	private static final ResourceLocation SAWBLADE = new ResourceLocation(ImmersiveEngineering.MODID, "item/sawblade_blade");
+	public static final ResourceLocation SAWBLADE = new ResourceLocation(ImmersiveEngineering.MODID, "item/sawblade_blade");
 
 	public SawbladeRenderer(EntityRendererManager renderManager)
 	{
 		super(renderManager);
-		DynamicModelLoader.requestTexture(SAWBLADE);
 	}
 
 	@Override

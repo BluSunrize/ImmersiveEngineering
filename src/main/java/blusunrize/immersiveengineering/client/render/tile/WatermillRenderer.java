@@ -8,10 +8,8 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.blocks.wooden.WatermillTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -24,7 +22,6 @@ import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.client.model.data.EmptyModelData;
@@ -34,9 +31,7 @@ import java.util.List;
 public class WatermillRenderer extends TileEntityRenderer<WatermillTileEntity>
 {
 	private static List<BakedQuad> quads;
-	private final DynamicModel<Void> model = DynamicModel.createSimple(
-			new ResourceLocation(ImmersiveEngineering.MODID, "block/wooden_device/watermill.obj.ie"),
-			"watermill", ModelType.IE_OBJ);
+	public static DynamicModel<Void> MODEL;
 
 	public WatermillRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
 	{
@@ -54,7 +49,7 @@ public class WatermillRenderer extends TileEntityRenderer<WatermillTileEntity>
 			if(state.getBlock()!=WoodenDevices.watermill)
 				return;
 			state = state.with(IEProperties.FACING_HORIZONTAL, Direction.NORTH);
-			quads = model.get(null).getQuads(state, null, Utils.RAND, EmptyModelData.INSTANCE);
+			quads = MODEL.get(null).getQuads(state, null, Utils.RAND, EmptyModelData.INSTANCE);
 		}
 		matrixStack.push();
 

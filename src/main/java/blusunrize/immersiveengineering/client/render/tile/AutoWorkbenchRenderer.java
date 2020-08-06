@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
@@ -59,10 +58,7 @@ import java.util.*;
 
 public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileEntity>
 {
-	private final DynamicModel<Direction> dynamic = DynamicModel.createSided(
-			new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/auto_workbench_animated.obj.ie"),
-			"auto_workbench_animated",
-			ModelType.IE_OBJ);
+	public static DynamicModel<Direction> DYNAMIC;
 
 	public AutoWorkbenchRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
 	{
@@ -81,13 +77,12 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 		BlockState state = te.getWorldNonnull().getBlockState(blockPos);
 		if(state.getBlock()!=Multiblocks.autoWorkbench)
 			return;
-		IBakedModel model = dynamic.get(te.getFacing());
+		IBakedModel model = DYNAMIC.get(te.getFacing());
 
 		//Outer GL Wrapping, initial translation
 		matrixStack.push();
 		matrixStack.translate(0.5, 0.5, 0.5);
-		if(te.getIsMirrored())
-			matrixStack.scale(te.getFacing().getXOffset()==0?-1: 1, 1, te.getFacing().getZOffset()==0?-1: 1);
+		bufferIn = TileRenderUtils.mirror(te, matrixStack, bufferIn);
 
 		//Item Displacement
 		float[][] itemDisplays = new float[te.processQueue.size()][];
