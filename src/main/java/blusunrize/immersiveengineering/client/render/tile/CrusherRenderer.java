@@ -8,8 +8,6 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.CrusherTileEntity;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -21,16 +19,12 @@ import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.model.data.EmptyModelData;
 
 public class CrusherRenderer extends TileEntityRenderer<CrusherTileEntity>
 {
-	private final DynamicModel<Direction> barrel = DynamicModel.createSided(
-			new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/crusher_drum.obj"),
-			"crusher_barrel", ModelType.OBJ
-	);
+	public static DynamicModel<Direction> BARREL;
 
 	public CrusherRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
 	{
@@ -49,7 +43,7 @@ public class CrusherRenderer extends TileEntityRenderer<CrusherTileEntity>
 		if(state.getBlock()!=Multiblocks.crusher)
 			return;
 		Direction dir = te.getFacing();
-		IBakedModel model = barrel.get(dir);
+		IBakedModel model = BARREL.get(dir);
 
 		boolean b = te.shouldRenderAsActive();
 		float angle = te.animation_barrelRotation+(b?18*partialTicks: 0);

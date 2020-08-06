@@ -8,9 +8,7 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.MixerTileEntity;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -21,16 +19,13 @@ import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.fluids.FluidStack;
 
 public class MixerRenderer extends TileEntityRenderer<MixerTileEntity>
 {
-	private final DynamicModel<Direction> dynamic = DynamicModel.createSided(
-			new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/mixer_agitator.obj"),
-			"mixer", ModelType.OBJ);
+	public static DynamicModel<Direction> AGITATOR;
 
 	public MixerRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
 	{
@@ -48,7 +43,7 @@ public class MixerRenderer extends TileEntityRenderer<MixerTileEntity>
 		BlockState state = te.getWorld().getBlockState(blockPos);
 		if(state.getBlock()!=Multiblocks.mixer)
 			return;
-		IBakedModel model = dynamic.get(te.getFacing());
+		IBakedModel model = AGITATOR.get(te.getFacing());
 
 		matrixStack.push();
 		matrixStack.translate(.5, .5, .5);
