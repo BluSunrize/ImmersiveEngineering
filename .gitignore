@@ -31,4 +31,3 @@ logs
 src/generated/resources/.cache/cache
 # Local gradle customizations (e.g. added mods)
 custom.gradle
-gradlewbuild.bat
