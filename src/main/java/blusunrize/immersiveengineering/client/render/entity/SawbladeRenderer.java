@@ -14,7 +14,6 @@ import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.render.tile.DynamicModel;
-import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.entities.SawbladeEntity;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -38,9 +37,7 @@ import javax.annotation.Nonnull;
 
 public class SawbladeRenderer extends EntityRenderer<SawbladeEntity>
 {
-	private final DynamicModel<Void> model = DynamicModel.createSimple(
-			new ResourceLocation(ImmersiveEngineering.MODID, "item/buzzsaw_diesel.obj.ie"),
-			"sawblade_entity", ModelType.IE_OBJ);
+	public static DynamicModel<Void> MODEL;
 
 	public static final ResourceLocation SAWBLADE = new ResourceLocation(ImmersiveEngineering.MODID, "item/sawblade_blade");
 
@@ -57,7 +54,7 @@ public class SawbladeRenderer extends EntityRenderer<SawbladeEntity>
 		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 		BlockPos blockPos = entity.func_233580_cy_();
 		BlockState state = entity.getEntityWorld().getBlockState(blockPos);
-		IBakedModel model = this.model.get(null);
+		IBakedModel model = this.MODEL.get(null);
 		IEObjState objState = new IEObjState(VisibilityList.show("blade"));
 
 		ClientUtils.bindAtlas();
