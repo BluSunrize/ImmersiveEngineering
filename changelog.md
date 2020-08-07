@@ -1,5 +1,6 @@
 ##### Version 1.14.4-3.1-pre
- - Fixed CMEs while loading dynamic models (Malte)
+- Fixed various issues with the manual (Malte)
+- Fixed CMEs while loading dynamic models (Malte)
 
 ##### Version 1.14.4-3.1-110
 - Moved to new version numbering system
