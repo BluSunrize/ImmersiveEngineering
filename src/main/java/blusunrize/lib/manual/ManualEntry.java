@@ -43,7 +43,6 @@ public class ManualEntry implements Comparable<ManualEntry>
 {
 	private final ManualInstance manual;
 	private List<ManualPage> pages;
-	private final TextSplitter splitter;
 	private final Function<TextSplitter, EntryData> getContent;
 	private String title;
 	private String subtext;
@@ -52,11 +51,10 @@ public class ManualEntry implements Comparable<ManualEntry>
 	private Int2ObjectMap<SpecialManualElement> specials;
 	private Object2IntMap<String> anchorPoints;
 
-	private ManualEntry(ManualInstance m, TextSplitter splitter, Function<TextSplitter, EntryData> getContent,
+	private ManualEntry(ManualInstance m, Function<TextSplitter, EntryData> getContent,
 						ResourceLocation location)
 	{
 		this.manual = m;
-		this.splitter = splitter;
 		this.getContent = getContent;
 		this.location = location;
 	}
@@ -66,7 +64,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 		try
 		{
 			manual.entryRenderPre();
-			splitter.clearSpecialByAnchor();
+			TextSplitter splitter = new TextSplitter(manual);
 			EntryData data = getContent.apply(splitter);
 			title = data.title;
 			subtext = data.subtext;
@@ -213,7 +211,6 @@ public class ManualEntry implements Comparable<ManualEntry>
 	public static class ManualEntryBuilder
 	{
 		ManualInstance manual;
-		TextSplitter splitter;
 		Function<TextSplitter, EntryData> getContent = null;
 		private ResourceLocation location;
 		private List<Triple<String, Integer, Supplier<? extends SpecialManualElement>>> hardcodedSpecials = new ArrayList<>();
@@ -221,13 +218,11 @@ public class ManualEntry implements Comparable<ManualEntry>
 		public ManualEntryBuilder(ManualInstance manual)
 		{
 			this.manual = manual;
-			splitter = new TextSplitter(manual);
 		}
 
 		public ManualEntryBuilder(@Nonnull ManualInstance manual, @Nonnull TextSplitter splitter)
 		{
 			this.manual = manual;
-			this.splitter = splitter;
 		}
 
 		public void addSpecialElement(String anchor, int offset, Supplier<? extends SpecialManualElement> element)
@@ -342,10 +337,9 @@ public class ManualEntry implements Comparable<ManualEntry>
 		public ManualEntry create()
 		{
 			Preconditions.checkNotNull(manual);
-			Preconditions.checkNotNull(splitter);
 			Preconditions.checkNotNull(getContent);
 			Preconditions.checkNotNull(location);
-			return new ManualEntry(manual, splitter, getContent, location);
+			return new ManualEntry(manual, getContent, location);
 		}
 
 		private static IResource getResourceNullable(ResourceLocation rl)
