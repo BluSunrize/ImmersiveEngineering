@@ -433,7 +433,7 @@ public class IEContent
 		MetalDevices.cloche = new ClocheBlock();
 		for(EnumMetals metal : new EnumMetals[]{EnumMetals.IRON, EnumMetals.STEEL, EnumMetals.ALUMINUM, EnumMetals.COPPER})
 			MetalDevices.chutes.put(metal, new GenericTileBlock("chute_"+metal.tagName(), () -> ChuteTileEntity.TYPE,
-					defaultMetalProperties, IEProperties.FACING_HORIZONTAL)
+					defaultMetalProperties, IEProperties.FACING_HORIZONTAL, BlockStateProperties.WATERLOGGED)
 					.setNotNormalBlock());
 
 		Multiblocks.cokeOven = new StoneMultiBlock("coke_oven", () -> CokeOvenTileEntity.TYPE);
