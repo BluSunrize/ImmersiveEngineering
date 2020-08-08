@@ -22,6 +22,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.item.ItemStack;
 import net.minecraft.resources.IResource;
+import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.IOUtils;
@@ -291,10 +292,11 @@ public class ManualEntry implements Comparable<ManualEntry>
 				ResourceLocation dataLoc = new ResourceLocation(name.getNamespace(),
 						"manual/"+name.getPath()+".json");
 				IResource resLang = getResourceNullable(langLoc);
+				IResourceManager manager = Minecraft.getInstance().getResourceManager();
 				IResource resData;
 				try
 				{
-					resData = Minecraft.getInstance().getResourceManager().getResource(dataLoc);
+					resData = FastResourceAccess.getResource(manager, dataLoc);
 				} catch(IOException e)
 				{
 					throw new RuntimeException(e);
@@ -346,7 +348,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 		{
 			try
 			{
-				return Minecraft.getInstance().getResourceManager().getResource(rl);
+				return FastResourceAccess.getResource(Minecraft.getInstance().getResourceManager(), rl);
 			} catch(IOException e)
 			{
 				return null;

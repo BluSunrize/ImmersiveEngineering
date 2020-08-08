@@ -9,6 +9,7 @@
 package blusunrize.lib.manual;
 
 import blusunrize.immersiveengineering.api.ManualHelper;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.lib.manual.ManualElementImage.ManualImage;
 import blusunrize.lib.manual.ManualEntry.ManualEntryBuilder;
 import blusunrize.lib.manual.Tree.AbstractNode;
@@ -248,7 +249,11 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 		if(ManualScreen.lastActiveManual!=null&&ManualScreen.lastActiveManual.getManual()==this)
 			return ManualScreen.lastActiveManual;
 		if(!initialized)
+		{
+			long start = System.currentTimeMillis();
 			reload();
+			IELogger.logger.info("Manual reload took {} ms", System.currentTimeMillis()-start);
+		}
 		return new ManualScreen(this, texture);
 	}
 
