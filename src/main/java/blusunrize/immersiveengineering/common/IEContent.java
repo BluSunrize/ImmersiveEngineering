@@ -422,7 +422,7 @@ public class IEContent
 				defaultMetalProperties, IEProperties.FACING_HORIZONTAL)
 				.setNotNormalBlock()
 				.setBlockLayer(BlockRenderLayer.SOLID, BlockRenderLayer.TRANSLUCENT);
-		MetalDevices.fluidPipe = new GenericTileBlock("fluid_pipe", () -> FluidPipeTileEntity.TYPE, defaultMetalProperties)
+		MetalDevices.fluidPipe = new GenericTileBlock("fluid_pipe", () -> FluidPipeTileEntity.TYPE, defaultMetalProperties, BlockStateProperties.WATERLOGGED)
 				.setNotNormalBlock()
 				.setBlockLayer(BlockRenderLayer.CUTOUT);
 		MetalDevices.sampleDrill = new SampleDrillBlock();
