@@ -17,6 +17,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
@@ -31,7 +32,7 @@ public class PostTransformerBlock extends MiscConnectorBlock
 	public PostTransformerBlock()
 	{
 		super("post_transformer", () -> PostTransformerTileEntity.TYPE,
-				ImmutableList.of(IEProperties.FACING_HORIZONTAL),
+				ImmutableList.of(IEProperties.FACING_HORIZONTAL, BlockStateProperties.WATERLOGGED),
 				ImmutableList.of(), (b, p) -> null);
 	}
 

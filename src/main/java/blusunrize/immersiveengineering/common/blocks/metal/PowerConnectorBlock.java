@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.generic.ConnectorBlock;
 import net.minecraft.block.BlockState;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.world.IBlockReader;
@@ -25,7 +26,7 @@ public class PowerConnectorBlock extends ConnectorBlock
 
 	public PowerConnectorBlock(String voltage, boolean relay, BlockRenderLayer... layers)
 	{
-		super("connector_"+voltage.toLowerCase()+(relay?"_relay": ""), IEProperties.FACING_ALL);
+		super("connector_"+voltage.toLowerCase()+(relay?"_relay": ""), IEProperties.FACING_ALL, BlockStateProperties.WATERLOGGED);
 		this.voltage = voltage;
 		this.relay = relay;
 		if(layers.length > 0)
