@@ -33,7 +33,10 @@ import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Direction.AxisDirection;
 import net.minecraft.util.Hand;
 import net.minecraft.util.IStringSerializable;
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
@@ -73,7 +76,7 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBloc
 	@Override
 	public void onReplaced(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, BlockState newState, boolean moving)
 	{
-		if(state.getBlock() != newState.getBlock())
+		if(state.getBlock()!=newState.getBlock())
 		{
 			int dummyState = state.get(POST_SLAVE);
 			HorizontalOffset offset = state.get(HORIZONTAL_OFFSET);
@@ -154,15 +157,18 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBloc
 		if(dummy==3&&offset==HorizontalOffset.NONE&&side.getAxis()!=Axis.Y)
 		{
 			BlockPos offsetPos = pos.offset(side);
+			BlockItemUseContext context = new BlockItemUseContext(new ItemUseContext(player, hand, hit));
 			//No Arms if space is blocked
-			if(!world.isAirBlock(offsetPos))
+			if(!world.getBlockState(offsetPos).isReplaceable(context))
 				return false;
 			//No Arms if perpendicular arms exist
 			for(Direction forbidden : ImmutableList.of(side.rotateY(), side.rotateYCCW()))
 				if(hasArmFor(pos, forbidden, world))
 					return false;
 
-			world.setBlockState(offsetPos, getDefaultState().with(POST_SLAVE, 3).with(HORIZONTAL_OFFSET, HorizontalOffset.get(side)));
+			BlockState arm_state = this.getStateForPlacement(context).with(POST_SLAVE, 3)
+					.with(HORIZONTAL_OFFSET, HorizontalOffset.get(side));
+			world.setBlockState(offsetPos, arm_state);
 			changed = true;
 		}
 		else if(dummy==3&&offset!=HorizontalOffset.NONE)
