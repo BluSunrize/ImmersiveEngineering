@@ -349,6 +349,8 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 			return getUpgrades(stack).getBoolean("scope");
 		if(group.equals("upgrade_speed"))
 			return getUpgrades(stack).getDouble("speed") > 0;
+		if(group.equals("barrel_top"))
+			return getUpgrades(stack).getDouble("speed") <= 0;
 		return true;
 	}
 
