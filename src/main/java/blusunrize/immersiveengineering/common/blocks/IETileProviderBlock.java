@@ -207,29 +207,29 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 	}
 
 	@Override
-	public boolean hammerUseSide(Direction side, PlayerEntity player, World w, BlockPos pos, BlockRayTraceResult hit)
+	public boolean hammerUseSide(Direction side, PlayerEntity player, Hand hand, World w, BlockPos pos, BlockRayTraceResult hit)
 	{
 		TileEntity tile = w.getTileEntity(pos);
 		if(tile instanceof IHammerInteraction)
 		{
-			boolean b = ((IHammerInteraction)tile).hammerUseSide(side, player, hit.getHitVec());
+			boolean b = ((IHammerInteraction)tile).hammerUseSide(side, player, hand, hit.getHitVec());
 			if(b)
 				return true;
 		}
-		return super.hammerUseSide(side, player, w, pos, hit);
+		return super.hammerUseSide(side, player, hand, w, pos, hit);
 	}
 
 	@Override
-	public boolean screwdriverUseSide(Direction side, PlayerEntity player, World w, BlockPos pos, BlockRayTraceResult hit)
+	public boolean screwdriverUseSide(Direction side, PlayerEntity player, Hand hand, World w, BlockPos pos, BlockRayTraceResult hit)
 	{
 		TileEntity tile = w.getTileEntity(pos);
 		if(tile instanceof IScrewdriverInteraction)
 		{
-			boolean b = ((IScrewdriverInteraction)tile).screwdriverUseSide(side, player, hit.getHitVec());
+			boolean b = ((IScrewdriverInteraction)tile).screwdriverUseSide(side, player, hand, hit.getHitVec());
 			if(b)
 				return true;
 		}
-		return super.screwdriverUseSide(side, player, w, pos, hit);
+		return super.screwdriverUseSide(side, player, hand, w, pos, hit);
 	}
 
 	@Override

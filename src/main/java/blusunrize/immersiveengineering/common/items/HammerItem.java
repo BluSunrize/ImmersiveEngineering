@@ -171,7 +171,7 @@ public class HammerItem extends IEBaseItem implements ITool
 				return ActionResultType.SUCCESS;
 			else if(!rotate&&tile instanceof IHammerInteraction)
 			{
-				if(((IHammerInteraction)tile).hammerUseSide(side, player, context.getHitVec()))
+				if(((IHammerInteraction)tile).hammerUseSide(side, player, context.getHand(), context.getHitVec()))
 					return ActionResultType.SUCCESS;
 			}
 		}

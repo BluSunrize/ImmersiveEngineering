@@ -298,12 +298,12 @@ public class IEBlockInterfaces
 
 	public interface IHammerInteraction
 	{
-		boolean hammerUseSide(Direction side, PlayerEntity player, Vec3d hitVec);
+		boolean hammerUseSide(Direction side, PlayerEntity player, Hand hand, Vec3d hitVec);
 	}
 
 	public interface IScrewdriverInteraction
 	{
-		boolean screwdriverUseSide(Direction side, PlayerEntity player, Vec3d hitVec);
+		boolean screwdriverUseSide(Direction side, PlayerEntity player, Hand hand, Vec3d hitVec);
 	}
 
 	public interface IPlacementInteraction

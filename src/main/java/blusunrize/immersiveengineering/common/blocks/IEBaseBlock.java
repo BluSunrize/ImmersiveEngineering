@@ -307,18 +307,18 @@ public class IEBaseBlock extends Block implements IIEBlock, IWaterLoggable
 	{
 		ItemStack activeStack = player.getHeldItem(hand);
 		if(activeStack.getToolTypes().contains(HammerItem.HAMMER_TOOL))
-			return hammerUseSide(hit.getFace(), player, world, pos, hit);
+			return hammerUseSide(hit.getFace(), player, hand, world, pos, hit);
 		if(activeStack.getToolTypes().contains(ScrewdriverItem.SCREWDRIVER_TOOL))
-			return screwdriverUseSide(hit.getFace(), player, world, pos, hit);
+			return screwdriverUseSide(hit.getFace(), player, hand, world, pos, hit);
 		return super.onBlockActivated(state, world, pos, player, hand, hit);
 	}
 
-	public boolean hammerUseSide(Direction side, PlayerEntity player, World w, BlockPos pos, BlockRayTraceResult hit)
+	public boolean hammerUseSide(Direction side, PlayerEntity player, Hand hand, World w, BlockPos pos, BlockRayTraceResult hit)
 	{
 		return false;
 	}
 
-	public boolean screwdriverUseSide(Direction side, PlayerEntity player, World w, BlockPos pos, BlockRayTraceResult hit)
+	public boolean screwdriverUseSide(Direction side, PlayerEntity player, Hand hand, World w, BlockPos pos, BlockRayTraceResult hit)
 	{
 		return false;
 	}
