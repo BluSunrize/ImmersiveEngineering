@@ -26,6 +26,7 @@ import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.IntegerProperty;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Direction.AxisDirection;
@@ -58,7 +59,7 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBloc
 
 	public PostBlock(String name, Properties blockProps)
 	{
-		super(name, blockProps, BlockItemIE::new, POST_SLAVE, HORIZONTAL_OFFSET);
+		super(name, blockProps, BlockItemIE::new, POST_SLAVE, HORIZONTAL_OFFSET, BlockStateProperties.WATERLOGGED);
 		setNotNormalBlock();
 		setMobility(PushReaction.BLOCK);
 		lightOpacity = 0;

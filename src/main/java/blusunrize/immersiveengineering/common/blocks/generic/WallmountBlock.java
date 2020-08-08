@@ -15,6 +15,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.EnumProperty;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.IStringSerializable;
@@ -40,7 +41,7 @@ public class WallmountBlock extends IEBaseBlock
 	public WallmountBlock(String name, Properties blockProps)
 	{
 		super(name, blockProps, BlockItemIE::new, IEProperties.FACING_HORIZONTAL,
-				ORIENTATION);
+				ORIENTATION, BlockStateProperties.WATERLOGGED);
 		setNotNormalBlock();
 		lightOpacity = 0;
 	}
