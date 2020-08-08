@@ -253,11 +253,6 @@ public class ClientProxy extends CommonProxy
 		//CLOTH
 		ClientRegistry.bindTileEntityRenderer(ShaderBannerTileEntity.TYPE, ShaderBannerRenderer::new);
 
-		/* Initialize Dynamic Models */
-		RedstoneConveyor.MODEL_PANEL = DynamicModel.createSided(
-				new ResourceLocation(ImmersiveEngineering.MODID, "block/conveyor_redstone.obj.ie"),
-				"conveyor_redstone", ModelType.IE_OBJ);
-
 		/*Colours*/
 		for(Item item : IEContent.registeredIEItems)
 			if(item instanceof IColouredItem&&((IColouredItem)item).hasCustomItemColours())
@@ -764,6 +759,14 @@ public class ClientProxy extends CommonProxy
 		WindmillRenderer.MODEL = DynamicModel.createSimple(
 				new ResourceLocation(ImmersiveEngineering.MODID, "block/wooden_device/windmill.obj.ie"),
 				"windmill", ModelType.IE_OBJ
+		);
+		RedstoneConveyor.MODEL_PANEL = DynamicModel.createSided(
+				new ResourceLocation(ImmersiveEngineering.MODID, "block/conveyor_redstone.obj.ie"),
+				"conveyor_redstone", ModelType.IE_OBJ
+		);
+		SawbladeRenderer.MODEL = DynamicModel.createSimple(
+				new ResourceLocation(ImmersiveEngineering.MODID, "item/buzzsaw_diesel.obj.ie"),
+				"sawblade_entity", ModelType.IE_OBJ
 		);
 	}
 }

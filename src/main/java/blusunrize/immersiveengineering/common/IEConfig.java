@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.wires.WireLogger;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
+import com.electronwill.nightconfig.core.Config;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -24,6 +25,7 @@ import net.minecraftforge.fml.config.ModConfig;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -629,6 +631,24 @@ public class IEConfig
 		ALL = builder.build();
 	}
 
+	private static Config rawConfig;
+
+	public static Config getRawConfig()
+	{
+		if(rawConfig==null)
+			try
+			{
+				Field childConfig = ForgeConfigSpec.class.getDeclaredField("childConfig");
+				childConfig.setAccessible(true);
+				rawConfig = (Config)childConfig.get(IEConfig.ALL);
+				Preconditions.checkNotNull(rawConfig);
+			} catch(Exception x)
+			{
+				throw new RuntimeException(x);
+			}
+		return rawConfig;
+	}
+
 	private static double[] toDoubleArray(ConfigValue<List<? extends Double>> in)
 	{
 		Double[] temp = in.get().toArray(new Double[0]);
@@ -661,6 +681,7 @@ public class IEConfig
 		else
 			wireLoggerLevel = Level.WARN;
 		Configurator.setLevel(WireLogger.logger.getName(), wireLoggerLevel);
+		rawConfig = null;
 	}
 
 	@SubscribeEvent
