@@ -25,9 +25,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.common.ForgeConfigSpec;
 
-import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -305,16 +303,7 @@ public class IEManualInstance extends ManualInstance
 	public String formatConfigEntry(String rep, String splitKey)
 	{
 		//TODO forge PR or wait for Lex to fix this
-		Config actualCfg;
-		try
-		{
-			Field childConfig = ForgeConfigSpec.class.getDeclaredField("childConfig");
-			childConfig.setAccessible(true);
-			actualCfg = (Config)childConfig.get(IEConfig.ALL);
-		} catch(IllegalAccessException|NoSuchFieldException e)
-		{
-			throw new RuntimeException(e);
-		}
+		Config actualCfg = IEConfig.getRawConfig();
 		String[] segment = rep.substring(0, rep.length()-1).split(splitKey);
 		if(segment.length < 3)
 			return "~ERROR0~";

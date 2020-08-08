@@ -26,6 +26,7 @@ public class IERenderTypes
 	public static final RenderType VEIN_MARKER;
 	public static final RenderType POSITION_COLOR_TEX_LIGHTMAP;
 	public static final RenderType POSITION_COLOR_LIGHTMAP;
+	public static final RenderType ITEM_DAMAGE_BAR;
 	protected static final RenderState.ShadeModelState SHADE_ENABLED = new RenderState.ShadeModelState(true);
 	protected static final RenderState.TextureState BLOCK_SHEET_MIPPED = new RenderState.TextureState(AtlasTexture.LOCATION_BLOCKS_TEXTURE, false, true);
 	protected static final RenderState.LightmapState LIGHTMAP_DISABLED = new RenderState.LightmapState(false);
@@ -33,6 +34,10 @@ public class IERenderTypes
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 	}, RenderSystem::disableBlend);
+	protected static final RenderState.TransparencyState NO_TRANSPARENCY = new RenderState.TransparencyState(
+			"no_transparency",
+			RenderSystem::disableBlend, () -> {
+	});
 	protected static final RenderState.DepthTestState DEPTH_ALWAYS = new RenderState.DepthTestState("always", GL11.GL_ALWAYS);
 
 	static
@@ -134,6 +139,18 @@ public class IERenderTypes
 				RenderType.State.getBuilder()
 						.texture(new TextureState())
 						.lightmap(new LightmapState(true))
+						.build(false)
+		);
+		ITEM_DAMAGE_BAR = RenderType.makeType(
+				ImmersiveEngineering.MODID+":item_damage_bar",
+				DefaultVertexFormats.POSITION_COLOR,
+				GL11.GL_QUADS,
+				256,
+				RenderType.State.getBuilder()
+						.depthTest(DEPTH_ALWAYS)
+						.texture(new TextureState())
+						.alpha(new AlphaState(0))
+						.transparency(NO_TRANSPARENCY)
 						.build(false)
 		);
 	}
@@ -257,7 +274,8 @@ public class IERenderTypes
 				in,
 				"no_lighting",
 				RenderSystem::disableLighting,
-				RenderSystem::enableLighting
+				() -> {
+				}
 		);
 	}
 
@@ -279,31 +297,24 @@ public class IERenderTypes
 	)
 	{
 		return type -> {
-			if(type!=RenderType.getGlint()&&type!=RenderType.getEntityGlint())
-				return in.getBuffer(new RenderType(
-						ImmersiveEngineering.MODID+":"+type+"_"+name,
-						type.getVertexFormat(),
-						type.getDrawMode(),
-						type.getBufferSize(),
-						type.isUseDelegate(),
-						false, // needsSorting is private and shouldn't be too relevant here
-						() -> {
-							type.setupRenderState();
-							setup.run();
-						},
-						() -> {
-							teardown.run();
-							type.clearRenderState();
-						}
-				)
-				{
-				});
-			else
-				// Glint required a second, non-reference-equal vertex builder. Both receive the same data. Returning
-				// a dummy builder here will cause the glint to not be rendered, but prevents crashes. If rendering
-				// glint becomes important in situations using this method in the future this will need to be
-				// reimplemented.
-				return new DummyVertexBuilder();
+			return in.getBuffer(new RenderType(
+					ImmersiveEngineering.MODID+":"+type+"_"+name,
+					type.getVertexFormat(),
+					type.getDrawMode(),
+					type.getBufferSize(),
+					type.isUseDelegate(),
+					false, // needsSorting is private and shouldn't be too relevant here
+					() -> {
+						type.setupRenderState();
+						setup.run();
+					},
+					() -> {
+						teardown.run();
+						type.clearRenderState();
+					}
+			)
+			{
+			});
 		};
 	}
 }

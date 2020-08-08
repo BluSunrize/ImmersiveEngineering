@@ -1,6 +1,10 @@
-#### Version 1.15.2-3.1-pre
+##### Version 1.15.2-3.1-pre
  - Fixed mirrored machines rendering incorrectly (Malte)
  - Fixed bucket wheels in mirrored excavators rendering incorrectly (Malte)
+ - Fixed crash when holding a drill with a damaged head (Malte)
+
+##### Version 1.14.4-3.1-pre
+ - Fixed CMEs while loading dynamic models (Malte)
 
 ##### Version 1.14.4-3.1-pre
  - Fixed CMEs while loading dynamic models (Malte)

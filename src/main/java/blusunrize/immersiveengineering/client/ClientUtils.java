@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.Connection.RenderData;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.client.models.SmartLightingQuad;
+import blusunrize.immersiveengineering.client.utils.BatchingRenderTypeBuffer;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.items.*;
@@ -1273,10 +1274,48 @@ public class ClientUtils
 		throw new IllegalArgumentException(String.valueOf(d));
 	}
 
-	public static void renderItemWithOverlayIntoGUI(ItemStack stack, int x, int y)
+	public static void renderItemWithOverlayIntoGUI(IRenderTypeBuffer buffer, MatrixStack transform,
+													ItemStack stack, int x, int y)
 	{
-		mc().getItemRenderer().renderItemAndEffectIntoGUI(stack, x, y);
-		mc().getItemRenderer().renderItemOverlays(mc().fontRenderer, stack, x, y);
+		buffer = IERenderTypes.disableLighting(buffer);
+		transform.push();
+		transform.translate(x, y, 100);
+		transform.push();
+		transform.translate(8, 8, 0);
+		transform.scale(1, -1, 1);
+		transform.scale(16, 16, 16);
+		BatchingRenderTypeBuffer batchBuffer = new BatchingRenderTypeBuffer();
+		mc().getItemRenderer().renderItem(stack, TransformType.GUI, 0xf000f0, OverlayTexture.NO_OVERLAY,
+				transform, batchBuffer);
+		batchBuffer.pipe(buffer);
+		transform.pop();
+		renderDurabilityBar(stack, buffer, transform);
+		transform.pop();
+	}
+
+	public static void renderDurabilityBar(ItemStack stack, IRenderTypeBuffer buffer, MatrixStack transform)
+	{
+		if(!stack.isEmpty()&&stack.getItem().showDurabilityBar(stack))
+		{
+			double health = stack.getItem().getDurabilityForDisplay(stack);
+			int i = Math.round(13.0F-(float)health*13.0F);
+			int j = stack.getItem().getRGBDurabilityForDisplay(stack);
+			draw(transform, buffer, 2, 13, 13, 2, 0, 0, 0);
+			draw(transform, buffer, 2, 13, i, 1, j >> 16&255, j >> 8&255, j&255);
+		}
+	}
+
+	private static void draw(MatrixStack transform, IRenderTypeBuffer buffer, int x, int y, int width, int height, int red, int green, int blue)
+	{
+		IVertexBuilder builder = buffer.getBuffer(IERenderTypes.ITEM_DAMAGE_BAR);
+		transform.push();
+		transform.translate(x, y, 0);
+		Matrix4f mat = transform.getLast().getMatrix();
+		builder.pos(mat, 0, 0, 0).color(red, green, blue, 255).endVertex();
+		builder.pos(mat, 0, height, 0).color(red, green, blue, 255).endVertex();
+		builder.pos(mat, width, height, 0).color(red, green, blue, 255).endVertex();
+		builder.pos(mat, width, 0, 0).color(red, green, blue, 255).endVertex();
+		transform.pop();
 	}
 
 	public static IFormattableTextComponent applyFormat(ITextComponent component, TextFormatting... color)
