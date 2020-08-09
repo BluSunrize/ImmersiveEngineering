@@ -117,7 +117,7 @@ public class SawbladeEntity extends IEProjectileEntity
 				Entity hit = ((EntityRayTraceResult)mop).getEntity();
 				Entity shooter = getShooter();
 				// todo: make this configurable?
-				hit.attackEntityFrom(IEDamageSources.causeSawbladeDamage(this, shooter), 10.0f);
+				hit.attackEntityFrom(IEDamageSources.causeSawbladeDamage(this, shooter), 12.0f);
 			}
 			int dmg = Math.round(getAmmo().getMaxDamage()*.05f);
 			Entity shooter = getShooter();

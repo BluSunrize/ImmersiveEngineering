@@ -846,10 +846,10 @@ public class IEContent
 
 		ChemthrowerEffects.register();
 
-		RailgunHandler.registerProjectileProperties(Ingredient.fromTag(IETags.ironRod), 15, 1.25).setColourMap(new int[][]{{0xd8d8d8, 0xd8d8d8, 0xd8d8d8, 0xa8a8a8, 0x686868, 0x686868}});
-		RailgunHandler.registerProjectileProperties(Ingredient.fromTag(IETags.aluminumRod), 13, 1.05).setColourMap(new int[][]{{0xd8d8d8, 0xd8d8d8, 0xd8d8d8, 0xa8a8a8, 0x686868, 0x686868}});
-		RailgunHandler.registerProjectileProperties(Ingredient.fromTag(IETags.steelRod), 18, 1.25).setColourMap(new int[][]{{0xb4b4b4, 0xb4b4b4, 0xb4b4b4, 0x7a7a7a, 0x555555, 0x555555}});
-		RailgunHandler.registerProjectileProperties(new ItemStack(IEItems.Misc.graphiteElectrode), 24, .9).setColourMap(new int[][]{{0x242424, 0x242424, 0x242424, 0x171717, 0x171717, 0x0a0a0a}});
+		RailgunHandler.registerProjectileProperties(Ingredient.fromTag(IETags.ironRod), 16, 1.25).setColourMap(new int[][]{{0xd8d8d8, 0xd8d8d8, 0xd8d8d8, 0xa8a8a8, 0x686868, 0x686868}});
+		RailgunHandler.registerProjectileProperties(Ingredient.fromTag(IETags.aluminumRod), 10, 1.05).setColourMap(new int[][]{{0xd8d8d8, 0xd8d8d8, 0xd8d8d8, 0xa8a8a8, 0x686868, 0x686868}});
+		RailgunHandler.registerProjectileProperties(Ingredient.fromTag(IETags.steelRod), 24, 1.25).setColourMap(new int[][]{{0xb4b4b4, 0xb4b4b4, 0xb4b4b4, 0x7a7a7a, 0x555555, 0x555555}});
+		RailgunHandler.registerProjectileProperties(new ItemStack(IEItems.Misc.graphiteElectrode), 30, .9).setColourMap(new int[][]{{0x242424, 0x242424, 0x242424, 0x171717, 0x171717, 0x0a0a0a}});
 		RailgunHandler.registerProjectileProperties(Ingredient.fromItems(IEItems.Tools.sawblade), new RailgunHandler.RailgunProjectileProperties(0, 0)
 		{
 			@Override
@@ -859,7 +859,7 @@ public class IEContent
 				return new SawbladeEntity(shooter.getEntityWorld(), shooter, look.x*20, look.y*20, look.z*20, ammo);
 			}
 		});
-		RailgunHandler.registerProjectileProperties(Ingredient.fromTag(Tags.Items.RODS_BLAZE), new RailgunProjectileProperties(12, 1.05)
+		RailgunHandler.registerProjectileProperties(Ingredient.fromTag(Tags.Items.RODS_BLAZE), new RailgunProjectileProperties(10, 1.05)
 		{
 			@Override
 			public boolean overrideHitEntity(Entity entityHit, Entity shooter)
