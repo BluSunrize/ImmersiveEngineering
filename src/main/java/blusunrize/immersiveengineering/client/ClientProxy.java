@@ -147,6 +147,7 @@ public class ClientProxy extends CommonProxy
 	public static boolean stencilBufferEnabled = false;
 	public static KeyBinding keybind_magnetEquip = new KeyBinding("key.immersiveengineering.magnetEquip", GLFW.GLFW_KEY_S, "key.categories.immersiveengineering");
 	public static KeyBinding keybind_chemthrowerSwitch = new KeyBinding("key.immersiveengineering.chemthrowerSwitch", -1, "key.categories.immersiveengineering");
+	public static KeyBinding keybind_railgunAmmo = new KeyBinding("key.immersiveengineering.railgunAmmo", GLFW.GLFW_KEY_R, "key.categories.immersiveengineering");
 
 	@Override
 	public void modConstruction()
@@ -228,10 +229,14 @@ public class ClientProxy extends CommonProxy
 			}
 		});
 		ClientRegistry.registerKeyBinding(keybind_magnetEquip);
-		ShaderHelper.initShaders();
+
+		keybind_railgunAmmo.setKeyConflictContext(KeyConflictContext.IN_GAME);
+		ClientRegistry.registerKeyBinding(keybind_railgunAmmo);
 
 		keybind_chemthrowerSwitch.setKeyConflictContext(KeyConflictContext.IN_GAME);
 		ClientRegistry.registerKeyBinding(keybind_chemthrowerSwitch);
+
+		ShaderHelper.initShaders();
 
 		TeslaCoilTileEntity.effectMap = ArrayListMultimap.create();
 

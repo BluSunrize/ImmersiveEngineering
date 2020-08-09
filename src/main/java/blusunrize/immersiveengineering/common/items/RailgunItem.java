@@ -116,12 +116,12 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 		if(slotChanged)
 			return true;
 		LazyOptional<ShaderWrapper> wrapperOld = oldStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
-		LazyOptional<Boolean> sameShader = wrapperOld.map(wOld->{
+		LazyOptional<Boolean> sameShader = wrapperOld.map(wOld -> {
 			LazyOptional<ShaderWrapper> wrapperNew = newStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
-			return wrapperNew.map(w->ItemStack.areItemStacksEqual(wOld.getShaderItem(), w.getShaderItem()))
+			return wrapperNew.map(w -> ItemStack.areItemStacksEqual(wOld.getShaderItem(), w.getShaderItem()))
 					.orElse(true);
 		});
-		if (!sameShader.orElse(true))
+		if(!sameShader.orElse(true))
 			return true;
 		return super.shouldCauseReequipAnimation(oldStack, newStack, slotChanged);
 	}
@@ -188,7 +188,7 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 		int energy = IEConfig.TOOLS.railgun_consumption.get();
 		float energyMod = 1+this.getUpgrades(stack).getFloat("consumption");
 		energy = (int)(energy*energyMod);
-		if(this.extractEnergy(stack, energy, true)==energy&&!findAmmo(player).isEmpty())
+		if(this.extractEnergy(stack, energy, true)==energy&&!findAmmo(stack, player).isEmpty())
 		{
 			player.setActiveHand(hand);
 			player.world.playSound(null, player.posX, player.posY, player.posZ, getChargeTime(stack) <= 20?IESounds.chargeFast: IESounds.chargeSlow, SoundCategory.PLAYERS, 1.5f, 1f);
@@ -227,7 +227,7 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 			energy = (int)(energy*energyMod);
 			if(this.extractEnergy(stack, energy, true)==energy)
 			{
-				ItemStack ammo = findAmmo((PlayerEntity)user);
+				ItemStack ammo = findAmmo(stack, (PlayerEntity)user);
 				if(!ammo.isEmpty())
 				{
 					Vec3d vec = user.getLookVec();
@@ -254,20 +254,70 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 		}
 	}
 
-	public static ItemStack findAmmo(PlayerEntity player)
+	public static ItemStack findAmmo(ItemStack railgun, PlayerEntity player)
 	{
+		// Check for cached slot
+		if(ItemNBTHelper.hasKey(railgun, "ammo_slot"))
+		{
+			int slot = ItemNBTHelper.getInt(railgun, "ammo_slot");
+			ItemStack ammo = findAmmoInSlot(player, slot);
+			if(!ammo.isEmpty())
+				return ammo;
+		}
+
+		// Find it otherwise
 		if(isAmmo(player.getHeldItem(Hand.OFF_HAND)))
+		{
+			ItemNBTHelper.putInt(railgun, "ammo_slot", 0);
 			return player.getHeldItem(Hand.OFF_HAND);
+		}
 		else if(isAmmo(player.getHeldItem(Hand.MAIN_HAND)))
+		{
+			ItemNBTHelper.putInt(railgun, "ammo_slot", 1);
 			return player.getHeldItem(Hand.MAIN_HAND);
+		}
 		else
 			for(int i = 0; i < player.inventory.getSizeInventory(); i++)
 			{
 				ItemStack itemstack = player.inventory.getStackInSlot(i);
 				if(isAmmo(itemstack))
+				{
+					ItemNBTHelper.putInt(railgun, "ammo_slot", 2+i);
 					return itemstack;
+				}
 			}
 		return ItemStack.EMPTY;
+	}
+
+	public static ItemStack findAmmoInSlot(PlayerEntity player, int slot)
+	{
+		ItemStack ammo = ItemStack.EMPTY;
+		if(slot==0||slot==1)
+			ammo = player.getHeldItem(slot==0?Hand.MAIN_HAND: Hand.OFF_HAND);
+		else if(slot > 1&&slot-2 < player.inventory.getSizeInventory())
+			ammo = player.inventory.getStackInSlot(slot-2);
+		if(isAmmo(ammo))
+			return ammo;
+		return ItemStack.EMPTY;
+	}
+
+	public static void nextAmmo(ItemStack railgun, PlayerEntity player)
+	{
+		if(ItemNBTHelper.hasKey(railgun, "ammo_slot"))
+		{
+			int slot = ItemNBTHelper.getInt(railgun, "ammo_slot");
+			int count = player.inventory.getSizeInventory()+2;
+			for(int i = 1; i < count; i++)
+			{
+				int actualSlot = (slot+i)%count;
+				if(!findAmmoInSlot(player, actualSlot).isEmpty())
+				{
+					ItemNBTHelper.putInt(railgun, "ammo_slot", actualSlot);
+					player.inventory.markDirty();
+					return;
+				}
+			}
+		}
 	}
 
 	public static boolean isAmmo(ItemStack stack)
