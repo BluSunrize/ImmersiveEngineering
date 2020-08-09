@@ -867,6 +867,12 @@ public class IEContent
 				entityHit.setFire(5);
 				return false;
 			}
+
+			@Override
+			public double getBreakChance(Entity shooter, ItemStack ammo)
+			{
+				return 1;
+			}
 		}.setColourMap(new int[][]{{0xfff32d, 0xffc100, 0xb36b19, 0xbf5a00, 0xbf5a00, 0x953300}}));
 
 		ExternalHeaterHandler.defaultFurnaceEnergyCost = IEConfig.MACHINES.heater_consumption.get();

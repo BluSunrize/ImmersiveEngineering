@@ -23,6 +23,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
@@ -129,16 +130,22 @@ public class RailgunShotEntity extends IEProjectileEntity
 	{
 		if(!this.world.isRemote&&!getAmmo().isEmpty())
 		{
+			Entity shooter = getShooter();
 			if(mop instanceof EntityRayTraceResult)
 			{
 				Entity hit = ((EntityRayTraceResult)mop).getEntity();
 				if(getAmmoProperties()!=null)
 				{
-					Entity shooter = getShooter();
 					if(!getAmmoProperties().overrideHitEntity(hit, shooter))
 						hit.attackEntityFrom(IEDamageSources.causeRailgunDamage(this, shooter),
 								(float)(getAmmoProperties().damage*IEConfig.TOOLS.railgun_damage.get()));
 				}
+			}
+			else if(mop instanceof BlockRayTraceResult)
+			{
+				double breakRoll = this.rand.nextDouble();
+				if(breakRoll <= getAmmoProperties().getBreakChance(shooter, ammo))
+					this.remove();
 			}
 		}
 	}

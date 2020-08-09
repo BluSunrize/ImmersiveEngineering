@@ -78,5 +78,13 @@ public class RailgunHandler
 		{
 			return null;
 		}
+
+		/**
+		 * @return the chance for the projectile to break after impacting a wall
+		 */
+		public double getBreakChance(Entity shooter, ItemStack ammo)
+		{
+			return .25;
+		}
 	}
 }
