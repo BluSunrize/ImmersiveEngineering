@@ -1,6 +1,8 @@
 ##### Version 1.14.4-3.1-pre
 - Fixed various issues with the manual (Malte)
 - Fixed CMEs while loading dynamic models (Malte)
+- Fixed warning about missing command argument serializer (Malte)
+- Fixed multiblocks not forming when using the wrong steel blocks (Malte)
 
 ##### Version 1.14.4-3.1-110
 - Moved to new version numbering system
