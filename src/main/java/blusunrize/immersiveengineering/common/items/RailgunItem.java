@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryEntry;
 import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler;
+import blusunrize.immersiveengineering.api.tool.RailgunHandler.RailgunProjectileProperties;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
@@ -34,6 +35,7 @@ import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Container;
@@ -230,12 +232,13 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 				ItemStack ammo = findAmmo(stack, (PlayerEntity)user);
 				if(!ammo.isEmpty())
 				{
+					ItemStack ammoConsumed = ammo.split(1);
+					RailgunProjectileProperties projectileProperties = RailgunHandler.getProjectileProperties(ammoConsumed);
 					Vec3d vec = user.getLookVec();
 					float speed = 20;
-					RailgunShotEntity shot = new RailgunShotEntity(user.world, user, vec.x*speed, vec.y*speed, vec.z*speed, Utils.copyStackWithAmount(ammo, 1));
-					ammo.shrink(1);
-					if(ammo.getCount() <= 0)
-						((PlayerEntity)user).inventory.deleteStack(ammo);
+					Entity shot = projectileProperties.overrideProjectile(user, stack, ammoConsumed);
+					if(shot==null)
+						shot = new RailgunShotEntity(user.world, user, vec.x*speed, vec.y*speed, vec.z*speed, ammoConsumed);
 					user.world.playSound(null, user.posX, user.posY, user.posZ, IESounds.railgunFire, SoundCategory.PLAYERS, 1, .5f+(.5f*user.getRNG().nextFloat()));
 					this.extractEnergy(stack, energy, false);
 					if(!world.isRemote)

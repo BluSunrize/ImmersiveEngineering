@@ -8,10 +8,11 @@
 
 package blusunrize.immersiveengineering.api.tool;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.util.datafix.fixes.EntityItemFrameFacing;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
@@ -21,11 +22,15 @@ public class RailgunHandler
 {
 	public static List<Pair<Ingredient, RailgunProjectileProperties>> projectilePropertyMap = new ArrayList<>();
 
-	public static RailgunProjectileProperties registerProjectileProperties(Ingredient stack, double damage, double gravity)
+	public static RailgunProjectileProperties registerProjectileProperties(Ingredient stack, RailgunProjectileProperties properties)
 	{
-		RailgunProjectileProperties properties = new RailgunProjectileProperties(damage, gravity);
 		projectilePropertyMap.add(Pair.of(stack, properties));
 		return properties;
+	}
+
+	public static RailgunProjectileProperties registerProjectileProperties(Ingredient stack, double damage, double gravity)
+	{
+		return registerProjectileProperties(stack, new RailgunProjectileProperties(damage, gravity));
 	}
 
 	public static RailgunProjectileProperties registerProjectileProperties(ItemStack stack, double damage, double gravity)
@@ -65,6 +70,14 @@ public class RailgunHandler
 		public boolean overrideHitEntity(Entity entityHit, Entity shooter)
 		{
 			return false;
+		}
+
+		/**
+		 * @return an entity to be launched instead of the default railgun projectile
+		 */
+		public Entity overrideProjectile(LivingEntity shooter, ItemStack railgun, ItemStack ammo)
+		{
+			return null;
 		}
 	}
 }
