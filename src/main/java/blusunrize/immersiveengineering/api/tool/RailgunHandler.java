@@ -12,7 +12,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.datafix.fixes.EntityItemFrameFacing;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
