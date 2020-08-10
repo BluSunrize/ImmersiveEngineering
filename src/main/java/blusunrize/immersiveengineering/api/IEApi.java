@@ -96,7 +96,7 @@ public class IEApi
 
 	public static <T> T getPreferredElementbyMod(Collection<T> list, Function<T, ResourceLocation> getName)
 	{
-		T preferredStack = null;
+		T preferredStack = list.get(0);
 		int currBest = modPreference.size();
 		for(T stack : list)
 		{
@@ -105,7 +105,7 @@ public class IEApi
 			{
 				String modId = rl.getNamespace();
 				int idx = modPreference.indexOf(modId);
-				if(preferredStack==null||(idx >= 0&&idx < currBest))
+				if(idx >= 0&&idx < currBest)
 				{
 					preferredStack = stack;
 					currBest = idx;
