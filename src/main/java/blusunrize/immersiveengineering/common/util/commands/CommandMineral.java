@@ -48,7 +48,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class CommandMineral
 {
-	static
+	public static void registerArguments()
 	{
 		ArgumentTypes.register(ImmersiveEngineering.MODID+":mineral", MineralArgument.class,
 				new ArgumentSerializer<>(MineralArgument::new));

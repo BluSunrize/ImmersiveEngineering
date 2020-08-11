@@ -28,6 +28,7 @@ import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import blusunrize.immersiveengineering.common.util.advancements.IEAdvancements;
 import blusunrize.immersiveengineering.common.util.commands.CommandHandler;
+import blusunrize.immersiveengineering.common.util.commands.CommandMineral;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import blusunrize.immersiveengineering.common.world.Villages;
@@ -105,8 +106,6 @@ public class ImmersiveEngineering
 
 	public void setup(FMLCommonSetupEvent event)
 	{
-		//Previously in PREINIT
-
 		proxy.preInit();
 
 		IEAdvancements.preInit();
@@ -163,8 +162,6 @@ public class ImmersiveEngineering
 
 		new ThreadContributorSpecialsDownloader();
 
-		//Previously in INIT
-
 		proxy.preInitEnd();
 		IEContent.init();
 
@@ -208,13 +205,12 @@ public class ImmersiveEngineering
 		IEIMCHandler.init();
 		//TODO IEIMCHandler.handleIMCMessages(FMLInterModComms.fetchRuntimeMessages(this));
 
-		//Previously in POSTINIT
-
 		IEContent.postInit();
 		proxy.postInit();
 		IECompatModule.doModulesPostInit();
 		proxy.postInitEnd();
 		ShaderRegistry.compileWeight();
+		CommandMineral.registerArguments();
 	}
 
 	private int messageId = 0;
