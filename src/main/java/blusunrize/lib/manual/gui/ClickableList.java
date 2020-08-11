@@ -13,6 +13,7 @@ import blusunrize.lib.manual.ManualUtils;
 import blusunrize.lib.manual.Tree;
 import blusunrize.lib.manual.Tree.AbstractNode;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.ResourceLocation;
@@ -23,6 +24,11 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+
+import static com.mojang.blaze3d.platform.GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA;
+import static com.mojang.blaze3d.platform.GlStateManager.DestFactor.ZERO;
+import static com.mojang.blaze3d.platform.GlStateManager.SourceFactor.ONE;
+import static com.mojang.blaze3d.platform.GlStateManager.SourceFactor.SRC_ALPHA;
 
 public class ClickableList extends Button
 {
@@ -82,6 +88,8 @@ public class ClickableList extends Button
 			if(isCategory[j])
 			{
 				ManualUtils.bindTexture(gui.texture);
+				RenderSystem.enableBlend();
+				RenderSystem.blendFuncSeparate(SRC_ALPHA, ONE_MINUS_SRC_ALPHA, ONE, ZERO);
 				this.blit(transform, 0, 0, 11, 226+(currEntryHovered?20: 0), 5, 10);
 			}
 			fr.drawString(transform, s, isCategory[j]?7: 0, 0, col);
