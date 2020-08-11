@@ -24,6 +24,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RecipesUpdatedEvent;
 import net.minecraftforge.event.TagsUpdatedEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.Collection;
@@ -64,7 +65,7 @@ public class RecipeReloadListener implements IResourceManagerReloadListener
 		}
 	}
 
-	@SubscribeEvent
+	@SubscribeEvent(priority = EventPriority.HIGH)
 	public void onRecipesUpdated(RecipesUpdatedEvent event)
 	{
 		clientRecipeManager = event.getRecipeManager();

@@ -134,9 +134,8 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 	public boolean isBlockTrigger(BlockState state)
 	{
 		getTemplate();
-		return state.getBlock()==trigger.getBlock();
+		return BlockMatcher.matches(trigger, state, null, null, additionalPredicates).isAllow();
 	}
-
 
 	@Override
 	public boolean createStructure(World world, BlockPos pos, Direction side, PlayerEntity player)

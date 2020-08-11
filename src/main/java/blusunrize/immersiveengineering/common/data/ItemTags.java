@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.items.IEItems.Metals;
+import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import net.minecraft.data.BlockTagsProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.ItemTagsProvider;
@@ -60,6 +61,7 @@ class ItemTags extends ItemTagsProvider
 		func_240522_a_(IETags.clay).func_240532_a_(Items.CLAY_BALL);
 		func_240522_a_(IETags.charCoal).func_240532_a_(Items.CHARCOAL);
 
+		func_240522_a_(Tags.Items.SEEDS).func_240532_a_(Misc.hempSeeds);
 		func_240522_a_(Tags.Items.RODS_WOODEN).func_240532_a_(Ingredients.stickTreated);
 		func_240522_a_(IETags.treatedStick).func_240532_a_(Ingredients.stickTreated);
 		func_240522_a_(IETags.slag).func_240532_a_(Ingredients.slag);

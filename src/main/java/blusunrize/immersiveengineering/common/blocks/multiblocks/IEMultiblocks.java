@@ -9,13 +9,18 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IETags;
+import blusunrize.immersiveengineering.api.IETags.MetalTags;
 import blusunrize.immersiveengineering.api.multiblocks.BlockMatcher;
 import blusunrize.immersiveengineering.api.multiblocks.BlockMatcher.Result;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
+import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.UnionMultiblock.TransformedMultiblock;
 import com.google.common.collect.ImmutableList;
+import net.minecraft.block.Block;
 import net.minecraft.block.FourWayBlock;
 import net.minecraft.state.Property;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.vector.Vector3i;
@@ -53,7 +58,8 @@ public class IEMultiblocks
 		//Basic blockstate matcher
 		BlockMatcher.addPredicate((expected, found, world, pos) -> expected==found?Result.allow(1): Result.deny(1));
 		//FourWayBlock (fences etc): allow additional connections
-		List<Property<Boolean>> sideProperties = ImmutableList.of(FourWayBlock.NORTH,
+		List<Property<Boolean>> sideProperties = ImmutableList.of(
+				FourWayBlock.NORTH,
 				FourWayBlock.EAST,
 				FourWayBlock.SOUTH,
 				FourWayBlock.WEST
@@ -66,6 +72,26 @@ public class IEMultiblocks
 						return Result.deny(2);
 				return Result.allow(2);
 			}
+			return Result.DEFAULT;
+		});
+		//Tags
+		ImmutableList.Builder<ITag<Block>> genericTagsBuilder = ImmutableList.builder();
+		for(EnumMetals metal : EnumMetals.values())
+		{
+			MetalTags tags = IETags.getTagsFor(metal);
+			genericTagsBuilder.add(tags.storage)
+					.add(tags.sheetmetal);
+		}
+		genericTagsBuilder.add(IETags.scaffoldingAlu);
+		genericTagsBuilder.add(IETags.scaffoldingSteel);
+		genericTagsBuilder.add(IETags.treatedWoodSlab);
+		genericTagsBuilder.add(IETags.treatedWood);
+		List<ITag<Block>> genericTags = genericTagsBuilder.build();
+		BlockMatcher.addPredicate((expected, found, world, pos) -> {
+			if(expected.getBlock()!=found.getBlock())
+				for(ITag<Block> t : genericTags)
+					if(expected.isIn(t)&&found.isIn(t))
+						return Result.allow(3);
 			return Result.DEFAULT;
 		});
 

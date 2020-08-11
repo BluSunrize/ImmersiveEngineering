@@ -1,5 +1,5 @@
-import net.minecraftforge.gradle.common.task.SignJar
 import groovy.json.JsonOutput
+import net.minecraftforge.gradle.common.task.SignJar
 
 buildscript {
     repositories {
@@ -16,7 +16,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = "${version_minecraft}-${version_ie}-${getBuildNumber()}"
+version = buildVersionString()
 group = 'blusunrize.immersiveengineering' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'ImmersiveEngineering'
 
@@ -165,17 +165,34 @@ task signJar(type: SignJar, dependsOn: jar) {
 
 build.dependsOn signJar
 
-String getBuildNumber() {
-    boolean includeGitRev = System.getenv("ie_add_git_rev") != null;
-    if (includeGitRev) {
+String buildVersionString() {
+    String ie_output_version = "${version_ie}-${version_buildnumber}"
+    boolean jenkins_build = System.getenv("ie_add_git_rev") != null
+    if (jenkins_build) {
+        // Get the current minor/patch number and bump it
+        int idx = version_ie.lastIndexOf(".")
+        String major = version_ie.substring(0, idx)
+        String minor = version_ie.substring(idx + 1)
+        int bumped = minor.toInteger() + 1
+        // Now use describe to get the number of commits since the last tag
+        exec {
+            commandLine 'git', 'fetch', '-t'
+        }
         def stdout = new ByteArrayOutputStream()
         exec {
-            commandLine 'git', 'rev-parse', '--short', 'HEAD'
+            commandLine 'git', 'describe', '--long', '--abbrev=8', 'HEAD'
             standardOutput = stdout
         }
-        return stdout.toString().trim()
+        String descr = stdout.toString().trim()
+        descr = descr.substring(0, descr.length() - 10)
+        idx = descr.lastIndexOf("-")
+        int pre_version = descr.substring(idx + 1).toInteger()
+        // If there have been more than 0 commits, consider this a pre-build
+        // otherwise use normal versioning (so a Jenkins build on the tag is equal to a release)
+        if (pre_version > 0)
+            ie_output_version = "${major}.${bumped}-pre.${pre_version}"
     }
-    return "${version_buildnumber}"
+    return "${version_minecraft}-${ie_output_version}"
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
@@ -289,13 +306,13 @@ class GenerateUpdateJSON extends DefaultTask {
                         String mainVer = currentVersion.substring(0, currentVersion.indexOf('-'))
                         String mcVer;
                         // legacy versioning support
-                        if(mainVer.startsWith("0.")) {
+                        if (mainVer.startsWith("0.")) {
                             mcVer = mcFromIEVersion[mainVer]
                         } else {
                             mcVer = mainVer
                         }
                         if (mcVer == null) {
-                            throw new NullPointerException("Could not find MC version for "+currentVersion);
+                            throw new NullPointerException("Could not find MC version for " + currentVersion);
                         }
                         if (!changelogForVersions.containsKey(mcVer)) {
                             promos.put(mcVer + RECOMMENDED, currentVersion)

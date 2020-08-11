@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.util.commands;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.excavator.MineralMix;
@@ -28,6 +29,8 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.ISuggestionProvider;
+import net.minecraft.command.arguments.ArgumentSerializer;
+import net.minecraft.command.arguments.ArgumentTypes;
 import net.minecraft.command.arguments.ColumnPosArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.ColumnPos;
@@ -45,6 +48,12 @@ import java.util.concurrent.CompletableFuture;
 
 public class CommandMineral
 {
+	public static void registerArguments()
+	{
+		ArgumentTypes.register(ImmersiveEngineering.MODID+":mineral", MineralArgument.class,
+				new ArgumentSerializer<>(MineralArgument::new));
+	}
+
 	public static LiteralArgumentBuilder<CommandSource> create()
 	{
 		LiteralArgumentBuilder<CommandSource> main = Commands.literal("mineral");
