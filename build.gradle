@@ -174,9 +174,12 @@ String buildVersionString() {
         String minor = version_ie.substring(idx + 1)
         int bumped = minor.toInteger() + 1
         // Now use describe to get the number of commits since the last tag
+        exec {
+            commandLine 'git', 'fetch', '-t'
+        }
         def stdout = new ByteArrayOutputStream()
         exec {
-            commandLine 'cmd', 'git', 'describe', '--long', '--abbrev=8', 'HEAD'
+            commandLine 'git', 'describe', '--long', '--abbrev=8', 'HEAD'
             standardOutput = stdout
         }
         String descr = stdout.toString().trim()
