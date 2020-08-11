@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.api;
 
 import blusunrize.immersiveengineering.api.utils.TagUtils;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Effect;
@@ -100,18 +101,21 @@ public class IEApi
 		int currBest = modPreference.size();
 		for(T stack : list)
 		{
+			if (preferredStack == null)
+				preferredStack = stack;
 			ResourceLocation rl = getName.apply(stack);
 			if(rl!=null)
 			{
 				String modId = rl.getNamespace();
 				int idx = modPreference.indexOf(modId);
-				if(preferredStack==null||(idx >= 0&&idx < currBest))
+				if(idx >= 0&&idx < currBest)
 				{
 					preferredStack = stack;
 					currBest = idx;
 				}
 			}
 		}
+		Preconditions.checkNotNull(preferredStack, "No entry found in %s", list);
 		return preferredStack;
 	}
 

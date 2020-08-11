@@ -4,7 +4,14 @@
  - Fixed crash when holding a drill with a damaged head (Malte)
 
 ##### Version 1.14.4-3.1-pre
- - Fixed CMEs while loading dynamic models (Malte)
+- Fixed various issues with the manual (Malte)
+- Fixed CMEs while loading dynamic models (Malte)
+- Fixed warning about missing command argument serializer (Malte)
+- Fixed multiblocks not forming when using the wrong steel blocks (Malte)
+- Fixed priority system for recipe outputs not working (Malte)
+- Fixed recipes sometimes not getting added to JEI on servers (Malte)
+- Fixed fences obstructing connections in counterintuitive ways (Malte)
+- Translations Added/Updated: zh_zn (masakitenchi)
 
 ##### Version 1.15.2-3.1-111
 - Moved to new version numbering system

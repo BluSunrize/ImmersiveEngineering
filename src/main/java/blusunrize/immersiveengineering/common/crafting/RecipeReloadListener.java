@@ -19,6 +19,7 @@ import net.minecraft.resources.IResourceManager;
 import net.minecraft.resources.IResourceManagerReloadListener;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RecipesUpdatedEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
@@ -33,12 +34,10 @@ public class RecipeReloadListener implements IResourceManagerReloadListener
 	public void onResourceManagerReload(IResourceManager resourceManager)
 	{
 		if(EffectiveSide.get().isServer())
-		{
 			buildRecipeLists(ServerLifecycleHooks.getCurrentServer().getRecipeManager());
-		}
 	}
 
-	@SubscribeEvent
+	@SubscribeEvent(priority = EventPriority.HIGH)
 	public void onRecipesUpdated(RecipesUpdatedEvent event)
 	{
 		buildRecipeLists(event.getRecipeManager());
