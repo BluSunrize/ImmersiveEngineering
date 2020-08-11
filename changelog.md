@@ -1,9 +1,12 @@
-##### Version 1.15.2-3.1-pre
+##### Version 1.16.1-3.1.1-pre
+- Fixed some derpy rendering in the manual (BluSunrize)
+
+##### Version 1.15.2-3.1.1-pre
  - Fixed mirrored machines rendering incorrectly (Malte)
  - Fixed bucket wheels in mirrored excavators rendering incorrectly (Malte)
  - Fixed crash when holding a drill with a damaged head (Malte)
 
-##### Version 1.14.4-3.1-pre
+##### Version 1.14.4-3.1.1-pre
 - Fixed various issues with the manual (Malte)
 - Fixed CMEs while loading dynamic models (Malte)
 - Fixed warning about missing command argument serializer (Malte)
@@ -12,9 +15,6 @@
 - Fixed recipes sometimes not getting added to JEI on servers (Malte)
 - Fixed fences obstructing connections in counterintuitive ways (Malte)
 - Translations Added/Updated: zh_zn (masakitenchi)
-
-##### Version 1.14.4-3.1-pre
- - Fixed CMEs while loading dynamic models (Malte)
 
 ##### Version 1.16.1-3.1-112
 - Require Forge version 32.0.99 or later
