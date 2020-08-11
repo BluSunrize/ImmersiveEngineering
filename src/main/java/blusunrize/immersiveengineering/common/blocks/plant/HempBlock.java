@@ -53,11 +53,11 @@ public class HempBlock extends BushBlock implements IGrowable
 		IEContent.registeredIEItems.add(new BlockItemIE(this));
 	}
 
-	@Override
-	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items)
-	{
-		//NOP
-	}
+//	@Override
+//	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items)
+//	{
+//		//NOP
+//	}
 
 	@Override
 	protected void fillStateContainer(Builder<Block, BlockState> builder)

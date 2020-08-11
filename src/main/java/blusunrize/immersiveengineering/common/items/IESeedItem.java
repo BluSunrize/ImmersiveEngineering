@@ -35,6 +35,12 @@ public class IESeedItem extends BlockItem implements IPlantable
 	}
 
 	@Override
+	public String getTranslationKey()
+	{
+		return this.getDefaultTranslationKey();
+	}
+
+	@Override
 	public PlantType getPlantType(IBlockReader world, BlockPos pos)
 	{
 		return ((IPlantable)this.getBlock()).getPlantType(world, pos);
