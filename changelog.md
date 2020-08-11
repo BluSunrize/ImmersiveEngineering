@@ -5,6 +5,7 @@
 - Fixed multiblocks not forming when using the wrong steel blocks (Malte)
 - Fixed priority system for recipe outputs not working (Malte)
 - Fixed recipes sometimes not getting added to JEI on servers (Malte)
+- Fixed fences obstructing connections in counterintuitive ways (Malte)
 
 ##### Version 1.14.4-3.1-110
 - Moved to new version numbering system

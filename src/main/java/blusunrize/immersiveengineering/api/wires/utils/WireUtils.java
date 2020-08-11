@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.api.wires.utils;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.api.wires.Connection.CatenaryData;
 import blusunrize.immersiveengineering.api.wires.WireCollisionData.CollisionInfo;
@@ -24,6 +23,9 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.IBooleanFunction;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
@@ -77,7 +79,9 @@ public class WireUtils
 
 	public static boolean preventsConnection(World worldIn, BlockPos pos, BlockState state, Vec3d a, Vec3d b)
 	{
-		for(AxisAlignedBB aabb : state.getCollisionShape(worldIn, pos).toBoundingBoxList())
+		VoxelShape shape = state.getCollisionShape(worldIn, pos);
+		shape = VoxelShapes.combine(shape, VoxelShapes.fullCube(), IBooleanFunction.AND);
+		for(AxisAlignedBB aabb : shape.toBoundingBoxList())
 		{
 			aabb = aabb.grow(1e-5);
 			if(aabb.contains(a)||aabb.contains(b)||aabb.rayTrace(a, b).isPresent())
@@ -95,11 +99,11 @@ public class WireUtils
 		{
 			Vec3d start = ((IImmersiveConnectable)teA).getConnectionOffset(conn, conn.getEndA());
 			Vec3d end = ((IImmersiveConnectable)teB).getConnectionOffset(conn, conn.getEndB());
-			ApiUtils.raytraceAlongCatenaryRelative(conn, (p) -> {
+			WireUtils.raytraceAlongCatenaryRelative(conn, (p) -> {
 				if(!ignore.contains(p.getLeft()))
 				{
 					BlockState state = world.getBlockState(p.getLeft());
-					if(ApiUtils.preventsConnection(world, p.getLeft(), state, p.getMiddle(), p.getRight()))
+					if(WireUtils.preventsConnection(world, p.getLeft(), state, p.getMiddle(), p.getRight()))
 						obstructions.add(p.getLeft());
 				}
 			}, (p) -> {
