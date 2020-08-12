@@ -1,5 +1,6 @@
 package blusunrize.lib.manual;
 
+import blusunrize.lib.manual.SplitResult.Token;
 import blusunrize.lib.manual.gui.ManualScreen;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.widget.button.Button;
@@ -8,6 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TextSplitterTest
 {
@@ -32,15 +34,18 @@ public class TextSplitterTest
 
 	private void assertLineCounts(SplitResult result, int... lineCounts)
 	{
-		List<List<String>> output = result.entry;
+		List<List<List<Token>>> output = result.entry;
 		int[] actualSizes = output.stream().mapToInt(List::size).toArray();
 		Assert.assertArrayEquals("Split result: "+output, lineCounts, actualSizes);
 	}
 
 	private void assertLines(SplitResult result, String... lines)
 	{
-		List<List<String>> output = result.entry;
-		String[] actualLines = output.stream().flatMap(List::stream).toArray(String[]::new);
+		List<List<List<Token>>> output = result.entry;
+		String[] actualLines = output.stream()
+				.flatMap(List::stream)
+				.map(l -> l.stream().map(Token::getText).collect(Collectors.joining()))
+				.toArray(String[]::new);
 		Assert.assertArrayEquals("Split result: "+output, lines, actualLines);
 	}
 

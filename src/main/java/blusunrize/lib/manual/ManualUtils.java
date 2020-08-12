@@ -10,6 +10,7 @@ package blusunrize.lib.manual;
 
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.util.IELogger;
+import blusunrize.lib.manual.SplitResult.Token;
 import blusunrize.lib.manual.Tree.AbstractNode;
 import blusunrize.lib.manual.gui.GuiButtonManualLink;
 import blusunrize.lib.manual.gui.ManualScreen;
@@ -38,6 +39,10 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.apache.commons.lang3.mutable.Mutable;
+import org.apache.commons.lang3.mutable.MutableInt;
+import org.apache.commons.lang3.mutable.MutableObject;
+import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -181,50 +186,51 @@ public class ManualUtils
 
 	public static final String THIS = "this";
 
-	public static void addLinkButtons(ManualEntry entry, ManualInstance manual, ManualScreen gui, List<String> text, int x, int y,
-									  List<Button> pageButtons, List<Link> repList)
+	public static void addLinkButtons(ManualEntry entry, ManualInstance manual, ManualScreen gui, List<List<Token>> text, int x, int y,
+									  List<Button> pageButtons)
 	{
-		for(Link link : repList)
+		final Map<Link, List<GuiButtonManualLink>> partButtons = new IdentityHashMap<>();
+		MutableInt lineId = new MutableInt(0);
+		for(List<Token> line : text)
 		{
-			List<GuiButtonManualLink> parts = new ArrayList<>();
-			for(String partText : link.getParts())
-				for(int line = 0; line < text.size(); line++)
-				{
-					String s = text.get(line);
-					int start;
-					if((start = s.indexOf(partText.trim())) >= 0)
+			Mutable<String> textUpToHere = new MutableObject<>("");
+			for(Token token : line)
+			{
+				token.getContent().ifRight(linkPart -> {
+					int bx = manual.fontRenderer().getStringWidth(textUpToHere.getValue());
+					int by = lineId.intValue()*manual.fontRenderer().FONT_HEIGHT;
+					Link link = linkPart.getParent();
+					String linkText = linkPart.getText();
+					ResourceLocation bkey = link.getTarget(entry);
+					int bw = manual.fontRenderer().getStringWidth(linkText);
+					ManualInstance.ManualLink outputLink;
+					ManualEntry bEntry = manual.getEntry(bkey);
+					if(bEntry!=null&&bEntry.hasAnchor(link.getTargetAnchor()))
+						outputLink = new ManualInstance.ManualLink(bEntry, link.getTargetAnchor(), link.getTargetOffset());
+					else
 					{
-						String linkText = partText;
-						if(!s.substring(start).startsWith(linkText))//This can happen when whitespace is cut off at the end of a line
-							linkText = linkText.trim();
-						int bx = manual.fontRenderer().getStringWidth(s.substring(0, start));
-						int by = line*manual.fontRenderer().FONT_HEIGHT;
-						ResourceLocation bkey = link.getTarget(entry);
-						int bw = manual.fontRenderer().getStringWidth(linkText);
-						ManualInstance.ManualLink outputLink;
-						ManualEntry bEntry = manual.getEntry(bkey);
-						if(bEntry!=null&&bEntry.hasAnchor(link.getTargetAnchor()))
-							outputLink = new ManualInstance.ManualLink(bEntry, link.getTargetAnchor(), link.getTargetOffset());
-						else
-						{
-							if(bEntry==null)
-								IELogger.logger.error("Unknown manual entry: {} (link from {})", bkey, entry.getLocation());
-							else if(!bEntry.hasAnchor(link.getTargetAnchor()))
-								IELogger.logger.error("Unknown anchor {} in entry {} (link from {})", link.getTargetAnchor(), bkey,
-										entry.getLocation());
-							outputLink = null;
-						}
-						GuiButtonManualLink btn = new GuiButtonManualLink(gui, x+bx, y+by, bw, (int)(manual.fontRenderer().FONT_HEIGHT*1.5),
-								outputLink, linkText);
-						parts.add(btn);
-						pageButtons.add(btn);
-						text.set(line, s);
-						break;
+						if(bEntry==null)
+							IELogger.logger.error("Unknown manual entry: {} (link from {})", bkey, entry.getLocation());
+						else if(!bEntry.hasAnchor(link.getTargetAnchor()))
+							IELogger.logger.error("Unknown anchor {} in entry {} (link from {})", link.getTargetAnchor(), bkey,
+									entry.getLocation());
+						outputLink = null;
 					}
-				}
-			for(GuiButtonManualLink btn : parts)
-				btn.otherParts = parts;
+					GuiButtonManualLink btn = new GuiButtonManualLink(gui, x+bx, y+by, bw, (int)(manual.fontRenderer().FONT_HEIGHT*1.5),
+							outputLink, linkText);
+					partButtons.computeIfAbsent(link, l -> new ArrayList<>())
+							.add(btn);
+				});
+				textUpToHere.setValue(textUpToHere.getValue()+token.getText());
+			}
+			lineId.increment();
 		}
+		for(List<GuiButtonManualLink> parts : partButtons.values())
+			for(GuiButtonManualLink btn : parts)
+			{
+				btn.otherParts = parts;
+				pageButtons.add(btn);
+			}
 	}
 
 	public static String attemptStringTranslation(String tranlationKey, String arg)

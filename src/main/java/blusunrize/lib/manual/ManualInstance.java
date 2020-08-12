@@ -270,6 +270,11 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 	public void addEntry(InnerNode<ResourceLocation, ManualEntry> node, ManualEntry entry, DoubleSupplier priority)
 	{
 		node.addNewLeaf(entry, priority);
+		reset();
+	}
+
+	public void reset()
+	{
 		initialized = false;
 		ManualScreen.lastActiveManual = null;
 	}
@@ -359,8 +364,7 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 	@Override
 	public void onResourceManagerReload(@Nonnull IResourceManager resourceManager, @Nonnull Predicate<IResourceType> resourcePredicate)
 	{
-		initialized = false;
-		ManualScreen.lastActiveManual = null;
+		reset();
 	}
 
 	public void reload()

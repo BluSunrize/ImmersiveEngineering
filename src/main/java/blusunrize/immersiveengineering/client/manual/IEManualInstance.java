@@ -107,18 +107,6 @@ public class IEManualInstance extends ManualInstance
 			s = s.replaceFirst(rep, result);
 		}
 
-		if(improveReadability())
-		{
-			overflow = 0;
-			int end = 0;
-			while((start = s.indexOf(TextFormatting.RESET.toString(), end)) >= 0&&overflow < 50)
-			{
-				overflow++;
-				end = start+TextFormatting.RESET.toString().length();
-				s = s.substring(0, end)+TextFormatting.BOLD.toString()+s.substring(end);
-			}
-			s = TextFormatting.BOLD+s;
-		}
 		return s;
 	}
 
