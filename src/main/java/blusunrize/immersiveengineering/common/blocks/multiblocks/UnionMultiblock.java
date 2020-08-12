@@ -35,7 +35,7 @@ public class UnionMultiblock implements IMultiblock
 	}
 
 	@Override
-	public boolean isBlockTrigger(BlockState state)
+	public boolean isBlockTrigger(BlockState state, Direction d)
 	{
 		return false;
 	}

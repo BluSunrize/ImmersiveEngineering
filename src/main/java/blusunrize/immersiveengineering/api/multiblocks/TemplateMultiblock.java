@@ -127,10 +127,19 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 	}
 
 	@Override
-	public boolean isBlockTrigger(BlockState state)
+	public boolean isBlockTrigger(BlockState state, Direction d)
 	{
 		getTemplate();
-		return BlockMatcher.matches(trigger, state, null, null, additionalPredicates).isAllow();
+		Rotation rot = Utils.getRotationBetweenFacings(Direction.NORTH, d.getOpposite());
+		if(rot==null)
+			return false;
+		for(Mirror mirror : getPossibleMirrorStates())
+		{
+			BlockState modifiedTrigger = applyToState(trigger, mirror, rot);
+			if(BlockMatcher.matches(modifiedTrigger, state, null, null, additionalPredicates).isAllow())
+				return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -142,13 +151,8 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 		if(rot==null)
 			return false;
 		Template template = getTemplate();
-		List<Mirror> mirrorStates;
-		if(canBeMirrored())
-			mirrorStates = ImmutableList.of(Mirror.NONE, Mirror.FRONT_BACK);
-		else
-			mirrorStates = ImmutableList.of(Mirror.NONE);
 		mirrorLoop:
-		for(Mirror mirror : mirrorStates)
+		for(Mirror mirror : getPossibleMirrorStates())
 		{
 			PlacementSettings placeSet = new PlacementSettings().setMirror(mirror).setRotation(rot);
 			BlockPos origin = pos.subtract(Template.transformedBlockPos(placeSet, triggerFromOrigin));
@@ -157,7 +161,7 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 				BlockPos realRelPos = Template.transformedBlockPos(placeSet, info.pos);
 				BlockPos here = origin.add(realRelPos);
 
-				BlockState expected = info.state.mirror(mirror).rotate(rot);
+				BlockState expected = applyToState(info.state, mirror, rot);
 				BlockState inWorld = world.getBlockState(here);
 				if(!BlockMatcher.matches(expected, inWorld, world, here, additionalPredicates).isAllow())
 					continue mirrorLoop;
@@ -166,6 +170,19 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 			return true;
 		}
 		return false;
+	}
+
+	private BlockState applyToState(BlockState in, Mirror m, Rotation r)
+	{
+		return in.mirror(m).rotate(r);
+	}
+
+	private List<Mirror> getPossibleMirrorStates()
+	{
+		if(canBeMirrored())
+			return ImmutableList.of(Mirror.NONE, Mirror.FRONT_BACK);
+		else
+			return ImmutableList.of(Mirror.NONE);
 	}
 
 	protected void form(World world, BlockPos pos, Rotation rot, Mirror mirror, Direction sideHit)

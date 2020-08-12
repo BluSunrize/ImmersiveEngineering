@@ -67,7 +67,20 @@ public class MultiblockHandler
 		 * Check whether the given block can be used to trigger the structure creation of the multiblock.<br>
 		 * Basically, a less resource-intensive preliminary check to avoid checking every structure.
 		 */
-		boolean isBlockTrigger(BlockState state);
+		default boolean isBlockTrigger(BlockState state, Direction side)
+		{
+			return isBlockTrigger(state);
+		}
+
+		@Deprecated
+		//TODO remove on next API break
+		default boolean isBlockTrigger(BlockState state)
+		{
+			for(Direction d : Direction.BY_HORIZONTAL_INDEX)
+				if(isBlockTrigger(state, d))
+					return true;
+			return false;
+		}
 
 		/**
 		 * This method checks the structure and sets the new one.

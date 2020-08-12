@@ -112,7 +112,7 @@ public class FeedthroughMultiblock implements IMultiblock
 	}
 
 	@Override
-	public boolean isBlockTrigger(BlockState state)
+	public boolean isBlockTrigger(BlockState state, Direction d)
 	{
 		return WireApi.getWireType(state)!=null;
 	}

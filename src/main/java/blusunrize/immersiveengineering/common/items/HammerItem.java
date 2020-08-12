@@ -119,7 +119,7 @@ public class HammerItem extends IEBaseItem implements ITool
 				interdictedMultiblocks[i] = new ResourceLocation(list.getString(i));
 		}
 		for(MultiblockHandler.IMultiblock mb : MultiblockHandler.getMultiblocks())
-			if(mb.isBlockTrigger(world.getBlockState(pos)))
+			if(mb.isBlockTrigger(world.getBlockState(pos), side))
 			{
 				boolean b = permittedMultiblocks==null;
 				if(permittedMultiblocks!=null)
