@@ -29,13 +29,4 @@ public class ManualHelper
 	{
 		return ieManualInstance;
 	}
-
-	/**
-	 * Adds a new entry to the manual. if the Category is new, it will be added to the list of categories automatically
-	 */
-	//public static void addEntry(String name, String category, IManualPage... pages)
-	//{
-	//	//ieManualInstance.addEntry(name, category, pages);
-	//	IELogger.logger.error("NOT SUPPORTED YET");
-	//}
 }

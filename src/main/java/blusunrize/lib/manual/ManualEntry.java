@@ -8,9 +8,9 @@
 
 package blusunrize.lib.manual;
 
+import blusunrize.lib.manual.SplitResult.Token;
 import blusunrize.lib.manual.gui.ManualScreen;
 import blusunrize.lib.manual.links.EntryWithLinks;
-import blusunrize.lib.manual.links.Link;
 import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("WeakerAccess")
 public class ManualEntry implements Comparable<ManualEntry>
@@ -48,7 +49,6 @@ public class ManualEntry implements Comparable<ManualEntry>
 	private String title;
 	private String subtext;
 	private final ResourceLocation location;
-	private List<Link> links;
 	private Int2ObjectMap<SpecialManualElement> specials;
 	private Object2IntMap<String> anchorPoints;
 
@@ -69,12 +69,11 @@ public class ManualEntry implements Comparable<ManualEntry>
 			EntryData data = getContent.apply(splitter);
 			title = data.title;
 			subtext = data.subtext;
-			EntryWithLinks withLinks = new EntryWithLinks(data.content, manual);
-			this.links = withLinks.getLinks();
-			SplitResult result = splitter.split(manual.formatText(withLinks.getSanitizedText()));
+			EntryWithLinks withLinks = new EntryWithLinks(manual.formatText(data.content), manual);
+			SplitResult result = splitter.split(withLinks.getUnsplitTokens());
 			specials = result.specialByPage;
 			anchorPoints = result.pageByAnchor;
-			List<List<String>> text = result.entry;
+			List<List<List<Token>>> text = result.entry;
 			pages = new ArrayList<>(text.size());
 			for(int i = 0; i < text.size(); i++)
 			{
@@ -126,9 +125,15 @@ public class ManualEntry implements Comparable<ManualEntry>
 	public void addButtons(ManualScreen gui, int x, int y, int page, List<Button> pageButtons)
 	{
 		ManualPage p = pages.get(page);
-		p.renderText = new ArrayList<>(p.text);
-		ManualUtils.addLinkButtons(this, manual, gui, p.renderText, x,
-				y+p.special.getPixelsTaken(), pageButtons, links);
+		p.renderText = p.text.stream()
+				.map(
+						l -> l.stream()
+								.map(Token::getText)
+								.collect(Collectors.joining())
+				)
+				.collect(Collectors.toList());
+		ManualUtils.addLinkButtons(this, manual, gui, p.text, x,
+				y+p.special.getPixelsTaken(), pageButtons);
 		List<Button> tempButtons = new ArrayList<>();
 		pages.get(gui.page).special.onOpened(gui, 0, 0, tempButtons);
 		for(Button btn : tempButtons)
@@ -198,11 +203,11 @@ public class ManualEntry implements Comparable<ManualEntry>
 	private static class ManualPage
 	{
 		public List<String> renderText;
-		List<String> text;
+		List<List<Token>> text;
 		@Nonnull
 		SpecialManualElement special;
 
-		public ManualPage(List<String> text, @Nonnull SpecialManualElement special)
+		public ManualPage(List<List<Token>> text, @Nonnull SpecialManualElement special)
 		{
 			this.text = text;
 			this.special = special;

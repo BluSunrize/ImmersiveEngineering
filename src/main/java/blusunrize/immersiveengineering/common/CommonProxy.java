@@ -76,7 +76,7 @@ public class CommonProxy
 	{
 	}
 
-	public void reloadManual()
+	public void resetManual()
 	{
 	}
 

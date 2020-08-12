@@ -28,6 +28,14 @@ public class Link
 	private final String targetAnchor;
 	private final int targetOffset;
 
+	public Link(List<String> parts, @Nullable ResourceLocation target, String targetAnchor, int offset)
+	{
+		this.parts = parts;
+		this.target = target;
+		this.targetOffset = offset;
+		this.targetAnchor = targetAnchor;
+	}
+
 	public Link(String text, String target, String targetInEntry, ManualInstance manual)
 	{
 		List<String> parts = new ArrayList<>();
@@ -37,6 +45,8 @@ public class Link
 			String part = FORMAT+resultPart;
 			parts.add(part);
 		}
+		int last = parts.size()-1;
+		parts.set(last, parts.get(last)+TextFormatting.RESET);
 		if(ManualUtils.THIS.equals(target))
 			this.target = null;
 		else
@@ -80,5 +90,11 @@ public class Link
 	public int getTargetOffset()
 	{
 		return targetOffset;
+	}
+
+	@Nullable
+	public ResourceLocation getRawTarget()
+	{
+		return target;
 	}
 }

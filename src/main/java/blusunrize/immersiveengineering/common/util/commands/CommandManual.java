@@ -23,7 +23,7 @@ public class CommandManual
 		main.then(
 				Commands.literal("reload")
 						.executes(context -> {
-									ImmersiveEngineering.proxy.reloadManual();
+									ImmersiveEngineering.proxy.resetManual();
 									return Command.SINGLE_SUCCESS;
 								}
 						)
