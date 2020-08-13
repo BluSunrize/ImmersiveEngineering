@@ -331,18 +331,15 @@ public class IEBaseBlock extends Block implements IIEBlock, IWaterLoggable
 		BlockState state = this.getDefaultState();
 		if(state.has(BlockStateProperties.WATERLOGGED)
 				&&context.getWorld().getFluidState(context.getPos()).getFluid()==Fluids.WATER)
-		{
 			state = state.with(BlockStateProperties.WATERLOGGED, true);
-		}
 		return state;
 	}
 
 	@Override
 	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos)
 	{
-		if (stateIn.has(BlockStateProperties.WATERLOGGED) && stateIn.get(BlockStateProperties.WATERLOGGED)) {
+		if(stateIn.has(BlockStateProperties.WATERLOGGED)&&stateIn.get(BlockStateProperties.WATERLOGGED))
 			worldIn.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickRate(worldIn));
-		}
 		return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
 	}
 
