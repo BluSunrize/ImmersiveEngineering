@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.api.ManualHelper;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderLayer;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
-import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.font.IEFontReloadListener;
@@ -313,7 +312,7 @@ public class ClientProxy extends CommonProxy
 	@SubscribeEvent
 	public static void textureStichPre(TextureStitchEvent.Pre event)
 	{
-		if(event.getMap().getTextureLocation() != PlayerContainer.LOCATION_BLOCKS_TEXTURE)
+		if(!event.getMap().getTextureLocation().equals(PlayerContainer.LOCATION_BLOCKS_TEXTURE))
 			return;
 		IELogger.info("Stitching Revolver Textures!");
 		RevolverItem.addRevolverTextures(event);
@@ -324,53 +323,12 @@ public class ClientProxy extends CommonProxy
 						if(layer.getTexture()!=null)
 							event.addSprite(layer.getTexture());
 
-		for(DrillHeadPerm p : DrillHeadPerm.ALL_PERMS)
-			event.addSprite(p.texture);
-		event.addSprite(RockcutterItem.texture);
-		event.addSprite(new ResourceLocation(MODID, "block/wire"));
-		event.addSprite(new ResourceLocation(MODID, "block/shaders/greyscale_fire"));
-
-		//TODO this shouldn't be necessary any more
-		for(BulletHandler.IBullet bullet : BulletHandler.getAllValues())
-			for(ResourceLocation rl : bullet.getTextures())
-				event.addSprite(rl);
-
-		for(ResourceLocation rl : ModelConveyor.rl_casing)
-			event.addSprite(rl);
-		event.addSprite(ConveyorHandler.textureConveyorColour);
-		event.addSprite(BasicConveyor.texture_off);
-		event.addSprite(BasicConveyor.texture_on);
-		event.addSprite(DropConveyor.texture_off);
-		event.addSprite(DropConveyor.texture_on);
-		event.addSprite(VerticalConveyor.texture_off);
-		event.addSprite(VerticalConveyor.texture_on);
-		event.addSprite(SplitConveyor.texture_off);
-		event.addSprite(SplitConveyor.texture_on);
-		event.addSprite(SplitConveyor.texture_casing);
-		event.addSprite(RedstoneConveyor.texture_panel);
-
-		event.addSprite(new ResourceLocation(MODID, "block/fluid/creosote_still"));
-		event.addSprite(new ResourceLocation(MODID, "block/fluid/creosote_flow"));
-		event.addSprite(new ResourceLocation(MODID, "block/fluid/plantoil_still"));
-		event.addSprite(new ResourceLocation(MODID, "block/fluid/plantoil_flow"));
-		event.addSprite(new ResourceLocation(MODID, "block/fluid/ethanol_still"));
-		event.addSprite(new ResourceLocation(MODID, "block/fluid/ethanol_flow"));
-		event.addSprite(new ResourceLocation(MODID, "block/fluid/biodiesel_still"));
-		event.addSprite(new ResourceLocation(MODID, "block/fluid/biodiesel_flow"));
-		event.addSprite(new ResourceLocation(MODID, "block/fluid/concrete_still"));
-		event.addSprite(new ResourceLocation(MODID, "block/fluid/concrete_flow"));
-		event.addSprite(new ResourceLocation(MODID, "block/fluid/potion_still"));
-		event.addSprite(new ResourceLocation(MODID, "block/fluid/potion_flow"));
-		event.addSprite(new ResourceLocation(MODID, "block/fluid/hot_metal_still"));
-		event.addSprite(new ResourceLocation(MODID, "block/fluid/hot_metal_flow"));
-
-		event.addSprite(new ResourceLocation(MODID, "item/shader_slot"));
 	}
 
 	@SubscribeEvent
 	public static void textureStichPost(TextureStitchEvent.Post event)
 	{
-		if(event.getMap().getTextureLocation() != PlayerContainer.LOCATION_BLOCKS_TEXTURE)
+		if(!event.getMap().getTextureLocation().equals(PlayerContainer.LOCATION_BLOCKS_TEXTURE))
 			return;
 		ImmersiveEngineering.proxy.clearRenderCaches();
 		RevolverItem.retrieveRevolverTextures(event.getMap());
@@ -711,6 +669,27 @@ public class ClientProxy extends CommonProxy
 		DynamicModelLoader.requestTexture(SawbladeRenderer.SAWBLADE);
 		DynamicModelLoader.requestTexture(ArcFurnaceRenderer.HOT_METLA_FLOW);
 		DynamicModelLoader.requestTexture(ArcFurnaceRenderer.HOT_METLA_STILL);
+		for(DrillHeadPerm p : DrillHeadPerm.ALL_PERMS)
+			DynamicModelLoader.requestTexture(p.texture);
+		DynamicModelLoader.requestTexture(RockcutterItem.texture);
+		DynamicModelLoader.requestTexture(new ResourceLocation(MODID, "block/wire"));
+		DynamicModelLoader.requestTexture(new ResourceLocation(MODID, "block/shaders/greyscale_fire"));
+
+		for(ResourceLocation rl : ModelConveyor.rl_casing)
+			DynamicModelLoader.requestTexture(rl);
+		DynamicModelLoader.requestTexture(ConveyorHandler.textureConveyorColour);
+		DynamicModelLoader.requestTexture(BasicConveyor.texture_off);
+		DynamicModelLoader.requestTexture(BasicConveyor.texture_on);
+		DynamicModelLoader.requestTexture(DropConveyor.texture_off);
+		DynamicModelLoader.requestTexture(DropConveyor.texture_on);
+		DynamicModelLoader.requestTexture(VerticalConveyor.texture_off);
+		DynamicModelLoader.requestTexture(VerticalConveyor.texture_on);
+		DynamicModelLoader.requestTexture(SplitConveyor.texture_off);
+		DynamicModelLoader.requestTexture(SplitConveyor.texture_on);
+		DynamicModelLoader.requestTexture(SplitConveyor.texture_casing);
+		DynamicModelLoader.requestTexture(RedstoneConveyor.texture_panel);
+
+		DynamicModelLoader.requestTexture(new ResourceLocation(MODID, "item/shader_slot"));
 
 		ArcFurnaceRenderer.ELECTRODES = DynamicModel.createSided(
 				new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/arc_furnace_electrodes.obj.ie"),

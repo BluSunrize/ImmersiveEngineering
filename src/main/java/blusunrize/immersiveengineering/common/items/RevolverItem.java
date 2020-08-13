@@ -809,7 +809,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 	/* ------------- INNER CLASSES ------------- */
 
 	public static final ArrayListMultimap<String, SpecialRevolver> specialRevolvers = ArrayListMultimap.create();
-	public static final Map<String, SpecialRevolver> specialRevolversByTag = new HashMap<String, SpecialRevolver>();
+	public static final Map<String, SpecialRevolver> specialRevolversByTag = new HashMap<>();
 
 	public static class SpecialRevolver
 	{

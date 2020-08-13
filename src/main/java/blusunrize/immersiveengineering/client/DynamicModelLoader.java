@@ -75,7 +75,7 @@ public class DynamicModelLoader
 	@SubscribeEvent
 	public static void textureStitch(TextureStitchEvent.Pre evt)
 	{
-		if(evt.getMap().getTextureLocation().equals(PlayerContainer.LOCATION_BLOCKS_TEXTURE))
+		if(!evt.getMap().getTextureLocation().equals(PlayerContainer.LOCATION_BLOCKS_TEXTURE))
 			return;
 		IELogger.logger.debug("Loading dynamic models");
 		try
