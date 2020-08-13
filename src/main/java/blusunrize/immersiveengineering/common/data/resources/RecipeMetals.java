@@ -55,6 +55,8 @@ public enum RecipeMetals
 	PLATINUM("platinum", false, true, new SecondaryOutput(IETags.getDust("nickel"), .1f)),
 	TUNGSTEN("tungsten", false, true),
 	OSMIUM("osmium", false, true),
+	COBALT("cobalt", false, true),
+	ARDITE("ardite", false, true),
 	BRONZE("bronze", false,
 			new AlloyProperties(4, new IngredientWithSize(IETags.getTagsFor(EnumMetals.COPPER).ingot, 3),
 					new IngredientWithSize(new net.minecraft.tags.ItemTags.Wrapper(IETags.getIngot("tin"))))
@@ -68,6 +70,12 @@ public enum RecipeMetals
 	INVAR("invar", false,
 			new AlloyProperties(3, new IngredientWithSize(IETags.getTagsFor(EnumMetals.IRON).ingot, 2),
 					new IngredientWithSize(IETags.getTagsFor(EnumMetals.NICKEL).ingot))
+	),
+	MANYULLYN("manyullyn", false,
+			new AlloyProperties(1, new IngredientWithSize(new net.minecraft.tags.ItemTags.Wrapper(IETags.getIngot("cobalt"))),
+					new IngredientWithSize(new net.minecraft.tags.ItemTags.Wrapper(IETags.getIngot("ardite"))))
+					.addConditions(getTagCondition(IETags.getIngot("cobalt")))
+					.addConditions(getTagCondition(IETags.getIngot("ardite")))
 	);
 
 	private final String name;
