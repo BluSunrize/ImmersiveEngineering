@@ -12,6 +12,7 @@ package blusunrize.immersiveengineering.common.crafting;
 import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.api.excavator.MineralMix;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
@@ -49,6 +50,7 @@ public class RecipeReloadListener implements IResourceManagerReloadListener
 		{
 			RecipeManager recipeManager = dataPackRegistries.func_240967_e_();
 			buildRecipeLists(recipeManager);
+			generateArcRecyclingRecipes(recipeManager);
 		}
 	}
 
@@ -61,7 +63,7 @@ public class RecipeReloadListener implements IResourceManagerReloadListener
 		{
 			TagUtils.ITEM_TAG_COLLECTION = ItemTags.getCollection();
 			TagUtils.BLOCK_TAG_COLLECTION = BlockTags.getCollection();
-			buildRecipeLists(clientRecipeManager);
+			generateArcRecyclingRecipes(clientRecipeManager);
 		}
 	}
 
@@ -69,15 +71,13 @@ public class RecipeReloadListener implements IResourceManagerReloadListener
 	public void onRecipesUpdated(RecipesUpdatedEvent event)
 	{
 		clientRecipeManager = event.getRecipeManager();
+		if(!Minecraft.getInstance().isSingleplayer())
+			buildRecipeLists(clientRecipeManager);
 	}
 
 	static void buildRecipeLists(RecipeManager recipeManager)
 	{
 		Collection<IRecipe<?>> recipes = recipeManager.getRecipes();
-
-		// Start recycling
-		ArcRecyclingThreadHandler recyclingHandler = new ArcRecyclingThreadHandler(recipes);
-		recyclingHandler.start();
 
 		AlloyRecipe.recipeList = filterRecipes(recipes, AlloyRecipe.class, AlloyRecipe.TYPE);
 		BlastFurnaceRecipe.recipeList = filterRecipes(recipes, BlastFurnaceRecipe.class, BlastFurnaceRecipe.TYPE);
@@ -109,8 +109,13 @@ public class RecipeReloadListener implements IResourceManagerReloadListener
 		MineralMix.mineralList = filterRecipes(recipes, MineralMix.class, MineralMix.TYPE);
 
 		MixerRecipePotion.initPotionRecipes();
+	}
 
-		// Wrap up recycling
+	private void generateArcRecyclingRecipes(RecipeManager recipeManager)
+	{
+		Collection<IRecipe<?>> recipes = recipeManager.getRecipes();
+		ArcRecyclingThreadHandler recyclingHandler = new ArcRecyclingThreadHandler(recipes);
+		recyclingHandler.start();
 		try
 		{
 			recyclingHandler.join();
