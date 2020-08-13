@@ -23,7 +23,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
@@ -145,8 +144,6 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 	@Override
 	public boolean createStructure(World world, BlockPos pos, Direction side, PlayerEntity player)
 	{
-		if(side.getAxis()==Axis.Y)
-			side = Direction.fromAngle(player.rotationYaw).getOpposite();
 		Rotation rot = Utils.getRotationBetweenFacings(Direction.NORTH, side.getOpposite());
 		if(rot==null)
 			return false;
