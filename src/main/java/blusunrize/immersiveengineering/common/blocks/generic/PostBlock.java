@@ -97,8 +97,8 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBloc
 				for(int i = 0; i <= highestBlock; ++i)
 					world.setBlockState(pos.up(i), Blocks.AIR.getDefaultState());
 			}
-			super.onReplaced(state, world, pos, newState, moving);
 		}
+		super.onReplaced(state, world, pos, newState, moving);
 	}
 
 	@Override
