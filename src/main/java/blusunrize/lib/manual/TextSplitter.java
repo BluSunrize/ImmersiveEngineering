@@ -2,8 +2,14 @@ package blusunrize.lib.manual;
 
 
 import blusunrize.immersiveengineering.common.util.IELogger;
+import blusunrize.lib.manual.SplitResult.LinkPart;
+import blusunrize.lib.manual.SplitResult.Token;
+import blusunrize.lib.manual.links.EntryWithLinks;
+import blusunrize.lib.manual.links.Link;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.mojang.datafixers.util.Either;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntArraySet;
@@ -20,6 +26,9 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.function.IntSupplier;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
+import static net.minecraft.util.text.TextFormatting.RESET;
 
 @SuppressWarnings("WeakerAccess")
 public class TextSplitter
@@ -51,7 +60,17 @@ public class TextSplitter
 
 	public TextSplitter(ManualInstance m, Function<String, String> tokenTransform)
 	{
-		this(m.fontRenderer(), m.pageWidth, m.pageHeight, tokenTransform);
+		this(m.fontRenderer(), m.pageWidth, m.pageHeight, tokenTransform.andThen(s -> {
+			final String extraFormat = TextFormatting.BOLD.toString();
+			if(m.improveReadability()&&s.charAt(0)!='<'&&!s.trim().isEmpty())
+			{
+				for(TextFormatting f : TextFormatting.values())
+					if(!f.isFancyStyling())
+						s = s.replace(f.toString(), f.toString()+extraFormat);
+				s = extraFormat+s;
+			}
+			return s;
+		}));
 	}
 
 	public TextSplitter(FontRenderer fontRenderer, int width, int height, Function<String, String> tokenTransform)
@@ -76,13 +95,22 @@ public class TextSplitter
 
 	public SplitResult split(String in)
 	{
+		return split(
+				EntryWithLinks.splitWhitespace(in).stream()
+						.<Either<String, Link>>map(Either::left)
+						.collect(Collectors.toList())
+		);
+	}
+
+	public SplitResult split(List<Either<String, Link>> unsizedTokens)
+	{
 		for(Map<Integer, SpecialManualElement> forAnchor : specialByAnchor.values())
 			for(SpecialManualElement e : forAnchor.values())
 				e.recalculateCraftingRecipes();
-		List<List<String>> entry = new ArrayList<>();
+		List<List<List<Token>>> entry = new ArrayList<>();
 		Object2IntMap<String> pageByAnchor = new Object2IntOpenHashMap<>();
 		pageByAnchor.put(START, 0);
-		Token[] wordsAndSpaces = splitWhitespace(in);
+		List<TokenWithWidth> wordsAndSpaces = convertToSplitterTokens(unsizedTokens);
 		NextPageData pageOverflow = new NextPageData();
 		while(pageOverflow!=null&&pageOverflow.topLine!=null)
 		{
@@ -101,9 +129,13 @@ public class TextSplitter
 		}
 		//Replace nonbreaking space (used to enforce unusual formatting, like space at the start of a line)
 		//by a normal space that can be properly rendered
-		for(List<String> page : entry)
-			for(int i = 0; i < page.size(); ++i)
-				page.set(i, page.get(i).replace('\u00A0', ' '));
+		for(List<List<Token>> page : entry)
+			for(List<Token> line : page)
+				for(int i = 0; i < line.size(); i++)
+				{
+					Token t = line.get(i);
+					line.set(i, line.get(i).replace('\u00A0', ' '));
+				}
 
 		// Create page to special element map
 		Int2ObjectMap<SpecialManualElement> specialByPage = new Int2ObjectOpenHashMap<>();
@@ -170,12 +202,12 @@ public class TextSplitter
 
 	private Page parsePage(
 			NextPageData overflow,
-			Token[] wordsAndSpaces,
+			List<TokenWithWidth> wordsAndSpaces,
 			Predicate<String> canPlaceAnchor,
 			Function<Optional<String>, Integer> getLines
 	)
 	{
-		List<String> page = new ArrayList<>();
+		List<List<Token>> page = new ArrayList<>();
 		NextLineData lineOverflow = overflow.topLine;
 		Optional<String> anchorOnPage = Optional.empty();
 		while(page.size() < getLines.apply(anchorOnPage)&&lineOverflow!=null)
@@ -210,87 +242,102 @@ public class TextSplitter
 				break;
 		}
 		// Remove empty lines at the end of the page
-		while(!page.isEmpty()&&page.get(page.size()-1).trim().isEmpty())
+		while(!page.isEmpty()&&page.get(page.size()-1).stream().allMatch(t -> t.getText().trim().isEmpty()))
 			page.remove(page.size()-1);
 		return new Page(page, anchorOnPage, lineOverflow);
 	}
 
-	private Line parseLine(NextLineData lastOverflow, Function<String, AnchorViability> canPlaceAnchor, Token[] wordsAndSpaces)
+	private Line parseLine(
+			NextLineData lastOverflow,
+			Function<String, AnchorViability> canPlaceAnchor,
+			List<TokenWithWidth> wordsAndSpaces
+	)
 	{
 		int pos = lastOverflow.firstToken;
 		Optional<String> anchorBeforeLine = Optional.empty();
-		List<Token> lineTokens = new ArrayList<>();
+		List<TokenWithWidth> lineTokens = new ArrayList<>();
 		int currentWidth;
-		if(lastOverflow.textOverflow.length() > 0)
+		if(!lastOverflow.overflow.getText().isEmpty())
 		{
-			String overflow = lastOverflow.formattingOverflow+lastOverflow.textOverflow;
-			int overflowLength = getWidth(overflow);
-			lineTokens.add(new Token(overflow, overflowLength));
+			int overflowLength = getWidth(lastOverflow.overflow.getText());
+			lineTokens.add(new TokenWithWidth(lastOverflow.overflow, overflowLength));
 			currentWidth = overflowLength;
 		}
 		else
 			currentWidth = 0;
-		while(pos < wordsAndSpaces.length&&currentWidth < lineWidth)
+		while(pos < wordsAndSpaces.size()&&currentWidth < lineWidth)
 		{
-			final Token token = wordsAndSpaces[pos];
-			if(currentWidth+token.length <= lineWidth||currentWidth==0)
+			final TokenWithWidth token = wordsAndSpaces.get(pos);
+			if(currentWidth+token.width <= lineWidth||currentWidth==0)
 			{
-				if(token.text.equals("<np>"))
-					return new Line(lineTokens, pos+1, true, anchorBeforeLine, "");
-				else if(isLinebreak(token.text))
-					return new Line(lineTokens, pos+1, false, anchorBeforeLine, "");
-				else if(token.text.startsWith("<&")&&token.text.endsWith(">"))
+				if(token.getText().equals("<np>"))
+					return new Line(lineTokens, pos+1, true, anchorBeforeLine);
+				else if(isLinebreak(token.getText()))
+					return new Line(lineTokens, pos+1, false, anchorBeforeLine);
+				else if(token.getText().startsWith("<&")&&token.getText().endsWith(">"))
 				{
-					String anchor = toAnchor(token.text);
+					String anchor = toAnchor(token.getText());
 					AnchorViability allowed = canPlaceAnchor.apply(anchor);
-					if(allowed==AnchorViability.VALID_IF_ALONE&&lineTokens.isEmpty())
-						return new Line("", pos+1, true, Optional.of(anchor), "");
+					if(allowed==AnchorViability.VALID_IF_ALONE&&currentWidth==0)
+						return new Line(ImmutableList.of(), pos+1, true, Optional.of(anchor));
 					else if(allowed!=AnchorViability.VALID)
-						return new Line(lineTokens, pos, true, Optional.empty(), "");
+						return new Line(lineTokens, pos, true, Optional.empty());
 					else
 						anchorBeforeLine = Optional.of(anchor);
 				}
-				else if(!Character.isWhitespace(token.text.charAt(0))||currentWidth!=0)
+				else if(!token.baseToken.isWhitespace()||currentWidth!=0)
 				{
 					//Don't add whitespace at the start of a line
 					lineTokens.add(token);
-					currentWidth += token.length;
+					currentWidth += token.width;
 				}
 				pos++;
 			}
 			else
 				break;
 		}
-		Token line = concatenateSkippingEndWhitespace(lineTokens);
-		if(line.length > lineWidth)
+		currentWidth = removeEndWhitespace(lineTokens, currentWidth);
+		if(currentWidth > lineWidth)
 		{
 			// Split off surplus characters, this should only happen with words longer than one line
+			TokenWithWidth lastToken = lineTokens.get(lineTokens.size()-1);
+			String lastTokenText = lastToken.getText();
+			final int trimTo = lineWidth-(currentWidth-lastToken.width);
 			String upToWidth = "";
-			for(int i = 0; i < line.length&&getWidth(upToWidth) < lineWidth; ++i)
-				upToWidth += line.text.charAt(i);
-			String overflow = line.text.substring(upToWidth.length());
-			return new Line(upToWidth, pos, false, anchorBeforeLine, overflow);
+			for(int i = 0; i < lastTokenText.length()&&getWidth(upToWidth) < trimTo; ++i)
+				upToWidth += lastTokenText.charAt(i);
+			String overflowText = lastTokenText.substring(upToWidth.length());
+			Token overflow = lastToken.baseToken.copyWithText(overflowText);
+			TokenWithWidth trimmedLastToken = lastToken.copyWithText(upToWidth, trimTo);
+			lineTokens.set(lineTokens.size()-1, trimmedLastToken);
+			return new Line(lineTokens, pos, false, anchorBeforeLine, overflow);
 		}
-		else if(pos < wordsAndSpaces.length)
-			return new Line(line.text, pos, false, anchorBeforeLine, "");
+		else if(pos < wordsAndSpaces.size())
+			return new Line(lineTokens, pos, false, anchorBeforeLine);
 		else
-			return new Line(line.text, null, anchorBeforeLine);
+			return new Line(lineTokens, null, anchorBeforeLine);
 	}
 
-	private static Token concatenateSkippingEndWhitespace(List<Token> tokens)
+	private int removeEndWhitespace(List<TokenWithWidth> tokens, int totalLength)
 	{
-		int totalLength = 0;
-		StringBuilder text = new StringBuilder();
-		for(int i = 0; i < tokens.size(); i++)
+		int lastIndex = tokens.size()-1;
+		while(!tokens.isEmpty()&&tokens.get(lastIndex).baseToken.isWhitespace())
+			totalLength -= tokens.remove(lastIndex--).width;
+		if(lastIndex >= 0)
 		{
-			Token t = tokens.get(i);
-			if(i < tokens.size()-1||!Character.isWhitespace(t.text.charAt(0)))
+			TokenWithWidth lastToken = tokens.get(lastIndex);
+			String newText = lastToken.getText().trim();
+			StringBuilder postFormat = new StringBuilder();
+			while(newText.length() >= 2&&newText.charAt(newText.length()-2)=='\u00a7')
 			{
-				totalLength += t.length;
-				text.append(t.text);
+				postFormat.insert(0, newText.substring(newText.length()-2));
+				newText = newText.substring(0, newText.length()-2).trim();
 			}
+			newText += postFormat;
+			if(!newText.equals(lastToken.getText()))
+				tokens.set(lastIndex, lastToken.copyWithText(newText, getWidth(newText)));
 		}
-		return new Token(text.toString(), totalLength);
+		return totalLength;
 	}
 
 	private String toAnchor(String token)
@@ -320,59 +367,21 @@ public class TextSplitter
 		return MathHelper.floor(pixels/(double)pixelsPerLine.getAsInt());
 	}
 
-	private Token[] splitWhitespace(String in)
+	private List<TokenWithWidth> convertToSplitterTokens(List<Either<String, Link>> rawTokens)
 	{
-		List<Token> parts = new ArrayList<>();
-		for(int i = 0; i < in.length(); )
+		List<TokenWithWidth> ret = new ArrayList<>(rawTokens.size());
+		for(Either<String, Link> e : rawTokens)
 		{
-			StringBuilder here = new StringBuilder();
-			char first = in.charAt(i);
-			here.append(first);
-			i++;
-			while(i < in.length())
-			{
-				char hereC = in.charAt(i);
-				byte action = shouldSplit(first, hereC);
-				if((action&1)!=0)
-				{
-					here.append(in.charAt(i));
-					i++;
-				}
-				if((action&2)!=0||(action&1)==0)
-					break;
-			}
-			String asString = tokenTransform.apply(here.toString());
-			//TODO deal with formatting?
-			int length = getWidth(asString);
-			parts.add(new Token(asString, length));
-		}
-		return parts.toArray(new Token[0]);
-	}
-
-	/**
-	 * @return &1: add character to token
-	 * &2: end here
-	 */
-	private static byte shouldSplit(char start, char here)
-	{
-		byte ret = 0b01;
-		if(Character.isWhitespace(start)^Character.isWhitespace(here))
-			ret = 0b10;
-		else if(Character.isWhitespace(here))
-		{
-			if((start=='\n'&&here=='\r')||(start=='\r'&&here=='\n'))
-				ret = 0b11;
-			else if((here=='\r'||here=='\n')||(start=='\r'||start=='\n'))
-				ret = 0b10;
-		}
-
-		if(here=='<')
-			ret = 0b10;
-		if(start=='<')
-		{
-			ret = 0b01;
-			if(here=='>')
-				ret |= 0b10;
+			e.ifLeft(s -> {
+				String transformed = tokenTransform.apply(s);
+				ret.add(new TokenWithWidth(Either.left(transformed), getWidth(transformed)));
+			});
+			e.ifRight(
+					l -> l.getParts().stream()
+							.map(tokenTransform)
+							.map(s -> new TokenWithWidth(Either.right(new LinkPart(l, s)), getWidth(s)))
+							.forEach(ret::add)
+			);
 		}
 		return ret;
 	}
@@ -392,25 +401,61 @@ public class TextSplitter
 
 	private static class Line
 	{
-		private final String line;
+		private final List<Token> line;
 		private final NextLineData overflow;
 		private final Optional<String> anchorBeforeLine;
 
-		private Line(String line, NextLineData overflow, @Nullable Optional<String> anchorBeforeLine)
+		private Line(List<TokenWithWidth> line, NextLineData overflow, @Nullable Optional<String> anchorBeforeLine)
 		{
-			this.line = line;
+			this.line = line.stream()
+					.map(t -> t.baseToken)
+					.collect(Collectors.toList());
 			this.overflow = overflow;
 			this.anchorBeforeLine = anchorBeforeLine;
 		}
 
-		public Line(List<Token> line, int firstToken, boolean endPageAfterLine, Optional<String> anchorBeforeLine, String textOverflow)
+		public Line(List<TokenWithWidth> line, int firstToken, boolean endPageAfterLine, Optional<String> anchorBeforeLine, Token textOverflow)
 		{
-			this(concatenateSkippingEndWhitespace(line).text, firstToken, endPageAfterLine, anchorBeforeLine, textOverflow);
+			this(line, new NextLineData(
+					firstToken,
+					endPageAfterLine,
+					textOverflow.copyWithText(getFormattingAtEnd(line)+textOverflow.getText())
+			), anchorBeforeLine);
 		}
 
-		public Line(String line, int firstToken, boolean endPageAfterLine, Optional<String> anchorBeforeLine, String textOverflow)
+		public Line(List<TokenWithWidth> line, int firstToken, boolean endPageAfterLine, Optional<String> anchorBeforeLine)
 		{
-			this(line, new NextLineData(firstToken, endPageAfterLine, TextFormatting.getFormatString(line), textOverflow), anchorBeforeLine);
+			this(line, firstToken, endPageAfterLine, anchorBeforeLine, new Token(""));
+		}
+
+		private static String getFormattingAtEnd(List<TokenWithWidth> tokens)
+		{
+			List<TextFormatting> ret = new ArrayList<>();
+			for(TokenWithWidth token : tokens)
+			{
+				String tokenText = token.getText();
+				int start = -1;
+
+				while((start = tokenText.indexOf('\u00a7', start+1))!=-1)
+					if(start < tokenText.length()-1)
+					{
+						TextFormatting textformatting = TextFormatting.fromFormattingCode(tokenText.charAt(start+1));
+						if(textformatting!=null)
+						{
+							if(textformatting.isNormalStyle())
+								ret.clear();
+							if(textformatting!=RESET)
+							{
+								ret.remove(textformatting);
+								ret.add(textformatting);
+							}
+						}
+					}
+			}
+
+			return ret.stream()
+					.map(TextFormatting::toString)
+					.collect(Collectors.joining());
 		}
 	}
 
@@ -418,32 +463,30 @@ public class TextSplitter
 	{
 		private final int firstToken;
 		private final boolean putOnNewPage;
-		private final String formattingOverflow;
-		private final String textOverflow;
+		private final Token overflow;
 
-		private NextLineData(int firstToken, boolean putOnNewPage, String formattingOverflow, String textOverflow)
+		private NextLineData(int firstToken, boolean putOnNewPage, Token overflow)
 		{
 			this.firstToken = firstToken;
 			this.putOnNewPage = putOnNewPage;
-			this.formattingOverflow = formattingOverflow;
-			this.textOverflow = textOverflow;
+			this.overflow = overflow;
 		}
 	}
 
 	private static class Page
 	{
-		private final List<String> lines;
+		private final List<List<Token>> lines;
 		private final Optional<String> anchor;
 		private final NextPageData nextPage;
 
-		private Page(List<String> lines, Optional<String> anchor, NextPageData nextPage)
+		private Page(List<List<Token>> lines, Optional<String> anchor, NextPageData nextPage)
 		{
 			this.lines = lines;
 			this.anchor = anchor;
 			this.nextPage = nextPage;
 		}
 
-		public Page(List<String> page, Optional<String> anchor, NextLineData overflow)
+		public Page(List<List<Token>> page, Optional<String> anchor, NextLineData overflow)
 		{
 			this(page, anchor, overflow==null?null: new NextPageData(overflow));
 		}
@@ -460,7 +503,7 @@ public class TextSplitter
 
 		public NextPageData()
 		{
-			this(new NextLineData(0, false, "", ""));
+			this(new NextLineData(0, false, new Token(Either.left(""))));
 		}
 	}
 
@@ -471,15 +514,33 @@ public class TextSplitter
 		VALID_IF_ALONE
 	}
 
-	private static class Token
+	private static class TokenWithWidth
 	{
-		public final String text;
-		public final int length;
+		private final Token baseToken;
+		private final int width;
 
-		private Token(String text, int length)
+		private TokenWithWidth(Either<String, LinkPart> text, int width)
 		{
-			this.text = text;
-			this.length = length;
+			this(new Token(text), width);
+		}
+
+		private TokenWithWidth(Token text, int width)
+		{
+			this.baseToken = text;
+			this.width = width;
+		}
+
+		public String getText()
+		{
+			return baseToken.getText();
+		}
+
+		public TokenWithWidth copyWithText(String text, int newWidth)
+		{
+			return new TokenWithWidth(
+					baseToken.copyWithText(text),
+					newWidth
+			);
 		}
 	}
 }

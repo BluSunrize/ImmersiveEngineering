@@ -131,10 +131,8 @@ public class IEConfig
 			adjustManualScale = builder
 					.comment("Set this to false to disable the manual's forced change of GUI scale")
 					.define("adjustManualScale", false);
-			//TODO is the second part still true?
 			badEyesight = builder
-					.comment("Set this to true if you suffer from bad eyesight. The Engineer's manual will be switched to a bold and darker text to improve readability.",
-							"Note that this may lead to a break of formatting and have text go off the page in some instances. This is unavoidable.")
+					.comment("Set this to true if you suffer from bad eyesight. The Engineer's manual will be switched to a bold and darker text to improve readability.")
 					.define("badEyesight", false);
 			tagTooltips = builder
 					.comment("Controls if item tooltips should contain the tags names of items. These tooltips are only visible in advanced tooltip mode (F3+H)")
@@ -682,6 +680,11 @@ public class IEConfig
 			wireLoggerLevel = Level.WARN;
 		Configurator.setLevel(WireLogger.logger.getName(), wireLoggerLevel);
 		rawConfig = null;
+		if(CACHED.badEyesight!=GENERAL.badEyesight.get())
+		{
+			CACHED.badEyesight = GENERAL.badEyesight.get();
+			ImmersiveEngineering.proxy.resetManual();
+		}
 	}
 
 	@SubscribeEvent
@@ -697,5 +700,6 @@ public class IEConfig
 		public boolean blocksBreakWires;
 		public boolean wireDamage;
 		public int[] connectorInputRates;
+		public boolean badEyesight;
 	}
 }

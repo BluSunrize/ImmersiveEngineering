@@ -59,6 +59,7 @@ import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import blusunrize.immersiveengineering.common.util.sound.IETickableSound;
 import blusunrize.immersiveengineering.common.util.sound.IETileSound;
 import blusunrize.immersiveengineering.common.util.sound.SkyhookSound;
+import blusunrize.lib.manual.gui.ManualScreen;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayListMultimap;
 import com.mojang.authlib.GameProfile;
@@ -563,10 +564,12 @@ public class ClientProxy extends CommonProxy
 	}
 
 	@Override
-	public void reloadManual()
+	public void resetManual()
 	{
+		if(mc().currentScreen instanceof ManualScreen)
+			mc().displayGuiScreen(null);
 		if(ManualHelper.getManual()!=null)
-			ManualHelper.getManual().reload();
+			ManualHelper.getManual().reset();
 	}
 
 	static
