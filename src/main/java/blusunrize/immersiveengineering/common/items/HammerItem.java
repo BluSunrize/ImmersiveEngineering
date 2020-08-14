@@ -38,6 +38,7 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -124,8 +125,13 @@ public class HammerItem extends IEBaseItem implements ITool
 			for(int i = 0; i < interdictedMultiblocks.length; i++)
 				interdictedMultiblocks[i] = new ResourceLocation(list.getString(i));
 		}
+		final Direction multiblockSide;
+		if(side.getAxis()==Axis.Y&&player!=null)
+			multiblockSide = Direction.fromAngle(player.rotationYaw).getOpposite();
+		else
+			multiblockSide = side;
 		for(MultiblockHandler.IMultiblock mb : MultiblockHandler.getMultiblocks())
-			if(mb.isBlockTrigger(world.getBlockState(pos), side))
+			if(mb.isBlockTrigger(world.getBlockState(pos), multiblockSide))
 			{
 				boolean b = permittedMultiblocks==null;
 				if(permittedMultiblocks!=null)
@@ -148,7 +154,7 @@ public class HammerItem extends IEBaseItem implements ITool
 					break;
 				if(MultiblockHandler.postMultiblockFormationEvent(player, mb, pos, stack).isCanceled())
 					continue;
-				if(mb.createStructure(world, pos, side, player))
+				if(mb.createStructure(world, pos, multiblockSide, player))
 				{
 					if(player instanceof ServerPlayerEntity)
 						IEAdvancements.TRIGGER_MULTIBLOCK.trigger((ServerPlayerEntity)player, mb, stack);
