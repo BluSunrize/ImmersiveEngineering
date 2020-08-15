@@ -1,4 +1,6 @@
-##### Version 1.14.4-3.1-pre
+##### Version 1.14.4-3.2-pre
+- Added waterlogging to various IE blocks (BluSunrize)
+- Added processing compat for Fluorite, Cobalt and Ardite (BluSunrize)
 - Fixed various issues with the manual (Malte)
 - Fixed CMEs while loading dynamic models (Malte)
 - Fixed warning about missing command argument serializer (Malte)
@@ -6,6 +8,7 @@
 - Fixed priority system for recipe outputs not working (Malte)
 - Fixed recipes sometimes not getting added to JEI on servers (Malte)
 - Fixed fences obstructing connections in counterintuitive ways (Malte)
+- Fixed crashes with the manual (Malte)
 - Translations Added/Updated: zh_zn (masakitenchi)
 
 ##### Version 1.14.4-3.1-110
