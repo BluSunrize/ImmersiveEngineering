@@ -16,6 +16,7 @@
   ],
   "category": "specialBullet",
   "result": {
-    "item": "immersiveengineering:flare"
+    "item": "immersiveengineering:flare",
+    "nbt": "{flareColour:2925323}"
   }
 }

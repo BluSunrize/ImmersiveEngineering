@@ -1,0 +1,30 @@
+{
+  "type": "immersiveengineering:arc_furnace",
+  "results": [
+    {
+      "tag": "forge:ingots/cobalt"
+    }
+  ],
+  "additives": [],
+  "conditions": [
+    {
+      "value": {
+        "tag": "forge:ingots/cobalt",
+        "type": "forge:tag_empty"
+      },
+      "type": "forge:not"
+    },
+    {
+      "value": {
+        "tag": "forge:dusts/cobalt",
+        "type": "forge:tag_empty"
+      },
+      "type": "forge:not"
+    }
+  ],
+  "input": {
+    "tag": "forge:dusts/cobalt"
+  },
+  "time": 100,
+  "energy": 51200
+}
