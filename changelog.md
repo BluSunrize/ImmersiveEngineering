@@ -1,6 +1,7 @@
 ##### Version 1.14.4-3.2-pre
 - Added waterlogging to various IE blocks (BluSunrize)
 - Added processing compat for Fluorite, Cobalt and Ardite (BluSunrize)
+- Re-Added recipe for patrons & contributers to cycle through revolver skins (BluSunrize)
 - Fixed various issues with the manual (Malte)
 - Fixed CMEs while loading dynamic models (Malte)
 - Fixed warning about missing command argument serializer (Malte)

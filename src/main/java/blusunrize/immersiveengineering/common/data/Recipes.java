@@ -57,8 +57,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.potion.PotionUtils;
-import net.minecraft.potion.Potions;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.IItemProvider;
@@ -183,6 +181,8 @@ public class Recipes extends RecipeProvider
 				.build(out, ImmersiveEngineering.MODID+":earmuffs_attach");
 		CustomRecipeBuilder.func_218656_a(RecipeSerializers.JERRYCAN_REFILL.get())
 				.build(out, ImmersiveEngineering.MODID+":jerrycan_refill");
+		CustomRecipeBuilder.func_218656_a(RecipeSerializers.REVOLVER_CYCLE_SERIALIZER.get())
+				.build(out, ImmersiveEngineering.MODID+":revolver_cycle");
 		CustomRecipeBuilder.func_218656_a(RecipeSerializers.IE_REPAIR.get())
 				.build(out, ImmersiveEngineering.MODID+":ie_item_repair");
 		addRGBRecipe(out, toRL("curtain_colour"), Ingredient.fromItems(Cloth.curtain), "colour");
