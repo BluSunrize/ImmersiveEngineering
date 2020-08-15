@@ -198,7 +198,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 				int consumed = IEConfig.MACHINES.assembler_consumption.get();
 
 				AssemblerHandler.IRecipeAdapter adapter = AssemblerHandler.findAdapter(pattern.recipe);
-				AssemblerHandler.RecipeQuery[] queries = adapter.getQueriedInputs(pattern.recipe, pattern.inv);
+				AssemblerHandler.RecipeQuery[] queries = adapter.getQueriedInputs(pattern.recipe, pattern.inv, world);
 				if(queries==null)
 					continue;
 				if(this.energyStorage.extractEnergy(consumed, true)==consumed&&this.consumeIngredients(queries, availableStacks, false, null))

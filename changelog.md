@@ -9,6 +9,7 @@
 - Fixed recipes sometimes not getting added to JEI on servers (Malte)
 - Fixed fences obstructing connections in counterintuitive ways (Malte)
 - Fixed crashes with the manual (Malte)
+- Fixed assembler logic once again to properly handle concrete recipes (BluSunrize)
 - Translations Added/Updated: zh_zn (masakitenchi)
 
 ##### Version 1.14.4-3.1-110
