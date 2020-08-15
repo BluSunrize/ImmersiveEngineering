@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectorBlock;
 import net.minecraft.block.BlockState;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
@@ -22,7 +23,7 @@ public class FloodlightBlock extends MiscConnectorBlock
 
 	public FloodlightBlock(String name, Supplier<TileEntityType<?>> tileType)
 	{
-		super(name, tileType, IEProperties.ACTIVE, IEProperties.FACING_ALL);
+		super(name, tileType, IEProperties.ACTIVE, IEProperties.FACING_ALL, BlockStateProperties.WATERLOGGED);
 	}
 
 	@Override

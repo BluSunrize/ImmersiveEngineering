@@ -8,23 +8,18 @@
 
 package blusunrize.immersiveengineering.api.tool;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.common.util.FakePlayerUtil;
 import blusunrize.immersiveengineering.common.util.Utils.InventoryCraftingFalse;
 import com.google.common.base.Preconditions;
-import net.minecraft.block.Blocks;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapedRecipe;
-import net.minecraft.item.crafting.ShapelessRecipe;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.crafting.IShapedRecipe;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
@@ -46,26 +41,13 @@ public class AssemblerHandler
 	public static final IRecipeAdapter<IRecipe<CraftingInventory>> defaultAdapter = new IRecipeAdapter<IRecipe<CraftingInventory>>()
 	{
 		@Override
-		public RecipeQuery[] getQueriedInputs(IRecipe<CraftingInventory> recipe, NonNullList<ItemStack> input)
+		public RecipeQuery[] getQueriedInputs(IRecipe<CraftingInventory> recipe, NonNullList<ItemStack> input, World world)
 		{
 			NonNullList<Ingredient> ingred = recipe.getIngredients();
 			CraftingInventory verificationInv = InventoryCraftingFalse.createFilledCraftingInventory(3, 3, input);
 			boolean matches;
 			ForgeHooks.setCraftingPlayer(FakePlayerUtil.getAnyFakePlayer());
-			if(recipe instanceof IShapedRecipe)
-			{
-				IShapedRecipe shapedInput = (IShapedRecipe)recipe;
-				ShapedRecipe verify = new ShapedRecipe(new ResourceLocation(ImmersiveEngineering.MODID, "temp"),
-						"temp", shapedInput.getRecipeWidth(), shapedInput.getRecipeHeight(),
-						ingred, new ItemStack(Items.GUNPOWDER));
-				matches = verify.matches(verificationInv, null);
-			}
-			else
-			{
-				ShapelessRecipe verify = new ShapelessRecipe(new ResourceLocation(ImmersiveEngineering.MODID, "temp"),
-						"temp", new ItemStack(Blocks.DIRT), ingred);
-				matches = verify.matches(verificationInv, null);
-			}
+			matches = recipe.matches(verificationInv, world);
 			ForgeHooks.setCraftingPlayer(null);
 			if(!matches)
 				return null;
@@ -115,15 +97,15 @@ public class AssemblerHandler
 	public interface IRecipeAdapter<R extends IRecipe<CraftingInventory>>
 	{
 		@Nullable
-		default RecipeQuery[] getQueriedInputs(R recipe)
+		default RecipeQuery[] getQueriedInputs(R recipe, World world)
 		{
-			return getQueriedInputs(recipe, NonNullList.create());
+			return getQueriedInputs(recipe, NonNullList.create(), world);
 		}
 
 		@Nullable
-		default RecipeQuery[] getQueriedInputs(R recipe, NonNullList<ItemStack> input)
+		default RecipeQuery[] getQueriedInputs(R recipe, NonNullList<ItemStack> input, World world)
 		{
-			return getQueriedInputs(recipe);
+			return getQueriedInputs(recipe, world);
 		}
 	}
 

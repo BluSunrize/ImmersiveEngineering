@@ -23,6 +23,7 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.EnumProperty;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -45,7 +46,7 @@ public class ConveyorBlock extends IETileProviderBlock
 	{
 		super(ConveyorHandler.getRegistryNameFor(type).getPath(),
 				Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(3.0F, 15.0F).notSolid(),
-				BlockItemIE::new, FACING);
+				BlockItemIE::new, FACING, BlockStateProperties.WATERLOGGED);
 		this.typeName = type;
 		lightOpacity = 0;
 		ConveyorHandler.conveyorBlocks.put(type, this);

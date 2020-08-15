@@ -1,12 +1,15 @@
-##### Version 1.16.1-3.1.1-pre
+##### Version 1.16.1-3.2.0-pre
 - Fixed some derpy rendering in the manual (BluSunrize)
 
-##### Version 1.15.2-3.1.1-pre
+##### Version 1.15.2-3.2.0-pre
  - Fixed mirrored machines rendering incorrectly (Malte)
  - Fixed bucket wheels in mirrored excavators rendering incorrectly (Malte)
  - Fixed crash when holding a drill with a damaged head (Malte)
 
-##### Version 1.14.4-3.1.1-pre
+##### Version 1.14.4-3.2.0-pre
+- Added waterlogging to various IE blocks (BluSunrize)
+- Added processing compat for Fluorite, Cobalt and Ardite (BluSunrize)
+- Re-Added recipe for patrons & contributers to cycle through revolver skins (BluSunrize)
 - Fixed various issues with the manual (Malte)
 - Fixed CMEs while loading dynamic models (Malte)
 - Fixed warning about missing command argument serializer (Malte)
@@ -14,6 +17,10 @@
 - Fixed priority system for recipe outputs not working (Malte)
 - Fixed recipes sometimes not getting added to JEI on servers (Malte)
 - Fixed fences obstructing connections in counterintuitive ways (Malte)
+- Fixed crashes with the manual (Malte)
+- Fixed assembler logic once again to properly handle concrete recipes (BluSunrize)
+- Fixed flare cartridge colours to match the dye they were crafted with (BluSunrize)
+- Fixed assembler connecting to pipes in wrong places (BluSunrize)
 - Translations Added/Updated: zh_zn (masakitenchi)
 
 ##### Version 1.16.1-3.1-112

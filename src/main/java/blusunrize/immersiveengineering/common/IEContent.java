@@ -79,6 +79,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.Effects;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tileentity.FurnaceTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -413,9 +414,9 @@ public class IEContent
 		Connectors.transformer = new TransformerBlock();
 		Connectors.transformerHV = new TransformerHVBlock();
 		Connectors.breakerswitch = new MiscConnectorBlock("breaker_switch", () -> BreakerSwitchTileEntity.TYPE,
-				IEProperties.ACTIVE, IEProperties.FACING_ALL);
+				IEProperties.ACTIVE, IEProperties.FACING_ALL, BlockStateProperties.WATERLOGGED);
 		Connectors.redstoneBreaker = new MiscConnectorBlock("redstone_breaker", () -> RedstoneBreakerTileEntity.TYPE,
-				IEProperties.ACTIVE, IEProperties.FACING_ALL);
+				IEProperties.ACTIVE, IEProperties.FACING_ALL, BlockStateProperties.WATERLOGGED);
 		Connectors.currentTransformer = new EnergyMeterBlock();
 		Connectors.connectorRedstone = new MiscConnectorBlock("connector_redstone", () -> ConnectorRedstoneTileEntity.TYPE);
 		Connectors.connectorProbe = new MiscConnectorBlock("connector_probe", () -> ConnectorProbeTileEntity.TYPE);
@@ -426,7 +427,7 @@ public class IEContent
 		MetalDevices.fluidPlacer = new GenericTileBlock("fluid_placer", () -> FluidPlacerTileEntity.TYPE,
 				metalPropertiesNotSolid);
 		MetalDevices.razorWire = new MiscConnectorBlock("razor_wire", () -> RazorWireTileEntity.TYPE,
-				IEProperties.FACING_HORIZONTAL);
+				IEProperties.FACING_HORIZONTAL, BlockStateProperties.WATERLOGGED);
 		MetalDevices.toolbox = new GenericTileBlock("toolbox_block", () -> ToolboxTileEntity.TYPE, metalPropertiesNotSolid,
 				(b, p) -> null, IEProperties.FACING_HORIZONTAL);
 		MetalDevices.capacitorLV = new GenericTileBlock("capacitor_lv", () -> CapacitorLVTileEntity.TYPE, defaultMetalProperties);
@@ -442,10 +443,10 @@ public class IEContent
 		MetalDevices.thermoelectricGen = new GenericTileBlock("thermoelectric_generator", () -> ThermoelectricGenTileEntity.TYPE,
 				defaultMetalProperties);
 		MetalDevices.electricLantern = new ElectricLanternBlock("electric_lantern", () -> ElectricLanternTileEntity.TYPE,
-				IEProperties.FACING_TOP_DOWN, IEProperties.ACTIVE);
+				IEProperties.FACING_TOP_DOWN, IEProperties.ACTIVE, BlockStateProperties.WATERLOGGED);
 		MetalDevices.chargingStation = new GenericTileBlock("charging_station", () -> ChargingStationTileEntity.TYPE,
 				metalPropertiesNotSolid, IEProperties.FACING_HORIZONTAL);
-		MetalDevices.fluidPipe = new GenericTileBlock("fluid_pipe", () -> FluidPipeTileEntity.TYPE, metalPropertiesNotSolid);
+		MetalDevices.fluidPipe = new GenericTileBlock("fluid_pipe", () -> FluidPipeTileEntity.TYPE, metalPropertiesNotSolid, BlockStateProperties.WATERLOGGED);
 		MetalDevices.sampleDrill = new SampleDrillBlock();
 		MetalDevices.teslaCoil = new TeslaCoilBlock();
 		MetalDevices.floodlight = new FloodlightBlock("floodlight", () -> FloodlightTileEntity.TYPE);
@@ -454,7 +455,7 @@ public class IEContent
 		MetalDevices.cloche = new ClocheBlock();
 		for(EnumMetals metal : new EnumMetals[]{EnumMetals.IRON, EnumMetals.STEEL, EnumMetals.ALUMINUM, EnumMetals.COPPER})
 			MetalDevices.chutes.put(metal, new GenericTileBlock("chute_"+metal.tagName(), () -> ChuteTileEntity.TYPE,
-					metalPropertiesNotSolid, IEProperties.FACING_HORIZONTAL));
+					metalPropertiesNotSolid, IEProperties.FACING_HORIZONTAL, BlockStateProperties.WATERLOGGED));
 
 		Multiblocks.cokeOven = new StoneMultiBlock("coke_oven", () -> CokeOvenTileEntity.TYPE);
 		Multiblocks.blastFurnace = new StoneMultiBlock("blast_furnace", () -> BlastFurnaceTileEntity.TYPE);

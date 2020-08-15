@@ -40,6 +40,7 @@ import blusunrize.immersiveengineering.common.items.IEItems.Metals;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.items.IEItems.*;
 import blusunrize.immersiveengineering.common.items.ToolUpgradeItem.ToolUpgrade;
+import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonArray;
@@ -185,6 +186,8 @@ public class Recipes extends RecipeProvider
 				.build(out, ImmersiveEngineering.MODID+":earmuffs_attach");
 		CustomRecipeBuilder.customRecipe(RecipeSerializers.JERRYCAN_REFILL.get())
 				.build(out, ImmersiveEngineering.MODID+":jerrycan_refill");
+		CustomRecipeBuilder.customRecipe(RecipeSerializers.REVOLVER_CYCLE_SERIALIZER.get())
+				.build(out, ImmersiveEngineering.MODID+":revolver_cycle");
 		CustomRecipeBuilder.customRecipe(RecipeSerializers.IE_REPAIR.get())
 				.build(out, ImmersiveEngineering.MODID+":ie_item_repair");
 		addRGBRecipe(out, toRL("curtain_colour"), Ingredient.fromItems(Cloth.curtain), "colour");
@@ -421,19 +424,24 @@ public class Recipes extends RecipeProvider
 				.addInput(Tags.Items.GUNPOWDER)
 				.addInput(Items.GLASS_BOTTLE)
 				.build(out, toRL("blueprint/bullet_potion"));
-		BlueprintCraftingRecipeBuilder.builder("specialBullet", BulletHandler.getBulletItem(BulletItem.FLARE))
+
+		ItemStack flare = BulletHandler.getBulletStack(BulletItem.FLARE);
+		ItemNBTHelper.putInt(flare, "flareColour", 0xcc2e06);
+		BlueprintCraftingRecipeBuilder.builder("specialBullet", flare.copy())
 				.addInput(BulletHandler.emptyShell)
 				.addInput(Tags.Items.GUNPOWDER)
 				.addInput(IETags.getTagsFor(EnumMetals.ALUMINUM).dust)
 				.addInput(Tags.Items.DYES_RED)
 				.build(out, toRL("blueprint/bullet_flare_red"));
-		BlueprintCraftingRecipeBuilder.builder("specialBullet", BulletHandler.getBulletItem(BulletItem.FLARE))
+		ItemNBTHelper.putInt(flare, "flareColour", 0x2ca30b);
+		BlueprintCraftingRecipeBuilder.builder("specialBullet", flare.copy())
 				.addInput(BulletHandler.emptyShell)
 				.addInput(Tags.Items.GUNPOWDER)
 				.addInput(IETags.getTagsFor(EnumMetals.ALUMINUM).dust)
 				.addInput(Tags.Items.DYES_GREEN)
 				.build(out, toRL("blueprint/bullet_flare_green"));
-		BlueprintCraftingRecipeBuilder.builder("specialBullet", BulletHandler.getBulletItem(BulletItem.FLARE))
+		ItemNBTHelper.putInt(flare, "flareColour", 0xffff82);
+		BlueprintCraftingRecipeBuilder.builder("specialBullet", flare.copy())
 				.addInput(BulletHandler.emptyShell)
 				.addInput(Tags.Items.GUNPOWDER)
 				.addInput(IETags.getTagsFor(EnumMetals.ALUMINUM).dust)

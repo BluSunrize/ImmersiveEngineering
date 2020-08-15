@@ -1,0 +1,30 @@
+{
+  "type": "immersiveengineering:hammer_crushing",
+  "conditions": [
+    {
+      "key": "tools.disable_hammer_crushing",
+      "value": false,
+      "type": "immersiveengineering:config"
+    },
+    {
+      "value": {
+        "tag": "forge:dusts/cobalt",
+        "type": "forge:tag_empty"
+      },
+      "type": "forge:not"
+    },
+    {
+      "value": {
+        "tag": "forge:ores/cobalt",
+        "type": "forge:tag_empty"
+      },
+      "type": "forge:not"
+    }
+  ],
+  "result": {
+    "tag": "forge:dusts/cobalt"
+  },
+  "input": {
+    "tag": "forge:ores/cobalt"
+  }
+}

@@ -118,7 +118,7 @@ public class ConnectorProbeTileEntity extends ConnectorRedstoneTileEntity
 	}
 
 	@Override
-	public ActionResultType screwdriverUseSide(Direction side, PlayerEntity player, Vector3d hitVec)
+	public ActionResultType screwdriverUseSide(Direction side, PlayerEntity player, Hand hand, Vector3d hitVec)
 	{
 		ImmersiveEngineering.proxy.openTileScreen(Lib.GUIID_RedstoneProbe, this);
 		return ActionResultType.SUCCESS;

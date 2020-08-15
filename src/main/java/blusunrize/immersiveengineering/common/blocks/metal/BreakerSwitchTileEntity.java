@@ -146,7 +146,7 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 	}
 
 	@Override
-	public boolean hammerUseSide(Direction side, PlayerEntity player, Vector3d hitVec)
+	public boolean hammerUseSide(Direction side, PlayerEntity player, Hand hand, Vector3d hitVec)
 	{
 		rotation = (rotation+3)%4;
 		for(ConnectionPoint cp : getConnectionPoints())
@@ -159,7 +159,7 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 	}
 
 	@Override
-	public ActionResultType screwdriverUseSide(Direction side, PlayerEntity player, Vector3d hitVec)
+	public ActionResultType screwdriverUseSide(Direction side, PlayerEntity player, Hand hand, Vector3d hitVec)
 	{
 		final boolean oldPassing = allowEnergyToPass();
 		inverted = !inverted;

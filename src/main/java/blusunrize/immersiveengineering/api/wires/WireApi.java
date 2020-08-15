@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.state.Property;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -101,7 +102,7 @@ public final class WireApi
 			if(state.getBlock()!=conn.getBlock())
 				return false;
 			for(Property<?> p : state.func_235904_r_())
-				if(p!=IEProperties.FACING_ALL&&!state.get(p).equals(conn.get(p)))
+				if(p!=IEProperties.FACING_ALL&&p!=BlockStateProperties.WATERLOGGED&&!state.get(p).equals(conn.get(p)))
 					return false;
 			return true;
 		}

@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.data.resources;
 
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
+import blusunrize.immersiveengineering.common.data.DataGenUtils;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
@@ -29,7 +30,9 @@ public enum RecipeOres
 	EMERALD("emerald", true, Items.EMERALD, 2),
 	LAPIS("lapis", true, Items.LAPIS_LAZULI, 9, new SecondaryOutput(IETags.sulfurDust, .1f)),
 	QUARTZ("quartz", true, Items.QUARTZ, 3, new SecondaryOutput(IETags.sulfurDust, .2f)),
-	REDSTONE("redstone", true, Items.REDSTONE, 6); // is cinnabar still a thing?
+	REDSTONE("redstone", true, Items.REDSTONE, 6), // is cinnabar still a thing?
+
+	FLUORITE("fluorite", false, new IngredientWithSize(DataGenUtils.createItemWrapper(IETags.getGem("fluorite")), 6));
 
 	private final String name;
 	private final boolean isNative;

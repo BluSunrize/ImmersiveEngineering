@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectorBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
@@ -32,7 +33,7 @@ public class FeedthroughBlock extends MiscConnectorBlock
 	{
 		super("feedthrough", () -> FeedthroughTileEntity.TYPE,
 				//TODO maybe clean up a bit
-				IEProperties.FACING_ALL
+				IEProperties.FACING_ALL, BlockStateProperties.WATERLOGGED
 		);
 	}
 
@@ -40,7 +41,7 @@ public class FeedthroughBlock extends MiscConnectorBlock
 	public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving)
 	{
 		TileEntity tile = world.getTileEntity(pos);
-		if(tile instanceof FeedthroughTileEntity&&!world.isRemote)
+		if(tile instanceof FeedthroughTileEntity&&!world.isRemote&&newState.getBlock()!=state.getBlock())
 		{
 			FeedthroughTileEntity feedthrough = (FeedthroughTileEntity)tile;
 			if(!feedthrough.currentlyDisassembling)

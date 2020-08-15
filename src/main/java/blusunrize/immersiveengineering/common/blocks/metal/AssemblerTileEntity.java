@@ -198,7 +198,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 				int consumed = IEConfig.MACHINES.assembler_consumption.get();
 
 				AssemblerHandler.IRecipeAdapter adapter = AssemblerHandler.findAdapter(pattern.recipe);
-				AssemblerHandler.RecipeQuery[] queries = adapter.getQueriedInputs(pattern.recipe, pattern.inv);
+				AssemblerHandler.RecipeQuery[] queries = adapter.getQueriedInputs(pattern.recipe, pattern.inv, world);
 				if(queries==null)
 					continue;
 				if(this.energyStorage.extractEnergy(consumed, true)==consumed&&this.consumeIngredients(queries, availableStacks, false, null))
@@ -528,6 +528,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 	private static final BlockPos inputPos = new BlockPos(1, 1, 2);
 	private static final BlockPos outputPos = new BlockPos(1, 1, 0);
 	private static final Set<BlockPos> itemConnections = ImmutableSet.of(inputPos, outputPos);
+
 	@Nonnull
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing)
@@ -571,11 +572,13 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 		return master();
 	}
 
+	private static final BlockPos fluidInputPos = new BlockPos(1, 0, 2);
+
 	@Override
 	protected IFluidTank[] getAccessibleFluidTanks(Direction side)
 	{
 		AssemblerTileEntity master = master();
-		if(master!=null&&/*TODO posInMultiblock==1&&*/(side==null||side==getFacing().getOpposite()))
+		if(master!=null&&fluidInputPos.equals(posInMultiblock)&&(side==null||side==getFacing().getOpposite()))
 			return master.tanks;
 		return new FluidTank[0];
 	}
