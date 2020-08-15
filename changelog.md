@@ -12,6 +12,7 @@
 - Fixed crashes with the manual (Malte)
 - Fixed assembler logic once again to properly handle concrete recipes (BluSunrize)
 - Fixed flare cartridge colours to match the dye they were crafted with (BluSunrize)
+- Fixed assembler connecting to pipes in wrong places (BluSunrize)
 - Translations Added/Updated: zh_zn (masakitenchi)
 
 ##### Version 1.14.4-3.1-110
