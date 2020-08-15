@@ -15,6 +15,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.state.IProperty;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
@@ -30,7 +31,7 @@ public class StructuralArmBlock extends IETileProviderBlock
 	public StructuralArmBlock(String name)
 	{
 		super(name, Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(3, 15),
-				BlockItemIE::new, FACING);
+				BlockItemIE::new, FACING, BlockStateProperties.WATERLOGGED);
 		setNotNormalBlock();
 		setBlockLayer(BlockRenderLayer.CUTOUT_MIPPED);
 	}

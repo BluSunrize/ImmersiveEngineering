@@ -19,6 +19,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.IProperty;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
@@ -40,7 +41,7 @@ public class LanternBlock extends IEBaseBlock implements IHasObjProperty
 						.hardnessAndResistance(3, 15)
 						.lightValue(14),
 				BlockItem::new,
-				FACING);
+				FACING, BlockStateProperties.WATERLOGGED);
 		setNotNormalBlock();
 	}
 

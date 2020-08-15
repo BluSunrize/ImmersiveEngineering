@@ -18,6 +18,7 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
@@ -35,7 +36,7 @@ public class FeedthroughBlock extends MiscConnectorBlock
 	{
 		super("feedthrough", () -> FeedthroughTileEntity.TYPE,
 				//TODO maybe clean up a bit
-				ImmutableList.of(IEProperties.FACING_ALL),
+				ImmutableList.of(IEProperties.FACING_ALL, BlockStateProperties.WATERLOGGED),
 				Arrays.asList(BlockRenderLayer.values())
 		);
 	}
@@ -44,7 +45,7 @@ public class FeedthroughBlock extends MiscConnectorBlock
 	public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving)
 	{
 		TileEntity tile = world.getTileEntity(pos);
-		if(tile instanceof FeedthroughTileEntity&&!world.isRemote)
+		if(tile instanceof FeedthroughTileEntity&&!world.isRemote&&newState.getBlock()!=state.getBlock())
 		{
 			FeedthroughTileEntity feedthrough = (FeedthroughTileEntity)tile;
 			if(!feedthrough.currentlyDisassembling)

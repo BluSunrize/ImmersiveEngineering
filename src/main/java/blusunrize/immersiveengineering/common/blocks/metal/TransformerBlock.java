@@ -5,6 +5,7 @@ import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectorBlock;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockReader;
 
@@ -16,7 +17,7 @@ public class TransformerBlock extends MiscConnectorBlock
 	public TransformerBlock()
 	{
 		super("transformer", () -> TransformerTileEntity.TYPE,
-				ImmutableList.of(IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE, IEProperties.MIRRORED),
+				ImmutableList.of(IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE, IEProperties.MIRRORED, BlockStateProperties.WATERLOGGED),
 				ImmutableList.of(), TransformerBlockItem::new);
 	}
 

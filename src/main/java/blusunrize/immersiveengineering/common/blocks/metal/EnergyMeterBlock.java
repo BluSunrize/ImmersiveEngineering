@@ -6,6 +6,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.IProperty;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
@@ -19,7 +20,7 @@ public class EnergyMeterBlock extends MiscConnectorBlock
 
 	public EnergyMeterBlock()
 	{
-		super("current_transformer", () -> EnergyMeterTileEntity.TYPE, DUMMY, FACING);
+		super("current_transformer", () -> EnergyMeterTileEntity.TYPE, DUMMY, FACING, BlockStateProperties.WATERLOGGED);
 		setNotNormalBlock();
 	}
 

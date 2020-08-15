@@ -16,6 +16,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.item.Item;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.IProperty;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
@@ -36,7 +37,7 @@ public class MiscConnectorBlock extends ConnectorBlock
 
 	public MiscConnectorBlock(String name, Supplier<TileEntityType<?>> tileType)
 	{
-		this(name, tileType, ImmutableList.of(IEProperties.FACING_ALL), ImmutableList.of());
+		this(name, tileType, ImmutableList.of(IEProperties.FACING_ALL, BlockStateProperties.WATERLOGGED), ImmutableList.of());
 	}
 
 	public MiscConnectorBlock(String name, Supplier<TileEntityType<?>> tileType, IProperty<?>... extraProperties)
@@ -46,7 +47,7 @@ public class MiscConnectorBlock extends ConnectorBlock
 
 	public MiscConnectorBlock(String name, Supplier<TileEntityType<?>> tileType, BlockRenderLayer... layers)
 	{
-		this(name, tileType, ImmutableList.of(IEProperties.FACING_ALL), ImmutableList.copyOf(layers));
+		this(name, tileType, ImmutableList.of(IEProperties.FACING_ALL, BlockStateProperties.WATERLOGGED), ImmutableList.copyOf(layers));
 	}
 
 	public MiscConnectorBlock(String name, Supplier<TileEntityType<?>> tileType, List<IProperty<?>> extraProps, List<BlockRenderLayer> layers)

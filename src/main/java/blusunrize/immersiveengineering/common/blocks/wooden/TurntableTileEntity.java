@@ -21,6 +21,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Direction.AxisDirection;
+import net.minecraft.util.Hand;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -115,7 +116,7 @@ public class TurntableTileEntity extends IEBaseTileEntity implements IStateBased
 	}
 
 	@Override
-	public boolean hammerUseSide(Direction side, PlayerEntity player, Vec3d hitVec)
+	public boolean hammerUseSide(Direction side, PlayerEntity player, Hand hand, Vec3d hitVec)
 	{
 		Direction facing = getFacing();
 		if(player.isSneaking()&&side.getAxis()!=facing.getAxis())

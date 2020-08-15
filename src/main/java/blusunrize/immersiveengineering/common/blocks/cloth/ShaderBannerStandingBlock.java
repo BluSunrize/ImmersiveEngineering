@@ -20,7 +20,7 @@ public class ShaderBannerStandingBlock extends ShaderBannerBlock
 
 	public ShaderBannerStandingBlock()
 	{
-		super("shader_banner", ROTATION);
+		super("shader_banner", ROTATION, BlockStateProperties.WATERLOGGED);
 	}
 
 	@Override
