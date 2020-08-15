@@ -24,12 +24,15 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.util.ActionResultType;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Direction.AxisDirection;
+import net.minecraft.util.Hand;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -60,7 +63,7 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBloc
 	public PostBlock(String name, Properties blockProps)
 	{
 		//TODO
-		super(name, blockProps, BlockItemIE::new, POST_SLAVE, HORIZONTAL_OFFSET);
+		super(name, blockProps, BlockItemIE::new, POST_SLAVE, HORIZONTAL_OFFSET, BlockStateProperties.WATERLOGGED);
 		setMobility(PushReaction.BLOCK);
 		lightOpacity = 0;
 	}
@@ -74,24 +77,27 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBloc
 	@Override
 	public void onReplaced(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, BlockState newState, boolean moving)
 	{
-		int dummyState = state.get(POST_SLAVE);
-		HorizontalOffset offset = state.get(HORIZONTAL_OFFSET);
-		if(dummyState > 0&&offset==HorizontalOffset.NONE)
-			world.setBlockState(pos.down(dummyState), Blocks.AIR.getDefaultState());
-		else if(dummyState==0)
+		if(state.getBlock()!=newState.getBlock())
 		{
-			spawnAsEntity(world, pos, new ItemStack(this));
-			final int highestBlock = 3;
-			BlockPos armStart = pos.up(highestBlock);
-			for(Direction d : Direction.BY_HORIZONTAL_INDEX)
+			int dummyState = state.get(POST_SLAVE);
+			HorizontalOffset offset = state.get(HORIZONTAL_OFFSET);
+			if(dummyState > 0&&offset==HorizontalOffset.NONE)
+				world.setBlockState(pos.down(dummyState), Blocks.AIR.getDefaultState());
+			else if(dummyState==0)
 			{
-				BlockPos armPos = armStart.offset(d);
-				BlockState armState = world.getBlockState(armPos);
-				if(armState.getBlock()==this&&armState.get(HORIZONTAL_OFFSET).getOffset().equals(d.getDirectionVec()))
-					world.setBlockState(armPos, Blocks.AIR.getDefaultState());
+				spawnAsEntity(world, pos, new ItemStack(this));
+				final int highestBlock = 3;
+				BlockPos armStart = pos.up(highestBlock);
+				for(Direction d : Direction.BY_HORIZONTAL_INDEX)
+				{
+					BlockPos armPos = armStart.offset(d);
+					BlockState armState = world.getBlockState(armPos);
+					if(armState.getBlock()==this&&armState.get(HORIZONTAL_OFFSET).getOffset().equals(d.getDirectionVec()))
+						world.setBlockState(armPos, Blocks.AIR.getDefaultState());
+				}
+				for(int i = 0; i <= highestBlock; ++i)
+					world.setBlockState(pos.up(i), Blocks.AIR.getDefaultState());
 			}
-			for(int i = 0; i <= highestBlock; ++i)
-				world.setBlockState(pos.up(i), Blocks.AIR.getDefaultState());
 		}
 		super.onReplaced(state, world, pos, newState, moving);
 	}
@@ -143,7 +149,7 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBloc
 	}
 
 	@Override
-	public ActionResultType hammerUseSide(Direction side, PlayerEntity player, World world, BlockPos pos, BlockRayTraceResult hit)
+	public ActionResultType hammerUseSide(Direction side, PlayerEntity player, Hand hand, World world, BlockPos pos, BlockRayTraceResult hit)
 	{
 		BlockState state = world.getBlockState(pos);
 		int dummy = state.get(POST_SLAVE);
@@ -152,15 +158,18 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBloc
 		if(dummy==3&&offset==HorizontalOffset.NONE&&side.getAxis()!=Axis.Y)
 		{
 			BlockPos offsetPos = pos.offset(side);
+			BlockItemUseContext context = new BlockItemUseContext(new ItemUseContext(player, hand, hit));
 			//No Arms if space is blocked
-			if(!world.isAirBlock(offsetPos))
+			if(!world.getBlockState(offsetPos).isReplaceable(context))
 				return ActionResultType.FAIL;
 			//No Arms if perpendicular arms exist
 			for(Direction forbidden : ImmutableList.of(side.rotateY(), side.rotateYCCW()))
 				if(hasArmFor(pos, forbidden, world))
 					return ActionResultType.FAIL;
 
-			world.setBlockState(offsetPos, getDefaultState().with(POST_SLAVE, 3).with(HORIZONTAL_OFFSET, HorizontalOffset.get(side)));
+			BlockState arm_state = this.getStateForPlacement(context).with(POST_SLAVE, 3)
+					.with(HORIZONTAL_OFFSET, HorizontalOffset.get(side));
+			world.setBlockState(offsetPos, arm_state);
 			changed = true;
 		}
 		else if(dummy==3&&offset!=HorizontalOffset.NONE)
@@ -175,7 +184,7 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBloc
 			world.notifyBlockUpdate(masterPos, masterState, masterState, 3);
 			return ActionResultType.SUCCESS;
 		}
-		return super.hammerUseSide(side, player, world, pos, hit);
+		return super.hammerUseSide(side, player, hand, world, pos, hit);
 	}
 
 	@Override

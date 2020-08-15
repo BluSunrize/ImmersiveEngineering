@@ -8,29 +8,22 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.items.IEItems.Weapons;
+import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.SpecialRecipeSerializer;
+import net.minecraft.item.crafting.SpecialRecipe;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 
-public class RevolverRecipe implements ICraftingRecipe
+public class RevolverCycleRecipe extends SpecialRecipe
 {
-	public static final IRecipeSerializer<RevolverRecipe> SERIALIZER = IRecipeSerializer.register(
-			ImmersiveEngineering.MODID+":revolver", new SpecialRecipeSerializer<>(RevolverRecipe::new)
-	);
-
-	private final ResourceLocation id;
-
-	public RevolverRecipe(ResourceLocation id)
+	public RevolverCycleRecipe(ResourceLocation id)
 	{
-		this.id = id;
+		super(id);
 	}
 
 	@Override
@@ -84,14 +77,9 @@ public class RevolverRecipe implements ICraftingRecipe
 	}
 
 	@Override
-	public ResourceLocation getId()
-	{
-		return id;
-	}
-
-	@Override
 	public IRecipeSerializer<?> getSerializer()
 	{
-		return SERIALIZER;
+		return RecipeSerializers.REVOLVER_CYCLE_SERIALIZER.get();
 	}
+
 }

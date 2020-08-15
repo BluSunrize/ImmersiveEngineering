@@ -46,6 +46,9 @@ public class RecipeSerializers
 	public static final RegistryObject<RevolverAssemblyRecipeSerializer> REVOLVER_ASSEMBLY_SERIALIZER = RECIPE_SERIALIZERS.register(
 			"revolver_assembly", RevolverAssemblyRecipeSerializer::new
 	);
+	public static final RegistryObject<SpecialRecipeSerializer<RevolverCycleRecipe>> REVOLVER_CYCLE_SERIALIZER = RECIPE_SERIALIZERS.register(
+			"revolver_cycle", () -> new SpecialRecipeSerializer<>(RevolverCycleRecipe::new)
+	);
 	public static final RegistryObject<SpecialRecipeSerializer<IERepairItemRecipe>> IE_REPAIR = RECIPE_SERIALIZERS.register(
 			"ie_item_repair", () -> new SpecialRecipeSerializer<>(IERepairItemRecipe::new)
 	);

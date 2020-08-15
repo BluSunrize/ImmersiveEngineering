@@ -205,31 +205,31 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 	}
 
 	@Override
-	public ActionResultType hammerUseSide(Direction side, PlayerEntity player, World w, BlockPos pos, BlockRayTraceResult hit)
+	public ActionResultType hammerUseSide(Direction side, PlayerEntity player, Hand hand, World w, BlockPos pos, BlockRayTraceResult hit)
 	{
 		TileEntity tile = w.getTileEntity(pos);
 		if(tile instanceof IHammerInteraction)
 		{
-			boolean b = ((IHammerInteraction)tile).hammerUseSide(side, player, hit.getHitVec());
+			boolean b = ((IHammerInteraction)tile).hammerUseSide(side, player, hand, hit.getHitVec());
 			if(b)
 				return ActionResultType.SUCCESS;
 			else
 				return ActionResultType.FAIL;
 		}
-		return super.hammerUseSide(side, player, w, pos, hit);
+		return super.hammerUseSide(side, player, hand, w, pos, hit);
 	}
 
 	@Override
-	public ActionResultType screwdriverUseSide(Direction side, PlayerEntity player, World w, BlockPos pos, BlockRayTraceResult hit)
+	public ActionResultType screwdriverUseSide(Direction side, PlayerEntity player, Hand hand, World w, BlockPos pos, BlockRayTraceResult hit)
 	{
 		TileEntity tile = w.getTileEntity(pos);
 		if(tile instanceof IScrewdriverInteraction)
 		{
-			ActionResultType teResult = ((IScrewdriverInteraction)tile).screwdriverUseSide(side, player, hit.getHitVec());
+			ActionResultType teResult = ((IScrewdriverInteraction)tile).screwdriverUseSide(side, player, hand, hit.getHitVec());
 			if(teResult!=ActionResultType.PASS)
 				return teResult;
 		}
-		return super.screwdriverUseSide(side, player, w, pos, hit);
+		return super.screwdriverUseSide(side, player, hand, w, pos, hit);
 	}
 
 	@Override

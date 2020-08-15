@@ -14,6 +14,7 @@ import com.google.common.collect.Maps;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.state.IProperty;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
@@ -37,7 +38,7 @@ public class ShaderBannerWallBlock extends ShaderBannerBlock
 
 	public ShaderBannerWallBlock()
 	{
-		super("shader_banner_wall", FACING);
+		super("shader_banner_wall", FACING, BlockStateProperties.WATERLOGGED);
 	}
 
 	@Override
