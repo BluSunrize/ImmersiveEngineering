@@ -33,6 +33,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ITag;
+import net.minecraft.tags.ITagCollection;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
@@ -76,14 +77,18 @@ public class ManualUtils
 
 	public static boolean isNonemptyItemTag(ResourceLocation name)
 	{
-		ITag<Item> t = ItemTags.getCollection().getTagMap().get(name);
-		return t!=null&&!t.getAllElements().isEmpty();
+		return isNonEmptyTag(ItemTags.getCollection(), name);
 	}
 
 	public static boolean isNonemptyBlockTag(ResourceLocation name)
 	{
-		ITag<Block> t = BlockTags.getCollection().getTagMap().get(name);
-		return t!=null&&!t.getAllElements().isEmpty();
+		return isNonEmptyTag(BlockTags.getCollection(), name);
+	}
+
+	private static <T> boolean isNonEmptyTag(ITagCollection<T> collection, ResourceLocation name)
+	{
+		ITag<T> tag = collection.get(name);
+		return tag!=null&&tag.getAllElements().size() > 0;
 	}
 
 	public static boolean isNonemptyBlockOrItemTag(ResourceLocation name)

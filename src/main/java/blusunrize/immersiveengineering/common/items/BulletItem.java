@@ -330,7 +330,7 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 								p = new EffectInstance(p.getPotion(), 1);
 							((LivingEntity)((EntityRayTraceResult)target).getEntity()).addPotionEffect(p);
 						}
-				world.playEvent(2002, bullet.func_233580_cy_(), PotionUtils.getPotionColor(potionType));
+				world.playEvent(2002, bullet.getPosition(), PotionUtils.getPotionColor(potionType));
 			}
 		}
 

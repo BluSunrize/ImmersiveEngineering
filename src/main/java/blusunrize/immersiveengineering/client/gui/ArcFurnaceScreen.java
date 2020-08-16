@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.client.gui;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE;
+import blusunrize.immersiveengineering.client.utils.FakeGuiUtils;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity.MultiblockProcessInMachine;
 import blusunrize.immersiveengineering.common.blocks.metal.ArcFurnaceTileEntity;
@@ -22,7 +23,6 @@ import net.minecraft.inventory.container.ClickType;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import java.util.ArrayList;
 
@@ -52,12 +52,12 @@ public class ArcFurnaceScreen extends IEContainerScreen<ArcFurnaceContainer>
 			tooltip.add(new TranslationTextComponent(Lib.GUI_CONFIG+"arcfurnace.distribute"));
 
 		if(!tooltip.isEmpty())
-			GuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
+			FakeGuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
 	}
 
 
 	@Override
-	protected void func_230450_a_(MatrixStack transform, float f, int mx, int my)
+	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float f, int mx, int my)
 	{
 		ClientUtils.bindTexture(texture);
 		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);

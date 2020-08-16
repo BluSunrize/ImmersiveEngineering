@@ -8,8 +8,6 @@
 
 package blusunrize.immersiveengineering.client;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.Connection.RenderData;
@@ -1323,6 +1321,6 @@ public class ClientUtils
 		Style style = component.getStyle();
 		for(TextFormatting format : color)
 			style = style.applyFormatting(format);
-		return component.deepCopy().func_230530_a_(style);
+		return component.deepCopy().setStyle(style);
 	}
 }

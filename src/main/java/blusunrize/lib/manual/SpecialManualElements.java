@@ -14,10 +14,13 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.IReorderingProcessor;
+import net.minecraft.util.text.LanguageMap;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public abstract class SpecialManualElements extends SpecialManualElement
@@ -65,7 +68,10 @@ public abstract class SpecialManualElements extends SpecialManualElement
 		{
 			FontRenderer font = highlighted.getItem().getFontRenderer(highlighted);
 			GuiUtils.preItemToolTip(highlighted);
-			gui.renderToolTip(transform, gui.getTooltipFromItem(highlighted), mx, my, font!=null?font: ClientUtils.font());
+			List<IReorderingProcessor> tooltip = LanguageMap.getInstance().func_244260_a(
+					Collections.unmodifiableList(gui.getTooltipFromItem(highlighted))
+			);
+			gui.renderToolTip(transform, tooltip, mx, my, font!=null?font: ClientUtils.font());
 			GuiUtils.postItemToolTip();
 		}
 	}

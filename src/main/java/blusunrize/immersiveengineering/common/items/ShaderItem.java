@@ -28,7 +28,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.WallBannerBlock;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
@@ -126,13 +125,13 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, ITextureOverr
 	{
 		//TODO proper translation
 		list.add(new TranslationTextComponent(Lib.DESC_INFO+"shader.level")
-				.func_240702_b_(this.getRarity(stack).color.toString())
-				.func_230529_a_(new TranslationTextComponent(Lib.DESC_INFO+"shader.rarity."+this.getRarity(stack).name().toLowerCase(Locale.US)))
+				.appendString(this.getRarity(stack).color.toString())
+				.append(new TranslationTextComponent(Lib.DESC_INFO+"shader.rarity."+this.getRarity(stack).name().toLowerCase(Locale.US)))
 		);
 		if(!Screen.hasShiftDown())
 			list.add(new TranslationTextComponent(Lib.DESC_INFO+"shader.applyTo")
-					.func_240702_b_(" ")
-					.func_230529_a_(new TranslationTextComponent(Lib.DESC_INFO+"holdShift")));
+					.appendString(" ")
+					.append(new TranslationTextComponent(Lib.DESC_INFO+"holdShift")));
 		else
 		{
 			list.add(new TranslationTextComponent(Lib.DESC_INFO+"shader.applyTo"));
@@ -157,8 +156,8 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, ITextureOverr
 		IFormattableTextComponent itc = super.getDisplayName(stack).deepCopy();
 		ResourceLocation rl = getShaderName(stack);
 		if(rl!=null)
-			itc.func_240702_b_(": ")
-					.func_230529_a_(new TranslationTextComponent("item."+rl.getNamespace()+".shader.name."+rl.getPath()));
+			itc.appendString(": ")
+					.append(new TranslationTextComponent("item."+rl.getNamespace()+".shader.name."+rl.getPath()));
 		return itc;
 	}
 

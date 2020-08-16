@@ -29,10 +29,7 @@ import blusunrize.immersiveengineering.common.items.RevolverItem;
 import blusunrize.immersiveengineering.common.items.ToolUpgradeItem.ToolUpgrade;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import blusunrize.immersiveengineering.common.util.Utils;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -53,11 +50,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.village.PointOfInterestType;
 import net.minecraft.world.World;
-import net.minecraft.world.gen.feature.jigsaw.JigsawManager;
-import net.minecraft.world.gen.feature.jigsaw.JigsawPattern;
-import net.minecraft.world.gen.feature.jigsaw.JigsawPattern.PlacementBehaviour;
-import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
-import net.minecraft.world.gen.feature.jigsaw.SingleJigsawPiece;
 import net.minecraft.world.gen.feature.structure.*;
 import net.minecraft.world.storage.MapData;
 import net.minecraft.world.storage.MapDecoration.Type;
@@ -101,7 +93,9 @@ public class Villages
 					rl("village/houses/"+biome+"_engineer"), 1);
 
 		// Register workstations
-		JigsawManager.REGISTRY.register(new JigsawPattern(
+		// TODO
+		/*
+		JigsawPatternRegistry.func_244094_a(new JigsawPattern(
 				new ResourceLocation(MODID, "village/workstations"),
 				new ResourceLocation("empty"),
 				ImmutableList.of(
@@ -113,6 +107,7 @@ public class Villages
 				),
 				JigsawPattern.PlacementBehaviour.RIGID
 		));
+		 */
 
 		// Register gifts
 		GiveHeroGiftsTask.GIFTS.put(Registers.PROF_ENGINEER.get(), rl("gameplay/hero_of_the_village/engineer"));
@@ -124,7 +119,8 @@ public class Villages
 
 	private static void addToPool(ResourceLocation pool, ResourceLocation toAdd, int weight)
 	{
-		JigsawPattern old = JigsawManager.REGISTRY.get(pool);
+		/*
+		JigsawPattern old = WorldGenRegistries.field_243656_h.getOrDefault(pool);
 		List<JigsawPiece> shuffled = old.getShuffledPieces(Utils.RAND);
 		List<Pair<JigsawPiece, Integer>> newPieces = new ArrayList<>();
 		for(JigsawPiece p : shuffled)
@@ -133,7 +129,8 @@ public class Villages
 		}
 		newPieces.add(new Pair<>(new SingleJigsawPiece(toAdd.toString()), weight));
 		ResourceLocation name = old.getName();
-		JigsawManager.REGISTRY.register(new JigsawPattern(pool, name, newPieces, PlacementBehaviour.RIGID));
+		WorldGenRegistries.field_243656_h.register(new JigsawPattern(pool, name, newPieces, PlacementBehaviour.RIGID));
+		 */
 	}
 
 	@Mod.EventBusSubscriber(modid = MODID, bus = Bus.MOD)
@@ -196,7 +193,7 @@ public class Villages
 		private static Collection<BlockState> assembleStates(Block block)
 		{
 			return block.getStateContainer().getValidStates().stream().filter(blockState -> {
-				if(blockState.func_235901_b_(IEProperties.MULTIBLOCKSLAVE))
+				if(blockState.hasProperty(IEProperties.MULTIBLOCKSLAVE))
 					return !blockState.get(IEProperties.MULTIBLOCKSLAVE);
 				return true;
 			}).collect(Collectors.toList());
@@ -408,7 +405,7 @@ public class Villages
 		public MerchantOffer getOffer(Entity trader, @Nonnull Random random)
 		{
 			World world = trader.getEntityWorld();
-			BlockPos merchantPos = trader.func_233580_cy_();
+			BlockPos merchantPos = trader.getPosition();
 			List<MineralVein> veins = new ArrayList<>();
 			for(int i = 0; i < 8; i++) //Let's just try this a maximum of 8 times before I give up
 			{

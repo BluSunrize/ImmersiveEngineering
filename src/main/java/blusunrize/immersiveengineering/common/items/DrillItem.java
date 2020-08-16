@@ -70,6 +70,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeHooks;
@@ -274,8 +275,8 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 			float quote = dmg/(float)maxDmg;
 			TextFormatting status = quote < .1?TextFormatting.RED: quote < .3?TextFormatting.GOLD: quote < .6?TextFormatting.YELLOW: TextFormatting.GREEN;
 			list.add(ClientUtils.applyFormat(new TranslationTextComponent(Lib.DESC_FLAVOUR+"drill.headDamage"), TextFormatting.GRAY)
-					.func_240702_b_(" ")
-					.func_230529_a_(ClientUtils.applyFormat(
+					.appendString(" ")
+					.append(ClientUtils.applyFormat(
 							new TranslationTextComponent(Lib.DESC_INFO+"percent", (int)(quote*100)),
 							status
 					)));
@@ -477,7 +478,8 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 					{
 						block.onPlayerDestroy(world, pos, state);
 						block.harvestBlock(world, player, pos, state, te, stack);
-						block.dropXpOnBlockBreak(world, pos, xpDropEvent);
+						if (world instanceof ServerWorld)
+							block.dropXpOnBlockBreak((ServerWorld)world, pos, xpDropEvent);
 					}
 				}
 				world.playEvent(2001, pos, Block.getStateId(state));

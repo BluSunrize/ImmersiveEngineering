@@ -791,7 +791,8 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 							for(ITextComponent s : text)
 								if(s!=null)
 									font.func_238416_a_(
-											s, scaledWidth/2+8, scaledHeight/2+8+(i++)*font.FONT_HEIGHT, 0xffffffff, true,
+											LanguageMap.getInstance().func_241870_a(s),
+											scaledWidth/2+8, scaledHeight/2+8+(i++)*font.FONT_HEIGHT, 0xffffffff, true,
 											transform.getLast().getMatrix(), buffer, false, 0, 0xf000f0
 									);
 							buffer.finish();
@@ -822,7 +823,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 							float mapRotation = (frameEntity.getRotation()%4)*1.5708f;
 
 							// Player hit vector, relative to frame block pos
-							Vector3d hitVec = mop.getHitVec().subtract(Vector3d.func_237491_b_(frameEntity.getHangingPosition()));
+							Vector3d hitVec = mop.getHitVec().subtract(Vector3d.copy(frameEntity.getHangingPosition()));
 							Direction frameDir = frameEntity.getHorizontalFacing();
 							double cursorH = 0;
 							double cursorV = 0;
@@ -946,7 +947,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		PlayerEntity player = ClientUtils.mc().player;
 		if(!player.getHeldItem(Hand.MAIN_HAND).isEmpty()&&player.getHeldItem(Hand.MAIN_HAND).getItem() instanceof IZoomTool)
 		{
-			if(player.isSneaking()&&player.func_233570_aj_())
+			if(player.isSneaking()&&player.isOnGround())
 			{
 				ItemStack equipped = player.getHeldItem(Hand.MAIN_HAND);
 				IZoomTool tool = (IZoomTool)equipped.getItem();
@@ -1383,7 +1384,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 
 		if(Screen.hasShiftDown())
 		{
-			RegistryKey<World> dimension = ClientUtils.mc().player.getEntityWorld().func_234923_W_();
+			RegistryKey<World> dimension = ClientUtils.mc().player.getEntityWorld().getDimensionKey();
 			List<ResourceLocation> keyList = new ArrayList<>(MineralMix.mineralList.keySet());
 			keyList.sort(Comparator.comparing(ResourceLocation::toString));
 			for(MineralVein vein : ExcavatorHandler.getMineralVeinList().get(dimension))

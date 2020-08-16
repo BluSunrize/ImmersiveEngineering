@@ -48,7 +48,7 @@ public class TurntableBlock extends IETileProviderBlock
 	@Override
 	public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving)
 	{
-		if(state.func_235901_b_(IEProperties.FACING_ALL) && newState.func_235901_b_(IEProperties.FACING_ALL))
+		if(state.hasProperty(IEProperties.FACING_ALL) && newState.hasProperty(IEProperties.FACING_ALL))
 			((TurntableTileEntity)world.getTileEntity(pos)).verticalTransitionRotationMap(state.get(IEProperties.FACING_ALL), newState.get(IEProperties.FACING_ALL));
 		super.onReplaced(state, world, pos, newState, isMoving);
 	}

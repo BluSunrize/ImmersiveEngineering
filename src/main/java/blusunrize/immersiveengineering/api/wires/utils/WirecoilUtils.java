@@ -76,7 +76,7 @@ public class WirecoilUtils
 					int distanceSq = (int)Math.ceil(otherLink.cp.getPosition().distanceSq(masterPos));
 					int maxLengthSq = coil.getMaxLength(stack); //not squared yet
 					maxLengthSq *= maxLengthSq;
-					if(!otherLink.dimension.equals(world.func_234923_W_()))
+					if(!otherLink.dimension.equals(world.getDimensionKey()))
 						player.sendStatusMessage(new TranslationTextComponent(Lib.CHAT_WARN+"wrongDimension"), true);
 					else if(otherLink.cp.getPosition().equals(masterPos))
 						player.sendStatusMessage(new TranslationTextComponent(Lib.CHAT_WARN+"sameConnection"), true);
@@ -177,7 +177,7 @@ public class WirecoilUtils
 		{
 			return new WireLink(
 					cp,
-					world.func_234923_W_(),
+					world.getDimensionKey(),
 					offset,
 					info
 			);

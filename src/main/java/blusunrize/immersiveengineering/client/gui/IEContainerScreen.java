@@ -27,10 +27,10 @@ public abstract class IEContainerScreen<C extends Container> extends ContainerSc
 	@Override
 	public void render(MatrixStack transform, int mouseX, int mouseY, float partialTicks)
 	{
-		this.field_238745_s_ = this.ySize-94;
+		this.playerInventoryTitleY = this.ySize-94;
 		this.renderBackground(transform);
 		super.render(transform, mouseX, mouseY, partialTicks);
-		this.func_230459_a_(transform, mouseX, mouseY);
+		this.drawGuiContainerForegroundLayer(transform, mouseX, mouseY);
 	}
 
 	public void fullInit()

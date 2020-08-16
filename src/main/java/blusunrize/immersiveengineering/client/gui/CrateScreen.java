@@ -24,7 +24,7 @@ public class CrateScreen extends IEContainerScreen<CrateContainer>
 	}
 
 	@Override
-	protected void func_230451_b_(MatrixStack transform, int mouseX, int mouseY)
+	protected void drawGuiContainerForegroundLayer(MatrixStack transform, int mouseX, int mouseY)
 	{
 		WoodenCrateTileEntity te = container.tile;
 		this.font.drawString(transform, te.getDisplayName().getUnformattedComponentText(),
@@ -32,7 +32,7 @@ public class CrateScreen extends IEContainerScreen<CrateContainer>
 	}
 
 	@Override
-	protected void func_230450_a_(MatrixStack transform, float f, int mx, int my)
+	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float f, int mx, int my)
 	{
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/crate.png");
 		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);

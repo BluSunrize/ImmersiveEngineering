@@ -117,7 +117,7 @@ public class SurveyToolsItem extends IEBaseItem
 			return stack;
 		}
 
-		ListNBT data = getVeinData(stack, world.func_234923_W_(), vein.getPos());
+		ListNBT data = getVeinData(stack, world.getDimensionKey(), vein.getPos());
 		int dataCount = data.size();
 		/* I considered not giving any information after 3 surveys, but because the text is displayed above the action
 		 * bar and can't be brought back after it fades, that could lead to frustration

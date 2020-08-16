@@ -48,7 +48,7 @@ public class RecipeReloadListener implements IResourceManagerReloadListener
 	{
 		if(dataPackRegistries!=null)
 		{
-			RecipeManager recipeManager = dataPackRegistries.func_240967_e_();
+			RecipeManager recipeManager = dataPackRegistries.getRecipeManager();
 			buildRecipeLists(recipeManager);
 			generateArcRecyclingRecipes(recipeManager);
 		}

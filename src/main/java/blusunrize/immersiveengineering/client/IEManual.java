@@ -320,10 +320,10 @@ public class IEManual
 					}
 				}
 				if(item==null)
-					item = ITextComponent.func_241827_a_(entry.getKey().toString());
+					item = ITextComponent.func_244388_a(entry.getKey().toString());
 
 				int bt = entry.getValue();
-				ITextComponent am = ITextComponent.func_241827_a_(bt+" "+valueType);
+				ITextComponent am = ITextComponent.func_244388_a(bt+" "+valueType);
 				list.add(new ITextComponent[]{item, am});
 			}
 		} catch(Exception e)

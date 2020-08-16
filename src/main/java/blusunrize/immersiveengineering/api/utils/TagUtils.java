@@ -13,7 +13,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tags.ITag;
-import net.minecraft.tags.TagCollection;
+import net.minecraft.tags.ITagCollection;
 import net.minecraft.tags.TagCollectionManager;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.NonNullList;
@@ -25,8 +25,8 @@ import java.util.HashSet;
 public class TagUtils
 {
 	// These will be overriden on the client side, because TagCollectionManager doesn't work there
-	public static TagCollection<Item> ITEM_TAG_COLLECTION = TagCollectionManager.func_232928_e_().func_232925_b_();
-	public static TagCollection<Block> BLOCK_TAG_COLLECTION = TagCollectionManager.func_232928_e_().func_232923_a_();
+	public static ITagCollection<Item> ITEM_TAG_COLLECTION = TagCollectionManager.func_242178_a().func_241836_b();
+	public static ITagCollection<Block> BLOCK_TAG_COLLECTION = TagCollectionManager.func_242178_a().func_241835_a();
 
 	public static ITag<Item> getItemTag(ResourceLocation key)
 	{

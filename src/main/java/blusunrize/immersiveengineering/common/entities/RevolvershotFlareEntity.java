@@ -107,7 +107,7 @@ public class RevolvershotFlareEntity extends RevolvershotEntity
 		{
 			setMotion(0, -.1, 0);
 			spawnParticles();
-			lightPos = this.func_233580_cy_();
+			lightPos = this.getPosition();
 			for(int i = 0; i < 128; i++)
 				if(world.isAirBlock(lightPos))
 					lightPos = lightPos.down();
@@ -128,7 +128,7 @@ public class RevolvershotFlareEntity extends RevolvershotEntity
 				if(mop instanceof EntityRayTraceResult)
 				{
 					Entity hit = ((EntityRayTraceResult)mop).getEntity();
-					if(!hit.func_230279_az_())
+					if(!hit.isImmuneToFire())
 						hit.setFire(8);
 				}
 				else if(mop instanceof BlockRayTraceResult)

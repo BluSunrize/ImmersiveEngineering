@@ -35,7 +35,7 @@ public class DimensionChunkCoords extends ChunkPos
 
 	public DimensionChunkCoords(World world, int chunkX, int chunkZ)
 	{
-		this(world.func_234923_W_(), chunkX, chunkZ);
+		this(world.getDimensionKey(), chunkX, chunkZ);
 	}
 
 	@Override

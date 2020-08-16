@@ -38,8 +38,8 @@ public class MBOriginalBlockLootEntry extends StandaloneLootEntry
 				MultiblockPartTileEntity<?> multiblockTile = (MultiblockPartTileEntity<?>)te;
 				Utils.getDrops(multiblockTile.getOriginalBlock(),
 						new LootContext.Builder(context.getWorld())
-								.withParameter(LootParameters.TOOL, context.get(LootParameters.TOOL))
-								.withParameter(LootParameters.POSITION, context.get(LootParameters.POSITION))
+								.withNullableParameter(LootParameters.TOOL, context.get(LootParameters.TOOL))
+								//TODO .withParameter(LootParameters.POSITION, context.get(LootParameters.POSITION))
 				).forEach(output);
 			}
 		}

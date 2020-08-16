@@ -55,7 +55,7 @@ public class ModWorkbenchRenderer extends TileEntityRenderer<ModWorkbenchTileEnt
 			if(stack.getItem() instanceof EngineersBlueprintItem)
 			{
 				matrixStack.push();
-				double playerDistanceSq = ClientUtils.mc().player.getDistanceSq(Vector3d.func_237489_a_(te.getPos()));
+				double playerDistanceSq = ClientUtils.mc().player.getDistanceSq(Vector3d.copyCentered(te.getPos()));
 				if(playerDistanceSq < 120)
 				{
 					BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(ItemNBTHelper.getString(stack, "blueprint"));

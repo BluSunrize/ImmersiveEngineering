@@ -35,9 +35,9 @@ public abstract class ClientTileScreen<T extends TileEntity> extends Screen
 		this.guiTop = (this.height-this.ySize)/2;
 	}
 
-	protected abstract void func_230450_a_(MatrixStack transform, int mouseX, int mouseY, float partialTick);
+	protected abstract void drawGuiContainerBackgroundLayer(MatrixStack transform, int mouseX, int mouseY, float partialTick);
 
-	protected abstract void func_230451_b_(MatrixStack transform, int mouseX, int mouseY, float partialTick);
+	protected abstract void drawGuiContainerForegroundLayer(MatrixStack transform, int mouseX, int mouseY, float partialTick);
 
 	@Override
 	public void render(MatrixStack transform, int mx, int my, float partial)
@@ -45,13 +45,13 @@ public abstract class ClientTileScreen<T extends TileEntity> extends Screen
 		// Render dark background
 		this.renderBackground(transform);
 		// Background texture
-		func_230450_a_(transform, mx, my, partial);
+		drawGuiContainerBackgroundLayer(transform, mx, my, partial);
 
 		// Buttons
 		super.render(transform, mx, my, partial);
 
 		// Foreground
-		func_230451_b_(transform, mx, my, partial);
+		drawGuiContainerForegroundLayer(transform, mx, my, partial);
 	}
 
 	@Override

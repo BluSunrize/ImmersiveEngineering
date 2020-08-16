@@ -178,7 +178,7 @@ public class HammerItem extends IEBaseItem implements ITool
 		{
 			boolean rotate = !(tile instanceof IDirectionalTile)&&!(tile instanceof IHammerInteraction);
 			if(!rotate&&tile instanceof IDirectionalTile)
-				rotate = ((IDirectionalTile)tile).canHammerRotate(side, context.getHitVec().subtract(Vector3d.func_237491_b_(pos)), player);
+				rotate = ((IDirectionalTile)tile).canHammerRotate(side, context.getHitVec().subtract(Vector3d.copy(pos)), player);
 			if(rotate&&RotationUtil.rotateBlock(world, pos, player!=null&&(player.isSneaking()!=side.equals(Direction.DOWN))))
 				return ActionResultType.SUCCESS;
 			else if(!rotate&&tile instanceof IHammerInteraction)

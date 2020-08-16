@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.client.gui;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.utils.FakeGuiUtils;
 import blusunrize.immersiveengineering.common.blocks.wooden.SorterTileEntity;
 import blusunrize.immersiveengineering.common.gui.SorterContainer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
@@ -25,7 +26,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,14 +63,14 @@ public class SorterScreen extends IEContainerScreen<SorterContainer>
 								new StringTextComponent(split[i]),
 								i==0?TextFormatting.WHITE: TextFormatting.GRAY
 						));
-					GuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
+					FakeGuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
 				}
 		}
 	}
 
 
 	@Override
-	protected void func_230450_a_(MatrixStack transform, float f, int mx, int my)
+	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float f, int mx, int my)
 	{
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/sorter.png");
 		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);

@@ -810,8 +810,8 @@ public class Recipes extends RecipeProvider
 		INamedTag<Item> aquamarine = createItemWrapper(IETags.getGem("aquamarine"));
 
 		// Common things
-		RegistryKey<DimensionType> overworld = DimensionType.field_235999_c_;
-		RegistryKey<DimensionType> nether = DimensionType.field_236000_d_;
+		RegistryKey<DimensionType> overworld = DimensionType.OVERWORLD;
+		RegistryKey<DimensionType> nether = DimensionType.THE_NETHER;
 		MineralMixBuilder.builder(overworld)
 				.addOre(Tags.Items.ORES_COAL, .8f)
 				.addOre(sulfur, .2f)
@@ -2869,7 +2869,7 @@ public class Recipes extends RecipeProvider
 		ITag<Item> itemTag = IETags.getItemTag(in);
 		if(itemTag==null)
 			//TODO this currently does not work, the tag collection is not initialized in data gen mode
-			itemTag = ItemTags.getCollection().getTagMap().get(in.getName());
+			itemTag = ItemTags.getCollection().get(in.getName());
 		Preconditions.checkNotNull(itemTag, "Failed to convert block tag "+in.getName()+" to item tag");
 		return makeIngredient(itemTag);
 	}

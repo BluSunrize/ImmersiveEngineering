@@ -240,7 +240,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 		{
 			RevolverPerk perk = RevolverPerk.get(key);
 			if(perk!=null)
-				list.add(new StringTextComponent("  ").func_230529_a_(perk.getDisplayString(perks.getDouble(key))));
+				list.add(new StringTextComponent("  ").append(perk.getDisplayString(perks.getDouble(key))));
 		}
 	}
 
@@ -874,7 +874,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 		{
 			String key = Lib.DESC_INFO+"revolver.perk."+this.toString();
 			return new TranslationTextComponent(key, valueFormatter.apply(value))
-					.func_240699_a_(isBadValue.test(value)?TextFormatting.RED: TextFormatting.BLUE);
+					.mergeStyle(isBadValue.test(value)?TextFormatting.RED: TextFormatting.BLUE);
 		}
 
 		public static ITextComponent getFormattedName(ITextComponent name, CompoundNBT perksTag)
@@ -888,12 +888,12 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 				averageTier += dTier;
 				int iTier = (int)MathHelper.clamp((dTier < 0?Math.floor(dTier): Math.ceil(dTier)), -3, 3);
 				String translate = Lib.DESC_INFO+"revolver.perk."+perk.name().toLowerCase()+".tier"+iTier;
-				name = new TranslationTextComponent(translate).func_230529_a_(name);
+				name = new TranslationTextComponent(translate).append(name);
 			}
 
 			int rarityTier = (int)Math.ceil(MathHelper.clamp(averageTier+3, 0, 6)/6*5);
 			Rarity rarity = rarityTier==5?Lib.RARITY_MASTERWORK: rarityTier==4?Rarity.EPIC: rarityTier==3?Rarity.RARE: rarityTier==2?Rarity.UNCOMMON: Rarity.COMMON;
-			return name.deepCopy().func_240699_a_(rarity.color);
+			return name.deepCopy().mergeStyle(rarity.color);
 		}
 
 		public static int calculateTier(CompoundNBT perksTag)

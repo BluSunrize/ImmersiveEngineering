@@ -17,6 +17,7 @@ import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.ColumnPos;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.INoiseGenerator;
@@ -64,7 +65,7 @@ public class ExcavatorHandler
 	{
 		if(world.isRemote)
 			return null;
-		RegistryKey<World> dimension = world.func_234923_W_();
+		RegistryKey<World> dimension = world.getDimensionKey();
 		Pair<RegistryKey<World>, ColumnPos> cacheKey = Pair.of(dimension, columnPos);
 		MineralWorldInfo worldInfo = MINERAL_INFO_CACHE.get(cacheKey);
 		if(worldInfo==null)
@@ -123,7 +124,7 @@ public class ExcavatorHandler
 			ColumnPos finalPos = pos;
 			int radius = 12+rand.nextInt(32);
 			int radiusSq = radius*radius;
-			boolean crossover = MINERAL_VEIN_LIST.get(world.func_234923_W_()).stream().anyMatch(vein -> {
+			boolean crossover = MINERAL_VEIN_LIST.get(world.getDimensionKey()).stream().anyMatch(vein -> {
 				int dX = vein.getPos().x-finalPos.x;
 				int dZ = vein.getPos().z-finalPos.z;
 				int dSq = dX*dX+dZ*dZ;
@@ -132,7 +133,7 @@ public class ExcavatorHandler
 			if(!crossover)
 			{
 				MineralMix mineralMix = null;
-				MineralSelection selection = new MineralSelection(world.func_234922_V_());
+				MineralSelection selection = new MineralSelection(world.func_230315_m_());
 				if(selection.getTotalWeight() > 0)
 				{
 					int weight = selection.getRandomWeight(rand);
@@ -152,7 +153,7 @@ public class ExcavatorHandler
 					// generate initial depletion
 					if(initialVeinDepletion > 0)
 						vein.setDepletion((int)(mineralVeinYield*(rand.nextDouble()*initialVeinDepletion)));
-					MINERAL_VEIN_LIST.put(world.func_234923_W_(), vein);
+					MINERAL_VEIN_LIST.put(world.getDimensionKey(), vein);
 					IESaveData.setDirty();
 				}
 			}
@@ -163,6 +164,11 @@ public class ExcavatorHandler
 	{
 		private final int totalWeight;
 		private final Set<MineralMix> validMinerals;
+
+		public MineralSelection(DimensionType dimension)
+		{
+			this(RegistryKey.func_240903_a_(Registry.DIMENSION_TYPE_KEY, dimension.func_242725_p()));
+		}
 
 		public MineralSelection(RegistryKey<DimensionType> dimension)
 		{

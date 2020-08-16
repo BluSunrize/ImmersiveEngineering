@@ -22,9 +22,9 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.IReorderingProcessor;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.ITextProperties;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 
@@ -294,7 +294,7 @@ public class ManualScreen extends Screen
 	}
 
 	@Override
-	public void renderToolTip(MatrixStack transform, List<? extends ITextProperties> text, int x, int y, FontRenderer font)
+	public void renderToolTip(MatrixStack transform, List<? extends IReorderingProcessor> text, int x, int y, FontRenderer font)
 	{
 		manual.tooltipRenderPre();
 		super.renderToolTip(transform, text, x, y, font);

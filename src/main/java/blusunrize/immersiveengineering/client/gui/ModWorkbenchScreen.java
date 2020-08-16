@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.utils.FakeGuiUtils;
 import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchTileEntity;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.gui.ModWorkbenchContainer;
@@ -28,7 +29,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.fml.client.gui.GuiUtils;
 import net.minecraftforge.items.ItemHandlerHelper;
 import org.lwjgl.opengl.GL11;
 
@@ -91,11 +91,11 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 						}
 						for(ItemStack ss : inputs)
 							tooltip.add(ClientUtils.applyFormat(
-									new StringTextComponent(ss.getCount()+"x ").func_230529_a_(ss.getDisplayName()),
+									new StringTextComponent(ss.getCount()+"x ").append(ss.getDisplayName()),
 									TextFormatting.GRAY
 							));
 
-						GuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
+						FakeGuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
 						RenderHelper.enableStandardItemLighting();
 					}
 			}
@@ -104,7 +104,7 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 
 
 	@Override
-	protected void func_230450_a_(MatrixStack transform, float f, int mx, int my)
+	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float f, int mx, int my)
 	{
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/workbench.png");
 		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);

@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonItem;
+import blusunrize.immersiveengineering.client.utils.FakeGuiUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.AutoWorkbenchTileEntity;
 import blusunrize.immersiveengineering.common.gui.AutoWorkbenchContainer;
 import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
@@ -23,7 +24,6 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,12 +83,12 @@ public class AutoWorkbenchScreen extends IEContainerScreen<AutoWorkbenchContaine
 			tooltip.add(new StringTextComponent(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" IF"));
 
 		if(!tooltip.isEmpty())
-			GuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
+			FakeGuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
 	}
 
 
 	@Override
-	protected void func_230450_a_(MatrixStack transform, float f, int mx, int my)
+	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float f, int mx, int my)
 	{
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/auto_workbench.png");
 		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);

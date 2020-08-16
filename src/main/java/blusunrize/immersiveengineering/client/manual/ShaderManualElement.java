@@ -109,8 +109,8 @@ public class ShaderManualElement extends SpecialManualElements
 
 		this.name = ClientUtils.applyFormat(shaderItem.getDisplayName(), TextFormatting.BOLD).getString();
 		IFormattableTextComponent textAssembly = new StringTextComponent("");
-		textAssembly.func_230529_a_(ClientUtils.applyFormat(new TranslationTextComponent("desc.immersiveengineering.info.shader.level"), TextFormatting.BOLD));
-		textAssembly.func_230529_a_(new TranslationTextComponent("desc.immersiveengineering.info.shader.rarity."+shader.rarity.name().toLowerCase(Locale.US)));
+		textAssembly.append(ClientUtils.applyFormat(new TranslationTextComponent("desc.immersiveengineering.info.shader.level"), TextFormatting.BOLD));
+		textAssembly.append(new TranslationTextComponent("desc.immersiveengineering.info.shader.rarity."+shader.rarity.name().toLowerCase(Locale.US)));
 		if(unlocked)
 		{
 			String set = shader.info_set==null||shader.info_set.isEmpty()?null: ManualUtils.attemptStringTranslation(Lib.DESC_INFO+"shader.set.%s", shader.info_set);
@@ -118,23 +118,23 @@ public class ShaderManualElement extends SpecialManualElements
 			String details = shader.info_details==null||shader.info_details.isEmpty()?null: ManualUtils.attemptStringTranslation(Lib.DESC_INFO+"shader.details.%s", shader.info_details);
 
 			if(set!=null)
-				textAssembly.func_240702_b_("\n")
-						.func_230529_a_(ClientUtils.applyFormat(new TranslationTextComponent("desc.immersiveengineering.info.shader.set"), TextFormatting.BOLD))
-						.func_240702_b_(" "+set);
+				textAssembly.appendString("\n")
+						.append(ClientUtils.applyFormat(new TranslationTextComponent("desc.immersiveengineering.info.shader.set"), TextFormatting.BOLD))
+						.appendString(" "+set);
 			if(reference!=null)
-				textAssembly.func_240702_b_("\n")
-						.func_230529_a_(ClientUtils.applyFormat(new TranslationTextComponent("desc.immersiveengineering.info.shader.reference"), TextFormatting.BOLD))
-						.func_240702_b_("\n"+reference);
+				textAssembly.appendString("\n")
+						.append(ClientUtils.applyFormat(new TranslationTextComponent("desc.immersiveengineering.info.shader.reference"), TextFormatting.BOLD))
+						.appendString("\n"+reference);
 			if(details!=null)
-				textAssembly.func_240702_b_("\n")
-						.func_230529_a_(ClientUtils.applyFormat(new TranslationTextComponent("desc.immersiveengineering.info.shader.details"), TextFormatting.BOLD))
-						.func_240702_b_("\n"+details);
+				textAssembly.appendString("\n")
+						.append(ClientUtils.applyFormat(new TranslationTextComponent("desc.immersiveengineering.info.shader.details"), TextFormatting.BOLD))
+						.appendString("\n"+details);
 
 			String cost = Integer.toString(replicationCost.getCount());
 			if(!IngredientUtils.hasPlayerIngredient(mc().player, replicationCost)&&!mc().player.abilities.isCreativeMode)
 				cost = TextFormatting.RED+cost;
 			buttons.add(new GuiButtonManual(gui, x+50, y+120, 70, 12,
-					new StringTextComponent(I18n.format("ie.manual.entry.shaderList.order")+" "+cost+"x   ").func_240699_a_(TextFormatting.BOLD),
+					new StringTextComponent(I18n.format("ie.manual.entry.shaderList.order")+" "+cost+"x   ").mergeStyle(TextFormatting.BOLD),
 					btn -> {
 						if(IngredientUtils.hasPlayerIngredient(mc().player, replicationCost)||mc().player.abilities.isCreativeMode)
 							ImmersiveEngineering.packetHandler.sendToServer(new MessageShaderManual(MessageType.SPAWN, shader.getName()));
@@ -144,7 +144,7 @@ public class ShaderManualElement extends SpecialManualElements
 		}
 		else
 		{
-			textAssembly.func_240702_b_("\n\n").func_230529_a_(new TranslationTextComponent("ie.manual.entry.shaderList.noInfo"));
+			textAssembly.appendString("\n\n").append(new TranslationTextComponent("ie.manual.entry.shaderList.noInfo"));
 			if(player.abilities.isCreativeMode)
 				buttons.add(new GuiButtonManual(gui, x+10, y+120, 100, 16,
 						new TranslationTextComponent("ie.manual.entry.shaderList.unlock"),
@@ -184,7 +184,7 @@ public class ShaderManualElement extends SpecialManualElements
 		int w = manual.fontRenderer().getStringWidth(this.name);
 		manual.fontRenderer().drawString(transform, this.name, x+60-w/2, y+24, manual.getTextColour());
 		if(this.text!=null&&!this.text.isEmpty())
-			manual.fontRenderer().func_238418_a_(ITextComponent.func_241827_a_(this.text), x, y+38, 120, manual.getTextColour());
+			manual.fontRenderer().func_238418_a_(ITextComponent.func_244388_a(this.text), x, y+38, 120, manual.getTextColour());
 
 	}
 

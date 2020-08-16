@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.SorterScreen.ButtonSorter;
+import blusunrize.immersiveengineering.client.utils.FakeGuiUtils;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.blocks.wooden.FluidSorterTileEntity;
 import blusunrize.immersiveengineering.common.gui.FluidSorterContainer;
@@ -33,7 +34,6 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,7 +83,7 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 						ClientUtils.addFluidTooltip(tile.filters[side][i], tooltip, 0);
 				}
 		if(!tooltip.isEmpty())
-			GuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
+			FakeGuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
 	}
 
 	@Override
@@ -114,7 +114,7 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 	}
 
 	@Override
-	protected void func_230450_a_(MatrixStack transform, float f, int mx, int my)
+	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float f, int mx, int my)
 	{
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/sorter.png");
 		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);

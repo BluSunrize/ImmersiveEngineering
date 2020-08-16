@@ -194,7 +194,7 @@ public class EventHandler
 			while(it.hasNext())
 			{
 				Pair<RegistryKey<World>, BlockPos> curr = it.next();
-				if(curr.getLeft().equals(event.world.func_234923_W_()))
+				if(curr.getLeft().equals(event.world.getDimensionKey()))
 				{
 					BlockState state = event.world.getBlockState(curr.getRight());
 					event.world.notifyBlockUpdate(curr.getRight(), state, state, 3);
@@ -308,7 +308,7 @@ public class EventHandler
 		{
 			synchronized(interdictionTiles)
 			{
-				Set<ISpawnInterdiction> dimSet = interdictionTiles.get(event.getEntity().world.func_234923_W_());
+				Set<ISpawnInterdiction> dimSet = interdictionTiles.get(event.getEntity().world.getDimensionKey());
 				if(dimSet!=null)
 				{
 					Iterator<ISpawnInterdiction> it = dimSet.iterator();
@@ -320,7 +320,7 @@ public class EventHandler
 							if(((TileEntity)interdictor).isRemoved()||((TileEntity)interdictor).getWorld()==null)
 								it.remove();
 							else if(
-									Vector3d.func_237491_b_(((TileEntity)interdictor).getPos()).squareDistanceTo(event.getEntity().getPositionVec())
+									Vector3d.copy(((TileEntity)interdictor).getPos()).squareDistanceTo(event.getEntity().getPositionVec())
 											<= interdictor.getInterdictionRangeSquared()
 							)
 								event.setCanceled(true);
@@ -350,7 +350,7 @@ public class EventHandler
 		{
 			synchronized(interdictionTiles)
 			{
-				RegistryKey<World> dimension = event.getEntity().world.func_234923_W_();
+				RegistryKey<World> dimension = event.getEntity().world.getDimensionKey();
 				if(interdictionTiles.containsKey(dimension))
 				{
 					Iterator<ISpawnInterdiction> it = interdictionTiles.get(dimension).iterator();
@@ -361,7 +361,7 @@ public class EventHandler
 						{
 							if(((TileEntity)interdictor).isRemoved()||((TileEntity)interdictor).getWorld()==null)
 								it.remove();
-							else if(Vector3d.func_237489_a_(((TileEntity)interdictor).getPos()).squareDistanceTo(event.getEntity().getPositionVec()) <= interdictor.getInterdictionRangeSquared())
+							else if(Vector3d.copyCentered(((TileEntity)interdictor).getPos()).squareDistanceTo(event.getEntity().getPositionVec()) <= interdictor.getInterdictionRangeSquared())
 								event.setResult(Event.Result.DENY);
 						}
 						else if(interdictor instanceof Entity)

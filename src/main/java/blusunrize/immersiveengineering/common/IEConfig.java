@@ -316,7 +316,7 @@ public class IEConfig
 					.defineInRange("excavator_initial_depletion", .2, 0, 1);
 			excavator_dimBlacklist = builder
 					.comment("List of dimensions that can't contain minerals. Default: The End.")
-					.defineList("excavator_dimBlacklist", ImmutableList.of(DimensionType.field_236001_e_.func_240901_a_().toString()),
+					.defineList("excavator_dimBlacklist", ImmutableList.of(DimensionType.THE_END.func_240901_a_().toString()),
 							obj -> true);
 			builder.pop();
 		}
@@ -457,7 +457,7 @@ public class IEConfig
 			oreDimBlacklist = builder
 					.comment("A blacklist of dimensions in which IE ores won't spawn. By default this is Nether and End")
 					.defineList("dimension_blocklist", ImmutableList.of(
-							DimensionType.field_236000_d_.func_240901_a_().toString(), DimensionType.field_236001_e_.func_240901_a_().toString()
+							DimensionType.THE_NETHER.func_240901_a_().toString(), DimensionType.THE_END.func_240901_a_().toString()
 					), obj -> true);
 			retrogen_key = builder
 					.comment("The retrogeneration key. Basically IE checks if this key is saved in the chunks data. If it isn't, it will perform retrogen on all ores marked for retrogen.", "Change this in combination with the retrogen booleans to regen only some of the ores.")

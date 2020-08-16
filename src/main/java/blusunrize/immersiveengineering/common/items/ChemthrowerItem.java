@@ -163,7 +163,7 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 					chem.setMotion(player.getMotion().add(vecDir.scale(range)));
 
 					// Apply a small amount of backforce.
-					if(!player.func_233570_aj_())
+					if(!player.isOnGround())
 						player.setMotion(player.getMotion().subtract(vecDir.scale(0.0025*range)));
 					if(ignite)
 						chem.setFire(10);

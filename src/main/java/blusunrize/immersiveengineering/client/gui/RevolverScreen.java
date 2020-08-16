@@ -51,7 +51,7 @@ public class RevolverScreen extends IEContainerScreen<RevolverContainer>
 	}
 
 	@Override
-	protected void func_230450_a_(MatrixStack transform, float par1, int par2, int par3)
+	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float par1, int par2, int par3)
 	{
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/revolver.png");
 		this.blit(transform, guiLeft+(offset > 0?offset: 0), guiTop+77, 0, 125, 176, 89);

@@ -60,7 +60,7 @@ public class ElectricLanternTileEntity extends ImmersiveConnectableTileEntity im
 		{
 			synchronized(EventHandler.interdictionTiles)
 			{
-				Set<ISpawnInterdiction> tileForDim = EventHandler.interdictionTiles.computeIfAbsent(world.func_234923_W_(), k -> new HashSet<>());
+				Set<ISpawnInterdiction> tileForDim = EventHandler.interdictionTiles.computeIfAbsent(world.getDimensionKey(), k -> new HashSet<>());
 				tileForDim.add(this);
 			}
 			interdictionList = true;

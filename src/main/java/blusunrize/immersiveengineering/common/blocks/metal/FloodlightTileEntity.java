@@ -248,12 +248,12 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 
 	public void placeLightAlongVector(Vector3d vec, int offset, ArrayList<BlockPos> checklist)
 	{
-		Vector3d light = Vector3d.func_237489_a_(getPos()).add(0, 0.25, 0);
+		Vector3d light = Vector3d.copyCentered(getPos()).add(0, 0.25, 0);
 		int range = 32;
 		HashSet<BlockPos> ignore = new HashSet<BlockPos>();
 		ignore.add(getPos());
 		BlockPos hit = Utils.rayTraceForFirst(Utils.addVectors(vec, light), light.add(vec.x*range, vec.y*range, vec.z*range), world, ignore);
-		double maxDistance = hit!=null?Vector3d.func_237489_a_(hit).add(0, 0.25, 0).squareDistanceTo(light): range*range;
+		double maxDistance = hit!=null?Vector3d.copyCentered(hit).add(0, 0.25, 0).squareDistanceTo(light): range*range;
 		for(int i = 1+offset; i <= range; i++)
 		{
 			BlockPos target = getPos().add(Math.round(vec.x*i), Math.round(vec.y*i), Math.round(vec.z*i));

@@ -1026,7 +1026,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 	{
 		if(world.isRemote)
 			return true;
-		hitVec = hitVec.subtract(Vector3d.func_237491_b_(pos));
+		hitVec = hitVec.subtract(Vector3d.copy(pos));
 		Direction fd = side;
 		List<AxisAlignedBB> boxes = getBoxes(new BoundingBoxKey(true, this));
 		for(AxisAlignedBB box : boxes)

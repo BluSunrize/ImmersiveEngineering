@@ -13,8 +13,8 @@ import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.util.IReorderingProcessor;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.ITextProperties;
 import net.minecraft.util.text.StringTextComponent;
 
 import java.util.Arrays;
@@ -82,8 +82,8 @@ public class ManualElementTable extends SpecialManualElements
 							int xx = textOff.length > 0&&j > 0?textOff[j-1]: x;
 							int w = Math.max(10, 120-(j > 0?textOff[j-1]-x: 0));
 							ITextComponent lineText = line[j];
-							List<ITextProperties> lines = manual.fontRenderer().func_238425_b_(lineText, w);
-							for(ITextProperties l : lines)
+							List<IReorderingProcessor> lines = manual.fontRenderer().func_238425_b_(lineText, w);
+							for(IReorderingProcessor l : lines)
 								manual.fontRenderer().func_238422_b_(transform, l, xx, y+yOff, manual.getTextColour());
 							if(lines.size() > height)
 								height = lines.size();

@@ -56,7 +56,7 @@ public abstract class IETemplateMultiblock extends TemplateMultiblock
 			tile.formed = true;
 			tile.offsetToMaster = new BlockPos(offsetFromMaster);
 			tile.posInMultiblock = info.pos;
-			if(state.func_235901_b_(IEProperties.MIRRORED))
+			if(state.hasProperty(IEProperties.MIRRORED))
 				tile.setMirrored(mirrored);
 			tile.setFacing(transformDirection(clickDirection.getOpposite()));
 			tile.markDirty();

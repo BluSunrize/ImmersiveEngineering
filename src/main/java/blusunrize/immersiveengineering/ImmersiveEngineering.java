@@ -278,7 +278,7 @@ public class ImmersiveEngineering
 		//TODO isn't this always true? if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
 		{
 			//TODO hardcoding DimensionType.OVERWORLD seems hacky/broken
-			ServerWorld world = event.getServer().getWorld(World.field_234918_g_);
+			ServerWorld world = event.getServer().getWorld(World.OVERWORLD);
 			if(!world.isRemote)
 			{
 				IESaveData worldData = world.getSavedData().getOrCreate(IESaveData::new, IESaveData.dataName);

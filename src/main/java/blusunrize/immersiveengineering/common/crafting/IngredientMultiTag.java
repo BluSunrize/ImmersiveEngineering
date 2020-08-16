@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
+import blusunrize.immersiveengineering.api.utils.TagUtils;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntComparators;
 import it.unimi.dsi.fastutil.ints.IntList;
@@ -42,8 +43,9 @@ public class IngredientMultiTag extends Ingredient
 	{
 		super(Stream.empty());
 		this.tags = new ArrayList<>();
-		for(int i = 0; i < tags.length; i++)
-			this.tags.add(ItemTags.getCollection().getOrCreate(tags[i]));
+		for(ResourceLocation tag : tags)
+			if(TagUtils.isNonemptyItemTag(tag))
+				this.tags.add(ItemTags.getCollection().get(tag));
 	}
 
 	private int totalSize()

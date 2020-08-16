@@ -1027,17 +1027,17 @@ public class BlockStates extends BlockStateProvider
 		Preconditions.checkArgument(layers.length > 0);
 		final Property<Direction> facingProp;
 		final int xForHorizontal;
-		if(b.getDefaultState().func_235901_b_(IEProperties.FACING_ALL))
+		if(b.getDefaultState().hasProperty(IEProperties.FACING_ALL))
 		{
 			facingProp = IEProperties.FACING_ALL;
 			xForHorizontal = 90;
 		}
-		else if(b.getDefaultState().func_235901_b_(IEProperties.FACING_TOP_DOWN))
+		else if(b.getDefaultState().hasProperty(IEProperties.FACING_TOP_DOWN))
 		{
 			facingProp = IEProperties.FACING_TOP_DOWN;
 			xForHorizontal = 90;
 		}
-		else if(b.getDefaultState().func_235901_b_(IEProperties.FACING_HORIZONTAL))
+		else if(b.getDefaultState().hasProperty(IEProperties.FACING_HORIZONTAL))
 		{
 			facingProp = IEProperties.FACING_HORIZONTAL;
 			xForHorizontal = 0;
@@ -1047,7 +1047,7 @@ public class BlockStates extends BlockStateProvider
 			facingProp = null;
 			xForHorizontal = 0;
 		}
-		Preconditions.checkState(facingProp==null||b.getDefaultState().func_235901_b_(facingProp),
+		Preconditions.checkState(facingProp==null||b.getDefaultState().hasProperty(facingProp),
 				b+" does not have "+facingProp);
 		VariantBlockStateBuilder builder = getVariantBuilder(b);
 		forEachState(builder.partialState(), additional, map -> {

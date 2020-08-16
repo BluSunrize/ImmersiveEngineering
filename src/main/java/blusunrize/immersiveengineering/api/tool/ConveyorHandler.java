@@ -455,7 +455,7 @@ public class ConveyorHandler
 				}
 				else
 					vY = Math.signum(maxCenterHeightUnderEntity-centerRelative.y)*0.07*vBase;
-				entity.func_230245_c_(false);
+				entity.setOnGround(false);
 			}
 
 			return new Vector3d(vX, vY, vZ);

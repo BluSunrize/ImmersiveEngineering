@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonBoolean;
+import blusunrize.immersiveengineering.client.utils.FakeGuiUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.ConnectorProbeTileEntity;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -20,7 +21,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import java.util.ArrayList;
 
@@ -73,13 +73,13 @@ public class RedstoneProbeScreen extends ClientTileScreen<ConnectorProbeTileEnti
 	}
 
 	@Override
-	protected void func_230450_a_(MatrixStack transform, int mouseX, int mouseY, float partialTick)
+	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, int mouseX, int mouseY, float partialTick)
 	{
 
 	}
 
 	@Override
-	protected void func_230451_b_(MatrixStack transform, int mouseX, int mouseY, float partialTick)
+	protected void drawGuiContainerForegroundLayer(MatrixStack transform, int mouseX, int mouseY, float partialTick)
 	{
 		this.font.drawString(transform, new TranslationTextComponent(Lib.GUI_CONFIG+"redstone_color_sending").getString(), guiLeft, guiTop, DyeColor.WHITE.getTextColor());
 		this.font.drawString(transform, new TranslationTextComponent(Lib.GUI_CONFIG+"redstone_color_receiving").getString(), guiLeft+116, guiTop, DyeColor.WHITE.getTextColor());
@@ -96,6 +96,6 @@ public class RedstoneProbeScreen extends ClientTileScreen<ConnectorProbeTileEnti
 			}
 
 		if(!tooltip.isEmpty())
-			GuiUtils.drawHoveringText(transform, tooltip, mouseX, mouseY, width, height, -1, font);
+			FakeGuiUtils.drawHoveringText(transform, tooltip, mouseX, mouseY, width, height, -1, font);
 	}
 }

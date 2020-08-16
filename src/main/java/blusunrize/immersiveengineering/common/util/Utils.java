@@ -914,7 +914,7 @@ public class Utils
 	{
 		int val = 0;
 		final int prime = 31;
-		for(Property<?> n : state.func_235904_r_())
+		for(Property<?> n : state.getProperties())
 		{
 			Object o = state.get(n);
 			val = prime*val+Objects.hash(o);

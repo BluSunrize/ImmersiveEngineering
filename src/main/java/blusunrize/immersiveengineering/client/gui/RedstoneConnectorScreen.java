@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonBoolean;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonState;
+import blusunrize.immersiveengineering.client.utils.FakeGuiUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.ConnectorRedstoneTileEntity;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -23,7 +24,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import java.util.ArrayList;
 import java.util.function.Consumer;
@@ -74,13 +74,13 @@ public class RedstoneConnectorScreen extends ClientTileScreen<ConnectorRedstoneT
 	}
 
 	@Override
-	protected void func_230450_a_(MatrixStack transform, int mouseX, int mouseY, float partialTick)
+	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, int mouseX, int mouseY, float partialTick)
 	{
 
 	}
 
 	@Override
-	protected void func_230451_b_(MatrixStack transform, int mouseX, int mouseY, float partialTick)
+	protected void drawGuiContainerForegroundLayer(MatrixStack transform, int mouseX, int mouseY, float partialTick)
 	{
 		ArrayList<ITextComponent> tooltip = new ArrayList<>();
 
@@ -104,7 +104,7 @@ public class RedstoneConnectorScreen extends ClientTileScreen<ConnectorRedstoneT
 			}
 
 		if(!tooltip.isEmpty())
-			GuiUtils.drawHoveringText(transform, tooltip, mouseX, mouseY, width, height, -1, font);
+			FakeGuiUtils.drawHoveringText(transform, tooltip, mouseX, mouseY, width, height, -1, font);
 	}
 
 	public static GuiButtonBoolean buildColorButton(GuiButtonBoolean[] buttons, int posX, int posY, boolean active, DyeColor color, Consumer<GuiButtonBoolean> onClick)

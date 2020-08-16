@@ -101,7 +101,7 @@ public class IEExplosion extends Explosion
 				{
 					TileEntity tile = state.hasTileEntity()?this.world.getTileEntity(pos): null;
 					LootContext.Builder lootCtx = new LootContext.Builder((ServerWorld)this.world)
-							.withRandom(this.world.rand).withParameter(LootParameters.POSITION, pos)
+							.withRandom(this.world.rand)
 							.withParameter(LootParameters.TOOL, ItemStack.EMPTY)
 							.withNullableParameter(LootParameters.BLOCK_ENTITY, tile);
 					if(damagesTerrain==Explosion.Mode.DESTROY)

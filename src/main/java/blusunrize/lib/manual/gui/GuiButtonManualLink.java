@@ -14,7 +14,9 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.util.IReorderingProcessor;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nullable;
@@ -64,6 +66,8 @@ public class GuiButtonManualLink extends Button
 			tooltip = gui.manual.formatLink(link);
 		else
 			tooltip = "Invalid link";
-		gui.renderToolTip(transform, ImmutableList.of(new StringTextComponent(tooltip)), mx+8, my+4, font);
+		gui.renderToolTip(transform, ImmutableList.of(
+				IReorderingProcessor.func_242239_a(tooltip, Style.EMPTY)
+		), mx+8, my+4, font);
 	}
 }

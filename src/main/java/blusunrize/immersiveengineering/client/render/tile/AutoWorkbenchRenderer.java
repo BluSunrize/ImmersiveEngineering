@@ -14,7 +14,6 @@ import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
@@ -289,7 +288,7 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 			}
 
 		//Blueprint
-		double playerDistanceSq = ClientUtils.mc().player.getDistanceSq(Vector3d.func_237489_a_(blockPos));
+		double playerDistanceSq = ClientUtils.mc().player.getDistanceSq(Vector3d.copyCentered(blockPos));
 
 		if(!blueprintStack.isEmpty()&&playerDistanceSq < 1000)
 		{

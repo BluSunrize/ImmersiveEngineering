@@ -15,6 +15,7 @@ import org.apache.commons.io.IOUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -78,11 +79,27 @@ public class DataGenUtils
 		return new ResourceLocation(base.getNamespace(), lastDir+relativePath);
 	}
 
-	public static INamedTag<Item> createItemWrapper(ResourceLocation name) {
-		return ItemTags.makeWrapperTag(name.toString());
+	public static INamedTag<Item> createItemWrapper(ResourceLocation name)
+	{
+		Optional<? extends INamedTag<Item>> existing = ItemTags.func_242177_b()
+				.stream()
+				.filter(tag -> tag.getName().equals(name))
+				.findAny();
+		if(existing.isPresent())
+			return existing.get();
+		else
+			return ItemTags.makeWrapperTag(name.toString());
 	}
 
 	public static INamedTag<Block> createBlockWrapper(ResourceLocation name) {
-		return BlockTags.makeWrapperTag(name.toString());
+		//TODO deduplicate, maybe speed up?
+		Optional<? extends INamedTag<Block>> existing = BlockTags.func_242174_b()
+				.stream()
+				.filter(tag -> tag.getName().equals(name))
+				.findAny();
+		if(existing.isPresent())
+			return existing.get();
+		else
+			return BlockTags.makeWrapperTag(name.toString());
 	}
 }

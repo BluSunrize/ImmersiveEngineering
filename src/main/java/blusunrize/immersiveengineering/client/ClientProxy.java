@@ -100,7 +100,6 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextProperties;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -505,10 +504,12 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public String[] splitStringOnWidth(String s, int w)
 	{
-		return ClientUtils.font().func_238425_b_(ITextProperties.func_240652_a_(s), w)
-				.stream()
-				.map(ITextProperties::getString)
-				.toArray(String[]::new);
+		//TODO
+		return new String[]{s};
+		//return ClientUtils.font().func_238425_b_(ITextProperties.func_240652_a_(s), w)
+		//		.stream()
+		//		.map(ITextProperties::getString)
+		//		.toArray(String[]::new);
 	}
 
 	@Override

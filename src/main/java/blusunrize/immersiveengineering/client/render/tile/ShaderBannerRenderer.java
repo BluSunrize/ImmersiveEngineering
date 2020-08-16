@@ -39,7 +39,7 @@ import java.util.HashMap;
 
 public class ShaderBannerRenderer extends TileEntityRenderer<ShaderBannerTileEntity>
 {
-	private final ModelRenderer clothModel = BannerTileEntityRenderer.func_228836_a_();
+	private final ModelRenderer clothModel = BannerTileEntityRenderer.getModelRender();
 	private final ModelRenderer standingModel = new ModelRenderer(64, 64, 44, 0);
 	private final ModelRenderer crossbar;
 

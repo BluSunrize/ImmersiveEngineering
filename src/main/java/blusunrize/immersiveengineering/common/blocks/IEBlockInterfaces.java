@@ -230,7 +230,7 @@ public class IEBlockInterfaces
 		default Direction getFacing()
 		{
 			BlockState state = getState();
-			if(state.func_235901_b_(getFacingProperty()))
+			if(state.hasProperty(getFacingProperty()))
 				return state.get(getFacingProperty());
 			else
 				return Direction.NORTH;
@@ -272,7 +272,8 @@ public class IEBlockInterfaces
 					new Builder(world)
 							.withNullableParameter(LootParameters.TOOL, ItemStack.EMPTY)
 							.withNullableParameter(LootParameters.BLOCK_STATE, world.getBlockState(tile.getPos()))
-							.withNullableParameter(LootParameters.POSITION, tile.getPos())
+							//TODO?
+							//.withNullableParameter(LootParameters.POSITION, tile.getPos())
 							.build(LootParameterSets.BLOCK)
 			).get(0);
 		}
@@ -319,7 +320,7 @@ public class IEBlockInterfaces
 		default boolean getIsActive()
 		{
 			BlockState state = getState();
-			if(state.func_235901_b_(IEProperties.ACTIVE))
+			if(state.hasProperty(IEProperties.ACTIVE))
 				return state.get(IEProperties.ACTIVE);
 			else
 				return false;
@@ -338,7 +339,7 @@ public class IEBlockInterfaces
 		default boolean getIsMirrored()
 		{
 			BlockState state = getState();
-			if(state.func_235901_b_(IEProperties.MIRRORED))
+			if(state.hasProperty(IEProperties.MIRRORED))
 				return state.get(IEProperties.MIRRORED);
 			else
 				return false;
@@ -403,7 +404,7 @@ public class IEBlockInterfaces
 		default boolean isDummy()
 		{
 			BlockState state = getState();
-			if(state.func_235901_b_(IEProperties.MULTIBLOCKSLAVE))
+			if(state.hasProperty(IEProperties.MULTIBLOCKSLAVE))
 				return state.get(IEProperties.MULTIBLOCKSLAVE);
 			else
 				return true;

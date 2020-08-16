@@ -88,8 +88,8 @@ public class LightningrodTileEntity extends MultiblockPartTileEntity<Lightningro
 					this.energyStorage.setEnergy(IEConfig.MACHINES.lightning_output.get());
 					BlockPos pos = fenceNet.get(Utils.RAND.nextInt(fenceNet.size()));
 					LightningBoltEntity lightningboltentity = EntityType.LIGHTNING_BOLT.create(world);
-					lightningboltentity.func_233576_c_(Vector3d.func_237492_c_(pos));
-					lightningboltentity.func_233623_a_(true);
+					lightningboltentity.moveForced(Vector3d.copyCenteredHorizontally(pos));
+					lightningboltentity.setEffectOnly(true);
 					world.addEntity(lightningboltentity);
 				}
 			}
