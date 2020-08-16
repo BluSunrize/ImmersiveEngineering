@@ -1,5 +1,5 @@
 {
-  "parent": "block/block",
+  "parent": "minecraft:block/block",
   "textures": {
     "texture": "immersiveengineering:block/metal_decoration/steel_post",
     "particle": "immersiveengineering:block/metal_decoration/steel_post"

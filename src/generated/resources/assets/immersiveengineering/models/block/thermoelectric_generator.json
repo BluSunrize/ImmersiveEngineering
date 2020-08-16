@@ -1,5 +1,5 @@
 {
-  "parent": "block/cube_bottom_top",
+  "parent": "minecraft:block/cube_bottom_top",
   "textures": {
     "side": "immersiveengineering:block/metal_device/thermoelectric_gen_side",
     "bottom": "immersiveengineering:block/metal_device/thermoelectric_gen_bottom",

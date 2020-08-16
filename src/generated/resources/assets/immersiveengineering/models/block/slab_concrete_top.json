@@ -1,5 +1,5 @@
 {
-  "parent": "block/slab_top",
+  "parent": "minecraft:block/slab_top",
   "textures": {
     "side": "immersiveengineering:block/stone_decoration/concrete",
     "bottom": "immersiveengineering:block/stone_decoration/concrete",

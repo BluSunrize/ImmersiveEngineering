@@ -1,5 +1,5 @@
 {
-  "parent": "block/slab",
+  "parent": "minecraft:block/slab",
   "textures": {
     "side": "immersiveengineering:block/metal/storage_silver",
     "bottom": "immersiveengineering:block/metal/storage_silver",

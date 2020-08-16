@@ -1,5 +1,5 @@
 {
-  "parent": "block/outer_stairs",
+  "parent": "minecraft:block/outer_stairs",
   "textures": {
     "side": "immersiveengineering:block/metal_decoration/aluminum_scaffolding",
     "bottom": "immersiveengineering:block/metal_decoration/aluminum_scaffolding",
