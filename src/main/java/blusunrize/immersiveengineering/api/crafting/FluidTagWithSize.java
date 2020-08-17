@@ -61,6 +61,13 @@ public class FluidTagWithSize implements Predicate<FluidStack>
 		return fluidTag.contains(fluidStack.getFluid())&&fluidStack.getAmount() >= this.amount;
 	}
 
+	public boolean testIgnoringAmount(@Nullable FluidStack fluidStack)
+	{
+		if(fluidStack==null)
+			return false;
+		return fluidTag.contains(fluidStack.getFluid());
+	}
+
 	@Nonnull
 	public List<FluidStack> getMatchingFluidStacks()
 	{

@@ -10,6 +10,7 @@
 package blusunrize.immersiveengineering.api.crafting.builders;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.crafting.FluidTagWithSize;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import com.google.common.base.Preconditions;
@@ -297,6 +298,16 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<R>> implements IFinishe
 	public R addFluid(Fluid fluid, int amount)
 	{
 		return addFluid("fluid", new FluidStack(fluid, amount));
+	}
+
+	public R addFluidTag(String key, FluidTagWithSize fluidTag)
+	{
+		return addWriter(jsonObject -> jsonObject.add(key, fluidTag.serialize()));
+	}
+
+	public R addFluidTag(String key, Tag<Fluid> fluidTag, int amount)
+	{
+		return addFluidTag(key, new FluidTagWithSize(fluidTag, amount));
 	}
 
 	/* =============== IFinishedRecipe =============== */
