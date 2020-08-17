@@ -310,6 +310,11 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<R>> implements IFinishe
 		return addFluidTag(key, new FluidTagWithSize(fluidTag, amount));
 	}
 
+	public R addFluidTag(Tag<Fluid> fluidTag, int amount)
+	{
+		return addFluidTag("fluid", new FluidTagWithSize(fluidTag, amount));
+	}
+
 	/* =============== IFinishedRecipe =============== */
 
 	@Override

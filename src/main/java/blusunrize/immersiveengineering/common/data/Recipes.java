@@ -49,7 +49,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.data.*;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.EquipmentSlotType.Group;
 import net.minecraft.item.Item;
@@ -57,6 +56,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.IItemProvider;
@@ -633,7 +633,7 @@ public class Recipes extends RecipeProvider
 		/* BOTTLING */
 		BottlingMachineRecipeBuilder.builder(Items.WET_SPONGE)
 				.addInput(Items.SPONGE)
-				.addFluid(Fluids.WATER, 1000)
+				.addFluidTag(FluidTags.WATER, 1000)
 				.build(out, toRL("bottling/sponge"));
 
 		/* CRUSHER */
@@ -757,14 +757,14 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL("refinery/biodiesel"));
 		/* MIXER */
 		MixerRecipeBuilder.builder(IEContent.fluidConcrete, 500)
-				.addFluid(Fluids.WATER, 500)
+				.addFluidTag(FluidTags.WATER, 500)
 				.addInput(new IngredientWithSize(Tags.Items.SAND, 2))
 				.addInput(Tags.Items.GRAVEL)
 				.addInput(IETags.clay)
 				.setEnergy(3200)
 				.build(out, toRL("mixer/concrete"));
 		MixerRecipeBuilder.builder(IEContent.fluidConcrete, 500)
-				.addFluid(Fluids.WATER, 500)
+				.addFluidTag(FluidTags.WATER, 500)
 				.addInput(new IngredientWithSize(IETags.slag, 2))
 				.addInput(Tags.Items.GRAVEL)
 				.addInput(IETags.clay)
