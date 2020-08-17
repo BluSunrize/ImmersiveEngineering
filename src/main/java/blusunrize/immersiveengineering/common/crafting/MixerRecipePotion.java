@@ -8,7 +8,9 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
+import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
+import blusunrize.immersiveengineering.api.crafting.FluidTagWithSize;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
 import blusunrize.immersiveengineering.common.IEContent;
@@ -17,10 +19,12 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionBrewing;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.potion.Potions;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.brewing.BrewingRecipe;
@@ -44,19 +48,19 @@ public class MixerRecipePotion extends MixerRecipe
 {
 	public static final HashMap<Potion, MixerRecipePotion> REGISTERED = new HashMap<>();
 	public static final Set<String> BLACKLIST = new HashSet<>();
-	private final Set<Pair<FluidStack, IngredientWithSize[]>> alternateInputs = new HashSet<>();
+	private final Set<Pair<FluidTagWithSize, IngredientWithSize[]>> alternateInputs = new HashSet<>();
 
 	public MixerRecipePotion(ResourceLocation id, Potion outputType, Potion inputType, IngredientWithSize reagent)
 	{
-		super(id, getFluidStackForType(outputType, 1000), getFluidStackForType(inputType, 1000), new IngredientWithSize[]{reagent}, 6400);
+		super(id, getFluidStackForType(outputType, 1000), getFluidTagForType(inputType, 1000), new IngredientWithSize[]{reagent}, 6400);
 	}
 
 	public void addAlternateInput(Potion inputType, IngredientWithSize reagent)
 	{
-		alternateInputs.add(Pair.of(getFluidStackForType(inputType, 1000), new IngredientWithSize[]{reagent}));
+		alternateInputs.add(Pair.of(getFluidTagForType(inputType, 1000), new IngredientWithSize[]{reagent}));
 	}
 
-	public Set<Pair<FluidStack, IngredientWithSize[]>> getAlternateInputs()
+	public Set<Pair<FluidTagWithSize, IngredientWithSize[]>> getAlternateInputs()
 	{
 		return alternateInputs;
 	}
@@ -117,7 +121,7 @@ public class MixerRecipePotion extends MixerRecipe
 
 			BottlingMachineRecipe bottling = new BottlingMachineRecipe(output.getRegistryName(),
 					PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION), output),
-					Ingredient.fromItems(Items.GLASS_BOTTLE), getFluidStackForType(output, 250));
+					Ingredient.fromItems(Items.GLASS_BOTTLE), getFluidTagForType(output, 250));
 			BottlingMachineRecipe.recipeList.put(bottling.getId(), bottling);
 		}
 	}
@@ -129,6 +133,15 @@ public class MixerRecipePotion extends MixerRecipe
 		FluidStack stack = new FluidStack(IEContent.fluidPotion, amount);
 		stack.getOrCreateTag().putString("Potion", type.getRegistryName().toString());
 		return stack;
+	}
+
+	public static FluidTagWithSize getFluidTagForType(Potion type, int amount)
+	{
+		if(type==Potions.WATER||type==null)
+			return new FluidTagWithSize(FluidTags.WATER, amount);
+		CompoundNBT nbt = new CompoundNBT();
+		nbt.putString("Potion", type.getRegistryName().toString());
+		return new FluidTagWithSize(IETags.fluidPotion, amount, nbt);
 	}
 
 	@Override

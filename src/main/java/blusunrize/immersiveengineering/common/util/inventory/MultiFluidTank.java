@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.util.inventory;
 
+import blusunrize.immersiveengineering.api.crafting.FluidTagWithSize;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -160,6 +161,30 @@ public class MultiFluidTank implements IFluidTank, IFluidHandler
 						it.remove();
 				}
 				return Utils.copyFluidStackWithAmount(resource, amount, true);
+			}
+		}
+		return FluidStack.EMPTY;
+	}
+
+	@Nonnull
+	public FluidStack drain(FluidTagWithSize fluidTag, FluidAction action)
+	{
+		if(this.fluids.isEmpty())
+			return FluidStack.EMPTY;
+		Iterator<FluidStack> it = this.fluids.iterator();
+		while(it.hasNext())
+		{
+			FluidStack fs = it.next();
+			if(fluidTag.testIgnoringAmount(fs))
+			{
+				int amount = Math.min(fluidTag.getAmount(), fs.getAmount());
+				if(action.execute())
+				{
+					fs.shrink(amount);
+					if(fs.getAmount() <= 0)
+						it.remove();
+				}
+				return Utils.copyFluidStackWithAmount(fs, amount, true);
 			}
 		}
 		return FluidStack.EMPTY;

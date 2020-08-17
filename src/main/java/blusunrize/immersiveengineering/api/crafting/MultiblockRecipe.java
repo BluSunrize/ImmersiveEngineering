@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
-import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.Ingredient;
@@ -17,7 +16,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -65,10 +63,10 @@ public abstract class MultiblockRecipe extends IESerializableRecipe implements I
 		return outputList;
 	}
 
-	protected List<FluidStack> fluidInputList;
+	protected List<FluidTagWithSize> fluidInputList;
 
 	@Override
-	public List<FluidStack> getFluidInputs()
+	public List<FluidTagWithSize> getFluidInputs()
 	{
 		return fluidInputList;
 	}

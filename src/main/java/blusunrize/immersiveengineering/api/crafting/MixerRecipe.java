@@ -33,11 +33,11 @@ public class MixerRecipe extends MultiblockRecipe
 	public static float timeModifier = 1;
 
 	public final IngredientWithSize[] itemInputs;
-	public final FluidStack fluidInput;
+	public final FluidTagWithSize fluidInput;
 	public final FluidStack fluidOutput;
 	public final int fluidAmount;
 
-	public MixerRecipe(ResourceLocation id, FluidStack fluidOutput, FluidStack fluidInput, IngredientWithSize[] itemInputs, int energy)
+	public MixerRecipe(ResourceLocation id, FluidStack fluidOutput, FluidTagWithSize fluidInput, IngredientWithSize[] itemInputs, int energy)
 	{
 		super(ItemStack.EMPTY, TYPE, id);
 		this.fluidOutput = fluidOutput;
@@ -81,10 +81,10 @@ public class MixerRecipe extends MultiblockRecipe
 		return compareToInputs(fluid, components, this.fluidInput, this.itemInputs);
 	}
 
-	protected boolean compareToInputs(FluidStack fluid, NonNullList<ItemStack> components, FluidStack fluidInput,
+	protected boolean compareToInputs(FluidStack fluid, NonNullList<ItemStack> components, FluidTagWithSize fluidInput,
 									  IngredientWithSize[] itemInputs)
 	{
-		if(fluid!=null&&fluid.containsFluid(fluidInput))
+		if(fluid!=null&&fluidInput.test(fluid))
 		{
 			ArrayList<ItemStack> queryList = new ArrayList<>(components.size());
 			for(ItemStack s : components)

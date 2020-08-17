@@ -73,6 +73,11 @@ public class FluidTagWithSize implements Predicate<FluidStack>
 		return new FluidTagWithSize(tag, amount, nbt);
 	}
 
+	public FluidTagWithSize withAmount(int amount)
+	{
+		return new FluidTagWithSize(this.fluidTag, amount, this.nbtTag);
+	}
+
 	@Override
 	public boolean test(@Nullable FluidStack fluidStack)
 	{

@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.generic;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
+import blusunrize.immersiveengineering.api.crafting.FluidTagWithSize;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
@@ -37,7 +38,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -118,6 +118,7 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 	}
 
 	ArrayDeque<R> lastCachedRecipes = new ArrayDeque(5);
+
 	@Nullable
 	protected abstract R getRecipeForId(ResourceLocation id);
 	//{
@@ -600,7 +601,7 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 			return recipe.getItemInputs();
 		}
 
-		protected List<FluidStack> getRecipeFluidInputs(PoweredMultiblockTileEntity<?, R> multiblock)
+		protected List<FluidTagWithSize> getRecipeFluidInputs(PoweredMultiblockTileEntity<?, R> multiblock)
 		{
 			return recipe.getFluidInputs();
 		}
@@ -656,29 +657,19 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 					}
 			}
 			IFluidTank[] tanks = multiblock.getInternalTanks();
-			List<FluidStack> fluidInputList = this.getRecipeFluidInputs(multiblock);
+			List<FluidTagWithSize> fluidInputList = this.getRecipeFluidInputs(multiblock);
 			if(tanks!=null&&this.inputTanks!=null&&fluidInputList!=null)
 			{
-				for(FluidStack ingr : new ArrayList<>(fluidInputList))
+				for(FluidTagWithSize ingr : new ArrayList<>(fluidInputList))
 				{
 					int ingrSize = ingr.getAmount();
 					for(int tank : this.inputTanks)
-						if(tanks[tank]!=null)
+						if(tanks[tank]!=null&&ingr.testIgnoringAmount(tanks[tank].getFluid()))
 						{
-							if(tanks[tank] instanceof IFluidHandler&&
-									!((IFluidHandler)tanks[tank]).drain(ingr, FluidAction.SIMULATE).isEmpty())
-							{
-								FluidStack taken = ((IFluidHandler)tanks[tank]).drain(ingr, FluidAction.EXECUTE);
-								if((ingrSize -= taken.getAmount()) <= 0)
-									break;
-							}
-							else if(!tanks[tank].getFluid().isEmpty()&&tanks[tank].getFluid().isFluidEqual(ingr))
-							{
-								int taken = Math.min(tanks[tank].getFluidAmount(), ingrSize);
-								tanks[tank].drain(taken, FluidAction.EXECUTE);
-								if((ingrSize -= taken) <= 0)
-									break;
-							}
+							int taken = Math.min(tanks[tank].getFluidAmount(), ingrSize);
+							tanks[tank].drain(taken, FluidAction.EXECUTE);
+							if((ingrSize -= taken) <= 0)
+								break;
 						}
 				}
 			}

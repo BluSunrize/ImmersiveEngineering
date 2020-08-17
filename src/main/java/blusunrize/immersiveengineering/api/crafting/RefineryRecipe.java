@@ -46,9 +46,7 @@ public class RefineryRecipe extends MultiblockRecipe
 		this.totalProcessEnergy = (int)Math.floor(energy*energyModifier);
 		this.totalProcessTime = (int)Math.floor(1*timeModifier);
 
-		this.fluidInputList = Lists.newArrayList();
-		this.fluidInputList.addAll(this.input0.getMatchingFluidStacks());
-		this.fluidInputList.addAll(this.input1.getMatchingFluidStacks());
+		this.fluidInputList = Lists.newArrayList(this.input0, this.input1);
 		this.fluidOutputList = Lists.newArrayList(this.output);
 	}
 

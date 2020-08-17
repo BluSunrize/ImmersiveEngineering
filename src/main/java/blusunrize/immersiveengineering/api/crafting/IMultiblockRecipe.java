@@ -33,7 +33,7 @@ public interface IMultiblockRecipe
 		return true;
 	}
 
-	List<FluidStack> getFluidInputs();
+	List<FluidTagWithSize> getFluidInputs();
 
 	NonNullList<ItemStack> getItemOutputs();
 
