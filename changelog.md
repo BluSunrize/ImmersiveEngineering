@@ -1,12 +1,13 @@
 ##### Version 1.16.1-3.2.0-pre
 - Fixed some derpy rendering in the manual (BluSunrize)
 
-##### Version 1.15.2-3.2.0-pre
- - Fixed mirrored machines rendering incorrectly (Malte)
- - Fixed bucket wheels in mirrored excavators rendering incorrectly (Malte)
- - Fixed crash when holding a drill with a damaged head (Malte)
+##### Version 1.15.2-3.2.0-114
+- Fixed mirrored machines rendering incorrectly (Malte)
+- Fixed bucket wheels in mirrored excavators rendering incorrectly (Malte)
+- Fixed crash when holding a drill with a damaged head (Malte)
+- Also includes the changes from 1.14.4-3.2.0-113
 
-##### Version 1.14.4-3.2.0-pre
+##### Version 1.14.4-3.2.0-113
 - Added waterlogging to various IE blocks (BluSunrize)
 - Added processing compat for Fluorite, Cobalt and Ardite (BluSunrize)
 - Re-Added recipe for patrons & contributers to cycle through revolver skins (BluSunrize)
