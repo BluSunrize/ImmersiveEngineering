@@ -20,6 +20,7 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
+import net.minecraft.tags.Tag;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -33,69 +34,47 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 public class ChemthrowerHandler
 {
-	public static HashMap<ResourceLocation, ChemthrowerEffect> effectMap = new HashMap<>();
-	public static HashSet<ResourceLocation> flammableList = new HashSet<>();
+	public static HashMap<Tag<Fluid>, ChemthrowerEffect> effectMap = new HashMap<>();
+	public static HashSet<Tag<Fluid>> flammableList = new HashSet<>();
 	public static HashSet<ResourceLocation> gasList = new HashSet<>();
 
 	/**
-	 * registers a special effect to a fluid. Fluids without an effect simply do damage based on temperature
+	 * registers a special effect to a fluid based on tags.
+	 * Fluids without an effect simply do damage based on temperature
 	 */
-	public static void registerEffect(Fluid fluid, ChemthrowerEffect effect)
+	public static void registerEffect(Tag<Fluid> fluidTag, ChemthrowerEffect effect)
 	{
-		if(fluid!=null)
-			registerEffect(fluid.getRegistryName(), effect);
-	}
-
-	/**
-	 * registers a special effect to a fluid. Fluids without an effect simply do damage based on temperature
-	 */
-	public static void registerEffect(ResourceLocation fluidName, ChemthrowerEffect effect)
-	{
-		effectMap.put(fluidName, effect);
+		effectMap.put(fluidTag, effect);
 	}
 
 	public static ChemthrowerEffect getEffect(Fluid fluid)
 	{
 		if(fluid!=null)
-			return getEffect(fluid.getRegistryName());
+			for(Map.Entry<Tag<Fluid>, ChemthrowerEffect> entry : effectMap.entrySet())
+				if(entry.getKey().contains(fluid))
+					return entry.getValue();
 		return null;
 	}
 
-	public static ChemthrowerEffect getEffect(ResourceLocation fluidName)
-	{
-		return effectMap.get(fluidName);
-	}
-
 	/**
-	 * registers a fluid to allow the chemical thrower to ignite it upon dispersal
+	 * registers a fluid based on its registry name, to allow the chemical thrower to ignite it upon dispersal
 	 */
-	public static void registerFlammable(Fluid fluid)
+	public static void registerFlammable(Tag<Fluid> fluidTag)
 	{
-		if(fluid!=null)
-			registerFlammable(fluid.getRegistryName());
-	}
-
-	/**
-	 * registers a fluid to allow the chemical thrower to ignite it upon dispersal
-	 */
-	public static void registerFlammable(ResourceLocation fluidName)
-	{
-		flammableList.add(fluidName);
+		flammableList.add(fluidTag);
 	}
 
 	public static boolean isFlammable(Fluid fluid)
 	{
 		if(fluid!=null)
-			return flammableList.contains(fluid.getRegistryName());
+			for(Tag<Fluid> predicate : flammableList)
+				if(predicate.contains(fluid))
+					return true;
 		return false;
-	}
-
-	public static boolean isFlammable(ResourceLocation fluidName)
-	{
-		return flammableList.contains(fluidName);
 	}
 
 	/**
