@@ -11,8 +11,10 @@ package blusunrize.immersiveengineering.api;
 
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import net.minecraft.block.Block;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
@@ -66,6 +68,14 @@ public class IETags
 	public static final Tag<Item> saltpeterDust = new ItemTags.Wrapper(getDust("saltpeter"));
 	public static final Tag<Item> sulfurDust = new ItemTags.Wrapper(getDust("sulfur"));
 	public static final Tag<Item> plates = new ItemTags.Wrapper(forgeLoc("plates"));
+
+	public static final Tag<Fluid> fluidCreosote = new FluidTags.Wrapper(forgeLoc("creosote"));
+	public static final Tag<Fluid> fluidPlantoil = new FluidTags.Wrapper(forgeLoc("plantoil"));
+	public static final Tag<Fluid> fluidEthanol = new FluidTags.Wrapper(forgeLoc("ethanol"));
+	public static final Tag<Fluid> fluidBiodiesel = new FluidTags.Wrapper(forgeLoc("biodiesel"));
+	public static final Tag<Fluid> fluidConcrete = new FluidTags.Wrapper(forgeLoc("concrete"));
+	public static final Tag<Fluid> fluidHerbicide = new FluidTags.Wrapper(forgeLoc("herbicide"));
+	public static final Tag<Fluid> fluidPotion = new FluidTags.Wrapper(forgeLoc("potion"));
 
 	static
 	{
