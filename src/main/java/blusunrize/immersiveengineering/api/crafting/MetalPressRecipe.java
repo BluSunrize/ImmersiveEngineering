@@ -63,16 +63,6 @@ public class MetalPressRecipe extends MultiblockRecipe
 		return this;
 	}
 
-	@Override
-	public void setupJEI()
-	{
-		super.setupJEI();
-		this.jeiItemInputList = new ArrayList[2];
-		this.jeiItemInputList[0] = Lists.newArrayList(jeiTotalItemInputList);
-		this.jeiItemInputList[1] = Lists.newArrayList(mold.stack);
-		this.jeiTotalItemInputList.add(mold.stack);
-	}
-
 	public boolean matches(ItemStack mold, ItemStack input, World world)
 	{
 		return this.input.test(input);
@@ -92,7 +82,6 @@ public class MetalPressRecipe extends MultiblockRecipe
 		recipesByMold = ArrayListMultimap.create();
 		recipeList.values().forEach(recipe -> recipesByMold.put(recipe.mold, recipe));
 	}
-
 
 	public static MetalPressRecipe findRecipe(ItemStack mold, ItemStack input, World world)
 	{
