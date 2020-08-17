@@ -100,7 +100,7 @@ public class ChemthrowerShotEntity extends IEProjectileEntity
 		if(getFluid()!=null)
 		{
 			FluidStack fluidStack = getFluid();
-			boolean isGas = fluidStack.getFluid().getAttributes().isGaseous(fluidStack)||ChemthrowerHandler.isGas(fluidStack.getFluid());
+			boolean isGas = fluidStack.getFluid().getAttributes().isGaseous(fluidStack);
 			return (isGas?.025f: .05F)*(fluidStack.getFluid().getAttributes().getDensity(fluidStack) < 0?-1: 1);
 		}
 		return super.getGravity();

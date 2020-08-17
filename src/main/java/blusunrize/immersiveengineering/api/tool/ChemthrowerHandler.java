@@ -21,7 +21,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.tags.Tag;
-import net.minecraft.util.*;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.EntityDamageSource;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
@@ -40,7 +43,6 @@ public class ChemthrowerHandler
 {
 	public static HashMap<Tag<Fluid>, ChemthrowerEffect> effectMap = new HashMap<>();
 	public static HashSet<Tag<Fluid>> flammableList = new HashSet<>();
-	public static HashSet<ResourceLocation> gasList = new HashSet<>();
 
 	/**
 	 * registers a special effect to a fluid based on tags.
@@ -75,35 +77,6 @@ public class ChemthrowerHandler
 				if(predicate.contains(fluid))
 					return true;
 		return false;
-	}
-
-	/**
-	 * registers a fluid to be dispersed like a gas. This is only necessary if the fluid itself isn't designated as a gas
-	 */
-	public static void registerGas(Fluid fluid)
-	{
-		if(fluid!=null)
-			registerGas(fluid.getRegistryName());
-	}
-
-	/**
-	 * registers a fluid to be dispersed like a gas. This is only necessary if the fluid itself isn't designated as a gas
-	 */
-	public static void registerGas(ResourceLocation fluidName)
-	{
-		gasList.add(fluidName);
-	}
-
-	public static boolean isGas(Fluid fluid)
-	{
-		if(fluid!=null)
-			return gasList.contains(fluid.getRegistryName());
-		return false;
-	}
-
-	public static boolean isGas(ResourceLocation fluidName)
-	{
-		return gasList.contains(fluidName);
 	}
 
 	public abstract static class ChemthrowerEffect

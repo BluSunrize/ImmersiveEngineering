@@ -87,7 +87,7 @@ public class TurretChemTileEntity extends TurretTileEntity
 				Vec3d v = getGunToTargetVec(target).normalize();
 
 				int split = 8;
-				boolean isGas = fs.getFluid().getAttributes().isGaseous()||ChemthrowerHandler.isGas(fs.getFluid());
+				boolean isGas = fs.getFluid().getAttributes().isGaseous();
 
 				float scatter = isGas?.15f: .05f;
 				float range = isGas?.5f: 1f;
