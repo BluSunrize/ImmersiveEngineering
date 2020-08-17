@@ -4,5 +4,6 @@
     "0.15-103": "- Fixed wires no longer transferring energy after release 101 (Malte)",
     "0.15-105": "- Fixed invisible connectors with Optifine (Malte)\n- Fixed metal ladders rendering as solid (Malte)\n- Fixed shield rendering in 3rd person (BluSunrize)\n- Fixed incorrect sounds on certain blocks (BluSunrize)\n- Also includes the changes from 0.14-104",
     "0.15-108": "- Also includes the changes from 0.14-107",
-    "1.15.2-3.1-111": "- Moved to new version numbering system\n- Fixed broken HUD of the Heavy Plated Shield upgrades (BluSunrize)\n- Fixed crash when bottling potions (Malte)\n- Fixed rotation for structural connectors (BluSunrize)\n- Also includes the changes from 1.14.4-3.1-110"
+    "1.15.2-3.1-111": "- Moved to new version numbering system\n- Fixed broken HUD of the Heavy Plated Shield upgrades (BluSunrize)\n- Fixed crash when bottling potions (Malte)\n- Fixed rotation for structural connectors (BluSunrize)\n- Also includes the changes from 1.14.4-3.1-110",
+    "1.15.2-3.2.0-114": "- Fixed mirrored machines rendering incorrectly (Malte)\n- Fixed bucket wheels in mirrored excavators rendering incorrectly (Malte)\n- Fixed crash when holding a drill with a damaged head (Malte)\n- Also includes the changes from 1.14.4-3.2.0-113"
 }

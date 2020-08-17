@@ -1,7 +1,8 @@
-##### Version 1.15.2-3.2-pre
- - Fixed mirrored machines rendering incorrectly (Malte)
- - Fixed bucket wheels in mirrored excavators rendering incorrectly (Malte)
- - Fixed crash when holding a drill with a damaged head (Malte)
+##### Version 1.15.2-3.2.0-114
+- Fixed mirrored machines rendering incorrectly (Malte)
+- Fixed bucket wheels in mirrored excavators rendering incorrectly (Malte)
+- Fixed crash when holding a drill with a damaged head (Malte)
+- Also includes the changes from 1.14.4-3.2.0-113
 
 ##### Version 1.14.4-3.2.0-113
 - Added waterlogging to various IE blocks (BluSunrize)
