@@ -751,8 +751,8 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL("fermenter/potato"));
 		/* REFINERY */
 		RefineryRecipeBuilder.builder(IEContent.fluidBiodiesel, 16)
-				.addInput(IEContent.fluidPlantoil, 8)
-				.addInput(IEContent.fluidEthanol, 8)
+				.addInput(IETags.fluidPlantoil, 8)
+				.addInput(IETags.fluidEthanol, 8)
 				.setEnergy(80)
 				.build(out, toRL("refinery/biodiesel"));
 		/* MIXER */
