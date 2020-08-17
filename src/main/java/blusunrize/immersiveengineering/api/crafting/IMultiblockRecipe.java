@@ -8,10 +8,7 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
-import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.FluidStack;
@@ -33,7 +30,7 @@ public interface IMultiblockRecipe
 		return true;
 	}
 
-	List<FluidTagWithSize> getFluidInputs();
+	List<FluidTagInput> getFluidInputs();
 
 	NonNullList<ItemStack> getItemOutputs();
 

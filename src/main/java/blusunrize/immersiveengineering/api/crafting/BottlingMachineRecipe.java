@@ -32,10 +32,10 @@ public class BottlingMachineRecipe extends MultiblockRecipe
 	public static RegistryObject<IERecipeSerializer<BottlingMachineRecipe>> SERIALIZER;
 
 	public final Ingredient input;
-	public final FluidTagWithSize fluidInput;
+	public final FluidTagInput fluidInput;
 	public final ItemStack output;
 
-	public BottlingMachineRecipe(ResourceLocation id, ItemStack output, Ingredient input, FluidTagWithSize fluidInput)
+	public BottlingMachineRecipe(ResourceLocation id, ItemStack output, Ingredient input, FluidTagInput fluidInput)
 	{
 		super(output, TYPE, id);
 		this.output = output;

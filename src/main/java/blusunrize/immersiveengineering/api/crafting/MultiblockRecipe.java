@@ -63,10 +63,10 @@ public abstract class MultiblockRecipe extends IESerializableRecipe implements I
 		return outputList;
 	}
 
-	protected List<FluidTagWithSize> fluidInputList;
+	protected List<FluidTagInput> fluidInputList;
 
 	@Override
-	public List<FluidTagWithSize> getFluidInputs()
+	public List<FluidTagInput> getFluidInputs()
 	{
 		return fluidInputList;
 	}

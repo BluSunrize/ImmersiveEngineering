@@ -9,7 +9,7 @@
 
 package blusunrize.immersiveengineering.api.crafting.builders;
 
-import blusunrize.immersiveengineering.api.crafting.FluidTagWithSize;
+import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.RefineryRecipe;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.tags.Tag;
@@ -33,7 +33,7 @@ public class RefineryRecipeBuilder extends IEFinishedRecipe<RefineryRecipeBuilde
 		return new RefineryRecipeBuilder().addFluid("result", fluidStack);
 	}
 
-	public RefineryRecipeBuilder addInput(FluidTagWithSize fluidTag)
+	public RefineryRecipeBuilder addInput(FluidTagInput fluidTag)
 	{
 		return addFluidTag(generateSafeInputKey(), fluidTag);
 	}

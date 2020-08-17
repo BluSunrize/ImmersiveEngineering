@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.crafting.serializers;
 
 import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
-import blusunrize.immersiveengineering.api.crafting.FluidTagWithSize;
+import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import com.google.gson.JsonObject;
@@ -34,7 +34,7 @@ public class BottlingMachineRecipeSerializer extends IERecipeSerializer<Bottling
 	{
 		ItemStack output = readOutput(json.get("result"));
 		Ingredient input = Ingredient.deserialize(JSONUtils.getJsonObject(json, "input"));
-		FluidTagWithSize fluidInput = FluidTagWithSize.deserialize(JSONUtils.getJsonObject(json, "fluid"));
+		FluidTagInput fluidInput = FluidTagInput.deserialize(JSONUtils.getJsonObject(json, "fluid"));
 		return new BottlingMachineRecipe(recipeId, output, input, fluidInput);
 	}
 
@@ -44,7 +44,7 @@ public class BottlingMachineRecipeSerializer extends IERecipeSerializer<Bottling
 	{
 		ItemStack output = buffer.readItemStack();
 		Ingredient input = Ingredient.read(buffer);
-		FluidTagWithSize fluidInput = FluidTagWithSize.read(buffer);
+		FluidTagInput fluidInput = FluidTagInput.read(buffer);
 		return new BottlingMachineRecipe(recipeId, output, input, fluidInput);
 	}
 

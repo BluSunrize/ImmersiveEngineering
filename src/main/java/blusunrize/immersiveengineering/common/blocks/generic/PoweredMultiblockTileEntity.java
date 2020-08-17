@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.generic;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
-import blusunrize.immersiveengineering.api.crafting.FluidTagWithSize;
+import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
@@ -601,7 +601,7 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 			return recipe.getItemInputs();
 		}
 
-		protected List<FluidTagWithSize> getRecipeFluidInputs(PoweredMultiblockTileEntity<?, R> multiblock)
+		protected List<FluidTagInput> getRecipeFluidInputs(PoweredMultiblockTileEntity<?, R> multiblock)
 		{
 			return recipe.getFluidInputs();
 		}
@@ -657,10 +657,10 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 					}
 			}
 			IFluidTank[] tanks = multiblock.getInternalTanks();
-			List<FluidTagWithSize> fluidInputList = this.getRecipeFluidInputs(multiblock);
+			List<FluidTagInput> fluidInputList = this.getRecipeFluidInputs(multiblock);
 			if(tanks!=null&&this.inputTanks!=null&&fluidInputList!=null)
 			{
-				for(FluidTagWithSize ingr : new ArrayList<>(fluidInputList))
+				for(FluidTagInput ingr : new ArrayList<>(fluidInputList))
 				{
 					int ingrSize = ingr.getAmount();
 					for(int tank : this.inputTanks)

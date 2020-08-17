@@ -34,10 +34,10 @@ public class RefineryRecipe extends MultiblockRecipe
 	public static float timeModifier = 1;
 
 	public final FluidStack output;
-	public final FluidTagWithSize input0;
-	public final FluidTagWithSize input1;
+	public final FluidTagInput input0;
+	public final FluidTagInput input1;
 
-	public RefineryRecipe(ResourceLocation id, FluidStack output, FluidTagWithSize input0, FluidTagWithSize input1, int energy)
+	public RefineryRecipe(ResourceLocation id, FluidStack output, FluidTagInput input0, FluidTagInput input1, int energy)
 	{
 		super(ItemStack.EMPTY, TYPE, id);
 		this.output = output;

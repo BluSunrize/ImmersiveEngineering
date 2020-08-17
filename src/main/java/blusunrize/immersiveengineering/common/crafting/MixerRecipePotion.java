@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
-import blusunrize.immersiveengineering.api.crafting.FluidTagWithSize;
+import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
 import blusunrize.immersiveengineering.common.IEContent;
@@ -48,7 +48,7 @@ public class MixerRecipePotion extends MixerRecipe
 {
 	public static final HashMap<Potion, MixerRecipePotion> REGISTERED = new HashMap<>();
 	public static final Set<String> BLACKLIST = new HashSet<>();
-	private final Set<Pair<FluidTagWithSize, IngredientWithSize[]>> alternateInputs = new HashSet<>();
+	private final Set<Pair<FluidTagInput, IngredientWithSize[]>> alternateInputs = new HashSet<>();
 
 	public MixerRecipePotion(ResourceLocation id, Potion outputType, Potion inputType, IngredientWithSize reagent)
 	{
@@ -60,7 +60,7 @@ public class MixerRecipePotion extends MixerRecipe
 		alternateInputs.add(Pair.of(getFluidTagForType(inputType, 1000), new IngredientWithSize[]{reagent}));
 	}
 
-	public Set<Pair<FluidTagWithSize, IngredientWithSize[]>> getAlternateInputs()
+	public Set<Pair<FluidTagInput, IngredientWithSize[]>> getAlternateInputs()
 	{
 		return alternateInputs;
 	}
@@ -135,13 +135,13 @@ public class MixerRecipePotion extends MixerRecipe
 		return stack;
 	}
 
-	public static FluidTagWithSize getFluidTagForType(Potion type, int amount)
+	public static FluidTagInput getFluidTagForType(Potion type, int amount)
 	{
 		if(type==Potions.WATER||type==null)
-			return new FluidTagWithSize(FluidTags.WATER.getId(), amount);
+			return new FluidTagInput(FluidTags.WATER.getId(), amount);
 		CompoundNBT nbt = new CompoundNBT();
 		nbt.putString("Potion", type.getRegistryName().toString());
-		return new FluidTagWithSize(IETags.fluidPotion.getId(), amount, nbt);
+		return new FluidTagInput(IETags.fluidPotion.getId(), amount, nbt);
 	}
 
 	@Override

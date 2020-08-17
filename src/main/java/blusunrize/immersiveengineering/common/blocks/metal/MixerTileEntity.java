@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
-import blusunrize.immersiveengineering.api.crafting.FluidTagWithSize;
+import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
@@ -466,7 +466,7 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 		}
 
 		@Override
-		protected List<FluidTagWithSize> getRecipeFluidInputs(PoweredMultiblockTileEntity<?, MixerRecipe> multiblock)
+		protected List<FluidTagInput> getRecipeFluidInputs(PoweredMultiblockTileEntity<?, MixerRecipe> multiblock)
 		{
 			return Collections.emptyList();
 		}

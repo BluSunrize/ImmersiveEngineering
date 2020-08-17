@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.crafting.serializers;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.crafting.FluidTagWithSize;
+import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
@@ -36,7 +36,7 @@ public class MixerRecipeSerializer extends IERecipeSerializer<MixerRecipe>
 	public MixerRecipe readFromJson(ResourceLocation recipeId, JsonObject json)
 	{
 		FluidStack fluidOutput = ApiUtils.jsonDeserializeFluidStack(JSONUtils.getJsonObject(json, "result"));
-		FluidTagWithSize fluidInput = FluidTagWithSize.deserialize(JSONUtils.getJsonObject(json, "fluid"));
+		FluidTagInput fluidInput = FluidTagInput.deserialize(JSONUtils.getJsonObject(json, "fluid"));
 		JsonArray inputs = json.getAsJsonArray("inputs");
 		IngredientWithSize[] ingredients = new IngredientWithSize[inputs.size()];
 		for(int i = 0; i < ingredients.length; i++)
@@ -50,7 +50,7 @@ public class MixerRecipeSerializer extends IERecipeSerializer<MixerRecipe>
 	public MixerRecipe read(ResourceLocation recipeId, PacketBuffer buffer)
 	{
 		FluidStack fluidOutput = buffer.readFluidStack();
-		FluidTagWithSize fluidInput = FluidTagWithSize.read(buffer);
+		FluidTagInput fluidInput = FluidTagInput.read(buffer);
 		int ingredientCount = buffer.readInt();
 		IngredientWithSize[] itemInputs = new IngredientWithSize[ingredientCount];
 		for(int i = 0; i < ingredientCount; i++)
