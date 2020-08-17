@@ -1,5 +1,6 @@
-##### Version 1.16.1-3.2.0-pre
+##### Version 1.16.1-3.2.0-115
 - Fixed some derpy rendering in the manual (BluSunrize)
+- Also includes the changes from 1.15.2-3.2.0-114
 
 ##### Version 1.15.2-3.2.0-114
 - Fixed mirrored machines rendering incorrectly (Malte)
