@@ -138,10 +138,10 @@ public class MixerRecipePotion extends MixerRecipe
 	public static FluidTagWithSize getFluidTagForType(Potion type, int amount)
 	{
 		if(type==Potions.WATER||type==null)
-			return new FluidTagWithSize(FluidTags.WATER, amount);
+			return new FluidTagWithSize(FluidTags.WATER.getId(), amount);
 		CompoundNBT nbt = new CompoundNBT();
 		nbt.putString("Potion", type.getRegistryName().toString());
-		return new FluidTagWithSize(IETags.fluidPotion, amount, nbt);
+		return new FluidTagWithSize(IETags.fluidPotion.getId(), amount, nbt);
 	}
 
 	@Override

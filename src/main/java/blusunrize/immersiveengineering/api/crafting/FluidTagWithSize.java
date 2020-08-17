@@ -21,44 +21,50 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class FluidTagWithSize implements Predicate<FluidStack>
 {
-	protected final Tag<Fluid> fluidTag;
+	protected final Lazy<Tag<Fluid>> fluidTag;
 	protected final int amount;
 	protected final CompoundNBT nbtTag;
 
-	public FluidTagWithSize(Tag<Fluid> fluidTag, int amount, CompoundNBT nbtTag)
+	public FluidTagWithSize(Lazy<Tag<Fluid>> fluidTag, int amount, CompoundNBT nbtTag)
 	{
 		this.fluidTag = fluidTag;
 		this.amount = amount;
 		this.nbtTag = nbtTag;
 	}
 
-	public FluidTagWithSize(Tag<Fluid> fluidTag, int amount)
+	public FluidTagWithSize(ResourceLocation resourceLocation, int amount, CompoundNBT nbtTag)
 	{
-		this(fluidTag, amount, null);
+		this(Lazy.of(() -> new FluidTags.Wrapper(resourceLocation)), amount, nbtTag);
+	}
+
+	public FluidTagWithSize(ResourceLocation resourceLocation, int amount)
+	{
+		this(resourceLocation, amount, null);
 	}
 
 	public static FluidTagWithSize deserialize(JsonElement input)
 	{
 		Preconditions.checkArgument(input instanceof JsonObject, "FluidTagWithSize can only be deserialized from a JsonObject");
 		JsonObject jsonObject = input.getAsJsonObject();
-		ResourceLocation resourcelocation = new ResourceLocation(JSONUtils.getString(jsonObject, "tag"));
-		Tag<Fluid> tag = FluidTags.getCollection().get(resourcelocation);
+		ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getString(jsonObject, "tag"));
 		if(!JSONUtils.hasField(jsonObject, "nbt"))
-			return new FluidTagWithSize(tag, JSONUtils.getInt(jsonObject, "amount"));
+			return new FluidTagWithSize(resourceLocation, JSONUtils.getInt(jsonObject, "amount"));
 		try
 		{
 			CompoundNBT nbt = JsonToNBT.getTagFromJson(JSONUtils.getString(jsonObject, "nbt"));
-			return new FluidTagWithSize(tag, JSONUtils.getInt(jsonObject, "amount"), nbt);
+			return new FluidTagWithSize(resourceLocation, JSONUtils.getInt(jsonObject, "amount"), nbt);
 		} catch(CommandSyntaxException e)
 		{
 			throw new RuntimeException(e);
@@ -67,10 +73,10 @@ public class FluidTagWithSize implements Predicate<FluidStack>
 
 	public static FluidTagWithSize read(PacketBuffer input)
 	{
-		Tag<Fluid> tag = FluidTags.getCollection().get(input.readResourceLocation());
+		ResourceLocation resourceLocation = input.readResourceLocation();
 		int amount = input.readInt();
 		CompoundNBT nbt = input.readBoolean()?input.readCompoundTag(): null;
-		return new FluidTagWithSize(tag, amount, nbt);
+		return new FluidTagWithSize(resourceLocation, amount, nbt);
 	}
 
 	public FluidTagWithSize withAmount(int amount)
@@ -88,7 +94,7 @@ public class FluidTagWithSize implements Predicate<FluidStack>
 	{
 		if(fluidStack==null)
 			return false;
-		if(!fluidTag.contains(fluidStack.getFluid()))
+		if(!fluidTag.get().contains(fluidStack.getFluid()))
 			return false;
 		if(this.nbtTag!=null)
 			return fluidStack.hasTag()&&fluidStack.getTag().equals(this.nbtTag);
@@ -98,7 +104,10 @@ public class FluidTagWithSize implements Predicate<FluidStack>
 	@Nonnull
 	public List<FluidStack> getMatchingFluidStacks()
 	{
-		return this.fluidTag.getAllElements().stream()
+		Tag<Fluid> tag = this.fluidTag.get();
+		if(tag==null)
+			return Collections.emptyList();
+		return tag.getAllElements().stream()
 				.map(fluid -> new FluidStack(fluid, FluidTagWithSize.this.amount, FluidTagWithSize.this.nbtTag))
 				.collect(Collectors.toList());
 	}
@@ -107,7 +116,7 @@ public class FluidTagWithSize implements Predicate<FluidStack>
 	public JsonElement serialize()
 	{
 		JsonObject jsonObject = new JsonObject();
-		jsonObject.addProperty("tag", this.fluidTag.getId().toString());
+		jsonObject.addProperty("tag", this.fluidTag.get().getId().toString());
 		jsonObject.addProperty("amount", this.amount);
 		if(this.nbtTag!=null)
 			jsonObject.addProperty("nbt", this.nbtTag.toString());
@@ -127,7 +136,7 @@ public class FluidTagWithSize implements Predicate<FluidStack>
 
 	public void write(PacketBuffer out)
 	{
-		out.writeResourceLocation(this.fluidTag.getId());
+		out.writeResourceLocation(this.fluidTag.get().getId());
 		out.writeInt(this.amount);
 		out.writeBoolean(this.nbtTag!=null);
 		if(this.nbtTag!=null)
