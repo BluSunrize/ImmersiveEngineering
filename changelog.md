@@ -1,3 +1,6 @@
+##### Version 1.15.2-3.2.1-pre
+- Fixed broken rendering of components on the Automated Workbench (BluSunrize)
+
 ##### Version 1.15.2-3.2.0-114
 - Fixed mirrored machines rendering incorrectly (Malte)
 - Fixed bucket wheels in mirrored excavators rendering incorrectly (Malte)
