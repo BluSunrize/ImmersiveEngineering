@@ -70,7 +70,12 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 
 	{
 		for(Direction d : Direction.VALUES)
-			sideConfig.put(d, IOSideConfig.NONE);
+		{
+			if(d==Direction.DOWN)
+				sideConfig.put(d, IOSideConfig.INPUT);
+			else
+				sideConfig.put(d, IOSideConfig.NONE);
+		}
 	}
 
 	public FluidTank tank = new FluidTank(4000);
