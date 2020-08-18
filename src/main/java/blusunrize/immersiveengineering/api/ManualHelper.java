@@ -10,6 +10,8 @@ package blusunrize.immersiveengineering.api;
 
 import blusunrize.immersiveengineering.client.manual.IEManualInstance;
 
+import java.util.function.Function;
+
 /**
  * @author BluSunrize - 04.07.2015
  */
@@ -28,5 +30,15 @@ public class ManualHelper
 	public static IEManualInstance getManual()
 	{
 		return ieManualInstance;
+	}
+
+	/**
+	 * Adds a new source of information for the "<config"-syntax in the IE manual
+	 *
+	 * @param newGetter returns either the object for the given key or null
+	 */
+	public static void addConfigGetter(Function<String, Object> newGetter)
+	{
+		ieManualInstance.configGetters.add(newGetter);
 	}
 }
