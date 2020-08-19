@@ -6,12 +6,12 @@
     ]
   },
   "criteria": {
-    "has_fluid_pipe": {
+    "has_chemthrower": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:fluid_pipe"
+            "item": "immersiveengineering:chemthrower"
           }
         ]
       }
@@ -25,7 +25,7 @@
   },
   "requirements": [
     [
-      "has_fluid_pipe",
+      "has_chemthrower",
       "has_the_recipe"
     ]
   ]

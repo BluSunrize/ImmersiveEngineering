@@ -13,7 +13,9 @@
       "item": "immersiveengineering:component_iron"
     },
     "b": {
-      "item": "immersiveengineering:plantoil_bucket"
+      "tag": "forge:plantoil",
+      "amount": 1000,
+      "type": "immersiveengineering:fluid"
     }
   },
   "result": {

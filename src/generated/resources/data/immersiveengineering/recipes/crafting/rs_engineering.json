@@ -7,7 +7,7 @@
   ],
   "key": {
     "i": {
-      "tag": "forge:ingots/iron"
+      "tag": "forge:sheetmetals/iron"
     },
     "c": {
       "tag": "forge:ingots/copper"
@@ -18,7 +18,7 @@
   },
   "result": {
     "item": "immersiveengineering:rs_engineering",
-    "count": 2
+    "count": 4
   },
   "quarter_turn": true
 }

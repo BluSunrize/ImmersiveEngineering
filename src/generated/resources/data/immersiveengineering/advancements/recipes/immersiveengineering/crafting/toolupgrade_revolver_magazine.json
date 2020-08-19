@@ -6,12 +6,12 @@
     ]
   },
   "criteria": {
-    "has_component_iron": {
+    "has_revolver": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:component_iron"
+            "item": "immersiveengineering:revolver"
           }
         ]
       }
@@ -25,7 +25,7 @@
   },
   "requirements": [
     [
-      "has_component_iron",
+      "has_revolver",
       "has_the_recipe"
     ]
   ]
