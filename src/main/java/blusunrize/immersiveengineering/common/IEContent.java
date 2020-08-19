@@ -69,6 +69,8 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.AbstractArrowEntity;
+import net.minecraft.entity.projectile.TridentEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.EquipmentSlotType.Group;
@@ -876,6 +878,29 @@ public class IEContent
 				return 1;
 			}
 		}.setColourMap(new int[][]{{0xfff32d, 0xffc100, 0xb36b19, 0xbf5a00, 0xbf5a00, 0x953300}}));
+		RailgunHandler.registerProjectile(Ingredient.fromItems(Items.TRIDENT), new RailgunHandler.IRailgunProjectile()
+		{
+			@Override
+			public boolean isValidForTurret()
+			{
+				return false;
+			}
+
+			@Override
+			public Entity getProjectile(@Nullable PlayerEntity shooter, ItemStack ammo, Entity defaultProjectile)
+			{
+				if(shooter!=null)
+				{
+					ammo.damageItem(1, shooter, (p_220047_1_) -> p_220047_1_.sendBreakAnimation(shooter.getActiveHand()));
+					TridentEntity trident = new TridentEntity(shooter.world, shooter, ammo);
+					trident.shoot(shooter, shooter.rotationPitch, shooter.rotationYaw, 0.0F, 2.5F, 1.0F);
+					if(shooter.abilities.isCreativeMode)
+						trident.pickupStatus = AbstractArrowEntity.PickupStatus.CREATIVE_ONLY;
+					return trident;
+				}
+				return defaultProjectile;
+			}
+		});
 
 		ExternalHeaterHandler.defaultFurnaceEnergyCost = IEConfig.MACHINES.heater_consumption.get();
 		ExternalHeaterHandler.defaultFurnaceSpeedupCost = IEConfig.MACHINES.heater_speedupConsumption.get();
