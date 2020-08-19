@@ -32,16 +32,17 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.EnderTeleportEvent;
 import net.minecraftforge.fluids.FluidStack;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 public class ChemthrowerHandler
 {
-	public static HashMap<Tag<Fluid>, ChemthrowerEffect> effectMap = new HashMap<>();
+	public static List<Pair<Tag<Fluid>, ChemthrowerEffect>> effectList = new ArrayList<>();
 	public static HashSet<Tag<Fluid>> flammableList = new HashSet<>();
 
 	/**
@@ -50,13 +51,13 @@ public class ChemthrowerHandler
 	 */
 	public static void registerEffect(Tag<Fluid> fluidTag, ChemthrowerEffect effect)
 	{
-		effectMap.put(fluidTag, effect);
+		effectList.add(Pair.of(fluidTag, effect));
 	}
 
 	public static ChemthrowerEffect getEffect(Fluid fluid)
 	{
 		if(fluid!=null)
-			for(Map.Entry<Tag<Fluid>, ChemthrowerEffect> entry : effectMap.entrySet())
+			for(Map.Entry<Tag<Fluid>, ChemthrowerEffect> entry : effectList)
 				if(entry.getKey().contains(fluid))
 					return entry.getValue();
 		return null;
