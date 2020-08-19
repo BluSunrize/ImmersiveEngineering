@@ -11,11 +11,9 @@ package blusunrize.immersiveengineering.api.energy;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
+import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author BluSunrize - 23.04.2015
@@ -24,7 +22,7 @@ import java.util.Set;
  */
 public class DieselHandler
 {
-	static final HashMap<Tag<Fluid>, Integer> dieselGenBurnTime = new HashMap<>();
+	static final List<Pair<Tag<Fluid>, Integer>> dieselGenBurnTime = new ArrayList<>();
 	static final Set<Tag<Fluid>> drillFuel = new HashSet<>();
 
 	/**
@@ -34,7 +32,7 @@ public class DieselHandler
 	public static void registerFuel(Tag<Fluid> fuel, int time)
 	{
 		if(fuel!=null)
-			dieselGenBurnTime.put(fuel, time);
+			dieselGenBurnTime.add(Pair.of(fuel, time));
 	}
 
 	public static int getBurnTime(Fluid fuel)
@@ -42,7 +40,7 @@ public class DieselHandler
 		if(fuel!=null)
 		{
 			ResourceLocation s = fuel.getRegistryName();
-			for(Map.Entry<Tag<Fluid>, Integer> entry : dieselGenBurnTime.entrySet())
+			for(Map.Entry<Tag<Fluid>, Integer> entry : dieselGenBurnTime)
 				if(entry.getKey().contains(fuel))
 					return entry.getValue();
 		}
@@ -52,11 +50,11 @@ public class DieselHandler
 	public static boolean isValidFuel(Fluid fuel)
 	{
 		if(fuel!=null)
-			return dieselGenBurnTime.keySet().stream().anyMatch(fluidTag -> fluidTag.contains(fuel));
+			return dieselGenBurnTime.stream().anyMatch(pair -> pair.getLeft().contains(fuel));
 		return false;
 	}
 
-	public static HashMap<Tag<Fluid>, Integer> getFuelValues()
+	public static List<Pair<Tag<Fluid>, Integer>> getFuelValues()
 	{
 		return dieselGenBurnTime;
 	}
