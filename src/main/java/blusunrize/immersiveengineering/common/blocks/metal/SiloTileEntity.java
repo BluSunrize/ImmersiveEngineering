@@ -222,10 +222,7 @@ public class SiloTileEntity extends MultiblockPartTileEntity<SiloTileEntity> imp
 			if(slot==0)
 				return ItemStack.EMPTY;
 			else
-			{
-				int maxSize = Math.min(silo.storageAmount, silo.identStack.getMaxStackSize());
-				return ItemUtils.copyStackWithAmount(silo.identStack, maxSize);
-			}
+				return ItemUtils.copyStackWithAmount(silo.identStack, silo.storageAmount);
 		}
 
 		@Override
@@ -259,11 +256,8 @@ public class SiloTileEntity extends MultiblockPartTileEntity<SiloTileEntity> imp
 			SiloTileEntity silo = this.silo.master();
 			if(slot!=1||silo.storageAmount < 1||amount < 1||silo.identStack.isEmpty())
 				return ItemStack.EMPTY;
-			ItemStack out;
-			if(silo.storageAmount >= amount)
-				out = Utils.copyStackWithAmount(silo.identStack, amount);
-			else
-				out = Utils.copyStackWithAmount(silo.identStack, silo.storageAmount);
+			int returned = Math.min(Math.min(silo.storageAmount, amount), silo.identStack.getMaxStackSize());
+			ItemStack out = Utils.copyStackWithAmount(silo.identStack, returned);
 			if(!simulate)
 			{
 				silo.updateComparatorValuesPart1();
@@ -271,6 +265,7 @@ public class SiloTileEntity extends MultiblockPartTileEntity<SiloTileEntity> imp
 				if(silo.storageAmount <= 0&&!silo.lockItem)
 					silo.identStack = ItemStack.EMPTY;
 				silo.markDirty();
+				silo.updateContainingBlockInfo();
 				silo.markContainingBlockForUpdate(null);
 				silo.updateComparatorValuesPart2();
 			}
@@ -280,13 +275,13 @@ public class SiloTileEntity extends MultiblockPartTileEntity<SiloTileEntity> imp
 		@Override
 		public int getSlotLimit(int slot)
 		{
-			return 64;
+			return MAX_STORAGE;
 		}
 
 		@Override
 		public boolean isItemValid(int slot, @Nonnull ItemStack stack)
 		{
-			return ItemStack.areItemsEqual(stack, silo.identStack);
+			return slot==0&&ItemStack.areItemsEqual(stack, silo.identStack);
 		}
 	}
 
