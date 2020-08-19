@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.client.render.entity;
 
 import blusunrize.immersiveengineering.api.tool.RailgunHandler;
+import blusunrize.immersiveengineering.api.tool.RailgunHandler.StandardRailgunProjectile;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.entities.RailgunShotEntity;
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -40,8 +41,9 @@ public class RailgunShotRenderer extends EntityRenderer<RailgunShotEntity>
 		int[][] colourMap = {{0x777777, 0xa4a4a4}};
 		if(!ammo.isEmpty())
 		{
-			RailgunHandler.RailgunProjectileProperties prop = RailgunHandler.getProjectileProperties(ammo);
-			colourMap = prop!=null?prop.colourMap: colourMap;
+			RailgunHandler.IRailgunProjectile prop = RailgunHandler.getProjectile(ammo);
+			if(prop instanceof RailgunHandler.StandardRailgunProjectile)
+				colourMap = ((StandardRailgunProjectile)prop).getColourMap();
 		}
 
 		renderRailgunProjectile(x, y, z, yaw, pitch, colourMap);

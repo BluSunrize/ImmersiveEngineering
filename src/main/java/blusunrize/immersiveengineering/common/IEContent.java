@@ -20,7 +20,6 @@ import blusunrize.immersiveengineering.api.tool.*;
 import blusunrize.immersiveengineering.api.tool.AssemblerHandler.RecipeQuery;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler.DefaultFurnaceAdapter;
-import blusunrize.immersiveengineering.api.tool.RailgunHandler.RailgunProjectileProperties;
 import blusunrize.immersiveengineering.api.wires.NetHandlerCapability;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler;
@@ -69,7 +68,7 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.EquipmentSlotType.Group;
@@ -85,6 +84,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.EntityRayTraceResult;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.Feature;
@@ -100,6 +101,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.*;
 
@@ -846,30 +848,30 @@ public class IEContent
 
 		ChemthrowerEffects.register();
 
-		RailgunHandler.registerProjectileProperties(Ingredient.fromTag(IETags.ironRod), 16, 1.25).setColourMap(new int[][]{{0xd8d8d8, 0xd8d8d8, 0xd8d8d8, 0xa8a8a8, 0x686868, 0x686868}});
-		RailgunHandler.registerProjectileProperties(Ingredient.fromTag(IETags.aluminumRod), 10, 1.05).setColourMap(new int[][]{{0xd8d8d8, 0xd8d8d8, 0xd8d8d8, 0xa8a8a8, 0x686868, 0x686868}});
-		RailgunHandler.registerProjectileProperties(Ingredient.fromTag(IETags.steelRod), 24, 1.25).setColourMap(new int[][]{{0xb4b4b4, 0xb4b4b4, 0xb4b4b4, 0x7a7a7a, 0x555555, 0x555555}});
-		RailgunHandler.registerProjectileProperties(new ItemStack(IEItems.Misc.graphiteElectrode), 30, .9).setColourMap(new int[][]{{0x242424, 0x242424, 0x242424, 0x171717, 0x171717, 0x0a0a0a}});
-		RailgunHandler.registerProjectileProperties(Ingredient.fromItems(IEItems.Tools.sawblade), new RailgunHandler.RailgunProjectileProperties(0, 0)
+		RailgunHandler.registerStandardProjectile(Ingredient.fromTag(IETags.ironRod), 16, 1.25).setColourMap(new int[][]{{0xd8d8d8, 0xd8d8d8, 0xd8d8d8, 0xa8a8a8, 0x686868, 0x686868}});
+		RailgunHandler.registerStandardProjectile(Ingredient.fromTag(IETags.aluminumRod), 10, 1.05).setColourMap(new int[][]{{0xd8d8d8, 0xd8d8d8, 0xd8d8d8, 0xa8a8a8, 0x686868, 0x686868}});
+		RailgunHandler.registerStandardProjectile(Ingredient.fromTag(IETags.steelRod), 24, 1.25).setColourMap(new int[][]{{0xb4b4b4, 0xb4b4b4, 0xb4b4b4, 0x7a7a7a, 0x555555, 0x555555}});
+		RailgunHandler.registerStandardProjectile(new ItemStack(IEItems.Misc.graphiteElectrode), 30, .9).setColourMap(new int[][]{{0x242424, 0x242424, 0x242424, 0x171717, 0x171717, 0x0a0a0a}});
+		RailgunHandler.registerProjectile(Ingredient.fromItems(IEItems.Tools.sawblade), new RailgunHandler.IRailgunProjectile()
 		{
 			@Override
-			public Entity overrideProjectile(LivingEntity shooter, ItemStack railgun, ItemStack ammo)
+			public Entity getProjectile(@Nullable PlayerEntity shooter, ItemStack ammo, Entity defaultProjectile)
 			{
 				Vec3d look = shooter.getLookVec();
 				return new SawbladeEntity(shooter.getEntityWorld(), shooter, look.x*20, look.y*20, look.z*20, ammo);
 			}
 		});
-		RailgunHandler.registerProjectileProperties(Ingredient.fromTag(Tags.Items.RODS_BLAZE), new RailgunProjectileProperties(10, 1.05)
+		RailgunHandler.registerProjectile(Ingredient.fromTag(Tags.Items.RODS_BLAZE), new RailgunHandler.StandardRailgunProjectile(10, 1.05)
 		{
 			@Override
-			public boolean overrideHitEntity(Entity entityHit, Entity shooter)
+			public void onHitTarget(World world, RayTraceResult target, @Nullable UUID shooter, Entity projectile)
 			{
-				entityHit.setFire(5);
-				return false;
+				if(target instanceof EntityRayTraceResult)
+					((EntityRayTraceResult)target).getEntity().setFire(5);
 			}
 
 			@Override
-			public double getBreakChance(Entity shooter, ItemStack ammo)
+			public double getBreakChance(@Nullable UUID shooter, ItemStack ammo)
 			{
 				return 1;
 			}

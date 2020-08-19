@@ -18,7 +18,7 @@ import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryEntry;
 import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler;
-import blusunrize.immersiveengineering.api.tool.RailgunHandler.RailgunProjectileProperties;
+import blusunrize.immersiveengineering.api.tool.RailgunHandler.IRailgunProjectile;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
@@ -233,12 +233,11 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 				if(!ammo.isEmpty())
 				{
 					ItemStack ammoConsumed = ammo.split(1);
-					RailgunProjectileProperties projectileProperties = RailgunHandler.getProjectileProperties(ammoConsumed);
+					IRailgunProjectile projectileProperties = RailgunHandler.getProjectile(ammoConsumed);
 					Vec3d vec = user.getLookVec();
 					float speed = 20;
-					Entity shot = projectileProperties.overrideProjectile(user, stack, ammoConsumed);
-					if(shot==null)
-						shot = new RailgunShotEntity(user.world, user, vec.x*speed, vec.y*speed, vec.z*speed, ammoConsumed);
+					Entity shot = new RailgunShotEntity(user.world, user, vec.x*speed, vec.y*speed, vec.z*speed, ammoConsumed);
+					shot = projectileProperties.getProjectile((PlayerEntity)user, ammoConsumed, shot);
 					user.world.playSound(null, user.posX, user.posY, user.posZ, IESounds.railgunFire, SoundCategory.PLAYERS, 1, .5f+(.5f*user.getRNG().nextFloat()));
 					this.extractEnergy(stack, energy, false);
 					if(!world.isRemote)
@@ -327,7 +326,7 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 	{
 		if(stack.isEmpty())
 			return false;
-		RailgunHandler.RailgunProjectileProperties prop = RailgunHandler.getProjectileProperties(stack);
+		RailgunHandler.IRailgunProjectile prop = RailgunHandler.getProjectile(stack);
 		return prop!=null;
 	}
 
