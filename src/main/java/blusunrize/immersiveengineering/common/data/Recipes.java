@@ -1077,7 +1077,7 @@ public class Recipes extends RecipeProvider
 				.patternLine("wbw")
 				.patternLine("www")
 				.key('w', ItemTags.PLANKS)
-				.key('b', new IngredientFluidStack(IEContent.fluidCreosote, 1000))
+				.key('b', new IngredientFluidStack(IETags.fluidCreosote, 1000))
 				.addCriterion("has_creosote", hasItem(IEContent.fluidCreosote.getFilledBucket()))
 				.build(out, toRL(toPath(WoodenDecoration.treatedWood.get(TreatedWoodStyles.HORIZONTAL))));
 	}
@@ -2373,7 +2373,7 @@ public class Recipes extends RecipeProvider
 				.patternLine("wc ")
 				.patternLine("sss")
 				.key('w', ItemTags.WOOL)
-				.key('c', new IngredientFluidStack(IEContent.fluidCreosote, 1000))
+				.key('c', new IngredientFluidStack(IETags.fluidCreosote, 1000))
 				.key('s', Tags.Items.RODS_WOODEN)
 				.addCriterion("has_wool", hasItem(ItemTags.WOOL))
 				.addCriterion("has_stick", hasItem(Tags.Items.RODS_WOODEN))

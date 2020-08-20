@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.api.utils;
 
+import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.gson.Gson;
@@ -66,6 +67,8 @@ public class ItemUtils
 			return FluidUtil.getFluidContained(stack)
 					.map(fs -> fs.containsFluid((FluidStack)o))
 					.orElse(false);
+		else if(o instanceof FluidTagInput)
+			return ((FluidTagInput)o).test(FluidUtil.getFluidContained(stack).orElse(FluidStack.EMPTY));
 		else if(o instanceof ResourceLocation)
 			return TagUtils.isInBlockOrItemTag(stack, (ResourceLocation)o);
 		else

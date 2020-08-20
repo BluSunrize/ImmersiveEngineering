@@ -823,7 +823,7 @@ public class IEContent
 		AssemblerHandler.registerSpecialQueryConverters((o) ->
 		{
 			if(o instanceof IngredientFluidStack)
-				return new RecipeQuery(((IngredientFluidStack)o).getFluid(), ((IngredientFluidStack)o).getFluid().getAmount());
+				return new RecipeQuery(((IngredientFluidStack)o).getFluidTagInput(),((IngredientFluidStack)o).getFluidTagInput().getAmount());
 			else return null;
 		});
 
