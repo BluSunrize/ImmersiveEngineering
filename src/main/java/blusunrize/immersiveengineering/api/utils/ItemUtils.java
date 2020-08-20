@@ -10,8 +10,14 @@ package blusunrize.immersiveengineering.api.utils;
 
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -20,6 +26,16 @@ import java.util.Collection;
 
 public class ItemUtils
 {
+	private static Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+
+	public static CompoundNBT parseNbtFromJson(JsonElement jsonElement) throws CommandSyntaxException
+	{
+		if(jsonElement.isJsonObject())
+			return JsonToNBT.getTagFromJson(GSON.toJson(jsonElement));
+		else
+			return JsonToNBT.getTagFromJson(jsonElement.getAsString());
+	}
+
 	public static boolean stackMatchesObject(ItemStack stack, Object o)
 	{
 		return stackMatchesObject(stack, o, false);

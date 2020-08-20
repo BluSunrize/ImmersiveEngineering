@@ -9,13 +9,14 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
+import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.Tag;
@@ -63,11 +64,11 @@ public class FluidTagInput implements Predicate<FluidStack>
 			return new FluidTagInput(resourceLocation, JSONUtils.getInt(jsonObject, "amount"));
 		try
 		{
-			CompoundNBT nbt = JsonToNBT.getTagFromJson(JSONUtils.getString(jsonObject, "nbt"));
+			CompoundNBT nbt = ItemUtils.parseNbtFromJson(jsonObject.get("nbt"));
 			return new FluidTagInput(resourceLocation, JSONUtils.getInt(jsonObject, "amount"), nbt);
 		} catch(CommandSyntaxException e)
 		{
-			throw new RuntimeException(e);
+			throw new JsonParseException(e);
 		}
 	}
 
