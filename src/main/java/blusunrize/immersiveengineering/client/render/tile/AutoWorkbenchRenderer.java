@@ -282,7 +282,7 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 							matrixStack.translate(localItemX, localItemY, localItemZ);
 							matrixStack.rotate(new Quaternion(new Vector3f(1, 0, 0), localAngle, true));
 							matrixStack.scale(scale, scale, .5f);
-							ClientUtils.mc().getItemRenderer().renderItem(dList.get(0), TransformType.FIXED, combinedLightIn, combinedOverlayIn, matrixStack, bufferIn);
+							ClientUtils.mc().getItemRenderer().renderItem(dList.get(d), TransformType.FIXED, combinedLightIn, combinedOverlayIn, matrixStack, bufferIn);
 							matrixStack.pop();
 						}
 					}

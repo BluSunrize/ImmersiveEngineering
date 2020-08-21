@@ -2,12 +2,15 @@
   "type": "minecraft:crafting_shaped",
   "pattern": [
     "sss",
-    "sss",
+    "sis",
     "sss"
   ],
   "key": {
     "s": {
       "tag": "forge:coal_coke"
+    },
+    "i": {
+      "item": "immersiveengineering:coal_coke"
     }
   },
   "result": {

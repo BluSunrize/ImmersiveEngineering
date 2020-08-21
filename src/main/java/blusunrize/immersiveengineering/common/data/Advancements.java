@@ -101,7 +101,7 @@ public class Advancements extends AdvancementProvider
 							new TranslationTextComponent("advancement.immersiveengineering.root"),
 							new TranslationTextComponent("advancement.immersiveengineering.root.desc"),
 							new ResourceLocation("immersiveengineering:textures/block/wooden_decoration/treated_wood.png"),
-							FrameType.TASK, false, false, false)
+							FrameType.TASK, true, true, false)
 					.withCriterion("manual", InventoryChangeTrigger.Instance.forItems(Tools.manual))
 					.register(consumer, "immersiveengineering:main/root");
 

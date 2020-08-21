@@ -6,7 +6,7 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.common.util.shapes;
+package blusunrize.immersiveengineering.api.utils.shapes;
 
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;

@@ -176,20 +176,23 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 
 	private void queueEvent(LoadUnloadEvent ev)
 	{
-		if(!getWorldNonnull().isRemote)
-			ev.run(this);
-		else
+		if(world!=null)
 		{
-			Deque<EventQueueEntry> queue = queuedEvents.get(pos);
-			if(queue==null)
+			if(!getWorldNonnull().isRemote)
+				ev.run(this);
+			else
 			{
-				queue = new ArrayDeque<>();
-				queuedEvents.put(pos, queue);
+				Deque<EventQueueEntry> queue = queuedEvents.get(pos);
+				if(queue==null)
+				{
+					queue = new ArrayDeque<>();
+					queuedEvents.put(pos, queue);
+				}
+				if(queue.isEmpty()||queue.getLast().tick!=world.getGameTime())
+					ApiUtils.addFutureServerTask(getWorldNonnull(), () -> processEvents(pos), true);
+				queue.add(new EventQueueEntry(ev, this, getWorldNonnull().getGameTime()));
+				WireLogger.logger.info("Queuing {} at {} (tile {})", ev, getPos(), this);
 			}
-			if(queue.isEmpty()||queue.getLast().tick!=world.getGameTime())
-				ApiUtils.addFutureServerTask(getWorldNonnull(), () -> processEvents(pos), true);
-			queue.add(new EventQueueEntry(ev, this, getWorldNonnull().getGameTime()));
-			WireLogger.logger.info("Queuing {} at {} (tile {})", ev, getPos(), this);
 		}
 	}
 

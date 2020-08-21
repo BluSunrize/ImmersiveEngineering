@@ -26,18 +26,29 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 
 public class IEManualInstance extends ManualInstance
 {
 	private final Set<ResourceLocation> hiddenEntries = new HashSet<>();
+	public final List<Function<String, Object>> configGetters = new ArrayList<>();
 
 	public IEManualInstance()
 	{
 		super(new ResourceLocation(ImmersiveEngineering.MODID, "textures/gui/manual.png"),
 				120, 148, new ResourceLocation(ImmersiveEngineering.MODID, "manual"));
+		configGetters.add(s -> {
+			//TODO forge PR or wait for Lex to fix this
+			Config actualCfg = IEConfig.getRawConfig();
+			if(!actualCfg.contains(s))
+				return null;
+			else
+				return actualCfg.get(s);
+		});
 		/*
 		TODO no longer easily possible?
 		this.fontRenderer.colorCode[0+6] = Lib.COLOUR_I_ImmersiveOrange;
@@ -186,7 +197,7 @@ public class IEManualInstance extends ManualInstance
 	@Override
 	public String getManualName()
 	{
-		return I18n.format("item.immersiveengineering.tool.manual.name");
+		return I18n.format("item.immersiveengineering.manual");
 	}
 
 	@Override
@@ -290,28 +301,55 @@ public class IEManualInstance extends ManualInstance
 
 	public String formatConfigEntry(String rep, String splitKey)
 	{
-		//TODO forge PR or wait for Lex to fix this
-		Config actualCfg = IEConfig.getRawConfig();
 		String[] segment = rep.substring(0, rep.length()-1).split(splitKey);
-		if(segment.length < 3)
-			return "~ERROR0~";
 		Preconditions.checkState(
-				actualCfg.contains(segment[2]),
+				segment.length >= 3,
+				"%s is not a valid config entry",
+				rep
+		);
+		Object configValueObj = null;
+		for(Function<String, Object> f : configGetters)
+		{
+			configValueObj = f.apply(segment[2]);
+			if(configValueObj!=null)
+				break;
+		}
+		Preconditions.checkState(
+				configValueObj!=null,
 				"Config key %s does not exist",
 				segment[2]
 		);
 		if(segment[1].equalsIgnoreCase("b"))
 		{
+			Preconditions.checkState(
+					configValueObj instanceof Boolean,
+					"Expected boolean value for %s, got %s",
+					segment[2], configValueObj
+			);
+			boolean configValue = (boolean)configValueObj;
 			if(segment.length > 3)
-				return (actualCfg.get(segment[2])?segment[3]: segment.length > 4?segment[4]: "");
+				return (configValue?segment[3]: segment.length > 4?segment[4]: "");
 			else
-				return ""+actualCfg.get(segment[2]);
+				return Boolean.toString(configValue);
 		}
 		else if(segment[1].equalsIgnoreCase("i"))
-			return ""+actualCfg.get(segment[2]);
+		{
+			Preconditions.checkState(
+					configValueObj instanceof Number,
+					"Expected number value for %s, got %s",
+					segment[2], configValueObj
+			);
+			return Integer.toString(((Number)configValueObj).intValue());
+		}
 		else if(segment[1].equalsIgnoreCase("iA"))
 		{
-			List<Integer> iA = actualCfg.get(segment[2]);
+			Preconditions.checkState(
+					configValueObj instanceof List<?>&&((List<?>)configValueObj).stream()
+							.allMatch(n -> n instanceof Number),
+					"Expected list of integer for %s, got %s",
+					segment[2], configValueObj
+			);
+			List<?> configList = (List<?>)configValueObj;
 			if(segment.length > 3)
 				try
 				{
@@ -320,48 +358,45 @@ public class IEManualInstance extends ManualInstance
 						int limiter = Integer.parseInt(segment[3].substring(1));
 						StringBuilder result = new StringBuilder();
 						for(int i = 0; i < limiter; i++)
-							result.append(i > 0?", ": "").append(iA.get(i));
+							result.append(i > 0?", ": "")
+									.append(configList.get(i));
 						return result.toString();
 					}
 					else
 					{
 						int idx = Integer.parseInt(segment[3]);
-						return ""+iA.get(idx);
+						return ""+configList.get(idx);
 					}
 				} catch(Exception ex)
 				{
-					return "~ERROR1~";
+					throw new RuntimeException("Failed to parse "+segment[3]+" as integer");
 				}
 			else
 			{
 				StringBuilder result = new StringBuilder();
-				for(int i = 0; i < iA.size(); i++)
-					result.append(i > 0?", ": "").append(iA.get(i));
+				for(int i = 0; i < configList.size(); i++)
+					result.append(i > 0?", ": "").append(configList.get(i));
 				return result.toString();
 			}
 		}
 		else if(segment[1].equalsIgnoreCase("d"))
-			return ""+actualCfg.get(segment[2]);
-		else if(segment[1].equalsIgnoreCase("dA"))
 		{
-			double[] iD = actualCfg.get(segment[2]);
-			if(segment.length > 3)
-				try
-				{
-					int idx = Integer.parseInt(segment[3]);
-					return ""+Utils.formatDouble(iD[idx], "##0.0##");
-				} catch(Exception ex)
-				{
-					return "~ERROR2~";
-				}
-			else
-			{
-				StringBuilder result = new StringBuilder();
-				for(int i = 0; i < iD.length; i++)
-					result.append(i > 0?", ": "").append(Utils.formatDouble(iD[i], "##0.0##"));
-				return result.toString();
-			}
+			Preconditions.checkState(
+					configValueObj instanceof Number,
+					"Expected double for %s, got %s",
+					segment[2], configValueObj
+			);
+			return Double.toString(((Number)configValueObj).doubleValue());
 		}
-		return "~ERROR3~";
+		else if(segment[1].equalsIgnoreCase("str"))
+		{
+			Preconditions.checkState(
+					configValueObj instanceof String,
+					"Expected string for %s, got %s",
+					segment[2], configValueObj
+			);
+			return (String)configValueObj;
+		}
+		throw new RuntimeException("Unknown config type: "+segment[1]+" (part of "+rep+")");
 	}
 }
