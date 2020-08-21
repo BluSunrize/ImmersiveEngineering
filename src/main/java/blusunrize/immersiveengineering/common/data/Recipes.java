@@ -114,8 +114,8 @@ public class Recipes extends RecipeProvider
 			Block sheetMetal = IEBlocks.Metals.sheetmetal.get(metal);
 			if(!metal.isVanillaMetal())
 			{
-				add3x3Conversion(ingot, tags.ingot, nugget, tags.nugget, out);
-				add3x3Conversion(block, IETags.getItemTag(tags.storage), ingot, tags.ingot, out);
+				add3x3Conversion(ingot, nugget, tags.nugget, out);
+				add3x3Conversion(block, ingot, tags.ingot, out);
 				if(IEBlocks.Metals.ores.containsKey(metal))
 				{
 					Block ore = IEBlocks.Metals.ores.get(metal);
@@ -933,7 +933,7 @@ public class Recipes extends RecipeProvider
 				makeIngredient(IETags.fiberHemp),
 				makeIngredient(IETags.clay),
 				out);
-		add3x3Conversion(StoneDecoration.coke, IETags.getItemTag(IETags.coalCokeBlock), IEItems.Ingredients.coalCoke, IETags.coalCoke, out);
+		add3x3Conversion(StoneDecoration.coke, IEItems.Ingredients.coalCoke, IETags.coalCoke, out);
 
 		addStairs(StoneDecoration.hempcrete, StoneDecoration.hempcreteStairs, out);
 		addStairs(StoneDecoration.concrete, StoneDecoration.concreteStairs[0], out);
@@ -2692,6 +2692,7 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL(toPath(Misc.cartMetalBarrel)));
 	}
 
+	//TODO tag convention?
 	private void addArmor(Tag<Item> input, Map<EquipmentSlotType, Item> items, String name, Consumer<IFinishedRecipe> out)
 	{
 		Item head = items.get(EquipmentSlotType.HEAD);
@@ -2726,17 +2727,18 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL(toPath(feet)));
 	}
 
-	private void add3x3Conversion(IItemProvider bigItem, Tag<Item> bigTag, IItemProvider smallItem, Tag<Item> smallTag, Consumer<IFinishedRecipe> out)
+	private void add3x3Conversion(IItemProvider bigItem, IItemProvider smallItem, Tag<Item> smallTag, Consumer<IFinishedRecipe> out)
 	{
 		ShapedRecipeBuilder.shapedRecipe(bigItem)
 				.key('s', smallTag)
+				.key('i', smallItem)
 				.patternLine("sss")
-				.patternLine("sss")
+				.patternLine("sis")
 				.patternLine("sss")
 				.addCriterion("has_"+toPath(smallItem), hasItem(smallItem))
 				.build(out, toRL(toPath(smallItem)+"_to_")+toPath(bigItem));
 		ShapelessRecipeBuilder.shapelessRecipe(smallItem, 9)
-				.addIngredient(bigTag)
+				.addIngredient(bigItem)
 				.addCriterion("has_"+toPath(bigItem), hasItem(smallItem))
 				.build(out, toRL(toPath(bigItem)+"_to_"+toPath(smallItem)));
 	}

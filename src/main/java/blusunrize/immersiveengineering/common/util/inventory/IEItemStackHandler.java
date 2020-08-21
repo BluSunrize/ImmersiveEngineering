@@ -80,7 +80,7 @@ public class IEItemStackHandler extends ItemStackHandler implements ICapabilityP
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
-		if(first)
+		if(first&&!stack.isEmpty())
 		{
 			int idealSize = ((InternalStorageItem)stack.getItem()).getSlotCount(stack);
 			NonNullList<ItemStack> newList = NonNullList.withSize(idealSize, ItemStack.EMPTY);

@@ -69,8 +69,11 @@ public class MineralVein
 
 	public void deplete()
 	{
-		depletion++;
-		IESaveData.setDirty();
+		if(!isDepleted())
+		{
+			depletion++;
+			IESaveData.setDirty();
+		}
 	}
 
 	public boolean isDepleted()

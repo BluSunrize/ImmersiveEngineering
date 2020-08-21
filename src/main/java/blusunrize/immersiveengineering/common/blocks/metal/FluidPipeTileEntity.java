@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.fluid.IFluidPipe;
+import blusunrize.immersiveengineering.api.utils.shapes.CachedVoxelShapes;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock.IELadderBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
@@ -21,7 +22,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDecoration;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
-import blusunrize.immersiveengineering.common.util.shapes.CachedVoxelShapes;
 import com.google.common.collect.Lists;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
@@ -171,7 +171,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 	public void onLoad()
 	{
 		super.onLoad();
-		if(!world.isRemote)
+		if(world!=null&&!world.isRemote)
 		{
 			//TODO this really shouldn't be necessary IMO...
 			ApiUtils.addFutureServerTask(world, () -> {
@@ -191,7 +191,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 	public void remove()
 	{
 		super.remove();
-		if(!world.isRemote)
+		if(world!=null&&!world.isRemote)
 			indirectConnections.clear();
 	}
 

@@ -2,12 +2,15 @@
   "type": "minecraft:crafting_shaped",
   "pattern": [
     "sss",
-    "sss",
+    "sis",
     "sss"
   ],
   "key": {
     "s": {
       "tag": "forge:ingots/nickel"
+    },
+    "i": {
+      "item": "immersiveengineering:ingot_nickel"
     }
   },
   "result": {
