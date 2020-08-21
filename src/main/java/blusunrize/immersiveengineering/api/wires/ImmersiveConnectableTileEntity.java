@@ -177,20 +177,21 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 
 	private void queueEvent(LoadUnloadEvent ev)
 	{
-		if(!getWorldNonnull().isRemote)
-			ev.run(this);
-		else
-		{
-			Queue<Pair<LoadUnloadEvent, ImmersiveConnectableTileEntity>> queue = queuedEvents.get(pos);
-			if(queue==null)
+		if(world!=null)
+			if(!getWorldNonnull().isRemote)
+				ev.run(this);
+			else
 			{
-				ApiUtils.addFutureServerTask(getWorldNonnull(), () -> processEvents(pos), true);
-				queue = new ArrayDeque<>();
-				queuedEvents.put(pos, queue);
+				Queue<Pair<LoadUnloadEvent, ImmersiveConnectableTileEntity>> queue = queuedEvents.get(pos);
+				if(queue==null)
+				{
+					ApiUtils.addFutureServerTask(getWorldNonnull(), () -> processEvents(pos), true);
+					queue = new ArrayDeque<>();
+					queuedEvents.put(pos, queue);
+				}
+				queue.add(Pair.of(ev, this));
+				WireLogger.logger.info("Queuing {} at {} (tile {})", ev, getPos(), this);
 			}
-			queue.add(Pair.of(ev, this));
-			WireLogger.logger.info("Queuing {} at {} (tile {})", ev, getPos(), this);
-		}
 	}
 
 	// Loading, unloading and removing is strange on the client, so we need to make sure we don't remove IICs from the

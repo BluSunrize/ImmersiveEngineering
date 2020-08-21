@@ -171,7 +171,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 	public void onLoad()
 	{
 		super.onLoad();
-		if(!world.isRemote)
+		if(world!=null&&!world.isRemote)
 		{
 			//TODO this really shouldn't be necessary IMO...
 			ApiUtils.addFutureServerTask(world, () -> {
@@ -191,7 +191,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 	public void remove()
 	{
 		super.remove();
-		if(!world.isRemote)
+		if(world!=null&&!world.isRemote)
 			indirectConnections.clear();
 	}
 
