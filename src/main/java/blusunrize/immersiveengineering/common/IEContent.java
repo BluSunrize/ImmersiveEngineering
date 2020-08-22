@@ -70,10 +70,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.EquipmentSlotType.Group;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.Rarity;
+import net.minecraft.item.*;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataSerializers;
@@ -246,6 +243,9 @@ public class IEContent
 			IEItems.Metals.ingots.put(m, ingot);
 			IEItems.Metals.dusts.put(m, dust);
 		}
+		for(DyeColor dye : DyeColor.values())
+			MetalDecoration.coloredSheetmetal.put(dye,
+					new IEBaseBlock("sheetmetal_colored_"+dye.getTranslationKey(), sheetmetalProperties, BlockItemIE::new));
 		Block.Properties stoneDecoProps = Block.Properties.create(Material.ROCK).hardnessAndResistance(2, 10);
 		Block.Properties stoneDecoLeadedProps = Block.Properties.create(Material.ROCK).hardnessAndResistance(2, 180);
 
