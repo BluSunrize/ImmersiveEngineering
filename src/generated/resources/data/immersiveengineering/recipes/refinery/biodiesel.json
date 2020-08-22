@@ -5,11 +5,11 @@
     "amount": 16
   },
   "input0": {
-    "fluid": "immersiveengineering:plantoil",
+    "tag": "forge:plantoil",
     "amount": 8
   },
   "input1": {
-    "fluid": "immersiveengineering:ethanol",
+    "tag": "forge:ethanol",
     "amount": 8
   },
   "energy": 80

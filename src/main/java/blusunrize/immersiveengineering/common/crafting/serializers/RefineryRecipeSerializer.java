@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.crafting.serializers;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.RefineryRecipe;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
@@ -33,8 +34,8 @@ public class RefineryRecipeSerializer extends IERecipeSerializer<RefineryRecipe>
 	public RefineryRecipe readFromJson(ResourceLocation recipeId, JsonObject json)
 	{
 		FluidStack output = ApiUtils.jsonDeserializeFluidStack(JSONUtils.getJsonObject(json, "result"));
-		FluidStack input0 = ApiUtils.jsonDeserializeFluidStack(JSONUtils.getJsonObject(json, "input0"));
-		FluidStack input1 = ApiUtils.jsonDeserializeFluidStack(JSONUtils.getJsonObject(json, "input1"));
+		FluidTagInput input0 = FluidTagInput.deserialize(JSONUtils.getJsonObject(json, "input0"));
+		FluidTagInput input1 = FluidTagInput.deserialize(JSONUtils.getJsonObject(json, "input1"));
 		int energy = JSONUtils.getInt(json, "energy");
 		return new RefineryRecipe(recipeId, output, input0, input1, energy);
 	}
@@ -44,8 +45,8 @@ public class RefineryRecipeSerializer extends IERecipeSerializer<RefineryRecipe>
 	public RefineryRecipe read(ResourceLocation recipeId, PacketBuffer buffer)
 	{
 		FluidStack output = buffer.readFluidStack();
-		FluidStack input0 = buffer.readFluidStack();
-		FluidStack input1 = buffer.readFluidStack();
+		FluidTagInput input0 = FluidTagInput.read(buffer);
+		FluidTagInput input1 = FluidTagInput.read(buffer);
 		int energy = buffer.readInt();
 		return new RefineryRecipe(recipeId, output, input0, input1, energy);
 	}
@@ -54,8 +55,8 @@ public class RefineryRecipeSerializer extends IERecipeSerializer<RefineryRecipe>
 	public void write(PacketBuffer buffer, RefineryRecipe recipe)
 	{
 		buffer.writeFluidStack(recipe.output);
-		buffer.writeFluidStack(recipe.input0);
-		buffer.writeFluidStack(recipe.input1);
+		recipe.input0.write(buffer);
+		recipe.input1.write(buffer);
 		buffer.writeInt(recipe.getTotalProcessEnergy());
 	}
 }

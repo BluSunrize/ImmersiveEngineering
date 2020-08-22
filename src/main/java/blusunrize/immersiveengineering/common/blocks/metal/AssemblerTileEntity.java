@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
+import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.tool.AssemblerHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttachable;
@@ -290,10 +291,10 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 			AssemblerHandler.RecipeQuery recipeQuery = queries[i];
 			if(recipeQuery!=null&&recipeQuery.query!=null)
 			{
-				FluidStack fs = recipeQuery.query instanceof FluidStack?(FluidStack)recipeQuery.query: null;
 				int querySize = recipeQuery.querySize;
-				if(fs!=null)
+				if(recipeQuery.query instanceof FluidStack)
 				{
+					FluidStack fs = (FluidStack)recipeQuery.query;
 					boolean hasFluid = false;
 					for(FluidTank tank : tanks)
 						if(tank.getFluid().containsFluid(fs))
@@ -301,6 +302,23 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 							hasFluid = true;
 							if(doConsume)
 								tank.drain(fs.getAmount(), FluidAction.EXECUTE);
+							break;
+						}
+					if(hasFluid)
+						continue;
+					else
+						querySize = 1;
+				}
+				if(recipeQuery.query instanceof FluidTagInput)
+				{
+					FluidTagInput fti = (FluidTagInput)recipeQuery.query;
+					boolean hasFluid = false;
+					for(FluidTank tank : tanks)
+						if(fti.test(tank.getFluid()))
+						{
+							hasFluid = true;
+							if(doConsume)
+								tank.drain(fti.getAmount(), FluidAction.EXECUTE);
 							break;
 						}
 					if(hasFluid)

@@ -140,7 +140,7 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 			{
 				Vec3d v = player.getLookVec();
 				int split = 8;
-				boolean isGas = fs.getFluid().getAttributes().isGaseous()||ChemthrowerHandler.isGas(fs.getFluid());
+				boolean isGas = fs.getFluid().getAttributes().isGaseous();
 
 				float scatter = isGas?.15f: .05f;
 				float range = isGas?.5f: 1f;

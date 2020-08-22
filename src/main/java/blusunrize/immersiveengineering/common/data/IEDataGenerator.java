@@ -30,6 +30,7 @@ public class IEDataGenerator
 			gen.addProvider(new Recipes(gen));
 			gen.addProvider(new IEBlockTags(gen));
 			gen.addProvider(new ItemTags(gen));
+			gen.addProvider(new FluidTags(gen));
 			gen.addProvider(new BlockLoot(gen));
 			gen.addProvider(new GeneralLoot(gen));
 			LoadedModels loadedModels = new LoadedModels(gen, event.getExistingFileHelper());
