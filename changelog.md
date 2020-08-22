@@ -1,3 +1,6 @@
+##### Version 1.16.1-4.0.0-pre
+- Fixed log spam caused by wire sync issues (Malte)
+
 ##### Version 1.15.2-4.0.0-pre
 - Fixed broken rendering of components on the Automated Workbench (BluSunrize)
 
