@@ -3,7 +3,8 @@
   "textures": {
     "particle": "immersiveengineering:block/multiblocks/crusher"
   },
-  "loader": "forge:obj",
+  "loader": "immersiveengineering:basic_split",
+  "base_loader": "forge:obj",
   "detectCullableFaces": false,
   "model": "immersiveengineering:models/block/metal_multiblock/crusher_mirrored.obj",
   "flip-v": true

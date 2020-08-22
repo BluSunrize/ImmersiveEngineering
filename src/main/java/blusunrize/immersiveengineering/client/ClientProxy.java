@@ -30,6 +30,7 @@ import blusunrize.immersiveengineering.client.models.connection.*;
 import blusunrize.immersiveengineering.client.models.multilayer.MultiLayerLoader;
 import blusunrize.immersiveengineering.client.models.obj.IEOBJLoader;
 import blusunrize.immersiveengineering.client.models.obj.IESmartObjModel;
+import blusunrize.immersiveengineering.client.models.split.BasicSplitLoader;
 import blusunrize.immersiveengineering.client.render.IEBipedLayerRenderer;
 import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.client.render.entity.*;
@@ -152,6 +153,7 @@ public class ClientProxy extends CommonProxy
 			ModelLoaderRegistry.registerLoader(CoresampleLoader.LOCATION, new CoresampleLoader());
 			ModelLoaderRegistry.registerLoader(MultiLayerLoader.LOCATION, new MultiLayerLoader());
 			ModelLoaderRegistry.registerLoader(FeedthroughLoader.LOCATION, new FeedthroughLoader());
+			ModelLoaderRegistry.registerLoader(BasicSplitLoader.LOCATION, new BasicSplitLoader());
 
 			((IReloadableResourceManager)mc().getResourceManager()).addReloadListener(new IEFontReloadListener());
 			requestModelsAndTextures();
