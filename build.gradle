@@ -168,11 +168,19 @@ String buildVersionString() {
     String ie_output_version = "${version_ie}-${version_buildnumber}"
     boolean jenkins_build = System.getenv("ie_add_git_rev") != null
     if (jenkins_build) {
-        // Get the current minor/patch number and bump it
-        int idx = version_ie.lastIndexOf(".")
-        String major = version_ie.substring(0, idx)
-        String minor = version_ie.substring(idx + 1)
-        int bumped = minor.toInteger() + 1
+        File changelog = new File("changelog.md")
+        if (!changelog.exists()) {
+            // Get the current minor/patch number and bump it
+            int idx = version_ie.lastIndexOf(".")
+            String major = version_ie.substring(0, idx)
+            String minor = version_ie.substring(idx + 1)
+            int bumped = minor.toInteger() + 1
+            ie_output_version = "${major}.${bumped}-pre"
+        } else {
+            // If the changelog file is present, we use the first line from that
+            String first_line = changelog.readLines().get(0)
+            ie_output_version = first_line.substring(first_line.indexOf("-") + 1)
+        }
         // Now use describe to get the number of commits since the last tag
         exec {
             commandLine 'git', 'fetch', '-t'
@@ -184,12 +192,12 @@ String buildVersionString() {
         }
         String descr = stdout.toString().trim()
         descr = descr.substring(0, descr.length() - 10)
-        idx = descr.lastIndexOf("-")
+        int idx = descr.lastIndexOf("-")
         int pre_version = descr.substring(idx + 1).toInteger()
         // If there have been more than 0 commits, consider this a pre-build
         // otherwise use normal versioning (so a Jenkins build on the tag is equal to a release)
         if (pre_version > 0)
-            ie_output_version = "${major}.${bumped}-pre.${pre_version}"
+            ie_output_version = "${ie_output_version}.${pre_version}"
     }
     return "${version_minecraft}-${ie_output_version}"
 }
