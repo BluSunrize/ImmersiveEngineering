@@ -124,9 +124,11 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBloc
 		BlockPos pos = context.getPos();
 		for(int i = 1; i <= 3; i++)
 		{
-			world.setBlockState(pos.add(0, i, 0), state.with(POST_SLAVE, i));
-			world.addBlockEvent(pos.add(0, i, 0), this,
-					255, 0);
+			BlockPos dummyPos = pos.up(i);
+			world.setBlockState(dummyPos, IEBaseBlock.applyLocationalWaterlogging(
+					state.with(POST_SLAVE, i), world, dummyPos
+			));
+			world.addBlockEvent(pos.add(0, i, 0), this, 255, 0);
 		}
 	}
 
