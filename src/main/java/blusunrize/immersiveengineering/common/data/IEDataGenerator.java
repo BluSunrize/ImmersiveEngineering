@@ -31,6 +31,7 @@ public class IEDataGenerator
 			BlockTagsProvider blockTags = new IEBlockTags(gen);
 			gen.addProvider(blockTags);
 			gen.addProvider(new ItemTags(gen, blockTags));
+			gen.addProvider(new FluidTags(gen));
 			gen.addProvider(new BlockLoot(gen));
 			gen.addProvider(new GeneralLoot(gen));
 			LoadedModels loadedModels = new LoadedModels(gen, event.getExistingFileHelper());

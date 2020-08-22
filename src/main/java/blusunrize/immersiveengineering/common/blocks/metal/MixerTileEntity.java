@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
+import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
@@ -56,7 +57,7 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 		IInteractionObjectIE, IBlockBounds
 {
 	public static TileEntityType<MixerTileEntity> TYPE;
-	
+
 	public MultiFluidTank tank = new MultiFluidTank(8000);
 	public NonNullList<ItemStack> inventory = NonNullList.withSize(8, ItemStack.EMPTY);
 	public float animation_agitator = 0;
@@ -309,7 +310,7 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 	private CapabilityReference<IItemHandler> outputCap = CapabilityReference.forTileEntity(
 			this, this::getOutputPos, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
 	);
-	
+
 	@Override
 	public void doProcessOutput(ItemStack output)
 	{
@@ -465,7 +466,7 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 		}
 
 		@Override
-		protected List<FluidStack> getRecipeFluidInputs(PoweredMultiblockTileEntity<?, MixerRecipe> multiblock)
+		protected List<FluidTagInput> getRecipeFluidInputs(PoweredMultiblockTileEntity<?, MixerRecipe> multiblock)
 		{
 			return Collections.emptyList();
 		}
@@ -478,7 +479,7 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 			MixerTileEntity mixer = (MixerTileEntity)multiblock;
 			// we don't need to check filling since after draining 1 mB of input fluid there will be space for 1 mB of output fluid
 			return mixer.energyStorage.extractEnergy(energyPerTick, true)==energyPerTick&&
-					!mixer.tank.drain(Utils.copyFluidStackWithAmount(recipe.fluidInput, 1, false), FluidAction.SIMULATE).isEmpty();
+					!mixer.tank.drain(recipe.fluidInput.withAmount(1), FluidAction.SIMULATE).isEmpty();
 		}
 
 		@Override
@@ -497,7 +498,8 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 						amount++;
 					}
 				}
-				FluidStack drained = ((MixerTileEntity)multiblock).tank.drain(Utils.copyFluidStackWithAmount(recipe.fluidInput, amount, false), FluidAction.EXECUTE);
+				MixerTileEntity mixer = (MixerTileEntity)multiblock;
+				FluidStack drained = mixer.tank.drain(recipe.fluidInput.withAmount(amount), FluidAction.EXECUTE);
 				if(!drained.isEmpty())
 				{
 					NonNullList<ItemStack> components = NonNullList.withSize(this.inputSlots.length, ItemStack.EMPTY);

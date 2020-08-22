@@ -10,6 +10,7 @@
 package blusunrize.immersiveengineering.api.crafting.builders;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import com.google.common.base.Preconditions;
@@ -23,6 +24,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.tags.ITag;
+import net.minecraft.tags.ITag.INamedTag;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.crafting.CraftingHelper;
@@ -296,6 +298,21 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<R>> implements IFinishe
 	public R addFluid(Fluid fluid, int amount)
 	{
 		return addFluid("fluid", new FluidStack(fluid, amount));
+	}
+
+	public R addFluidTag(String key, FluidTagInput fluidTag)
+	{
+		return addWriter(jsonObject -> jsonObject.add(key, fluidTag.serialize()));
+	}
+
+	public R addFluidTag(String key, INamedTag<Fluid> fluidTag, int amount)
+	{
+		return addFluidTag(key, new FluidTagInput(fluidTag.getName(), amount));
+	}
+
+	public R addFluidTag(INamedTag<Fluid> fluidTag, int amount)
+	{
+		return addFluidTag("fluid", new FluidTagInput(fluidTag.getName(), amount));
 	}
 
 	/* =============== IFinishedRecipe =============== */

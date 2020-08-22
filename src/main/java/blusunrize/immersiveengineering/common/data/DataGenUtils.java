@@ -2,10 +2,12 @@ package blusunrize.immersiveengineering.common.data;
 
 import com.google.common.base.Preconditions;
 import net.minecraft.block.Block;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.resources.IResource;
 import net.minecraft.resources.ResourcePackType;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ITag.INamedTag;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
@@ -78,11 +80,18 @@ public class DataGenUtils
 		return new ResourceLocation(base.getNamespace(), lastDir+relativePath);
 	}
 
-	public static INamedTag<Item> createItemWrapper(ResourceLocation name) {
+	public static INamedTag<Item> createItemWrapper(ResourceLocation name)
+	{
 		return ItemTags.makeWrapperTag(name.toString());
 	}
 
-	public static INamedTag<Block> createBlockWrapper(ResourceLocation name) {
+	public static INamedTag<Block> createBlockWrapper(ResourceLocation name)
+	{
 		return BlockTags.makeWrapperTag(name.toString());
+	}
+
+	public static INamedTag<Fluid> createFluidWrapper(ResourceLocation name)
+	{
+		return FluidTags.makeWrapperTag(name.toString());
 	}
 }

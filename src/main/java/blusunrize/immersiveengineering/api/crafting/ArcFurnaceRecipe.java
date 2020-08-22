@@ -70,17 +70,6 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 	}
 
 	@Override
-	public void setupJEI()
-	{
-		super.setupJEI();
-//		List<ItemStack>[] newJeiItemOutputList = new ArrayList[jeiItemOutputList.length+1];
-//		System.arraycopy(jeiItemOutputList,0, newJeiItemOutputList,0, jeiItemOutputList.length);
-//		newJeiItemOutputList[jeiItemOutputList.length] = Lists.newArrayList(slag);
-//		jeiItemOutputList = newJeiItemOutputList;
-		this.jeiTotalItemOutputList.add(slag);
-	}
-
-	@Override
 	public int getMultipleProcessTicks()
 	{
 		return 0;

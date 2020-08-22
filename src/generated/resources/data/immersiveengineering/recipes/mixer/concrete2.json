@@ -19,7 +19,7 @@
     "amount": 500
   },
   "fluid": {
-    "fluid": "minecraft:water",
+    "tag": "minecraft:water",
     "amount": 500
   },
   "energy": 3200

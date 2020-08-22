@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler;
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler.EnergyConnector;
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler.IEnergyWire;
+import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -210,8 +211,11 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 	@Override
 	public void placeDummies(BlockItemUseContext ctx, BlockState state)
 	{
-		world.setBlockState(pos.add(0, 1, 0), state.with(IEProperties.MULTIBLOCKSLAVE, true));
-		((EnergyMeterTileEntity)world.getTileEntity(pos.add(0, 1, 0))).setFacing(this.getFacing());
+		BlockPos dummyPos = pos.up();
+		world.setBlockState(dummyPos, IEBaseBlock.applyLocationalWaterlogging(
+				state.with(IEProperties.MULTIBLOCKSLAVE, true), world, dummyPos
+		));
+		((EnergyMeterTileEntity)world.getTileEntity(dummyPos)).setFacing(this.getFacing());
 	}
 
 	@Override

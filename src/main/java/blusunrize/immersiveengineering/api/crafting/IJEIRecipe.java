@@ -19,12 +19,4 @@ public interface IJEIRecipe
 	{
 		return true;
 	}
-
-	List<ItemStack> getJEITotalItemInputs();
-
-	List<ItemStack> getJEITotalItemOutputs();
-
-	List<FluidStack> getJEITotalFluidInputs();
-
-	List<FluidStack> getJEITotalFluidOutputs();
 }

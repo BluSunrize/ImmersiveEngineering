@@ -8,14 +8,12 @@
 
 package blusunrize.immersiveengineering.api.energy;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.ResourceLocation;
+import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author BluSunrize - 23.04.2015
@@ -24,17 +22,17 @@ import java.util.Set;
  */
 public class DieselHandler
 {
-	static final HashMap<ResourceLocation, Integer> dieselGenBurnTime = new HashMap<>();
-	static final Set<Fluid> drillFuel = new HashSet<>();
+	static final List<Pair<ITag<Fluid>, Integer>> dieselGenBurnTime = new ArrayList<>();
+	static final Set<ITag<Fluid>> drillFuel = new HashSet<>();
 
 	/**
-	 * @param fuel the fluid to be used as fuel
+	 * @param fuel the fluidtag to be used as fuel
 	 * @param time the total burn time gained from 1000 mB
 	 */
-	public static void registerFuel(Fluid fuel, int time)
+	public static void registerFuel(ITag<Fluid> fuel, int time)
 	{
 		if(fuel!=null)
-			dieselGenBurnTime.put(fuel.getRegistryName(), time);
+			dieselGenBurnTime.add(Pair.of(fuel, time));
 	}
 
 	public static int getBurnTime(Fluid fuel)
@@ -42,8 +40,9 @@ public class DieselHandler
 		if(fuel!=null)
 		{
 			ResourceLocation s = fuel.getRegistryName();
-			if(dieselGenBurnTime.containsKey(s))
-				return dieselGenBurnTime.get(s);
+			for(Map.Entry<ITag<Fluid>, Integer> entry : dieselGenBurnTime)
+				if(entry.getKey().contains(fuel))
+					return entry.getValue();
 		}
 		return 0;
 	}
@@ -51,21 +50,16 @@ public class DieselHandler
 	public static boolean isValidFuel(Fluid fuel)
 	{
 		if(fuel!=null)
-			return dieselGenBurnTime.containsKey(fuel.getRegistryName());
+			return dieselGenBurnTime.stream().anyMatch(pair -> pair.getLeft().contains(fuel));
 		return false;
 	}
 
-	public static HashMap<ResourceLocation, Integer> getFuelValues()
+	public static List<Pair<ITag<Fluid>, Integer>> getFuelValues()
 	{
 		return dieselGenBurnTime;
 	}
 
-	public static Map<ResourceLocation, Integer> getFuelValuesSorted(boolean inverse)
-	{
-		return ApiUtils.sortMap(dieselGenBurnTime, inverse);
-	}
-
-	public static void registerDrillFuel(Fluid fuel)
+	public static void registerDrillFuel(ITag<Fluid> fuel)
 	{
 		if(fuel!=null)
 			drillFuel.add(fuel);
@@ -73,17 +67,7 @@ public class DieselHandler
 
 	public static boolean isValidDrillFuel(Fluid fuel)
 	{
-		return fuel!=null&&drillFuel.contains(fuel);
+		return fuel!=null&&drillFuel.stream().anyMatch(fluidTag -> fluidTag.contains(fuel));
 	}
 
-	public static void removeFuel(Fluid fuel)
-	{
-		if(fuel!=null)
-			dieselGenBurnTime.remove(fuel.getRegistryName());
-	}
-
-	public static void removeDrillFuel(Fluid fuel)
-	{
-		drillFuel.remove(fuel);
-	}
 }

@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
+import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
@@ -310,9 +311,10 @@ public class TransformerTileEntity extends ImmersiveConnectableTileEntity implem
 		state = state.with(IEProperties.MULTIBLOCKSLAVE, true);
 		for(int i = 1; i <= 2; i++)
 		{
-			world.setBlockState(pos.add(0, i, 0), state);
-			((TransformerTileEntity)world.getTileEntity(pos.add(0, i, 0))).dummy = i;
-			((TransformerTileEntity)world.getTileEntity(pos.add(0, i, 0))).setFacing(this.getFacing());
+			BlockPos dummyPos = pos.up(i);
+			world.setBlockState(dummyPos, IEBaseBlock.applyLocationalWaterlogging(state, world, dummyPos));
+			((TransformerTileEntity)world.getTileEntity(dummyPos)).dummy = i;
+			((TransformerTileEntity)world.getTileEntity(dummyPos)).setFacing(this.getFacing());
 		}
 	}
 

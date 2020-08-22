@@ -8,17 +8,20 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
+import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.tags.ITag.INamedTag;
 import net.minecraftforge.common.crafting.IIngredientSerializer;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 /**
@@ -26,22 +29,22 @@ import java.util.stream.Stream;
  */
 public class IngredientFluidStack extends Ingredient
 {
-	private final FluidStack fluid;
+	private final FluidTagInput fluidTagInput;
 
-	public IngredientFluidStack(FluidStack fluid)
+	public IngredientFluidStack(FluidTagInput fluidTagInput)
 	{
 		super(Stream.empty());
-		this.fluid = fluid;
+		this.fluidTagInput = fluidTagInput;
 	}
 
-	public IngredientFluidStack(Fluid fluid, int amount)
+	public IngredientFluidStack(INamedTag<Fluid> tag, int amount)
 	{
-		this(new FluidStack(fluid, amount));
+		this(new FluidTagInput(tag.getName(), amount));
 	}
 
-	public FluidStack getFluid()
+	public FluidTagInput getFluidTagInput()
 	{
-		return fluid;
+		return fluidTagInput;
 	}
 
 	ItemStack[] cachedStacks;
@@ -52,7 +55,10 @@ public class IngredientFluidStack extends Ingredient
 	{
 		if(cachedStacks==null)
 		{
-			cachedStacks = new ItemStack[]{FluidUtil.getFilledBucket(fluid)};
+			cachedStacks = this.fluidTagInput.getMatchingFluidStacks()
+					.stream()
+					.map((Function<FluidStack, Object>)FluidUtil::getFilledBucket)
+					.toArray(ItemStack[]::new);
 		}
 		return this.cachedStacks;
 	}
@@ -61,15 +67,9 @@ public class IngredientFluidStack extends Ingredient
 	public boolean test(@Nullable ItemStack stack)
 	{
 		if(stack==null)
-		{
 			return false;
-		}
 		else
-		{
-			return FluidUtil.getFluidContained(stack)
-					.map(fs -> fs.containsFluid(fluid))
-					.orElse(false);
-		}
+			return this.fluidTagInput.test(FluidUtil.getFluidContained(stack).orElse(FluidStack.EMPTY));
 	}
 
 	@Nonnull
@@ -83,9 +83,7 @@ public class IngredientFluidStack extends Ingredient
 	@Override
 	public JsonElement serialize()
 	{
-		JsonObject ret = new JsonObject();
-		ret.addProperty("amount", fluid.getAmount());
-		ret.addProperty("fluid", fluid.getFluid().getRegistryName().toString());
+		JsonObject ret = (JsonObject)this.fluidTagInput.serialize();
 		ret.addProperty("type", IngredientSerializerFluidStack.NAME.toString());
 		return ret;
 	}

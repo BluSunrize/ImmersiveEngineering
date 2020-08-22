@@ -1,11 +1,18 @@
-##### Version 1.15.2-3.2.1-pre
+##### Version 1.15.2-4.0.0-pre
 - Fixed broken rendering of components on the Automated Workbench (BluSunrize)
 
-##### Version 1.14.4-3.2.1-pre
+##### Version 1.14.4-4.0.0-pre
+- Added dyed sheetmetal, textured by Rorax! (BluSunrize)
 - Changed the pump to be configured for input on the bottom by default (Malte)
 - Changed nugget to ingot/ingot to block recipes to only trigger when an IE ingot is used in the middle slot (Malte)
   - If more mods adopt this convention it will mean that crafting a storage block from a specific mod will be possible
+- Changed ItemHandler for the Silo to hopefully cooperate better with Refined Storage (BluSunrize)
 - Fixed continued depletion of already depleted mineral veins (BluSunrize)
+- Fixed RTFM advancement not being announced (BluSunrize)
+- Fixed crashes with Building Gadgets & JEI (BluSunrize)
+- Fixed incorrect waterlogging of dummy blocks for pump, posts and others (BluSunrize)
+- Fixed mineral survey tools not breaking when exceeding their damage (BluSunrize)
+- Fixed recipe list positions in squeezer & fermenter GUI (BluSunrize)
 
 ##### Version 1.16.1-3.2.0-115
 - Fixed some derpy rendering in the manual (BluSunrize)

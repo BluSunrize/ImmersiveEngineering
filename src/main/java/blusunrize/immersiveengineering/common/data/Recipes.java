@@ -49,14 +49,15 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.data.*;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.EquipmentSlotType.Group;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ITag;
 import net.minecraft.tags.ITag.INamedTag;
 import net.minecraft.tags.ItemTags;
@@ -646,7 +647,7 @@ public class Recipes extends RecipeProvider
 		/* BOTTLING */
 		BottlingMachineRecipeBuilder.builder(Items.WET_SPONGE)
 				.addInput(Items.SPONGE)
-				.addFluid(Fluids.WATER, 1000)
+				.addFluidTag(FluidTags.WATER, 1000)
 				.build(out, toRL("bottling/sponge"));
 
 		/* CRUSHER */
@@ -769,20 +770,20 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL("fermenter/potato"));
 		/* REFINERY */
 		RefineryRecipeBuilder.builder(IEContent.fluidBiodiesel, 16)
-				.addInput(IEContent.fluidPlantoil, 8)
-				.addInput(IEContent.fluidEthanol, 8)
+				.addInput(IETags.fluidPlantoil, 8)
+				.addInput(IETags.fluidEthanol, 8)
 				.setEnergy(80)
 				.build(out, toRL("refinery/biodiesel"));
 		/* MIXER */
 		MixerRecipeBuilder.builder(IEContent.fluidConcrete, 500)
-				.addFluid(Fluids.WATER, 500)
+				.addFluidTag(FluidTags.WATER, 500)
 				.addInput(new IngredientWithSize(Tags.Items.SAND, 2))
 				.addInput(Tags.Items.GRAVEL)
 				.addInput(IETags.clay)
 				.setEnergy(3200)
 				.build(out, toRL("mixer/concrete"));
 		MixerRecipeBuilder.builder(IEContent.fluidConcrete, 500)
-				.addFluid(Fluids.WATER, 500)
+				.addFluidTag(FluidTags.WATER, 500)
 				.addInput(new IngredientWithSize(IETags.slag, 2))
 				.addInput(Tags.Items.GRAVEL)
 				.addInput(IETags.clay)
@@ -1105,7 +1106,7 @@ public class Recipes extends RecipeProvider
 				.patternLine("wbw")
 				.patternLine("www")
 				.key('w', ItemTags.PLANKS)
-				.key('b', new IngredientFluidStack(IEContent.fluidCreosote, 1000))
+				.key('b', new IngredientFluidStack(IETags.fluidCreosote, 1000))
 				.addCriterion("has_creosote", hasItem(IEContent.fluidCreosote.getFilledBucket()))
 				.build(out, toRL(toPath(WoodenDecoration.treatedWood.get(TreatedWoodStyles.HORIZONTAL))));
 	}
@@ -1242,6 +1243,20 @@ public class Recipes extends RecipeProvider
 
 	private void recipesMetalDecorations(@Nonnull Consumer<IFinishedRecipe> out)
 	{
+		for(DyeColor dye : DyeColor.values())
+		{
+			ITag<Item> dyeTag = DataGenUtils.createItemWrapper(new ResourceLocation("forge", "dyes/"+dye.getTranslationKey()));
+			Block coloredSheetmetal = MetalDecoration.coloredSheetmetal.get(dye);
+			ShapedRecipeBuilder.shapedRecipe(coloredSheetmetal)
+					.patternLine("sss")
+					.patternLine("sds")
+					.patternLine("sss")
+					.key('s', IETags.getItemTag(IETags.sheetmetals))
+					.key('d', dyeTag)
+					.addCriterion("has_sheetmetal", hasItem(IETags.getItemTag(IETags.sheetmetals)))
+					.build(out, toRL(toPath(coloredSheetmetal)));
+		}
+
 		for(MetalScaffoldingType type : MetalScaffoldingType.values())
 		{
 			addStairs(MetalDecoration.steelScaffolding.get(type), MetalDecoration.steelScaffoldingStair.get(type), out);
@@ -2401,7 +2416,7 @@ public class Recipes extends RecipeProvider
 				.patternLine("wc ")
 				.patternLine("sss")
 				.key('w', ItemTags.WOOL)
-				.key('c', new IngredientFluidStack(IEContent.fluidCreosote, 1000))
+				.key('c', new IngredientFluidStack(IETags.fluidCreosote, 1000))
 				.key('s', Tags.Items.RODS_WOODEN)
 				.addCriterion("has_wool", hasItem(ItemTags.WOOL))
 				.addCriterion("has_stick", hasItem(Tags.Items.RODS_WOODEN))
