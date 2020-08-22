@@ -15,8 +15,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.ChunkStatus;
-import net.minecraft.world.chunk.IChunk;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 import java.util.function.Supplier;
@@ -73,10 +71,6 @@ public class MessageWireSync implements IMessage
 					start, end, type, added);
 			PlayerEntity player = ImmersiveEngineering.proxy.getClientPlayer();
 			World w = player.world;
-			IChunk startChunk = w.getChunk(start.getPosition().getX() >> 4, start.getPosition().getZ() >> 4, ChunkStatus.FULL, false);
-			if(startChunk==null&&added)
-				WireLogger.logger.warn("Start chunk is null");
-
 			GlobalWireNetwork globalNet = GlobalWireNetwork.getNetwork(w);
 			if(added)
 				globalNet.addConnection(new Connection(type, start, end));
