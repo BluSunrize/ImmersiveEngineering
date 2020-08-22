@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "sss",
+    "sds",
+    "sss"
+  ],
+  "key": {
+    "s": {
+      "tag": "forge:sheetmetals"
+    },
+    "d": {
+      "tag": "forge:dyes/gray"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:sheetmetal_colored_gray"
+  }
+}

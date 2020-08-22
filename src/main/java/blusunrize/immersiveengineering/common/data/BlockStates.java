@@ -40,6 +40,7 @@ import net.minecraft.block.SlabBlock;
 import net.minecraft.block.StairsBlock;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.item.DyeColor;
 import net.minecraft.resources.ResourcePackType;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.IProperty;
@@ -292,6 +293,11 @@ public class BlockStates extends BlockStateProvider
 			ResourceLocation sheetmetalName = modLoc("block/metal/sheetmetal_"+name);
 			cubeAll(Metals.sheetmetal.get(m), sheetmetalName);
 			slabFor(Metals.sheetmetal.get(m), sheetmetalName);
+		}
+		for(DyeColor dye : DyeColor.values())
+		{
+			ResourceLocation sheetmetalName = modLoc("block/metal/sheetmetal_"+dye.getTranslationKey());
+			cubeAll(MetalDecoration.coloredSheetmetal.get(dye), sheetmetalName);
 		}
 		fenceBlock(WoodenDecoration.treatedFence, TREATED_FENCE_TEXTURE);
 		fenceBlock(MetalDecoration.steelFence, STEEL_FENCE_TEXTURE);

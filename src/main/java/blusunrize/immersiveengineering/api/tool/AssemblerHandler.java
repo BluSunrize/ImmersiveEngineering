@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.api.tool;
 
+import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.common.util.FakePlayerUtil;
 import blusunrize.immersiveengineering.common.util.Utils.InventoryCraftingFalse;
@@ -147,7 +148,8 @@ public class AssemblerHandler
 		public int querySize;
 
 		/**
-		 * Valid types of Query are ItemStack, ItemStack[], ArrayList<ItemStack>, IngredientWithSize, String (OreDict Name) and FluidStack
+		 * Valid types of Query are ItemStack, ItemStack[], ArrayList<ItemStack>, IngredientWithSize,
+		 * ResourceLocation (Tag Name), FluidStack or FluidTagInput
 		 */
 		public RecipeQuery(Object query, int querySize)
 		{
@@ -157,7 +159,8 @@ public class AssemblerHandler
 							query instanceof List||
 							query instanceof IngredientWithSize||
 							query instanceof ResourceLocation||
-							query instanceof FluidStack,
+							query instanceof FluidStack||
+							query instanceof FluidTagInput,
 					query+" is not a valid ingredient!"
 			);
 			this.query = query;

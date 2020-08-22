@@ -17,6 +17,7 @@ import com.google.common.collect.HashBiMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.block.StairsBlock;
+import net.minecraft.item.DyeColor;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -142,6 +143,7 @@ public final class IEBlocks
 		public static Map<MetalScaffoldingType, Block> aluScaffolding = new EnumMap<>(MetalScaffoldingType.class);
 		public static Map<MetalScaffoldingType, StairsBlock> steelScaffoldingStair = new EnumMap<>(MetalScaffoldingType.class);
 		public static Map<MetalScaffoldingType, StairsBlock> aluScaffoldingStair = new EnumMap<>(MetalScaffoldingType.class);
+		public static Map<DyeColor, Block> coloredSheetmetal = new EnumMap<>(DyeColor.class);
 	}
 
 	public static final class MetalDevices

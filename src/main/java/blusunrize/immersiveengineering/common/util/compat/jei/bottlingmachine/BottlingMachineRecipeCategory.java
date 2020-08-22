@@ -45,7 +45,7 @@ public class BottlingMachineRecipeCategory extends IERecipeCategory<BottlingMach
 	public void setIngredients(BottlingMachineRecipe recipe, IIngredients ingredients)
 	{
 		ingredients.setInputLists(VanillaTypes.ITEM, JEIIngredientStackListBuilder.make(recipe.input).build());
-		ingredients.setInput(VanillaTypes.FLUID, recipe.fluidInput);
+		ingredients.setInputs(VanillaTypes.FLUID, recipe.fluidInput.getMatchingFluidStacks());
 		ingredients.setOutput(VanillaTypes.ITEM, recipe.output);
 	}
 
@@ -62,7 +62,7 @@ public class BottlingMachineRecipeCategory extends IERecipeCategory<BottlingMach
 
 		IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
 		guiFluidStacks.init(0, true, 75, 0, 16, 47, 4000, false, tankOverlay);
-		guiFluidStacks.set(0, recipe.fluidInput);
+		guiFluidStacks.set(0, recipe.fluidInput.getMatchingFluidStacks());
 		guiFluidStacks.addTooltipCallback(JEIHelper.fluidTooltipCallback);
 	}
 

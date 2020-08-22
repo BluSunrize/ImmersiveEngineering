@@ -308,13 +308,18 @@ public class IEBaseBlock extends Block implements IIEBlock, IWaterLoggable
 
 	/* WATER LOGGING */
 
+	public static BlockState applyLocationalWaterlogging(BlockState state, World world, BlockPos pos)
+	{
+		if(state.has(BlockStateProperties.WATERLOGGED))
+			return state.with(BlockStateProperties.WATERLOGGED, world.getFluidState(pos).getFluid()==Fluids.WATER);
+		return state;
+	}
+
 	@Override
 	public BlockState getStateForPlacement(BlockItemUseContext context)
 	{
 		BlockState state = this.getDefaultState();
-		if(state.has(BlockStateProperties.WATERLOGGED)
-				&&context.getWorld().getFluidState(context.getPos()).getFluid()==Fluids.WATER)
-			state = state.with(BlockStateProperties.WATERLOGGED, true);
+		state = applyLocationalWaterlogging(state, context.getWorld(), context.getPos());
 		return state;
 	}
 

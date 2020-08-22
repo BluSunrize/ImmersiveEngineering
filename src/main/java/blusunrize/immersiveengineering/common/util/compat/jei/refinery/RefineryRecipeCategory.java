@@ -43,12 +43,12 @@ public class RefineryRecipeCategory extends IERecipeCategory<RefineryRecipe>
 	@Override
 	public void setIngredients(RefineryRecipe recipe, IIngredients ingredients)
 	{
-		List<FluidStack> l = new ArrayList<>();
+		List<List<FluidStack>> l = new ArrayList<>();
 		if(recipe.input0!=null)
-			l.add(recipe.input0);
+			l.add(recipe.input0.getMatchingFluidStacks());
 		if(recipe.input1!=null)
-			l.add(recipe.input1);
-		ingredients.setInputs(VanillaTypes.FLUID, l);
+			l.add(recipe.input1.getMatchingFluidStacks());
+		ingredients.setInputLists(VanillaTypes.FLUID, l);
 		ingredients.setOutput(VanillaTypes.FLUID, recipe.output);
 	}
 
@@ -59,12 +59,12 @@ public class RefineryRecipeCategory extends IERecipeCategory<RefineryRecipe>
 		if(recipe.input0!=null)
 		{
 			guiFluidStacks.init(0, true, 7, 10, 16, 47, 50, false, tankOverlay);
-			guiFluidStacks.set(0, recipe.input0);
+			guiFluidStacks.set(0, recipe.input0.getMatchingFluidStacks());
 		}
 		if(recipe.input1!=null)
 		{
 			guiFluidStacks.init(1, true, 55, 10, 16, 47, 50, false, tankOverlay);
-			guiFluidStacks.set(1, recipe.input1);
+			guiFluidStacks.set(1, recipe.input1.getMatchingFluidStacks());
 		}
 		guiFluidStacks.init(2, false, 103, 10, 16, 47, 50, false, tankOverlay);
 		guiFluidStacks.set(2, recipe.output);

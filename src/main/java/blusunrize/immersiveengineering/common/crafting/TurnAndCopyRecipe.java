@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
+import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -118,7 +119,7 @@ public class TurnAndCopyRecipe extends ShapedRecipe
 					LazyOptional<IFluidHandlerItem> handlerLazy = FluidUtil.getFluidHandler(s.getCount() > 1?Utils.copyStackWithAmount(s, 1): s);
 					handlerLazy.ifPresent(handler ->
 					{
-						FluidStack fluid = ((IngredientFluidStack)matchedIngr.get(i)).getFluid();
+						FluidTagInput fluid = ((IngredientFluidStack)matchedIngr.get(i)).getFluidTagInput();
 						handler.drain(fluid.getAmount(), FluidAction.EXECUTE);
 						remains.set(transposedI, handler.getContainer().copy());
 					});

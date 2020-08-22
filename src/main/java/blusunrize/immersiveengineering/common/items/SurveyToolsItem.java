@@ -32,6 +32,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nonnull;
@@ -53,6 +54,8 @@ public class SurveyToolsItem extends IEBaseItem
 			return state.getMaterial()==Material.CLAY||state.getMaterial()==Material.EARTH
 					||state.getMaterial()==Material.ORGANIC||state.getMaterial()==Material.SAND;
 		});
+		// Stone, Diorite, Andesite, etc.
+		CAN_USE_ON.add(((world, pos) -> Tags.Blocks.STONE.contains(world.getBlockState(pos).getBlock())));
 		// soft rocks
 		CAN_USE_ON.add((world, pos) -> {
 			BlockState state = world.getBlockState(pos);
@@ -179,7 +182,9 @@ public class SurveyToolsItem extends IEBaseItem
 		data.add(tag);
 
 		world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ITEM_BOOK_PAGE_TURN, SoundCategory.NEUTRAL, 1.0F, 1.0F+(world.rand.nextFloat()-world.rand.nextFloat())*0.4F);
-		stack.attemptDamageItem(1, world.rand, player);
+		stack.damageItem(1, player, (user) -> {
+			user.sendBreakAnimation(user.getActiveHand());
+		});
 
 		return stack;
 	}

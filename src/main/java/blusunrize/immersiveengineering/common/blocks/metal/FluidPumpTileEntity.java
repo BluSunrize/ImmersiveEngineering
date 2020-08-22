@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.fluid.IFluidPipe;
 import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
@@ -511,8 +512,11 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 	@Override
 	public void placeDummies(BlockItemUseContext ctx, BlockState state)
 	{
-		getWorldNonnull().setBlockState(pos.add(0, 1, 0), state);
-		TileEntity tile = getWorldNonnull().getTileEntity(pos.add(0, 1, 0));
+		BlockPos dummyPos = pos.up();
+		getWorldNonnull().setBlockState(dummyPos, IEBaseBlock.applyLocationalWaterlogging(
+				state, getWorldNonnull(), dummyPos
+		));
+		TileEntity tile = getWorldNonnull().getTileEntity(dummyPos);
 		if(tile instanceof FluidPumpTileEntity)
 			((FluidPumpTileEntity)tile).setDummy(true);
 	}

@@ -32,10 +32,10 @@ public class BottlingMachineRecipe extends MultiblockRecipe
 	public static RegistryObject<IERecipeSerializer<BottlingMachineRecipe>> SERIALIZER;
 
 	public final Ingredient input;
-	public final FluidStack fluidInput;
+	public final FluidTagInput fluidInput;
 	public final ItemStack output;
 
-	public BottlingMachineRecipe(ResourceLocation id, ItemStack output, Ingredient input, FluidStack fluidInput)
+	public BottlingMachineRecipe(ResourceLocation id, ItemStack output, Ingredient input, FluidTagInput fluidInput)
 	{
 		super(output, TYPE, id);
 		this.output = output;
@@ -60,7 +60,7 @@ public class BottlingMachineRecipe extends MultiblockRecipe
 	{
 		if(!input.isEmpty()&&fluid!=null)
 			for(BottlingMachineRecipe recipe : recipeList.values())
-				if(ItemUtils.stackMatchesObject(input, recipe.input)&&fluid.containsFluid(recipe.fluidInput))
+				if(ItemUtils.stackMatchesObject(input, recipe.input)&&recipe.fluidInput.test(fluid))
 					return recipe;
 		return null;
 	}

@@ -19,11 +19,11 @@ import net.minecraft.block.*;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -36,14 +36,13 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-import static blusunrize.immersiveengineering.common.IEContent.*;
+import static blusunrize.immersiveengineering.api.IETags.*;
 
 public class ChemthrowerEffects
 {
 	public static void register()
 	{
-
-		ChemthrowerHandler.registerEffect(Fluids.WATER, new ChemthrowerEffect_Extinguish());
+		ChemthrowerHandler.registerEffect(FluidTags.WATER, new ChemthrowerEffect_Extinguish());
 
 		ChemthrowerHandler.registerEffect(fluidPotion, new ChemthrowerEffect()
 		{
@@ -145,7 +144,7 @@ public class ChemthrowerEffects
 				// Kill leaves
 				if(hit.isIn(BlockTags.LEAVES))
 					world.removeBlock(brtr.getPos(), false);
-				// turn grass & farmland to dirt
+					// turn grass & farmland to dirt
 				else if(hit.getBlock() instanceof SnowyDirtBlock||hit.getBlock() instanceof FarmlandBlock)
 				{
 					world.setBlockState(brtr.getPos(), Blocks.DIRT.getDefaultState());
