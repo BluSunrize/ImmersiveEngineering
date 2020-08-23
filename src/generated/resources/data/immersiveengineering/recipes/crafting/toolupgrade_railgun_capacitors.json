@@ -1,15 +1,16 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "www",
-    "ccc"
+    "p  ",
+    "ip ",
+    " ip"
   ],
   "key": {
-    "w": {
-      "item": "immersiveengineering:wirecoil_steel"
+    "p": {
+      "tag": "forge:plates/constantan"
     },
-    "c": {
-      "item": "immersiveengineering:capacitor_hv"
+    "i": {
+      "tag": "forge:ingots/steel"
     }
   },
   "result": {
