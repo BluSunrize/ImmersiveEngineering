@@ -26,6 +26,7 @@ import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.entities.RailgunShotEntity;
 import blusunrize.immersiveengineering.common.gui.IESlot;
+import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IScrollwheel;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEEnergyItem;
 import blusunrize.immersiveengineering.common.util.IESounds;
@@ -65,7 +66,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, IZoomTool, ITool, IOBJModelCallback<ItemStack>
+public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, IZoomTool, IScrollwheel, ITool, IOBJModelCallback<ItemStack>
 {
 	public RailgunItem()
 	{
@@ -303,31 +304,42 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 		return ItemStack.EMPTY;
 	}
 
-	public static void nextAmmo(ItemStack railgun, PlayerEntity player)
-	{
-		if(ItemNBTHelper.hasKey(railgun, "ammo_slot"))
-		{
-			int slot = ItemNBTHelper.getInt(railgun, "ammo_slot");
-			int count = player.inventory.getSizeInventory()+2;
-			for(int i = 1; i < count; i++)
-			{
-				int actualSlot = (slot+i)%count;
-				if(!findAmmoInSlot(player, actualSlot).isEmpty())
-				{
-					ItemNBTHelper.putInt(railgun, "ammo_slot", actualSlot);
-					player.inventory.markDirty();
-					return;
-				}
-			}
-		}
-	}
-
 	public static boolean isAmmo(ItemStack stack)
 	{
 		if(stack.isEmpty())
 			return false;
 		RailgunHandler.IRailgunProjectile prop = RailgunHandler.getProjectile(stack);
 		return prop!=null;
+	}
+
+	private boolean checkAmmoSlot(ItemStack stack, PlayerEntity player, int actualSlot)
+	{
+		if(!findAmmoInSlot(player, actualSlot).isEmpty())
+		{
+			ItemNBTHelper.putInt(stack, "ammo_slot", actualSlot);
+			player.inventory.markDirty();
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public void onScrollwheel(ItemStack stack, PlayerEntity player, boolean forward)
+	{
+		int slot = ItemNBTHelper.getInt(stack, "ammo_slot");
+		int count = player.inventory.getSizeInventory()+2;
+		if(forward)
+		{
+			for(int i = 1; i < count; i++)
+				if(checkAmmoSlot(stack, player, (slot+i)%count))
+					return;
+		}
+		else
+		{
+			for(int i = count-1; i >= 1; i--)
+				if(checkAmmoSlot(stack, player, (slot+i)%count))
+					return;
+		}
 	}
 
 	public int getChargeTime(ItemStack railgun)

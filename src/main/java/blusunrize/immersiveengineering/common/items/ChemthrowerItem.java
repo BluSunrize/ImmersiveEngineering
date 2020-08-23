@@ -204,7 +204,7 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 	}
 
 	@Override
-	public void onScrollwheel(ItemStack stack, boolean forward)
+	public void onScrollwheel(ItemStack stack, PlayerEntity playerEntity, boolean forward)
 	{
 		if(getUpgrades(stack).getBoolean("multitank"))
 		{
