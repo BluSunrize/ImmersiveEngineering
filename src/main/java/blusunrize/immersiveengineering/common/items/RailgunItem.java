@@ -356,9 +356,11 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 	@Override
 	public void removeFromWorkbench(PlayerEntity player, ItemStack stack)
 	{
-//		ToDo: Make an Upgrade Advancement?
-//		if(contents[18]!=null&&contents[19]!=null)
-//			Utils.unlockIEAdvancement(player, "upgrade_railgun");
+		LazyOptional<IItemHandler> invCap = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		invCap.ifPresent(inv -> {
+			if(!inv.getStackInSlot(0).isEmpty()&&!inv.getStackInSlot(1).isEmpty())
+				Utils.unlockIEAdvancement(player, "main/upgrade_railgun");
+		});
 	}
 
 	@Override

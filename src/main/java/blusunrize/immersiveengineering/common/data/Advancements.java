@@ -216,6 +216,16 @@ public class Advancements extends AdvancementProvider
 					.withCriterion("railgun", InventoryChangeTrigger.Instance.forItems(Weapons.railgun))
 					.register(consumer, "immersiveengineering:main/craft_railgun");
 
+			ItemStack upgraded_railgun = new ItemStack(Weapons.railgun);
+			upgrades = new CompoundNBT();
+			upgrades.putBoolean("scope", true);
+			upgrades.putFloat("speed", 1f);
+			ItemNBTHelper.setTagCompound(upgraded_railgun, "upgrades", upgrades);
+			Advancement upgrade_railgun = advancement(railgun, upgraded_railgun, "upgrade_railgun", FrameType.CHALLENGE, true, true, false)
+					.withCriterion("code_trigger", new ImpossibleTrigger.Instance())
+					.withRewards(reward(new ResourceLocation("immersiveengineering", "advancements/shader_rare")))
+					.register(consumer, "immersiveengineering:main/upgrade_railgun");
+
 			Advancement improvedblastfurnace = advancement(steel, Multiblocks.blastFurnaceAdv, "mb_improvedblastfurnace", FrameType.TASK, true, true, false)
 					.withCriterion("improvedblastfurnace",
 							new MultiblockTrigger.Instance(
