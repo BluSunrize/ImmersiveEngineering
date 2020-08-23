@@ -9,9 +9,8 @@
 package blusunrize.immersiveengineering.client.models.split;
 
 import blusunrize.immersiveengineering.api.IEProperties.Model;
-import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
-import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import malte0811.modelsplitter.SplitModel;
@@ -21,6 +20,7 @@ import malte0811.modelsplitter.util.BakedQuadUtil;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.IModelTransform;
 import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -42,11 +42,20 @@ import java.util.stream.Collectors;
 public class BakedSplitModel implements IBakedModel
 {
 	private final IBakedModel base;
-	private final Lazy<Map<Vec3i, List<BakedQuad>>> splitModels;
+	private final List<Vec3i> parts;
+	private final IModelTransform transform;
+	private Lazy<Map<Vec3i, List<BakedQuad>>> splitModels;
 
-	public BakedSplitModel(IBakedModel base, TemplateMultiblock multiblock)
+	public BakedSplitModel(IBakedModel base, List<Vec3i> parts, IModelTransform transform)
 	{
 		this.base = base;
+		this.parts = parts;
+		this.transform = transform;
+		init();
+	}
+
+	private void init()
+	{
 		this.splitModels = Lazy.concurrentOf(() -> {
 			List<BakedQuad> quads = base.getQuads(null, null, Utils.RAND, EmptyModelData.INSTANCE);
 			List<Polygon<TextureAtlasSprite>> polys = quads.stream()
@@ -55,13 +64,11 @@ public class BakedSplitModel implements IBakedModel
 			SplitModel<TextureAtlasSprite> splitData = new SplitModel<>(new OBJModel<>(polys));
 
 			// Clump parts outside the multiblock into the real part
-			Set<Vec3i> multiblockBlocks = multiblock.getStructure().stream()
-					.map(s -> s.pos)
-					.collect(Collectors.toSet());
+			Set<Vec3i> multiblockBlocks = new HashSet<>(parts);
 			Map<Vec3i, OBJModel<TextureAtlasSprite>> clumped = new HashMap<>();
 			for(Entry<Vec3i, OBJModel<TextureAtlasSprite>> e : splitData.getParts().entrySet())
 			{
-				BlockPos posToAdd = new BlockPos(e.getKey()).add(multiblock.getMasterFromOriginOffset());
+				BlockPos posToAdd = new BlockPos(e.getKey());
 				OBJModel<TextureAtlasSprite> model = e.getValue();
 				if(!multiblockBlocks.contains(posToAdd))
 				{
@@ -84,7 +91,7 @@ public class BakedSplitModel implements IBakedModel
 			{
 				List<BakedQuad> subModelFaces = new ArrayList<>(e.getValue().getFaces().size());
 				for(Polygon<TextureAtlasSprite> p : e.getValue().getFaces())
-					subModelFaces.add(BakedQuadUtil.toBakedQuad(p, DefaultVertexFormats.BLOCK));
+					subModelFaces.add(BakedQuadUtil.toBakedQuad(p, transform, DefaultVertexFormats.BLOCK));
 				map.put(e.getKey(), subModelFaces);
 			}
 			return map;
@@ -115,9 +122,9 @@ public class BakedSplitModel implements IBakedModel
 	)
 	{
 		TileEntity te = world.getTileEntity(pos);
-		if(te instanceof MultiblockPartTileEntity<?>)
+		if(te instanceof IGeneralMultiblock)
 			return new SinglePropertyModelData<>(
-					((MultiblockPartTileEntity<?>)te).posInMultiblock,
+					((IGeneralMultiblock)te).getModelOffset(),
 					Model.SUBMODEL_OFFSET
 			);
 		else
@@ -173,5 +180,11 @@ public class BakedSplitModel implements IBakedModel
 	public ItemOverrideList getOverrides()
 	{
 		return base.getOverrides();
+	}
+
+	@Override
+	public boolean doesHandlePerspectives()
+	{
+		return true;
 	}
 }

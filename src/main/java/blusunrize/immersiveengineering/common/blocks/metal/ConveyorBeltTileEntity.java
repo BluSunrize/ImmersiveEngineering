@@ -28,6 +28,7 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
@@ -235,6 +236,12 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IStateBa
 	public boolean isRSPowered()
 	{
 		return super.isRSPowered();
+	}
+
+	@Override
+	public BlockPos getModelOffset()
+	{
+		throw new UnsupportedOperationException();
 	}
 
 	public static class ConveyorInventoryHandler implements IItemHandlerModifiable

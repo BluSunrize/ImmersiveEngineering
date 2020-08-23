@@ -428,4 +428,19 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 			return (T)tile;
 		return null;
 	}
+
+	@Nonnull
+	@Override
+	public BlockPos getModelOffset()
+	{
+		BlockPos mirroredPosInMB = posInMultiblock;
+		final Vec3i size = multiblockInstance.getSize();
+		if(getIsMirrored())
+			mirroredPosInMB = new BlockPos(
+					size.getX()-mirroredPosInMB.getX()-1,
+					mirroredPosInMB.getY(),
+					mirroredPosInMB.getZ()
+			);
+		return mirroredPosInMB.subtract(multiblockInstance.getMasterFromOriginOffset());
+	}
 }

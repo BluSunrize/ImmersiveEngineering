@@ -125,12 +125,12 @@ public class Polygon<Texture>
         while(secondVertex+2 < points.size())
         {
             quads.add(new Polygon<>(ImmutableList.of(
-                    points.get(0),
-                    points.get(secondVertex),
-                    points.get(secondVertex+1),
-                    points.get(secondVertex+2)
-            ), getTexture()));
-            secondVertex += 3;
+					points.get(0),
+					points.get(secondVertex),
+					points.get(secondVertex+1),
+					points.get(secondVertex+2)
+			), getTexture()));
+			secondVertex += 2;
         }
         if(secondVertex+1 < points.size())
         {

@@ -63,14 +63,14 @@ public class SplitModel<Texture>
 				max = Math.max(max, pos);
 			}
 		}
-		int firstBorder = EPS_MATH.ceil(min);
-		int lastBorder = EPS_MATH.floor(max);
+		final int firstBorder = EPS_MATH.ceil(min);
+		final int lastBorder = EPS_MATH.floor(max);
 		Int2ObjectMap<OBJModel<Texture>> modelPerSection = new Int2ObjectOpenHashMap<>();
+		double[] vecData = new double[3];
+		vecData[axis] = 1;
+		final Vec3d normal = new Vec3d(vecData);
 		for(int borderPos = firstBorder; borderPos <= lastBorder; ++borderPos)
 		{
-			double[] vecData = new double[3];
-			vecData[axis] = 1;
-			Vec3d normal = new Vec3d(vecData);
 			Plane cut = new Plane(normal, borderPos);
 			Map<EpsilonMath.Sign, OBJModel<Texture>> splitModel = input.split(cut);
 			OBJModel<Texture> sectionModel = splitModel.get(EpsilonMath.Sign.NEGATIVE);

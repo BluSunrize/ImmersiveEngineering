@@ -4,7 +4,11 @@ import com.google.common.base.Preconditions;
 import malte0811.modelsplitter.math.Vec3d;
 import malte0811.modelsplitter.model.Polygon;
 import malte0811.modelsplitter.model.Vertex;
+import net.minecraft.client.renderer.TransformationMatrix;
+import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.IModelTransform;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
@@ -65,25 +69,31 @@ public class BakedQuadUtil
 		return new Polygon<>(vertices, quad.func_187508_a());
 	}
 
-	public static BakedQuad toBakedQuad(Polygon<TextureAtlasSprite> poly, VertexFormat format)
+	public static BakedQuad toBakedQuad(Polygon<TextureAtlasSprite> poly, IModelTransform transform, VertexFormat format)
 	{
 		Preconditions.checkArgument(poly.getPoints().size()==4);
 		BakedQuadBuilder quadBuilder = new BakedQuadBuilder(poly.getTexture());
-		final Vec3d normal = poly.getPoints().get(0).getNormal();
-		quadBuilder.setQuadOrientation(Direction.getFacingFromVector(normal.get(0), normal.get(1), normal.get(2)));
+		TransformationMatrix rotation = transform.getRotation().blockCenterToCorner();
+		Vector3f normal = new Vector3f();
 		for(Vertex v : poly.getPoints())
 		{
 			List<VertexFormatElement> elements = format.getElements();
+			Vector4f pos = new Vector4f();
+			pos.set(toArray(v.getPosition(), 4));
+			normal.set(toArray(v.getNormal(), 3));
+			rotation.transformPosition(pos);
+			rotation.transformNormal(normal);
+			pos.perspectiveDivide();
 			for(int i = 0, elementsSize = elements.size(); i < elementsSize; i++)
 			{
 				VertexFormatElement element = elements.get(i);
 				switch(element.getUsage())
 				{
 					case POSITION:
-						putVec3d(quadBuilder, i, v.getPosition());
+						quadBuilder.put(i, pos.getX(), pos.getY(), pos.getZ());
 						break;
 					case NORMAL:
-						putVec3d(quadBuilder, i, v.getNormal());
+						quadBuilder.put(i, normal.getX(), normal.getY(), normal.getZ());
 						break;
 					case COLOR:
 						//TODO?
@@ -105,16 +115,17 @@ public class BakedQuadUtil
 				}
 			}
 		}
+		quadBuilder.setQuadOrientation(Direction.getFacingFromVector(normal.getX(), normal.getY(), normal.getZ()));
 		return quadBuilder.build();
 	}
 
-	private static void putVec3d(BakedQuadBuilder out, int index, Vec3d data)
+	private static float[] toArray(Vec3d vec, int length)
 	{
-		out.put(
-				index,
-				(float)data.get(0),
-				(float)data.get(1),
-				(float)data.get(2)
-		);
+		float[] ret = new float[length];
+		for(int i = 0; i < 3; ++i)
+			ret[i] = (float)vec.get(i);
+		for(int i = 3; i < length; ++i)
+			ret[i] = 1;
+		return ret;
 	}
 }

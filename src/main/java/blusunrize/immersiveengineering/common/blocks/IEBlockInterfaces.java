@@ -389,6 +389,13 @@ public class IEBlockInterfaces
 		void placeDummies(BlockItemUseContext ctx, BlockState state);
 
 		void breakDummies(BlockPos pos, BlockState state);
+
+		@Override
+		default BlockPos getModelOffset()
+		{
+			//TODO
+			throw new UnsupportedOperationException();
+		}
 	}
 
 	/**
@@ -398,6 +405,8 @@ public class IEBlockInterfaces
 	{
 		@Nullable
 		IGeneralMultiblock master();
+
+		BlockPos getModelOffset();
 
 		default boolean isDummy()
 		{

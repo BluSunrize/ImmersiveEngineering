@@ -10,12 +10,14 @@ package blusunrize.immersiveengineering.common.data;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.models.ModelConfigurableSides.Loader;
 import blusunrize.immersiveengineering.client.models.ModelConveyor.ConveyorLoader;
 import blusunrize.immersiveengineering.client.models.connection.ConnectionLoader;
 import blusunrize.immersiveengineering.client.models.connection.FeedthroughLoader;
 import blusunrize.immersiveengineering.client.models.multilayer.MultiLayerLoader;
+import blusunrize.immersiveengineering.client.models.split.BasicSplitLoader;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
@@ -25,6 +27,7 @@ import blusunrize.immersiveengineering.common.blocks.generic.WallmountBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.WallmountBlock.Orientation;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.CoverType;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.plant.EnumHempGrowth;
 import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
@@ -33,6 +36,7 @@ import blusunrize.immersiveengineering.common.util.fluids.IEFluid;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.block.Block;
 import net.minecraft.block.FenceBlock;
@@ -47,6 +51,8 @@ import net.minecraft.state.IProperty;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
 import net.minecraftforge.client.model.generators.*;
 import net.minecraftforge.client.model.generators.ModelFile.ExistingModelFile;
 import net.minecraftforge.client.model.generators.VariantBlockStateBuilder.PartialBlockstate;
@@ -225,6 +231,17 @@ public class BlockStates extends BlockStateProvider
 		return obj(loc.substring(0, loc.length()-4), modLoc(loc));
 	}
 
+	private ModelFile splitOBJ(String loc, TemplateMultiblock mb)
+	{
+		return splitOBJ(loc, mb, false);
+	}
+
+	private ModelFile splitOBJ(String loc, TemplateMultiblock mb, boolean mirror)
+	{
+		Preconditions.checkArgument(loc.endsWith(".obj"));
+		return splitOBJ(loc.substring(0, loc.length()-4), modLoc(loc), mb, mirror);
+	}
+
 	private ModelFile obj(String name, ResourceLocation model)
 	{
 		return obj(name, model, ImmutableMap.of());
@@ -244,6 +261,38 @@ public class BlockStates extends BlockStateProvider
 		ret.texture("particle", particleTex);
 		for(Entry<String, ResourceLocation> e : textures.entrySet())
 			ret.texture(e.getKey(), e.getValue());
+		return ret;
+	}
+
+	private ModelFile splitOBJ(String name, ResourceLocation model, TemplateMultiblock multiblock, boolean mirror)
+	{
+		assertModelExists(model);
+		LoadedModelBuilder ret = loadedModels.withExistingParent(name, mcLoc("block"))
+				.loader(BasicSplitLoader.LOCATION)
+				.additional(BasicSplitLoader.BASE_LOADER, forgeLoc("obj"))
+				.additional("detectCullableFaces", false)
+				.additional("model", addModelsPrefix(model))
+				.additional("flip-v", true);
+		final Vec3i offset = multiblock.getMasterFromOriginOffset();
+		final Vec3i size = multiblock.getSize();
+		JsonArray parts = multiblock.getStructure()
+				.stream()
+				.filter(info -> !info.state.isAir())
+				.map(info -> info.pos)
+				.map(p -> {
+					if(mirror)
+						p = new BlockPos(size.getX()-p.getX()-1, p.getY(), p.getZ());
+					return p.subtract(offset);
+				})
+				.map(p -> {
+					JsonArray posJson = new JsonArray();
+					posJson.add(p.getX());
+					posJson.add(p.getY());
+					posJson.add(p.getZ());
+					return posJson;
+				})
+				.collect(JsonArray::new, JsonArray::add, JsonArray::addAll);
+		ret.additional(BasicSplitLoader.PARTS, parts);
 		return ret;
 	}
 
@@ -731,38 +780,44 @@ public class BlockStates extends BlockStateProvider
 
 	private void createMetalMultiblocks()
 	{
-		createMultiblock(Multiblocks.excavator, obj("block/metal_multiblock/excavator.obj"),
-				obj("block/metal_multiblock/excavator_mirrored.obj"));
-		createMultiblock(Multiblocks.crusher, obj("block/metal_multiblock/crusher_mirrored.obj"),
-				obj("block/metal_multiblock/crusher.obj"));
-		createMultiblock(Multiblocks.metalPress, obj("block/metal_multiblock/metal_press.obj"));
-		createMultiblock(Multiblocks.assembler, obj("block/metal_multiblock/assembler.obj"));
-		createMultiblock(Multiblocks.arcFurnace, obj("block/metal_multiblock/arc_furnace.obj"),
-				obj("block/metal_multiblock/arc_furnace_mirrored.obj"));
+		createMultiblock(Multiblocks.excavator,
+				splitOBJ("block/metal_multiblock/excavator.obj", IEMultiblocks.EXCAVATOR),
+				splitOBJ("block/metal_multiblock/excavator_mirrored.obj", IEMultiblocks.EXCAVATOR, true));
+		//TODO pass MB only once?
+		createMultiblock(Multiblocks.crusher,
+				splitOBJ("block/metal_multiblock/crusher_mirrored.obj", IEMultiblocks.CRUSHER),
+				splitOBJ("block/metal_multiblock/crusher.obj", IEMultiblocks.CRUSHER, true));
+		createMultiblock(Multiblocks.metalPress,
+				splitOBJ("block/metal_multiblock/metal_press.obj", IEMultiblocks.METAL_PRESS));
+		createMultiblock(Multiblocks.assembler,
+				splitOBJ("block/metal_multiblock/assembler.obj", IEMultiblocks.ASSEMBLER));
+		createMultiblock(Multiblocks.arcFurnace,
+				splitOBJ("block/metal_multiblock/arc_furnace.obj", IEMultiblocks.ARC_FURNACE),
+				splitOBJ("block/metal_multiblock/arc_furnace_mirrored.obj", IEMultiblocks.ARC_FURNACE, true));
 
-		createMultiblock(Multiblocks.blastFurnaceAdv, obj("block/blastfurnace_advanced.obj"));
-		createMultiblock(Multiblocks.silo, obj("block/metal_multiblock/silo.obj"));
-		createMultiblock(Multiblocks.tank, obj("block/metal_multiblock/tank.obj"));
+		createMultiblock(Multiblocks.blastFurnaceAdv, splitOBJ("block/blastfurnace_advanced.obj", IEMultiblocks.ADVANCED_BLAST_FURNACE));
+		createMultiblock(Multiblocks.silo, splitOBJ("block/metal_multiblock/silo.obj", IEMultiblocks.SILO));
+		createMultiblock(Multiblocks.tank, splitOBJ("block/metal_multiblock/tank.obj", IEMultiblocks.SHEETMETAL_TANK));
 		createMultiblock(Multiblocks.bottlingMachine,
-				obj("block/metal_multiblock/bottling_machine.obj"),
-				obj("block/metal_multiblock/bottling_machine_mirrored.obj"));
+				splitOBJ("block/metal_multiblock/bottling_machine.obj", IEMultiblocks.BOTTLING_MACHINE),
+				splitOBJ("block/metal_multiblock/bottling_machine_mirrored.obj", IEMultiblocks.BOTTLING_MACHINE, true));
 		createMultiblock(Multiblocks.fermenter,
-				obj("block/metal_multiblock/fermenter.obj"),
-				obj("block/metal_multiblock/fermenter_mirrored.obj"));
+				splitOBJ("block/metal_multiblock/fermenter.obj", IEMultiblocks.FERMENTER),
+				splitOBJ("block/metal_multiblock/fermenter_mirrored.obj", IEMultiblocks.FERMENTER, true));
 		createMultiblock(Multiblocks.squeezer,
-				obj("block/metal_multiblock/squeezer.obj"),
-				obj("block/metal_multiblock/squeezer_mirrored.obj"));
+				splitOBJ("block/metal_multiblock/squeezer.obj", IEMultiblocks.SQUEEZER),
+				splitOBJ("block/metal_multiblock/squeezer_mirrored.obj", IEMultiblocks.SQUEEZER, true));
 		createMultiblock(Multiblocks.mixer,
-				obj("block/metal_multiblock/mixer.obj"),
-				obj("block/metal_multiblock/mixer_mirrored.obj"));
+				splitOBJ("block/metal_multiblock/mixer.obj", IEMultiblocks.MIXER),
+				splitOBJ("block/metal_multiblock/mixer_mirrored.obj", IEMultiblocks.MIXER, true));
 		createMultiblock(Multiblocks.refinery,
-				obj("block/metal_multiblock/refinery.obj"),
-				obj("block/metal_multiblock/refinery_mirrored.obj"));
+				splitOBJ("block/metal_multiblock/refinery.obj", IEMultiblocks.REFINERY),
+				splitOBJ("block/metal_multiblock/refinery_mirrored.obj", IEMultiblocks.REFINERY, true));
 		createMultiblock(Multiblocks.dieselGenerator,
-				obj("block/metal_multiblock/diesel_generator.obj"),
-				obj("block/metal_multiblock/diesel_generator_mirrored.obj"));
+				splitOBJ("block/metal_multiblock/diesel_generator.obj", IEMultiblocks.DIESEL_GENERATOR),
+				splitOBJ("block/metal_multiblock/diesel_generator_mirrored.obj", IEMultiblocks.DIESEL_GENERATOR, true));
 		createMultiblock(Multiblocks.lightningrod,
-				obj("block/metal_multiblock/lightningrod.obj"));
+				splitOBJ("block/metal_multiblock/lightningrod.obj", IEMultiblocks.LIGHTNING_ROD));
 		createMultiblock(WoodenDevices.workbench,
 				ieObj("block/wooden_device/workbench.obj.ie"),
 				null, IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL, null, 180);
@@ -770,8 +825,8 @@ public class BlockStates extends BlockStateProvider
 				obj("block/metal_device/core_drill.obj"),
 				null, IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL, null, 180);
 		createMultiblock(Multiblocks.autoWorkbench,
-				obj("block/metal_multiblock/auto_workbench.obj"),
-				obj("block/metal_multiblock/auto_workbench_mirrored.obj"),
+				splitOBJ("block/metal_multiblock/auto_workbench.obj", IEMultiblocks.AUTO_WORKBENCH),
+				splitOBJ("block/metal_multiblock/auto_workbench_mirrored.obj", IEMultiblocks.AUTO_WORKBENCH, true),
 				IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL,
 				IEProperties.MIRRORED, 180);
 	}
@@ -903,18 +958,13 @@ public class BlockStates extends BlockStateProvider
 				)));
 	}
 
+	//TODO split IEOBJ models?
 	private void createMultiblock(Block b, ModelFile masterModel, @Nullable ModelFile mirroredModel, IProperty<Boolean> isSlave,
 								  EnumProperty<Direction> facing, @Nullable IProperty<Boolean> mirroredState, int rotationOffset,
 								  ResourceLocation particleTex)
 	{
 		Preconditions.checkArgument((mirroredModel==null)==(mirroredState==null));
 		VariantBlockStateBuilder builder = getVariantBuilder(b);
-		builder.partialState()
-				.with(isSlave, true)
-				.setModels(new ConfiguredModel(
-						models().withExistingParent(b.getRegistryName().getPath()+"_empty", EMPTY_MODEL.model.getLocation())
-								.texture("particle", particleTex)
-				));
 		boolean[] possibleMirrorStates;
 		if(mirroredState!=null)
 			possibleMirrorStates = new boolean[]{false, true};
@@ -940,7 +990,6 @@ public class BlockStates extends BlockStateProvider
 				}
 				ModelFile model = mirrored?mirroredModel: masterModel;
 				PartialBlockstate partialState = builder.partialState()
-						.with(isSlave, false)
 						.with(facing, dir);
 				if(mirroredState!=null)
 					partialState = partialState.with(mirroredState, mirrored);

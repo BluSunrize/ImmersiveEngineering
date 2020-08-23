@@ -34,7 +34,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -106,23 +105,6 @@ public class DynamicModelLoader
 			evt.addSprite(rl.getTextureLocation());
 	}
 
-	private static Class<? extends IUnbakedModel> VANILLA_MODEL_WRAPPER;
-	private static Field BASE_MODEL;
-
-	static
-	{
-		try
-		{
-			//TODO update?
-			VANILLA_MODEL_WRAPPER = (Class<? extends IUnbakedModel>)Class.forName("net.minecraftforge.client.model.ModelLoader$VanillaModelWrapper");
-			BASE_MODEL = VANILLA_MODEL_WRAPPER.getDeclaredField("model");
-			BASE_MODEL.setAccessible(true);
-		} catch(ClassNotFoundException|NoSuchFieldException e)
-		{
-			e.printStackTrace();
-		}
-	}
-
 	@SubscribeEvent(priority = EventPriority.LOW)
 	public static void modelRegistry(ModelRegistryEvent evt)
 	{
@@ -137,21 +119,7 @@ public class DynamicModelLoader
 				p_209273_0_.name = "generation marker";
 			});
 		else
-		{
-			IUnbakedModel wrapper = ModelLoader.defaultModelGetter().apply(loc);
-			if(VANILLA_MODEL_WRAPPER.isInstance(wrapper))
-			{
-				try
-				{
-					return (BlockModel)BASE_MODEL.get(wrapper);
-				} catch(IllegalAccessException e)
-				{
-					throw new RuntimeException(e);
-				}
-			}
-			else
-				return wrapper;
-		}
+			return ModelLoader.defaultModelGetter().apply(loc);
 	}
 
 	public static void requestTexture(ResourceLocation name)

@@ -581,6 +581,7 @@ public class IEContent
 
 		IELootFunctions.preInit();
 		IEShaders.commonConstruction();
+		IEMultiblocks.init();
 	}
 
 	@SubscribeEvent
@@ -844,7 +845,6 @@ public class IEContent
 		//ThermoelectricHandler.registerSourceInKelvin(new ResourceLocation("forge:storage_blocks/blutonium"), 4000);
 
 		/*MULTIBLOCKS*/
-		IEMultiblocks.init();
 		MultiblockHandler.registerMultiblock(IEMultiblocks.FEEDTHROUGH);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.LIGHTNING_ROD);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.DIESEL_GENERATOR);

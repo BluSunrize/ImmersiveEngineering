@@ -8,25 +8,28 @@
 
 package blusunrize.immersiveengineering.client.models.split;
 
-import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.Vec3i;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 
 public class BasicSplitModel implements IModelGeometry<BasicSplitModel>
 {
 	private final IModelGeometry<?> baseModel;
+	private final List<Vec3i> parts;
 
-	public BasicSplitModel(IModelGeometry<?> baseModel)
+	public BasicSplitModel(IModelGeometry<?> baseModel, List<Vec3i> parts)
 	{
 		this.baseModel = baseModel;
+		this.parts = parts;
 	}
 
 	@Override
@@ -40,9 +43,9 @@ public class BasicSplitModel implements IModelGeometry<BasicSplitModel>
 	)
 	{
 		return new BakedSplitModel(
-				baseModel.bake(owner, bakery, spriteGetter, modelTransform, overrides, modelLocation),
-				//TODO
-				IEMultiblocks.CRUSHER
+				baseModel.bake(owner, bakery, spriteGetter, ModelRotation.X0_Y0, overrides, modelLocation),
+				parts,
+				modelTransform
 		);
 	}
 
