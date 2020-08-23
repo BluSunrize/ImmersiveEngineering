@@ -364,7 +364,7 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 	@Override
 	public int getMaxEnergyStored(ItemStack container)
 	{
-		return 1600;
+		return 8000;
 	}
 
 
