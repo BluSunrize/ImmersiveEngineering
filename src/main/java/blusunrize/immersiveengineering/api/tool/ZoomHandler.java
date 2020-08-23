@@ -21,6 +21,19 @@ public class ZoomHandler
 	public static float fovZoom = 1;
 	public static boolean isZooming = false;
 
+	public static int getCurrentZoomStep(float[] steps)
+	{
+		int curStep = -1;
+		float dist = 0;
+		for(int i = 0; i < steps.length; i++)
+			if(curStep==-1||Math.abs(steps[i]-ZoomHandler.fovZoom) < dist)
+			{
+				curStep = i;
+				dist = Math.abs(steps[i]-ZoomHandler.fovZoom);
+			}
+		return curStep;
+	}
+
 	/**
 	 * @author BluSunrize - 25.12.2015
 	 * <p>

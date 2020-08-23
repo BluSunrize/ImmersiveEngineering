@@ -9,4 +9,4 @@ Valid projectiles include, for instance, §2iron§r and §2steel rods§r, as wel
 Due to the low internal energy storage, it is recommended to use the Railgun along with a <link;powerpack;Capacitor Backpack>.
 As with other IE tools, the railgun can be modified in the <link;workbench;Engineer's Workbench> and be customized with <link;shader;Shaders>.<np>
 <&caps>The §2Additional Capacitors§r greatly reduce the railgun's charge time.<np>
-<&scope>The §2Precision Scope§r allows you to zoom in with the railgun. Sneak to use the scope and use the mouse wheel to switch between magnification levels.
+<&scope>The §2Precision Scope§r allows you to zoom in with the railgun. Use §l<keybind;key.immersiveengineering.railgunZoom>§r to use the scope and scroll the mouse wheel to switch between magnification levels.
