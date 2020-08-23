@@ -16,6 +16,7 @@ public class InvertingVertexBuffer extends CollectingVertexBuilder
 	@Override
 	public void endVertex()
 	{
+		super.endVertex();
 		if(vertices.size() >= verticesPerPrimitive)
 		{
 			for(int i = vertices.size()-1; i >= 0; --i)
