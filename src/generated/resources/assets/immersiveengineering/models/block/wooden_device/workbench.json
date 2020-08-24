@@ -1,9 +1,21 @@
 {
   "parent": "block/block",
-  "textures": {
-    "particle": "immersiveengineering:block/multiblocks/autoworkbench_blueprint"
-  },
-  "loader": "immersiveengineering:ie_obj",
+  "loader": "immersiveengineering:basic_split",
+  "base_loader": "immersiveengineering:ie_obj",
+  "dynamic": true,
+  "detectCullableFaces": false,
   "model": "immersiveengineering:models/block/wooden_device/workbench.obj.ie",
-  "flip-v": true
+  "flip-v": true,
+  "split_parts": [
+    [
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      0
+    ]
+  ]
 }

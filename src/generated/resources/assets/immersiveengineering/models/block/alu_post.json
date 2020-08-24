@@ -4,7 +4,52 @@
     "texture": "immersiveengineering:block/metal_decoration/aluminum_post",
     "particle": "immersiveengineering:block/metal_decoration/aluminum_post"
   },
-  "loader": "immersiveengineering:ie_obj",
+  "loader": "immersiveengineering:basic_split",
+  "base_loader": "immersiveengineering:ie_obj",
+  "dynamic": true,
+  "detectCullableFaces": false,
   "model": "immersiveengineering:models/block/wooden_device/wooden_post.obj.ie",
-  "flip-v": true
+  "flip-v": true,
+  "split_parts": [
+    [
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      0
+    ],
+    [
+      0,
+      2,
+      0
+    ],
+    [
+      0,
+      3,
+      0
+    ],
+    [
+      0,
+      3,
+      1
+    ],
+    [
+      -1,
+      3,
+      0
+    ],
+    [
+      0,
+      3,
+      -1
+    ],
+    [
+      1,
+      3,
+      0
+    ]
+  ]
 }

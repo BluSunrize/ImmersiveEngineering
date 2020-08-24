@@ -1,16 +1,7 @@
 {
   "variants": {
-    "post_slave=0": {
+    "": {
       "model": "immersiveengineering:block/treated_post"
-    },
-    "post_slave=1": {
-      "model": "immersiveengineering:block/empty_treated_post"
-    },
-    "post_slave=2": {
-      "model": "immersiveengineering:block/empty_treated_post"
-    },
-    "post_slave=3": {
-      "model": "immersiveengineering:block/empty_treated_post"
     }
   }
 }

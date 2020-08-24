@@ -2,6 +2,7 @@
   "parent": "block/block",
   "loader": "immersiveengineering:basic_split",
   "base_loader": "forge:obj",
+  "dynamic": false,
   "detectCullableFaces": false,
   "model": "immersiveengineering:models/block/metal_multiblock/excavator.obj",
   "flip-v": true,
