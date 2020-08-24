@@ -289,6 +289,11 @@ public class Advancements extends AdvancementProvider
 					.withCriterion("code_trigger", new ImpossibleTrigger.Instance())
 					.withRewards(reward(new ResourceLocation("immersiveengineering", "advancements/shader_masterwork")))
 					.register(consumer, "immersiveengineering:main/secret_drillbreak");
+
+			Advancement ravenholm = advancement(railgun, Misc.iconRavenholm, "secret_ravenholm", FrameType.CHALLENGE, true, true, true)
+					.withCriterion("code_trigger", new ImpossibleTrigger.Instance())
+					.withRewards(reward(new ResourceLocation("immersiveengineering", "advancements/shader_masterwork")))
+					.register(consumer, "immersiveengineering:main/secret_ravenholm");
 		}
 	}
 

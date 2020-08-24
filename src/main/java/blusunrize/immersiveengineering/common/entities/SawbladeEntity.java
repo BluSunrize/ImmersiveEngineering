@@ -10,11 +10,13 @@ package blusunrize.immersiveengineering.common.entities;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
+import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EntityType.Builder;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -123,6 +125,18 @@ public class SawbladeEntity extends IEProjectileEntity
 			Entity shooter = getShooter();
 			if(getAmmo().attemptDamageItem(dmg, world.rand, shooter instanceof ServerPlayerEntity?(ServerPlayerEntity)shooter: null))
 				this.remove();
+		}
+	}
+
+	@Override
+	protected void handlePiecing(Entity target)
+	{
+		super.handlePiecing(target);
+		if(this.piercedEntities.size() >= 3)
+		{
+			PlayerEntity shooter = world.getPlayerByUuid(shootingEntity);
+			if(shooter!=null)
+				Utils.unlockIEAdvancement(shooter, "main/secret_ravenholm");
 		}
 	}
 
