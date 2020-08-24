@@ -17,12 +17,12 @@ import blusunrize.immersiveengineering.client.models.ModelConveyor.ConveyorLoade
 import blusunrize.immersiveengineering.client.models.connection.ConnectionLoader;
 import blusunrize.immersiveengineering.client.models.connection.FeedthroughLoader;
 import blusunrize.immersiveengineering.client.models.multilayer.MultiLayerLoader;
-import blusunrize.immersiveengineering.client.models.split.BasicSplitLoader;
+import blusunrize.immersiveengineering.client.models.obj.IEOBJLoader;
+import blusunrize.immersiveengineering.client.models.split.SplitModelLoader;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
 import blusunrize.immersiveengineering.common.blocks.cloth.StripCurtainBlock;
-import blusunrize.immersiveengineering.common.blocks.generic.PostBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.WallmountBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.WallmountBlock.Orientation;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.CoverType;
@@ -30,6 +30,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.plant.EnumHempGrowth;
 import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
+import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchTileEntity;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
 import blusunrize.immersiveengineering.common.data.models.LoadedModelBuilder;
 import blusunrize.immersiveengineering.common.util.fluids.IEFluid;
@@ -62,7 +63,9 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 import static blusunrize.immersiveengineering.common.data.IEDataGenerator.rl;
@@ -181,25 +184,21 @@ public class BlockStates extends BlockStateProvider
 	private void postBlock(Block b, ResourceLocation texture)
 	{
 		ResourceLocation model = rl("block/wooden_device/wooden_post.obj.ie");
-		assertModelExists(model);
-		LoadedModelBuilder modelFile = loadedModels.withExistingParent(name(b), mcLoc("block"))
-				.loader(modLoc("ie_obj"))
-				.additional("model", addModelsPrefix(model))
-				.additional("flip-v", true)
-				.texture("texture", texture)
+		ImmutableList.Builder<Vec3i> parts = ImmutableList.builder();
+		parts.add(new Vec3i(0, 0, 0))
+				.add(new Vec3i(0, 1, 0))
+				.add(new Vec3i(0, 2, 0))
+				.add(new Vec3i(0, 3, 0));
+		for(Direction d : Direction.BY_HORIZONTAL_INDEX)
+			parts.add(new BlockPos(0, 3, 0).offset(d));
+		LoadedModelBuilder builder = splitModel(
+				name(b), IEOBJLoader.LOADER_NAME, model, parts.build().stream(), true
+		);
+		builder.texture("texture", texture)
 				.texture("particle", texture);
 		getVariantBuilder(b)
 				.partialState()
-				.with(PostBlock.POST_SLAVE, 0)
-				.setModels(new ConfiguredModel(modelFile));
-		for(int i = 1; i <= 3; ++i)
-			getVariantBuilder(b)
-					.partialState()
-					.with(PostBlock.POST_SLAVE, i)
-					.setModels(new ConfiguredModel(
-							models().withExistingParent("empty_"+b.getRegistryName().getPath(), EMPTY_MODEL.model.getLocation())
-									.texture("particle", texture)
-					));
+				.setModels(new ConfiguredModel(builder));
 	}
 
 	private ModelFile cubeTwo(String name, ResourceLocation top, ResourceLocation bottom,
@@ -231,17 +230,6 @@ public class BlockStates extends BlockStateProvider
 		return obj(loc.substring(0, loc.length()-4), modLoc(loc));
 	}
 
-	private ModelFile splitOBJ(String loc, TemplateMultiblock mb)
-	{
-		return splitOBJ(loc, mb, false);
-	}
-
-	private ModelFile splitOBJ(String loc, TemplateMultiblock mb, boolean mirror)
-	{
-		Preconditions.checkArgument(loc.endsWith(".obj"));
-		return splitOBJ(loc.substring(0, loc.length()-4), modLoc(loc), mb, mirror);
-	}
-
 	private ModelFile obj(String name, ResourceLocation model)
 	{
 		return obj(name, model, ImmutableMap.of());
@@ -264,18 +252,50 @@ public class BlockStates extends BlockStateProvider
 		return ret;
 	}
 
-	private ModelFile splitOBJ(String name, ResourceLocation model, TemplateMultiblock multiblock, boolean mirror)
+	private static final Collector<Vec3i, JsonArray, JsonArray> POSITIONS_TO_JSON = Collector.of(
+			JsonArray::new,
+			(arr, vec) -> {
+				JsonArray posJson = new JsonArray();
+				posJson.add(vec.getX());
+				posJson.add(vec.getY());
+				posJson.add(vec.getZ());
+				arr.add(posJson);
+			},
+			(a, b) -> {
+				JsonArray arr = new JsonArray();
+				arr.addAll(a);
+				arr.addAll(b);
+				return arr;
+			}
+	);
+
+	private ModelFile splitOBJ(String loc, TemplateMultiblock mb)
 	{
-		assertModelExists(model);
-		LoadedModelBuilder ret = loadedModels.withExistingParent(name, mcLoc("block"))
-				.loader(BasicSplitLoader.LOCATION)
-				.additional(BasicSplitLoader.BASE_LOADER, forgeLoc("obj"))
-				.additional("detectCullableFaces", false)
-				.additional("model", addModelsPrefix(model))
-				.additional("flip-v", true);
+		return splitOBJ(loc, mb, false);
+	}
+
+	private ModelFile splitOBJ(String loc, TemplateMultiblock mb, boolean mirror)
+	{
+		Preconditions.checkArgument(loc.endsWith(".obj"));
+		return splitOBJ(loc.substring(0, loc.length()-4), modLoc(loc), mb, mirror);
+	}
+
+	private ModelFile splitOBJ(String loc, List<Vec3i> parts)
+	{
+		Preconditions.checkArgument(loc.endsWith(".obj"));
+		return splitModel(loc.substring(0, loc.length()-4), forgeLoc("obj"), modLoc(loc), parts.stream(), false);
+	}
+
+	private ModelFile splitOBJ(
+			String name,
+			ResourceLocation model,
+			TemplateMultiblock multiblock,
+			boolean mirror
+	)
+	{
 		final Vec3i offset = multiblock.getMasterFromOriginOffset();
 		final Vec3i size = multiblock.getSize();
-		JsonArray parts = multiblock.getStructure()
+		Stream<Vec3i> partsStream = multiblock.getStructure()
 				.stream()
 				.filter(info -> !info.state.isAir())
 				.map(info -> info.pos)
@@ -283,17 +303,45 @@ public class BlockStates extends BlockStateProvider
 					if(mirror)
 						p = new BlockPos(size.getX()-p.getX()-1, p.getY(), p.getZ());
 					return p.subtract(offset);
-				})
-				.map(p -> {
-					JsonArray posJson = new JsonArray();
-					posJson.add(p.getX());
-					posJson.add(p.getY());
-					posJson.add(p.getZ());
-					return posJson;
-				})
-				.collect(JsonArray::new, JsonArray::add, JsonArray::addAll);
-		ret.additional(BasicSplitLoader.PARTS, parts);
+				});
+		return splitModel(name, forgeLoc("obj"), model, partsStream, false);
+	}
+
+	private LoadedModelBuilder splitModel(
+			String name,
+			ResourceLocation loader,
+			ResourceLocation model,
+			Stream<Vec3i> parts,
+			boolean dynamic
+	)
+	{
+		assertModelExists(model);
+		LoadedModelBuilder ret = loadedModels.withExistingParent(name, mcLoc("block"))
+				.loader(SplitModelLoader.LOCATION)
+				.additional(SplitModelLoader.BASE_LOADER, loader)
+				.additional(SplitModelLoader.DYNAMIC, dynamic)
+				.additional("detectCullableFaces", false)
+				.additional("model", addModelsPrefix(model))
+				.additional("flip-v", true);
+		JsonArray partsJson = parts.collect(POSITIONS_TO_JSON);
+		ret.additional(SplitModelLoader.PARTS, partsJson);
 		return ret;
+	}
+
+	private LoadedModelBuilder splitIEOBJ(
+			String model,
+			List<Vec3i> parts
+	)
+	{
+		Preconditions.checkArgument(model.endsWith(".obj.ie"));
+		String name = model.substring(0, model.length()-7);
+		return splitModel(
+				name,
+				IEOBJLoader.LOADER_NAME,
+				modLoc(model),
+				parts.stream(),
+				true
+		);
 	}
 
 	private LoadedModelBuilder ieObj(String loc)
@@ -420,6 +468,7 @@ public class BlockStates extends BlockStateProvider
 		simpleBlock(Multiblocks.bucketWheel, EMPTY_MODEL);
 		simpleBlock(MetalDevices.fluidPipe, ieObj("block/metal_device/fluid_pipe.obj.ie"));
 
+		//TODO split
 		createMultiblock(
 				MetalDevices.cloche,
 				ieObj("block/metal_device/cloche.obj.ie")
@@ -433,7 +482,7 @@ public class BlockStates extends BlockStateProvider
 				ieObj("block/metal_device/gun_turret.obj.ie")
 		);
 		createMultiblock(MetalDevices.teslaCoil, obj("block/metal_device/teslacoil.obj"),
-				null, IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_ALL, null,
+				null, IEProperties.FACING_ALL, null,
 				180);
 		for(Entry<EnumMetals, Block> chute : MetalDevices.chutes.entrySet())
 		{
@@ -574,6 +623,7 @@ public class BlockStates extends BlockStateProvider
 					.additional("base_name", modLoc("block/metal_device/fluid_placer"));
 			simpleBlockItem(MetalDevices.fluidPlacer, model);
 		}
+		//TODO split
 		createMultiblock(MetalDevices.blastFurnacePreheater,
 				obj("block/metal_device/blastfurnace_preheater.obj"));
 		{
@@ -783,7 +833,6 @@ public class BlockStates extends BlockStateProvider
 		createMultiblock(Multiblocks.excavator,
 				splitOBJ("block/metal_multiblock/excavator.obj", IEMultiblocks.EXCAVATOR),
 				splitOBJ("block/metal_multiblock/excavator_mirrored.obj", IEMultiblocks.EXCAVATOR, true));
-		//TODO pass MB only once?
 		createMultiblock(Multiblocks.crusher,
 				splitOBJ("block/metal_multiblock/crusher_mirrored.obj", IEMultiblocks.CRUSHER),
 				splitOBJ("block/metal_multiblock/crusher.obj", IEMultiblocks.CRUSHER, true));
@@ -819,15 +868,22 @@ public class BlockStates extends BlockStateProvider
 		createMultiblock(Multiblocks.lightningrod,
 				splitOBJ("block/metal_multiblock/lightningrod.obj", IEMultiblocks.LIGHTNING_ROD));
 		createMultiblock(WoodenDevices.workbench,
-				ieObj("block/wooden_device/workbench.obj.ie"),
-				null, IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL, null, 180);
+				splitIEOBJ("block/wooden_device/workbench.obj.ie", ImmutableList.of(
+						ModWorkbenchTileEntity.MASTER_POS,
+						ModWorkbenchTileEntity.DUMMY_POS
+				)),
+				null, IEProperties.FACING_HORIZONTAL, null, 180);
 		createMultiblock(MetalDevices.sampleDrill,
-				obj("block/metal_device/core_drill.obj"),
-				null, IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL, null, 180);
+				splitOBJ("block/metal_device/core_drill.obj", ImmutableList.of(
+						BlockPos.ZERO,
+						BlockPos.ZERO.up(),
+						BlockPos.ZERO.up(2)
+				)),
+				null, IEProperties.FACING_HORIZONTAL, null, 180);
 		createMultiblock(Multiblocks.autoWorkbench,
 				splitOBJ("block/metal_multiblock/auto_workbench.obj", IEMultiblocks.AUTO_WORKBENCH),
 				splitOBJ("block/metal_multiblock/auto_workbench_mirrored.obj", IEMultiblocks.AUTO_WORKBENCH, true),
-				IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL,
+				IEProperties.FACING_HORIZONTAL,
 				IEProperties.MIRRORED, 180);
 	}
 
@@ -861,13 +917,14 @@ public class BlockStates extends BlockStateProvider
 				modLoc("block/multiblocks/alloy_smelter_side"),
 				modLoc("block/multiblocks/alloy_smelter_on")
 		);
-		createMultiblock(Multiblocks.cokeOven, cokeOvenOff, cokeOvenOn, IEProperties.MULTIBLOCKSLAVE,
+		//TODO split
+		createMultiblock(Multiblocks.cokeOven, cokeOvenOff, cokeOvenOn,
 				IEProperties.FACING_HORIZONTAL, IEProperties.ACTIVE, 180,
 				modLoc("block/multiblocks/coke_oven"));
-		createMultiblock(Multiblocks.alloySmelter, alloySmelterOff, alloySmelterOn, IEProperties.MULTIBLOCKSLAVE,
+		createMultiblock(Multiblocks.alloySmelter, alloySmelterOff, alloySmelterOn,
 				IEProperties.FACING_HORIZONTAL, IEProperties.ACTIVE, 180,
 				modLoc("block/multiblocks/alloy_smelter_side"));
-		createMultiblock(Multiblocks.blastFurnace, blastFurnaceOff, blastFurnaceOn, IEProperties.MULTIBLOCKSLAVE,
+		createMultiblock(Multiblocks.blastFurnace, blastFurnaceOff, blastFurnaceOn,
 				IEProperties.FACING_HORIZONTAL, IEProperties.ACTIVE, 180,
 				modLoc("block/multiblocks/blast_furnace"));
 	}
@@ -933,7 +990,7 @@ public class BlockStates extends BlockStateProvider
 
 	private void createMultiblock(Block b, ModelFile masterModel, ModelFile mirroredModel, int rotationOffset)
 	{
-		createMultiblock(b, masterModel, mirroredModel, IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL, IEProperties.MIRRORED, rotationOffset);
+		createMultiblock(b, masterModel, mirroredModel, IEProperties.FACING_HORIZONTAL, IEProperties.MIRRORED, rotationOffset);
 	}
 
 	private void createMultiblock(Block b, ModelFile masterModel, ModelFile mirroredModel)
@@ -943,23 +1000,23 @@ public class BlockStates extends BlockStateProvider
 
 	private void createMultiblock(Block b, ModelFile masterModel)
 	{
-		createMultiblock(b, masterModel, null, IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL, null, 180);
+		createMultiblock(b, masterModel, null, IEProperties.FACING_HORIZONTAL, null, 180);
 	}
 
-	private void createMultiblock(Block b, ModelFile masterModel, @Nullable ModelFile mirroredModel, IProperty<Boolean> isSlave,
+	private void createMultiblock(Block b, ModelFile masterModel, @Nullable ModelFile mirroredModel,
 								  EnumProperty<Direction> facing, @Nullable IProperty<Boolean> mirroredState, int rotationOffset)
 	{
 		String objLoc = ((ModelBuilder<?>)masterModel).toJson().get("model").getAsString();
 		objLoc = objLoc.substring(0, objLoc.indexOf(':')+1)+objLoc.substring(objLoc.indexOf('/')+1);
-		createMultiblock(b, masterModel, mirroredModel, isSlave, facing, mirroredState, rotationOffset,
+		createMultiblock(b, masterModel, mirroredModel, facing, mirroredState, rotationOffset,
 				new ResourceLocation(DataGenUtils.getTextureFromObj(
 						new ResourceLocation(objLoc),
 						existingFileHelper
 				)));
 	}
 
-	//TODO split IEOBJ models?
-	private void createMultiblock(Block b, ModelFile masterModel, @Nullable ModelFile mirroredModel, IProperty<Boolean> isSlave,
+	//TODO readd particle textures
+	private void createMultiblock(Block b, ModelFile masterModel, @Nullable ModelFile mirroredModel,
 								  EnumProperty<Direction> facing, @Nullable IProperty<Boolean> mirroredState, int rotationOffset,
 								  ResourceLocation particleTex)
 	{

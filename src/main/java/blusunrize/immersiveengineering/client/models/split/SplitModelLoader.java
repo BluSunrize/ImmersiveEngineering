@@ -23,11 +23,12 @@ import net.minecraftforge.client.model.geometry.IModelGeometry;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BasicSplitLoader implements IModelLoader<BasicSplitModel>
+public class SplitModelLoader implements IModelLoader<UnbakedSplitModel>
 {
 	public static final ResourceLocation LOCATION = new ResourceLocation(ImmersiveEngineering.MODID, "basic_split");
 	public static final String PARTS = "split_parts";
 	public static final String BASE_LOADER = "base_loader";
+	public static final String DYNAMIC = "dynamic";
 
 	@Override
 	public void onResourceManagerReload(IResourceManager resourceManager)
@@ -36,7 +37,7 @@ public class BasicSplitLoader implements IModelLoader<BasicSplitModel>
 	}
 
 	@Override
-	public BasicSplitModel read(JsonDeserializationContext deserializationContext, JsonObject modelContents)
+	public UnbakedSplitModel read(JsonDeserializationContext deserializationContext, JsonObject modelContents)
 	{
 		ResourceLocation subloader;
 		if(modelContents.has(BASE_LOADER))
@@ -55,6 +56,6 @@ public class BasicSplitLoader implements IModelLoader<BasicSplitModel>
 				deserializationContext,
 				modelContents
 		);
-		return new BasicSplitModel(baseModel, parts);
+		return new UnbakedSplitModel(baseModel, parts, modelContents.get(DYNAMIC).getAsBoolean());
 	}
 }

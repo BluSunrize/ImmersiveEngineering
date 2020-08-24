@@ -289,4 +289,9 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 		return false;
 	}
 
+	@Override
+	public BlockPos getModelOffset(BlockState state)
+	{
+		return new BlockPos(0, dummy, 0);
+	}
 }

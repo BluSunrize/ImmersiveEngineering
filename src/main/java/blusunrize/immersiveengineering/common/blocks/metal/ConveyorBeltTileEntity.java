@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.base.Preconditions;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
@@ -239,7 +240,7 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IStateBa
 	}
 
 	@Override
-	public BlockPos getModelOffset()
+	public BlockPos getModelOffset(BlockState state)
 	{
 		throw new UnsupportedOperationException();
 	}

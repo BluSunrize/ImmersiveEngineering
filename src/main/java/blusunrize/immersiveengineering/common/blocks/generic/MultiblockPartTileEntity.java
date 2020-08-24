@@ -431,7 +431,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 
 	@Nonnull
 	@Override
-	public BlockPos getModelOffset()
+	public BlockPos getModelOffset(BlockState state)
 	{
 		BlockPos mirroredPosInMB = posInMultiblock;
 		final Vec3i size = multiblockInstance.getSize();
