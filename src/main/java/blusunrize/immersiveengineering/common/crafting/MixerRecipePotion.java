@@ -15,6 +15,8 @@ import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.util.IELogger;
+import com.google.common.collect.ImmutableList;
+import com.mojang.datafixers.util.Either;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -32,6 +34,7 @@ import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.brewing.IBrewingRecipe;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.registries.IRegistryDelegate;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -141,7 +144,15 @@ public class MixerRecipePotion extends MixerRecipe
 			return new FluidTagInput(FluidTags.WATER.getName(), amount);
 		CompoundNBT nbt = new CompoundNBT();
 		nbt.putString("Potion", type.getRegistryName().toString());
-		return new FluidTagInput(IETags.fluidPotion.getName(), amount, nbt);
+		//TODO this is a workaround, we should probably be syncing the potion recipes along with everything else
+		if(EffectiveSide.get().isServer())
+			return new FluidTagInput(IETags.fluidPotion.getName(), amount, nbt);
+		else
+			return new FluidTagInput(
+					Either.right(ImmutableList.of(IEContent.fluidPotion.getRegistryName())),
+					amount,
+					nbt
+			);
 	}
 
 	@Override

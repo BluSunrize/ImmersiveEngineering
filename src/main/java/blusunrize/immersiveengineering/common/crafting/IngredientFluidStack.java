@@ -21,7 +21,6 @@ import net.minecraftforge.fluids.FluidUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 /**
@@ -54,12 +53,10 @@ public class IngredientFluidStack extends Ingredient
 	public ItemStack[] getMatchingStacks()
 	{
 		if(cachedStacks==null)
-		{
 			cachedStacks = this.fluidTagInput.getMatchingFluidStacks()
 					.stream()
-					.map((Function<FluidStack, Object>)FluidUtil::getFilledBucket)
+					.map(FluidUtil::getFilledBucket)
 					.toArray(ItemStack[]::new);
-		}
 		return this.cachedStacks;
 	}
 
