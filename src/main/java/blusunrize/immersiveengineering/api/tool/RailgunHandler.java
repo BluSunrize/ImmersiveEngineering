@@ -52,9 +52,9 @@ public class RailgunHandler
 	public interface IRailgunProjectile
 	{
 		/**
-		 * @param shooter
-		 * @param ammo
-		 * @param defaultProjectile
+		 * @param shooter the player who shot the projectile. In the case of a turret, this is null
+		 * @param ammo the ItemStack used as ammo
+		 * @param defaultProjectile the default projectile that should be returned if no custom one is created
 		 * @return the given or a custom entity
 		 */
 		default Entity getProjectile(@Nullable PlayerEntity shooter, ItemStack ammo, Entity defaultProjectile)
@@ -96,7 +96,7 @@ public class RailgunHandler
 
 		/**
 		 * @return whether this projectile should be allowed to be placed in, and used from a turret.<br>
-		 * Projectiles that rely on a player using them should return false, since turrets parse null for a player
+		 * Projectiles that rely on a player using them should return false, since turrets pass null for a player
 		 */
 		default boolean isValidForTurret()
 		{
@@ -106,8 +106,8 @@ public class RailgunHandler
 
 	public static class StandardRailgunProjectile implements IRailgunProjectile
 	{
-		private double damage;
-		private double gravity;
+		private final double damage;
+		private final double gravity;
 		private int[][] colourMap = {{0x686868, 0xa4a4a4, 0xa4a4a4, 0xa4a4a4, 0x686868}};
 
 		public StandardRailgunProjectile(double damage, double gravity)
