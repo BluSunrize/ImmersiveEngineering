@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.api.tool;
 
+import com.google.common.base.Preconditions;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -18,6 +19,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -52,8 +54,8 @@ public class RailgunHandler
 	public interface IRailgunProjectile
 	{
 		/**
-		 * @param shooter the player who shot the projectile. In the case of a turret, this is null
-		 * @param ammo the ItemStack used as ammo
+		 * @param shooter           the player who shot the projectile. In the case of a turret, this is null
+		 * @param ammo              the ItemStack used as ammo
 		 * @param defaultProjectile the default projectile that should be returned if no custom one is created
 		 * @return the given or a custom entity
 		 */
@@ -108,7 +110,7 @@ public class RailgunHandler
 	{
 		private final double damage;
 		private final double gravity;
-		private int[][] colourMap = {{0x686868, 0xa4a4a4, 0xa4a4a4, 0xa4a4a4, 0x686868}};
+		private RailgunRenderColors colourMap;
 
 		public StandardRailgunProjectile(double damage, double gravity)
 		{
@@ -116,13 +118,13 @@ public class RailgunHandler
 			this.gravity = gravity;
 		}
 
-		public StandardRailgunProjectile setColourMap(int[][] map)
+		public StandardRailgunProjectile setColourMap(RailgunRenderColors map)
 		{
 			this.colourMap = map;
 			return this;
 		}
 
-		public int[][] getColourMap()
+		public RailgunRenderColors getColourMap()
 		{
 			return colourMap;
 		}
@@ -143,6 +145,59 @@ public class RailgunHandler
 		public boolean isValidForTurret()
 		{
 			return true;
+		}
+	}
+
+	public static class RailgunRenderColors
+	{
+		// A standard railgun projectile is rendered as a set of rings stacked on eachother
+		// Each array in this list describes the gradient of one of those rings
+		private final List<int[]> rings;
+
+		private final int gradientLength;
+
+		public RailgunRenderColors(int[]... rings)
+		{
+			Preconditions.checkArgument(rings.length > 0, "Railgun render colours can not be instantiated with no data");
+			this.rings = Arrays.asList(rings);
+			this.gradientLength = rings[0].length;
+			for(int[] ring : rings)
+				Preconditions.checkArgument(ring.length==this.gradientLength, "All rings in Railgun render must have the same length");
+		}
+
+		public RailgunRenderColors(int... color)
+		{
+			this(new int[][]{color});
+		}
+
+		public int getRingCount()
+		{
+			return this.rings.size();
+		}
+
+		public int getGradientLength()
+		{
+			return this.gradientLength;
+		}
+
+		private static int[] splitRGB(int rgb)
+		{
+			return new int[]{(rgb >> 16)&255, (rgb >> 8)&255, rgb&255};
+		}
+
+		public int[] getRingColor(int lengthIdx, int widthIdx)
+		{
+			return splitRGB(this.rings.get(lengthIdx)[widthIdx]);
+		}
+
+		public int[] getFrontColor(int widthIdx)
+		{
+			return splitRGB(this.rings.get(0)[widthIdx]);
+		}
+
+		public int[] getBackColor(int widthIdx)
+		{
+			return splitRGB(this.rings.get(this.rings.size()-1)[widthIdx]);
 		}
 	}
 }
