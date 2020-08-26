@@ -48,7 +48,7 @@ public class RailgunShotRenderer extends EntityRenderer<RailgunShotEntity>
 		{
 			RailgunHandler.IRailgunProjectile prop = RailgunHandler.getProjectile(ammo);
 			if(prop instanceof RailgunHandler.StandardRailgunProjectile)
-				colors = ((StandardRailgunProjectile)prop).getColourMap();
+				colors = ((StandardRailgunProjectile)prop).getColorMap();
 		}
 		renderRailgunProjectile(x, y, z, yaw, pitch, colors);
 	}

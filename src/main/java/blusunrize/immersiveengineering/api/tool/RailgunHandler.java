@@ -110,7 +110,7 @@ public class RailgunHandler
 	{
 		private final double damage;
 		private final double gravity;
-		private RailgunRenderColors colourMap;
+		private RailgunRenderColors colorMap;
 
 		public StandardRailgunProjectile(double damage, double gravity)
 		{
@@ -118,15 +118,15 @@ public class RailgunHandler
 			this.gravity = gravity;
 		}
 
-		public StandardRailgunProjectile setColourMap(RailgunRenderColors map)
+		public StandardRailgunProjectile setColorMap(RailgunRenderColors map)
 		{
-			this.colourMap = map;
+			this.colorMap = map;
 			return this;
 		}
 
-		public RailgunRenderColors getColourMap()
+		public RailgunRenderColors getColorMap()
 		{
-			return colourMap;
+			return colorMap;
 		}
 
 		@Override
@@ -158,7 +158,7 @@ public class RailgunHandler
 
 		public RailgunRenderColors(int[]... rings)
 		{
-			Preconditions.checkArgument(rings.length > 0, "Railgun render colours can not be instantiated with no data");
+			Preconditions.checkArgument(rings.length > 0, "Railgun render colors can not be instantiated with no data");
 			this.rings = Arrays.asList(rings);
 			this.gradientLength = rings[0].length;
 			for(int[] ring : rings)

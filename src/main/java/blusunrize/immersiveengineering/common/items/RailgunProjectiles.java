@@ -33,22 +33,22 @@ public class RailgunProjectiles
 	public static void register()
 	{
 		// Iron
-		RailgunHandler.registerStandardProjectile(Ingredient.fromTag(IETags.ironRod), 16, 1.25).setColourMap(
+		RailgunHandler.registerStandardProjectile(Ingredient.fromTag(IETags.ironRod), 16, 1.25).setColorMap(
 				new RailgunRenderColors(0xd8d8d8, 0xd8d8d8, 0xd8d8d8, 0xa8a8a8, 0x686868, 0x686868)
 		);
 
 		// Aluminum
-		RailgunHandler.registerStandardProjectile(Ingredient.fromTag(IETags.aluminumRod), 10, 1.05).setColourMap(
+		RailgunHandler.registerStandardProjectile(Ingredient.fromTag(IETags.aluminumRod), 10, 1.05).setColorMap(
 				new RailgunRenderColors(0xd8d8d8, 0xd8d8d8, 0xd8d8d8, 0xa8a8a8, 0x686868, 0x686868)
 		);
 
 		// Steel
-		RailgunHandler.registerStandardProjectile(Ingredient.fromTag(IETags.steelRod), 24, 1.25).setColourMap(
+		RailgunHandler.registerStandardProjectile(Ingredient.fromTag(IETags.steelRod), 24, 1.25).setColorMap(
 				new RailgunRenderColors(0xb4b4b4, 0xb4b4b4, 0xb4b4b4, 0x7a7a7a, 0x555555, 0x555555)
 		);
 
 		// Graphite
-		RailgunHandler.registerStandardProjectile(new ItemStack(IEItems.Misc.graphiteElectrode), 30, .9).setColourMap(
+		RailgunHandler.registerStandardProjectile(new ItemStack(IEItems.Misc.graphiteElectrode), 30, .9).setColorMap(
 				new RailgunRenderColors(0x242424, 0x242424, 0x242424, 0x171717, 0x171717, 0x0a0a0a)
 		);
 
@@ -67,7 +67,7 @@ public class RailgunProjectiles
 			{
 				return 1;
 			}
-		}.setColourMap(new RailgunRenderColors(0xfff32d, 0xffc100, 0xb36b19, 0xbf5a00, 0xbf5a00, 0x953300)));
+		}.setColorMap(new RailgunRenderColors(0xfff32d, 0xffc100, 0xb36b19, 0xbf5a00, 0xbf5a00, 0x953300)));
 
 		// Sawblade
 		RailgunHandler.registerProjectile(Ingredient.fromItems(IEItems.Tools.sawblade), new RailgunHandler.IRailgunProjectile()
