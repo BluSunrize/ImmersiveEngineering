@@ -1,4 +1,4 @@
-package malte0811.modelsplitter.util;
+package blusunrize.immersiveengineering.client.models.split;
 
 import com.google.common.base.Preconditions;
 import malte0811.modelsplitter.math.Vec3d;
@@ -21,7 +21,7 @@ import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BakedQuadUtil
+public class PolygonUtils
 {
 	private static int getOffset(VertexFormatElement.Usage usage, VertexFormatElement.Type type)
 	{
@@ -96,7 +96,6 @@ public class BakedQuadUtil
 						quadBuilder.put(i, normal.getX(), normal.getY(), normal.getZ());
 						break;
 					case COLOR:
-						//TODO?
 						quadBuilder.put(i, 1, 1, 1, 1);
 						break;
 					case UV:

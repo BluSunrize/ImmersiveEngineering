@@ -17,7 +17,6 @@ import com.google.common.collect.ImmutableList;
 import malte0811.modelsplitter.SplitModel;
 import malte0811.modelsplitter.model.OBJModel;
 import malte0811.modelsplitter.model.Polygon;
-import malte0811.modelsplitter.util.BakedQuadUtil;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
@@ -92,7 +91,7 @@ public class BakedBasicSplitModel extends CompositeBakedModel<IBakedModel>
 	)
 	{
 		List<Polygon<TextureAtlasSprite>> polys = in.stream()
-				.map(BakedQuadUtil::toPolygon)
+				.map(PolygonUtils::toPolygon)
 				.collect(Collectors.toList());
 		SplitModel<TextureAtlasSprite> splitData = new SplitModel<>(new OBJModel<>(polys));
 
@@ -122,7 +121,7 @@ public class BakedBasicSplitModel extends CompositeBakedModel<IBakedModel>
 		{
 			List<BakedQuad> subModelFaces = new ArrayList<>(e.getValue().getFaces().size());
 			for(Polygon<TextureAtlasSprite> p : e.getValue().getFaces())
-				subModelFaces.add(BakedQuadUtil.toBakedQuad(p, transform, DefaultVertexFormats.BLOCK));
+				subModelFaces.add(PolygonUtils.toBakedQuad(p, transform, DefaultVertexFormats.BLOCK));
 			map.put(e.getKey(), subModelFaces);
 		}
 		return map;
