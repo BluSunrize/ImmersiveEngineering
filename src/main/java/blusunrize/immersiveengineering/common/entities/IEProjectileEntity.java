@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.entities;
 
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
@@ -44,7 +45,7 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 	public boolean inGround;
 	public int ticksInGround;
 	public int ticksInAir;
-	protected IntOpenHashSet piercedEntities;
+	protected IntSet piercedEntities;
 
 	private int tickLimit = 40;
 
