@@ -852,65 +852,7 @@ public class IEContent
 
 		ChemthrowerEffects.register();
 
-		RailgunHandler.registerStandardProjectile(Ingredient.fromTag(IETags.ironRod), 16, 1.25).setColourMap(
-				new RailgunRenderColors(0xd8d8d8, 0xd8d8d8, 0xd8d8d8, 0xa8a8a8, 0x686868, 0x686868)
-		);
-		RailgunHandler.registerStandardProjectile(Ingredient.fromTag(IETags.aluminumRod), 10, 1.05).setColourMap(
-				new RailgunRenderColors(0xd8d8d8, 0xd8d8d8, 0xd8d8d8, 0xa8a8a8, 0x686868, 0x686868)
-		);
-		RailgunHandler.registerStandardProjectile(Ingredient.fromTag(IETags.steelRod), 24, 1.25).setColourMap(
-				new RailgunRenderColors(0xb4b4b4, 0xb4b4b4, 0xb4b4b4, 0x7a7a7a, 0x555555, 0x555555)
-		);
-		RailgunHandler.registerStandardProjectile(new ItemStack(IEItems.Misc.graphiteElectrode), 30, .9).setColourMap(
-				new RailgunRenderColors(0x242424, 0x242424, 0x242424, 0x171717, 0x171717, 0x0a0a0a)
-		);
-		RailgunHandler.registerProjectile(Ingredient.fromItems(IEItems.Tools.sawblade), new RailgunHandler.IRailgunProjectile()
-		{
-			@Override
-			public Entity getProjectile(@Nullable PlayerEntity shooter, ItemStack ammo, Entity defaultProjectile)
-			{
-				Vec3d look = shooter.getLookVec();
-				return new SawbladeEntity(shooter.getEntityWorld(), shooter, look.x*20, look.y*20, look.z*20, ammo);
-			}
-		});
-		RailgunHandler.registerProjectile(Ingredient.fromTag(Tags.Items.RODS_BLAZE), new RailgunHandler.StandardRailgunProjectile(10, 1.05)
-		{
-			@Override
-			public void onHitTarget(World world, RayTraceResult target, @Nullable UUID shooter, Entity projectile)
-			{
-				if(target instanceof EntityRayTraceResult)
-					((EntityRayTraceResult)target).getEntity().setFire(5);
-			}
-
-			@Override
-			public double getBreakChance(@Nullable UUID shooter, ItemStack ammo)
-			{
-				return 1;
-			}
-		}.setColourMap(new RailgunRenderColors(0xfff32d, 0xffc100, 0xb36b19, 0xbf5a00, 0xbf5a00, 0x953300)));
-		RailgunHandler.registerProjectile(Ingredient.fromItems(Items.TRIDENT), new RailgunHandler.IRailgunProjectile()
-		{
-			@Override
-			public boolean isValidForTurret()
-			{
-				return false;
-			}
-
-			@Override
-			public Entity getProjectile(@Nullable PlayerEntity shooter, ItemStack ammo, Entity defaultProjectile)
-			{
-				if(shooter!=null)
-				{
-					ammo.damageItem(1, shooter, (p_220047_1_) -> p_220047_1_.sendBreakAnimation(shooter.getActiveHand()));
-					TridentEntity trident = new TridentEntity(shooter.world, shooter, ammo);
-					trident.shoot(shooter, shooter.rotationPitch, shooter.rotationYaw, 0.0F, 2.5F, 1.0F);
-					if(shooter.abilities.isCreativeMode)
-						trident.pickupStatus = AbstractArrowEntity.PickupStatus.CREATIVE_ONLY;
-					return trident;
-				}
-				return defaultProjectile;
-			}
-		});
+		RailgunProjectiles.register();
 
 		ExternalHeaterHandler.defaultFurnaceEnergyCost = IEConfig.MACHINES.heater_consumption.get();
 		ExternalHeaterHandler.defaultFurnaceSpeedupCost = IEConfig.MACHINES.heater_speedupConsumption.get();
