@@ -298,6 +298,7 @@ public class BlockStates extends BlockStateProvider
 		{
 			ResourceLocation sheetmetalName = modLoc("block/metal/sheetmetal_"+dye.getTranslationKey());
 			cubeAll(MetalDecoration.coloredSheetmetal.get(dye), sheetmetalName);
+			slabFor(MetalDecoration.coloredSheetmetal.get(dye), sheetmetalName);
 		}
 		fenceBlock(WoodenDecoration.treatedFence, TREATED_FENCE_TEXTURE);
 		fenceBlock(MetalDecoration.steelFence, STEEL_FENCE_TEXTURE);
