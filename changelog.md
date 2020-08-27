@@ -1,5 +1,6 @@
 ##### Version 1.15.2-4.0.0-pre
 - Fixed broken rendering of components on the Automated Workbench (BluSunrize)
+- Fixed rendering of mirrored multiblocks (Malte)
 
 ##### Version 1.14.4-4.0.0-pre
 - Added dyed sheetmetal, textured by Rorax! (BluSunrize)
