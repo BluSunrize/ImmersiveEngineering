@@ -597,4 +597,10 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 			renderBB = new AxisAlignedBB(0, 0, 0, 1, 2, 1).offset(pos);
 		return renderBB;
 	}
+
+	@Override
+	public BlockPos getModelOffset(BlockState state)
+	{
+		return new BlockPos(0, dummy, 0);
+	}
 }

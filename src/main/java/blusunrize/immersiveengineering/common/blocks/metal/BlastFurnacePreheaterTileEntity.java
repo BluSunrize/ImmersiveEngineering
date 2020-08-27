@@ -196,4 +196,10 @@ public class BlastFurnacePreheaterTileEntity extends IEBaseTileEntity implements
 			}
 		}
 	}
+
+	@Override
+	public BlockPos getModelOffset(BlockState state)
+	{
+		return new BlockPos(0, dummy, 0);
+	}
 }

@@ -1,8 +1,8 @@
 {
   "parent": "block/block",
   "textures": {
-    "texture": "immersiveengineering:block/metal_decoration/steel_post",
-    "particle": "immersiveengineering:block/metal_decoration/steel_post"
+    "particle": "immersiveengineering:block/metal_decoration/steel_post",
+    "texture": "immersiveengineering:block/metal_decoration/steel_post"
   },
   "loader": "immersiveengineering:basic_split",
   "base_loader": "immersiveengineering:ie_obj",

@@ -1,5 +1,8 @@
 {
   "parent": "block/block",
+  "textures": {
+    "particle": "immersiveengineering:block/multiblocks/fermenter"
+  },
   "loader": "immersiveengineering:basic_split",
   "base_loader": "forge:obj",
   "dynamic": false,

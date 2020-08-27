@@ -643,4 +643,13 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 		BlockState newState = old.with(IEProperties.MULTIBLOCKSLAVE, dummy);
 		world.setBlockState(pos, newState);
 	}
+
+	@Override
+	public BlockPos getModelOffset(BlockState state)
+	{
+		if (isDummy())
+			return new BlockPos(0, 1, 0);
+		else
+			return BlockPos.ZERO;
+	}
 }

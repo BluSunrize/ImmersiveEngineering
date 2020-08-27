@@ -189,7 +189,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 		float hitZ = (float)context.getHitVec().z-pos.getZ();
 		ItemStack stack = context.getItem();
 
-		if(tile instanceof IDirectionalTile&&false)
+		if(tile instanceof IDirectionalTile)
 		{
 			Direction f = ((IDirectionalTile)tile).getFacingForPlacement(placer, pos, side, hitX, hitY, hitZ);
 			((IDirectionalTile)tile).setFacing(f);

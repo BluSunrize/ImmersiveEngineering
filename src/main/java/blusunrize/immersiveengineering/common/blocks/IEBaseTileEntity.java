@@ -103,7 +103,6 @@ public abstract class IEBaseTileEntity extends TileEntity implements BlockstateP
 	@Override
 	public void rotate(Rotation rot)
 	{
-		if(true) return;
 		if(rot!=Rotation.NONE&&this instanceof IDirectionalTile&&((IDirectionalTile)this).canRotate(Direction.UP))
 		{
 			Direction f = ((IDirectionalTile)this).getFacing();
@@ -129,7 +128,6 @@ public abstract class IEBaseTileEntity extends TileEntity implements BlockstateP
 	@Override
 	public void mirror(Mirror mirrorIn)
 	{
-		if(true) return;
 		if(mirrorIn==Mirror.FRONT_BACK&&this instanceof IDirectionalTile)
 		{
 			((IDirectionalTile)this).setFacing(((IDirectionalTile)this).getFacing());

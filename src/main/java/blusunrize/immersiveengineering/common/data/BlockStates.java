@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.client.models.connection.ConnectionLoader
 import blusunrize.immersiveengineering.client.models.connection.FeedthroughLoader;
 import blusunrize.immersiveengineering.client.models.multilayer.MultiLayerLoader;
 import blusunrize.immersiveengineering.client.models.obj.IEOBJLoader;
+import blusunrize.immersiveengineering.client.models.obj.OBJHelper;
 import blusunrize.immersiveengineering.client.models.split.SplitModelLoader;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
@@ -192,10 +193,9 @@ public class BlockStates extends BlockStateProvider
 		for(Direction d : Direction.BY_HORIZONTAL_INDEX)
 			parts.add(new BlockPos(0, 3, 0).offset(d));
 		LoadedModelBuilder builder = splitModel(
-				name(b), IEOBJLoader.LOADER_NAME, model, parts.build().stream(), true
+				name(b), IEOBJLoader.LOADER_NAME, model, texture.toString(), parts.build().stream(), true
 		);
-		builder.texture("texture", texture)
-				.texture("particle", texture);
+		builder.texture("texture", texture);
 		getVariantBuilder(b)
 				.partialState()
 				.setModels(new ConfiguredModel(builder));
@@ -268,6 +268,8 @@ public class BlockStates extends BlockStateProvider
 				return arr;
 			}
 	);
+	private static final List<Vec3i> COLUMN_TWO = ImmutableList.of(BlockPos.ZERO, BlockPos.ZERO.up());
+	private static final List<Vec3i> COLUMN_THREE = ImmutableList.of(BlockPos.ZERO, BlockPos.ZERO.up(), BlockPos.ZERO.up(2));
 
 	private ModelFile splitOBJ(String loc, TemplateMultiblock mb)
 	{
@@ -283,7 +285,11 @@ public class BlockStates extends BlockStateProvider
 	private ModelFile splitOBJ(String loc, List<Vec3i> parts)
 	{
 		Preconditions.checkArgument(loc.endsWith(".obj"));
-		return splitModel(loc.substring(0, loc.length()-4), forgeLoc("obj"), modLoc(loc), parts.stream(), false);
+		ResourceLocation modelLoc = modLoc(loc);
+		return splitModel(
+				loc.substring(0, loc.length()-4), forgeLoc("obj"), modelLoc, DataGenUtils.getTextureFromObj(
+						modelLoc, existingFileHelper
+				), parts.stream(), false);
 	}
 
 	private ModelFile splitOBJ(
@@ -304,13 +310,16 @@ public class BlockStates extends BlockStateProvider
 						p = new BlockPos(size.getX()-p.getX()-1, p.getY(), p.getZ());
 					return p.subtract(offset);
 				});
-		return splitModel(name, forgeLoc("obj"), model, partsStream, false);
+		return splitModel(name, forgeLoc("obj"), model, DataGenUtils.getTextureFromObj(
+				model, existingFileHelper
+		), partsStream, false);
 	}
 
 	private LoadedModelBuilder splitModel(
 			String name,
 			ResourceLocation loader,
 			ResourceLocation model,
+			String particleTexture,
 			Stream<Vec3i> parts,
 			boolean dynamic
 	)
@@ -322,7 +331,8 @@ public class BlockStates extends BlockStateProvider
 				.additional(SplitModelLoader.DYNAMIC, dynamic)
 				.additional("detectCullableFaces", false)
 				.additional("model", addModelsPrefix(model))
-				.additional("flip-v", true);
+				.additional("flip-v", true)
+				.texture("particle", particleTexture);
 		JsonArray partsJson = parts.collect(POSITIONS_TO_JSON);
 		ret.additional(SplitModelLoader.PARTS, partsJson);
 		return ret;
@@ -335,10 +345,12 @@ public class BlockStates extends BlockStateProvider
 	{
 		Preconditions.checkArgument(model.endsWith(".obj.ie"));
 		String name = model.substring(0, model.length()-7);
+		ResourceLocation modelLoc = modLoc(model);
 		return splitModel(
 				name,
 				IEOBJLoader.LOADER_NAME,
-				modLoc(model),
+				modelLoc,
+				DataGenUtils.getTextureFromObj(modelLoc, existingFileHelper),
 				parts.stream(),
 				true
 		);
@@ -468,20 +480,23 @@ public class BlockStates extends BlockStateProvider
 		simpleBlock(Multiblocks.bucketWheel, EMPTY_MODEL);
 		simpleBlock(MetalDevices.fluidPipe, ieObj("block/metal_device/fluid_pipe.obj.ie"));
 
-		//TODO split
 		createMultiblock(
 				MetalDevices.cloche,
-				ieObj("block/metal_device/cloche.obj.ie")
+				splitIEOBJ("block/metal_device/cloche.obj.ie", COLUMN_THREE)
 		);
 		createMultiblock(
 				MetalDevices.turretChem,
-				ieObj("block/metal_device/chem_turret.obj.ie")
+				splitIEOBJ("block/metal_device/chem_turret.obj.ie", COLUMN_TWO)
 		);
 		createMultiblock(
 				MetalDevices.turretGun,
-				ieObj("block/metal_device/gun_turret.obj.ie")
+				splitIEOBJ("block/metal_device/gun_turret.obj.ie", COLUMN_TWO)
 		);
-		createMultiblock(MetalDevices.teslaCoil, obj("block/metal_device/teslacoil.obj"),
+		createMultiblock(
+				MetalDevices.teslaCoil,
+				splitOBJ("block/metal_device/teslacoil.obj", 
+                    ImmutableList.of(BlockPos.ZERO, new BlockPos(0, 0, -1))
+                ),
 				null, IEProperties.FACING_ALL, null,
 				180);
 		for(Entry<EnumMetals, Block> chute : MetalDevices.chutes.entrySet())
@@ -623,9 +638,10 @@ public class BlockStates extends BlockStateProvider
 					.additional("base_name", modLoc("block/metal_device/fluid_placer"));
 			simpleBlockItem(MetalDevices.fluidPlacer, model);
 		}
-		//TODO split
-		createMultiblock(MetalDevices.blastFurnacePreheater,
-				obj("block/metal_device/blastfurnace_preheater.obj"));
+		createMultiblock(
+				MetalDevices.blastFurnacePreheater,
+				splitOBJ("block/metal_device/blastfurnace_preheater.obj", COLUMN_THREE)
+		);
 		{
 			ModelFile furnaceHeaterOn = models().withExistingParent("furnace_heater_on", rl("block/ie_six_sides_overlay_all_but_one"))
 					.texture("block_all", rl("block/metal_device/furnace_heater_active"))
@@ -758,7 +774,6 @@ public class BlockStates extends BlockStateProvider
 				ImmutableMap.of(), RenderType.getCutout(), RenderType.getTranslucent());
 		createConnector(Connectors.connectorBundled, rl("block/connector/connector_bundled.obj"),
 				ImmutableMap.of(), RenderType.getCutout());
-		//TODO all layers
 		createConnector(Connectors.feedthrough, FeedthroughLoader.LOCATION, ImmutableMap.of(),
 				RenderType.getBlockRenderTypes().toArray(new RenderType[0]));
 		createConnector(MetalDevices.electricLantern, state -> rl("block/metal_device/e_lantern.obj"),
@@ -779,6 +794,7 @@ public class BlockStates extends BlockStateProvider
 				return rl("block/connector/breaker_switch_on.obj.ie");
 		}, ImmutableMap.of(), ImmutableList.of(IEProperties.ACTIVE), RenderType.getSolid());
 		{
+			//TODO split
 			ResourceLocation leftModel = rl("block/connector/transformer_mv_left.obj");
 			createConnector(Connectors.transformer, map -> {
 				if(map.getSetStates().get(IEProperties.MULTIBLOCKSLAVE)==Boolean.TRUE)
@@ -797,6 +813,7 @@ public class BlockStates extends BlockStateProvider
 		createConnector(Connectors.postTransformer, rl("block/connector/transformer_post.obj"),
 				ImmutableMap.of(), RenderType.getSolid());
 		{
+			//TODO split
 			ResourceLocation leftModel = rl("block/connector/transformer_hv_left.obj");
 			createConnector(Connectors.transformerHV, map -> {
 				if(map.getSetStates().get(IEProperties.MULTIBLOCKSLAVE)==Boolean.TRUE)
@@ -813,6 +830,7 @@ public class BlockStates extends BlockStateProvider
 			), RenderType.getSolid());
 		}
 
+		//TODO split
 		ResourceLocation ctModel = rl("block/connector/e_meter.obj");
 		createConnector(Connectors.currentTransformer, map -> {
 			if(map.getSetStates().get(IEProperties.MULTIBLOCKSLAVE)==Boolean.TRUE)
@@ -917,16 +935,13 @@ public class BlockStates extends BlockStateProvider
 				modLoc("block/multiblocks/alloy_smelter_side"),
 				modLoc("block/multiblocks/alloy_smelter_on")
 		);
-		//TODO split
+		//TODO split, add particles
 		createMultiblock(Multiblocks.cokeOven, cokeOvenOff, cokeOvenOn,
-				IEProperties.FACING_HORIZONTAL, IEProperties.ACTIVE, 180,
-				modLoc("block/multiblocks/coke_oven"));
+				IEProperties.FACING_HORIZONTAL, IEProperties.ACTIVE, 180);
 		createMultiblock(Multiblocks.alloySmelter, alloySmelterOff, alloySmelterOn,
-				IEProperties.FACING_HORIZONTAL, IEProperties.ACTIVE, 180,
-				modLoc("block/multiblocks/alloy_smelter_side"));
+				IEProperties.FACING_HORIZONTAL, IEProperties.ACTIVE, 180);
 		createMultiblock(Multiblocks.blastFurnace, blastFurnaceOff, blastFurnaceOn,
-				IEProperties.FACING_HORIZONTAL, IEProperties.ACTIVE, 180,
-				modLoc("block/multiblocks/blast_furnace"));
+				IEProperties.FACING_HORIZONTAL, IEProperties.ACTIVE, 180);
 	}
 
 	private void createMultistateSingleModel(Block block, ConfiguredModel model)
@@ -1005,20 +1020,6 @@ public class BlockStates extends BlockStateProvider
 
 	private void createMultiblock(Block b, ModelFile masterModel, @Nullable ModelFile mirroredModel,
 								  EnumProperty<Direction> facing, @Nullable IProperty<Boolean> mirroredState, int rotationOffset)
-	{
-		String objLoc = ((ModelBuilder<?>)masterModel).toJson().get("model").getAsString();
-		objLoc = objLoc.substring(0, objLoc.indexOf(':')+1)+objLoc.substring(objLoc.indexOf('/')+1);
-		createMultiblock(b, masterModel, mirroredModel, facing, mirroredState, rotationOffset,
-				new ResourceLocation(DataGenUtils.getTextureFromObj(
-						new ResourceLocation(objLoc),
-						existingFileHelper
-				)));
-	}
-
-	//TODO readd particle textures
-	private void createMultiblock(Block b, ModelFile masterModel, @Nullable ModelFile mirroredModel,
-								  EnumProperty<Direction> facing, @Nullable IProperty<Boolean> mirroredState, int rotationOffset,
-								  ResourceLocation particleTex)
 	{
 		Preconditions.checkArgument((mirroredModel==null)==(mirroredState==null));
 		VariantBlockStateBuilder builder = getVariantBuilder(b);

@@ -24,7 +24,10 @@ public class DataGenUtils
 	{
 		try
 		{
-			IResource objResource = helper.getResource(obj, ResourcePackType.CLIENT_RESOURCES, "", "models");
+			String prefix = "models";
+			if (obj.getPath().startsWith("models/"))
+				prefix = "";
+			IResource objResource = helper.getResource(obj, ResourcePackType.CLIENT_RESOURCES, "", prefix);
 			InputStream objStream = objResource.getInputStream();
 			String fullObj = IOUtils.toString(objStream, StandardCharsets.US_ASCII);
 			String libLoc = findFirstOccurrenceGroup(MTLLIB, fullObj);

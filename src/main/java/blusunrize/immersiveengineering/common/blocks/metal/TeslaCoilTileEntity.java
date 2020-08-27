@@ -607,4 +607,13 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 			return lifeTimer <= 0;
 		}
 	}
+
+	@Override
+	public BlockPos getModelOffset(BlockState state)
+	{
+		if (isDummy())
+			return new BlockPos(0, 0, -1);
+		else
+			return BlockPos.ZERO;
+	}
 }

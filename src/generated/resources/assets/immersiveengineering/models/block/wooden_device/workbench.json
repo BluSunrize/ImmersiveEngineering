@@ -1,5 +1,8 @@
 {
   "parent": "block/block",
+  "textures": {
+    "particle": "immersiveengineering:block/multiblocks/autoworkbench_blueprint"
+  },
   "loader": "immersiveengineering:basic_split",
   "base_loader": "immersiveengineering:ie_obj",
   "dynamic": true,

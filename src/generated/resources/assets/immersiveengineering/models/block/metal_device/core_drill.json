@@ -1,5 +1,8 @@
 {
   "parent": "block/block",
+  "textures": {
+    "particle": "immersiveengineering:block/metal_device/coresample_drill"
+  },
   "loader": "immersiveengineering:basic_split",
   "base_loader": "forge:obj",
   "dynamic": false,
