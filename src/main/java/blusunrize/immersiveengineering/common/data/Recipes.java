@@ -376,7 +376,7 @@ public class Recipes extends RecipeProvider
 		Item[] molds = {Molds.moldPlate, Molds.moldGear, Molds.moldRod, Molds.moldBulletCasing, Molds.moldWire, Molds.moldPacking4, Molds.moldPacking9, Molds.moldUnpacking};
 		for(Item mold : molds)
 			BlueprintCraftingRecipeBuilder.builder("molds", mold)
-					.addInput(new IngredientWithSize(IETags.getTagsFor(EnumMetals.STEEL).plate, 5))
+					.addInput(new IngredientWithSize(IETags.getTagsFor(EnumMetals.STEEL).plate, 3))
 					.addInput(Tools.wirecutter)
 					.build(out, toRL("blueprint/"+toPath(mold)));
 
@@ -2398,7 +2398,7 @@ public class Recipes extends RecipeProvider
 				.addIngredient(Ingredient.fromTag(IETags.fiberHemp), 3)
 				.addCriterion("has_hemp_fiber", hasItem(Ingredients.hempFiber))
 				.build(out, toRL(toPath(Items.STRING)));
-		ShapelessRecipeBuilder.shapelessRecipe(Items.GUNPOWDER)
+		ShapelessRecipeBuilder.shapelessRecipe(Items.GUNPOWDER, 3)
 				.addIngredient(Ingredient.fromTag(IETags.saltpeterDust), 4)
 				.addIngredient(IETags.sulfurDust)
 				.addIngredient(Items.CHARCOAL)
