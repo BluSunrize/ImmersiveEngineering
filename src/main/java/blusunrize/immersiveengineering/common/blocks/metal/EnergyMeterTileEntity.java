@@ -363,4 +363,13 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 	{
 		return ImmutableList.of(new ConnectionPoint(pos, 0), new ConnectionPoint(pos, 1));
 	}
+
+	@Override
+	public BlockPos getModelOffset(BlockState state)
+	{
+		if(isDummy())
+			return BlockPos.ZERO;
+		else
+			return new BlockPos(0, -1, 0);
+	}
 }

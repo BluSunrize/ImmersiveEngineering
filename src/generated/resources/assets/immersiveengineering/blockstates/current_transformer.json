@@ -1,21 +1,21 @@
 {
   "variants": {
     "facing=north,multiblockslave=false": {
-      "model": "immersiveengineering:block/current_transformer_empty",
+      "model": "immersiveengineering:block/connector/e_meter",
       "y": 180,
       "uvlock": true
     },
     "facing=south,multiblockslave=false": {
-      "model": "immersiveengineering:block/current_transformer_empty",
+      "model": "immersiveengineering:block/connector/e_meter",
       "uvlock": true
     },
     "facing=west,multiblockslave=false": {
-      "model": "immersiveengineering:block/current_transformer_empty",
+      "model": "immersiveengineering:block/connector/e_meter",
       "y": 90,
       "uvlock": true
     },
     "facing=east,multiblockslave=false": {
-      "model": "immersiveengineering:block/current_transformer_empty",
+      "model": "immersiveengineering:block/connector/e_meter",
       "y": 270,
       "uvlock": true
     },
