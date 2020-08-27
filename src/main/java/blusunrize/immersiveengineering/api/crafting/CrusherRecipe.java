@@ -22,6 +22,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.RegistryObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -82,7 +83,7 @@ public class CrusherRecipe extends MultiblockRecipe
 	}
 
 	// Initialized by reload listener
-	public static Map<ResourceLocation, CrusherRecipe> recipeList;
+	public static Map<ResourceLocation, CrusherRecipe> recipeList = Collections.emptyMap();
 
 	public static CrusherRecipe findRecipe(ItemStack input)
 	{

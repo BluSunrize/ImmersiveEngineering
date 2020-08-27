@@ -16,6 +16,7 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.RegistryObject;
 
+import java.util.Collections;
 import java.util.Map;
 
 public class BlastFurnaceFuel extends IESerializableRecipe
@@ -24,7 +25,7 @@ public class BlastFurnaceFuel extends IESerializableRecipe
 	public static RegistryObject<IERecipeSerializer<BlastFurnaceFuel>> SERIALIZER;
 
 	// Initialized by reload listener
-	public static Map<ResourceLocation, BlastFurnaceFuel> blastFuels;
+	public static Map<ResourceLocation, BlastFurnaceFuel> blastFuels = Collections.emptyMap();
 
 	public final Ingredient input;
 	public final int burnTime;
