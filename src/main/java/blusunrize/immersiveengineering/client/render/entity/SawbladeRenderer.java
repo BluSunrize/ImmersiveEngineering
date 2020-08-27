@@ -44,15 +44,13 @@ public class SawbladeRenderer extends EntityRenderer<SawbladeEntity>
 	@Override
 	public void render(SawbladeEntity entity, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn)
 	{
-		IVertexBuilder builder = bufferIn.getBuffer(RenderType.getEntityTranslucent(SAWBLADE));
+		IVertexBuilder builder = bufferIn.getBuffer(RenderType.getTranslucent());
 
 		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 		BlockPos blockPos = entity.getPosition();
 		BlockState state = entity.getEntityWorld().getBlockState(blockPos);
 		IBakedModel model = this.MODEL.get(null);
 		IEObjState objState = new IEObjState(VisibilityList.show("blade"));
-
-		ClientUtils.bindAtlas();
 
 		matrixStackIn.push();
 		matrixStackIn.scale(.75f, .75f, .75f);
@@ -72,7 +70,6 @@ public class SawbladeRenderer extends EntityRenderer<SawbladeEntity>
 		AmbientOcclusionStatus aoStat = ClientUtils.mc().gameSettings.ambientOcclusionStatus;
 		ClientUtils.mc().gameSettings.ambientOcclusionStatus = AmbientOcclusionStatus.OFF;
 
-		matrixStackIn.translate(-0.5, -0.5, -0.5);
 		blockRenderer.getBlockModelRenderer().renderModel(entity.getEntityWorld(), model, state, blockPos,
 				matrixStackIn, builder, true,
 				entity.getEntityWorld().rand, 0, 0, new SinglePropertyModelData<>(objState, Model.IE_OBJ_STATE));

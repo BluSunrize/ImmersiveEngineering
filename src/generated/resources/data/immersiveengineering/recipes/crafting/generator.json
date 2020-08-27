@@ -1,16 +1,16 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "iii",
+    "iei",
     "ede",
-    "iii"
+    "iei"
   ],
   "key": {
     "i": {
-      "tag": "forge:ingots/steel"
+      "tag": "forge:sheetmetals/steel"
     },
     "e": {
-      "tag": "forge:ingots/electrum"
+      "tag": "forge:plates/electrum"
     },
     "d": {
       "item": "immersiveengineering:dynamo"
@@ -18,6 +18,6 @@
   },
   "result": {
     "item": "immersiveengineering:generator",
-    "count": 2
+    "count": 4
   }
 }

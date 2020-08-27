@@ -80,6 +80,7 @@ import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Container;
@@ -136,6 +137,7 @@ public class ClientProxy extends CommonProxy
 	public static IEFontRender itemFont;
 	public static KeyBinding keybind_magnetEquip = new KeyBinding("key.immersiveengineering.magnetEquip", GLFW.GLFW_KEY_S, "key.categories.immersiveengineering");
 	public static KeyBinding keybind_chemthrowerSwitch = new KeyBinding("key.immersiveengineering.chemthrowerSwitch", -1, "key.categories.immersiveengineering");
+	public static KeyBinding keybind_railgunZoom = new KeyBinding("key.immersiveengineering.railgunZoom", InputMappings.Type.MOUSE, 2, "key.categories.immersiveengineering");
 
 	@Override
 	public void modConstruction()
@@ -204,7 +206,7 @@ public class ClientProxy extends CommonProxy
 
 		MinecraftForge.EVENT_BUS.register(new RecipeReloadListener());
 
-		keybind_magnetEquip.setKeyConflictContext(new IKeyConflictContext()
+		IKeyConflictContext noKeyConflict = new IKeyConflictContext()
 		{
 			@Override
 			public boolean isActive()
@@ -217,12 +219,17 @@ public class ClientProxy extends CommonProxy
 			{
 				return false;
 			}
-		});
+		};
+		keybind_magnetEquip.setKeyConflictContext(noKeyConflict);
 		ClientRegistry.registerKeyBinding(keybind_magnetEquip);
-		ShaderHelper.initShaders();
+
+		keybind_railgunZoom.setKeyConflictContext(noKeyConflict);
+		ClientRegistry.registerKeyBinding(keybind_railgunZoom);
 
 		keybind_chemthrowerSwitch.setKeyConflictContext(KeyConflictContext.IN_GAME);
 		ClientRegistry.registerKeyBinding(keybind_chemthrowerSwitch);
+
+		ShaderHelper.initShaders();
 
 		TeslaCoilTileEntity.effectMap = ArrayListMultimap.create();
 

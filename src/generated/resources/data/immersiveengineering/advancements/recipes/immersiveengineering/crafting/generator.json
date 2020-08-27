@@ -6,12 +6,12 @@
     ]
   },
   "criteria": {
-    "has_steel_ingot": {
+    "has_steel_sheetmetal": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "tag": "forge:ingots/steel"
+            "tag": "forge:sheetmetals/steel"
           }
         ]
       }
@@ -45,7 +45,7 @@
   },
   "requirements": [
     [
-      "has_steel_ingot",
+      "has_steel_sheetmetal",
       "has_electrum_ingot",
       "has_dynamo",
       "has_the_recipe"

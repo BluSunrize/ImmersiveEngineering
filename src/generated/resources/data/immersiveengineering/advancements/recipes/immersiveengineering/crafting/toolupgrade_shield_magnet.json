@@ -6,12 +6,12 @@
     ]
   },
   "criteria": {
-    "has_coil_lv": {
+    "has_shield": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:coil_lv"
+            "item": "immersiveengineering:shield"
           }
         ]
       }
@@ -25,7 +25,7 @@
   },
   "requirements": [
     [
-      "has_coil_lv",
+      "has_shield",
       "has_the_recipe"
     ]
   ]
