@@ -168,11 +168,15 @@ public class IEDamageSources
 
 	public static DamageSource causeRailgunDamage(RailgunShotEntity shot, Entity shooter)
 	{
+		if(shooter==null)
+			return new TurretDamageSource(Lib.DMG_Railgun);
 		return new IEDamageSource_Indirect(Lib.DMG_Railgun, shot, shooter).setDamageBypassesArmor();
 	}
 
 	public static DamageSource causeSawbladeDamage(SawbladeEntity shot, Entity shooter)
 	{
+		if(shooter==null)
+			return new TurretDamageSource(Lib.DMG_Sawblade);
 		return new IEDamageSource_Indirect(Lib.DMG_Sawblade, shot, shooter).setDamageBypassesArmor();
 	}
 

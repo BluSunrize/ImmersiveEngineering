@@ -20,6 +20,7 @@ import blusunrize.immersiveengineering.api.tool.*;
 import blusunrize.immersiveengineering.api.tool.AssemblerHandler.RecipeQuery;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler.DefaultFurnaceAdapter;
+import blusunrize.immersiveengineering.api.tool.RailgunHandler.RailgunRenderColors;
 import blusunrize.immersiveengineering.api.wires.NetHandlerCapability;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler;
@@ -66,7 +67,11 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.AbstractArrowEntity;
+import net.minecraft.entity.projectile.TridentEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.EquipmentSlotType.Group;
@@ -82,9 +87,13 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.EntityRayTraceResult;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.RegistryEvent.MissingMappings.Mapping;
@@ -95,6 +104,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.*;
 
@@ -586,6 +596,7 @@ public class IEContent
 		IEItems.Misc.iconBirthday = new FakeIconItem("birthday");
 		IEItems.Misc.iconLucky = new FakeIconItem("lucky");
 		IEItems.Misc.iconDrillbreak = new FakeIconItem("drillbreak");
+		IEItems.Misc.iconRavenholm = new FakeIconItem("ravenholm");
 
 		ConveyorHandler.createConveyorBlocks();
 		BulletHandler.emptyCasing = new ItemStack(Ingredients.emptyCasing);
@@ -823,7 +834,7 @@ public class IEContent
 		AssemblerHandler.registerSpecialQueryConverters((o) ->
 		{
 			if(o instanceof IngredientFluidStack)
-				return new RecipeQuery(((IngredientFluidStack)o).getFluidTagInput(),((IngredientFluidStack)o).getFluidTagInput().getAmount());
+				return new RecipeQuery(((IngredientFluidStack)o).getFluidTagInput(), ((IngredientFluidStack)o).getFluidTagInput().getAmount());
 			else return null;
 		});
 
@@ -841,10 +852,7 @@ public class IEContent
 
 		ChemthrowerEffects.register();
 
-		RailgunHandler.registerProjectileProperties(Ingredient.fromTag(IETags.ironRod), 15, 1.25).setColourMap(new int[][]{{0xd8d8d8, 0xd8d8d8, 0xd8d8d8, 0xa8a8a8, 0x686868, 0x686868}});
-		RailgunHandler.registerProjectileProperties(Ingredient.fromTag(IETags.aluminumRod), 13, 1.05).setColourMap(new int[][]{{0xd8d8d8, 0xd8d8d8, 0xd8d8d8, 0xa8a8a8, 0x686868, 0x686868}});
-		RailgunHandler.registerProjectileProperties(Ingredient.fromTag(IETags.steelRod), 18, 1.25).setColourMap(new int[][]{{0xb4b4b4, 0xb4b4b4, 0xb4b4b4, 0x7a7a7a, 0x555555, 0x555555}});
-		RailgunHandler.registerProjectileProperties(new ItemStack(IEItems.Misc.graphiteElectrode), 24, .9).setColourMap(new int[][]{{0x242424, 0x242424, 0x242424, 0x171717, 0x171717, 0x0a0a0a}});
+		RailgunProjectiles.register();
 
 		ExternalHeaterHandler.defaultFurnaceEnergyCost = IEConfig.MACHINES.heater_consumption.get();
 		ExternalHeaterHandler.defaultFurnaceSpeedupCost = IEConfig.MACHINES.heater_speedupConsumption.get();

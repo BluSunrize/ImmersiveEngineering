@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryEntry;
 import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler;
+import blusunrize.immersiveengineering.api.tool.RailgunHandler.IRailgunProjectile;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
@@ -25,6 +26,7 @@ import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.entities.RailgunShotEntity;
 import blusunrize.immersiveengineering.common.gui.IESlot;
+import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IScrollwheel;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEEnergyItem;
 import blusunrize.immersiveengineering.common.util.IESounds;
@@ -34,6 +36,7 @@ import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Container;
@@ -63,7 +66,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, IZoomTool, ITool, IOBJModelCallback<ItemStack>
+public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, IZoomTool, IScrollwheel, ITool, IOBJModelCallback<ItemStack>
 {
 	public RailgunItem()
 	{
@@ -116,12 +119,12 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 		if(slotChanged)
 			return true;
 		LazyOptional<ShaderWrapper> wrapperOld = oldStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
-		LazyOptional<Boolean> sameShader = wrapperOld.map(wOld->{
+		LazyOptional<Boolean> sameShader = wrapperOld.map(wOld -> {
 			LazyOptional<ShaderWrapper> wrapperNew = newStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
-			return wrapperNew.map(w->ItemStack.areItemStacksEqual(wOld.getShaderItem(), w.getShaderItem()))
+			return wrapperNew.map(w -> ItemStack.areItemStacksEqual(wOld.getShaderItem(), w.getShaderItem()))
 					.orElse(true);
 		});
-		if (!sameShader.orElse(true))
+		if(!sameShader.orElse(true))
 			return true;
 		return super.shouldCauseReequipAnimation(oldStack, newStack, slotChanged);
 	}
@@ -188,7 +191,7 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 		int energy = IEConfig.TOOLS.railgun_consumption.get();
 		float energyMod = 1+this.getUpgrades(stack).getFloat("consumption");
 		energy = (int)(energy*energyMod);
-		if(this.extractEnergy(stack, energy, true)==energy&&!findAmmo(player).isEmpty())
+		if(this.extractEnergy(stack, energy, true)==energy&&!findAmmo(stack, player).isEmpty())
 		{
 			player.setActiveHand(hand);
 			player.world.playSound(null, player.posX, player.posY, player.posZ, getChargeTime(stack) <= 20?IESounds.chargeFast: IESounds.chargeSlow, SoundCategory.PLAYERS, 1.5f, 1f);
@@ -227,15 +230,15 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 			energy = (int)(energy*energyMod);
 			if(this.extractEnergy(stack, energy, true)==energy)
 			{
-				ItemStack ammo = findAmmo((PlayerEntity)user);
+				ItemStack ammo = findAmmo(stack, (PlayerEntity)user);
 				if(!ammo.isEmpty())
 				{
+					ItemStack ammoConsumed = ammo.split(1);
+					IRailgunProjectile projectileProperties = RailgunHandler.getProjectile(ammoConsumed);
 					Vec3d vec = user.getLookVec();
 					float speed = 20;
-					RailgunShotEntity shot = new RailgunShotEntity(user.world, user, vec.x*speed, vec.y*speed, vec.z*speed, Utils.copyStackWithAmount(ammo, 1));
-					ammo.shrink(1);
-					if(ammo.getCount() <= 0)
-						((PlayerEntity)user).inventory.deleteStack(ammo);
+					Entity shot = new RailgunShotEntity(user.world, user, vec.x*speed, vec.y*speed, vec.z*speed, ammoConsumed);
+					shot = projectileProperties.getProjectile((PlayerEntity)user, ammoConsumed, shot);
 					user.world.playSound(null, user.posX, user.posY, user.posZ, IESounds.railgunFire, SoundCategory.PLAYERS, 1, .5f+(.5f*user.getRNG().nextFloat()));
 					this.extractEnergy(stack, energy, false);
 					if(!world.isRemote)
@@ -254,19 +257,50 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 		}
 	}
 
-	public static ItemStack findAmmo(PlayerEntity player)
+	public static ItemStack findAmmo(ItemStack railgun, PlayerEntity player)
 	{
+		// Check for cached slot
+		if(ItemNBTHelper.hasKey(railgun, "ammo_slot"))
+		{
+			int slot = ItemNBTHelper.getInt(railgun, "ammo_slot");
+			ItemStack ammo = findAmmoInSlot(player, slot);
+			if(!ammo.isEmpty())
+				return ammo;
+		}
+
+		// Find it otherwise
 		if(isAmmo(player.getHeldItem(Hand.OFF_HAND)))
+		{
+			ItemNBTHelper.putInt(railgun, "ammo_slot", 0);
 			return player.getHeldItem(Hand.OFF_HAND);
+		}
 		else if(isAmmo(player.getHeldItem(Hand.MAIN_HAND)))
+		{
+			ItemNBTHelper.putInt(railgun, "ammo_slot", 1);
 			return player.getHeldItem(Hand.MAIN_HAND);
+		}
 		else
 			for(int i = 0; i < player.inventory.getSizeInventory(); i++)
 			{
 				ItemStack itemstack = player.inventory.getStackInSlot(i);
 				if(isAmmo(itemstack))
+				{
+					ItemNBTHelper.putInt(railgun, "ammo_slot", 2+i);
 					return itemstack;
+				}
 			}
+		return ItemStack.EMPTY;
+	}
+
+	public static ItemStack findAmmoInSlot(PlayerEntity player, int slot)
+	{
+		ItemStack ammo = ItemStack.EMPTY;
+		if(slot==0||slot==1)
+			ammo = player.getHeldItem(slot==0?Hand.MAIN_HAND: Hand.OFF_HAND);
+		else if(slot > 1&&slot-2 < player.inventory.getSizeInventory())
+			ammo = player.inventory.getStackInSlot(slot-2);
+		if(isAmmo(ammo))
+			return ammo;
 		return ItemStack.EMPTY;
 	}
 
@@ -274,8 +308,38 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 	{
 		if(stack.isEmpty())
 			return false;
-		RailgunHandler.RailgunProjectileProperties prop = RailgunHandler.getProjectileProperties(stack);
+		RailgunHandler.IRailgunProjectile prop = RailgunHandler.getProjectile(stack);
 		return prop!=null;
+	}
+
+	private boolean checkAmmoSlot(ItemStack stack, PlayerEntity player, int actualSlot)
+	{
+		if(!findAmmoInSlot(player, actualSlot).isEmpty())
+		{
+			ItemNBTHelper.putInt(stack, "ammo_slot", actualSlot);
+			player.inventory.markDirty();
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public void onScrollwheel(ItemStack stack, PlayerEntity player, boolean forward)
+	{
+		int slot = ItemNBTHelper.getInt(stack, "ammo_slot");
+		int count = player.inventory.getSizeInventory()+2;
+		if(forward)
+		{
+			for(int i = 1; i < count; i++)
+				if(checkAmmoSlot(stack, player, (slot+i)%count))
+					return;
+		}
+		else
+		{
+			for(int i = count-1; i >= 1; i--)
+				if(checkAmmoSlot(stack, player, (slot+i)%count))
+					return;
+		}
 	}
 
 	public int getChargeTime(ItemStack railgun)
@@ -292,15 +356,17 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 	@Override
 	public void removeFromWorkbench(PlayerEntity player, ItemStack stack)
 	{
-//		ToDo: Make an Upgrade Advancement?
-//		if(contents[18]!=null&&contents[19]!=null)
-//			Utils.unlockIEAdvancement(player, "upgrade_railgun");
+		LazyOptional<IItemHandler> invCap = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		invCap.ifPresent(inv -> {
+			if(!inv.getStackInSlot(0).isEmpty()&&!inv.getStackInSlot(1).isEmpty())
+				Utils.unlockIEAdvancement(player, "main/upgrade_railgun");
+		});
 	}
 
 	@Override
 	public int getMaxEnergyStored(ItemStack container)
 	{
-		return 1600;
+		return 8000;
 	}
 
 
@@ -349,6 +415,8 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 			return getUpgrades(stack).getBoolean("scope");
 		if(group.equals("upgrade_speed"))
 			return getUpgrades(stack).getDouble("speed") > 0;
+		if(group.equals("barrel_top"))
+			return getUpgrades(stack).getDouble("speed") <= 0;
 		return true;
 	}
 

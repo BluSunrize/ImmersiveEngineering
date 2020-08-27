@@ -239,7 +239,7 @@ public class ItemModels extends LoadedModelProvider
 		addItemModels("", Tools.sawblade, Tools.rockcutter);
 		addItemModels("", IEItems.Misc.maintenanceKit);
 		addItemModels("", IEItems.Misc.cartWoodenCrate, IEItems.Misc.cartReinforcedCrate, IEItems.Misc.cartWoodenBarrel, IEItems.Misc.cartMetalBarrel);
-		addItemModels("", IEItems.Misc.iconBirthday, IEItems.Misc.iconLucky, IEItems.Misc.iconDrillbreak);
+		addItemModels("", IEItems.Misc.iconBirthday, IEItems.Misc.iconLucky, IEItems.Misc.iconDrillbreak, IEItems.Misc.iconRavenholm);
 
 		obj(Tools.voltmeter, rl("item/voltmeter.obj"))
 				.transforms(rl("item/voltmeter"));

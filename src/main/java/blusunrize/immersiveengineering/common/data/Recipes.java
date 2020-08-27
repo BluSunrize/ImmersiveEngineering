@@ -2252,17 +2252,19 @@ public class Recipes extends RecipeProvider
 
 		ShapedRecipeBuilder.shapedRecipe(Misc.toolUpgrades.get(ToolUpgrade.RAILGUN_SCOPE))
 				.patternLine("pi ")
-				.patternLine("i i")
-				.patternLine(" ip")
-				.key('i', IETags.getTagsFor(EnumMetals.COPPER).ingot)
+				.patternLine("c i")
+				.patternLine(" cp")
+				.key('i', IETags.getTagsFor(EnumMetals.IRON).plate)
+				.key('c', IETags.getTagsFor(EnumMetals.COPPER).ingot)
 				.key('p', Tags.Items.GLASS_PANES)
 				.addCriterion("has_railgun", hasItem(Weapons.railgun))
 				.build(out, toRL(toPath(Misc.toolUpgrades.get(ToolUpgrade.RAILGUN_SCOPE))));
 		ShapedRecipeBuilder.shapedRecipe(Misc.toolUpgrades.get(ToolUpgrade.RAILGUN_CAPACITORS))
-				.patternLine("www")
-				.patternLine("ccc")
-				.key('w', Misc.wireCoils.get(WireType.STEEL))
-				.key('c', MetalDevices.capacitorHV)
+				.patternLine("p  ")
+				.patternLine("ip ")
+				.patternLine(" ip")
+				.key('p', IETags.getTagsFor(EnumMetals.CONSTANTAN).plate)
+				.key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
 				.addCriterion("has_railgun", hasItem(Weapons.railgun))
 				.build(out, toRL(toPath(Misc.toolUpgrades.get(ToolUpgrade.RAILGUN_CAPACITORS))));
 
@@ -2473,12 +2475,13 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL(toPath(Weapons.chemthrower)));
 		ShapedRecipeBuilder.shapedRecipe(Weapons.railgun)
 				.patternLine(" vg")
-				.patternLine("cbv")
-				.patternLine("bc ")
+				.patternLine("icp")
+				.patternLine("ci ")
 				.key('g', Ingredients.woodenGrip)
-				.key('b', Ingredients.gunpartBarrel)
+				.key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
 				.key('v', MetalDevices.capacitorHV)
 				.key('c', MetalDecoration.mvCoil)
+				.key('p', Ingredients.circuitBoard)
 				.addCriterion("has_"+toPath(MetalDevices.capacitorHV), hasItem(MetalDevices.capacitorHV))
 				.build(out, toRL(toPath(Weapons.railgun)));
 		ShapedRecipeBuilder.shapedRecipe(Misc.skyhook)

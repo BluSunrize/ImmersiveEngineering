@@ -379,7 +379,7 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 	}
 
 	@Override
-	public void onScrollwheel(ItemStack stack, boolean forward)
+	public void onScrollwheel(ItemStack stack, PlayerEntity playerEntity, boolean forward)
 	{
 		if(hasQuiverUpgrade(stack))
 		{
