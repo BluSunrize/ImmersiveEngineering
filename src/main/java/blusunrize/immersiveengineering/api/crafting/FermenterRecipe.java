@@ -20,10 +20,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.RegistryObject;
 
 import javax.annotation.Nonnull;
-import java.util.Comparator;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * @author BluSunrize - 01.03.2016
@@ -70,7 +67,7 @@ public class FermenterRecipe extends MultiblockRecipe
 	}
 
 	// Initialized by reload listener
-	public static Map<ResourceLocation, FermenterRecipe> recipeList;
+	public static Map<ResourceLocation, FermenterRecipe> recipeList = Collections.emptyMap();
 
 	public static FermenterRecipe findRecipe(ItemStack input)
 	{

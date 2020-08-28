@@ -74,8 +74,8 @@ public class MetalPressRecipe extends MultiblockRecipe
 	}
 
 	// Initialized by reload listener
-	public static Map<ResourceLocation, MetalPressRecipe> recipeList;
-	private static ArrayListMultimap<ComparableItemStack, MetalPressRecipe> recipesByMold;
+	public static Map<ResourceLocation, MetalPressRecipe> recipeList = Collections.emptyMap();
+	private static ArrayListMultimap<ComparableItemStack, MetalPressRecipe> recipesByMold = ArrayListMultimap.create();
 
 	public static void updateRecipesByMold()
 	{

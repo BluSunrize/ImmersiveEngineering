@@ -1247,7 +1247,7 @@ public class Recipes extends RecipeProvider
 		{
 			ITag<Item> dyeTag = DataGenUtils.createItemWrapper(new ResourceLocation("forge", "dyes/"+dye.getTranslationKey()));
 			Block coloredSheetmetal = MetalDecoration.coloredSheetmetal.get(dye);
-			ShapedRecipeBuilder.shapedRecipe(coloredSheetmetal)
+			ShapedRecipeBuilder.shapedRecipe(coloredSheetmetal, 8)
 					.patternLine("sss")
 					.patternLine("sds")
 					.patternLine("sss")
