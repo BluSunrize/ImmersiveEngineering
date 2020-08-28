@@ -6,12 +6,12 @@
     ]
   },
   "criteria": {
-    "has_plantoil_bucket": {
+    "has_drill": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:plantoil_bucket"
+            "item": "immersiveengineering:drill"
           }
         ]
       }
@@ -25,7 +25,7 @@
   },
   "requirements": [
     [
-      "has_plantoil_bucket",
+      "has_drill",
       "has_the_recipe"
     ]
   ]

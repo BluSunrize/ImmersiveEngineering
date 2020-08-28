@@ -8,7 +8,7 @@
       ]
     ]
   },
-  "caps": {
+  "speed": {
     "type": "crafting",
     "recipe": "crafting/toolupgrade_railgun_capacitors"
   },

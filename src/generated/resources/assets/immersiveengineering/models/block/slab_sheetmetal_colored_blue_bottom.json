@@ -1,0 +1,8 @@
+{
+  "parent": "block/slab",
+  "textures": {
+    "side": "immersiveengineering:block/metal/sheetmetal_blue",
+    "bottom": "immersiveengineering:block/metal/sheetmetal_blue",
+    "top": "immersiveengineering:block/metal/sheetmetal_blue"
+  }
+}

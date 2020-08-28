@@ -95,6 +95,7 @@ import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.MapData;
 import net.minecraftforge.client.event.*;
+import net.minecraftforge.client.event.InputEvent.MouseScrollEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.client.gui.ForgeIngameGui;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -180,6 +181,22 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 					if(held.getItem() instanceof IScrollwheel)
 						ImmersiveEngineering.packetHandler.sendToServer(new MessageScrollwheelItem(true));
 				}
+
+				if(!ClientProxy.keybind_railgunZoom.isInvalid()&&ClientProxy.keybind_railgunZoom.isPressed())
+					for(Hand hand : Hand.values())
+					{
+						ItemStack held = event.player.getHeldItem(hand);
+						if(held.getItem() instanceof IZoomTool&&((IZoomTool)held.getItem()).canZoom(held, event.player))
+						{
+							ZoomHandler.isZooming = !ZoomHandler.isZooming;
+							if(ZoomHandler.isZooming)
+							{
+								float[] steps = ((IZoomTool)held.getItem()).getZoomSteps(held, event.player);
+								if(steps!=null&&steps.length > 0)
+									ZoomHandler.fovZoom = steps[ZoomHandler.getCurrentZoomStep(steps)];
+							}
+						}
+					}
 			}
 		}
 	}
@@ -603,14 +620,27 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						int duration = 72000-(player.isHandActive()&&player.getActiveHand()==hand?player.getItemInUseCount(): 0);
 						int chargeTime = ((RailgunItem)equipped.getItem()).getChargeTime(equipped);
 						int chargeLevel = duration < 72000?Math.min(99, (int)(duration/(float)chargeTime*100)): 0;
-						float scale = 2f;
+						float scale = 1.5f;
+
+						IVertexBuilder builder = buffer.getBuffer(IERenderTypes.getGui(rl("textures/gui/hud_elements.png")));
+						boolean boundLeft = (player.getPrimaryHand()==HandSide.RIGHT)==(hand==Hand.OFF_HAND);
+						float dx = boundLeft?24: (scaledWidth-24-64);
+						float dy = scaledHeight-16;
 						transform.push();
-						transform.translate(scaledWidth-rightOffset-80, scaledHeight-30, 0);
+						transform.translate(dx, dy, 0);
+						ClientUtils.drawTexturedRect(builder, transform, 0, -32, 64, 32, 1, 1, 1, 1, 0, 64/256f, 96/256f, 128/256f);
+
+						ItemStack ammo = RailgunItem.findAmmo(equipped, player);
+						if(!ammo.isEmpty())
+							ClientUtils.renderItemWithOverlayIntoGUI(buffer, transform, ammo, 6, -22);
+
+						transform.translate(30, -27.5, 0);
 						transform.scale(scale, scale, 1);
+						String chargeTxt = chargeLevel < 10?"0 "+chargeLevel: chargeLevel/10+" "+chargeLevel%10;
 						ClientUtils.font().renderString(
-								(chargeLevel < 10?"0": "")+chargeLevel, 0, 0, Lib.colour_nixieTubeText,
-								true, transform.getLast().getMatrix(),
-								buffer, false, 0, 0xf000f0
+								chargeTxt, 0, 0, Lib.COLOUR_I_ImmersiveOrange,
+								true, transform.getLast().getMatrix(), buffer, false,
+								0, 0xf000f0
 						);
 						transform.pop();
 					}
@@ -944,79 +974,48 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	public void onFOVUpdate(FOVUpdateEvent event)
 	{
 		PlayerEntity player = ClientUtils.mc().player;
-		if(!player.getHeldItem(Hand.MAIN_HAND).isEmpty()&&player.getHeldItem(Hand.MAIN_HAND).getItem() instanceof IZoomTool)
+
+		// Check if player is holding a zoom-allowing item
+		ItemStack equipped = player.getHeldItem(Hand.MAIN_HAND);
+		boolean mayZoom = equipped.getItem() instanceof IZoomTool&&((IZoomTool)equipped.getItem()).canZoom(equipped, player);
+		// Set zoom if allowed, otherwise stop zooming
+		if(ZoomHandler.isZooming)
 		{
-			if(player.isSneaking()&&player.func_233570_aj_())
-			{
-				ItemStack equipped = player.getHeldItem(Hand.MAIN_HAND);
-				IZoomTool tool = (IZoomTool)equipped.getItem();
-				if(tool.canZoom(equipped, player))
-				{
-					if(!ZoomHandler.isZooming)
-					{
-						float[] steps = tool.getZoomSteps(equipped, player);
-						if(steps!=null&&steps.length > 0)
-						{
-							int curStep = -1;
-							float dist = 0;
-							for(int i = 0; i < steps.length; i++)
-								if(curStep==-1||Math.abs(steps[i]-ZoomHandler.fovZoom) < dist)
-								{
-									curStep = i;
-									dist = Math.abs(steps[i]-ZoomHandler.fovZoom);
-								}
-							ZoomHandler.fovZoom = steps[curStep];
-						}
-						ZoomHandler.isZooming = true;
-					}
-					event.setNewfov(ZoomHandler.fovZoom);
-				}
-				else if(ZoomHandler.isZooming)
-					ZoomHandler.isZooming = false;
-			}
-			else if(ZoomHandler.isZooming)
+			if(mayZoom)
+				event.setNewfov(ZoomHandler.fovZoom);
+			else
 				ZoomHandler.isZooming = false;
 		}
-		else if(ZoomHandler.isZooming)
-			ZoomHandler.isZooming = false;
+
+		// Concrete feet slow you, but shouldn't break FoV
 		if(player.getActivePotionEffect(IEPotions.concreteFeet)!=null)
 			event.setNewfov(1);
-
 	}
 
 	@SubscribeEvent
-	public void onMouseEvent(InputEvent.MouseScrollEvent event)
+	public void onMouseEvent(MouseScrollEvent event)
 	{
-		if(event.getScrollDelta()!=0&&ClientUtils.mc().currentScreen==null)
+		PlayerEntity player = ClientUtils.mc().player;
+		if(event.getScrollDelta()!=0&&ClientUtils.mc().currentScreen==null&&player!=null)
 		{
-			PlayerEntity player = ClientUtils.mc().player;
-			if(player!=null&&!player.getHeldItem(Hand.MAIN_HAND).isEmpty()&&player.isSneaking())
+			ItemStack equipped = player.getHeldItem(Hand.MAIN_HAND);
+			// Handle zoom steps
+			if(equipped.getItem() instanceof IZoomTool&&((IZoomTool)equipped.getItem()).canZoom(equipped, player)&&ZoomHandler.isZooming)
 			{
-				ItemStack equipped = player.getHeldItem(Hand.MAIN_HAND);
-
-				if(equipped.getItem() instanceof IZoomTool)
+				float[] steps = ((IZoomTool)equipped.getItem()).getZoomSteps(equipped, player);
+				if(steps!=null&&steps.length > 0)
 				{
-					IZoomTool tool = (IZoomTool)equipped.getItem();
-					if(tool.canZoom(equipped, player))
-					{
-						float[] steps = tool.getZoomSteps(equipped, player);
-						if(steps!=null&&steps.length > 0)
-						{
-							int curStep = -1;
-							float dist = 0;
-							for(int i = 0; i < steps.length; i++)
-								if(curStep==-1||Math.abs(steps[i]-ZoomHandler.fovZoom) < dist)
-								{
-									curStep = i;
-									dist = Math.abs(steps[i]-ZoomHandler.fovZoom);
-								}
-							int newStep = curStep+(event.getScrollDelta() > 0?-1: 1);
-							if(newStep >= 0&&newStep < steps.length)
-								ZoomHandler.fovZoom = steps[newStep];
-							event.setCanceled(true);
-						}
-					}
+					int curStep = ZoomHandler.getCurrentZoomStep(steps);
+					int newStep = curStep+(event.getScrollDelta() > 0?-1: 1);
+					if(newStep >= 0&&newStep < steps.length)
+						ZoomHandler.fovZoom = steps[newStep];
+					event.setCanceled(true);
 				}
+			}
+
+			// Handle sneak + scrolling
+			if(player.isSneaking())
+			{
 				if(IEConfig.TOOLS.chemthrower_scroll.get()&&equipped.getItem() instanceof IScrollwheel)
 				{
 					ImmersiveEngineering.packetHandler.sendToServer(new MessageScrollwheelItem(event.getScrollDelta() < 0));
@@ -1213,7 +1212,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			halfRotationArrowCoords[0]
 	};
 
-	public static void drawCircularRotationArrows(IRenderTypeBuffer buffer, MatrixStack transform, float rotation,  boolean flip, boolean halfCircle)
+	public static void drawCircularRotationArrows(IRenderTypeBuffer buffer, MatrixStack transform, float rotation, boolean flip, boolean halfCircle)
 	{
 		transform.push();
 		transform.translate(0, 0.502, 0);

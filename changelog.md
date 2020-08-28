@@ -3,9 +3,11 @@
 
 ##### Version 1.15.2-4.0.0-pre
 - Fixed broken rendering of components on the Automated Workbench (BluSunrize)
+- Fixed rendering of mirrored multiblocks (Malte)
 
 ##### Version 1.14.4-4.0.0-pre
 - Added dyed sheetmetal, textured by Rorax! (BluSunrize)
+- Changed recipes for engineering blocks & MV architecture to be less iron/steel heavy (BluSunrize)
 - Changed the pump to be configured for input on the bottom by default (Malte)
 - Changed nugget to ingot/ingot to block recipes to only trigger when an IE ingot is used in the middle slot (Malte)
   - If more mods adopt this convention it will mean that crafting a storage block from a specific mod will be possible

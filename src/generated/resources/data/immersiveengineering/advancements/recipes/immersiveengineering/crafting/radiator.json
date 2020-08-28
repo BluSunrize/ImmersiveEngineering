@@ -6,6 +6,16 @@
     ]
   },
   "criteria": {
+    "has_steel_sheetmetal": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:sheetmetals/steel"
+          }
+        ]
+      }
+    },
     "has_water_bucket": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
@@ -26,16 +36,6 @@
         ]
       }
     },
-    "has_steel_ingot": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "tag": "forge:ingots/steel"
-          }
-        ]
-      }
-    },
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
@@ -45,9 +45,9 @@
   },
   "requirements": [
     [
+      "has_steel_sheetmetal",
       "has_water_bucket",
       "has_copper_ingot",
-      "has_steel_ingot",
       "has_the_recipe"
     ]
   ]

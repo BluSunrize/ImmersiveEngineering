@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/sheetmetal_colored_magenta_from_slab"
+    ]
+  },
+  "criteria": {
+    "has_sheetmetal_colored_magenta": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:sheetmetal_colored_magenta"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/sheetmetal_colored_magenta_from_slab"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_sheetmetal_colored_magenta",
+      "has_the_recipe"
+    ]
+  ]
+}

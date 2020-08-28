@@ -6,12 +6,12 @@
     ]
   },
   "criteria": {
-    "has_wirecoil_steel": {
+    "has_railgun": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:wirecoil_steel"
+            "item": "immersiveengineering:railgun"
           }
         ]
       }
@@ -25,7 +25,7 @@
   },
   "requirements": [
     [
-      "has_wirecoil_steel",
+      "has_railgun",
       "has_the_recipe"
     ]
   ]

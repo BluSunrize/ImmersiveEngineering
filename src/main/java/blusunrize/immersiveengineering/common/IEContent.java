@@ -16,9 +16,12 @@ import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
-import blusunrize.immersiveengineering.api.tool.*;
+import blusunrize.immersiveengineering.api.tool.AssemblerHandler;
 import blusunrize.immersiveengineering.api.tool.AssemblerHandler.RecipeQuery;
+import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
+import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
+import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler;
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler.DefaultFurnaceAdapter;
 import blusunrize.immersiveengineering.api.wires.NetHandlerCapability;
 import blusunrize.immersiveengineering.api.wires.WireType;
@@ -244,8 +247,11 @@ public class IEContent
 			IEItems.Metals.dusts.put(m, dust);
 		}
 		for(DyeColor dye : DyeColor.values())
-			MetalDecoration.coloredSheetmetal.put(dye,
-					new IEBaseBlock("sheetmetal_colored_"+dye.getTranslationKey(), sheetmetalProperties, BlockItemIE::new));
+		{
+			IEBaseBlock sheetmetal = new IEBaseBlock("sheetmetal_colored_"+dye.getTranslationKey(), sheetmetalProperties, BlockItemIE::new);
+			MetalDecoration.coloredSheetmetal.put(dye, sheetmetal);
+			addSlabFor(sheetmetal);
+		}
 		Block.Properties stoneDecoProps = Block.Properties.create(Material.ROCK)
 				.sound(SoundType.STONE)
 				.setRequiresTool()
@@ -600,6 +606,7 @@ public class IEContent
 		IEItems.Misc.iconBirthday = new FakeIconItem("birthday");
 		IEItems.Misc.iconLucky = new FakeIconItem("lucky");
 		IEItems.Misc.iconDrillbreak = new FakeIconItem("drillbreak");
+		IEItems.Misc.iconRavenholm = new FakeIconItem("ravenholm");
 
 		ConveyorHandler.createConveyorBlocks();
 		BulletHandler.emptyCasing = new ItemStack(Ingredients.emptyCasing);
@@ -855,10 +862,7 @@ public class IEContent
 
 		ChemthrowerEffects.register();
 
-		RailgunHandler.registerProjectileProperties(IETags.ironRod, 15, 1.25).setColourMap(new int[][]{{0xd8d8d8, 0xd8d8d8, 0xd8d8d8, 0xa8a8a8, 0x686868, 0x686868}});
-		RailgunHandler.registerProjectileProperties(IETags.aluminumRod, 13, 1.05).setColourMap(new int[][]{{0xd8d8d8, 0xd8d8d8, 0xd8d8d8, 0xa8a8a8, 0x686868, 0x686868}});
-		RailgunHandler.registerProjectileProperties(IETags.steelRod, 18, 1.25).setColourMap(new int[][]{{0xb4b4b4, 0xb4b4b4, 0xb4b4b4, 0x7a7a7a, 0x555555, 0x555555}});
-		RailgunHandler.registerProjectileProperties(new ItemStack(IEItems.Misc.graphiteElectrode), 24, .9).setColourMap(new int[][]{{0x242424, 0x242424, 0x242424, 0x171717, 0x171717, 0x0a0a0a}});
+		RailgunProjectiles.register();
 
 		ExternalHeaterHandler.defaultFurnaceEnergyCost = IEConfig.MACHINES.heater_consumption.get();
 		ExternalHeaterHandler.defaultFurnaceSpeedupCost = IEConfig.MACHINES.heater_speedupConsumption.get();

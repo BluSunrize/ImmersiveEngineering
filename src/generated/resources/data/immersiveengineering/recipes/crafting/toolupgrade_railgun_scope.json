@@ -2,11 +2,14 @@
   "type": "minecraft:crafting_shaped",
   "pattern": [
     "pi ",
-    "i i",
-    " ip"
+    "c i",
+    " cp"
   ],
   "key": {
     "i": {
+      "tag": "forge:plates/iron"
+    },
+    "c": {
       "tag": "forge:ingots/copper"
     },
     "p": {
