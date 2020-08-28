@@ -24,14 +24,16 @@ import blusunrize.lib.manual.gui.GuiButtonManual;
 import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.ManualScreen;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.*;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
+import net.minecraft.util.text.IFormattableTextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +55,7 @@ public class ShaderManualElement extends SpecialManualElements
 	int example = 0;
 	boolean unlocked;
 
-	String name, text;
+	IFormattableTextComponent name, text;
 
 	public ShaderManualElement(ManualInstance manual, ShaderRegistry.ShaderRegistryEntry shader)
 	{
@@ -107,7 +109,7 @@ public class ShaderManualElement extends SpecialManualElements
 		else
 			exampleItems = null;
 
-		this.name = ClientUtils.applyFormat(shaderItem.getDisplayName(), TextFormatting.BOLD).getString();
+		this.name = ClientUtils.applyFormat(shaderItem.getDisplayName(), TextFormatting.BOLD);
 		IFormattableTextComponent textAssembly = new StringTextComponent("");
 		textAssembly.func_230529_a_(ClientUtils.applyFormat(new TranslationTextComponent("desc.immersiveengineering.info.shader.level"), TextFormatting.BOLD));
 		textAssembly.func_230529_a_(new TranslationTextComponent("desc.immersiveengineering.info.shader.rarity."+shader.rarity.name().toLowerCase(Locale.US)));
@@ -157,34 +159,40 @@ public class ShaderManualElement extends SpecialManualElements
 						.setTextColour(gui.getManual().getTextColour(), gui.getManual().getHighlightColour())
 				);
 		}
-		this.text = textAssembly.getString();
+		this.text = textAssembly;
 	}
 
 	@Override
 	public void render(MatrixStack transform, ManualScreen gui, int x, int y, int mouseX, int mouseY)
 	{
-		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 		RenderHelper.enableStandardItemLighting();
 		float scale = 2;
-		GL11.glScalef(scale, scale, scale);
+		transform.push();
+		transform.scale(scale, scale, scale);
+		RenderSystem.pushMatrix();
+		RenderSystem.multMatrix(transform.getLast().getMatrix());
 		boolean examples = exampleItems!=null&&exampleItems.length > 0;
 
 		ManualUtils.renderItem().renderItemAndEffectIntoGUI(shaderItem, (int)((x+10+(examples?0: 34))/scale), (int)((y-8)/scale));
 		if(examples&&example >= 0&&example < exampleItems.length)
 			ManualUtils.renderItem().renderItemAndEffectIntoGUI(exampleItems[example], (int)((x+63)/scale), (int)((y-8)/scale));
 
-		GL11.glScalef(1/scale, 1/scale, 1/scale);
-
+		RenderSystem.popMatrix();
+		transform.scale(1/scale, 1/scale, 1/scale);
+		RenderSystem.pushMatrix();
+		RenderSystem.multMatrix(transform.getLast().getMatrix());
 		if(unlocked)
 			ManualUtils.renderItem().renderItemAndEffectIntoGUI(replicationCost.getRandomizedExampleStack(mc().player.ticksExisted), x+102, y+118);
 
 		RenderHelper.disableStandardItemLighting();
-		GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 
-		int w = manual.fontRenderer().getStringWidth(this.name);
-		manual.fontRenderer().drawString(transform, this.name, x+60-w/2, y+24, manual.getTextColour());
-		if(this.text!=null&&!this.text.isEmpty())
-			manual.fontRenderer().func_238418_a_(ITextComponent.func_241827_a_(this.text), x, y+38, 120, manual.getTextColour());
+		int w = manual.fontRenderer().getStringWidth(this.name.getString());
+		manual.fontRenderer().func_238418_a_(this.name, x+60-w/2, y+24, 120, manual.getTextColour());
+		if(this.text!=null)
+			manual.fontRenderer().func_238418_a_(this.text, x, y+38, 120, manual.getTextColour());
+
+		RenderSystem.popMatrix();
+		transform.pop();
 
 	}
 

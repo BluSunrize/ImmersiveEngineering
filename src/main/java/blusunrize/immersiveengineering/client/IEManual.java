@@ -159,6 +159,8 @@ public class IEManual
 							String key = shader.name.getPath();
 							content.append("<&").append(key).append(">").append("<np>");
 						}
+						int last = content.lastIndexOf("<np>");
+						content.delete(last, last+4);
 						return content.toString();
 					}
 			);
