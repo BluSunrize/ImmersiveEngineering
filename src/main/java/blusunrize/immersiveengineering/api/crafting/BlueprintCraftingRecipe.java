@@ -41,9 +41,9 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 	public static float timeModifier = 1;
 
 	// Initialized by reload listener
-	public static Map<ResourceLocation, BlueprintCraftingRecipe> recipeList;
-	public static Set<String> recipeCategories;
-	private static Map<String, List<BlueprintCraftingRecipe>> recipesByCategory;
+	public static Map<ResourceLocation, BlueprintCraftingRecipe> recipeList = Collections.emptyMap();
+	public static Set<String> recipeCategories = Collections.emptySet();
+	private static Map<String, List<BlueprintCraftingRecipe>> recipesByCategory = Collections.emptyMap();
 
 	public String blueprintCategory;
 	public ItemStack output;

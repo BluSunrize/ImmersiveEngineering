@@ -19,6 +19,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.RegistryObject;
 
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -54,7 +55,7 @@ public class BottlingMachineRecipe extends MultiblockRecipe
 	}
 
 	// Initialized by reload listener
-	public static Map<ResourceLocation, BottlingMachineRecipe> recipeList;
+	public static Map<ResourceLocation, BottlingMachineRecipe> recipeList = Collections.emptyMap();
 
 	public static BottlingMachineRecipe findRecipe(ItemStack input, FluidStack fluid)
 	{

@@ -1219,7 +1219,7 @@ public class Recipes extends RecipeProvider
 		{
 			Tag<Item> dyeTag = new ItemTags.Wrapper(new ResourceLocation("forge", "dyes/"+dye.getTranslationKey()));
 			Block coloredSheetmetal = MetalDecoration.coloredSheetmetal.get(dye);
-			ShapedRecipeBuilder.shapedRecipe(coloredSheetmetal)
+			ShapedRecipeBuilder.shapedRecipe(coloredSheetmetal, 8)
 					.patternLine("sss")
 					.patternLine("sds")
 					.patternLine("sss")

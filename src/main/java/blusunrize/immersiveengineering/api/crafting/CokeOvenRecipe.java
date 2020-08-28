@@ -15,6 +15,7 @@ import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.RegistryObject;
 
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -54,7 +55,7 @@ public class CokeOvenRecipe extends IESerializableRecipe
 	}
 
 	// Initialized by reload listener
-	public static Map<ResourceLocation, CokeOvenRecipe> recipeList;
+	public static Map<ResourceLocation, CokeOvenRecipe> recipeList = Collections.emptyMap();
 
 	public static CokeOvenRecipe findRecipe(ItemStack input)
 	{

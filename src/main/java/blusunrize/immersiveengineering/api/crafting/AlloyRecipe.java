@@ -14,6 +14,7 @@ import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.RegistryObject;
 
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -53,7 +54,7 @@ public class AlloyRecipe extends IESerializableRecipe
 	}
 
 	// Initialized by reload listener
-	public static Map<ResourceLocation, AlloyRecipe> recipeList;
+	public static Map<ResourceLocation, AlloyRecipe> recipeList = Collections.emptyMap();
 
 	public static AlloyRecipe findRecipe(ItemStack input0, ItemStack input1)
 	{
