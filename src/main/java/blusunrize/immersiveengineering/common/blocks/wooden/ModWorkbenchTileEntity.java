@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
+import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
@@ -43,7 +44,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 
 public class ModWorkbenchTileEntity extends IEBaseTileEntity implements IIEInventory, IStateBasedDirectional,
-		IHasDummyBlocks, IInteractionObjectIE, IHasObjProperty
+		IHasDummyBlocks, IInteractionObjectIE, IHasObjProperty, IModelOffsetProvider
 {
 	public static final BlockPos MASTER_POS = BlockPos.ZERO;
 	public static final BlockPos DUMMY_POS = new BlockPos(1, 0, 0);

@@ -389,24 +389,12 @@ public class IEBlockInterfaces
 		void placeDummies(BlockItemUseContext ctx, BlockState state);
 
 		void breakDummies(BlockPos pos, BlockState state);
-
-		@Override
-		default BlockPos getModelOffset(BlockState state)
-		{
-			//TODO
-			throw new UnsupportedOperationException();
-		}
-	}
-
-	public interface IHasModelOffset
-	{
-		BlockPos getModelOffset(BlockState state);
 	}
 
 	/**
 	 * super-interface for {@link MultiblockPartTileEntity} and {@link IHasDummyBlocks}
 	 */
-	public interface IGeneralMultiblock extends BlockstateProvider, IHasModelOffset
+	public interface IGeneralMultiblock extends BlockstateProvider
 	{
 		@Nullable
 		IGeneralMultiblock master();

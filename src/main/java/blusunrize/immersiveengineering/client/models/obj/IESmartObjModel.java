@@ -11,12 +11,12 @@ package blusunrize.immersiveengineering.client.models.obj;
 import blusunrize.immersiveengineering.api.ComparableItemStack;
 import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
+import blusunrize.immersiveengineering.api.client.ICacheKeyProvider;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderLayer;
-import blusunrize.immersiveengineering.client.models.ICacheKeyProvider;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.client.models.connection.RenderCacheKey;
 import blusunrize.immersiveengineering.client.models.obj.OBJHelper.MeshWrapper;
@@ -68,7 +68,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("deprecation")
-public class IESmartObjModel implements IBakedModel, ICacheKeyProvider
+public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 {
 	public static Cache<ComparableItemStack, IBakedModel> cachedBakedItemModels = CacheBuilder.newBuilder()
 			.maximumSize(100).expireAfterAccess(60, TimeUnit.SECONDS).build();

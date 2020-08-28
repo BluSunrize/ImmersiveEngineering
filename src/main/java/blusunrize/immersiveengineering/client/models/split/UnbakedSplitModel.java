@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.client.models.split;
 
-import blusunrize.immersiveengineering.client.models.ICacheKeyProvider;
+import blusunrize.immersiveengineering.api.client.ICacheKeyProvider;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -49,7 +49,7 @@ public class UnbakedSplitModel implements IModelGeometry<UnbakedSplitModel>
 		IBakedModel bakedBase = baseModel.bake(owner, bakery, spriteGetter, ModelRotation.X0_Y0, overrides, modelLocation);
 		if(dynamic)
 			return new BakedDynamicSplitModel<>(
-					(ICacheKeyProvider & IBakedModel)bakedBase,
+					(ICacheKeyProvider<?>)bakedBase,
 					parts,
 					modelTransform
 			);

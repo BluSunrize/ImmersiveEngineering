@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.TargetingInfo;
+import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
 import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
@@ -42,7 +43,7 @@ import java.util.Set;
 import static blusunrize.immersiveengineering.api.wires.WireType.MV_CATEGORY;
 
 public class TransformerTileEntity extends ImmersiveConnectableTileEntity implements IStateBasedDirectional, IMirrorAble,
-		IHasDummyBlocks, ISelectionBounds, ICollisionBounds
+		IHasDummyBlocks, ISelectionBounds, ICollisionBounds, IModelOffsetProvider
 {
 	public static TileEntityType<TransformerTileEntity> TYPE;
 	private static final int RIGHT_INDEX = 0;

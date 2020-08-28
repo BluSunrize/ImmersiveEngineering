@@ -1,7 +1,7 @@
-package blusunrize.immersiveengineering.client.models;
+package blusunrize.immersiveengineering.api.client;
 
-import blusunrize.immersiveengineering.client.models.connection.RenderCacheKey;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.util.Direction;
 import net.minecraftforge.client.model.data.IModelData;
 
@@ -9,10 +9,14 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Random;
 
-public interface ICacheKeyProvider
+/**
+ * Implement in IBakedModel when using dynamic split models. Models with equivalent cache keys will only be queried
+ * and split once
+ */
+public interface ICacheKeyProvider<K> extends IBakedModel
 {
 	@Nullable
-	RenderCacheKey getKey(
+	K getKey(
 			@Nullable BlockState state,
 			@Nullable Direction side,
 			@Nonnull Random rand,

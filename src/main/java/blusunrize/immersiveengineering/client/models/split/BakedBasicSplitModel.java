@@ -9,10 +9,10 @@
 package blusunrize.immersiveengineering.client.models.split;
 
 import blusunrize.immersiveengineering.api.IEProperties.Model;
+import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
 import blusunrize.immersiveengineering.client.models.CompositeBakedModel;
 import blusunrize.immersiveengineering.client.utils.CombinedModelData;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import malte0811.modelsplitter.SplitModel;
@@ -76,10 +76,10 @@ public class BakedBasicSplitModel extends CompositeBakedModel<IBakedModel>
 	)
 	{
 		TileEntity te = world.getTileEntity(pos);
-		if(te instanceof IGeneralMultiblock)
+		if(te instanceof IModelOffsetProvider)
 			return new CombinedModelData(
 					new SinglePropertyModelData<>(
-							((IGeneralMultiblock)te).getModelOffset(state),
+							((IModelOffsetProvider)te).getModelOffset(state),
 							Model.SUBMODEL_OFFSET
 					),
 					tileData

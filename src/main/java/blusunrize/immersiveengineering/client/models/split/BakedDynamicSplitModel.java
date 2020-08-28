@@ -1,13 +1,11 @@
 package blusunrize.immersiveengineering.client.models.split;
 
 import blusunrize.immersiveengineering.api.IEProperties.Model;
+import blusunrize.immersiveengineering.api.client.ICacheKeyProvider;
+import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
 import blusunrize.immersiveengineering.client.models.CompositeBakedModel;
-import blusunrize.immersiveengineering.client.models.ICacheKeyProvider;
-import blusunrize.immersiveengineering.client.models.connection.RenderCacheKey;
 import blusunrize.immersiveengineering.client.utils.CombinedModelData;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasModelOffset;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
@@ -31,11 +29,11 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-public class BakedDynamicSplitModel<T extends ICacheKeyProvider & IBakedModel> extends CompositeBakedModel<T>
+public class BakedDynamicSplitModel<K, T extends ICacheKeyProvider<K> & IBakedModel> extends CompositeBakedModel<T>
 {
 	private final Set<Vec3i> parts;
 	private final IModelTransform transform;
-	private final Cache<RenderCacheKey, Map<Vec3i, List<BakedQuad>>> subModelCache = CacheBuilder.newBuilder()
+	private final Cache<K, Map<Vec3i, List<BakedQuad>>> subModelCache = CacheBuilder.newBuilder()
 			.maximumSize(10)
 			.expireAfterAccess(1, TimeUnit.MINUTES)
 			.build();
@@ -54,7 +52,7 @@ public class BakedDynamicSplitModel<T extends ICacheKeyProvider & IBakedModel> e
 		BlockPos offset = extraData.getData(Model.SUBMODEL_OFFSET);
 		if(offset==null)
 			return super.getQuads(state, side, rand, extraData);
-		RenderCacheKey key = base.getKey(state, side, rand, extraData);
+		K key = base.getKey(state, side, rand, extraData);
 		if(key==null)
 			return ImmutableList.of();
 		try
@@ -85,10 +83,10 @@ public class BakedDynamicSplitModel<T extends ICacheKeyProvider & IBakedModel> e
 		IModelData baseData = super.getModelData(world, pos, state, tileData);
 		TileEntity te = world.getTileEntity(pos);
 		BlockPos offset = null;
-		if(te instanceof IGeneralMultiblock)
-			offset = ((IGeneralMultiblock)te).getModelOffset(state);
-		else if(state.getBlock() instanceof IHasModelOffset)
-			offset = ((IHasModelOffset)state.getBlock()).getModelOffset(state);
+		if(te instanceof IModelOffsetProvider)
+			offset = ((IModelOffsetProvider)te).getModelOffset(state);
+		else if(state.getBlock() instanceof IModelOffsetProvider)
+			offset = ((IModelOffsetProvider)state.getBlock()).getModelOffset(state);
 		if(offset!=null)
 			return new CombinedModelData(
 					new SinglePropertyModelData<>(

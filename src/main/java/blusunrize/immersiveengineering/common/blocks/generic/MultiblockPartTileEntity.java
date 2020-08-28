@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.generic;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
 import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
@@ -50,7 +51,8 @@ import java.util.Optional;
 import java.util.Set;
 
 public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntity<T>> extends IEBaseTileEntity
-		implements ITickableTileEntity, IDirectionalTile, IGeneralMultiblock, IScrewdriverInteraction, IMirrorAble
+		implements ITickableTileEntity, IDirectionalTile, IGeneralMultiblock, IScrewdriverInteraction, IMirrorAble,
+		IModelOffsetProvider
 {
 	public boolean formed = false;
 	//Position of this block according to the BlockInfo's returned by IMultiblock#getStructure
