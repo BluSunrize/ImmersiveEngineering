@@ -463,6 +463,39 @@ public class Recipes extends RecipeProvider
 		BlueprintCraftingRecipeBuilder.builder("electrode", Misc.graphiteElectrode)
 				.addInput(new IngredientWithSize(IETags.hopGraphiteIngot, 4))
 				.build(out, toRL("blueprint/electrode"));
+
+		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", Misc.bannerPatternHammer)
+				.addInput(Items.PAPER)
+				.addInput(Tools.hammer)
+				.build(out, toRL("blueprint/banner_hammer"));
+		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", Misc.bannerPatternBevels)
+				.addInput(Items.PAPER)
+				.addInput(IETags.plates)
+				.build(out, toRL("blueprint/banner_bevels"));
+		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", Misc.bannerPatternOrnate)
+				.addInput(Items.PAPER)
+				.addInput(IETags.getTagsFor(EnumMetals.SILVER).dust)
+				.build(out, toRL("blueprint/banner_ornate"));
+		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", Misc.bannerPatternTreatedWood)
+				.addInput(Items.PAPER)
+				.addInput(IETags.getItemTag(IETags.treatedWood))
+				.build(out, toRL("blueprint/banner_treatedwood"));
+		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", Misc.bannerPatternWindmill)
+				.addInput(Items.PAPER)
+				.addInput(WoodenDevices.windmill)
+				.build(out, toRL("blueprint/banner_windmill"));
+		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", Misc.bannerPatternWolfR)
+				.addInput(Items.PAPER)
+				.addInput(BulletHandler.getBulletItem(BulletItem.WOLFPACK))
+				.build(out, toRL("blueprint/banner_wolf_r"));
+		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", Misc.bannerPatternWolfL)
+				.addInput(Items.PAPER)
+				.addInput(BulletHandler.getBulletItem(BulletItem.WOLFPACK))
+				.build(out, toRL("blueprint/banner_wolf_l"));
+		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", Misc.bannerPatternWolf)
+				.addInput(Items.PAPER)
+				.addInput(BulletHandler.getBulletItem(BulletItem.WOLFPACK))
+				.build(out, toRL("blueprint/banner_wolf"));
 	}
 
 	private void recipesMultiblockMachines(@Nonnull Consumer<IFinishedRecipe> out)
@@ -2396,6 +2429,16 @@ public class Recipes extends RecipeProvider
 				.key('p', Items.PAPER)
 				.addCriterion("has_"+toPath(Items.PAPER), hasItem(Items.PAPER))
 				.build(buildBlueprint(out, "bullet"), toRL("blueprint_bullets"));
+		ShapedRecipeBuilder.shapedRecipe(Misc.blueprint)
+				.patternLine(" b ")
+				.patternLine("ddd")
+				.patternLine("ppp")
+				.key('b', ItemTags.BANNERS)
+				.key('d', Tags.Items.DYES_BLUE)
+				//TODO tag?
+				.key('p', Items.PAPER)
+				.addCriterion("has_"+toPath(Items.PAPER), hasItem(Items.PAPER))
+				.build(buildBlueprint(out, "bannerpatterns"), toRL("blueprint_bannerpatterns"));
 
 		ShapedRecipeBuilder.shapedRecipe(Misc.blueprint)
 				.patternLine("ggg")

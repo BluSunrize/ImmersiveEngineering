@@ -79,6 +79,7 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.Effects;
 import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.tileentity.BannerPattern;
 import net.minecraft.tileentity.FurnaceTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -603,6 +604,15 @@ public class IEContent
 			}
 		};
 
+		IEItems.Misc.bannerPatternHammer = addBanner("hammer", "hmr");
+		IEItems.Misc.bannerPatternBevels = addBanner("bevels", "bvl");
+		IEItems.Misc.bannerPatternOrnate = addBanner("ornate", "orn");
+		IEItems.Misc.bannerPatternTreatedWood = addBanner("treated_wood", "twd");
+		IEItems.Misc.bannerPatternWindmill = addBanner("windmill", "wnd");
+		IEItems.Misc.bannerPatternWolfR = addBanner("wolf_r", "wlfr");
+		IEItems.Misc.bannerPatternWolfL = addBanner("wolf_l", "wlfl");
+		IEItems.Misc.bannerPatternWolf = addBanner("wolf", "wlf");
+
 		IEItems.Misc.iconBirthday = new FakeIconItem("birthday");
 		IEItems.Misc.iconLucky = new FakeIconItem("lucky");
 		IEItems.Misc.iconDrillbreak = new FakeIconItem("drillbreak");
@@ -828,17 +838,6 @@ public class IEContent
 		ShaderRegistry.itemExamples.add(new ItemStack(Weapons.railgun));
 		ShaderRegistry.itemExamples.add(new ItemStack(IEItems.Misc.shield));
 
-		/*BANNERS*/
-		addBanner("hammer", "hmr", new ItemStack(Tools.hammer));
-		addBanner("bevels", "bvl", "plateIron");
-		addBanner("ornate", "orn", "dustSilver");
-		addBanner("treated_wood", "twd", "plankTreatedWood");
-		addBanner("windmill", "wnd", new ItemStack[]{new ItemStack(WoodenDevices.windmill)});
-		ItemStack wolfpackCartridge = new ItemStack(BulletHandler.getBulletItem(BulletItem.WOLFPACK));
-		addBanner("wolf_r", "wlfr", wolfpackCartridge, 1);
-		addBanner("wolf_l", "wlfl", wolfpackCartridge, -1);
-		addBanner("wolf", "wlf", wolfpackCartridge, 0, 0);
-
 		/*ASSEMBLER RECIPE ADAPTERS*/
 		//Fluid Ingredients
 		AssemblerHandler.registerSpecialQueryConverters((o) ->
@@ -962,18 +961,14 @@ public class IEContent
 					config.veinsPerChunk.get());
 	}
 
-	public static void addBanner(String name, String id, Object item, int... offset)
+	public static Item addBanner(String name, String id)
 	{
-		name = MODID+"_"+name;
+		String enumName = MODID+"_"+name;
 		id = "ie_"+id;
-		ItemStack craftingStack = ItemStack.EMPTY;
-		if(item instanceof ItemStack&&(offset==null||offset.length < 1))
-			craftingStack = (ItemStack)item;
-		/*TODO
-		BannerPattern e = EnumHelper.addEnum(BannerPattern.class, name.toUpperCase(), new Class[]{String.class, String.class, ItemStack.class}, name, id, craftingStack);
-		if(craftingStack.isEmpty())
-			RecipeBannerAdvanced.addAdvancedPatternRecipe(e, ApiUtils.createIngredientStack(item), offset);
-
-		 */
+		BannerPattern pattern = BannerPattern.create(enumName.toUpperCase(), enumName, id, true);
+		Item patternItem = new BannerPatternItem(pattern, new Item.Properties().group(ImmersiveEngineering.itemGroup));
+		patternItem.setRegistryName(ImmersiveEngineering.MODID, "bannerpattern_"+name);
+		IEContent.registeredIEItems.add(patternItem);
+		return patternItem;
 	}
 }

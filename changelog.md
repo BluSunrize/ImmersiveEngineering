@@ -1,4 +1,5 @@
 ##### Version 1.16.1-4.0.0-pre
+- Re-added custom banner patterns. Craft the blueprint, make patterns, then use them on the loom! (BluSunrize)
 - Fixed log spam caused by wire sync issues (Malte)
 - Fixed manual page for shaders (BluSunrize)
 

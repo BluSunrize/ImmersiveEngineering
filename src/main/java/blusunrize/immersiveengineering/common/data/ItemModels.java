@@ -239,6 +239,14 @@ public class ItemModels extends LoadedModelProvider
 		addItemModels("", Tools.sawblade, Tools.rockcutter);
 		addItemModels("", IEItems.Misc.maintenanceKit);
 		addItemModels("", IEItems.Misc.cartWoodenCrate, IEItems.Misc.cartReinforcedCrate, IEItems.Misc.cartWoodenBarrel, IEItems.Misc.cartMetalBarrel);
+		addItemModel("banner_pattern", IEItems.Misc.bannerPatternHammer);
+		addItemModel("banner_pattern", IEItems.Misc.bannerPatternBevels);
+		addItemModel("banner_pattern", IEItems.Misc.bannerPatternOrnate);
+		addItemModel("banner_pattern", IEItems.Misc.bannerPatternTreatedWood);
+		addItemModel("banner_pattern", IEItems.Misc.bannerPatternWindmill);
+		addItemModel("banner_pattern", IEItems.Misc.bannerPatternWolfR);
+		addItemModel("banner_pattern", IEItems.Misc.bannerPatternWolfL);
+		addItemModel("banner_pattern", IEItems.Misc.bannerPatternWolf);
 		addItemModels("", IEItems.Misc.iconBirthday, IEItems.Misc.iconLucky, IEItems.Misc.iconDrillbreak, IEItems.Misc.iconRavenholm);
 
 		obj(Tools.voltmeter, rl("item/voltmeter.obj"))
