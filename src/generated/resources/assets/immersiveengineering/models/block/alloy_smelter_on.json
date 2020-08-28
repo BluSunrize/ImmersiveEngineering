@@ -1,11 +1,58 @@
 {
-  "parent": "immersiveengineering:block/ie_two_cubed",
+  "parent": "block/block",
   "textures": {
-    "north": "immersiveengineering:block/multiblocks/alloy_smelter_on",
+    "particle": "immersiveengineering:block/multiblocks/alloy_smelter_side",
+    "side": "immersiveengineering:block/multiblocks/alloy_smelter_side",
     "top": "immersiveengineering:block/multiblocks/alloy_smelter_top",
     "bottom": "immersiveengineering:block/multiblocks/alloy_smelter_bottom",
-    "east": "immersiveengineering:block/multiblocks/alloy_smelter_side",
-    "west": "immersiveengineering:block/multiblocks/alloy_smelter_side",
-    "south": "immersiveengineering:block/multiblocks/alloy_smelter_side"
-  }
+    "front": "immersiveengineering:block/multiblocks/alloy_smelter_on"
+  },
+  "loader": "immersiveengineering:basic_split",
+  "base_loader": "forge:obj",
+  "dynamic": false,
+  "detectCullableFaces": false,
+  "model": "immersiveengineering:models/block/stone_multiblocks/cube_two.obj",
+  "flip-v": true,
+  "split_parts": [
+    [
+      0,
+      0,
+      -1
+    ],
+    [
+      1,
+      0,
+      -1
+    ],
+    [
+      0,
+      1,
+      -1
+    ],
+    [
+      1,
+      1,
+      -1
+    ],
+    [
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      0
+    ],
+    [
+      1,
+      1,
+      0
+    ]
+  ]
 }

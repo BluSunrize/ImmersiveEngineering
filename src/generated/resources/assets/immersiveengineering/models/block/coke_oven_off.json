@@ -1,11 +1,151 @@
 {
-  "parent": "immersiveengineering:block/ie_three_cubed",
+  "parent": "block/block",
   "textures": {
-    "north": "immersiveengineering:block/multiblocks/coke_oven_off",
-    "top": "immersiveengineering:block/multiblocks/coke_oven",
-    "bottom": "immersiveengineering:block/multiblocks/coke_oven",
-    "east": "immersiveengineering:block/multiblocks/coke_oven",
-    "west": "immersiveengineering:block/multiblocks/coke_oven",
-    "south": "immersiveengineering:block/multiblocks/coke_oven"
-  }
+    "particle": "immersiveengineering:block/multiblocks/coke_oven",
+    "side": "immersiveengineering:block/multiblocks/coke_oven",
+    "front": "immersiveengineering:block/multiblocks/coke_oven_off"
+  },
+  "loader": "immersiveengineering:basic_split",
+  "base_loader": "forge:obj",
+  "dynamic": false,
+  "detectCullableFaces": false,
+  "model": "immersiveengineering:models/block/stone_multiblocks/cube_three.obj",
+  "flip-v": true,
+  "split_parts": [
+    [
+      -1,
+      -1,
+      -1
+    ],
+    [
+      0,
+      -1,
+      -1
+    ],
+    [
+      1,
+      -1,
+      -1
+    ],
+    [
+      -1,
+      0,
+      -1
+    ],
+    [
+      0,
+      0,
+      -1
+    ],
+    [
+      1,
+      0,
+      -1
+    ],
+    [
+      -1,
+      1,
+      -1
+    ],
+    [
+      0,
+      1,
+      -1
+    ],
+    [
+      1,
+      1,
+      -1
+    ],
+    [
+      -1,
+      -1,
+      0
+    ],
+    [
+      0,
+      -1,
+      0
+    ],
+    [
+      1,
+      -1,
+      0
+    ],
+    [
+      -1,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      0
+    ],
+    [
+      -1,
+      1,
+      0
+    ],
+    [
+      0,
+      1,
+      0
+    ],
+    [
+      1,
+      1,
+      0
+    ],
+    [
+      -1,
+      -1,
+      1
+    ],
+    [
+      0,
+      -1,
+      1
+    ],
+    [
+      1,
+      -1,
+      1
+    ],
+    [
+      -1,
+      0,
+      1
+    ],
+    [
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      0,
+      1
+    ],
+    [
+      -1,
+      1,
+      1
+    ],
+    [
+      0,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      1
+    ]
+  ]
 }

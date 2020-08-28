@@ -205,24 +205,32 @@ public class BlockStates extends BlockStateProvider
 	private ModelFile cubeTwo(String name, ResourceLocation top, ResourceLocation bottom,
 							  ResourceLocation side, ResourceLocation front)
 	{
-		return models().withExistingParent(name, modLoc("ie_two_cubed"))
-				.texture("north", front)
+		return splitModel(
+				name,
+				forgeLoc("obj"),
+				rl("block/stone_multiblocks/cube_two.obj"),
+				side.toString(),
+				CUBE_TWO.stream(),
+				false
+		)
+				.texture("side", side)
 				.texture("top", top)
 				.texture("bottom", bottom)
-				.texture("east", side)
-				.texture("west", side)
-				.texture("south", side);
+				.texture("front", front);
 	}
 
 	private ModelFile cubeThree(String name, ResourceLocation def, ResourceLocation front)
 	{
-		return models().withExistingParent(name, modLoc("ie_three_cubed"))
-				.texture("north", front)
-				.texture("top", def)
-				.texture("bottom", def)
-				.texture("east", def)
-				.texture("west", def)
-				.texture("south", def);
+		return splitModel(
+				name,
+				forgeLoc("obj"),
+				rl("block/stone_multiblocks/cube_three.obj"),
+				def.toString(),
+				CUBE_THREE.stream(),
+				false
+		)
+				.texture("side", def)
+				.texture("front", front);
 	}
 
 	private ModelFile obj(String loc)
@@ -271,19 +279,25 @@ public class BlockStates extends BlockStateProvider
 	);
 	private static final List<Vec3i> COLUMN_TWO = ImmutableList.of(BlockPos.ZERO, BlockPos.ZERO.up());
 	private static final List<Vec3i> COLUMN_THREE = ImmutableList.of(BlockPos.ZERO, BlockPos.ZERO.up(), BlockPos.ZERO.up(2));
+	private static final List<Vec3i> CUBE_THREE = BlockPos.getAllInBox(-1, -1, -1, 1, 1, 1)
+			.map(BlockPos::toImmutable)
+			.collect(Collectors.toList());
+	private static final List<Vec3i> CUBE_TWO = BlockPos.getAllInBox(0, 0, -1, 1, 1, 0)
+			.map(BlockPos::toImmutable)
+			.collect(Collectors.toList());
 
-	private ModelFile splitOBJ(String loc, TemplateMultiblock mb)
+	private LoadedModelBuilder splitOBJ(String loc, TemplateMultiblock mb)
 	{
 		return splitOBJ(loc, mb, false);
 	}
 
-	private ModelFile splitOBJ(String loc, TemplateMultiblock mb, boolean mirror)
+	private LoadedModelBuilder splitOBJ(String loc, TemplateMultiblock mb, boolean mirror)
 	{
 		Preconditions.checkArgument(loc.endsWith(".obj"));
 		return splitOBJ(loc.substring(0, loc.length()-4), modLoc(loc), mb, mirror);
 	}
 
-	private ModelFile splitOBJ(String loc, List<Vec3i> parts)
+	private LoadedModelBuilder splitOBJ(String loc, List<Vec3i> parts)
 	{
 		Preconditions.checkArgument(loc.endsWith(".obj"));
 		ResourceLocation modelLoc = modLoc(loc);
@@ -293,7 +307,7 @@ public class BlockStates extends BlockStateProvider
 				), parts.stream(), false);
 	}
 
-	private ModelFile splitOBJ(
+	private LoadedModelBuilder splitOBJ(
 			String name,
 			ResourceLocation model,
 			TemplateMultiblock multiblock,
@@ -942,7 +956,6 @@ public class BlockStates extends BlockStateProvider
 				modLoc("block/multiblocks/alloy_smelter_side"),
 				modLoc("block/multiblocks/alloy_smelter_on")
 		);
-		//TODO split, add particles
 		createMultiblock(Multiblocks.cokeOven, cokeOvenOff, cokeOvenOn,
 				IEProperties.FACING_HORIZONTAL, IEProperties.ACTIVE, 180);
 		createMultiblock(Multiblocks.alloySmelter, alloySmelterOff, alloySmelterOn,
