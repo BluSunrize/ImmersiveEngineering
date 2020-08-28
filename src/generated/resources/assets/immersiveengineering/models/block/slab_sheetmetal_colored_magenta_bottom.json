@@ -1,5 +1,5 @@
 {
-  "parent": "block/slab",
+  "parent": "minecraft:block/slab",
   "textures": {
     "side": "immersiveengineering:block/metal/sheetmetal_magenta",
     "bottom": "immersiveengineering:block/metal/sheetmetal_magenta",
