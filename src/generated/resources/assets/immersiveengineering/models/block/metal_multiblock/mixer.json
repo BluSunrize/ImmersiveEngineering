@@ -3,8 +3,102 @@
   "textures": {
     "particle": "immersiveengineering:block/multiblocks/mixer"
   },
-  "loader": "forge:obj",
+  "loader": "immersiveengineering:basic_split",
+  "base_loader": "forge:obj",
+  "dynamic": false,
   "detectCullableFaces": false,
   "model": "immersiveengineering:models/block/metal_multiblock/mixer.obj",
-  "flip-v": true
+  "flip-v": true,
+  "split_parts": [
+    [
+      -1,
+      -1,
+      -1
+    ],
+    [
+      0,
+      -1,
+      -1
+    ],
+    [
+      1,
+      -1,
+      -1
+    ],
+    [
+      1,
+      -1,
+      0
+    ],
+    [
+      -1,
+      -1,
+      1
+    ],
+    [
+      1,
+      -1,
+      1
+    ],
+    [
+      -1,
+      -1,
+      0
+    ],
+    [
+      0,
+      -1,
+      0
+    ],
+    [
+      0,
+      -1,
+      1
+    ],
+    [
+      0,
+      0,
+      -1
+    ],
+    [
+      1,
+      0,
+      -1
+    ],
+    [
+      -1,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      0
+    ],
+    [
+      -1,
+      0,
+      1
+    ],
+    [
+      1,
+      0,
+      1
+    ],
+    [
+      0,
+      1,
+      0
+    ],
+    [
+      -1,
+      1,
+      0
+    ]
+  ]
 }

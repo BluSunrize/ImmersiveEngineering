@@ -9,12 +9,14 @@ buildscript {
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.0'
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
+apply plugin: 'com.github.johnrengelman.shadow'
 
 version = buildVersionString()
 group = 'blusunrize.immersiveengineering' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
@@ -120,6 +122,10 @@ repositories {
         name 'DVS1 Maven FS'
         url 'https://dvs1.progwml6.com/files/maven'
     }
+    maven { // BlockModelSplitter
+        name 'Jared maven'
+        url 'https://maven.blamejared.com/'
+    }
     repositories {//Curseforge maven, in case some other maven goes offline and for mods that don't have a maven
         maven {
             name = "CurseForge"
@@ -132,6 +138,7 @@ dependencies {
     runtimeOnly fg.deobf("mezz.jei:jei-1.15.2:6.0.0.4")
     runtimeOnly fg.deobf("nbtedit:NBTEdit:0.9.0")
     compileOnly fg.deobf("mezz.jei:jei-1.15.2:6.0.0.4:api")
+    compile "malte0811:BlockModelSplitter:1.0.1"
     testImplementation('junit:junit:4.13')
 }
 
@@ -209,6 +216,18 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 
 artifacts {
     archives sourcesJar
+    archives shadowJar
+}
+
+shadowJar {
+    classifier = ''
+    dependencies {
+        include(dependency('malte0811:BlockModelSplitter:.*'))
+    }
+}
+
+reobf {
+    shadowJar {}
 }
 
 apply plugin: 'maven'

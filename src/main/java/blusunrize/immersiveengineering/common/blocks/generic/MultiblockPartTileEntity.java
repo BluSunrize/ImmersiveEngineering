@@ -10,10 +10,12 @@ package blusunrize.immersiveengineering.common.blocks.generic;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
 import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMultiblock;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.StoneMultiblock;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.SafeChunkUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -49,7 +51,8 @@ import java.util.Optional;
 import java.util.Set;
 
 public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntity<T>> extends IEBaseTileEntity
-		implements ITickableTileEntity, IDirectionalTile, IGeneralMultiblock, IScrewdriverInteraction, IMirrorAble
+		implements ITickableTileEntity, IDirectionalTile, IGeneralMultiblock, IScrewdriverInteraction, IMirrorAble,
+		IModelOffsetProvider
 {
 	public boolean formed = false;
 	//Position of this block according to the BlockInfo's returned by IMultiblock#getStructure
@@ -427,5 +430,26 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 		if(this.getClass().isInstance(tile))
 			return (T)tile;
 		return null;
+	}
+
+	@Nonnull
+	@Override
+	public BlockPos getModelOffset(BlockState state)
+	{
+		BlockPos mirroredPosInMB = posInMultiblock;
+		final Vec3i size = multiblockInstance.getSize();
+		if(getIsMirrored())
+			mirroredPosInMB = new BlockPos(
+					size.getX()-mirroredPosInMB.getX()-1,
+					mirroredPosInMB.getY(),
+					mirroredPosInMB.getZ()
+			);
+		if(multiblockInstance instanceof StoneMultiblock)
+			mirroredPosInMB = new BlockPos(
+					size.getX()-mirroredPosInMB.getX()-1,
+					mirroredPosInMB.getY(),
+					size.getZ()-mirroredPosInMB.getZ()-1
+			);
+		return mirroredPosInMB.subtract(multiblockInstance.getMasterFromOriginOffset());
 	}
 }

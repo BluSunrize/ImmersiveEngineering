@@ -22,13 +22,16 @@ import net.minecraftforge.client.model.obj.OBJModel;
 import javax.annotation.Nonnull;
 import java.util.*;
 
+import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
+
 public class IEOBJLoader implements IModelLoader<IEOBJModel>
 {
-	private IResourceManager manager;
+	public static final ResourceLocation LOADER_NAME = new ResourceLocation(MODID, "ie_obj");
+	public static final IEOBJLoader instance = new IEOBJLoader();
+
 	private final Set<String> enabledDomains = new HashSet<>();
 	private final Map<ResourceLocation, IEOBJModel> cache = new HashMap<>();
 	private final Map<ResourceLocation, Exception> errors = new HashMap<>();
-	public static IEOBJLoader instance = new IEOBJLoader();
 
 	public void addDomain(String domain)
 	{
@@ -50,7 +53,6 @@ public class IEOBJLoader implements IModelLoader<IEOBJModel>
 	@Override
 	public void onResourceManagerReload(@Nonnull IResourceManager resourceManager)
 	{
-		this.manager = resourceManager;
 		cache.clear();
 		errors.clear();
 	}

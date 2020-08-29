@@ -10,9 +10,13 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
+import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
@@ -40,8 +44,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 
 public class ModWorkbenchTileEntity extends IEBaseTileEntity implements IIEInventory, IStateBasedDirectional,
-		IHasDummyBlocks, IInteractionObjectIE, IHasObjProperty
+		IHasDummyBlocks, IInteractionObjectIE, IHasObjProperty, IModelOffsetProvider
 {
+	public static final BlockPos MASTER_POS = BlockPos.ZERO;
+	public static final BlockPos DUMMY_POS = new BlockPos(1, 0, 0);
 	public static TileEntityType<ModWorkbenchTileEntity> TYPE;
 	NonNullList<ItemStack> inventory = NonNullList.withSize(7, ItemStack.EMPTY);
 
@@ -145,17 +151,17 @@ public class ModWorkbenchTileEntity extends IEBaseTileEntity implements IIEInven
 
 	@Nullable
 	@Override
-	public IGeneralMultiblock master()
+	public ModWorkbenchTileEntity master()
 	{
 		if(!isDummy())
 			return this;
 		// Used to provide tile-dependant drops after breaking
 		if(tempMasterTE!=null)
-			return tempMasterTE;
+			return (ModWorkbenchTileEntity)tempMasterTE;
 		Direction dummyDir = isDummy()?getFacing().rotateYCCW(): getFacing().rotateY();
 		BlockPos masterPos = getPos().offset(dummyDir);
 		TileEntity te = Utils.getExistingTileEntity(world, masterPos);
-		return this.getClass().isInstance(te)?(IGeneralMultiblock)te: null;
+		return (te instanceof ModWorkbenchTileEntity)?(ModWorkbenchTileEntity)te: null;
 	}
 
 	private void setDummy(boolean dummy)
@@ -219,7 +225,8 @@ public class ModWorkbenchTileEntity extends IEBaseTileEntity implements IIEInven
 	@Override
 	public VisibilityList compileDisplayList(BlockState state)
 	{
-		if(this.inventory.get(0).getItem() instanceof EngineersBlueprintItem)
+		ModWorkbenchTileEntity master = master();
+		if(master!=null&&master.inventory.get(0).getItem() instanceof EngineersBlueprintItem)
 			return blueprintDisplayList;
 		return normalDisplayList;
 	}
@@ -228,5 +235,14 @@ public class ModWorkbenchTileEntity extends IEBaseTileEntity implements IIEInven
 	public EnumProperty<Direction> getFacingProperty()
 	{
 		return IEProperties.FACING_HORIZONTAL;
+	}
+
+	@Override
+	public BlockPos getModelOffset(BlockState state)
+	{
+		if(isDummy())
+			return DUMMY_POS;
+		else
+			return MASTER_POS;
 	}
 }

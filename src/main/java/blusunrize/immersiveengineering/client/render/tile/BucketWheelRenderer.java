@@ -88,8 +88,8 @@ public class BucketWheelRenderer extends TileEntityRenderer<BucketWheelTileEntit
 		IModelData modelData = new SinglePropertyModelData<>(tile, IOBJModelCallback.PROPERTY);
 		List<BakedQuad> quads;
 		if(model instanceof IESmartObjModel)
-			quads = ((IESmartObjModel)model).getQuads(state, null, 0, objState, texMap, true,
-					modelData);
+			quads = ((IESmartObjModel)model).getQuads(state, objState, texMap,
+					true, modelData);
 		else
 			quads = model.getQuads(state, null, Utils.RAND, modelData);
 		ClientUtils.renderModelTESRFast(quads, builder, matrixStack, combinedLightIn);

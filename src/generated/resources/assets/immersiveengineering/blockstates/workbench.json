@@ -1,26 +1,23 @@
 {
   "variants": {
-    "facing=north,multiblockslave=false": {
+    "facing=north": {
       "model": "immersiveengineering:block/wooden_device/workbench",
       "uvlock": true
     },
-    "facing=south,multiblockslave=false": {
+    "facing=south": {
       "model": "immersiveengineering:block/wooden_device/workbench",
       "y": 180,
       "uvlock": true
     },
-    "facing=west,multiblockslave=false": {
+    "facing=west": {
       "model": "immersiveengineering:block/wooden_device/workbench",
       "y": 270,
       "uvlock": true
     },
-    "facing=east,multiblockslave=false": {
+    "facing=east": {
       "model": "immersiveengineering:block/wooden_device/workbench",
       "y": 90,
       "uvlock": true
-    },
-    "multiblockslave=true": {
-      "model": "immersiveengineering:block/workbench_empty"
     }
   }
 }

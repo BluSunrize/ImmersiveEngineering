@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.client.models.obj;
 import blusunrize.immersiveengineering.api.ComparableItemStack;
 import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
+import blusunrize.immersiveengineering.api.client.ICacheKeyProvider;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
@@ -67,7 +68,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("deprecation")
-public class IESmartObjModel implements IBakedModel
+public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 {
 	public static Cache<ComparableItemStack, IBakedModel> cachedBakedItemModels = CacheBuilder.newBuilder()
 			.maximumSize(100).expireAfterAccess(60, TimeUnit.SECONDS).build();
@@ -286,7 +287,7 @@ public class IESmartObjModel implements IBakedModel
 			objState = modelData.getData(Model.IE_OBJ_STATE);
 		if(modelData.hasProperty(Model.TEXTURE_REMAP))
 			tex = modelData.getData(Model.TEXTURE_REMAP);
-		return getQuads(blockState, side, rand.nextLong(), objState, tex, true, modelData);
+		return getQuads(blockState, objState, tex, true, modelData);
 	}
 
 	@Nonnull
@@ -321,29 +322,47 @@ public class IESmartObjModel implements IBakedModel
 		return new CombinedModelData(customData.toArray(new IModelData[0]));
 	}
 
-	public List<BakedQuad> getQuads(BlockState blockState, Direction side, long rand, IEObjState visibility, Map<String, String> tex,
-									boolean addAnimationAndTex, IModelData modelData)
+	@Override
+	@Nullable
+	public RenderCacheKey getKey(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData)
 	{
-		if(blockState==null)
-		{
-			//if(bakedQuads==null)
-			bakedQuads = ImmutableList.copyOf(buildQuads(modelData));
-			return bakedQuads;
-		}
-		this.tempState = blockState;
-		RenderCacheKey adapter;
+		if(side!=null)
+			return null;
+		IEObjState objState = null;
+		Map<String, String> tex = ImmutableMap.of();
+		if(extraData.hasProperty(Model.IE_OBJ_STATE))
+			objState = extraData.getData(Model.IE_OBJ_STATE);
+		if(extraData.hasProperty(Model.TEXTURE_REMAP))
+			tex = extraData.getData(Model.TEXTURE_REMAP);
+		return getKey(state, extraData, true, objState, tex);
+	}
+
+	public RenderCacheKey getKey(@Nullable BlockState blockState, @Nonnull IModelData modelData,
+								 boolean addAnimationAndTex, IEObjState visibility, Map<String, String> tex)
+	{
 		String cacheKey = "";
 		if(blockState!=null&&modelData.hasProperty(IOBJModelCallback.PROPERTY))
 			cacheKey = modelData.getData(IOBJModelCallback.PROPERTY).getCacheKey(blockState);
 		if(addAnimationAndTex)
-			adapter = new RenderCacheKey(blockState, MinecraftForgeClient.getRenderLayer(), visibility, tex, cacheKey);
+			return new RenderCacheKey(blockState, MinecraftForgeClient.getRenderLayer(), visibility, tex, cacheKey);
 		else
-			adapter = new RenderCacheKey(blockState, MinecraftForgeClient.getRenderLayer(), cacheKey);
+			return new RenderCacheKey(blockState, MinecraftForgeClient.getRenderLayer(), cacheKey);
+	}
+
+	public List<BakedQuad> getQuads(BlockState blockState, IEObjState visibility, Map<String, String> tex,
+									boolean addAnimationAndTex, IModelData modelData)
+	{
+		if(blockState==null)
+		{
+			if(bakedQuads==null)
+				bakedQuads = ImmutableList.copyOf(buildQuads(modelData));
+			return bakedQuads;
+		}
+		this.tempState = blockState;
+		RenderCacheKey key = getKey(blockState, modelData, addAnimationAndTex, visibility, tex);
 		try
 		{
-			modelCache.invalidateAll();
-			//TODO is the cache working as intended? It grew to 3 GB when it was a HashMap
-			List<BakedQuad> quads = modelCache.get(adapter, () ->
+			List<BakedQuad> quads = modelCache.get(key, () ->
 			{
 				IESmartObjModel model;
 				if(visibility!=null)

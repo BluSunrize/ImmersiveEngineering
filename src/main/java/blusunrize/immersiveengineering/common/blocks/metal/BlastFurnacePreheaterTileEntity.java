@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
@@ -33,7 +34,8 @@ import net.minecraft.util.math.Vec3d;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class BlastFurnacePreheaterTileEntity extends IEBaseTileEntity implements IIEInternalFluxHandler, IStateBasedDirectional, IHasDummyBlocks
+public class BlastFurnacePreheaterTileEntity extends IEBaseTileEntity implements IIEInternalFluxHandler,
+		IStateBasedDirectional, IHasDummyBlocks, IModelOffsetProvider
 {
 	public static TileEntityType<BlastFurnacePreheaterTileEntity> TYPE;
 
@@ -195,5 +197,11 @@ public class BlastFurnacePreheaterTileEntity extends IEBaseTileEntity implements
 				((BlastFurnacePreheaterTileEntity)te).markContainingBlockForUpdate(null);
 			}
 		}
+	}
+
+	@Override
+	public BlockPos getModelOffset(BlockState state)
+	{
+		return new BlockPos(0, dummy, 0);
 	}
 }

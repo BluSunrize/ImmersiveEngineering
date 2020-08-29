@@ -193,6 +193,11 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 		}
 	}
 
+	public BlockPos getMasterFromOriginOffset()
+	{
+		return masterFromOrigin;
+	}
+
 	protected abstract void replaceStructureBlock(BlockInfo info, World world, BlockPos actualPos, boolean mirrored, Direction clickDirection, Vec3i offsetFromMaster);
 
 	@Override
