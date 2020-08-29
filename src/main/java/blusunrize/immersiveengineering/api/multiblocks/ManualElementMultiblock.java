@@ -326,6 +326,10 @@ public class ManualElementMultiblock extends SpecialManualElements
 		return yOffTotal;
 	}
 
+	public IMultiblock getMultiblock() {
+		return this.multiblock;
+	}
+
 	static class MultiblockBlockAccess implements IEnviromentBlockReader
 	{
 		private final MultiblockRenderInfo data;
