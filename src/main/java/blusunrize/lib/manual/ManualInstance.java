@@ -249,9 +249,9 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 		return this.getGui(true);
 	}
 
-	public ManualScreen getGui(boolean doLastActive)
+	public ManualScreen getGui(boolean useLastActive)
 	{
-		if(doLastActive&&ManualScreen.lastActiveManual!=null&&ManualScreen.lastActiveManual.getManual()==this)
+		if(useLastActive&&ManualScreen.lastActiveManual!=null&&ManualScreen.lastActiveManual.getManual()==this)
 			return ManualScreen.lastActiveManual;
 		if(!initialized)
 		{
@@ -259,7 +259,7 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 			reload();
 			IELogger.logger.info("Manual reload took {} ms", System.currentTimeMillis()-start);
 		}
-		return new ManualScreen(this, texture, doLastActive);
+		return new ManualScreen(this, texture, useLastActive);
 	}
 
 	public void addEntry(InnerNode<ResourceLocation, ManualEntry> node, ManualEntry entry)

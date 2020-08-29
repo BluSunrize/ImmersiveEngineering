@@ -55,14 +55,14 @@ public class ManualScreen extends Screen
 	private ClickableList entryList;
 	private ClickableList suggestionList;
 
-	private final boolean doLastActive;
+	private final boolean setLastActive;
 
 	public ManualScreen(ManualInstance manual, String texture)
 	{
 		this(manual, texture, true);
 	}
 
-	public ManualScreen(ManualInstance manual, String texture, boolean doLastActive)
+	public ManualScreen(ManualInstance manual, String texture, boolean setLastActive)
 	{
 		super(new StringTextComponent("manual"));
 		this.manual = manual;
@@ -73,7 +73,7 @@ public class ManualScreen extends Screen
 		if(prevGuiScale!=0&&prevGuiScale!=2&&manual.allowGuiRescale())
 			mc.gameSettings.guiScale = 2;
 
-		this.doLastActive = doLastActive;
+		this.setLastActive = setLastActive;
 	}
 
 	public ManualEntry getCurrentPage()
@@ -164,10 +164,8 @@ public class ManualScreen extends Screen
 		else if(searchField!=null)
 			searchField = null;
 
-		if (doLastActive)
-		{
+		if (setLastActive)
 			lastActiveManual = this;
-		}
 	}
 
 	public void fullInit()
