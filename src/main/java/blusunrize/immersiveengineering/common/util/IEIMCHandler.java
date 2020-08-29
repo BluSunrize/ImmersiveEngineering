@@ -1,3 +1,12 @@
+/*
+ * BluSunrize
+ * Copyright (c) 2020
+ *
+ * This code is licensed under "Blu's License of Common Sense"
+ * Details can be found in the license file in the root folder of this project
+ *
+ */
+
 package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.common.EventHandler;
@@ -5,12 +14,10 @@ import blusunrize.immersiveengineering.common.blocks.metal.FluidPipeTileEntity;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.Block;
 import net.minecraft.entity.MobEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.InterModComms.IMCMessage;
 
 import java.util.HashMap;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
