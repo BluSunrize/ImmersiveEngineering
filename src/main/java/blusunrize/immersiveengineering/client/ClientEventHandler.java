@@ -52,14 +52,18 @@ import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.sound.IEMuffledSound;
 import blusunrize.immersiveengineering.common.util.sound.IEMuffledTickableSound;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ITickableSound;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.screen.VideoSettingsScreen;
 import net.minecraft.client.multiplayer.PlayerController;
+import net.minecraft.client.renderer.GPUWarning;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Tessellator;
@@ -1465,6 +1469,29 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	{
 		if(event.getEntity().getPersistentData().contains("headshot"))
 			enableHead(event.getRenderer(), true);
+	}
+
+	@SubscribeEvent
+	public void onScreenOpened(GuiScreenEvent.InitGuiEvent.Pre event)
+	{
+		if(event.getGui() instanceof VideoSettingsScreen&&ClientProxy.stencilEnabled)
+		{
+			GPUWarning gpuWarning = Minecraft.getInstance().func_241558_U_();
+			final String key = "renderer";
+			final String suffix = "tencil enabled in Immersive Engineering config";
+			if(!gpuWarning.field_241688_c_.containsKey(key)||!gpuWarning.field_241688_c_.get(key).endsWith(suffix))
+			{
+				ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
+				for(Entry<String, String> e : gpuWarning.field_241688_c_.entrySet())
+					if(key.equals(e.getKey()))
+						builder.put(key, e.getValue()+", s"+suffix);
+					else
+						builder.put(e.getKey(), e.getValue());
+				if(!gpuWarning.field_241688_c_.containsKey(key))
+					builder.put(key, "S"+suffix);
+				gpuWarning.field_241688_c_ = builder.build();
+			}
+		}
 	}
 
 	private static void enableHead(LivingRenderer renderer, boolean shouldEnable)

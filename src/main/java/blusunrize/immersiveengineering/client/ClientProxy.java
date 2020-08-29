@@ -78,8 +78,8 @@ import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.client.util.InputMappings;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Container;
@@ -154,12 +154,17 @@ public class ClientProxy extends CommonProxy
 		}
 	}
 
+	public static boolean stencilEnabled = false;
+
 	@Override
 	public void preInit()
 	{
 		//TODO auto-detect old cards that don't support this?
 		if(IEConfig.GENERAL.stencilBufferEnabled.get())
-			DeferredWorkQueue.runLater(() -> Minecraft.getInstance().getFramebuffer().enableStencil());
+			DeferredWorkQueue.runLater(() -> {
+				Minecraft.getInstance().getFramebuffer().enableStencil();
+				stencilEnabled = true;
+			});
 
 		RenderingRegistry.registerEntityRenderingHandler(RevolvershotEntity.TYPE, RevolvershotRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(RevolvershotFlareEntity.TYPE, RevolvershotRenderer::new);
