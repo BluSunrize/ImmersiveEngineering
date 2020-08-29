@@ -23,6 +23,7 @@
 - Fixed some threading issues with recipes (BluSunrize)
 - Fixed missing details for the IKELOS shader (BluSunrize)
 - Fixed more concurrency exceptions with mineral veins (BluSunrize)
+- Fixed alloy grit recipes outputting too little (BluSunrize)
 
 ##### Version 1.14.4-3.2.0-113
 - Added waterlogging to various IE blocks (BluSunrize)
