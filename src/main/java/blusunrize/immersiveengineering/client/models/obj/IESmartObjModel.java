@@ -337,13 +337,8 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 		return getKey(state, extraData, true, objState, tex);
 	}
 
-	public RenderCacheKey getKey(
-			@Nullable BlockState blockState,
-			@Nonnull IModelData modelData,
-			boolean addAnimationAndTex,
-			IEObjState visibility,
-			Map<String, String> tex
-	)
+	public RenderCacheKey getKey(@Nullable BlockState blockState, @Nonnull IModelData modelData,
+								 boolean addAnimationAndTex, IEObjState visibility, Map<String, String> tex)
 	{
 		String cacheKey = "";
 		if(blockState!=null&&modelData.hasProperty(IOBJModelCallback.PROPERTY))

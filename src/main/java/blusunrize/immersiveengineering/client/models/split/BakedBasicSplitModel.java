@@ -54,26 +54,20 @@ public class BakedBasicSplitModel extends CompositeBakedModel<IBakedModel>
 
 	@Nonnull
 	@Override
-	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData)
+	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand,
+									@Nonnull IModelData extraData)
 	{
 		BlockPos offset = extraData.getData(Model.SUBMODEL_OFFSET);
 		if(offset!=null)
-			return splitModels.get().getOrDefault(
-					offset,
-					ImmutableList.of()
-			);
+			return splitModels.get().getOrDefault(offset, ImmutableList.of());
 		else
 			return base.getQuads(state, side, rand, extraData);
 	}
 
 	@Nonnull
 	@Override
-	public IModelData getModelData(
-			@Nonnull ILightReader world,
-			@Nonnull BlockPos pos,
-			@Nonnull BlockState state,
-			@Nonnull IModelData tileData
-	)
+	public IModelData getModelData(@Nonnull ILightReader world, @Nonnull BlockPos pos, @Nonnull BlockState state,
+								   @Nonnull IModelData tileData)
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof IModelOffsetProvider)
@@ -88,11 +82,7 @@ public class BakedBasicSplitModel extends CompositeBakedModel<IBakedModel>
 			return tileData;
 	}
 
-	public static Map<Vec3i, List<BakedQuad>> split(
-			List<BakedQuad> in,
-			Set<Vec3i> parts,
-			IModelTransform transform
-	)
+	public static Map<Vec3i, List<BakedQuad>> split(List<BakedQuad> in, Set<Vec3i> parts, IModelTransform transform)
 	{
 		List<Polygon<TextureAtlasSprite>> polys = in.stream()
 				.map(PolygonUtils::toPolygon)
