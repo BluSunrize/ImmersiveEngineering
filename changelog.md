@@ -3,7 +3,17 @@
 - Fixed rendering of mirrored multiblocks (Malte)
 
 ##### Version 1.14.4-4.0.0-pre
-- Added dyed sheetmetal, textured by Rorax! (BluSunrize)
+- Added dyed sheetmetal & slabs, textured by Rorax! (BluSunrize)
+- Changed various recipes: (BluSunrize)
+  - Engineering blocks got cheaper
+  - MV architecture now uses electrum
+  - Gunpowder has more output
+  - Press molds need less steel 
+- Changed the Railgun (BluSunrize)
+  - New model!
+  - New types of ammo!
+  - More energy storage!
+  - New advancements!
 - Changed the pump to be configured for input on the bottom by default (Malte)
 - Changed nugget to ingot/ingot to block recipes to only trigger when an IE ingot is used in the middle slot (Malte)
   - If more mods adopt this convention it will mean that crafting a storage block from a specific mod will be possible
@@ -14,6 +24,9 @@
 - Fixed incorrect waterlogging of dummy blocks for pump, posts and others (BluSunrize)
 - Fixed mineral survey tools not breaking when exceeding their damage (BluSunrize)
 - Fixed recipe list positions in squeezer & fermenter GUI (BluSunrize)
+- Fixed some threading issues with recipes (BluSunrize)
+- Fixed missing details for the IKELOS shader (BluSunrize)
+- Fixed more concurrency exceptions with mineral veins (BluSunrize)
 
 ##### Version 1.15.2-3.2.0-114
 - Fixed mirrored machines rendering incorrectly (Malte)

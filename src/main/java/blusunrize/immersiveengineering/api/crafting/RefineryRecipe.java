@@ -17,6 +17,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.RegistryObject;
 
 import javax.annotation.Nonnull;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 
@@ -57,7 +58,7 @@ public class RefineryRecipe extends MultiblockRecipe
 	}
 
 	// Initialized by reload listener
-	public static Map<ResourceLocation, RefineryRecipe> recipeList;
+	public static Map<ResourceLocation, RefineryRecipe> recipeList = Collections.emptyMap();
 
 	public static RefineryRecipe findRecipe(FluidStack input0, FluidStack input1)
 	{

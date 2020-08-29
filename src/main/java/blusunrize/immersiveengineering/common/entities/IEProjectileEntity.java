@@ -8,6 +8,8 @@
 
 package blusunrize.immersiveengineering.common.entities;
 
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
@@ -43,6 +45,7 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 	public boolean inGround;
 	public int ticksInGround;
 	public int ticksInAir;
+	protected IntSet piercedEntities;
 
 	private int tickLimit = 40;
 
@@ -217,8 +220,7 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 					}
 					if(allowHit)
 						this.onImpact(mop);
-					if(this.getPierceLevel() <= 0)
-						this.remove();
+					this.handlePiecing(entityHit.getEntity());
 				}
 				else if(mop.getType()==Type.BLOCK)
 				{
@@ -305,6 +307,23 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 			}
 
 		}
+	}
+
+	protected void handlePiecing(Entity target)
+	{
+		if(this.getPierceLevel() > 0)
+		{
+			if(this.piercedEntities==null)
+				this.piercedEntities = new IntOpenHashSet(this.getPierceLevel());
+			if(this.piercedEntities.size() >= this.getPierceLevel()+1)
+			{
+				this.remove();
+				return;
+			}
+			this.piercedEntities.add(target.getEntityId());
+		}
+		else
+			this.remove();
 	}
 
 	@OnlyIn(Dist.CLIENT)

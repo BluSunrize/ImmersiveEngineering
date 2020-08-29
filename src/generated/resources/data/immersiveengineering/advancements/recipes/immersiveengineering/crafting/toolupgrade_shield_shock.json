@@ -6,12 +6,12 @@
     ]
   },
   "criteria": {
-    "has_connector_lv": {
+    "has_shield": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:connector_lv"
+            "item": "immersiveengineering:shield"
           }
         ]
       }
@@ -25,7 +25,7 @@
   },
   "requirements": [
     [
-      "has_connector_lv",
+      "has_shield",
       "has_the_recipe"
     ]
   ]

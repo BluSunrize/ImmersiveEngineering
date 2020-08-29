@@ -59,7 +59,7 @@ public class MixerRecipe extends MultiblockRecipe
 	}
 
 	// Initialized by reload listener
-	public static Map<ResourceLocation, MixerRecipe> recipeList;
+	public static Map<ResourceLocation, MixerRecipe> recipeList = Collections.emptyMap();
 
 	public static MixerRecipe findRecipe(FluidStack fluid, NonNullList<ItemStack> components)
 	{

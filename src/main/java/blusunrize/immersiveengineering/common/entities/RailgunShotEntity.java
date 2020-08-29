@@ -1,6 +1,6 @@
 /*
  * BluSunrize
- * Copyright (c) 2017
+ * Copyright (c) 2020
  *
  * This code is licensed under "Blu's License of Common Sense"
  * Details can be found in the license file in the root folder of this project
@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.entities;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler;
-import blusunrize.immersiveengineering.api.tool.RailgunHandler.RailgunProjectileProperties;
+import blusunrize.immersiveengineering.api.tool.RailgunHandler.IRailgunProjectile;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import net.minecraft.entity.Entity;
@@ -24,6 +24,7 @@ import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
@@ -45,7 +46,7 @@ public class RailgunShotEntity extends IEProjectileEntity
 
 	private ItemStack ammo = ItemStack.EMPTY;
 	private static final DataParameter<ItemStack> dataMarker_ammo = EntityDataManager.createKey(RailgunShotEntity.class, DataSerializers.ITEMSTACK);
-	private RailgunProjectileProperties ammoProperties;
+	private IRailgunProjectile ammoProperties;
 
 	public RailgunShotEntity(EntityType<RailgunShotEntity> type, World world)
 	{
@@ -99,17 +100,17 @@ public class RailgunShotEntity extends IEProjectileEntity
 		return ammo;
 	}
 
-	public RailgunProjectileProperties getAmmoProperties()
+	public IRailgunProjectile getProjectileProperties()
 	{
 		if(ammoProperties==null&&!ammo.isEmpty())
-			ammoProperties = RailgunHandler.getProjectileProperties(ammo);
+			ammoProperties = RailgunHandler.getProjectile(ammo);
 		return ammoProperties;
 	}
 
 	@Override
 	public double getGravity()
 	{
-		return .005*(getAmmoProperties()!=null?getAmmoProperties().gravity: 1);
+		return .005*(getProjectileProperties()!=null?getProjectileProperties().getGravity(): 1);
 	}
 
 	@Override
@@ -131,16 +132,25 @@ public class RailgunShotEntity extends IEProjectileEntity
 	{
 		if(!this.world.isRemote&&!getAmmo().isEmpty())
 		{
-			if(mop instanceof EntityRayTraceResult)
+			IRailgunProjectile projectileProperties = getProjectileProperties();
+			if(projectileProperties!=null)
 			{
-				Entity hit = ((EntityRayTraceResult)mop).getEntity();
-				if(getAmmoProperties()!=null)
+				if(mop instanceof EntityRayTraceResult)
 				{
-					Entity shooter = getShooter();
-					if(!getAmmoProperties().overrideHitEntity(hit, shooter))
-						hit.attackEntityFrom(IEDamageSources.causeRailgunDamage(this, shooter),
-								(float)(getAmmoProperties().damage*IEConfig.TOOLS.railgun_damage.get()));
+					Entity hit = ((EntityRayTraceResult)mop).getEntity();
+					double damage = projectileProperties.getDamage(this.world, hit, this.shootingEntity, this);
+					hit.attackEntityFrom(
+							IEDamageSources.causeRailgunDamage(this, this.world.getPlayerByUuid(this.shootingEntity)),
+							(float)(damage*IEConfig.TOOLS.railgun_damage.get())
+					);
 				}
+				else if(mop instanceof BlockRayTraceResult)
+				{
+					double breakRoll = this.rand.nextDouble();
+					if(breakRoll <= getProjectileProperties().getBreakChance(this.shootingEntity, ammo))
+						this.remove();
+				}
+				projectileProperties.onHitTarget(this.world, mop, this.shootingEntity, this);
 			}
 		}
 	}

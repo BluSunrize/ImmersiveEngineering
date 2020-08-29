@@ -2,21 +2,24 @@
   "type": "minecraft:crafting_shaped",
   "pattern": [
     " vg",
-    "cbv",
-    "bc "
+    "icp",
+    "ci "
   ],
   "key": {
     "g": {
       "item": "immersiveengineering:wooden_grip"
     },
-    "b": {
-      "item": "immersiveengineering:gunpart_barrel"
+    "i": {
+      "tag": "forge:ingots/steel"
     },
     "v": {
       "item": "immersiveengineering:capacitor_hv"
     },
     "c": {
       "item": "immersiveengineering:coil_mv"
+    },
+    "p": {
+      "item": "immersiveengineering:circuit_board"
     }
   },
   "result": {

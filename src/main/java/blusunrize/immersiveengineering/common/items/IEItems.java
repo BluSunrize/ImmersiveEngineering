@@ -152,6 +152,7 @@ public final class IEItems
 		public static Item iconBirthday;
 		public static Item iconLucky;
 		public static Item iconDrillbreak;
+		public static Item iconRavenholm;
 
 	}
 }

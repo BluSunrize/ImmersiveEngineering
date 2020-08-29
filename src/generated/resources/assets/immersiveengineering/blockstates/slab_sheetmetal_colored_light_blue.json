@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=top": {
+      "model": "immersiveengineering:block/slab_sheetmetal_colored_light_blue_top"
+    },
+    "type=bottom": {
+      "model": "immersiveengineering:block/slab_sheetmetal_colored_light_blue_bottom"
+    },
+    "type=double": {
+      "model": "immersiveengineering:block/slab_sheetmetal_colored_light_blue_double"
+    }
+  }
+}
