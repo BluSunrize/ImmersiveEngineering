@@ -140,19 +140,29 @@ public class MixerRecipePotion extends MixerRecipe
 
 	public static FluidTagInput getFluidTagForType(Potion type, int amount)
 	{
+		ResourceLocation tagName;
+		List<ResourceLocation> basicRepresentatives;
+		CompoundNBT nbt = null;
 		if(type==Potions.WATER||type==null)
-			return new FluidTagInput(FluidTags.WATER.getName(), amount);
-		CompoundNBT nbt = new CompoundNBT();
-		nbt.putString("Potion", type.getRegistryName().toString());
+		{
+			tagName = FluidTags.WATER.getName();
+			basicRepresentatives = ImmutableList.of(
+					Fluids.WATER.getRegistryName(),
+					Fluids.FLOWING_WATER.getRegistryName()
+			);
+		}
+		else
+		{
+			nbt = new CompoundNBT();
+			nbt.putString("Potion", type.getRegistryName().toString());
+			tagName = IETags.fluidPotion.getName();
+			basicRepresentatives = ImmutableList.of(IEContent.fluidPotion.getRegistryName());
+		}
 		//TODO this is a workaround, we should probably be syncing the potion recipes along with everything else
 		if(EffectiveSide.get().isServer())
-			return new FluidTagInput(IETags.fluidPotion.getName(), amount, nbt);
+			return new FluidTagInput(tagName, amount, nbt);
 		else
-			return new FluidTagInput(
-					Either.right(ImmutableList.of(IEContent.fluidPotion.getRegistryName())),
-					amount,
-					nbt
-			);
+			return new FluidTagInput(Either.right(basicRepresentatives), amount, nbt);
 	}
 
 	@Override
