@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import malte0811.modelsplitter.SplitModel;
+import malte0811.modelsplitter.math.ModelSplitterVec3i;
 import malte0811.modelsplitter.model.OBJModel;
 import malte0811.modelsplitter.model.Polygon;
 import net.minecraft.block.BlockState;
@@ -90,9 +91,9 @@ public class BakedBasicSplitModel extends CompositeBakedModel<IBakedModel>
 		SplitModel<TextureAtlasSprite> splitData = new SplitModel<>(new OBJModel<>(polys));
 
 		Map<Vec3i, OBJModel<TextureAtlasSprite>> clumped = new HashMap<>();
-		for(Entry<Vec3i, OBJModel<TextureAtlasSprite>> e : splitData.getParts().entrySet())
+		for(Entry<ModelSplitterVec3i, OBJModel<TextureAtlasSprite>> e : splitData.getParts().entrySet())
 		{
-			BlockPos posToAdd = new BlockPos(e.getKey());
+			BlockPos posToAdd = new BlockPos(e.getKey().getX(), e.getKey().getY(), e.getKey().getZ());
 			OBJModel<TextureAtlasSprite> model = e.getValue();
 			if(!parts.contains(posToAdd))
 			{
