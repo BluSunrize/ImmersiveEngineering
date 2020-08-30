@@ -1,6 +1,9 @@
 ##### Version 1.15.2-4.0.0-pre
+- Changed rendering of multiblocks to split models into blocks;
+  - This should address weird issues with shadows and disappearing models (Malte)
 - Fixed broken rendering of components on the Automated Workbench (BluSunrize)
 - Fixed rendering of mirrored multiblocks (Malte)
+- Fixed rendering of conveyors in the manual; this caused confusion when building multiblocks (Malte)
 
 ##### Version 1.14.4-4.0.0-116
 - Added dyed sheetmetal & slabs, textured by Rorax! (BluSunrize)
