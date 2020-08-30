@@ -1,8 +1,9 @@
-##### Version 1.16.1-4.0.0-pre
+##### Version 1.16.1-4.0.0-118
 - Re-added custom banner patterns. Craft the blueprint, make patterns, then use them on the loom! (BluSunrize)
 - Added a warning when switching to "fabulous" graphics while stencil is enabled (Malte)
 - Fixed log spam caused by wire sync issues (Malte)
 - Fixed manual page for shaders (BluSunrize)
+- Also includes the changes from 1.15.2-4.0.0-117
 
 ##### Version 1.15.2-4.0.0-117
 - Changed rendering of multiblocks to split models into blocks;
