@@ -27,6 +27,7 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class RecipeReloadListener implements IResourceManagerReloadListener
 {
@@ -79,8 +80,7 @@ public class RecipeReloadListener implements IResourceManagerReloadListener
 		RefineryRecipe.recipeList = filterRecipes(recipes, RefineryRecipe.class, RefineryRecipe.TYPE);
 		MixerRecipe.recipeList = filterRecipes(recipes, MixerRecipe.class, MixerRecipe.TYPE);
 		MineralMix.mineralList = filterRecipes(recipes, MineralMix.class, MineralMix.TYPE);
-
-		MixerRecipePotion.initPotionRecipes();
+	}
 
 		// Wrap up recycling
 		try
@@ -95,8 +95,16 @@ public class RecipeReloadListener implements IResourceManagerReloadListener
 
 	static <R extends IRecipe<?>> Map<ResourceLocation, R> filterRecipes(Collection<IRecipe<?>> recipes, Class<R> recipeClass, IRecipeType<R> recipeType)
 	{
-		return recipes.stream()
-				.filter(iRecipe -> iRecipe.getType()==recipeType)
+		return Stream.concat(
+				recipes.stream()
+						.filter(iRecipe -> iRecipe.getType()==recipeType),
+				recipes.stream()
+						//TODO cache
+						.filter(r -> r.getType()==GeneratedListRecipe.TYPE)
+						.map(r -> (GeneratedListRecipe)r)
+						.filter(r -> r.getSubType()==recipeType)
+						.flatMap(r -> r.getSubRecipes().stream())
+		)
 				.map(recipeClass::cast)
 				.collect(Collectors.toMap(recipe -> recipe.getId(), recipe -> recipe));
 	}

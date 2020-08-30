@@ -32,11 +32,12 @@ import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.brewing.IBrewingRecipe;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IRegistryDelegate;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -46,7 +47,6 @@ import java.util.Set;
  */
 public class MixerRecipePotion extends MixerRecipe
 {
-	public static final HashMap<Potion, MixerRecipePotion> REGISTERED = new HashMap<>();
 	public static final Set<String> BLACKLIST = new HashSet<>();
 	private final Set<Pair<FluidTagInput, IngredientWithSize[]>> alternateInputs = new HashSet<>();
 
@@ -65,9 +65,9 @@ public class MixerRecipePotion extends MixerRecipe
 		return alternateInputs;
 	}
 
-	public static void initPotionRecipes()
+	public static List<MixerRecipe> initPotionRecipes()
 	{
-		REGISTERED.clear();
+		List<MixerRecipe> ret = new ArrayList<>();
 		// Vanilla
 		try
 		{
@@ -85,9 +85,8 @@ public class MixerRecipePotion extends MixerRecipe
 				Ingredient reagent = (Ingredient)f_reagent.get(mixPredicate);
 				IRegistryDelegate<Potion> input = (IRegistryDelegate<Potion>)f_input.get(mixPredicate);
 				IRegistryDelegate<Potion> output = (IRegistryDelegate<Potion>)f_output.get(mixPredicate);
-				registerPotionRecipe(output.get(), input.get(), new IngredientWithSize(reagent));
+				registerPotionRecipe(output.get(), input.get(), new IngredientWithSize(reagent), ret);
 			}
-
 		} catch(Exception e)
 		{
 			IELogger.error("Error when trying to figure out vanilla potion recipes", e);
@@ -102,28 +101,42 @@ public class MixerRecipePotion extends MixerRecipe
 				ItemStack output = ((BrewingRecipe)recipe).getOutput();
 				if(output.getItem()==Items.POTION)
 					registerPotionRecipe(PotionUtils.getPotionFromItem(output),
-							PotionUtils.getPotionFromItem(input.getMatchingStacks()[0]), ingredient);
+							PotionUtils.getPotionFromItem(input.getMatchingStacks()[0]), ingredient, ret);
 			}
+		return ret;
 	}
 
-	public static void registerPotionRecipe(Potion output, Potion input, IngredientWithSize reagent)
+	public static void registerPotionRecipe(Potion output, Potion input, IngredientWithSize reagent, List<MixerRecipe> all)
 	{
-		if(REGISTERED.containsKey(output))
+		if(!BLACKLIST.contains(output.getRegistryName().toString()))
 		{
-			MixerRecipePotion recipe = REGISTERED.get(output);
-			recipe.addAlternateInput(input, reagent);
-		}
-		else if(!BLACKLIST.contains(output.getRegistryName().toString()))
-		{
-			MixerRecipePotion recipe = new MixerRecipePotion(output.getRegistryName(), output, input, reagent);
-			MixerRecipe.recipeList.put(recipe.getId(), recipe);
-			REGISTERED.put(output, recipe);
+			ResourceLocation name = output.getRegistryName();
+			long existing = all.stream().filter(r -> r.getId().toString().startsWith(output.getRegistryName().toString())).count();
+			if(existing > 0)
+				name = new ResourceLocation(name.getNamespace(), name.getPath()+"_"+existing);
+			MixerRecipe recipe = new MixerRecipe(
+					name, getFluidStackForType(output, 1000), getFluidTagForType(input, 1000),
+					new IngredientWithSize[]{reagent}, 6400);
+			all.add(recipe);
 
 			BottlingMachineRecipe bottling = new BottlingMachineRecipe(output.getRegistryName(),
 					PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION), output),
 					Ingredient.fromItems(Items.GLASS_BOTTLE), getFluidTagForType(output, 250));
 			BottlingMachineRecipe.recipeList.put(bottling.getId(), bottling);
 		}
+	}
+
+	public static List<BottlingMachineRecipe> getPotionBottlingRecipes()
+	{
+		List<BottlingMachineRecipe> ret = new ArrayList<>();
+		for(Potion potion : ForgeRegistries.POTION_TYPES.getValues())
+			ret.add(new BottlingMachineRecipe(
+					potion.getRegistryName(),
+					PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION), potion),
+					Ingredient.fromItems(Items.GLASS_BOTTLE),
+					getFluidTagForType(potion, 250)
+			));
+		return ret;
 	}
 
 	public static FluidStack getFluidStackForType(Potion type, int amount)
@@ -139,9 +152,12 @@ public class MixerRecipePotion extends MixerRecipe
 	{
 		if(type==Potions.WATER||type==null)
 			return new FluidTagInput(FluidTags.WATER.getId(), amount);
-		CompoundNBT nbt = new CompoundNBT();
-		nbt.putString("Potion", type.getRegistryName().toString());
-		return new FluidTagInput(IETags.fluidPotion.getId(), amount, nbt);
+		else
+		{
+			CompoundNBT nbt = new CompoundNBT();
+			nbt.putString("Potion", type.getRegistryName().toString());
+			return new FluidTagInput(IETags.fluidPotion.getId(), amount, nbt);
+		}
 	}
 
 	@Override
