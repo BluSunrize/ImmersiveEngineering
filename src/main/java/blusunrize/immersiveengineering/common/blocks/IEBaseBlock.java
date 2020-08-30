@@ -74,12 +74,14 @@ public class IEBaseBlock extends Block implements IIEBlock, IWaterLoggable
 		ResourceLocation registryName = createRegistryName();
 		setRegistryName(registryName);
 
-		IEContent.registeredIEBlocks.add(this);
+		if(shouldRegisterBlock())
+			IEContent.registeredIEBlocks.add(this);
 		Item item = createItemBlock.apply(this, new Item.Properties().group(getItemGroup()));
 		if(item!=null)
 		{
 			item.setRegistryName(registryName);
-			IEContent.registeredIEItems.add(item);
+			if(shouldRegisterItem())
+				IEContent.registeredIEItems.add(item);
 		}
 		lightOpacity = 15;
 	}
@@ -261,6 +263,16 @@ public class IEBaseBlock extends Block implements IIEBlock, IWaterLoggable
 	public ItemGroup getItemGroup()
 	{
 		return ImmersiveEngineering.itemGroup;
+	}
+	
+	public boolean shouldRegisterBlock()
+	{
+		return true;
+	}
+	
+	public boolean shouldRegisterItem()
+	{
+		return true;
 	}
 
 	@Override
