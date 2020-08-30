@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderLayer;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
+import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.fx.FluidSplashParticle.Data;
 import blusunrize.immersiveengineering.client.fx.FractalParticle;
@@ -28,6 +29,7 @@ import blusunrize.immersiveengineering.client.models.connection.*;
 import blusunrize.immersiveengineering.client.models.multilayer.MultiLayerLoader;
 import blusunrize.immersiveengineering.client.models.obj.IEOBJLoader;
 import blusunrize.immersiveengineering.client.models.obj.IESmartObjModel;
+import blusunrize.immersiveengineering.client.models.split.SplitModelLoader;
 import blusunrize.immersiveengineering.client.render.IEBipedLayerRenderer;
 import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.client.render.entity.*;
@@ -142,13 +144,14 @@ public class ClientProxy extends CommonProxy
 		// Apparently this runs in data generation runs... but registering model loaders causes NPEs there
 		if(Minecraft.getInstance()!=null)
 		{
-			ModelLoaderRegistry.registerLoader(new ResourceLocation(MODID, "ie_obj"), IEOBJLoader.instance);
+			ModelLoaderRegistry.registerLoader(IEOBJLoader.LOADER_NAME, IEOBJLoader.instance);
 			ModelLoaderRegistry.registerLoader(ConnectionLoader.LOADER_NAME, new ConnectionLoader());
 			ModelLoaderRegistry.registerLoader(ModelConfigurableSides.Loader.NAME, new ModelConfigurableSides.Loader());
 			ModelLoaderRegistry.registerLoader(ConveyorLoader.LOCATION, new ConveyorLoader());
 			ModelLoaderRegistry.registerLoader(CoresampleLoader.LOCATION, new CoresampleLoader());
 			ModelLoaderRegistry.registerLoader(MultiLayerLoader.LOCATION, new MultiLayerLoader());
 			ModelLoaderRegistry.registerLoader(FeedthroughLoader.LOCATION, new FeedthroughLoader());
+			ModelLoaderRegistry.registerLoader(SplitModelLoader.LOCATION, new SplitModelLoader());
 
 			requestModelsAndTextures();
 		}
@@ -222,7 +225,9 @@ public class ClientProxy extends CommonProxy
 		keybind_magnetEquip.setKeyConflictContext(noKeyConflict);
 		ClientRegistry.registerKeyBinding(keybind_magnetEquip);
 
-		keybind_railgunZoom.setKeyConflictContext(noKeyConflict);
+		keybind_railgunZoom.setKeyConflictContext(new ItemKeybindConflictContext(
+				(stack, player) -> stack.getItem() instanceof IZoomTool&&((IZoomTool)stack.getItem()).canZoom(stack, player))
+		);
 		ClientRegistry.registerKeyBinding(keybind_railgunZoom);
 
 		keybind_chemthrowerSwitch.setKeyConflictContext(KeyConflictContext.IN_GAME);

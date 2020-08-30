@@ -4,11 +4,15 @@
 - Fixed log spam caused by wire sync issues (Malte)
 - Fixed manual page for shaders (BluSunrize)
 
-##### Version 1.15.2-4.0.0-pre
+##### Version 1.15.2-4.0.0-117
+- Changed rendering of multiblocks to split models into blocks;
+  - This should address weird issues with shadows and disappearing models (Malte)
 - Fixed broken rendering of components on the Automated Workbench (BluSunrize)
 - Fixed rendering of mirrored multiblocks (Malte)
+- Fixed rendering of conveyors in the manual; this caused confusion when building multiblocks (Malte)
+- Also includes the changes from 1.14.4-4.0.0-116
 
-##### Version 1.14.4-4.0.0-pre
+##### Version 1.14.4-4.0.0-116
 - Added dyed sheetmetal & slabs, textured by Rorax! (BluSunrize)
 - Changed various recipes: (BluSunrize)
   - Engineering blocks got cheaper
@@ -33,6 +37,7 @@
 - Fixed some threading issues with recipes (BluSunrize)
 - Fixed missing details for the IKELOS shader (BluSunrize)
 - Fixed more concurrency exceptions with mineral veins (BluSunrize)
+- Fixed alloy grit recipes outputting too little (BluSunrize)
 
 ##### Version 1.16.1-3.2.0-115
 - Fixed some derpy rendering in the manual (BluSunrize)

@@ -1,7 +1,15 @@
+/*
+ * BluSunrize
+ * Copyright (c) 2020
+ *
+ * This code is licensed under "Blu's License of Common Sense"
+ * Details can be found in the license file in the root folder of this project
+ *
+ */
+
 package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.common.util.IELogger;
-import com.mojang.blaze3d.platform.GLX;
 import org.lwjgl.opengl.ARBFragmentShader;
 import org.lwjgl.opengl.ARBShaderObjects;
 import org.lwjgl.opengl.ARBVertexShader;

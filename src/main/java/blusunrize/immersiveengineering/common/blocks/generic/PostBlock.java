@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.IPostBlock;
+import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
@@ -28,8 +29,8 @@ import net.minecraft.loot.LootContext.Builder;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.IntegerProperty;
-import net.minecraft.util.ActionResultType;
 import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Direction.AxisDirection;
@@ -54,7 +55,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBlock
+public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBlock, IModelOffsetProvider
 {
 	public static final IntegerProperty POST_SLAVE = IntegerProperty.create("post_slave", 0, 3);
 	public static final EnumProperty<HorizontalOffset> HORIZONTAL_OFFSET = EnumProperty.create("horizontal_offset",
@@ -357,9 +358,11 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBloc
 	{
 		ArrayList<String> visible = new ArrayList<>();
 		visible.add("base");
+		final int offset = 1-state.get(POST_SLAVE);
+		pos = pos.subtract(state.get(HORIZONTAL_OFFSET).getOffset());
 		for(int i = 0; i <= 2; i++)
 		{
-			BlockPos upperPos = pos.up(1+i);
+			BlockPos upperPos = pos.up(offset+i);
 			BlockState upperState = world.getBlockState(upperPos);
 			if(upperState.getBlock()==this)
 			{
@@ -390,6 +393,14 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBloc
 	{
 		int offset = world.getBlockState(pos).get(POST_SLAVE);
 		return offset > 0;
+	}
+
+	@Nonnull
+	@Override
+	public BlockPos getModelOffset(BlockState state)
+	{
+		HorizontalOffset d = state.get(HORIZONTAL_OFFSET);
+		return new BlockPos(0, state.get(POST_SLAVE), 0).add(d.getOffset());
 	}
 
 	enum HorizontalOffset implements IStringSerializable

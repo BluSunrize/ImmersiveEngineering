@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.tool.IElectricEquipment;
 import blusunrize.immersiveengineering.api.tool.IElectricEquipment.ElectricSource;
@@ -63,7 +64,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInternalFluxHandler, IHasDummyBlocks,
-		IStateBasedDirectional, IBlockBounds, IScrewdriverInteraction
+		IStateBasedDirectional, IBlockBounds, IScrewdriverInteraction, IModelOffsetProvider
 {
 	public static TileEntityType<TeslaCoilTileEntity> TYPE;
 
@@ -606,5 +607,14 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 			lifeTimer--;
 			return lifeTimer <= 0;
 		}
+	}
+
+	@Override
+	public BlockPos getModelOffset(BlockState state)
+	{
+		if (isDummy())
+			return new BlockPos(0, 0, -1);
+		else
+			return BlockPos.ZERO;
 	}
 }

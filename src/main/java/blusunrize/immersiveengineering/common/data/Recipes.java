@@ -2385,12 +2385,12 @@ public class Recipes extends RecipeProvider
 				.addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot))
 				.build(out, toRL(toPath(Ingredients.wireSteel)));
 
-		ShapelessRecipeBuilder.shapelessRecipe(Metals.dusts.get(EnumMetals.ELECTRUM))
+		ShapelessRecipeBuilder.shapelessRecipe(Metals.dusts.get(EnumMetals.ELECTRUM), 2)
 				.addIngredient(IETags.getTagsFor(EnumMetals.GOLD).dust)
 				.addIngredient(IETags.getTagsFor(EnumMetals.SILVER).dust)
 				.addCriterion("has_gold_dust", hasItem(IETags.getTagsFor(EnumMetals.GOLD).dust))
 				.build(out, toRL("electrum_mix"));
-		ShapelessRecipeBuilder.shapelessRecipe(Metals.dusts.get(EnumMetals.CONSTANTAN))
+		ShapelessRecipeBuilder.shapelessRecipe(Metals.dusts.get(EnumMetals.CONSTANTAN), 2)
 				.addIngredient(IETags.getTagsFor(EnumMetals.COPPER).dust)
 				.addIngredient(IETags.getTagsFor(EnumMetals.NICKEL).dust)
 				.addCriterion("has_nickel_dust", hasItem(IETags.getTagsFor(EnumMetals.NICKEL).dust))

@@ -4,10 +4,24 @@
   },
   "loader": "immersiveengineering:connector",
   "base_model": {
-    "loader": "forge:obj",
+    "base_loader": "forge:obj",
     "model": "immersiveengineering:models/block/connector/e_meter.obj",
     "flip-v": true,
-    "detectCullableFaces": false
+    "detectCullableFaces": false,
+    "loader": "immersiveengineering:basic_split",
+    "split_parts": [
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        -1,
+        0
+      ]
+    ],
+    "dynamic": false
   },
   "layers": [
     "solid"

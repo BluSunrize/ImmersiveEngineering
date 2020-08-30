@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import net.minecraft.data.BlockTagsProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.model.generators.ExistingFileHelper;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
@@ -20,10 +21,12 @@ import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 @EventBusSubscriber(modid = ImmersiveEngineering.MODID, bus = Bus.MOD)
 public class IEDataGenerator
 {
+	public static ExistingFileHelper EXISTING_HELPER = null;
 
 	@SubscribeEvent
 	public static void gatherData(GatherDataEvent event)
 	{
+		EXISTING_HELPER = event.getExistingFileHelper();
 		DataGenerator gen = event.getGenerator();
 		if(event.includeServer())
 		{
