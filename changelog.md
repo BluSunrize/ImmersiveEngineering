@@ -2,7 +2,7 @@
 - Fixed broken rendering of components on the Automated Workbench (BluSunrize)
 - Fixed rendering of mirrored multiblocks (Malte)
 
-##### Version 1.14.4-4.0.0-pre
+##### Version 1.14.4-4.0.0-116
 - Added dyed sheetmetal & slabs, textured by Rorax! (BluSunrize)
 - Changed various recipes: (BluSunrize)
   - Engineering blocks got cheaper
@@ -27,6 +27,7 @@
 - Fixed some threading issues with recipes (BluSunrize)
 - Fixed missing details for the IKELOS shader (BluSunrize)
 - Fixed more concurrency exceptions with mineral veins (BluSunrize)
+- Fixed alloy grit recipes outputting too little (BluSunrize)
 
 ##### Version 1.15.2-3.2.0-114
 - Fixed mirrored machines rendering incorrectly (Malte)

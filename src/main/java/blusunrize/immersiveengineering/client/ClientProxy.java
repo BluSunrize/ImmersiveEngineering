@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderLayer;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
+import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.font.IEFontReloadListener;
 import blusunrize.immersiveengineering.client.font.IEFontRender;
@@ -225,7 +226,9 @@ public class ClientProxy extends CommonProxy
 		keybind_magnetEquip.setKeyConflictContext(noKeyConflict);
 		ClientRegistry.registerKeyBinding(keybind_magnetEquip);
 
-		keybind_railgunZoom.setKeyConflictContext(noKeyConflict);
+		keybind_railgunZoom.setKeyConflictContext(new ItemKeybindConflictContext(
+				(stack, player) -> stack.getItem() instanceof IZoomTool&&((IZoomTool)stack.getItem()).canZoom(stack, player))
+		);
 		ClientRegistry.registerKeyBinding(keybind_railgunZoom);
 
 		keybind_chemthrowerSwitch.setKeyConflictContext(KeyConflictContext.IN_GAME);
