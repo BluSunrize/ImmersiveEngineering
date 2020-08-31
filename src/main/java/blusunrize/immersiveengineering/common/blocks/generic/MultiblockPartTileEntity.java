@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMultiblock;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.StoneMultiblock;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.SafeChunkUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -444,12 +443,6 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 					mirroredPosInMB.getY(),
 					mirroredPosInMB.getZ()
 			);
-		if(multiblockInstance instanceof StoneMultiblock)
-			mirroredPosInMB = new BlockPos(
-					size.getX()-mirroredPosInMB.getX()-1,
-					mirroredPosInMB.getY(),
-					size.getZ()-mirroredPosInMB.getZ()-1
-			);
-		return mirroredPosInMB.subtract(multiblockInstance.getMasterFromOriginOffset());
+		return multiblockInstance.multiblockToModelPos(mirroredPosInMB);
 	}
 }

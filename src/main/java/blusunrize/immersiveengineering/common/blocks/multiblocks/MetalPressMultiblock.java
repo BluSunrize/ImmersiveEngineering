@@ -23,7 +23,6 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
@@ -86,6 +85,16 @@ public class MetalPressMultiblock extends IETemplateMultiblock
 	public Direction untransformDirection(Direction transformed)
 	{
 		return transformed.rotateYCCW();
+	}
+
+	@Override
+	public BlockPos multiblockToModelPos(BlockPos posInMultiblock)
+	{
+		return super.multiblockToModelPos(new BlockPos(
+				posInMultiblock.getZ()+1,
+				posInMultiblock.getY(),
+				1-posInMultiblock.getX()
+		));
 	}
 
 	@Override
