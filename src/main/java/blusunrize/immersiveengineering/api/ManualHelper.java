@@ -33,7 +33,7 @@ public class ManualHelper
 	}
 
 	/**
-	 * Adds a new source of information for the "<config"-syntax in the IE manual
+	 * Adds a new source of information for the "&lt;config"-syntax in the IE manual
 	 *
 	 * @param newGetter returns either the object for the given key or null
 	 */
