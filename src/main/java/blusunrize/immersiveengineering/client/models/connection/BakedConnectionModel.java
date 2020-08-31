@@ -87,7 +87,7 @@ public class BakedConnectionModel extends BakedIEModel
 			{
 				ConnectionPoint here = c.getEndFor(orig.here);
 				data.add(new Connection.RenderData(c, c.getEndB().equals(here),
-						ClientUtils.getVertexCountForSide(here, c, RenderData.POINTS_PER_WIRE)));
+						ClientUtils.getSolidVertexCountForSide(here, c, RenderData.POINTS_PER_WIRE)));
 			}
 			ModelKey key = new ModelKey(data, ad, orig.here);
 			try
@@ -157,7 +157,7 @@ public class BakedConnectionModel extends BakedIEModel
 	public class AssembledBakedModel implements IBakedModel
 	{
 		ModelKey key;
-		List<BakedQuad>[] lists;
+		List<BakedQuad> lists;
 		TextureAtlasSprite texture;
 
 		public AssembledBakedModel(ModelKey key, TextureAtlasSprite tex, IBakedModel b)
@@ -171,15 +171,13 @@ public class BakedConnectionModel extends BakedIEModel
 		public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand, IModelData data)
 		{
 			RenderType layer = MinecraftForgeClient.getRenderLayer();
-			// The new rendering system does not support making non-translucent textures translucent using alpha,
-			// so the fading ends are currently does
 			if(layer!=RenderType.getSolid())
 				return getBaseQuads(layer, state, side, rand, data);
 			if(lists==null)
 				lists = ClientUtils.convertConnectionFromBlockstate(key.here, key.connections, texture);
-			List<BakedQuad> l = new ArrayList<>(lists[0]);
+			List<BakedQuad> l = new ArrayList<>(lists);
 			l.addAll(getBaseQuads(layer, state, side, rand, data));
-			return Collections.synchronizedList(l);
+			return l;
 		}
 
 		@Override

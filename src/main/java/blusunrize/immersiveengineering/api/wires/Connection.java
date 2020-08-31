@@ -294,6 +294,9 @@ public class Connection
 		public static final int POINTS_PER_WIRE = 16;
 		public final CatenaryData data;
 		public final WireType type;
+		public final int pointsToRenderSolid;
+		@Deprecated
+		// Replaced by pointsToRenderSolid
 		public final int pointsToRender;
 		public final int color;
 
@@ -301,7 +304,7 @@ public class Connection
 		{
 			type = conn.type;
 			assert (conn.hasCatenaryData());
-			pointsToRender = count;
+			pointsToRenderSolid = pointsToRender = count;
 			color = type.getColour(conn);
 			data = new CatenaryData(conn.getCatenaryData(), startAtB, conn.getPoint(0, conn.getEndB()));
 		}
@@ -314,7 +317,7 @@ public class Connection
 
 			RenderData that = (RenderData)o;
 
-			if(pointsToRender!=that.pointsToRender) return false;
+			if(pointsToRenderSolid!=that.pointsToRenderSolid) return false;
 			if(!data.equals(that.data)) return false;
 			return type.equals(that.type);
 		}
@@ -324,7 +327,7 @@ public class Connection
 		{
 			int result = data.hashCode();
 			result = 31*result+type.hashCode();
-			result = 31*result+pointsToRender;
+			result = 31*result+pointsToRenderSolid;
 			return result;
 		}
 
