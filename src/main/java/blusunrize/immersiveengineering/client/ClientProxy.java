@@ -519,17 +519,6 @@ public class ClientProxy extends CommonProxy
 	}
 
 	@Override
-	public String[] splitStringOnWidth(String s, int w)
-	{
-		//TODO
-		return new String[]{s};
-		//return ClientUtils.font().func_238425_b_(ITextProperties.func_240652_a_(s), w)
-		//		.stream()
-		//		.map(ITextProperties::getString)
-		//		.toArray(String[]::new);
-	}
-
-	@Override
 	public World getClientWorld()
 	{
 		return mc().world;

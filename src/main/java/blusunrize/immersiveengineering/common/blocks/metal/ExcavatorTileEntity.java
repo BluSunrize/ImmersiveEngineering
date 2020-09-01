@@ -48,6 +48,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fluids.FluidStack;
@@ -292,13 +293,12 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 				ItemStack tool = new ItemStack(Items.IRON_PICKAXE);
 				tool.addEnchantment(Enchantments.SILK_TOUCH, 1);
 				LootContext.Builder dropContext = new Builder((ServerWorld)world)
-						//TODO .withNullableParameter(LootParameters.POSITION, pos)
+						.withNullableParameter(LootParameters.field_237457_g_, Vector3d.copyCentered(pos))
 						.withNullableParameter(LootParameters.TOOL, tool);
 
 				List<ItemStack> itemsNullable = blockstate.getDrops(dropContext);
 				NonNullList<ItemStack> items = NonNullList.create();
 				items.addAll(itemsNullable);
-				//TODO ForgeEventFactory.fireBlockHarvesting(items, world, pos, blockstate, 0, 1.0f, true, fakePlayer);
 
 				for(int i = 0; i < items.size(); i++)
 					if(i!=0)

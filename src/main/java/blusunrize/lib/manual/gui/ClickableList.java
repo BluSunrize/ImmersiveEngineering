@@ -168,4 +168,9 @@ public class ClickableList extends Button
 			maxOffset = 0;
 		height = getFontHeight()*Math.min(perPage, headers.length);
 	}
+
+	public int getHeight()
+	{
+		return height;
+	}
 }

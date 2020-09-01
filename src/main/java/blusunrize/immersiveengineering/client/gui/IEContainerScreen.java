@@ -30,7 +30,7 @@ public abstract class IEContainerScreen<C extends Container> extends ContainerSc
 		this.playerInventoryTitleY = this.ySize-94;
 		this.renderBackground(transform);
 		super.render(transform, mouseX, mouseY, partialTicks);
-		this.drawGuiContainerForegroundLayer(transform, mouseX, mouseY);
+		this.renderHoveredTooltip(transform, mouseX, mouseY);
 	}
 
 	public void fullInit()

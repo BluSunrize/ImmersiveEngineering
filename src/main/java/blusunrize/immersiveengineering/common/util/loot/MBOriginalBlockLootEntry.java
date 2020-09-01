@@ -48,7 +48,7 @@ public class MBOriginalBlockLootEntry extends StandaloneLootEntry
 				Utils.getDrops(multiblockTile.getOriginalBlock(),
 						new LootContext.Builder(context.getWorld())
 								.withNullableParameter(LootParameters.TOOL, context.get(LootParameters.TOOL))
-								//TODO .withParameter(LootParameters.POSITION, context.get(LootParameters.POSITION))
+								.withNullableParameter(LootParameters.field_237457_g_, context.get(LootParameters.field_237457_g_))
 				).forEach(output);
 			}
 		}
