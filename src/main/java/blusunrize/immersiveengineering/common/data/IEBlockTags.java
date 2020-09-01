@@ -67,7 +67,7 @@ class IEBlockTags extends BlockTagsProvider
 			getOrCreateBuilder(IETags.sheetmetals).addItemEntry(sheetmetal);
 		}
 		for(DyeColor dye : DyeColor.values())
-			func_240522_a_(IETags.sheetmetals).func_240532_a_(MetalDecoration.coloredSheetmetal.get(dye));
+			getOrCreateBuilder(IETags.sheetmetals).add(MetalDecoration.coloredSheetmetal.get(dye));
 		for(TreatedWoodStyles style : TreatedWoodStyles.values())
 		{
 			getOrCreateBuilder(IETags.treatedWood).addItemEntry(WoodenDecoration.treatedWood.get(style));
