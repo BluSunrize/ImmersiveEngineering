@@ -100,11 +100,11 @@ public class ClickableList extends Button
 		{
 			final int minVisibleBlack = 0x1B<<24;
 			final int mainBarBlack = 0x28<<24;
-			final float totalHeight = maxOffset*getFontHeight()+getHeight();
+			final float totalHeight = maxOffset*getFontHeight()+height;
 			final float heightTopRel = (offset*getFontHeight())/totalHeight;
-			final float heightBottomRel = (offset*getFontHeight()+getHeight())/totalHeight;
-			final int heightTopAbs = (int)(heightTopRel*getHeight());
-			final int heightBottomAbs = (int)(heightBottomRel*getHeight());
+			final float heightBottomRel = (offset*getFontHeight()+height)/totalHeight;
+			final int heightTopAbs = (int)(heightTopRel*height);
+			final int heightBottomAbs = (int)(heightBottomRel*height);
 			fill(transform, x+width, y, x+width+8, y+height, minVisibleBlack);
 			fill(transform, x+width+1, y+heightTopAbs, x+width+7, y+heightBottomAbs, mainBarBlack);
 		}

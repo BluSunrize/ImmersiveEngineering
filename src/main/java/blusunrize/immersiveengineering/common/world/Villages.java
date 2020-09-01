@@ -29,7 +29,11 @@ import blusunrize.immersiveengineering.common.items.RevolverItem;
 import blusunrize.immersiveengineering.common.items.ToolUpgradeItem.ToolUpgrade;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.mojang.datafixers.util.Either;
+import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -47,10 +51,18 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.village.PointOfInterestType;
 import net.minecraft.world.World;
+import net.minecraft.world.gen.feature.jigsaw.JigsawPattern;
+import net.minecraft.world.gen.feature.jigsaw.JigsawPattern.PlacementBehaviour;
+import net.minecraft.world.gen.feature.jigsaw.JigsawPatternRegistry;
+import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
+import net.minecraft.world.gen.feature.jigsaw.LegacySingleJigsawPiece;
 import net.minecraft.world.gen.feature.structure.*;
+import net.minecraft.world.gen.feature.template.ProcessorLists;
 import net.minecraft.world.storage.MapData;
 import net.minecraft.world.storage.MapDecoration.Type;
 import net.minecraftforge.event.village.VillagerTradesEvent;
@@ -93,21 +105,17 @@ public class Villages
 					rl("village/houses/"+biome+"_engineer"), 1);
 
 		// Register workstations
-		// TODO
-		/*
 		JigsawPatternRegistry.func_244094_a(new JigsawPattern(
 				new ResourceLocation(MODID, "village/workstations"),
 				new ResourceLocation("empty"),
 				ImmutableList.of(
-						new Pair<>(new SingleJigsawPiece(MODID+":village/workstations/electrician"), 1),
-						new Pair<>(new SingleJigsawPiece(MODID+":village/workstations/engineer"), 1),
-						new Pair<>(new SingleJigsawPiece(MODID+":village/workstations/gunsmith"), 1),
-						new Pair<>(new SingleJigsawPiece(MODID+":village/workstations/machinist"), 1),
-						new Pair<>(new SingleJigsawPiece(MODID+":village/workstations/outfitter"), 1)
-				),
-				JigsawPattern.PlacementBehaviour.RIGID
+						new Pair<>(createWorkstation("village/workstations/electrician"), 1),
+						new Pair<>(createWorkstation("village/workstations/engineer"), 1),
+						new Pair<>(createWorkstation("village/workstations/gunsmith"), 1),
+						new Pair<>(createWorkstation("village/workstations/machinist"), 1),
+						new Pair<>(createWorkstation("village/workstations/outfitter"), 1)
+				)
 		));
-		 */
 
 		// Register gifts
 		GiveHeroGiftsTask.GIFTS.put(Registers.PROF_ENGINEER.get(), rl("gameplay/hero_of_the_village/engineer"));
@@ -117,20 +125,31 @@ public class Villages
 		GiveHeroGiftsTask.GIFTS.put(Registers.PROF_GUNSMITH.get(), rl("gameplay/hero_of_the_village/gunsmith"));
 	}
 
+	private static JigsawPiece createWorkstation(String name)
+	{
+		return new LegacySingleJigsawPiece(
+				Either.left(rl(name)),
+				() -> ProcessorLists.field_244101_a,
+				PlacementBehaviour.RIGID
+		);
+	}
+
 	private static void addToPool(ResourceLocation pool, ResourceLocation toAdd, int weight)
 	{
-		/*
 		JigsawPattern old = WorldGenRegistries.field_243656_h.getOrDefault(pool);
-		List<JigsawPiece> shuffled = old.getShuffledPieces(Utils.RAND);
+		List<JigsawPiece> shuffled;
+		if(old!=null)
+			shuffled = old.getShuffledPieces(Utils.RAND);
+		else
+			shuffled = ImmutableList.of();
 		List<Pair<JigsawPiece, Integer>> newPieces = new ArrayList<>();
 		for(JigsawPiece p : shuffled)
 		{
 			newPieces.add(new Pair<>(p, 1));
 		}
-		newPieces.add(new Pair<>(new SingleJigsawPiece(toAdd.toString()), weight));
+		newPieces.add(new Pair<>(new LegacySingleJigsawPiece(Either.left(toAdd), () -> ProcessorLists.field_244101_a, PlacementBehaviour.RIGID), weight));
 		ResourceLocation name = old.getName();
-		WorldGenRegistries.field_243656_h.register(new JigsawPattern(pool, name, newPieces, PlacementBehaviour.RIGID));
-		 */
+		Registry.register(WorldGenRegistries.field_243656_h, pool, new JigsawPattern(pool, name, newPieces));
 	}
 
 	@Mod.EventBusSubscriber(modid = MODID, bus = Bus.MOD)

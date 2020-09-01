@@ -9,12 +9,12 @@
 package blusunrize.immersiveengineering.common.world;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.collect.HashMultimap;
-import com.mojang.serialization.Codec;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.RegistryKey;
@@ -25,24 +25,29 @@ import net.minecraft.world.DimensionType;
 import net.minecraft.world.ISeedReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.chunk.IChunk;
 import net.minecraft.world.gen.ChunkGenerator;
+import net.minecraft.world.gen.GenerationStage.Decoration;
 import net.minecraft.world.gen.PerlinNoiseGenerator;
 import net.minecraft.world.gen.feature.*;
 import net.minecraft.world.gen.feature.OreFeatureConfig.FillerBlockType;
-import net.minecraft.world.gen.placement.*;
+import net.minecraft.world.gen.placement.ConfiguredPlacement;
+import net.minecraft.world.gen.placement.IPlacementConfig;
+import net.minecraft.world.gen.placement.Placement;
+import net.minecraft.world.gen.placement.TopSolidRangeConfig;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.world.ChunkDataEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 public class IEWorldGen
 {
@@ -53,32 +58,20 @@ public class IEWorldGen
 
 	public static void addOreGen(String name, BlockState state, int maxVeinSize, int minY, int maxY, int chunkOccurence)
 	{
-		/*
-   func_243968_a("ore_iron",
-		Feature.ORE.withConfiguration(
-			new OreFeatureConfig(OreFeatureConfig.FillerBlockType.field_241882_a, Features.States.field_244046_aj, 9)
-		)
-		.func_242733_d(64)
-		.func_242728_a()
-		.func_242731_b(20)
-    );
-		 */
 		OreFeatureConfig cfg = new OreFeatureConfig(FillerBlockType.field_241882_a, state, maxVeinSize);
-		ConfiguredFeature<?, ?> feature = new ConfiguredFeature<>(Feature.ORE, cfg)
-				.withPlacement(
-						new ConfiguredPlacement<>(COUNT_RANGE_IE, new TopSolidRangeConfig(minY, minY, maxY))
-				)
-				// TODO actually understand what I'm doing here
-				.func_242728_a()
-				.func_242731_b(chunkOccurence);
-		//TODO
-		//for(Biome biome : WorldGenRegistries.field_243657_i)
-		//	biome.addFeature(Decoration.UNDERGROUND_ORES, feature);
+		ConfiguredFeature<?, ?> feature = Features.func_243968_a(Lib.MODID+":"+name, Feature.ORE
+				.withConfiguration(new OreFeatureConfig(OreFeatureConfig.FillerBlockType.field_241882_a, state, maxVeinSize))
+				.withPlacement(Placement.field_242907_l/* RANGE */.configure(new TopSolidRangeConfig(minY, minY, maxY)))
+				.func_242728_a/* spreadHorizontally */()
+				.func_242731_b/* repeat */(chunkOccurence));
+		for(Biome biome : ForgeRegistries.BIOMES)
+			new BiomeModifier(biome).addFeature(Decoration.UNDERGROUND_ORES, feature);
 		features.put(name, feature);
 
+		//TODO probably broken
 		ConfiguredFeature<?, ?> retroFeature = new ConfiguredFeature<>(IEContent.ORE_RETROGEN, cfg)
 				.withPlacement(
-						new ConfiguredPlacement<>(COUNT_RANGE_IE, new TopSolidRangeConfig(minY, minY, maxY))
+						new ConfiguredPlacement<>(Placement.field_242907_l, new TopSolidRangeConfig(minY, minY, maxY))
 				)
 				.func_242728_a()
 				.func_242731_b(chunkOccurence);
@@ -87,12 +80,13 @@ public class IEWorldGen
 
 	public static void registerMineralVeinGen()
 	{
-		ConfiguredFeature<?, ?> vein_feature = new ConfiguredFeature<>(MINERAL_VEIN_FEATURE, new NoFeatureConfig())
-				.withPlacement(
-						new ConfiguredPlacement<>(Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG)
-				);
-		//TODO for(Biome biome : ForgeRegistries.BIOMES.getValues())
-		//TODO 	biome.addFeature(Decoration.RAW_GENERATION, vein_feature);
+		ConfiguredFeature<?, ?> vein_feature = Features.func_243968_a(Lib.MODID+":miarenl_veins",
+				new ConfiguredFeature<>(MINERAL_VEIN_FEATURE, new NoFeatureConfig())
+						.withPlacement(
+								new ConfiguredPlacement<>(Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG)
+						));
+		for(Biome biome : ForgeRegistries.BIOMES.getValues())
+			new BiomeModifier(biome).addFeature(Decoration.RAW_GENERATION, vein_feature);
 	}
 
 	public void generateOres(Random random, int chunkX, int chunkZ, ServerWorld world, boolean newGeneration)
@@ -191,46 +185,13 @@ public class IEWorldGen
 			IELogger.info("Retrogen was performed on "+counter+" Chunks, "+remaining+" chunks remaining");
 	}
 
-	private static CountRangeInIEDimensions COUNT_RANGE_IE;
 	private static FeatureMineralVein MINERAL_VEIN_FEATURE;
-
-	public void registerPlacements(RegistryEvent.Register<Placement<?>> ev)
-	{
-		COUNT_RANGE_IE = new CountRangeInIEDimensions(TopSolidRangeConfig.field_236985_a_);
-		COUNT_RANGE_IE.setRegistryName(ImmersiveEngineering.MODID, "count_range_in_ie_dimensions");
-		ev.getRegistry().register(COUNT_RANGE_IE);
-	}
 
 	public void registerFeatures(RegistryEvent.Register<Feature<?>> ev)
 	{
 		MINERAL_VEIN_FEATURE = new FeatureMineralVein();
 		MINERAL_VEIN_FEATURE.setRegistryName(ImmersiveEngineering.MODID, "mineral_vein");
 		ev.getRegistry().register(MINERAL_VEIN_FEATURE);
-	}
-
-	private static class CountRangeInIEDimensions extends Placement<TopSolidRangeConfig>
-	{
-		private final RangePlacement countRange;
-
-		public CountRangeInIEDimensions(Codec<TopSolidRangeConfig> configFactoryIn)
-		{
-			super(configFactoryIn);
-			this.countRange = new RangePlacement(configFactoryIn);
-		}
-
-		@Override
-		public Stream<BlockPos> func_241857_a(WorldDecoratingHelper p_241857_1_, Random p_241857_2_, TopSolidRangeConfig p_241857_3_, BlockPos p_241857_4_)
-		{
-			//TODO
-			//if(!oreDimBlacklist.contains(worldIn.getWorld().func_234922_V_()))
-			//{
-			//	return countRange.getPositions(worldIn, generatorIn, random, configIn, pos);
-			//}
-			//else
-			//{
-				return Stream.empty();
-			//}
-		}
 	}
 
 	private static class FeatureMineralVein extends Feature<NoFeatureConfig>

@@ -180,7 +180,7 @@ public class ManualScreen extends Screen
 			if(suggestionList.visible)
 			{
 				this.blit(transform, guiLeft+174, guiTop+100, 214, 212, 16, 26);
-				int h = suggestionList.getHeight();
+				int h = 200;//TODO suggestionList.getHeight();
 				int w = 76;
 				this.blit(transform, guiLeft+174, guiTop+116, 230, 212, 16, 16);//Top Left
 				this.blit(transform, guiLeft+174, guiTop+132+h, 230, 228, 16, 10);//Bottom Left

@@ -25,6 +25,7 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootContext;
 import net.minecraft.loot.LootParameterSets;
+import net.minecraft.loot.LootParameters;
 import net.minecraft.loot.LootTable;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -32,6 +33,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -156,7 +158,7 @@ public class WoodenCrateTileEntity extends IEBaseTileEntity implements IIEInvent
 					.getLootTableFromLocation(this.lootTable);
 			this.lootTable = null;
 			LootContext.Builder contextBuilder = new LootContext.Builder((ServerWorld)this.world);
-			//TODO contextBuilder.withParameter(LootParameters.POSITION, pos);
+			contextBuilder.withParameter(LootParameters.field_237457_g_, Vector3d.copyCentered(pos));
 			if(player!=null)
 				contextBuilder.withLuck(player.getLuck());
 			LootContext context = contextBuilder.build(LootParameterSets.CHEST);

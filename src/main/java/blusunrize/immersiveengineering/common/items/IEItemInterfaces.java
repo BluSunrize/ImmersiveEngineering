@@ -13,13 +13,13 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 
 import java.util.List;
+import java.util.Optional;
 
 public class IEItemInterfaces
 {
@@ -47,7 +47,7 @@ public class IEItemInterfaces
 
 		default FluidStack getFluid(ItemStack container)
 		{
-			LazyOptional<FluidStack> optional = FluidUtil.getFluidContained(container);
+			Optional<FluidStack> optional = FluidUtil.getFluidContained(container);
 			if(optional.isPresent())
 				return optional.orElseThrow(RuntimeException::new);
 			else

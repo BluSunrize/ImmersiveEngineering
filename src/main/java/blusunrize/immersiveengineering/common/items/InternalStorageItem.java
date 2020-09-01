@@ -20,6 +20,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 import javax.annotation.Nullable;
+import java.util.Optional;
 
 public abstract class InternalStorageItem extends IEBaseItem
 {
@@ -59,7 +60,7 @@ public abstract class InternalStorageItem extends IEBaseItem
 	public NonNullList<ItemStack> getContainedItems(ItemStack stack)
 	{
 		LazyOptional<IItemHandler> lazyHandler = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-		LazyOptional<NonNullList<ItemStack>> ret = lazyHandler.map(handler -> {
+		Optional<NonNullList<ItemStack>> ret = lazyHandler.map(handler -> {
 			if(handler instanceof IEItemStackHandler)
 				return ((IEItemStackHandler)handler).getContainedItems();
 			else

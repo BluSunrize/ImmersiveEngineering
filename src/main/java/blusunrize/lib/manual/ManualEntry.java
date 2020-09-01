@@ -301,7 +301,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 				IResource resData;
 				try
 				{
-					resData = FastResourceAccess.getResource(manager, dataLoc);
+					resData = manager.getResource(dataLoc);
 				} catch(IOException e)
 				{
 					throw new RuntimeException(e);
@@ -353,7 +353,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 		{
 			try
 			{
-				return FastResourceAccess.getResource(Minecraft.getInstance().getResourceManager(), rl);
+				return Minecraft.getInstance().getResourceManager().getResource(rl);
 			} catch(IOException e)
 			{
 				return null;
