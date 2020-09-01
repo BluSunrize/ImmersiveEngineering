@@ -431,10 +431,10 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 						BottlingMachineRecipe recipe = BottlingMachineRecipe.findRecipe(items.get(0), fs);
 						if(recipe!=null)
 						{
-							if(tile.tanks[0].drain(recipe.fluidInput, FluidAction.SIMULATE).getAmount()==recipe.fluidInput.getAmount())
+							if(recipe.fluidInput.test(tile.tanks[0].getFluid()))
 							{
 								items.set(1, recipe.getActualItemOutputs(tile).get(0));
-								tile.tanks[0].drain(recipe.fluidInput, FluidAction.EXECUTE);
+								tile.tanks[0].drain(recipe.fluidInput.getAmount(), FluidAction.EXECUTE);
 							}
 						}
 						else

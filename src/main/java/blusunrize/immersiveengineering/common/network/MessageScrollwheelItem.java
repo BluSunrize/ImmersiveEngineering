@@ -46,7 +46,7 @@ public class MessageScrollwheelItem implements IMessage
 		ctx.enqueueWork(() -> {
 			ItemStack equipped = player.getHeldItem(Hand.MAIN_HAND);
 			if(equipped.getItem() instanceof IScrollwheel)
-				((IScrollwheel)equipped.getItem()).onScrollwheel(equipped, forward);
+				((IScrollwheel)equipped.getItem()).onScrollwheel(equipped, player, forward);
 		});
 	}
 }

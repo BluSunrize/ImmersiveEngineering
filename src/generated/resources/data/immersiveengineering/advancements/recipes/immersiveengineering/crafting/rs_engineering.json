@@ -6,12 +6,12 @@
     ]
   },
   "criteria": {
-    "has_iron_ingot": {
+    "has_iron_sheetmetal": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "tag": "forge:ingots/iron"
+            "tag": "forge:sheetmetals/iron"
           }
         ]
       }
@@ -45,7 +45,7 @@
   },
   "requirements": [
     [
-      "has_iron_ingot",
+      "has_iron_sheetmetal",
       "has_copper_ingot",
       "has_redstone",
       "has_the_recipe"

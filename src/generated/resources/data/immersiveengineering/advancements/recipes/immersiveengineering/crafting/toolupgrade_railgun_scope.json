@@ -6,12 +6,12 @@
     ]
   },
   "criteria": {
-    "has_ingot_copper": {
+    "has_railgun": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "tag": "forge:ingots/copper"
+            "item": "immersiveengineering:railgun"
           }
         ]
       }
@@ -25,7 +25,7 @@
   },
   "requirements": [
     [
-      "has_ingot_copper",
+      "has_railgun",
       "has_the_recipe"
     ]
   ]

@@ -16,6 +16,7 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.RegistryObject;
 
+import java.util.Collections;
 import java.util.Map;
 
 public class ClocheFertilizer extends IESerializableRecipe
@@ -24,7 +25,7 @@ public class ClocheFertilizer extends IESerializableRecipe
 	public static RegistryObject<IERecipeSerializer<ClocheFertilizer>> SERIALIZER;
 
 	// Initialized by reload listener
-	public static Map<ResourceLocation, ClocheFertilizer> fertilizerList;
+	public static Map<ResourceLocation, ClocheFertilizer> fertilizerList = Collections.emptyMap();
 
 	public final Ingredient input;
 	public final float growthModifier;

@@ -1,12 +1,59 @@
-##### Version 1.16.1-3.1.1-pre
+##### Version 1.16.1-4.0.0-118
+- Re-added custom banner patterns. Craft the blueprint, make patterns, then use them on the loom! (BluSunrize)
+- Added a warning when switching to "fabulous" graphics while stencil is enabled (Malte)
+- Fixed log spam caused by wire sync issues (Malte)
+- Fixed manual page for shaders (BluSunrize)
+- Also includes the changes from 1.15.2-4.0.0-117
+
+##### Version 1.15.2-4.0.0-117
+- Changed rendering of multiblocks to split models into blocks;
+  - This should address weird issues with shadows and disappearing models (Malte)
+- Fixed broken rendering of components on the Automated Workbench (BluSunrize)
+- Fixed rendering of mirrored multiblocks (Malte)
+- Fixed rendering of conveyors in the manual; this caused confusion when building multiblocks (Malte)
+- Also includes the changes from 1.14.4-4.0.0-116
+
+##### Version 1.14.4-4.0.0-116
+- Added dyed sheetmetal & slabs, textured by Rorax! (BluSunrize)
+- Changed various recipes: (BluSunrize)
+  - Engineering blocks got cheaper
+  - MV architecture now uses electrum
+  - Gunpowder has more output
+  - Press molds need less steel 
+- Changed the Railgun (BluSunrize)
+  - New model!
+  - New types of ammo!
+  - More energy storage!
+  - New advancements!
+- Changed the pump to be configured for input on the bottom by default (Malte)
+- Changed nugget to ingot/ingot to block recipes to only trigger when an IE ingot is used in the middle slot (Malte)
+  - If more mods adopt this convention it will mean that crafting a storage block from a specific mod will be possible
+- Changed ItemHandler for the Silo to hopefully cooperate better with Refined Storage (BluSunrize)
+- Fixed continued depletion of already depleted mineral veins (BluSunrize)
+- Fixed RTFM advancement not being announced (BluSunrize)
+- Fixed crashes with Building Gadgets & JEI (BluSunrize)
+- Fixed incorrect waterlogging of dummy blocks for pump, posts and others (BluSunrize)
+- Fixed mineral survey tools not breaking when exceeding their damage (BluSunrize)
+- Fixed recipe list positions in squeezer & fermenter GUI (BluSunrize)
+- Fixed some threading issues with recipes (BluSunrize)
+- Fixed missing details for the IKELOS shader (BluSunrize)
+- Fixed more concurrency exceptions with mineral veins (BluSunrize)
+- Fixed alloy grit recipes outputting too little (BluSunrize)
+
+##### Version 1.16.1-3.2.0-115
 - Fixed some derpy rendering in the manual (BluSunrize)
+- Also includes the changes from 1.15.2-3.2.0-114
 
-##### Version 1.15.2-3.1.1-pre
- - Fixed mirrored machines rendering incorrectly (Malte)
- - Fixed bucket wheels in mirrored excavators rendering incorrectly (Malte)
- - Fixed crash when holding a drill with a damaged head (Malte)
+##### Version 1.15.2-3.2.0-114
+- Fixed mirrored machines rendering incorrectly (Malte)
+- Fixed bucket wheels in mirrored excavators rendering incorrectly (Malte)
+- Fixed crash when holding a drill with a damaged head (Malte)
+- Also includes the changes from 1.14.4-3.2.0-113
 
-##### Version 1.14.4-3.1.1-pre
+##### Version 1.14.4-3.2.0-113
+- Added waterlogging to various IE blocks (BluSunrize)
+- Added processing compat for Fluorite, Cobalt and Ardite (BluSunrize)
+- Re-Added recipe for patrons & contributers to cycle through revolver skins (BluSunrize)
 - Fixed various issues with the manual (Malte)
 - Fixed CMEs while loading dynamic models (Malte)
 - Fixed warning about missing command argument serializer (Malte)
@@ -14,6 +61,10 @@
 - Fixed priority system for recipe outputs not working (Malte)
 - Fixed recipes sometimes not getting added to JEI on servers (Malte)
 - Fixed fences obstructing connections in counterintuitive ways (Malte)
+- Fixed crashes with the manual (Malte)
+- Fixed assembler logic once again to properly handle concrete recipes (BluSunrize)
+- Fixed flare cartridge colours to match the dye they were crafted with (BluSunrize)
+- Fixed assembler connecting to pipes in wrong places (BluSunrize)
 - Translations Added/Updated: zh_zn (masakitenchi)
 
 ##### Version 1.16.1-3.1-112

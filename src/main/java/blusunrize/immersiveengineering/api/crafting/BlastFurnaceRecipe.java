@@ -15,6 +15,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.RegistryObject;
 
 import javax.annotation.Nonnull;
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -55,7 +56,7 @@ public class BlastFurnaceRecipe extends IESerializableRecipe
 	}
 
 	// Initialized by reload listener
-	public static Map<ResourceLocation, BlastFurnaceRecipe> recipeList;
+	public static Map<ResourceLocation, BlastFurnaceRecipe> recipeList = Collections.emptyMap();
 
 	public static BlastFurnaceRecipe findRecipe(ItemStack input)
 	{

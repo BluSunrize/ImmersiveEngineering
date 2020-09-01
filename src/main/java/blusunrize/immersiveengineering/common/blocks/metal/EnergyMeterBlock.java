@@ -1,3 +1,12 @@
+/*
+ * BluSunrize
+ * Copyright (c) 2020
+ *
+ * This code is licensed under "Blu's License of Common Sense"
+ * Details can be found in the license file in the root folder of this project
+ *
+ */
+
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
@@ -6,6 +15,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.Property;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
@@ -19,7 +29,7 @@ public class EnergyMeterBlock extends MiscConnectorBlock
 
 	public EnergyMeterBlock()
 	{
-		super("current_transformer", () -> EnergyMeterTileEntity.TYPE, DUMMY, FACING);
+		super("current_transformer", () -> EnergyMeterTileEntity.TYPE, DUMMY, FACING, BlockStateProperties.WATERLOGGED);
 	}
 
 	@Override

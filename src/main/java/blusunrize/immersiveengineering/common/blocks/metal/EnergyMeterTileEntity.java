@@ -12,14 +12,16 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.TargetingInfo;
+import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
+import blusunrize.immersiveengineering.api.utils.shapes.CachedVoxelShapes;
 import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler;
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler.EnergyConnector;
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler.IEnergyWire;
+import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
-import blusunrize.immersiveengineering.common.util.shapes.CachedVoxelShapes;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
@@ -53,8 +55,7 @@ import java.util.List;
 import java.util.Set;
 
 public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implements ITickableTileEntity, IStateBasedDirectional,
-		IHasDummyBlocks, IPlayerInteraction, IComparatorOverride,
-		EnergyConnector, IBlockBounds
+		IHasDummyBlocks, IPlayerInteraction, IComparatorOverride, EnergyConnector, IBlockBounds, IModelOffsetProvider
 {
 	public static TileEntityType<EnergyMeterTileEntity> TYPE;
 
@@ -210,8 +211,11 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 	@Override
 	public void placeDummies(BlockItemUseContext ctx, BlockState state)
 	{
-		world.setBlockState(pos.add(0, 1, 0), state.with(IEProperties.MULTIBLOCKSLAVE, true));
-		((EnergyMeterTileEntity)world.getTileEntity(pos.add(0, 1, 0))).setFacing(this.getFacing());
+		BlockPos dummyPos = pos.up();
+		world.setBlockState(dummyPos, IEBaseBlock.applyLocationalWaterlogging(
+				state.with(IEProperties.MULTIBLOCKSLAVE, true), world, dummyPos
+		));
+		((EnergyMeterTileEntity)world.getTileEntity(dummyPos)).setFacing(this.getFacing());
 	}
 
 	@Override
@@ -358,5 +362,14 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 	public Collection<ConnectionPoint> getConnectionPoints()
 	{
 		return ImmutableList.of(new ConnectionPoint(pos, 0), new ConnectionPoint(pos, 1));
+	}
+
+	@Override
+	public BlockPos getModelOffset(BlockState state)
+	{
+		if(isDummy())
+			return BlockPos.ZERO;
+		else
+			return new BlockPos(0, -1, 0);
 	}
 }

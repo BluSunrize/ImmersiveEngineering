@@ -49,7 +49,7 @@ public class MixerRecipeCategory extends IERecipeCategory<MixerRecipe>
 	@Override
 	public void setIngredients(MixerRecipe recipe, IIngredients ingredients)
 	{
-		ingredients.setInput(VanillaTypes.FLUID, recipe.fluidInput);
+		ingredients.setInputs(VanillaTypes.FLUID, recipe.fluidInput.getMatchingFluidStacks());
 		ingredients.setInputLists(VanillaTypes.ITEM, JEIIngredientStackListBuilder.make(recipe.itemInputs).build());
 		ingredients.setOutput(VanillaTypes.FLUID, recipe.fluidOutput);
 	}
@@ -59,7 +59,7 @@ public class MixerRecipeCategory extends IERecipeCategory<MixerRecipe>
 	{
 		IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
 		guiFluidStacks.init(0, true, 48, 3, 58, 47, 4000, false, null);
-		guiFluidStacks.set(0, recipe.fluidInput);
+		guiFluidStacks.set(0, recipe.fluidInput.getMatchingFluidStacks());
 
 		guiFluidStacks.init(1, false, 138, 2, 16, 47, 4000, false, tankOverlay);
 		guiFluidStacks.set(1, recipe.fluidOutput);

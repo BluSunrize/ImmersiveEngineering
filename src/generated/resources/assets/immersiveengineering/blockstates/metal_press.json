@@ -1,26 +1,23 @@
 {
   "variants": {
-    "facing=north,multiblockslave=false": {
+    "facing=north": {
       "model": "immersiveengineering:block/metal_multiblock/metal_press",
       "uvlock": true
     },
-    "facing=south,multiblockslave=false": {
+    "facing=south": {
       "model": "immersiveengineering:block/metal_multiblock/metal_press",
       "y": 180,
       "uvlock": true
     },
-    "facing=west,multiblockslave=false": {
+    "facing=west": {
       "model": "immersiveengineering:block/metal_multiblock/metal_press",
       "y": 270,
       "uvlock": true
     },
-    "facing=east,multiblockslave=false": {
+    "facing=east": {
       "model": "immersiveengineering:block/metal_multiblock/metal_press",
       "y": 90,
       "uvlock": true
-    },
-    "multiblockslave=true": {
-      "model": "immersiveengineering:block/metal_press_empty"
     }
   }
 }

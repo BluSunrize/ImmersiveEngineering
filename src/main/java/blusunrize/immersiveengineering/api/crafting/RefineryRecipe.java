@@ -17,6 +17,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.RegistryObject;
 
 import javax.annotation.Nonnull;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 
@@ -34,10 +35,10 @@ public class RefineryRecipe extends MultiblockRecipe
 	public static float timeModifier = 1;
 
 	public final FluidStack output;
-	public final FluidStack input0;
-	public final FluidStack input1;
+	public final FluidTagInput input0;
+	public final FluidTagInput input1;
 
-	public RefineryRecipe(ResourceLocation id, FluidStack output, FluidStack input0, FluidStack input1, int energy)
+	public RefineryRecipe(ResourceLocation id, FluidStack output, FluidTagInput input0, FluidTagInput input1, int energy)
 	{
 		super(ItemStack.EMPTY, TYPE, id);
 		this.output = output;
@@ -57,7 +58,7 @@ public class RefineryRecipe extends MultiblockRecipe
 	}
 
 	// Initialized by reload listener
-	public static Map<ResourceLocation, RefineryRecipe> recipeList;
+	public static Map<ResourceLocation, RefineryRecipe> recipeList = Collections.emptyMap();
 
 	public static RefineryRecipe findRecipe(FluidStack input0, FluidStack input1)
 	{
@@ -65,23 +66,23 @@ public class RefineryRecipe extends MultiblockRecipe
 		{
 			if(input0!=null)
 			{
-				if(recipe.input0!=null&&input0.containsFluid(recipe.input0))
+				if(recipe.input0!=null&&recipe.input0.test(input0))
 				{
-					if((recipe.input1==null&&input1==null)||(recipe.input1!=null&&input1!=null&&input1.containsFluid(recipe.input1)))
+					if((recipe.input1==null&&input1==null)||(recipe.input1!=null&&input1!=null&&recipe.input1.test(input1)))
 						return recipe;
 				}
 
-				if(recipe.input1!=null&&input0.containsFluid(recipe.input1))
+				if(recipe.input1!=null&&recipe.input1.test(input0))
 				{
-					if((recipe.input0==null&&input1==null)||(recipe.input0!=null&&input1!=null&&input1.containsFluid(recipe.input0)))
+					if((recipe.input0==null&&input1==null)||(recipe.input0!=null&&input1!=null&&recipe.input0.test(input1)))
 						return recipe;
 				}
 			}
 			else if(input1!=null)
 			{
-				if(recipe.input0!=null&&input1.containsFluid(recipe.input0)&&recipe.input1==null)
+				if(recipe.input0!=null&&recipe.input0.test(input1)&&recipe.input1==null)
 					return recipe;
-				if(recipe.input1!=null&&input1.containsFluid(recipe.input1)&&recipe.input0==null)
+				if(recipe.input1!=null&&recipe.input1.test(input1)&&recipe.input0==null)
 					return recipe;
 			}
 		}
@@ -96,16 +97,16 @@ public class RefineryRecipe extends MultiblockRecipe
 		{
 			if(!input0.isEmpty()&&input1.isEmpty())
 			{
-				if(input0.isFluidEqual(recipe.input0)||input0.isFluidEqual(recipe.input1))
+				if(recipe.input0.testIgnoringAmount(input0)||recipe.input1.testIgnoringAmount(input0))
 					return Optional.of(recipe);
 			}
 			else if(input0.isEmpty()&&!input1.isEmpty())
 			{
-				if(input1.isFluidEqual(recipe.input0)||input1.isFluidEqual(recipe.input1))
+				if(recipe.input0.testIgnoringAmount(input1)||recipe.input1.testIgnoringAmount(input1))
 					return Optional.of(recipe);
 			}
-			else if((input0.isFluidEqual(recipe.input0)&&input1.isFluidEqual(recipe.input1))
-					||(input0.isFluidEqual(recipe.input1)&&input1.isFluidEqual(recipe.input0)))
+			else if((recipe.input0.testIgnoringAmount(input0)&&recipe.input1.testIgnoringAmount(input1))
+					||(recipe.input1.testIgnoringAmount(input0)&&recipe.input0.testIgnoringAmount(input1)))
 				return Optional.of(recipe);
 		}
 		return Optional.empty();

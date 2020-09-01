@@ -8,19 +8,25 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
+import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
+import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.util.IELogger;
+import com.google.common.collect.ImmutableList;
+import com.mojang.datafixers.util.Either;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionBrewing;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.potion.Potions;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.brewing.BrewingRecipe;
@@ -28,6 +34,7 @@ import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.brewing.IBrewingRecipe;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.registries.IRegistryDelegate;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -44,19 +51,19 @@ public class MixerRecipePotion extends MixerRecipe
 {
 	public static final HashMap<Potion, MixerRecipePotion> REGISTERED = new HashMap<>();
 	public static final Set<String> BLACKLIST = new HashSet<>();
-	private final Set<Pair<FluidStack, IngredientWithSize[]>> alternateInputs = new HashSet<>();
+	private final Set<Pair<FluidTagInput, IngredientWithSize[]>> alternateInputs = new HashSet<>();
 
 	public MixerRecipePotion(ResourceLocation id, Potion outputType, Potion inputType, IngredientWithSize reagent)
 	{
-		super(id, getFluidStackForType(outputType, 1000), getFluidStackForType(inputType, 1000), new IngredientWithSize[]{reagent}, 6400);
+		super(id, getFluidStackForType(outputType, 1000), getFluidTagForType(inputType, 1000), new IngredientWithSize[]{reagent}, 6400);
 	}
 
 	public void addAlternateInput(Potion inputType, IngredientWithSize reagent)
 	{
-		alternateInputs.add(Pair.of(getFluidStackForType(inputType, 1000), new IngredientWithSize[]{reagent}));
+		alternateInputs.add(Pair.of(getFluidTagForType(inputType, 1000), new IngredientWithSize[]{reagent}));
 	}
 
-	public Set<Pair<FluidStack, IngredientWithSize[]>> getAlternateInputs()
+	public Set<Pair<FluidTagInput, IngredientWithSize[]>> getAlternateInputs()
 	{
 		return alternateInputs;
 	}
@@ -117,7 +124,7 @@ public class MixerRecipePotion extends MixerRecipe
 
 			BottlingMachineRecipe bottling = new BottlingMachineRecipe(output.getRegistryName(),
 					PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION), output),
-					Ingredient.fromItems(Items.GLASS_BOTTLE), getFluidStackForType(output, 250));
+					Ingredient.fromItems(Items.GLASS_BOTTLE), getFluidTagForType(output, 250));
 			BottlingMachineRecipe.recipeList.put(bottling.getId(), bottling);
 		}
 	}
@@ -129,6 +136,33 @@ public class MixerRecipePotion extends MixerRecipe
 		FluidStack stack = new FluidStack(IEContent.fluidPotion, amount);
 		stack.getOrCreateTag().putString("Potion", type.getRegistryName().toString());
 		return stack;
+	}
+
+	public static FluidTagInput getFluidTagForType(Potion type, int amount)
+	{
+		ResourceLocation tagName;
+		List<ResourceLocation> basicRepresentatives;
+		CompoundNBT nbt = null;
+		if(type==Potions.WATER||type==null)
+		{
+			tagName = FluidTags.WATER.getName();
+			basicRepresentatives = ImmutableList.of(
+					Fluids.WATER.getRegistryName(),
+					Fluids.FLOWING_WATER.getRegistryName()
+			);
+		}
+		else
+		{
+			nbt = new CompoundNBT();
+			nbt.putString("Potion", type.getRegistryName().toString());
+			tagName = IETags.fluidPotion.getName();
+			basicRepresentatives = ImmutableList.of(IEContent.fluidPotion.getRegistryName());
+		}
+		//TODO this is a workaround, we should probably be syncing the potion recipes along with everything else
+		if(EffectiveSide.get().isServer())
+			return new FluidTagInput(tagName, amount, nbt);
+		else
+			return new FluidTagInput(Either.right(basicRepresentatives), amount, nbt);
 	}
 
 	@Override

@@ -1,36 +1,33 @@
 {
   "variants": {
-    "facing=down,multiblockslave=false": {
+    "facing=down": {
       "model": "immersiveengineering:block/metal_device/teslacoil",
       "x": 90,
       "uvlock": true
     },
-    "facing=up,multiblockslave=false": {
+    "facing=up": {
       "model": "immersiveengineering:block/metal_device/teslacoil",
       "x": -90,
       "uvlock": true
     },
-    "facing=north,multiblockslave=false": {
+    "facing=north": {
       "model": "immersiveengineering:block/metal_device/teslacoil",
       "uvlock": true
     },
-    "facing=south,multiblockslave=false": {
+    "facing=south": {
       "model": "immersiveengineering:block/metal_device/teslacoil",
       "y": 180,
       "uvlock": true
     },
-    "facing=west,multiblockslave=false": {
+    "facing=west": {
       "model": "immersiveengineering:block/metal_device/teslacoil",
       "y": 270,
       "uvlock": true
     },
-    "facing=east,multiblockslave=false": {
+    "facing=east": {
       "model": "immersiveengineering:block/metal_device/teslacoil",
       "y": 90,
       "uvlock": true
-    },
-    "multiblockslave=true": {
-      "model": "immersiveengineering:block/tesla_coil_empty"
     }
   }
 }

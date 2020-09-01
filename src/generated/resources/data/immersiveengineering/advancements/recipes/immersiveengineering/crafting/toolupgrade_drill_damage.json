@@ -6,12 +6,12 @@
     ]
   },
   "criteria": {
-    "has_component_iron": {
+    "has_drill": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:component_iron"
+            "item": "immersiveengineering:drill"
           }
         ]
       }
@@ -25,7 +25,7 @@
   },
   "requirements": [
     [
-      "has_component_iron",
+      "has_drill",
       "has_the_recipe"
     ]
   ]

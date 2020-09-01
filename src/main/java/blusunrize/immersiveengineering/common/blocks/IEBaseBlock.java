@@ -15,10 +15,14 @@ import blusunrize.immersiveengineering.common.items.ScrewdriverItem;
 import blusunrize.immersiveengineering.common.items.WirecutterItem;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.IWaterLoggable;
 import net.minecraft.block.material.PushReaction;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.FluidState;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -26,12 +30,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.pathfinding.PathType;
 import net.minecraft.state.Property;
 import net.minecraft.state.StateContainer.Builder;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -43,7 +49,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiFunction;
 
-public class IEBaseBlock extends Block implements IIEBlock
+public class IEBaseBlock extends Block implements IIEBlock, IWaterLoggable
 {
 	protected static Property[] tempProperties;
 
@@ -175,7 +181,10 @@ public class IEBaseBlock extends Block implements IIEBlock
 
 	protected BlockState getInitDefaultState()
 	{
-		return this.stateContainer.getBaseState();
+		BlockState state = this.stateContainer.getBaseState();
+		if(state.hasProperty(BlockStateProperties.WATERLOGGED))
+			state = state.with(BlockStateProperties.WATERLOGGED, Boolean.FALSE);
+		return state;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -256,18 +265,18 @@ public class IEBaseBlock extends Block implements IIEBlock
 	{
 		ItemStack activeStack = player.getHeldItem(hand);
 		if(activeStack.getToolTypes().contains(HammerItem.HAMMER_TOOL))
-			return hammerUseSide(hit.getFace(), player, world, pos, hit);
+			return hammerUseSide(hit.getFace(), player, hand, world, pos, hit);
 		if(activeStack.getToolTypes().contains(ScrewdriverItem.SCREWDRIVER_TOOL))
-			return screwdriverUseSide(hit.getFace(), player, world, pos, hit);
+			return screwdriverUseSide(hit.getFace(), player, hand, world, pos, hit);
 		return super.onBlockActivated(state, world, pos, player, hand, hit);
 	}
 
-	public ActionResultType hammerUseSide(Direction side, PlayerEntity player, World w, BlockPos pos, BlockRayTraceResult hit)
+	public ActionResultType hammerUseSide(Direction side, PlayerEntity player, Hand hand, World w, BlockPos pos, BlockRayTraceResult hit)
 	{
 		return ActionResultType.PASS;
 	}
 
-	public ActionResultType screwdriverUseSide(Direction side, PlayerEntity player, World w, BlockPos pos, BlockRayTraceResult hit)
+	public ActionResultType screwdriverUseSide(Direction side, PlayerEntity player, Hand hand, World w, BlockPos pos, BlockRayTraceResult hit)
 	{
 		return ActionResultType.PASS;
 	}
@@ -277,6 +286,61 @@ public class IEBaseBlock extends Block implements IIEBlock
 	{
 		return false;
 	}
+
+	/* WATER LOGGING */
+
+	public static BlockState applyLocationalWaterlogging(BlockState state, World world, BlockPos pos)
+	{
+		if(state.hasProperty(BlockStateProperties.WATERLOGGED))
+			return state.with(BlockStateProperties.WATERLOGGED, world.getFluidState(pos).getFluid()==Fluids.WATER);
+		return state;
+	}
+
+	@Override
+	public BlockState getStateForPlacement(BlockItemUseContext context)
+	{
+		BlockState state = this.getDefaultState();
+		state = applyLocationalWaterlogging(state, context.getWorld(), context.getPos());
+		return state;
+	}
+
+	@Override
+	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos)
+	{
+		if(stateIn.hasProperty(BlockStateProperties.WATERLOGGED)&&stateIn.get(BlockStateProperties.WATERLOGGED))
+			worldIn.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickRate(worldIn));
+		return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
+	}
+
+	@Override
+	public FluidState getFluidState(BlockState state)
+	{
+		if(state.hasProperty(BlockStateProperties.WATERLOGGED)&&state.get(BlockStateProperties.WATERLOGGED))
+			return Fluids.WATER.getStillFluidState(false);
+		return super.getFluidState(state);
+	}
+
+	@Override
+	public boolean canContainFluid(IBlockReader worldIn, BlockPos pos, BlockState state, Fluid fluidIn)
+	{
+		return state.hasProperty(BlockStateProperties.WATERLOGGED)&&IWaterLoggable.super.canContainFluid(worldIn, pos, state, fluidIn);
+	}
+
+	@Override
+	public boolean receiveFluid(IWorld worldIn, BlockPos pos, BlockState state, FluidState fluidStateIn)
+	{
+		return state.hasProperty(BlockStateProperties.WATERLOGGED)&&IWaterLoggable.super.receiveFluid(worldIn, pos, state, fluidStateIn);
+	}
+
+	@Override
+	public Fluid pickupFluid(IWorld worldIn, BlockPos pos, BlockState state)
+	{
+		if(state.hasProperty(BlockStateProperties.WATERLOGGED))
+			return IWaterLoggable.super.pickupFluid(worldIn, pos, state);
+		return Fluids.EMPTY;
+	}
+
+	/* LADDERS */
 
 	public abstract static class IELadderBlock extends IEBaseBlock
 	{

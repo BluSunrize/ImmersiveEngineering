@@ -99,14 +99,14 @@ public class ModelConveyor extends BakedIEModel
 				conveyor = extraData.getData(Model.CONVEYOR);
 			if(extraData.hasProperty(Model.TILEENTITY_PASSTHROUGH))
 				tile = extraData.getData(Model.TILEENTITY_PASSTHROUGH);
+			if(conveyor==null)
+				conveyor = ConveyorHandler.getConveyor(new ResourceLocation(key), tile);
 			if(conveyor!=null&&tile!=null)
 				key = conveyor.getModelCacheKey();
 		}
 		List<BakedQuad> cachedQuads = modelCache.get(key);
 		if(cachedQuads==null)
 		{
-			if(conveyor==null)
-				conveyor = ConveyorHandler.getConveyor(new ResourceLocation(key), tile);
 			cachedQuads = Collections.synchronizedList(Lists.newArrayList());
 			TransformationMatrix matrix = ClientUtils.rotateTo(facing);
 			if(conveyor!=null)

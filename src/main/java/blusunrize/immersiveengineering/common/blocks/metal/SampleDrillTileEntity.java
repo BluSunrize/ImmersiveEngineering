@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.excavator.MineralMix;
@@ -47,7 +48,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInternalFluxHandler, IHasDummyBlocks,
-		IPlayerInteraction
+		IPlayerInteraction, IModelOffsetProvider
 {
 	public static TileEntityType<SampleDrillTileEntity> TYPE;
 
@@ -289,4 +290,9 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 		return false;
 	}
 
+	@Override
+	public BlockPos getModelOffset(BlockState state)
+	{
+		return new BlockPos(0, dummy, 0);
+	}
 }

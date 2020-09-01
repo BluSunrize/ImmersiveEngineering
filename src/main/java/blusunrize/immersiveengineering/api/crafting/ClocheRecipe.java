@@ -1,3 +1,12 @@
+/*
+ * BluSunrize
+ * Copyright (c) 2020
+ *
+ * This code is licensed under "Blu's License of Common Sense"
+ * Details can be found in the license file in the root folder of this project
+ *
+ */
+
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.Lib;
@@ -12,6 +21,7 @@ import net.minecraftforge.fml.RegistryObject;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +38,7 @@ public class ClocheRecipe extends IESerializableRecipe
 	public final ClocheRenderFunction renderFunction;
 
 	// Initialized by reload listener
-	public static Map<ResourceLocation, ClocheRecipe> recipeList;
+	public static Map<ResourceLocation, ClocheRecipe> recipeList = Collections.emptyMap();
 	private static List<Pair<Ingredient, ResourceLocation>> soilTextureList = new ArrayList<>();
 
 	public ClocheRecipe(ResourceLocation id, List<ItemStack> outputs, Ingredient seed, Ingredient soil, int time, ClocheRenderReference renderReference)

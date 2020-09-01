@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderLayer;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
+import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.fx.FluidSplashParticle.Data;
 import blusunrize.immersiveengineering.client.fx.FractalParticle;
@@ -28,6 +29,7 @@ import blusunrize.immersiveengineering.client.models.connection.*;
 import blusunrize.immersiveengineering.client.models.multilayer.MultiLayerLoader;
 import blusunrize.immersiveengineering.client.models.obj.IEOBJLoader;
 import blusunrize.immersiveengineering.client.models.obj.IESmartObjModel;
+import blusunrize.immersiveengineering.client.models.split.SplitModelLoader;
 import blusunrize.immersiveengineering.client.render.IEBipedLayerRenderer;
 import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.client.render.entity.*;
@@ -78,6 +80,7 @@ import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.client.util.InputMappings;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
@@ -130,6 +133,7 @@ public class ClientProxy extends CommonProxy
 {
 	public static KeyBinding keybind_magnetEquip = new KeyBinding("key.immersiveengineering.magnetEquip", GLFW.GLFW_KEY_S, "key.categories.immersiveengineering");
 	public static KeyBinding keybind_chemthrowerSwitch = new KeyBinding("key.immersiveengineering.chemthrowerSwitch", -1, "key.categories.immersiveengineering");
+	public static KeyBinding keybind_railgunZoom = new KeyBinding("key.immersiveengineering.railgunZoom", InputMappings.Type.MOUSE, 2, "key.categories.immersiveengineering");
 
 	@Override
 	public void modConstruction()
@@ -139,24 +143,30 @@ public class ClientProxy extends CommonProxy
 		// Apparently this runs in data generation runs... but registering model loaders causes NPEs there
 		if(Minecraft.getInstance()!=null)
 		{
-			ModelLoaderRegistry.registerLoader(new ResourceLocation(MODID, "ie_obj"), IEOBJLoader.instance);
+			ModelLoaderRegistry.registerLoader(IEOBJLoader.LOADER_NAME, IEOBJLoader.instance);
 			ModelLoaderRegistry.registerLoader(ConnectionLoader.LOADER_NAME, new ConnectionLoader());
 			ModelLoaderRegistry.registerLoader(ModelConfigurableSides.Loader.NAME, new ModelConfigurableSides.Loader());
 			ModelLoaderRegistry.registerLoader(ConveyorLoader.LOCATION, new ConveyorLoader());
 			ModelLoaderRegistry.registerLoader(CoresampleLoader.LOCATION, new CoresampleLoader());
 			ModelLoaderRegistry.registerLoader(MultiLayerLoader.LOCATION, new MultiLayerLoader());
 			ModelLoaderRegistry.registerLoader(FeedthroughLoader.LOCATION, new FeedthroughLoader());
+			ModelLoaderRegistry.registerLoader(SplitModelLoader.LOCATION, new SplitModelLoader());
 
 			requestModelsAndTextures();
 		}
 	}
+
+	public static boolean stencilEnabled = false;
 
 	@Override
 	public void preInit()
 	{
 		//TODO auto-detect old cards that don't support this?
 		if(IEConfig.GENERAL.stencilBufferEnabled.get())
-			DeferredWorkQueue.runLater(() -> Minecraft.getInstance().getFramebuffer().enableStencil());
+			DeferredWorkQueue.runLater(() -> {
+				Minecraft.getInstance().getFramebuffer().enableStencil();
+				stencilEnabled = true;
+			});
 
 		RenderingRegistry.registerEntityRenderingHandler(RevolvershotEntity.TYPE, RevolvershotRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(RevolvershotFlareEntity.TYPE, RevolvershotRenderer::new);
@@ -197,7 +207,7 @@ public class ClientProxy extends CommonProxy
 
 		MinecraftForge.EVENT_BUS.register(new RecipeReloadListener(null));
 
-		keybind_magnetEquip.setKeyConflictContext(new IKeyConflictContext()
+		IKeyConflictContext noKeyConflict = new IKeyConflictContext()
 		{
 			@Override
 			public boolean isActive()
@@ -210,12 +220,19 @@ public class ClientProxy extends CommonProxy
 			{
 				return false;
 			}
-		});
+		};
+		keybind_magnetEquip.setKeyConflictContext(noKeyConflict);
 		ClientRegistry.registerKeyBinding(keybind_magnetEquip);
-		ShaderHelper.initShaders();
+
+		keybind_railgunZoom.setKeyConflictContext(new ItemKeybindConflictContext(
+				(stack, player) -> stack.getItem() instanceof IZoomTool&&((IZoomTool)stack.getItem()).canZoom(stack, player))
+		);
+		ClientRegistry.registerKeyBinding(keybind_railgunZoom);
 
 		keybind_chemthrowerSwitch.setKeyConflictContext(KeyConflictContext.IN_GAME);
 		ClientRegistry.registerKeyBinding(keybind_chemthrowerSwitch);
+
+		ShaderHelper.initShaders();
 
 		TeslaCoilTileEntity.effectMap = ArrayListMultimap.create();
 

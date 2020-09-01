@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/sheetmetal_colored_gray"
+    ]
+  },
+  "criteria": {
+    "has_sheetmetal": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:sheetmetals"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/sheetmetal_colored_gray"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_sheetmetal",
+      "has_the_recipe"
+    ]
+  ]
+}

@@ -101,7 +101,7 @@ public class Advancements extends AdvancementProvider
 							new TranslationTextComponent("advancement.immersiveengineering.root"),
 							new TranslationTextComponent("advancement.immersiveengineering.root.desc"),
 							new ResourceLocation("immersiveengineering:textures/block/wooden_decoration/treated_wood.png"),
-							FrameType.TASK, false, false, false)
+							FrameType.TASK, true, true, false)
 					.withCriterion("manual", InventoryChangeTrigger.Instance.forItems(Tools.manual))
 					.register(consumer, "immersiveengineering:main/root");
 
@@ -154,12 +154,12 @@ public class Advancements extends AdvancementProvider
 					.withCriterion("revolver", InventoryChangeTrigger.Instance.forItems(Weapons.revolver))
 					.register(consumer, "immersiveengineering:main/craft_revolver");
 
-			ItemStack upgraded_revolver = new ItemStack(Weapons.revolver);
+			ItemStack upgradedRevolver = new ItemStack(Weapons.revolver);
 			CompoundNBT upgrades = new CompoundNBT();
 			upgrades.putInt("bullets", 6);
 			upgrades.putBoolean("electro", true);
-			ItemNBTHelper.setTagCompound(upgraded_revolver, "upgrades", upgrades);
-			Advancement upgrade_revolver = advancement(revolver, upgraded_revolver, "upgrade_revolver", FrameType.CHALLENGE, true, true, false)
+			ItemNBTHelper.setTagCompound(upgradedRevolver, "upgrades", upgrades);
+			Advancement upgrade_revolver = advancement(revolver, upgradedRevolver, "upgrade_revolver", FrameType.CHALLENGE, true, true, false)
 					.withCriterion("code_trigger", new ImpossibleTrigger.Instance())
 					.withRewards(reward(new ResourceLocation("immersiveengineering", "advancements/shader_rare")))
 					.register(consumer, "immersiveengineering:main/upgrade_revolver");
@@ -172,15 +172,15 @@ public class Advancements extends AdvancementProvider
 					.withCriterion("drill", InventoryChangeTrigger.Instance.forItems(Tools.drill))
 					.register(consumer, "immersiveengineering:main/craft_drill");
 
-			ItemStack upgraded_drill = new ItemStack(Tools.drill);
+			ItemStack upgradedDrill = new ItemStack(Tools.drill);
 			upgrades = new CompoundNBT();
 			upgrades.putInt("damage", 3);
 			upgrades.putBoolean("waterproof", true);
 			upgrades.putBoolean("oiled", true);
 			upgrades.putFloat("speed", 6.0f);
-			ItemNBTHelper.setTagCompound(upgraded_drill, "upgrades", upgrades);
-			ItemNBTHelper.setItemStack(upgraded_drill, "head", new ItemStack(Tools.drillheadSteel));
-			Advancement upgrade_drill = advancement(drill, upgraded_drill, "upgrade_drill", FrameType.CHALLENGE, true, true, false)
+			ItemNBTHelper.setTagCompound(upgradedDrill, "upgrades", upgrades);
+			ItemNBTHelper.setItemStack(upgradedDrill, "head", new ItemStack(Tools.drillheadSteel));
+			Advancement upgradeDrill = advancement(drill, upgradedDrill, "upgrade_drill", FrameType.CHALLENGE, true, true, false)
 					.withCriterion("code_trigger", new ImpossibleTrigger.Instance())
 					.withRewards(reward(new ResourceLocation("immersiveengineering", "advancements/shader_rare")))
 					.register(consumer, "immersiveengineering:main/upgrade_drill");
@@ -189,15 +189,15 @@ public class Advancements extends AdvancementProvider
 					.withCriterion("buzzsaw", InventoryChangeTrigger.Instance.forItems(Tools.buzzsaw))
 					.register(consumer, "immersiveengineering:main/craft_buzzsaw");
 
-			ItemStack upgraded_buzzsaw = new ItemStack(Tools.buzzsaw);
+			ItemStack upgradedBuzzsaw = new ItemStack(Tools.buzzsaw);
 			upgrades = new CompoundNBT();
 			upgrades.putBoolean("oiled", true);
 			upgrades.putBoolean("spareblades", true);
-			ItemNBTHelper.setTagCompound(upgraded_buzzsaw, "upgrades", upgrades);
-			ItemNBTHelper.setItemStack(upgraded_buzzsaw, "sawblade", new ItemStack(Tools.sawblade));
-			ItemNBTHelper.setItemStack(upgraded_buzzsaw, "sawblade_spare1", new ItemStack(Tools.sawblade));
-			ItemNBTHelper.setItemStack(upgraded_buzzsaw, "sawblade_spare2", new ItemStack(Tools.sawblade));
-			Advancement upgrade_buzzsaw = advancement(buzzsaw, upgraded_buzzsaw, "upgrade_buzzsaw", FrameType.CHALLENGE, true, true, false)
+			ItemNBTHelper.setTagCompound(upgradedBuzzsaw, "upgrades", upgrades);
+			ItemNBTHelper.setItemStack(upgradedBuzzsaw, "sawblade", new ItemStack(Tools.sawblade));
+			ItemNBTHelper.setItemStack(upgradedBuzzsaw, "sawblade_spare1", new ItemStack(Tools.sawblade));
+			ItemNBTHelper.setItemStack(upgradedBuzzsaw, "sawblade_spare2", new ItemStack(Tools.sawblade));
+			Advancement upgradeBuzzsaw = advancement(buzzsaw, upgradedBuzzsaw, "upgrade_buzzsaw", FrameType.CHALLENGE, true, true, false)
 					.withCriterion("code_trigger", new ImpossibleTrigger.Instance())
 					.withRewards(reward(new ResourceLocation("immersiveengineering", "advancements/shader_rare")))
 					.register(consumer, "immersiveengineering:main/upgrade_buzzsaw");
@@ -215,6 +215,16 @@ public class Advancements extends AdvancementProvider
 			Advancement railgun = advancement(workbench, Weapons.railgun, "craft_railgun", FrameType.TASK, true, true, false)
 					.withCriterion("railgun", InventoryChangeTrigger.Instance.forItems(Weapons.railgun))
 					.register(consumer, "immersiveengineering:main/craft_railgun");
+
+			ItemStack upgradedRailgun = new ItemStack(Weapons.railgun);
+			upgrades = new CompoundNBT();
+			upgrades.putBoolean("scope", true);
+			upgrades.putFloat("speed", 1f);
+			ItemNBTHelper.setTagCompound(upgradedRailgun, "upgrades", upgrades);
+			Advancement upgradeRailgun = advancement(railgun, upgradedRailgun, "upgrade_railgun", FrameType.CHALLENGE, true, true, false)
+					.withCriterion("code_trigger", new ImpossibleTrigger.Instance())
+					.withRewards(reward(new ResourceLocation("immersiveengineering", "advancements/shader_rare")))
+					.register(consumer, "immersiveengineering:main/upgrade_railgun");
 
 			Advancement improvedblastfurnace = advancement(steel, Multiblocks.blastFurnaceAdv, "mb_improvedblastfurnace", FrameType.TASK, true, true, false)
 					.withCriterion("improvedblastfurnace",
@@ -279,6 +289,11 @@ public class Advancements extends AdvancementProvider
 					.withCriterion("code_trigger", new ImpossibleTrigger.Instance())
 					.withRewards(reward(new ResourceLocation("immersiveengineering", "advancements/shader_masterwork")))
 					.register(consumer, "immersiveengineering:main/secret_drillbreak");
+
+			Advancement ravenholm = advancement(railgun, Misc.iconRavenholm, "secret_ravenholm", FrameType.CHALLENGE, true, true, true)
+					.withCriterion("code_trigger", new ImpossibleTrigger.Instance())
+					.withRewards(reward(new ResourceLocation("immersiveengineering", "advancements/shader_masterwork")))
+					.register(consumer, "immersiveengineering:main/secret_ravenholm");
 		}
 	}
 

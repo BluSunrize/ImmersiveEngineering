@@ -137,7 +137,7 @@ public class FakeLightBlock extends IETileProviderBlock
 		@Override
 		public void onLoad()
 		{
-			if(IEConfig.MACHINES.floodlight_spawnPrevent.get())
+			if(world!=null&&IEConfig.MACHINES.floodlight_spawnPrevent.get())
 				synchronized(EventHandler.interdictionTiles)
 				{
 					Set<ISpawnInterdiction> forDim = EventHandler.interdictionTiles.computeIfAbsent(

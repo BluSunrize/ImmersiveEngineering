@@ -43,7 +43,7 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 	public String specialRecipeType;
 	public static List<String> specialRecipeTypes = new ArrayList<>();
 	// Initialized by reload listener
-	public static Map<ResourceLocation, ArcFurnaceRecipe> recipeList;
+	public static Map<ResourceLocation, ArcFurnaceRecipe> recipeList = Collections.emptyMap();
 
 	public ArcFurnaceRecipe(ResourceLocation id, NonNullList<ItemStack> output, IngredientWithSize input, @Nonnull ItemStack slag, int time,
 							int energy, IngredientWithSize... additives)
@@ -67,17 +67,6 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 	protected IERecipeSerializer<ArcFurnaceRecipe> getIESerializer()
 	{
 		return SERIALIZER.get();
-	}
-
-	@Override
-	public void setupJEI()
-	{
-		super.setupJEI();
-//		List<ItemStack>[] newJeiItemOutputList = new ArrayList[jeiItemOutputList.length+1];
-//		System.arraycopy(jeiItemOutputList,0, newJeiItemOutputList,0, jeiItemOutputList.length);
-//		newJeiItemOutputList[jeiItemOutputList.length] = Lists.newArrayList(slag);
-//		jeiItemOutputList = newJeiItemOutputList;
-		this.jeiTotalItemOutputList.add(slag);
 	}
 
 	@Override

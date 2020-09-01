@@ -19,6 +19,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.Property;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
@@ -40,7 +41,7 @@ public class LanternBlock extends IEBaseBlock implements IHasObjProperty
 						.hardnessAndResistance(3, 15)
 						.setLightLevel(b -> 14).notSolid(),
 				BlockItem::new,
-				FACING);
+				FACING, BlockStateProperties.WATERLOGGED);
 	}
 
 	private static final Map<Direction, VoxelShape> SHAPES = ImmutableMap.<Direction, VoxelShape>builder()

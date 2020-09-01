@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "sss",
+    "sds",
+    "sss"
+  ],
+  "key": {
+    "s": {
+      "tag": "forge:sheetmetals"
+    },
+    "d": {
+      "tag": "forge:dyes/cyan"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:sheetmetal_colored_cyan",
+    "count": 8
+  }
+}

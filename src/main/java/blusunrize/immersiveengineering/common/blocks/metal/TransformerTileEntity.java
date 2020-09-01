@@ -10,8 +10,10 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.TargetingInfo;
+import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
 import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
+import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
@@ -41,7 +43,7 @@ import java.util.Set;
 import static blusunrize.immersiveengineering.api.wires.WireType.MV_CATEGORY;
 
 public class TransformerTileEntity extends ImmersiveConnectableTileEntity implements IStateBasedDirectional, IMirrorAble,
-		IHasDummyBlocks, ISelectionBounds, ICollisionBounds
+		IHasDummyBlocks, ISelectionBounds, ICollisionBounds, IModelOffsetProvider
 {
 	public static TileEntityType<TransformerTileEntity> TYPE;
 	private static final int RIGHT_INDEX = 0;
@@ -195,16 +197,16 @@ public class TransformerTileEntity extends ImmersiveConnectableTileEntity implem
 
 	private Vector3d getConnectionOffset(Connection con, boolean right)
 	{
-			double conRadius = con.type.getRenderDiameter()/2;
-			double offset = getHigherWiretype().equals(con.type.getCategory())?getHigherOffset(): getLowerOffset();
-			if(getFacing()==Direction.NORTH)
-				return new Vector3d(right?.8125: .1875, 2+offset-conRadius, .5);
-			if(getFacing()==Direction.SOUTH)
-				return new Vector3d(right?.1875: .8125, 2+offset-conRadius, .5);
-			if(getFacing()==Direction.WEST)
-				return new Vector3d(.5, 2+offset-conRadius, right?.1875: .8125);
-			if(getFacing()==Direction.EAST)
-				return new Vector3d(.5, 2+offset-conRadius, right?.8125: .1875);
+		double conRadius = con.type.getRenderDiameter()/2;
+		double offset = getHigherWiretype().equals(con.type.getCategory())?getHigherOffset(): getLowerOffset();
+		if(getFacing()==Direction.NORTH)
+			return new Vector3d(right?.8125: .1875, 2+offset-conRadius, .5);
+		if(getFacing()==Direction.SOUTH)
+			return new Vector3d(right?.1875: .8125, 2+offset-conRadius, .5);
+		if(getFacing()==Direction.WEST)
+			return new Vector3d(.5, 2+offset-conRadius, right?.1875: .8125);
+		if(getFacing()==Direction.EAST)
+			return new Vector3d(.5, 2+offset-conRadius, right?.8125: .1875);
 		return new Vector3d(.5, .5, .5);
 	}
 
@@ -245,14 +247,16 @@ public class TransformerTileEntity extends ImmersiveConnectableTileEntity implem
 			if(master instanceof TransformerTileEntity)
 				((TransformerTileEntity)master).updateMirrorState();
 		}
-		else
+		else if(rightType!=null||leftType!=null)
 		{
-			if(rightType!=null||leftType!=null)
+			String higher = getHigherWiretype();
+			boolean intendedState = (rightType!=null&&higher.equals(rightType.getCategory()))||
+					(leftType!=null&&!higher.equals(leftType.getCategory()));
+			for(int i = 0; i < 3; ++i)
 			{
-				String higher = getHigherWiretype();
-				boolean intendedState = (rightType!=null&&higher.equals(rightType.getCategory()))||
-						(leftType!=null&&!higher.equals(leftType.getCategory()));
-				setMirrored(intendedState);
+				TileEntity te = world.getTileEntity(pos.up(i));
+				if(te instanceof TransformerTileEntity)
+					((TransformerTileEntity)te).setMirrored(intendedState);
 			}
 		}
 	}
@@ -310,9 +314,10 @@ public class TransformerTileEntity extends ImmersiveConnectableTileEntity implem
 		state = state.with(IEProperties.MULTIBLOCKSLAVE, true);
 		for(int i = 1; i <= 2; i++)
 		{
-			world.setBlockState(pos.add(0, i, 0), state);
-			((TransformerTileEntity)world.getTileEntity(pos.add(0, i, 0))).dummy = i;
-			((TransformerTileEntity)world.getTileEntity(pos.add(0, i, 0))).setFacing(this.getFacing());
+			BlockPos dummyPos = pos.up(i);
+			world.setBlockState(dummyPos, IEBaseBlock.applyLocationalWaterlogging(state, world, dummyPos));
+			((TransformerTileEntity)world.getTileEntity(dummyPos)).dummy = i;
+			((TransformerTileEntity)world.getTileEntity(dummyPos)).setFacing(this.getFacing());
 		}
 	}
 
@@ -411,5 +416,11 @@ public class TransformerTileEntity extends ImmersiveConnectableTileEntity implem
 			return ImmutableList.of();
 		else
 			return ImmutableList.of(new Connection(pos, LEFT_INDEX, RIGHT_INDEX));
+	}
+
+	@Override
+	public BlockPos getModelOffset(BlockState state)
+	{
+		return new BlockPos(0, dummy, 0);
 	}
 }

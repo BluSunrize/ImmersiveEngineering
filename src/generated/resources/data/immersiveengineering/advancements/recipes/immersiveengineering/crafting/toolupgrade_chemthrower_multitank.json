@@ -6,12 +6,12 @@
     ]
   },
   "criteria": {
-    "has_toolupgrade_drill_capacity": {
+    "has_chemthrower": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:toolupgrade_drill_capacity"
+            "item": "immersiveengineering:chemthrower"
           }
         ]
       }
@@ -25,7 +25,7 @@
   },
   "requirements": [
     [
-      "has_toolupgrade_drill_capacity",
+      "has_chemthrower",
       "has_the_recipe"
     ]
   ]

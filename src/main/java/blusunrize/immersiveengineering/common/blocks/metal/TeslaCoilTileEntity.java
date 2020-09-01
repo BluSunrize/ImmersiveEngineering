@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.tool.IElectricEquipment;
 import blusunrize.immersiveengineering.api.tool.IElectricEquipment.ElectricSource;
@@ -41,6 +42,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
+import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -62,7 +64,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInternalFluxHandler, IHasDummyBlocks,
-		IStateBasedDirectional, IBlockBounds, IScrewdriverInteraction
+		IStateBasedDirectional, IBlockBounds, IScrewdriverInteraction, IModelOffsetProvider
 {
 	public static TileEntityType<TeslaCoilTileEntity> TYPE;
 
@@ -402,13 +404,13 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 	}
 
 	@Override
-	public ActionResultType screwdriverUseSide(Direction side, PlayerEntity player, Vector3d hitVec)
+	public ActionResultType screwdriverUseSide(Direction side, PlayerEntity player, Hand hand, Vector3d hitVec)
 	{
 		if(isDummy())
 		{
 			TileEntity te = world.getTileEntity(getPos().offset(getFacing(), -1));
 			if(te instanceof TeslaCoilTileEntity)
-				return ((TeslaCoilTileEntity)te).screwdriverUseSide(side, player, hitVec);
+				return ((TeslaCoilTileEntity)te).screwdriverUseSide(side, player, hand, hitVec);
 			return ActionResultType.PASS;
 		}
 		if(!world.isRemote)
@@ -605,5 +607,14 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 			lifeTimer--;
 			return lifeTimer <= 0;
 		}
+	}
+
+	@Override
+	public BlockPos getModelOffset(BlockState state)
+	{
+		if (isDummy())
+			return new BlockPos(0, 0, -1);
+		else
+			return BlockPos.ZERO;
 	}
 }

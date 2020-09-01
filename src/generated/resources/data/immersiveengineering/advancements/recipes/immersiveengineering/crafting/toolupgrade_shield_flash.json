@@ -6,12 +6,12 @@
     ]
   },
   "criteria": {
-    "has_electron_tube": {
+    "has_shield": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:electron_tube"
+            "item": "immersiveengineering:shield"
           }
         ]
       }
@@ -25,7 +25,7 @@
   },
   "requirements": [
     [
-      "has_electron_tube",
+      "has_shield",
       "has_the_recipe"
     ]
   ]

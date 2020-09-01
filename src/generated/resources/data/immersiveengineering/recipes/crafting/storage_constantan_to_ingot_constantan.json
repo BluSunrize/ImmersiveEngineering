@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
-      "tag": "forge:storage_blocks/constantan"
+      "item": "immersiveengineering:storage_constantan"
     }
   ],
   "result": {

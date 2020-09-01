@@ -7,18 +7,20 @@
   ],
   "key": {
     "i": {
-      "tag": "forge:ingots/steel"
+      "tag": "forge:sheetmetals/steel"
     },
     "c": {
-      "tag": "forge:ingots/copper"
+      "tag": "forge:plates/copper"
     },
     "b": {
-      "item": "minecraft:water_bucket"
+      "tag": "minecraft:water",
+      "amount": 1000,
+      "type": "immersiveengineering:fluid"
     }
   },
   "result": {
     "item": "immersiveengineering:radiator",
-    "count": 2
+    "count": 4
   },
   "quarter_turn": true
 }

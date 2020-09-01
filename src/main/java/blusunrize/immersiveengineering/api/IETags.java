@@ -12,6 +12,7 @@ package blusunrize.immersiveengineering.api;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import com.google.common.base.Preconditions;
 import net.minecraft.block.Block;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.tags.ITag.INamedTag;
 import net.minecraft.util.ResourceLocation;
@@ -23,8 +24,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.BiConsumer;
 
-import static blusunrize.immersiveengineering.common.data.DataGenUtils.createBlockWrapper;
-import static blusunrize.immersiveengineering.common.data.DataGenUtils.createItemWrapper;
+import static blusunrize.immersiveengineering.common.data.DataGenUtils.*;
 import static blusunrize.immersiveengineering.common.data.IEDataGenerator.rl;
 
 public class IETags
@@ -65,6 +65,14 @@ public class IETags
 	public static final INamedTag<Item> saltpeterDust = createItemWrapper(getDust("saltpeter"));
 	public static final INamedTag<Item> sulfurDust = createItemWrapper(getDust("sulfur"));
 	public static final INamedTag<Item> plates = createItemWrapper(forgeLoc("plates"));
+
+	public static final INamedTag<Fluid> fluidCreosote = createFluidWrapper(forgeLoc("creosote"));
+	public static final INamedTag<Fluid> fluidPlantoil = createFluidWrapper(forgeLoc("plantoil"));
+	public static final INamedTag<Fluid> fluidEthanol = createFluidWrapper(forgeLoc("ethanol"));
+	public static final INamedTag<Fluid> fluidBiodiesel = createFluidWrapper(forgeLoc("biodiesel"));
+	public static final INamedTag<Fluid> fluidConcrete = createFluidWrapper(forgeLoc("concrete"));
+	public static final INamedTag<Fluid> fluidHerbicide = createFluidWrapper(forgeLoc("herbicide"));
+	public static final INamedTag<Fluid> fluidPotion = createFluidWrapper(forgeLoc("potion"));
 
 	static
 	{

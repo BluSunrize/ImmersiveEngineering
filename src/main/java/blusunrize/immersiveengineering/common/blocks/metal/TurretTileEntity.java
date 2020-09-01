@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
@@ -43,6 +44,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -64,7 +66,8 @@ import java.util.List;
 import java.util.UUID;
 
 public abstract class TurretTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInternalFluxHandler, IIEInventory,
-		IHasDummyBlocks, ITileDrop, IStateBasedDirectional, IBlockBounds, IInteractionObjectIE, IEntityProof, IScrewdriverInteraction, IHasObjProperty
+		IHasDummyBlocks, ITileDrop, IStateBasedDirectional, IBlockBounds, IInteractionObjectIE, IEntityProof, IScrewdriverInteraction,
+		IHasObjProperty, IModelOffsetProvider
 {
 	public FluxStorage energyStorage = new FluxStorage(16000);
 	public boolean redstoneControlInverted = false;
@@ -376,13 +379,13 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 	}
 
 	@Override
-	public ActionResultType screwdriverUseSide(Direction side, PlayerEntity player, Vector3d hitVec)
+	public ActionResultType screwdriverUseSide(Direction side, PlayerEntity player, Hand hand, Vector3d hitVec)
 	{
 		if(isDummy())
 		{
 			TileEntity te = world.getTileEntity(getPos().down());
 			if(te instanceof TurretTileEntity)
-				return ((TurretTileEntity)te).screwdriverUseSide(side, player, hitVec);
+				return ((TurretTileEntity)te).screwdriverUseSide(side, player, hand, hitVec);
 			return ActionResultType.FAIL;
 		}
 		if(player.isSneaking()&&!world.isRemote)
@@ -641,5 +644,14 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 		BlockState old = getBlockState();
 		BlockState newState = old.with(IEProperties.MULTIBLOCKSLAVE, dummy);
 		world.setBlockState(pos, newState);
+	}
+
+	@Override
+	public BlockPos getModelOffset(BlockState state)
+	{
+		if (isDummy())
+			return new BlockPos(0, 1, 0);
+		else
+			return BlockPos.ZERO;
 	}
 }

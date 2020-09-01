@@ -16,9 +16,12 @@ import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
-import blusunrize.immersiveengineering.api.tool.*;
+import blusunrize.immersiveengineering.api.tool.AssemblerHandler;
 import blusunrize.immersiveengineering.api.tool.AssemblerHandler.RecipeQuery;
+import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
+import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
+import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler;
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler.DefaultFurnaceAdapter;
 import blusunrize.immersiveengineering.api.wires.NetHandlerCapability;
 import blusunrize.immersiveengineering.api.wires.WireType;
@@ -70,14 +73,13 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.EquipmentSlotType.Group;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.Rarity;
+import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.Effects;
+import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.tileentity.BannerPattern;
 import net.minecraft.tileentity.FurnaceTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -246,6 +248,12 @@ public class IEContent
 			IEItems.Metals.ingots.put(m, ingot);
 			IEItems.Metals.dusts.put(m, dust);
 		}
+		for(DyeColor dye : DyeColor.values())
+		{
+			IEBaseBlock sheetmetal = new IEBaseBlock("sheetmetal_colored_"+dye.getTranslationKey(), sheetmetalProperties, BlockItemIE::new);
+			MetalDecoration.coloredSheetmetal.put(dye, sheetmetal);
+			addSlabFor(sheetmetal);
+		}
 		Block.Properties stoneDecoProps = Block.Properties.create(Material.ROCK)
 				.sound(SoundType.STONE)
 				.setRequiresTool()
@@ -410,9 +418,9 @@ public class IEContent
 		Connectors.transformer = new TransformerBlock();
 		Connectors.transformerHV = new TransformerHVBlock();
 		Connectors.breakerswitch = new MiscConnectorBlock("breaker_switch", () -> BreakerSwitchTileEntity.TYPE,
-				IEProperties.ACTIVE, IEProperties.FACING_ALL);
+				IEProperties.ACTIVE, IEProperties.FACING_ALL, BlockStateProperties.WATERLOGGED);
 		Connectors.redstoneBreaker = new MiscConnectorBlock("redstone_breaker", () -> RedstoneBreakerTileEntity.TYPE,
-				IEProperties.ACTIVE, IEProperties.FACING_ALL);
+				IEProperties.ACTIVE, IEProperties.FACING_ALL, BlockStateProperties.WATERLOGGED);
 		Connectors.currentTransformer = new EnergyMeterBlock();
 		Connectors.connectorRedstone = new MiscConnectorBlock("connector_redstone", () -> ConnectorRedstoneTileEntity.TYPE);
 		Connectors.connectorProbe = new MiscConnectorBlock("connector_probe", () -> ConnectorProbeTileEntity.TYPE);
@@ -423,7 +431,7 @@ public class IEContent
 		MetalDevices.fluidPlacer = new GenericTileBlock("fluid_placer", () -> FluidPlacerTileEntity.TYPE,
 				metalPropertiesNotSolid);
 		MetalDevices.razorWire = new MiscConnectorBlock("razor_wire", () -> RazorWireTileEntity.TYPE,
-				IEProperties.FACING_HORIZONTAL);
+				IEProperties.FACING_HORIZONTAL, BlockStateProperties.WATERLOGGED);
 		MetalDevices.toolbox = new GenericTileBlock("toolbox_block", () -> ToolboxTileEntity.TYPE, metalPropertiesNotSolid,
 				(b, p) -> null, IEProperties.FACING_HORIZONTAL);
 		MetalDevices.capacitorLV = new GenericTileBlock("capacitor_lv", () -> CapacitorLVTileEntity.TYPE, defaultMetalProperties);
@@ -439,10 +447,10 @@ public class IEContent
 		MetalDevices.thermoelectricGen = new GenericTileBlock("thermoelectric_generator", () -> ThermoelectricGenTileEntity.TYPE,
 				defaultMetalProperties);
 		MetalDevices.electricLantern = new ElectricLanternBlock("electric_lantern", () -> ElectricLanternTileEntity.TYPE,
-				IEProperties.FACING_TOP_DOWN, IEProperties.ACTIVE);
+				IEProperties.FACING_TOP_DOWN, IEProperties.ACTIVE, BlockStateProperties.WATERLOGGED);
 		MetalDevices.chargingStation = new GenericTileBlock("charging_station", () -> ChargingStationTileEntity.TYPE,
 				metalPropertiesNotSolid, IEProperties.FACING_HORIZONTAL);
-		MetalDevices.fluidPipe = new GenericTileBlock("fluid_pipe", () -> FluidPipeTileEntity.TYPE, metalPropertiesNotSolid);
+		MetalDevices.fluidPipe = new GenericTileBlock("fluid_pipe", () -> FluidPipeTileEntity.TYPE, metalPropertiesNotSolid, BlockStateProperties.WATERLOGGED);
 		MetalDevices.sampleDrill = new SampleDrillBlock();
 		MetalDevices.teslaCoil = new TeslaCoilBlock();
 		MetalDevices.floodlight = new FloodlightBlock("floodlight", () -> FloodlightTileEntity.TYPE);
@@ -451,7 +459,7 @@ public class IEContent
 		MetalDevices.cloche = new ClocheBlock();
 		for(EnumMetals metal : new EnumMetals[]{EnumMetals.IRON, EnumMetals.STEEL, EnumMetals.ALUMINUM, EnumMetals.COPPER})
 			MetalDevices.chutes.put(metal, new GenericTileBlock("chute_"+metal.tagName(), () -> ChuteTileEntity.TYPE,
-					metalPropertiesNotSolid, IEProperties.FACING_HORIZONTAL));
+					metalPropertiesNotSolid, IEProperties.FACING_HORIZONTAL, BlockStateProperties.WATERLOGGED));
 
 		Multiblocks.cokeOven = new StoneMultiBlock("coke_oven", () -> CokeOvenTileEntity.TYPE);
 		Multiblocks.blastFurnace = new StoneMultiBlock("blast_furnace", () -> BlastFurnaceTileEntity.TYPE);
@@ -597,9 +605,19 @@ public class IEContent
 			}
 		};
 
+		IEItems.Misc.bannerPatternHammer = addBanner("hammer", "hmr");
+		IEItems.Misc.bannerPatternBevels = addBanner("bevels", "bvl");
+		IEItems.Misc.bannerPatternOrnate = addBanner("ornate", "orn");
+		IEItems.Misc.bannerPatternTreatedWood = addBanner("treated_wood", "twd");
+		IEItems.Misc.bannerPatternWindmill = addBanner("windmill", "wnd");
+		IEItems.Misc.bannerPatternWolfR = addBanner("wolf_r", "wlfr");
+		IEItems.Misc.bannerPatternWolfL = addBanner("wolf_l", "wlfl");
+		IEItems.Misc.bannerPatternWolf = addBanner("wolf", "wlf");
+
 		IEItems.Misc.iconBirthday = new FakeIconItem("birthday");
 		IEItems.Misc.iconLucky = new FakeIconItem("lucky");
 		IEItems.Misc.iconDrillbreak = new FakeIconItem("drillbreak");
+		IEItems.Misc.iconRavenholm = new FakeIconItem("ravenholm");
 
 		ConveyorHandler.createConveyorBlocks();
 		BulletHandler.emptyCasing = new ItemStack(Ingredients.emptyCasing);
@@ -611,6 +629,7 @@ public class IEContent
 
 		IELootFunctions.preInit();
 		IEShaders.commonConstruction();
+		IEMultiblocks.init();
 	}
 
 	@SubscribeEvent
@@ -825,28 +844,17 @@ public class IEContent
 		ShaderRegistry.itemExamples.add(new ItemStack(Weapons.railgun));
 		ShaderRegistry.itemExamples.add(new ItemStack(IEItems.Misc.shield));
 
-		/*BANNERS*/
-		addBanner("hammer", "hmr", new ItemStack(Tools.hammer));
-		addBanner("bevels", "bvl", "plateIron");
-		addBanner("ornate", "orn", "dustSilver");
-		addBanner("treated_wood", "twd", "plankTreatedWood");
-		addBanner("windmill", "wnd", new ItemStack[]{new ItemStack(WoodenDevices.windmill)});
-		ItemStack wolfpackCartridge = new ItemStack(BulletHandler.getBulletItem(BulletItem.WOLFPACK));
-		addBanner("wolf_r", "wlfr", wolfpackCartridge, 1);
-		addBanner("wolf_l", "wlfl", wolfpackCartridge, -1);
-		addBanner("wolf", "wlf", wolfpackCartridge, 0, 0);
-
 		/*ASSEMBLER RECIPE ADAPTERS*/
 		//Fluid Ingredients
 		AssemblerHandler.registerSpecialQueryConverters((o) ->
 		{
 			if(o instanceof IngredientFluidStack)
-				return new RecipeQuery(((IngredientFluidStack)o).getFluid(), ((IngredientFluidStack)o).getFluid().getAmount());
+				return new RecipeQuery(((IngredientFluidStack)o).getFluidTagInput(), ((IngredientFluidStack)o).getFluidTagInput().getAmount());
 			else return null;
 		});
 
-		DieselHandler.registerFuel(fluidBiodiesel, 125);
-		DieselHandler.registerDrillFuel(fluidBiodiesel);
+		DieselHandler.registerFuel(IETags.fluidBiodiesel, 125);
+		DieselHandler.registerDrillFuel(IETags.fluidBiodiesel);
 
 		fluidCreosote.block.setEffect(IEPotions.flammable, 100, 0);
 		fluidEthanol.block.setEffect(Effects.NAUSEA, 70, 0);
@@ -859,10 +867,7 @@ public class IEContent
 
 		ChemthrowerEffects.register();
 
-		RailgunHandler.registerProjectileProperties(IETags.ironRod, 15, 1.25).setColourMap(new int[][]{{0xd8d8d8, 0xd8d8d8, 0xd8d8d8, 0xa8a8a8, 0x686868, 0x686868}});
-		RailgunHandler.registerProjectileProperties(IETags.aluminumRod, 13, 1.05).setColourMap(new int[][]{{0xd8d8d8, 0xd8d8d8, 0xd8d8d8, 0xa8a8a8, 0x686868, 0x686868}});
-		RailgunHandler.registerProjectileProperties(IETags.steelRod, 18, 1.25).setColourMap(new int[][]{{0xb4b4b4, 0xb4b4b4, 0xb4b4b4, 0x7a7a7a, 0x555555, 0x555555}});
-		RailgunHandler.registerProjectileProperties(new ItemStack(IEItems.Misc.graphiteElectrode), 24, .9).setColourMap(new int[][]{{0x242424, 0x242424, 0x242424, 0x171717, 0x171717, 0x0a0a0a}});
+		RailgunProjectiles.register();
 
 		ExternalHeaterHandler.defaultFurnaceEnergyCost = IEConfig.MACHINES.heater_consumption.get();
 		ExternalHeaterHandler.defaultFurnaceSpeedupCost = IEConfig.MACHINES.heater_speedupConsumption.get();
@@ -878,7 +883,6 @@ public class IEContent
 		//ThermoelectricHandler.registerSourceInKelvin(new ResourceLocation("forge:storage_blocks/blutonium"), 4000);
 
 		/*MULTIBLOCKS*/
-		IEMultiblocks.init();
 		MultiblockHandler.registerMultiblock(IEMultiblocks.FEEDTHROUGH);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.LIGHTNING_ROD);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.DIESEL_GENERATOR);
@@ -962,18 +966,14 @@ public class IEContent
 					config.veinsPerChunk.get());
 	}
 
-	public static void addBanner(String name, String id, Object item, int... offset)
+	public static Item addBanner(String name, String id)
 	{
-		name = MODID+"_"+name;
+		String enumName = MODID+"_"+name;
 		id = "ie_"+id;
-		ItemStack craftingStack = ItemStack.EMPTY;
-		if(item instanceof ItemStack&&(offset==null||offset.length < 1))
-			craftingStack = (ItemStack)item;
-		/*TODO
-		BannerPattern e = EnumHelper.addEnum(BannerPattern.class, name.toUpperCase(), new Class[]{String.class, String.class, ItemStack.class}, name, id, craftingStack);
-		if(craftingStack.isEmpty())
-			RecipeBannerAdvanced.addAdvancedPatternRecipe(e, ApiUtils.createIngredientStack(item), offset);
-
-		 */
+		BannerPattern pattern = BannerPattern.create(enumName.toUpperCase(), enumName, id, true);
+		Item patternItem = new BannerPatternItem(pattern, new Item.Properties().group(ImmersiveEngineering.itemGroup));
+		patternItem.setRegistryName(ImmersiveEngineering.MODID, "bannerpattern_"+name);
+		IEContent.registeredIEItems.add(patternItem);
+		return patternItem;
 	}
 }

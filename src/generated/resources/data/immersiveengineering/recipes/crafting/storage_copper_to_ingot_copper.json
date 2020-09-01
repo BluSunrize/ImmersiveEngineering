@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
-      "tag": "forge:storage_blocks/copper"
+      "item": "immersiveengineering:storage_copper"
     }
   ],
   "result": {

@@ -144,7 +144,7 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 			{
 				Vector3d v = player.getLookVec();
 				int split = 8;
-				boolean isGas = fs.getFluid().getAttributes().isGaseous()||ChemthrowerHandler.isGas(fs.getFluid());
+				boolean isGas = fs.getFluid().getAttributes().isGaseous();
 
 				float scatter = isGas?.15f: .05f;
 				float range = isGas?.5f: 1f;
@@ -208,7 +208,7 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 	}
 
 	@Override
-	public void onScrollwheel(ItemStack stack, boolean forward)
+	public void onScrollwheel(ItemStack stack, PlayerEntity playerEntity, boolean forward)
 	{
 		if(getUpgrades(stack).getBoolean("multitank"))
 		{

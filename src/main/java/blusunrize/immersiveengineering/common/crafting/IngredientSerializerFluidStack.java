@@ -9,14 +9,11 @@
 package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
-import net.minecraft.fluid.Fluid;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.crafting.IIngredientSerializer;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 
@@ -33,31 +30,19 @@ public class IngredientSerializerFluidStack implements IIngredientSerializer<Ing
 	@Override
 	public IngredientFluidStack parse(@Nonnull PacketBuffer buffer)
 	{
-		ResourceLocation name = new ResourceLocation(buffer.readString(512));
-		int amount = buffer.readInt();
-		Fluid fluid = ForgeRegistries.FLUIDS.getValue(name);
-		if(fluid==null)
-			throw new JsonSyntaxException("Fluid with name "+name+" could not be found");
-		return new IngredientFluidStack(fluid, amount);
+		return new IngredientFluidStack(FluidTagInput.read(buffer));
 	}
 
 	@Nonnull
 	@Override
 	public IngredientFluidStack parse(@Nonnull JsonObject json)
 	{
-		ResourceLocation name = new ResourceLocation(JSONUtils.getString(json, "fluid"));
-		int amount = JSONUtils.getInt(json, "amount", 1000);
-		Fluid fluid = ForgeRegistries.FLUIDS.getValue(name);
-		if(fluid==null)
-			throw new JsonSyntaxException("Fluid with name "+name+" could not be found");
-		return new IngredientFluidStack(fluid, amount);
+		return new IngredientFluidStack(FluidTagInput.deserialize(json));
 	}
 
 	@Override
 	public void write(@Nonnull PacketBuffer buffer, @Nonnull IngredientFluidStack ingredient)
 	{
-		buffer.writeString(ingredient.getFluid().getFluid().getRegistryName().toString());
-		buffer.writeInt(ingredient.getFluid().getAmount());
-		//TODO NBT?
+		ingredient.getFluidTagInput().write(buffer);
 	}
 }

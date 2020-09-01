@@ -48,9 +48,13 @@ public class IESaveData extends WorldSavedData
 			ResourceLocation rl = new ResourceLocation(dimTag.getString("dimension"));
 			RegistryKey<World> dimensionType = RegistryKey.func_240903_a_(Registry.WORLD_KEY, rl);
 			ListNBT mineralList = dimTag.getList("veins", NBT.TAG_COMPOUND);
-			ExcavatorHandler.getMineralVeinList().putAll(dimensionType,
-					mineralList.stream().map(inbt -> MineralVein.readFromNBT((CompoundNBT)inbt))
-							.collect(Collectors.toList()));
+			synchronized(ExcavatorHandler.getMineralVeinList())
+			{
+				ExcavatorHandler.getMineralVeinList().
+						putAll(dimensionType, mineralList.stream()
+								.map(inbt -> MineralVein.readFromNBT((CompoundNBT)inbt))
+								.collect(Collectors.toList()));
+			}
 		}
 		// Legacy, using mineralDepletion key
 		if(nbt.contains("mineralDepletion", NBT.TAG_LIST))

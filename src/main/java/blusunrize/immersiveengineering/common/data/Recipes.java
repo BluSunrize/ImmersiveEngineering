@@ -40,6 +40,7 @@ import blusunrize.immersiveengineering.common.items.IEItems.Metals;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.items.IEItems.*;
 import blusunrize.immersiveengineering.common.items.ToolUpgradeItem.ToolUpgrade;
+import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonArray;
@@ -48,14 +49,15 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.data.*;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.EquipmentSlotType.Group;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ITag;
 import net.minecraft.tags.ITag.INamedTag;
 import net.minecraft.tags.ItemTags;
@@ -118,8 +120,8 @@ public class Recipes extends RecipeProvider
 			Block sheetMetal = IEBlocks.Metals.sheetmetal.get(metal);
 			if(!metal.isVanillaMetal())
 			{
-				add3x3Conversion(ingot, tags.ingot, nugget, tags.nugget, out);
-				add3x3Conversion(block, IETags.getItemTag(tags.storage), ingot, tags.ingot, out);
+				add3x3Conversion(ingot, nugget, tags.nugget, out);
+				add3x3Conversion(block, ingot, tags.ingot, out);
 				if(IEBlocks.Metals.ores.containsKey(metal))
 				{
 					Block ore = IEBlocks.Metals.ores.get(metal);
@@ -185,6 +187,8 @@ public class Recipes extends RecipeProvider
 				.build(out, ImmersiveEngineering.MODID+":earmuffs_attach");
 		CustomRecipeBuilder.customRecipe(RecipeSerializers.JERRYCAN_REFILL.get())
 				.build(out, ImmersiveEngineering.MODID+":jerrycan_refill");
+		CustomRecipeBuilder.customRecipe(RecipeSerializers.REVOLVER_CYCLE_SERIALIZER.get())
+				.build(out, ImmersiveEngineering.MODID+":revolver_cycle");
 		CustomRecipeBuilder.customRecipe(RecipeSerializers.IE_REPAIR.get())
 				.build(out, ImmersiveEngineering.MODID+":ie_item_repair");
 		addRGBRecipe(out, toRL("curtain_colour"), Ingredient.fromItems(Cloth.curtain), "colour");
@@ -378,7 +382,7 @@ public class Recipes extends RecipeProvider
 		Item[] molds = {Molds.moldPlate, Molds.moldGear, Molds.moldRod, Molds.moldBulletCasing, Molds.moldWire, Molds.moldPacking4, Molds.moldPacking9, Molds.moldUnpacking};
 		for(Item mold : molds)
 			BlueprintCraftingRecipeBuilder.builder("molds", mold)
-					.addInput(new IngredientWithSize(IETags.getTagsFor(EnumMetals.STEEL).plate, 5))
+					.addInput(new IngredientWithSize(IETags.getTagsFor(EnumMetals.STEEL).plate, 3))
 					.addInput(Tools.wirecutter)
 					.build(out, toRL("blueprint/"+toPath(mold)));
 
@@ -421,19 +425,24 @@ public class Recipes extends RecipeProvider
 				.addInput(Tags.Items.GUNPOWDER)
 				.addInput(Items.GLASS_BOTTLE)
 				.build(out, toRL("blueprint/bullet_potion"));
-		BlueprintCraftingRecipeBuilder.builder("specialBullet", BulletHandler.getBulletItem(BulletItem.FLARE))
+
+		ItemStack flare = BulletHandler.getBulletStack(BulletItem.FLARE);
+		ItemNBTHelper.putInt(flare, "flareColour", 0xcc2e06);
+		BlueprintCraftingRecipeBuilder.builder("specialBullet", flare.copy())
 				.addInput(BulletHandler.emptyShell)
 				.addInput(Tags.Items.GUNPOWDER)
 				.addInput(IETags.getTagsFor(EnumMetals.ALUMINUM).dust)
 				.addInput(Tags.Items.DYES_RED)
 				.build(out, toRL("blueprint/bullet_flare_red"));
-		BlueprintCraftingRecipeBuilder.builder("specialBullet", BulletHandler.getBulletItem(BulletItem.FLARE))
+		ItemNBTHelper.putInt(flare, "flareColour", 0x2ca30b);
+		BlueprintCraftingRecipeBuilder.builder("specialBullet", flare.copy())
 				.addInput(BulletHandler.emptyShell)
 				.addInput(Tags.Items.GUNPOWDER)
 				.addInput(IETags.getTagsFor(EnumMetals.ALUMINUM).dust)
 				.addInput(Tags.Items.DYES_GREEN)
 				.build(out, toRL("blueprint/bullet_flare_green"));
-		BlueprintCraftingRecipeBuilder.builder("specialBullet", BulletHandler.getBulletItem(BulletItem.FLARE))
+		ItemNBTHelper.putInt(flare, "flareColour", 0xffff82);
+		BlueprintCraftingRecipeBuilder.builder("specialBullet", flare.copy())
 				.addInput(BulletHandler.emptyShell)
 				.addInput(Tags.Items.GUNPOWDER)
 				.addInput(IETags.getTagsFor(EnumMetals.ALUMINUM).dust)
@@ -454,6 +463,39 @@ public class Recipes extends RecipeProvider
 		BlueprintCraftingRecipeBuilder.builder("electrode", Misc.graphiteElectrode)
 				.addInput(new IngredientWithSize(IETags.hopGraphiteIngot, 4))
 				.build(out, toRL("blueprint/electrode"));
+
+		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", Misc.bannerPatternHammer)
+				.addInput(Items.PAPER)
+				.addInput(Tools.hammer)
+				.build(out, toRL("blueprint/banner_hammer"));
+		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", Misc.bannerPatternBevels)
+				.addInput(Items.PAPER)
+				.addInput(IETags.plates)
+				.build(out, toRL("blueprint/banner_bevels"));
+		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", Misc.bannerPatternOrnate)
+				.addInput(Items.PAPER)
+				.addInput(IETags.getTagsFor(EnumMetals.SILVER).dust)
+				.build(out, toRL("blueprint/banner_ornate"));
+		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", Misc.bannerPatternTreatedWood)
+				.addInput(Items.PAPER)
+				.addInput(IETags.getItemTag(IETags.treatedWood))
+				.build(out, toRL("blueprint/banner_treatedwood"));
+		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", Misc.bannerPatternWindmill)
+				.addInput(Items.PAPER)
+				.addInput(WoodenDevices.windmill)
+				.build(out, toRL("blueprint/banner_windmill"));
+		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", Misc.bannerPatternWolfR)
+				.addInput(Items.PAPER)
+				.addInput(BulletHandler.getBulletItem(BulletItem.WOLFPACK))
+				.build(out, toRL("blueprint/banner_wolf_r"));
+		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", Misc.bannerPatternWolfL)
+				.addInput(Items.PAPER)
+				.addInput(BulletHandler.getBulletItem(BulletItem.WOLFPACK))
+				.build(out, toRL("blueprint/banner_wolf_l"));
+		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", Misc.bannerPatternWolf)
+				.addInput(Items.PAPER)
+				.addInput(BulletHandler.getBulletItem(BulletItem.WOLFPACK))
+				.build(out, toRL("blueprint/banner_wolf"));
 	}
 
 	private void recipesMultiblockMachines(@Nonnull Consumer<IFinishedRecipe> out)
@@ -638,7 +680,7 @@ public class Recipes extends RecipeProvider
 		/* BOTTLING */
 		BottlingMachineRecipeBuilder.builder(Items.WET_SPONGE)
 				.addInput(Items.SPONGE)
-				.addFluid(Fluids.WATER, 1000)
+				.addFluidTag(FluidTags.WATER, 1000)
 				.build(out, toRL("bottling/sponge"));
 
 		/* CRUSHER */
@@ -761,20 +803,20 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL("fermenter/potato"));
 		/* REFINERY */
 		RefineryRecipeBuilder.builder(IEContent.fluidBiodiesel, 16)
-				.addInput(IEContent.fluidPlantoil, 8)
-				.addInput(IEContent.fluidEthanol, 8)
+				.addInput(IETags.fluidPlantoil, 8)
+				.addInput(IETags.fluidEthanol, 8)
 				.setEnergy(80)
 				.build(out, toRL("refinery/biodiesel"));
 		/* MIXER */
 		MixerRecipeBuilder.builder(IEContent.fluidConcrete, 500)
-				.addFluid(Fluids.WATER, 500)
+				.addFluidTag(FluidTags.WATER, 500)
 				.addInput(new IngredientWithSize(Tags.Items.SAND, 2))
 				.addInput(Tags.Items.GRAVEL)
 				.addInput(IETags.clay)
 				.setEnergy(3200)
 				.build(out, toRL("mixer/concrete"));
 		MixerRecipeBuilder.builder(IEContent.fluidConcrete, 500)
-				.addFluid(Fluids.WATER, 500)
+				.addFluidTag(FluidTags.WATER, 500)
 				.addInput(new IngredientWithSize(IETags.slag, 2))
 				.addInput(Tags.Items.GRAVEL)
 				.addInput(IETags.clay)
@@ -953,7 +995,7 @@ public class Recipes extends RecipeProvider
 				makeIngredient(IETags.fiberHemp),
 				makeIngredient(IETags.clay),
 				out);
-		add3x3Conversion(StoneDecoration.coke, IETags.getItemTag(IETags.coalCokeBlock), IEItems.Ingredients.coalCoke, IETags.coalCoke, out);
+		add3x3Conversion(StoneDecoration.coke, IEItems.Ingredients.coalCoke, IETags.coalCoke, out);
 
 		addStairs(StoneDecoration.hempcrete, StoneDecoration.hempcreteStairs, out);
 		addStairs(StoneDecoration.concrete, StoneDecoration.concreteStairs[0], out);
@@ -1010,7 +1052,7 @@ public class Recipes extends RecipeProvider
 				.key('s', Tags.Items.SAND)
 				.key('c', IETags.clay)
 				.key('g', Tags.Items.GRAVEL)
-				.key('b', Items.WATER_BUCKET)
+				.key('b', new IngredientFluidStack(FluidTags.WATER, 1000))
 				.addCriterion("has_clay", hasItem(IETags.clay))
 				.build(out, toRL("concrete"));
 		TurnAndCopyRecipeBuilder.builder(StoneDecoration.concrete, 12)
@@ -1022,7 +1064,7 @@ public class Recipes extends RecipeProvider
 				.key('s', IEItems.Ingredients.slag)
 				.key('c', IETags.clay)
 				.key('g', Tags.Items.GRAVEL)
-				.key('b', Items.WATER_BUCKET)
+				.key('b', new IngredientFluidStack(FluidTags.WATER, 1000))
 				.addCriterion("has_slag", hasItem(IEItems.Ingredients.slag))
 				.build(out, toRL("concrete"));
 		ShapedRecipeBuilder.shapedRecipe(StoneDecoration.concreteTile, 4)
@@ -1097,7 +1139,7 @@ public class Recipes extends RecipeProvider
 				.patternLine("wbw")
 				.patternLine("www")
 				.key('w', ItemTags.PLANKS)
-				.key('b', new IngredientFluidStack(IEContent.fluidCreosote, 1000))
+				.key('b', new IngredientFluidStack(IETags.fluidCreosote, 1000))
 				.addCriterion("has_creosote", hasItem(IEContent.fluidCreosote.getFilledBucket()))
 				.build(out, toRL(toPath(WoodenDecoration.treatedWood.get(TreatedWoodStyles.HORIZONTAL))));
 	}
@@ -1234,6 +1276,20 @@ public class Recipes extends RecipeProvider
 
 	private void recipesMetalDecorations(@Nonnull Consumer<IFinishedRecipe> out)
 	{
+		for(DyeColor dye : DyeColor.values())
+		{
+			ITag<Item> dyeTag = DataGenUtils.createItemWrapper(new ResourceLocation("forge", "dyes/"+dye.getTranslationKey()));
+			Block coloredSheetmetal = MetalDecoration.coloredSheetmetal.get(dye);
+			ShapedRecipeBuilder.shapedRecipe(coloredSheetmetal, 8)
+					.patternLine("sss")
+					.patternLine("sds")
+					.patternLine("sss")
+					.key('s', IETags.getItemTag(IETags.sheetmetals))
+					.key('d', dyeTag)
+					.addCriterion("has_sheetmetal", hasItem(IETags.getItemTag(IETags.sheetmetals)))
+					.build(out, toRL(toPath(coloredSheetmetal)));
+		}
+
 		for(MetalScaffoldingType type : MetalScaffoldingType.values())
 		{
 			addStairs(MetalDecoration.steelScaffolding.get(type), MetalDecoration.steelScaffoldingStair.get(type), out);
@@ -1333,63 +1389,62 @@ public class Recipes extends RecipeProvider
 				.addCriterion("has_"+toPath(Misc.wireCoils.get(WireType.STEEL)), hasItem(Misc.wireCoils.get(WireType.STEEL)))
 				.build(out, toRL(toPath(MetalDecoration.hvCoil)));
 
-		TurnAndCopyRecipeBuilder.builder(MetalDecoration.engineeringRS, 2)
+		TurnAndCopyRecipeBuilder.builder(MetalDecoration.engineeringRS, 4)
 				.allowQuarterTurn()
 				.patternLine("iri")
 				.patternLine("rcr")
 				.patternLine("iri")
-				.key('i', Tags.Items.INGOTS_IRON)
+				.key('i', IETags.getItemTag(IETags.getTagsFor(EnumMetals.IRON).sheetmetal))
 				.key('c', IETags.getTagsFor(EnumMetals.COPPER).ingot)
 				.key('r', Tags.Items.DUSTS_REDSTONE)
-				.addCriterion("has_iron_ingot", hasItem(IETags.getTagsFor(EnumMetals.IRON).ingot))
+				.addCriterion("has_iron_sheetmetal", hasItem(IETags.getItemTag(IETags.getTagsFor(EnumMetals.IRON).sheetmetal)))
 				.addCriterion("has_copper_ingot", hasItem(IETags.getTagsFor(EnumMetals.COPPER).ingot))
 				.addCriterion("has_redstone", hasItem(Items.REDSTONE))
 				.build(out, toRL(toPath(MetalDecoration.engineeringRS)));
-		ShapedRecipeBuilder.shapedRecipe(MetalDecoration.engineeringLight, 2)
+		ShapedRecipeBuilder.shapedRecipe(MetalDecoration.engineeringLight, 4)
 				.patternLine("igi")
-				.patternLine("ccc")
+				.patternLine("gcg")
 				.patternLine("igi")
-				.key('i', Tags.Items.INGOTS_IRON)
+				.key('i', IETags.getItemTag(IETags.getTagsFor(EnumMetals.IRON).sheetmetal))
 				.key('c', IETags.getTagsFor(EnumMetals.COPPER).ingot)
 				.key('g', Ingredients.componentIron)
-				.addCriterion("has_iron_ingot", hasItem(IETags.getTagsFor(EnumMetals.IRON).ingot))
+				.addCriterion("has_iron_sheetmetal", hasItem(IETags.getItemTag(IETags.getTagsFor(EnumMetals.IRON).sheetmetal)))
 				.addCriterion("has_copper_ingot", hasItem(IETags.getTagsFor(EnumMetals.COPPER).ingot))
 				.addCriterion("has_component_iron", hasItem(Ingredients.componentIron))
 				.build(out, toRL(toPath(MetalDecoration.engineeringLight)));
-		ShapedRecipeBuilder.shapedRecipe(MetalDecoration.engineeringHeavy, 2)
+		ShapedRecipeBuilder.shapedRecipe(MetalDecoration.engineeringHeavy, 4)
 				.patternLine("igi")
-				.patternLine("pep")
+				.patternLine("geg")
 				.patternLine("igi")
-				.key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
+				.key('i', IETags.getItemTag(IETags.getTagsFor(EnumMetals.STEEL).sheetmetal))
 				.key('e', IETags.getTagsFor(EnumMetals.ELECTRUM).ingot)
 				.key('g', Ingredients.componentSteel)
-				.key('p', Blocks.PISTON)
-				.addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot))
+				.addCriterion("has_steel_sheetmetal", hasItem(IETags.getItemTag(IETags.getTagsFor(EnumMetals.STEEL).sheetmetal)))
 				.addCriterion("has_electrum_ingot", hasItem(IETags.getTagsFor(EnumMetals.ELECTRUM).ingot))
 				.addCriterion("has_component_steel", hasItem(Ingredients.componentSteel))
 				.build(out, toRL(toPath(MetalDecoration.engineeringHeavy)));
-		ShapedRecipeBuilder.shapedRecipe(MetalDecoration.generator, 2)
-				.patternLine("iii")
+		ShapedRecipeBuilder.shapedRecipe(MetalDecoration.generator, 4)
+				.patternLine("iei")
 				.patternLine("ede")
-				.patternLine("iii")
-				.key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
-				.key('e', IETags.getTagsFor(EnumMetals.ELECTRUM).ingot)
+				.patternLine("iei")
+				.key('i', IETags.getItemTag(IETags.getTagsFor(EnumMetals.STEEL).sheetmetal))
+				.key('e', IETags.getTagsFor(EnumMetals.ELECTRUM).plate)
 				.key('d', MetalDevices.dynamo)
-				.addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot))
+				.addCriterion("has_steel_sheetmetal", hasItem(IETags.getItemTag(IETags.getTagsFor(EnumMetals.STEEL).sheetmetal)))
 				.addCriterion("has_electrum_ingot", hasItem(IETags.getTagsFor(EnumMetals.ELECTRUM).ingot))
 				.addCriterion("has_"+toPath(MetalDevices.dynamo), hasItem(MetalDevices.dynamo))
 				.build(out, toRL(toPath(MetalDecoration.generator)));
-		TurnAndCopyRecipeBuilder.builder(MetalDecoration.radiator, 2)
+		TurnAndCopyRecipeBuilder.builder(MetalDecoration.radiator, 4)
 				.allowQuarterTurn()
 				.patternLine("ici")
 				.patternLine("cbc")
 				.patternLine("ici")
-				.key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
-				.key('c', IETags.getTagsFor(EnumMetals.COPPER).ingot)
-				.key('b', Items.WATER_BUCKET)
+				.key('i', IETags.getItemTag(IETags.getTagsFor(EnumMetals.STEEL).sheetmetal))
+				.key('c', IETags.getTagsFor(EnumMetals.COPPER).plate)
+				.key('b', new IngredientFluidStack(FluidTags.WATER, 1000))
+				.addCriterion("has_steel_sheetmetal", hasItem(IETags.getItemTag(IETags.getTagsFor(EnumMetals.STEEL).sheetmetal)))
 				.addCriterion("has_water_bucket", hasItem(Items.WATER_BUCKET))
 				.addCriterion("has_copper_ingot", hasItem(IETags.getTagsFor(EnumMetals.COPPER).ingot))
-				.addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot))
 				.build(out, toRL(toPath(MetalDecoration.radiator)));
 
 		ShapedRecipeBuilder.shapedRecipe(MetalDecoration.aluPost)
@@ -1767,16 +1822,16 @@ public class Recipes extends RecipeProvider
 				.patternLine(" i ")
 				.patternLine("cic")
 				.patternLine("cic")
-				.key('i', IETags.getTagsFor(EnumMetals.IRON).ingot)
+				.key('i', IETags.getTagsFor(EnumMetals.ELECTRUM).ingot)
 				.key('c', Blocks.TERRACOTTA)
-				.addCriterion("has_iron_ingot", hasItem(IETags.getTagsFor(EnumMetals.IRON).ingot))
+				.addCriterion("has_electrum_ingot", hasItem(IETags.getTagsFor(EnumMetals.ELECTRUM).ingot))
 				.build(out, toRL("connector_mv"));
 		ShapedRecipeBuilder.shapedRecipe(Connectors.getEnergyConnector(WireType.MV_CATEGORY, true), 8)
 				.patternLine(" i ")
 				.patternLine("cic")
-				.key('i', IETags.getTagsFor(EnumMetals.IRON).ingot)
+				.key('i', IETags.getTagsFor(EnumMetals.ELECTRUM).ingot)
 				.key('c', Blocks.TERRACOTTA)
-				.addCriterion("has_iron_ingot", hasItem(IETags.getTagsFor(EnumMetals.IRON).ingot))
+				.addCriterion("has_electrum_ingot", hasItem(IETags.getTagsFor(EnumMetals.ELECTRUM).ingot))
 				.build(out, toRL("connector_mv_relay"));
 		ShapedRecipeBuilder.shapedRecipe(Connectors.getEnergyConnector(WireType.HV_CATEGORY, false), 4)
 				.patternLine(" i ")
@@ -2183,24 +2238,23 @@ public class Recipes extends RecipeProvider
 				.key('b', Items.BUCKET)
 				.key('l', Tags.Items.GEMS_LAPIS)
 				.key('c', Ingredients.componentIron)
-				.addCriterion("has_bucket", hasItem(Items.BUCKET))
+				.addCriterion("has_drill", hasItem(Tools.drill))
 				.build(out, toRL(toPath(Misc.toolUpgrades.get(ToolUpgrade.DRILL_WATERPROOF))));
-		Item plantoilBucket = IEContent.fluidPlantoil.getFilledBucket();
 		ShapedRecipeBuilder.shapedRecipe(Misc.toolUpgrades.get(ToolUpgrade.DRILL_LUBE))
 				.patternLine("bi ")
 				.patternLine("ibi")
 				.patternLine(" ic")
 				.key('i', IETags.getTagsFor(EnumMetals.IRON).ingot)
 				.key('c', Ingredients.componentIron)
-				.key('b', plantoilBucket)
-				.addCriterion("has_"+toPath(plantoilBucket), hasItem(plantoilBucket))
+				.key('b', new IngredientFluidStack(IETags.fluidPlantoil, 1000))
+				.addCriterion("has_drill", hasItem(Tools.drill))
 				.build(out, toRL(toPath(Misc.toolUpgrades.get(ToolUpgrade.DRILL_LUBE))));
 		ShapedRecipeBuilder.shapedRecipe(Misc.toolUpgrades.get(ToolUpgrade.DRILL_DAMAGE))
 				.patternLine("iii")
 				.patternLine(" c ")
 				.key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
 				.key('c', Ingredients.componentIron)
-				.addCriterion("has_"+toPath(Ingredients.componentIron), hasItem(Ingredients.componentIron))
+				.addCriterion("has_drill", hasItem(Tools.drill))
 				.build(out, toRL(toPath(Misc.toolUpgrades.get(ToolUpgrade.DRILL_DAMAGE))));
 		ShapedRecipeBuilder.shapedRecipe(Misc.toolUpgrades.get(ToolUpgrade.DRILL_CAPACITY))
 				.patternLine("ci ")
@@ -2210,7 +2264,7 @@ public class Recipes extends RecipeProvider
 				.key('c', Ingredients.componentIron)
 				.key('r', Tags.Items.DYES_RED)
 				.key('b', Items.BUCKET)
-				.addCriterion("has_bucket", hasItem(Items.BUCKET))
+				.addCriterion("has_drill", hasItem(Tools.drill))
 				.build(out, toRL(toPath(Misc.toolUpgrades.get(ToolUpgrade.DRILL_CAPACITY))));
 
 		ShapedRecipeBuilder.shapedRecipe(Misc.toolUpgrades.get(ToolUpgrade.REVOLVER_BAYONET))
@@ -2219,7 +2273,7 @@ public class Recipes extends RecipeProvider
 				.key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
 				.key('w', IETags.getItemTag(IETags.treatedWood))
 				.key('s', Items.IRON_SWORD)
-				.addCriterion("has_iron_sword", hasItem(Items.IRON_SWORD))
+				.addCriterion("has_revolver", hasItem(Weapons.revolver))
 				.build(out, toRL(toPath(Misc.toolUpgrades.get(ToolUpgrade.REVOLVER_BAYONET))));
 		ShapedRecipeBuilder.shapedRecipe(Misc.toolUpgrades.get(ToolUpgrade.REVOLVER_MAGAZINE))
 				.patternLine(" ai")
@@ -2228,7 +2282,7 @@ public class Recipes extends RecipeProvider
 				.key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
 				.key('a', IETags.getTagsFor(EnumMetals.COPPER).ingot)
 				.key('c', Ingredients.componentIron)
-				.addCriterion("has_"+toPath(Ingredients.componentIron), hasItem(Ingredients.componentIron))
+				.addCriterion("has_revolver", hasItem(Weapons.revolver))
 				.build(out, toRL(toPath(Misc.toolUpgrades.get(ToolUpgrade.REVOLVER_MAGAZINE))));
 		ShapedRecipeBuilder.shapedRecipe(Misc.toolUpgrades.get(ToolUpgrade.REVOLVER_ELECTRO))
 				.patternLine("eee")
@@ -2236,7 +2290,7 @@ public class Recipes extends RecipeProvider
 				.key('e', Ingredients.electronTube)
 				.key('r', IETags.steelRod)
 				.key('w', Ingredients.wireCopper)
-				.addCriterion("has_"+toPath(Ingredients.electronTube), hasItem(Ingredients.electronTube))
+				.addCriterion("has_revolver", hasItem(Weapons.revolver))
 				.build(out, toRL(toPath(Misc.toolUpgrades.get(ToolUpgrade.REVOLVER_ELECTRO))));
 
 		ShapedRecipeBuilder.shapedRecipe(Misc.toolUpgrades.get(ToolUpgrade.CHEMTHROWER_FOCUS))
@@ -2246,7 +2300,7 @@ public class Recipes extends RecipeProvider
 				.key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
 				.key('p', MetalDevices.fluidPipe)
 				.key('h', Items.HOPPER)
-				.addCriterion("has_"+toPath(MetalDevices.fluidPipe), hasItem(MetalDevices.fluidPipe))
+				.addCriterion("has_chemthrower", hasItem(Weapons.chemthrower))
 				.build(out, toRL(toPath(Misc.toolUpgrades.get(ToolUpgrade.CHEMTHROWER_FOCUS))));
 		ShapedRecipeBuilder.shapedRecipe(Misc.toolUpgrades.get(ToolUpgrade.CHEMTHROWER_MULTITANK))
 				.patternLine(" p ")
@@ -2254,23 +2308,25 @@ public class Recipes extends RecipeProvider
 				.key('p', MetalDevices.fluidPipe)
 				.key('c', Ingredients.componentIron)
 				.key('t', Misc.toolUpgrades.get(ToolUpgrade.DRILL_CAPACITY))
-				.addCriterion("has_"+toPath(Misc.toolUpgrades.get(ToolUpgrade.DRILL_CAPACITY)), hasItem(Misc.toolUpgrades.get(ToolUpgrade.DRILL_CAPACITY)))
+				.addCriterion("has_chemthrower", hasItem(Weapons.chemthrower))
 				.build(out, toRL(toPath(Misc.toolUpgrades.get(ToolUpgrade.CHEMTHROWER_MULTITANK))));
 
 		ShapedRecipeBuilder.shapedRecipe(Misc.toolUpgrades.get(ToolUpgrade.RAILGUN_SCOPE))
 				.patternLine("pi ")
-				.patternLine("i i")
-				.patternLine(" ip")
-				.key('i', IETags.getTagsFor(EnumMetals.COPPER).ingot)
+				.patternLine("c i")
+				.patternLine(" cp")
+				.key('i', IETags.getTagsFor(EnumMetals.IRON).plate)
+				.key('c', IETags.getTagsFor(EnumMetals.COPPER).ingot)
 				.key('p', Tags.Items.GLASS_PANES)
-				.addCriterion("has_ingot_copper", hasItem(IETags.getTagsFor(EnumMetals.COPPER).ingot))
+				.addCriterion("has_railgun", hasItem(Weapons.railgun))
 				.build(out, toRL(toPath(Misc.toolUpgrades.get(ToolUpgrade.RAILGUN_SCOPE))));
 		ShapedRecipeBuilder.shapedRecipe(Misc.toolUpgrades.get(ToolUpgrade.RAILGUN_CAPACITORS))
-				.patternLine("www")
-				.patternLine("ccc")
-				.key('w', Misc.wireCoils.get(WireType.STEEL))
-				.key('c', MetalDevices.capacitorHV)
-				.addCriterion("has_"+toPath(Misc.wireCoils.get(WireType.STEEL)), hasItem(Misc.wireCoils.get(WireType.STEEL)))
+				.patternLine("p  ")
+				.patternLine("ip ")
+				.patternLine(" ip")
+				.key('p', IETags.getTagsFor(EnumMetals.CONSTANTAN).plate)
+				.key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
+				.addCriterion("has_railgun", hasItem(Weapons.railgun))
 				.build(out, toRL(toPath(Misc.toolUpgrades.get(ToolUpgrade.RAILGUN_CAPACITORS))));
 
 		ShapedRecipeBuilder.shapedRecipe(Misc.toolUpgrades.get(ToolUpgrade.SHIELD_FLASH))
@@ -2279,7 +2335,7 @@ public class Recipes extends RecipeProvider
 				.key('i', IETags.getTagsFor(EnumMetals.ALUMINUM).plate)
 				.key('p', Tags.Items.GLASS_PANES)
 				.key('e', Ingredients.electronTube)
-				.addCriterion("has_"+toPath(Ingredients.electronTube), hasItem(Ingredients.electronTube))
+				.addCriterion("has_shield", hasItem(Misc.shield))
 				.build(out, toRL(toPath(Misc.toolUpgrades.get(ToolUpgrade.SHIELD_FLASH))));
 		ShapedRecipeBuilder.shapedRecipe(Misc.toolUpgrades.get(ToolUpgrade.SHIELD_SHOCK))
 				.patternLine("crc")
@@ -2287,7 +2343,7 @@ public class Recipes extends RecipeProvider
 				.patternLine("crc")
 				.key('r', IETags.ironRod)
 				.key('c', IEBlocks.Connectors.getEnergyConnector(WireType.LV_CATEGORY, false))
-				.addCriterion("has_"+toPath(IEBlocks.Connectors.getEnergyConnector(WireType.LV_CATEGORY, false)), hasItem(IEBlocks.Connectors.getEnergyConnector(WireType.LV_CATEGORY, false)))
+				.addCriterion("has_shield", hasItem(Misc.shield))
 				.build(out, toRL(toPath(Misc.toolUpgrades.get(ToolUpgrade.SHIELD_SHOCK))));
 		ShapedRecipeBuilder.shapedRecipe(Misc.toolUpgrades.get(ToolUpgrade.SHIELD_MAGNET))
 				.patternLine("  l")
@@ -2296,7 +2352,7 @@ public class Recipes extends RecipeProvider
 				.key('i', IETags.getTagsFor(EnumMetals.IRON).ingot)
 				.key('l', Tags.Items.LEATHER)
 				.key('c', MetalDecoration.lvCoil)
-				.addCriterion("has_"+toPath(MetalDecoration.lvCoil), hasItem(MetalDecoration.lvCoil))
+				.addCriterion("has_shield", hasItem(Misc.shield))
 				.build(out, toRL(toPath(Misc.toolUpgrades.get(ToolUpgrade.SHIELD_MAGNET))));
 
 		ShapedRecipeBuilder.shapedRecipe(Misc.toolUpgrades.get(ToolUpgrade.BUZZSAW_SPAREBLADES))
@@ -2329,12 +2385,12 @@ public class Recipes extends RecipeProvider
 				.addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot))
 				.build(out, toRL(toPath(Ingredients.wireSteel)));
 
-		ShapelessRecipeBuilder.shapelessRecipe(Metals.dusts.get(EnumMetals.ELECTRUM))
+		ShapelessRecipeBuilder.shapelessRecipe(Metals.dusts.get(EnumMetals.ELECTRUM), 2)
 				.addIngredient(IETags.getTagsFor(EnumMetals.GOLD).dust)
 				.addIngredient(IETags.getTagsFor(EnumMetals.SILVER).dust)
 				.addCriterion("has_gold_dust", hasItem(IETags.getTagsFor(EnumMetals.GOLD).dust))
 				.build(out, toRL("electrum_mix"));
-		ShapelessRecipeBuilder.shapelessRecipe(Metals.dusts.get(EnumMetals.CONSTANTAN))
+		ShapelessRecipeBuilder.shapelessRecipe(Metals.dusts.get(EnumMetals.CONSTANTAN), 2)
 				.addIngredient(IETags.getTagsFor(EnumMetals.COPPER).dust)
 				.addIngredient(IETags.getTagsFor(EnumMetals.NICKEL).dust)
 				.addCriterion("has_nickel_dust", hasItem(IETags.getTagsFor(EnumMetals.NICKEL).dust))
@@ -2373,6 +2429,16 @@ public class Recipes extends RecipeProvider
 				.key('p', Items.PAPER)
 				.addCriterion("has_"+toPath(Items.PAPER), hasItem(Items.PAPER))
 				.build(buildBlueprint(out, "bullet"), toRL("blueprint_bullets"));
+		ShapedRecipeBuilder.shapedRecipe(Misc.blueprint)
+				.patternLine(" b ")
+				.patternLine("ddd")
+				.patternLine("ppp")
+				.key('b', ItemTags.BANNERS)
+				.key('d', Tags.Items.DYES_BLUE)
+				//TODO tag?
+				.key('p', Items.PAPER)
+				.addCriterion("has_"+toPath(Items.PAPER), hasItem(Items.PAPER))
+				.build(buildBlueprint(out, "bannerpatterns"), toRL("blueprint_bannerpatterns"));
 
 		ShapedRecipeBuilder.shapedRecipe(Misc.blueprint)
 				.patternLine("ggg")
@@ -2393,7 +2459,7 @@ public class Recipes extends RecipeProvider
 				.patternLine("wc ")
 				.patternLine("sss")
 				.key('w', ItemTags.WOOL)
-				.key('c', new IngredientFluidStack(IEContent.fluidCreosote, 1000))
+				.key('c', new IngredientFluidStack(IETags.fluidCreosote, 1000))
 				.key('s', Tags.Items.RODS_WOODEN)
 				.addCriterion("has_wool", hasItem(ItemTags.WOOL))
 				.addCriterion("has_stick", hasItem(Tags.Items.RODS_WOODEN))
@@ -2403,7 +2469,7 @@ public class Recipes extends RecipeProvider
 				.addIngredient(Ingredient.fromTag(IETags.fiberHemp), 3)
 				.addCriterion("has_hemp_fiber", hasItem(Ingredients.hempFiber))
 				.build(out, toRL(toPath(Items.STRING)));
-		ShapelessRecipeBuilder.shapelessRecipe(Items.GUNPOWDER)
+		ShapelessRecipeBuilder.shapelessRecipe(Items.GUNPOWDER, 3)
 				.addIngredient(Ingredient.fromTag(IETags.saltpeterDust), 4)
 				.addIngredient(IETags.sulfurDust)
 				.addIngredient(Items.CHARCOAL)
@@ -2480,12 +2546,13 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL(toPath(Weapons.chemthrower)));
 		ShapedRecipeBuilder.shapedRecipe(Weapons.railgun)
 				.patternLine(" vg")
-				.patternLine("cbv")
-				.patternLine("bc ")
+				.patternLine("icp")
+				.patternLine("ci ")
 				.key('g', Ingredients.woodenGrip)
-				.key('b', Ingredients.gunpartBarrel)
+				.key('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
 				.key('v', MetalDevices.capacitorHV)
 				.key('c', MetalDecoration.mvCoil)
+				.key('p', Ingredients.circuitBoard)
 				.addCriterion("has_"+toPath(MetalDevices.capacitorHV), hasItem(MetalDevices.capacitorHV))
 				.build(out, toRL(toPath(Weapons.railgun)));
 		ShapedRecipeBuilder.shapedRecipe(Misc.skyhook)
@@ -2746,17 +2813,18 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL(toPath(feet)));
 	}
 
-	private void add3x3Conversion(IItemProvider bigItem, INamedTag<Item> bigTag, IItemProvider smallItem, INamedTag<Item> smallTag, Consumer<IFinishedRecipe> out)
+	private void add3x3Conversion(IItemProvider bigItem, IItemProvider smallItem, INamedTag<Item> smallTag, Consumer<IFinishedRecipe> out)
 	{
 		ShapedRecipeBuilder.shapedRecipe(bigItem)
 				.key('s', smallTag)
+				.key('i', smallItem)
 				.patternLine("sss")
-				.patternLine("sss")
+				.patternLine("sis")
 				.patternLine("sss")
 				.addCriterion("has_"+toPath(smallItem), hasItem(smallItem))
 				.build(out, toRL(toPath(smallItem)+"_to_")+toPath(bigItem));
 		ShapelessRecipeBuilder.shapelessRecipe(smallItem, 9)
-				.addIngredient(bigTag)
+				.addIngredient(bigItem)
 				.addCriterion("has_"+toPath(bigItem), hasItem(smallItem))
 				.build(out, toRL(toPath(bigItem)+"_to_"+toPath(smallItem)));
 	}

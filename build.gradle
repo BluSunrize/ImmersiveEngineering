@@ -9,12 +9,14 @@ buildscript {
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.0'
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
+apply plugin: 'com.github.johnrengelman.shadow'
 
 version = buildVersionString()
 group = 'blusunrize.immersiveengineering' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
@@ -120,6 +122,10 @@ repositories {
         name 'DVS1 Maven FS'
         url 'https://dvs1.progwml6.com/files/maven'
     }
+    maven { // BlockModelSplitter
+        name 'Jared maven'
+        url 'https://maven.blamejared.com/'
+    }
     repositories {//Curseforge maven, in case some other maven goes offline and for mods that don't have a maven
         maven {
             name = "CurseForge"
@@ -137,6 +143,7 @@ dependencies {
     //runtimeOnly fg.deobf("mezz.jei:jei-1.16.2:7.1.0.11")
     //runtimeOnly fg.deobf("nbtedit:NBTEdit:0.9.0")
     compileOnly fg.deobf("mezz.jei:jei-1.16.2:7.1.0.11:api")
+    compile "malte0811:BlockModelSplitter:1.1.1"
     testImplementation('junit:junit:4.13')
 }
 
@@ -173,11 +180,19 @@ String buildVersionString() {
     String ie_output_version = "${version_ie}-${version_buildnumber}"
     boolean jenkins_build = System.getenv("ie_add_git_rev") != null
     if (jenkins_build) {
-        // Get the current minor/patch number and bump it
-        int idx = version_ie.lastIndexOf(".")
-        String major = version_ie.substring(0, idx)
-        String minor = version_ie.substring(idx + 1)
-        int bumped = minor.toInteger() + 1
+        File changelog = new File("changelog.md")
+        if (!changelog.exists()) {
+            // Get the current minor/patch number and bump it
+            int idx = version_ie.lastIndexOf(".")
+            String major = version_ie.substring(0, idx)
+            String minor = version_ie.substring(idx + 1)
+            int bumped = minor.toInteger() + 1
+            ie_output_version = "${major}.${bumped}-pre"
+        } else {
+            // If the changelog file is present, we use the first line from that
+            String first_line = changelog.readLines().get(0)
+            ie_output_version = first_line.substring(first_line.indexOf("-") + 1)
+        }
         // Now use describe to get the number of commits since the last tag
         exec {
             commandLine 'git', 'fetch', '-t'
@@ -189,12 +204,12 @@ String buildVersionString() {
         }
         String descr = stdout.toString().trim()
         descr = descr.substring(0, descr.length() - 10)
-        idx = descr.lastIndexOf("-")
+        int idx = descr.lastIndexOf("-")
         int pre_version = descr.substring(idx + 1).toInteger()
         // If there have been more than 0 commits, consider this a pre-build
         // otherwise use normal versioning (so a Jenkins build on the tag is equal to a release)
         if (pre_version > 0)
-            ie_output_version = "${major}.${bumped}-pre.${pre_version}"
+            ie_output_version = "${ie_output_version}.${pre_version}"
     }
     return "${version_minecraft}-${ie_output_version}"
 }
@@ -206,6 +221,18 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 
 artifacts {
     archives sourcesJar
+    archives shadowJar
+}
+
+shadowJar {
+    classifier = ''
+    dependencies {
+        include(dependency('malte0811:BlockModelSplitter:.*'))
+    }
+}
+
+reobf {
+    shadowJar {}
 }
 
 apply plugin: 'maven'

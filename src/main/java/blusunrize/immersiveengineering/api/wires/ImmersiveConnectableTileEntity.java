@@ -31,13 +31,15 @@ import net.minecraftforge.client.model.data.IModelData;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.function.Consumer;
 
 public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity implements IImmersiveConnectable
 {
 	protected GlobalWireNetwork globalNet;
-	private static Map<BlockPos, Deque<EventQueueEntry>> queuedEvents = new HashMap<>();
+	private static final Map<BlockPos, Deque<EventQueueEntry>> queuedEvents = new HashMap<>();
+	private static WeakReference<World> lastWorld = new WeakReference<>(null);
 
 	public ImmersiveConnectableTileEntity(TileEntityType<? extends ImmersiveConnectableTileEntity> type)
 	{
@@ -176,20 +178,32 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 
 	private void queueEvent(LoadUnloadEvent ev)
 	{
-		if(!getWorldNonnull().isRemote)
-			ev.run(this);
-		else
+		if(world!=null)
 		{
-			Deque<EventQueueEntry> queue = queuedEvents.get(pos);
-			if(queue==null)
+			if(!getWorldNonnull().isRemote)
+				ev.run(this);
+			else
 			{
-				queue = new ArrayDeque<>();
-				queuedEvents.put(pos, queue);
+				if(lastWorld.get()!=world)
+				{
+					WireLogger.logger.info(
+							"Discarding queue map {} for world {} because world is now {}",
+							queuedEvents, lastWorld.get(), world
+					);
+					queuedEvents.clear();
+					lastWorld = new WeakReference<>(world);
+				}
+				Deque<EventQueueEntry> queue = queuedEvents.get(pos);
+				if(queue==null)
+				{
+					queue = new ArrayDeque<>();
+					queuedEvents.put(pos, queue);
+				}
+				if(queue.isEmpty()||queue.getLast().tick!=world.getGameTime())
+					ApiUtils.addFutureServerTask(getWorldNonnull(), () -> processEvents(pos), true);
+				queue.add(new EventQueueEntry(ev, this, getWorldNonnull().getGameTime()));
+				WireLogger.logger.info("Queuing {} at {} (tile {})", ev, getPos(), this);
 			}
-			if(queue.isEmpty()||queue.getLast().tick!=world.getGameTime())
-				ApiUtils.addFutureServerTask(getWorldNonnull(), () -> processEvents(pos), true);
-			queue.add(new EventQueueEntry(ev, this, getWorldNonnull().getGameTime()));
-			WireLogger.logger.info("Queuing {} at {} (tile {})", ev, getPos(), this);
 		}
 	}
 
@@ -200,18 +214,18 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 	private static void processEvents(BlockPos pos)
 	{
 		ImmersiveConnectableTileEntity toUnload = null;
-		List<ImmersiveConnectableTileEntity> loadedInTick = new ArrayList<>();
+		List<EventQueueEntry> loadedInTick = new ArrayList<>();
 		Queue<EventQueueEntry> events = queuedEvents.get(pos);
-		for(EventQueueEntry e : events)
+		for(final EventQueueEntry e : events)
 		{
 			switch(e.type)
 			{
 				case LOAD:
-					loadedInTick.add(e.tile);
+					loadedInTick.add(e);
 					break;
 				case UNLOAD:
 				case REMOVE:
-					boolean wasNew = loadedInTick.remove(e.tile);
+					boolean wasNew = loadedInTick.removeIf(ev -> ev.tile==e.tile);
 					if(!wasNew)
 					{
 						Preconditions.checkState(
@@ -224,8 +238,18 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 					break;
 			}
 		}
+		int loadedStartIndex = 0;
+		while(loadedInTick.size() > loadedStartIndex+1)
+		{
+			EventQueueEntry first = loadedInTick.get(loadedStartIndex);
+			EventQueueEntry second = loadedInTick.get(loadedStartIndex+1);
+			if(first.tick+10 > second.tick)
+				break;
+			WireLogger.logger.info("Skipping load event {} as it happened long before {}", first, second);
+			++loadedStartIndex;
+		}
 		Preconditions.checkState(
-				loadedInTick.size() < 2,
+				loadedInTick.size() < loadedStartIndex+2,
 				"Too many IICs loaded at %s in one tick: %s, queue is %s",
 				pos, loadedInTick, events
 		);
@@ -236,23 +260,30 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 			else
 				LoadUnloadEvent.REMOVE.run(toUnload);
 		}
+		boolean shouldKeep = false;
 		if(!loadedInTick.isEmpty())
 		{
-			ImmersiveConnectableTileEntity loaded = loadedInTick.get(0);
-			ConnectionPoint testPoint = loaded.getConnectionPoints().iterator().next();
-			IImmersiveConnectable currentLoaded = loaded.globalNet.getLocalNet(testPoint).getConnector(testPoint);
-			if(currentLoaded==null||currentLoaded.isProxy())
+			ImmersiveConnectableTileEntity loaded = loadedInTick.get(loadedStartIndex).tile;
+			Collection<ConnectionPoint> points = loaded.getConnectionPoints();
+			if(points.size() > 0)
 			{
-				LoadUnloadEvent.LOAD.run(loaded);
-				queuedEvents.remove(pos);
-			}
-			else
-			{
-				events.clear();
-				events.add(new EventQueueEntry(LoadUnloadEvent.LOAD, loaded, loaded.getWorldNonnull().getGameTime()-1));
+				ConnectionPoint testPoint = points.iterator().next();
+				IImmersiveConnectable currentLoaded = loaded.globalNet.getLocalNet(testPoint).getConnector(testPoint);
+				if(currentLoaded==null||currentLoaded.isProxy())
+					LoadUnloadEvent.LOAD.run(loaded);
+				else
+				{
+					WireLogger.logger.info(
+							"Re-queueing load of {} because {} is loaded at {} (queue was {})",
+							loaded, currentLoaded, testPoint, events
+					);
+					events.clear();
+					events.add(new EventQueueEntry(LoadUnloadEvent.LOAD, loaded, loaded.getWorldNonnull().getGameTime()-1));
+					shouldKeep = true;
+				}
 			}
 		}
-		else
+		if(!shouldKeep)
 			queuedEvents.remove(pos);
 	}
 

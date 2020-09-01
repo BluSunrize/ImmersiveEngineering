@@ -3,8 +3,47 @@
   "textures": {
     "particle": "immersiveengineering:block/conveyor/conveyor"
   },
-  "loader": "forge:obj",
+  "loader": "immersiveengineering:basic_split",
+  "base_loader": "forge:obj",
+  "dynamic": false,
   "detectCullableFaces": false,
   "model": "immersiveengineering:models/block/metal_multiblock/metal_press.obj",
-  "flip-v": true
+  "flip-v": true,
+  "split_parts": [
+    [
+      0,
+      0,
+      0
+    ],
+    [
+      -1,
+      -1,
+      0
+    ],
+    [
+      0,
+      -1,
+      0
+    ],
+    [
+      1,
+      -1,
+      0
+    ],
+    [
+      0,
+      1,
+      0
+    ],
+    [
+      -1,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      0
+    ]
+  ]
 }

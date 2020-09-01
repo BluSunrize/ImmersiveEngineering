@@ -21,6 +21,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.data.BlockTagsProvider;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.item.DyeColor;
 import net.minecraft.tags.BlockTags;
 import net.minecraftforge.common.Tags;
 
@@ -65,6 +66,8 @@ class IEBlockTags extends BlockTagsProvider
 			getOrCreateBuilder(tags.sheetmetal).addItemEntry(sheetmetal);
 			getOrCreateBuilder(IETags.sheetmetals).addItemEntry(sheetmetal);
 		}
+		for(DyeColor dye : DyeColor.values())
+			func_240522_a_(IETags.sheetmetals).func_240532_a_(MetalDecoration.coloredSheetmetal.get(dye));
 		for(TreatedWoodStyles style : TreatedWoodStyles.values())
 		{
 			getOrCreateBuilder(IETags.treatedWood).addItemEntry(WoodenDecoration.treatedWood.get(style));

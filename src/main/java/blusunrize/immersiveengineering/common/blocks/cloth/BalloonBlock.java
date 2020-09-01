@@ -13,6 +13,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
@@ -29,7 +30,7 @@ public class BalloonBlock extends IETileProviderBlock
 				.sound(SoundType.CLOTH)
 				.hardnessAndResistance(0.8F)
 				.setLightLevel(s -> 13)
-				.notSolid(), BlockItemBalloon::new);
+				.notSolid(), BlockItemBalloon::new, BlockStateProperties.WATERLOGGED);
 		setHasColours();
 		setLightOpacity(0);
 	}

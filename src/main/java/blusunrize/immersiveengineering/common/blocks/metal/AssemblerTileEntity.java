@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
+import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.tool.AssemblerHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttachable;
@@ -198,7 +199,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 				int consumed = IEConfig.MACHINES.assembler_consumption.get();
 
 				AssemblerHandler.IRecipeAdapter adapter = AssemblerHandler.findAdapter(pattern.recipe);
-				AssemblerHandler.RecipeQuery[] queries = adapter.getQueriedInputs(pattern.recipe, pattern.inv);
+				AssemblerHandler.RecipeQuery[] queries = adapter.getQueriedInputs(pattern.recipe, pattern.inv, world);
 				if(queries==null)
 					continue;
 				if(this.energyStorage.extractEnergy(consumed, true)==consumed&&this.consumeIngredients(queries, availableStacks, false, null))
@@ -290,10 +291,10 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 			AssemblerHandler.RecipeQuery recipeQuery = queries[i];
 			if(recipeQuery!=null&&recipeQuery.query!=null)
 			{
-				FluidStack fs = recipeQuery.query instanceof FluidStack?(FluidStack)recipeQuery.query: null;
 				int querySize = recipeQuery.querySize;
-				if(fs!=null)
+				if(recipeQuery.query instanceof FluidStack)
 				{
+					FluidStack fs = (FluidStack)recipeQuery.query;
 					boolean hasFluid = false;
 					for(FluidTank tank : tanks)
 						if(tank.getFluid().containsFluid(fs))
@@ -301,6 +302,23 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 							hasFluid = true;
 							if(doConsume)
 								tank.drain(fs.getAmount(), FluidAction.EXECUTE);
+							break;
+						}
+					if(hasFluid)
+						continue;
+					else
+						querySize = 1;
+				}
+				if(recipeQuery.query instanceof FluidTagInput)
+				{
+					FluidTagInput fti = (FluidTagInput)recipeQuery.query;
+					boolean hasFluid = false;
+					for(FluidTank tank : tanks)
+						if(fti.test(tank.getFluid()))
+						{
+							hasFluid = true;
+							if(doConsume)
+								tank.drain(fti.getAmount(), FluidAction.EXECUTE);
 							break;
 						}
 					if(hasFluid)
@@ -528,6 +546,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 	private static final BlockPos inputPos = new BlockPos(1, 1, 2);
 	private static final BlockPos outputPos = new BlockPos(1, 1, 0);
 	private static final Set<BlockPos> itemConnections = ImmutableSet.of(inputPos, outputPos);
+
 	@Nonnull
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing)
@@ -571,11 +590,13 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 		return master();
 	}
 
+	private static final BlockPos fluidInputPos = new BlockPos(1, 0, 2);
+
 	@Override
 	protected IFluidTank[] getAccessibleFluidTanks(Direction side)
 	{
 		AssemblerTileEntity master = master();
-		if(master!=null&&/*TODO posInMultiblock==1&&*/(side==null||side==getFacing().getOpposite()))
+		if(master!=null&&fluidInputPos.equals(posInMultiblock)&&(side==null||side==getFacing().getOpposite()))
 			return master.tanks;
 		return new FluidTank[0];
 	}

@@ -1,3 +1,12 @@
+/*
+ * BluSunrize
+ * Copyright (c) 2020
+ *
+ * This code is licensed under "Blu's License of Common Sense"
+ * Details can be found in the license file in the root folder of this project
+ *
+ */
+
 package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
@@ -159,6 +168,8 @@ public class IEManual
 							String key = shader.name.getPath();
 							content.append("<&").append(key).append(">").append("<np>");
 						}
+						int last = content.lastIndexOf("<np>");
+						content.delete(last, last+4);
 						return content.toString();
 					}
 			);

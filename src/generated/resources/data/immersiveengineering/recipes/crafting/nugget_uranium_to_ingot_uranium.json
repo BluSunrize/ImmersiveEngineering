@@ -2,12 +2,15 @@
   "type": "minecraft:crafting_shaped",
   "pattern": [
     "sss",
-    "sss",
+    "sis",
     "sss"
   ],
   "key": {
     "s": {
       "tag": "forge:nuggets/uranium"
+    },
+    "i": {
+      "item": "immersiveengineering:nugget_uranium"
     }
   },
   "result": {

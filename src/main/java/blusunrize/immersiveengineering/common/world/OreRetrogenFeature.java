@@ -1,4 +1,13 @@
 /*
+ * BluSunrize
+ * Copyright (c) 2020
+ *
+ * This code is licensed under "Blu's License of Common Sense"
+ * Details can be found in the license file in the root folder of this project
+ *
+ */
+
+/*
  * Credit to Richard Freimer @pupnewfster
  * https://github.com/mekanism/Mekanism/blob/a5c433d58b5ec51b85bc5252a566b5f8668d47f9/src/main/java/mekanism/common/world/OreRetrogenFeature.java
  */
