@@ -133,12 +133,13 @@ repositories {
         }
     }
 }
+
 dependencies {
     minecraft 'net.minecraftforge:forge:1.15.2-31.2.30'
     runtimeOnly fg.deobf("mezz.jei:jei-1.15.2:6.0.0.4")
     runtimeOnly fg.deobf("nbtedit:NBTEdit:0.9.0")
     compileOnly fg.deobf("mezz.jei:jei-1.15.2:6.0.0.4:api")
-    compile "malte0811:BlockModelSplitter:1.1.1"
+    compile "malte0811:BlockModelSplitter:1.2.0"
     testImplementation('junit:junit:4.13')
 }
 
