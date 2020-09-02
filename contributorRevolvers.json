@@ -39,7 +39,7 @@
 }
 
 {
-  "uuid":["4ad51bb6-9612-457a-a143-a7ca01ed7107"],
+  "uuid":["f34afdfb-996b-4020-b8a2-b740e2937b29"],
   "tag":"rose","flavour":"","baseUpgrades":{"melee":10.0},"renderAdditions":["bayonet_attachment","dev_bayonet"]
 }
 
@@ -55,7 +55,7 @@
 
 {
   "uuid":["27672103-b8c7-400d-8817-49de433336dd"],
-  "tag":"superchief","flavour":"","baseUpgrades":{},"renderAdditions":[]
+  "tag":"superchief","flavour":"","baseUpgrades":{"melee":10.0}, "renderAdditions":["bayonet_attachment","dev_bayonet"]
 }
 
 {
