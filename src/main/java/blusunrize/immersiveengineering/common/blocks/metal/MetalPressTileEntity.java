@@ -57,10 +57,6 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 
 	public ItemStack mold = ItemStack.EMPTY;
 
-	//total must be <= 0.5
-	public static final float transportTimePercentage = 0.4375f;
-	public static final float pressTimePercentage = 0.03125f;
-
 	@Override
 	public void tick()
 	{
@@ -170,7 +166,9 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 			if(recipe==null)
 				return;
 			ItemStack displayStack = recipe.getDisplayStack(stack);
-			float transformationPoint = transportTimePercentage+pressTimePercentage;
+//			float processMaxTicks = recipe.getTotalProcessTime();
+//			float transformationPoint = (MetalPressRenderer.getPressTime(processMaxTicks)+MetalPressRenderer.getPressTime(processMaxTicks))/processMaxTicks;
+			float transformationPoint = 0.5f;
 			MultiblockProcess<MetalPressRecipe> process = new MultiblockProcessInWorld<>(recipe, transformationPoint,
 					Utils.createNonNullItemStackListFromItemStack(displayStack));
 			if(master.addProcessToQueue(process, true))
