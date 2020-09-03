@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttachable;
+import blusunrize.immersiveengineering.client.render.tile.MetalPressRenderer;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
@@ -56,6 +57,10 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 
 	public ItemStack mold = ItemStack.EMPTY;
 
+	//total must be <= 0.5
+	public static final float transportTimePercentage = 0.4375f;
+	public static final float pressTimePercentage = 0.03125f;
+
 	@Override
 	public void tick()
 	{
@@ -64,15 +69,16 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 			return;
 		for(MultiblockProcess process : processQueue)
 		{
-			float tick = 1/(float)process.maxTicks;
-			float transportTime = 52.5f/120f;
-			float pressTime = 3.75f/120f;
-			float fProcess = process.processTick*tick;
-			if(fProcess >= transportTime&&fProcess < transportTime+tick)
+			float maxTicks = process.maxTicks;
+			float transportTime = MetalPressRenderer.getTransportTime(maxTicks);
+			float pressTime = MetalPressRenderer.getPressTime(maxTicks);
+			float fProcess = process.processTick;
+			//Note: the >= and < check instead of a single == is because fProcess is an int and transportTime and pressTime are floats. Because of that it has to be windowed
+			if(fProcess >= transportTime&&fProcess < transportTime+1f)
 				world.playSound(null, getPos(), IESounds.metalpress_piston, SoundCategory.BLOCKS, .3F, 1);
-			if(fProcess >= (transportTime+pressTime)&&fProcess < (transportTime+pressTime+tick))
+			if(fProcess >= (transportTime+pressTime)&&fProcess < (transportTime+pressTime+1f))
 				world.playSound(null, getPos(), IESounds.metalpress_smash, SoundCategory.BLOCKS, .3F, 1);
-			if(fProcess >= (1-transportTime)&&fProcess < (1-transportTime+tick))
+			if(fProcess >= (maxTicks-transportTime)&&fProcess < (maxTicks-transportTime+1f))
 				world.playSound(null, getPos(), IESounds.metalpress_piston, SoundCategory.BLOCKS, .3F, 1);
 		}
 	}
@@ -164,7 +170,7 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 			if(recipe==null)
 				return;
 			ItemStack displayStack = recipe.getDisplayStack(stack);
-			float transformationPoint = 56.25f/120f;
+			float transformationPoint = transportTimePercentage+pressTimePercentage;
 			MultiblockProcess<MetalPressRecipe> process = new MultiblockProcessInWorld<>(recipe, transformationPoint,
 					Utils.createNonNullItemStackListFromItemStack(displayStack));
 			if(master.addProcessToQueue(process, true))
@@ -249,7 +255,8 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 	@Override
 	public float getMinProcessDistance(MultiblockProcess<MetalPressRecipe> process)
 	{
-		return 63.75f/120f;
+		float maxTicks = process.maxTicks;
+		return 1f-(MetalPressRenderer.getTransportTime(maxTicks)+MetalPressRenderer.getPressTime(maxTicks))/maxTicks;
 	}
 
 

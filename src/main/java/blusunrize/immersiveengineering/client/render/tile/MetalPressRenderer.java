@@ -34,6 +34,10 @@ public class MetalPressRenderer extends TileEntityRenderer<MetalPressTileEntity>
 {
 	public static DynamicModel<Void> PISTON;
 
+	private static final float standardTransportTime = 52.5f;
+	private static final float standardPressTime = 3.75f;
+	private static final float minCycleTime = 120f; //set >= 2*(standardPressTime+standardTransportTime)
+
 	public MetalPressRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
 	{
 		super(rendererDispatcherIn);
@@ -56,30 +60,33 @@ public class MetalPressRenderer extends TileEntityRenderer<MetalPressTileEntity>
 		matrixStack.translate(.5, .5, .5);
 		float piston = 0;
 		float[] shift = new float[te.processQueue.size()];
+		System.out.println(partialTicks);
 		for(int i = 0; i < shift.length; i++)
 		{
 			MultiblockProcess<MetalPressRecipe> process = te.processQueue.get(i);
 			if(process==null)
 				continue;
-			float transportTime = 52.5f/120f;
-			float pressTime = 3.75f/120f;
-			float fProcess = (process.processTick+(te.shouldRenderAsActive()?partialTicks: 0))/(float)process.maxTicks;
+			float processMaxTicks = process.maxTicks;
+			float transportTime = getTransportTime(processMaxTicks);
+			float pressTime = getPressTime(processMaxTicks);
+			//+partialTicks
+			float fProcess = process.processTick;
 
 			if(fProcess < transportTime)
 				shift[i] = fProcess/transportTime*.5f;
-			else if(fProcess < (1-transportTime))
+			else if(fProcess < (processMaxTicks-transportTime))
 				shift[i] = .5f;
 			else
-				shift[i] = .5f+(fProcess-(1-transportTime))/transportTime*.5f;
+				shift[i] = .5f+.5f*(fProcess-(processMaxTicks-transportTime))/transportTime;
 			if(!te.mold.isEmpty())
-				if(fProcess >= transportTime&&fProcess < (1-transportTime))
+				if(fProcess >= transportTime&&fProcess < (processMaxTicks-transportTime))
 				{
 					if(fProcess < (transportTime+pressTime))
 						piston = (fProcess-transportTime)/pressTime;
-					else if(fProcess < (1-transportTime-pressTime))
+					else if(fProcess < (processMaxTicks-transportTime-pressTime))
 						piston = 1;
 					else
-						piston = 1-(fProcess-(1-transportTime-pressTime))/pressTime;
+						piston = 1-(fProcess-(processMaxTicks-transportTime-pressTime))/pressTime;
 				}
 		}
 
@@ -126,5 +133,21 @@ public class MetalPressRenderer extends TileEntityRenderer<MetalPressTileEntity>
 			}
 		}
 		matrixStack.pop();
+	}
+
+	public static float getTransportTime(float processMaxTicks)
+	{
+		if(processMaxTicks >= minCycleTime)
+			return standardTransportTime;
+		else
+			return processMaxTicks*standardTransportTime/minCycleTime;
+	}
+
+	public static float getPressTime(float processMaxTicks)
+	{
+		if(processMaxTicks >= minCycleTime)
+			return standardPressTime;
+		else
+			return processMaxTicks*standardPressTime/minCycleTime;
 	}
 }
