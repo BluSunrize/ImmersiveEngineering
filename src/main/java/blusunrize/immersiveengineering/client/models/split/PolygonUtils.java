@@ -60,9 +60,9 @@ public class PolygonUtils
 			final int baseOffset = v*DefaultVertexFormats.BLOCK.getSize()/4;
 			int packedNormal = quad.getVertexData()[normalOffset+baseOffset];
 			final Vec3d normalVec = new Vec3d(
-					(byte)(packedNormal >> 16),
+					(byte)(packedNormal),
 					(byte)(packedNormal >> 8),
-					(byte)(packedNormal)
+					(byte)(packedNormal >> 16)
 			).normalize();
 			final double[] uv = {
 					Float.intBitsToFloat(quad.getVertexData()[uvOffset+baseOffset]),

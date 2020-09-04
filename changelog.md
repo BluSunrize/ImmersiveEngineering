@@ -1,4 +1,10 @@
 ##### Version 1.15.2-4.0.0-117
+- Fixed model issues with the metal press and refinery (Malte)
+- Fixed the metal press piston vanishing at certain angles (Malte)
+- Fixed wires rendering too many segments near chunk boundaries (Malte)
+- Fixed broken lighting on split models (Malte)
+
+##### Version 1.15.2-4.0.0-117
 - Changed rendering of multiblocks to split models into blocks;
   - This should address weird issues with shadows and disappearing models (Malte)
 - Fixed broken rendering of components on the Automated Workbench (BluSunrize)
