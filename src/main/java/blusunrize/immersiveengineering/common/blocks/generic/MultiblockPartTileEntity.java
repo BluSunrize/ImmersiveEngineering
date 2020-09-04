@@ -58,7 +58,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	public BlockPos posInMultiblock = BlockPos.ZERO;
 	//Offset from the master to this block (world coordinate system)
 	public BlockPos offsetToMaster = BlockPos.ZERO;
-	private final IETemplateMultiblock multiblockInstance;
+	protected final IETemplateMultiblock multiblockInstance;
 	// stores the world time at which this block can only be disassembled by breaking the block associated with this TE.
 	// This prevents half/duplicate disassembly when working with the drill or TCon hammers
 	public long onlyLocalDissassembly = -1;
