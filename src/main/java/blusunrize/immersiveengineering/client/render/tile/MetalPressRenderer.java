@@ -60,7 +60,7 @@ public class MetalPressRenderer extends TileEntityRenderer<MetalPressTileEntity>
 		matrixStack.translate(.5, .5, .5);
 		float piston = 0;
 		float[] shift = new float[te.processQueue.size()];
-		System.out.println(partialTicks);
+
 		for(int i = 0; i < shift.length; i++)
 		{
 			MultiblockProcess<MetalPressRecipe> process = te.processQueue.get(i);
