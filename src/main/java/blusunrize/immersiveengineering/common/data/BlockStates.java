@@ -65,6 +65,7 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -293,8 +294,19 @@ public class BlockStates extends BlockStateProvider
 
 	private LoadedModelBuilder splitOBJ(String loc, TemplateMultiblock mb, boolean mirror)
 	{
+		UnaryOperator<BlockPos> transform = UnaryOperator.identity();
+		if(mirror)
+		{
+			Vector3i size = mb.getSize();
+			transform = p -> new BlockPos(size.getX()-p.getX()-1, p.getY(), p.getZ());
+		}
+		return splitOBJ(loc, mb, transform);
+	}
+
+	private LoadedModelBuilder splitOBJ(String loc, TemplateMultiblock mb, UnaryOperator<BlockPos> transform)
+	{
 		Preconditions.checkArgument(loc.endsWith(".obj"));
-		return splitOBJ(loc.substring(0, loc.length()-4), modLoc(loc), mb, mirror);
+		return splitOBJ(loc.substring(0, loc.length()-4), modLoc(loc), mb, transform);
 	}
 
 	private LoadedModelBuilder splitOBJ(String loc, List<Vector3i> parts)
@@ -311,20 +323,16 @@ public class BlockStates extends BlockStateProvider
 			String name,
 			ResourceLocation model,
 			TemplateMultiblock multiblock,
-			boolean mirror
+			UnaryOperator<BlockPos> transform
 	)
 	{
 		final Vector3i offset = multiblock.getMasterFromOriginOffset();
-		final Vector3i size = multiblock.getSize();
 		Stream<Vector3i> partsStream = multiblock.getStructure()
 				.stream()
 				.filter(info -> !info.state.isAir())
 				.map(info -> info.pos)
-				.map(p -> {
-					if(mirror)
-						p = new BlockPos(size.getX()-p.getX()-1, p.getY(), p.getZ());
-					return p.subtract(offset);
-				});
+				.map(transform)
+				.map(p -> p.subtract(offset));
 		return splitModel(name, forgeLoc("obj"), model, DataGenUtils.getTextureFromObj(
 				model, existingFileHelper
 		), partsStream, false);
@@ -877,7 +885,9 @@ public class BlockStates extends BlockStateProvider
 				splitOBJ("block/metal_multiblock/crusher_mirrored.obj", IEMultiblocks.CRUSHER),
 				splitOBJ("block/metal_multiblock/crusher.obj", IEMultiblocks.CRUSHER, true));
 		createMultiblock(Multiblocks.metalPress,
-				splitOBJ("block/metal_multiblock/metal_press.obj", IEMultiblocks.METAL_PRESS));
+				splitOBJ("block/metal_multiblock/metal_press.obj", IEMultiblocks.METAL_PRESS,
+						p -> new BlockPos(p.getZ()+1, p.getY(), p.getX()-1)
+				));
 		createMultiblock(Multiblocks.assembler,
 				splitOBJ("block/metal_multiblock/assembler.obj", IEMultiblocks.ASSEMBLER));
 		createMultiblock(Multiblocks.arcFurnace,

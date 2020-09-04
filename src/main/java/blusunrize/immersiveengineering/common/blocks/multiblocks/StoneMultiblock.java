@@ -47,4 +47,14 @@ public abstract class StoneMultiblock extends IETemplateMultiblock
 	{
 		return transformed.getOpposite();
 	}
+
+	@Override
+	public BlockPos multiblockToModelPos(BlockPos posInMultiblock)
+	{
+		return super.multiblockToModelPos(new BlockPos(
+				getSize().getX()-posInMultiblock.getX()-1,
+				posInMultiblock.getY(),
+				getSize().getZ()-posInMultiblock.getZ()-1
+		));
+	}
 }

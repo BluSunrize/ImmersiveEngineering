@@ -88,6 +88,16 @@ public class MetalPressMultiblock extends IETemplateMultiblock
 	}
 
 	@Override
+	public BlockPos multiblockToModelPos(BlockPos posInMultiblock)
+	{
+		return super.multiblockToModelPos(new BlockPos(
+				posInMultiblock.getZ()+1,
+				posInMultiblock.getY(),
+				1-posInMultiblock.getX()
+		));
+	}
+
+	@Override
 	protected void replaceStructureBlock(BlockInfo info, World world, BlockPos actualPos, boolean mirrored, Direction clickDirection, Vector3i offsetFromMaster)
 	{
 		Direction mbDirection;

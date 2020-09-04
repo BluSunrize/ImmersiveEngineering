@@ -139,7 +139,7 @@ dependencies {
     runtimeOnly fg.deobf("mezz.jei:jei-1.16.1:7.0.0.6")
     //runtimeOnly fg.deobf("nbtedit:NBTEdit:0.9.0")
     compileOnly fg.deobf("mezz.jei:jei-1.16.1:7.0.0.6:api")
-    compile "malte0811:BlockModelSplitter:1.1.1"
+    compile "malte0811:BlockModelSplitter:1.2.0"
     testImplementation('junit:junit:4.13')
 }
 
