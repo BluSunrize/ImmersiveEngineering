@@ -21,7 +21,10 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
@@ -395,16 +398,16 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 
 	@Nullable
 	@Override
-	public IGeneralMultiblock master()
+	public ClocheTileEntity master()
 	{
 		if(!isDummy())
 			return this;
 		// Used to provide tile-dependant drops after breaking
-		if(tempMasterTE!=null)
-			return tempMasterTE;
+		if(tempMasterTE instanceof ClocheTileEntity)
+			return (ClocheTileEntity)tempMasterTE;
 		BlockPos masterPos = getPos().down(dummy);
 		TileEntity te = Utils.getExistingTileEntity(world, masterPos);
-		return this.getClass().isInstance(te)?(IGeneralMultiblock)te: null;
+		return te instanceof ClocheTileEntity?(ClocheTileEntity)te: null;
 	}
 
 	@Override
@@ -513,11 +516,16 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
+	@Nullable
 	public TextureAtlasSprite getTextureReplacement(BlockState object, String group, String material)
 	{
-		if(!inventory.get(SLOT_SOIL).isEmpty()&&"farmland".equals(material))
+		ClocheTileEntity master = master();
+		if(master==null)
+			return null;
+		ItemStack soil = master.inventory.get(SLOT_SOIL);
+		if(!soil.isEmpty()&&"farmland".equals(material))
 		{
-			ResourceLocation rl = getSoilTexture();
+			ResourceLocation rl = getSoilTexture(soil);
 			if(rl!=null)
 				return ClientUtils.getSprite(rl);
 		}
@@ -552,9 +560,20 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 	}
 
 	@OnlyIn(Dist.CLIENT)
+	@Nullable
 	private ResourceLocation getSoilTexture()
 	{
-		ItemStack soil = inventory.get(SLOT_SOIL);
+		ClocheTileEntity master = master();
+		if(master!=null)
+			return getSoilTexture(master.inventory.get(SLOT_SOIL));
+		else
+			return null;
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	@Nullable
+	private static ResourceLocation getSoilTexture(ItemStack soil)
+	{
 		ResourceLocation rl = ClocheRecipe.getSoilTexture(soil);
 		if(rl==null)
 		{
