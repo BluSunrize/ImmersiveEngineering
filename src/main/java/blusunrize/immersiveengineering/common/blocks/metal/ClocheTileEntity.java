@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
@@ -365,6 +366,19 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 	public boolean canRotate(Direction axis)
 	{
 		return true;
+	}
+
+	@Override
+	public void setFacing(Direction facing)
+	{
+		BlockPos lowest = pos.down(dummy);
+		for(int i = 0; i < 3; ++i)
+		{
+			BlockPos pos = lowest.up(i);
+			BlockState state = getWorldNonnull().getBlockState(pos);
+			if(state.getBlock()==MetalDevices.cloche)
+				getWorldNonnull().setBlockState(pos, state.with(getFacingProperty(), facing));
+		}
 	}
 
 	@Override
