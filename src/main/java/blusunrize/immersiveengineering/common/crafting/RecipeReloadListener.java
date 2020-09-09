@@ -35,7 +35,11 @@ public class RecipeReloadListener implements IResourceManagerReloadListener
 	public void onResourceManagerReload(IResourceManager resourceManager)
 	{
 		if(EffectiveSide.get().isServer())
-			buildRecipeLists(ServerLifecycleHooks.getCurrentServer().getRecipeManager());
+		{
+			RecipeManager recipeManager = ServerLifecycleHooks.getCurrentServer().getRecipeManager();
+			startArcRecyclingRecipeGen(recipeManager);
+			buildRecipeLists(recipeManager);
+		}
 	}
 
 	@SubscribeEvent(priority = EventPriority.HIGH)
@@ -72,7 +76,6 @@ public class RecipeReloadListener implements IResourceManagerReloadListener
 		MetalPressPackingRecipes.CRAFTING_RECIPE_MAP = filterRecipes(recipes, ICraftingRecipe.class, IRecipeType.CRAFTING);
 		MetalPressRecipe.updateRecipesByMold();
 
-		ArcFurnaceRecipe.recipeList = filterRecipes(recipes, ArcFurnaceRecipe.class, ArcFurnaceRecipe.TYPE);
 		BottlingMachineRecipe.recipeList = filterRecipes(recipes, BottlingMachineRecipe.class, BottlingMachineRecipe.TYPE);
 		CrusherRecipe.recipeList = filterRecipes(recipes, CrusherRecipe.class, CrusherRecipe.TYPE);
 		FermenterRecipe.recipeList = filterRecipes(recipes, FermenterRecipe.class, FermenterRecipe.TYPE);
@@ -80,31 +83,25 @@ public class RecipeReloadListener implements IResourceManagerReloadListener
 		RefineryRecipe.recipeList = filterRecipes(recipes, RefineryRecipe.class, RefineryRecipe.TYPE);
 		MixerRecipe.recipeList = filterRecipes(recipes, MixerRecipe.class, MixerRecipe.TYPE);
 		MineralMix.mineralList = filterRecipes(recipes, MineralMix.class, MineralMix.TYPE);
+		ArcFurnaceRecipe.recipeList = filterRecipes(recipes, ArcFurnaceRecipe.class, ArcFurnaceRecipe.TYPE);
 	}
 
-		// Wrap up recycling
-		try
-		{
-			recyclingHandler.join();
-			recyclingHandler.finishUp();
-		} catch(InterruptedException e)
-		{
-			e.printStackTrace();
-		}
+	private void startArcRecyclingRecipeGen(RecipeManager recipeManager)
+	{
+		Collection<IRecipe<?>> recipes = recipeManager.getRecipes();
+		new ArcRecyclingThreadHandler(recipes).start();
 	}
 
 	static <R extends IRecipe<?>> Map<ResourceLocation, R> filterRecipes(Collection<IRecipe<?>> recipes, Class<R> recipeClass, IRecipeType<R> recipeType)
 	{
-		return Stream.concat(
-				recipes.stream()
-						.filter(iRecipe -> iRecipe.getType()==recipeType),
-				recipes.stream()
-						//TODO cache
-						.filter(r -> r.getType()==GeneratedListRecipe.TYPE)
-						.map(r -> (GeneratedListRecipe)r)
-						.filter(r -> r.getSubType()==recipeType)
-						.flatMap(r -> r.getSubRecipes().stream())
-		)
+		return recipes.stream()
+				.filter(iRecipe -> iRecipe.getType()==recipeType)
+				.flatMap(r -> {
+					if(r instanceof GeneratedListRecipe)
+						return ((GeneratedListRecipe)r).getSubRecipes().stream();
+					else
+						return Stream.of(r);
+				})
 				.map(recipeClass::cast)
 				.collect(Collectors.toMap(recipe -> recipe.getId(), recipe -> recipe));
 	}

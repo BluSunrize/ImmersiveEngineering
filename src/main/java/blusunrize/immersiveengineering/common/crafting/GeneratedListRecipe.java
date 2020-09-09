@@ -9,7 +9,6 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.*;
 import com.google.common.base.Preconditions;
 import net.minecraft.item.ItemStack;
@@ -28,7 +27,6 @@ import static blusunrize.immersiveengineering.common.data.IEDataGenerator.rl;
 
 public class GeneratedListRecipe extends IESerializableRecipe
 {
-	public static final IRecipeType<ArcFurnaceRecipe> TYPE = IRecipeType.register(Lib.MODID+":generated_list");
 	public static Map<ResourceLocation, RecipeListGenerator<?>> LIST_GENERATORS = new HashMap<>();
 	public static RegistryObject<IERecipeSerializer<GeneratedListRecipe>> SERIALIZER;
 
@@ -39,8 +37,12 @@ public class GeneratedListRecipe extends IESerializableRecipe
 				MixerRecipe.TYPE
 		));
 		LIST_GENERATORS.put(rl("potion_bottling_list"), new RecipeListGenerator<>(
-				MixerRecipePotion::getPotionBottlingRecipes, BottlingMachineRecipe.SERIALIZER.getId(),
+				PotionHelper::getPotionBottlingRecipes, BottlingMachineRecipe.SERIALIZER.getId(),
 				BottlingMachineRecipe.TYPE
+		));
+		LIST_GENERATORS.put(rl("arc_recycling_list"), new RecipeListGenerator<>(
+				ArcRecyclingThreadHandler::getRecipesFromRunningThreads, ArcFurnaceRecipe.SERIALIZER.getId(),
+				ArcFurnaceRecipe.TYPE
 		));
 	}
 
@@ -50,8 +52,8 @@ public class GeneratedListRecipe extends IESerializableRecipe
 
 	public GeneratedListRecipe(ResourceLocation id)
 	{
-		super(ItemStack.EMPTY, TYPE, id);
-		generator = Preconditions.checkNotNull(LIST_GENERATORS.get(id), id);
+		super(ItemStack.EMPTY, Preconditions.checkNotNull(LIST_GENERATORS.get(id), id).recipeType, id);
+		generator = LIST_GENERATORS.get(id);
 	}
 
 	public GeneratedListRecipe(ResourceLocation id, @Nullable List<IESerializableRecipe> subRecipes)
@@ -89,11 +91,6 @@ public class GeneratedListRecipe extends IESerializableRecipe
 	public ResourceLocation getSubSerializer()
 	{
 		return generator.serialized;
-	}
-
-	public IRecipeType<?> getSubType()
-	{
-		return generator.recipeType;
 	}
 
 	public static class RecipeListGenerator<T extends IESerializableRecipe>
