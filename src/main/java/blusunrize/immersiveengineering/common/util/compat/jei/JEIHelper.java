@@ -16,6 +16,8 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.crafting.ArcRecyclingRecipe;
 import blusunrize.immersiveengineering.common.gui.CraftingTableContainer;
+import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
+import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.compat.jei.alloysmelter.AlloySmelterRecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.arcfurnace.ArcFurnaceRecipeCategory;
@@ -63,19 +65,7 @@ public class JEIHelper implements IModPlugin
 	@Override
 	public void registerItemSubtypes(ISubtypeRegistration subtypeRegistry)
 	{
-		//NBT Ignorance
-		/*
-		subtypeRegistry.registerSubtypeInterpreter(Item.getItemFromBlock(MetalDevices.CONVEYORS), itemStack -> {
-			if(!itemStack.isEmpty()&&ItemNBTHelper.hasKey(itemStack, "conveyorType"))
-				return ItemNBTHelper.getString(itemStack, "conveyorType");
-			return ISubtypeInterpreter.NONE;
-		});
-		subtypeRegistry.registerSubtypeInterpreter(IEContent.itemBullet, itemStack -> {
-			if(!itemStack.isEmpty()&&itemStack.getMetadata()==2&&ItemNBTHelper.hasKey(itemStack, "bullet"))
-				return ItemNBTHelper.getString(itemStack, "bullet");
-			return ISubtypeInterpreter.NONE;
-		});
-		 */
+		subtypeRegistry.registerSubtypeInterpreter(Misc.blueprint, EngineersBlueprintItem::getCategory);
 	}
 
 	@Override
