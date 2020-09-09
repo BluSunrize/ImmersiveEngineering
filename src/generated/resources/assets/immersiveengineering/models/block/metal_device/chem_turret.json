@@ -3,22 +3,7 @@
   "textures": {
     "particle": "immersiveengineering:block/metal_device/chem_turret"
   },
-  "loader": "immersiveengineering:basic_split",
-  "base_loader": "immersiveengineering:ie_obj",
-  "dynamic": true,
-  "detectCullableFaces": false,
+  "loader": "immersiveengineering:ie_obj",
   "model": "immersiveengineering:models/block/metal_device/chem_turret.obj.ie",
-  "flip-v": true,
-  "split_parts": [
-    [
-      0,
-      0,
-      0
-    ],
-    [
-      0,
-      1,
-      0
-    ]
-  ]
+  "flip-v": true
 }
