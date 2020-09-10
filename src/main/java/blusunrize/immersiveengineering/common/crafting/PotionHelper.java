@@ -10,7 +10,6 @@
 package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.api.IETags;
-import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.common.IEContent;
@@ -25,7 +24,6 @@ import net.minecraft.potion.PotionBrewing;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.potion.Potions;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.brewing.BrewingRecipe;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.brewing.IBrewingRecipe;
@@ -34,37 +32,9 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.registries.IRegistryDelegate;
 
 import java.lang.reflect.Field;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class PotionHelper
 {
-	public static List<BottlingMachineRecipe> getPotionBottlingRecipes()
-	{
-		Map<Potion, BottlingMachineRecipe> recipes = new HashMap<>();
-		Function<Potion, BottlingMachineRecipe> toRecipe = potion -> new BottlingMachineRecipe(
-				potion.getRegistryName(),
-				PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION), potion),
-				Ingredient.fromItems(Items.GLASS_BOTTLE),
-				getFluidTagForType(potion, 250)
-		);
-		applyToAllPotionRecipes((out, in, reagent) -> {
-					if(!recipes.containsKey(out))
-						recipes.put(out, toRecipe.apply(out));
-				}
-		);
-		recipes.put(Potions.WATER, toRecipe.apply(Potions.WATER));
-		IELogger.logger.info(
-				"Recipes for potions: "+recipes.keySet().stream()
-						.map(Potion::getRegistryName)
-						.filter(Objects::nonNull)
-						.map(ResourceLocation::toString)
-						.collect(Collectors.joining(", "))
-		);
-		return new ArrayList<>(recipes.values());
-	}
-
 	public static FluidStack getFluidStackForType(Potion type, int amount)
 	{
 		if(type==Potions.WATER||type==null)

@@ -33,11 +33,11 @@ public class GeneratedListRecipe extends IESerializableRecipe
 	static
 	{
 		LIST_GENERATORS.put(rl("mixer_potion_list"), new RecipeListGenerator<>(
-				MixerRecipePotion::initPotionRecipes, MixerRecipe.SERIALIZER.getId(),
+				PotionRecipeGenerators::initPotionRecipes, MixerRecipe.SERIALIZER.getId(),
 				MixerRecipe.TYPE
 		));
 		LIST_GENERATORS.put(rl("potion_bottling_list"), new RecipeListGenerator<>(
-				PotionHelper::getPotionBottlingRecipes, BottlingMachineRecipe.SERIALIZER.getId(),
+				PotionRecipeGenerators::getPotionBottlingRecipes, BottlingMachineRecipe.SERIALIZER.getId(),
 				BottlingMachineRecipe.TYPE
 		));
 		LIST_GENERATORS.put(rl("arc_recycling_list"), new RecipeListGenerator<>(
