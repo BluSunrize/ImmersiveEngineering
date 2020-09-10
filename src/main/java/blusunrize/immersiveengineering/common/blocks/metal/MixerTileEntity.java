@@ -494,9 +494,7 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 				{
 					double distBetweenExtra = maxTicks/(double)leftover;
 					if(Math.floor(processTick/distBetweenExtra)!=Math.floor((processTick-1)/distBetweenExtra))
-					{
 						amount++;
-					}
 				}
 				MixerTileEntity mixer = (MixerTileEntity)multiblock;
 				FluidStack drained = mixer.tank.drain(recipe.fluidInput.withAmount(amount), FluidAction.EXECUTE);
