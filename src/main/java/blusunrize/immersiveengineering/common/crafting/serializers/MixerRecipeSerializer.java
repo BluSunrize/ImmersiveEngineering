@@ -53,8 +53,8 @@ public class MixerRecipeSerializer extends IERecipeSerializer<MixerRecipe>
 		FluidTagInput fluidInput = FluidTagInput.read(buffer);
 		int ingredientCount = buffer.readInt();
 		IngredientWithSize[] itemInputs = new IngredientWithSize[ingredientCount];
-		for(int j = 0; j < ingredientCount; j++)
-			itemInputs[j] = IngredientWithSize.read(buffer);
+		for(int i = 0; i < ingredientCount; i++)
+			itemInputs[i] = IngredientWithSize.read(buffer);
 		int energy = buffer.readInt();
 		return new MixerRecipe(recipeId, fluidOutput, fluidInput, itemInputs, energy);
 	}
