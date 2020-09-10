@@ -28,7 +28,6 @@ import org.apache.logging.log4j.core.config.Configurator;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.function.Predicate;
 
@@ -147,17 +146,6 @@ public class IEConfig
 			showUpdateNews = builder
 					.comment("Set this to false to hide the update news in the manual")
 					.define("showUpdateNews", true);
-			villagerHouse = builder
-					.comment("Set this to false to stop the IE villager house from spawning")
-					.worldRestart()//TODO MC restart?
-					.define("villagerHouse", true);
-			enableVillagers = builder
-					.comment("Set this to false to remove IE villagers from the game")
-					.define("enableVillagers", true);
-			//TODO is this still relevant (loot tables)?
-			hempSeedWeight = builder
-					.comment("The weight that hempseeds have when breaking tall grass. 5 by default, set to 0 to disable drops")
-					.defineInRange("hempSeedWeight", 5, 0, Integer.MAX_VALUE);
 			fancyItemHolding = builder
 					.comment("Allows revolvers and other IE items to look properly held in 3rd person. This uses a coremod. Can be disabled in case of conflicts with other animation mods.")
 					.define("fancyItemHolding", true);
@@ -186,9 +174,6 @@ public class IEConfig
 		public final DoubleValue increasedTileRenderdistance;
 		public final ConfigValue<List<? extends String>> preferredOres;
 		public final BooleanValue showUpdateNews;
-		public final BooleanValue villagerHouse;
-		public final BooleanValue enableVillagers;
-		public final IntValue hempSeedWeight;
 		public final BooleanValue fancyItemHolding;
 		public final BooleanValue stencilBufferEnabled;
 		public final Map<String, BooleanValue> compat = new HashMap<>();
@@ -232,108 +217,154 @@ public class IEConfig
 			dieselGen_output = builder
 					.comment("The Flux per tick that the Diesel Generator will output. The burn time of the fuel determines the total output")
 					.defineInRange("dieselGen_output", 4096, 0, Integer.MAX_VALUE);
-			heater_consumption = builder
-					.comment("The Flux per tick consumed to add one heat to a furnace. Creates up to 4 heat in the startup time and then 1 heat per tick to keep it running")
-					.defineInRange("heater_consumption", 8, 1, Integer.MAX_VALUE);
-			heater_speedupConsumption = builder
-					.comment("The Flux per tick consumed to double the speed of the furnace. Only happens if furnace is at maximum heat.")
-					.defineInRange("heater_speedupConsumption", 24, 1, Integer.MAX_VALUE);
+			{
+				builder.push("external_heater");
+				heater_consumption = builder
+						.comment("The Flux per tick consumed to add one heat to a furnace. Creates up to 4 heat in the startup time and then 1 heat per tick to keep it running")
+						.defineInRange("consumption", 8, 1, Integer.MAX_VALUE);
+				heater_speedupConsumption = builder
+						.comment("The Flux per tick consumed to double the speed of the furnace. Only happens if furnace is at maximum heat.")
+						.defineInRange("speedupConsumption", 24, 1, Integer.MAX_VALUE);
+				builder.pop();
+			}
 			preheater_consumption = addPositive(builder, "preheater_consumption", 32, "The Flux per tick the Blast Furnace Preheater will consume to speed up the Blast Furnace");
-			coredrill_time = addPositive(builder, "coredrill_time", 200, "The length in ticks it takes for the Core Sample Drill to figure out which mineral is found in a chunk");
-			coredrill_consumption = addPositive(builder, "coredrill_consumption", 40, "The Flux per tick consumed by the Core Sample Drill");
-			pump_consumption = addPositive(builder, "pump_consumption", 250, "The Flux the Fluid Pump will consume to pick up a fluid block in the world");
-			pump_consumption_accelerate = addPositive(builder, "pump_consumption_accelerate", 5, "The Flux the Fluid Pump will consume pressurize and accelerate fluids, increasing the transferrate");
-			pump_infiniteWater = builder
-					.comment("Set this to false to disable the fluid pump being able to draw infinite water from sources")
-					.define("pump_infiniteWater", true);
-			pump_placeCobble = builder
-					.comment("If this is set to true (default) the pump will replace fluids it picks up with cobblestone in order to reduce lag caused by flowing fluids.")
-					.define("pump_placeCobble", true);
+			{
+				builder.push("coredrill");
+				coredrill_time = addPositive(builder, "time", 200, "The length in ticks it takes for the Core Sample Drill to figure out which mineral is found in a chunk");
+				coredrill_consumption = addPositive(builder, "consumption", 40, "The Flux per tick consumed by the Core Sample Drill");
+				builder.pop();
+			}
+			{
+				builder.push("pump");
+				pump_consumption = addPositive(builder, "consumption", 250, "The Flux the Fluid Pump will consume to pick up a fluid block in the world");
+				pump_consumption_accelerate = addPositive(builder, "consumption_accelerate", 5, "The Flux the Fluid Pump will consume pressurize and accelerate fluids, increasing the transferrate");
+				pump_infiniteWater = builder
+						.comment("Set this to false to disable the fluid pump being able to draw infinite water from sources")
+						.define("infiniteWater", true);
+				pump_placeCobble = builder
+						.comment("If this is set to true (default) the pump will replace fluids it picks up with cobblestone in order to reduce lag caused by flowing fluids.")
+						.define("placeCobble", true);
+				builder.pop();
+			}
 			charger_consumption = addPositive(builder, "charger_consumption", 256,
 					"The Flux per tick the Charging Station can insert into an item");
-			teslacoil_consumption = addPositive(builder, "teslacoil_consumption", 256,
-					"The Flux per tick the Tesla Coil will consume, simply by being active");
-			teslacoil_consumption_active = addPositive(builder, "teslacoil_consumption_active", 512, "The amount of Flux the Tesla Coil will consume when shocking an entity");
-			teslacoil_damage = builder
-					.comment("The amount of damage the Tesla Coil will do when shocking an entity")
-					.defineInRange("teslacoil_damage", 6D, 0, Integer.MAX_VALUE);
-			turret_consumption = addPositive(builder, "turret_consumption", 64, "The Flux per tick any turret consumes to monitor the area");
-			turret_chem_consumption = addPositive(builder, "turret_chem_consumption", 32, "The Flux per tick the chemthrower turret consumes to shoot");
-			turret_gun_consumption = addPositive(builder, "turret_gun_consumption", 32, "The Flux per tick the gun turret consumes to shoot");
-			cloche_consumption = addPositive(builder, "garden_cloche_consumption", 8, "The Flux per tick the cloche consumes to grow plants");
-			cloche_fertilizer = addPositive(builder, "garden_cloche_fertilizer", 6000, "The amount of ticks one dose of fertilizer lasts in the cloche");
-			cloche_fluid = addPositive(builder, "garden_cloche_fluid", 250, "The amount of fluid the cloche uses per dose of fertilizer");
-			cloche_growth_mod = builder
-					.comment("A modifier to apply to the cloches total growing speed")
-					.defineInRange("garden_cloche_growth_modifier", 1, 1e-3, 1e3);
-			cloche_solid_fertilizer_mod = builder
-					.comment("A base-modifier for all solid fertilizers in the cloche")
-					.defineInRange("garden_cloche_solid_fertilizer_mod", 1, 1e-3, 1e3);
-			cloche_fluid_fertilizer_mod = builder
-					.comment("A base-modifier for all fluid fertilizers in the cloche")
-					.defineInRange("garden_cloche_fluid_fertilizer_mod", 1, 1e-3, 1e3);
-			lantern_spawnPrevent = builder
-					.comment("Set this to false to disable the mob-spawn prevention of the Powered Lantern")
-					.worldRestart()
-					.define("lantern_SpawnPrevent", true);
-			lantern_energyDraw = addPositive(builder, "lantern_energyDraw", 1, "How much Flux the powered lantern draws per tick");
-			lantern_maximumStorage = addPositive(builder, "lantern_max_storage", 10, "How much Flux the powered lantern can hold (should be greater than the power draw)");
-			floodlight_spawnPrevent = builder
-					.comment("Set this to false to disable the mob-spawn prevention of the Floodlight")
-					.worldRestart()
-					.define("floodlight_spawnPrevent", true);
-			floodlight_energyDraw = addPositive(builder, "floodlight_energyDraw", 5, "How much Flux the floodlight draws per tick");
-			floodlight_maximumStorage = addPositive(builder, "floodlight_max_storage", 80, "How much Flux the floodlight can hold (must be at least 10x the power draw)");
+			{
+				builder.push("teslacoil");
+				teslacoil_consumption = addPositive(builder, "consumption", 256,
+						"The Flux per tick the Tesla Coil will consume, simply by being active");
+				teslacoil_consumption_active = addPositive(builder, "consumption_active", 512, "The amount of Flux the Tesla Coil will consume when shocking an entity");
+				teslacoil_damage = builder
+						.comment("The amount of damage the Tesla Coil will do when shocking an entity")
+						.defineInRange("damage", 6D, 0, Integer.MAX_VALUE);
+				builder.pop();
+			}
+			{
+				builder.push("turret");
+				turret_consumption = addPositive(builder, "consumption", 64, "The Flux per tick any turret consumes to monitor the area");
+				turret_chem_consumption = addPositive(builder, "chem_consumption", 32, "The Flux per tick the chemthrower turret consumes to shoot");
+				turret_gun_consumption = addPositive(builder, "gun_consumption", 32, "The Flux per tick the gun turret consumes to shoot");
+				builder.pop();
+			}
+			{
+				builder.push("garden_cloche");
+				cloche_consumption = addPositive(builder, "consumption", 8, "The Flux per tick the cloche consumes to grow plants");
+				cloche_fertilizer = addPositive(builder, "fertilizer", 6000, "The amount of ticks one dose of fertilizer lasts in the cloche");
+				cloche_fluid = addPositive(builder, "fluid", 250, "The amount of fluid the cloche uses per dose of fertilizer");
+				cloche_growth_mod = builder
+						.comment("A modifier to apply to the cloches total growing speed")
+						.defineInRange("growth_modifier", 1, 1e-3, 1e3);
+				cloche_solid_fertilizer_mod = builder
+						.comment("A base-modifier for all solid fertilizers in the cloche")
+						.defineInRange("solid_fertilizer_mod", 1, 1e-3, 1e3);
+				cloche_fluid_fertilizer_mod = builder
+						.comment("A base-modifier for all fluid fertilizers in the cloche")
+						.defineInRange("fluid_fertilizer_mod", 1, 1e-3, 1e3);
+				builder.pop();
+			}
+			{
+				builder.push("lantern");
+				lantern_spawnPrevent = builder
+						.comment("Set this to false to disable the mob-spawn prevention of the Powered Lantern")
+						.worldRestart()
+						.define("spawnPrevent", true);
+				lantern_energyDraw = addPositive(builder, "energyDraw", 1, "How much Flux the powered lantern draws per tick");
+				lantern_maximumStorage = addPositive(builder, "maxStorage", 10, "How much Flux the powered lantern can hold (should be greater than the power draw)");
+				builder.pop();
+			}
+			{
+				builder.push("floodlight");
+				floodlight_spawnPrevent = builder
+						.comment("Set this to false to disable the mob-spawn prevention of the Floodlight")
+						.worldRestart()
+						.define("spawnPrevent", true);
+				floodlight_energyDraw = addPositive(builder, "energyDraw", 5, "How much Flux the floodlight draws per tick");
+				floodlight_maximumStorage = addPositive(builder, "max_storage", 80, "How much Flux the floodlight can hold (must be at least 10x the power draw)");
+				builder.pop();
+			}
 			metalPressConfig = addMachineEnergyTimeModifiers(builder, "metal press");
 			crusherConfig = addMachineEnergyTimeModifiers(builder, "crusher");
 			squeezerConfig = addMachineEnergyTimeModifiers(builder, "squeezer");
 			fermenterConfig = addMachineEnergyTimeModifiers(builder, "fermenter");
 			refineryConfig = addMachineEnergyTimeModifiers(builder, "refinery");
-			arcFurnaceConfig = addMachineEnergyTimeModifiers(builder, "arc furnace");
 			autoWorkbenchConfig = addMachineEnergyTimeModifiers(builder, "auto workbench");
 			bottlingMachineConfig = addMachineEnergyTimeModifiers(builder, "bottling machine");
 			mixerConfig = addMachineEnergyTimeModifiers(builder, "mixer");
-			arcfurnace_electrodeDamage = addPositive(builder, "arcfurnace_electrodeDamage", 96000, "The maximum amount of damage Graphite Electrodes can take. While the furnace is working, electrodes sustain 1 damage per tick, so this is effectively the lifetime in ticks. The default value of 96000 makes them last for 8 consecutive ingame days");
-			arcfurnace_electrodeCrafting = builder
-					.comment("Set this to true to make the blueprint for graphite electrodes craftable in addition to villager/dungeon loot")
-					.define("arcfurnace_electrodeCrafting", false);
-			arcfurnace_recycle = builder
-					.comment("Set this to false to disable the Arc Furnace's recycling of armors and tools")
-					.define("arcfurnace_recycle", true);
+			{
+				arcFurnaceConfig = addMachineEnergyTimeModifiers(builder, "arc furnace", false);
+				arcfurnace_electrodeDamage = addPositive(builder, "electrodeDamage", 96000, "The maximum amount of damage Graphite Electrodes can take. While the furnace is working, electrodes sustain 1 damage per tick, so this is effectively the lifetime in ticks. The default value of 96000 makes them last for 8 consecutive ingame days");
+				arcfurnace_electrodeCrafting = builder
+						.comment("Set this to true to make the blueprint for graphite electrodes craftable in addition to villager/dungeon loot")
+						.define("electrodeCrafting", false);
+				arcfurnace_recycle = builder
+						.comment("Set this to false to disable the Arc Furnace's recycling of armors and tools")
+						.define("recycle", true);
+				builder.pop();
+			}
 
 			assembler_consumption = addPositive(builder, "assembler_consumption", 80, "The Flux the Assembler will consume to craft an item from a recipe");
-			excavator_consumption = addPositive(builder, "excavator_consumption", 4096, "The Flux per tick the Excavator will consume to dig");
-			excavator_speed = builder
-					.comment("The speed of the Excavator. Basically translates to how many degrees per tick it will turn.")
-					.defineInRange("excavator_speed", 1, 1e-3, 1e3);
-			excavator_particles = builder
-					.comment("Set this to false to disable the ridiculous amounts of particles the Excavator spawns")
-					.define("excavator_particles", true);
-			excavator_theshold = builder
-					.comment("The threshold the perlin noise has to cross for a mineral vein to be generated. Higher means less likely.")
-					.defineInRange("excavator_chance", .9, 0, 1);
-			excavator_yield = builder
-					.comment("The maximum amount of yield one can get out of a chunk with the excavator. Set a number smaller than zero to make it infinite")
-					.defineInRange("excavator_yield", 38400, -1, Integer.MAX_VALUE);
-			excavator_initial_depletion = builder
-					.comment("The maximum depletion a vein can start with, as a decimal value. When a vein generates, a random percentage up to this value is depleted from it")
-					.defineInRange("excavator_initial_depletion", .2, 0, 1);
-			excavator_dimBlacklist = builder
-					.comment("List of dimensions that can't contain minerals. Default: The End.")
-					.defineList("excavator_dimBlacklist", ImmutableList.of(DimensionType.THE_END.getRegistryName().toString()),
-							obj -> true);
+			{
+				builder.push("excavator");
+				excavator_consumption = addPositive(builder, "consumption", 4096, "The Flux per tick the Excavator will consume to dig");
+				excavator_speed = builder
+						.comment("The speed of the Excavator. Basically translates to how many degrees per tick it will turn.")
+						.defineInRange("speed", 1, 1e-3, 1e3);
+				excavator_particles = builder
+						.comment("Set this to false to disable the ridiculous amounts of particles the Excavator spawns")
+						.define("particles", true);
+				excavator_theshold = builder
+						.comment("The threshold the perlin noise has to cross for a mineral vein to be generated. Higher means less likely.")
+						.defineInRange("chance", .9, 0, 1);
+				excavator_yield = builder
+						.comment("The maximum amount of yield one can get out of a chunk with the excavator. Set a number smaller than zero to make it infinite")
+						.defineInRange("yield", 38400, -1, Integer.MAX_VALUE);
+				excavator_initial_depletion = builder
+						.comment("The maximum depletion a vein can start with, as a decimal value. When a vein generates, a random percentage up to this value is depleted from it")
+						.defineInRange("initial_depletion", .2, 0, 1);
+				excavator_dimBlacklist = builder
+						.comment("List of dimensions that can't contain minerals. Default: The End.")
+						.defineList("dimBlacklist", ImmutableList.of(DimensionType.THE_END.getRegistryName().toString()),
+								obj -> true);
+				builder.pop();
+			}
 			builder.pop();
 		}
 
 		private MachineRecipeConfig addMachineEnergyTimeModifiers(Builder builder, String machine)
 		{
-			String pathName = machine.toLowerCase(Locale.ENGLISH).replace(' ', '_');
+			return addMachineEnergyTimeModifiers(builder, machine, true);
+		}
+
+		private MachineRecipeConfig addMachineEnergyTimeModifiers(Builder builder, String machine, boolean popCategory)
+		{
+			builder.push(machine.replace(' ', '_'));
 			DoubleValue energy = builder
 					.comment("A modifier to apply to the energy costs of every "+machine+" recipe")
-					.defineInRange(pathName+"_energyModifier", 1, 1e-3, 1e3);
+					.defineInRange("energyModifier", 1, 1e-3, 1e3);
 			DoubleValue time = builder
 					.comment("A modifier to apply to the time of every "+machine+" recipe")
-					.defineInRange(pathName+"_timeModifier", 1, 1e-3, 1e3);
+					.defineInRange("timeModifier", 1, 1e-3, 1e3);
+			if(popCategory)
+				builder.pop();
 			return new MachineRecipeConfig(energy, time);
 		}
 
@@ -528,43 +559,65 @@ public class IEConfig
 			disableHammerCrushing = builder
 					.comment("Set this to true to completely disable the ore-crushing recipes with the Engineers Hammer")
 					.define("disable_hammer_crushing", false);
+			// TODO read too early. Can that be worked around?
 			hammerDurabiliy = addPositive(builder, "hammer_durability", 100, "The maximum durability of the Engineer's Hammer. Used up when hammering ingots into plates.");
 			cutterDurabiliy = addPositive(builder, "cutter_durability", 250, "The maximum durability of the Wirecutter. Used up when cutting plates into wire.");
-			bulletDamage_Casull = addNonNegative(builder, "bulletDamage_casull", 10, "The amount of base damage a Casull Cartridge inflicts");
-			bulletDamage_AP = addNonNegative(builder, "bulletDamage_ap", 10, "The amount of base damage a armor piercing Cartridge inflicts");
-			bulletDamage_Buck = addNonNegative(builder, "bulletDamage_buck", 2, "The amount of base damage a single part of buckshot inflicts");
-			bulletDamage_Dragon = addNonNegative(builder, "bulletDamage_dragon", 3, "The amount of base damage a dragon breath cartridge inflicts");
-			bulletDamage_Homing = addNonNegative(builder, "bulletDamage_homing", 10, "The amount of base damage a homing cartridge inflicts");
-			bulletDamage_Wolfpack = addNonNegative(builder, "bulletDamage_wolfpack", 4, "The amount of base damage a wolfpack cartridge inflicts");
-			bulletDamage_WolfpackPart = addNonNegative(builder, "bulletDamage_wolfpack_part", 8, "The amount of base damage the sub-projectiles of a  wolfpack cartridge inflicts");
-			bulletDamage_Silver = addNonNegative(builder, "bulletDamage_silver", 10, "The amount of damage a silver bullet inflicts");
-			bulletDamage_Potion = addNonNegative(builder, "bulletDamage_phial", 1, "The amount of base damage a phial cartridge inflicts");
+			{
+				builder.push("bullet_damage");
+				bulletDamage_Casull = addNonNegative(builder, "casull", 10, "The amount of base damage a Casull Cartridge inflicts");
+				bulletDamage_AP = addNonNegative(builder, "ap", 10, "The amount of base damage a armor piercing Cartridge inflicts");
+				bulletDamage_Buck = addNonNegative(builder, "buck", 2, "The amount of base damage a single part of buckshot inflicts");
+				bulletDamage_Dragon = addNonNegative(builder, "dragon", 3, "The amount of base damage a dragon breath cartridge inflicts");
+				bulletDamage_Homing = addNonNegative(builder, "homing", 10, "The amount of base damage a homing cartridge inflicts");
+				bulletDamage_Wolfpack = addNonNegative(builder, "wolfpack", 4, "The amount of base damage a wolfpack cartridge inflicts");
+				bulletDamage_WolfpackPart = addNonNegative(builder, "wolfpack_part", 8, "The amount of base damage the sub-projectiles of a  wolfpack cartridge inflicts");
+				bulletDamage_Silver = addNonNegative(builder, "silver", 10, "The amount of damage a silver bullet inflicts");
+				bulletDamage_Potion = addNonNegative(builder, "phial", 1, "The amount of base damage a phial cartridge inflicts");
+				builder.pop();
+			}
 			earDefenders_SoundBlacklist = builder
 					.comment("A list of sounds that should not be muffled by the Ear Defenders. Adding to this list requires knowledge of the correct sound resource names.")
 					.defineList("earDefenders_SoundBlacklist", ImmutableList.of(), obj -> true);
-			chemthrower_consumption = addPositive(builder, "chemthrower_consumption", 10, "The mb of fluid the Chemical Thrower will consume per tick of usage");
-			chemthrower_scroll = builder
-					.comment("Set this to false to disable the use of Sneak+Scroll to switch Chemthrower tanks.")
-					.define("chemthrower_scroll", true);
-			railgun_consumption = addPositive(builder, "railgun_consumption", 800, "The base amount of Flux consumed per shot by the Railgun");
-			railgun_damage = addNonNegative(builder, "railgun_damage_modifier", 1, "A modifier for the damage of all projectiles fired by the Railgun");
-			powerpack_whitelist = builder
-					.comment("A whitelist of armor pieces to allow attaching the capacitor backpack, formatting: [mod id]:[item name]")
-					.defineList("powerpack_whitelist", ImmutableList.of(), obj -> true);
-			powerpack_blacklist = builder
-					.comment("A blacklist of armor pieces to allow attaching the capacitor backpack, formatting: [mod id]:[item name]. Whitelist has priority over this")
-					.defineList("powerpack_blacklist", ImmutableList.of(
-							"embers:ashen_cloak_chest", "ic2:batpack", "ic2:cf_pack", "ic2:energy_pack", "ic2:jetpack", "ic2:jetpack_electric", "ic2:lappack"
-					), obj -> true);
-			toolbox_tools = builder
-					.comment("A whitelist of tools allowed in the toolbox, formatting: [mod id]:[item name]")
-					.defineList("toolbox_tools", ImmutableList.of(), obj -> true);
-			toolbox_foods = builder
-					.comment("A whitelist of foods allowed in the toolbox, formatting: [mod id]:[item name]")
-					.defineList("toolbox_foods", ImmutableList.of(), obj -> true);
-			toolbox_wiring = builder
-					.comment("A whitelist of wire-related allowed in the toolbox, formatting: [mod id]:[item name]")
-					.defineList("toolbox_wiring", ImmutableList.of(), obj -> true);
+			{
+				builder.push("chemthrower");
+				chemthrower_consumption = addPositive(builder, "consumption", 10, "The mb of fluid the Chemical Thrower will consume per tick of usage");
+				chemthrower_scroll = builder
+						.comment("Set this to false to disable the use of Sneak+Scroll to switch Chemthrower tanks.")
+						.define("scroll", true);
+				builder.pop();
+			}
+			{
+				builder.push("railgun");
+				railgun_consumption = addPositive(builder, "consumption", 800, "The base amount of Flux consumed per shot by the Railgun");
+				railgun_damage = addNonNegative(builder, "damage_modifier", 1, "A modifier for the damage of all projectiles fired by the Railgun");
+				builder.pop();
+			}
+			{
+				builder.push("powerpack");
+				powerpack_whitelist = builder
+						.comment("A whitelist of armor pieces to allow attaching the capacitor backpack, formatting: [mod id]:[item name]")
+						.defineList("whitelist", ImmutableList.of(), obj -> true);
+				//TODO update list
+				powerpack_blacklist = builder
+						.comment("A blacklist of armor pieces to allow attaching the capacitor backpack, formatting: [mod id]:[item name]. Whitelist has priority over this")
+						.defineList("blacklist", ImmutableList.of(
+								"embers:ashen_cloak_chest", "ic2:batpack", "ic2:cf_pack", "ic2:energy_pack", "ic2:jetpack", "ic2:jetpack_electric", "ic2:lappack"
+						), obj -> true);
+				builder.pop();
+			}
+			{
+				builder.push("toolbox");
+				toolbox_tools = builder
+						.comment("A whitelist of tools allowed in the toolbox, formatting: [mod id]:[item name]")
+						.defineList("tools", ImmutableList.of(), obj -> true);
+				toolbox_foods = builder
+						.comment("A whitelist of foods allowed in the toolbox, formatting: [mod id]:[item name]")
+						.defineList("foods", ImmutableList.of(), obj -> true);
+				toolbox_wiring = builder
+						.comment("A whitelist of wire-related allowed in the toolbox, formatting: [mod id]:[item name]")
+						.defineList("wiring", ImmutableList.of(), obj -> true);
+				builder.pop();
+			}
 			builder.pop();
 		}
 

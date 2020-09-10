@@ -2378,7 +2378,7 @@ public class Recipes extends RecipeProvider
 				//TODO tag?
 				.key('p', Items.PAPER)
 				.addCriterion("has_"+toPath(Items.PAPER), hasItem(Items.PAPER))
-				.build(buildBlueprint(out, "electrode", new ConditionIEConfig(true, "machines.arcfurnace_electrodeCrafting")),
+				.build(buildBlueprint(out, "electrode", new ConditionIEConfig(true, "machines.arc_furnace.electrodeCrafting")),
 						toRL("blueprint_electrode"));
 	}
 
