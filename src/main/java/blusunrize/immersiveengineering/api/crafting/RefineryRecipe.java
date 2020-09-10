@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.common.IEConfig;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeType;
@@ -40,7 +41,7 @@ public class RefineryRecipe extends MultiblockRecipe
 
 	public RefineryRecipe(ResourceLocation id, FluidStack output, FluidTagInput input0, FluidTagInput input1, int energy)
 	{
-		super(ItemStack.EMPTY, TYPE, id);
+		super(ItemStack.EMPTY, TYPE, id, IEConfig.MACHINES.refineryConfig);
 		this.output = output;
 		this.input0 = input0;
 		this.input1 = input1;

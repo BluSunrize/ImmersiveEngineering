@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
+import blusunrize.immersiveengineering.common.IEConfig.Machines.MachineRecipeConfig;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.Ingredient;
@@ -21,9 +22,12 @@ import java.util.stream.Collectors;
 
 public abstract class MultiblockRecipe extends IESerializableRecipe implements IMultiblockRecipe, IJEIRecipe
 {
-	protected MultiblockRecipe(ItemStack outputDummy, IRecipeType<?> type, ResourceLocation id)
+	private final MachineRecipeConfig machineConfig;
+
+	protected MultiblockRecipe(ItemStack outputDummy, IRecipeType<?> type, ResourceLocation id, MachineRecipeConfig machineConfig)
 	{
 		super(outputDummy, type, id);
+		this.machineConfig = machineConfig;
 	}
 
 	@Override
@@ -84,7 +88,7 @@ public abstract class MultiblockRecipe extends IESerializableRecipe implements I
 	@Override
 	public int getTotalProcessTime()
 	{
-		return this.totalProcessTime;
+		return (int)(this.totalProcessTime*machineConfig.timeModifier.get());
 	}
 
 	int totalProcessEnergy;
@@ -92,7 +96,7 @@ public abstract class MultiblockRecipe extends IESerializableRecipe implements I
 	@Override
 	public int getTotalProcessEnergy()
 	{
-		return this.totalProcessEnergy;
+		return (int)(this.totalProcessEnergy*machineConfig.energyModifier.get());
 	}
 
 }

@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.common.IEConfig;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeType;
@@ -39,7 +40,7 @@ public class MixerRecipe extends MultiblockRecipe
 
 	public MixerRecipe(ResourceLocation id, FluidStack fluidOutput, FluidTagInput fluidInput, IngredientWithSize[] itemInputs, int energy)
 	{
-		super(ItemStack.EMPTY, TYPE, id);
+		super(ItemStack.EMPTY, TYPE, id, IEConfig.MACHINES.mixerConfig);
 		this.fluidOutput = fluidOutput;
 		this.fluidAmount = fluidOutput.getAmount();
 		this.fluidInput = fluidInput;

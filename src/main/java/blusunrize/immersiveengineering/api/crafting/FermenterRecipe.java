@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.util.ListUtils;
 import com.google.common.collect.Lists;
 import net.minecraft.fluid.Fluid;
@@ -41,7 +42,7 @@ public class FermenterRecipe extends MultiblockRecipe
 
 	public FermenterRecipe(ResourceLocation id, FluidStack fluidOutput, @Nonnull ItemStack itemOutput, IngredientWithSize input, int energy)
 	{
-		super(itemOutput, TYPE, id);
+		super(itemOutput, TYPE, id, IEConfig.MACHINES.fermenterConfig);
 		this.fluidOutput = fluidOutput;
 		this.itemOutput = itemOutput;
 		this.input = input;
