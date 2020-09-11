@@ -10,11 +10,12 @@ package blusunrize.immersiveengineering.common;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.wires.WireLogger;
+import blusunrize.immersiveengineering.common.IEConfig.Wires.WireConfig;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
+import blusunrize.immersiveengineering.common.wires.IEWireTypes.IEWireType;
 import com.electronwill.nightconfig.core.Config;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.*;
@@ -26,6 +27,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
 
 import java.lang.reflect.Field;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,22 +78,40 @@ public class IEConfig
 							"when asked to by an IE developer.")
 					.define("validateNets", false);
 			builder.pop();
-			List<Integer> defaultTransferRates = Lists.newArrayList(2048, 8192, 32768, 0, 0, 0);
-			wireTransferRate = builder
-					.comment("The transfer rates in Flux/t for the wire tiers (copper, electrum, HV, Structural Rope, Cable & Redstone (no transfer) )")
-					.define("wireTransferRate", defaultTransferRates, isSameSizeList(defaultTransferRates, i -> i >= 0));
-			List<Double> defaultLossRates = Lists.newArrayList(.05, .025, .025, 1., 1., 1.);
-			wireLossRatio = builder
-					.comment("The percentage of power lost every 16 blocks of distance for the wire tiers (copper, electrum, HV, Structural Rope, Cable & Redstone(no transfer) )")
-					.define("wireLossRatio", defaultLossRates, isSameSizeList(defaultLossRates, d -> d >= 0));
-			List<Integer> defaultColours = Lists.newArrayList(0xb36c3f, 0xeda045, 0x6f6f6f, 0x967e6d, 0x6f6f6f, 0xff2f2f, 0xfaf1de, 0x9d857a);
-			wireColouration = builder
-					.comment("The RGB colourate of the wires.")
-					.define("wireColouration", defaultColours, isSameSizeList(defaultColours));
-			List<Integer> defaultLength = Lists.newArrayList(16, 16, 32, 32, 32, 32);
-			wireLength = builder
-					.comment("\"The maximum length wire can have. Copper and Electrum should be similar, Steel is meant for long range transport, Structural Rope & Cables are purely decorational\"")
-					.define("wireLength", defaultLength, isSameSizeList(defaultLength, i -> i > 0));
+			energyWireConfigs.put(
+					IEWireType.COPPER,
+					new EnergyWireConfig(builder, "copper", 0xb36c3f, 16, 2048, 0.05)
+			);
+			energyWireConfigs.put(
+					IEWireType.ELECTRUM,
+					new EnergyWireConfig(builder, "electrum", 0xeda045, 16, 8192, 0.025)
+			);
+			energyWireConfigs.put(
+					IEWireType.STEEL,
+					new EnergyWireConfig(builder, "hv", 0x6f6f6f, 32, 32768, 0.025)
+			);
+			wireConfigs.put(
+					IEWireType.STRUCTURE_ROPE,
+					new WireConfig(builder, "rope", 0x967e6d, 32)
+			);
+			wireConfigs.put(
+					IEWireType.STRUCTURE_STEEL,
+					new WireConfig(builder, "cable", 0x6f6f6f, 32)
+			);
+			wireConfigs.put(
+					IEWireType.REDSTONE,
+					//TODO 32 or 16 length?
+					new WireConfig(builder, "redstone", 0xff2f2f, 32)
+			);
+			wireConfigs.put(
+					IEWireType.COPPER_INSULATED,
+					new WireConfig(builder, "insulated_copper", 0xfaf1de, 16)
+			);
+			wireConfigs.put(
+					IEWireType.ELECTRUM_INSULATED,
+					new WireConfig(builder, "insulated_electrum", 0x9d857a, 16)
+			);
+			wireConfigs.putAll(energyWireConfigs);
 			enableWireDamage = builder.comment("If this is enabled, wires connected to power sources will cause damage to entities touching them",
 					"This shouldn't cause significant lag but possibly will. If it does, please report it at https://github.com/BluSunrize/ImmersiveEngineering/issues unless there is a report of it already.")
 					.define("enableWireDamage", true);
@@ -103,12 +123,73 @@ public class IEConfig
 		public final BooleanValue sanitizeConnections;
 		public final BooleanValue enableWireLogger;
 		public final BooleanValue validateNet;
-		public final ConfigValue<List<? extends Integer>> wireTransferRate;
-		public final ConfigValue<List<? extends Double>> wireLossRatio;
-		public final ConfigValue<List<? extends Integer>> wireColouration;
-		public final ConfigValue<List<? extends Integer>> wireLength;
 		public final BooleanValue enableWireDamage;
 		public final BooleanValue blocksBreakWires;
+		public final Map<IEWireType, WireConfig> wireConfigs = new EnumMap<>(IEWireType.class);
+		public final Map<IEWireType, EnergyWireConfig> energyWireConfigs = new EnumMap<>(IEWireType.class);
+
+		public static class WireConfig
+		{
+			public final IntValue colorGetter;
+			public final IntValue maxLengthGetter;
+			public int color;
+			public int maxLength;
+
+			protected WireConfig(ForgeConfigSpec.Builder builder, String name, int defColor, int defLength, boolean doPop)
+			{
+				builder.push(name);
+				colorGetter = builder.comment("The RGB color used for "+name+" wires")
+						.defineInRange("color", defColor, Integer.MIN_VALUE, Integer.MAX_VALUE);
+				maxLengthGetter = builder.comment("The maximum length of "+name+" wires")
+						//TODO lower max?
+						.defineInRange("maxLength", defLength, 0, Integer.MAX_VALUE);
+				if(doPop)
+					builder.pop();
+			}
+
+			public WireConfig(ForgeConfigSpec.Builder builder, String name, int defColor, int defLength)
+			{
+				this(builder, name, defColor, defLength, true);
+			}
+
+			void updateCachedValues()
+			{
+				color = colorGetter.get();
+				maxLength = maxLengthGetter.get();
+			}
+		}
+
+		public static class EnergyWireConfig extends WireConfig
+		{
+			public final IntValue transferRateGetter;
+			public final IntValue connectorRateGetter;
+			public final DoubleValue lossRatioGetter;
+			public int transferRate;
+			public int connectorRate;
+			public double lossRatio;
+
+			public EnergyWireConfig(Builder builder, String name, int defColor, int defLength, int defRate, double defLoss)
+			{
+				super(builder, name, defColor, defLength, false);
+				this.transferRateGetter = builder.comment("The transfer rate of "+name+" wire in IF/t")
+						.defineInRange("transferRate", defRate, 0, Integer.MAX_VALUE);
+				this.lossRatioGetter = builder.comment("The percentage of power lost every 16 blocks of distance in "+name+" wire")
+						.defineInRange("loss", defLoss, 0, 1);
+				this.connectorRateGetter = builder
+						.comment("In- and output rates of "+name+" wire connectors. This is independant of the transferrate of the wires.")
+						.defineInRange("wireConnectorInput", defRate/8, 0, Integer.MAX_VALUE);
+				builder.pop();
+			}
+
+			@Override
+			void updateCachedValues()
+			{
+				super.updateCachedValues();
+				transferRate = transferRateGetter.get();
+				lossRatio = lossRatioGetter.get();
+				connectorRate = connectorRateGetter.get();
+			}
+		}
 	}
 
 	public static class General
@@ -185,10 +266,6 @@ public class IEConfig
 		Machines(ForgeConfigSpec.Builder builder)
 		{
 			builder.push("machines");
-			List<Integer> defaultConnectorIO = ImmutableList.of(256, 1024, 4096);
-			wireConnectorInput = builder
-					.comment("In- and output rates of LV,MV and HV Wire Conenctors. This is independant of the transferrate of the wires.")
-					.define("wireConnectorInput", defaultConnectorIO, isSameSizeList(defaultConnectorIO, i -> i >= 0));
 			{
 				builder.push("capacitors");
 				IntValue[] temp = addCapacitorConfig(builder, "low", 100000, 256, 256);
@@ -388,8 +465,6 @@ public class IEConfig
 			return ret;
 		}
 
-		//Connectors TODO move to Wires?
-		public final ConfigValue<List<? extends Integer>> wireConnectorInput;
 		//Capacitors
 		public final IntValue capacitorLvStorage;
 		public final IntValue capacitorLvInput;
@@ -700,15 +775,6 @@ public class IEConfig
 		return rawConfig;
 	}
 
-	private static double[] toDoubleArray(ConfigValue<List<? extends Double>> in)
-	{
-		Double[] temp = in.get().toArray(new Double[0]);
-		double[] ret = new double[temp.length];
-		for(int i = 0; i < temp.length; ++i)
-			ret[i] = temp[i];
-		return ret;
-	}
-
 	private static int[] toIntArray(ConfigValue<List<? extends Integer>> in)
 	{
 		Integer[] temp = in.get().toArray(new Integer[0]);
@@ -721,9 +787,7 @@ public class IEConfig
 	@SubscribeEvent
 	public static void onConfigReload(ModConfig.Reloading ev)
 	{
-		CACHED.wireLossRatio = toDoubleArray(WIRES.wireLossRatio);
-		CACHED.wireTransferRate = toIntArray(WIRES.wireTransferRate);
-		CACHED.connectorInputRates = toIntArray(MACHINES.wireConnectorInput);
+		WIRES.wireConfigs.values().forEach(WireConfig::updateCachedValues);
 		CACHED.blocksBreakWires = WIRES.blocksBreakWires.get();
 		CACHED.wireDamage = WIRES.enableWireDamage.get();
 		Level wireLoggerLevel;
@@ -748,11 +812,8 @@ public class IEConfig
 
 	public static class CachedConfigValues
 	{
-		public double[] wireLossRatio;
-		public int[] wireTransferRate;
 		public boolean blocksBreakWires;
 		public boolean wireDamage;
-		public int[] connectorInputRates;
 		public boolean badEyesight;
 	}
 }

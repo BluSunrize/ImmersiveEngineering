@@ -15,6 +15,8 @@ import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler.IEnergyWire;
 import blusunrize.immersiveengineering.api.wires.localhandlers.WireDamageHandler;
 import blusunrize.immersiveengineering.api.wires.localhandlers.WireDamageHandler.IShockingWire;
+import blusunrize.immersiveengineering.common.IEConfig.Wires.EnergyWireConfig;
+import blusunrize.immersiveengineering.common.IEConfig.Wires.WireConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Connectors;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import com.google.common.collect.ImmutableList;
@@ -33,13 +35,10 @@ import java.util.Collection;
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 import static blusunrize.immersiveengineering.api.wires.WireApi.registerFeedthroughForWiretype;
 import static blusunrize.immersiveengineering.api.wires.WireType.*;
-import static blusunrize.immersiveengineering.common.IEConfig.CACHED;
 import static blusunrize.immersiveengineering.common.IEConfig.WIRES;
 
 public class IEWireTypes
 {
-	public static String[] uniqueNames = {"COPPER", "ELECTRUM", "STEEL", "STRUCTURE_ROPE", "STRUCTURE_STEEL", "REDSTONE",
-			"COPPER_INS", "ELECTRUM_INS"};
 	public static double[] renderDiameter = {.03125, .03125, .0625, .0625, .0625, .03125};
 	public static ShockingWire COPPER;
 	public static ShockingWire ELECTRUM;
@@ -53,14 +52,14 @@ public class IEWireTypes
 
 	public static void modConstruction()
 	{
-		WireType.COPPER = COPPER = new ShockingWire(0);
-		WireType.ELECTRUM = ELECTRUM = new ShockingWire(1);
-		WireType.STEEL = STEEL = new ShockingWire(2);
-		WireType.STRUCTURE_ROPE = STRUCTURE_ROPE = new BasicWire(3);
-		WireType.STRUCTURE_STEEL = STRUCTURE_STEEL = new BasicWire(4);
-		WireType.REDSTONE = REDSTONE = new BasicWire(5);
-		WireType.COPPER_INSULATED = COPPER_INSULATED = new EnergyWire(6);
-		WireType.ELECTRUM_INSULATED = ELECTRUM_INSULATED = new EnergyWire(7);
+		WireType.COPPER = COPPER = new ShockingWire(IEWireType.COPPER);
+		WireType.ELECTRUM = ELECTRUM = new ShockingWire(IEWireType.ELECTRUM);
+		WireType.STEEL = STEEL = new ShockingWire(IEWireType.STEEL);
+		WireType.STRUCTURE_ROPE = STRUCTURE_ROPE = new BasicWire(IEWireType.STRUCTURE_ROPE);
+		WireType.STRUCTURE_STEEL = STRUCTURE_STEEL = new BasicWire(IEWireType.STRUCTURE_STEEL);
+		WireType.REDSTONE = REDSTONE = new BasicWire(IEWireType.REDSTONE);
+		WireType.COPPER_INSULATED = COPPER_INSULATED = new EnergyWire(IEWireType.COPPER_INSULATED);
+		WireType.ELECTRUM_INSULATED = ELECTRUM_INSULATED = new EnergyWire(IEWireType.ELECTRUM_INSULATED);
 		WireType.INTERNAL_CONNECTION = INTERNAL_CONNECTION = new InternalConnection();
 	}
 
@@ -81,21 +80,46 @@ public class IEWireTypes
 		);
 	}
 
+	public enum IEWireType
+	{
+		COPPER("COPPER", null),
+		ELECTRUM("ELECTRUM", null),
+		STEEL("STEEL", null),
+		STRUCTURE_ROPE("STRUCTURE_ROPE", null),
+		STRUCTURE_STEEL("STRUCTURE_STEEL", null),
+		REDSTONE("REDSTONE", null),
+		COPPER_INSULATED("COPPER_INS", COPPER),
+		ELECTRUM_INSULATED("ELECTRUM_INS", ELECTRUM);
+		public final String uniqueName;
+		public final IEWireType energyBaseType;
+
+		IEWireType(String name, @Nullable IEWireType base)
+		{
+			this.uniqueName = name;
+			if(base!=null)
+				this.energyBaseType = base;
+			else
+				this.energyBaseType = this;
+		}
+	}
+
 	private static class BasicWire extends WireType
 	{
-		final int ordinal;
+		final IEWireType type;
+		final WireConfig config;
 
-		public BasicWire(int ordinal)
+		public BasicWire(IEWireType type)
 		{
 			super();
-			this.ordinal = ordinal;
+			this.type = type;
 			WireApi.registerWireType(this);
+			this.config = WIRES.wireConfigs.get(type);
 		}
 
 		@Override
 		public int getColour(Connection connection)
 		{
-			return WIRES.wireColouration.get().get(ordinal);
+			return config.color;
 		}
 
 		@Override
@@ -114,7 +138,7 @@ public class IEWireTypes
 		@Override
 		public int getMaxLength()
 		{
-			return WIRES.wireLength.get().get(ordinal%6);
+			return config.maxLength;
 		}
 
 		@Override
@@ -126,36 +150,36 @@ public class IEWireTypes
 		@Override
 		public String getUniqueName()
 		{
-			return uniqueNames[ordinal];
+			return type.uniqueName;
 		}
 
 		@Override
 		public double getRenderDiameter()
 		{
-			return renderDiameter[ordinal%6];
+			return renderDiameter[type.ordinal()%6];
 		}
 
 		@Nonnull
 		@Override
 		public String getCategory()
 		{
-			switch(ordinal)
+			switch(type)
 			{
-				case 0:
-				case 6:
+				case COPPER:
+				case COPPER_INSULATED:
 					return LV_CATEGORY;
-				case 1:
-				case 7:
+				case ELECTRUM:
+				case ELECTRUM_INSULATED:
 					return MV_CATEGORY;
-				case 2:
+				case STEEL:
 					return HV_CATEGORY;
-				case 3:
-				case 4:
+				case STRUCTURE_ROPE:
+				case STRUCTURE_STEEL:
 					return STRUCTURE_CATEGORY;
-				case 5:
+				case REDSTONE:
 					return REDSTONE_CATEGORY;
 				default:
-					throw new IllegalStateException("Ordinal "+ordinal+" is not valid");
+					throw new IllegalStateException("Ordinal "+type+" is not valid");
 			}
 		}
 
@@ -168,21 +192,23 @@ public class IEWireTypes
 
 	private static class EnergyWire extends BasicWire implements IEnergyWire
 	{
+		private final EnergyWireConfig config;
 
-		public EnergyWire(int ordinal)
+		public EnergyWire(IEWireType type)
 		{
-			super(ordinal);
+			super(type);
+			this.config = WIRES.energyWireConfigs.get(type.energyBaseType);
 		}
 
 		public double getLossRatio()
 		{
-			return Math.abs(CACHED.wireLossRatio[ordinal%6]);
+			return config.lossRatio;
 		}
 
 		@Override
 		public int getTransferRate()
 		{
-			return Math.abs(CACHED.wireTransferRate[ordinal%6]);
+			return config.transferRate;
 		}
 
 		@Override
@@ -203,11 +229,11 @@ public class IEWireTypes
 	{
 		private final IElectricEquipment.ElectricSource eSource;
 
-		public ShockingWire(int ordinal)
+		public ShockingWire(IEWireType type)
 		{
-			super(ordinal);
+			super(type);
 			if(getDamageRadius() > 0)
-				eSource = new IElectricEquipment.ElectricSource(.5F*(1+ordinal));
+				eSource = new IElectricEquipment.ElectricSource(.5F*(1+type.ordinal()));
 			else
 				eSource = new IElectricEquipment.ElectricSource(-1);
 		}
@@ -215,13 +241,13 @@ public class IEWireTypes
 		@Override
 		public double getDamageRadius()
 		{
-			switch(ordinal)
+			switch(type)
 			{
-				case 0://LV
+				case COPPER://LV
 					return .05;
-				case 1://MV
+				case ELECTRUM://MV
 					return .1;
-				case 2://HV
+				case STEEL://HV
 					return .3;
 			}
 			return 0;
