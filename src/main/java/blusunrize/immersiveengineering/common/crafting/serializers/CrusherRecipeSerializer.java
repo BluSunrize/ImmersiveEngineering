@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.crafting.serializers;
 import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.StackWithChance;
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -21,6 +22,7 @@ import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.crafting.CraftingHelper;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class CrusherRecipeSerializer extends IERecipeSerializer<CrusherRecipe>
@@ -38,7 +40,7 @@ public class CrusherRecipeSerializer extends IERecipeSerializer<CrusherRecipe>
 		Ingredient input = Ingredient.deserialize(JSONUtils.getJsonObject(json, "input"));
 		JsonArray array = json.getAsJsonArray("secondaries");
 		int energy = JSONUtils.getInt(json, "energy");
-		CrusherRecipe recipe = new CrusherRecipe(recipeId, output, input, energy);
+		CrusherRecipe recipe = IEConfig.MACHINES.crusherConfig.apply(new CrusherRecipe(recipeId, output, input, energy));
 		for(int i = 0; i < array.size(); i++)
 		{
 			JsonObject element = array.get(i).getAsJsonObject();
@@ -54,7 +56,7 @@ public class CrusherRecipeSerializer extends IERecipeSerializer<CrusherRecipe>
 
 	@Nullable
 	@Override
-	public CrusherRecipe read(ResourceLocation recipeId, PacketBuffer buffer)
+	public CrusherRecipe read(@Nonnull ResourceLocation recipeId, PacketBuffer buffer)
 	{
 		ItemStack output = buffer.readItemStack();
 		Ingredient input = Ingredient.read(buffer);

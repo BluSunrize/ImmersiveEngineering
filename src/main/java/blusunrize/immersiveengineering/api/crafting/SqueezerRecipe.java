@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.util.ListUtils;
 import com.google.common.collect.Lists;
 import net.minecraft.fluid.Fluid;
@@ -32,9 +31,6 @@ public class SqueezerRecipe extends MultiblockRecipe
 	public static IRecipeType<SqueezerRecipe> TYPE = IRecipeType.register(Lib.MODID+":squeezer");
 	public static RegistryObject<IERecipeSerializer<SqueezerRecipe>> SERIALIZER;
 
-	public static float energyModifier = 1;
-	public static float timeModifier = 1;
-
 	public IngredientWithSize input;
 	public final FluidStack fluidOutput;
 	@Nonnull
@@ -42,12 +38,12 @@ public class SqueezerRecipe extends MultiblockRecipe
 
 	public SqueezerRecipe(ResourceLocation id, FluidStack fluidOutput, @Nonnull ItemStack itemOutput, IngredientWithSize input, int energy)
 	{
-		super(itemOutput, TYPE, id, IEConfig.MACHINES.squeezerConfig);
+		super(itemOutput, TYPE, id);
 		this.fluidOutput = fluidOutput;
 		this.itemOutput = itemOutput;
 		this.input = input;
-		this.totalProcessEnergy = (int)Math.floor(energy*energyModifier);
-		this.totalProcessTime = (int)Math.floor(80*timeModifier);
+		this.totalProcessEnergy = energy;
+		this.totalProcessTime = 80;
 
 		setInputListWithSizes(Lists.newArrayList(this.input));
 		this.fluidOutputList = Lists.newArrayList(this.fluidOutput);

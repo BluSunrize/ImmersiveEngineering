@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.api.wires.WireLogger;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import com.electronwill.nightconfig.core.Config;
@@ -325,7 +326,7 @@ public class IEConfig
 			builder.pop();
 		}
 
-		private MachineRecipeConfig addMachineEnergyTimeModifiers(Builder builder, String machine)
+		private <T extends MultiblockRecipe> MachineRecipeConfig<T> addMachineEnergyTimeModifiers(Builder builder, String machine)
 		{
 			String pathName = machine.toLowerCase(Locale.ENGLISH).replace(' ', '_');
 			DoubleValue energy = builder
@@ -334,7 +335,7 @@ public class IEConfig
 			DoubleValue time = builder
 					.comment("A modifier to apply to the time of every "+machine+" recipe")
 					.defineInRange(pathName+"_timeModifier", 1, 1e-3, 1e3);
-			return new MachineRecipeConfig(energy, time);
+			return new MachineRecipeConfig<>(energy, time);
 		}
 
 		private IntValue[] addCapacitorConfig(ForgeConfigSpec.Builder builder, String voltage, int defaultStorage, int defaultInput, int defaultOutput)
@@ -410,18 +411,18 @@ public class IEConfig
 
 
 		//Multiblock Recipes
-		public final MachineRecipeConfig metalPressConfig;
-		public final MachineRecipeConfig crusherConfig;
-		public final MachineRecipeConfig squeezerConfig;
-		public final MachineRecipeConfig fermenterConfig;
-		public final MachineRecipeConfig refineryConfig;
-		public final MachineRecipeConfig arcFurnaceConfig;
+		public final MachineRecipeConfig<MetalPressRecipe> metalPressConfig;
+		public final MachineRecipeConfig<CrusherRecipe> crusherConfig;
+		public final MachineRecipeConfig<SqueezerRecipe> squeezerConfig;
+		public final MachineRecipeConfig<FermenterRecipe> fermenterConfig;
+		public final MachineRecipeConfig<RefineryRecipe> refineryConfig;
+		public final MachineRecipeConfig<ArcFurnaceRecipe> arcFurnaceConfig;
 		public final IntValue arcfurnace_electrodeDamage;
 		public final BooleanValue arcfurnace_electrodeCrafting;
 		public final BooleanValue arcfurnace_recycle;
-		public final MachineRecipeConfig autoWorkbenchConfig;
-		public final MachineRecipeConfig bottlingMachineConfig;
-		public final MachineRecipeConfig mixerConfig;
+		public final MachineRecipeConfig<BlueprintCraftingRecipe> autoWorkbenchConfig;
+		public final MachineRecipeConfig<BottlingMachineRecipe> bottlingMachineConfig;
+		public final MachineRecipeConfig<MixerRecipe> mixerConfig;
 
 		//Other Multiblock machines
 		public final IntValue assembler_consumption;
@@ -433,7 +434,7 @@ public class IEConfig
 		public final DoubleValue excavator_initial_depletion;
 		public final ConfigValue<List<? extends String>> excavator_dimBlacklist;
 
-		public static class MachineRecipeConfig
+		public static class MachineRecipeConfig<T extends MultiblockRecipe>
 		{
 			public final DoubleValue energyModifier;
 			public final DoubleValue timeModifier;
@@ -442,6 +443,12 @@ public class IEConfig
 			{
 				this.energyModifier = energyModifier;
 				this.timeModifier = timeModifier;
+			}
+
+			public T apply(T recipe)
+			{
+				recipe.modifyTimeAndEnergy(timeModifier.get(), energyModifier.get());
+				return recipe;
 			}
 		}
 	}

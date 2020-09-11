@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.RefineryRecipe;
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
@@ -37,7 +38,7 @@ public class RefineryRecipeSerializer extends IERecipeSerializer<RefineryRecipe>
 		FluidTagInput input0 = FluidTagInput.deserialize(JSONUtils.getJsonObject(json, "input0"));
 		FluidTagInput input1 = FluidTagInput.deserialize(JSONUtils.getJsonObject(json, "input1"));
 		int energy = JSONUtils.getInt(json, "energy");
-		return new RefineryRecipe(recipeId, output, input0, input1, energy);
+		return IEConfig.MACHINES.refineryConfig.apply(new RefineryRecipe(recipeId, output, input0, input1, energy));
 	}
 
 	@Nullable

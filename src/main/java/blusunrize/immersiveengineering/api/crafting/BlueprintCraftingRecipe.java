@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.utils.ItemUtils;
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.ListUtils;
@@ -39,9 +38,6 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 	public static IRecipeType<BlueprintCraftingRecipe> TYPE = IRecipeType.register(Lib.MODID+":blueprint");
 	public static RegistryObject<IERecipeSerializer<BlueprintCraftingRecipe>> SERIALIZER;
 
-	public static float energyModifier = 1;
-	public static float timeModifier = 1;
-
 	@Nonnull
 	public static Set<String> recipeCategories = new TreeSet<>();
 	// Initialized by reload listener
@@ -54,7 +50,7 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 
 	public BlueprintCraftingRecipe(ResourceLocation id, String blueprintCategory, ItemStack output, IngredientWithSize[] inputs)
 	{
-		super(output, TYPE, id, IEConfig.MACHINES.autoWorkbenchConfig);
+		super(output, TYPE, id);
 		this.blueprintCategory = blueprintCategory;
 		this.output = output;
 		this.inputs = inputs;
@@ -63,8 +59,8 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 		this.outputList = ListUtils.fromItem(this.output);
 
 		//Time and energy values are for the automatic workbench
-		this.totalProcessEnergy = (int)Math.floor(23040*energyModifier);
-		this.totalProcessTime = (int)Math.floor(180*timeModifier);
+		this.totalProcessEnergy = 23040;
+		this.totalProcessTime = 180;
 	}
 
 	@Override

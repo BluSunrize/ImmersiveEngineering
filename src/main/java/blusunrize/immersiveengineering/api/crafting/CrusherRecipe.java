@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.util.ListUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.base.Preconditions;
@@ -37,21 +36,17 @@ public class CrusherRecipe extends MultiblockRecipe
 	public static IRecipeType<CrusherRecipe> TYPE = IRecipeType.register(Lib.MODID+":crusher");
 	public static RegistryObject<IERecipeSerializer<CrusherRecipe>> SERIALIZER;
 
-	//TODO remove?
-	public static float energyModifier = 1;
-	public static float timeModifier = 1;
-
 	public final Ingredient input;
 	public final ItemStack output;
 	public final List<StackWithChance> secondaryOutputs = new ArrayList<>();
 
 	public CrusherRecipe(ResourceLocation id, ItemStack output, Ingredient input, int energy)
 	{
-		super(output, TYPE, id, IEConfig.MACHINES.crusherConfig);
+		super(output, TYPE, id);
 		this.output = output;
 		this.input = input;
-		this.totalProcessEnergy = (int)Math.floor(energy*energyModifier);
-		this.totalProcessTime = (int)Math.floor(50*timeModifier);
+		this.totalProcessEnergy = energy;
+		this.totalProcessTime = 50;
 
 		setInputList(Lists.newArrayList(this.input));
 		this.outputList = ListUtils.fromItem(this.output);
