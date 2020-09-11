@@ -41,15 +41,16 @@ public class IESaveData extends WorldSavedData
 	public void read(CompoundNBT nbt)
 	{
 		ListNBT dimensionList = nbt.getList("mineralVeins", NBT.TAG_COMPOUND);
-		ExcavatorHandler.getMineralVeinList().clear();
-		for(int i = 0; i < dimensionList.size(); i++)
+		synchronized(ExcavatorHandler.getMineralVeinList())
 		{
-			CompoundNBT dimTag = dimensionList.getCompound(i);
-			ResourceLocation rl = new ResourceLocation(dimTag.getString("dimension"));
-			RegistryKey<World> dimensionType = RegistryKey.func_240903_a_(Registry.WORLD_KEY, rl);
-			ListNBT mineralList = dimTag.getList("veins", NBT.TAG_COMPOUND);
-			synchronized(ExcavatorHandler.getMineralVeinList())
+			ExcavatorHandler.getMineralVeinList().clear();
+			for(int i = 0; i < dimensionList.size(); i++)
 			{
+				CompoundNBT dimTag = dimensionList.getCompound(i);
+				ResourceLocation rl = new ResourceLocation(dimTag.getString("dimension"));
+				RegistryKey<World> dimensionType = RegistryKey.func_240903_a_(Registry.WORLD_KEY, rl);
+			ListNBT mineralList = dimTag.getList("veins", NBT.TAG_COMPOUND);
+
 				ExcavatorHandler.getMineralVeinList().
 						putAll(dimensionType, mineralList.stream()
 								.map(inbt -> MineralVein.readFromNBT((CompoundNBT)inbt))
@@ -99,18 +100,18 @@ public class IESaveData extends WorldSavedData
 	public CompoundNBT write(@Nonnull CompoundNBT nbt)
 	{
 		ListNBT dimensionList = new ListNBT();
-		for(RegistryKey<World> dimension : ExcavatorHandler.getMineralVeinList().keySet())
+		synchronized(ExcavatorHandler.getMineralVeinList())
 		{
-			CompoundNBT dimTag = new CompoundNBT();
-			dimTag.putString("dimension", dimension.func_240901_a_().toString());
-			ListNBT mineralList = new ListNBT();
-			synchronized(ExcavatorHandler.getMineralVeinList())
+			for(RegistryKey<World> dimension : ExcavatorHandler.getMineralVeinList().keySet())
 			{
+				CompoundNBT dimTag = new CompoundNBT();
+				dimTag.putString("dimension", dimension.func_240901_a_().toString());
+				ListNBT mineralList = new ListNBT();
 				for(MineralVein mineralVein : ExcavatorHandler.getMineralVeinList().get(dimension))
 					mineralList.add(mineralVein.writeToNBT());
+				dimTag.put("veins", mineralList);
+				dimensionList.add(dimTag);
 			}
-			dimTag.put("veins", mineralList);
-			dimensionList.add(dimTag);
 		}
 		nbt.put("mineralVeins", dimensionList);
 

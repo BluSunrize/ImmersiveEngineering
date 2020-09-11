@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.crafting.serializers;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -51,7 +52,9 @@ public class ArcFurnaceRecipeSerializer extends IERecipeSerializer<ArcFurnaceRec
 
 		int time = JSONUtils.getInt(json, "time");
 		int energy = JSONUtils.getInt(json, "energy");
-		return new ArcFurnaceRecipe(recipeId, outputs, input, slag, time, energy, ingredients);
+		return IEConfig.MACHINES.arcFurnaceConfig.apply(
+				new ArcFurnaceRecipe(recipeId, outputs, input, slag, time, energy, ingredients)
+		);
 	}
 
 	@Nullable

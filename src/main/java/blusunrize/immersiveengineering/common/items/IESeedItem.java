@@ -14,6 +14,9 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ComposterBlock;
 import net.minecraft.item.BlockItem;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraftforge.common.IPlantable;
@@ -32,6 +35,13 @@ public class IESeedItem extends BlockItem implements IPlantable
 		DeferredWorkQueue.runLater(
 				() -> ComposterBlock.CHANCES.putIfAbsent(this, 0.3f)
 		);
+	}
+
+	@Override
+	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items)
+	{
+		if(this.isInGroup(group))
+			items.add(new ItemStack(this));
 	}
 
 	@Override

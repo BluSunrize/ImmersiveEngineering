@@ -19,8 +19,8 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteract
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.BasicConveyor;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
+import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import com.google.common.collect.ImmutableSet;
@@ -99,7 +99,7 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 		if(isDummy()||isRSDisabled()||world.isRemote||world.getGameTime()%16!=((getPos().getX()^getPos().getZ())&15)||inventory.get(0).isEmpty())
 			return;
 
-		BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(ItemNBTHelper.getString(inventory.get(0), "blueprint"));
+		BlueprintCraftingRecipe[] recipes = EngineersBlueprintItem.getRecipes(inventory.get(0));
 		if(recipes.length > 0&&(this.selectedRecipe >= 0&&this.selectedRecipe < recipes.length))
 		{
 			BlueprintCraftingRecipe recipe = recipes[this.selectedRecipe];

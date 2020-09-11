@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.FermenterRecipe;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
@@ -41,7 +42,9 @@ public class FermenterRecipeSerializer extends IERecipeSerializer<FermenterRecip
 			itemOutput = readOutput(json.get("result"));
 		IngredientWithSize input = IngredientWithSize.deserialize(json.get("input"));
 		int energy = JSONUtils.getInt(json, "energy");
-		return new FermenterRecipe(recipeId, fluidOutput, itemOutput, input, energy);
+		return IEConfig.MACHINES.fermenterConfig.apply(
+				new FermenterRecipe(recipeId, fluidOutput, itemOutput, input, energy)
+		);
 	}
 
 	@Nullable

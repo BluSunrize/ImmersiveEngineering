@@ -46,9 +46,8 @@ public class EngineersBlueprintItem extends IEBaseItem
 	@OnlyIn(Dist.CLIENT)
 	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
 	{
-		String key = ItemNBTHelper.getString(stack, "blueprint");
+		String key = getCategory(stack);
 		if(!key.isEmpty()
-				&&BlueprintCraftingRecipe.recipeCategories!=null
 				&&BlueprintCraftingRecipe.recipeCategories.contains(key))
 		{
 			String formatKey = Lib.DESC_INFO+"blueprint."+key;
@@ -74,7 +73,7 @@ public class EngineersBlueprintItem extends IEBaseItem
 	@Override
 	public void fillItemGroup(ItemGroup tab, NonNullList<ItemStack> list)
 	{
-		if(this.isInGroup(tab) && BlueprintCraftingRecipe.recipeCategories!=null)
+		if(this.isInGroup(tab))
 			for(String key : BlueprintCraftingRecipe.recipeCategories)
 			{
 				ItemStack stack = new ItemStack(this);
@@ -84,8 +83,13 @@ public class EngineersBlueprintItem extends IEBaseItem
 	}
 
 	@Nonnull
-	public BlueprintCraftingRecipe[] getRecipes(ItemStack stack)
+	public static BlueprintCraftingRecipe[] getRecipes(ItemStack stack)
 	{
-		return BlueprintCraftingRecipe.findRecipes(ItemNBTHelper.getString(stack, "blueprint"));
+		return BlueprintCraftingRecipe.findRecipes(getCategory(stack));
+	}
+
+	public static String getCategory(ItemStack stack)
+	{
+		return ItemNBTHelper.getString(stack, "blueprint");
 	}
 }

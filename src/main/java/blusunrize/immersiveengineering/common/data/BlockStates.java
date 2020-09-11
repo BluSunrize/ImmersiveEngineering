@@ -508,19 +508,13 @@ public class BlockStates extends BlockStateProvider
 				MetalDevices.cloche,
 				splitIEOBJ("block/metal_device/cloche.obj.ie", COLUMN_THREE)
 		);
-		createMultiblock(
-				MetalDevices.turretChem,
-				splitIEOBJ("block/metal_device/chem_turret.obj.ie", COLUMN_TWO)
-		);
-		createMultiblock(
-				MetalDevices.turretGun,
-				splitIEOBJ("block/metal_device/gun_turret.obj.ie", COLUMN_TWO)
-		);
+		turret(MetalDevices.turretChem, ieObj("block/metal_device/chem_turret.obj.ie"));
+		turret(MetalDevices.turretGun, ieObj("block/metal_device/gun_turret.obj.ie"));
 		createMultiblock(
 				MetalDevices.teslaCoil,
 				splitOBJ("block/metal_device/teslacoil.obj",
-                    ImmutableList.of(BlockPos.ZERO, new BlockPos(0, 0, -1))
-                ),
+						ImmutableList.of(BlockPos.ZERO, new BlockPos(0, 0, -1))
+				),
 				null, IEProperties.FACING_ALL, null,
 				180);
 		for(Entry<EnumMetals, Block> chute : MetalDevices.chutes.entrySet())
@@ -746,6 +740,21 @@ public class BlockStates extends BlockStateProvider
 				IEProperties.FACING_HORIZONTAL, ImmutableList.of());
 
 		loadedModels.backupModels();
+	}
+
+	public void turret(Block b, ModelFile masterModel)
+	{
+		createRotatedBlock(
+				b,
+				s -> {
+					if(s.getSetStates().get(IEProperties.MULTIBLOCKSLAVE)==Boolean.TRUE)
+						return EMPTY_MODEL.model;
+					else
+						return masterModel;
+				},
+				IEProperties.FACING_HORIZONTAL,
+				ImmutableList.of(IEProperties.MULTIBLOCKSLAVE)
+		);
 	}
 
 	public void fenceBlock(FenceBlock b, ResourceLocation texture)

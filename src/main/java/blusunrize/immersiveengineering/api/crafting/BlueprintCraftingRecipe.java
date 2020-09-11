@@ -22,6 +22,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.items.ItemHandlerHelper;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
@@ -37,12 +38,10 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 	public static IRecipeType<BlueprintCraftingRecipe> TYPE = IRecipeType.register(Lib.MODID+":blueprint");
 	public static RegistryObject<IERecipeSerializer<BlueprintCraftingRecipe>> SERIALIZER;
 
-	public static float energyModifier = 1;
-	public static float timeModifier = 1;
-
+	@Nonnull
+	public static Set<String> recipeCategories = new TreeSet<>();
 	// Initialized by reload listener
 	public static Map<ResourceLocation, BlueprintCraftingRecipe> recipeList = Collections.emptyMap();
-	public static Set<String> recipeCategories = Collections.emptySet();
 	private static Map<String, List<BlueprintCraftingRecipe>> recipesByCategory = Collections.emptyMap();
 
 	public String blueprintCategory;
@@ -60,8 +59,8 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 		this.outputList = ListUtils.fromItem(this.output);
 
 		//Time and energy values are for the automatic workbench
-		this.totalProcessEnergy = (int)Math.floor(23040*energyModifier);
-		this.totalProcessTime = (int)Math.floor(180*timeModifier);
+		this.totalProcessEnergy = 23040;
+		this.totalProcessTime = 180;
 	}
 
 	@Override
@@ -181,13 +180,31 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 		recipesByCategory = recipeList.values().stream()
 				.collect(Collectors.groupingBy(r -> r.blueprintCategory));
 		for(Entry<String, List<BlueprintCraftingRecipe>> e : recipesByCategory.entrySet())
+		{
+
+			if(!recipeCategories.contains(e.getKey()))
+				throw new RuntimeException(
+						"Recipe category "+e.getKey()+" was not registered during startup or in the IE config, but has recipes "+e.getValue().stream()
+								.map(r -> r.getId().toString())
+								.collect(Collectors.joining(", "))
+				);
 			e.getValue().sort(Comparator.comparing(BlueprintCraftingRecipe::getId));
-		recipeCategories = recipesByCategory.keySet();
+		}
 	}
 
 	@Override
 	public int getMultipleProcessTicks()
 	{
 		return 0;
+	}
+
+	public static void registerDefaultCategories()
+	{
+		recipeCategories.add("components");
+		recipeCategories.add("molds");
+		recipeCategories.add("bullet");
+		recipeCategories.add("specialBullet");
+		recipeCategories.add("electrode");
+		recipeCategories.add("bannerpatterns");
 	}
 }

@@ -31,9 +31,6 @@ public class MetalPressRecipe extends MultiblockRecipe
 	public static IRecipeType<MetalPressRecipe> TYPE = IRecipeType.register(Lib.MODID+":metal_press");
 	public static RegistryObject<IERecipeSerializer<MetalPressRecipe>> SERIALIZER;
 
-	public static float energyModifier = 1;
-	public static float timeModifier = 1;
-
 	public IngredientWithSize input;
 	public final ComparableItemStack mold;
 	public final ItemStack output;
@@ -44,8 +41,8 @@ public class MetalPressRecipe extends MultiblockRecipe
 		this.output = output;
 		this.input = input;
 		this.mold = mold;
-		this.totalProcessEnergy = (int)Math.floor(energy*energyModifier);
-		this.totalProcessTime = (int)Math.floor(120*timeModifier);
+		this.totalProcessEnergy = energy;
+		this.totalProcessTime = 120;
 
 		setInputListWithSizes(Lists.newArrayList(this.input));
 		this.outputList = ListUtils.fromItem(this.output);
