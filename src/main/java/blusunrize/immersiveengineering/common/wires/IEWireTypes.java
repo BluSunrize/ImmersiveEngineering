@@ -15,9 +15,10 @@ import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler.IEnergyWire;
 import blusunrize.immersiveengineering.api.wires.localhandlers.WireDamageHandler;
 import blusunrize.immersiveengineering.api.wires.localhandlers.WireDamageHandler.IShockingWire;
-import blusunrize.immersiveengineering.common.IEConfig.Wires.EnergyWireConfig;
-import blusunrize.immersiveengineering.common.IEConfig.Wires.WireConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Connectors;
+import blusunrize.immersiveengineering.common.config.IEClientConfig;
+import blusunrize.immersiveengineering.common.config.IEServerConfig.Wires.EnergyWireConfig;
+import blusunrize.immersiveengineering.common.config.IEServerConfig.Wires.WireConfig;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -27,6 +28,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.ForgeConfigSpec.IntValue;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -35,7 +37,7 @@ import java.util.Collection;
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 import static blusunrize.immersiveengineering.api.wires.WireApi.registerFeedthroughForWiretype;
 import static blusunrize.immersiveengineering.api.wires.WireType.*;
-import static blusunrize.immersiveengineering.common.IEConfig.WIRES;
+import static blusunrize.immersiveengineering.common.config.IEServerConfig.WIRES;
 
 public class IEWireTypes
 {
@@ -107,6 +109,7 @@ public class IEWireTypes
 	{
 		final IEWireType type;
 		final WireConfig config;
+		final IntValue color;
 
 		public BasicWire(IEWireType type)
 		{
@@ -114,12 +117,13 @@ public class IEWireTypes
 			this.type = type;
 			WireApi.registerWireType(this);
 			this.config = WIRES.wireConfigs.get(type);
+			this.color = IEClientConfig.wireColors.get(type);
 		}
 
 		@Override
 		public int getColour(Connection connection)
 		{
-			return config.color;
+			return color.get();
 		}
 
 		@Override

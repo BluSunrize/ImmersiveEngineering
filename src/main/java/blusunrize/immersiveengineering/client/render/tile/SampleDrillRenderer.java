@@ -8,9 +8,9 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.SampleDrillTileEntity;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
@@ -45,7 +45,7 @@ public class SampleDrillRenderer extends TileEntityRenderer<SampleDrillTileEntit
 		matrixStack.push();
 		matrixStack.translate(.5, .5, .5);
 
-		int max = IEConfig.MACHINES.coredrill_time.get();
+		int max = IEServerConfig.MACHINES.coredrill_time.get();
 		if(tile.process > 0&&tile.process < max)
 		{
 			matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), ((tile.process+partialTicks)*22.5f)%360f, true));

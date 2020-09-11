@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
@@ -122,10 +122,10 @@ public class PowerpackRecipe implements ICraftingRecipe
 		if(stack.getItem()==Misc.powerpack)
 			return false;
 		String regName = stack.getItem().getRegistryName().toString();
-		for(String s : IEConfig.TOOLS.powerpack_whitelist.get())
+		for(String s : IEServerConfig.TOOLS.powerpack_whitelist.get())
 			if(regName.equals(s))
 				return true;
-		for(String s : IEConfig.TOOLS.powerpack_blacklist.get())
+		for(String s : IEServerConfig.TOOLS.powerpack_blacklist.get())
 			if(regName.equals(s))
 				return false;
 		return true;

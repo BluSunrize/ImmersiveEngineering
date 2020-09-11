@@ -23,7 +23,7 @@ import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
-import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.entities.RailgunShotEntity;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IScrollwheel;
@@ -188,7 +188,7 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand)
 	{
 		ItemStack stack = player.getHeldItem(hand);
-		int energy = IEConfig.TOOLS.railgun_consumption.get();
+		int energy = IEServerConfig.TOOLS.railgun_consumption.get();
 		float energyMod = 1+this.getUpgrades(stack).getFloat("consumption");
 		energy = (int)(energy*energyMod);
 		if(this.extractEnergy(stack, energy, true)==energy&&!findAmmo(stack, player).isEmpty())
@@ -225,7 +225,7 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 			ItemNBTHelper.remove(stack, "inUse");
 			if(inUse < getChargeTime(stack))
 				return;
-			int energy = IEConfig.TOOLS.railgun_consumption.get();
+			int energy = IEServerConfig.TOOLS.railgun_consumption.get();
 			float energyMod = 1+this.getUpgrades(stack).getFloat("consumption");
 			energy = (int)(energy*energyMod);
 			if(this.extractEnergy(stack, energy, true)==energy)

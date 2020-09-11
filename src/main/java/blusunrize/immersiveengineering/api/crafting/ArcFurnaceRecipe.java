@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -49,7 +49,7 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 	public ArcFurnaceRecipe(ResourceLocation id, NonNullList<ItemStack> output, IngredientWithSize input, @Nonnull ItemStack slag, int time,
 							int energy, IngredientWithSize... additives)
 	{
-		super(output.get(0), TYPE, id, IEConfig.MACHINES.arcFurnaceConfig);
+		super(output.get(0), TYPE, id, IEServerConfig.MACHINES.arcFurnaceConfig);
 		this.output = output;
 		this.input = input;
 		this.slag = slag;

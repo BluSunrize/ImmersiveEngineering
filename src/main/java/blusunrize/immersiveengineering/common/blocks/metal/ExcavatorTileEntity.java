@@ -16,10 +16,10 @@ import blusunrize.immersiveengineering.api.excavator.MineralMix;
 import blusunrize.immersiveengineering.api.excavator.MineralVein;
 import blusunrize.immersiveengineering.api.excavator.MineralWorldInfo;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.FakePlayerUtil;
@@ -164,7 +164,7 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 					MineralVein mineralVein = ExcavatorHandler.getRandomMineral(world, wheelPos);
 					MineralMix mineral = mineralVein!=null?mineralVein.getMineral(): null;
 
-					int consumed = IEConfig.MACHINES.excavator_consumption.get();
+					int consumed = IEServerConfig.MACHINES.excavator_consumption.get();
 					int extracted = energyStorage.extractEnergy(consumed, true);
 					if(extracted >= consumed)
 					{

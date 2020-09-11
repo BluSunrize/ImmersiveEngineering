@@ -16,7 +16,6 @@ import blusunrize.immersiveengineering.api.crafting.builders.*;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.wires.WireType;
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
@@ -25,6 +24,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.Cove
 import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.crafting.HammerCrushingRecipeBuilder;
 import blusunrize.immersiveengineering.common.crafting.IEConfigConditionSerializer.ConditionIEConfig;
 import blusunrize.immersiveengineering.common.crafting.IngredientFluidStack;
@@ -611,7 +611,7 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL("metalpress/bullet_casing"));
 
 		ItemStack electrode = new ItemStack(Misc.graphiteElectrode);
-		electrode.setDamage(IEConfig.MACHINES.arcfurnace_electrodeDamage.get()/2);
+		electrode.setDamage(IEServerConfig.MACHINES.arcfurnace_electrodeDamage.get()/2);
 		MetalPressRecipeBuilder.builder(Molds.moldRod, electrode)
 				.addInput(new IngredientWithSize(IETags.hopGraphiteIngot, 4))
 				.setEnergy(4800)

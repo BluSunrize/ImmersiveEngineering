@@ -10,8 +10,8 @@ package blusunrize.immersiveengineering.common.world;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.collect.HashMultimap;
 import com.mojang.datafixers.Dynamic;
@@ -112,7 +112,7 @@ public class IEWorldGen
 		CompoundNBT levelTag = event.getData().getCompound("Level");
 		CompoundNBT nbt = new CompoundNBT();
 		levelTag.put("ImmersiveEngineering", nbt);
-		nbt.putBoolean(IEConfig.ORES.retrogen_key.get(), true);
+		nbt.putBoolean(IEServerConfig.ORES.retrogen_key.get(), true);
 	}
 
 	@SubscribeEvent
@@ -121,10 +121,10 @@ public class IEWorldGen
 		if(event.getChunk().getStatus()==ChunkStatus.FULL)
 		{
 			DimensionType dimension = event.getChunk().getWorldForge().getDimension().getType();
-			if(!event.getData().getCompound("ImmersiveEngineering").contains(IEConfig.ORES.retrogen_key.get())&&
+			if(!event.getData().getCompound("ImmersiveEngineering").contains(IEServerConfig.ORES.retrogen_key.get())&&
 					!retrogenOres.isEmpty())
 			{
-				if(IEConfig.ORES.retrogen_log_flagChunk.get())
+				if(IEServerConfig.ORES.retrogen_log_flagChunk.get())
 					IELogger.info("Chunk "+event.getChunk().getPos()+" has been flagged for Ore RetroGeneration by IE.");
 				synchronized(retrogenChunks)
 				{
@@ -176,7 +176,7 @@ public class IEWorldGen
 			}
 			remaining = chunks==null?0: chunks.size();
 		}
-		if(counter > 0&&IEConfig.ORES.retrogen_log_remaining.get())
+		if(counter > 0&&IEServerConfig.ORES.retrogen_log_remaining.get())
 			IELogger.info("Retrogen was performed on "+counter+" Chunks, "+remaining+" chunks remaining");
 	}
 

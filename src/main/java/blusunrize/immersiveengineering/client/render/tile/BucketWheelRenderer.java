@@ -14,9 +14,9 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.client.models.obj.IESmartObjModel;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.BucketWheelTileEntity;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -80,7 +80,7 @@ public class BucketWheelRenderer extends TileEntityRenderer<BucketWheelTileEntit
 		bufferIn = TileRenderUtils.mirror(tile, matrixStack, bufferIn);
 		float dir = tile.getFacing()==Direction.SOUTH?90: tile.getFacing()==Direction.NORTH?-90: tile.getFacing()==Direction.EAST?180: 0;
 		matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), dir, true));
-		float rot = tile.rotation+(float)(tile.active?IEConfig.MACHINES.excavator_speed.get()*partialTicks: 0);
+		float rot = tile.rotation+(float)(tile.active?IEServerConfig.MACHINES.excavator_speed.get()*partialTicks: 0);
 		matrixStack.rotate(new Quaternion(new Vector3f(1, 0, 0), rot, true));
 
 		matrixStack.translate(-.5, -.5, -.5);

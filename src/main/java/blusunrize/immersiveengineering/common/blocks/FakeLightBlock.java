@@ -9,9 +9,9 @@
 package blusunrize.immersiveengineering.common.blocks;
 
 import blusunrize.immersiveengineering.common.EventHandler;
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISpawnInterdiction;
 import blusunrize.immersiveengineering.common.blocks.metal.FloodlightTileEntity;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -143,7 +143,7 @@ public class FakeLightBlock extends IETileProviderBlock
 		@Override
 		public void onLoad()
 		{
-			if(world!=null&&IEConfig.MACHINES.floodlight_spawnPrevent.get())
+			if(world!=null&&IEServerConfig.MACHINES.floodlight_spawnPrevent.get())
 				synchronized(EventHandler.interdictionTiles)
 				{
 					Set<ISpawnInterdiction> forDim = EventHandler.interdictionTiles.computeIfAbsent(

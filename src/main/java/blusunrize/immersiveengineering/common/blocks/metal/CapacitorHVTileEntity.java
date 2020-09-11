@@ -8,33 +8,16 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import net.minecraft.tileentity.TileEntityType;
 
+//TODO tile type, but no custom class
 public class CapacitorHVTileEntity extends CapacitorLVTileEntity
 {
 	public static TileEntityType<CapacitorHVTileEntity> TYPE;
 
 	public CapacitorHVTileEntity()
 	{
-		super(TYPE);
+		super(TYPE, IEServerConfig.MACHINES.hvCapConfig);
 	}
-	@Override
-	public int getMaxStorage()
-	{
-		return IEConfig.MACHINES.capacitorHvStorage.get();
-	}
-
-	@Override
-	public int getMaxInput()
-	{
-		return IEConfig.MACHINES.capacitorHvInput.get();
-	}
-
-	@Override
-	public int getMaxOutput()
-	{
-		return IEConfig.MACHINES.capacitorHvOutput.get();
-	}
-
 }

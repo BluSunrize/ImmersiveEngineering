@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "conditions": [
     {
-      "key": "machines.arcfurnace_electrodeCrafting",
+      "key": "machines.arc_furnace.electrodeCrafting",
       "value": true,
       "type": "immersiveengineering:config"
     }

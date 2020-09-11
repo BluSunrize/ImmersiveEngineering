@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
-import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.entities.RevolvershotEntity;
 import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
@@ -61,7 +61,7 @@ public class TurretGunTileEntity extends TurretTileEntity
 	@Override
 	protected boolean canActivate()
 	{
-		return this.energyStorage.getEnergyStored() >= IEConfig.MACHINES.turret_gun_consumption.get()&&!inventory.get(0).isEmpty();
+		return this.energyStorage.getEnergyStored() >= IEServerConfig.MACHINES.turret_gun_consumption.get()&&!inventory.get(0).isEmpty();
 	}
 
 	@Override
@@ -85,7 +85,7 @@ public class TurretGunTileEntity extends TurretTileEntity
 	@Override
 	protected void activate()
 	{
-		int energy = IEConfig.MACHINES.turret_gun_consumption.get();
+		int energy = IEServerConfig.MACHINES.turret_gun_consumption.get();
 		ItemStack bulletStack = inventory.get(0);
 		if(!bulletStack.isEmpty()&&this.energyStorage.extractEnergy(energy, true)==energy)
 		{

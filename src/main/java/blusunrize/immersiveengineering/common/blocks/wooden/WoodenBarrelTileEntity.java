@@ -10,10 +10,10 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalBarrelTileEntity;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -114,7 +114,7 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 	{
 		if (!(rtr instanceof BlockRayTraceResult))
 			return new String[0];
-		BlockRayTraceResult brtr = (BlockRayTraceResult) rtr;
+		BlockRayTraceResult brtr = (BlockRayTraceResult)rtr;
 		if(Utils.isFluidRelatedItemStack(player.getHeldItem(Hand.MAIN_HAND)))
 		{
 			String s = null;
@@ -124,7 +124,7 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 				s = I18n.format(Lib.GUI+"empty");
 			return new String[]{s};
 		}
-		if(hammer&&IEConfig.GENERAL.showTextOverlay.get()&&brtr.getFace().getAxis()==Axis.Y)
+		if(hammer&&IEServerConfig.GENERAL.showTextOverlay.get()&&brtr.getFace().getAxis()==Axis.Y)
 		{
 			IOSideConfig side = sideConfig.getOrDefault(brtr.getFace(), NONE);
 			IOSideConfig opposite = sideConfig.getOrDefault(brtr.getFace().getOpposite(), NONE);

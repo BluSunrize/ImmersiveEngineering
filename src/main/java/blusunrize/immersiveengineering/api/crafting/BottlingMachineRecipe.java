@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.utils.ItemUtils;
-import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.ListUtils;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
@@ -39,7 +39,7 @@ public class BottlingMachineRecipe extends MultiblockRecipe
 
 	public BottlingMachineRecipe(ResourceLocation id, ItemStack output, Ingredient input, FluidTagInput fluidInput)
 	{
-		super(output, TYPE, id, IEConfig.MACHINES.bottlingMachineConfig);
+		super(output, TYPE, id, IEServerConfig.MACHINES.bottlingMachineConfig);
 		this.output = output;
 		this.input = input;
 		this.fluidInput = fluidInput;

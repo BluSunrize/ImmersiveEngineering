@@ -12,11 +12,11 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
 import blusunrize.immersiveengineering.api.tool.ITool;
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.RotationUtil;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -58,7 +58,7 @@ public class HammerItem extends IEBaseItem implements ITool
 
 	public HammerItem()
 	{
-		super("hammer", new Properties().defaultMaxDamage(IEConfig.TOOLS.hammerDurabiliy.get()));
+		super("hammer", new Properties().defaultMaxDamage(IEServerConfig.TOOLS.hammerDurabiliy.get()));
 	}
 
 	@Override

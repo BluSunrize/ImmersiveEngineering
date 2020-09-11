@@ -16,7 +16,8 @@ import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.client.models.SmartLightingQuad;
 import blusunrize.immersiveengineering.client.utils.BatchingRenderTypeBuffer;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
-import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.config.IEClientConfig;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
@@ -254,7 +255,7 @@ public class ClientUtils
 	//TODO move somewhere else?
 	public static void handleBipedRotations(BipedModel model, Entity entity)
 	{
-		if(!IEConfig.GENERAL.fancyItemHolding.get())
+		if(!IEClientConfig.fancyItemHolding.get())
 			return;
 
 		if(entity instanceof PlayerEntity)
@@ -1062,7 +1063,7 @@ public class ClientUtils
 	public static void renderModelTESRFancy(List<BakedQuad> quads, IVertexBuilder renderer, World world, BlockPos pos,
 											boolean useCached, int color, int light)
 	{//TODO include matrix transformations?, cache normals?
-		if(IEConfig.GENERAL.disableFancyTESR.get())
+		if(IEServerConfig.GENERAL.disableFancyTESR.get())
 			renderModelTESRFast(quads, renderer, new MatrixStack(), world.getLightSubtracted(pos, 0), color);
 		else
 		{

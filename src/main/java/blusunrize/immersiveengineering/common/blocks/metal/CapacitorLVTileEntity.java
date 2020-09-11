@@ -11,12 +11,13 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.config.IEServerConfig.Machines.CapacitorConfig;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
@@ -47,14 +48,16 @@ public class CapacitorLVTileEntity extends IEBaseTileEntity implements ITickable
 	public static TileEntityType<CapacitorLVTileEntity> TYPE;
 
 	public EnumMap<Direction, IOSideConfig> sideConfig = new EnumMap<>(Direction.class);
+	private final CapacitorConfig configValues;
 
-	FluxStorage energyStorage = new FluxStorage(getMaxStorage(), getMaxInput(), getMaxOutput());
+	FluxStorage energyStorage;
 
 	public int comparatorOutput = 0;
 
-	public CapacitorLVTileEntity(TileEntityType<? extends CapacitorLVTileEntity> type)
+	public CapacitorLVTileEntity(TileEntityType<? extends CapacitorLVTileEntity> type, CapacitorConfig configValues)
 	{
 		super(type);
+		this.configValues = configValues;
 		for(Direction f : Direction.VALUES)
 		{
 			if(f==Direction.UP)
@@ -62,11 +65,12 @@ public class CapacitorLVTileEntity extends IEBaseTileEntity implements ITickable
 			else
 				sideConfig.put(f, IOSideConfig.NONE);
 		}
+		energyStorage = new FluxStorage(getMaxStorage(), getMaxInput(), getMaxOutput());
 	}
 
 	public CapacitorLVTileEntity()
 	{
-		this(TYPE);
+		this(TYPE, IEServerConfig.MACHINES.lvCapConfig);
 	}
 
 	@Override
@@ -131,19 +135,19 @@ public class CapacitorLVTileEntity extends IEBaseTileEntity implements ITickable
 		return false;
 	}
 
-	public int getMaxStorage()
+	public final int getMaxStorage()
 	{
-		return IEConfig.MACHINES.capacitorLvStorage.get();
+		return configValues.storage.getAsInt();
 	}
 
-	public int getMaxInput()
+	public final int getMaxInput()
 	{
-		return IEConfig.MACHINES.capacitorLvInput.get();
+		return configValues.input.getAsInt();
 	}
 
-	public int getMaxOutput()
+	public final int getMaxOutput()
 	{
-		return IEConfig.MACHINES.capacitorLvOutput.get();
+		return configValues.output.getAsInt();
 	}
 
 	@Override
@@ -191,7 +195,7 @@ public class CapacitorLVTileEntity extends IEBaseTileEntity implements ITickable
 	@Override
 	public String[] getOverlayText(PlayerEntity player, RayTraceResult mop, boolean hammer)
 	{
-		if(hammer&&IEConfig.GENERAL.showTextOverlay.get()&&mop instanceof BlockRayTraceResult)
+		if(hammer&&IEServerConfig.GENERAL.showTextOverlay.get()&&mop instanceof BlockRayTraceResult)
 		{
 			BlockRayTraceResult bmop = (BlockRayTraceResult)mop;
 			IOSideConfig here = sideConfig.get(bmop.getFace());

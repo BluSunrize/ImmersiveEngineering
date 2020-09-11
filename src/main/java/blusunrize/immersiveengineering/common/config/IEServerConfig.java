@@ -1,17 +1,16 @@
 /*
  * BluSunrize
- * Copyright (c) 2017
+ * Copyright (c) 2020
  *
  * This code is licensed under "Blu's License of Common Sense"
  * Details can be found in the license file in the root folder of this project
+ *
  */
 
-package blusunrize.immersiveengineering.common;
+package blusunrize.immersiveengineering.common.config;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.wires.WireLogger;
-import blusunrize.immersiveengineering.common.IEConfig.Wires.WireConfig;
-import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
+import blusunrize.immersiveengineering.common.config.IEServerConfig.Wires.WireConfig;
 import blusunrize.immersiveengineering.common.wires.IEWireTypes.IEWireType;
 import com.electronwill.nightconfig.core.Config;
 import com.google.common.base.Preconditions;
@@ -23,95 +22,64 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.config.ModConfig;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.config.Configurator;
 
 import java.lang.reflect.Field;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
+import java.util.function.IntSupplier;
 
 @SuppressWarnings("WeakerAccess")
 @EventBusSubscriber(modid = ImmersiveEngineering.MODID, bus = Bus.MOD)
-public class IEConfig
+public class IEServerConfig
 {
-	//TODO replace fixed-length lists with push's/pop's
-	private static <T> Predicate<Object> isSameSizeList(List<T> in)
-	{
-		return isSameSizeList(in, obj -> true);
-	}
-
-	private static <T> Predicate<Object> isSameSizeList(List<T> in, Predicate<T> elementChecker)
-	{
-		Preconditions.checkArgument(!in.isEmpty());
-		return obj -> {
-			if(!(obj instanceof List)||((List<?>)obj).size()!=in.size())
-				return false;
-			Class<?> clazz = in.get(0).getClass();
-			for(Object o : (List<?>)obj)
-				if(!clazz.isInstance(o)||!elementChecker.test((T)o))
-					return false;
-			return true;
-		};
-	}
-
 	public static class Wires
 	{
 		Wires(ForgeConfigSpec.Builder builder)
 		{
 			builder.comment("Configuration related to Immersive Engineering wires").push("wires");
+			// Server
 			sanitizeConnections = builder
 					.comment("Attempts to make the internal data structures used for wires consistent with the connectors in the world."+
 									"Use with care and backups and only when suspecting corrupted data.",
 							"This option will check and load all connection endpoints and may slow down the world loading process.")
 					.define("sanitizeConnections", false);
-			builder.push("debug");
-			enableWireLogger = builder
-					.comment("Enable detailed logging for the wire network. This can be useful for developers to track"+
-							" down issues related to wires.")
-					.define("enableWireLogger", false);
-			validateNet = builder
-					.comment("Run sanity checks on the wire network after every interaction. This will cause a decent "+
-							"amount of lag and a lot of log spam if the wire network isn't fully intact. Only enable "+
-							"when asked to by an IE developer.")
-					.define("validateNets", false);
-			builder.pop();
+			// Split: Color in client, all others in server
 			energyWireConfigs.put(
 					IEWireType.COPPER,
-					new EnergyWireConfig(builder, "copper", 0xb36c3f, 16, 2048, 0.05)
+					new EnergyWireConfig(builder, "copper", 16, 2048, 0.05)
 			);
 			energyWireConfigs.put(
 					IEWireType.ELECTRUM,
-					new EnergyWireConfig(builder, "electrum", 0xeda045, 16, 8192, 0.025)
+					new EnergyWireConfig(builder, "electrum", 16, 8192, 0.025)
 			);
 			energyWireConfigs.put(
 					IEWireType.STEEL,
-					new EnergyWireConfig(builder, "hv", 0x6f6f6f, 32, 32768, 0.025)
+					new EnergyWireConfig(builder, "hv", 32, 32768, 0.025)
 			);
 			wireConfigs.put(
 					IEWireType.STRUCTURE_ROPE,
-					new WireConfig(builder, "rope", 0x967e6d, 32)
+					new WireConfig(builder, "rope", 32)
 			);
 			wireConfigs.put(
 					IEWireType.STRUCTURE_STEEL,
-					new WireConfig(builder, "cable", 0x6f6f6f, 32)
+					new WireConfig(builder, "cable", 32)
 			);
 			wireConfigs.put(
 					IEWireType.REDSTONE,
 					//TODO 32 or 16 length?
-					new WireConfig(builder, "redstone", 0xff2f2f, 32)
+					new WireConfig(builder, "redstone", 32)
 			);
 			wireConfigs.put(
 					IEWireType.COPPER_INSULATED,
-					new WireConfig(builder, "insulated_copper", 0xfaf1de, 16)
+					new WireConfig(builder, "insulated_copper", 16)
 			);
 			wireConfigs.put(
 					IEWireType.ELECTRUM_INSULATED,
-					new WireConfig(builder, "insulated_electrum", 0x9d857a, 16)
+					new WireConfig(builder, "insulated_electrum", 16)
 			);
 			wireConfigs.putAll(energyWireConfigs);
+			//Server
 			enableWireDamage = builder.comment("If this is enabled, wires connected to power sources will cause damage to entities touching them",
 					"This shouldn't cause significant lag but possibly will. If it does, please report it at https://github.com/BluSunrize/ImmersiveEngineering/issues unless there is a report of it already.")
 					.define("enableWireDamage", true);
@@ -121,8 +89,6 @@ public class IEConfig
 		}
 
 		public final BooleanValue sanitizeConnections;
-		public final BooleanValue enableWireLogger;
-		public final BooleanValue validateNet;
 		public final BooleanValue enableWireDamage;
 		public final BooleanValue blocksBreakWires;
 		public final Map<IEWireType, WireConfig> wireConfigs = new EnumMap<>(IEWireType.class);
@@ -130,16 +96,12 @@ public class IEConfig
 
 		public static class WireConfig
 		{
-			public final IntValue colorGetter;
 			public final IntValue maxLengthGetter;
-			public int color;
 			public int maxLength;
 
-			protected WireConfig(ForgeConfigSpec.Builder builder, String name, int defColor, int defLength, boolean doPop)
+			protected WireConfig(ForgeConfigSpec.Builder builder, String name, int defLength, boolean doPop)
 			{
 				builder.push(name);
-				colorGetter = builder.comment("The RGB color used for "+name+" wires")
-						.defineInRange("color", defColor, Integer.MIN_VALUE, Integer.MAX_VALUE);
 				maxLengthGetter = builder.comment("The maximum length of "+name+" wires")
 						//TODO lower max?
 						.defineInRange("maxLength", defLength, 0, Integer.MAX_VALUE);
@@ -147,14 +109,13 @@ public class IEConfig
 					builder.pop();
 			}
 
-			public WireConfig(ForgeConfigSpec.Builder builder, String name, int defColor, int defLength)
+			public WireConfig(ForgeConfigSpec.Builder builder, String name, int defLength)
 			{
-				this(builder, name, defColor, defLength, true);
+				this(builder, name, defLength, true);
 			}
 
 			void updateCachedValues()
 			{
-				color = colorGetter.get();
 				maxLength = maxLengthGetter.get();
 			}
 		}
@@ -168,9 +129,9 @@ public class IEConfig
 			public int connectorRate;
 			public double lossRatio;
 
-			public EnergyWireConfig(Builder builder, String name, int defColor, int defLength, int defRate, double defLoss)
+			public EnergyWireConfig(Builder builder, String name, int defLength, int defRate, double defLoss)
 			{
-				super(builder, name, defColor, defLength, false);
+				super(builder, name, defLength, false);
 				this.transferRateGetter = builder.comment("The transfer rate of "+name+" wire in IF/t")
 						.defineInRange("transferRate", defRate, 0, Integer.MAX_VALUE);
 				this.lossRatioGetter = builder.comment("The percentage of power lost every 16 blocks of distance in "+name+" wire")
@@ -197,6 +158,7 @@ public class IEConfig
 		General(ForgeConfigSpec.Builder builder)
 		{
 			builder.push("General");
+			//CLient
 			disableFancyTESR = builder
 					.comment("Disables most lighting code for certain models that are rendered dynamically (TESR). May improve FPS.",
 							"Affects turrets and garden cloches")
@@ -220,29 +182,11 @@ public class IEConfig
 			increasedTileRenderdistance = builder
 					.comment("Increase the distance at which certain TileEntities (specifically windmills) are still visible. This is a modifier, so set it to 1 for default render distance, to 2 for doubled distance and so on.")
 					.defineInRange("increasedTileRenderdistance", 1.5, 0, Double.MAX_VALUE);
+			//Server?
 			preferredOres = builder
 					.comment("A list of preferred Mod IDs that results of IE processes should stem from, aka which mod you want the copper to come from.",
 							"This affects the ores dug by the excavator, as well as those crushing recipes that don't have associated IE items. This list is in oreder of priority.")
 					.defineList("preferredOres", ImmutableList.of(ImmersiveEngineering.MODID), obj -> true);
-			showUpdateNews = builder
-					.comment("Set this to false to hide the update news in the manual")
-					.define("showUpdateNews", true);
-			fancyItemHolding = builder
-					.comment("Allows revolvers and other IE items to look properly held in 3rd person. This uses a coremod. Can be disabled in case of conflicts with other animation mods.")
-					.define("fancyItemHolding", true);
-			stencilBufferEnabled = builder
-					.comment("Set to false to disable the stencil buffer. This may be necessary on older GPUs.")
-					.define("stencilBufferEnabled", true);
-			builder
-					.comment("A list of all mods that IE has integrated compatability for", "Setting any of these to false disables the respective compat")
-					.push("compat");
-			for(String mod : IECompatModule.moduleClasses.keySet())
-				compat.put(mod, builder
-						.define(mod, true));
-			builder.pop();
-			enableDebug = builder
-					.comment("A config setting to enable debug features. These features may vary between releases, may cause crashes, and are unsupported. Do not enable unless asked to by a developer of IE.")
-					.define("enableDebug", false);
 			builder.pop();
 		}
 
@@ -254,11 +198,6 @@ public class IEConfig
 		public final BooleanValue tagTooltips;
 		public final DoubleValue increasedTileRenderdistance;
 		public final ConfigValue<List<? extends String>> preferredOres;
-		public final BooleanValue showUpdateNews;
-		public final BooleanValue fancyItemHolding;
-		public final BooleanValue stencilBufferEnabled;
-		public final Map<String, BooleanValue> compat = new HashMap<>();
-		public final BooleanValue enableDebug;
 	}
 
 	public static class Machines
@@ -266,20 +205,12 @@ public class IEConfig
 		Machines(ForgeConfigSpec.Builder builder)
 		{
 			builder.push("machines");
+			//Server
 			{
 				builder.push("capacitors");
-				IntValue[] temp = addCapacitorConfig(builder, "low", 100000, 256, 256);
-				capacitorLvStorage = temp[0];
-				capacitorLvInput = temp[1];
-				capacitorLvOutput = temp[2];
-				temp = addCapacitorConfig(builder, "medium", 1000000, 1024, 1024);
-				capacitorMvStorage = temp[0];
-				capacitorMvInput = temp[1];
-				capacitorMvOutput = temp[2];
-				temp = addCapacitorConfig(builder, "high", 4000000, 4096, 4096);
-				capacitorHvStorage = temp[0];
-				capacitorHvInput = temp[1];
-				capacitorHvOutput = temp[2];
+				lvCapConfig = new CapacitorConfig(builder, "low", 100000, 256, 256);
+				mvCapConfig = new CapacitorConfig(builder, "medium", 1000000, 1024, 1024);
+				hvCapConfig = new CapacitorConfig(builder, "high", 4000000, 4096, 4096);
 				builder.pop();
 			}
 			dynamo_output = builder
@@ -445,36 +376,42 @@ public class IEConfig
 			return new MachineRecipeConfig(energy, time);
 		}
 
-		private IntValue[] addCapacitorConfig(ForgeConfigSpec.Builder builder, String voltage, int defaultStorage, int defaultInput, int defaultOutput)
+		public static class CapacitorConfig
 		{
-			IntValue[] ret = new IntValue[3];
-			builder
-					.comment("Configuration for the "+voltage+" voltage capacitor")
-					.push(voltage.charAt(0)+"v");
-			String prefix = "capacitor"+Character.toUpperCase(voltage.charAt(0))+"V_";
-			ret[0] = builder
-					.comment("Maximum energy stored (Flux)")
-					.defineInRange(prefix+"storage", defaultStorage, 1, Integer.MAX_VALUE);
-			ret[1] = builder
-					.comment("Maximum energy input (Flux/tick)")
-					.defineInRange(prefix+"input", defaultInput, 1, Integer.MAX_VALUE);
-			ret[2] = builder
-					.comment("Maximum energy output (Flux/tick)")
-					.defineInRange(prefix+"output", defaultOutput, 1, Integer.MAX_VALUE);
-			builder.pop();
-			return ret;
+			public static final CapacitorConfig CREATIVE = new CapacitorConfig(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE);
+			public final IntSupplier storage;
+			public final IntSupplier input;
+			public final IntSupplier output;
+
+			private CapacitorConfig(ForgeConfigSpec.Builder builder, String voltage, int defaultStorage, int defaultInput, int defaultOutput)
+			{
+				builder
+						.comment("Configuration for the "+voltage+" voltage capacitor")
+						.push(voltage.charAt(0)+"v");
+				storage = builder
+						.comment("Maximum energy stored (Flux)")
+						.defineInRange("storage", defaultStorage, 1, Integer.MAX_VALUE)::get;
+				input = builder
+						.comment("Maximum energy input (Flux/tick)")
+						.defineInRange("input", defaultInput, 1, Integer.MAX_VALUE)::get;
+				output = builder
+						.comment("Maximum energy output (Flux/tick)")
+						.defineInRange("output", defaultOutput, 1, Integer.MAX_VALUE)::get;
+				builder.pop();
+			}
+
+			private CapacitorConfig(int storage, int input, int output)
+			{
+				this.storage = () -> storage;
+				this.input = () -> input;
+				this.output = () -> output;
+			}
 		}
 
 		//Capacitors
-		public final IntValue capacitorLvStorage;
-		public final IntValue capacitorLvInput;
-		public final IntValue capacitorLvOutput;
-		public final IntValue capacitorMvStorage;
-		public final IntValue capacitorMvInput;
-		public final IntValue capacitorMvOutput;
-		public final IntValue capacitorHvStorage;
-		public final IntValue capacitorHvInput;
-		public final IntValue capacitorHvOutput;
+		public final CapacitorConfig lvCapConfig;
+		public final CapacitorConfig mvCapConfig;
+		public final CapacitorConfig hvCapConfig;
 
 		//Generators
 		public final DoubleValue dynamo_output;
@@ -557,7 +494,7 @@ public class IEConfig
 		Ores(Builder builder)
 		{
 			builder.push("ores");
-			//TODO these may need to be adjusted
+			//Server
 			ore_copper = new OreConfig(builder, "copper", 8, 40, 72, 8);
 			ore_bauxite = new OreConfig(builder, "bauxite", 4, 40, 85, 8);
 			ore_lead = new OreConfig(builder, "lead", 6, 8, 36, 4);
@@ -631,6 +568,7 @@ public class IEConfig
 		Tools(Builder builder)
 		{
 			builder.push("tools");
+			//Server
 			disableHammerCrushing = builder
 					.comment("Set this to true to completely disable the ore-crushing recipes with the Engineers Hammer")
 					.define("disable_hammer_crushing", false);
@@ -650,9 +588,7 @@ public class IEConfig
 				bulletDamage_Potion = addNonNegative(builder, "phial", 1, "The amount of base damage a phial cartridge inflicts");
 				builder.pop();
 			}
-			earDefenders_SoundBlacklist = builder
-					.comment("A list of sounds that should not be muffled by the Ear Defenders. Adding to this list requires knowledge of the correct sound resource names.")
-					.defineList("earDefenders_SoundBlacklist", ImmutableList.of(), obj -> true);
+			// Server
 			{
 				builder.push("chemthrower");
 				chemthrower_consumption = addPositive(builder, "consumption", 10, "The mb of fluid the Chemical Thrower will consume per tick of usage");
@@ -716,7 +652,6 @@ public class IEConfig
 		public final DoubleValue bulletDamage_Silver;
 		public final DoubleValue bulletDamage_Potion;
 
-		public final ConfigValue<List<? extends String>> earDefenders_SoundBlacklist;
 		public final IntValue chemthrower_consumption;
 		public final BooleanValue chemthrower_scroll;
 		public final IntValue railgun_consumption;
@@ -737,7 +672,7 @@ public class IEConfig
 				.defineInRange(name, defaultVal, 1, Integer.MAX_VALUE);
 	}
 
-	public static final ForgeConfigSpec ALL;
+	public static final ForgeConfigSpec CONFIG_SPEC;
 	public static final Wires WIRES;
 	public static final General GENERAL;
 	public static final Machines MACHINES;
@@ -754,7 +689,7 @@ public class IEConfig
 		ORES = new Ores(builder);
 		TOOLS = new Tools(builder);
 
-		ALL = builder.build();
+		CONFIG_SPEC = builder.build();
 	}
 
 	private static Config rawConfig;
@@ -766,7 +701,7 @@ public class IEConfig
 			{
 				Field childConfig = ForgeConfigSpec.class.getDeclaredField("childConfig");
 				childConfig.setAccessible(true);
-				rawConfig = (Config)childConfig.get(IEConfig.ALL);
+				rawConfig = (Config)childConfig.get(IEServerConfig.CONFIG_SPEC);
 				Preconditions.checkNotNull(rawConfig);
 			} catch(Exception x)
 			{
@@ -785,29 +720,17 @@ public class IEConfig
 	}
 
 	@SubscribeEvent
-	public static void onConfigReload(ModConfig.Reloading ev)
+	public static void onConfigReload(ModConfig.ModConfigEvent ev)
 	{
 		WIRES.wireConfigs.values().forEach(WireConfig::updateCachedValues);
 		CACHED.blocksBreakWires = WIRES.blocksBreakWires.get();
 		CACHED.wireDamage = WIRES.enableWireDamage.get();
-		Level wireLoggerLevel;
-		if(WIRES.enableWireLogger.get())
-			wireLoggerLevel = Level.ALL;
-		else
-			wireLoggerLevel = Level.WARN;
-		Configurator.setLevel(WireLogger.logger.getName(), wireLoggerLevel);
 		rawConfig = null;
 		if(CACHED.badEyesight!=GENERAL.badEyesight.get())
 		{
 			CACHED.badEyesight = GENERAL.badEyesight.get();
 			ImmersiveEngineering.proxy.resetManual();
 		}
-	}
-
-	@SubscribeEvent
-	public static void onConfigLoad(ModConfig.Loading ev)
-	{
-		onConfigReload(null);
 	}
 
 	public static class CachedConfigValues

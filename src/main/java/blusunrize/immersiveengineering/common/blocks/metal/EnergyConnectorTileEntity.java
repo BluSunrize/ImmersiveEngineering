@@ -14,11 +14,11 @@ import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler;
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler.EnergyConnector;
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Connectors;
 import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectorBlock;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
@@ -278,12 +278,12 @@ public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity im
 
 	public int getMaxInput()
 	{
-		return IEConfig.WIRES.energyWireConfigs.get(getWireType()).connectorRate;
+		return IEServerConfig.WIRES.energyWireConfigs.get(getWireType()).connectorRate;
 	}
 
 	public int getMaxOutput()
 	{
-		return IEConfig.WIRES.energyWireConfigs.get(getWireType()).connectorRate;
+		return IEServerConfig.WIRES.energyWireConfigs.get(getWireType()).connectorRate;
 	}
 
 	private static final Object2FloatMap<Pair<String, Boolean>> LENGTH = new Object2FloatAVLTreeMap<>();

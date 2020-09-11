@@ -16,7 +16,13 @@ import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.ClientProxy;
-import blusunrize.immersiveengineering.common.*;
+import blusunrize.immersiveengineering.common.CommonProxy;
+import blusunrize.immersiveengineering.common.EventHandler;
+import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.IESaveData;
+import blusunrize.immersiveengineering.common.config.IEClientConfig;
+import blusunrize.immersiveengineering.common.config.IECommonConfig;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.crafting.IngredientSerializers;
 import blusunrize.immersiveengineering.common.crafting.RecipeReloadListener;
 import blusunrize.immersiveengineering.common.items.*;
@@ -92,11 +98,11 @@ public class ImmersiveEngineering
 		RecipeSerializers.RECIPE_SERIALIZERS.register(FMLJavaModLoadingContext.get().getModEventBus());
 		Villages.Registers.POINTS_OF_INTEREST.register(FMLJavaModLoadingContext.get().getModEventBus());
 		Villages.Registers.PROFESSIONS.register(FMLJavaModLoadingContext.get().getModEventBus());
-		//TODO separate client/server config?
-		ModLoadingContext.get().registerConfig(Type.COMMON, IEConfig.ALL);
+		ModLoadingContext.get().registerConfig(Type.COMMON, IECommonConfig.CONFIG_SPEC);
+		ModLoadingContext.get().registerConfig(Type.CLIENT, IEClientConfig.CONFIG_SPEC);
+		ModLoadingContext.get().registerConfig(Type.SERVER, IEServerConfig.CONFIG_SPEC);
 		IEContent.modConstruction();
 		proxy.modConstruction();
-		//TODO FluidRegistry.enableUniversalBucket();
 		IngredientSerializers.init();
 
 		IEWorldGen ieWorldGen = new IEWorldGen();
@@ -111,9 +117,9 @@ public class ImmersiveEngineering
 		IEAdvancements.preInit();
 
 
-		for(String b : IEConfig.ORES.oreDimBlacklist.get())
+		for(String b : IEServerConfig.ORES.oreDimBlacklist.get())
 			IEWorldGen.oreDimBlacklist.add(new ResourceLocation(b));
-		IEApi.modPreference = IEConfig.GENERAL.preferredOres.get();
+		IEApi.modPreference = IEServerConfig.GENERAL.preferredOres.get();
 		IEApi.prefixToIngotMap.put("ingots", new Integer[]{1, 1});
 		IEApi.prefixToIngotMap.put("nuggets", new Integer[]{1, 9});
 		IEApi.prefixToIngotMap.put("storage_blocks", new Integer[]{9, 1});
@@ -165,17 +171,17 @@ public class ImmersiveEngineering
 		proxy.preInitEnd();
 		IEContent.init();
 
-		if(IEConfig.ORES.ore_bauxite.retrogenEnabled.get())
+		if(IEServerConfig.ORES.ore_bauxite.retrogenEnabled.get())
 			IEWorldGen.retrogenOres.add("retrogen_bauxite");
-		if(IEConfig.ORES.ore_lead.retrogenEnabled.get())
+		if(IEServerConfig.ORES.ore_lead.retrogenEnabled.get())
 			IEWorldGen.retrogenOres.add("retrogen_lead");
-		if(IEConfig.ORES.ore_silver.retrogenEnabled.get())
+		if(IEServerConfig.ORES.ore_silver.retrogenEnabled.get())
 			IEWorldGen.retrogenOres.add("retrogen_silver");
-		if(IEConfig.ORES.ore_nickel.retrogenEnabled.get())
+		if(IEServerConfig.ORES.ore_nickel.retrogenEnabled.get())
 			IEWorldGen.retrogenOres.add("retrogen_nickel");
-		if(IEConfig.ORES.ore_uranium.retrogenEnabled.get())
+		if(IEServerConfig.ORES.ore_uranium.retrogenEnabled.get())
 			IEWorldGen.retrogenOres.add("retrogen_uranium");
-		if(IEConfig.ORES.ore_copper.retrogenEnabled.get())
+		if(IEServerConfig.ORES.ore_copper.retrogenEnabled.get())
 			IEWorldGen.retrogenOres.add("retrogen_copper");
 
 		MinecraftForge.EVENT_BUS.register(new EventHandler());

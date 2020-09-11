@@ -15,8 +15,8 @@ import blusunrize.immersiveengineering.api.wires.ImmersiveConnectableTileEntity;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler.EnergyConnector;
 import blusunrize.immersiveengineering.common.EventHandler;
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -43,8 +43,8 @@ public class ElectricLanternTileEntity extends ImmersiveConnectableTileEntity im
 	public static TileEntityType<ElectricLanternTileEntity> TYPE;
 
 	public int energyStorage = 0;
-	private int energyDraw = IEConfig.MACHINES.lantern_energyDraw.get();
-	private int maximumStorage = IEConfig.MACHINES.lantern_maximumStorage.get();
+	private int energyDraw = IEServerConfig.MACHINES.lantern_energyDraw.get();
+	private int maximumStorage = IEServerConfig.MACHINES.lantern_maximumStorage.get();
 	private boolean interdictionList = false;
 
 	public ElectricLanternTileEntity()
@@ -57,7 +57,7 @@ public class ElectricLanternTileEntity extends ImmersiveConnectableTileEntity im
 	{
 		if(world.isRemote)
 			return;
-		if(!interdictionList&&IEConfig.MACHINES.lantern_spawnPrevent.get())
+		if(!interdictionList&&IEServerConfig.MACHINES.lantern_spawnPrevent.get())
 		{
 			synchronized(EventHandler.interdictionTiles)
 			{

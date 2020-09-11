@@ -12,12 +12,12 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTile;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.blocks.generic.ScaffoldingBlock;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -135,7 +135,7 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 				if(burnTime > 0)
 				{
 					int fluidConsumed = 1000/burnTime;
-					int output = IEConfig.MACHINES.dieselGen_output.get();
+					int output = IEServerConfig.MACHINES.dieselGen_output.get();
 					int connected = 0;
 					TileEntity[] receivers = new TileEntity[3];
 					for(int i = 0; i < 3; i++)

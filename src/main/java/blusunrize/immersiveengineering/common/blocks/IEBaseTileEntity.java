@@ -11,8 +11,8 @@ package blusunrize.immersiveengineering.common.blocks;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.client.utils.CombinedModelData;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.SafeChunkUtils;
@@ -231,7 +231,7 @@ public abstract class IEBaseTileEntity extends TileEntity implements BlockstateP
 	@Override
 	public double getMaxRenderDistanceSquared()
 	{
-		double increase = IEConfig.GENERAL.increasedTileRenderdistance.get();
+		double increase = IEServerConfig.GENERAL.increasedTileRenderdistance.get();
 		return super.getMaxRenderDistanceSquared()*
 				increase*increase;
 	}

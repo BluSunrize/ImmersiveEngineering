@@ -14,11 +14,11 @@ import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.tool.AssemblerHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttachable;
 import blusunrize.immersiveengineering.api.utils.ItemUtils;
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
@@ -196,7 +196,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 				for(ItemStack stack : this.inventory)
 					if(!stack.isEmpty())
 						availableStacks.add(stack);
-				int consumed = IEConfig.MACHINES.assembler_consumption.get();
+				int consumed = IEServerConfig.MACHINES.assembler_consumption.get();
 
 				AssemblerHandler.IRecipeAdapter adapter = AssemblerHandler.findAdapter(pattern.recipe);
 				AssemblerHandler.RecipeQuery[] queries = adapter.getQueriedInputs(pattern.recipe, pattern.inv, world);

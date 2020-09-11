@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
@@ -43,13 +43,13 @@ public class GraphiteElectrodeItem extends IEBaseItem
 	@Override
 	public double getDurabilityForDisplay(ItemStack stack)
 	{
-		return ItemNBTHelper.getInt(stack, "graphDmg")/(double)IEConfig.MACHINES.arcfurnace_electrodeDamage.get();
+		return ItemNBTHelper.getInt(stack, "graphDmg")/(double)IEServerConfig.MACHINES.arcfurnace_electrodeDamage.get();
 	}
 
 	@Override
 	public int getMaxDamage(ItemStack stack)
 	{
-		return IEConfig.MACHINES.arcfurnace_electrodeDamage.get();
+		return IEServerConfig.MACHINES.arcfurnace_electrodeDamage.get();
 	}
 
 	@Override

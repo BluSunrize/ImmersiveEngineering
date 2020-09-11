@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.ComparableItemStack;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.ListUtils;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
@@ -41,7 +41,7 @@ public class MetalPressRecipe extends MultiblockRecipe
 
 	public MetalPressRecipe(ResourceLocation id, ItemStack output, IngredientWithSize input, ComparableItemStack mold, int energy)
 	{
-		super(output, TYPE, id, IEConfig.MACHINES.metalPressConfig);
+		super(output, TYPE, id, IEServerConfig.MACHINES.metalPressConfig);
 		this.output = output;
 		this.input = input;
 		this.mold = mold;

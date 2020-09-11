@@ -31,7 +31,6 @@ import blusunrize.immersiveengineering.api.wires.localhandlers.LocalNetworkHandl
 import blusunrize.immersiveengineering.api.wires.localhandlers.WireDamageHandler;
 import blusunrize.immersiveengineering.api.wires.redstone.RedstoneNetworkHandler;
 import blusunrize.immersiveengineering.client.utils.ClocheRenderFunctions;
-import blusunrize.immersiveengineering.common.IEConfig.Ores.OreConfig;
 import blusunrize.immersiveengineering.common.blocks.*;
 import blusunrize.immersiveengineering.common.blocks.FakeLightBlock.FakeLightTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
@@ -44,6 +43,8 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
 import blusunrize.immersiveengineering.common.blocks.stone.*;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.config.IEServerConfig.Ores.OreConfig;
 import blusunrize.immersiveengineering.common.crafting.IngredientFluidStack;
 import blusunrize.immersiveengineering.common.entities.*;
 import blusunrize.immersiveengineering.common.items.*;
@@ -781,12 +782,12 @@ public class IEContent
 	public static void init()
 	{
 		/*WORLDGEN*/
-		addConfiguredWorldgen(Metals.ores.get(EnumMetals.COPPER), "copper", IEConfig.ORES.ore_copper);
-		addConfiguredWorldgen(Metals.ores.get(EnumMetals.ALUMINUM), "bauxite", IEConfig.ORES.ore_bauxite);
-		addConfiguredWorldgen(Metals.ores.get(EnumMetals.LEAD), "lead", IEConfig.ORES.ore_lead);
-		addConfiguredWorldgen(Metals.ores.get(EnumMetals.SILVER), "silver", IEConfig.ORES.ore_silver);
-		addConfiguredWorldgen(Metals.ores.get(EnumMetals.NICKEL), "nickel", IEConfig.ORES.ore_nickel);
-		addConfiguredWorldgen(Metals.ores.get(EnumMetals.URANIUM), "uranium", IEConfig.ORES.ore_uranium);
+		addConfiguredWorldgen(Metals.ores.get(EnumMetals.COPPER), "copper", IEServerConfig.ORES.ore_copper);
+		addConfiguredWorldgen(Metals.ores.get(EnumMetals.ALUMINUM), "bauxite", IEServerConfig.ORES.ore_bauxite);
+		addConfiguredWorldgen(Metals.ores.get(EnumMetals.LEAD), "lead", IEServerConfig.ORES.ore_lead);
+		addConfiguredWorldgen(Metals.ores.get(EnumMetals.SILVER), "silver", IEServerConfig.ORES.ore_silver);
+		addConfiguredWorldgen(Metals.ores.get(EnumMetals.NICKEL), "nickel", IEServerConfig.ORES.ore_nickel);
+		addConfiguredWorldgen(Metals.ores.get(EnumMetals.URANIUM), "uranium", IEServerConfig.ORES.ore_uranium);
 		IEWorldGen.registerMineralVeinGen();
 
 		CapabilityShader.register();
@@ -828,16 +829,16 @@ public class IEContent
 		fluidBiodiesel.block.setEffect(IEPotions.flammable, 100, 1);
 		fluidConcrete.block.setEffect(Effects.SLOWNESS, 20, 3);
 
-		ExcavatorHandler.mineralVeinYield = IEConfig.MACHINES.excavator_yield.get();
-		ExcavatorHandler.initialVeinDepletion = IEConfig.MACHINES.excavator_initial_depletion.get();
-		ExcavatorHandler.mineralNoiseThreshold = IEConfig.MACHINES.excavator_theshold.get();
+		ExcavatorHandler.mineralVeinYield = IEServerConfig.MACHINES.excavator_yield.get();
+		ExcavatorHandler.initialVeinDepletion = IEServerConfig.MACHINES.excavator_initial_depletion.get();
+		ExcavatorHandler.mineralNoiseThreshold = IEServerConfig.MACHINES.excavator_theshold.get();
 
 		ChemthrowerEffects.register();
 
 		RailgunProjectiles.register();
 
-		ExternalHeaterHandler.defaultFurnaceEnergyCost = IEConfig.MACHINES.heater_consumption.get();
-		ExternalHeaterHandler.defaultFurnaceSpeedupCost = IEConfig.MACHINES.heater_speedupConsumption.get();
+		ExternalHeaterHandler.defaultFurnaceEnergyCost = IEServerConfig.MACHINES.heater_consumption.get();
+		ExternalHeaterHandler.defaultFurnaceSpeedupCost = IEServerConfig.MACHINES.heater_speedupConsumption.get();
 		ExternalHeaterHandler.registerHeatableAdapter(FurnaceTileEntity.class, new DefaultFurnaceAdapter());
 
 		ThermoelectricHandler.registerSourceInKelvin(Blocks.MAGMA_BLOCK, 1300);
