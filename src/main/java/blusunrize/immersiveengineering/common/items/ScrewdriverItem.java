@@ -11,7 +11,10 @@ package blusunrize.immersiveengineering.common.items;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.tool.ITool;
 import com.google.common.collect.ImmutableSet;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorldReader;
 import net.minecraftforge.common.ToolType;
 
 import javax.annotation.Nonnull;
@@ -31,6 +34,12 @@ public class ScrewdriverItem extends IEBaseItem implements ITool
 	public Set<ToolType> getToolTypes(ItemStack stack)
 	{
 		return ImmutableSet.of(SCREWDRIVER_TOOL);
+	}
+
+	@Override
+	public boolean doesSneakBypassUse(ItemStack stack, IWorldReader world, BlockPos pos, PlayerEntity player)
+	{
+		return true;
 	}
 
 	@Override
