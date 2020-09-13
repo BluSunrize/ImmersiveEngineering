@@ -34,6 +34,7 @@ public interface IOBJModelCallback<T>
 	ModelProperty<IOBJModelCallback> PROPERTY = new ModelProperty<>();
 
 	@OnlyIn(Dist.CLIENT)
+	@Nullable
 	default TextureAtlasSprite getTextureReplacement(T object, String group, String material)
 	{
 		return null;

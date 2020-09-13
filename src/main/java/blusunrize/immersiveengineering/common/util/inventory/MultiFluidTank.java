@@ -178,13 +178,14 @@ public class MultiFluidTank implements IFluidTank, IFluidHandler
 			if(fluidTag.testIgnoringAmount(fs))
 			{
 				int amount = Math.min(fluidTag.getAmount(), fs.getAmount());
+				FluidStack ret = Utils.copyFluidStackWithAmount(fs, amount, true);
 				if(action.execute())
 				{
 					fs.shrink(amount);
 					if(fs.getAmount() <= 0)
 						it.remove();
 				}
-				return Utils.copyFluidStackWithAmount(fs, amount, true);
+				return ret;
 			}
 		}
 		return FluidStack.EMPTY;

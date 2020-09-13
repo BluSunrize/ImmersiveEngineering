@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMultiblock;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.StoneMultiblock;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.SafeChunkUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -59,7 +58,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	public BlockPos posInMultiblock = BlockPos.ZERO;
 	//Offset from the master to this block (world coordinate system)
 	public BlockPos offsetToMaster = BlockPos.ZERO;
-	private final IETemplateMultiblock multiblockInstance;
+	protected final IETemplateMultiblock multiblockInstance;
 	// stores the world time at which this block can only be disassembled by breaking the block associated with this TE.
 	// This prevents half/duplicate disassembly when working with the drill or TCon hammers
 	public long onlyLocalDissassembly = -1;
@@ -444,12 +443,6 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 					mirroredPosInMB.getY(),
 					mirroredPosInMB.getZ()
 			);
-		if(multiblockInstance instanceof StoneMultiblock)
-			mirroredPosInMB = new BlockPos(
-					size.getX()-mirroredPosInMB.getX()-1,
-					mirroredPosInMB.getY(),
-					size.getZ()-mirroredPosInMB.getZ()-1
-			);
-		return mirroredPosInMB.subtract(multiblockInstance.getMasterFromOriginOffset());
+		return multiblockInstance.multiblockToModelPos(mirroredPosInMB);
 	}
 }

@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.client.utils.CombinedModelData;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
+import malte0811.modelsplitter.ClumpedModel;
 import malte0811.modelsplitter.SplitModel;
 import malte0811.modelsplitter.math.ModelSplitterVec3i;
 import malte0811.modelsplitter.model.OBJModel;
@@ -89,35 +90,19 @@ public class BakedBasicSplitModel extends CompositeBakedModel<IBakedModel>
 				.map(PolygonUtils::toPolygon)
 				.collect(Collectors.toList());
 		SplitModel<TextureAtlasSprite> splitData = new SplitModel<>(new OBJModel<>(polys));
-
-		Map<Vector3i, OBJModel<TextureAtlasSprite>> clumped = new HashMap<>();
-		for(Entry<ModelSplitterVec3i, OBJModel<TextureAtlasSprite>> e : splitData.getParts().entrySet())
-		{
-			BlockPos posToAdd = new BlockPos(e.getKey().getX(), e.getKey().getY(), e.getKey().getZ());
-			OBJModel<TextureAtlasSprite> model = e.getValue();
-			if(!parts.contains(posToAdd))
-			{
-				for(Direction d : Direction.VALUES)
-				{
-					if(parts.contains(posToAdd.offset(d)))
-					{
-						posToAdd = posToAdd.offset(d);
-						model = model.translate(d.getAxis().ordinal(), -d.getAxisDirection().getOffset());
-						break;
-					}
-				}
-			}
-			if(parts.contains(posToAdd))
-				clumped.merge(posToAdd, model, OBJModel::union);
-		}
+		Set<ModelSplitterVec3i> partsBMS = parts.stream()
+				.map(v -> new ModelSplitterVec3i(v.getX(), v.getY(), v.getZ()))
+				.collect(Collectors.toSet());
+		ClumpedModel<TextureAtlasSprite> clumpedModel = new ClumpedModel<>(splitData, partsBMS);
 
 		Map<Vector3i, List<BakedQuad>> map = new HashMap<>();
-		for(Entry<Vector3i, OBJModel<TextureAtlasSprite>> e : clumped.entrySet())
+		for(Entry<ModelSplitterVec3i, OBJModel<TextureAtlasSprite>> e : clumpedModel.getClumpedParts().entrySet())
 		{
 			List<BakedQuad> subModelFaces = new ArrayList<>(e.getValue().getFaces().size());
 			for(Polygon<TextureAtlasSprite> p : e.getValue().getFaces())
 				subModelFaces.add(PolygonUtils.toBakedQuad(p, transform, DefaultVertexFormats.BLOCK));
-			map.put(e.getKey(), subModelFaces);
+			Vector3i mcKey = new Vector3i(e.getKey().getX(), e.getKey().getY(), e.getKey().getZ());
+			map.put(mcKey, subModelFaces);
 		}
 		return map;
 	}

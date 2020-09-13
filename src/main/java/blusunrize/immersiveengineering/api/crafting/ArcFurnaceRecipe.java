@@ -31,9 +31,6 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 	public static IRecipeType<ArcFurnaceRecipe> TYPE = IRecipeType.register(Lib.MODID+":arc_furnace");
 	public static RegistryObject<IERecipeSerializer<ArcFurnaceRecipe>> SERIALIZER;
 
-	public static float energyModifier = 1;
-	public static float timeModifier = 1;
-
 	public final IngredientWithSize input;
 	public final IngredientWithSize[] additives;
 	public final NonNullList<ItemStack> output;
@@ -52,8 +49,8 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 		this.output = output;
 		this.input = input;
 		this.slag = slag;
-		this.totalProcessTime = (int)Math.floor(time*timeModifier);
-		this.totalProcessEnergy = (int)Math.floor(energy*energyModifier);
+		this.totalProcessTime = time;
+		this.totalProcessEnergy = energy;
 		this.additives = additives;
 
 		List<IngredientWithSize> inputList = Lists.newArrayList(this.input);

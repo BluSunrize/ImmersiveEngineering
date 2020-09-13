@@ -47,7 +47,7 @@ public class AssemblerHandler
 			NonNullList<Ingredient> ingred = recipe.getIngredients();
 			CraftingInventory verificationInv = InventoryCraftingFalse.createFilledCraftingInventory(3, 3, input);
 			boolean matches;
-			ForgeHooks.setCraftingPlayer(FakePlayerUtil.getAnyFakePlayer());
+			ForgeHooks.setCraftingPlayer(FakePlayerUtil.getFakePlayer(world));
 			matches = recipe.matches(verificationInv, world);
 			ForgeHooks.setCraftingPlayer(null);
 			if(!matches)

@@ -172,12 +172,16 @@ public class LocalWireNetwork implements IWorldTickable
 					"Adding connector %s at %s in net %s, but IIC %s already exists there",
 					iic, p, this, existingIIC
 			);
-		else
-			Preconditions.checkState(
-					existingIIC.isProxy(),
-					"Loading connector %s at %s in net %s, but current IIC is %s",
+		else if(existingIIC!=null&&!existingIIC.isProxy())
+		{
+			// This out-of-order case can happen in 1.16 when TEs are marked for unloading, but onChunkUnload isn't
+			// actually called until a player logs back in, at which point the new TE can already be loaded
+			WireLogger.logger.info(
+					"Loading connector {} at {} in net {}, but current IIC is {}, unloading first",
 					iic, p, this, existingIIC
 			);
+			unloadConnector(p, existingIIC);
+		}
 		connectors.put(p, iic);
 		for(ConnectionPoint cp : iic.getConnectionPoints())
 			if(connections.containsKey(cp))
@@ -188,25 +192,35 @@ public class LocalWireNetwork implements IWorldTickable
 			}
 	}
 
-	void unloadConnector(BlockPos pos)
+	boolean unloadConnector(BlockPos pos, @Nullable IImmersiveConnectable iicToRemove)
 	{
-		IImmersiveConnectable iic = connectors.get(pos);
+		IImmersiveConnectable existingIIC = connectors.get(pos);
+		if(iicToRemove!=existingIIC)
+		{
+			// Out of order case, same as in loadConnector
+			WireLogger.logger.info(
+					"Tried to remove {} at {} from {}, skipping",
+					iicToRemove, pos, this
+			);
+			return false;
+		}
 		Preconditions.checkState(
-				iic!=null,
+				existingIIC!=null,
 				"Unloading connector at %s in net %s, but no connector is stored",
 				pos, this
 		);
 		Preconditions.checkState(
-				!iic.isProxy(),
+				!existingIIC.isProxy(),
 				"Unloading connector at %s in %s, but %s is already a proxy",
-				pos, this, iic
+				pos, this, existingIIC
 		);
 		for(LocalNetworkHandler h : handlers.values())
-			h.onConnectorUnloaded(pos, iic);
-		for(ConnectionPoint cp : iic.getConnectionPoints())
+			h.onConnectorUnloaded(pos, existingIIC);
+		for(ConnectionPoint cp : existingIIC.getConnectionPoints())
 			if(connections.containsKey(cp))
-				removeHandlersFor(iic);
-		connectors.put(pos, proxyProvider.createFor(iic));
+				removeHandlersFor(existingIIC);
+		connectors.put(pos, proxyProvider.createFor(existingIIC));
+		return true;
 	}
 
 	LocalWireNetwork merge(LocalWireNetwork other, Supplier<LocalWireNetwork> createNewNet)

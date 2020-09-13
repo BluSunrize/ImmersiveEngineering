@@ -9,14 +9,12 @@
 package blusunrize.immersiveengineering.api.wires;
 
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties.ConnectionModelData;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.client.utils.CombinedModelData;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
@@ -31,15 +29,13 @@ import net.minecraftforge.client.model.data.IModelData;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.lang.ref.WeakReference;
-import java.util.*;
-import java.util.function.Consumer;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity implements IImmersiveConnectable
 {
 	protected GlobalWireNetwork globalNet;
-	private static final Map<BlockPos, Deque<EventQueueEntry>> queuedEvents = new HashMap<>();
-	private static WeakReference<World> lastWorld = new WeakReference<>(null);
 
 	public ImmersiveConnectableTileEntity(TileEntityType<? extends ImmersiveConnectableTileEntity> type)
 	{
@@ -159,134 +155,22 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 	public void onChunkUnloaded()
 	{
 		super.onChunkUnloaded();
-		queueEvent(LoadUnloadEvent.UNLOAD);
+		globalNet.onConnectorUnload(pos, this);
 	}
 
 	@Override
 	public void onLoad()
 	{
 		super.onLoad();
-		queueEvent(LoadUnloadEvent.LOAD);
+		globalNet.onConnectorLoad(this, world);
 	}
 
 	@Override
 	public void remove()
 	{
 		super.remove();
-		queueEvent(LoadUnloadEvent.REMOVE);
+		globalNet.removeConnector(pos);
 	}
-
-	private void queueEvent(LoadUnloadEvent ev)
-	{
-		if(world!=null)
-		{
-			if(!getWorldNonnull().isRemote)
-				ev.run(this);
-			else
-			{
-				if(lastWorld.get()!=world)
-				{
-					WireLogger.logger.info(
-							"Discarding queue map {} for world {} because world is now {}",
-							queuedEvents, lastWorld.get(), world
-					);
-					queuedEvents.clear();
-					lastWorld = new WeakReference<>(world);
-				}
-				Deque<EventQueueEntry> queue = queuedEvents.get(pos);
-				if(queue==null)
-				{
-					queue = new ArrayDeque<>();
-					queuedEvents.put(pos, queue);
-				}
-				if(queue.isEmpty()||queue.getLast().tick!=world.getGameTime())
-					ApiUtils.addFutureServerTask(getWorldNonnull(), () -> processEvents(pos), true);
-				queue.add(new EventQueueEntry(ev, this, getWorldNonnull().getGameTime()));
-				WireLogger.logger.info("Queuing {} at {} (tile {})", ev, getPos(), this);
-			}
-		}
-	}
-
-	// Loading, unloading and removing is strange on the client, so we need to make sure we don't remove IICs from the
-	// net that shouldn't be. This fixes #4152
-	// In 1.16 this is even worse than in previous versions, with unload happening 1 tick after load when a TE is
-	// replaced.
-	private static void processEvents(BlockPos pos)
-	{
-		ImmersiveConnectableTileEntity toUnload = null;
-		List<EventQueueEntry> loadedInTick = new ArrayList<>();
-		Queue<EventQueueEntry> events = queuedEvents.get(pos);
-		for(final EventQueueEntry e : events)
-		{
-			switch(e.type)
-			{
-				case LOAD:
-					loadedInTick.add(e);
-					break;
-				case UNLOAD:
-				case REMOVE:
-					boolean wasNew = loadedInTick.removeIf(ev -> ev.tile==e.tile);
-					if(!wasNew)
-					{
-						Preconditions.checkState(
-								toUnload==null,
-								"Unloading two IICs at %s in the same tick: %s and %s, events %s",
-								e.tile, toUnload, events
-						);
-						toUnload = e.tile;
-					}
-					break;
-			}
-		}
-		int loadedStartIndex = 0;
-		while(loadedInTick.size() > loadedStartIndex+1)
-		{
-			EventQueueEntry first = loadedInTick.get(loadedStartIndex);
-			EventQueueEntry second = loadedInTick.get(loadedStartIndex+1);
-			if(first.tick+10 > second.tick)
-				break;
-			WireLogger.logger.info("Skipping load event {} as it happened long before {}", first, second);
-			++loadedStartIndex;
-		}
-		Preconditions.checkState(
-				loadedInTick.size() < loadedStartIndex+2,
-				"Too many IICs loaded at %s in one tick: %s, queue is %s",
-				pos, loadedInTick, events
-		);
-		if(toUnload!=null)
-		{
-			if(!loadedInTick.isEmpty())
-				LoadUnloadEvent.UNLOAD.run(toUnload);
-			else
-				LoadUnloadEvent.REMOVE.run(toUnload);
-		}
-		boolean shouldKeep = false;
-		if(!loadedInTick.isEmpty())
-		{
-			ImmersiveConnectableTileEntity loaded = loadedInTick.get(loadedStartIndex).tile;
-			Collection<ConnectionPoint> points = loaded.getConnectionPoints();
-			if(points.size() > 0)
-			{
-				ConnectionPoint testPoint = points.iterator().next();
-				IImmersiveConnectable currentLoaded = loaded.globalNet.getLocalNet(testPoint).getConnector(testPoint);
-				if(currentLoaded==null||currentLoaded.isProxy())
-					LoadUnloadEvent.LOAD.run(loaded);
-				else
-				{
-					WireLogger.logger.info(
-							"Re-queueing load of {} because {} is loaded at {} (queue was {})",
-							loaded, currentLoaded, testPoint, events
-					);
-					events.clear();
-					events.add(new EventQueueEntry(LoadUnloadEvent.LOAD, loaded, loaded.getWorldNonnull().getGameTime()-1));
-					shouldKeep = true;
-				}
-			}
-		}
-		if(!shouldKeep)
-			queuedEvents.remove(pos);
-	}
-
 	@Override
 	public Collection<ConnectionPoint> getConnectionPoints()
 	{
@@ -311,55 +195,5 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 	public BlockPos getPosition()
 	{
 		return pos;
-	}
-
-	private enum LoadUnloadEvent
-	{
-		LOAD(te -> te.globalNet.onConnectorLoad(te, te.getWorld())),
-		UNLOAD(te -> te.globalNet.onConnectorUnload(te.getPos(), te)),
-		REMOVE(te -> te.globalNet.removeConnector(te));
-
-		private final Consumer<ImmersiveConnectableTileEntity> run;
-
-		LoadUnloadEvent(Consumer<ImmersiveConnectableTileEntity> run)
-		{
-			this.run = run;
-		}
-
-		public void run(ImmersiveConnectableTileEntity tile)
-		{
-			WireLogger.logger.info("Running {} at {} (tile {})", name(), tile.getPos(), tile);
-			run.accept(tile);
-		}
-
-		@Override
-		public String toString()
-		{
-			return name();
-		}
-	}
-
-	private static class EventQueueEntry
-	{
-		private final LoadUnloadEvent type;
-		private final ImmersiveConnectableTileEntity tile;
-		private final long tick;
-
-		private EventQueueEntry(LoadUnloadEvent type, ImmersiveConnectableTileEntity tile, long tick)
-		{
-			this.type = type;
-			this.tile = tile;
-			this.tick = tick;
-		}
-
-		@Override
-		public String toString()
-		{
-			return new StringJoiner(", ", EventQueueEntry.class.getSimpleName()+"[", "]")
-					.add("type="+type)
-					.add("tile="+tile)
-					.add("tick="+tick)
-					.toString();
-		}
 	}
 }

@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.*;
+import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
 import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
@@ -630,6 +631,7 @@ public class IEContent
 		IELootFunctions.preInit();
 		IEShaders.commonConstruction();
 		IEMultiblocks.init();
+		BlueprintCraftingRecipe.registerDefaultCategories();
 	}
 
 	@SubscribeEvent

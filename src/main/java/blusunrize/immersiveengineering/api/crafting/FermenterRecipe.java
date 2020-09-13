@@ -32,9 +32,6 @@ public class FermenterRecipe extends MultiblockRecipe
 	public static IRecipeType<FermenterRecipe> TYPE = IRecipeType.register(Lib.MODID+":fermenter");
 	public static RegistryObject<IERecipeSerializer<FermenterRecipe>> SERIALIZER;
 
-	public static float energyModifier = 1;
-	public static float timeModifier = 1;
-
 	public IngredientWithSize input;
 	public final FluidStack fluidOutput;
 	@Nonnull
@@ -46,8 +43,8 @@ public class FermenterRecipe extends MultiblockRecipe
 		this.fluidOutput = fluidOutput;
 		this.itemOutput = itemOutput;
 		this.input = input;
-		this.totalProcessEnergy = (int)Math.floor(energy*energyModifier);
-		this.totalProcessTime = (int)Math.floor(80*timeModifier);
+		this.totalProcessEnergy = energy;
+		this.totalProcessTime = 80;
 
 		setInputListWithSizes(Lists.newArrayList(this.input));
 		this.fluidOutputList = Lists.newArrayList(this.fluidOutput);

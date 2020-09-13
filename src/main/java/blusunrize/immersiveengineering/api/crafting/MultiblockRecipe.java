@@ -95,4 +95,9 @@ public abstract class MultiblockRecipe extends IESerializableRecipe implements I
 		return this.totalProcessEnergy;
 	}
 
+	public void modifyTimeAndEnergy(double timeModifier, double energyModifier)
+	{
+		this.totalProcessTime *= timeModifier;
+		this.totalProcessEnergy *= energyModifier;
+	}
 }

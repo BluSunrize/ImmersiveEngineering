@@ -82,6 +82,11 @@ public abstract class IETemplateMultiblock extends TemplateMultiblock
 		return transformed;
 	}
 
+	public BlockPos multiblockToModelPos(BlockPos posInMultiblock)
+	{
+		return posInMultiblock.subtract(masterFromOrigin);
+	}
+
 	@Override
 	protected void prepareBlockForDisassembly(World world, BlockPos pos)
 	{

@@ -1,3 +1,18 @@
+##### Version 1.16.1-4.0.0-pre
+- Fixed crashes with wires under certain conditions (Malte)
+
+##### Version 1.15.2-4.0.0-pre
+- Fixed model issues with the metal press and refinery (Malte)
+- Fixed the metal press piston vanishing at certain angles (Malte)
+- Fixed wires rendering too many segments near chunk boundaries (Malte)
+- Fixed broken lighting on split models (Malte)
+- Fixed each block of the garden cloche rotating on its own (Malte)
+- Fixed soil blocks not rendering in the garden cloche (Malte)
+- Fixed the hemp plant blocks appearing in the creative menu (Malte)
+- Fixed blueprints not showing up in the creative menu and JEI (Malte)
+- Fixed turrets being rotated incorrectly (Malte)
+- Fixed mixers voiding one tick worth of output (Malte)
+
 ##### Version 1.16.1-4.0.0-118
 - Re-added custom banner patterns. Craft the blueprint, make patterns, then use them on the loom! (BluSunrize)
 - Added a warning when switching to "fabulous" graphics while stencil is enabled (Malte)

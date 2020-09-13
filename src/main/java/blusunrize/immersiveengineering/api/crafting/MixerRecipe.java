@@ -29,9 +29,6 @@ public class MixerRecipe extends MultiblockRecipe
 	public static IRecipeType<MixerRecipe> TYPE = IRecipeType.register(Lib.MODID+":mixer");
 	public static RegistryObject<IERecipeSerializer<MixerRecipe>> SERIALIZER;
 
-	public static float energyModifier = 1;
-	public static float timeModifier = 1;
-
 	public final IngredientWithSize[] itemInputs;
 	public final FluidTagInput fluidInput;
 	public final FluidStack fluidOutput;
@@ -44,8 +41,8 @@ public class MixerRecipe extends MultiblockRecipe
 		this.fluidAmount = fluidOutput.getAmount();
 		this.fluidInput = fluidInput;
 		this.itemInputs = itemInputs;
-		this.totalProcessEnergy = (int)Math.floor(energy*energyModifier);
-		this.totalProcessTime = (int)Math.floor(fluidOutput.getAmount()*timeModifier);
+		this.totalProcessEnergy = energy;
+		this.totalProcessTime = fluidOutput.getAmount();
 
 		this.fluidInputList = Lists.newArrayList(this.fluidInput);
 		setInputListWithSizes(Lists.newArrayList(this.itemInputs));

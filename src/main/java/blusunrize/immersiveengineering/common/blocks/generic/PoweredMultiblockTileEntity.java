@@ -212,8 +212,11 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 		if(!isDummy())
 		{
 			BlockPos nullPos = this.getOrigin();
-			return new AxisAlignedBB(nullPos, TemplateMultiblock.withSettingsAndOffset(nullPos, new BlockPos(structureDimensions),
-					getIsMirrored(), getFacing()));
+			return new AxisAlignedBB(nullPos,
+					TemplateMultiblock.withSettingsAndOffset(
+							nullPos, new BlockPos(structureDimensions), getIsMirrored(),
+							multiblockInstance.untransformDirection(getFacing())
+					));
 		}
 		return super.getRenderBoundingBox();
 	}

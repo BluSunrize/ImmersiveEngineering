@@ -31,9 +31,6 @@ public class RefineryRecipe extends MultiblockRecipe
 	public static IRecipeType<RefineryRecipe> TYPE = IRecipeType.register(Lib.MODID+":refinery");
 	public static RegistryObject<IERecipeSerializer<RefineryRecipe>> SERIALIZER;
 
-	public static float energyModifier = 1;
-	public static float timeModifier = 1;
-
 	public final FluidStack output;
 	public final FluidTagInput input0;
 	public final FluidTagInput input1;
@@ -44,8 +41,8 @@ public class RefineryRecipe extends MultiblockRecipe
 		this.output = output;
 		this.input0 = input0;
 		this.input1 = input1;
-		this.totalProcessEnergy = (int)Math.floor(energy*energyModifier);
-		this.totalProcessTime = (int)Math.floor(1*timeModifier);
+		this.totalProcessEnergy = energy;
+		this.totalProcessTime = 1;
 
 		this.fluidInputList = Lists.newArrayList(this.input0, this.input1);
 		this.fluidOutputList = Lists.newArrayList(this.output);

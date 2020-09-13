@@ -349,16 +349,20 @@ public class GlobalWireNetwork implements IWorldTickable
 
 	public void onConnectorUnload(BlockPos pos, IImmersiveConnectable iic)
 	{
-		Set<LocalWireNetwork> handledNets = new HashSet<>();
+		Map<LocalWireNetwork, Boolean> handledNets = new HashMap<>();
 		for(ConnectionPoint connectionPoint : iic.getConnectionPoints())
 		{
 			LocalWireNetwork local = getLocalNet(connectionPoint);
-			if(handledNets.add(local))
-				local.unloadConnector(pos);
+			Boolean actuallyRemoved = handledNets.get(local);
+			if(actuallyRemoved==null)
+			{
+				actuallyRemoved = local.unloadConnector(pos, iic);
+				handledNets.put(local, actuallyRemoved);
+			}
+			if(actuallyRemoved)
+				for(Connection c : getLocalNet(connectionPoint).getConnections(connectionPoint))
+					collisionData.removeConnection(c);
 		}
-		for(ConnectionPoint cp : iic.getConnectionPoints())
-			for(Connection c : getLocalNet(cp).getConnections(cp))
-				collisionData.removeConnection(c);
 		validateNextTick = true;
 	}
 

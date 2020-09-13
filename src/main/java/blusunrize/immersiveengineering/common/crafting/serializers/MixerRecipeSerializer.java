@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -42,7 +43,9 @@ public class MixerRecipeSerializer extends IERecipeSerializer<MixerRecipe>
 		for(int i = 0; i < ingredients.length; i++)
 			ingredients[i] = IngredientWithSize.deserialize(inputs.get(i));
 		int energy = JSONUtils.getInt(json, "energy");
-		return new MixerRecipe(recipeId, fluidOutput, fluidInput, ingredients, energy);
+		return IEConfig.MACHINES.mixerConfig.apply(
+				new MixerRecipe(recipeId, fluidOutput, fluidInput, ingredients, energy)
+		);
 	}
 
 	@Nullable

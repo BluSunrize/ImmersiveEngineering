@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.wires.Connection;
-import blusunrize.immersiveengineering.api.wires.Connection.RenderData;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.client.models.SmartLightingQuad;
 import blusunrize.immersiveengineering.client.utils.BatchingRenderTypeBuffer;
@@ -589,16 +588,12 @@ public class ClientUtils
 	private static float[] alphaFirst2Fading = {0, 0, 1, 1};
 	private static float[] alphaNoFading = {1, 1, 1, 1};
 
-	public static List<BakedQuad>[] convertConnectionFromBlockstate(BlockPos here, Set<Connection.RenderData> data, TextureAtlasSprite t)
+	public static List<BakedQuad> convertConnectionFromBlockstate(BlockPos here, Set<Connection.RenderData> data, TextureAtlasSprite t)
 	{
-		List<BakedQuad>[] ret = new List[]{
-				new ArrayList<>(),
-				new ArrayList<>()
-		};
+		List<BakedQuad> ret = new ArrayList<>();
 		if(data==null)
 			return ret;
 		Vector3d dir = Vector3d.ZERO;
-		Vector3d cross = Vector3d.ZERO;
 
 		Vector3d up = new Vector3d(0, 1, 0);
 		for(Connection.RenderData connData : data)
@@ -609,33 +604,27 @@ public class ClientUtils
 				rgb[3] = 1;
 			float radius = (float)(connData.type.getRenderDiameter()/2);
 
-			for(int i = 1; i < connData.pointsToRender; i++)
+			for(int segmentEndId = 1; segmentEndId <= connData.pointsToRenderSolid; segmentEndId++)
 			{
-				boolean fading = i==connData.pointsToRender-1&&connData.pointsToRender <= RenderData.POINTS_PER_WIRE;
-				List<BakedQuad> curr = ret[fading?1: 0];
-				int j = i-1;
-				Vector3d current = connData.getPoint(i);
-				Vector3d previous = connData.getPoint(j);
-				if(fading)
-				{
-					current = current.add(fadingOffset);
-					previous = previous.add(fadingOffset);
-				}
-				boolean vertical = current.x==previous.x&&current.z==previous.z;
+				int segmentStartId = segmentEndId-1;
+				Vector3d segmentEnd = connData.getPoint(segmentEndId);
+				Vector3d segmentStart = connData.getPoint(segmentStartId);
+				boolean vertical = segmentEnd.x==segmentStart.x&&segmentEnd.z==segmentStart.z;
+				Vector3d cross;
 				if(!vertical)
 				{
-					dir = current.subtract(previous);
+					dir = segmentEnd.subtract(segmentStart);
 					cross = up.crossProduct(dir);
 					cross = cross.scale(radius/cross.length());
 				}
 				else
 					cross = new Vector3d(radius, 0, 0);
-				Vector3d[] vertices = {current.add(cross),
-						current.subtract(cross),
-						previous.subtract(cross),
-						previous.add(cross)};
-				curr.add(createSmartLightingBakedQuad(DefaultVertexFormats.BLOCK, vertices, Direction.DOWN, t, rgb, false, fading?alphaFirst2Fading: alphaNoFading, here));
-				curr.add(createSmartLightingBakedQuad(DefaultVertexFormats.BLOCK, vertices, Direction.UP, t, rgb, true, fading?alphaFirst2Fading: alphaNoFading, here));
+				Vector3d[] vertices = {segmentEnd.add(cross),
+						segmentEnd.subtract(cross),
+						segmentStart.subtract(cross),
+						segmentStart.add(cross)};
+				ret.add(createSmartLightingBakedQuad(DefaultVertexFormats.BLOCK, vertices, Direction.DOWN, t, rgb, false, alphaNoFading, here));
+				ret.add(createSmartLightingBakedQuad(DefaultVertexFormats.BLOCK, vertices, Direction.UP, t, rgb, true, alphaNoFading, here));
 
 				if(!vertical)
 				{
@@ -644,18 +633,18 @@ public class ClientUtils
 				}
 				else
 					cross = new Vector3d(0, 0, radius);
-				vertices = new Vector3d[]{current.add(cross),
-						current.subtract(cross),
-						previous.subtract(cross),
-						previous.add(cross)};
-				curr.add(createSmartLightingBakedQuad(DefaultVertexFormats.BLOCK, vertices, Direction.WEST, t, rgb, false, fading?alphaFirst2Fading: alphaNoFading, here));
-				curr.add(createSmartLightingBakedQuad(DefaultVertexFormats.BLOCK, vertices, Direction.EAST, t, rgb, true, fading?alphaFirst2Fading: alphaNoFading, here));
+				vertices = new Vector3d[]{segmentEnd.add(cross),
+						segmentEnd.subtract(cross),
+						segmentStart.subtract(cross),
+						segmentStart.add(cross)};
+				ret.add(createSmartLightingBakedQuad(DefaultVertexFormats.BLOCK, vertices, Direction.WEST, t, rgb, false, alphaNoFading, here));
+				ret.add(createSmartLightingBakedQuad(DefaultVertexFormats.BLOCK, vertices, Direction.EAST, t, rgb, true, alphaNoFading, here));
 			}
 		}
 		return ret;
 	}
 
-	public static int getVertexCountForSide(ConnectionPoint start, Connection conn, int totalPoints)
+	public static int getSolidVertexCountForSide(ConnectionPoint start, Connection conn, int totalPoints)
 	{
 		List<Integer> crossings = new ArrayList<>();
 		Vector3d lastPoint = conn.getPoint(0, start);
@@ -666,14 +655,16 @@ public class ClientUtils
 				crossings.add(i);
 			lastPoint = current;
 		}
-		int index = crossings.size()/2;
 		boolean greater = conn.isPositiveEnd(start);
-		if(crossings.size()%2==0&&greater)
-			index--;
 		if(crossings.size() > 0)
-			return crossings.get(index)+(greater?1: 2);
+		{
+			int index = crossings.size()/2;
+			if(crossings.size()%2==0&&greater)
+				index--;
+			return crossings.get(index)-(greater?0: 1);
+		}
 		else
-			return greater?totalPoints+1: 0;
+			return greater?totalPoints: 0;
 	}
 
 	public static Vector3d[] applyMatrixToVertices(TransformationMatrix matrix, Vector3d... vertices)
