@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.wires.WireApi;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectorBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemGroup;
@@ -27,11 +28,11 @@ import net.minecraft.world.World;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FeedthroughBlock extends MiscConnectorBlock
+public class FeedthroughBlock extends MiscConnectorBlock<FeedthroughTileEntity>
 {
 	public FeedthroughBlock()
 	{
-		super("feedthrough", () -> FeedthroughTileEntity.TYPE,
+		super("feedthrough", IETileTypes.FEEDTHROUGH,
 				//TODO maybe clean up a bit
 				IEProperties.FACING_ALL, BlockStateProperties.WATERLOGGED
 		);

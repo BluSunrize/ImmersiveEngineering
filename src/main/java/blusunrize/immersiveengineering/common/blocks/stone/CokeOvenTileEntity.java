@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.stone;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.CokeOvenRecipe;
 import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IActiveState;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
@@ -25,7 +26,6 @@ import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.IIntArray;
 import net.minecraft.util.NonNullList;
@@ -49,7 +49,6 @@ import javax.annotation.Nullable;
 public class CokeOvenTileEntity extends MultiblockPartTileEntity<CokeOvenTileEntity> implements IIEInventory,
 		IActiveState, IInteractionObjectIE, IProcessTile, IBlockBounds
 {
-	public static TileEntityType<CokeOvenTileEntity> TYPE;
 	public static final int INPUT_SLOT = 0;
 	public static final int OUTPUT_SLOT = 1;
 	public static final int EMPTY_CONTAINER_SLOT = 2;
@@ -63,7 +62,7 @@ public class CokeOvenTileEntity extends MultiblockPartTileEntity<CokeOvenTileEnt
 
 	public CokeOvenTileEntity()
 	{
-		super(IEMultiblocks.COKE_OVEN, TYPE, false);
+		super(IEMultiblocks.COKE_OVEN, IETileTypes.COKE_OVEN.get(), false);
 	}
 
 	@Override

@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.stone;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IActiveState;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
@@ -42,8 +43,6 @@ import javax.annotation.Nullable;
 public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnaceTileEntity> implements IIEInventory,
 		IActiveState, IInteractionObjectIE, IProcessTile, IBlockBounds
 {
-	public static TileEntityType<BlastFurnaceTileEntity> TYPE;
-
 	NonNullList<ItemStack> inventory = NonNullList.withSize(4, ItemStack.EMPTY);
 	public int process = 0;
 	public int processMax = 0;
@@ -53,7 +52,7 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 
 	public BlastFurnaceTileEntity()
 	{
-		super(IEMultiblocks.BLAST_FURNACE, TYPE, false);
+		super(IEMultiblocks.BLAST_FURNACE, IETileTypes.BLAST_FURNACE.get(), false);
 	}
 
 	protected BlastFurnaceTileEntity(IETemplateMultiblock mb, TileEntityType<? extends BlastFurnaceTileEntity> type)

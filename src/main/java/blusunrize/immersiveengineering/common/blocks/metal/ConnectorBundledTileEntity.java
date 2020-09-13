@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.api.wires.redstone.CapabilityRedstoneNetw
 import blusunrize.immersiveengineering.api.wires.redstone.CapabilityRedstoneNetwork.RedstoneBundleConnection;
 import blusunrize.immersiveengineering.api.wires.redstone.IRedstoneConnector;
 import blusunrize.immersiveengineering.api.wires.redstone.RedstoneNetworkHandler;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectorBlock;
@@ -43,11 +44,9 @@ import static blusunrize.immersiveengineering.api.wires.WireType.REDSTONE_CATEGO
 public class ConnectorBundledTileEntity extends ImmersiveConnectableTileEntity implements ITickableTileEntity, IStateBasedDirectional,
 		IBlockBounds, IRedstoneConnector
 {
-	public static TileEntityType<ConnectorBundledTileEntity> TYPE;
-
 	public ConnectorBundledTileEntity()
 	{
-		this(TYPE);
+		this(IETileTypes.CONNECTOR_BUNDLED.get());
 	}
 
 	public ConnectorBundledTileEntity(TileEntityType<? extends ConnectorBundledTileEntity> type)

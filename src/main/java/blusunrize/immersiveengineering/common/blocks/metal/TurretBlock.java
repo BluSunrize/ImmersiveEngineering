@@ -17,12 +17,11 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraftforge.fml.RegistryObject;
 
-import java.util.function.Supplier;
-
-public class TurretBlock extends GenericTileBlock
+public class TurretBlock<T extends TurretTileEntity> extends GenericTileBlock<T>
 {
-	public TurretBlock(String name, Supplier<TileEntityType<?>> tileType)
+	public TurretBlock(String name, RegistryObject<TileEntityType<T>> tileType)
 	{
 		super(name, tileType, Block.Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(3, 15).notSolid(),
 				IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE);

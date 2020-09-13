@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.items.IEItems.Tools;
@@ -25,7 +26,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.state.EnumProperty;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
@@ -46,15 +46,13 @@ import java.util.List;
 public class ToolboxTileEntity extends IEBaseTileEntity implements IStateBasedDirectional, IBlockBounds, IIEInventory,
 		IInteractionObjectIE, ITileDrop, IPlayerInteraction
 {
-	public static TileEntityType<ToolboxTileEntity> TYPE;
-
 	NonNullList<ItemStack> inventory = NonNullList.withSize(ToolboxItem.SLOT_COUNT, ItemStack.EMPTY);
 	public ITextComponent name;
 	private ListNBT enchantments;
 
 	public ToolboxTileEntity()
 	{
-		super(TYPE);
+		super(IETileTypes.TOOLBOX.get());
 	}
 
 	@Override

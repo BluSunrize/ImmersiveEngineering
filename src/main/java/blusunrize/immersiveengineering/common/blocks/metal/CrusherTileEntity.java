@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
 import blusunrize.immersiveengineering.common.EventHandler;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTile;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
@@ -30,7 +31,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.NonNullList;
@@ -58,7 +58,6 @@ import java.util.Set;
 
 public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEntity, CrusherRecipe> implements ISoundTile, IBlockBounds
 {
-	public static TileEntityType<CrusherTileEntity> TYPE;
 	public List<ItemStack> inputs = new ArrayList<>();
 	public int process = 0;
 
@@ -66,7 +65,7 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 
 	public CrusherTileEntity()
 	{
-		super(IEMultiblocks.CRUSHER, 32000, true, TYPE);
+		super(IEMultiblocks.CRUSHER, 32000, true, IETileTypes.CRUSHER.get());
 	}
 
 	@Override

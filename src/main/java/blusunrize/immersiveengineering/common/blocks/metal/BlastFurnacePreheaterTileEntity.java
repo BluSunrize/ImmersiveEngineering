@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
@@ -26,7 +27,6 @@ import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -37,8 +37,6 @@ import javax.annotation.Nullable;
 public class BlastFurnacePreheaterTileEntity extends IEBaseTileEntity implements IIEInternalFluxHandler,
 		IStateBasedDirectional, IHasDummyBlocks, IModelOffsetProvider
 {
-	public static TileEntityType<BlastFurnacePreheaterTileEntity> TYPE;
-
 	public boolean active;
 	public int dummy = 0;
 	public FluxStorage energyStorage = new FluxStorage(8000);
@@ -47,7 +45,7 @@ public class BlastFurnacePreheaterTileEntity extends IEBaseTileEntity implements
 
 	public BlastFurnacePreheaterTileEntity()
 	{
-		super(TYPE);
+		super(IETileTypes.BLASTFURNACE_PREHEATER.get());
 	}
 
 	public int doSpeedup()

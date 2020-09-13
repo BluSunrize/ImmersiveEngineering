@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.entities.RevolvershotEntity;
 import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
@@ -22,7 +23,6 @@ import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.RedstoneParticleData;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
@@ -41,15 +41,13 @@ import javax.annotation.Nullable;
 
 public class TurretGunTileEntity extends TurretTileEntity
 {
-	public static TileEntityType<TurretGunTileEntity> TYPE;
-
 	public int cycleRender;
 	private NonNullList<ItemStack> inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 	public boolean expelCasings = false;
 
 	public TurretGunTileEntity()
 	{
-		super(TYPE);
+		super(IETileTypes.TURRET_GUN.get());
 	}
 
 	@Override

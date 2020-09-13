@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttachable;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
@@ -28,7 +29,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
@@ -49,11 +49,9 @@ import java.util.Set;
 public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPressTileEntity, MetalPressRecipe> implements
 		IPlayerInteraction, IConveyorAttachable, IBlockBounds
 {
-	public static TileEntityType<MetalPressTileEntity> TYPE;
-
 	public MetalPressTileEntity()
 	{
-		super(IEMultiblocks.METAL_PRESS, 16000, true, TYPE);
+		super(IEMultiblocks.METAL_PRESS, 16000, true, IETileTypes.METAL_PRESS.get());
 	}
 
 	public ItemStack mold = ItemStack.EMPTY;

@@ -12,6 +12,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.wires.*;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -26,7 +27,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.state.EnumProperty;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
@@ -50,8 +50,6 @@ import static blusunrize.immersiveengineering.api.wires.WireApi.INFOS;
 public class FeedthroughTileEntity extends ImmersiveConnectableTileEntity implements ITileDrop,
 		IPropertyPassthrough, IBlockBounds, ICacheData, IStateBasedDirectional
 {
-	public static TileEntityType<FeedthroughTileEntity> TYPE;
-
 	public static final String WIRE = "wire";
 	private static final String OFFSET = "offset";
 	public static final String MIDDLE_STATE = "middle";
@@ -65,7 +63,7 @@ public class FeedthroughTileEntity extends ImmersiveConnectableTileEntity implem
 
 	public FeedthroughTileEntity()
 	{
-		super(TYPE);
+		super(IETileTypes.FEEDTHROUGH.get());
 	}
 
 	@Override

@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
@@ -31,7 +32,6 @@ import net.minecraft.nbt.FloatNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.NonNullList;
@@ -48,12 +48,11 @@ public class ModWorkbenchTileEntity extends IEBaseTileEntity implements IIEInven
 {
 	public static final BlockPos MASTER_POS = BlockPos.ZERO;
 	public static final BlockPos DUMMY_POS = new BlockPos(1, 0, 0);
-	public static TileEntityType<ModWorkbenchTileEntity> TYPE;
 	NonNullList<ItemStack> inventory = NonNullList.withSize(7, ItemStack.EMPTY);
 
 	public ModWorkbenchTileEntity()
 	{
-		super(TYPE);
+		super(IETileTypes.MOD_WORKBENCH.get());
 	}
 
 	@Override

@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IEApi;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
@@ -25,7 +26,6 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -50,16 +50,16 @@ import java.util.Random;
 
 public class WoodenCrateTileEntity extends IEBaseTileEntity implements IIEInventory, IInteractionObjectIE, ITileDrop, IComparatorOverride
 {
-	public static TileEntityType<WoodenCrateTileEntity> TYPE;
 	NonNullList<ItemStack> inventory = NonNullList.withSize(27, ItemStack.EMPTY);
 	public ResourceLocation lootTable;
 	public String name;
 	private ListNBT enchantments;
+	//TODO tile type
 	private boolean reinforced = false;
 
 	public WoodenCrateTileEntity()
 	{
-		super(TYPE);
+		super(IETileTypes.WOODEN_CRATE.get());
 	}
 
 	public WoodenCrateTileEntity(boolean reinforced)

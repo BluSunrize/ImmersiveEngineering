@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICollisionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISelectionBounds;
@@ -27,7 +28,6 @@ import com.google.common.collect.Lists;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.NonNullList;
@@ -57,7 +57,6 @@ import java.util.*;
 public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnaceTileEntity, ArcFurnaceRecipe>
 		implements ISoundTile, IInteractionObjectIE, ISelectionBounds, ICollisionBounds
 {
-	public static TileEntityType<ArcFurnaceTileEntity> TYPE;
 	private static final int SLAG_SLOT = 22;
 	private static final int FIRST_OUT_SLOT = 16;
 	private static final int OUT_SLOT_COUNT = 6;
@@ -85,7 +84,7 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 
 	public ArcFurnaceTileEntity()
 	{
-		super(IEMultiblocks.ARC_FURNACE, 64000, true, TYPE);
+		super(IEMultiblocks.ARC_FURNACE, 64000, true, IETileTypes.ARC_FURNACE.get());
 	}
 
 	@Override

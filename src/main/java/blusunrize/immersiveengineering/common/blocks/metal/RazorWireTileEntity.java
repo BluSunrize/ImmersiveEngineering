@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.api.wires.ImmersiveConnectableTileEntity;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler.EnergyConnector;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICollisionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISelectionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
@@ -28,7 +29,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Direction.AxisDirection;
@@ -52,11 +52,9 @@ import java.util.Objects;
 public class RazorWireTileEntity extends ImmersiveConnectableTileEntity implements IStateBasedDirectional, ICollisionBounds,
 		IOBJModelCallback<BlockState>, EnergyConnector, ISelectionBounds
 {
-	public static TileEntityType<RazorWireTileEntity> TYPE;
-
 	public RazorWireTileEntity()
 	{
-		super(TYPE);
+		super(IETileTypes.RAZOR_WIRE.get());
 	}
 
 	@Override

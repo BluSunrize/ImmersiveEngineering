@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
 import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTile;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
@@ -27,7 +28,6 @@ import com.google.common.collect.Lists;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -48,8 +48,6 @@ import java.util.Set;
 public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGeneratorTileEntity>
 		implements IBlockBounds, ISoundTile
 {
-	public static TileEntityType<DieselGeneratorTileEntity> TYPE;
-
 	public FluidTank[] tanks = new FluidTank[]{new FluidTank(24000)};
 	public boolean active = false;
 
@@ -60,7 +58,7 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 
 	public DieselGeneratorTileEntity()
 	{
-		super(IEMultiblocks.DIESEL_GENERATOR, TYPE, true);
+		super(IEMultiblocks.DIESEL_GENERATOR, IETileTypes.DIESEL_GENERATOR.get(), true);
 	}
 
 	@Override
