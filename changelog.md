@@ -1,4 +1,5 @@
 ##### Version 1.15.2-4.0.0-pre
+- Added Enderpeals as valid Railgun projectiles! (BluSunrize)
 - Fixed model issues with the metal press and refinery (Malte)
 - Fixed the metal press piston vanishing at certain angles (Malte)
 - Fixed wires rendering too many segments near chunk boundaries (Malte)
