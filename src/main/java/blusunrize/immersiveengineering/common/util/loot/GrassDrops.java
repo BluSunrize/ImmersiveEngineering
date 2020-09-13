@@ -44,11 +44,16 @@ public class GrassDrops
 		{
 			return new GrassDropModifier(ailootcondition);
 		}
+
+		@Override
+		public JsonObject write(GrassDropModifier instance)
+		{
+			return new JsonObject();
+		}
 	}
 
 	private static class GrassDropModifier extends LootModifier
 	{
-
 		protected GrassDropModifier(ILootCondition[] conditionsIn)
 		{
 			super(conditionsIn);

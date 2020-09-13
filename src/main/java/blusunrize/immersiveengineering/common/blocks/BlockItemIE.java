@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
@@ -120,7 +119,7 @@ public class BlockItemIE extends BlockItem
 	protected boolean onBlockPlaced(BlockPos pos, World worldIn, @Nullable PlayerEntity player, ItemStack stack, BlockState state)
 	{
 		// Skip reading the tile from NBT if the block is a (general) multiblock
-		if(!state.func_235901_b_(IEProperties.MULTIBLOCKSLAVE))
+		if(!state.hasProperty(IEProperties.MULTIBLOCKSLAVE))
 			return super.onBlockPlaced(pos, worldIn, player, stack, state);
 		else
 			return false;
