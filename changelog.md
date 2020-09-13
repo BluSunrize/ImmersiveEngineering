@@ -1,4 +1,4 @@
-##### Version 1.14.4-4.0.0-pre
+##### Version 1.14.4-4.0.1-pre
 - Fixed screwdriver not being able to sneak+rightclick blocks (BluSunrize)
 - Fixed heavy shield not being repairable with a steel ingot (BluSunrize)
 
