@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import net.minecraft.block.Block;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -54,18 +55,10 @@ public class WoodenCrateTileEntity extends IEBaseTileEntity implements IIEInvent
 	public ResourceLocation lootTable;
 	public String name;
 	private ListNBT enchantments;
-	//TODO tile type
-	private boolean reinforced = false;
 
 	public WoodenCrateTileEntity()
 	{
 		super(IETileTypes.WOODEN_CRATE.get());
-	}
-
-	public WoodenCrateTileEntity(boolean reinforced)
-	{
-		this();
-		this.reinforced = reinforced;
 	}
 
 	@Override
@@ -82,7 +75,6 @@ public class WoodenCrateTileEntity extends IEBaseTileEntity implements IIEInvent
 			else
 				inventory = Utils.readInventory(nbt.getList("inventory", NBT.TAG_COMPOUND), 27);
 		}
-		this.reinforced = nbt.getBoolean("reinforced");
 	}
 
 	@Override
@@ -99,7 +91,6 @@ public class WoodenCrateTileEntity extends IEBaseTileEntity implements IIEInvent
 			else
 				writeInv(nbt, false);
 		}
-		nbt.putBoolean("reinforced", reinforced);
 	}
 
 	public void writeInv(CompoundNBT nbt, boolean toItem)
@@ -128,7 +119,8 @@ public class WoodenCrateTileEntity extends IEBaseTileEntity implements IIEInvent
 			return new StringTextComponent(name);
 		else
 		{
-			if(reinforced)
+			Block b = getBlockState().getBlock();
+			if(b instanceof CrateBlock&&((CrateBlock)b).isReinforced())
 				return new TranslationTextComponent("block.immersiveengineering.reinforced_crate");
 			else
 				return new TranslationTextComponent("block.immersiveengineering.crate");
