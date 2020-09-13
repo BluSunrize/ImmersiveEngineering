@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.client.render.entity;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler.RailgunRenderColors;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler.StandardRailgunProjectile;
-import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
 import blusunrize.immersiveengineering.common.entities.RailgunShotEntity;
@@ -48,7 +47,7 @@ public class RailgunShotRenderer extends EntityRenderer<RailgunShotEntity>
 		if(!ammo.isEmpty())
 		{
 			RailgunHandler.IRailgunProjectile prop = RailgunHandler.getProjectile(ammo);
-			if(prop instanceof RailgunHandler.StandardRailgunProjectile)
+			if(prop instanceof RailgunHandler.StandardRailgunProjectile&&((StandardRailgunProjectile)prop).getColorMap()!=null)
 				colors = ((StandardRailgunProjectile)prop).getColorMap();
 		}
 
