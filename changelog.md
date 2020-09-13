@@ -1,3 +1,6 @@
+##### Version 1.14.4-4.0.0-pre
+- Fixed screwdriver not being able to sneak+rightclick blocks (BluSunrize)
+
 ##### Version 1.14.4-4.0.0-116
 - Added dyed sheetmetal & slabs, textured by Rorax! (BluSunrize)
 - Changed various recipes: (BluSunrize)
