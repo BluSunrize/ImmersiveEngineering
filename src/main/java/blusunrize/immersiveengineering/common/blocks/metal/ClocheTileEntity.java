@@ -550,13 +550,11 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 	@OnlyIn(Dist.CLIENT)
 	public String getCacheKey(BlockState object)
 	{
-		if(!inventory.get(SLOT_SOIL).isEmpty())
-		{
-			ResourceLocation rl = getSoilTexture();
-			if(rl!=null)
-				return rl.toString();
-		}
-		return null;
+		ResourceLocation rl = getSoilTexture();
+		if(rl!=null)
+			return rl.toString();
+		else
+			return null;
 	}
 
 	@OnlyIn(Dist.CLIENT)
