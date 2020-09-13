@@ -32,7 +32,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -44,7 +43,7 @@ import javax.annotation.Nullable;
 import java.util.EnumMap;
 import java.util.List;
 
-public class CapacitorLVTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInternalFluxHandler, IBlockOverlayText,
+public class CapacitorTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInternalFluxHandler, IBlockOverlayText,
 		IConfigurableSides, IComparatorOverride, ITileDrop
 {
 	public EnumMap<Direction, IOSideConfig> sideConfig = new EnumMap<>(Direction.class);
@@ -54,9 +53,9 @@ public class CapacitorLVTileEntity extends IEBaseTileEntity implements ITickable
 
 	public int comparatorOutput = 0;
 
-	public CapacitorLVTileEntity(TileEntityType<? extends CapacitorLVTileEntity> type, CapacitorConfig configValues)
+	public CapacitorTileEntity(CapacitorConfig configValues)
 	{
-		super(type);
+		super(configValues.tileType.get());
 		this.configValues = configValues;
 		for(Direction f : Direction.VALUES)
 		{
@@ -66,11 +65,6 @@ public class CapacitorLVTileEntity extends IEBaseTileEntity implements ITickable
 				sideConfig.put(f, IOSideConfig.NONE);
 		}
 		energyStorage = new FluxStorage(getMaxStorage(), getMaxInput(), getMaxOutput());
-	}
-
-	public CapacitorLVTileEntity()
-	{
-		this(IETileTypes.CAPACITOR_LV.get(), IEServerConfig.MACHINES.lvCapConfig);
 	}
 
 	@Override

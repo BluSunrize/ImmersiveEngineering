@@ -9,18 +9,17 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
-import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Machines.CapacitorConfig;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 
-public class CapacitorCreativeTileEntity extends CapacitorLVTileEntity
+public class CapacitorCreativeTileEntity extends CapacitorTileEntity
 {
 	public CapacitorCreativeTileEntity()
 	{
-		super(IETileTypes.CAPACITOR_CREATIVE.get(), CapacitorConfig.CREATIVE);
+		super(CapacitorConfig.CREATIVE);
 		for(Direction d : Direction.VALUES)
 			sideConfig.put(d, IOSideConfig.OUTPUT);
 	}

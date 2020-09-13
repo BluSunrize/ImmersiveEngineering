@@ -10,11 +10,15 @@
 package blusunrize.immersiveengineering.common.config;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.crafting.*;
+import blusunrize.immersiveengineering.common.IETileTypes;
+import blusunrize.immersiveengineering.common.blocks.metal.CapacitorTileEntity;
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Wires.WireConfig;
 import blusunrize.immersiveengineering.common.wires.IEWireTypes.IEWireType;
 import com.electronwill.nightconfig.core.Config;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.*;
@@ -28,6 +32,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.IntSupplier;
+import java.util.function.Supplier;
 
 @SuppressWarnings("WeakerAccess")
 @EventBusSubscriber(modid = ImmersiveEngineering.MODID, bus = Bus.MOD)
@@ -208,9 +213,9 @@ public class IEServerConfig
 			//Server
 			{
 				builder.push("capacitors");
-				lvCapConfig = new CapacitorConfig(builder, "low", 100000, 256, 256);
-				mvCapConfig = new CapacitorConfig(builder, "medium", 1000000, 1024, 1024);
-				hvCapConfig = new CapacitorConfig(builder, "high", 4000000, 4096, 4096);
+				lvCapConfig = new CapacitorConfig(builder, () -> IETileTypes.CAPACITOR_LV.get(), "low", 100000, 256, 256);
+				mvCapConfig = new CapacitorConfig(builder, () -> IETileTypes.CAPACITOR_MV.get(), "medium", 1000000, 1024, 1024);
+				hvCapConfig = new CapacitorConfig(builder, () -> IETileTypes.CAPACITOR_HV.get(), "high", 4000000, 4096, 4096);
 				builder.pop();
 			}
 			dynamo_output = builder
@@ -378,13 +383,17 @@ public class IEServerConfig
 
 		public static class CapacitorConfig
 		{
-			public static final CapacitorConfig CREATIVE = new CapacitorConfig(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE);
+			public static final CapacitorConfig CREATIVE = new CapacitorConfig(
+					Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, () -> IETileTypes.CAPACITOR_CREATIVE.get()
+			);
 			public final IntSupplier storage;
 			public final IntSupplier input;
 			public final IntSupplier output;
+			public final Supplier<TileEntityType<? extends CapacitorTileEntity>> tileType;
 
-			private CapacitorConfig(ForgeConfigSpec.Builder builder, String voltage, int defaultStorage, int defaultInput, int defaultOutput)
+			private CapacitorConfig(Builder builder, Supplier<TileEntityType<? extends CapacitorTileEntity>> tileType, String voltage, int defaultStorage, int defaultInput, int defaultOutput)
 			{
+				this.tileType = tileType;
 				builder
 						.comment("Configuration for the "+voltage+" voltage capacitor")
 						.push(voltage.charAt(0)+"v");
@@ -400,11 +409,12 @@ public class IEServerConfig
 				builder.pop();
 			}
 
-			private CapacitorConfig(int storage, int input, int output)
+			private CapacitorConfig(int storage, int input, int output, Supplier<TileEntityType<? extends CapacitorTileEntity>> type)
 			{
 				this.storage = () -> storage;
 				this.input = () -> input;
 				this.output = () -> output;
+				this.tileType = type;
 			}
 		}
 
