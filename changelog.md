@@ -1,3 +1,6 @@
+##### Version 1.16.1-4.0.0-pre
+- Fixed crashes with wires under certain conditions (Malte)
+
 ##### Version 1.15.2-4.0.0-pre
 - Fixed model issues with the metal press and refinery (Malte)
 - Fixed the metal press piston vanishing at certain angles (Malte)
