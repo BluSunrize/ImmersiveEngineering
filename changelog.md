@@ -10,6 +10,7 @@
 - Fixed turrets being rotated incorrectly (Malte)
 - Fixed mixers voiding one tick worth of output (Malte)
 - Fixed screwdriver not being able to sneak+rightclick blocks (BluSunrize)
+- Fixed heavy shield not being repairable with a steel ingot (BluSunrize)
 
 ##### Version 1.15.2-4.0.0-117
 - Changed rendering of multiblocks to split models into blocks;
