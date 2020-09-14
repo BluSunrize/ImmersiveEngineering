@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.IRotationAcceptor;
 import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
@@ -22,7 +23,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
@@ -32,11 +32,9 @@ import javax.annotation.Nullable;
 
 public class DynamoTileEntity extends IEBaseTileEntity implements IIEInternalFluxConnector, IStateBasedDirectional, IRotationAcceptor
 {
-	public static TileEntityType<DynamoTileEntity> TYPE;
-
 	public DynamoTileEntity()
 	{
-		super(TYPE);
+		super(IETileTypes.DYNAMO.get());
 	}
 
 	@Override

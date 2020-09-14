@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
@@ -17,6 +16,7 @@ import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.excavator.MineralMix;
 import blusunrize.immersiveengineering.api.excavator.MineralWorldInfo;
 import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
@@ -34,7 +34,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
@@ -50,8 +49,6 @@ import javax.annotation.Nullable;
 public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInternalFluxHandler, IHasDummyBlocks,
 		IPlayerInteraction, IModelOffsetProvider
 {
-	public static TileEntityType<SampleDrillTileEntity> TYPE;
-
 	public FluxStorage energyStorage = new FluxStorage(8000);
 	public int dummy = 0;
 	public int process = 0;
@@ -61,7 +58,7 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 
 	public SampleDrillTileEntity()
 	{
-		super(TYPE);
+		super(IETileTypes.SAMPLE_DRILL.get());
 	}
 
 	public static boolean _Immovable()
@@ -72,7 +69,7 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 	@Override
 	public void tick()
 	{
-		ApiUtils.checkForNeedlessTicking(this);
+		checkForNeedlessTicking();
 		if(dummy!=0||world.isAirBlock(getPos().add(0, -1, 0))||!sample.isEmpty())
 			return;
 		if(world.isRemote&&active)

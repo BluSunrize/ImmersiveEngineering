@@ -47,4 +47,9 @@ public class CrateBlock extends IETileProviderBlock
 			return 1200000;
 		return super.getExplosionResistance(state, world, pos, explosion);
 	}
+
+	public boolean isReinforced()
+	{
+		return reinforced;
+	}
 }

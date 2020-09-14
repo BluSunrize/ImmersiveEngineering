@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
@@ -16,6 +15,7 @@ import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.fluid.IFluidPipe;
 import blusunrize.immersiveengineering.client.utils.TextUtils;
 import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
@@ -37,7 +37,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -66,8 +65,6 @@ import java.util.Map;
 public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IBlockBounds, IHasDummyBlocks,
 		IConfigurableSides, IFluidPipe, IIEInternalFluxHandler, IBlockOverlayText
 {
-	public static TileEntityType<FluidPumpTileEntity> TYPE;
-
 	public Map<Direction, IOSideConfig> sideConfig = new EnumMap<>(Direction.class);
 
 	{
@@ -92,7 +89,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 
 	public FluidPumpTileEntity()
 	{
-		super(TYPE);
+		super(IETileTypes.FLUID_PUMP.get());
 	}
 
 	private Map<Direction, CapabilityReference<IFluidHandler>> neighborFluids = new EnumMap<>(Direction.class);
@@ -106,7 +103,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 	@Override
 	public void tick()
 	{
-		ApiUtils.checkForNeedlessTicking(this);
+		checkForNeedlessTicking();
 		if(isDummy()||world.isRemote)
 			return;
 		if(tank.getFluidAmount() > 0)

@@ -9,18 +9,16 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.wires.WireType;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.tileentity.TileEntityType;
 
 import static blusunrize.immersiveengineering.api.wires.WireType.HV_CATEGORY;
 
 public class TransformerHVTileEntity extends TransformerTileEntity
 {
-	public static TileEntityType<TransformerHVTileEntity> TYPE;
-
 	public TransformerHVTileEntity()
 	{
-		super(TYPE);
+		super(IETileTypes.TRANSFORMER_HV.get());
 		acceptableLowerWires = ImmutableSet.of(WireType.LV_CATEGORY, WireType.MV_CATEGORY);
 	}
 

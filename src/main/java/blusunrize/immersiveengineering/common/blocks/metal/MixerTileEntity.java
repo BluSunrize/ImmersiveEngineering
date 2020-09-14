@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
@@ -27,7 +28,6 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -56,8 +56,6 @@ import java.util.*;
 public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity, MixerRecipe> implements
 		IInteractionObjectIE, IBlockBounds
 {
-	public static TileEntityType<MixerTileEntity> TYPE;
-
 	public MultiFluidTank tank = new MultiFluidTank(8000);
 	public NonNullList<ItemStack> inventory = NonNullList.withSize(8, ItemStack.EMPTY);
 	public float animation_agitator = 0;
@@ -65,7 +63,7 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 
 	public MixerTileEntity()
 	{
-		super(IEMultiblocks.MIXER, 16000, true, TYPE);
+		super(IEMultiblocks.MIXER, 16000, true, IETileTypes.MIXER.get());
 	}
 
 	@Override

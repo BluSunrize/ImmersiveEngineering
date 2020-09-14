@@ -9,15 +9,13 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.common.IEConfig;
-import net.minecraft.tileentity.TileEntityType;
+import blusunrize.immersiveengineering.common.IETileTypes;
 
 public class CapacitorMVTileEntity extends CapacitorLVTileEntity
 {
-	public static TileEntityType<CapacitorMVTileEntity> TYPE;
-
 	public CapacitorMVTileEntity()
 	{
-		super(TYPE);
+		super(IETileTypes.CAPACITOR_MV.get());
 	}
 
 	@Override

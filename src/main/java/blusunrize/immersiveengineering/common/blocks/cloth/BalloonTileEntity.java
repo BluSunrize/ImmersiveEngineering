@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryEntry;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
 import blusunrize.immersiveengineering.common.blocks.metal.ConnectorStructuralTileEntity;
@@ -30,7 +31,6 @@ import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.*;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.BlockPos;
@@ -50,7 +50,6 @@ import javax.annotation.Nullable;
 
 public class BalloonTileEntity extends ConnectorStructuralTileEntity implements IPlayerInteraction, IHammerInteraction
 {
-	public static TileEntityType<BalloonTileEntity> TYPE;
 	public int style = 0;
 	public DyeColor colour0 = null;
 	public DyeColor colour1 = null;
@@ -58,7 +57,7 @@ public class BalloonTileEntity extends ConnectorStructuralTileEntity implements 
 
 	public BalloonTileEntity()
 	{
-		super(TYPE);
+		super(IETileTypes.BALLOON.get());
 		reInitCapability();
 	}
 

@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
@@ -20,6 +19,7 @@ import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
@@ -45,7 +45,6 @@ import net.minecraft.state.EnumProperty;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -80,8 +79,6 @@ import java.util.List;
 public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IStateBasedDirectional, IBlockBounds, IHasDummyBlocks,
 		IIEInventory, IIEInternalFluxHandler, IInteractionObjectIE, IOBJModelCallback<BlockState>, IModelOffsetProvider
 {
-	public static TileEntityType<ClocheTileEntity> TYPE;
-
 	public static final int SLOT_SOIL = 0;
 	public static final int SLOT_SEED = 1;
 	public static final int SLOT_FERTILIZER = 2;
@@ -112,7 +109,7 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 
 	public ClocheTileEntity()
 	{
-		super(TYPE);
+		super(IETileTypes.CLOCHE.get());
 	}
 
 	private CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntity(this,
@@ -122,7 +119,7 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 	@Override
 	public void tick()
 	{
-		ApiUtils.checkForNeedlessTicking(this);
+		checkForNeedlessTicking();
 		if(dummy!=0||isRSPowered())
 			return;
 		ItemStack seed = inventory.get(SLOT_SEED);

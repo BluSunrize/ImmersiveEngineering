@@ -79,7 +79,11 @@ public class CrateMinecartEntity extends IEMinecartEntity<WoodenCrateTileEntity>
 	@Override
 	protected Supplier<WoodenCrateTileEntity> getTileProvider()
 	{
-		return () -> new WoodenCrateTileEntity(false);
+		return () -> {
+			WoodenCrateTileEntity tile = new WoodenCrateTileEntity();
+			tile.setOverrideState(getDisplayTile());
+			return tile;
+		};
 	}
 
 	@Override

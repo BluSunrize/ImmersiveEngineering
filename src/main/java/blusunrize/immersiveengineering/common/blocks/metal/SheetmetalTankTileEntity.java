@@ -8,8 +8,9 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.utils.TextUtils;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
@@ -21,7 +22,6 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -45,15 +45,13 @@ import java.util.Set;
 public class SheetmetalTankTileEntity extends MultiblockPartTileEntity<SheetmetalTankTileEntity>
 		implements IBlockOverlayText, IPlayerInteraction, IComparatorOverride, IBlockBounds
 {
-	public static TileEntityType<SheetmetalTankTileEntity> TYPE;
-
 	public FluidTank tank = new FluidTank(512000);
 	private int[] oldComps = new int[4];
 	private int masterCompOld;
 
 	public SheetmetalTankTileEntity()
 	{
-		super(IEMultiblocks.SHEETMETAL_TANK, TYPE, true);
+		super(IEMultiblocks.SHEETMETAL_TANK, IETileTypes.SHEETMETAL_TANK.get(), true);
 	}
 
 	@Override
@@ -77,7 +75,7 @@ public class SheetmetalTankTileEntity extends MultiblockPartTileEntity<Sheetmeta
 	@Override
 	public void tick()
 	{
-		ApiUtils.checkForNeedlessTicking(this);
+		checkForNeedlessTicking();
 		if(!isDummy()&&!world.isRemote&&!isRSDisabled())
 			for(Direction f : Direction.VALUES)
 				if(f!=Direction.UP&&tank.getFluidAmount() > 0)

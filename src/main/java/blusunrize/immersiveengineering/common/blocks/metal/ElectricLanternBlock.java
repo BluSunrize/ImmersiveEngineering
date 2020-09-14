@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectorBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.state.Property;
@@ -18,12 +19,12 @@ import net.minecraft.world.IBlockReader;
 
 import java.util.function.Supplier;
 
-public class ElectricLanternBlock extends MiscConnectorBlock
+public class ElectricLanternBlock extends MiscConnectorBlock<ElectricLanternTileEntity>
 {
 
-	public ElectricLanternBlock(String name, Supplier<TileEntityType<?>> tileType, Property<?>... extraProperties)
+	public ElectricLanternBlock(String name, Property<?>... extraProperties)
 	{
-		super(name, tileType, extraProperties);
+		super(name, IETileTypes.ELECTRIC_LANTERN, extraProperties);
 	}
 
 	@Override

@@ -33,7 +33,6 @@ import blusunrize.immersiveengineering.api.wires.redstone.RedstoneNetworkHandler
 import blusunrize.immersiveengineering.client.utils.ClocheRenderFunctions;
 import blusunrize.immersiveengineering.common.IEConfig.Ores.OreConfig;
 import blusunrize.immersiveengineering.common.blocks.*;
-import blusunrize.immersiveengineering.common.blocks.FakeLightBlock.FakeLightTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
 import blusunrize.immersiveengineering.common.blocks.cloth.*;
 import blusunrize.immersiveengineering.common.blocks.generic.*;
@@ -42,7 +41,8 @@ import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.Cove
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
-import blusunrize.immersiveengineering.common.blocks.stone.*;
+import blusunrize.immersiveengineering.common.blocks.stone.PartialConcreteBlock;
+import blusunrize.immersiveengineering.common.blocks.stone.StoneMultiBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
 import blusunrize.immersiveengineering.common.crafting.IngredientFluidStack;
 import blusunrize.immersiveengineering.common.entities.*;
@@ -91,15 +91,14 @@ import net.minecraft.world.gen.feature.OreFeatureConfig;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.RegistryEvent.MissingMappings.Mapping;
-import net.minecraftforge.event.RegistryEvent.Register;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
-import java.lang.reflect.Field;
 import java.util.*;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
@@ -306,7 +305,7 @@ public class IEContent
 		StoneDecoration.concreteStairs[0] = new IEStairsBlock("stairs_concrete", stoneDecoProps, (IEBaseBlock)StoneDecoration.concrete);
 		StoneDecoration.concreteStairs[1] = new IEStairsBlock("stairs_concrete_tile", stoneDecoProps, (IEBaseBlock)StoneDecoration.concreteTile);
 		StoneDecoration.concreteStairs[2] = new IEStairsBlock("stairs_concrete_leaded", stoneDecoLeadedProps, (IEBaseBlock)StoneDecoration.concreteLeaded);
-		StoneDecoration.coresample = new GenericTileBlock("coresample", () -> CoresampleTileEntity.TYPE,
+		StoneDecoration.coresample = new GenericTileBlock<>("coresample", IETileTypes.CORE_SAMPLE,
 				stoneDecoPropsNotSolid, (b, p) -> null, IEProperties.FACING_HORIZONTAL);
 
 		Block.Properties standardWoodProperties = Block.Properties.create(Material.WOOD)
@@ -329,7 +328,7 @@ public class IEContent
 		WoodenDecoration.treatedFence = new IEFenceBlock("treated_fence", standardWoodPropertiesNotSolid);
 		WoodenDecoration.treatedScaffolding = new ScaffoldingBlock("treated_scaffold", standardWoodPropertiesNotSolid);
 
-		WoodenDevices.craftingTable = new GenericTileBlock("craftingtable", () -> CraftingTableTileEntity.TYPE,
+		WoodenDevices.craftingTable = new GenericTileBlock<>("craftingtable", IETileTypes.CRAFTING_TABLE,
 				standardWoodPropertiesNotSolid, IEProperties.FACING_HORIZONTAL);
 		WoodenDevices.workbench = new ModWorkbenchBlock("workbench");
 		WoodenDevices.gunpowderBarrel = new GunpowderBarrelBlock("gunpowder_barrel");
@@ -339,7 +338,7 @@ public class IEContent
 		WoodenDevices.reinforcedCrate = new CrateBlock("reinforced_crate", true);
 
 		WoodenDevices.sorter = new SorterBlock("sorter", false);
-		WoodenDevices.itemBatcher = new GenericTileBlock("item_batcher", () -> ItemBatcherTileEntity.TYPE,
+		WoodenDevices.itemBatcher = new GenericTileBlock<>("item_batcher", IETileTypes.ITEM_BATCHER,
 				standardWoodProperties, IEProperties.FACING_ALL);
 		WoodenDevices.fluidSorter = new SorterBlock("fluid_sorter", true);
 		WoodenDevices.windmill = new WindmillBlock("windmill");
@@ -414,74 +413,74 @@ public class IEContent
 			Connectors.ENERGY_CONNECTORS.put(new ImmutablePair<>(cat, true), relay);
 		}
 
-		Connectors.connectorStructural = new MiscConnectorBlock("connector_structural", () -> ConnectorStructuralTileEntity.TYPE);
+		Connectors.connectorStructural = new MiscConnectorBlock<>("connector_structural", IETileTypes.CONNECTOR_STRUCTURAL);
 		Connectors.postTransformer = new PostTransformerBlock();
 		Connectors.transformer = new TransformerBlock();
 		Connectors.transformerHV = new TransformerHVBlock();
-		Connectors.breakerswitch = new MiscConnectorBlock("breaker_switch", () -> BreakerSwitchTileEntity.TYPE,
+		Connectors.breakerswitch = new MiscConnectorBlock<>("breaker_switch", IETileTypes.BREAKER_SWITCH,
 				IEProperties.ACTIVE, IEProperties.FACING_ALL, BlockStateProperties.WATERLOGGED);
-		Connectors.redstoneBreaker = new MiscConnectorBlock("redstone_breaker", () -> RedstoneBreakerTileEntity.TYPE,
+		Connectors.redstoneBreaker = new MiscConnectorBlock<>("redstone_breaker", IETileTypes.REDSTONE_BREAKER,
 				IEProperties.ACTIVE, IEProperties.FACING_ALL, BlockStateProperties.WATERLOGGED);
 		Connectors.currentTransformer = new EnergyMeterBlock();
-		Connectors.connectorRedstone = new MiscConnectorBlock("connector_redstone", () -> ConnectorRedstoneTileEntity.TYPE);
-		Connectors.connectorProbe = new MiscConnectorBlock("connector_probe", () -> ConnectorProbeTileEntity.TYPE);
-		Connectors.connectorBundled = new MiscConnectorBlock("connector_bundled", () -> ConnectorBundledTileEntity.TYPE);
+		Connectors.connectorRedstone = new MiscConnectorBlock<>("connector_redstone", IETileTypes.CONNECTOR_REDSTONE);
+		Connectors.connectorProbe = new MiscConnectorBlock<>("connector_probe", IETileTypes.CONNECTOR_PROBE);
+		Connectors.connectorBundled = new MiscConnectorBlock<>("connector_bundled", IETileTypes.CONNECTOR_BUNDLED);
 
 		Connectors.feedthrough = new FeedthroughBlock();
 
-		MetalDevices.fluidPlacer = new GenericTileBlock("fluid_placer", () -> FluidPlacerTileEntity.TYPE,
+		MetalDevices.fluidPlacer = new GenericTileBlock<>("fluid_placer", IETileTypes.FLUID_PLACER,
 				metalPropertiesNotSolid);
-		MetalDevices.razorWire = new MiscConnectorBlock("razor_wire", () -> RazorWireTileEntity.TYPE,
+		MetalDevices.razorWire = new MiscConnectorBlock<>("razor_wire", IETileTypes.RAZOR_WIRE,
 				IEProperties.FACING_HORIZONTAL, BlockStateProperties.WATERLOGGED);
-		MetalDevices.toolbox = new GenericTileBlock("toolbox_block", () -> ToolboxTileEntity.TYPE, metalPropertiesNotSolid,
+		MetalDevices.toolbox = new GenericTileBlock<>("toolbox_block", IETileTypes.TOOLBOX, metalPropertiesNotSolid,
 				(b, p) -> null, IEProperties.FACING_HORIZONTAL);
-		MetalDevices.capacitorLV = new GenericTileBlock("capacitor_lv", () -> CapacitorLVTileEntity.TYPE, defaultMetalProperties);
-		MetalDevices.capacitorMV = new GenericTileBlock("capacitor_mv", () -> CapacitorMVTileEntity.TYPE, defaultMetalProperties);
-		MetalDevices.capacitorHV = new GenericTileBlock("capacitor_hv", () -> CapacitorHVTileEntity.TYPE, defaultMetalProperties);
-		MetalDevices.capacitorCreative = new GenericTileBlock("capacitor_creative", () -> CapacitorCreativeTileEntity.TYPE, defaultMetalProperties);
+		MetalDevices.capacitorLV = new GenericTileBlock<>("capacitor_lv", IETileTypes.CAPACITOR_LV, defaultMetalProperties);
+		MetalDevices.capacitorMV = new GenericTileBlock<>("capacitor_mv", IETileTypes.CAPACITOR_MV, defaultMetalProperties);
+		MetalDevices.capacitorHV = new GenericTileBlock<>("capacitor_hv", IETileTypes.CAPACITOR_HV, defaultMetalProperties);
+		MetalDevices.capacitorCreative = new GenericTileBlock<>("capacitor_creative", IETileTypes.CAPACITOR_CREATIVE, defaultMetalProperties);
 		MetalDevices.barrel = new BarrelBlock("metal_barrel", true);
 		MetalDevices.fluidPump = new FluidPumpBlock();
 		MetalDevices.blastFurnacePreheater = new BlastFurnacePreheaterBlock();
-		MetalDevices.furnaceHeater = new GenericTileBlock("furnace_heater", () -> FurnaceHeaterTileEntity.TYPE,
+		MetalDevices.furnaceHeater = new GenericTileBlock<>("furnace_heater", IETileTypes.FURNACE_HEATER,
 				defaultMetalProperties, IEProperties.ACTIVE, IEProperties.FACING_ALL);
-		MetalDevices.dynamo = new GenericTileBlock("dynamo", () -> DynamoTileEntity.TYPE, defaultMetalProperties, IEProperties.FACING_HORIZONTAL);
-		MetalDevices.thermoelectricGen = new GenericTileBlock("thermoelectric_generator", () -> ThermoelectricGenTileEntity.TYPE,
+		MetalDevices.dynamo = new GenericTileBlock<>("dynamo", IETileTypes.DYNAMO, defaultMetalProperties, IEProperties.FACING_HORIZONTAL);
+		MetalDevices.thermoelectricGen = new GenericTileBlock<>("thermoelectric_generator", IETileTypes.THERMOELECTRIC_GEN,
 				defaultMetalProperties);
-		MetalDevices.electricLantern = new ElectricLanternBlock("electric_lantern", () -> ElectricLanternTileEntity.TYPE,
+		MetalDevices.electricLantern = new ElectricLanternBlock("electric_lantern",
 				IEProperties.FACING_TOP_DOWN, IEProperties.ACTIVE, BlockStateProperties.WATERLOGGED);
-		MetalDevices.chargingStation = new GenericTileBlock("charging_station", () -> ChargingStationTileEntity.TYPE,
+		MetalDevices.chargingStation = new GenericTileBlock<>("charging_station", IETileTypes.CHARGING_STATION,
 				metalPropertiesNotSolid, IEProperties.FACING_HORIZONTAL);
-		MetalDevices.fluidPipe = new GenericTileBlock("fluid_pipe", () -> FluidPipeTileEntity.TYPE, metalPropertiesNotSolid, BlockStateProperties.WATERLOGGED);
+		MetalDevices.fluidPipe = new GenericTileBlock<>("fluid_pipe", IETileTypes.FLUID_PIPE, metalPropertiesNotSolid, BlockStateProperties.WATERLOGGED);
 		MetalDevices.sampleDrill = new SampleDrillBlock();
 		MetalDevices.teslaCoil = new TeslaCoilBlock();
-		MetalDevices.floodlight = new FloodlightBlock("floodlight", () -> FloodlightTileEntity.TYPE);
-		MetalDevices.turretChem = new TurretBlock("turret_chem", () -> TurretChemTileEntity.TYPE);
-		MetalDevices.turretGun = new TurretBlock("turret_gun", () -> TurretGunTileEntity.TYPE);
+		MetalDevices.floodlight = new FloodlightBlock("floodlight");
+		MetalDevices.turretChem = new TurretBlock<>("turret_chem", IETileTypes.TURRET_CHEM);
+		MetalDevices.turretGun = new TurretBlock<>("turret_gun", IETileTypes.TURRET_GUN);
 		MetalDevices.cloche = new ClocheBlock();
 		for(EnumMetals metal : new EnumMetals[]{EnumMetals.IRON, EnumMetals.STEEL, EnumMetals.ALUMINUM, EnumMetals.COPPER})
-			MetalDevices.chutes.put(metal, new GenericTileBlock("chute_"+metal.tagName(), () -> ChuteTileEntity.TYPE,
+			MetalDevices.chutes.put(metal, new GenericTileBlock<>("chute_"+metal.tagName(), IETileTypes.CHUTE,
 					metalPropertiesNotSolid, IEProperties.FACING_HORIZONTAL, BlockStateProperties.WATERLOGGED));
 
-		Multiblocks.cokeOven = new StoneMultiBlock("coke_oven", () -> CokeOvenTileEntity.TYPE);
-		Multiblocks.blastFurnace = new StoneMultiBlock("blast_furnace", () -> BlastFurnaceTileEntity.TYPE);
-		Multiblocks.alloySmelter = new StoneMultiBlock("alloy_smelter", () -> AlloySmelterTileEntity.TYPE);
-		Multiblocks.blastFurnaceAdv = new StoneMultiBlock("advanced_blast_furnace", () -> BlastFurnaceAdvancedTileEntity.TYPE);
-		Multiblocks.crusher = new MetalMultiblockBlock("crusher", () -> CrusherTileEntity.TYPE);
-		Multiblocks.silo = new MetalMultiblockBlock("silo", () -> SiloTileEntity.TYPE);
-		Multiblocks.tank = new MetalMultiblockBlock("tank", () -> SheetmetalTankTileEntity.TYPE);
-		Multiblocks.arcFurnace = new MetalMultiblockBlock("arc_furnace", () -> ArcFurnaceTileEntity.TYPE);
-		Multiblocks.assembler = new MetalMultiblockBlock("assembler", () -> AssemblerTileEntity.TYPE);
-		Multiblocks.autoWorkbench = new MetalMultiblockBlock("auto_workbench", () -> AutoWorkbenchTileEntity.TYPE);
-		Multiblocks.bucketWheel = new MetalMultiblockBlock("bucket_wheel", () -> BucketWheelTileEntity.TYPE);
-		Multiblocks.excavator = new MetalMultiblockBlock("excavator", () -> ExcavatorTileEntity.TYPE);
-		Multiblocks.metalPress = new MetalMultiblockBlock("metal_press", () -> MetalPressTileEntity.TYPE);
-		Multiblocks.bottlingMachine = new MetalMultiblockBlock("bottling_machine", () -> BottlingMachineTileEntity.TYPE);
-		Multiblocks.fermenter = new MetalMultiblockBlock("fermenter", () -> FermenterTileEntity.TYPE);
-		Multiblocks.squeezer = new MetalMultiblockBlock("squeezer", () -> SqueezerTileEntity.TYPE);
-		Multiblocks.mixer = new MetalMultiblockBlock("mixer", () -> MixerTileEntity.TYPE);
-		Multiblocks.refinery = new MetalMultiblockBlock("refinery", () -> RefineryTileEntity.TYPE);
-		Multiblocks.dieselGenerator = new MetalMultiblockBlock("diesel_generator", () -> DieselGeneratorTileEntity.TYPE);
-		Multiblocks.lightningrod = new MetalMultiblockBlock("lightning_rod", () -> LightningrodTileEntity.TYPE);
+		Multiblocks.cokeOven = new StoneMultiBlock<>("coke_oven", IETileTypes.COKE_OVEN);
+		Multiblocks.blastFurnace = new StoneMultiBlock<>("blast_furnace", IETileTypes.BLAST_FURNACE);
+		Multiblocks.alloySmelter = new StoneMultiBlock<>("alloy_smelter", IETileTypes.ALLOY_SMELTER);
+		Multiblocks.blastFurnaceAdv = new StoneMultiBlock<>("advanced_blast_furnace", IETileTypes.BLAST_FURNACE_ADVANCED);
+		Multiblocks.crusher = new MetalMultiblockBlock<>("crusher", IETileTypes.CRUSHER);
+		Multiblocks.silo = new MetalMultiblockBlock<>("silo", IETileTypes.SILO);
+		Multiblocks.tank = new MetalMultiblockBlock<>("tank", IETileTypes.SHEETMETAL_TANK);
+		Multiblocks.arcFurnace = new MetalMultiblockBlock<>("arc_furnace", IETileTypes.ARC_FURNACE);
+		Multiblocks.assembler = new MetalMultiblockBlock<>("assembler", IETileTypes.ASSEMBLER);
+		Multiblocks.autoWorkbench = new MetalMultiblockBlock<>("auto_workbench", IETileTypes.AUTO_WORKBENCH);
+		Multiblocks.bucketWheel = new MetalMultiblockBlock<>("bucket_wheel", IETileTypes.BUCKET_WHEEL);
+		Multiblocks.excavator = new MetalMultiblockBlock<>("excavator", IETileTypes.EXCAVATOR);
+		Multiblocks.metalPress = new MetalMultiblockBlock<>("metal_press", IETileTypes.METAL_PRESS);
+		Multiblocks.bottlingMachine = new MetalMultiblockBlock<>("bottling_machine", IETileTypes.BOTTLING_MACHINE);
+		Multiblocks.fermenter = new MetalMultiblockBlock<>("fermenter", IETileTypes.FERMENTER);
+		Multiblocks.squeezer = new MetalMultiblockBlock<>("squeezer", IETileTypes.SQUEEZER);
+		Multiblocks.mixer = new MetalMultiblockBlock<>("mixer", IETileTypes.MIXER);
+		Multiblocks.refinery = new MetalMultiblockBlock<>("refinery", IETileTypes.REFINERY);
+		Multiblocks.dieselGenerator = new MetalMultiblockBlock<>("diesel_generator", IETileTypes.DIESEL_GENERATOR);
+		Multiblocks.lightningrod = new MetalMultiblockBlock<>("lightning_rod", IETileTypes.LIGHTNING_ROD);
 
 		Tools.hammer = new HammerItem();
 		Tools.wirecutter = new WirecutterItem();
@@ -632,6 +631,7 @@ public class IEContent
 		IEShaders.commonConstruction();
 		IEMultiblocks.init();
 		BlueprintCraftingRecipe.registerDefaultCategories();
+		IETileTypes.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
 	}
 
 	@SubscribeEvent
@@ -740,84 +740,6 @@ public class IEContent
 	{
 		EnergyConnectorTileEntity.registerConnectorTEs(event);
 		ConveyorHandler.registerConveyorTEs(event);
-
-		registerTile(BalloonTileEntity.class, event, Cloth.balloon);
-		registerTile(StripCurtainTileEntity.class, event, Cloth.curtain);
-		registerTile(ShaderBannerTileEntity.class, event, Cloth.shaderBanner, Cloth.shaderBannerWall);
-
-		registerTile(CokeOvenTileEntity.class, event, Multiblocks.cokeOven);
-		registerTile(BlastFurnaceTileEntity.class, event, Multiblocks.blastFurnace);
-		registerTile(BlastFurnaceAdvancedTileEntity.class, event, Multiblocks.blastFurnaceAdv);
-		registerTile(CoresampleTileEntity.class, event, StoneDecoration.coresample);
-		registerTile(AlloySmelterTileEntity.class, event, Multiblocks.alloySmelter);
-
-		registerTile(CraftingTableTileEntity.class, event, WoodenDevices.craftingTable);
-		registerTile(WoodenCrateTileEntity.class, event, WoodenDevices.crate);
-		registerTile(WoodenBarrelTileEntity.class, event, WoodenDevices.woodenBarrel);
-		registerTile(ModWorkbenchTileEntity.class, event, WoodenDevices.workbench);
-		registerTile(SorterTileEntity.class, event, WoodenDevices.sorter);
-		registerTile(ItemBatcherTileEntity.class, event, WoodenDevices.itemBatcher);
-		registerTile(TurntableTileEntity.class, event, WoodenDevices.turntable);
-		registerTile(FluidSorterTileEntity.class, event, WoodenDevices.fluidSorter);
-		registerTile(WatermillTileEntity.class, event, WoodenDevices.watermill);
-		registerTile(WindmillTileEntity.class, event, WoodenDevices.windmill);
-
-		registerTile(RazorWireTileEntity.class, event, MetalDevices.razorWire);
-		registerTile(ToolboxTileEntity.class, event, MetalDevices.toolbox);
-		registerTile(StructuralArmTileEntity.class, event, MetalDecoration.slopeAlu, MetalDecoration.slopeSteel);
-
-		registerTile(ConnectorStructuralTileEntity.class, event, Connectors.connectorStructural);
-		registerTile(TransformerTileEntity.class, event, Connectors.transformer);
-		registerTile(PostTransformerTileEntity.class, event, Connectors.postTransformer);
-		registerTile(TransformerHVTileEntity.class, event, Connectors.transformerHV);
-		registerTile(BreakerSwitchTileEntity.class, event, Connectors.breakerswitch);
-		registerTile(RedstoneBreakerTileEntity.class, event, Connectors.redstoneBreaker);
-		registerTile(EnergyMeterTileEntity.class, event, Connectors.currentTransformer);
-		registerTile(ConnectorRedstoneTileEntity.class, event, Connectors.connectorRedstone);
-		registerTile(ConnectorProbeTileEntity.class, event, Connectors.connectorProbe);
-		registerTile(ConnectorBundledTileEntity.class, event, Connectors.connectorBundled);
-		registerTile(FeedthroughTileEntity.class, event, Connectors.feedthrough);
-
-		registerTile(CapacitorLVTileEntity.class, event, MetalDevices.capacitorLV);
-		registerTile(CapacitorMVTileEntity.class, event, MetalDevices.capacitorMV);
-		registerTile(CapacitorHVTileEntity.class, event, MetalDevices.capacitorHV);
-		registerTile(CapacitorCreativeTileEntity.class, event, MetalDevices.capacitorCreative);
-		registerTile(MetalBarrelTileEntity.class, event, MetalDevices.barrel);
-		registerTile(FluidPumpTileEntity.class, event, MetalDevices.fluidPump);
-		registerTile(FluidPlacerTileEntity.class, event, MetalDevices.fluidPlacer);
-
-		registerTile(BlastFurnacePreheaterTileEntity.class, event, MetalDevices.blastFurnacePreheater);
-		registerTile(FurnaceHeaterTileEntity.class, event, MetalDevices.furnaceHeater);
-		registerTile(DynamoTileEntity.class, event, MetalDevices.dynamo);
-		registerTile(ThermoelectricGenTileEntity.class, event, MetalDevices.thermoelectricGen);
-		registerTile(ElectricLanternTileEntity.class, event, MetalDevices.electricLantern);
-		registerTile(ChargingStationTileEntity.class, event, MetalDevices.chargingStation);
-		registerTile(FluidPipeTileEntity.class, event, MetalDevices.fluidPipe);
-		registerTile(SampleDrillTileEntity.class, event, MetalDevices.sampleDrill);
-		registerTile(TeslaCoilTileEntity.class, event, MetalDevices.teslaCoil);
-		registerTile(FloodlightTileEntity.class, event, MetalDevices.floodlight);
-		registerTile(TurretChemTileEntity.class, event, MetalDevices.turretChem);
-		registerTile(TurretGunTileEntity.class, event, MetalDevices.turretGun);
-		registerTile(ClocheTileEntity.class, event, MetalDevices.cloche);
-		registerTile(ChuteTileEntity.class, event, MetalDevices.chutes.values().toArray(new Block[0]));
-
-		registerTile(MetalPressTileEntity.class, event, Multiblocks.metalPress);
-		registerTile(CrusherTileEntity.class, event, Multiblocks.crusher);
-		registerTile(SheetmetalTankTileEntity.class, event, Multiblocks.tank);
-		registerTile(SiloTileEntity.class, event, Multiblocks.silo);
-		registerTile(AssemblerTileEntity.class, event, Multiblocks.assembler);
-		registerTile(AutoWorkbenchTileEntity.class, event, Multiblocks.autoWorkbench);
-		registerTile(BottlingMachineTileEntity.class, event, Multiblocks.bottlingMachine);
-		registerTile(SqueezerTileEntity.class, event, Multiblocks.squeezer);
-		registerTile(FermenterTileEntity.class, event, Multiblocks.fermenter);
-		registerTile(RefineryTileEntity.class, event, Multiblocks.refinery);
-		registerTile(DieselGeneratorTileEntity.class, event, Multiblocks.dieselGenerator);
-		registerTile(BucketWheelTileEntity.class, event, Multiblocks.bucketWheel);
-		registerTile(ExcavatorTileEntity.class, event, Multiblocks.excavator);
-		registerTile(ArcFurnaceTileEntity.class, event, Multiblocks.arcFurnace);
-		registerTile(LightningrodTileEntity.class, event, Multiblocks.lightningrod);
-		registerTile(MixerTileEntity.class, event, Multiblocks.mixer);
-		registerTile(FakeLightTileEntity.class, event, Misc.fakeLight);
 	}
 
 	public static void init()
@@ -928,35 +850,6 @@ public class IEContent
 	public static void postInit()
 	{
 		Villages.init();
-	}
-
-	public static <T extends TileEntity> void registerTile(Class<T> tile, Register<TileEntityType<?>> event, Block... valid)
-	{
-		String s = tile.getSimpleName();
-		s = s.substring(0, s.indexOf("TileEntity")).toLowerCase(Locale.ENGLISH);
-		Set<Block> validSet = new HashSet<>(Arrays.asList(valid));
-		TileEntityType<T> type = new TileEntityType<>(() -> {
-			try
-			{
-				return tile.newInstance();
-			} catch(InstantiationException|IllegalAccessException e)
-			{
-				e.printStackTrace();
-			}
-			return null;
-		}, validSet, null);
-		type.setRegistryName(MODID, s);
-		event.getRegistry().register(type);
-		try
-		{
-			Field typeField = tile.getField("TYPE");
-			typeField.set(null, type);
-		} catch(NoSuchFieldException|IllegalAccessException e)
-		{
-			e.printStackTrace();
-			throw new RuntimeException(e);
-		}
-		registeredIETiles.add(tile);
 	}
 
 	public static void addConfiguredWorldgen(Block state, String name, OreConfig config)

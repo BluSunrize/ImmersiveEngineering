@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
 import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
@@ -23,7 +24,6 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 
@@ -32,13 +32,11 @@ import javax.annotation.Nullable;
 
 public class ThermoelectricGenTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInternalFluxConnector
 {
-	public static TileEntityType<ThermoelectricGenTileEntity> TYPE;
-
 	private int energyOutput = -1;
 
 	public ThermoelectricGenTileEntity()
 	{
-		super(TYPE);
+		super(IETileTypes.THERMOELECTRIC_GEN.get());
 	}
 
 	@Override

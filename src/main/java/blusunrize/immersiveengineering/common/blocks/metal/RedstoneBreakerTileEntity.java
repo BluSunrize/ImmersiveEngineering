@@ -10,11 +10,11 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -28,11 +28,9 @@ import javax.annotation.Nullable;
 
 public class RedstoneBreakerTileEntity extends BreakerSwitchTileEntity implements ITickableTileEntity
 {
-	public static TileEntityType<RedstoneBreakerTileEntity> TYPE;
-
 	public RedstoneBreakerTileEntity()
 	{
-		super(TYPE);
+		super(IETileTypes.REDSTONE_BREAKER.get());
 	}
 	@Override
 	public void tick()

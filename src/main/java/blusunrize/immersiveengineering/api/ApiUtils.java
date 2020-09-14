@@ -8,9 +8,8 @@
 
 package blusunrize.immersiveengineering.api;
 
+import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
-import blusunrize.immersiveengineering.common.EventHandler;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
@@ -35,12 +34,16 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import static blusunrize.immersiveengineering.api.IETags.getIngot;
 import static blusunrize.immersiveengineering.api.utils.ItemUtils.copyStackWithAmount;
 
 public class ApiUtils
 {
+	public static final SetRestrictedField<Consumer<TileEntity>> disableTicking = new SetRestrictedField<>();
+
 	public static JsonElement jsonSerializeFluidStack(FluidStack fluidStack)
 	{
 		if(fluidStack==null)
@@ -123,11 +126,10 @@ public class ApiUtils
 		return sortedMap;
 	}
 
-	//TODO move to EventHandler(?), since IGeneeralMultiblock isn't API
-	public static <T extends TileEntity & IGeneralMultiblock> void checkForNeedlessTicking(T te)
+	public static <T extends TileEntity> void checkForNeedlessTicking(T te, Predicate<T> shouldDisable)
 	{
-		if(!te.getWorld().isRemote&&te.isDummy())
-			EventHandler.REMOVE_FROM_TICKING.add(te);
+		if(!te.getWorld().isRemote&&shouldDisable.test(te))
+			disableTicking.getValue().accept(te);
 	}
 
 	//Based on net.minecraft.entity.EntityLivingBase.knockBack

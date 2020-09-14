@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
@@ -15,7 +16,6 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
@@ -39,8 +39,6 @@ import static net.minecraftforge.fluids.capability.CapabilityFluidHandler.FLUID_
  */
 public class FluidSorterTileEntity extends IEBaseTileEntity implements IInteractionObjectIE
 {
-	public static TileEntityType<FluidSorterTileEntity> TYPE;
-
 	public byte[] sortWithNBT = {1, 1, 1, 1, 1, 1};
 	//	public static final int filterSlotsPerSide = 8;
 	public FluidStack[][] filters = new FluidStack[6][8];
@@ -54,7 +52,7 @@ public class FluidSorterTileEntity extends IEBaseTileEntity implements IInteract
 
 	public FluidSorterTileEntity()
 	{
-		super(TYPE);
+		super(IETileTypes.FLUID_SORTER.get());
 		for(Direction f : Direction.VALUES)
 			neighborCaps.put(f, CapabilityReference.forNeighbor(this, FLUID_HANDLER_CAPABILITY, f));
 	}

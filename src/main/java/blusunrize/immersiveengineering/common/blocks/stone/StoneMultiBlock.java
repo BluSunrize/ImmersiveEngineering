@@ -10,22 +10,23 @@ package blusunrize.immersiveengineering.common.blocks.stone;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.IEMultiblockBlock;
+import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.world.IBlockReader;
+import net.minecraftforge.fml.RegistryObject;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.function.Supplier;
 
-public class StoneMultiBlock extends IEMultiblockBlock
+public class StoneMultiBlock<T extends MultiblockPartTileEntity<? super T>> extends IEMultiblockBlock
 {
-	private Supplier<TileEntityType<?>> type;
+	private RegistryObject<TileEntityType<T>> type;
 
-	public StoneMultiBlock(String name, Supplier<TileEntityType<?>> type)
+	public StoneMultiBlock(String name, RegistryObject<TileEntityType<T>> type)
 	{
 		super(name, Block.Properties.create(Material.ROCK).hardnessAndResistance(2, 20).notSolid(),
 				IEProperties.ACTIVE);

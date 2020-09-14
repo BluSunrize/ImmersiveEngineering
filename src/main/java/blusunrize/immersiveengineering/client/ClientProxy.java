@@ -38,15 +38,11 @@ import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType
 import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IColouredBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTile;
-import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
-import blusunrize.immersiveengineering.common.blocks.stone.CoresampleTileEntity;
-import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchTileEntity;
-import blusunrize.immersiveengineering.common.blocks.wooden.WatermillTileEntity;
-import blusunrize.immersiveengineering.common.blocks.wooden.WindmillTileEntity;
 import blusunrize.immersiveengineering.common.crafting.RecipeReloadListener;
 import blusunrize.immersiveengineering.common.entities.*;
 import blusunrize.immersiveengineering.common.gui.GuiHandler;
@@ -236,32 +232,32 @@ public class ClientProxy extends CommonProxy
 
 		TeslaCoilTileEntity.effectMap = ArrayListMultimap.create();
 
-		ClientRegistry.bindTileEntityRenderer(ChargingStationTileEntity.TYPE, ChargingStationRenderer::new);
-		ClientRegistry.bindTileEntityRenderer(SampleDrillTileEntity.TYPE, SampleDrillRenderer::new);
-		ClientRegistry.bindTileEntityRenderer(TeslaCoilTileEntity.TYPE, TeslaCoilRenderer::new);
-		ClientRegistry.bindTileEntityRenderer(TurretChemTileEntity.TYPE, TurretRenderer::new);
-		ClientRegistry.bindTileEntityRenderer(TurretGunTileEntity.TYPE, TurretRenderer::new);
-		ClientRegistry.bindTileEntityRenderer(ClocheTileEntity.TYPE, ClocheRenderer::new);
+		ClientRegistry.bindTileEntityRenderer(IETileTypes.CHARGING_STATION.get(), ChargingStationRenderer::new);
+		ClientRegistry.bindTileEntityRenderer(IETileTypes.SAMPLE_DRILL.get(), SampleDrillRenderer::new);
+		ClientRegistry.bindTileEntityRenderer(IETileTypes.TESLACOIL.get(), TeslaCoilRenderer::new);
+		ClientRegistry.bindTileEntityRenderer(IETileTypes.TURRET_CHEM.get(), TurretRenderer::new);
+		ClientRegistry.bindTileEntityRenderer(IETileTypes.TURRET_GUN.get(), TurretRenderer::new);
+		ClientRegistry.bindTileEntityRenderer(IETileTypes.CLOCHE.get(), ClocheRenderer::new);
 		// MULTIBLOCKS
-		ClientRegistry.bindTileEntityRenderer(MetalPressTileEntity.TYPE, MetalPressRenderer::new);
-		ClientRegistry.bindTileEntityRenderer(CrusherTileEntity.TYPE, CrusherRenderer::new);
-		ClientRegistry.bindTileEntityRenderer(SheetmetalTankTileEntity.TYPE, SheetmetalTankRenderer::new);
-		ClientRegistry.bindTileEntityRenderer(SiloTileEntity.TYPE, SiloRenderer::new);
-		ClientRegistry.bindTileEntityRenderer(SqueezerTileEntity.TYPE, SqueezerRenderer::new);
-		ClientRegistry.bindTileEntityRenderer(DieselGeneratorTileEntity.TYPE, DieselGeneratorRenderer::new);
-		ClientRegistry.bindTileEntityRenderer(BucketWheelTileEntity.TYPE, BucketWheelRenderer::new);
-		ClientRegistry.bindTileEntityRenderer(ArcFurnaceTileEntity.TYPE, ArcFurnaceRenderer::new);
-		ClientRegistry.bindTileEntityRenderer(AutoWorkbenchTileEntity.TYPE, AutoWorkbenchRenderer::new);
-		ClientRegistry.bindTileEntityRenderer(BottlingMachineTileEntity.TYPE, BottlingMachineRenderer::new);
-		ClientRegistry.bindTileEntityRenderer(MixerTileEntity.TYPE, MixerRenderer::new);
+		ClientRegistry.bindTileEntityRenderer(IETileTypes.METAL_PRESS.get(), MetalPressRenderer::new);
+		ClientRegistry.bindTileEntityRenderer(IETileTypes.CRUSHER.get(), CrusherRenderer::new);
+		ClientRegistry.bindTileEntityRenderer(IETileTypes.SHEETMETAL_TANK.get(), SheetmetalTankRenderer::new);
+		ClientRegistry.bindTileEntityRenderer(IETileTypes.SILO.get(), SiloRenderer::new);
+		ClientRegistry.bindTileEntityRenderer(IETileTypes.SQUEEZER.get(), SqueezerRenderer::new);
+		ClientRegistry.bindTileEntityRenderer(IETileTypes.DIESEL_GENERATOR.get(), DieselGeneratorRenderer::new);
+		ClientRegistry.bindTileEntityRenderer(IETileTypes.BUCKET_WHEEL.get(), BucketWheelRenderer::new);
+		ClientRegistry.bindTileEntityRenderer(IETileTypes.ARC_FURNACE.get(), ArcFurnaceRenderer::new);
+		ClientRegistry.bindTileEntityRenderer(IETileTypes.AUTO_WORKBENCH.get(), AutoWorkbenchRenderer::new);
+		ClientRegistry.bindTileEntityRenderer(IETileTypes.BOTTLING_MACHINE.get(), BottlingMachineRenderer::new);
+		ClientRegistry.bindTileEntityRenderer(IETileTypes.MIXER.get(), MixerRenderer::new);
 		//WOOD
-		ClientRegistry.bindTileEntityRenderer(WatermillTileEntity.TYPE, WatermillRenderer::new);
-		ClientRegistry.bindTileEntityRenderer(WindmillTileEntity.TYPE, WindmillRenderer::new);
-		ClientRegistry.bindTileEntityRenderer(ModWorkbenchTileEntity.TYPE, ModWorkbenchRenderer::new);
+		ClientRegistry.bindTileEntityRenderer(IETileTypes.WATERMILL.get(), WatermillRenderer::new);
+		ClientRegistry.bindTileEntityRenderer(IETileTypes.WINDMILL.get(), WindmillRenderer::new);
+		ClientRegistry.bindTileEntityRenderer(IETileTypes.MOD_WORKBENCH.get(), ModWorkbenchRenderer::new);
 		//STONE
-		ClientRegistry.bindTileEntityRenderer(CoresampleTileEntity.TYPE, CoresampleRenderer::new);
+		ClientRegistry.bindTileEntityRenderer(IETileTypes.CORE_SAMPLE.get(), CoresampleRenderer::new);
 		//CLOTH
-		ClientRegistry.bindTileEntityRenderer(ShaderBannerTileEntity.TYPE, ShaderBannerRenderer::new);
+		ClientRegistry.bindTileEntityRenderer(IETileTypes.SHADER_BANNER.get(), ShaderBannerRenderer::new);
 
 		/*Colours*/
 		for(Item item : IEContent.registeredIEItems)
