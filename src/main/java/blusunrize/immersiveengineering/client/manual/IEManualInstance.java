@@ -22,6 +22,7 @@ import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.Tree;
 import com.electronwill.nightconfig.core.Config;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.KeyBinding;
