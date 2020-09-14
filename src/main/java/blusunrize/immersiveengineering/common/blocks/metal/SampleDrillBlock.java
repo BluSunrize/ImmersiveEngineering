@@ -10,6 +10,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.generic.GenericTileBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
@@ -18,11 +19,11 @@ import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class SampleDrillBlock extends GenericTileBlock
+public class SampleDrillBlock extends GenericTileBlock<SampleDrillTileEntity>
 {
 	public SampleDrillBlock()
 	{
-		super("sample_drill", () -> SampleDrillTileEntity.TYPE,
+		super("sample_drill", IETileTypes.SAMPLE_DRILL,
 				Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(3, 15).notSolid(),
 				IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE);
 	}

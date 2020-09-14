@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -32,9 +31,6 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 	public static IRecipeType<ArcFurnaceRecipe> TYPE = IRecipeType.register(Lib.MODID+":arc_furnace");
 	public static RegistryObject<IERecipeSerializer<ArcFurnaceRecipe>> SERIALIZER;
 
-	public static float energyModifier = 1;
-	public static float timeModifier = 1;
-
 	public final IngredientWithSize input;
 	public final IngredientWithSize[] additives;
 	public final NonNullList<ItemStack> output;
@@ -49,12 +45,12 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 	public ArcFurnaceRecipe(ResourceLocation id, NonNullList<ItemStack> output, IngredientWithSize input, @Nonnull ItemStack slag, int time,
 							int energy, IngredientWithSize... additives)
 	{
-		super(output.get(0), TYPE, id, IEServerConfig.MACHINES.arcFurnaceConfig);
+		super(output.get(0), TYPE, id);
 		this.output = output;
 		this.input = input;
 		this.slag = slag;
-		this.totalProcessTime = (int)Math.floor(time*timeModifier);
-		this.totalProcessEnergy = (int)Math.floor(energy*energyModifier);
+		this.totalProcessTime = time;
+		this.totalProcessEnergy = energy;
 		this.additives = additives;
 
 		List<IngredientWithSize> inputList = Lists.newArrayList(this.input);

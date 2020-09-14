@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectorBlock;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
@@ -51,8 +52,6 @@ import static blusunrize.immersiveengineering.api.wires.WireType.HV_CATEGORY;
 public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity implements IBlockBounds, IAdvancedDirectionalTile,
 		IActiveState, IHammerInteraction, IScrewdriverInteraction, IPlayerInteraction, IRedstoneOutput, IOBJModelCallback<BlockState>, IStateBasedDirectional
 {
-	public static TileEntityType<BreakerSwitchTileEntity> TYPE;
-
 	public static final int LEFT_INDEX = 0;
 	public static final int RIGHT_INDEX = 1;
 	public int rotation = 0;
@@ -61,7 +60,7 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 
 	public BreakerSwitchTileEntity()
 	{
-		super(TYPE);
+		super(IETileTypes.BREAKER_SWITCH.get());
 	}
 
 	public BreakerSwitchTileEntity(TileEntityType<? extends BreakerSwitchTileEntity> type)

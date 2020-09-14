@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.energy.IRotationAcceptor;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
@@ -26,7 +27,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -39,7 +39,6 @@ import javax.annotation.Nullable;
 
 public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IStateBasedDirectional, IHasDummyBlocks, IHasObjProperty
 {
-	public static TileEntityType<WatermillTileEntity> TYPE;
 	public int[] offset = {0, 0};
 	public float rotation = 0;
 	private Vec3d rotationVec = null;
@@ -51,7 +50,7 @@ public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTi
 
 	public WatermillTileEntity()
 	{
-		super(TYPE);
+		super(IETileTypes.WINDMILL.get());
 	}
 
 	@Override

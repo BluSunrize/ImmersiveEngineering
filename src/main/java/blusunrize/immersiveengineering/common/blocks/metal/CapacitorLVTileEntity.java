@@ -11,6 +11,8 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
+import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
@@ -45,8 +47,6 @@ import java.util.List;
 public class CapacitorLVTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInternalFluxHandler, IBlockOverlayText,
 		IConfigurableSides, IComparatorOverride, ITileDrop
 {
-	public static TileEntityType<CapacitorLVTileEntity> TYPE;
-
 	public EnumMap<Direction, IOSideConfig> sideConfig = new EnumMap<>(Direction.class);
 	private final CapacitorConfig configValues;
 
@@ -70,7 +70,7 @@ public class CapacitorLVTileEntity extends IEBaseTileEntity implements ITickable
 
 	public CapacitorLVTileEntity()
 	{
-		this(TYPE, IEServerConfig.MACHINES.lvCapConfig);
+		this(IETileTypes.CAPACITOR_LV.get(), IEServerConfig.MACHINES.lvCapConfig);
 	}
 
 	@Override

@@ -13,6 +13,8 @@ import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorageAdvanced;
+import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
@@ -30,7 +32,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
@@ -50,8 +51,6 @@ import javax.annotation.Nullable;
 public class ChargingStationTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInternalFluxHandler, IIEInventory,
 		IStateBasedDirectional, IBlockBounds, IComparatorOverride, IPlayerInteraction
 {
-	public static TileEntityType<ChargingStationTileEntity> TYPE;
-
 	public FluxStorageAdvanced energyStorage = new FluxStorageAdvanced(32000);
 	public NonNullList<ItemStack> inventory = NonNullList.withSize(1, ItemStack.EMPTY);
 	private boolean charging = true;
@@ -59,7 +58,7 @@ public class ChargingStationTileEntity extends IEBaseTileEntity implements ITick
 
 	public ChargingStationTileEntity()
 	{
-		super(TYPE);
+		super(IETileTypes.CHARGING_STATION.get());
 	}
 
 	@Override

@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.crafting.RefineryRecipe;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICollisionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
@@ -22,7 +23,6 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -46,14 +46,12 @@ import java.util.Set;
 public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTileEntity, RefineryRecipe> implements
 		ISelectionBounds, ICollisionBounds, IInteractionObjectIE, IBlockBounds
 {
-	public static TileEntityType<RefineryTileEntity> TYPE;
-
 	public FluidTank[] tanks = new FluidTank[]{new FluidTank(24000), new FluidTank(24000), new FluidTank(24000)};
 	public NonNullList<ItemStack> inventory = NonNullList.withSize(6, ItemStack.EMPTY);
 
 	public RefineryTileEntity()
 	{
-		super(IEMultiblocks.REFINERY, 16000, true, TYPE);
+		super(IEMultiblocks.REFINERY, 16000, true, IETileTypes.REFINERY.get());
 	}
 
 	@Override

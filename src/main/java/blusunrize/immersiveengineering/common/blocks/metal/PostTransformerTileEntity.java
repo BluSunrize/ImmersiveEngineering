@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.wires.*;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import com.google.common.collect.ImmutableList;
@@ -39,7 +40,6 @@ import static blusunrize.immersiveengineering.api.wires.WireType.MV_CATEGORY;
 public class PostTransformerTileEntity extends ImmersiveConnectableTileEntity implements IStateBasedDirectional,
 		IBlockBounds
 {
-	public static TileEntityType<PostTransformerTileEntity> TYPE;
 	private static final int RIGHT_INDEX = 0;
 	private static final int LEFT_INDEX = 1;
 	private WireType leftType;
@@ -48,7 +48,7 @@ public class PostTransformerTileEntity extends ImmersiveConnectableTileEntity im
 
 	public PostTransformerTileEntity()
 	{
-		super(TYPE);
+		super(IETileTypes.POST_TRANSFORMER.get());
 	}
 
 	public PostTransformerTileEntity(TileEntityType<? extends PostTransformerTileEntity> type)

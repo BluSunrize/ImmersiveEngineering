@@ -10,6 +10,8 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalBarrelTileEntity;
@@ -55,8 +57,6 @@ import static net.minecraftforge.fluids.capability.CapabilityFluidHandler.FLUID_
 public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IBlockOverlayText, IConfigurableSides, IPlayerInteraction, ITileDrop, IComparatorOverride
 {
 	public static final int IGNITION_TEMPERATURE = 573;
-	public static TileEntityType<WoodenBarrelTileEntity> TYPE;
-
 	public EnumMap<Direction, IOSideConfig> sideConfig = new EnumMap<>(ImmutableMap.of(
 			Direction.DOWN, OUTPUT,
 			Direction.UP, IOSideConfig.INPUT
@@ -70,7 +70,7 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 
 	public WoodenBarrelTileEntity()
 	{
-		this(TYPE);
+		this(IETileTypes.WOODEN_BARREL.get());
 	}
 
 	private Map<Direction, CapabilityReference<IFluidHandler>> neighbors = ImmutableMap.of(

@@ -14,6 +14,8 @@ import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.tool.AssemblerHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttachable;
 import blusunrize.immersiveengineering.api.utils.ItemUtils;
+import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
@@ -33,7 +35,6 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -63,14 +64,12 @@ import java.util.Set;
 public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTileEntity, MultiblockRecipe>
 		implements IInteractionObjectIE, IConveyorAttachable, IBlockBounds
 {
-	public static TileEntityType<AssemblerTileEntity> TYPE;
-
 	public boolean[] computerOn = new boolean[3];
 	public boolean isComputerControlled = false;
 
 	public AssemblerTileEntity()
 	{
-		super(IEMultiblocks.ASSEMBLER, 32000, true, TYPE);
+		super(IEMultiblocks.ASSEMBLER, 32000, true, IETileTypes.ASSEMBLER.get());
 	}
 
 	public FluidTank[] tanks = {new FluidTank(8000), new FluidTank(8000), new FluidTank(8000)};

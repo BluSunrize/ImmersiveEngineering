@@ -10,11 +10,11 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.entities.ChemthrowerShotEntity;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.Vec3d;
@@ -32,14 +32,12 @@ import javax.annotation.Nullable;
 
 public class TurretChemTileEntity extends TurretTileEntity
 {
-	public static TileEntityType<TurretChemTileEntity> TYPE;
-
 	public FluidTank tank = new FluidTank(4000);
 	public boolean ignite = false;
 
 	public TurretChemTileEntity()
 	{
-		super(TYPE);
+		super(IETileTypes.TURRET_CHEM.get());
 	}
 
 	@Override

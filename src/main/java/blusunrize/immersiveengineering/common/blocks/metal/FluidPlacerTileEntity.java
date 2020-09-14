@@ -10,6 +10,8 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
@@ -24,7 +26,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -45,7 +46,6 @@ import java.util.*;
 
 public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IConfigurableSides, IBlockOverlayText
 {
-	public static TileEntityType<FluidPlacerTileEntity> TYPE;
 	private final Map<Direction, IOSideConfig> sideConfig = new EnumMap<>(Direction.class);
 
 	{
@@ -64,7 +64,7 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickable
 
 	public FluidPlacerTileEntity()
 	{
-		super(TYPE);
+		super(IETileTypes.FLUID_PLACER.get());
 	}
 
 	@Override

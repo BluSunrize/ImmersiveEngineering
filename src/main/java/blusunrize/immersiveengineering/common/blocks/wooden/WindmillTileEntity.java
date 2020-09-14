@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.energy.IRotationAcceptor;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedVoxelShapes;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
@@ -26,7 +27,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
@@ -45,7 +45,6 @@ import java.util.List;
 public class WindmillTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IStateBasedDirectional,
 		IReadOnPlacement, IPlayerInteraction, IHasObjProperty, IBlockBounds
 {
-	public static TileEntityType<WindmillTileEntity> TYPE;
 	public float prevRotation = 0;
 	public float rotation = 0;
 	public float turnSpeed = 0;
@@ -56,7 +55,7 @@ public class WindmillTileEntity extends IEBaseTileEntity implements ITickableTil
 
 	public WindmillTileEntity()
 	{
-		super(TYPE);
+		super(IETileTypes.WINDMILL.get());
 	}
 
 	@Override

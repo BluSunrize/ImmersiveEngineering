@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.ListUtils;
 import com.google.common.collect.Lists;
 import net.minecraft.fluid.Fluid;
@@ -32,9 +31,6 @@ public class FermenterRecipe extends MultiblockRecipe
 	public static IRecipeType<FermenterRecipe> TYPE = IRecipeType.register(Lib.MODID+":fermenter");
 	public static RegistryObject<IERecipeSerializer<FermenterRecipe>> SERIALIZER;
 
-	public static float energyModifier = 1;
-	public static float timeModifier = 1;
-
 	public IngredientWithSize input;
 	public final FluidStack fluidOutput;
 	@Nonnull
@@ -42,12 +38,12 @@ public class FermenterRecipe extends MultiblockRecipe
 
 	public FermenterRecipe(ResourceLocation id, FluidStack fluidOutput, @Nonnull ItemStack itemOutput, IngredientWithSize input, int energy)
 	{
-		super(itemOutput, TYPE, id, IEServerConfig.MACHINES.fermenterConfig);
+		super(itemOutput, TYPE, id);
 		this.fluidOutput = fluidOutput;
 		this.itemOutput = itemOutput;
 		this.input = input;
-		this.totalProcessEnergy = (int)Math.floor(energy*energyModifier);
-		this.totalProcessTime = (int)Math.floor(80*timeModifier);
+		this.totalProcessEnergy = energy;
+		this.totalProcessTime = 80;
 
 		setInputListWithSizes(Lists.newArrayList(this.input));
 		this.fluidOutputList = Lists.newArrayList(this.fluidOutput);

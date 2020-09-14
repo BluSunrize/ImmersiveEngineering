@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttachable;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
@@ -28,7 +29,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -52,11 +52,9 @@ import java.util.Set;
 public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWorkbenchTileEntity, MultiblockRecipe>
 		implements IInteractionObjectIE, IConveyorAttachable, IBlockBounds
 {
-	public static TileEntityType<AutoWorkbenchTileEntity> TYPE;
-
 	public AutoWorkbenchTileEntity()
 	{
-		super(IEMultiblocks.AUTO_WORKBENCH, 32000, true, TYPE);
+		super(IEMultiblocks.AUTO_WORKBENCH, 32000, true, IETileTypes.AUTO_WORKBENCH.get());
 	}
 
 	public NonNullList<ItemStack> inventory = NonNullList.withSize(17, ItemStack.EMPTY);

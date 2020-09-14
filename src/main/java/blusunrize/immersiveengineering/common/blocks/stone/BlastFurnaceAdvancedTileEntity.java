@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.stone;
 
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.metal.BlastFurnacePreheaterTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
@@ -17,7 +18,6 @@ import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.BlockPos;
@@ -35,11 +35,9 @@ import java.util.Set;
 
 public class BlastFurnaceAdvancedTileEntity extends BlastFurnaceTileEntity
 {
-	public static TileEntityType<BlastFurnaceAdvancedTileEntity> TYPE;
-
 	public BlastFurnaceAdvancedTileEntity()
 	{
-		super(IEMultiblocks.ADVANCED_BLAST_FURNACE, TYPE);
+		super(IEMultiblocks.ADVANCED_BLAST_FURNACE, IETileTypes.BLAST_FURNACE_ADVANCED.get());
 	}
 
 	private CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntity(this,

@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
@@ -21,7 +22,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -46,8 +46,6 @@ import java.util.Set;
 
 public class SiloTileEntity extends MultiblockPartTileEntity<SiloTileEntity> implements IComparatorOverride, IBlockBounds
 {
-	public static TileEntityType<SiloTileEntity> TYPE;
-
 	public ItemStack identStack = ItemStack.EMPTY;
 	public int storageAmount = 0;
 	private static final int MAX_STORAGE = 41472;
@@ -58,7 +56,7 @@ public class SiloTileEntity extends MultiblockPartTileEntity<SiloTileEntity> imp
 
 	public SiloTileEntity()
 	{
-		super(IEMultiblocks.SILO, TYPE, true);
+		super(IEMultiblocks.SILO, IETileTypes.SILO.get(), true);
 	}
 
 	private EnumMap<Direction, CapabilityReference<IItemHandler>> outputCaps = new EnumMap<>(Direction.class);

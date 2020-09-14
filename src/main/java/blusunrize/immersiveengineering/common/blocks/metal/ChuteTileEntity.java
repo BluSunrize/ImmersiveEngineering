@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorTile;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedVoxelShapes;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.IESounds;
@@ -30,7 +31,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
@@ -54,13 +54,11 @@ public class ChuteTileEntity extends IEBaseTileEntity implements IStateBasedDire
 	private static final String NBT_POS = "immersiveengineering:chutePos";
 	private static final String NBT_TIME = "immersiveengineering:chuteTime";
 	private static final String NBT_GLITCH = "immersiveengineering:chuteGlitched";
-	public static TileEntityType<ChuteTileEntity> TYPE;
-
 	private boolean diagonal = false;
 
 	public ChuteTileEntity()
 	{
-		super(TYPE);
+		super(IETileTypes.CHUTE.get());
 	}
 
 	@Override

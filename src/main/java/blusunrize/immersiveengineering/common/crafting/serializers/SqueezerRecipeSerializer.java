@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.SqueezerRecipe;
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
@@ -41,7 +42,9 @@ public class SqueezerRecipeSerializer extends IERecipeSerializer<SqueezerRecipe>
 			itemOutput = readOutput(json.get("result"));
 		IngredientWithSize input = IngredientWithSize.deserialize(json.get("input"));
 		int energy = JSONUtils.getInt(json, "energy");
-		return new SqueezerRecipe(recipeId, fluidOutput, itemOutput, input, energy);
+		return IEConfig.MACHINES.squeezerConfig.apply(
+				new SqueezerRecipe(recipeId, fluidOutput, itemOutput, input, energy)
+		);
 	}
 
 	@Nullable

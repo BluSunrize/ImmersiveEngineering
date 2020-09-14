@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
@@ -18,7 +19,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -38,8 +38,6 @@ import static net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABI
 //TODO Metadata and oredict are gone. Update manual entry as well.
 public class SorterTileEntity extends IEBaseTileEntity implements IInteractionObjectIE
 {
-	public static TileEntityType<SorterTileEntity> TYPE;
-
 	public SorterInventory filter;
 	public int[] sideFilter = {0, 0, 0, 0, 0, 0};//OreDict,nbt,fuzzy
 	public static final int filterSlotsPerSide = 8;
@@ -54,7 +52,7 @@ public class SorterTileEntity extends IEBaseTileEntity implements IInteractionOb
 
 	public SorterTileEntity()
 	{
-		super(TYPE);
+		super(IETileTypes.SORTER.get());
 		filter = new SorterInventory(this);
 		for(Direction f : Direction.VALUES)
 			neighborCaps.put(f, CapabilityReference.forNeighbor(this, ITEM_HANDLER_CAPABILITY, f));

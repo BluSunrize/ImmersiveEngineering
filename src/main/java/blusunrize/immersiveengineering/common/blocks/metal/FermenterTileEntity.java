@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.crafting.FermenterRecipe;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
@@ -23,7 +24,6 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -54,13 +54,12 @@ import java.util.Set;
 public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTileEntity, FermenterRecipe> implements
 		IBlockBounds, IInteractionObjectIE
 {
-	public static TileEntityType<FermenterTileEntity> TYPE;
 	public FluidTank[] tanks = new FluidTank[]{new FluidTank(24000)};
 	public NonNullList<ItemStack> inventory = NonNullList.withSize(11, ItemStack.EMPTY);
 
 	public FermenterTileEntity()
 	{
-		super(IEMultiblocks.FERMENTER, 16000, true, TYPE);
+		super(IEMultiblocks.FERMENTER, 16000, true, IETileTypes.FERMENTER.get());
 	}
 
 	@Override

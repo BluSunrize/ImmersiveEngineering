@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.cloth;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedVoxelShapes;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
@@ -24,7 +25,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
@@ -49,15 +49,13 @@ import java.util.List;
 public class StripCurtainTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IRedstoneOutput, IScrewdriverInteraction,
 		ICollisionBounds, IAdvancedDirectionalTile, IStateBasedDirectional, IColouredTile, ITileDrop, ISelectionBounds
 {
-	public static TileEntityType<StripCurtainTileEntity> TYPE;
-
 	public int colour = 0xffffff;
 	private int redstoneSignal = 0;
 	private boolean strongSignal = false;
 
 	public StripCurtainTileEntity()
 	{
-		super(TYPE);
+		super(IETileTypes.STRIP_CURTAIN.get());
 	}
 
 	@Override

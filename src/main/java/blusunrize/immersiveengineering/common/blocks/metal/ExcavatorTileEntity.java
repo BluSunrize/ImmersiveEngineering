@@ -16,6 +16,8 @@ import blusunrize.immersiveengineering.api.excavator.MineralMix;
 import blusunrize.immersiveengineering.api.excavator.MineralVein;
 import blusunrize.immersiveengineering.api.excavator.MineralWorldInfo;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
+import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
@@ -36,7 +38,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -65,13 +66,12 @@ import java.util.Set;
 public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTileEntity, MultiblockRecipe> implements
 		IBlockBounds
 {
-	public static TileEntityType<ExcavatorTileEntity> TYPE;
 	private static final BlockPos wheelCenterOffset = new BlockPos(1, 1, 1);
 	public boolean active = false;
 
 	public ExcavatorTileEntity()
 	{
-		super(IEMultiblocks.EXCAVATOR, 64000, true, TYPE);
+		super(IEMultiblocks.EXCAVATOR, 64000, true, IETileTypes.EXCAVATOR.get());
 	}
 
 

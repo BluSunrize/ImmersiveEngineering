@@ -18,6 +18,8 @@ import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHan
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.EventHandler;
+import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.FakeLightBlock.FakeLightTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Misc;
@@ -35,7 +37,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
@@ -62,8 +63,6 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 		IHammerInteraction, IScrewdriverInteraction, ISpawnInterdiction, IBlockBounds, IActiveState,
 		IOBJModelCallback<BlockState>, EnergyConnector, IStateBasedDirectional
 {
-	public static TileEntityType<FloodlightTileEntity> TYPE;
-
 	public int energyStorage = 0;
 	private int energyDraw = IEServerConfig.MACHINES.floodlight_energyDraw.get();
 	private int maximumStorage = IEServerConfig.MACHINES.floodlight_maximumStorage.get();
@@ -83,7 +82,7 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 
 	public FloodlightTileEntity()
 	{
-		super(TYPE);
+		super(IETileTypes.FLOODLIGHT.get());
 	}
 
 	@Override

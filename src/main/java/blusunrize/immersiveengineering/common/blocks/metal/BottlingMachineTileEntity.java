@@ -12,6 +12,8 @@ import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttachable;
+import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
@@ -26,7 +28,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.NonNullList;
@@ -57,13 +58,12 @@ import java.util.Set;
 public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<BottlingMachineTileEntity, MultiblockRecipe>
 		implements IConveyorAttachable, IBlockBounds
 {
-	public static TileEntityType<BottlingMachineTileEntity> TYPE;
 	public FluidTank[] tanks = new FluidTank[]{new FluidTank(8000)};
 	public List<BottlingProcess> bottlingProcessQueue = new ArrayList<>();
 
 	public BottlingMachineTileEntity()
 	{
-		super(IEMultiblocks.BOTTLING_MACHINE, 16000, true, TYPE);
+		super(IEMultiblocks.BOTTLING_MACHINE, 16000, true, IETileTypes.BOTTLING_MACHINE.get());
 	}
 
 	@Override

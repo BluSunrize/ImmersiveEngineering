@@ -16,6 +16,8 @@ import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.excavator.MineralMix;
 import blusunrize.immersiveengineering.api.excavator.MineralWorldInfo;
+import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
@@ -34,7 +36,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
@@ -50,8 +51,6 @@ import javax.annotation.Nullable;
 public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInternalFluxHandler, IHasDummyBlocks,
 		IPlayerInteraction, IModelOffsetProvider
 {
-	public static TileEntityType<SampleDrillTileEntity> TYPE;
-
 	public FluxStorage energyStorage = new FluxStorage(8000);
 	public int dummy = 0;
 	public int process = 0;
@@ -61,7 +60,7 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 
 	public SampleDrillTileEntity()
 	{
-		super(TYPE);
+		super(IETileTypes.SAMPLE_DRILL.get());
 	}
 
 	public static boolean _Immovable()

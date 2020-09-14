@@ -9,10 +9,10 @@ v 2 -1 -1
 v 2 -1 2
 v 2 2 -1
 v 2 2 2
-vt 0 0
-vt 0 1
-vt 1 1
 vt 1 0
+vt 1 1
+vt 0 1
+vt 0 0
 usemtl front
 f 1/1 3/2 7/3 5/4
 usemtl side

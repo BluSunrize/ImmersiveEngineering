@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler;
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler.EnergyConnector;
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler.IEnergyWire;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
@@ -36,7 +37,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
@@ -57,8 +57,6 @@ import java.util.Set;
 public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implements ITickableTileEntity, IStateBasedDirectional,
 		IHasDummyBlocks, IPlayerInteraction, IComparatorOverride, EnergyConnector, IBlockBounds, IModelOffsetProvider
 {
-	public static TileEntityType<EnergyMeterTileEntity> TYPE;
-
 	public final DoubleList lastPackets = new DoubleArrayList(20);
 	private int nextPacketIndex = 0;
 	private int compVal = -1;
@@ -66,7 +64,7 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 
 	public EnergyMeterTileEntity()
 	{
-		super(TYPE);
+		super(IETileTypes.ENERGY_METER.get());
 	}
 
 	@Override

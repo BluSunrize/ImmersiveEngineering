@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -22,7 +23,6 @@ import net.minecraft.entity.item.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.DyeColor;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -46,11 +46,9 @@ public class ConnectorProbeTileEntity extends ConnectorRedstoneTileEntity
 {
 	public DyeColor redstoneChannelSending = DyeColor.WHITE;
 	private int lastOutput = 0;
-	public static TileEntityType<ConnectorProbeTileEntity> TYPE;
-
 	public ConnectorProbeTileEntity()
 	{
-		super(TYPE);
+		super(IETileTypes.CONNECTOR_PROBE.get());
 	}
 
 	@Override

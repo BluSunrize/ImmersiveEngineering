@@ -9,15 +9,13 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
-import net.minecraft.tileentity.TileEntityType;
+import blusunrize.immersiveengineering.common.IETileTypes;
 
 //TODO tile type, but no custom class
 public class CapacitorHVTileEntity extends CapacitorLVTileEntity
 {
-	public static TileEntityType<CapacitorHVTileEntity> TYPE;
-
 	public CapacitorHVTileEntity()
 	{
-		super(TYPE, IEServerConfig.MACHINES.hvCapConfig);
+		super(IETilTypes.CAPACITOR_HV.get(), IEServerConfig.MACHINES.hvCapConfig);
 	}
 }

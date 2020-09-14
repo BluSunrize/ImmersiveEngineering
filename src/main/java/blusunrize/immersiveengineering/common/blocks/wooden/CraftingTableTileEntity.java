@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
@@ -23,7 +24,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.state.EnumProperty;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.Vec3d;
@@ -39,12 +39,11 @@ import javax.annotation.Nonnull;
 
 public class CraftingTableTileEntity extends IEBaseTileEntity implements IIEInventory, IStateBasedDirectional, IInteractionObjectIE
 {
-	public static TileEntityType<CraftingTableTileEntity> TYPE;
 	NonNullList<ItemStack> inventory = NonNullList.withSize(27, ItemStack.EMPTY);
 
 	public CraftingTableTileEntity()
 	{
-		super(TYPE);
+		super(IETileTypes.CRAFTING_TABLE.get());
 	}
 
 	@Override
