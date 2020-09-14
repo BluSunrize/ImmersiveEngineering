@@ -19,7 +19,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOve
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop;
-import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Machines.CapacitorConfig;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
@@ -190,7 +190,7 @@ public class CapacitorTileEntity extends IEBaseTileEntity implements ITickableTi
 	@Override
 	public ITextComponent[] getOverlayText(PlayerEntity player, RayTraceResult mop, boolean hammer)
 	{
-		if(hammer&&IEServerConfig.GENERAL.showTextOverlay.get()&&mop instanceof BlockRayTraceResult)
+		if(hammer&&IEClientConfig.showTextOverlay.get()&&mop instanceof BlockRayTraceResult)
 		{
 			BlockRayTraceResult bmop = (BlockRayTraceResult)mop;
 			IOSideConfig here = sideConfig.get(bmop.getFace());

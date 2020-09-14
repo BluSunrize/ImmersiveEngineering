@@ -21,6 +21,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.FluidPipeTileEntity.DirectionalFluidOutput;
+import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
@@ -372,7 +373,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 	@Override
 	public ITextComponent[] getOverlayText(PlayerEntity player, RayTraceResult mop, boolean hammer)
 	{
-		if(hammer&&IEServerConfig.GENERAL.showTextOverlay.get()&&!isDummy()&&mop instanceof BlockRayTraceResult)
+		if(hammer&&IEClientConfig.showTextOverlay.get()&&!isDummy()&&mop instanceof BlockRayTraceResult)
 		{
 			BlockRayTraceResult brtr = (BlockRayTraceResult)mop;
 			IOSideConfig i = sideConfig.get(brtr.getFace());

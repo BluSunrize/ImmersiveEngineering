@@ -72,7 +72,6 @@ public class IEServerConfig
 			);
 			wireConfigs.put(
 					IEWireType.REDSTONE,
-					//TODO 32 or 16 length?
 					new WireConfig(builder, "redstone", 32)
 			);
 			wireConfigs.put(
@@ -108,7 +107,6 @@ public class IEServerConfig
 			{
 				builder.push(name);
 				maxLengthGetter = builder.comment("The maximum length of "+name+" wires")
-						//TODO lower max?
 						.defineInRange("maxLength", defLength, 0, Integer.MAX_VALUE);
 				if(doPop)
 					builder.pop();
@@ -158,59 +156,11 @@ public class IEServerConfig
 		}
 	}
 
-	public static class General
-	{
-		General(ForgeConfigSpec.Builder builder)
-		{
-			builder.push("General");
-			//CLient
-			disableFancyTESR = builder
-					.comment("Disables most lighting code for certain models that are rendered dynamically (TESR). May improve FPS.",
-							"Affects turrets and garden cloches")
-					.define("disableFancyTESR", false);
-			showTextOverlay = builder
-					.comment("Show the text overlay for various blocks, such as the configuration of capacitors or pumps")
-					.define("showTextOverlay", true);
-			nixietubeFont = builder
-					.comment("Set this to false to disable the super awesome looking nixie tube front for the voltmeter and other things")
-					.define("nixietubeFont", true);
-			//TODO unclear whether true or false enables rescaling
-			adjustManualScale = builder
-					.comment("Set this to false to disable the manual's forced change of GUI scale")
-					.define("adjustManualScale", false);
-			badEyesight = builder
-					.comment("Set this to true if you suffer from bad eyesight. The Engineer's manual will be switched to a bold and darker text to improve readability.")
-					.define("badEyesight", false);
-			tagTooltips = builder
-					.comment("Controls if item tooltips should contain the tags names of items. These tooltips are only visible in advanced tooltip mode (F3+H)")
-					.define("tagTooltips", true);
-			increasedTileRenderdistance = builder
-					.comment("Increase the distance at which certain TileEntities (specifically windmills) are still visible. This is a modifier, so set it to 1 for default render distance, to 2 for doubled distance and so on.")
-					.defineInRange("increasedTileRenderdistance", 1.5, 0, Double.MAX_VALUE);
-			//Server?
-			preferredOres = builder
-					.comment("A list of preferred Mod IDs that results of IE processes should stem from, aka which mod you want the copper to come from.",
-							"This affects the ores dug by the excavator, as well as those crushing recipes that don't have associated IE items. This list is in oreder of priority.")
-					.defineList("preferredOres", ImmutableList.of(ImmersiveEngineering.MODID), obj -> true);
-			builder.pop();
-		}
-
-		public final BooleanValue disableFancyTESR;
-		public final BooleanValue showTextOverlay;
-		public final BooleanValue nixietubeFont;
-		public final BooleanValue adjustManualScale;
-		public final BooleanValue badEyesight;
-		public final BooleanValue tagTooltips;
-		public final DoubleValue increasedTileRenderdistance;
-		public final ConfigValue<List<? extends String>> preferredOres;
-	}
-
 	public static class Machines
 	{
 		Machines(ForgeConfigSpec.Builder builder)
 		{
 			builder.push("machines");
-			//Server
 			{
 				builder.push("capacitors");
 				lvCapConfig = new CapacitorConfig(builder, () -> IETileTypes.CAPACITOR_LV.get(), "low", 100000, 256, 256);
@@ -511,11 +461,6 @@ public class IEServerConfig
 			ore_silver = new OreConfig(builder, "silver", 8, 8, 40, 4);
 			ore_nickel = new OreConfig(builder, "nickel", 6, 8, 24, 2);
 			ore_uranium = new OreConfig(builder, "uranium", 4, 8, 24, 2);
-			oreDimBlacklist = builder
-					.comment("A blacklist of dimensions in which IE ores won't spawn. By default this is Nether and End")
-					.defineList("dimension_blocklist", ImmutableList.of(
-							DimensionType.THE_NETHER.getRegistryName().toString(), DimensionType.THE_END.getRegistryName().toString()
-					), obj -> true);
 			retrogen_key = builder
 					.comment("The retrogeneration key. Basically IE checks if this key is saved in the chunks data. If it isn't, it will perform retrogen on all ores marked for retrogen.", "Change this in combination with the retrogen booleans to regen only some of the ores.")
 					.define("retrogen_key", "DEFAULT");
@@ -535,7 +480,6 @@ public class IEServerConfig
 		public final OreConfig ore_silver;
 		public final OreConfig ore_nickel;
 		public final OreConfig ore_uranium;
-		public final ConfigValue<List<? extends String>> oreDimBlacklist;
 		public final BooleanValue retrogen_log_flagChunk;
 		public final BooleanValue retrogen_log_remaining;
 		public final ConfigValue<String> retrogen_key;
@@ -618,7 +562,7 @@ public class IEServerConfig
 				powerpack_whitelist = builder
 						.comment("A whitelist of armor pieces to allow attaching the capacitor backpack, formatting: [mod id]:[item name]")
 						.defineList("whitelist", ImmutableList.of(), obj -> true);
-				//TODO update list
+				//TODO update list for 1.16.3
 				powerpack_blacklist = builder
 						.comment("A blacklist of armor pieces to allow attaching the capacitor backpack, formatting: [mod id]:[item name]. Whitelist has priority over this")
 						.defineList("blacklist", ImmutableList.of(
@@ -684,7 +628,6 @@ public class IEServerConfig
 
 	public static final ForgeConfigSpec CONFIG_SPEC;
 	public static final Wires WIRES;
-	public static final General GENERAL;
 	public static final Machines MACHINES;
 	public static final Ores ORES;
 	public static final Tools TOOLS;
@@ -694,7 +637,6 @@ public class IEServerConfig
 	{
 		ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
 		WIRES = new Wires(builder);
-		GENERAL = new General(builder);
 		MACHINES = new Machines(builder);
 		ORES = new Ores(builder);
 		TOOLS = new Tools(builder);
@@ -720,15 +662,6 @@ public class IEServerConfig
 		return rawConfig;
 	}
 
-	private static int[] toIntArray(ConfigValue<List<? extends Integer>> in)
-	{
-		Integer[] temp = in.get().toArray(new Integer[0]);
-		int[] ret = new int[temp.length];
-		for(int i = 0; i < temp.length; ++i)
-			ret[i] = temp[i];
-		return ret;
-	}
-
 	@SubscribeEvent
 	public static void onConfigReload(ModConfig.ModConfigEvent ev)
 	{
@@ -736,17 +669,11 @@ public class IEServerConfig
 		CACHED.blocksBreakWires = WIRES.blocksBreakWires.get();
 		CACHED.wireDamage = WIRES.enableWireDamage.get();
 		rawConfig = null;
-		if(CACHED.badEyesight!=GENERAL.badEyesight.get())
-		{
-			CACHED.badEyesight = GENERAL.badEyesight.get();
-			ImmersiveEngineering.proxy.resetManual();
-		}
 	}
 
 	public static class CachedConfigValues
 	{
 		public boolean blocksBreakWires;
 		public boolean wireDamage;
-		public boolean badEyesight;
 	}
 }

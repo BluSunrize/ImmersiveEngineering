@@ -305,13 +305,13 @@ public class IEManualInstance extends ManualInstance
 	@Override
 	public boolean allowGuiRescale()
 	{
-		return IEServerConfig.GENERAL.adjustManualScale.get();
+		return !IEClientConfig.adjustManualScale.get();
 	}
 
 	@Override
 	public boolean improveReadability()
 	{
-		return IEServerConfig.GENERAL.badEyesight.get();
+		return IEClientConfig.badEyesight.get();
 	}
 
 	public String formatConfigEntry(String rep, String splitKey)

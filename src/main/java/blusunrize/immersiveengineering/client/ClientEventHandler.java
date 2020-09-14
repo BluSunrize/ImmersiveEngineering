@@ -259,7 +259,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 					TextFormatting.GRAY
 			));
 
-		if(IEServerConfig.GENERAL.tagTooltips.get()&&event.getFlags().isAdvanced())
+		if(IEClientConfig.tagTooltips.get()&&event.getFlags().isAdvanced())
 		{
 			for(ResourceLocation oid : ItemTags.getCollection().getOwningTags(event.getItemStack().getItem()))
 				event.getToolTip().add(ClientUtils.applyFormat(

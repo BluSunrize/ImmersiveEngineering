@@ -45,9 +45,7 @@ import net.minecraft.item.*;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.resources.DataPackRegistries;
-import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.server.ServerWorld;
@@ -123,13 +121,7 @@ public class ImmersiveEngineering
 
 		IEAdvancements.preInit();
 
-
-		for(String b : IEServerConfig.ORES.oreDimBlacklist.get())
-			IEWorldGen.oreDimBlacklist.add(RegistryKey.func_240903_a_(
-					Registry.DIMENSION_TYPE_KEY,
-					new ResourceLocation(b)
-			));
-		IEApi.modPreference = IEServerConfig.GENERAL.preferredOres.get();
+		IEApi.modPreference = IECommonConfig.preferredOres.get();
 		IEApi.prefixToIngotMap.put("ingots", new Integer[]{1, 1});
 		IEApi.prefixToIngotMap.put("nuggets", new Integer[]{1, 9});
 		IEApi.prefixToIngotMap.put("storage_blocks", new Integer[]{9, 1});

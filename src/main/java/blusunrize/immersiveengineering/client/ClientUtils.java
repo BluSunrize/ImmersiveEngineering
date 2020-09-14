@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.client.models.SmartLightingQuad;
 import blusunrize.immersiveengineering.client.utils.BatchingRenderTypeBuffer;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
-import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
@@ -1054,7 +1053,7 @@ public class ClientUtils
 	public static void renderModelTESRFancy(List<BakedQuad> quads, IVertexBuilder renderer, World world, BlockPos pos,
 											boolean useCached, int color, int light)
 	{//TODO include matrix transformations?, cache normals?
-		if(IEServerConfig.GENERAL.disableFancyTESR.get())
+		if(IEClientConfig.disableFancyTESR.get())
 			renderModelTESRFast(quads, renderer, new MatrixStack(), world.getLightSubtracted(pos, 0), color);
 		else
 		{

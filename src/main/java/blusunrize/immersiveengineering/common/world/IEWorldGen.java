@@ -21,7 +21,6 @@ import net.minecraft.util.RegistryKey;
 import net.minecraft.util.SharedSeedRandom;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.DimensionType;
 import net.minecraft.world.ISeedReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
@@ -53,7 +52,6 @@ public class IEWorldGen
 {
 	public static Map<String, ConfiguredFeature<?, ?>> features = new HashMap<>();
 	public static Map<String, ConfiguredFeature<?, ?>> retroFeatures = new HashMap<>();
-	public static List<RegistryKey<DimensionType>> oreDimBlacklist = new ArrayList<>();
 	public static Set<String> retrogenOres = new HashSet<>();
 
 	public static void addOreGen(String name, BlockState state, int maxVeinSize, int minY, int maxY, int chunkOccurence)
@@ -91,23 +89,15 @@ public class IEWorldGen
 
 	public void generateOres(Random random, int chunkX, int chunkZ, ServerWorld world, boolean newGeneration)
 	{
-		if(!oreDimBlacklist.contains(world.getDimensionKey()))
+		if(newGeneration)
+			for(Entry<String, ConfiguredFeature<?, ?>> gen : features.entrySet())
+				gen.getValue().func_242765_a(world, world.getChunkProvider().getChunkGenerator(), random, new BlockPos(16*chunkX, 0, 16*chunkZ));
+		else
 		{
-			if(newGeneration)
-			{
-				for(Entry<String, ConfiguredFeature<?, ?>> gen : features.entrySet())
+			for(Entry<String, ConfiguredFeature<?, ?>> gen : retroFeatures.entrySet())
+				if(retrogenOres.contains("retrogen_"+gen.getKey()))
 					gen.getValue().func_242765_a(world, world.getChunkProvider().getChunkGenerator(), random, new BlockPos(16*chunkX, 0, 16*chunkZ));
-			}
-			else
-			{
-				for(Entry<String, ConfiguredFeature<?, ?>> gen : retroFeatures.entrySet())
-				{
-					if(retrogenOres.contains("retrogen_"+gen.getKey()))
-						gen.getValue().func_242765_a(world, world.getChunkProvider().getChunkGenerator(), random, new BlockPos(16*chunkX, 0, 16*chunkZ));
-				}
-			}
 		}
-
 	}
 
 	@SubscribeEvent
