@@ -1,6 +1,0 @@
-{
-	"parent": "block/cube_all",
-	"textures": {
-		"all": "immersiveengineering:block/metal_decoration0_radiator"
-	}
-}
