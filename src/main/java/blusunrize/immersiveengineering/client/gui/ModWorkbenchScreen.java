@@ -12,11 +12,13 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.utils.FakeGuiUtils;
 import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchTileEntity;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.gui.ModWorkbenchContainer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderHelper;
@@ -26,7 +28,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.items.ItemHandlerHelper;
 import org.lwjgl.opengl.GL11;
@@ -54,9 +55,9 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 	}
 
 	@Override
-	public void render(int mx, int my, float partial)
+	public void render(MatrixStack transform, int mx, int my, float partial)
 	{
-		super.render(mx, my, partial);
+		super.render(transform, mx, my, partial);
 		for(int i = 0; i < container.slotCount; i++)
 		{
 			Slot s = container.getSlot(i);
@@ -67,8 +68,11 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 					if(isPointInRegion(s.xPos, s.yPos, 16, 16, mx, my))
 					{
 						List<ITextComponent> tooltip = new ArrayList<>();
-						tooltip.add(recipe.output.getDisplayName().deepCopy().setStyle(new Style().setColor(recipe.output.getRarity().color)));
-						ArrayList<ItemStack> inputs = new ArrayList<ItemStack>();
+						tooltip.add(ClientUtils.applyFormat(
+								recipe.output.getDisplayName().deepCopy(),
+								recipe.output.getRarity().color
+						));
+						List<ItemStack> inputs = new ArrayList<>();
 						for(IngredientWithSize stack : recipe.inputs)
 						{
 							ItemStack toAdd = Utils.copyStackWithAmount(stack.getRandomizedExampleStack(mc().player.ticksExisted), stack.getCount());
@@ -86,10 +90,12 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 								inputs.add(toAdd.copy());
 						}
 						for(ItemStack ss : inputs)
-							tooltip.add(new StringTextComponent(ss.getCount()+"x ").appendSibling(ss.getDisplayName())
-									.setStyle(new Style().setColor(TextFormatting.GRAY)));
+							tooltip.add(ClientUtils.applyFormat(
+									new StringTextComponent(ss.getCount()+"x ").append(ss.getDisplayName()),
+									TextFormatting.GRAY
+							));
 
-						ClientUtils.drawHoveringText(tooltip, mx, my, font, width, height);
+						FakeGuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
 						RenderHelper.enableStandardItemLighting();
 					}
 			}
@@ -98,11 +104,10 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float f, int mx, int my)
+	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float f, int mx, int my)
 	{
-		RenderSystem.color3f(1.0F, 1.0F, 1.0F);
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/workbench.png");
-		this.blit(guiLeft, guiTop, 0, 0, xSize, ySize);
+		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
 
 
 		for(int i = 0; i < container.slotCount; i++)
@@ -126,7 +131,7 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 				{
 					itemRender.renderItemAndEffectIntoGUI(ghostStack, guiLeft+s.xPos, guiTop+s.yPos);
 					RenderSystem.depthFunc(GL11.GL_GREATER);
-					ClientUtils.drawColouredRect(guiLeft+s.xPos+0, guiTop+s.yPos+0, 16, 16, 0xbb333333);
+					ClientUtils.drawColouredRect(guiLeft+s.xPos, guiTop+s.yPos, 16, 16, 0xbb333333);
 					RenderSystem.depthFunc(GL11.GL_LEQUAL);
 				}
 			}

@@ -12,9 +12,9 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag;
+import net.minecraft.tags.ITagCollection;
+import net.minecraft.tags.TagCollectionManager;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -24,14 +24,38 @@ import java.util.HashSet;
 
 public class TagUtils
 {
+	// These will be overriden on the client side, because TagCollectionManager doesn't work there
+	public static ITagCollection<Item> ITEM_TAG_COLLECTION = TagCollectionManager.func_242178_a().func_241836_b();
+	public static ITagCollection<Block> BLOCK_TAG_COLLECTION = TagCollectionManager.func_242178_a().func_241835_a();
+
+	public static ITag<Item> getItemTag(ResourceLocation key)
+	{
+		return ITEM_TAG_COLLECTION.get(key);
+	}
+
+	public static ITag<Block> getBlockTag(ResourceLocation key)
+	{
+		return BLOCK_TAG_COLLECTION.get(key);
+	}
+
+	public static Collection<ResourceLocation> getTagsForItem(Item item)
+	{
+		return ITEM_TAG_COLLECTION.getOwningTags(item);
+	}
+
+	public static Collection<ResourceLocation> getTagsForBlock(Block block)
+	{
+		return BLOCK_TAG_COLLECTION.getOwningTags(block);
+	}
+
 	public static boolean isInBlockOrItemTag(ItemStack stack, ResourceLocation oreName)
 	{
 		if(!isNonemptyBlockOrItemTag(oreName))
 			return false;
-		Tag<Item> itemTag = ItemTags.getCollection().get(oreName);
+		ITag<Item> itemTag = getItemTag(oreName);
 		if(itemTag!=null&&itemTag.getAllElements().contains(stack.getItem()))
 			return true;
-		Tag<Block> blockTag = BlockTags.getCollection().get(oreName);
+		ITag<Block> blockTag = getBlockTag(oreName);
 		return blockTag!=null&&blockTag.getAllElements()
 				.stream()
 				.map(IItemProvider::asItem)
@@ -40,13 +64,13 @@ public class TagUtils
 
 	public static boolean isNonemptyItemTag(ResourceLocation name)
 	{
-		Tag<Item> t = ItemTags.getCollection().getTagMap().get(name);
+		ITag<Item> t = getItemTag(name);
 		return t!=null&&!t.getAllElements().isEmpty();
 	}
 
 	public static boolean isNonemptyBlockTag(ResourceLocation name)
 	{
-		Tag<Block> t = BlockTags.getCollection().getTagMap().get(name);
+		ITag<Block> t = getBlockTag(name);
 		return t!=null&&!t.getAllElements().isEmpty();
 	}
 
@@ -58,12 +82,12 @@ public class TagUtils
 	public static NonNullList<ItemStack> getItemsInTag(ResourceLocation name)
 	{
 		NonNullList<ItemStack> ret = NonNullList.create();
-		addItemsInTag(ret, ItemTags.getCollection().get(name));
-		addItemsInTag(ret, BlockTags.getCollection().get(name));
+		addItemsInTag(ret, getItemTag(name));
+		addItemsInTag(ret, getBlockTag(name));
 		return ret;
 	}
 
-	private static <T extends IItemProvider> void addItemsInTag(NonNullList<ItemStack> out, Tag<T> in)
+	private static <T extends IItemProvider> void addItemsInTag(NonNullList<ItemStack> out, ITag<T> in)
 	{
 		if(in!=null)
 			in.getAllElements().stream()
@@ -87,10 +111,10 @@ public class TagUtils
 
 	public static Collection<ResourceLocation> getMatchingTagNames(ItemStack stack)
 	{
-		Collection<ResourceLocation> ret = new HashSet<>(stack.getItem().getTags());
+		Collection<ResourceLocation> ret = new HashSet<>(getTagsForItem(stack.getItem()));
 		Block b = Block.getBlockFromItem(stack.getItem());
 		if(b!=Blocks.AIR)
-			ret.addAll(b.getTags());
+			ret.addAll(getTagsForBlock(b));
 		return ret;
 	}
 

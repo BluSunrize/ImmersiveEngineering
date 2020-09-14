@@ -41,9 +41,9 @@ public class GlobalWireNetworkTest
 	{
 		global.onConnectorLoad(iicA, false);
 		global.onConnectorLoad(iicB, false);
-		Assert.assertEquals(global.getConnector(cpA0), iicA);
-		Assert.assertEquals(global.getConnector(cpB0), iicB);
-		Assert.assertEquals(global.getConnector(cpB1), iicB);
+		Assert.assertEquals(global.getExistingConnector(cpA0), iicA);
+		Assert.assertEquals(global.getExistingConnector(cpB0), iicB);
+		Assert.assertEquals(global.getExistingConnector(cpB1), iicB);
 		for(ConnectionPoint cp : new ConnectionPoint[]{cpA0, cpB0, cpB1})
 			Assert.assertNotNull(global.getNullableLocalNet(cp));
 		Assert.assertNotEquals(global.getLocalNet(cpA0), global.getLocalNet(cpB0));

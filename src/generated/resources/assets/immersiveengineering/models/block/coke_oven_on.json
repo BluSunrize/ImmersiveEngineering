@@ -1,5 +1,5 @@
 {
-  "parent": "block/block",
+  "parent": "minecraft:block/block",
   "textures": {
     "particle": "immersiveengineering:block/multiblocks/coke_oven",
     "side": "immersiveengineering:block/multiblocks/coke_oven",

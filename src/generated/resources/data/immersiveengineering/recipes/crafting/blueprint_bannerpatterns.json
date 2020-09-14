@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " b ",
+    "ddd",
+    "ppp"
+  ],
+  "key": {
+    "b": {
+      "tag": "minecraft:banners"
+    },
+    "d": {
+      "tag": "forge:dyes/blue"
+    },
+    "p": {
+      "item": "minecraft:paper"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:blueprint",
+    "nbt": {
+      "blueprint": "bannerpatterns"
+    }
+  }
+}

@@ -13,15 +13,17 @@ import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultib
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.ICriterionTrigger;
 import net.minecraft.advancements.PlayerAdvancements;
 import net.minecraft.advancements.criterion.CriterionInstance;
+import net.minecraft.advancements.criterion.EntityPredicate;
+import net.minecraft.advancements.criterion.EntityPredicate.AndPredicate;
 import net.minecraft.advancements.criterion.ItemPredicate;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.ConditionArrayParser;
+import net.minecraft.loot.ConditionArraySerializer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 
@@ -75,9 +77,14 @@ public class MultiblockTrigger implements ICriterionTrigger<MultiblockTrigger.In
 	}
 
 	@Override
-	public MultiblockTrigger.Instance deserializeInstance(JsonObject json, JsonDeserializationContext context)
+	public Instance deserialize(JsonObject json, ConditionArrayParser context)
 	{
-		return new MultiblockTrigger.Instance(new ResourceLocation(JSONUtils.getString(json, "multiblock")), ItemPredicate.deserialize(json.get("item")));
+		EntityPredicate.AndPredicate and = EntityPredicate.AndPredicate.deserializeJSONObject(json, "player", context);
+		return new MultiblockTrigger.Instance(
+				new ResourceLocation(JSONUtils.getString(json, "multiblock")),
+				ItemPredicate.deserialize(json.get("item")),
+				and
+		);
 	}
 
 	public void trigger(ServerPlayerEntity player, IMultiblock multiblock, ItemStack hammer)
@@ -87,14 +94,19 @@ public class MultiblockTrigger implements ICriterionTrigger<MultiblockTrigger.In
 			listeners.trigger(multiblock, hammer);
 	}
 
+	public static Instance create(ResourceLocation multiblock, ItemPredicate hammer)
+	{
+		return new Instance(multiblock, hammer, AndPredicate.ANY_AND);
+	}
+
 	public static class Instance extends CriterionInstance
 	{
 		private final ResourceLocation multiblock;
 		private final ItemPredicate hammer;
 
-		public Instance(ResourceLocation multiblock, ItemPredicate hammer)
+		public Instance(ResourceLocation multiblock, ItemPredicate hammer, AndPredicate and)
 		{
-			super(MultiblockTrigger.ID);
+			super(MultiblockTrigger.ID, and);
 			this.multiblock = multiblock;
 			this.hammer = hammer;
 		}
@@ -105,9 +117,9 @@ public class MultiblockTrigger implements ICriterionTrigger<MultiblockTrigger.In
 		}
 
 		@Override
-		public JsonElement serialize()
+		public JsonObject serialize(ConditionArraySerializer p_230240_1_)
 		{
-			JsonObject jsonobject = new JsonObject();
+			JsonObject jsonobject = super.serialize(p_230240_1_);
 			jsonobject.addProperty("multiblock", this.multiblock.toString());
 			jsonobject.add("item", this.hammer.serialize());
 			return jsonobject;

@@ -16,8 +16,8 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
@@ -25,7 +25,7 @@ import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.EffectType;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Set;
@@ -50,15 +50,15 @@ public class IEPotions
 				0x690000, 0, false, 2, true, true);
 		sticky = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "sticky"), EffectType.HARMFUL,
 				0x9c6800, 0, false, 3, true, true)
-				.addAttributesModifier(SharedMonsterAttributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -0.5, Operation.MULTIPLY_TOTAL);
+				.addAttributesModifier(Attributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -0.5, Operation.MULTIPLY_TOTAL);
 		stunned = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "stunned"), EffectType.HARMFUL,
 				0x624a98, 0, false, 4, true, true);
 		concreteFeet = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "concrete_feet"), EffectType.HARMFUL,
 				0x624a98, 0, false, 5, true, true)
-				.addAttributesModifier(SharedMonsterAttributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -2D, Operation.MULTIPLY_TOTAL);
+				.addAttributesModifier(Attributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -2D, Operation.MULTIPLY_TOTAL);
 		flashed = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "flashed"), EffectType.HARMFUL,
 				0x624a98, 0, false, 6, true, true)
-				.addAttributesModifier(SharedMonsterAttributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -0.15, Operation.MULTIPLY_TOTAL);
+				.addAttributesModifier(Attributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -0.15, Operation.MULTIPLY_TOTAL);
 
 		IEApi.potions = new Effect[]{flammable, slippery, conductive, sticky, stunned, concreteFeet, flashed};
 	}
@@ -125,8 +125,8 @@ public class IEPotions
 		{
 			if(this==IEPotions.slippery)
 			{
-				if(living.onGround)
-					living.moveRelative(0, new Vec3d(0, 1, 0.005));
+				if(living.isOnGround())
+					living.moveRelative(0, new Vector3d(0, 1, 0.005));
 				EquipmentSlotType hand = living.getRNG().nextBoolean()?EquipmentSlotType.MAINHAND: EquipmentSlotType.OFFHAND;
 				if(!living.world.isRemote&&living.getRNG().nextInt(300)==0&&!living.getItemStackFromSlot(hand).isEmpty())
 				{

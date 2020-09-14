@@ -37,20 +37,19 @@ public class ManualElementImage extends SpecialManualElements
 	}
 
 	@Override
-	public void render(ManualScreen gui, int x, int y, int mx, int my)
+	public void render(MatrixStack transform, ManualScreen gui, int x, int y, int mx, int my)
 	{
 		int yOff = 0;
 		for(ManualImage image1 : images)
 		{
 			int xOff = 60-image1.uSize/2;
-			gui.fillGradient(x+xOff-2, y+yOff-2, x+xOff+image1.uSize+2, y+yOff+image1.vSize+2,
+			gui.fillGradient(transform, x+xOff-2, y+yOff-2, x+xOff+image1.uSize+2, y+yOff+image1.vSize+2,
 					0xffeaa74c, 0xfff6b059);
-			gui.fillGradient(x+xOff-1, y+yOff-1, x+xOff+image1.uSize+1, y+yOff+image1.vSize+1,
+			gui.fillGradient(transform, x+xOff-1, y+yOff-1, x+xOff+image1.uSize+1, y+yOff+image1.vSize+1,
 					0xffc68e46, 0xffbe8844);
 			yOff += image1.vSize+5;
 		}
 		yOff = 0;
-		MatrixStack transform = new MatrixStack();
 		IRenderTypeBuffer.Impl buffers = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
 		for(ManualImage image : images)
 		{

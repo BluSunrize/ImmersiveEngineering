@@ -14,6 +14,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.vector.Vector3d;
 
 import javax.annotation.Nonnull;
 
@@ -45,6 +46,6 @@ public class FluidSorterContainer extends IEBaseContainer<FluidSorterTileEntity>
 			return false;
 		if(!((IInteractionObjectIE)tile).canUseGui(player))
 			return false;
-		return !tile.isRemoved()&&tile.getDistanceSq(player.getPosX(), player.getPosY(), player.getPosZ()) < 64;
+		return !tile.isRemoved()&&Vector3d.copy(tile.getPos()).squareDistanceTo(player.getPositionVec()) < 64;
 	}
 }

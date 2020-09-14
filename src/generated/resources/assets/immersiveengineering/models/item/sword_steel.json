@@ -1,5 +1,5 @@
 {
-  "parent": "item/handheld",
+  "parent": "minecraft:item/handheld",
   "textures": {
     "layer0": "immersiveengineering:item/tool_sword_steel"
   }

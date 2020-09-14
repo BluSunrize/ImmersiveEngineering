@@ -8,8 +8,8 @@
 
 package blusunrize.immersiveengineering.client.models;
 
-import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
 import blusunrize.immersiveengineering.client.render.IEBipedLayerRenderer;
 import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
 import blusunrize.immersiveengineering.common.items.PowerpackItem;
@@ -31,7 +31,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 import java.text.DecimalFormat;
 import java.util.concurrent.TimeUnit;
@@ -219,7 +219,7 @@ public class ModelPowerpack<T extends LivingEntity> extends ModelIEArmorBase<T>
 				float angleX = (right?bipedRightArm: bipedLeftArm).rotateAngleX;
 				float angleZ = (right?bipedRightArm: bipedLeftArm).rotateAngleZ;
 				String cacheKey = keyFormat.format(angleX)+"_"+keyFormat.format(angleZ);
-				Vec3d[] vex;
+				Vector3d[] vex;
 				try
 				{
 					vex = (right?catenaryCacheRight: catenaryCacheLeft).get(cacheKey, () ->
@@ -229,7 +229,7 @@ public class ModelPowerpack<T extends LivingEntity> extends ModelIEArmorBase<T>
 						double y = armLength*Math.cos(angleX);
 						double z = armLength*Math.sin(angleX);
 
-						return WireUtils.getConnectionCatenary(new Vec3d(.484375, -.75, .25), new Vec3d(x, -y, z), 1.5);
+						return WireUtils.getConnectionCatenary(new Vector3d(.484375, -.75, .25), new Vector3d(x, -y, z), 1.5);
 					});
 				} catch(Exception e)
 				{
@@ -250,12 +250,12 @@ public class ModelPowerpack<T extends LivingEntity> extends ModelIEArmorBase<T>
 					{
 						int iHere = i-offset;
 						int iThere = i-1+offset;
-						Vec3d vecHere = vex[iHere];
-						Vec3d vecThere = vex[iThere];
+						Vector3d vecHere = vex[iHere];
+						Vector3d vecThere = vex[iThere];
 						builder.setNormal((float)(vecThere.z-vecHere.z), 0, (float)(vecHere.x-vecThere.x));
 						for(int index : new int[]{iHere, iThere})
 						{
-							Vec3d vec = vex[index];
+							Vector3d vec = vex[index];
 							double xA = scaleX*vec.x-.015625;
 							double xB = scaleX*vec.x+.015625;
 							if(index==iHere)
@@ -274,7 +274,7 @@ public class ModelPowerpack<T extends LivingEntity> extends ModelIEArmorBase<T>
 						builder.setNormal((float)(vecThere.y-vecHere.y), (float)(vecHere.x-vecThere.x), 0);
 						for(int index : new int[]{iHere, iThere})
 						{
-							Vec3d vec = vex[index];
+							Vector3d vec = vex[index];
 							double yA = -vec.y-.015625;
 							double yB = -vec.y;
 							if(index==iThere)
@@ -302,10 +302,10 @@ public class ModelPowerpack<T extends LivingEntity> extends ModelIEArmorBase<T>
 	}
 
 	static final DecimalFormat keyFormat = new DecimalFormat("0.0000");
-	public static final Cache<String, Vec3d[]> catenaryCacheLeft = CacheBuilder.newBuilder()
+	public static final Cache<String, Vector3d[]> catenaryCacheLeft = CacheBuilder.newBuilder()
 			.expireAfterAccess(5, TimeUnit.MINUTES)
 			.build();
-	public static final Cache<String, Vec3d[]> catenaryCacheRight = CacheBuilder.newBuilder()
+	public static final Cache<String, Vector3d[]> catenaryCacheRight = CacheBuilder.newBuilder()
 			.expireAfterAccess(5, TimeUnit.MINUTES)
 			.build();
 

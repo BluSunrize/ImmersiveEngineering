@@ -36,49 +36,49 @@ class IEBlockTags extends BlockTagsProvider
 	@Override
 	protected void registerTags()
 	{
-		getBuilder(BlockTags.FENCES)
-				.add(MetalDecoration.aluFence)
-				.add(MetalDecoration.steelFence)
-				.add(WoodenDecoration.treatedFence);
-		getBuilder(BlockTags.WOODEN_FENCES)
-				.add(WoodenDecoration.treatedFence);
-		getBuilder(IETags.clayBlock)
-				.add(Blocks.CLAY);
-		getBuilder(IETags.glowstoneBlock)
-				.add(Blocks.GLOWSTONE);
+		getOrCreateBuilder(BlockTags.FENCES)
+				.addItemEntry(MetalDecoration.aluFence)
+				.addItemEntry(MetalDecoration.steelFence)
+				.addItemEntry(WoodenDecoration.treatedFence);
+		getOrCreateBuilder(BlockTags.WOODEN_FENCES)
+				.addItemEntry(WoodenDecoration.treatedFence);
+		getOrCreateBuilder(IETags.clayBlock)
+				.addItemEntry(Blocks.CLAY);
+		getOrCreateBuilder(IETags.glowstoneBlock)
+				.addItemEntry(Blocks.GLOWSTONE);
 		for(EnumMetals metal : EnumMetals.values())
 		{
 			MetalTags tags = IETags.getTagsFor(metal);
 			if(!metal.isVanillaMetal())
 			{
 				Block storage = IEBlocks.Metals.storage.get(metal);
-				getBuilder(tags.storage).add(storage);
-				getBuilder(Tags.Blocks.STORAGE_BLOCKS).add(storage);
+				getOrCreateBuilder(tags.storage).addItemEntry(storage);
+				getOrCreateBuilder(Tags.Blocks.STORAGE_BLOCKS).addItemEntry(storage);
 				if(metal.shouldAddOre())
 				{
 					Block ore = IEBlocks.Metals.ores.get(metal);
 					assert (tags.ore!=null&&ore!=null);
-					getBuilder(tags.ore).add(ore);
-					getBuilder(Tags.Blocks.ORES).add(ore);
+					getOrCreateBuilder(tags.ore).addItemEntry(ore);
+					getOrCreateBuilder(Tags.Blocks.ORES).addItemEntry(ore);
 				}
 			}
 			Block sheetmetal = IEBlocks.Metals.sheetmetal.get(metal);
-			getBuilder(tags.sheetmetal).add(sheetmetal);
-			getBuilder(IETags.sheetmetals).add(sheetmetal);
+			getOrCreateBuilder(tags.sheetmetal).addItemEntry(sheetmetal);
+			getOrCreateBuilder(IETags.sheetmetals).addItemEntry(sheetmetal);
 		}
 		for(DyeColor dye : DyeColor.values())
-			getBuilder(IETags.sheetmetals).add(MetalDecoration.coloredSheetmetal.get(dye));
+			getOrCreateBuilder(IETags.sheetmetals).add(MetalDecoration.coloredSheetmetal.get(dye));
 		for(TreatedWoodStyles style : TreatedWoodStyles.values())
 		{
-			getBuilder(IETags.treatedWood).add(WoodenDecoration.treatedWood.get(style));
-			getBuilder(IETags.treatedWoodSlab).add(IEBlocks.toSlab.get(IEBlocks.WoodenDecoration.treatedWood.get(style)));
+			getOrCreateBuilder(IETags.treatedWood).addItemEntry(WoodenDecoration.treatedWood.get(style));
+			getOrCreateBuilder(IETags.treatedWoodSlab).addItemEntry(IEBlocks.toSlab.get(IEBlocks.WoodenDecoration.treatedWood.get(style)));
 		}
 		for(MetalScaffoldingType t : MetalScaffoldingType.values())
 		{
-			getBuilder(IETags.scaffoldingSteel).add(MetalDecoration.steelScaffolding.get(t));
-			getBuilder(IETags.scaffoldingAlu).add(MetalDecoration.aluScaffolding.get(t));
+			getOrCreateBuilder(IETags.scaffoldingSteel).addItemEntry(MetalDecoration.steelScaffolding.get(t));
+			getOrCreateBuilder(IETags.scaffoldingAlu).addItemEntry(MetalDecoration.aluScaffolding.get(t));
 		}
-		getBuilder(IETags.coalCokeBlock)
-				.add(StoneDecoration.coke);
+		getOrCreateBuilder(IETags.coalCokeBlock)
+				.addItemEntry(StoneDecoration.coke);
 	}
 }

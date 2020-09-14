@@ -25,12 +25,12 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.Rarity;
+import net.minecraft.loot.*;
+import net.minecraft.loot.StandaloneLootEntry.Builder;
+import net.minecraft.loot.conditions.RandomChance;
+import net.minecraft.loot.functions.SetCount;
+import net.minecraft.loot.functions.SetNBT;
 import net.minecraft.util.IItemProvider;
-import net.minecraft.world.storage.loot.*;
-import net.minecraft.world.storage.loot.StandaloneLootEntry.Builder;
-import net.minecraft.world.storage.loot.conditions.RandomChance;
-import net.minecraft.world.storage.loot.functions.SetCount;
-import net.minecraft.world.storage.loot.functions.SetNBT;
 
 public class GeneralLoot extends LootGenerator
 {

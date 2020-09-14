@@ -10,13 +10,13 @@ package blusunrize.immersiveengineering.client.render;
 
 import blusunrize.immersiveengineering.api.shader.ShaderLayer;
 import blusunrize.immersiveengineering.common.util.IELogger;
-import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.client.renderer.texture.Texture;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.resources.IResource;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.Vector4f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.io.IOUtils;
@@ -24,6 +24,8 @@ import org.apache.commons.io.IOUtils;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.function.IntFunction;
+
+import static net.minecraft.client.renderer.texture.NativeImage.*;
 
 @OnlyIn(Dist.CLIENT)
 public class IEShaderLayerCompositeTexture extends Texture
@@ -130,8 +132,7 @@ public class IEShaderLayerCompositeTexture extends Texture
 									int pre = finalTexture.getPixelRGBA(u, v) >> 24&255;
 
 									// if we just set it, we also set alpha values, we gotta blend it
-									//finalTexture.setPixelRGBA(u, v, i2);
-									finalTexture.blendPixel(u, v, i2);
+									blendPixel(finalTexture, u, v, i2);
 
 									// if the image was blank, or the resulting alpha is lower than how it started,
 									// we fix it.
@@ -173,5 +174,48 @@ public class IEShaderLayerCompositeTexture extends Texture
 			if(finalTexture!=null)
 				finalTexture.close();
 		}
+	}
+
+	private void blendPixel(NativeImage image, int xIn, int yIn, int colIn)
+	{
+		int existing = image.getPixelRGBA(xIn, yIn);
+		float alphaIn = (float)getAlpha(colIn)/255.0F;
+		float blueIn = (float)getBlue(colIn)/255.0F;
+		float greenIn = (float)getGreen(colIn)/255.0F;
+		float redIn = (float)getRed(colIn)/255.0F;
+		float alphaOld = (float)getAlpha(existing)/255.0F;
+		float blueOld = (float)getBlue(existing)/255.0F;
+		float greenOld = (float)getGreen(existing)/255.0F;
+		float redOld = (float)getRed(existing)/255.0F;
+		float oldMixFactor = 1.0F-alphaIn;
+		float alphaOut = alphaIn*alphaIn+alphaOld*oldMixFactor;
+		float blueOut = blueIn*alphaIn+blueOld*oldMixFactor;
+		float greenOut = greenIn*alphaIn+greenOld*oldMixFactor;
+		float redOut = redIn*alphaIn+redOld*oldMixFactor;
+		if(alphaOut > 1.0F)
+		{
+			alphaOut = 1.0F;
+		}
+
+		if(blueOut > 1.0F)
+		{
+			blueOut = 1.0F;
+		}
+
+		if(greenOut > 1.0F)
+		{
+			greenOut = 1.0F;
+		}
+
+		if(redOut > 1.0F)
+		{
+			redOut = 1.0F;
+		}
+
+		int redOutInt = (int)(alphaOut*255.0F);
+		int blueOutInt = (int)(blueOut*255.0F);
+		int greenOutInt = (int)(greenOut*255.0F);
+		int alphaOutInt = (int)(redOut*255.0F);
+		image.setPixelRGBA(xIn, yIn, getCombined(redOutInt, blueOutInt, greenOutInt, alphaOutInt));
 	}
 }

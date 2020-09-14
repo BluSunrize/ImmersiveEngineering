@@ -14,19 +14,21 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.LootContext;
+import net.minecraft.loot.LootParameters;
+import net.minecraft.loot.LootPoolEntryType;
+import net.minecraft.loot.StandaloneLootEntry;
+import net.minecraft.loot.conditions.ILootCondition;
+import net.minecraft.loot.functions.ILootFunction;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.storage.loot.LootContext;
-import net.minecraft.world.storage.loot.LootParameters;
-import net.minecraft.world.storage.loot.StandaloneLootEntry;
-import net.minecraft.world.storage.loot.conditions.ILootCondition;
-import net.minecraft.world.storage.loot.functions.ILootFunction;
 
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 
 public class TileDropLootEntry extends StandaloneLootEntry
 {
+	public static final ResourceLocation ID = new ResourceLocation(ImmersiveEngineering.MODID, "tile_drop");
 
 	protected TileDropLootEntry(int weightIn, int qualityIn, ILootCondition[] conditionsIn, ILootFunction[] functionsIn)
 	{
@@ -49,14 +51,15 @@ public class TileDropLootEntry extends StandaloneLootEntry
 		return builder(TileDropLootEntry::new);
 	}
 
+	@Nonnull
+	@Override
+	public LootPoolEntryType func_230420_a_()
+	{
+		return IELootFunctions.tileDrop;
+	}
+
 	public static class Serializer extends StandaloneLootEntry.Serializer<TileDropLootEntry>
 	{
-
-		public Serializer()
-		{
-			super(new ResourceLocation(ImmersiveEngineering.MODID, "tile_drop"), TileDropLootEntry.class);
-		}
-
 		@Nonnull
 		@Override
 		protected TileDropLootEntry func_212829_b_(

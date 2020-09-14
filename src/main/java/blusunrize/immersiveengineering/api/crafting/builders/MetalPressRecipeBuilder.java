@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag;
 
 public class MetalPressRecipeBuilder extends IEFinishedRecipe<MetalPressRecipeBuilder>
 {
@@ -32,7 +32,7 @@ public class MetalPressRecipeBuilder extends IEFinishedRecipe<MetalPressRecipeBu
 		return new MetalPressRecipeBuilder().addIngredient("mold", mold).addResult(result);
 	}
 
-	public static MetalPressRecipeBuilder builder(Item mold, Tag<Item> result, int count)
+	public static MetalPressRecipeBuilder builder(Item mold, ITag<Item> result, int count)
 	{
 		return new MetalPressRecipeBuilder().addIngredient("mold", mold).addResult(new IngredientWithSize(result, count));
 	}

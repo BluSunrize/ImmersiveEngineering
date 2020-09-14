@@ -31,6 +31,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
+import java.util.UUID;
 
 public class RailgunShotEntity extends IEProjectileEntity
 {
@@ -135,22 +136,24 @@ public class RailgunShotEntity extends IEProjectileEntity
 			IRailgunProjectile projectileProperties = getProjectileProperties();
 			if(projectileProperties!=null)
 			{
+				Entity shooter = this.func_234616_v_();
+				UUID shooterUuid = this.getShooterUUID();
 				if(mop instanceof EntityRayTraceResult)
 				{
 					Entity hit = ((EntityRayTraceResult)mop).getEntity();
-					double damage = projectileProperties.getDamage(this.world, hit, this.shootingEntity, this);
+					double damage = projectileProperties.getDamage(this.world, hit, shooterUuid, this);
 					hit.attackEntityFrom(
-							IEDamageSources.causeRailgunDamage(this, this.world.getPlayerByUuid(this.shootingEntity)),
+							IEDamageSources.causeRailgunDamage(this, shooter),
 							(float)(damage*IEServerConfig.TOOLS.railgun_damage.get())
 					);
 				}
 				else if(mop instanceof BlockRayTraceResult)
 				{
 					double breakRoll = this.rand.nextDouble();
-					if(breakRoll <= getProjectileProperties().getBreakChance(this.shootingEntity, ammo))
+					if(breakRoll <= getProjectileProperties().getBreakChance(shooterUuid, ammo))
 						this.remove();
 				}
-				projectileProperties.onHitTarget(this.world, mop, this.shootingEntity, this);
+				projectileProperties.onHitTarget(this.world, mop, shooterUuid, this);
 			}
 		}
 	}

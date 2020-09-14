@@ -8,8 +8,6 @@
 
 package blusunrize.immersiveengineering.client;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
@@ -33,6 +31,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound.AttenuationType;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.fonts.FontResourceManager;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.model.BipedModel;
@@ -58,13 +57,12 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.*;
 import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fml.client.gui.GuiUtils;
 import org.apache.commons.compress.utils.IOUtils;
 import org.lwjgl.opengl.GL11;
 
@@ -140,19 +138,16 @@ public class ClientUtils
 		return bufferedimage;
 	}
 
-	private static FontRenderer unicodeFontRender;
-
-	static
-	{
-		IEApi.renderCacheClearers.add(() -> unicodeFontRender = null);
-	}
+	private static FontRenderer unicodeRenderer;
 
 	public static FontRenderer unicodeFontRender()
 	{
-		if(unicodeFontRender==null)
-			unicodeFontRender = mc().getFontResourceManager()
-					.getFontRenderer(new ResourceLocation(ImmersiveEngineering.MODID, "unicode"));
-		return unicodeFontRender;
+		if(unicodeRenderer==null)
+			unicodeRenderer = new FontRenderer(rl -> {
+				FontResourceManager resourceManager = Minecraft.getInstance().fontResourceMananger;
+				return resourceManager.field_238546_d_.get(Minecraft.field_238177_c_);
+			});
+		return unicodeRenderer;
 	}
 
 	public enum TimestampFormat
@@ -331,12 +326,11 @@ public class ClientUtils
 			matrix.push();
 			matrix.translate(blockpos.getX(), blockpos.getY(), blockpos.getZ());
 			IVertexBuilder worldRendererIn = buffers.getBuffer(ModelBakery.DESTROY_RENDER_TYPES.get(progress));
-			worldRendererIn = new MatrixApplyingVertexBuilder(worldRendererIn, matrix.getLast());
+			worldRendererIn = new MatrixApplyingVertexBuilder(worldRendererIn, matrix.getLast().getMatrix(), matrix.getLast().getNormal());
 			Block block = world.getBlockState(blockpos).getBlock();
 			TileEntity te = world.getTileEntity(blockpos);
 			boolean hasBreak = block instanceof ChestBlock||block instanceof EnderChestBlock
 					||block instanceof AbstractSignBlock||block instanceof SkullBlock;
-			if(!hasBreak) hasBreak = te!=null&&te.canRenderBreaking();
 			if(!hasBreak)
 			{
 				BlockState iblockstate = world.getBlockState(blockpos);
@@ -349,8 +343,13 @@ public class ClientUtils
 
 	public static void drawColouredRect(int x, int y, int w, int h, int colour)
 	{
+		drawColouredRect(x, y, w, h, colour, new MatrixStack());
+	}
+
+	public static void drawColouredRect(int x, int y, int w, int h, int colour, MatrixStack transform)
+	{
 		IRenderTypeBuffer.Impl buffers = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
-		drawColouredRect(x, y, w, h, colour, buffers, new MatrixStack());
+		drawColouredRect(x, y, w, h, colour, buffers, transform);
 		buffers.finish();
 	}
 
@@ -484,18 +483,18 @@ public class ClientUtils
 		}
 	}
 
-	public static void drawSlot(int x, int y, int w, int h)
+	public static void drawSlot(int x, int y, int w, int h, MatrixStack transform)
 	{
-		drawSlot(x, y, w, h, 0xff);
+		drawSlot(x, y, w, h, 0xff, transform);
 	}
 
-	public static void drawSlot(int x, int y, int w, int h, int alpha)
+	public static void drawSlot(int x, int y, int w, int h, int alpha, MatrixStack transform)
 	{
-		drawColouredRect(x+8-w/2, y+8-h/2-1, w, 1, (alpha<<24)+0x373737);
-		drawColouredRect(x+8-w/2-1, y+8-h/2-1, 1, h+1, (alpha<<24)+0x373737);
-		drawColouredRect(x+8-w/2, y+8-h/2, w, h, (alpha<<24)+0x8b8b8b);
-		drawColouredRect(x+8-w/2, y+8+h/2, w+1, 1, (alpha<<24)+0xffffff);
-		drawColouredRect(x+8+w/2, y+8-h/2, 1, h, (alpha<<24)+0xffffff);
+		drawColouredRect(x+8-w/2, y+8-h/2-1, w, 1, (alpha<<24)+0x373737, transform);
+		drawColouredRect(x+8-w/2-1, y+8-h/2-1, 1, h+1, (alpha<<24)+0x373737, transform);
+		drawColouredRect(x+8-w/2, y+8-h/2, w, h, (alpha<<24)+0x8b8b8b, transform);
+		drawColouredRect(x+8-w/2, y+8+h/2, w+1, 1, (alpha<<24)+0xffffff, transform);
+		drawColouredRect(x+8+w/2, y+8-h/2, 1, h, (alpha<<24)+0xffffff, transform);
 	}
 
 	public static void drawDarkSlot(int x, int y, int w, int h)
@@ -507,26 +506,17 @@ public class ClientUtils
 		drawColouredRect(x+8+w/2, y+8-h/2, 1, h, 0x77999999);
 	}
 
-	public static void drawHoveringText(List<ITextComponent> list, int x, int y, FontRenderer font, int xSize, int ySize)
+	public static void handleGuiTank(MatrixStack transform, IFluidTank tank, int x, int y, int w, int h, int oX, int oY, int oW, int oH, int mX, int mY, String originalTexture, List<ITextComponent> tooltip)
 	{
-		List<String> textTooltip = new ArrayList<>(list.size());
-		for(ITextComponent c : list)
-			textTooltip.add(c.getFormattedText());
-		GuiUtils.drawHoveringText(textTooltip, x, y, xSize, ySize, -1, font);
+		handleGuiTank(transform, tank.getFluid(), tank.getCapacity(), x, y, w, h, oX, oY, oW, oH, mX, mY, originalTexture, tooltip);
 	}
 
-	public static void handleGuiTank(IFluidTank tank, int x, int y, int w, int h, int oX, int oY, int oW, int oH, int mX, int mY, String originalTexture, List<ITextComponent> tooltip)
-	{
-		handleGuiTank(tank.getFluid(), tank.getCapacity(), x, y, w, h, oX, oY, oW, oH, mX, mY, originalTexture, tooltip);
-	}
-
-	public static void handleGuiTank(FluidStack fluid, int capacity, int x, int y, int w, int h, int oX, int oY, int oW, int oH, int mX, int mY, String originalTexture, List<ITextComponent> tooltip)
+	public static void handleGuiTank(MatrixStack transform, FluidStack fluid, int capacity, int x, int y, int w, int h, int oX, int oY, int oW, int oH, int mX, int mY, String originalTexture, List<ITextComponent> tooltip)
 	{
 		if(tooltip==null)
 		{
-			RenderSystem.pushMatrix();
+			transform.push();
 			IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
-			MatrixStack transform = new MatrixStack();
 			if(fluid!=null&&fluid.getFluid()!=null)
 			{
 				int fluidHeight = (int)(h*(fluid.getAmount()/(float)capacity));
@@ -538,7 +528,7 @@ public class ClientUtils
 			RenderType renderType = IERenderTypes.getGui(new ResourceLocation(originalTexture));
 			drawTexturedRect(buffer.getBuffer(renderType), transform, x+xOff, y+yOff, oW, oH, 256f, oX, oX+oW, oY, oY+oH);
 			buffer.finish(renderType);
-			RenderSystem.popMatrix();
+			transform.pop();
 		}
 		else
 		{
@@ -550,8 +540,10 @@ public class ClientUtils
 	public static void addFluidTooltip(FluidStack fluid, List<ITextComponent> tooltip, int tankCapacity)
 	{
 		if(!fluid.isEmpty())
-			tooltip.add(fluid.getDisplayName().setStyle(
-					new Style().setColor(fluid.getFluid().getAttributes().getRarity(fluid).color)));
+			tooltip.add(applyFormat(
+					fluid.getDisplayName(),
+					fluid.getFluid().getAttributes().getRarity(fluid).color
+			));
 		else
 			tooltip.add(new TranslationTextComponent("gui.immersiveengineering.empty"));
 		if(fluid.getFluid() instanceof IEFluid)
@@ -563,21 +555,19 @@ public class ClientUtils
 				tooltip.add(new TranslationTextComponent(Lib.DESC_INFO+"holdShiftForInfo"));
 			else
 			{
-				Style darkGray = new Style().setColor(TextFormatting.DARK_GRAY);
 				//TODO translation keys
-				tooltip.add(new StringTextComponent("Fluid Registry: "+fluid.getFluid().getRegistryName()).setStyle(darkGray));
-				tooltip.add(new StringTextComponent("Density: "+fluid.getFluid().getAttributes().getDensity(fluid)).setStyle(darkGray));
-				tooltip.add(new StringTextComponent("Temperature: "+fluid.getFluid().getAttributes().getTemperature(fluid)).setStyle(darkGray));
-				tooltip.add(new StringTextComponent("Viscosity: "+fluid.getFluid().getAttributes().getViscosity(fluid)).setStyle(darkGray));
-				tooltip.add(new StringTextComponent("NBT Data: "+fluid.getTag()).setStyle(darkGray));
+				tooltip.add(applyFormat(new StringTextComponent("Fluid Registry: "+fluid.getFluid().getRegistryName()), TextFormatting.DARK_GRAY));
+				tooltip.add(applyFormat(new StringTextComponent("Density: "+fluid.getFluid().getAttributes().getDensity(fluid)), TextFormatting.DARK_GRAY));
+				tooltip.add(applyFormat(new StringTextComponent("Temperature: "+fluid.getFluid().getAttributes().getTemperature(fluid)), TextFormatting.DARK_GRAY));
+				tooltip.add(applyFormat(new StringTextComponent("Viscosity: "+fluid.getFluid().getAttributes().getViscosity(fluid)), TextFormatting.DARK_GRAY));
+				tooltip.add(applyFormat(new StringTextComponent("NBT Data: "+fluid.getTag()), TextFormatting.DARK_GRAY));
 			}
 		}
 
-		Style gray = new Style().setColor(TextFormatting.GRAY);
 		if(tankCapacity > 0)
-			tooltip.add(new StringTextComponent(fluid.getAmount()+"/"+tankCapacity+"mB").setStyle(gray));
+			tooltip.add(applyFormat(new StringTextComponent(fluid.getAmount()+"/"+tankCapacity+"mB"), TextFormatting.GRAY));
 		else
-			tooltip.add(new StringTextComponent(fluid.getAmount()+"mB").setStyle(gray));
+			tooltip.add(applyFormat(new StringTextComponent(fluid.getAmount()+"mB"), TextFormatting.GRAY));
 	}
 
 	public static Quaternion degreeToQuaterion(double x, double y, double z)
@@ -595,7 +585,7 @@ public class ClientUtils
 		return quat;
 	}
 
-	private static final Vec3d fadingOffset = new Vec3d(.0001F, .0001F, .0001F);
+	private static final Vector3d fadingOffset = new Vector3d(.0001F, .0001F, .0001F);
 	private static float[] alphaFirst2Fading = {0, 0, 1, 1};
 	private static float[] alphaNoFading = {1, 1, 1, 1};
 
@@ -604,9 +594,9 @@ public class ClientUtils
 		List<BakedQuad> ret = new ArrayList<>();
 		if(data==null)
 			return ret;
-		Vec3d dir = Vec3d.ZERO;
+		Vector3d dir = Vector3d.ZERO;
 
-		Vec3d up = new Vec3d(0, 1, 0);
+		Vector3d up = new Vector3d(0, 1, 0);
 		for(Connection.RenderData connData : data)
 		{
 			int color = connData.color;
@@ -618,10 +608,10 @@ public class ClientUtils
 			for(int segmentEndId = 1; segmentEndId <= connData.pointsToRenderSolid; segmentEndId++)
 			{
 				int segmentStartId = segmentEndId-1;
-				Vec3d segmentEnd = connData.getPoint(segmentEndId);
-				Vec3d segmentStart = connData.getPoint(segmentStartId);
+				Vector3d segmentEnd = connData.getPoint(segmentEndId);
+				Vector3d segmentStart = connData.getPoint(segmentStartId);
 				boolean vertical = segmentEnd.x==segmentStart.x&&segmentEnd.z==segmentStart.z;
-				Vec3d cross;
+				Vector3d cross;
 				if(!vertical)
 				{
 					dir = segmentEnd.subtract(segmentStart);
@@ -629,8 +619,8 @@ public class ClientUtils
 					cross = cross.scale(radius/cross.length());
 				}
 				else
-					cross = new Vec3d(radius, 0, 0);
-				Vec3d[] vertices = {segmentEnd.add(cross),
+					cross = new Vector3d(radius, 0, 0);
+				Vector3d[] vertices = {segmentEnd.add(cross),
 						segmentEnd.subtract(cross),
 						segmentStart.subtract(cross),
 						segmentStart.add(cross)};
@@ -643,8 +633,8 @@ public class ClientUtils
 					cross = cross.scale(radius/cross.length());
 				}
 				else
-					cross = new Vec3d(0, 0, radius);
-				vertices = new Vec3d[]{segmentEnd.add(cross),
+					cross = new Vector3d(0, 0, radius);
+				vertices = new Vector3d[]{segmentEnd.add(cross),
 						segmentEnd.subtract(cross),
 						segmentStart.subtract(cross),
 						segmentStart.add(cross)};
@@ -658,10 +648,10 @@ public class ClientUtils
 	public static int getSolidVertexCountForSide(ConnectionPoint start, Connection conn, int totalPoints)
 	{
 		List<Integer> crossings = new ArrayList<>();
-		Vec3d lastPoint = conn.getPoint(0, start);
+		Vector3d lastPoint = conn.getPoint(0, start);
 		for(int i = 1; i <= totalPoints; i++)
 		{
-			Vec3d current = conn.getPoint(i/(double)totalPoints, start);
+			Vector3d current = conn.getPoint(i/(double)totalPoints, start);
 			if(crossesChunkBoundary(current, lastPoint, start.getPosition()))
 				crossings.add(i);
 			lastPoint = current;
@@ -678,44 +668,44 @@ public class ClientUtils
 			return greater?totalPoints: 0;
 	}
 
-	public static Vec3d[] applyMatrixToVertices(TransformationMatrix matrix, Vec3d... vertices)
+	public static Vector3d[] applyMatrixToVertices(TransformationMatrix matrix, Vector3d... vertices)
 	{
 		if(matrix==null)
 			return vertices;
-		Vec3d[] ret = new Vec3d[vertices.length];
+		Vector3d[] ret = new Vector3d[vertices.length];
 		for(int i = 0; i < ret.length; i++)
 		{
 			Vector4f vec = new Vector4f((float)vertices[i].x, (float)vertices[i].y, (float)vertices[i].z, 1);
 			matrix.transformPosition(vec);
 			vec.perspectiveDivide();
-			ret[i] = new Vec3d(vec.getX(), vec.getY(), vec.getZ());
+			ret[i] = new Vector3d(vec.getX(), vec.getY(), vec.getZ());
 		}
 		return ret;
 	}
 
-	public static Set<BakedQuad> createBakedBox(Vec3d from, Vec3d to, Matrix4 matrix, Function<Direction, TextureAtlasSprite> textureGetter, float[] colour)
+	public static Set<BakedQuad> createBakedBox(Vector3d from, Vector3d to, Matrix4 matrix, Function<Direction, TextureAtlasSprite> textureGetter, float[] colour)
 	{
 		return createBakedBox(from, to, matrix, Direction.NORTH, textureGetter, colour);
 	}
 
-	public static Set<BakedQuad> createBakedBox(Vec3d from, Vec3d to, Matrix4 matrix, Direction facing, Function<Direction, TextureAtlasSprite> textureGetter, float[] colour)
+	public static Set<BakedQuad> createBakedBox(Vector3d from, Vector3d to, Matrix4 matrix, Direction facing, Function<Direction, TextureAtlasSprite> textureGetter, float[] colour)
 	{
 		return createBakedBox(from, to, matrix, facing, vertices -> vertices, textureGetter, colour);
 	}
 
 	@Nonnull
-	public static Set<BakedQuad> createBakedBox(Vec3d from, Vec3d to, Matrix4 matrixIn, Direction facing, Function<Vec3d[], Vec3d[]> vertexTransformer, Function<Direction, TextureAtlasSprite> textureGetter, float[] colour)
+	public static Set<BakedQuad> createBakedBox(Vector3d from, Vector3d to, Matrix4 matrixIn, Direction facing, Function<Vector3d[], Vector3d[]> vertexTransformer, Function<Direction, TextureAtlasSprite> textureGetter, float[] colour)
 	{
 		TransformationMatrix matrix = matrixIn.toTransformationMatrix();
 		HashSet<BakedQuad> quads = new HashSet<>();
 		if(vertexTransformer==null)
 			vertexTransformer = v -> v;
 
-		Vec3d[] vertices = {
-				new Vec3d(from.x, from.y, from.z),
-				new Vec3d(from.x, from.y, to.z),
-				new Vec3d(to.x, from.y, to.z),
-				new Vec3d(to.x, from.y, from.z)
+		Vector3d[] vertices = {
+				new Vector3d(from.x, from.y, from.z),
+				new Vector3d(from.x, from.y, to.z),
+				new Vector3d(to.x, from.y, to.z),
+				new Vector3d(to.x, from.y, from.z)
 		};
 		TextureAtlasSprite sprite = textureGetter.apply(Direction.DOWN);
 		if(sprite!=null)
@@ -723,18 +713,18 @@ public class ClientUtils
 
 		for(int i = 0; i < vertices.length; i++)
 		{
-			Vec3d v = vertices[i];
-			vertices[i] = new Vec3d(v.x, to.y, v.z);
+			Vector3d v = vertices[i];
+			vertices[i] = new Vector3d(v.x, to.y, v.z);
 		}
 		sprite = textureGetter.apply(Direction.UP);
 		if(sprite!=null)
 			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.BLOCK, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(Direction.UP, facing), sprite, new double[]{from.x*16, from.z*16, to.x*16, to.z*16}, colour, false));
 
-		vertices = new Vec3d[]{
-				new Vec3d(to.x, to.y, from.z),
-				new Vec3d(to.x, from.y, from.z),
-				new Vec3d(from.x, from.y, from.z),
-				new Vec3d(from.x, to.y, from.z)
+		vertices = new Vector3d[]{
+				new Vector3d(to.x, to.y, from.z),
+				new Vector3d(to.x, from.y, from.z),
+				new Vector3d(from.x, from.y, from.z),
+				new Vector3d(from.x, to.y, from.z)
 		};
 		sprite = textureGetter.apply(Direction.NORTH);
 		if(sprite!=null)
@@ -742,18 +732,18 @@ public class ClientUtils
 
 		for(int i = 0; i < vertices.length; i++)
 		{
-			Vec3d v = vertices[i];
-			vertices[i] = new Vec3d(v.x, v.y, to.z);
+			Vector3d v = vertices[i];
+			vertices[i] = new Vector3d(v.x, v.y, to.z);
 		}
 		sprite = textureGetter.apply(Direction.SOUTH);
 		if(sprite!=null)
 			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.BLOCK, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(Direction.SOUTH, facing), sprite, new double[]{to.x*16, 16-to.y*16, from.x*16, 16-from.y*16}, colour, true));
 
-		vertices = new Vec3d[]{
-				new Vec3d(from.x, to.y, to.z),
-				new Vec3d(from.x, from.y, to.z),
-				new Vec3d(from.x, from.y, from.z),
-				new Vec3d(from.x, to.y, from.z)
+		vertices = new Vector3d[]{
+				new Vector3d(from.x, to.y, to.z),
+				new Vector3d(from.x, from.y, to.z),
+				new Vector3d(from.x, from.y, from.z),
+				new Vector3d(from.x, to.y, from.z)
 		};
 		sprite = textureGetter.apply(Direction.WEST);
 		if(sprite!=null)
@@ -761,8 +751,8 @@ public class ClientUtils
 
 		for(int i = 0; i < vertices.length; i++)
 		{
-			Vec3d v = vertices[i];
-			vertices[i] = new Vec3d(to.x, v.y, v.z);
+			Vector3d v = vertices[i];
+			vertices[i] = new Vector3d(to.x, v.y, v.z);
 		}
 		sprite = textureGetter.apply(Direction.EAST);
 		if(sprite!=null)
@@ -771,32 +761,33 @@ public class ClientUtils
 		return quads;
 	}
 
-	public static BakedQuad createBakedQuad(VertexFormat format, Vec3d[] vertices, Direction facing, TextureAtlasSprite sprite, float[] colour, boolean invert, float[] alpha)
+	public static BakedQuad createBakedQuad(VertexFormat format, Vector3d[] vertices, Direction facing, TextureAtlasSprite sprite, float[] colour, boolean invert, float[] alpha)
 	{
 		return createBakedQuad(format, vertices, facing, sprite, new double[]{0, 0, 16, 16}, colour, invert, alpha);
 	}
 
-	public static BakedQuad createSmartLightingBakedQuad(VertexFormat format, Vec3d[] vertices, Direction facing, TextureAtlasSprite sprite, float[] colour, boolean invert, float[] alpha, BlockPos base)
+	public static BakedQuad createSmartLightingBakedQuad(VertexFormat format, Vector3d[] vertices, Direction facing, TextureAtlasSprite sprite, float[] colour, boolean invert, float[] alpha, BlockPos base)
 	{
 		return createBakedQuad(format, vertices, facing, sprite, new double[]{0, 0, 16, 16}, colour, invert, alpha, true, base);
 	}
 
-	public static BakedQuad createBakedQuad(VertexFormat format, Vec3d[] vertices, Direction facing, TextureAtlasSprite sprite, double[] uvs, float[] colour, boolean invert)
+	public static BakedQuad createBakedQuad(VertexFormat format, Vector3d[] vertices, Direction facing, TextureAtlasSprite sprite, double[] uvs, float[] colour, boolean invert)
 	{
 		return createBakedQuad(format, vertices, facing, sprite, uvs, colour, invert, alphaNoFading);
 	}
 
-	public static BakedQuad createBakedQuad(VertexFormat format, Vec3d[] vertices, Direction facing, TextureAtlasSprite sprite, double[] uvs, float[] colour, boolean invert, float[] alpha)
+	public static BakedQuad createBakedQuad(VertexFormat format, Vector3d[] vertices, Direction facing, TextureAtlasSprite sprite, double[] uvs, float[] colour, boolean invert, float[] alpha)
 	{
 		return createBakedQuad(format, vertices, facing, sprite, uvs, colour, invert, alpha, false, null);
 	}
 
-	public static BakedQuad createBakedQuad(VertexFormat format, Vec3d[] vertices, Direction facing, TextureAtlasSprite sprite, double[] uvs, float[] colour, boolean invert, float[] alpha, boolean smartLighting, BlockPos basePos)
+	public static BakedQuad createBakedQuad(VertexFormat format, Vector3d[] vertices, Direction facing, TextureAtlasSprite sprite, double[] uvs, float[] colour, boolean invert, float[] alpha, boolean smartLighting, BlockPos basePos)
 	{
 		BakedQuadBuilder builder = new BakedQuadBuilder(sprite);
 		builder.setQuadOrientation(facing);
 		builder.setApplyDiffuseLighting(true);
-		Vec3d faceNormal = new Vec3d(facing.getDirectionVec());
+		Vector3i normalInt = facing.getDirectionVec();
+		Vector3d faceNormal = new Vector3d(normalInt.getX(), normalInt.getY(), normalInt.getZ());
 		int vId = invert?3: 0;
 		int u = vId > 1?2: 0;
 		putVertexData(format, builder, vertices[vId], faceNormal, uvs[u], uvs[1], sprite, colour, alpha[vId]);
@@ -813,7 +804,7 @@ public class ClientUtils
 		return smartLighting?new SmartLightingQuad(tmp.getVertexData(), -1, facing, sprite, basePos): tmp;
 	}
 
-	public static void putVertexData(VertexFormat format, BakedQuadBuilder builder, Vec3d pos, Vec3d faceNormal, double u, double v, TextureAtlasSprite sprite, float[] colour, float alpha)
+	public static void putVertexData(VertexFormat format, BakedQuadBuilder builder, Vector3d pos, Vector3d faceNormal, double u, double v, TextureAtlasSprite sprite, float[] colour, float alpha)
 	{
 		for(int e = 0; e < format.getElements().size(); e++)
 			switch(format.getElements().get(e).getUsage())
@@ -852,7 +843,7 @@ public class ClientUtils
 		return Minecraft.getInstance().getAtlasSpriteGetter(PlayerContainer.LOCATION_BLOCKS_TEXTURE).apply(MissingTextureSprite.getLocation());
 	}
 
-	public static boolean crossesChunkBoundary(Vec3d start, Vec3d end, BlockPos offset)
+	public static boolean crossesChunkBoundary(Vector3d start, Vector3d end, BlockPos offset)
 	{
 		if(crossesChunkBorderSingleDim(start.x, end.x, offset.getX()))
 			return true;
@@ -1118,13 +1109,13 @@ public class ClientUtils
 					quadCoords[i][2] = Float.intBitsToFloat(vData[size*i+posOffset+2]);
 				}
 				//generate the normal vector
-				Vec3d side1 = new Vec3d(quadCoords[1][0]-quadCoords[3][0],
+				Vector3d side1 = new Vector3d(quadCoords[1][0]-quadCoords[3][0],
 						quadCoords[1][1]-quadCoords[3][1],
 						quadCoords[1][2]-quadCoords[3][2]);
-				Vec3d side2 = new Vec3d(quadCoords[2][0]-quadCoords[0][0],
+				Vector3d side2 = new Vector3d(quadCoords[2][0]-quadCoords[0][0],
 						quadCoords[2][1]-quadCoords[0][1],
 						quadCoords[2][2]-quadCoords[0][2]);
-				Vec3d normal = side1.crossProduct(side2);
+				Vector3d normal = side1.crossProduct(side2);
 				normal = normal.normalize();
 				// calculate the final light values and do the rendering
 				int l1 = getLightValue(neighbourBrightness[1], normalizationFactors[1], light&255, normal);
@@ -1143,7 +1134,7 @@ public class ClientUtils
 		}
 	}
 
-	private static int getLightValue(int[] neighbourBrightness, float[] normalizationFactors, int localBrightness, Vec3d normal)
+	private static int getLightValue(int[] neighbourBrightness, float[] normalizationFactors, int localBrightness, Vector3d normal)
 	{
 		//calculate the dot product between the required light vector and the normal of the quad
 		// quad brightness is proportional to this value, see https://github.com/ssloy/tinyrenderer/wiki/Lesson-2:-Triangle-rasterization-and-back-face-culling#flat-shading-render
@@ -1315,5 +1306,13 @@ public class ClientUtils
 		builder.pos(mat, width, height, 0).color(red, green, blue, 255).endVertex();
 		builder.pos(mat, width, 0, 0).color(red, green, blue, 255).endVertex();
 		transform.pop();
+	}
+
+	public static IFormattableTextComponent applyFormat(ITextComponent component, TextFormatting... color)
+	{
+		Style style = component.getStyle();
+		for(TextFormatting format : color)
+			style = style.applyFormatting(format);
+		return component.deepCopy().setStyle(style);
 	}
 }

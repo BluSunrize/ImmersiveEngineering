@@ -30,10 +30,10 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3i;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -84,7 +84,7 @@ public class ConnectorBundledTileEntity extends ImmersiveConnectableTileEntity i
 	}
 
 	@Override
-	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vec3i offset)
+	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vector3i offset)
 	{
 		return REDSTONE_CATEGORY.equals(cableType.getCategory());
 	}
@@ -108,7 +108,7 @@ public class ConnectorBundledTileEntity extends ImmersiveConnectableTileEntity i
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
 	{
 		return false;
 	}
@@ -133,11 +133,11 @@ public class ConnectorBundledTileEntity extends ImmersiveConnectableTileEntity i
 	}
 
 	@Override
-	public Vec3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
+	public Vector3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
 		Direction side = getFacing().getOpposite();
 		double conRadius = con.type.getRenderDiameter()/2;
-		return new Vec3d(.5-conRadius*side.getXOffset(), .5-conRadius*side.getYOffset(), .5-conRadius*side.getZOffset());
+		return new Vector3d(.5-conRadius*side.getXOffset(), .5-conRadius*side.getYOffset(), .5-conRadius*side.getZOffset());
 	}
 
 	@Override

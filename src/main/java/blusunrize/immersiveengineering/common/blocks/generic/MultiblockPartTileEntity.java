@@ -32,8 +32,8 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.gen.feature.template.Template.BlockInfo;
 import net.minecraftforge.common.capabilities.Capability;
@@ -62,7 +62,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	// stores the world time at which this block can only be disassembled by breaking the block associated with this TE.
 	// This prevents half/duplicate disassembly when working with the drill or TCon hammers
 	public long onlyLocalDissassembly = -1;
-	protected final Vec3i structureDimensions;
+	protected final Vector3i structureDimensions;
 	protected final boolean hasRedstoneControl;
 	protected boolean redstoneControlInverted = false;
 	//Absent means no controlling computers
@@ -104,7 +104,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
 	{
 		return false;
 	}
@@ -294,7 +294,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	@Nullable
 	public T master()
 	{
-		if(offsetToMaster.equals(Vec3i.NULL_VECTOR))
+		if(offsetToMaster.equals(Vector3i.NULL_VECTOR))
 			return (T)this;
 		// Used to provide tile-dependant drops after disassembly
 		if(tempMasterTE!=null)
@@ -318,7 +318,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	@Override
 	public boolean isDummy()
 	{
-		return !offsetToMaster.equals(Vec3i.NULL_VECTOR);
+		return !offsetToMaster.equals(Vector3i.NULL_VECTOR);
 	}
 
 	public BlockState getOriginalBlock()
@@ -381,7 +381,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	}
 
 	@Override
-	public ActionResultType screwdriverUseSide(Direction side, PlayerEntity player, Hand hand, Vec3d hitVec)
+	public ActionResultType screwdriverUseSide(Direction side, PlayerEntity player, Hand hand, Vector3d hitVec)
 	{
 		if(this.isRedstonePos()&&hasRedstoneControl)
 		{
@@ -436,7 +436,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	public BlockPos getModelOffset(BlockState state)
 	{
 		BlockPos mirroredPosInMB = posInMultiblock;
-		final Vec3i size = multiblockInstance.getSize();
+		final Vector3i size = multiblockInstance.getSize();
 		if(getIsMirrored())
 			mirroredPosInMB = new BlockPos(
 					size.getX()-mirroredPosInMB.getX()-1,

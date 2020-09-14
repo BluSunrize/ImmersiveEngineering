@@ -17,12 +17,12 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
+import net.minecraft.util.math.vector.TransformationMatrix;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -44,7 +44,7 @@ import java.util.Set;
 @EventBusSubscriber(value = Dist.CLIENT, modid = ImmersiveEngineering.MODID, bus = Bus.MOD)
 public class DynamicModelLoader
 {
-	private static Set<Material> requestedTextures = new HashSet<>();
+	private static Set<RenderMaterial> requestedTextures = new HashSet<>();
 	private static Set<ResourceLocation> manualTextureRequests = new HashSet<>();
 	private static final Multimap<ModelWithTransforms, ModelResourceLocation> requestedModels = HashMultimap.create();
 	private static Map<ModelWithTransforms, IUnbakedModel> unbakedModels = new HashMap<>();
@@ -63,11 +63,8 @@ public class DynamicModelLoader
 				state = new SimpleUVModelTransform(ImmutableMap.copyOf(unbaked.getKey().transforms), conf.uvLock);
 			IBakedModel baked = unbaked.getValue().bakeModel(evt.getModelLoader(), ModelLoader.defaultTextureGetter(),
 					state, conf.name);
-			synchronized(requestedModels)
-			{
-				for(ModelResourceLocation mrl : requestedModels.get(unbaked.getKey()))
-					evt.getModelRegistry().put(mrl, baked);
-			}
+			for(ModelResourceLocation mrl : requestedModels.get(unbaked.getKey()))
+				evt.getModelRegistry().put(mrl, baked);
 		}
 	}
 
@@ -79,18 +76,14 @@ public class DynamicModelLoader
 		IELogger.logger.debug("Loading dynamic models");
 		try
 		{
-			//apparently this is needed to prevent CMEs. TODO Figure out the threads involved and how to solve this in a nicer way.
-			synchronized(requestedModels)
+			for(ModelWithTransforms reqModel : requestedModels.keySet())
 			{
-				for(ModelWithTransforms reqModel : requestedModels.keySet())
-				{
-					BlockModel model = ExpandedBlockModelDeserializer.INSTANCE.fromJson(reqModel.model.data, BlockModel.class);
-					Set<Pair<String, String>> missingTexErrors = new HashSet<>();
-					requestedTextures.addAll(model.getTextures(DynamicModelLoader::getVanillaModel, missingTexErrors));
-					if(!missingTexErrors.isEmpty())
-						throw new RuntimeException("Missing textures: "+missingTexErrors);
-					unbakedModels.put(reqModel, model);
-				}
+				BlockModel model = ExpandedBlockModelDeserializer.INSTANCE.fromJson(reqModel.model.data, BlockModel.class);
+				Set<Pair<String, String>> missingTexErrors = new HashSet<>();
+				requestedTextures.addAll(model.getTextures(DynamicModelLoader::getVanillaModel, missingTexErrors));
+				if(!missingTexErrors.isEmpty())
+					throw new RuntimeException("Missing textures: "+missingTexErrors);
+				unbakedModels.put(reqModel, model);
 			}
 		} catch(Exception x)
 		{
@@ -101,15 +94,19 @@ public class DynamicModelLoader
 		IELogger.logger.debug("Stitching textures!");
 		for(ResourceLocation rl : manualTextureRequests)
 			evt.addSprite(rl);
-		for(Material rl : requestedTextures)
+		for(RenderMaterial rl : requestedTextures)
 			evt.addSprite(rl.getTextureLocation());
 	}
 
-	@SubscribeEvent(priority = EventPriority.LOW)
-	public static void modelRegistry(ModelRegistryEvent evt)
+	@EventBusSubscriber(modid = ImmersiveEngineering.MODID, bus = Bus.FORGE)
+	public static class ForgeBusSubscriber
 	{
-		requestedTextures.clear();
-		unbakedModels.clear();
+		@SubscribeEvent(priority = EventPriority.LOW)
+		public static void modelRegistry(ModelRegistryEvent evt)
+		{
+			requestedTextures.clear();
+			unbakedModels.clear();
+		}
 	}
 
 	private static IUnbakedModel getVanillaModel(ResourceLocation loc)
@@ -135,10 +132,7 @@ public class DynamicModelLoader
 	public static void requestModel(ModelRequest reqModel, ModelResourceLocation name,
 									Map<TransformType, TransformationMatrix> transforms)
 	{
-		synchronized(requestedModels)
-		{
-			requestedModels.put(new ModelWithTransforms(reqModel, transforms), name);
-		}
+		requestedModels.put(new ModelWithTransforms(reqModel, transforms), name);
 	}
 
 	public static class ModelRequest
@@ -161,7 +155,8 @@ public class DynamicModelLoader
 			this.data.addProperty("loader", loader.toString());
 		}
 
-		public static ModelRequest ieObj(ResourceLocation loc, int rotY) {
+		public static ModelRequest ieObj(ResourceLocation loc, int rotY)
+		{
 			return withModel(loc, new ResourceLocation(ImmersiveEngineering.MODID, "ie_obj"), rotY);
 		}
 

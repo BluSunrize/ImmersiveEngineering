@@ -13,12 +13,10 @@ import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.ToolConfigBoolean;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.ToolConfigFloat;
 import blusunrize.immersiveengineering.api.tool.ITool;
-import blusunrize.immersiveengineering.client.ClientProxy;
 import blusunrize.immersiveengineering.client.models.ModelEarmuffs;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.collect.Sets;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -27,6 +25,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.IDyeableArmorItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -36,6 +35,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 import java.util.LinkedHashSet;
 import java.util.List;
+
+import static blusunrize.immersiveengineering.client.utils.FontUtils.withAppendColoredColour;
 
 public class EarmuffsItem extends IEBaseItem implements IDyeableArmorItem, IConfigurableTool, ITool, IColouredItem
 {
@@ -114,15 +115,9 @@ public class EarmuffsItem extends IEBaseItem implements IDyeableArmorItem, IConf
 	@Override
 	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
 	{
-		String hexCol = Integer.toHexString(this.getColourForIEItem(stack, 0));
-		list.add(new TranslationTextComponent(Lib.DESC_INFO+"colour", "<hexcol="+hexCol+":#"+hexCol+">"));
-	}
-
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public FontRenderer getFontRenderer(ItemStack stack)
-	{
-		return ClientProxy.itemFont;
+		int color = this.getColourForIEItem(stack, 0);
+		IFormattableTextComponent mainComponent = new TranslationTextComponent(Lib.DESC_INFO+"colour");
+		list.add(withAppendColoredColour(mainComponent, color));
 	}
 
 	public static LinkedHashSet<String> affectedSoundCategories = Sets.newLinkedHashSet();

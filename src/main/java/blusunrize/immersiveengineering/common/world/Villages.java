@@ -32,6 +32,7 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.block.Block;
@@ -50,15 +51,18 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.village.PointOfInterestType;
 import net.minecraft.world.World;
-import net.minecraft.world.gen.feature.jigsaw.JigsawManager;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPattern;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPattern.PlacementBehaviour;
+import net.minecraft.world.gen.feature.jigsaw.JigsawPatternRegistry;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
-import net.minecraft.world.gen.feature.jigsaw.SingleJigsawPiece;
+import net.minecraft.world.gen.feature.jigsaw.LegacySingleJigsawPiece;
 import net.minecraft.world.gen.feature.structure.*;
+import net.minecraft.world.gen.feature.template.ProcessorLists;
 import net.minecraft.world.storage.MapData;
 import net.minecraft.world.storage.MapDecoration.Type;
 import net.minecraftforge.event.village.VillagerTradesEvent;
@@ -66,14 +70,11 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -104,17 +105,16 @@ public class Villages
 					rl("village/houses/"+biome+"_engineer"), 1);
 
 		// Register workstations
-		JigsawManager.REGISTRY.register(new JigsawPattern(
+		JigsawPatternRegistry.func_244094_a(new JigsawPattern(
 				new ResourceLocation(MODID, "village/workstations"),
 				new ResourceLocation("empty"),
 				ImmutableList.of(
-						new Pair<>(new SingleJigsawPiece(MODID+":village/workstations/electrician"), 1),
-						new Pair<>(new SingleJigsawPiece(MODID+":village/workstations/engineer"), 1),
-						new Pair<>(new SingleJigsawPiece(MODID+":village/workstations/gunsmith"), 1),
-						new Pair<>(new SingleJigsawPiece(MODID+":village/workstations/machinist"), 1),
-						new Pair<>(new SingleJigsawPiece(MODID+":village/workstations/outfitter"), 1)
-				),
-				JigsawPattern.PlacementBehaviour.RIGID
+						new Pair<>(createWorkstation("village/workstations/electrician"), 1),
+						new Pair<>(createWorkstation("village/workstations/engineer"), 1),
+						new Pair<>(createWorkstation("village/workstations/gunsmith"), 1),
+						new Pair<>(createWorkstation("village/workstations/machinist"), 1),
+						new Pair<>(createWorkstation("village/workstations/outfitter"), 1)
+				)
 		));
 
 		// Register gifts
@@ -125,25 +125,38 @@ public class Villages
 		GiveHeroGiftsTask.GIFTS.put(Registers.PROF_GUNSMITH.get(), rl("gameplay/hero_of_the_village/gunsmith"));
 	}
 
+	private static JigsawPiece createWorkstation(String name)
+	{
+		return new LegacySingleJigsawPiece(
+				Either.left(rl(name)),
+				() -> ProcessorLists.field_244101_a,
+				PlacementBehaviour.RIGID
+		);
+	}
+
 	private static void addToPool(ResourceLocation pool, ResourceLocation toAdd, int weight)
 	{
-		JigsawPattern old = JigsawManager.REGISTRY.get(pool);
-		List<JigsawPiece> shuffled = old.getShuffledPieces(Utils.RAND);
+		JigsawPattern old = WorldGenRegistries.field_243656_h.getOrDefault(pool);
+		List<JigsawPiece> shuffled;
+		if(old!=null)
+			shuffled = old.getShuffledPieces(Utils.RAND);
+		else
+			shuffled = ImmutableList.of();
 		List<Pair<JigsawPiece, Integer>> newPieces = new ArrayList<>();
 		for(JigsawPiece p : shuffled)
 		{
 			newPieces.add(new Pair<>(p, 1));
 		}
-		newPieces.add(new Pair<>(new SingleJigsawPiece(toAdd.toString()), weight));
+		newPieces.add(new Pair<>(new LegacySingleJigsawPiece(Either.left(toAdd), () -> ProcessorLists.field_244101_a, PlacementBehaviour.RIGID), weight));
 		ResourceLocation name = old.getName();
-		JigsawManager.REGISTRY.register(new JigsawPattern(pool, name, newPieces, PlacementBehaviour.RIGID));
+		Registry.register(WorldGenRegistries.field_243656_h, pool, new JigsawPattern(pool, name, newPieces));
 	}
 
 	@Mod.EventBusSubscriber(modid = MODID, bus = Bus.MOD)
 	public static class Registers
 	{
-		public static final DeferredRegister<PointOfInterestType> POINTS_OF_INTEREST = new DeferredRegister<>(ForgeRegistries.POI_TYPES, ImmersiveEngineering.MODID);
-		public static final DeferredRegister<VillagerProfession> PROFESSIONS = new DeferredRegister<>(ForgeRegistries.PROFESSIONS, ImmersiveEngineering.MODID);
+		public static final DeferredRegister<PointOfInterestType> POINTS_OF_INTEREST = DeferredRegister.create(ForgeRegistries.POI_TYPES, ImmersiveEngineering.MODID);
+		public static final DeferredRegister<VillagerProfession> PROFESSIONS = DeferredRegister.create(ForgeRegistries.PROFESSIONS, ImmersiveEngineering.MODID);
 
 		// TODO: Add more workstations. We need a different one for each profession
 		public static final RegistryObject<PointOfInterestType> POI_CRAFTINGTABLE = POINTS_OF_INTEREST.register(
@@ -199,7 +212,7 @@ public class Villages
 		private static Collection<BlockState> assembleStates(Block block)
 		{
 			return block.getStateContainer().getValidStates().stream().filter(blockState -> {
-				if(blockState.has(IEProperties.MULTIBLOCKSLAVE))
+				if(blockState.hasProperty(IEProperties.MULTIBLOCKSLAVE))
 					return !blockState.get(IEProperties.MULTIBLOCKSLAVE);
 				return true;
 			}).collect(Collectors.toList());

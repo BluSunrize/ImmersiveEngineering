@@ -49,15 +49,16 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.item.DyeColor;
 import net.minecraft.resources.ResourcePackType;
 import net.minecraft.state.EnumProperty;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.Property;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraftforge.client.model.generators.*;
 import net.minecraftforge.client.model.generators.ModelFile.ExistingModelFile;
 import net.minecraftforge.client.model.generators.VariantBlockStateBuilder.PartialBlockstate;
+import net.minecraftforge.common.data.ExistingFileHelper;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
@@ -187,11 +188,11 @@ public class BlockStates extends BlockStateProvider
 	private void postBlock(Block b, ResourceLocation texture)
 	{
 		ResourceLocation model = rl("block/wooden_device/wooden_post.obj.ie");
-		ImmutableList.Builder<Vec3i> parts = ImmutableList.builder();
-		parts.add(new Vec3i(0, 0, 0))
-				.add(new Vec3i(0, 1, 0))
-				.add(new Vec3i(0, 2, 0))
-				.add(new Vec3i(0, 3, 0));
+		ImmutableList.Builder<Vector3i> parts = ImmutableList.builder();
+		parts.add(new Vector3i(0, 0, 0))
+				.add(new Vector3i(0, 1, 0))
+				.add(new Vector3i(0, 2, 0))
+				.add(new Vector3i(0, 3, 0));
 		for(Direction d : Direction.BY_HORIZONTAL_INDEX)
 			parts.add(new BlockPos(0, 3, 0).offset(d));
 		LoadedModelBuilder builder = splitModel(
@@ -262,7 +263,7 @@ public class BlockStates extends BlockStateProvider
 		return ret;
 	}
 
-	private static final Collector<Vec3i, JsonArray, JsonArray> POSITIONS_TO_JSON = Collector.of(
+	private static final Collector<Vector3i, JsonArray, JsonArray> POSITIONS_TO_JSON = Collector.of(
 			JsonArray::new,
 			(arr, vec) -> {
 				JsonArray posJson = new JsonArray();
@@ -278,12 +279,12 @@ public class BlockStates extends BlockStateProvider
 				return arr;
 			}
 	);
-	private static final List<Vec3i> COLUMN_TWO = ImmutableList.of(BlockPos.ZERO, BlockPos.ZERO.up());
-	private static final List<Vec3i> COLUMN_THREE = ImmutableList.of(BlockPos.ZERO, BlockPos.ZERO.up(), BlockPos.ZERO.up(2));
-	private static final List<Vec3i> CUBE_THREE = BlockPos.getAllInBox(-1, -1, -1, 1, 1, 1)
+	private static final List<Vector3i> COLUMN_TWO = ImmutableList.of(BlockPos.ZERO, BlockPos.ZERO.up());
+	private static final List<Vector3i> COLUMN_THREE = ImmutableList.of(BlockPos.ZERO, BlockPos.ZERO.up(), BlockPos.ZERO.up(2));
+	private static final List<Vector3i> CUBE_THREE = BlockPos.getAllInBox(-1, -1, -1, 1, 1, 1)
 			.map(BlockPos::toImmutable)
 			.collect(Collectors.toList());
-	private static final List<Vec3i> CUBE_TWO = BlockPos.getAllInBox(0, 0, -1, 1, 1, 0)
+	private static final List<Vector3i> CUBE_TWO = BlockPos.getAllInBox(0, 0, -1, 1, 1, 0)
 			.map(BlockPos::toImmutable)
 			.collect(Collectors.toList());
 
@@ -297,7 +298,7 @@ public class BlockStates extends BlockStateProvider
 		UnaryOperator<BlockPos> transform = UnaryOperator.identity();
 		if(mirror)
 		{
-			Vec3i size = mb.getSize();
+			Vector3i size = mb.getSize();
 			transform = p -> new BlockPos(size.getX()-p.getX()-1, p.getY(), p.getZ());
 		}
 		return splitOBJ(loc, mb, transform);
@@ -309,7 +310,7 @@ public class BlockStates extends BlockStateProvider
 		return splitOBJ(loc.substring(0, loc.length()-4), modLoc(loc), mb, transform);
 	}
 
-	private LoadedModelBuilder splitOBJ(String loc, List<Vec3i> parts)
+	private LoadedModelBuilder splitOBJ(String loc, List<Vector3i> parts)
 	{
 		Preconditions.checkArgument(loc.endsWith(".obj"));
 		ResourceLocation modelLoc = modLoc(loc);
@@ -326,8 +327,8 @@ public class BlockStates extends BlockStateProvider
 			UnaryOperator<BlockPos> transform
 	)
 	{
-		final Vec3i offset = multiblock.getMasterFromOriginOffset();
-		Stream<Vec3i> partsStream = multiblock.getStructure()
+		final Vector3i offset = multiblock.getMasterFromOriginOffset();
+		Stream<Vector3i> partsStream = multiblock.getStructure()
 				.stream()
 				.filter(info -> !info.state.isAir())
 				.map(info -> info.pos)
@@ -343,7 +344,7 @@ public class BlockStates extends BlockStateProvider
 			ResourceLocation loader,
 			ResourceLocation model,
 			String particleTexture,
-			Stream<Vec3i> parts,
+			Stream<Vector3i> parts,
 			boolean dynamic
 	)
 	{
@@ -363,7 +364,7 @@ public class BlockStates extends BlockStateProvider
 
 	private LoadedModelBuilder splitIEOBJ(
 			String model,
-			List<Vec3i> parts
+			List<Vector3i> parts
 	)
 	{
 		Preconditions.checkArgument(model.endsWith(".obj.ie"));
@@ -869,7 +870,7 @@ public class BlockStates extends BlockStateProvider
 				), RenderType.getSolid());
 	}
 
-	private JsonObject split(JsonObject baseModel, List<Vec3i> parts)
+	private JsonObject split(JsonObject baseModel, List<Vector3i> parts)
 	{
 		JsonObject splitModel = new JsonObject();
 		for(Entry<String, JsonElement> e : baseModel.entrySet())
@@ -1008,14 +1009,14 @@ public class BlockStates extends BlockStateProvider
 				));
 	}
 
-	private void createRotatedBlock(Block block, Function<PartialBlockstate, ModelFile> model, IProperty<Direction> facing,
-									List<IProperty<?>> additionalProps)
+	private void createRotatedBlock(Block block, Function<PartialBlockstate, ModelFile> model, Property<Direction> facing,
+									List<Property<?>> additionalProps)
 	{
 		createRotatedBlock(block, model, facing, additionalProps, 0, 180);
 	}
 
-	private void createRotatedBlock(Block block, Function<PartialBlockstate, ModelFile> model, IProperty<Direction> facing,
-									List<IProperty<?>> additionalProps, int offsetRotX, int offsetRotY)
+	private void createRotatedBlock(Block block, Function<PartialBlockstate, ModelFile> model, Property<Direction> facing,
+									List<Property<?>> additionalProps, int offsetRotX, int offsetRotY)
 	{
 		VariantBlockStateBuilder stateBuilder = getVariantBuilder(block);
 		forEachState(stateBuilder.partialState(), additionalProps, state -> {
@@ -1059,7 +1060,7 @@ public class BlockStates extends BlockStateProvider
 	}
 
 	private void createMultiblock(Block b, ModelFile masterModel, @Nullable ModelFile mirroredModel,
-								  EnumProperty<Direction> facing, @Nullable IProperty<Boolean> mirroredState, int rotationOffset)
+								  EnumProperty<Direction> facing, @Nullable Property<Boolean> mirroredState, int rotationOffset)
 	{
 		Preconditions.checkArgument((mirroredModel==null)==(mirroredState==null));
 		VariantBlockStateBuilder builder = getVariantBuilder(b);
@@ -1123,7 +1124,7 @@ public class BlockStates extends BlockStateProvider
 		return ret;
 	}
 
-	private void createDirectionalBlock(Block b, IProperty<Direction> prop, ModelFile model)
+	private void createDirectionalBlock(Block b, Property<Direction> prop, ModelFile model)
 	{
 		VariantBlockStateBuilder builder = getVariantBuilder(b);
 		for(Direction d : Direction.BY_HORIZONTAL_INDEX)
@@ -1151,8 +1152,8 @@ public class BlockStates extends BlockStateProvider
 		}
 	}
 
-	private <T extends Comparable<T>> void forEach(PartialBlockstate base, IProperty<T> prop,
-												   List<IProperty<?>> remaining, Consumer<PartialBlockstate> out)
+	private <T extends Comparable<T>> void forEach(PartialBlockstate base, Property<T> prop,
+												   List<Property<?>> remaining, Consumer<PartialBlockstate> out)
 	{
 		for(T value : prop.getAllowedValues())
 			forEachState(base, remaining, map -> {
@@ -1161,12 +1162,12 @@ public class BlockStates extends BlockStateProvider
 			});
 	}
 
-	private void forEachState(PartialBlockstate base, List<IProperty<?>> props, Consumer<PartialBlockstate> out)
+	private void forEachState(PartialBlockstate base, List<Property<?>> props, Consumer<PartialBlockstate> out)
 	{
 		if(props.size() > 0)
 		{
-			List<IProperty<?>> remaining = props.subList(1, props.size());
-			IProperty<?> main = props.get(0);
+			List<Property<?>> remaining = props.subList(1, props.size());
+			Property<?> main = props.get(0);
 			forEach(base, main, remaining, out);
 		}
 		else
@@ -1176,7 +1177,7 @@ public class BlockStates extends BlockStateProvider
 	private void createConnectorWithCustomModel(
 			Block b, Function<PartialBlockstate, Pair<ResourceLocation, JsonObject>> model,
 			Function<PartialBlockstate, ImmutableMap<String, ResourceLocation>> textures,
-			List<IProperty<?>> additional, RenderType... layers)
+			List<Property<?>> additional, RenderType... layers)
 	{
 		final List<String> layersList = Arrays.stream(layers)
 				.map(rt -> rt.name)
@@ -1190,7 +1191,7 @@ public class BlockStates extends BlockStateProvider
 	private void createConnector(
 			Block b, Function<PartialBlockstate, ResourceLocation> model,
 			Function<PartialBlockstate, ImmutableMap<String, ResourceLocation>> textures,
-			List<IProperty<?>> additional, RenderType... layers)
+			List<Property<?>> additional, RenderType... layers)
 	{
 		final List<String> layersList = Arrays.stream(layers)
 				.map(rt -> rt.name)
@@ -1199,23 +1200,23 @@ public class BlockStates extends BlockStateProvider
 	}
 
 	private void createConnector(
-			Block b, Function<PartialBlockstate, ModelFile> toModel, List<IProperty<?>> additional,
+			Block b, Function<PartialBlockstate, ModelFile> toModel, List<Property<?>> additional,
 			RenderType... layers)
 	{
 		Preconditions.checkArgument(layers.length > 0);
-		final IProperty<Direction> facingProp;
+		final Property<Direction> facingProp;
 		final int xForHorizontal;
-		if(b.getDefaultState().has(IEProperties.FACING_ALL))
+		if(b.getDefaultState().hasProperty(IEProperties.FACING_ALL))
 		{
 			facingProp = IEProperties.FACING_ALL;
 			xForHorizontal = 90;
 		}
-		else if(b.getDefaultState().has(IEProperties.FACING_TOP_DOWN))
+		else if(b.getDefaultState().hasProperty(IEProperties.FACING_TOP_DOWN))
 		{
 			facingProp = IEProperties.FACING_TOP_DOWN;
 			xForHorizontal = 90;
 		}
-		else if(b.getDefaultState().has(IEProperties.FACING_HORIZONTAL))
+		else if(b.getDefaultState().hasProperty(IEProperties.FACING_HORIZONTAL))
 		{
 			facingProp = IEProperties.FACING_HORIZONTAL;
 			xForHorizontal = 0;
@@ -1225,12 +1226,12 @@ public class BlockStates extends BlockStateProvider
 			facingProp = null;
 			xForHorizontal = 0;
 		}
-		Preconditions.checkState(facingProp==null||b.getDefaultState().has(facingProp),
+		Preconditions.checkState(facingProp==null||b.getDefaultState().hasProperty(facingProp),
 				b+" does not have "+facingProp);
 		VariantBlockStateBuilder builder = getVariantBuilder(b);
 		forEachState(builder.partialState(), additional, map -> {
 			final List<String> layersList = Arrays.stream(layers)
-					.map(RenderType::toString) // toString is implemented as getName
+					.map(r -> r.name)
 					.collect(Collectors.toList());
 			if(facingProp!=null)
 			{
@@ -1371,7 +1372,7 @@ public class BlockStates extends BlockStateProvider
 
 	private void createConnector(Block b, Function<PartialBlockstate, ResourceLocation> model,
 								 ImmutableMap<String, ResourceLocation> textures,
-								 List<IProperty<?>> additional, RenderType... layers)
+								 List<Property<?>> additional, RenderType... layers)
 	{
 		createConnector(b, model, state -> textures, additional, layers);
 	}
@@ -1399,7 +1400,7 @@ public class BlockStates extends BlockStateProvider
 		VariantBlockStateBuilder builder = getVariantBuilder(Misc.hempPlant);
 		for(EnumHempGrowth g : EnumHempGrowth.values())
 		{
-			ModelFile model = models().withExistingParent("block/hemp/"+g.getName(),
+			ModelFile model = models().withExistingParent("block/hemp/"+g.getString(),
 					new ResourceLocation("block/crop"))
 					.texture("crop", g.getTextureName());
 			builder.partialState()
@@ -1412,7 +1413,7 @@ public class BlockStates extends BlockStateProvider
 	{
 		BlockModelBuilder builder = models().withExistingParent(outName, modLoc("block/ie_six_sides"));
 		for(Direction d : Direction.VALUES)
-			builder.texture(d.getName(), new ResourceLocation(baseTexName.getNamespace(),
+			builder.texture(d.getString(), new ResourceLocation(baseTexName.getNamespace(),
 					baseTexName.getPath()+"_"+d.ordinal()));
 		builder.texture("particle", new ResourceLocation(baseTexName.getNamespace(),
 				baseTexName.getPath()+"_0"));

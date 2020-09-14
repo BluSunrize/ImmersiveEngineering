@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag;
 
 public class BlueprintCraftingRecipeBuilder extends IEFinishedRecipe<BlueprintCraftingRecipeBuilder>
 {
@@ -33,7 +33,7 @@ public class BlueprintCraftingRecipeBuilder extends IEFinishedRecipe<BlueprintCr
 		return new BlueprintCraftingRecipeBuilder().addWriter(jsonObject -> jsonObject.addProperty("category", category)).addResult(result);
 	}
 
-	public static BlueprintCraftingRecipeBuilder builder(String category, Tag<Item> result, int count)
+	public static BlueprintCraftingRecipeBuilder builder(String category, ITag<Item> result, int count)
 	{
 		return new BlueprintCraftingRecipeBuilder().addWriter(jsonObject -> jsonObject.addProperty("category", category)).addResult(new IngredientWithSize(result, count));
 	}

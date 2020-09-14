@@ -32,9 +32,9 @@ import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -197,7 +197,7 @@ public class WindmillTileEntity extends IEBaseTileEntity implements ITickableTil
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
 	{
 		return false;
 	}

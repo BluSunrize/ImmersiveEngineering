@@ -44,10 +44,16 @@ import com.google.gson.JsonStreamParser;
 import net.minecraft.item.*;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.resources.DataPackRegistries;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.World;
+import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.AddReloadListenerEvent;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -55,7 +61,6 @@ import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLFingerprintViolationEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
-import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -93,7 +98,8 @@ public class ImmersiveEngineering
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::loadComplete);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::wrongSignature);
 		MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
-		MinecraftForge.EVENT_BUS.addListener(this::serverAboutToStart);
+		MinecraftForge.EVENT_BUS.addListener(this::registerCommands);
+		MinecraftForge.EVENT_BUS.addListener(this::addReloadListeners);
 		MinecraftForge.EVENT_BUS.addListener(this::serverStarted);
 		RecipeSerializers.RECIPE_SERIALIZERS.register(FMLJavaModLoadingContext.get().getModEventBus());
 		Villages.Registers.POINTS_OF_INTEREST.register(FMLJavaModLoadingContext.get().getModEventBus());
@@ -107,18 +113,22 @@ public class ImmersiveEngineering
 
 		IEWorldGen ieWorldGen = new IEWorldGen();
 		MinecraftForge.EVENT_BUS.register(ieWorldGen);
-		FMLJavaModLoadingContext.get().getModEventBus().register(ieWorldGen);
+		FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(Feature.class, ieWorldGen::registerFeatures);
 	}
 
 	public void setup(FMLCommonSetupEvent event)
 	{
+		ApiUtils.disableTicking.setValue(EventHandler.REMOVE_FROM_TICKING::add);
 		proxy.preInit();
 
 		IEAdvancements.preInit();
 
 
 		for(String b : IEServerConfig.ORES.oreDimBlacklist.get())
-			IEWorldGen.oreDimBlacklist.add(new ResourceLocation(b));
+			IEWorldGen.oreDimBlacklist.add(RegistryKey.func_240903_a_(
+					Registry.DIMENSION_TYPE_KEY,
+					new ResourceLocation(b)
+			));
 		IEApi.modPreference = IEServerConfig.GENERAL.preferredOres.get();
 		IEApi.prefixToIngotMap.put("ingots", new Integer[]{1, 1});
 		IEApi.prefixToIngotMap.put("nuggets", new Integer[]{1, 9});
@@ -162,8 +172,8 @@ public class ImmersiveEngineering
 		ArcFurnaceRecipe.makeItemInvalidRecyclingOutput(stack -> stack.getItem() instanceof HammerItem
 				||stack.getItem() instanceof WirecutterItem||stack.getItem() instanceof ScrewdriverItem);
 		// Ignore bricks
-		ArcFurnaceRecipe.makeItemInvalidRecyclingOutput(stack -> ApiUtils.isIngot(stack)
-				&&Objects.requireNonNull(ApiUtils.getMetalComponentTypeAndMetal(stack, "ingots"))[1].contains("brick"));
+		ArcFurnaceRecipe.makeItemInvalidRecyclingOutput(stack -> TagUtils.isIngot(stack)
+				&&Objects.requireNonNull(TagUtils.getMatchingPrefixAndRemaining(stack, "ingots"))[1].contains("brick"));
 
 
 		new ThreadContributorSpecialsDownloader();
@@ -255,13 +265,18 @@ public class ImmersiveEngineering
 	public void serverStarting(FMLServerStartingEvent event)
 	{
 		proxy.serverStarting();
-		//TODO do client commands exist yet? I don't think so
-		CommandHandler.registerServer(event.getCommandDispatcher());
 	}
 
-	public void serverAboutToStart(FMLServerAboutToStartEvent event)
+	public void registerCommands(RegisterCommandsEvent event)
 	{
-		event.getServer().getResourceManager().addReloadListener(new RecipeReloadListener());
+		//TODO do client commands exist yet? I don't think so
+		CommandHandler.registerServer(event.getDispatcher());
+	}
+
+	public void addReloadListeners(AddReloadListenerEvent event)
+	{
+		DataPackRegistries dataPackRegistries = event.getDataPackRegistries();
+		event.addListener(new RecipeReloadListener(dataPackRegistries));
 	}
 
 	public void serverStarted(FMLServerStartedEvent event)
@@ -269,7 +284,7 @@ public class ImmersiveEngineering
 		//TODO isn't this always true? if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
 		{
 			//TODO hardcoding DimensionType.OVERWORLD seems hacky/broken
-			ServerWorld world = event.getServer().getWorld(DimensionType.OVERWORLD);
+			ServerWorld world = event.getServer().getWorld(World.OVERWORLD);
 			if(!world.isRemote)
 			{
 				IESaveData worldData = world.getSavedData().getOrCreate(IESaveData::new, IESaveData.dataName);

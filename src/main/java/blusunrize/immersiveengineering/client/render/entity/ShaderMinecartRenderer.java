@@ -20,8 +20,6 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Vector3f;
-import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.MinecartRenderer;
@@ -34,7 +32,9 @@ import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.util.math.vector.Vector4f;
 
 import java.util.List;
 
@@ -81,7 +81,7 @@ public class ShaderMinecartRenderer<T extends AbstractMinecartEntity> extends Mi
 					for(int pass = 0; pass < layers.length; pass++)
 						if(sCase.shouldRenderGroupForPass(""+part, pass))
 						{
-							Vector4f col = sCase.getRenderColor(""+part, pass, new net.minecraft.client.renderer.Vector4f(1, 1, 1, 1));
+							Vector4f col = sCase.getRenderColor(""+part, pass, new Vector4f(1, 1, 1, 1));
 							matrixStackIn.push();
 							matrixStackIn.scale(scale, scale, scale);
 
@@ -122,12 +122,12 @@ public class ShaderMinecartRenderer<T extends AbstractMinecartEntity> extends Mi
 		double d0 = MathHelper.lerp(partialTicks, entityIn.lastTickPosX, entityIn.getPosX());
 		double d1 = MathHelper.lerp(partialTicks, entityIn.lastTickPosY, entityIn.getPosY());
 		double d2 = MathHelper.lerp(partialTicks, entityIn.lastTickPosZ, entityIn.getPosZ());
-		Vec3d vec3d = entityIn.getPos(d0, d1, d2);
+		Vector3d vec3d = entityIn.getPos(d0, d1, d2);
 		float f3 = MathHelper.lerp(partialTicks, entityIn.prevRotationPitch, entityIn.rotationPitch);
 		if(vec3d!=null)
 		{
-			Vec3d vec3d1 = entityIn.getPosOffset(d0, d1, d2, 0.3F);
-			Vec3d vec3d2 = entityIn.getPosOffset(d0, d1, d2, -0.3F);
+			Vector3d vec3d1 = entityIn.getPosOffset(d0, d1, d2, 0.3F);
+			Vector3d vec3d2 = entityIn.getPosOffset(d0, d1, d2, -0.3F);
 			if(vec3d1==null)
 				vec3d1 = vec3d;
 
@@ -135,7 +135,7 @@ public class ShaderMinecartRenderer<T extends AbstractMinecartEntity> extends Mi
 				vec3d2 = vec3d;
 
 			matrixStackIn.translate(vec3d.x-d0, (vec3d1.y+vec3d2.y)/2.0D-d1, vec3d.z-d2);
-			Vec3d vec3d3 = vec3d2.add(-vec3d1.x, -vec3d1.y, -vec3d1.z);
+			Vector3d vec3d3 = vec3d2.add(-vec3d1.x, -vec3d1.y, -vec3d1.z);
 			if(vec3d3.length()!=0.0D)
 			{
 				vec3d3 = vec3d3.normalize();

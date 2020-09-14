@@ -30,6 +30,7 @@ import net.minecraft.item.ItemUseContext;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -113,7 +114,7 @@ public class VoltmeterItem extends IEBaseItem implements ITool
 			else
 			{
 				WireLink link = WireLink.readFromItem(stack);
-				if(link.dimension.equals(world.getDimension().getType().getRegistryName()))
+				if(link.dimension.equals(world.getDimensionKey()))
 				{
 					GlobalWireNetwork global = GlobalWireNetwork.getNetwork(world);
 					LocalWireNetwork netHere = global.getNullableLocalNet(cp);
@@ -133,7 +134,7 @@ public class VoltmeterItem extends IEBaseItem implements ITool
 							player.sendMessage(new TranslationTextComponent(
 									Lib.CHAT_INFO+"averageLoss",
 									Utils.formatDouble(loss*100, "###.000")
-							));
+							), Util.DUMMY_UUID);
 						}
 					}
 				}

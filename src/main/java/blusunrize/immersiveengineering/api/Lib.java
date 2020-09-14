@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.api;
 
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import net.minecraft.item.IItemTier;
 import net.minecraft.item.Rarity;
 import net.minecraft.item.crafting.Ingredient;
@@ -137,7 +138,7 @@ public class Lib
 		@Override
 		public Ingredient getRepairMaterial()
 		{
-			return Ingredient.fromTag(ItemTags.getCollection().get(IETags.getIngot("steel")));
+			return Ingredient.fromTag(IETags.getTagsFor(EnumMetals.STEEL).ingot);
 		}
 	};
 	public static final Rarity RARITY_MASTERWORK = Rarity.create("IE_MASTERWORK", TextFormatting.GOLD);

@@ -15,7 +15,7 @@ import blusunrize.lib.manual.PositionedItemStack;
 import blusunrize.lib.manual.SpecialManualElements;
 import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.ManualScreen;
-import com.google.common.collect.ArrayListMultimap;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.widget.button.Button;
@@ -93,7 +93,7 @@ public class ManualElementBlueprint extends SpecialManualElements
 	}
 
 	@Override
-	public void render(ManualScreen gui, int x, int y, int mouseX, int mouseY)
+	public void render(MatrixStack transform, ManualScreen gui, int x, int y, int mouseX, int mouseY)
 	{
 		RenderSystem.enableRescaleNormal();
 		RenderHelper.enableStandardItemLighting();
@@ -108,12 +108,13 @@ public class ManualElementBlueprint extends SpecialManualElements
 				{
 					if(pstack.x > maxX)
 						maxX = pstack.x;
-					AbstractGui.fill(x+pstack.x, y+pstack.y, x+pstack.x+16, y+pstack.y+16, 0x33666666);
+					AbstractGui.fill(transform, x+pstack.x, y+pstack.y, x+pstack.x+16, y+pstack.y+16, 0x33666666);
 				}
 			ManualUtils.drawTexturedRect(manual.texture, x+maxX-17, y+yOff/2-5, 16, 10, 0/256f, 16/256f, 226/256f, 236/256f);
 		}
 
-		RenderSystem.translatef(0, 0, 300);
+		RenderSystem.pushMatrix();
+		RenderSystem.multMatrix(transform.getLast().getMatrix());
 		if(!recipes.isEmpty()&&recipePage >= 0&&recipePage < this.recipes.size())
 		{
 			for(PositionedItemStack pstack : recipes.get(recipePage))
@@ -127,15 +128,9 @@ public class ManualElementBlueprint extends SpecialManualElements
 							highlighted = pstack.getStack();
 					}
 		}
+		RenderSystem.popMatrix();
 
-		RenderSystem.translatef(0, 0, -300);
-		RenderSystem.disableRescaleNormal();
-		RenderSystem.enableBlend();
-		RenderHelper.disableStandardItemLighting();
-
-		this.renderHighlightedTooltip(gui, mouseX, mouseY);
-		RenderSystem.enableBlend();
-		RenderHelper.disableStandardItemLighting();
+		this.renderHighlightedTooltip(transform, gui, mouseX, mouseY);
 	}
 
 	@Override

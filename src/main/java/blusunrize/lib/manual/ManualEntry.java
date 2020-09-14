@@ -15,7 +15,7 @@ import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.client.Minecraft;
@@ -91,7 +91,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 		}
 	}
 
-	public void renderPage(ManualScreen gui, int x, int y, int mouseX, int mouseY)
+	public void renderPage(MatrixStack transform, ManualScreen gui, int x, int y, int mouseX, int mouseY)
 	{
 		int page = gui.page;
 		ManualPage toRender = pages.get(page);
@@ -104,12 +104,12 @@ public class ManualEntry implements Comparable<ManualEntry>
 			offsetText = toRender.special.getPixelsTaken();
 			offsetSpecial = 0;
 		}
-		ManualUtils.drawSplitString(manual.fontRenderer(), toRender.renderText, x, y+offsetText,
+		ManualUtils.drawSplitString(transform, manual.fontRenderer(), toRender.renderText, x, y+offsetText,
 				manual.getTextColour());
-		RenderSystem.pushMatrix();
-		RenderSystem.translatef(x, y+offsetSpecial, 0);
-		toRender.special.render(gui, 0, 0, mouseX, mouseY);
-		RenderSystem.popMatrix();
+		transform.push();
+		transform.translate(x, y+offsetSpecial, 0);
+		toRender.special.render(transform, gui, 0, 0, mouseX, mouseY);
+		transform.pop();
 	}
 
 	public String getTitle()
@@ -301,7 +301,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 				IResource resData;
 				try
 				{
-					resData = FastResourceAccess.getResource(manager, dataLoc);
+					resData = manager.getResource(dataLoc);
 				} catch(IOException e)
 				{
 					throw new RuntimeException(e);
@@ -353,7 +353,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 		{
 			try
 			{
-				return FastResourceAccess.getResource(Minecraft.getInstance().getResourceManager(), rl);
+				return Minecraft.getInstance().getResourceManager().getResource(rl);
 			} catch(IOException e)
 			{
 				return null;
@@ -376,7 +376,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 		}
 
 		@Override
-		public void render(ManualScreen m, int x, int y, int mouseX, int mouseY)
+		public void render(MatrixStack transform, ManualScreen m, int x, int y, int mouseX, int mouseY)
 		{
 		}
 

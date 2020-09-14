@@ -34,8 +34,8 @@ import net.minecraft.command.arguments.ArgumentTypes;
 import net.minecraft.command.arguments.ColumnPosArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.ColumnPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -103,27 +103,27 @@ public class CommandMineral
 		MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(sender.getWorld(), pos);
 		StringTextComponent ret = new StringTextComponent("");
 		if(info==null||info.getTotalWeight()==0)
-			ret.appendSibling(new TranslationTextComponent(Lib.CHAT_COMMAND+"mineral.get.none", pos.x, pos.z));
+			ret.append(new TranslationTextComponent(Lib.CHAT_COMMAND+"mineral.get.none", pos.x, pos.z));
 		else
 		{
-			ret.appendSibling(new TranslationTextComponent(Lib.CHAT_COMMAND+"mineral.get", pos.x, pos.z));
+			ret.append(new TranslationTextComponent(Lib.CHAT_COMMAND+"mineral.get", pos.x, pos.z));
 			for(Pair<MineralVein, Integer> pair : info.getAllVeins())
 			{
 				MineralVein vein = pair.getLeft();
 				double percentage = pair.getRight()/(double)info.getTotalWeight();
-				ITextComponent component = new StringTextComponent("\n "+Utils.formatDouble(percentage*100, "0.00")+"% ");
-				component.appendSibling(new TranslationTextComponent(vein.getMineral().getTranslationKey()));
-				ret.appendSibling(component.applyTextStyle(TextFormatting.GRAY));
+				IFormattableTextComponent component = new StringTextComponent("\n "+Utils.formatDouble(percentage*100, "0.00")+"% ");
+				component.append(new TranslationTextComponent(vein.getMineral().getTranslationKey()));
+				ret.append(component.mergeStyle(TextFormatting.GRAY));
 				component = new StringTextComponent("\n  ");
-				component.appendSibling(new TranslationTextComponent(Lib.CHAT_COMMAND+"mineral.get.pos",
+				component.append(new TranslationTextComponent(Lib.CHAT_COMMAND+"mineral.get.pos",
 						vein.getPos().x, vein.getPos().z, vein.getRadius()));
-				component.appendText("\n  ");
+				component.appendString("\n  ");
 				if(ExcavatorHandler.mineralVeinYield==0)
-					component.appendSibling(new TranslationTextComponent(Lib.DESC_INFO+"coresample.infinite"));
+					component.append(new TranslationTextComponent(Lib.DESC_INFO+"coresample.infinite"));
 				else
-					component.appendSibling(new TranslationTextComponent(Lib.DESC_INFO+"coresample.yield",
+					component.append(new TranslationTextComponent(Lib.DESC_INFO+"coresample.yield",
 							ExcavatorHandler.mineralVeinYield-vein.getDepletion()));
-				ret.appendSibling(component.applyTextStyle(TextFormatting.GRAY));
+				ret.append(component.mergeStyle(TextFormatting.GRAY));
 			}
 		}
 		sender.sendFeedback(ret, true);
@@ -159,7 +159,7 @@ public class CommandMineral
 			MineralVein vein = new MineralVein(pos, mineral.getId(), radius);
 			synchronized(ExcavatorHandler.getMineralVeinList())
 			{
-				ExcavatorHandler.getMineralVeinList().put(sender.getWorld().getDimension().getType(), vein);
+				ExcavatorHandler.getMineralVeinList().put(sender.getWorld().getDimensionKey(), vein);
 			}
 			IESaveData.setDirty();
 			sender.sendFeedback(new TranslationTextComponent(Lib.CHAT_COMMAND+
@@ -207,7 +207,7 @@ public class CommandMineral
 					"mineral.set_depletion.no_mineral", pos.x, pos.z), true);
 	}
 
-	private static ColumnPos columnPos(Vec3d vec)
+	private static ColumnPos columnPos(Vector3d vec)
 	{
 		return new ColumnPos((int)vec.x, (int)vec.z);
 	}

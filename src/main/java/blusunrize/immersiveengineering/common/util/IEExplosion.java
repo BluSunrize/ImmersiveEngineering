@@ -18,8 +18,10 @@ import net.minecraft.enchantment.ProtectionEnchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.IFluidState;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.LootContext;
+import net.minecraft.loot.LootParameters;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
@@ -28,12 +30,10 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraft.world.storage.loot.LootContext;
-import net.minecraft.world.storage.loot.LootParameters;
 
 import java.util.Comparator;
 import java.util.List;
@@ -51,7 +51,7 @@ public class IEExplosion extends Explosion
 
 	public IEExplosion(World world, Entity igniter, double x, double y, double z, float size, boolean isFlaming, Mode damageTerrain)
 	{
-		super(world, igniter, x, y, z, size, isFlaming, damageTerrain);
+		super(world, igniter, null, null, x, y, z, size, isFlaming, damageTerrain);
 		this.dropChance = 1/size;
 		this.world = world;
 		damagesTerrain = damageTerrain;
@@ -101,7 +101,7 @@ public class IEExplosion extends Explosion
 				{
 					TileEntity tile = state.hasTileEntity()?this.world.getTileEntity(pos): null;
 					LootContext.Builder lootCtx = new LootContext.Builder((ServerWorld)this.world)
-							.withRandom(this.world.rand).withParameter(LootParameters.POSITION, pos)
+							.withRandom(this.world.rand)
 							.withParameter(LootParameters.TOOL, ItemStack.EMPTY)
 							.withNullableParameter(LootParameters.BLOCK_ENTITY, tile);
 					if(damagesTerrain==Explosion.Mode.DESTROY)
@@ -148,10 +148,10 @@ public class IEExplosion extends Explosion
 						{
 							BlockPos blockpos = new BlockPos(d4, d6, d8);
 							BlockState iblockstate = this.world.getBlockState(blockpos);
-							IFluidState ifluidstate = this.world.getFluidState(blockpos);
+							FluidState ifluidstate = this.world.getFluidState(blockpos);
 							if(!iblockstate.isAir(world, blockpos)||!ifluidstate.isEmpty())
 							{
-								float f2 = Math.max(iblockstate.getExplosionResistance(world, blockpos, getExplosivePlacedBy(), this), ifluidstate.getExplosionResistance(world, blockpos, getExplosivePlacedBy(), this));
+								float f2 = Math.max(iblockstate.getExplosionResistance(world, blockpos, this), ifluidstate.getExplosionResistance(world, blockpos, this));
 								if(this.getExplosivePlacedBy()!=null)
 								{
 									f2 = this.getExplosivePlacedBy().getExplosionResistance(this, this.world, blockpos, iblockstate, ifluidstate, f2);
@@ -185,7 +185,7 @@ public class IEExplosion extends Explosion
 		int j1 = MathHelper.floor(getPosition().z+(double)f3+1.0D);
 		List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this.getExplosivePlacedBy(), new AxisAlignedBB(k1, i2, j2, l1, i1, j1));
 		net.minecraftforge.event.ForgeEventFactory.onExplosionDetonate(this.world, this, list, f3);
-		Vec3d vec3 = new Vec3d(getPosition().x, getPosition().y, getPosition().z);
+		Vector3d vec3 = new Vector3d(getPosition().x, getPosition().y, getPosition().z);
 
 		for(int k2 = 0; k2 < list.size(); ++k2)
 		{
@@ -213,7 +213,7 @@ public class IEExplosion extends Explosion
 								d7*d11,
 								d9*d11));
 						if(entity instanceof PlayerEntity&&!((PlayerEntity)entity).abilities.disableDamage)
-							this.getPlayerKnockbackMap().put((PlayerEntity)entity, new Vec3d(d5*d10, d7*d10, d9*d10));
+							this.getPlayerKnockbackMap().put((PlayerEntity)entity, new Vector3d(d5*d10, d7*d10, d9*d10));
 					}
 				}
 			}
@@ -223,7 +223,7 @@ public class IEExplosion extends Explosion
 	@Override
 	public void doExplosionB(boolean spawnParticles)
 	{
-		Vec3d pos = getPosition();
+		Vector3d pos = getPosition();
 		this.world.playSound(pos.x, pos.y, pos.z, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.NEUTRAL, 4.0F, (1.0F+(Utils.RAND.nextFloat()-Utils.RAND.nextFloat())*0.2F)*0.7F, true);
 
 		if(this.size >= 2.0F&&this.damagesTerrain!=Mode.NONE)

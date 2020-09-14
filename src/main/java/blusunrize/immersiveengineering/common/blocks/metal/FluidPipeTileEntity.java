@@ -31,8 +31,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.TransformationMatrix;
-import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.entity.Entity;
@@ -49,9 +47,11 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.vector.TransformationMatrix;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector4f;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -1020,11 +1020,11 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 	}
 
 	@Override
-	public boolean hammerUseSide(Direction side, PlayerEntity player, Hand hand, Vec3d hitVec)
+	public boolean hammerUseSide(Direction side, PlayerEntity player, Hand hand, Vector3d hitVec)
 	{
 		if(world.isRemote)
 			return true;
-		hitVec = hitVec.subtract(new Vec3d(pos));
+		hitVec = hitVec.subtract(Vector3d.copy(pos));
 		Direction fd = side;
 		List<AxisAlignedBB> boxes = getBoxes(new BoundingBoxKey(true, this));
 		for(AxisAlignedBB box : boxes)
@@ -1032,7 +1032,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 			{
 				for(Direction d : Direction.VALUES)
 				{
-					Vec3d testVec = new Vec3d(0.5+0.5*d.getXOffset(), 0.5+0.5*d.getYOffset(), 0.5+0.5*d.getZOffset());
+					Vector3d testVec = new Vector3d(0.5+0.5*d.getXOffset(), 0.5+0.5*d.getYOffset(), 0.5+0.5*d.getZOffset());
 					if(box.grow(0.002).contains(testVec))
 					{
 						fd = d;

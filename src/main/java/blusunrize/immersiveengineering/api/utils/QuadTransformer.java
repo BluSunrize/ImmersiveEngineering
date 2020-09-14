@@ -9,16 +9,16 @@
 package blusunrize.immersiveengineering.api.utils;
 
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
-import net.minecraft.client.renderer.TransformationMatrix;
-import net.minecraft.client.renderer.Vector3f;
-import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.vector.TransformationMatrix;
+import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.util.math.vector.Vector4f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
@@ -26,8 +26,6 @@ import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Function;
 
 @OnlyIn(Dist.CLIENT)
@@ -92,7 +90,7 @@ public class QuadTransformer implements Function<BakedQuad, BakedQuad>
 			@Override
 			public void setQuadOrientation(@Nonnull Direction orientation)
 			{
-				Vec3i normal = orientation.getDirectionVec();
+				Vector3i normal = orientation.getDirectionVec();
 				Vector3f newFront = new Vector3f(normal.getX(), normal.getY(), normal.getZ());
 				transform.transformNormal(newFront);
 				Direction newOrientation = Direction.getFacingFromVector(newFront.getX(), newFront.getY(), newFront.getZ());

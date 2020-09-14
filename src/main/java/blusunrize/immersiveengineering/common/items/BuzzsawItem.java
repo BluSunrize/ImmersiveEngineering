@@ -32,22 +32,22 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.fluids.IEItemFluidHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.ImmutableMultimap.Builder;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.LeavesBlock;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.Quaternion;
-import net.minecraft.client.renderer.TransformationMatrix;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -65,12 +65,15 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.util.math.vector.TransformationMatrix;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeHooks;
@@ -326,16 +329,22 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 	{
 		list.add(IEItemFluidHandler.fluidItemInfoFlavor(getFluid(stack), getCapacity(stack, 2000)));
 		if(getSawblade(stack).isEmpty())
-			list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"buzzsaw.noBlade").setStyle(new Style().setColor(TextFormatting.GRAY)));
+			list.add(ClientUtils.applyFormat(
+					new TranslationTextComponent(Lib.DESC_FLAVOUR+"buzzsaw.noBlade"),
+					TextFormatting.GRAY
+			));
 		else
 		{
 			int maxDmg = getMaxBladeDamage(stack);
 			int dmg = maxDmg-getBladeDamage(stack);
 			float quote = dmg/(float)maxDmg;
 			TextFormatting status = (quote < .1?TextFormatting.RED: quote < .3?TextFormatting.GOLD: quote < .6?TextFormatting.YELLOW: TextFormatting.GREEN);
-			list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"buzzsaw.bladeDamage").setStyle(new Style().setColor(TextFormatting.GRAY))
-					.appendText(" ")
-					.appendSibling(new TranslationTextComponent(Lib.DESC_INFO+"percent", (int)(quote*100)).setStyle(new Style().setColor(status))));
+			list.add(ClientUtils.applyFormat(new TranslationTextComponent(Lib.DESC_FLAVOUR+"buzzsaw.bladeDamage"), TextFormatting.GRAY)
+					.appendString(" ")
+					.append(ClientUtils.applyFormat(
+							new TranslationTextComponent(Lib.DESC_INFO+"percent", (int)(quote*100)),
+							status
+					)));
 		}
 	}
 
@@ -348,22 +357,22 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 	/* ------------- ATTRIBUTES ------------- */
 
 	@Override
-	public Multimap<String, AttributeModifier> getAttributeModifiers(EquipmentSlotType slot, ItemStack stack)
+	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlotType slot, ItemStack stack)
 	{
-		Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
+		Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
 		if(slot==EquipmentSlotType.MAINHAND)
 		{
 			ItemStack sawblade = getSawblade(stack);
 			if(!sawblade.isEmpty()&&canBuzzsawBeUsed(stack, null))
 			{
-				multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(),
+				builder.put(Attributes.ATTACK_DAMAGE,
 						new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier",
 								((SawbladeItem)sawblade.getItem()).getSawbladeDamage(), Operation.ADDITION));
-				multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(),
+				builder.put(Attributes.ATTACK_SPEED,
 						new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", -2.5D, Operation.ADDITION));
 			}
 		}
-		return multimap;
+		return builder.build();
 	}
 
 	@Override
@@ -451,7 +460,7 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 
 				Triple<ItemStack, ShaderRegistryEntry, ShaderCase> shader = ShaderRegistry.getStoredShaderAndCase(stack);
 				if(shader!=null)
-					shader.getMiddle().getEffectFunction().execute(world, shader.getLeft(), stack, shader.getRight().getShaderType().toString(), new Vec3d(pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5), null, .375f);
+					shader.getMiddle().getEffectFunction().execute(world, shader.getLeft(), stack, shader.getRight().getShaderType().toString(), new Vector3d(pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5), null, .375f);
 			}
 		}
 	}
@@ -670,7 +679,8 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 					{
 						block.onPlayerDestroy(world, pos, state);
 						block.harvestBlock(world, player, pos, state, te, stack);
-						block.dropXpOnBlockBreak(world, pos, xpDropEvent);
+						if (world instanceof ServerWorld)
+							block.dropXpOnBlockBreak((ServerWorld)world, pos, xpDropEvent);
 					}
 				}
 				world.playEvent(2001, pos, Block.getStateId(state));
@@ -703,7 +713,7 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 		if(slotChanged)
 			return true;
 		LazyOptional<ShaderWrapper> wrapperOld = oldStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
-		LazyOptional<Boolean> sameShader = wrapperOld.map(wOld -> {
+		Optional<Boolean> sameShader = wrapperOld.map(wOld -> {
 			LazyOptional<ShaderWrapper> wrapperNew = newStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
 			return wrapperNew.map(w -> ItemStack.areItemStacksEqual(wOld.getShaderItem(), w.getShaderItem()))
 					.orElse(true);

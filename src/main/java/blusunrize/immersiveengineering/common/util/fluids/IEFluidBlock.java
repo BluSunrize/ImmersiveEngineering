@@ -14,12 +14,12 @@ import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.fluid.IFluidState;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
-import net.minecraft.state.IProperty;
-import net.minecraft.state.IStateHolder;
+import net.minecraft.state.Property;
 import net.minecraft.state.StateContainer.Builder;
+import net.minecraft.state.StateHolder;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -57,22 +57,22 @@ public class IEFluidBlock extends FlowingFluidBlock
 			f = ieFluid;
 		else
 			f = tempFluid;
-		builder.add(f.getStateContainer().getProperties().toArray(new IProperty[0]));
+		builder.add(f.getStateContainer().getProperties().toArray(new Property[0]));
 	}
 
 	@Nonnull
 	@Override
-	public IFluidState getFluidState(@Nonnull BlockState state)
+	public FluidState getFluidState(@Nonnull BlockState state)
 	{
-		IFluidState baseState = super.getFluidState(state);
-		for(IProperty<?> prop : ieFluid.getStateContainer().getProperties())
+		FluidState baseState = super.getFluidState(state);
+		for(Property<?> prop : ieFluid.getStateContainer().getProperties())
 			if(prop!=FlowingFluidBlock.LEVEL)
 				baseState = withCopiedValue(prop, baseState, state);
 		return baseState;
 	}
 
-	private <T extends IStateHolder<T>, S extends Comparable<S>>
-	T withCopiedValue(IProperty<S> prop, T oldState, IStateHolder<?> copyFrom)
+	private <T extends StateHolder<?, T>, S extends Comparable<S>>
+	T withCopiedValue(Property<S> prop, T oldState, StateHolder<?, ?> copyFrom)
 	{
 		return oldState.with(prop, copyFrom.get(prop));
 	}

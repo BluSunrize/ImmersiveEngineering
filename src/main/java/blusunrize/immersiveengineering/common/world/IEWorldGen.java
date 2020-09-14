@@ -9,33 +9,34 @@
 package blusunrize.immersiveengineering.common.world;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.collect.HashMultimap;
-import com.mojang.datafixers.Dynamic;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.SharedSeedRandom;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.DimensionType;
+import net.minecraft.world.ISeedReader;
 import net.minecraft.world.IWorld;
+import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.chunk.IChunk;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.GenerationSettings;
 import net.minecraft.world.gen.GenerationStage.Decoration;
 import net.minecraft.world.gen.PerlinNoiseGenerator;
-import net.minecraft.world.gen.feature.ConfiguredFeature;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.NoFeatureConfig;
-import net.minecraft.world.gen.feature.OreFeatureConfig;
+import net.minecraft.world.gen.feature.*;
 import net.minecraft.world.gen.feature.OreFeatureConfig.FillerBlockType;
-import net.minecraft.world.gen.placement.*;
+import net.minecraft.world.gen.placement.ConfiguredPlacement;
+import net.minecraft.world.gen.placement.IPlacementConfig;
+import net.minecraft.world.gen.placement.Placement;
+import net.minecraft.world.gen.placement.TopSolidRangeConfig;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.TickEvent;
@@ -44,62 +45,65 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.function.Function;
-import java.util.stream.Stream;
+import java.util.stream.IntStream;
 
 public class IEWorldGen
 {
 	public static Map<String, ConfiguredFeature<?, ?>> features = new HashMap<>();
 	public static Map<String, ConfiguredFeature<?, ?>> retroFeatures = new HashMap<>();
-	public static List<ResourceLocation> oreDimBlacklist = new ArrayList<>();
+	public static List<RegistryKey<DimensionType>> oreDimBlacklist = new ArrayList<>();
 	public static Set<String> retrogenOres = new HashSet<>();
 
 	public static void addOreGen(String name, BlockState state, int maxVeinSize, int minY, int maxY, int chunkOccurence)
 	{
-		OreFeatureConfig cfg = new OreFeatureConfig(FillerBlockType.NATURAL_STONE, state, maxVeinSize);
-		ConfiguredFeature<?, ?> feature = new ConfiguredFeature<>(Feature.ORE, cfg)
-				.withPlacement(
-						new ConfiguredPlacement<>(COUNT_RANGE_IE, new CountRangeConfig(chunkOccurence, minY, minY, maxY))
-				);
-		for(Biome biome : ForgeRegistries.BIOMES.getValues())
-			biome.addFeature(Decoration.UNDERGROUND_ORES, feature);
+		OreFeatureConfig cfg = new OreFeatureConfig(FillerBlockType.field_241882_a, state, maxVeinSize);
+		ConfiguredFeature<?, ?> feature = Features.func_243968_a(Lib.MODID+":"+name, Feature.ORE
+				.withConfiguration(new OreFeatureConfig(OreFeatureConfig.FillerBlockType.field_241882_a, state, maxVeinSize))
+				.withPlacement(Placement.field_242907_l/* RANGE */.configure(new TopSolidRangeConfig(minY, minY, maxY)))
+				.func_242728_a/* spreadHorizontally */()
+				.func_242731_b/* repeat */(chunkOccurence));
+		for(Biome biome : ForgeRegistries.BIOMES)
+			new BiomeModifier(biome).addFeature(Decoration.UNDERGROUND_ORES, feature);
 		features.put(name, feature);
 
+		//TODO probably broken
 		ConfiguredFeature<?, ?> retroFeature = new ConfiguredFeature<>(IEContent.ORE_RETROGEN, cfg)
 				.withPlacement(
-						new ConfiguredPlacement<>(COUNT_RANGE_IE, new CountRangeConfig(chunkOccurence, minY, minY, maxY))
-				);
+						new ConfiguredPlacement<>(Placement.field_242907_l, new TopSolidRangeConfig(minY, minY, maxY))
+				)
+				.func_242728_a()
+				.func_242731_b(chunkOccurence);
 		retroFeatures.put(name, retroFeature);
 	}
 
 	public static void registerMineralVeinGen()
 	{
-		ConfiguredFeature<?, ?> vein_feature = new ConfiguredFeature<>(MINERAL_VEIN_FEATURE, new NoFeatureConfig())
-				.withPlacement(
-						new ConfiguredPlacement<>(Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG)
-				);
+		ConfiguredFeature<?, ?> vein_feature = Features.func_243968_a(Lib.MODID+":miarenl_veins",
+				new ConfiguredFeature<>(MINERAL_VEIN_FEATURE, new NoFeatureConfig())
+						.withPlacement(
+								new ConfiguredPlacement<>(Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG)
+						));
 		for(Biome biome : ForgeRegistries.BIOMES.getValues())
-			biome.addFeature(Decoration.RAW_GENERATION, vein_feature);
+			new BiomeModifier(biome).addFeature(Decoration.RAW_GENERATION, vein_feature);
 	}
 
 	public void generateOres(Random random, int chunkX, int chunkZ, ServerWorld world, boolean newGeneration)
 	{
-		if(!oreDimBlacklist.contains(world.getDimension().getType().getRegistryName()))
+		if(!oreDimBlacklist.contains(world.getDimensionKey()))
 		{
 			if(newGeneration)
 			{
 				for(Entry<String, ConfiguredFeature<?, ?>> gen : features.entrySet())
-					gen.getValue().place(world, world.getChunkProvider().getChunkGenerator(), random, new BlockPos(16*chunkX, 0, 16*chunkZ));
+					gen.getValue().func_242765_a(world, world.getChunkProvider().getChunkGenerator(), random, new BlockPos(16*chunkX, 0, 16*chunkZ));
 			}
 			else
 			{
 				for(Entry<String, ConfiguredFeature<?, ?>> gen : retroFeatures.entrySet())
 				{
 					if(retrogenOres.contains("retrogen_"+gen.getKey()))
-						gen.getValue().place(world, world.getChunkProvider().getChunkGenerator(), random, new BlockPos(16*chunkX, 0, 16*chunkZ));
+						gen.getValue().func_242765_a(world, world.getChunkProvider().getChunkGenerator(), random, new BlockPos(16*chunkX, 0, 16*chunkZ));
 				}
 			}
 		}
@@ -118,14 +122,15 @@ public class IEWorldGen
 	@SubscribeEvent
 	public void chunkDataLoad(ChunkDataEvent.Load event)
 	{
-		if(event.getChunk().getStatus()==ChunkStatus.FULL)
+		IWorld world = event.getWorld();
+		if(event.getChunk().getStatus()==ChunkStatus.FULL && world instanceof World)
 		{
-			DimensionType dimension = event.getChunk().getWorldForge().getDimension().getType();
 			if(!event.getData().getCompound("ImmersiveEngineering").contains(IEServerConfig.ORES.retrogen_key.get())&&
 					!retrogenOres.isEmpty())
 			{
 				if(IEServerConfig.ORES.retrogen_log_flagChunk.get())
 					IELogger.info("Chunk "+event.getChunk().getPos()+" has been flagged for Ore RetroGeneration by IE.");
+				RegistryKey<World> dimension = ((World)world).getDimensionKey();
 				synchronized(retrogenChunks)
 				{
 					retrogenChunks.computeIfAbsent(dimension, d -> new ArrayList<>()).add(event.getChunk().getPos());
@@ -134,7 +139,7 @@ public class IEWorldGen
 		}
 	}
 
-	public static final Map<DimensionType, List<ChunkPos>> retrogenChunks = new HashMap<>();
+	public static final Map<RegistryKey<World>, List<ChunkPos>> retrogenChunks = new HashMap<>();
 
 	int indexToRemove = 0;
 
@@ -143,7 +148,7 @@ public class IEWorldGen
 	{
 		if(event.side==LogicalSide.CLIENT||event.phase==TickEvent.Phase.START||!(event.world instanceof ServerWorld))
 			return;
-		DimensionType dimension = event.world.getDimension().getType();
+		RegistryKey<World> dimension = event.world.getDimensionKey();
 		int counter = 0;
 		int remaining;
 		synchronized(retrogenChunks)
@@ -161,7 +166,7 @@ public class IEWorldGen
 					ChunkPos loc = chunks.get(indexToRemove);
 					if(event.world.chunkExists(loc.x, loc.z))
 					{
-						long worldSeed = event.world.getSeed();
+						long worldSeed = ((ISeedReader)event.world).getSeed();
 						Random fmlRandom = new Random(worldSeed);
 						long xSeed = (fmlRandom.nextLong() >> 3);
 						long zSeed = (fmlRandom.nextLong() >> 3);
@@ -180,74 +185,39 @@ public class IEWorldGen
 			IELogger.info("Retrogen was performed on "+counter+" Chunks, "+remaining+" chunks remaining");
 	}
 
-	private static CountRangeInIEDimensions COUNT_RANGE_IE;
 	private static FeatureMineralVein MINERAL_VEIN_FEATURE;
 
-	@SubscribeEvent
-	public void registerPlacements(RegistryEvent.Register<Placement<?>> ev)
-	{
-		COUNT_RANGE_IE = new CountRangeInIEDimensions(CountRangeConfig::deserialize);
-		COUNT_RANGE_IE.setRegistryName(ImmersiveEngineering.MODID, "count_range_in_ie_dimensions");
-		ev.getRegistry().register(COUNT_RANGE_IE);
-	}
-
-	@SubscribeEvent
 	public void registerFeatures(RegistryEvent.Register<Feature<?>> ev)
 	{
-		MINERAL_VEIN_FEATURE = new FeatureMineralVein(NoFeatureConfig::deserialize);
+		MINERAL_VEIN_FEATURE = new FeatureMineralVein();
 		MINERAL_VEIN_FEATURE.setRegistryName(ImmersiveEngineering.MODID, "mineral_vein");
 		ev.getRegistry().register(MINERAL_VEIN_FEATURE);
 	}
 
-	private static class CountRangeInIEDimensions extends Placement<CountRangeConfig>
-	{
-		private final CountRange countRange;
-
-		public CountRangeInIEDimensions(Function<Dynamic<?>, ? extends CountRangeConfig> configFactoryIn)
-		{
-			super(configFactoryIn);
-			this.countRange = new CountRange(configFactoryIn);
-		}
-
-		@Nonnull
-		@Override
-		public Stream<BlockPos> getPositions(@Nonnull IWorld worldIn,
-											 @Nonnull ChunkGenerator<? extends GenerationSettings> generatorIn,
-											 @Nonnull Random random, @Nonnull CountRangeConfig configIn, @Nonnull BlockPos pos)
-		{
-			DimensionType d = worldIn.getDimension().getType();
-			if(!oreDimBlacklist.contains(d.getRegistryName()))
-			{
-				return countRange.getPositions(worldIn, generatorIn, random, configIn, pos);
-			}
-			else
-			{
-				return Stream.empty();
-			}
-		}
-	}
-
 	private static class FeatureMineralVein extends Feature<NoFeatureConfig>
 	{
-		public static HashMultimap<DimensionType, ChunkPos> veinGeneratedChunks = HashMultimap.create();
+		public static HashMultimap<RegistryKey<World>, ChunkPos> veinGeneratedChunks = HashMultimap.create();
 
-		public FeatureMineralVein(Function<Dynamic<?>, ? extends NoFeatureConfig> configFactoryIn)
+		public FeatureMineralVein()
 		{
-			super(configFactoryIn);
+			super(NoFeatureConfig.field_236558_a_);
 		}
 
 		@Override
-		public boolean place(IWorld worldIn, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, NoFeatureConfig config)
+		public boolean func_241855_a(ISeedReader worldIn, ChunkGenerator p_241855_2_, Random random, BlockPos pos, NoFeatureConfig p_241855_5_)
 		{
 			if(ExcavatorHandler.noiseGenerator==null)
-				ExcavatorHandler.noiseGenerator = new PerlinNoiseGenerator(new SharedSeedRandom(worldIn.getSeed()), 0, 0);
+				ExcavatorHandler.noiseGenerator = new PerlinNoiseGenerator(
+						new SharedSeedRandom(worldIn.getSeed()),
+						IntStream.of(0)
+				);
 
-			DimensionType dimension = worldIn.getDimension().getType();
+			RegistryKey<World> dimension = worldIn.getWorld().getDimensionKey();
 			IChunk chunk = worldIn.getChunk(pos);
 			if(!veinGeneratedChunks.containsEntry(dimension, chunk.getPos()))
 			{
 				veinGeneratedChunks.put(dimension, chunk.getPos());
-				ExcavatorHandler.generatePotentialVein(dimension, chunk.getPos(), rand);
+				ExcavatorHandler.generatePotentialVein(worldIn.getWorld(), chunk.getPos(), random);
 				return true;
 			}
 			return false;

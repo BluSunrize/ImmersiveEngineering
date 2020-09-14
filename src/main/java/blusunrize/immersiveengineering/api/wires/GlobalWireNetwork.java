@@ -53,6 +53,9 @@ public class GlobalWireNetwork implements IWorldTickable
 	private static World lastServerWorld = null;
 	private static GlobalWireNetwork lastServerNet = null;
 
+	private static World lastClientWorld;
+	private static GlobalWireNetwork lastClientNet;
+
 	private final Map<ConnectionPoint, LocalWireNetwork> localNets = new HashMap<>();
 	private final WireCollisionData collisionData;
 	private final IICProxyProvider proxyProvider;
@@ -65,14 +68,21 @@ public class GlobalWireNetwork implements IWorldTickable
 		// does not need any synchronization
 		if(!w.isRemote&&w==lastServerWorld)
 			return lastServerNet;
+		if(w.isRemote&&w==lastClientWorld)
+			return lastClientNet;
 		LazyOptional<GlobalWireNetwork> netOptional = w.getCapability(NetHandlerCapability.NET_CAPABILITY);
 		if(!netOptional.isPresent())
-			throw new RuntimeException("No net handler found for dimension "+w.getDimension().getType().getRegistryName()+", remote: "+w.isRemote);
+			throw new RuntimeException("No net handler found for dimension "+w.getDimensionKey().func_240901_a_()+", remote: "+w.isRemote);
 		GlobalWireNetwork ret = netOptional.orElseThrow(RuntimeException::new);
 		if(!w.isRemote)
 		{
 			lastServerWorld = w;
 			lastServerNet = ret;
+		}
+		else
+		{
+			lastClientWorld = w;
+			lastClientNet = ret;
 		}
 		return ret;
 	}
@@ -340,16 +350,20 @@ public class GlobalWireNetwork implements IWorldTickable
 
 	public void onConnectorUnload(BlockPos pos, IImmersiveConnectable iic)
 	{
-		Set<LocalWireNetwork> handledNets = new HashSet<>();
+		Map<LocalWireNetwork, Boolean> handledNets = new HashMap<>();
 		for(ConnectionPoint connectionPoint : iic.getConnectionPoints())
 		{
 			LocalWireNetwork local = getLocalNet(connectionPoint);
-			if(handledNets.add(local))
-				local.unloadConnector(pos);
+			Boolean actuallyRemoved = handledNets.get(local);
+			if(actuallyRemoved==null)
+			{
+				actuallyRemoved = local.unloadConnector(pos, iic);
+				handledNets.put(local, actuallyRemoved);
+			}
+			if(actuallyRemoved)
+				for(Connection c : getLocalNet(connectionPoint).getConnections(connectionPoint))
+					collisionData.removeConnection(c);
 		}
-		for(ConnectionPoint cp : iic.getConnectionPoints())
-			for(Connection c : getLocalNet(cp).getConnections(cp))
-				collisionData.removeConnection(c);
 		validateNextTick = true;
 	}
 
@@ -495,7 +509,7 @@ public class GlobalWireNetwork implements IWorldTickable
 			localNets.remove(cp);
 	}
 
-	public IImmersiveConnectable getConnector(ConnectionPoint cp)
+	public IImmersiveConnectable getExistingConnector(ConnectionPoint cp)
 	{
 		LocalWireNetwork local = getNullableLocalNet(cp);
 		return Preconditions.checkNotNull(local, "No local net at %s", cp)

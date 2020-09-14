@@ -8,8 +8,8 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.client.utils.TextUtils;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
@@ -19,7 +19,6 @@ import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileE
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -31,6 +30,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
@@ -55,20 +55,15 @@ public class SheetmetalTankTileEntity extends MultiblockPartTileEntity<Sheetmeta
 	}
 
 	@Override
-	public String[] getOverlayText(PlayerEntity player, RayTraceResult mop, boolean hammer)
+	public ITextComponent[] getOverlayText(PlayerEntity player, RayTraceResult mop, boolean hammer)
 	{
 		if(Utils.isFluidRelatedItemStack(player.getHeldItem(Hand.MAIN_HAND)))
 		{
 			SheetmetalTankTileEntity master = master();
 			FluidStack fs = master!=null?master.tank.getFluid(): this.tank.getFluid();
-			String s;
-			if(!fs.isEmpty())
-				s = fs.getDisplayName().getFormattedText()+": "+fs.getAmount()+"mB";
-			else
-				s = I18n.format(Lib.GUI+"empty");
-			return new String[]{s};
+			return new ITextComponent[]{TextUtils.formatFluidStack(fs)};
 		}
-		return new String[0];
+		return null;
 	}
 
 	@Override
@@ -80,7 +75,7 @@ public class SheetmetalTankTileEntity extends MultiblockPartTileEntity<Sheetmeta
 	@Override
 	public void tick()
 	{
-		ApiUtils.checkForNeedlessTicking(this);
+		checkForNeedlessTicking();
 		if(!isDummy()&&!world.isRemote&&!isRSDisabled())
 			for(Direction f : Direction.VALUES)
 				if(f!=Direction.UP&&tank.getFluidAmount() > 0)

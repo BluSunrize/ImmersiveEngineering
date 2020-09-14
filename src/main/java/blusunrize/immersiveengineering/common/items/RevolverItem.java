@@ -30,20 +30,20 @@ import blusunrize.immersiveengineering.common.network.MessageSpeedloaderSync;
 import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.ImmutableMultimap.Builder;
 import com.google.common.collect.Multimap;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.Quaternion;
-import net.minecraft.client.renderer.TransformationMatrix;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -58,7 +58,10 @@ import net.minecraft.item.UseAction;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.*;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.util.math.vector.TransformationMatrix;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -237,38 +240,38 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 		{
 			RevolverPerk perk = RevolverPerk.get(key);
 			if(perk!=null)
-				list.add(new StringTextComponent("  ").appendSibling(perk.getDisplayString(perks.getDouble(key))));
+				list.add(new StringTextComponent("  ").append(perk.getDisplayString(perks.getDouble(key))));
 		}
 	}
 
 	/* ------------- ATTRIBUTES, UPDATE, RIGHTCLICK ------------- */
 
 	@Override
-	public Multimap<String, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot, ItemStack stack)
+	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot, ItemStack stack)
 	{
-		Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
+		Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
 		if(slot==EquipmentSlotType.MAINHAND)
 		{
 			if(getUpgrades(stack).getBoolean("fancyAnimation"))
-				multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -2, Operation.ADDITION));
+				builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -2, Operation.ADDITION));
 			double melee = getUpgradeValue_d(stack, "melee");
 			if(melee!=0)
 			{
-				multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", melee, Operation.ADDITION));
-				multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -2.4000000953674316D, Operation.ADDITION));
+				builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", melee, Operation.ADDITION));
+				builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -2.4000000953674316D, Operation.ADDITION));
 			}
 		}
 		if(slot.getSlotType()==Group.HAND)
 		{
 			double speed = getUpgradeValue_d(stack, "speed");
 			if(speed!=0)
-				multimap.put(SharedMonsterAttributes.MOVEMENT_SPEED.getName(), new AttributeModifier(speedModUUID, "Weapon modifier", speed, Operation.MULTIPLY_BASE));
+				builder.put(Attributes.MOVEMENT_SPEED, new AttributeModifier(speedModUUID, "Weapon modifier", speed, Operation.MULTIPLY_BASE));
 
 			double luck = getUpgradeValue_d(stack, RevolverPerk.LUCK.getNBTKey());
 			if(luck!=0)
-				multimap.put(SharedMonsterAttributes.LUCK.getName(), new AttributeModifier(luckModUUID, "Weapon modifier", luck, Operation.ADDITION));
+				builder.put(Attributes.LUCK, new AttributeModifier(luckModUUID, "Weapon modifier", luck, Operation.ADDITION));
 		}
-		return multimap;
+		return builder.build();
 	}
 
 	@Override
@@ -353,7 +356,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 							IBullet bullet = ((BulletItem)bullet0).getType();
 							if(bullet!=null)
 							{
-								Vec3d vec = player.getLookVec();
+								Vector3d vec = player.getLookVec();
 								boolean electro = getUpgrades(revolver).getBoolean("electro");
 								int count = bullet.getProjectileCount(player);
 								if(count==1)
@@ -364,7 +367,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 								else
 									for(int i = 0; i < count; i++)
 									{
-										Vec3d vecDir = vec.add(player.getRNG().nextGaussian()*.1, player.getRNG().nextGaussian()*.1, player.getRNG().nextGaussian()*.1);
+										Vector3d vecDir = vec.add(player.getRNG().nextGaussian()*.1, player.getRNG().nextGaussian()*.1, player.getRNG().nextGaussian()*.1);
 										Entity entBullet = getBullet(player, vecDir, bullet, electro);
 										player.world.addEntity(bullet.getProjectile(player, bullets.get(0), entBullet, electro));
 									}
@@ -402,10 +405,10 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 				Triple<ItemStack, ShaderRegistryEntry, ShaderCase> shader = ShaderRegistry.getStoredShaderAndCase(revolver);
 				if(shader!=null)
 				{
-					Vec3d pos = Utils.getLivingFrontPos(player, .75, player.getHeight()*.75, hand==Hand.MAIN_HAND?player.getPrimaryHand(): player.getPrimaryHand().opposite(), false, 1);
+					Vector3d pos = Utils.getLivingFrontPos(player, .75, player.getHeight()*.75, hand==Hand.MAIN_HAND?player.getPrimaryHand(): player.getPrimaryHand().opposite(), false, 1);
 					shader.getMiddle().getEffectFunction().execute(world, shader.getLeft(), revolver,
 							shader.getRight().getShaderType().toString(), pos,
-							Vec3d.fromPitchYaw(player.getPitchYaw()), .125f);
+							Vector3d.fromPitchYaw(player.getPitchYaw()), .125f);
 				}
 			}
 			return new ActionResult<>(ActionResultType.SUCCESS, revolver);
@@ -451,7 +454,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 
 	/* ------------- BULLET UTILITY ------------- */
 
-	private RevolvershotEntity getBullet(PlayerEntity player, Vec3d vecDir, IBullet type, boolean electro)
+	private RevolvershotEntity getBullet(PlayerEntity player, Vector3d vecDir, IBullet type, boolean electro)
 	{
 		IELogger.logger.info("Starting with motion vector {}", vecDir);
 		RevolvershotEntity bullet = new RevolvershotEntity(player.world, player, vecDir.x*1.5, vecDir.y*1.5, vecDir.z*1.5, type);
@@ -614,7 +617,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 			return true;
 
 		LazyOptional<ShaderWrapper> wrapperOld = oldStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
-		LazyOptional<Boolean> sameShader = wrapperOld.map(wOld -> {
+		Optional<Boolean> sameShader = wrapperOld.map(wOld -> {
 			LazyOptional<ShaderWrapper> wrapperNew = newStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
 			return wrapperNew.map(w -> ItemStack.areItemStacksEqual(wOld.getShaderItem(), w.getShaderItem()))
 					.orElse(true);
@@ -871,7 +874,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 		{
 			String key = Lib.DESC_INFO+"revolver.perk."+this.toString();
 			return new TranslationTextComponent(key, valueFormatter.apply(value))
-					.applyTextStyle(isBadValue.test(value)?TextFormatting.RED: TextFormatting.BLUE);
+					.mergeStyle(isBadValue.test(value)?TextFormatting.RED: TextFormatting.BLUE);
 		}
 
 		public static ITextComponent getFormattedName(ITextComponent name, CompoundNBT perksTag)
@@ -885,12 +888,12 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 				averageTier += dTier;
 				int iTier = (int)MathHelper.clamp((dTier < 0?Math.floor(dTier): Math.ceil(dTier)), -3, 3);
 				String translate = Lib.DESC_INFO+"revolver.perk."+perk.name().toLowerCase()+".tier"+iTier;
-				name = new TranslationTextComponent(translate).appendSibling(name);
+				name = new TranslationTextComponent(translate).append(name);
 			}
 
 			int rarityTier = (int)Math.ceil(MathHelper.clamp(averageTier+3, 0, 6)/6*5);
 			Rarity rarity = rarityTier==5?Lib.RARITY_MASTERWORK: rarityTier==4?Rarity.EPIC: rarityTier==3?Rarity.RARE: rarityTier==2?Rarity.UNCOMMON: Rarity.COMMON;
-			return name.applyTextStyle(rarity.color);
+			return name.deepCopy().mergeStyle(rarity.color);
 		}
 
 		public static int calculateTier(CompoundNBT perksTag)

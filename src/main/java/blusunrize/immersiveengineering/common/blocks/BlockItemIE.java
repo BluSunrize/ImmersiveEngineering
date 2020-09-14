@@ -11,11 +11,10 @@ package blusunrize.immersiveengineering.common.blocks;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.client.ClientProxy;
+import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
@@ -25,7 +24,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -59,13 +57,6 @@ public class BlockItemIE extends BlockItem
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public FontRenderer getFontRenderer(ItemStack stack)
-	{
-		return ClientProxy.itemFont;
-	}
-
-	@Override
-	@OnlyIn(Dist.CLIENT)
 	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag advanced)
 	{
 		if(getBlock() instanceof IIEBlock)
@@ -74,19 +65,22 @@ public class BlockItemIE extends BlockItem
 			if(ieBlock.hasFlavour())
 			{
 				String flavourKey = Lib.DESC_FLAVOUR+ieBlock.getNameForFlavour();
-				tooltip.add(new TranslationTextComponent(flavourKey).setStyle(new Style().setColor(TextFormatting.GRAY)));
+				tooltip.add(ClientUtils.applyFormat(new TranslationTextComponent(flavourKey),
+						TextFormatting.GRAY));
 			}
 		}
 		super.addInformation(stack, world, tooltip, advanced);
 		if(ItemNBTHelper.hasKey(stack, "energyStorage"))
-			tooltip.add(new TranslationTextComponent(Lib.DESC_INFO+"energyStored",
-					ItemNBTHelper.getInt(stack, "energyStorage")).setStyle(new Style().setColor(TextFormatting.GRAY)));
+			tooltip.add(ClientUtils.applyFormat(new TranslationTextComponent(Lib.DESC_INFO+"energyStored",
+							ItemNBTHelper.getInt(stack, "energyStorage")),
+					TextFormatting.GRAY));
 		if(ItemNBTHelper.hasKey(stack, "tank"))
 		{
 			FluidStack fs = FluidStack.loadFluidStackFromNBT(ItemNBTHelper.getTagCompound(stack, "tank"));
 			if(fs!=null)
-				tooltip.add(new TranslationTextComponent(Lib.DESC_INFO+"fluidStored",
-						fs.getDisplayName(), fs.getAmount()).setStyle(new Style().setColor(TextFormatting.GRAY)));
+				tooltip.add(ClientUtils.applyFormat(
+						new TranslationTextComponent(Lib.DESC_INFO+"fluidStored", fs.getDisplayName(), fs.getAmount()),
+						TextFormatting.GRAY));
 		}
 	}
 
@@ -125,7 +119,7 @@ public class BlockItemIE extends BlockItem
 	protected boolean onBlockPlaced(BlockPos pos, World worldIn, @Nullable PlayerEntity player, ItemStack stack, BlockState state)
 	{
 		// Skip reading the tile from NBT if the block is a (general) multiblock
-		if(!state.has(IEProperties.MULTIBLOCKSLAVE))
+		if(!state.hasProperty(IEProperties.MULTIBLOCKSLAVE))
 			return super.onBlockPlaced(pos, worldIn, player, stack, state);
 		else
 			return false;

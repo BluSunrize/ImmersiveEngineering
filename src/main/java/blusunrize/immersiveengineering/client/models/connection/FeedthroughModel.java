@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.client.models.connection;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.utils.QuadTransformer;
@@ -37,12 +36,11 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
-import net.minecraft.client.renderer.TransformationMatrix;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -50,9 +48,10 @@ import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.ILightReader;
-import net.minecraft.world.World;
+import net.minecraft.util.math.vector.TransformationMatrix;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.world.IBlockDisplayReader;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.data.EmptyModelData;
@@ -116,7 +115,7 @@ public class FeedthroughModel extends BakedIEModel
 
 	@Nonnull
 	@Override
-	public IModelData getModelData(@Nonnull ILightReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData)
+	public IModelData getModelData(@Nonnull IBlockDisplayReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData)
 	{
 		List<IModelData> ret = new ArrayList<>();
 		ret.add(tileData);
@@ -196,11 +195,10 @@ public class FeedthroughModel extends BakedIEModel
 				.expireAfterAccess(60, TimeUnit.SECONDS)
 				.build();
 
-
 		@Nonnull
 		@Override
-		public IBakedModel getModelWithOverrides(@Nonnull IBakedModel originalModel, ItemStack stack,
-												 @Nullable World world, @Nullable LivingEntity entity)
+		public IBakedModel func_239290_a_(@Nonnull IBakedModel originalModel, ItemStack stack,
+												 @Nullable ClientWorld world, @Nullable LivingEntity entity)
 		{
 			Item connItem = Item.getItemFromBlock(Connectors.feedthrough);
 			if(stack.getItem()==connItem)
@@ -297,9 +295,9 @@ public class FeedthroughModel extends BakedIEModel
 	private static class SpecificFeedthroughModel extends FeedthroughModel
 	{
 		private static final float[] WHITE = {1, 1, 1, 1};
-		private static final Vec3d[] vertices = {
-				new Vec3d(.75F, .001F, .75F), new Vec3d(.75F, .001F, .25F),
-				new Vec3d(.25F, .001F, .25F), new Vec3d(.25F, .001F, .75F)
+		private static final Vector3d[] vertices = {
+				new Vector3d(.75F, .001F, .75F), new Vector3d(.75F, .001F, .25F),
+				new Vector3d(.25F, .001F, .25F), new Vector3d(.25F, .001F, .75F)
 		};
 		List<List<BakedQuad>> quads = new ArrayList<>(6);
 
@@ -365,7 +363,7 @@ public class FeedthroughModel extends BakedIEModel
 						mat = new Matrix4();
 						mat.translate(0, 0, -1);
 						all.addAll(getConnQuads(facing.getOpposite(), side, k.type, mat));
-						Function<BakedQuad, BakedQuad> tintTransformer = ApiUtils.transformQuad(TransformationMatrix.identity(),
+						Function<BakedQuad, BakedQuad> tintTransformer = new QuadTransformer(TransformationMatrix.identity(),
 								colorMultiplier);
 						all.addAll(model.getQuads(k.baseState, side, Utils.RAND).stream().map(tintTransformer)
 								.collect(Collectors.toCollection(ArrayList::new)));

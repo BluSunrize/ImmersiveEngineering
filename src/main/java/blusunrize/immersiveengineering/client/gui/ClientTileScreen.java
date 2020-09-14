@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.client.gui;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.ITextComponent;
@@ -34,23 +35,23 @@ public abstract class ClientTileScreen<T extends TileEntity> extends Screen
 		this.guiTop = (this.height-this.ySize)/2;
 	}
 
-	protected abstract void drawGuiContainerBackgroundLayer(int mouseX, int mouseY, float partialTick);
+	protected abstract void drawGuiContainerBackgroundLayer(MatrixStack transform, int mouseX, int mouseY, float partialTick);
 
-	protected abstract void drawGuiContainerForegroundLayer(int mouseX, int mouseY, float partialTick);
+	protected abstract void drawGuiContainerForegroundLayer(MatrixStack transform, int mouseX, int mouseY, float partialTick);
 
 	@Override
-	public void render(int mx, int my, float partial)
+	public void render(MatrixStack transform, int mx, int my, float partial)
 	{
 		// Render dark background
-		this.renderBackground();
+		this.renderBackground(transform);
 		// Background texture
-		drawGuiContainerBackgroundLayer(mx, my, partial);
+		drawGuiContainerBackgroundLayer(transform, mx, my, partial);
 
 		// Buttons
-		super.render(mx, my, partial);
+		super.render(transform, mx, my, partial);
 
 		// Foreground
-		drawGuiContainerForegroundLayer(mx, my, partial);
+		drawGuiContainerForegroundLayer(transform, mx, my, partial);
 	}
 
 	@Override

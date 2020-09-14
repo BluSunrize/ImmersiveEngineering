@@ -11,15 +11,15 @@ package blusunrize.immersiveengineering.client.fx;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.ActiveRenderInfo;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particles.BasicParticleType;
-import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class SparksParticle extends SpriteTexturedParticle
 {
-	public SparksParticle(World world, double x, double y, double z, double mx, double my, double mz, IAnimatedSprite sprite)
+	public SparksParticle(ClientWorld world, double x, double y, double z, double mx, double my, double mz, IAnimatedSprite sprite)
 	{
 		super(world, x, y, z, mx, my, mz);
 		this.setMaxAge(16);
@@ -65,7 +65,7 @@ public class SparksParticle extends SpriteTexturedParticle
 
 		@Nullable
 		@Override
-		public Particle makeParticle(BasicParticleType typeIn, World worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
+		public Particle makeParticle(BasicParticleType typeIn, ClientWorld worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
 		{
 			return new SparksParticle(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, sprite);
 		}

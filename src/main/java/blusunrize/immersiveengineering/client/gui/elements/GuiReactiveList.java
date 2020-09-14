@@ -10,10 +10,11 @@ package blusunrize.immersiveengineering.client.gui.elements;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.util.text.StringTextComponent;
 
 import java.util.function.Function;
 
@@ -37,7 +38,7 @@ public class GuiReactiveList extends Button
 
 	public GuiReactiveList(Screen gui, int x, int y, int w, int h, IPressable handler, String... entries)
 	{
-		super(x, y, w, h, "", handler);
+		super(x, y, w, h, StringTextComponent.EMPTY, handler);
 		this.gui = gui;
 		this.entries = entries;
 		recalculateEntries();
@@ -103,31 +104,30 @@ public class GuiReactiveList extends Button
 	}
 
 	@Override
-	public void render(int mx, int my, float partialTicks)
+	public void render(MatrixStack transform, int mx, int my, float partialTicks)
 	{
 		FontRenderer fr = ClientUtils.mc().fontRenderer;
 
 		int mmY = my-this.y;
 		int strWidth = width-padding[2]-padding[3]-(needsSlider?6: 0);
-		RenderSystem.color3f(1, 1, 1);
 		if(needsSlider)
 		{
 			ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
-			this.blit(x+width-6, y, 16, 136, 6, 4);
-			this.blit(x+width-6, y+height-4, 16, 144, 6, 4);
+			this.blit(transform, x+width-6, y, 16, 136, 6, 4);
+			this.blit(transform, x+width-6, y+height-4, 16, 144, 6, 4);
 			for(int i = 0; i < height-8; i += 2)
-				this.blit(x+width-6, y+4+i, 16, 141, 6, 2);
+				this.blit(transform, x+width-6, y+4+i, 16, 141, 6, 2);
 
 			int sliderSize = Math.max(6, height-maxOffset*fr.FONT_HEIGHT);
 			float silderShift = (height-sliderSize)/(float)maxOffset*offset;
 
-			this.blit(x+width-5, (int)(y+silderShift+1), 20, 129, 4, 2);
-			this.blit(x+width-5, (int)(y+silderShift+sliderSize-4), 20, 132, 4, 3);
+			this.blit(transform, x+width-5, (int)(y+silderShift+1), 20, 129, 4, 2);
+			this.blit(transform, x+width-5, (int)(y+silderShift+sliderSize-4), 20, 132, 4, 3);
 			for(int i = 0; i < sliderSize-7; i++)
-				this.blit(x+width-5, (int)(y+silderShift+3+i), 20, 131, 4, 1);
+				this.blit(transform, x+width-5, (int)(y+silderShift+3+i), 20, 131, 4, 1);
 		}
 
-		RenderSystem.scalef(textScale, textScale, 1);
+		transform.scale(textScale, textScale, 1);
 		this.isHovered = mx >= x&&mx < x+width&&my >= y&&my < y+height;
 		boolean hasTarget = false;
 		for(int i = 0; i < Math.min(perPage, entries.length); i++)
@@ -150,7 +150,7 @@ public class GuiReactiveList extends Button
 			if(j > entries.length-1)
 				j = entries.length-1;
 			String s = translationFunction!=null?translationFunction.apply(entries[j]): entries[j];
-			int overLength = s.length()-fr.sizeStringToWidth(s, strWidth);
+			int overLength = s.length()-fr.func_238412_a_(s, strWidth).length();
 			if(overLength > 0)//String is too long
 			{
 				if(selectionHover&&hoverTimer > 20)
@@ -158,15 +158,15 @@ public class GuiReactiveList extends Button
 					int textOffset = (hoverTimer/10)%(s.length());
 					s = s.substring(textOffset)+" "+s.substring(0, textOffset);
 				}
-				s = fr.trimStringToWidth(s, strWidth);
+				s = fr.func_238412_a_(s, strWidth);
 			}
 			float tx = ((x+padding[2])/textScale);
 			float ty = ((y+padding[0]+(fr.FONT_HEIGHT*i))/textScale);
-			RenderSystem.translatef(tx, ty, 0);
-			fr.drawString(s, 0, 0, col);
-			RenderSystem.translatef(-tx, -ty, 0);
+			transform.translate(tx, ty, 0);
+			fr.drawString(transform, s, 0, 0, col);
+			transform.translate(-tx, -ty, 0);
 		}
-		RenderSystem.scalef(1/textScale, 1/textScale, 1);
+		transform.scale(1/textScale, 1/textScale, 1);
 		if(!hasTarget)
 		{
 			targetEntry = -1;

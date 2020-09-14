@@ -27,16 +27,17 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ITag;
+import net.minecraft.tags.ITagCollection;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.mutable.Mutable;
@@ -67,23 +68,27 @@ public class ManualUtils
 
 	public static boolean isInTag(ItemStack stack, ResourceLocation tag)
 	{
-		Tag<Item> itemTag = ItemTags.getCollection().get(tag);
+		ITag<Item> itemTag = ItemTags.getCollection().get(tag);
 		if(itemTag!=null&&itemTag.contains(stack.getItem()))
 			return true;
-		Tag<Block> blockTag = BlockTags.getCollection().get(tag);
+		ITag<Block> blockTag = BlockTags.getCollection().get(tag);
 		return blockTag!=null&&blockTag.contains(Block.getBlockFromItem(stack.getItem()));
 	}
 
 	public static boolean isNonemptyItemTag(ResourceLocation name)
 	{
-		Tag<Item> t = ItemTags.getCollection().getTagMap().get(name);
-		return t!=null&&!t.getAllElements().isEmpty();
+		return isNonEmptyTag(ItemTags.getCollection(), name);
 	}
 
 	public static boolean isNonemptyBlockTag(ResourceLocation name)
 	{
-		Tag<Block> t = BlockTags.getCollection().getTagMap().get(name);
-		return t!=null&&!t.getAllElements().isEmpty();
+		return isNonEmptyTag(BlockTags.getCollection(), name);
+	}
+
+	private static <T> boolean isNonEmptyTag(ITagCollection<T> collection, ResourceLocation name)
+	{
+		ITag<T> tag = collection.get(name);
+		return tag!=null&&tag.getAllElements().size() > 0;
 	}
 
 	public static boolean isNonemptyBlockOrItemTag(ResourceLocation name)
@@ -274,11 +279,11 @@ public class ManualUtils
 	/**
 	 * Custom implementation of drawing a split string because Mojang's doesn't reset text colour between lines >___>
 	 */
-	public static void drawSplitString(FontRenderer fontRenderer, List<String> text, int x, int y, int colour)
+	public static void drawSplitString(MatrixStack transform, FontRenderer fontRenderer, List<String> text, int x, int y, int colour)
 	{
 		for(String s : text)
 		{
-			fontRenderer.drawString(s, x, y, colour);
+			fontRenderer.drawString(transform, s, x, y, colour);
 			y += fontRenderer.FONT_HEIGHT;
 		}
 	}
@@ -392,6 +397,6 @@ public class ManualUtils
 
 	public static boolean listStack(String search, ItemStack stack)
 	{
-		return stack.getDisplayName().getFormattedText().toLowerCase(Locale.ENGLISH).contains(search);
+		return stack.getDisplayName().getString().toLowerCase(Locale.ENGLISH).contains(search);
 	}
 }

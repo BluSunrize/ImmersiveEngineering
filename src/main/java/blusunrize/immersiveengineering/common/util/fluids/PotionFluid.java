@@ -15,15 +15,16 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.IFluidState;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.potion.*;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -54,7 +55,7 @@ public class PotionFluid extends Fluid
 	}
 
 	@Override
-	protected boolean canDisplace(@Nonnull IFluidState p_215665_1_, @Nonnull IBlockReader p_215665_2_,
+	protected boolean canDisplace(@Nonnull FluidState p_215665_1_, @Nonnull IBlockReader p_215665_2_,
 								  @Nonnull BlockPos p_215665_3_, @Nonnull Fluid p_215665_4_, @Nonnull Direction p_215665_5_)
 	{
 		return true;
@@ -62,9 +63,9 @@ public class PotionFluid extends Fluid
 
 	@Nonnull
 	@Override
-	protected Vec3d getFlow(@Nonnull IBlockReader p_215663_1_, @Nonnull BlockPos p_215663_2_, @Nonnull IFluidState p_215663_3_)
+	protected Vector3d getFlow(@Nonnull IBlockReader p_215663_1_, @Nonnull BlockPos p_215663_2_, @Nonnull FluidState p_215663_3_)
 	{
-		return Vec3d.ZERO;
+		return Vector3d.ZERO;
 	}
 
 	@Override
@@ -80,39 +81,39 @@ public class PotionFluid extends Fluid
 	}
 
 	@Override
-	public float getActualHeight(@Nonnull IFluidState p_215662_1_, @Nonnull IBlockReader p_215662_2_, @Nonnull BlockPos p_215662_3_)
+	public float getActualHeight(@Nonnull FluidState p_215662_1_, @Nonnull IBlockReader p_215662_2_, @Nonnull BlockPos p_215662_3_)
 	{
 		return 0;
 	}
 
 	@Override
-	public float getHeight(@Nonnull IFluidState p_223407_1_)
+	public float getHeight(@Nonnull FluidState p_223407_1_)
 	{
 		return 0;
 	}
 
 	@Nonnull
 	@Override
-	protected BlockState getBlockState(@Nonnull IFluidState state)
+	protected BlockState getBlockState(@Nonnull FluidState state)
 	{
 		return Blocks.AIR.getDefaultState();
 	}
 
 	@Override
-	public boolean isSource(@Nonnull IFluidState state)
+	public boolean isSource(@Nonnull FluidState state)
 	{
 		return true;
 	}
 
 	@Override
-	public int getLevel(@Nonnull IFluidState p_207192_1_)
+	public int getLevel(@Nonnull FluidState p_207192_1_)
 	{
 		return 0;
 	}
 
 	@Nonnull
 	@Override
-	public VoxelShape func_215664_b(@Nonnull IFluidState p_215664_1_, @Nonnull IBlockReader p_215664_2_, @Nonnull BlockPos p_215664_3_)
+	public VoxelShape func_215664_b(@Nonnull FluidState p_215664_1_, @Nonnull IBlockReader p_215664_2_, @Nonnull BlockPos p_215664_3_)
 	{
 		return VoxelShapes.empty();
 	}
@@ -130,26 +131,26 @@ public class PotionFluid extends Fluid
 		{
 			List<EffectInstance> effects = PotionUtils.getEffectsFromTag(fluidStack.getTag());
 			if(effects.isEmpty())
-				tooltip.add(new TranslationTextComponent("effect.none").applyTextStyle(TextFormatting.GRAY));
+				tooltip.add(new TranslationTextComponent("effect.none").mergeStyle(TextFormatting.GRAY));
 			else
 			{
 				for(EffectInstance instance : effects)
 				{
-					ITextComponent itextcomponent = new TranslationTextComponent(instance.getEffectName());
+					IFormattableTextComponent itextcomponent = new TranslationTextComponent(instance.getEffectName());
 					Effect effect = instance.getPotion();
 					if(instance.getAmplifier() > 0)
-						itextcomponent.appendText(" ").appendSibling(new TranslationTextComponent("potion.potency."+instance.getAmplifier()));
+						itextcomponent.appendString(" ").append(new TranslationTextComponent("potion.potency."+instance.getAmplifier()));
 					if(instance.getDuration() > 20)
-						itextcomponent.appendText(" (").appendText(EffectUtils.getPotionDurationString(instance, 1)).appendText(")");
+						itextcomponent.appendString(" (").appendString(EffectUtils.getPotionDurationString(instance, 1)).appendString(")");
 
-					tooltip.add(itextcomponent.applyTextStyle(effect.getEffectType().getColor()));
+					tooltip.add(itextcomponent.mergeStyle(effect.getEffectType().getColor()));
 				}
 			}
 			Potion potionType = PotionUtils.getPotionTypeFromNBT(fluidStack.getTag());
 			if(potionType!=Potions.EMPTY)
 			{
 				String modID = potionType.getRegistryName().getNamespace();
-				tooltip.add(new TranslationTextComponent(Lib.DESC_INFO+"potionMod", Utils.getModName(modID)).applyTextStyle(TextFormatting.DARK_GRAY));
+				tooltip.add(new TranslationTextComponent(Lib.DESC_INFO+"potionMod", Utils.getModName(modID)).mergeStyle(TextFormatting.DARK_GRAY));
 			}
 		}
 	}

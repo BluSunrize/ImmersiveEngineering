@@ -14,6 +14,7 @@ import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.ManualInstance.ManualLink;
 import blusunrize.lib.manual.ManualUtils;
 import blusunrize.lib.manual.Tree.AbstractNode;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -21,7 +22,9 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.IReorderingProcessor;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 
@@ -152,7 +155,7 @@ public class ManualScreen extends Screen
 		if(textField)
 		{
 			mc.keyboardListener.enableRepeatEvents(true);
-			searchField = new TextFieldWidget(font, guiLeft+166, guiTop+78, 120, 12, "");
+			searchField = new TextFieldWidget(font, guiLeft+166, guiTop+78, 120, 12, StringTextComponent.EMPTY);
 			searchField.setTextColor(-1);
 			searchField.setDisabledTextColour(-1);
 			searchField.setEnableBackgroundDrawing(false);
@@ -173,38 +176,38 @@ public class ManualScreen extends Screen
 	}
 
 	@Override
-	public void render(int mouseX, int mouseY, float f)
+	public void render(MatrixStack transform, int mouseX, int mouseY, float f)
 	{
 		manualTick++;
 		manual.entryRenderPre();
 
 		ManualUtils.bindTexture(texture);
-		this.blit(guiLeft, guiTop, 0, 0, xSize, ySize);
+		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
 		if(this.searchField!=null)
 		{
 			int l = searchField.getText().length()*6;
 			if(l > 20)
-				this.blit(guiLeft+166, guiTop+74, 136+(120-l), 238, l, 18);
+				this.blit(transform, guiLeft+166, guiTop+74, 136+(120-l), 238, l, 18);
 			if(suggestionList.visible)
 			{
-				this.blit(guiLeft+174, guiTop+100, 214, 212, 16, 26);
+				this.blit(transform, guiLeft+174, guiTop+100, 214, 212, 16, 26);
 				int h = suggestionList.getHeight();
 				int w = 76;
-				this.blit(guiLeft+174, guiTop+116, 230, 212, 16, 16);//Top Left
-				this.blit(guiLeft+174, guiTop+132+h, 230, 228, 16, 10);//Bottom Left
-				this.blit(guiLeft+190+w, guiTop+116, 246, 212, 10, 16);//Top Right
-				this.blit(guiLeft+190+w, guiTop+132+h, 246, 228, 10, 10);//Bottom Right
+				this.blit(transform, guiLeft+174, guiTop+116, 230, 212, 16, 16);//Top Left
+				this.blit(transform, guiLeft+174, guiTop+132+h, 230, 228, 16, 10);//Bottom Left
+				this.blit(transform, guiLeft+190+w, guiTop+116, 246, 212, 10, 16);//Top Right
+				this.blit(transform, guiLeft+190+w, guiTop+132+h, 246, 228, 10, 10);//Bottom Right
 				for(int hh = 0; hh < h; hh++)
 				{
-					this.blit(guiLeft+174, guiTop+132+hh, 230, 228, 16, 1);
+					this.blit(transform, guiLeft+174, guiTop+132+hh, 230, 228, 16, 1);
 					for(int ww = 0; ww < w; ww++)
-						this.blit(guiLeft+190+ww, guiTop+132+hh, 246, 228, 1, 1);
-					this.blit(guiLeft+190+w, guiTop+132+hh, 246, 228, 10, 1);
+						this.blit(transform, guiLeft+190+ww, guiTop+132+hh, 246, 228, 1, 1);
+					this.blit(transform, guiLeft+190+w, guiTop+132+hh, 246, 228, 10, 1);
 				}
 				for(int ww = 0; ww < w; ww++)
 				{
-					this.blit(guiLeft+190+ww, guiTop+116, 246, 212, 1, 16);
-					this.blit(guiLeft+190+ww, guiTop+132+h, 246, 228, 1, 10);
+					this.blit(transform, guiLeft+190+ww, guiTop+116, 246, 212, 1, 16);
+					this.blit(transform, guiLeft+190+ww, guiTop+132+h, 246, 228, 1, 10);
 
 				}
 			}
@@ -220,20 +223,20 @@ public class ManualScreen extends Screen
 
 			RenderSystem.enableBlend();
 			if(page > 0)
-				this.blit(guiLeft+32, guiTop+179, 0, 216+(b0?20: 0), 16, 10);
+				this.blit(transform, guiLeft+32, guiTop+179, 0, 216+(b0?20: 0), 16, 10);
 			if(page < selectedEntry.getPageCount()-1)
-				this.blit(guiLeft+136, guiTop+179, 0, 226+(b1?20: 0), 16, 10);
+				this.blit(transform, guiLeft+136, guiTop+179, 0, 226+(b1?20: 0), 16, 10);
 
 			manual.titleRenderPre();
 			//Title
-			this.drawCenteredStringScaled(manual.fontRenderer(), TextFormatting.BOLD+selectedEntry.getTitle(), guiLeft+xSize/2, guiTop+14, manual.getTitleColour(), 1, true);
-			this.drawCenteredStringScaled(manual.fontRenderer(), manual.formatEntrySubtext(selectedEntry.getSubtext()), guiLeft+xSize/2,
+			this.drawCenteredStringScaled(transform, manual.fontRenderer(), TextFormatting.BOLD+selectedEntry.getTitle(), guiLeft+xSize/2, guiTop+14, manual.getTitleColour(), 1, true);
+			this.drawCenteredStringScaled(transform, manual.fontRenderer(), manual.formatEntrySubtext(selectedEntry.getSubtext()), guiLeft+xSize/2,
 					guiTop+22, manual.getSubTitleColour(), 1, true);
 			//Page Number
-			this.drawCenteredStringScaled(manual.fontRenderer(), TextFormatting.BOLD.toString()+(page+1), guiLeft+xSize/2, guiTop+183, manual.getPagenumberColour(), 1, false);
+			this.drawCenteredStringScaled(transform, manual.fontRenderer(), TextFormatting.BOLD.toString()+(page+1), guiLeft+xSize/2, guiTop+183, manual.getPagenumberColour(), 1, false);
 			manual.titleRenderPost();
 
-			selectedEntry.renderPage(this, guiLeft+32, guiTop+28, mouseX-32, mouseY-28);
+			selectedEntry.renderPage(transform, this, guiLeft+32, guiTop+28, mouseX-32, mouseY-28);
 
 			mouseX += guiLeft;
 			mouseY += guiTop;
@@ -242,19 +245,19 @@ public class ManualScreen extends Screen
 		{
 			String title = ManualUtils.getTitleForNode(currentNode, manual);
 			manual.titleRenderPre();
-			this.drawCenteredStringScaled(manual.fontRenderer(), TextFormatting.BOLD+title, guiLeft+xSize/2, guiTop+12, manual.getTitleColour(), 1, true);
+			this.drawCenteredStringScaled(transform, manual.fontRenderer(), TextFormatting.BOLD+title, guiLeft+xSize/2, guiTop+12, manual.getTitleColour(), 1, true);
 			manual.titleRenderPost();
 		}
 		if(this.searchField!=null)
 		{
-			this.searchField.render(mouseX, mouseY, f);
+			this.searchField.render(transform, mouseX, mouseY, f);
 			if(suggestionList.visible)
 				//TODO translation
-				manual.fontRenderer().drawString("It looks like you meant:", guiLeft+180, guiTop+128, manual.getTextColour());
+				manual.fontRenderer().drawString(transform, "It looks like you meant:", guiLeft+180, guiTop+128, manual.getTextColour());
 		}
 		for(Button btn : pageButtons)
-			btn.render(mouseX, mouseY, f);
-		super.render(mouseX, mouseY, f);
+			btn.render(transform, mouseX, mouseY, f);
+		super.render(transform, mouseX, mouseY, f);
 		RenderSystem.enableBlend();
 		manual.entryRenderPost();
 	}
@@ -268,44 +271,44 @@ public class ManualScreen extends Screen
 			mc.gameSettings.guiScale = prevGuiScale;
 	}
 
-	private void drawCenteredStringScaled(FontRenderer fr, String s, int x, int y, int colour, float scale, boolean shadow)
+	private void drawCenteredStringScaled(MatrixStack transform, FontRenderer fr, String s, int x, int y, int colour, float scale, boolean shadow)
 	{
 		int xx = (int)Math.floor(x/scale-(fr.getStringWidth(s)/2.));
 		int yy = (int)Math.floor(y/scale-(fr.FONT_HEIGHT/2.));
 		if(scale!=1)
 		{
-			RenderSystem.pushMatrix();
-			RenderSystem.scalef(scale, scale, scale);
+			transform.push();
+			transform.scale(scale, scale, scale);
 		}
 		if(shadow)
-			fr.drawStringWithShadow(s, xx, yy, colour);
+			fr.drawStringWithShadow(transform, s, xx, yy, colour);
 		else
-			fr.drawString(s, xx, yy, colour);
+			fr.drawString(transform, s, xx, yy, colour);
 		if(scale!=1)
-			RenderSystem.popMatrix();
+			transform.pop();
 	}
 
 	@Override
-	public List<String> getTooltipFromItem(ItemStack stack)
+	public List<ITextComponent> getTooltipFromItem(ItemStack stack)
 	{
-		List<String> tooltip = super.getTooltipFromItem(stack);
+		List<ITextComponent> tooltip = super.getTooltipFromItem(stack);
 		if(currentNode.isLeaf())
 		{
 			if(currentNode.getLeafData().getHighlightedStack(page)==stack)
 			{
 				ManualLink link = this.manual.getManualLink(stack);
 				if(link!=null)
-					tooltip.add(manual.formatLink(link));
+					tooltip.add(new StringTextComponent(manual.formatLink(link)));
 			}
 		}
 		return tooltip;
 	}
 
 	@Override
-	public void renderTooltip(List<String> text, int x, int y, FontRenderer font)
+	public void renderToolTip(MatrixStack transform, List<? extends IReorderingProcessor> text, int x, int y, FontRenderer font)
 	{
 		manual.tooltipRenderPre();
-		super.renderTooltip(text, x, y, font);
+		super.renderToolTip(transform, text, x, y, font);
 		manual.tooltipRenderPost();
 	}
 
@@ -481,9 +484,9 @@ public class ManualScreen extends Screen
 
 	//Make public as a utility
 	@Override
-	public void fillGradient(int x1, int yA, int x2, int yB, int colorA, int colorB)
+	public void fillGradient(MatrixStack transform, int x1, int yA, int x2, int yB, int colorA, int colorB)
 	{
-		super.fillGradient(x1, yA, x2, yB, colorA, colorB);
+		super.fillGradient(transform, x1, yA, x2, yB, colorA, colorB);
 	}
 
 	@Override

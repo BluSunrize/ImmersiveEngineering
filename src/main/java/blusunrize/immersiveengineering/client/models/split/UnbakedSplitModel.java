@@ -13,7 +13,7 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
 
@@ -26,10 +26,10 @@ import java.util.function.Function;
 public class UnbakedSplitModel implements IModelGeometry<UnbakedSplitModel>
 {
 	private final IModelGeometry<?> baseModel;
-	private final Set<Vec3i> parts;
+	private final Set<Vector3i> parts;
 	private final boolean dynamic;
 
-	public UnbakedSplitModel(IModelGeometry<?> baseModel, List<Vec3i> parts, boolean dynamic)
+	public UnbakedSplitModel(IModelGeometry<?> baseModel, List<Vector3i> parts, boolean dynamic)
 	{
 		this.baseModel = baseModel;
 		this.parts = new HashSet<>(parts);
@@ -37,14 +37,8 @@ public class UnbakedSplitModel implements IModelGeometry<UnbakedSplitModel>
 	}
 
 	@Override
-	public IBakedModel bake(
-			IModelConfiguration owner,
-			ModelBakery bakery,
-			Function<Material, TextureAtlasSprite> spriteGetter,
-			IModelTransform modelTransform,
-			ItemOverrideList overrides,
-			ResourceLocation modelLocation
-	)
+	public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<RenderMaterial, TextureAtlasSprite> spriteGetter,
+							IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation)
 	{
 		IBakedModel bakedBase = baseModel.bake(owner, bakery, spriteGetter, ModelRotation.X0_Y0, overrides, modelLocation);
 		if(dynamic)
@@ -58,7 +52,8 @@ public class UnbakedSplitModel implements IModelGeometry<UnbakedSplitModel>
 	}
 
 	@Override
-	public Collection<Material> getTextures(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors)
+	public Collection<RenderMaterial> getTextures(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter,
+												  Set<Pair<String, String>> missingTextureErrors)
 	{
 		return baseModel.getTextures(owner, modelGetter, missingTextureErrors);
 	}

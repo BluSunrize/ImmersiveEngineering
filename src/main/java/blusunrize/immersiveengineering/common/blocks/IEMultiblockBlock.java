@@ -16,7 +16,7 @@ import net.minecraft.block.material.PushReaction;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.Property;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
@@ -27,7 +27,7 @@ import org.apache.commons.lang3.ArrayUtils;
 
 public abstract class IEMultiblockBlock extends IETileProviderBlock
 {
-	public IEMultiblockBlock(String name, Properties props, IProperty<?>... additionalProperties)
+	public IEMultiblockBlock(String name, Properties props, Property<?>... additionalProperties)
 	{
 		//TODO
 		super(name, props, BlockItemIE::new, ArrayUtils.addAll(additionalProperties, IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE));

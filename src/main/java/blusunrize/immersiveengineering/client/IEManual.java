@@ -40,10 +40,10 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.DimensionType;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.VersionChecker;
@@ -168,6 +168,8 @@ public class IEManual
 							String key = shader.name.getPath();
 							content.append("<&").append(key).append(">").append("<np>");
 						}
+						int last = content.lastIndexOf("<np>");
+						content.delete(last, last+4);
 						return content.toString();
 					}
 			);
@@ -186,7 +188,7 @@ public class IEManual
 	}
 
 	private static Supplier<ManualElementTable> addDynamicTable(
-			Supplier<SortedMap<String, Integer>> getContents,
+			Supplier<SortedMap<ITextComponent, Integer>> getContents,
 			String valueType
 	)
 	{
@@ -215,10 +217,10 @@ public class IEManual
 			if(mineral.dimensions!=null&&mineral.dimensions.size() > 0)
 			{
 				StringBuilder validDims = new StringBuilder();
-				for(DimensionType dim : mineral.dimensions)
+				for(RegistryKey<DimensionType> dim : mineral.dimensions)
 					validDims.append((validDims.length() > 0)?", ": "")
 							.append("<dim;")
-							.append(DimensionType.getKey(dim))
+							.append(dim.func_240901_a_())
 							.append(">");
 				dimensionString = I18n.format("ie.manual.entry.mineralsDimValid", toName.apply(mineral), validDims.toString());
 			}
@@ -239,7 +241,7 @@ public class IEManual
 										.format(sorted.getChance()*100)
 										.replaceAll("\\G0", "\u00A0")
 						).append("% ")
-						.append(sorted.getStack().getDisplayName().getFormattedText());
+						.append(sorted.getStack().getDisplayName().getString());
 				sortedOres.add(sorted.getStack());
 			}
 			splitter.addSpecialPage(mineral.getId().toString(), 0, new ManualElementItem(ManualHelper.getManual(), sortedOres));
@@ -297,9 +299,9 @@ public class IEManual
 		builder.setContent(() -> {
 			String title = version.toString();
 			if(ahead)
-				title += I18n.format("ie.manual.newerVersion");
+				title += " - "+I18n.format("ie.manual.newerVersion");
 			else if(currVer.equals(version))
-				title += I18n.format("ie.manual.currentVersion");
+				title += " - "+I18n.format("ie.manual.currentVersion");
 			return title;
 		}, () -> "", () -> text);
 		builder.setLocation(new ResourceLocation(MODID, "changelog_"+version.toString()));
@@ -309,14 +311,16 @@ public class IEManual
 	static <T> ITextComponent[][] formatToTable_ItemIntMap(Map<T, Integer> map, String valueType)
 	{
 		List<Entry<T, Integer>> sortedMapArray = new ArrayList<>(map.entrySet());
-		sortedMapArray.sort(Comparator.comparing(Entry::getValue));
+		sortedMapArray.sort(Entry.comparingByValue());
 		ArrayList<ITextComponent[]> list = new ArrayList<>();
 		try
 		{
 			for(Entry<T, Integer> entry : sortedMapArray)
 			{
 				ITextComponent item = null;
-				if(entry.getKey() instanceof ResourceLocation)
+				if(entry.getKey() instanceof ITextComponent)
+					item = (ITextComponent)entry.getKey();
+				else if(entry.getKey() instanceof ResourceLocation)
 				{
 					ResourceLocation key = (ResourceLocation)entry.getKey();
 					if(TagUtils.isNonemptyItemTag(key))
@@ -326,13 +330,11 @@ public class IEManual
 							item = is.getDisplayName();
 					}
 				}
-				else if(entry.getKey() instanceof ITextComponent)
-					item = (ITextComponent)entry.getKey();
 				if(item==null)
-					item = new StringTextComponent(entry.getKey().toString());
+					item = ITextComponent.func_244388_a(entry.getKey().toString());
 
 				int bt = entry.getValue();
-				ITextComponent am = new StringTextComponent(bt+" "+valueType);
+				ITextComponent am = ITextComponent.func_244388_a(bt+" "+valueType);
 				list.add(new ITextComponent[]{item, am});
 			}
 		} catch(Exception e)

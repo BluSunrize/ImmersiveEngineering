@@ -15,7 +15,7 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.Property;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
@@ -30,7 +30,7 @@ public abstract class ShaderBannerBlock extends IETileProviderBlock
 {
 	private static VoxelShape SHAPE = Block.makeCuboidShape(4.0D, 0.0D, 4.0D, 12.0D, 16.0D, 12.0D);
 
-	public ShaderBannerBlock(String name, IProperty... stateProps)
+	public ShaderBannerBlock(String name, Property... stateProps)
 	{
 		super(name, Block.Properties.create(Material.WOOL).hardnessAndResistance(1.0F).sound(SoundType.CLOTH).doesNotBlockMovement().notSolid(), (b, p) -> null, stateProps);
 	}

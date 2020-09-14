@@ -22,10 +22,11 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
@@ -41,12 +42,12 @@ public class WireUtils
 {
 	public static Connection getConnectionMovedThrough(World world, LivingEntity e)
 	{
-		Vec3d start = e.getEyePosition(0);
-		Vec3d end = e.getEyePosition(1);
+		Vector3d start = e.getEyePosition(0);
+		Vector3d end = e.getEyePosition(1);
 		return raytraceWires(world, start, end, null);
 	}
 
-	public static Connection raytraceWires(World world, Vec3d start, Vec3d end, @Nullable Connection ignored)
+	public static Connection raytraceWires(World world, Vector3d start, Vector3d end, @Nullable Connection ignored)
 	{
 		GlobalWireNetwork global = GlobalWireNetwork.getNetwork(world);
 		WireCollisionData collisionData = global.getCollisionData();
@@ -60,11 +61,11 @@ public class WireUtils
 				Connection c = wireInfo.conn;
 				if(!c.equals(ignored))
 				{
-					Vec3d startRelative = start.add(-pos.getX(), -pos.getY(), -pos.getZ());
-					Vec3d across = wireInfo.intersectB.subtract(wireInfo.intersectA);
+					Vector3d startRelative = start.add(-pos.getX(), -pos.getY(), -pos.getZ());
+					Vector3d across = wireInfo.intersectB.subtract(wireInfo.intersectA);
 					double t = Utils.getCoeffForMinDistance(startRelative, wireInfo.intersectA, across);
 					t = MathHelper.clamp(t, 0, 1);
-					Vec3d closest = wireInfo.intersectA.add(t*across.x, t*across.y, t*across.z);
+					Vector3d closest = wireInfo.intersectA.add(t*across.x, t*across.y, t*across.z);
 					double distSq = closest.squareDistanceTo(startRelative);
 					if(distSq < minDistSq.get())
 					{
@@ -77,7 +78,7 @@ public class WireUtils
 		return ret.get();
 	}
 
-	public static boolean preventsConnection(World worldIn, BlockPos pos, BlockState state, Vec3d a, Vec3d b)
+	public static boolean preventsConnection(World worldIn, BlockPos pos, BlockState state, Vector3d a, Vector3d b)
 	{
 		VoxelShape shape = state.getCollisionShape(worldIn, pos);
 		shape = VoxelShapes.combine(shape, VoxelShapes.fullCube(), IBooleanFunction.AND);
@@ -97,8 +98,10 @@ public class WireUtils
 		Set<BlockPos> obstructions = new HashSet<>();
 		if(teA instanceof IImmersiveConnectable&&teB instanceof IImmersiveConnectable)
 		{
-			Vec3d start = ((IImmersiveConnectable)teA).getConnectionOffset(conn, conn.getEndA());
-			Vec3d end = ((IImmersiveConnectable)teB).getConnectionOffset(conn, conn.getEndB());
+			Vector3d start = ((IImmersiveConnectable)teA).getConnectionOffset(conn, conn.getEndA());
+			Vector3d end = ((IImmersiveConnectable)teB).getConnectionOffset(conn, conn.getEndB());
+			Vector3i offsetEndInt = conn.getEndB().getPosition().subtract(conn.getEndA().getPosition());
+			Vector3d offsetEnd = new Vector3d(offsetEndInt.getX(), offsetEndInt.getY(), offsetEndInt.getZ());
 			WireUtils.raytraceAlongCatenaryRelative(conn, (p) -> {
 				if(!ignore.contains(p.getLeft()))
 				{
@@ -107,7 +110,7 @@ public class WireUtils
 						obstructions.add(p.getLeft());
 				}
 			}, (p) -> {
-			}, start, end.add(new Vec3d(conn.getEndB().getPosition().subtract(conn.getEndA().getPosition()))));
+			}, start, end.add(offsetEnd));
 		}
 		return obstructions;
 	}
@@ -117,25 +120,25 @@ public class WireUtils
 		return WireType.getValue(tag.getString(key));
 	}
 
-	public static void raytraceAlongCatenary(Connection conn, LocalWireNetwork net, Consumer<Triple<BlockPos, Vec3d, Vec3d>> in,
-											 Consumer<Triple<BlockPos, Vec3d, Vec3d>> close)
+	public static void raytraceAlongCatenary(Connection conn, LocalWireNetwork net, Consumer<Triple<BlockPos, Vector3d, Vector3d>> in,
+											 Consumer<Triple<BlockPos, Vector3d, Vector3d>> close)
 	{
-		Vec3d vStart = getVecForIICAt(net, conn.getEndA(), conn, false);
-		Vec3d vEnd = getVecForIICAt(net, conn.getEndB(), conn, true);
+		Vector3d vStart = getVecForIICAt(net, conn.getEndA(), conn, false);
+		Vector3d vEnd = getVecForIICAt(net, conn.getEndB(), conn, true);
 		raytraceAlongCatenaryRelative(conn, in, close, vStart, vEnd);
 	}
 
-	public static void raytraceAlongCatenaryRelative(Connection conn, Consumer<Triple<BlockPos, Vec3d, Vec3d>> in,
-													 Consumer<Triple<BlockPos, Vec3d, Vec3d>> close, Vec3d vStart,
-													 Vec3d vEnd)
+	public static void raytraceAlongCatenaryRelative(Connection conn, Consumer<Triple<BlockPos, Vector3d, Vector3d>> in,
+													 Consumer<Triple<BlockPos, Vector3d, Vector3d>> close, Vector3d vStart,
+													 Vector3d vEnd)
 	{
 		conn.generateCatenaryData(vStart, vEnd);
 		final BlockPos offset = conn.getEndA().getPosition();
 		raytraceAlongCatenary(conn.getCatenaryData(), offset, in, close);
 	}
 
-	public static void raytraceAlongCatenary(CatenaryData data, BlockPos offset, Consumer<Triple<BlockPos, Vec3d, Vec3d>> in,
-											 Consumer<Triple<BlockPos, Vec3d, Vec3d>> close)
+	public static void raytraceAlongCatenary(CatenaryData data, BlockPos offset, Consumer<Triple<BlockPos, Vector3d, Vector3d>> in,
+											 Consumer<Triple<BlockPos, Vector3d, Vector3d>> close)
 	{
 		CatenaryTracer ct = new CatenaryTracer(data, offset);
 		ct.calculateIntegerIntersections();
@@ -147,7 +150,7 @@ public class WireUtils
 		});
 	}
 
-	public static Vec3d[] getConnectionCatenary(Vec3d start, Vec3d end, double slack)
+	public static Vector3d[] getConnectionCatenary(Vector3d start, Vector3d end, double slack)
 	{
 		final int vertices = 17;
 		double dx = (end.x)-(start.x);
@@ -167,18 +170,18 @@ public class WireUtils
 		double a = dw/2/l;
 		double offsetX = (0+dw-a*Math.log((k+dy)/(k-dy)))*0.5;
 		double offsetY = (dy+0-k*Math.cosh(l)/Math.sinh(l))*0.5;
-		Vec3d[] vex = new Vec3d[vertices+1];
+		Vector3d[] vex = new Vector3d[vertices+1];
 
-		vex[0] = new Vec3d(start.x, start.y, start.z);
+		vex[0] = new Vector3d(start.x, start.y, start.z);
 		for(int i = 1; i < vertices; i++)
 		{
 			float posRelative = i/(float)vertices;
 			double x = 0+dx*posRelative;
 			double z = 0+dz*posRelative;
 			double y = a*Math.cosh((dw*posRelative-offsetX)/a)+offsetY;
-			vex[i] = new Vec3d(start.x+x, start.y+y, start.z+z);
+			vex[i] = new Vector3d(start.x+x, start.y+y, start.z+z);
 		}
-		vex[vertices] = new Vec3d(end.x, end.y, end.z);
+		vex[vertices] = new Vector3d(end.x, end.y, end.z);
 
 		return vex;
 	}
@@ -203,12 +206,16 @@ public class WireUtils
 		return null;
 	}
 
-	public static Vec3d getVecForIICAt(LocalWireNetwork net, ConnectionPoint pos, Connection conn, boolean fromOtherEnd)
+	public static Vector3d getVecForIICAt(LocalWireNetwork net, ConnectionPoint pos, Connection conn, boolean fromOtherEnd)
 	{
 		//Force loading
 		IImmersiveConnectable iicPos = net.getConnector(pos.getPosition());
-		Preconditions.checkArgument(iicPos!=null&&!iicPos.isProxy());
-		Vec3d offset = iicPos.getConnectionOffset(conn, pos);
+		Preconditions.checkArgument(
+				iicPos!=null&&!iicPos.isProxy(),
+				"Expected non-proxy at %s while querying offset for connection %s, but got %s",
+				pos, conn, iicPos
+		);
+		Vector3d offset = iicPos.getConnectionOffset(conn, pos);
 		if(fromOtherEnd)
 		{
 			BlockPos posA = pos.getPosition();
@@ -231,9 +238,9 @@ public class WireUtils
 
 	public static Connection getTargetConnection(World world, PlayerEntity player, Connection ignored, double maxDistance)
 	{
-		Vec3d look = player.getLookVec();
-		Vec3d start = player.getEyePosition(1);
-		Vec3d end = start.add(look.scale(maxDistance));
+		Vector3d look = player.getLookVec();
+		Vector3d start = player.getEyePosition(1);
+		Vector3d end = start.add(look.scale(maxDistance));
 		return raytraceWires(world, start, end, ignored);
 	}
 

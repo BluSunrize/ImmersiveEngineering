@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.items.HammerItem;
 import blusunrize.immersiveengineering.common.items.ScrewdriverItem;
 import blusunrize.immersiveengineering.common.items.WirecutterItem;
-import com.google.common.base.Preconditions;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.IWaterLoggable;
@@ -21,26 +20,22 @@ import net.minecraft.block.material.PushReaction;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.FluidState;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.pathfinding.PathType;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.fluid.IFluidState;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.Property;
 import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
@@ -56,10 +51,10 @@ import java.util.function.BiFunction;
 
 public class IEBaseBlock extends Block implements IIEBlock, IWaterLoggable
 {
-	protected static IProperty[] tempProperties;
+	protected static Property[] tempProperties;
 
 	public final String name;
-	public final IProperty[] additionalProperties;
+	public final Property[] additionalProperties;
 	boolean isHidden;
 	boolean hasFlavour;
 	//TODO wtf is variable opacity?
@@ -68,10 +63,10 @@ public class IEBaseBlock extends Block implements IIEBlock, IWaterLoggable
 	protected boolean canHammerHarvest;
 	protected final boolean notNormalBlock;
 
-	public IEBaseBlock(String name, Block.Properties blockProps, BiFunction<Block, Item.Properties, Item> createItemBlock, IProperty... additionalProperties)
+	public IEBaseBlock(String name, Block.Properties blockProps, BiFunction<Block, Item.Properties, Item> createItemBlock, Property... additionalProperties)
 	{
 		super(setTempProperties(blockProps, additionalProperties));
-		this.notNormalBlock = !isSolid(getDefaultState());
+		this.notNormalBlock = !getDefaultState().isSolid();
 		this.name = name;
 
 		this.additionalProperties = Arrays.copyOf(tempProperties, tempProperties.length);
@@ -92,15 +87,15 @@ public class IEBaseBlock extends Block implements IIEBlock, IWaterLoggable
 	//TODO do we still need this hackyness?
 	protected static Block.Properties setTempProperties(Properties blockProps, Object[] additionalProperties)
 	{
-		List<IProperty<?>> propList = new ArrayList<>();
+		List<Property<?>> propList = new ArrayList<>();
 		for(Object o : additionalProperties)
 		{
-			if(o instanceof IProperty)
-				propList.add((IProperty<?>)o);
-			if(o instanceof IProperty[])
-				propList.addAll(Arrays.asList(((IProperty<?>[])o)));
+			if(o instanceof Property)
+				propList.add((Property<?>)o);
+			if(o instanceof Property[])
+				propList.addAll(Arrays.asList(((Property<?>[])o)));
 		}
-		tempProperties = propList.toArray(new IProperty[0]);
+		tempProperties = propList.toArray(new Property[0]);
 		return blockProps.variableOpacity();
 	}
 
@@ -178,20 +173,6 @@ public class IEBaseBlock extends Block implements IIEBlock, IWaterLoggable
 	}
 
 	@Override
-	@SuppressWarnings("deprecation")
-	public boolean causesSuffocation(BlockState state, IBlockReader worldIn, BlockPos pos)
-	{
-		return !notNormalBlock;
-	}
-
-	@Override
-	@SuppressWarnings("deprecation")
-	public boolean isNormalCube(BlockState state, IBlockReader world, BlockPos pos)
-	{
-		return !notNormalBlock;
-	}
-
-	@Override
 	protected void fillStateContainer(Builder<Block, BlockState> builder)
 	{
 		super.fillStateContainer(builder);
@@ -201,13 +182,13 @@ public class IEBaseBlock extends Block implements IIEBlock, IWaterLoggable
 	protected BlockState getInitDefaultState()
 	{
 		BlockState state = this.stateContainer.getBaseState();
-		if(state.has(BlockStateProperties.WATERLOGGED))
+		if(state.hasProperty(BlockStateProperties.WATERLOGGED))
 			state = state.with(BlockStateProperties.WATERLOGGED, Boolean.FALSE);
 		return state;
 	}
 
 	@SuppressWarnings("unchecked")
-	protected <V extends Comparable<V>> BlockState applyProperty(BlockState in, IProperty<V> prop, Object val)
+	protected <V extends Comparable<V>> BlockState applyProperty(BlockState in, Property<V> prop, Object val)
 	{
 		return in.with(prop, (V)val);
 	}
@@ -310,7 +291,7 @@ public class IEBaseBlock extends Block implements IIEBlock, IWaterLoggable
 
 	public static BlockState applyLocationalWaterlogging(BlockState state, World world, BlockPos pos)
 	{
-		if(state.has(BlockStateProperties.WATERLOGGED))
+		if(state.hasProperty(BlockStateProperties.WATERLOGGED))
 			return state.with(BlockStateProperties.WATERLOGGED, world.getFluidState(pos).getFluid()==Fluids.WATER);
 		return state;
 	}
@@ -326,15 +307,15 @@ public class IEBaseBlock extends Block implements IIEBlock, IWaterLoggable
 	@Override
 	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos)
 	{
-		if(stateIn.has(BlockStateProperties.WATERLOGGED)&&stateIn.get(BlockStateProperties.WATERLOGGED))
+		if(stateIn.hasProperty(BlockStateProperties.WATERLOGGED)&&stateIn.get(BlockStateProperties.WATERLOGGED))
 			worldIn.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickRate(worldIn));
 		return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
 	}
 
 	@Override
-	public IFluidState getFluidState(BlockState state)
+	public FluidState getFluidState(BlockState state)
 	{
-		if(state.has(BlockStateProperties.WATERLOGGED)&&state.get(BlockStateProperties.WATERLOGGED))
+		if(state.hasProperty(BlockStateProperties.WATERLOGGED)&&state.get(BlockStateProperties.WATERLOGGED))
 			return Fluids.WATER.getStillFluidState(false);
 		return super.getFluidState(state);
 	}
@@ -342,19 +323,19 @@ public class IEBaseBlock extends Block implements IIEBlock, IWaterLoggable
 	@Override
 	public boolean canContainFluid(IBlockReader worldIn, BlockPos pos, BlockState state, Fluid fluidIn)
 	{
-		return state.has(BlockStateProperties.WATERLOGGED)&&IWaterLoggable.super.canContainFluid(worldIn, pos, state, fluidIn);
+		return state.hasProperty(BlockStateProperties.WATERLOGGED)&&IWaterLoggable.super.canContainFluid(worldIn, pos, state, fluidIn);
 	}
 
 	@Override
-	public boolean receiveFluid(IWorld worldIn, BlockPos pos, BlockState state, IFluidState fluidStateIn)
+	public boolean receiveFluid(IWorld worldIn, BlockPos pos, BlockState state, FluidState fluidStateIn)
 	{
-		return state.has(BlockStateProperties.WATERLOGGED)&&IWaterLoggable.super.receiveFluid(worldIn, pos, state, fluidStateIn);
+		return state.hasProperty(BlockStateProperties.WATERLOGGED)&&IWaterLoggable.super.receiveFluid(worldIn, pos, state, fluidStateIn);
 	}
 
 	@Override
 	public Fluid pickupFluid(IWorld worldIn, BlockPos pos, BlockState state)
 	{
-		if(state.has(BlockStateProperties.WATERLOGGED))
+		if(state.hasProperty(BlockStateProperties.WATERLOGGED))
 			return IWaterLoggable.super.pickupFluid(worldIn, pos, state);
 		return Fluids.EMPTY;
 	}
@@ -364,7 +345,7 @@ public class IEBaseBlock extends Block implements IIEBlock, IWaterLoggable
 	public abstract static class IELadderBlock extends IEBaseBlock
 	{
 		public IELadderBlock(String name, Block.Properties material,
-							 BiFunction<Block, Item.Properties, Item> itemBlock, IProperty... additionalProperties)
+							 BiFunction<Block, Item.Properties, Item> itemBlock, Property... additionalProperties)
 		{
 			super(name, material, itemBlock, additionalProperties);
 		}
@@ -387,9 +368,9 @@ public class IEBaseBlock extends Block implements IIEBlock, IWaterLoggable
 		{
 			if(entityIn instanceof LivingEntity&&!((LivingEntity)entityIn).isOnLadder())
 			{
-				Vec3d motion = entityIn.getMotion();
+				Vector3d motion = entityIn.getMotion();
 				float maxMotion = 0.15F;
-				motion = new Vec3d(
+				motion = new Vector3d(
 						MathHelper.clamp(motion.x, -maxMotion, maxMotion),
 						Math.max(motion.y, -maxMotion),
 						MathHelper.clamp(motion.z, -maxMotion, maxMotion)
@@ -398,9 +379,9 @@ public class IEBaseBlock extends Block implements IIEBlock, IWaterLoggable
 				entityIn.fallDistance = 0.0F;
 
 				if(motion.y < 0&&entityIn instanceof PlayerEntity&&entityIn.isSneaking())
-					motion = new Vec3d(motion.x, 0, motion.z);
+					motion = new Vector3d(motion.x, 0, motion.z);
 				else if(entityIn.collidedHorizontally)
-					motion = new Vec3d(motion.x, 0.2, motion.z);
+					motion = new Vector3d(motion.x, 0.2, motion.z);
 				entityIn.setMotion(motion);
 			}
 		}

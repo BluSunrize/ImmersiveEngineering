@@ -12,10 +12,10 @@ package blusunrize.immersiveengineering.client.utils;
 import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.renderer.Vector3f;
-import net.minecraft.client.renderer.Vector4f;
-import net.minecraft.util.math.Vec2f;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector2f;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.util.math.vector.Vector4f;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -25,8 +25,8 @@ public class TransformingVertexBuilder implements IVertexBuilder
 {
 	private final IVertexBuilder base;
 	private final MatrixStack transform;
-	ObjectWithGlobal<Vec2f> uv = new ObjectWithGlobal<>();
-	ObjectWithGlobal<Vec3d> pos = new ObjectWithGlobal<>();
+	ObjectWithGlobal<Vector2f> uv = new ObjectWithGlobal<>();
+	ObjectWithGlobal<Vector3d> pos = new ObjectWithGlobal<>();
 	ObjectWithGlobal<Vec2i> overlay = new ObjectWithGlobal<>();
 	ObjectWithGlobal<Vec2i> lightmap = new ObjectWithGlobal<>();
 	ObjectWithGlobal<Vector3f> normal = new ObjectWithGlobal<>();
@@ -47,7 +47,7 @@ public class TransformingVertexBuilder implements IVertexBuilder
 	@Override
 	public IVertexBuilder pos(double x, double y, double z)
 	{
-		pos.putData(new Vec3d(x, y, z));
+		pos.putData(new Vector3d(x, y, z));
 		return this;
 	}
 
@@ -63,7 +63,7 @@ public class TransformingVertexBuilder implements IVertexBuilder
 	@Override
 	public IVertexBuilder tex(float u, float v)
 	{
-		uv.putData(new Vec2f(u, v));
+		uv.putData(new Vector2f(u, v));
 		return this;
 	}
 

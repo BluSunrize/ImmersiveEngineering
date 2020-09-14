@@ -10,10 +10,10 @@ package blusunrize.immersiveengineering.common.data.models;
 
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.gson.*;
-import net.minecraft.client.renderer.Quaternion;
-import net.minecraft.client.renderer.TransformationMatrix;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.ItemTransformVec3f;
+import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.util.math.vector.TransformationMatrix;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.client.model.generators.ModelBuilder.Perspective;
 import net.minecraftforge.common.model.TransformationHelper;
 

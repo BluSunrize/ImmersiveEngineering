@@ -55,8 +55,8 @@ public class ShaderBagItem extends IEBaseItem
 	public ITextComponent getDisplayName(ItemStack stack)
 	{
 		return new TranslationTextComponent(Lib.DESC_INFO+"shader.rarity."+this.rarity.name().toLowerCase(Locale.US))
-				.appendText(" ")
-				.appendSibling(super.getDisplayName(stack));
+				.appendString(" ")
+				.append(super.getDisplayName(stack));
 	}
 
 	@Override

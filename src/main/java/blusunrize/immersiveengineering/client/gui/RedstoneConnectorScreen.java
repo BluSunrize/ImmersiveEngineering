@@ -14,13 +14,14 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonBoolean;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonState;
+import blusunrize.immersiveengineering.client.utils.FakeGuiUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.ConnectorRedstoneTileEntity;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
-import net.minecraft.client.renderer.RenderHelper;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.item.DyeColor;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.Style;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 
@@ -49,7 +50,7 @@ public class RedstoneConnectorScreen extends ClientTileScreen<ConnectorRedstoneT
 
 		this.buttons.clear();
 
-		buttonInOut = new GuiButtonState<>(guiLeft+41, guiTop+20, 18, 18, "", new IOSideConfig[]{IOSideConfig.INPUT, IOSideConfig.OUTPUT},
+		buttonInOut = new GuiButtonState<>(guiLeft+41, guiTop+20, 18, 18, StringTextComponent.EMPTY, new IOSideConfig[]{IOSideConfig.INPUT, IOSideConfig.OUTPUT},
 				tileEntity.ioMode.ordinal()-1, "immersiveengineering:textures/gui/redstone_configuration.png", 176, 0, 1,
 				btn -> sendConfig("ioMode", btn.getNextState().ordinal())
 		);
@@ -73,32 +74,37 @@ public class RedstoneConnectorScreen extends ClientTileScreen<ConnectorRedstoneT
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(int mouseX, int mouseY, float partialTick)
+	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, int mouseX, int mouseY, float partialTick)
 	{
 
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY, float partialTick)
+	protected void drawGuiContainerForegroundLayer(MatrixStack transform, int mouseX, int mouseY, float partialTick)
 	{
 		ArrayList<ITextComponent> tooltip = new ArrayList<>();
 
 		if(buttonInOut.isHovered())
 		{
 			tooltip.add(new TranslationTextComponent(Lib.GUI_CONFIG+"redstone_iomode"));
-			tooltip.add(buttonInOut.getState().getTextComponent().setStyle(new Style().setColor(TextFormatting.GRAY)));
+			tooltip.add(ClientUtils.applyFormat(
+					buttonInOut.getState().getTextComponent(),
+					TextFormatting.GRAY
+			));
 		}
 
 		for(int i = 0; i < colorButtons.length; i++)
 			if(colorButtons[i].isHovered())
 			{
 				tooltip.add(new TranslationTextComponent(Lib.GUI_CONFIG+"redstone_color"));
-				tooltip.add(new TranslationTextComponent("color.minecraft."+DyeColor.byId(i).getTranslationKey())
-						.setStyle(new Style().setColor(TextFormatting.GRAY)));
+				tooltip.add(ClientUtils.applyFormat(
+						new TranslationTextComponent("color.minecraft."+DyeColor.byId(i).getTranslationKey()),
+						TextFormatting.GRAY
+						));
 			}
 
 		if(!tooltip.isEmpty())
-			ClientUtils.drawHoveringText(tooltip, mouseX, mouseY, font, width, height);
+			FakeGuiUtils.drawHoveringText(transform, tooltip, mouseX, mouseY, width, height, -1, font);
 	}
 
 	public static GuiButtonBoolean buildColorButton(GuiButtonBoolean[] buttons, int posX, int posY, boolean active, DyeColor color, Consumer<GuiButtonBoolean> onClick)
@@ -119,16 +125,16 @@ public class RedstoneConnectorScreen extends ClientTileScreen<ConnectorRedstoneT
 			}
 
 			@Override
-			public void render(int mouseX, int mouseY, float partialTicks)
+			public void render(MatrixStack transform, int mouseX, int mouseY, float partialTicks)
 			{
-				super.render(mouseX, mouseY, partialTicks);
+				super.render(transform, mouseX, mouseY, partialTicks);
 				if(this.visible)
 				{
 					int col = color.colorValue;
 					if(!getState())
 						col = ClientUtils.getDarkenedTextColour(col);
 					col = 0xff000000|col;
-					this.fillGradient(x+3, y+3, x+9, y+9, col, col);
+					this.fillGradient(transform, x+3, y+3, x+9, y+9, col, col);
 				}
 			}
 		};

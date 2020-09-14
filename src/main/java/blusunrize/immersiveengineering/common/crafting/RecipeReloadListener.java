@@ -11,45 +11,73 @@ package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.api.excavator.MineralMix;
+import blusunrize.immersiveengineering.api.utils.TagUtils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.RecipeManager;
+import net.minecraft.resources.DataPackRegistries;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.resources.IResourceManagerReloadListener;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RecipesUpdatedEvent;
+import net.minecraftforge.event.TagsUpdatedEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.thread.EffectiveSide;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/* We can't use ISelectiveResourceReloadListener because it references a client-only class which crashes servers
+ */
 public class RecipeReloadListener implements IResourceManagerReloadListener
 {
+	private final DataPackRegistries dataPackRegistries;
+
+	public RecipeReloadListener(DataPackRegistries dataPackRegistries)
+	{
+		this.dataPackRegistries = dataPackRegistries;
+	}
+
 	@Override
 	public void onResourceManagerReload(IResourceManager resourceManager)
 	{
-		if(EffectiveSide.get().isServer())
-			buildRecipeLists(ServerLifecycleHooks.getCurrentServer().getRecipeManager());
+		if(dataPackRegistries!=null)
+		{
+			RecipeManager recipeManager = dataPackRegistries.getRecipeManager();
+			buildRecipeLists(recipeManager);
+			generateArcRecyclingRecipes(recipeManager);
+		}
+	}
+
+	RecipeManager clientRecipeManager;
+
+	@SubscribeEvent
+	public void onTagsUpdated(TagsUpdatedEvent event)
+	{
+		if(clientRecipeManager!=null)
+		{
+			TagUtils.ITEM_TAG_COLLECTION = ItemTags.getCollection();
+			TagUtils.BLOCK_TAG_COLLECTION = BlockTags.getCollection();
+			generateArcRecyclingRecipes(clientRecipeManager);
+		}
 	}
 
 	@SubscribeEvent(priority = EventPriority.HIGH)
 	public void onRecipesUpdated(RecipesUpdatedEvent event)
 	{
-		buildRecipeLists(event.getRecipeManager());
+		clientRecipeManager = event.getRecipeManager();
+		if(!Minecraft.getInstance().isSingleplayer())
+			buildRecipeLists(clientRecipeManager);
 	}
 
 	static void buildRecipeLists(RecipeManager recipeManager)
 	{
 		Collection<IRecipe<?>> recipes = recipeManager.getRecipes();
-
-		// Start recycling
-		ArcRecyclingThreadHandler recyclingHandler = new ArcRecyclingThreadHandler(recipes);
-		recyclingHandler.start();
 
 		AlloyRecipe.recipeList = filterRecipes(recipes, AlloyRecipe.class, AlloyRecipe.TYPE);
 		BlastFurnaceRecipe.recipeList = filterRecipes(recipes, BlastFurnaceRecipe.class, BlastFurnaceRecipe.TYPE);
@@ -81,8 +109,13 @@ public class RecipeReloadListener implements IResourceManagerReloadListener
 		MineralMix.mineralList = filterRecipes(recipes, MineralMix.class, MineralMix.TYPE);
 
 		MixerRecipePotion.initPotionRecipes();
+	}
 
-		// Wrap up recycling
+	private void generateArcRecyclingRecipes(RecipeManager recipeManager)
+	{
+		Collection<IRecipe<?>> recipes = recipeManager.getRecipes();
+		ArcRecyclingThreadHandler recyclingHandler = new ArcRecyclingThreadHandler(recipes);
+		recyclingHandler.start();
 		try
 		{
 			recyclingHandler.join();

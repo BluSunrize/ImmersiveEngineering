@@ -8,10 +8,10 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.wires.*;
+import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
@@ -23,11 +23,11 @@ import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3i;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -82,17 +82,17 @@ public class PostTransformerTileEntity extends ImmersiveConnectableTileEntity im
 	{
 		super.readCustomNBT(nbt, descPacket);
 		if(nbt.contains("leftType"))
-			leftType = ApiUtils.getWireTypeFromNBT(nbt, "leftType");
+			leftType = WireUtils.getWireTypeFromNBT(nbt, "leftType");
 		else
 			leftType = null;
 		if(nbt.contains("rightType"))
-			rightType = ApiUtils.getWireTypeFromNBT(nbt, "rightType");
+			rightType = WireUtils.getWireTypeFromNBT(nbt, "rightType");
 		else
 			rightType = null;
 	}
 
 	@Override
-	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vec3i offset)
+	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vector3i offset)
 	{
 		switch(target.getIndex())
 		{
@@ -161,22 +161,22 @@ public class PostTransformerTileEntity extends ImmersiveConnectableTileEntity im
 	}
 
 	@Override
-	public Vec3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
+	public Vector3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
 		return getConnectionOffset(con, con.getEndFor(pos).getIndex()==RIGHT_INDEX);
 	}
 
-	private Vec3d getConnectionOffset(Connection con, boolean right)
+	private Vector3d getConnectionOffset(Connection con, boolean right)
 	{
 		if(right)
-			return new Vec3d(.5+(getFacing()==Direction.EAST?.4375: getFacing()==Direction.WEST?-.4375: 0), 1.4375, .5+(getFacing()==Direction.SOUTH?.4375: getFacing()==Direction.NORTH?-.4375: 0));
+			return new Vector3d(.5+(getFacing()==Direction.EAST?.4375: getFacing()==Direction.WEST?-.4375: 0), 1.4375, .5+(getFacing()==Direction.SOUTH?.4375: getFacing()==Direction.NORTH?-.4375: 0));
 		else
-			return new Vec3d(.5+(getFacing()==Direction.EAST?-.0625: getFacing()==Direction.WEST?.0625: 0), .25, .5+(getFacing()==Direction.SOUTH?-.0625: getFacing()==Direction.NORTH?.0625: 0));
+			return new Vector3d(.5+(getFacing()==Direction.EAST?-.0625: getFacing()==Direction.WEST?.0625: 0), .25, .5+(getFacing()==Direction.SOUTH?-.0625: getFacing()==Direction.NORTH?.0625: 0));
 	}
 
 	@Nullable
 	@Override
-	public ConnectionPoint getTargetedPoint(TargetingInfo target, Vec3i offset)
+	public ConnectionPoint getTargetedPoint(TargetingInfo target, Vector3i offset)
 	{
 		if(target.hitY >= .5)
 			return new ConnectionPoint(pos, RIGHT_INDEX);
@@ -203,7 +203,7 @@ public class PostTransformerTileEntity extends ImmersiveConnectableTileEntity im
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
 	{
 		return false;
 	}

@@ -11,11 +11,13 @@ package blusunrize.immersiveengineering.common.data.resources;
 
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
+import blusunrize.immersiveengineering.common.data.DataGenUtils;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag.INamedTag;
+
+import static blusunrize.immersiveengineering.common.data.DataGenUtils.createItemWrapper;
 
 /**
  * An Enum of  non-metal ores from Vanilla, IE and other mods. Used for generating Crusher recipes
@@ -30,18 +32,18 @@ public enum RecipeOres
 	QUARTZ("quartz", true, Items.QUARTZ, 3, new SecondaryOutput(IETags.sulfurDust, .2f)),
 	REDSTONE("redstone", true, Items.REDSTONE, 6), // is cinnabar still a thing?
 
-	FLUORITE("fluorite", false, new IngredientWithSize(new ItemTags.Wrapper(IETags.getGem("fluorite")), 6));
+	FLUORITE("fluorite", false, new IngredientWithSize(DataGenUtils.createItemWrapper(IETags.getGem("fluorite")), 6));
 
 	private final String name;
 	private final boolean isNative;
-	private final Tag<Item> ore;
+	private final INamedTag<Item> ore;
 	private final IngredientWithSize output;
 	private final SecondaryOutput[] secondaryOutputs;
 
 	RecipeOres(String name, boolean isNative, IngredientWithSize output, SecondaryOutput... secondaryOutputs)
 	{
 		this.name = name;
-		this.ore = new ItemTags.Wrapper(IETags.getOre(name));
+		this.ore = createItemWrapper(IETags.getOre(name));
 		this.isNative = isNative;
 		this.output = output;
 		this.secondaryOutputs = secondaryOutputs;
@@ -63,7 +65,7 @@ public enum RecipeOres
 		return isNative;
 	}
 
-	public Tag<Item> getOre()
+	public INamedTag<Item> getOre()
 	{
 		return ore;
 	}

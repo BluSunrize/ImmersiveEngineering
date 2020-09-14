@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
 import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
+import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
@@ -38,9 +39,8 @@ import net.minecraft.item.Rarity;
 import net.minecraft.item.UseAction;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.*;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -59,6 +59,7 @@ import net.minecraftforge.items.IItemHandler;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFluidItem, IOBJModelCallback<ItemStack>, ITool, IScrollwheel
@@ -79,7 +80,10 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 		{
 			ITextComponent add = IEItemFluidHandler.fluidItemInfoFlavor(ItemNBTHelper.getFluidStack(stack, FluidHandlerItemStack.FLUID_NBT_KEY+(i > 0?i: "")), cap);
 			if(i > 0)
-				add.setStyle(new Style().setColor(TextFormatting.GRAY));
+				ClientUtils.applyFormat(
+						add,
+						TextFormatting.GRAY
+				);
 			list.add(add);
 		}
 	}
@@ -91,8 +95,8 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 			FluidAttributes attr = fs.getFluid().getAttributes();
 			TextFormatting rarity = attr.getRarity()==Rarity.COMMON?TextFormatting.GRAY:
 					attr.getRarity().color;
-			return new TranslationTextComponent(Lib.DESC_FLAVOUR+"fluidStack", attr.getDisplayName(fs),
-					fs.getAmount(), capacity).setStyle(new Style().setColor(rarity));
+			return ClientUtils.applyFormat(new TranslationTextComponent(Lib.DESC_FLAVOUR+"fluidStack", attr.getDisplayName(fs),
+					fs.getAmount(), capacity), rarity);
 		}
 		else
 			return new TranslationTextComponent(Lib.DESC_FLAVOUR+"drill.empty");
@@ -138,7 +142,7 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 			int consumed = IEServerConfig.TOOLS.chemthrower_consumption.get();
 			if(consumed*duration <= fs.getAmount())
 			{
-				Vec3d v = player.getLookVec();
+				Vector3d v = player.getLookVec();
 				int split = 8;
 				boolean isGas = fs.getFluid().getAttributes().isGaseous();
 
@@ -153,14 +157,14 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 				boolean ignite = ChemthrowerHandler.isFlammable(fs.getFluid())&&isIgniteEnable(stack);
 				for(int i = 0; i < split; i++)
 				{
-					Vec3d vecDir = v.add(player.getRNG().nextGaussian()*scatter, player.getRNG().nextGaussian()*scatter, player.getRNG().nextGaussian()*scatter);
+					Vector3d vecDir = v.add(player.getRNG().nextGaussian()*scatter, player.getRNG().nextGaussian()*scatter, player.getRNG().nextGaussian()*scatter);
 					ChemthrowerShotEntity chem = new ChemthrowerShotEntity(player.world, player, vecDir.x*0.25, vecDir.y*0.25, vecDir.z*0.25, fs);
 
 					// Apply momentum from the player.
 					chem.setMotion(player.getMotion().add(vecDir.scale(range)));
 
 					// Apply a small amount of backforce.
-					if(!player.onGround)
+					if(!player.isOnGround())
 						player.setMotion(player.getMotion().subtract(vecDir.scale(0.0025*range)));
 					if(ignite)
 						chem.setFire(10);
@@ -259,7 +263,7 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 		if(slotChanged)
 			return true;
 		LazyOptional<ShaderWrapper> wrapperOld = oldStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
-		LazyOptional<Boolean> sameShader = wrapperOld.map(wOld -> {
+		Optional<Boolean> sameShader = wrapperOld.map(wOld -> {
 			LazyOptional<ShaderWrapper> wrapperNew = newStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
 			return wrapperNew.map(w -> ItemStack.areItemStacksEqual(wOld.getShaderItem(), w.getShaderItem()))
 					.orElse(true);

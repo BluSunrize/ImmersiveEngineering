@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
@@ -57,10 +58,10 @@ public class BlastFurnaceFuelCategory extends IERecipeCategory<BlastFurnaceFuel>
 	}
 
 	@Override
-	public void draw(BlastFurnaceFuel recipe, double mouseX, double mouseY)
+	public void draw(BlastFurnaceFuel recipe, MatrixStack transform, double mouseX, double mouseY)
 	{
-		this.flame.draw(1, 0);
+		this.flame.draw(transform, 1, 0);
 		String burnTime = I18n.format("desc.immersiveengineering.info.seconds", Utils.formatDouble(recipe.burnTime/20, "#.##"));
-		ClientUtils.font().drawString(burnTime, 24, 12, 0x777777);
+		ClientUtils.font().drawString(transform, burnTime, 24, 12, 0x777777);
 	}
 }

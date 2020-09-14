@@ -142,5 +142,11 @@ public class FaradaySuitItem extends ArmorItem implements IElectricEquipment
 		{
 			return 0;
 		}
+
+		@Override
+		public float getKnockbackResistance()
+		{
+			return 0;
+		}
 	}
 }

@@ -24,7 +24,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerIn
 import blusunrize.immersiveengineering.common.blocks.metal.ConnectorStructuralTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
@@ -35,10 +34,11 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.*;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector4f;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -161,7 +161,7 @@ public class BalloonTileEntity extends ConnectorStructuralTileEntity implements 
 	}
 
 	@Override
-	public Vec3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
+	public Vector3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
 		BlockPos end = con.getOtherEnd(here).getPosition();
 		int xDif = end.getX()-getPos().getX();
@@ -171,12 +171,12 @@ public class BalloonTileEntity extends ConnectorStructuralTileEntity implements 
 		{
 			double dist = Math.sqrt(xDif*xDif+zDif*zDif);
 			if(dist/Math.abs(yDif) < 2.5)
-				return new Vec3d(.5, .09375, .5);
+				return new Vector3d(.5, .09375, .5);
 		}
 		if(Math.abs(zDif) > Math.abs(xDif))
-			return new Vec3d(.5, .09375, zDif > 0?.78125: .21875);
+			return new Vector3d(.5, .09375, zDif > 0?.78125: .21875);
 		else
-			return new Vec3d(xDif > 0?.78125: .21875, .09375, .5);
+			return new Vector3d(xDif > 0?.78125: .21875, .09375, .5);
 	}
 
 	@Override
@@ -227,7 +227,7 @@ public class BalloonTileEntity extends ConnectorStructuralTileEntity implements 
 	}
 
 	@Override
-	public boolean hammerUseSide(Direction side, PlayerEntity player, Hand hand, Vec3d hitVec)
+	public boolean hammerUseSide(Direction side, PlayerEntity player, Hand hand, Vector3d hitVec)
 	{
 		if(!world.isRemote)
 		{
@@ -242,7 +242,7 @@ public class BalloonTileEntity extends ConnectorStructuralTileEntity implements 
 	{
 		if(entity instanceof AbstractArrowEntity)
 		{
-			Vec3d pos = new Vec3d(getPos()).add(.5, .5, .5);
+			Vector3d pos = Vector3d.copyCentered(getPos());
 			world.playSound(null, pos.x, pos.y, pos.z, SoundEvents.ENTITY_FIREWORK_ROCKET_BLAST,
 					SoundCategory.BLOCKS, 1.5f, 0.7f);
 			world.removeBlock(getPos(), false);

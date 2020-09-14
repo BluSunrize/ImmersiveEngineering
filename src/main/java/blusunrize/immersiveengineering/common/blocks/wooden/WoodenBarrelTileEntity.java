@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.client.utils.TextUtils;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
@@ -21,10 +22,10 @@ import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.LootContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -33,8 +34,8 @@ import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.storage.loot.LootContext;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -45,10 +46,7 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static blusunrize.immersiveengineering.api.IEEnums.IOSideConfig.NONE;
 import static blusunrize.immersiveengineering.api.IEEnums.IOSideConfig.OUTPUT;
@@ -110,30 +108,20 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 	}
 
 	@Override
-	public String[] getOverlayText(PlayerEntity player, RayTraceResult rtr, boolean hammer)
+	public ITextComponent[] getOverlayText(PlayerEntity player, RayTraceResult rtr, boolean hammer)
 	{
-		if (!(rtr instanceof BlockRayTraceResult))
-			return new String[0];
+		if(!(rtr instanceof BlockRayTraceResult))
+			return null;
 		BlockRayTraceResult brtr = (BlockRayTraceResult)rtr;
 		if(Utils.isFluidRelatedItemStack(player.getHeldItem(Hand.MAIN_HAND)))
-		{
-			String s = null;
-			if(!tank.getFluid().isEmpty())
-				s = tank.getFluid().getDisplayName().getFormattedText()+": "+tank.getFluidAmount()+"mB";
-			else
-				s = I18n.format(Lib.GUI+"empty");
-			return new String[]{s};
-		}
+			return new ITextComponent[]{
+					TextUtils.formatFluidStack(tank.getFluid())
+			};
 		if(hammer&&IEServerConfig.GENERAL.showTextOverlay.get()&&brtr.getFace().getAxis()==Axis.Y)
 		{
 			IOSideConfig side = sideConfig.getOrDefault(brtr.getFace(), NONE);
 			IOSideConfig opposite = sideConfig.getOrDefault(brtr.getFace().getOpposite(), NONE);
-			return new String[]{
-					I18n.format(Lib.DESC_INFO+"blockSide.facing")
-							+": "+I18n.format(Lib.DESC_INFO+"blockSide.connectFluid."+side.getName()),
-					I18n.format(Lib.DESC_INFO+"blockSide.opposite")
-							+": "+I18n.format(Lib.DESC_INFO+"blockSide.connectFluid."+opposite.getName())
-			};
+			return TextUtils.sideConfigWithOpposite(Lib.DESC_INFO+"blockSide.connectFluid.", side, opposite);
 		}
 		return null;
 	}
@@ -310,11 +298,11 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 	@Override
 	public boolean interact(Direction side, PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
-		LazyOptional<FluidStack> fOptional = FluidUtil.getFluidContained(heldItem);
+		Optional<FluidStack> fOptional = FluidUtil.getFluidContained(heldItem);
 		boolean metal = this instanceof MetalBarrelTileEntity;
 		if(!metal)
 		{
-			LazyOptional<Boolean> ret = fOptional.map((f) -> {
+			Optional<Boolean> ret = fOptional.map((f) -> {
 				if(f.getFluid().getAttributes().isGaseous(f))
 				{
 					ChatUtils.sendServerNoSpamMessages(player, new TranslationTextComponent(Lib.CHAT_INFO+"noGasAllowed"));

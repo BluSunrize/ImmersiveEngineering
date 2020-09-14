@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.cloth;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.client.utils.FontUtils;
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -51,21 +52,13 @@ public class StripCurtainBlock extends IETileProviderBlock
 		return new StripCurtainTileEntity();
 	}
 
-	/*TODO why is this here? Added in the original 1.8 commit
-		@Override
-		@OnlyIn(Dist.CLIENT)
-		public int getRenderColour(IBlockState state, @Nullable IBlockReader worldIn, @Nullable BlockPos pos, int tintIndex)
-		{
-			return 0xFFFFFF;
-		}*/
-
 	@Override
 	public void addInformation(ItemStack stack, @Nullable IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag advanced)
 	{
 		if(ItemNBTHelper.hasKey(stack, "colour"))
 		{
-			String hexCol = Integer.toHexString(ItemNBTHelper.getInt(stack, "colour"));
-			tooltip.add(new TranslationTextComponent(Lib.DESC_INFO+"colour", "<hexcol="+hexCol+":#"+hexCol+">"));
+			int color = ItemNBTHelper.getInt(stack, "colour");
+			tooltip.add(FontUtils.withAppendColoredColour(new TranslationTextComponent(Lib.DESC_INFO+"colour"), color));
 		}
 	}
 

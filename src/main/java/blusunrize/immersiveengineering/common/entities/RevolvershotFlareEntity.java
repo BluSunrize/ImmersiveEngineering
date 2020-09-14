@@ -21,7 +21,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.EntityRayTraceResult;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 public class RevolvershotFlareEntity extends RevolvershotEntity
@@ -95,7 +99,7 @@ public class RevolvershotFlareEntity extends RevolvershotEntity
 			if(ticksExisted > 40)
 				for(int i = 0; i < 20; i++)
 				{
-					Vec3d v = new Vec3d(Utils.RAND.nextDouble()-.5, Utils.RAND.nextDouble()-.5, Utils.RAND.nextDouble()-.5);
+					Vector3d v = new Vector3d(Utils.RAND.nextDouble()-.5, Utils.RAND.nextDouble()-.5, Utils.RAND.nextDouble()-.5);
 					ImmersiveEngineering.proxy.spawnRedstoneFX(world, getPosX()+v.x, getPosY()+v.y, getPosZ()+v.z, v.x/10, v.y/10, v.z/10, 1, r, g, b);
 				}
 		}
@@ -146,7 +150,7 @@ public class RevolvershotFlareEntity extends RevolvershotEntity
 		float b = (getColour()&255)/255f;
 		for(int i = 0; i < 80; i++)
 		{
-			Vec3d v = new Vec3d((Utils.RAND.nextDouble()-.5)*i > 40?2: 1, (Utils.RAND.nextDouble()-.5)*i > 40?2: 1, (Utils.RAND.nextDouble()-.5)*i > 40?2: 1);
+			Vector3d v = new Vector3d((Utils.RAND.nextDouble()-.5)*i > 40?2: 1, (Utils.RAND.nextDouble()-.5)*i > 40?2: 1, (Utils.RAND.nextDouble()-.5)*i > 40?2: 1);
 			ImmersiveEngineering.proxy.spawnRedstoneFX(world, getPosX()+v.x, getPosY()+v.y, getPosZ()+v.z, v.x/10, v.y/10, v.z/10, 1, r, g, b);
 		}
 	}

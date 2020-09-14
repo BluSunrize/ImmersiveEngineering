@@ -19,13 +19,14 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.tuple.Triple;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Supplier;
 
 public class ShaderRegistry
 {
@@ -66,7 +67,7 @@ public class ShaderRegistry
 	/**
 	 * The deafault cost for replicating a shader. Prices are multiplied with 10-rarity level. Prices can be adjusted for every registry entry
 	 */
-	public static Tag<Item> defaultReplicationCost = IETags.getTagsFor(EnumMetals.SILVER).dust;
+	public static ITag<Item> defaultReplicationCost = IETags.getTagsFor(EnumMetals.SILVER).dust;
 	/**
 	 * A HashMap to set default texture bounds for the additional layers of a shadercase. Saves you the trouble of redfining them for every shader. See {@link ShaderLayer#setTextureBounds(double... bounds)}.
 	 */
@@ -96,7 +97,7 @@ public class ShaderRegistry
 		return shaderRegistry.get(name)
 				.setCrateLoot(loot)
 				.setBagLoot(bags)
-				.setReplicationCost(new IngredientWithSize(Ingredient.fromTag(defaultReplicationCost), 10-rarityWeightMap.get(rarity)));
+				.setReplicationCost(() -> new IngredientWithSize(Ingredient.fromTag(defaultReplicationCost), 10-rarityWeightMap.get(rarity)));
 	}
 
 	public static <T extends ShaderCase> T registerShaderCase(ResourceLocation name, T shader, Rarity rarity)
@@ -623,7 +624,7 @@ public class ShaderRegistry
 		public String info_set;
 		public String info_reference;
 		public String info_details;
-		public IngredientWithSize replicationCost;
+		public Supplier<IngredientWithSize> replicationCost;
 
 		public IShaderEffectFunction effectFunction;
 		private static final IShaderEffectFunction DEFAULT_EFFECT = (world, shader, item, shaderType, pos, dir, scale) -> {
@@ -726,7 +727,7 @@ public class ShaderRegistry
 			return this;
 		}
 
-		public ShaderRegistryEntry setReplicationCost(@Nonnull IngredientWithSize replicationCost)
+		public ShaderRegistryEntry setReplicationCost(@Nonnull Supplier<IngredientWithSize> replicationCost)
 		{
 			this.replicationCost = replicationCost;
 			return this;

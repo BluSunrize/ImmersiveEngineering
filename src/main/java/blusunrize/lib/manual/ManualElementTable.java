@@ -10,9 +10,10 @@ package blusunrize.lib.manual;
 
 import blusunrize.lib.manual.gui.ManualScreen;
 import com.google.common.base.Preconditions;
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.util.IReorderingProcessor;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
@@ -63,12 +64,12 @@ public class ManualElementTable extends SpecialManualElements
 	}
 
 	@Override
-	public void render(ManualScreen gui, int x, int y, int mx, int my)
+	public void render(MatrixStack transform, ManualScreen gui, int x, int y, int mx, int my)
 	{
 		if(table!=null)
 		{
 			int col = manual.getHighlightColour()|0xff000000;
-			AbstractGui.fill(x, y-2, x+120, y-1, col);
+			AbstractGui.fill(transform, x, y-2, x+120, y-1, col);
 
 			int yOff = 0;
 			for(ITextComponent[] line : table)
@@ -80,21 +81,22 @@ public class ManualElementTable extends SpecialManualElements
 						{
 							int xx = textOff.length > 0&&j > 0?textOff[j-1]: x;
 							int w = Math.max(10, 120-(j > 0?textOff[j-1]-x: 0));
-							String lineText = line[j].getFormattedText();
-							manual.fontRenderer().drawSplitString(lineText, xx, y+yOff, w, manual.getTextColour());
-							int lines = manual.fontRenderer().listFormattedStringToWidth(lineText, w).size();
-							if(lines > height)
-								height = lines;
+							ITextComponent lineText = line[j];
+							List<IReorderingProcessor> lines = manual.fontRenderer().func_238425_b_(lineText, w);
+							for(IReorderingProcessor l : lines)
+								manual.fontRenderer().func_238422_b_(transform, l, xx, y+yOff, manual.getTextColour());
+							if(lines.size() > height)
+								height = lines.size();
 						}
 
 					if(horizontalBars)
 					{
 						float scale = .5f;
-						RenderSystem.scalef(1, scale, 1);
+						transform.scale(1, scale, 1);
 						int barHeight = (int)((y+yOff+height*manual.fontRenderer().FONT_HEIGHT)/scale);
-						AbstractGui.fill(x, barHeight, x+120, barHeight+1,
+						AbstractGui.fill(transform, x, barHeight, x+120, barHeight+1,
 								manual.getTextColour()|0xff000000);
-						RenderSystem.scalef(1, 1/scale, 1);
+						transform.scale(1, 1/scale, 1);
 					}
 
 					yOff += height*(manual.fontRenderer().FONT_HEIGHT+1);
@@ -102,7 +104,7 @@ public class ManualElementTable extends SpecialManualElements
 
 			if(bars!=null)
 				for(int i = 0; i < bars.length; i++)
-					AbstractGui.fill(textOff[i]-4, y-4, textOff[i]-3, y+yOff, col);
+					AbstractGui.fill(transform, textOff[i]-4, y-4, textOff[i]-3, y+yOff, col);
 		}
 	}
 
@@ -121,7 +123,7 @@ public class ManualElementTable extends SpecialManualElements
 				bars = Arrays.copyOf(bars, tableLine.length-1);
 			for(int j = 0; j < tableLine.length-1; j++)
 			{
-				int fl = manual.fontRenderer().getStringWidth(tableLine[j].getFormattedText());
+				int fl = manual.fontRenderer().func_238414_a_(tableLine[j]);
 				if(fl > bars[j])
 					bars[j] = fl;
 			}
@@ -140,7 +142,7 @@ public class ManualElementTable extends SpecialManualElements
 					if(tableLine[j]!=null)
 					{
 						int w = Math.max(10, 120-(j > 0?textOff[j-1]: 0));
-						int l = manual.fontRenderer().listFormattedStringToWidth(tableLine[j].getFormattedText(), w).size();
+						int l = manual.fontRenderer().func_238425_b_(tableLine[j], w).size();
 						if(j!=0)
 							yOff += l*(manual.fontRenderer().FONT_HEIGHT+1);
 					}

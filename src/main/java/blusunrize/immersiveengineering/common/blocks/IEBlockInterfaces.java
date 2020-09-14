@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
@@ -16,7 +17,6 @@ import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileE
 import blusunrize.immersiveengineering.common.gui.GuiHandler;
 import com.google.common.base.Preconditions;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -25,6 +25,10 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.LootContext;
+import net.minecraft.loot.LootContext.Builder;
+import net.minecraft.loot.LootParameterSets;
+import net.minecraft.loot.LootParameters;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.tileentity.TileEntity;
@@ -34,19 +38,16 @@ import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.vector.TransformationMatrix;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.IBlockDisplayReader;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.ILightReader;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraft.world.storage.loot.LootContext;
-import net.minecraft.world.storage.loot.LootContext.Builder;
-import net.minecraft.world.storage.loot.LootParameterSets;
-import net.minecraft.world.storage.loot.LootParameters;
 import net.minecraftforge.client.model.data.IModelData;
 
 import javax.annotation.Nonnull;
@@ -71,7 +72,8 @@ public class IEBlockInterfaces
 
 	public interface IBlockOverlayText
 	{
-		String[] getOverlayText(PlayerEntity player, RayTraceResult mop, boolean hammer);
+		@Nullable
+		ITextComponent[] getOverlayText(PlayerEntity player, RayTraceResult mop, boolean hammer);
 
 		boolean useNixieFont(PlayerEntity player, RayTraceResult mop);
 	}
@@ -186,7 +188,7 @@ public class IEBlockInterfaces
 			return false;
 		}
 
-		default boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
+		default boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
 		{
 			return true;
 		}
@@ -229,7 +231,7 @@ public class IEBlockInterfaces
 		default Direction getFacing()
 		{
 			BlockState state = getState();
-			if(state.has(getFacingProperty()))
+			if(state.hasProperty(getFacingProperty()))
 				return state.get(getFacingProperty());
 			else
 				return Direction.NORTH;
@@ -271,7 +273,7 @@ public class IEBlockInterfaces
 					new Builder(world)
 							.withNullableParameter(LootParameters.TOOL, ItemStack.EMPTY)
 							.withNullableParameter(LootParameters.BLOCK_STATE, world.getBlockState(tile.getPos()))
-							.withNullableParameter(LootParameters.POSITION, tile.getPos())
+							.withNullableParameter(LootParameters.field_237457_g_, Vector3d.copyCentered(tile.getPos()))
 							.build(LootParameterSets.BLOCK)
 			).get(0);
 		}
@@ -300,12 +302,12 @@ public class IEBlockInterfaces
 
 	public interface IHammerInteraction
 	{
-		boolean hammerUseSide(Direction side, PlayerEntity player, Hand hand, Vec3d hitVec);
+		boolean hammerUseSide(Direction side, PlayerEntity player, Hand hand, Vector3d hitVec);
 	}
 
 	public interface IScrewdriverInteraction
 	{
-		ActionResultType screwdriverUseSide(Direction side, PlayerEntity player, Hand hand, Vec3d hitVec);
+		ActionResultType screwdriverUseSide(Direction side, PlayerEntity player, Hand hand, Vector3d hitVec);
 	}
 
 	public interface IPlacementInteraction
@@ -318,7 +320,7 @@ public class IEBlockInterfaces
 		default boolean getIsActive()
 		{
 			BlockState state = getState();
-			if(state.has(IEProperties.ACTIVE))
+			if(state.hasProperty(IEProperties.ACTIVE))
 				return state.get(IEProperties.ACTIVE);
 			else
 				return false;
@@ -337,7 +339,7 @@ public class IEBlockInterfaces
 		default boolean getIsMirrored()
 		{
 			BlockState state = getState();
-			if(state.has(IEProperties.MIRRORED))
+			if(state.hasProperty(IEProperties.MIRRORED))
 				return state.get(IEProperties.MIRRORED);
 			else
 				return false;
@@ -402,10 +404,18 @@ public class IEBlockInterfaces
 		default boolean isDummy()
 		{
 			BlockState state = getState();
-			if(state.has(IEProperties.MULTIBLOCKSLAVE))
+			if(state.hasProperty(IEProperties.MULTIBLOCKSLAVE))
 				return state.get(IEProperties.MULTIBLOCKSLAVE);
 			else
 				return true;
+		}
+
+		default void checkForNeedlessTicking()
+		{
+			ApiUtils.checkForNeedlessTicking((TileEntity & IGeneralMultiblock)this,
+					// The warning on the next line should be ignored, using a method reference causes
+					// a "BootstrapMethodError"
+					te -> te.isDummy());
 		}
 	}
 
@@ -471,7 +481,7 @@ public class IEBlockInterfaces
 
 	public interface IModelDataBlock
 	{
-		IModelData getModelData(@Nonnull ILightReader world, @Nonnull BlockPos pos, @Nonnull BlockState state,
+		IModelData getModelData(@Nonnull IBlockDisplayReader world, @Nonnull BlockPos pos, @Nonnull BlockState state,
 								@Nonnull IModelData tileData);
 	}
 }

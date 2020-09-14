@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -31,7 +31,7 @@ public abstract class CapabilityReference<T>
 		return new TECapReference<>(local::getWorld, pos, cap);
 	}
 
-	public static <T> CapabilityReference<T> forRelative(TileEntity local, Capability<T> cap, Vec3i offset, Direction side)
+	public static <T> CapabilityReference<T> forRelative(TileEntity local, Capability<T> cap, Vector3i offset, Direction side)
 	{
 		return forTileEntity(local, () -> new DirectionalBlockPos(local.getPos().add(offset), side.getOpposite()), cap);
 	}

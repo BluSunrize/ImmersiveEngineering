@@ -1,7 +1,0 @@
-{
-	"parent": "immersiveengineering:block/ie_six_sides_overlay_all",
-	"textures": {
-		"block_all": "immersiveengineering:block/ctm/metal_decoration0_light_engineering_ctm",
-		"overlay_all": "immersiveengineering:block/ctm/metal_decoration0_light_frame"
-	}
-}

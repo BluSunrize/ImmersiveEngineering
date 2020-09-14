@@ -28,10 +28,10 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -45,7 +45,7 @@ import javax.annotation.Nullable;
 
 public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IStateBasedDirectional, ICollisionBounds,
 		ISelectionBounds, IHammerInteraction, IPlayerInteraction, IConveyorTile, IPropertyPassthrough,
-		ITickableTileEntity, IGeneralMultiblock
+		ITickableTileEntity
 {
 	private final IConveyorBelt conveyorBeltSubtype;
 
@@ -111,7 +111,7 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IStateBa
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
 	{
 		return !entity.isSneaking();
 	}
@@ -130,28 +130,15 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IStateBa
 	}
 
 	@Override
-	public boolean isDummy()
-	{
-		return this.conveyorBeltSubtype!=null&&!this.conveyorBeltSubtype.isTicking();
-	}
-
-	@Nullable
-	@Override
-	public IGeneralMultiblock master()
-	{
-		return this;
-	}
-
-	@Override
 	public void tick()
 	{
-		ApiUtils.checkForNeedlessTicking(this);
+		ApiUtils.checkForNeedlessTicking(this, te -> te.conveyorBeltSubtype!=null&&!te.conveyorBeltSubtype.isTicking());
 		if(this.conveyorBeltSubtype!=null)
 			this.conveyorBeltSubtype.onUpdate();
 	}
 
 	@Override
-	public boolean hammerUseSide(Direction side, PlayerEntity player, Hand hand, Vec3d hitVec)
+	public boolean hammerUseSide(Direction side, PlayerEntity player, Hand hand, Vector3d hitVec)
 	{
 		if(player.isSneaking()&&conveyorBeltSubtype!=null&&conveyorBeltSubtype.changeConveyorDirection())
 		{
@@ -266,7 +253,7 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IStateBa
 			if(!simulate)
 			{
 				ItemEntity entity = new ItemEntity(conveyor.getWorldNonnull(), conveyor.getPos().getX()+.5, conveyor.getPos().getY()+.1875, conveyor.getPos().getZ()+.5, stack.copy());
-				entity.setMotion(Vec3d.ZERO);
+				entity.setMotion(Vector3d.ZERO);
 				conveyor.getWorldNonnull().addEntity(entity);
 				if(conveyor.conveyorBeltSubtype!=null)
 					conveyor.conveyorBeltSubtype.onItemDeployed(entity);

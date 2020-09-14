@@ -27,7 +27,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -97,7 +97,7 @@ public class TurretGunTileEntity extends TurretTileEntity
 					this.energyStorage.extractEnergy(energy, false);
 					this.sendRenderPacket();
 
-					Vec3d vec = getGunToTargetVec(target).normalize();
+					Vector3d vec = getGunToTargetVec(target).normalize();
 
 					int count = bullet.getProjectileCount(null);
 					if(count==1)
@@ -108,7 +108,7 @@ public class TurretGunTileEntity extends TurretTileEntity
 					else
 						for(int i = 0; i < count; i++)
 						{
-							Vec3d vecDir = vec.add(Utils.RAND.nextGaussian()*.1, Utils.RAND.nextGaussian()*.1, Utils.RAND.nextGaussian()*.1);
+							Vector3d vecDir = vec.add(Utils.RAND.nextGaussian()*.1, Utils.RAND.nextGaussian()*.1, Utils.RAND.nextGaussian()*.1);
 							Entity entBullet = getBulletEntity(world, vecDir, bullet);
 							world.addEntity(bullet.getProjectile(null, bulletStack, entBullet, false));
 						}
@@ -122,7 +122,7 @@ public class TurretGunTileEntity extends TurretTileEntity
 							double cX = getPos().getX()+.5;
 							double cY = getPos().getY()+1.375;
 							double cZ = getPos().getZ()+.5;
-							Vec3d vCasing = vec.rotateYaw(-1.57f);
+							Vector3d vCasing = vec.rotateYaw(-1.57f);
 							world.addParticle(RedstoneParticleData.REDSTONE_DUST, cX+vCasing.x, cY+vCasing.y, cZ+vCasing.z, 0, 0, 0);
 							ItemEntity entCasing = new ItemEntity(world, cX+vCasing.x, cY+vCasing.y, cZ+vCasing.z, casing.copy());
 							entCasing.setMotion(0, -.01, 0);
@@ -153,9 +153,9 @@ public class TurretGunTileEntity extends TurretTileEntity
 				new MessageTileSync(this, tag));
 	}
 
-	RevolvershotEntity getBulletEntity(World world, Vec3d vecDir, IBullet type)
+	RevolvershotEntity getBulletEntity(World world, Vector3d vecDir, IBullet type)
 	{
-		Vec3d gunPos = getGunPosition();
+		Vector3d gunPos = getGunPosition();
 		RevolvershotEntity bullet = new RevolvershotEntity(world, gunPos.x+vecDir.x, gunPos.y+vecDir.y, gunPos.z+vecDir.z, 0, 0, 0, type);
 		bullet.setMotion(vecDir);
 		return bullet;

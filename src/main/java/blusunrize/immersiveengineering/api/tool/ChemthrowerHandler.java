@@ -20,7 +20,7 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.SoundCategory;
@@ -42,14 +42,14 @@ import java.util.Map;
 
 public class ChemthrowerHandler
 {
-	public static List<Pair<Tag<Fluid>, ChemthrowerEffect>> effectList = new ArrayList<>();
-	public static HashSet<Tag<Fluid>> flammableList = new HashSet<>();
+	public static List<Pair<ITag<Fluid>, ChemthrowerEffect>> effectList = new ArrayList<>();
+	public static HashSet<ITag<Fluid>> flammableList = new HashSet<>();
 
 	/**
 	 * registers a special effect to a fluid based on tags.
 	 * Fluids without an effect simply do damage based on temperature
 	 */
-	public static void registerEffect(Tag<Fluid> fluidTag, ChemthrowerEffect effect)
+	public static void registerEffect(ITag<Fluid> fluidTag, ChemthrowerEffect effect)
 	{
 		effectList.add(Pair.of(fluidTag, effect));
 	}
@@ -57,7 +57,7 @@ public class ChemthrowerHandler
 	public static ChemthrowerEffect getEffect(Fluid fluid)
 	{
 		if(fluid!=null)
-			for(Map.Entry<Tag<Fluid>, ChemthrowerEffect> entry : effectList)
+			for(Map.Entry<ITag<Fluid>, ChemthrowerEffect> entry : effectList)
 				if(entry.getKey().contains(fluid))
 					return entry.getValue();
 		return null;
@@ -66,7 +66,7 @@ public class ChemthrowerHandler
 	/**
 	 * registers a fluid based on its registry name, to allow the chemical thrower to ignite it upon dispersal
 	 */
-	public static void registerFlammable(Tag<Fluid> fluidTag)
+	public static void registerFlammable(ITag<Fluid> fluidTag)
 	{
 		flammableList.add(fluidTag);
 	}
@@ -74,7 +74,7 @@ public class ChemthrowerHandler
 	public static boolean isFlammable(Fluid fluid)
 	{
 		if(fluid!=null)
-			for(Tag<Fluid> predicate : flammableList)
+			for(ITag<Fluid> predicate : flammableList)
 				if(predicate.contains(fluid))
 					return true;
 		return false;

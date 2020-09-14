@@ -15,7 +15,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraftforge.client.model.IModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
@@ -45,11 +45,11 @@ public class SplitModelLoader implements IModelLoader<UnbakedSplitModel>
 		else
 			subloader = new ResourceLocation("minecraft", "elements");
 		JsonArray partsJson = modelContents.getAsJsonArray(PARTS);
-		List<Vec3i> parts = new ArrayList<>(partsJson.size());
+		List<Vector3i> parts = new ArrayList<>(partsJson.size());
 		for(JsonElement e : partsJson)
 		{
 			JsonArray a = e.getAsJsonArray();
-			parts.add(new Vec3i(a.get(0).getAsInt(), a.get(1).getAsInt(), a.get(2).getAsInt()));
+			parts.add(new Vector3i(a.get(0).getAsInt(), a.get(1).getAsInt(), a.get(2).getAsInt()));
 		}
 		IModelGeometry<?> baseModel = ModelLoaderRegistry.getModel(
 				subloader,

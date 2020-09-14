@@ -20,8 +20,6 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.TransformationMatrix;
-import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
@@ -29,6 +27,8 @@ import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.TransformationMatrix;
+import net.minecraft.util.math.vector.Vector4f;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -43,7 +43,7 @@ public class IEOBJItemRenderer extends ItemStackTileEntityRenderer
 	public static final ItemStackTileEntityRenderer INSTANCE = new IEOBJItemRenderer();
 
 	@Override
-	public void render(ItemStack stack, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn,
+	public void func_239207_a_(ItemStack stack, TransformType transformType, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn,
 					   int combinedLightIn, int combinedOverlayIn)
 	{
 		float partialTicks = mc().getRenderPartialTicks();
@@ -77,7 +77,6 @@ public class IEOBJItemRenderer extends ItemStackTileEntityRenderer
 				for(String g : OBJHelper.getGroups(obj.baseModel).keySet())
 					if(callback.shouldRenderGroup(stack, g))
 						visible.add(g);
-				TransformType transformType = obj.lastCameraTransform;
 				for(String[] groups : callback.getSpecialGroups(stack, transformType, IESmartObjModel.tempEntityStatic))
 				{
 					TransformationMatrix mat = callback.getTransformForGroups(stack, groups, transformType, mc().player,

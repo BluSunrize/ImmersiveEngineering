@@ -19,9 +19,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBou
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.Quaternion;
-import net.minecraft.client.renderer.TransformationMatrix;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -29,10 +26,9 @@ import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.vector.*;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -55,7 +51,7 @@ public class ConnectorStructuralTileEntity extends ImmersiveConnectableTileEntit
 	}
 
 	@Override
-	public boolean hammerUseSide(Direction side, PlayerEntity player, Hand hand, Vec3d hitVec)
+	public boolean hammerUseSide(Direction side, PlayerEntity player, Hand hand, Vector3d hitVec)
 	{
 		if(!world.isRemote)
 		{
@@ -84,17 +80,17 @@ public class ConnectorStructuralTileEntity extends ImmersiveConnectableTileEntit
 	}
 
 	@Override
-	public Vec3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
+	public Vector3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
 		Direction side = getFacing().getOpposite();
 		double conRadius = .03125;
-		return new Vec3d(.5+side.getXOffset()*(-.125-conRadius),
+		return new Vector3d(.5+side.getXOffset()*(-.125-conRadius),
 				.5+side.getYOffset()*(-.125-conRadius),
 				.5+side.getZOffset()*(-.125-conRadius));
 	}
 
 	@Override
-	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vec3i offset)
+	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vector3i offset)
 	{
 		//TODO are ropes and cables meant to be mixed?
 		return STRUCTURE_CATEGORY.equals(cableType.getCategory());
@@ -135,7 +131,7 @@ public class ConnectorStructuralTileEntity extends ImmersiveConnectableTileEntit
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
 	{
 		return false;
 	}

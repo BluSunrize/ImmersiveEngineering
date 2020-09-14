@@ -13,7 +13,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.Property;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Mirror;
@@ -28,7 +28,7 @@ import java.util.Map;
 
 public class ShaderBannerWallBlock extends ShaderBannerBlock
 {
-	public static final IProperty<Direction> FACING = IEProperties.FACING_HORIZONTAL;
+	public static final Property<Direction> FACING = IEProperties.FACING_HORIZONTAL;
 
 	private static Map<Direction, VoxelShape> SHAPES = Maps.newEnumMap(ImmutableMap.of(
 			Direction.NORTH, Block.makeCuboidShape(0.0D, 0.0D, 14.0D, 16.0D, 12.5D, 16.0D),

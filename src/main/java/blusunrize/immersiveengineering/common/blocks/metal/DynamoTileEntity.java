@@ -26,7 +26,7 @@ import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -71,7 +71,7 @@ public class DynamoTileEntity extends IEBaseTileEntity implements IIEInternalFlu
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
 	{
 		return true;
 	}

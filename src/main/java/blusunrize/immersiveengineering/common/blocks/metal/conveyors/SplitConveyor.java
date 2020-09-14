@@ -17,7 +17,6 @@ import blusunrize.immersiveengineering.common.util.SafeChunkUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -30,7 +29,8 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.TransformationMatrix;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -152,9 +152,9 @@ public class SplitConveyor extends BasicConveyor
 	}
 
 	@Override
-	public Vec3d getDirection(Entity entity, boolean outputBlocked)
+	public Vector3d getDirection(Entity entity, boolean outputBlocked)
 	{
-		Vec3d vec = super.getDirection(entity, outputBlocked);
+		Vector3d vec = super.getDirection(entity, outputBlocked);
 		String nbtKey = "immersiveengineering:conveyorDir"+Integer.toHexString(getTile().getPos().hashCode());
 		if(!entity.getPersistentData().contains(nbtKey, NBT.TAG_INT))
 			return vec;
@@ -165,7 +165,7 @@ public class SplitConveyor extends BasicConveyor
 		{
 			double sideMove = Math.pow(1+distNext, 0.1)*.2;
 			if(distNext < .8)
-				vec = new Vec3d(getFacing().getAxis()==Axis.X?0: vec.x, vec.y, getFacing().getAxis()==Axis.Z?0: vec.z);
+				vec = new Vector3d(getFacing().getAxis()==Axis.X?0: vec.x, vec.y, getFacing().getAxis()==Axis.Z?0: vec.z);
 			vec = vec.add(redirect.getXOffset()*sideMove, 0, redirect.getZOffset()*sideMove);
 		}
 		return vec;
@@ -212,20 +212,20 @@ public class SplitConveyor extends BasicConveyor
 		TransformationMatrix tMatrix = matrix.toTransformationMatrix();
 		float[] colour = {1, 1, 1, 1};
 
-		Vec3d[] vertices = {new Vec3d(.0625f, 0, 0), new Vec3d(.0625f, 0, 1), new Vec3d(.9375f, 0, 1), new Vec3d(.9375f, 0, 0)};
+		Vector3d[] vertices = {new Vector3d(.0625f, 0, 0), new Vector3d(.0625f, 0, 1), new Vector3d(.9375f, 0, 1), new Vector3d(.9375f, 0, 0)};
 
 		// replace bottom with casing
 		baseModel.set(0, ClientUtils.createBakedQuad(DefaultVertexFormats.BLOCK, ClientUtils.applyMatrixToVertices(tMatrix, vertices), Utils.rotateFacingTowardsDir(Direction.DOWN, getFacing()), ClientUtils.getSprite(ModelConveyor.rl_casing[3]), new double[]{1, 0, 15, 16}, colour, true));
 
-		vertices = new Vec3d[]{new Vec3d(.0625f, .1875f, 0), new Vec3d(.0625f, .1875f, 1), new Vec3d(.9375f, .1875f, 1), new Vec3d(.9375f, .1875f, 0)};
+		vertices = new Vector3d[]{new Vector3d(.0625f, .1875f, 0), new Vector3d(.0625f, .1875f, 1), new Vector3d(.9375f, .1875f, 1), new Vector3d(.9375f, .1875f, 0)};
 		baseModel.add(ClientUtils.createBakedQuad(DefaultVertexFormats.BLOCK, ClientUtils.applyMatrixToVertices(tMatrix, vertices), Direction.UP, tex_casing0, new double[]{1, 16, 15, 0}, colour, false));
 
-		vertices = new Vec3d[]{new Vec3d(.0625f, 0, 0), new Vec3d(.0625f, .1875f, 0), new Vec3d(.9375f, .1875f, 0), new Vec3d(.9375f, 0, 0)};
+		vertices = new Vector3d[]{new Vector3d(.0625f, 0, 0), new Vector3d(.0625f, .1875f, 0), new Vector3d(.9375f, .1875f, 0), new Vector3d(.9375f, 0, 0)};
 		baseModel.set(15, ClientUtils.createBakedQuad(DefaultVertexFormats.BLOCK, ClientUtils.applyMatrixToVertices(tMatrix, vertices), getFacing(), ClientUtils.getSprite(ModelConveyor.rl_casing[1]), new double[]{1, 16, 15, 13}, colour, false));
 
-		vertices = new Vec3d[]{new Vec3d(.0625f, .125f, 0), new Vec3d(.0625f, .1875f, 0), new Vec3d(.9375f, .1875f, 0), new Vec3d(.9375f, .125f, 0)};
-		Vec3d[] vertices2 = new Vec3d[]{new Vec3d(.5f, .125f, 0), new Vec3d(.5f, .125f, .5f), new Vec3d(.5f, .1875f, .5f), new Vec3d(.5f, .1875f, 0)};
-		Vec3d[] vertices3 = new Vec3d[]{new Vec3d(.5f, .125f, 0), new Vec3d(.5f, .125f, .5f), new Vec3d(.5f, .1875f, .5f), new Vec3d(.5f, .1875f, 0)};
+		vertices = new Vector3d[]{new Vector3d(.0625f, .125f, 0), new Vector3d(.0625f, .1875f, 0), new Vector3d(.9375f, .1875f, 0), new Vector3d(.9375f, .125f, 0)};
+		Vector3d[] vertices2 = new Vector3d[]{new Vector3d(.5f, .125f, 0), new Vector3d(.5f, .125f, .5f), new Vector3d(.5f, .1875f, .5f), new Vector3d(.5f, .1875f, 0)};
+		Vector3d[] vertices3 = new Vector3d[]{new Vector3d(.5f, .125f, 0), new Vector3d(.5f, .125f, .5f), new Vector3d(.5f, .1875f, .5f), new Vector3d(.5f, .1875f, 0)};
 		for(int i = 0; i < 8; i++)
 		{
 			for(int iv = 0; iv < vertices.length; iv++)

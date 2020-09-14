@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.gui.MaintenanceKitContainer;
 import blusunrize.immersiveengineering.common.network.MessageMaintenanceKit;
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.nbt.CompoundNBT;
@@ -33,16 +33,15 @@ public class MaintenanceKitScreen extends ToolModificationScreen<MaintenanceKitC
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float f, int mx, int my)
+	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float f, int mx, int my)
 	{
-		RenderSystem.color3f(1.0F, 1.0F, 1.0F);
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/maintenance_kit.png");
-		this.blit(guiLeft, guiTop, 0, 0, xSize, ySize);
+		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
 
 		for(int i = 0; i < container.internalSlots; i++)
 		{
 			Slot s = container.getSlot(i);
-			ClientUtils.drawSlot(guiLeft+s.xPos, guiTop+s.yPos, 16, 16, 0x44);
+			ClientUtils.drawSlot(guiLeft+s.xPos, guiTop+s.yPos, 16, 16, 0x44, transform);
 		}
 	}
 }

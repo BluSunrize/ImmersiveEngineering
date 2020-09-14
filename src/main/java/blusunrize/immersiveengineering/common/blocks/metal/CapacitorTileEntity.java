@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
+import blusunrize.immersiveengineering.client.utils.TextUtils;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
@@ -25,10 +26,10 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWra
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.LootContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -36,7 +37,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.storage.loot.LootContext;
+import net.minecraft.util.text.ITextComponent;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -187,19 +188,14 @@ public class CapacitorTileEntity extends IEBaseTileEntity implements ITickableTi
 	}
 
 	@Override
-	public String[] getOverlayText(PlayerEntity player, RayTraceResult mop, boolean hammer)
+	public ITextComponent[] getOverlayText(PlayerEntity player, RayTraceResult mop, boolean hammer)
 	{
 		if(hammer&&IEServerConfig.GENERAL.showTextOverlay.get()&&mop instanceof BlockRayTraceResult)
 		{
 			BlockRayTraceResult bmop = (BlockRayTraceResult)mop;
 			IOSideConfig here = sideConfig.get(bmop.getFace());
 			IOSideConfig opposite = sideConfig.get(bmop.getFace().getOpposite());
-			return new String[]{
-					I18n.format(Lib.DESC_INFO+"blockSide.facing")
-							+": "+I18n.format(Lib.DESC_INFO+"blockSide.connectEnergy."+here.getName()),
-					I18n.format(Lib.DESC_INFO+"blockSide.opposite")
-							+": "+I18n.format(Lib.DESC_INFO+"blockSide.connectEnergy."+opposite.getName())
-			};
+			return TextUtils.sideConfigWithOpposite(Lib.DESC_INFO+"blockSide.connectEnergy.", here, opposite);
 		}
 		return null;
 	}

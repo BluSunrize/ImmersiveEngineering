@@ -15,7 +15,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EntityType.Builder;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 public class RevolvershotHomingEntity extends RevolvershotEntity
@@ -69,8 +69,8 @@ public class RevolvershotHomingEntity extends RevolvershotEntity
 			LivingEntity target = getTarget();
 			if(target!=null)
 			{
-				Vec3d oldMotion = getMotion();
-				Vec3d newMotion = new Vec3d(
+				Vector3d oldMotion = getMotion();
+				Vector3d newMotion = new Vector3d(
 						oldMotion.x*(1-redirectionSpeed)+(target.getPosX()-this.getPosX())*redirectionSpeed,
 						oldMotion.y*(1-redirectionSpeed)+((target.getPosY()+target.getHeight()/2)-this.getPosY())*redirectionSpeed,
 						oldMotion.z*(1-redirectionSpeed)+(target.getPosZ()-this.getPosZ())*redirectionSpeed).normalize();
@@ -88,7 +88,7 @@ public class RevolvershotHomingEntity extends RevolvershotEntity
 		AxisAlignedBB aabb = new AxisAlignedBB(getPosX()-r, getPosY()-r, getPosZ()-r, getPosX()+r, getPosY()+r, getPosZ()+r);
 		LivingEntity target = null;
 		for(Object o : world.getEntitiesWithinAABB(LivingEntity.class, aabb))
-			if(o instanceof LivingEntity&&!((LivingEntity)o).getUniqueID().equals(this.shootingEntity))
+			if(o instanceof LivingEntity&&!((LivingEntity)o).getUniqueID().equals(this.field_234609_b_))
 				if(target==null||((LivingEntity)o).getDistanceSq(this) < target.getDistanceSq(this))
 					target = (LivingEntity)o;
 		return target;

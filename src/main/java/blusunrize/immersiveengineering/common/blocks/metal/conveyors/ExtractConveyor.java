@@ -16,7 +16,6 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -32,10 +31,11 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.math.vector.TransformationMatrix;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -95,40 +95,40 @@ public class ExtractConveyor extends BasicConveyor
 
 		Function<Direction, TextureAtlasSprite> getCasingSprite = enumFacing -> enumFacing.getAxis()==Axis.Z?texture_steel: texture_casing;
 
-		Function<Vec3d[], Vec3d[]> vertexTransformer = vertices -> {
+		Function<Vector3d[], Vector3d[]> vertexTransformer = vertices -> {
 			if(extend==0)
 				return vertices;
-			Vec3d[] ret = new Vec3d[vertices.length];
+			Vector3d[] ret = new Vector3d[vertices.length];
 			for(int i = 0; i < ret.length; i++)
-				ret[i] = new Vec3d(vertices[i].x, vertices[i].y, vertices[i].z-extend);
+				ret[i] = new Vector3d(vertices[i].x, vertices[i].y, vertices[i].z-extend);
 			return ret;
 		};
-		Function<Vec3d[], Vec3d[]> casingTransformer = vertices -> {
-			Vec3d[] ret = new Vec3d[vertices.length];
+		Function<Vector3d[], Vector3d[]> casingTransformer = vertices -> {
+			Vector3d[] ret = new Vector3d[vertices.length];
 			for(int i = 0; i < ret.length; i++)
-				ret[i] = new Vec3d(vertices[i].x, vertices[i].y-.25f, vertices[i].z-.625f-extend);
+				ret[i] = new Vector3d(vertices[i].x, vertices[i].y-.25f, vertices[i].z-.625f-extend);
 			return ret;
 		};
 
-		baseModel.addAll(ClientUtils.createBakedBox(new Vec3d(.0625f, .375f, .625f), new Vec3d(.1875f, 1f, 1f), matrix, getFacing(), casingTransformer, getCasingSprite, colour));
-		baseModel.addAll(ClientUtils.createBakedBox(new Vec3d(.8125f, .375f, .625f), new Vec3d(.9375f, 1f, 1f), matrix, getFacing(), casingTransformer, getCasingSprite, colour));
-		baseModel.addAll(ClientUtils.createBakedBox(new Vec3d(.1875f, .875f, .625f), new Vec3d(.8125f, 1f, 1f), matrix, getFacing(), casingTransformer, getCasingSprite, colour));
+		baseModel.addAll(ClientUtils.createBakedBox(new Vector3d(.0625f, .375f, .625f), new Vector3d(.1875f, 1f, 1f), matrix, getFacing(), casingTransformer, getCasingSprite, colour));
+		baseModel.addAll(ClientUtils.createBakedBox(new Vector3d(.8125f, .375f, .625f), new Vector3d(.9375f, 1f, 1f), matrix, getFacing(), casingTransformer, getCasingSprite, colour));
+		baseModel.addAll(ClientUtils.createBakedBox(new Vector3d(.1875f, .875f, .625f), new Vector3d(.8125f, 1f, 1f), matrix, getFacing(), casingTransformer, getCasingSprite, colour));
 
 		if(getTile()!=null&&extend > 0)
 		{
 			TextureAtlasSprite tex_conveyor = ClientUtils.getSprite(isActive()?BasicConveyor.texture_on: BasicConveyor.texture_off);
 			Function<Direction, TextureAtlasSprite> getExtensionSprite = enumFacing -> enumFacing.getAxis()==Axis.Y?null: enumFacing.getAxis()==Axis.Z?texture_steel: texture_casing;
 
-			Vec3d[] vertices = {new Vec3d(.0625f, 0, -extend), new Vec3d(.0625f, 0, 0), new Vec3d(.9375f, 0, 0), new Vec3d(.9375f, 0, -extend)};
+			Vector3d[] vertices = {new Vector3d(.0625f, 0, -extend), new Vector3d(.0625f, 0, 0), new Vector3d(.9375f, 0, 0), new Vector3d(.9375f, 0, -extend)};
 			baseModel.add(ClientUtils.createBakedQuad(DefaultVertexFormats.BLOCK, ClientUtils.applyMatrixToVertices(tMatrix, vertices), Utils.rotateFacingTowardsDir(Direction.DOWN, getFacing()), tex_conveyor, new double[]{15, extend*16, 1, 0}, colour, true));
 			for(int i = 0; i < vertices.length; i++)
 				vertices[i] = Utils.withCoordinate(vertices[i], Axis.Y, .125);
 			baseModel.add(ClientUtils.createBakedQuad(DefaultVertexFormats.BLOCK, ClientUtils.applyMatrixToVertices(tMatrix, vertices), Utils.rotateFacingTowardsDir(Direction.UP, getFacing()), tex_conveyor, new double[]{15, (1-extend)*16, 1, 16}, colour, false));
-			baseModel.addAll(ClientUtils.createBakedBox(new Vec3d(.0625f, .25f, .625f), new Vec3d(.9375f, .375f, .625f+extend), matrix, getFacing(), casingTransformer, getExtensionSprite, colour));
+			baseModel.addAll(ClientUtils.createBakedBox(new Vector3d(.0625f, .25f, .625f), new Vector3d(.9375f, .375f, .625f+extend), matrix, getFacing(), casingTransformer, getExtensionSprite, colour));
 		}
 
 
-		Vec3d[] vertices = new Vec3d[]{new Vec3d(.8125f, .625f, .03125f), new Vec3d(.8125f, .125f, .03125f), new Vec3d(.1875f, .125f, .03125f), new Vec3d(.1875f, .625f, .03125f)};
+		Vector3d[] vertices = new Vector3d[]{new Vector3d(.8125f, .625f, .03125f), new Vector3d(.8125f, .125f, .03125f), new Vector3d(.1875f, .125f, .03125f), new Vector3d(.1875f, .625f, .03125f)};
 		baseModel.add(ClientUtils.createBakedQuad(DefaultVertexFormats.BLOCK, ClientUtils.applyMatrixToVertices(tMatrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(Direction.NORTH, getFacing()), texture_assembler, new double[]{15.25, 13.25, 12.75, 15.25}, colour, false));
 		for(int i = 0; i < vertices.length; i++)
 			vertices[i] = Utils.withCoordinate(vertices[i], Axis.Z, .0625);
@@ -137,7 +137,7 @@ public class ExtractConveyor extends BasicConveyor
 		for(int i = 0; i < 5; i++)
 		{
 			float off = i*.125f;
-			baseModel.addAll(ClientUtils.createBakedBox(new Vec3d(.203125f+off, .1875f, .09375f), new Vec3d(.296875f+off, .625f, .125f), matrix, getFacing(), vertexTransformer, (facing1) -> texture_curtain, colour));
+			baseModel.addAll(ClientUtils.createBakedBox(new Vector3d(.203125f+off, .1875f, .09375f), new Vector3d(.296875f+off, .625f, .125f), matrix, getFacing(), vertexTransformer, (facing1) -> texture_curtain, colour));
 		}
 
 		super.modifyQuads(baseModel);
@@ -259,7 +259,7 @@ public class ExtractConveyor extends BasicConveyor
 										getTile().getPos().getX()+.5,
 										getTile().getPos().getY()+.1875,
 										getTile().getPos().getZ()+.5, extractItem);
-								entity.setMotion(Vec3d.ZERO);
+								entity.setMotion(Vector3d.ZERO);
 								world.addEntity(entity);
 								this.onItemDeployed(entity);
 								this.transferCooldown = this.transferTickrate;

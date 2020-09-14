@@ -20,10 +20,10 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.block.Block;
 import net.minecraft.block.FourWayBlock;
 import net.minecraft.state.Property;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.vector.Vector3i;
 
 import java.util.List;
 
@@ -75,7 +75,7 @@ public class IEMultiblocks
 			return Result.DEFAULT;
 		});
 		//Tags
-		ImmutableList.Builder<Tag<Block>> genericTagsBuilder = ImmutableList.builder();
+		ImmutableList.Builder<ITag<Block>> genericTagsBuilder = ImmutableList.builder();
 		for(EnumMetals metal : EnumMetals.values())
 		{
 			MetalTags tags = IETags.getTagsFor(metal);
@@ -86,10 +86,10 @@ public class IEMultiblocks
 		genericTagsBuilder.add(IETags.scaffoldingSteel);
 		genericTagsBuilder.add(IETags.treatedWoodSlab);
 		genericTagsBuilder.add(IETags.treatedWood);
-		List<Tag<Block>> genericTags = genericTagsBuilder.build();
+		List<ITag<Block>> genericTags = genericTagsBuilder.build();
 		BlockMatcher.addPredicate((expected, found, world, pos) -> {
 			if(expected.getBlock()!=found.getBlock())
-				for(Tag<Block> t : genericTags)
+				for(ITag<Block> t : genericTags)
 					if(expected.isIn(t)&&found.isIn(t))
 						return Result.allow(3);
 			return Result.DEFAULT;
@@ -119,8 +119,8 @@ public class IEMultiblocks
 		SQUEEZER = new SqueezerMultiblock();
 		EXCAVATOR_DEMO = new UnionMultiblock(new ResourceLocation(ImmersiveEngineering.MODID, "excavator_demo"),
 				ImmutableList.of(
-						new TransformedMultiblock(EXCAVATOR, Vec3i.NULL_VECTOR, Rotation.NONE),
-						new TransformedMultiblock(BUCKET_WHEEL, new Vec3i(1, -2, 4), Rotation.COUNTERCLOCKWISE_90)
+						new TransformedMultiblock(EXCAVATOR, Vector3i.NULL_VECTOR, Rotation.NONE),
+						new TransformedMultiblock(BUCKET_WHEEL, new Vector3i(1, -2, 4), Rotation.COUNTERCLOCKWISE_90)
 				));
 	}
 }

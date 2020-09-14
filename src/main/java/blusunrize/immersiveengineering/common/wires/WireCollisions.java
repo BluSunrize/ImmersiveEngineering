@@ -25,7 +25,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
@@ -67,10 +67,10 @@ public class WireCollisions
 				for(CollisionInfo info : data)
 					if(info.isInBlock)
 					{
-						Vec3d vecA = info.conn.getPoint(0, info.conn.getEndA());
+						Vector3d vecA = info.conn.getPoint(0, info.conn.getEndA());
 						if(Utils.isVecInBlock(vecA, pos, info.conn.getEndA().getPosition(), 1e-3))
 							continue;
-						Vec3d vecB = info.conn.getPoint(0, info.conn.getEndB());
+						Vector3d vecB = info.conn.getPoint(0, info.conn.getEndB());
 						if(Utils.isVecInBlock(vecB, pos, info.conn.getEndB().getPosition(), 1e-3))
 							continue;
 						BlockPos dropPos = pos;

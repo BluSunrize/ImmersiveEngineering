@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.client.gui;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -24,11 +25,12 @@ public abstract class IEContainerScreen<C extends Container> extends ContainerSc
 	}
 
 	@Override
-	public void render(int mouseX, int mouseY, float partialTicks)
+	public void render(MatrixStack transform, int mouseX, int mouseY, float partialTicks)
 	{
-		this.renderBackground();
-		super.render(mouseX, mouseY, partialTicks);
-		this.renderHoveredToolTip(mouseX, mouseY);
+		this.playerInventoryTitleY = this.ySize-94;
+		this.renderBackground(transform);
+		super.render(transform, mouseX, mouseY, partialTicks);
+		this.renderHoveredTooltip(transform, mouseX, mouseY);
 	}
 
 	public void fullInit()

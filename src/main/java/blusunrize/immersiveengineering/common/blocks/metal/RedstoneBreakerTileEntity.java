@@ -18,10 +18,10 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.math.vector.Vector3d;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -57,8 +57,8 @@ public class RedstoneBreakerTileEntity extends BreakerSwitchTileEntity implement
 	@Override
 	public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx)
 	{
-		Vec3d start = new Vec3d(0, .125f, 0);
-		Vec3d end = new Vec3d(1, .875f, 1);
+		Vector3d start = new Vector3d(0, .125f, 0);
+		Vector3d end = new Vector3d(1, .875f, 1);
 		Matrix4 mat = new Matrix4(getFacing());
 		mat.translate(.5, .5, 0).rotate(Math.PI/2*rotation, 0, 0, 1).translate(-.5, -.5, 0);
 		start = mat.apply(start);
@@ -67,12 +67,12 @@ public class RedstoneBreakerTileEntity extends BreakerSwitchTileEntity implement
 	}
 
 	@Override
-	public Vec3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
+	public Vector3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
 		Matrix4 mat = new Matrix4(getFacing());
 		mat.translate(.5, .5, 0).rotate(Math.PI/2*rotation, 0, 0, 1).translate(-.5, -.5, 0);
 		boolean isLeft = here.getIndex()==LEFT_INDEX;
-		Vec3d ret = mat.apply(isLeft?new Vec3d(.125, .5, 1): new Vec3d(.875, .5, 1));
+		Vector3d ret = mat.apply(isLeft?new Vector3d(.125, .5, 1): new Vector3d(.875, .5, 1));
 		return ret;
 	}
 

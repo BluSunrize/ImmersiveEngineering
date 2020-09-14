@@ -149,6 +149,15 @@ public final class IEItems
 		public static Item cartWoodenBarrel;
 		public static Item cartMetalBarrel;
 
+		public static Item bannerPatternHammer;
+		public static Item bannerPatternBevels;
+		public static Item bannerPatternOrnate;
+		public static Item bannerPatternTreatedWood;
+		public static Item bannerPatternWindmill;
+		public static Item bannerPatternWolfR;
+		public static Item bannerPatternWolfL;
+		public static Item bannerPatternWolf;
+
 		public static Item iconBirthday;
 		public static Item iconLucky;
 		public static Item iconDrillbreak;

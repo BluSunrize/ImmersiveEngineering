@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks.stone;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.CokeOvenRecipe;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.IETileTypes;
@@ -86,7 +85,7 @@ public class CokeOvenTileEntity extends MultiblockPartTileEntity<CokeOvenTileEnt
 	@Override
 	public void tick()
 	{
-		ApiUtils.checkForNeedlessTicking(this);
+		checkForNeedlessTicking();
 		if(!world.isRemote&&formed&&!isDummy())
 		{
 			final boolean activeBeforeTick = getIsActive();

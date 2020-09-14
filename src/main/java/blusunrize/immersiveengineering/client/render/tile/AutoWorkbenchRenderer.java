@@ -14,7 +14,6 @@ import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
@@ -29,7 +28,9 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.BlockRendererDispatcher;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
@@ -41,7 +42,9 @@ import net.minecraft.resources.IResource;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
@@ -285,7 +288,7 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 			}
 
 		//Blueprint
-		double playerDistanceSq = ClientUtils.mc().player.getDistanceSq(new Vec3d(blockPos));
+		double playerDistanceSq = ClientUtils.mc().player.getDistanceSq(Vector3d.copyCentered(blockPos));
 
 		if(!blueprintStack.isEmpty()&&playerDistanceSq < 1000)
 		{

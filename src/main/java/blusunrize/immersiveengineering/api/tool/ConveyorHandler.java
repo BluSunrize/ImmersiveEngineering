@@ -21,7 +21,6 @@ import com.google.common.collect.ImmutableSet;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
@@ -36,9 +35,11 @@ import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.math.vector.TransformationMatrix;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -399,7 +400,7 @@ public class ConveyorHandler
 		}
 
 		@Deprecated
-		default Vec3d getDirection(Entity entity)
+		default Vector3d getDirection(Entity entity)
 		{
 			return getDirection(entity, false);
 		}
@@ -407,7 +408,7 @@ public class ConveyorHandler
 		/**
 		 * @return a vector representing the movement applied to the entity
 		 */
-		default Vec3d getDirection(Entity entity, boolean outputBlocked)
+		default Vector3d getDirection(Entity entity, boolean outputBlocked)
 		{
 			ConveyorDirection conveyorDirection = getConveyorDirection();
 			BlockPos pos = getTile().getPos();
@@ -436,11 +437,12 @@ public class ConveyorHandler
 			if(conveyorDirection!=ConveyorDirection.HORIZONTAL)
 			{
 				// Attempt to fix entity to the highest point under it
-				final Vec3d centerRelative = entity.getPositionVec()
-						.subtract(new Vec3d(pos))
+				final Vector3d centerRelative = entity.getPositionVec()
+						.subtract(new Vector3d(pos.getX(), pos.getY(), pos.getZ()))
 						.subtract(0.5+vX, 0.5, 0.5+vZ);
 				final double conveyorHeight = 2/16.;
-				final double centerOffsetInDirection = centerRelative.dotProduct(new Vec3d(facing.getDirectionVec()));
+				final Vector3i directionVector = facing.getDirectionVec();
+				final double centerOffsetInDirection = centerRelative.dotProduct(new Vector3d(directionVector.getX(), directionVector.getY(), directionVector.getZ()));
 				final double radius = entity.getSize(entity.getPose()).width/2;
 				final double maxEntityPos = centerOffsetInDirection+radius;
 				double maxCenterHeightUnderEntity = maxEntityPos+conveyorHeight;
@@ -453,10 +455,10 @@ public class ConveyorHandler
 				}
 				else
 					vY = Math.signum(maxCenterHeightUnderEntity-centerRelative.y)*0.07*vBase;
-				entity.onGround = false;
+				entity.setOnGround(false);
 			}
 
-			return new Vec3d(vX, vY, vZ);
+			return new Vector3d(vX, vY, vZ);
 		}
 
 		default void onEntityCollision(@Nonnull Entity entity)
@@ -473,7 +475,7 @@ public class ConveyorHandler
 			{
 				boolean hasBeenHandled = !markEntityAsHandled(entity);
 				final boolean outputBlocked = isOutputBlocked();
-				Vec3d vec = this.getDirection(entity, outputBlocked);
+				Vector3d vec = this.getDirection(entity, outputBlocked);
 				if(entity.fallDistance < 3)
 					entity.fallDistance = 0;
 				if(outputBlocked)
@@ -490,7 +492,7 @@ public class ConveyorHandler
 						replacementX = 0;
 						replacementZ = 0;
 					}
-					vec = new Vec3d(
+					vec = new Vector3d(
 							replacementX,
 							vec.y,
 							replacementZ

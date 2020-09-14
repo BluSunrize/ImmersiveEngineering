@@ -1,0 +1,23 @@
+{
+  "type": "immersiveengineering:mineral_mix",
+  "ores": [
+    {
+      "chance": 0.6,
+      "output": {
+        "item": "minecraft:gravel"
+      }
+    },
+    {
+      "chance": 0.4,
+      "output": {
+        "item": "minecraft:ancient_debris"
+      }
+    }
+  ],
+  "dimensions": [
+    "minecraft:the_nether"
+  ],
+  "weight": 8,
+  "fail_chance": 0.7,
+  "sample_background": "minecraft:netherrack"
+}

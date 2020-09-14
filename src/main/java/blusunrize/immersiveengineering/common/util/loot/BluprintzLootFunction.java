@@ -13,19 +13,21 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonSerializationContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.LootContext;
+import net.minecraft.loot.LootFunction;
+import net.minecraft.loot.LootFunctionType;
+import net.minecraft.loot.conditions.ILootCondition;
+import net.minecraft.loot.functions.ILootFunction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.storage.loot.LootContext;
-import net.minecraft.world.storage.loot.LootFunction;
-import net.minecraft.world.storage.loot.conditions.ILootCondition;
-import net.minecraft.world.storage.loot.functions.ILootFunction;
 
 import javax.annotation.Nonnull;
 
 public class BluprintzLootFunction extends LootFunction
 {
+	public static final ResourceLocation ID = new ResourceLocation(ImmersiveEngineering.MODID, "secret_bluprintz");
+
 	protected BluprintzLootFunction(ILootCondition[] conditionsIn)
 	{
 		super(conditionsIn);
@@ -40,19 +42,15 @@ public class BluprintzLootFunction extends LootFunction
 		return stack;
 	}
 
+	@Nonnull
+	@Override
+	public LootFunctionType func_230425_b_()
+	{
+		return IELootFunctions.bluprintz;
+	}
+
 	public static class Serializer extends LootFunction.Serializer<BluprintzLootFunction>
 	{
-		protected Serializer()
-		{
-			super(new ResourceLocation(ImmersiveEngineering.MODID, "secret_bluprintz"), BluprintzLootFunction.class);
-		}
-
-		@Override
-		public void serialize(@Nonnull JsonObject object, @Nonnull BluprintzLootFunction functionClazz, @Nonnull JsonSerializationContext serializationContext)
-		{
-			super.serialize(object, functionClazz, serializationContext);
-		}
-
 		@Override
 		@Nonnull
 		public BluprintzLootFunction deserialize(@Nonnull JsonObject object, @Nonnull JsonDeserializationContext deserializationContext, @Nonnull ILootCondition[] conditionsIn)

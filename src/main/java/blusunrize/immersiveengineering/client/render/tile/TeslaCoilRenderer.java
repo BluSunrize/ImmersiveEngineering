@@ -18,7 +18,7 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 import java.util.List;
 
@@ -55,16 +55,16 @@ public class TeslaCoilRenderer extends TileEntityRenderer<TeslaCoilTileEntity>
 		IVertexBuilder base = buffers.getBuffer(IERenderTypes.getLines(lineWidth));
 		TransformingVertexBuilder builder = new TransformingVertexBuilder(base, transform);
 		builder.setColor(rgba[0], rgba[1], rgba[2], rgba[3]);
-		List<Vec3d> subs = animation.subPoints;
+		List<Vector3d> subs = animation.subPoints;
 		builder.pos(animation.startPos.x-tileX, animation.startPos.y-tileY, animation.startPos.z-tileZ).endVertex();
 
-		for(Vec3d sub : subs)
+		for(Vector3d sub : subs)
 		{
 			builder.pos(sub.x-tileX, sub.y-tileY, sub.z-tileZ).endVertex();
 			builder.pos(sub.x-tileX, sub.y-tileY, sub.z-tileZ).endVertex();
 		}
 
-		Vec3d end = (animation.targetEntity!=null?animation.targetEntity.getPositionVector(): animation.targetPos).add(-tileX, -tileY, -tileZ);
+		Vector3d end = (animation.targetEntity!=null?animation.targetEntity.getPositionVec(): animation.targetPos).add(-tileX, -tileY, -tileZ);
 		builder.pos(end.x, end.y, end.z).endVertex();
 	}
 }

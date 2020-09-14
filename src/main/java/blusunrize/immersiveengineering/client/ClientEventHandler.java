@@ -29,6 +29,7 @@ import blusunrize.immersiveengineering.client.gui.BlastFurnaceScreen;
 import blusunrize.immersiveengineering.client.gui.RevolverScreen;
 import blusunrize.immersiveengineering.client.render.tile.AutoWorkbenchRenderer;
 import blusunrize.immersiveengineering.client.render.tile.AutoWorkbenchRenderer.BlueprintLines;
+import blusunrize.immersiveengineering.client.utils.FontUtils;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
@@ -52,15 +53,21 @@ import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.sound.IEMuffledSound;
 import blusunrize.immersiveengineering.common.util.sound.IEMuffledTickableSound;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ITickableSound;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.screen.VideoSettingsScreen;
 import net.minecraft.client.multiplayer.PlayerController;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.GPUWarning;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.IHasHead;
@@ -86,10 +93,10 @@ import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.*;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.MapData;
 import net.minecraftforge.client.event.*;
@@ -118,6 +125,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static blusunrize.immersiveengineering.common.data.IEDataGenerator.rl;
 
@@ -214,35 +222,50 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		{
 			ItemStack shader = wrapper.getShaderItem();
 			if(!shader.isEmpty())
-				event.getToolTip().add(shader.getDisplayName().setStyle(new Style().setColor(TextFormatting.DARK_GRAY)));
+				event.getToolTip().add(ClientUtils.applyFormat(
+						shader.getDisplayName(),
+						TextFormatting.DARK_GRAY
+				));
 		});
-		Style gray = new Style().setColor(TextFormatting.GRAY);
 		if(ItemNBTHelper.hasKey(event.getItemStack(), Lib.NBT_Earmuffs))
 		{
 			ItemStack earmuffs = ItemNBTHelper.getItemStack(event.getItemStack(), Lib.NBT_Earmuffs);
 			if(!earmuffs.isEmpty())
-				event.getToolTip().add(earmuffs.getDisplayName().setStyle(gray));
+				event.getToolTip().add(ClientUtils.applyFormat(
+						earmuffs.getDisplayName(),
+						TextFormatting.GRAY
+				));
 		}
 		if(ItemNBTHelper.hasKey(event.getItemStack(), Lib.NBT_Powerpack))
 		{
 			ItemStack powerpack = ItemNBTHelper.getItemStack(event.getItemStack(), Lib.NBT_Powerpack);
 			if(!powerpack.isEmpty())
 			{
-				event.getToolTip().add(powerpack.getDisplayName().setStyle(gray));
-				event.getToolTip().add(new StringTextComponent(EnergyHelper.getEnergyStored(powerpack)+"/"+EnergyHelper.getMaxEnergyStored(powerpack)+" IF")
-						.setStyle(gray));
+				event.getToolTip().add(ClientUtils.applyFormat(
+						powerpack.getDisplayName(),
+						TextFormatting.GRAY
+				));
+				event.getToolTip().add(ClientUtils.applyFormat(
+						new StringTextComponent(EnergyHelper.getEnergyStored(powerpack)+"/"+EnergyHelper.getMaxEnergyStored(powerpack)+" IF"),
+						TextFormatting.GRAY
+						));
 			}
 		}
 		if(ClientUtils.mc().currentScreen!=null
 				&&ClientUtils.mc().currentScreen instanceof BlastFurnaceScreen
 				&&BlastFurnaceFuel.isValidBlastFuel(event.getItemStack()))
-			event.getToolTip().add(new TranslationTextComponent("desc.immersiveengineering.info.blastFuelTime", BlastFurnaceFuel.getBlastFuelTime(event.getItemStack()))
-					.setStyle(gray));
+			event.getToolTip().add(ClientUtils.applyFormat(
+					new TranslationTextComponent("desc.immersiveengineering.info.blastFuelTime", BlastFurnaceFuel.getBlastFuelTime(event.getItemStack())),
+					TextFormatting.GRAY
+			));
 
 		if(IEServerConfig.GENERAL.tagTooltips.get()&&event.getFlags().isAdvanced())
 		{
 			for(ResourceLocation oid : ItemTags.getCollection().getOwningTags(event.getItemStack().getItem()))
-				event.getToolTip().add(new StringTextComponent(oid.toString()).setStyle(gray));
+				event.getToolTip().add(ClientUtils.applyFormat(
+						new StringTextComponent(oid.toString()),
+						TextFormatting.GRAY
+				));
 		}
 
 		if(event.getItemStack().getItem() instanceof IBulletContainer)
@@ -260,7 +283,10 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			if(bullets!=null)
 			{
 				int bulletAmount = ((IBulletContainer)stack.getItem()).getBulletCount(stack);
-				int line = event.getLines().size()-Utils.findSequenceInList(event.getLines(), BULLET_TOOLTIP, (a, b) -> b.endsWith(a));
+				List<String> linesString = event.getLines().stream()
+						.map(ITextProperties::getString)
+						.collect(Collectors.toList());
+				int line = event.getLines().size()-Utils.findSequenceInList(linesString, BULLET_TOOLTIP, (a, b) -> b.endsWith(a));
 
 				int currentX = event.getX();
 				int currentY = line > 0?event.getY()+(event.getHeight()+1-line*10): event.getY()-42;
@@ -529,7 +555,8 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 					}
 					else if(equipped.getItem()==Misc.fluorescentTube)
 					{
-						String s = I18n.format("desc.immersiveengineering.info.colour", "#"+FluorescentTubeItem.hexColorString(equipped));
+						int color = FluorescentTubeItem.getRGBInt(equipped, 1);
+						String s = I18n.format(Lib.DESC_INFO+"colour") + "#"+FontUtils.hexColorString(color);
 						ClientUtils.font().renderString(s, scaledWidth/2-ClientUtils.font().getStringWidth(s)/2,
 								scaledHeight-ForgeIngameGui.left_height-20, FluorescentTubeItem.getRGBInt(equipped, 1),
 								true, transform.getLast().getMatrix(), buffer, false, 0, 0xf000f0
@@ -615,7 +642,6 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						transform.translate(30, -27.5, 0);
 						transform.scale(scale, scale, 1);
 						String chargeTxt = chargeLevel < 10?"0 "+chargeLevel: chargeLevel/10+" "+chargeLevel%10;
-//						ClientUtils.font().drawStringWithShadow(chargeTxt, 0, 0, Lib.COLOUR_I_ImmersiveOrange);
 						ClientUtils.font().renderString(
 								chargeTxt, 0, 0, Lib.COLOUR_I_ImmersiveOrange,
 								true, transform.getLast().getMatrix(), buffer, false,
@@ -685,7 +711,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 									ClientUtils.drawTexturedRect(builder, transform, -100, -20, 64, 16, 1, 1, 1, 1, 0/256f, 64/256f, 76/256f, 92/256f);
 									if(!fuel.isEmpty())
 									{
-										String name = ClientUtils.font().trimStringToWidth(fuel.getDisplayName().getFormattedText(), 50).trim();
+										String name = ClientUtils.font().func_238417_a_(fuel.getDisplayName(), 50).getString().trim();
 										ClientUtils.font().renderString(
 												name, -68-ClientUtils.font().getStringWidth(name)/2, -15, 0,
 												false, transform.getLast().getMatrix(), buffer, false,
@@ -755,18 +781,18 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 							int storage = receiver.getEnergyStored(side);
 							if(maxStorage > 0)
 								text = I18n.format(Lib.DESC_INFO+"energyStored", "<br>"+Utils.toScientificNotation(storage, "0##", 100000)+" / "+Utils.toScientificNotation(maxStorage, "0##", 100000)).split("<br>");
-							int col = IEServerConfig.GENERAL.nixietubeFont.get()?Lib.colour_nixieTubeText: 0xffffff;
+							int col = 0xffffff;
 							int i = 0;
 							RenderSystem.enableBlend();
 							for(String s : text)
 								if(s!=null)
 								{
 									s = s.trim();
-									int w = ClientProxy.nixieFontOptional.getStringWidth(s);
-									ClientProxy.nixieFontOptional.renderString(
+									int w = ClientUtils.font().getStringWidth(s);
+									ClientUtils.font().renderString(
 											s, scaledWidth/2-w/2,
-											scaledHeight/2-4-text.length*(ClientProxy.nixieFontOptional.getFontHeight()+2)+
-													(i++)*(ClientProxy.nixieFontOptional.getFontHeight()+2), col,
+											scaledHeight/2-4-text.length*(ClientUtils.font().FONT_HEIGHT+2)+
+													(i++)*(ClientUtils.font().FONT_HEIGHT+2), col,
 											false, transform.getLast().getMatrix(), buffer, false,
 											0, 0xf000f0
 									);
@@ -791,18 +817,17 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 					if(tileEntity instanceof IBlockOverlayText)
 					{
 						IBlockOverlayText overlayBlock = (IBlockOverlayText)tileEntity;
-						String[] text = overlayBlock.getOverlayText(ClientUtils.mc().player, mop, hammer);
-						boolean useNixie = overlayBlock.useNixieFont(ClientUtils.mc().player, mop);
+						ITextComponent[] text = overlayBlock.getOverlayText(ClientUtils.mc().player, mop, hammer);
 						if(text!=null&&text.length > 0)
 						{
-							FontRenderer font = useNixie?ClientProxy.nixieFontOptional: ClientUtils.font();
-							int col = (useNixie&&IEServerConfig.GENERAL.nixietubeFont.get())?Lib.colour_nixieTubeText: 0xffffff;
+							FontRenderer font = ClientUtils.font();
 							int i = 0;
 							IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
-							for(String s : text)
+							for(ITextComponent s : text)
 								if(s!=null)
-									font.renderString(
-											s, scaledWidth/2+8, scaledHeight/2+8+(i++)*font.FONT_HEIGHT, col, true,
+									font.func_238416_a_(
+											LanguageMap.getInstance().func_241870_a(s),
+											scaledWidth/2+8, scaledHeight/2+8+(i++)*font.FONT_HEIGHT, 0xffffffff, true,
 											transform.getLast().getMatrix(), buffer, false, 0, 0xf000f0
 									);
 							buffer.finish();
@@ -833,7 +858,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 							float mapRotation = (frameEntity.getRotation()%4)*1.5708f;
 
 							// Player hit vector, relative to frame block pos
-							Vec3d hitVec = mop.getHitVec().subtract(new Vec3d(frameEntity.getHangingPosition()));
+							Vector3d hitVec = mop.getHitVec().subtract(Vector3d.copy(frameEntity.getHangingPosition()));
 							Direction frameDir = frameEntity.getHorizontalFacing();
 							double cursorH = 0;
 							double cursorV = 0;
@@ -888,7 +913,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 									byte b0 = (byte)((int)((double)(f*2.0F)+0.5D));
 									byte b1 = (byte)((int)((double)(f1*2.0F)+0.5D));
 									// Make it a vector, rotate it around the map center
-									Vec3d mapPos = new Vec3d(0, b1, b0);
+									Vector3d mapPos = new Vector3d(0, b1, b0);
 									mapPos = mapPos.rotatePitch(mapRotation);
 									// Turn it into a 0.0 to 128.0 offset
 									double offsetH = (mapPos.z/2.0F+64.0F);
@@ -909,7 +934,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 								{
 									MineralMix mix = MineralMix.mineralList.get(new ResourceLocation(minerals.getString(i)));
 									if(mix!=null)
-										font.drawStringWithShadow(I18n.format(mix.getTranslationKey()), scaledWidth/2+8, scaledHeight/2+8+i*font.FONT_HEIGHT, 0xffffff);
+										font.drawStringWithShadow(transform, I18n.format(mix.getTranslationKey()), scaledWidth/2+8, scaledHeight/2+8+i*font.FONT_HEIGHT, 0xffffff);
 								}
 						}
 					}
@@ -1020,7 +1045,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			IRenderTypeBuffer buffer = event.getBuffers();
 			BlockRayTraceResult rtr = (BlockRayTraceResult)event.getTarget();
 			BlockPos pos = rtr.getPos();
-			Vec3d renderView = event.getInfo().getProjectedView();
+			Vector3d renderView = event.getInfo().getProjectedView();
 			transform.push();
 			transform.translate(-renderView.x, -renderView.y, -renderView.z);
 			transform.translate(pos.getX(), pos.getY(), pos.getZ());
@@ -1109,7 +1134,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				float yFromMid = side.getAxis()==Axis.Y?0: (float)rtr.getHitVec().y-pos.getY()-.5f;
 				float zFromMid = side.getAxis()==Axis.Z?0: (float)rtr.getHitVec().z-pos.getZ()-.5f;
 				float max = Math.max(Math.abs(yFromMid), Math.max(Math.abs(xFromMid), Math.abs(zFromMid)));
-				Vec3d dir = new Vec3d(max==Math.abs(xFromMid)?Math.signum(xFromMid): 0, max==Math.abs(yFromMid)?Math.signum(yFromMid): 0, max==Math.abs(zFromMid)?Math.signum(zFromMid): 0);
+				Vector3d dir = new Vector3d(max==Math.abs(xFromMid)?Math.signum(xFromMid): 0, max==Math.abs(yFromMid)?Math.signum(yFromMid): 0, max==Math.abs(zFromMid)?Math.signum(zFromMid): 0);
 				drawBlockOverlayArrow(mat, buffers, dir, side, targetedBB);
 
 			}
@@ -1257,15 +1282,15 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 
 	private final static float[][] arrowCoords = {{0, .375f}, {.3125f, .0625f}, {.125f, .0625f}, {.125f, -.375f}, {-.125f, -.375f}, {-.125f, .0625f}, {-.3125f, .0625f}};
 
-	public static void drawBlockOverlayArrow(Matrix4f transform, IRenderTypeBuffer buffers, Vec3d directionVec,
+	public static void drawBlockOverlayArrow(Matrix4f transform, IRenderTypeBuffer buffers, Vector3d directionVec,
 											 Direction side, AxisAlignedBB targetedBB)
 	{
-		Vec3d[] translatedPositions = new Vec3d[arrowCoords.length];
+		Vector3d[] translatedPositions = new Vector3d[arrowCoords.length];
 		Matrix4 mat = new Matrix4();
-		Vec3d defaultDir = side.getAxis()==Axis.Y?new Vec3d(0, 0, 1): new Vec3d(0, 1, 0);
+		Vector3d defaultDir = side.getAxis()==Axis.Y?new Vector3d(0, 0, 1): new Vector3d(0, 1, 0);
 		directionVec = directionVec.normalize();
 		double angle = Math.acos(defaultDir.dotProduct(directionVec));
-		Vec3d axis = defaultDir.crossProduct(directionVec);
+		Vector3d axis = defaultDir.crossProduct(directionVec);
 		mat.rotate(angle, axis.x, axis.y, axis.z);
 		if(side.getAxis()==Axis.Z)
 			mat.rotate(Math.PI/2, 1, 0, 0).rotate(Math.PI, 0, 1, 0);
@@ -1273,19 +1298,19 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			mat.rotate(Math.PI/2, 0, 0, 1).rotate(Math.PI/2, 0, 1, 0);
 		for(int i = 0; i < translatedPositions.length; i++)
 		{
-			Vec3d vec = mat.apply(new Vec3d(arrowCoords[i][0], 0, arrowCoords[i][1])).add(.5, .5, .5);
+			Vector3d vec = mat.apply(new Vector3d(arrowCoords[i][0], 0, arrowCoords[i][1])).add(.5, .5, .5);
 			if(targetedBB!=null)
-				vec = new Vec3d(side==Direction.WEST?targetedBB.minX-.002: side==Direction.EAST?targetedBB.maxX+.002: vec.x, side==Direction.DOWN?targetedBB.minY-.002: side==Direction.UP?targetedBB.maxY+.002: vec.y, side==Direction.NORTH?targetedBB.minZ-.002: side==Direction.SOUTH?targetedBB.maxZ+.002: vec.z);
+				vec = new Vector3d(side==Direction.WEST?targetedBB.minX-.002: side==Direction.EAST?targetedBB.maxX+.002: vec.x, side==Direction.DOWN?targetedBB.minY-.002: side==Direction.UP?targetedBB.maxY+.002: vec.y, side==Direction.NORTH?targetedBB.minZ-.002: side==Direction.SOUTH?targetedBB.maxZ+.002: vec.z);
 			translatedPositions[i] = vec;
 		}
 
 		IVertexBuilder triBuilder = buffers.getBuffer(IERenderTypes.TRANSLUCENT_TRIANGLES);
-		Vec3d center = translatedPositions[0];
+		Vector3d center = translatedPositions[0];
 		for(int i = 2; i < translatedPositions.length; i++)
 		{
-			Vec3d point = translatedPositions[i];
-			Vec3d prevPoint = translatedPositions[i-1];
-			for(Vec3d p : new Vec3d[]{center, prevPoint, point})
+			Vector3d point = translatedPositions[i];
+			Vector3d prevPoint = translatedPositions[i-1];
+			for(Vector3d p : new Vector3d[]{center, prevPoint, point})
 				triBuilder.pos(transform, (float)p.x, (float)p.y, (float)p.z)
 						.color(Lib.COLOUR_F_ImmersiveOrange[0], Lib.COLOUR_F_ImmersiveOrange[1], Lib.COLOUR_F_ImmersiveOrange[2], 0.4F)
 						.endVertex();
@@ -1293,7 +1318,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		IVertexBuilder lineBuilder = buffers.getBuffer(IERenderTypes.TRANSLUCENT_LINES);
 		for(int i = 0; i <= translatedPositions.length; i++)
 		{
-			Vec3d point = translatedPositions[i%translatedPositions.length];
+			Vector3d point = translatedPositions[i%translatedPositions.length];
 			int max = i==0||i==translatedPositions.length?1: 2;
 			for(int j = 0; j < max; ++j)
 				lineBuilder.pos(transform, (float)point.x, (float)point.y, (float)point.z)
@@ -1304,7 +1329,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 
 	public static void drawAdditionalBlockbreak(DrawHighlightEvent ev, PlayerEntity player, float partialTicks, Collection<BlockPos> blocks)
 	{
-		Vec3d renderView = ev.getInfo().getProjectedView();
+		Vector3d renderView = ev.getInfo().getProjectedView();
 		for(BlockPos pos : blocks)
 			ev.getContext().drawSelectionBox(
 					ev.getMatrix(),
@@ -1330,7 +1355,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		float partial = event.getPartialTicks();
 		MatrixStack transform = event.getMatrixStack();
 		transform.push();
-		Vec3d renderView = ClientUtils.mc().gameRenderer.getActiveRenderInfo().getProjectedView();
+		Vector3d renderView = ClientUtils.mc().gameRenderer.getActiveRenderInfo().getProjectedView();
 		transform.translate(-renderView.x, -renderView.y, -renderView.z);
 		IRenderTypeBuffer.Impl buffers = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
 		if(!FractalParticle.PARTICLE_FRACTAL_DEQUE.isEmpty())
@@ -1363,7 +1388,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 
 		if(Screen.hasShiftDown())
 		{
-			DimensionType dimension = ClientUtils.mc().player.getEntityWorld().getDimension().getType();
+			RegistryKey<World> dimension = ClientUtils.mc().player.getEntityWorld().getDimensionKey();
 			List<ResourceLocation> keyList = new ArrayList<>(MineralMix.mineralList.keySet());
 			keyList.sort(Comparator.comparing(ResourceLocation::toString));
 			for(MineralVein vein : ExcavatorHandler.getMineralVeinList().get(dimension))
@@ -1410,13 +1435,13 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				Matrix4f mat = transform.getLast().getMatrix();
 				int time = entry.getValue().getValue().get();
 				float alpha = (float)Math.min((2+Math.sin(time*Math.PI/40))/3, time/20F);
-				Vec3d prev = conn.getPoint(0, conn.getEndA());
+				Vector3d prev = conn.getPoint(0, conn.getEndA());
 				for(int i = 0; i < RenderData.POINTS_PER_WIRE; i++)
 				{
 					builder.pos(mat, (float)prev.x, (float)prev.y, (float)prev.z)
 							.color(1, 0, 0, alpha).endVertex();
 					alpha = (float)Math.min((2+Math.sin((time+(i+1)*8)*Math.PI/40))/3, time/20F);
-					Vec3d next = conn.getPoint((i+1)/(double)RenderData.POINTS_PER_WIRE, conn.getEndA());
+					Vector3d next = conn.getPoint((i+1)/(double)RenderData.POINTS_PER_WIRE, conn.getEndA());
 					builder.pos(mat, (float)next.x, (float)next.y, (float)next.z)
 							.color(1, 0, 0, alpha).endVertex();
 					prev = next;
@@ -1446,6 +1471,29 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	{
 		if(event.getEntity().getPersistentData().contains("headshot"))
 			enableHead(event.getRenderer(), true);
+	}
+
+	@SubscribeEvent
+	public void onScreenOpened(GuiScreenEvent.InitGuiEvent.Pre event)
+	{
+		if(event.getGui() instanceof VideoSettingsScreen&&ClientProxy.stencilEnabled)
+		{
+			GPUWarning gpuWarning = Minecraft.getInstance().func_241558_U_();
+			final String key = "renderer";
+			final String suffix = "tencil enabled in Immersive Engineering config";
+			if(!gpuWarning.field_241688_c_.containsKey(key)||!gpuWarning.field_241688_c_.get(key).endsWith(suffix))
+			{
+				ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
+				for(Entry<String, String> e : gpuWarning.field_241688_c_.entrySet())
+					if(key.equals(e.getKey()))
+						builder.put(key, e.getValue()+", s"+suffix);
+					else
+						builder.put(e.getKey(), e.getValue());
+				if(!gpuWarning.field_241688_c_.containsKey(key))
+					builder.put(key, "S"+suffix);
+				gpuWarning.field_241688_c_ = builder.build();
+			}
+		}
 	}
 
 	private static void enableHead(LivingRenderer renderer, boolean shouldEnable)

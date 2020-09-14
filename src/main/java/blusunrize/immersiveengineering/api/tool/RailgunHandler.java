@@ -11,8 +11,11 @@ package blusunrize.immersiveengineering.api.tool;
 import com.google.common.base.Preconditions;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.tags.ITag;
+import net.minecraft.tags.Tag;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.Pair;
@@ -22,31 +25,32 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 public class RailgunHandler
 {
-	public static List<Pair<Ingredient, IRailgunProjectile>> projectilePropertyMap = new ArrayList<>();
+	public static List<Pair<Supplier<Ingredient>, IRailgunProjectile>> projectilePropertyMap = new ArrayList<>();
 
-	public static IRailgunProjectile registerProjectile(Ingredient stack, IRailgunProjectile properties)
+	public static IRailgunProjectile registerProjectile(Supplier<Ingredient> stack, IRailgunProjectile properties)
 	{
 		projectilePropertyMap.add(Pair.of(stack, properties));
 		return properties;
 	}
 
-	public static StandardRailgunProjectile registerStandardProjectile(Ingredient stack, double damage, double gravity)
+	public static StandardRailgunProjectile registerStandardProjectile(ITag<Item> tag, double damage, double gravity)
 	{
-		return (StandardRailgunProjectile)registerProjectile(stack, new StandardRailgunProjectile(damage, gravity));
+		return (StandardRailgunProjectile)registerProjectile(() -> Ingredient.fromTag(tag), new StandardRailgunProjectile(damage, gravity));
 	}
 
 	public static StandardRailgunProjectile registerStandardProjectile(ItemStack stack, double damage, double gravity)
 	{
-		return registerStandardProjectile(Ingredient.fromStacks(stack), damage, gravity);
+		return (StandardRailgunProjectile)registerProjectile(() -> Ingredient.fromStacks(stack), new StandardRailgunProjectile(damage, gravity));
 	}
 
 	public static IRailgunProjectile getProjectile(ItemStack stack)
 	{
-		for(Pair<Ingredient, IRailgunProjectile> pair : projectilePropertyMap)
-			if(pair.getLeft().test(stack))
+		for(Pair<Supplier<Ingredient>, IRailgunProjectile> pair : projectilePropertyMap)
+			if(pair.getLeft().get().test(stack))
 				return pair.getRight();
 		return null;
 	}

@@ -20,9 +20,6 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.renderer.Quaternion;
-import net.minecraft.client.renderer.TransformationMatrix;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.Entity;
@@ -36,8 +33,11 @@ import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.util.math.vector.TransformationMatrix;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -156,7 +156,7 @@ public class VerticalConveyor extends BasicConveyor
 	}
 
 	@Override
-	public Vec3d getDirection(Entity entity, boolean outputBlocked)
+	public Vector3d getDirection(Entity entity, boolean outputBlocked)
 	{
 		BlockPos posWall = getTile().getPos().offset(getFacing());
 		double d = .625+entity.getWidth();
@@ -198,7 +198,7 @@ public class VerticalConveyor extends BasicConveyor
 		BlockPos upForward = getTile().getPos().add(0, 1, 0);
 		if(contact&&!(Utils.getExistingTileEntity(getTile().getWorld(), upForward) instanceof IConveyorTile))
 			vY *= 2.25;
-		return new Vec3d(vX, vY, vZ);
+		return new Vector3d(vX, vY, vZ);
 	}
 
 	private CapabilityReference<IItemHandler> inserter;
@@ -226,12 +226,12 @@ public class VerticalConveyor extends BasicConveyor
 		double treshold = .9;
 		boolean contact = distY < treshold;
 
-		entity.onGround = false;
+		entity.setOnGround(false);
 		if(entity.fallDistance < 3)
 			entity.fallDistance = 0;
 		else
 			entity.fallDistance *= .9;
-		Vec3d vec = getDirection(entity, outputBlocked);
+		Vector3d vec = getDirection(entity, outputBlocked);
 		boolean hasBeenHandled = !ConveyorHandler.markEntityAsHandled(entity);
 		if(outputBlocked&&entity.getPosY() >= getTile().getPos().getY()+0.25)
 		{
@@ -241,9 +241,9 @@ public class VerticalConveyor extends BasicConveyor
 			else
 				my = entity.getMotion().y;
 			if(hasBeenHandled)
-				vec = new Vec3d(vec.x, my, vec.z);
+				vec = new Vector3d(vec.x, my, vec.z);
 			else
-				vec = new Vec3d(0, my, 0);
+				vec = new Vector3d(0, my, 0);
 		}
 		entity.setMotion(vec);
 

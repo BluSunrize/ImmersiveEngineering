@@ -30,16 +30,16 @@ public class MultiLayerModel implements IModelGeometry<MultiLayerModel>
 	}
 
 	@Override
-	public Collection<Material> getTextures(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors)
+	public Collection<RenderMaterial> getTextures(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors)
 	{
-		List<Material> ret = new ArrayList<>();
+		List<RenderMaterial> ret = new ArrayList<>();
 		for(IModelGeometry<?> geometry : subModels.values())
 			ret.addAll(geometry.getTextures(owner, modelGetter, missingTextureErrors));
 		return ret;
 	}
 
 	@Override
-	public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation)
+	public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<RenderMaterial, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation)
 	{
 		Map<String, IBakedModel> baked = new HashMap<>();
 		for(Entry<String, IModelGeometry<?>> e : subModels.entrySet())

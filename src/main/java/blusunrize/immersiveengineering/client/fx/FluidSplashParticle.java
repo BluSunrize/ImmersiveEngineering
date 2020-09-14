@@ -11,6 +11,8 @@ package blusunrize.immersiveengineering.client.fx;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
@@ -20,6 +22,7 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.SpriteTexturedParticle;
 import net.minecraft.client.renderer.texture.MissingTextureSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.network.PacketBuffer;
@@ -30,7 +33,6 @@ import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
@@ -44,7 +46,14 @@ import javax.annotation.Nullable;
 @OnlyIn(Dist.CLIENT)
 public class FluidSplashParticle extends SpriteTexturedParticle
 {
-	public FluidSplashParticle(Fluid fluid, World worldIn, double xCoordIn, double yCoordIn, double zCoordIn,
+	public static final Codec<Data> CODEC = RecordCodecBuilder.create(instance ->
+			instance.group(
+					Codec.STRING.fieldOf("fluid").forGetter(
+							data -> data.fluid.getRegistryName().toString()
+					)).apply(instance, Data::new)
+	);
+
+	public FluidSplashParticle(Fluid fluid, ClientWorld worldIn, double xCoordIn, double yCoordIn, double zCoordIn,
 							   double xSpeedIn, double ySpeedIn, double zSpeedIn)
 	{
 		super(worldIn, xCoordIn, yCoordIn, zCoordIn, xSpeedIn, ySpeedIn, zSpeedIn);
@@ -126,7 +135,7 @@ public class FluidSplashParticle extends SpriteTexturedParticle
 	{
 		@Nullable
 		@Override
-		public Particle makeParticle(Data typeIn, World worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
+		public Particle makeParticle(Data typeIn, ClientWorld worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
 		{
 			return new FluidSplashParticle(typeIn.fluid, worldIn, x, y, z, xSpeed, ySpeed, zSpeed);
 		}
@@ -134,8 +143,12 @@ public class FluidSplashParticle extends SpriteTexturedParticle
 
 	public static class Data implements IParticleData
 	{
-
 		private final Fluid fluid;
+
+		public Data(String name)
+		{
+			this(ForgeRegistries.FLUIDS.getValue(new ResourceLocation(name)));
+		}
 
 		public Data(Fluid fluid)
 		{

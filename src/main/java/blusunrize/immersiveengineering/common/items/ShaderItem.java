@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderLayer;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.shader.impl.ShaderCaseItem;
+import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Cloth;
 import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerStandingBlock;
 import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerTileEntity;
@@ -27,7 +28,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.WallBannerBlock;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
@@ -38,8 +38,8 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -125,13 +125,13 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, ITextureOverr
 	{
 		//TODO proper translation
 		list.add(new TranslationTextComponent(Lib.DESC_INFO+"shader.level")
-				.appendText(this.getRarity(stack).color.toString())
-				.appendSibling(new TranslationTextComponent(Lib.DESC_INFO+"shader.rarity."+this.getRarity(stack).name().toLowerCase(Locale.US)))
+				.appendString(this.getRarity(stack).color.toString())
+				.append(new TranslationTextComponent(Lib.DESC_INFO+"shader.rarity."+this.getRarity(stack).name().toLowerCase(Locale.US)))
 		);
 		if(!Screen.hasShiftDown())
 			list.add(new TranslationTextComponent(Lib.DESC_INFO+"shader.applyTo")
-					.appendText(" ")
-					.appendSibling(new TranslationTextComponent(Lib.DESC_INFO+"holdShift")));
+					.appendString(" ")
+					.append(new TranslationTextComponent(Lib.DESC_INFO+"holdShift")));
 		else
 		{
 			list.add(new TranslationTextComponent(Lib.DESC_INFO+"shader.applyTo"));
@@ -141,8 +141,10 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, ITextureOverr
 				List<ShaderCase> array = ShaderRegistry.shaderRegistry.get(rl).getCases();
 				for(ShaderCase sCase : array)
 					if(!(sCase instanceof ShaderCaseItem))
-						list.add(new TranslationTextComponent(Lib.DESC_INFO+"shader."+sCase.getShaderType())
-								.setStyle(new Style().setColor(TextFormatting.DARK_GRAY)));
+						list.add(ClientUtils.applyFormat(
+								new TranslationTextComponent(Lib.DESC_INFO+"shader."+sCase.getShaderType()),
+								TextFormatting.DARK_GRAY
+						));
 			}
 		}
 	}
@@ -151,10 +153,11 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, ITextureOverr
 	@Override
 	public ITextComponent getDisplayName(@Nonnull ItemStack stack)
 	{
-		ITextComponent itc = super.getDisplayName(stack);
+		IFormattableTextComponent itc = super.getDisplayName(stack).deepCopy();
 		ResourceLocation rl = getShaderName(stack);
 		if(rl!=null)
-			itc.appendText(": ").appendSibling(new TranslationTextComponent("item."+rl.getNamespace()+".shader.name."+rl.getPath()));
+			itc.appendString(": ")
+					.append(new TranslationTextComponent("item."+rl.getNamespace()+".shader.name."+rl.getPath()));
 		return itc;
 	}
 

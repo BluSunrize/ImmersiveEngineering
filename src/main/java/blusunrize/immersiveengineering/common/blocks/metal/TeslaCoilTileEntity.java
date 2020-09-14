@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
@@ -47,10 +46,10 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -70,7 +69,7 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 	public FluxStorage energyStorage = new FluxStorage(48000);
 	public boolean redstoneControlInverted = false;
 	public boolean lowPower = false;
-	private Vec3d soundPos = null;
+	private Vector3d soundPos = null;
 	@OnlyIn(Dist.CLIENT)
 	public static ArrayListMultimap<BlockPos, LightningAnimation> effectMap;
 	private static final ElectricSource TC_FIELD = new ElectricSource(-1);
@@ -83,7 +82,7 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 	@Override
 	public void tick()
 	{
-		ApiUtils.checkForNeedlessTicking(this);
+		checkForNeedlessTicking();
 		if(isDummy())
 			return;
 		synchronized(this)
@@ -279,7 +278,7 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 						f = dz < 0?Direction.NORTH: Direction.SOUTH;
 				}
 				double verticalOffset = 1+Utils.RAND.nextDouble()*.25;
-				Vec3d coilPos = new Vec3d(getPos()).add(.5, .5, .5);
+				Vector3d coilPos = Vector3d.copyCentered(getPos());
 				//Vertical offset
 				coilPos = coilPos.add(getFacing().getXOffset()*verticalOffset, getFacing().getYOffset()*verticalOffset, getFacing().getZOffset()*verticalOffset);
 				//offset to direction
@@ -333,7 +332,7 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 		}
 
 		double verticalOffset = 1+Utils.RAND.nextDouble()*.25;
-		Vec3d coilPos = new Vec3d(getPos()).add(.5, .5, .5);
+		Vector3d coilPos = Vector3d.copyCentered(getPos());
 		//Vertical offset
 		coilPos = coilPos.add(getFacing().getXOffset()*verticalOffset, getFacing().getYOffset()*verticalOffset, getFacing().getZOffset()*verticalOffset);
 		//offset to direction
@@ -342,7 +341,7 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 		f = DirectionUtils.rotateAround(f, getFacing().getAxis());
 		double dShift = (Utils.RAND.nextDouble()-.5)*.75;
 		coilPos = coilPos.add(f.getXOffset()*dShift, f.getYOffset()*dShift, f.getZOffset()*dShift);
-		addAnimation(new LightningAnimation(coilPos, new Vec3d(getPos()).add(tx, ty, tz)));
+		addAnimation(new LightningAnimation(coilPos, Vector3d.copy(getPos()).add(tx, ty, tz)));
 //		world.playSound(null, getPos(), IESounds.tesla, SoundCategory.BLOCKS,2.5f, .5f + Utils.RAND.nextFloat());
 		world.playSound(getPos().getX(), getPos().getY(), getPos().getZ(), IESounds.tesla, SoundCategory.BLOCKS, 2.5F, 0.5F+Utils.RAND.nextFloat(), true);
 	}
@@ -403,7 +402,7 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 	}
 
 	@Override
-	public ActionResultType screwdriverUseSide(Direction side, PlayerEntity player, Hand hand, Vec3d hitVec)
+	public ActionResultType screwdriverUseSide(Direction side, PlayerEntity player, Hand hand, Vector3d hitVec)
 	{
 		if(isDummy())
 		{
@@ -458,7 +457,7 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
 	{
 		return false;
 	}
@@ -533,23 +532,23 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 
 	public static class LightningAnimation
 	{
-		public Vec3d startPos;
+		public Vector3d startPos;
 		public LivingEntity targetEntity;
-		public Vec3d targetPos;
+		public Vector3d targetPos;
 		private int lifeTimer = 20;
 		private final int ANIMATION_MAX = 4;
 		private int animationTimer = ANIMATION_MAX;
 
-		public List<Vec3d> subPoints = new ArrayList<>();
-		private Vec3d prevTarget;
+		public List<Vector3d> subPoints = new ArrayList<>();
+		private Vector3d prevTarget;
 
-		public LightningAnimation(Vec3d startPos, LivingEntity targetEntity)
+		public LightningAnimation(Vector3d startPos, LivingEntity targetEntity)
 		{
 			this.startPos = startPos;
 			this.targetEntity = targetEntity;
 		}
 
-		public LightningAnimation(Vec3d startPos, Vec3d targetPos)
+		public LightningAnimation(Vector3d startPos, Vector3d targetPos)
 		{
 			this.startPos = startPos;
 			this.targetPos = targetPos;
@@ -560,7 +559,7 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 			if(subPoints.isEmpty()||animationTimer==0)
 				return true;
 			boolean b = false;
-			Vec3d end = targetEntity!=null?targetEntity.getPositionVector(): targetPos;
+			Vector3d end = targetEntity!=null?targetEntity.getPositionVec(): targetPos;
 			if(prevTarget!=null)
 				b = prevTarget.distanceTo(end) > 1;
 			prevTarget = end;
@@ -570,12 +569,12 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 		public void createLightning(Random rand)
 		{
 			subPoints.clear();
-			Vec3d end = targetEntity!=null?targetEntity.getPositionVector(): targetPos;
-			Vec3d dist = end.subtract(startPos);
+			Vector3d end = targetEntity!=null?targetEntity.getPositionVec(): targetPos;
+			Vector3d dist = end.subtract(startPos);
 			double points = 12;
 			for(int i = 0; i < points; i++)
 			{
-				Vec3d sub = startPos.add(dist.x/points*i, dist.y/points*i, dist.z/points*i);
+				Vector3d sub = startPos.add(dist.x/points*i, dist.y/points*i, dist.z/points*i);
 				//distance to the middle point and by that, distance from the start and end. -1 is start, 1 is end
 				double fixPointDist = (i-points/2)/(points/2);
 				//Randomization modifier, closer to start/end means smaller divergence

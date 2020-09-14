@@ -25,8 +25,8 @@ import net.minecraft.client.renderer.model.IModelTransform;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.ILightReader;
+import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.world.IBlockDisplayReader;
 import net.minecraftforge.client.model.data.IModelData;
 
 import javax.annotation.Nonnull;
@@ -40,14 +40,14 @@ import java.util.concurrent.TimeUnit;
 
 public class BakedDynamicSplitModel<K, T extends ICacheKeyProvider<K> & IBakedModel> extends CompositeBakedModel<T>
 {
-	private final Set<Vec3i> parts;
+	private final Set<Vector3i> parts;
 	private final IModelTransform transform;
-	private final Cache<K, Map<Vec3i, List<BakedQuad>>> subModelCache = CacheBuilder.newBuilder()
+	private final Cache<K, Map<Vector3i, List<BakedQuad>>> subModelCache = CacheBuilder.newBuilder()
 			.maximumSize(10)
 			.expireAfterAccess(1, TimeUnit.MINUTES)
 			.build();
 
-	public BakedDynamicSplitModel(T base, Set<Vec3i> parts, IModelTransform transform)
+	public BakedDynamicSplitModel(T base, Set<Vector3i> parts, IModelTransform transform)
 	{
 		super(base);
 		this.parts = parts;
@@ -83,7 +83,7 @@ public class BakedDynamicSplitModel<K, T extends ICacheKeyProvider<K> & IBakedMo
 	@Nonnull
 	@Override
 	public IModelData getModelData(
-			@Nonnull ILightReader world,
+			@Nonnull IBlockDisplayReader world,
 			@Nonnull BlockPos pos,
 			@Nonnull BlockState state,
 			@Nonnull IModelData tileData

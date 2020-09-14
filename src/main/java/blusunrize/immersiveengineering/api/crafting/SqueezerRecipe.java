@@ -16,6 +16,7 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.RegistryObject;
 
@@ -82,16 +83,19 @@ public class SqueezerRecipe extends MultiblockRecipe
 		return 0;
 	}
 
-	public static SortedMap<String, Integer> getFluidValuesSorted(Fluid f, boolean inverse)
+	public static SortedMap<ITextComponent, Integer> getFluidValuesSorted(Fluid f, boolean inverse)
 	{
-		SortedMap<String, Integer> map = new TreeMap<>(
-				inverse?Comparator.<String>reverseOrder(): Comparator.<String>naturalOrder()
+		SortedMap<ITextComponent, Integer> map = new TreeMap<>(
+				Comparator.comparing(
+						ITextComponent::getString,
+						inverse?Comparator.reverseOrder(): Comparator.reverseOrder()
+				)
 		);
 		for(SqueezerRecipe recipe : recipeList.values())
 			if(recipe.fluidOutput!=null&&recipe.fluidOutput.getFluid()==f&&!recipe.input.hasNoMatchingItems())
 			{
 				ItemStack is = recipe.input.getMatchingStacks()[0];
-				map.put(is.getDisplayName().getFormattedText(), recipe.fluidOutput.getAmount());
+				map.put(is.getDisplayName(), recipe.fluidOutput.getAmount());
 			}
 		return map;
 	}

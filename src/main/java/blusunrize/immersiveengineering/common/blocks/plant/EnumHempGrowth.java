@@ -24,20 +24,20 @@ public enum EnumHempGrowth implements IStringSerializable
 	TOP0;
 
 	@Override
-	public String getName()
+	public String getString()
 	{
 		return name().toLowerCase(Locale.ENGLISH);
 	}
 
 	public ResourceLocation getTextureName()
 	{
-		return new ResourceLocation(ImmersiveEngineering.MODID, "block/hemp/"+getName());
+		return new ResourceLocation(ImmersiveEngineering.MODID, "block/hemp/"+getString());
 	}
 
 	@Override
 	public String toString()
 	{
-		return getName();
+		return getString();
 	}
 
 	public EnumHempGrowth next()

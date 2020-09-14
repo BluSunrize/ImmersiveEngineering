@@ -18,8 +18,6 @@ import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
 import blusunrize.immersiveengineering.api.wires.WireType;
-import blusunrize.immersiveengineering.client.font.IEFontReloadListener;
-import blusunrize.immersiveengineering.client.font.IEFontRender;
 import blusunrize.immersiveengineering.client.fx.FluidSplashParticle.Data;
 import blusunrize.immersiveengineering.client.fx.FractalParticle;
 import blusunrize.immersiveengineering.client.fx.IEParticles;
@@ -78,6 +76,7 @@ import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Container;
@@ -89,7 +88,7 @@ import net.minecraft.particles.ItemParticleData;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.resources.IReloadableResourceManager;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.Property;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
@@ -98,7 +97,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -127,11 +126,6 @@ import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 @Mod.EventBusSubscriber(value = Dist.CLIENT, modid = MODID, bus = Bus.MOD)
 public class ClientProxy extends CommonProxy
 {
-	public static AtlasTexture revolverTextureMap;
-	public static final ResourceLocation revolverTextureResource = new ResourceLocation("textures/atlas/immersiveengineering/revolvers.png");
-	public static IEFontRender nixieFontOptional;
-	public static IEFontRender nixieFont;
-	public static IEFontRender itemFont;
 	public static KeyBinding keybind_magnetEquip = new KeyBinding("key.immersiveengineering.magnetEquip", GLFW.GLFW_KEY_S, "key.categories.immersiveengineering");
 	public static KeyBinding keybind_chemthrowerSwitch = new KeyBinding("key.immersiveengineering.chemthrowerSwitch", -1, "key.categories.immersiveengineering");
 	public static KeyBinding keybind_railgunZoom = new KeyBinding("key.immersiveengineering.railgunZoom", InputMappings.Type.MOUSE, 2, "key.categories.immersiveengineering");
@@ -153,16 +147,20 @@ public class ClientProxy extends CommonProxy
 			ModelLoaderRegistry.registerLoader(FeedthroughLoader.LOCATION, new FeedthroughLoader());
 			ModelLoaderRegistry.registerLoader(SplitModelLoader.LOCATION, new SplitModelLoader());
 
-			((IReloadableResourceManager)mc().getResourceManager()).addReloadListener(new IEFontReloadListener());
 			requestModelsAndTextures();
 		}
 	}
+
+	public static boolean stencilEnabled = false;
 
 	@Override
 	public void preInit()
 	{
 		if(IEClientConfig.stencilBufferEnabled.get())
-			DeferredWorkQueue.runLater(() -> Minecraft.getInstance().getFramebuffer().enableStencil());
+			DeferredWorkQueue.runLater(() -> {
+				Minecraft.getInstance().getFramebuffer().enableStencil();
+				stencilEnabled = true;
+			});
 
 		RenderingRegistry.registerEntityRenderingHandler(RevolvershotEntity.TYPE, RevolvershotRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(RevolvershotFlareEntity.TYPE, RevolvershotRenderer::new);
@@ -201,7 +199,7 @@ public class ClientProxy extends CommonProxy
 		MinecraftForge.EVENT_BUS.register(handler);
 		((IReloadableResourceManager)mc().getResourceManager()).addReloadListener(handler);
 
-		MinecraftForge.EVENT_BUS.register(new RecipeReloadListener());
+		MinecraftForge.EVENT_BUS.register(new RecipeReloadListener(null));
 
 		IKeyConflictContext noKeyConflict = new IKeyConflictContext()
 		{
@@ -358,14 +356,14 @@ public class ClientProxy extends CommonProxy
 		Minecraft.getInstance().getItemRenderer().getItemModelMesher().register(item, new ModelResourceLocation(path, renderCase));
 	}
 
-	public static String getPropertyString(Map<IProperty, Comparable> propertyMap)
+	public static String getPropertyString(Map<Property, Comparable> propertyMap)
 	{
 		StringBuilder stringbuilder = new StringBuilder();
-		for(Entry<IProperty, Comparable> entry : propertyMap.entrySet())
+		for(Entry<Property, Comparable> entry : propertyMap.entrySet())
 		{
 			if(stringbuilder.length()!=0)
 				stringbuilder.append(",");
-			IProperty iproperty = entry.getKey();
+			Property iproperty = entry.getKey();
 			Comparable comparable = entry.getValue();
 			stringbuilder.append(iproperty.getName());
 			stringbuilder.append("=");
@@ -480,7 +478,7 @@ public class ClientProxy extends CommonProxy
 				}
 
 				Particle particle = new BreakingParticle.Factory().makeParticle(new ItemParticleData(ParticleTypes.ITEM, stack),
-						tile.getWorldNonnull(), x, y, z, mX, mY, mZ);
+						(ClientWorld) tile.getWorldNonnull(), x, y, z, mX, mY, mZ);
 				mc().particles.addEffect(particle);
 			}
 		}
@@ -506,18 +504,12 @@ public class ClientProxy extends CommonProxy
 	}
 
 	@Override
-	public void spawnFractalFX(World world, double x, double y, double z, Vec3d direction, double scale, int prefixColour, float[][] colour)
+	public void spawnFractalFX(World world, double x, double y, double z, Vector3d direction, double scale, int prefixColour, float[][] colour)
 	{
 		if(prefixColour >= 0)
 			colour = prefixColour==1?FractalParticle.COLOUR_ORANGE: prefixColour==2?FractalParticle.COLOUR_RED: FractalParticle.COLOUR_LIGHTNING;
 		FractalParticle.Data particle = new FractalParticle.Data(direction, scale, 10, 16, colour[0], colour[1]);
 		world.addParticle(particle, x, y, z, 0, 0, 0);
-	}
-
-	@Override
-	public String[] splitStringOnWidth(String s, int w)
-	{
-		return ClientUtils.font().listFormattedStringToWidth(s, w).toArray(new String[0]);
 	}
 
 	@Override
@@ -620,10 +612,10 @@ public class ClientProxy extends CommonProxy
 	public void openTileScreen(ResourceLocation guiId, TileEntity tileEntity)
 	{
 		if(guiId==Lib.GUIID_RedstoneConnector&&tileEntity instanceof ConnectorRedstoneTileEntity)
-			Minecraft.getInstance().displayGuiScreen(new RedstoneConnectorScreen((ConnectorRedstoneTileEntity)tileEntity, tileEntity.getBlockState().getBlock().getNameTextComponent()));
+			Minecraft.getInstance().displayGuiScreen(new RedstoneConnectorScreen((ConnectorRedstoneTileEntity)tileEntity, tileEntity.getBlockState().getBlock().getTranslatedName()));
 
 		if(guiId==Lib.GUIID_RedstoneProbe&&tileEntity instanceof ConnectorProbeTileEntity)
-			Minecraft.getInstance().displayGuiScreen(new RedstoneProbeScreen((ConnectorProbeTileEntity)tileEntity, tileEntity.getBlockState().getBlock().getNameTextComponent()));
+			Minecraft.getInstance().displayGuiScreen(new RedstoneProbeScreen((ConnectorProbeTileEntity)tileEntity, tileEntity.getBlockState().getBlock().getTranslatedName()));
 	}
 
 	@Override

@@ -15,7 +15,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ILightReader;
+import net.minecraft.world.IBlockDisplayReader;
 import net.minecraft.world.LightType;
 import net.minecraftforge.client.model.pipeline.BlockInfo;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
@@ -90,7 +90,7 @@ public class SmartLightingQuad extends BakedQuad
 		@Override
 		protected void updateLightmap(float[] normal, float[] lightmap, float x, float y, float z)
 		{
-			ILightReader world = blockInfo.getWorld();
+			IBlockDisplayReader world = blockInfo.getWorld();
 			BlockPos here = blockPos.add(Math.floor(x-normal[0]/2+0.5), Math.floor(y-normal[1]/2+0.5), Math.floor(z-normal[2]/2+0.5));
 			lightmap[0] = world.getLightManager().getLightEngine(LightType.BLOCK).getLightFor(here)/(float)0xF;
 			lightmap[1] = world.getLightManager().getLightEngine(LightType.SKY).getLightFor(here)/(float)0xF;

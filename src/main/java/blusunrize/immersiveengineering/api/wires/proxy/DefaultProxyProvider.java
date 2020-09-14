@@ -15,22 +15,16 @@ import com.google.common.base.Preconditions;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
 
 import java.util.Collection;
 
 public class DefaultProxyProvider implements IICProxyProvider
 {
-	private final DimensionType dimension;
+	private final World world;
 
-	public DefaultProxyProvider(DimensionType dimension)
+	public DefaultProxyProvider(World world)
 	{
-		this.dimension = dimension;
-	}
-
-	public DefaultProxyProvider(World w)
-	{
-		this(w.dimension.getType());
+		this.world = world;
 	}
 
 	@Override
@@ -43,12 +37,12 @@ public class DefaultProxyProvider implements IICProxyProvider
 	@Override
 	public IImmersiveConnectable fromNBT(CompoundNBT nbt)
 	{
-		return IICProxy.readFromNBT(nbt);
+		return IICProxy.readFromNBT(world, nbt);
 	}
 
 	@Override
 	public IImmersiveConnectable create(BlockPos pos, Collection<Connection> internal, Collection<ConnectionPoint> points)
 	{
-		return new IICProxy(dimension, pos, internal, points);
+		return new IICProxy(world, pos, internal, points);
 	}
 }

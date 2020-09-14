@@ -29,8 +29,8 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.ILightReader;
+import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.world.IBlockDisplayReader;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.common.util.Lazy;
@@ -43,9 +43,9 @@ import java.util.stream.Collectors;
 
 public class BakedBasicSplitModel extends CompositeBakedModel<IBakedModel>
 {
-	private final Lazy<Map<Vec3i, List<BakedQuad>>> splitModels;
+	private final Lazy<Map<Vector3i, List<BakedQuad>>> splitModels;
 
-	public BakedBasicSplitModel(IBakedModel base, Set<Vec3i> parts, IModelTransform transform)
+	public BakedBasicSplitModel(IBakedModel base, Set<Vector3i> parts, IModelTransform transform)
 	{
 		super(base);
 		this.splitModels = Lazy.concurrentOf(() -> {
@@ -68,7 +68,7 @@ public class BakedBasicSplitModel extends CompositeBakedModel<IBakedModel>
 
 	@Nonnull
 	@Override
-	public IModelData getModelData(@Nonnull ILightReader world, @Nonnull BlockPos pos, @Nonnull BlockState state,
+	public IModelData getModelData(@Nonnull IBlockDisplayReader world, @Nonnull BlockPos pos, @Nonnull BlockState state,
 								   @Nonnull IModelData tileData)
 	{
 		TileEntity te = world.getTileEntity(pos);
@@ -84,7 +84,7 @@ public class BakedBasicSplitModel extends CompositeBakedModel<IBakedModel>
 			return tileData;
 	}
 
-	public static Map<Vec3i, List<BakedQuad>> split(List<BakedQuad> in, Set<Vec3i> parts, IModelTransform transform)
+	public static Map<Vector3i, List<BakedQuad>> split(List<BakedQuad> in, Set<Vector3i> parts, IModelTransform transform)
 	{
 		List<Polygon<TextureAtlasSprite>> polys = in.stream()
 				.map(PolygonUtils::toPolygon)
@@ -95,13 +95,13 @@ public class BakedBasicSplitModel extends CompositeBakedModel<IBakedModel>
 				.collect(Collectors.toSet());
 		ClumpedModel<TextureAtlasSprite> clumpedModel = new ClumpedModel<>(splitData, partsBMS);
 
-		Map<Vec3i, List<BakedQuad>> map = new HashMap<>();
+		Map<Vector3i, List<BakedQuad>> map = new HashMap<>();
 		for(Entry<ModelSplitterVec3i, OBJModel<TextureAtlasSprite>> e : clumpedModel.getClumpedParts().entrySet())
 		{
 			List<BakedQuad> subModelFaces = new ArrayList<>(e.getValue().getFaces().size());
 			for(Polygon<TextureAtlasSprite> p : e.getValue().getFaces())
 				subModelFaces.add(PolygonUtils.toBakedQuad(p, transform, DefaultVertexFormats.BLOCK));
-			Vec3i mcKey = new Vec3i(e.getKey().getX(), e.getKey().getY(), e.getKey().getZ());
+			Vector3i mcKey = new Vector3i(e.getKey().getX(), e.getKey().getY(), e.getKey().getZ());
 			map.put(mcKey, subModelFaces);
 		}
 		return map;

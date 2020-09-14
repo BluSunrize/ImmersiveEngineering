@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.api.multiblocks;
 
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
+import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.ManualUtils;
@@ -20,12 +21,17 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.BlockRendererDispatcher;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.fluid.IFluidState;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.util.math.vector.TransformationMatrix;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.util.text.*;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.gen.feature.template.Template.BlockInfo;
@@ -76,9 +82,11 @@ public class ManualElementMultiblock extends SpecialManualElements
 		yOffTotal = (int)(transY+scale*diagLength/2);
 	}
 
-	private static final ITextComponent greenTick = new StringTextComponent("\u2713")
-			.setStyle(new Style().setColor(TextFormatting.GREEN).setBold(true))
-			.appendSibling(new StringTextComponent(" "));
+	private static final ITextComponent greenTick = ClientUtils.applyFormat(
+			new StringTextComponent("\u2713"),
+			TextFormatting.GREEN, TextFormatting.BOLD
+	)
+			.appendString(" ");
 
 	@Override
 	public void onOpened(ManualScreen gui, int x, int y, List<Button> pageButtons)
@@ -151,33 +159,32 @@ public class ManualElementMultiblock extends SpecialManualElements
 					if(indent > 0)
 						for(int ii = 0; ii < indent; ii++)
 							sIndent.append("0");
-					ITextComponent s;
+					IFormattableTextComponent s;
 					if(hasItems[ss])
 						s = greenTick.deepCopy();
 					else
 						s = new StringTextComponent(hasAnyItems?"   ": "");
-					s.appendSibling(
-							new StringTextComponent(sIndent.toString()+req.getCount()+"x ")
-									.setStyle(new Style().setColor(TextFormatting.GRAY))
-					);
+					s.append(ClientUtils.applyFormat(
+							new StringTextComponent(sIndent.toString()+req.getCount()+"x "),
+									TextFormatting.GRAY
+					));
 					if(!req.isEmpty())
-						s.appendSibling(
-								req.getDisplayName().deepCopy()
-										.setStyle(new Style().setColor(req.getRarity().color))
-						);
+						s.append(ClientUtils.applyFormat(
+								req.getDisplayName().deepCopy(),
+								req.getRarity().color
+						));
 					else
-						s.appendSibling(new StringTextComponent("???"));
+						s.appendString("???");
 					componentTooltip.add(s);
 				}
 		}
 	}
 
 	@Override
-	public void render(ManualScreen gui, int x, int y, int mouseX, int mouseY)
+	public void render(MatrixStack transform, ManualScreen gui, int x, int y, int mouseX, int mouseY)
 	{
 		if(multiblock.getStructure()!=null)
 		{
-			MatrixStack transform = new MatrixStack();
 			IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
 			try
 			{
@@ -253,17 +260,11 @@ public class ManualElementMultiblock extends SpecialManualElements
 
 			if(componentTooltip!=null)
 			{
-				manual.fontRenderer().drawString("?", 116, yOffTotal/2-4, manual.getTextColour());
+				manual.fontRenderer().drawString(transform, "?", 116, yOffTotal/2-4, manual.getTextColour());
 				if(mouseX >= 116&&mouseX < 122&&mouseY >= yOffTotal/2-4&&mouseY < yOffTotal/2+4)
-				{
-					List<String> asStrings = new ArrayList<>();
-					for(ITextComponent iTextComponent : componentTooltip)
-					{
-						String formattedText = iTextComponent.getFormattedText();
-						asStrings.add(formattedText);
-					}
-					gui.renderTooltip(asStrings, mouseX, mouseY, manual.fontRenderer());
-				}
+					gui.renderToolTip(transform, LanguageMap.getInstance().func_244260_a(
+							Collections.unmodifiableList(componentTooltip)
+					), mouseX, mouseY, manual.fontRenderer());
 			}
 		}
 	}
@@ -321,7 +322,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 			for(Entry<BlockPos, BlockInfo> p : data.data.entrySet())
 				if(p.getValue().nbt!=null&&!p.getValue().nbt.isEmpty())
 				{
-					TileEntity te = TileEntity.create(p.getValue().nbt);
+					TileEntity te = TileEntity.readTileEntity(p.getValue().state, p.getValue().nbt);
 					if(te!=null)
 					{
 						te.cachedBlockState = p.getValue().state;
@@ -369,7 +370,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 		}
 
 		@Override
-		public IFluidState getFluidState(BlockPos pos)
+		public FluidState getFluidState(BlockPos pos)
 		{
 			return getBlockState(pos).getFluidState();
 		}

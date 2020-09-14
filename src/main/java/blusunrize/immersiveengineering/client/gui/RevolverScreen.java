@@ -51,20 +51,20 @@ public class RevolverScreen extends IEContainerScreen<RevolverContainer>
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3)
+	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float par1, int par2, int par3)
 	{
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/revolver.png");
-		this.blit(guiLeft+(offset > 0?offset: 0), guiTop+77, 0, 125, 176, 89);
+		this.blit(transform, guiLeft+(offset > 0?offset: 0), guiTop+77, 0, 125, 176, 89);
 
 		int off = (offset < 0?-offset: 0);
 		for(int hand = 0; hand < (otherRevolver?2: 1); hand++)
 		{
 			int side = !otherRevolver?0: (hand==0)==(ImmersiveEngineering.proxy.getClientPlayer().getPrimaryHand()==HandSide.RIGHT)?1: 0;
-			this.blit(guiLeft+off+00, guiTop+1, 00, 51, 74, 74);
+			this.blit(transform, guiLeft+off+00, guiTop+1, 00, 51, 74, 74);
 			if(bullets[side] >= 18)
-				this.blit(guiLeft+off+47, guiTop+1, 74, 51, 103, 74);
+				this.blit(transform, guiLeft+off+47, guiTop+1, 74, 51, 103, 74);
 			else if(bullets[side] > 8)
-				this.blit(guiLeft+off+57, guiTop+1, 57, 12, 79, 39);
+				this.blit(transform, guiLeft+off+57, guiTop+1, 57, 12, 79, 39);
 			off += (bullets[side] >= 18?150: bullets[side] > 8?136: 74)+4;
 		}
 	}
@@ -84,9 +84,10 @@ public class RevolverScreen extends IEContainerScreen<RevolverContainer>
 
 		ItemRenderer ir = ClientUtils.mc().getItemRenderer();
 		int[][] slots = RevolverContainer.slotPositions[bulletAmount >= 18?2: bulletAmount > 8?1: 0];
+		transform.push();
+		transform.translate(0, 0, 10);
 		RenderSystem.pushMatrix();
 		RenderSystem.multMatrix(transform.getLast().getMatrix());
-		RenderSystem.translated(0, 0, 10);
 		for(int i = 0; i < bulletAmount; i++)
 		{
 			ItemStack b = bullets.get(i);
@@ -110,9 +111,10 @@ public class RevolverScreen extends IEContainerScreen<RevolverContainer>
 					x = ii==0?48: ii==1?29: ii==3?2: 10;
 					y = ii==1?57: ii==3?30: ii==4?11: 49;
 				}
-				ir.renderItemIntoGUI(b, x, y);
+				ir.renderItemAndEffectIntoGUI(b, x, y);
 			}
 		}
 		RenderSystem.popMatrix();
+		transform.pop();
 	}
 }

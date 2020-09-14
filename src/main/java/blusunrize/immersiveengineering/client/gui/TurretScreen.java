@@ -14,16 +14,18 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonCheckbox;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE;
 import blusunrize.immersiveengineering.client.gui.elements.GuiReactiveList;
+import blusunrize.immersiveengineering.client.utils.FakeGuiUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.TurretTileEntity;
 import blusunrize.immersiveengineering.common.gui.TurretContainer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -48,7 +50,7 @@ public abstract class TurretScreen extends IEContainerScreen<TurretContainer>
 	{
 		super.init();
 		mc().keyboardListener.enableRepeatEvents(true);
-		this.nameField = new TextFieldWidget(this.font, guiLeft+11, guiTop+88, 58, 12, "");
+		this.nameField = new TextFieldWidget(this.font, guiLeft+11, guiTop+88, 58, 12, StringTextComponent.EMPTY);
 		this.nameField.setTextColor(-1);
 		this.nameField.setDisabledTextColour(-1);
 		this.nameField.setEnableBackgroundDrawing(false);
@@ -70,7 +72,7 @@ public abstract class TurretScreen extends IEContainerScreen<TurretContainer>
 					}
 				}, tile.targetList.toArray(new String[0]))
 				.setPadding(0, 0, 2, 2));
-		this.addButton(new GuiButtonIE(guiLeft+74, guiTop+84, 24, 16, I18n.format(Lib.GUI_CONFIG+"turret.add"), "immersiveengineering:textures/gui/turret.png", 176, 65,
+		this.addButton(new GuiButtonIE(guiLeft+74, guiTop+84, 24, 16, new TranslationTextComponent(Lib.GUI_CONFIG+"turret.add"), "immersiveengineering:textures/gui/turret.png", 176, 65,
 				btn -> {
 					CompoundNBT tag = new CompoundNBT();
 					int listOffset = -1;
@@ -133,29 +135,28 @@ public abstract class TurretScreen extends IEContainerScreen<TurretContainer>
 		}
 	}
 
-	protected abstract void renderCustom(List<ITextComponent> tooltipOut, int mx, int my);
+	protected abstract void renderCustom(MatrixStack transform, List<ITextComponent> tooltipOut, int mx, int my);
 
 	@Override
-	public void render(int mx, int my, float partial)
+	public void render(MatrixStack transform, int mx, int my, float partial)
 	{
-		super.render(mx, my, partial);
-		this.nameField.render(mx, my, partial);
+		super.render(transform, mx, my, partial);
+		this.nameField.render(transform, mx, my, partial);
 
 		ArrayList<ITextComponent> tooltip = new ArrayList<>();
 		if(mx >= guiLeft+158&&mx < guiLeft+165&&my >= guiTop+16&&my < guiTop+62)
 			tooltip.add(new StringTextComponent(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" IF"));
 
-		renderCustom(tooltip, mx, my);
+		renderCustom(transform, tooltip, mx, my);
 		if(!tooltip.isEmpty())
-			ClientUtils.drawHoveringText(tooltip, mx, my, font, width, height);
+			FakeGuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float f, int mx, int my)
+	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float f, int mx, int my)
 	{
-		RenderSystem.color3f(1.0F, 1.0F, 1.0F);
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/turret.png");
-		this.blit(guiLeft, guiTop, 0, 0, xSize, ySize);
+		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
 
 		int stored = (int)(46*(tile.getEnergyStored(null)/(float)tile.getMaxEnergyStored(null)));
 		ClientUtils.drawGradientRect(guiLeft+158, guiTop+16+(46-stored), guiLeft+165, guiTop+62, 0xffb51500, 0xff600b00);

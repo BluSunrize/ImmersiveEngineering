@@ -22,8 +22,6 @@ import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.Tree;
 import com.electronwill.nightconfig.core.Config;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.KeyBinding;
@@ -127,8 +125,8 @@ public class IEManualInstance extends ManualInstance
 			for(KeyBinding kb : ClientUtils.mc().gameSettings.keyBindings)
 				if(segment[1].equalsIgnoreCase(kb.getKeyDescription()))
 				{
-					result = kb.getLocalizedName();
-					if(result!=null&&result.length() > 1)
+					result = kb.func_238171_j_().getString();
+					if(result.length() > 1)
 						result = Utils.toCamelCase(result);
 					break;
 				}
@@ -208,10 +206,7 @@ public class IEManualInstance extends ManualInstance
 	@Override
 	public FontRenderer fontRenderer()
 	{
-		FontRenderer ret = /*TODO new IEItemFontRender()*/ClientUtils.unicodeFontRender();
-		if(Minecraft.getInstance().gameSettings.language!=null)
-			ret.setBidiFlag(ClientUtils.mc().getLanguageManager().isCurrentLanguageBidirectional());
-		return ret;
+		return /*TODO new IEItemFontRender()*/ClientUtils.unicodeFontRender();
 	}
 
 	@Override

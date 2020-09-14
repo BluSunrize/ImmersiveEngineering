@@ -27,11 +27,11 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3i;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -60,7 +60,7 @@ public class ElectricLanternTileEntity extends ImmersiveConnectableTileEntity im
 		{
 			synchronized(EventHandler.interdictionTiles)
 			{
-				Set<ISpawnInterdiction> tileForDim = EventHandler.interdictionTiles.computeIfAbsent(world.getDimension().getType(), k -> new HashSet<>());
+				Set<ISpawnInterdiction> tileForDim = EventHandler.interdictionTiles.computeIfAbsent(world.getDimensionKey(), k -> new HashSet<>());
 				tileForDim.add(this);
 			}
 			interdictionList = true;
@@ -134,21 +134,21 @@ public class ElectricLanternTileEntity extends ImmersiveConnectableTileEntity im
 	}
 
 	@Override
-	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vec3i offset)
+	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vector3i offset)
 	{
 		return WireType.LV_CATEGORY.equals(cableType.getCategory());
 	}
 
 	@Override
-	public Vec3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
+	public Vector3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
 		BlockPos other = con.getOtherEnd(here).getPosition();
 		int xDif = other.getX()-pos.getX();
 		int zDif = other.getZ()-pos.getZ();
 		boolean flipped = getFacing()==Direction.UP;
 		if(Math.abs(xDif) >= Math.abs(zDif))
-			return new Vec3d(xDif < 0?.25: xDif > 0?.75: .5, flipped?.9375: .0625, .5);
-		return new Vec3d(.5, flipped?.9375: .0625, zDif < 0?.25: zDif > 0?.75: .5);
+			return new Vector3d(xDif < 0?.25: xDif > 0?.75: .5, flipped?.9375: .0625, .5);
+		return new Vector3d(.5, flipped?.9375: .0625, zDif < 0?.25: zDif > 0?.75: .5);
 	}
 
 	@Override
@@ -177,7 +177,7 @@ public class ElectricLanternTileEntity extends ImmersiveConnectableTileEntity im
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
 	{
 		return false;
 	}
@@ -189,7 +189,7 @@ public class ElectricLanternTileEntity extends ImmersiveConnectableTileEntity im
 	}
 
 	@Override
-	public boolean hammerUseSide(Direction side, PlayerEntity player, Hand hand, Vec3d hitVec)
+	public boolean hammerUseSide(Direction side, PlayerEntity player, Hand hand, Vector3d hitVec)
 	{
 		if(!world.isRemote)
 			setFacing(getFacing().getOpposite());

@@ -206,7 +206,7 @@ public class IEExplosiveEntity extends TNTEntity
 		}
 		else
 		{
-			this.handleWaterMovement();
+			this.func_233566_aG_();
 			this.world.addParticle(ParticleTypes.SMOKE, this.getPosX(), this.getPosY()+0.5D, this.getPosZ(), 0.0D, 0.0D, 0.0D);
 		}
 	}

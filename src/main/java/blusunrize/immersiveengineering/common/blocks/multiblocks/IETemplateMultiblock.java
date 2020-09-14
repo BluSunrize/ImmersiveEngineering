@@ -15,12 +15,12 @@ import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.template.Template.BlockInfo;
 
@@ -31,7 +31,7 @@ public abstract class IETemplateMultiblock extends TemplateMultiblock
 {
 	private final Supplier<BlockState> baseState;
 
-	public IETemplateMultiblock(ResourceLocation loc, BlockPos masterFromOrigin, BlockPos triggerFromOrigin, Map<Block, Tag<Block>> tags, Supplier<BlockState> baseState)
+	public IETemplateMultiblock(ResourceLocation loc, BlockPos masterFromOrigin, BlockPos triggerFromOrigin, Map<Block, ITag<Block>> tags, Supplier<BlockState> baseState)
 	{
 		super(loc, masterFromOrigin, triggerFromOrigin, tags);
 		this.baseState = baseState;
@@ -43,10 +43,10 @@ public abstract class IETemplateMultiblock extends TemplateMultiblock
 	}
 
 	@Override
-	protected void replaceStructureBlock(BlockInfo info, World world, BlockPos actualPos, boolean mirrored, Direction clickDirection, Vec3i offsetFromMaster)
+	protected void replaceStructureBlock(BlockInfo info, World world, BlockPos actualPos, boolean mirrored, Direction clickDirection, Vector3i offsetFromMaster)
 	{
 		BlockState state = baseState.get();
-		if(!offsetFromMaster.equals(Vec3i.NULL_VECTOR))
+		if(!offsetFromMaster.equals(Vector3i.NULL_VECTOR))
 			state = state.with(IEProperties.MULTIBLOCKSLAVE, true);
 		world.setBlockState(actualPos, state);
 		TileEntity curr = world.getTileEntity(actualPos);
@@ -56,7 +56,7 @@ public abstract class IETemplateMultiblock extends TemplateMultiblock
 			tile.formed = true;
 			tile.offsetToMaster = new BlockPos(offsetFromMaster);
 			tile.posInMultiblock = info.pos;
-			if(state.getProperties().contains(IEProperties.MIRRORED))
+			if(state.hasProperty(IEProperties.MIRRORED))
 				tile.setMirrored(mirrored);
 			tile.setFacing(transformDirection(clickDirection.getOpposite()));
 			tile.markDirty();

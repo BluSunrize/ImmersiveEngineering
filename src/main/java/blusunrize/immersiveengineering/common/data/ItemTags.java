@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.items.IEItems.Metals;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
+import net.minecraft.data.BlockTagsProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.ItemTagsProvider;
 import net.minecraft.item.Item;
@@ -24,9 +25,9 @@ import net.minecraftforge.common.Tags;
 class ItemTags extends ItemTagsProvider
 {
 
-	public ItemTags(DataGenerator gen)
+	public ItemTags(DataGenerator gen, BlockTagsProvider blocks)
 	{
-		super(gen);
+		super(gen, blocks);
 	}
 
 	@Override
@@ -41,44 +42,47 @@ class ItemTags extends ItemTagsProvider
 			MetalTags tags = IETags.getTagsFor(metal);
 			if(!metal.isVanillaMetal())
 			{
-				getBuilder(tags.ingot).add(ingot);
-				getBuilder(Tags.Items.INGOTS).add(ingot);
-				getBuilder(tags.nugget).add(nugget);
-				getBuilder(Tags.Items.NUGGETS).add(nugget);
-				getBuilder(Tags.Items.STORAGE_BLOCKS).add(IEBlocks.Metals.storage.get(metal).asItem());
+				getOrCreateBuilder(tags.ingot).addItemEntry(ingot);
+				getOrCreateBuilder(Tags.Items.INGOTS).addItemEntry(ingot);
+				getOrCreateBuilder(tags.nugget).addItemEntry(nugget);
+				getOrCreateBuilder(Tags.Items.NUGGETS).addItemEntry(nugget);
+				getOrCreateBuilder(Tags.Items.STORAGE_BLOCKS).addItemEntry(IEBlocks.Metals.storage.get(metal).asItem());
 				if(metal.shouldAddOre())
-					getBuilder(Tags.Items.ORES).add(IEBlocks.Metals.ores.get(metal).asItem());
+					getOrCreateBuilder(Tags.Items.ORES).addItemEntry(IEBlocks.Metals.ores.get(metal).asItem());
 			}
-			getBuilder(tags.plate).add(plate);
-			getBuilder(IETags.plates).add(plate);
-			getBuilder(tags.dust).add(dust);
-			getBuilder(Tags.Items.DUSTS).add(dust);
+			getOrCreateBuilder(tags.plate).addItemEntry(plate);
+			getOrCreateBuilder(IETags.plates).addItemEntry(plate);
+			getOrCreateBuilder(tags.dust).addItemEntry(dust);
+			getOrCreateBuilder(Tags.Items.DUSTS).addItemEntry(dust);
 		}
 
 		IETags.forAllBlocktags(this::copy);
 
-		getBuilder(IETags.clay).add(Items.CLAY_BALL);
-		getBuilder(IETags.charCoal).add(Items.CHARCOAL);
+		getOrCreateBuilder(IETags.clay).addItemEntry(Items.CLAY_BALL);
+		getOrCreateBuilder(IETags.charCoal).addItemEntry(Items.CHARCOAL);
 
-		getBuilder(Tags.Items.SEEDS).add(Misc.hempSeeds);
-		getBuilder(Tags.Items.RODS_WOODEN).add(Ingredients.stickTreated);
-		getBuilder(IETags.treatedStick).add(Ingredients.stickTreated);
-		getBuilder(IETags.slag).add(Ingredients.slag);
-		getBuilder(IETags.ironRod).add(Ingredients.stickIron);
-		getBuilder(IETags.steelRod).add(Ingredients.stickSteel);
-		getBuilder(IETags.aluminumRod).add(Ingredients.stickAluminum);
-		getBuilder(IETags.fiberHemp).add(Ingredients.hempFiber);
-		getBuilder(IETags.fabricHemp).add(Ingredients.hempFabric);
-		getBuilder(IETags.coalCoke).add(Ingredients.coalCoke);
-		getBuilder(IETags.coalCokeDust).add(Ingredients.dustCoke);
-		getBuilder(IETags.hopGraphiteDust).add(Ingredients.dustHopGraphite);
-		getBuilder(IETags.hopGraphiteIngot).add(Ingredients.ingotHopGraphite);
-		getBuilder(IETags.copperWire).add(Ingredients.wireCopper);
-		getBuilder(IETags.electrumWire).add(Ingredients.wireElectrum);
-		getBuilder(IETags.aluminumWire).add(Ingredients.wireAluminum);
-		getBuilder(IETags.steelWire).add(Ingredients.wireSteel);
-		getBuilder(IETags.saltpeterDust).add(Ingredients.dustSaltpeter);
-		getBuilder(IETags.sulfurDust).add(Ingredients.dustSulfur);
-		getBuilder(IETags.metalRods).add(IETags.aluminumRod, IETags.ironRod, IETags.steelRod);
+		getOrCreateBuilder(Tags.Items.SEEDS).addItemEntry(Misc.hempSeeds);
+		getOrCreateBuilder(Tags.Items.RODS_WOODEN).addItemEntry(Ingredients.stickTreated);
+		getOrCreateBuilder(IETags.treatedStick).addItemEntry(Ingredients.stickTreated);
+		getOrCreateBuilder(IETags.slag).addItemEntry(Ingredients.slag);
+		getOrCreateBuilder(IETags.ironRod).addItemEntry(Ingredients.stickIron);
+		getOrCreateBuilder(IETags.steelRod).addItemEntry(Ingredients.stickSteel);
+		getOrCreateBuilder(IETags.aluminumRod).addItemEntry(Ingredients.stickAluminum);
+		getOrCreateBuilder(IETags.fiberHemp).addItemEntry(Ingredients.hempFiber);
+		getOrCreateBuilder(IETags.fabricHemp).addItemEntry(Ingredients.hempFabric);
+		getOrCreateBuilder(IETags.coalCoke).addItemEntry(Ingredients.coalCoke);
+		getOrCreateBuilder(IETags.coalCokeDust).addItemEntry(Ingredients.dustCoke);
+		getOrCreateBuilder(IETags.hopGraphiteDust).addItemEntry(Ingredients.dustHopGraphite);
+		getOrCreateBuilder(IETags.hopGraphiteIngot).addItemEntry(Ingredients.ingotHopGraphite);
+		getOrCreateBuilder(IETags.copperWire).addItemEntry(Ingredients.wireCopper);
+		getOrCreateBuilder(IETags.electrumWire).addItemEntry(Ingredients.wireElectrum);
+		getOrCreateBuilder(IETags.aluminumWire).addItemEntry(Ingredients.wireAluminum);
+		getOrCreateBuilder(IETags.steelWire).addItemEntry(Ingredients.wireSteel);
+		getOrCreateBuilder(IETags.saltpeterDust).addItemEntry(Ingredients.dustSaltpeter);
+		getOrCreateBuilder(IETags.sulfurDust).addItemEntry(Ingredients.dustSulfur);
+		getOrCreateBuilder(IETags.metalRods)
+				.addTag(IETags.aluminumRod)
+				.addTag(IETags.ironRod)
+				.addTag(IETags.steelRod);
 	}
 }

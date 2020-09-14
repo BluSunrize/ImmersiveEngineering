@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
+import blusunrize.immersiveengineering.api.utils.TagUtils;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntComparators;
 import it.unimi.dsi.fastutil.ints.IntList;
@@ -16,8 +17,8 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.RecipeItemHelper;
+import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -34,7 +35,7 @@ import java.util.stream.Stream;
  */
 public class IngredientMultiTag extends Ingredient
 {
-	private List<Tag<Item>> tags;
+	private List<ITag<Item>> tags;
 	private IntList itemIds = null;
 	private ItemStack[] array = null;
 
@@ -42,14 +43,15 @@ public class IngredientMultiTag extends Ingredient
 	{
 		super(Stream.empty());
 		this.tags = new ArrayList<>();
-		for(int i = 0; i < tags.length; i++)
-			this.tags.add(ItemTags.getCollection().getOrCreate(tags[i]));
+		for(ResourceLocation tag : tags)
+			if(TagUtils.isNonemptyItemTag(tag))
+				this.tags.add(ItemTags.getCollection().get(tag));
 	}
 
 	private int totalSize()
 	{
 		int i = 0;
-		for(Tag<Item> list : tags)
+		for(ITag<Item> list : tags)
 			i += list.getAllElements().size();
 		return i;
 	}
@@ -61,7 +63,7 @@ public class IngredientMultiTag extends Ingredient
 		if(array==null||this.array.length!=totalSize())
 		{
 			NonNullList<ItemStack> lst = NonNullList.create();
-			for(Tag<Item> list : tags)
+			for(ITag<Item> list : tags)
 				for(Item stack : list.getAllElements())
 					stack.getItem().fillItemGroup(ItemGroup.SEARCH, lst);
 			this.array = lst.toArray(new ItemStack[0]);
@@ -78,7 +80,7 @@ public class IngredientMultiTag extends Ingredient
 		{
 			this.itemIds = new IntArrayList(totalSize());
 
-			for(Tag<Item> list : tags)
+			for(ITag<Item> list : tags)
 				for(Item item : list.getAllElements())
 					this.itemIds.add(RecipeItemHelper.pack(new ItemStack(item)));
 			this.itemIds.sort(IntComparators.NATURAL_COMPARATOR);
@@ -94,7 +96,7 @@ public class IngredientMultiTag extends Ingredient
 		if(input==null)
 			return false;
 
-		for(Tag<Item> list : tags)
+		for(ITag<Item> list : tags)
 			if(list.contains(input.getItem()))
 				return true;
 

@@ -22,7 +22,8 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
@@ -41,7 +42,7 @@ public class BlockItemBalloon extends BlockItemIE
 			increaseOffset(itemStackIn);
 		else
 		{
-			Vec3d pos = playerIn.getPositionVector().add(0, playerIn.getEyeHeight(), 0).add(playerIn.getLookVec());
+			Vector3d pos = playerIn.getPositionVec().add(0, playerIn.getEyeHeight(), 0).add(playerIn.getLookVec());
 			BlockPos bPos = new BlockPos(pos);
 			int offset = getOffset(itemStackIn);
 			bPos = bPos.up(offset);
@@ -84,10 +85,10 @@ public class BlockItemBalloon extends BlockItemIE
 	@Override
 	public ITextComponent getDisplayName(ItemStack stack)
 	{
-		ITextComponent ret = super.getDisplayName(stack);
+		IFormattableTextComponent ret = super.getDisplayName(stack).deepCopy();
 		CompoundNBT nbt = stack.getOrCreateTag();
 		if(nbt.getByte("offset")!=0)
-			ret.appendText(" (+"+nbt.getByte("offset")+")");
+			ret.appendString(" (+"+nbt.getByte("offset")+")");
 		return ret;
 	}
 

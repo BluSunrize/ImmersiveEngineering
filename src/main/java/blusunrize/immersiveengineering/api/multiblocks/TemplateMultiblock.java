@@ -21,12 +21,16 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.template.PlacementSettings;
 import net.minecraft.world.gen.feature.template.Template;
@@ -67,11 +71,11 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 		this(loc, masterFromOrigin, triggerFromOrigin, ImmutableMap.of());
 	}
 
-	public TemplateMultiblock(ResourceLocation loc, BlockPos masterFromOrigin, BlockPos triggerFromOrigin, Map<Block, Tag<Block>> tags)
+	public TemplateMultiblock(ResourceLocation loc, BlockPos masterFromOrigin, BlockPos triggerFromOrigin, Map<Block, ITag<Block>> tags)
 	{
 		this(loc, masterFromOrigin, triggerFromOrigin, ImmutableList.of(
 				(expected, found, world, pos) -> {
-					Tag<Block> tag = tags.get(expected.getBlock());
+					ITag<Block> tag = tags.get(expected.getBlock());
 					if(tag!=null)
 					{
 						if(found.isIn(tag))
@@ -93,7 +97,7 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 			try
 			{
 				template = StaticTemplateManager.loadStaticTemplate(loc);
-				List<Template.BlockInfo> blocks = template.blocks.get(0);
+				List<Template.BlockInfo> blocks = template.blocks.get(0).func_237157_a_();
 				for(int i = 0; i < blocks.size(); i++)
 				{
 					Template.BlockInfo info = blocks.get(i);
@@ -153,7 +157,7 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 		{
 			PlacementSettings placeSet = new PlacementSettings().setMirror(mirror).setRotation(rot);
 			BlockPos origin = pos.subtract(Template.transformedBlockPos(placeSet, triggerFromOrigin));
-			for(Template.BlockInfo info : template.blocks.get(0))
+			for(Template.BlockInfo info : template.blocks.get(0).func_237157_a_())
 			{
 				BlockPos realRelPos = Template.transformedBlockPos(placeSet, info.pos);
 				BlockPos here = origin.add(realRelPos);
@@ -198,16 +202,16 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 		return masterFromOrigin;
 	}
 
-	protected abstract void replaceStructureBlock(BlockInfo info, World world, BlockPos actualPos, boolean mirrored, Direction clickDirection, Vec3i offsetFromMaster);
+	protected abstract void replaceStructureBlock(BlockInfo info, World world, BlockPos actualPos, boolean mirrored, Direction clickDirection, Vector3i offsetFromMaster);
 
 	@Override
 	public List<BlockInfo> getStructure()
 	{
-		return getTemplate().blocks.get(0);
+		return getTemplate().blocks.get(0).func_237157_a_();
 	}
 
 	@Override
-	public Vec3i getSize()
+	public Vector3i getSize()
 	{
 		return getTemplate().getSize();
 	}
@@ -241,7 +245,7 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 		{
 			List<BlockInfo> structure = getStructure();
 			List<ItemStack> ret = new ArrayList<>(structure.size());
-			RayTraceResult rtr = new BlockRayTraceResult(Vec3d.ZERO, Direction.DOWN, BlockPos.ZERO, false);
+			RayTraceResult rtr = new BlockRayTraceResult(Vector3d.ZERO, Direction.DOWN, BlockPos.ZERO, false);
 			for(BlockInfo info : structure)
 			{
 				ItemStack picked = Utils.getPickBlock(info.state, rtr, ImmersiveEngineering.proxy.getClientPlayer());

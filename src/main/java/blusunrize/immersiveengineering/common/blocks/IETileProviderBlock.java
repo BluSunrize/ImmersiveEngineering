@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks;
 
-import blusunrize.immersiveengineering.api.DimensionBlockPos;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
@@ -27,50 +26,36 @@ import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.Property;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.Direction.AxisDirection;
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
 import static blusunrize.immersiveengineering.api.wires.GlobalWireNetwork.getNetwork;
 
-@Mod.EventBusSubscriber
 public abstract class IETileProviderBlock extends IEBaseBlock implements IColouredBlock
 {
 	private boolean hasColours = false;
 
 	public IETileProviderBlock(String name, Block.Properties blockProps, BiFunction<Block, Item.Properties, Item> itemBlock,
-							   IProperty... stateProps)
+							   Property... stateProps)
 	{
 		super(name, blockProps, itemBlock, stateProps);
-	}
-
-	private static final Map<DimensionBlockPos, TileEntity> tempTile = new HashMap<>();
-
-	@SubscribeEvent
-	public static void onTick(TickEvent.ServerTickEvent ev)
-	{
-		if(ev.phase==TickEvent.Phase.END)
-			tempTile.clear();
 	}
 
 	@Override
@@ -83,9 +68,9 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 	protected BlockState getInitDefaultState()
 	{
 		BlockState ret = super.getInitDefaultState();
-		if(ret.getProperties().contains(IEProperties.FACING_ALL))
+		if(ret.hasProperty(IEProperties.FACING_ALL))
 			ret = ret.with(IEProperties.FACING_ALL, getDefaultFacing());
-		else if(ret.getProperties().contains(IEProperties.FACING_HORIZONTAL))
+		else if(ret.hasProperty(IEProperties.FACING_HORIZONTAL))
 			ret = ret.with(IEProperties.FACING_HORIZONTAL, getDefaultFacing());
 		return ret;
 	}
@@ -120,7 +105,6 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 				for(ConnectionPoint cp : ((IImmersiveConnectable)tile).getConnectionPoints())
 					getNetwork(world).removeAllConnectionsAt(cp, dropHandler);
 		}
-		tempTile.put(new DimensionBlockPos(pos, world.getDimension().getType()), tile);
 		super.onReplaced(state, world, pos, newState, isMoving);
 	}
 
@@ -243,7 +227,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 		TileEntity tile = world.getTileEntity(pos);
 		if(tile instanceof IDirectionalTile&&Utils.isHammer(heldItem)&&((IDirectionalTile)tile).canHammerRotate(
 				side,
-				hit.getHitVec().subtract(new Vec3d(pos)),
+				hit.getHitVec().subtract(Vector3d.copy(pos)),
 				player)&&!world.isRemote)
 		{
 			Direction f = ((IDirectionalTile)tile).getFacing();
@@ -289,11 +273,11 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 	}
 
 	@Nullable
-	private IProperty<Direction> findFacingProperty(BlockState state)
+	private Property<Direction> findFacingProperty(BlockState state)
 	{
-		if(state.has(IEProperties.FACING_ALL))
+		if(state.hasProperty(IEProperties.FACING_ALL))
 			return IEProperties.FACING_ALL;
-		else if(state.has(IEProperties.FACING_HORIZONTAL))
+		else if(state.hasProperty(IEProperties.FACING_HORIZONTAL))
 			return IEProperties.FACING_HORIZONTAL;
 		else
 			return null;
@@ -302,7 +286,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 	@Override
 	public BlockState rotate(BlockState state, Rotation rot)
 	{
-		IProperty<Direction> facingProp = findFacingProperty(state);
+		Property<Direction> facingProp = findFacingProperty(state);
 		if(facingProp!=null&&canRotate())
 		{
 			Direction currentDirection = state.get(facingProp);
@@ -315,11 +299,11 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 	@Override
 	public BlockState mirror(BlockState state, Mirror mirrorIn)
 	{
-		if(state.has(IEProperties.MIRRORED)&&canRotate()&&mirrorIn==Mirror.LEFT_RIGHT)
+		if(state.hasProperty(IEProperties.MIRRORED)&&canRotate()&&mirrorIn==Mirror.LEFT_RIGHT)
 			return state.with(IEProperties.MIRRORED, !state.get(IEProperties.MIRRORED));
 		else
 		{
-			IProperty<Direction> facingProp = findFacingProperty(state);
+			Property<Direction> facingProp = findFacingProperty(state);
 			if(facingProp!=null&&canRotate())
 			{
 				Direction currentDirection = state.get(facingProp);
@@ -409,40 +393,6 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 				return ((ISelectionBounds)te).getSelectionShape(null);
 		}
 		return super.getRaytraceShape(state, world, pos);
-	}
-
-	//TODO remove? Vanilla knows about the advanced bounds now...
-	@Nullable
-	@Override
-	public RayTraceResult getRayTraceResult(BlockState state, World world, BlockPos pos, Vec3d start, Vec3d end, RayTraceResult original)
-	{
-		TileEntity te = world.getTileEntity(pos);
-		if(te instanceof ISelectionBounds)
-		{
-			List<AxisAlignedBB> list = ((ISelectionBounds)te).getSelectionShape(null).toBoundingBoxList();
-			if(!list.isEmpty())
-			{
-				RayTraceResult min = null;
-				double minDist = Double.POSITIVE_INFINITY;
-				for(AxisAlignedBB aabb : list)
-				{
-					BlockRayTraceResult mop = VoxelShapes.create(aabb.offset(-pos.getX(), -pos.getY(), -pos.getZ()))
-							.rayTrace(start, end, pos);
-					if(mop!=null)
-					{
-						//double dist = mop.hitVec.squareDistanceTo(start);
-						double dist = mop.getHitVec().squareDistanceTo(start);
-						if(dist < minDist)
-						{
-							min = mop;
-							minDist = dist;
-						}
-					}
-				}
-				return min;
-			}
-		}
-		return original;
 	}
 
 	@Override

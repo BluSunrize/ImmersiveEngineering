@@ -25,7 +25,6 @@ import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamag
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.block.DispenserBlock;
-import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -40,7 +39,8 @@ import net.minecraft.item.UseAction;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.*;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -58,6 +58,7 @@ import net.minecraftforge.items.IItemHandler;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public class IEShieldItem extends UpgradeableToolItem implements IIEEnergyItem, IOBJModelCallback<ItemStack>
@@ -101,7 +102,7 @@ public class IEShieldItem extends UpgradeableToolItem implements IIEEnergyItem, 
 		if(slotChanged)
 			return true;
 		LazyOptional<ShaderWrapper> wrapperOld = oldStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
-		LazyOptional<Boolean> sameShader = wrapperOld.map(wOld -> {
+		Optional<Boolean> sameShader = wrapperOld.map(wOld -> {
 			LazyOptional<ShaderWrapper> wrapperNew = newStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
 			return wrapperNew.map(w -> ItemStack.areItemStacksEqual(wOld.getShaderItem(), w.getShaderItem()))
 					.orElse(true);
@@ -166,9 +167,9 @@ public class IEShieldItem extends UpgradeableToolItem implements IIEEnergyItem, 
 	{
 		if(getUpgrades(stack).getBoolean("flash")&&getUpgrades(stack).getInt("flash_cooldown") <= 0)
 		{
-			Vec3d look = player.getLookVec();
+			Vector3d look = player.getLookVec();
 			//Offsets Player position by look backwards, then truncates cone at 1
-			List<LivingEntity> targets = Utils.getTargetsInCone(player.getEntityWorld(), player.getPositionVector().subtract(look), player.getLookVec().scale(9), 1.57079f, .5f);
+			List<LivingEntity> targets = Utils.getTargetsInCone(player.getEntityWorld(), player.getPositionVec().subtract(look), player.getLookVec().scale(9), 1.57079f, .5f);
 			for(LivingEntity t : targets)
 				if(!player.equals(t))
 				{

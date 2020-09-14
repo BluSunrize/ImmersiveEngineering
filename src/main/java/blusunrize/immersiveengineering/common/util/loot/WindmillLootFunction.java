@@ -16,18 +16,20 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.LootContext;
+import net.minecraft.loot.LootFunction;
+import net.minecraft.loot.LootFunctionType;
+import net.minecraft.loot.LootParameters;
+import net.minecraft.loot.conditions.ILootCondition;
+import net.minecraft.loot.functions.ILootFunction;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.storage.loot.LootContext;
-import net.minecraft.world.storage.loot.LootFunction;
-import net.minecraft.world.storage.loot.LootParameters;
-import net.minecraft.world.storage.loot.conditions.ILootCondition;
-import net.minecraft.world.storage.loot.functions.ILootFunction;
 
 import javax.annotation.Nonnull;
 
 public class WindmillLootFunction extends LootFunction
 {
+	public static final ResourceLocation ID = new ResourceLocation(ImmersiveEngineering.MODID, "windmill");
 
 	protected WindmillLootFunction(ILootCondition[] conditionsIn)
 	{
@@ -51,14 +53,14 @@ public class WindmillLootFunction extends LootFunction
 		return stack;
 	}
 
+	@Override
+	public LootFunctionType func_230425_b_()
+	{
+		return IELootFunctions.windmill;
+	}
+
 	public static class Serializer extends LootFunction.Serializer<WindmillLootFunction>
 	{
-
-		public Serializer()
-		{
-			super(new ResourceLocation(ImmersiveEngineering.MODID, "windmill"), WindmillLootFunction.class);
-		}
-
 		@Nonnull
 		@Override
 		public WindmillLootFunction deserialize(@Nonnull JsonObject object,

@@ -94,12 +94,6 @@ public class IEBaseItem extends Item implements IColouredItem
 		}, buffer -> buffer.writeInt(slot.ordinal()));
 	}
 
-	@Override
-	public boolean hasCustomProperties()
-	{
-		return true;//TODO does always returning true break anything?
-	}
-
 	public static Item.Properties withIEOBJRender()
 	{
 		return ImmersiveEngineering.proxy.useIEOBJRenderer(new Properties());

@@ -9,8 +9,7 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
-import blusunrize.immersiveengineering.common.blocks.IIEBlock;
+import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.entities.IEMinecartEntity;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.block.AbstractRailBlock;
@@ -22,14 +21,12 @@ import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.dispenser.IDispenseItemBehavior;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.properties.RailShape;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -89,8 +86,10 @@ public abstract class IEMinecartItem extends IEBaseItem
 		{
 			FluidStack fs = FluidStack.loadFluidStackFromNBT(ItemNBTHelper.getTagCompound(stack, "tank"));
 			if(fs!=null)
-				tooltip.add(new TranslationTextComponent(Lib.DESC_INFO+"fluidStored",
-						fs.getDisplayName(), fs.getAmount()).setStyle(new Style().setColor(TextFormatting.GRAY)));
+				tooltip.add(ClientUtils.applyFormat(
+						new TranslationTextComponent(Lib.DESC_INFO+"fluidStored", fs.getDisplayName(), fs.getAmount()),
+						TextFormatting.GRAY
+				));
 		}
 	}
 

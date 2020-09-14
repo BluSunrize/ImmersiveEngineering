@@ -18,14 +18,14 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.block.*;
-import net.minecraft.client.renderer.TransformationMatrix;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.state.IProperty;
 import net.minecraft.state.IntegerProperty;
+import net.minecraft.state.Property;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.TransformationMatrix;
+import net.minecraft.util.math.vector.Vector3f;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Collection;
@@ -64,7 +64,7 @@ public class ClocheRenderFunctions
 			}
 			else
 			{
-				for(IProperty<?> prop : cropBlock.getDefaultState().getProperties())
+				for(Property<?> prop : cropBlock.getDefaultState().getProperties())
 					if("age".equals(prop.getName())&&prop instanceof IntegerProperty)
 					{
 						int tmp = -1;

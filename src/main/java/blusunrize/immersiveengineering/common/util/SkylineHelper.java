@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -23,11 +22,15 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.CubeCoordinateIterator;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
@@ -54,37 +57,37 @@ public class SkylineHelper
 			GlobalWireNetwork global = GlobalWireNetwork.getNetwork(player.world);
 			ConnectionPoint cpA = connection.getEndA();
 			ConnectionPoint cpB = connection.getEndB();
-			IImmersiveConnectable iicB = global.getConnector(cpB);
-			IImmersiveConnectable iicA = global.getConnector(cpA);
-			Vec3d vStart = new Vec3d(cpA.getPosition());
-			Vec3d vEnd = new Vec3d(cpB.getPosition());
+			IImmersiveConnectable iicB = global.getExistingConnector(cpB);
+			IImmersiveConnectable iicA = global.getExistingConnector(cpA);
+			Vector3d vStart = Vector3d.copy(cpA.getPosition());
+			Vector3d vEnd = Vector3d.copy(cpB.getPosition());
 
 			if(iicB!=null)
 				vStart = Utils.addVectors(vStart, iicB.getConnectionOffset(connection, cpB));
 			if(iicA!=null)
 				vEnd = Utils.addVectors(vEnd, iicA.getConnectionOffset(connection, cpA));
 
-			Vec3d pos = player.getEyePosition(0);
-			Vec3d across = new Vec3d(vEnd.x-vStart.x, vEnd.y-vStart.y, vEnd.z-vStart.z);
+			Vector3d pos = player.getEyePosition(0);
+			Vector3d across = new Vector3d(vEnd.x-vStart.x, vEnd.y-vStart.y, vEnd.z-vStart.z);
 			double linePos = Utils.getCoeffForMinDistance(pos, vStart, across);
 			connection.generateCatenaryData(player.world);
 			CatenaryData catData = connection.getCatenaryData();
 
-			Vec3d playerMovement = new Vec3d(player.getMotion().x, player.getMotion().y,
+			Vector3d playerMovement = new Vector3d(player.getMotion().x, player.getMotion().y,
 					player.getMotion().z);
 			double slopeAtPos = connection.getSlope(linePos, cpA);
-			Vec3d extendedWire;
+			Vector3d extendedWire;
 			if(catData.isVertical())
-				extendedWire = new Vec3d(0, catData.getHorLength(), 0);
+				extendedWire = new Vector3d(0, catData.getHorLength(), 0);
 			else
-				extendedWire = new Vec3d(catData.getDeltaX(), slopeAtPos*catData.getHorLength(), catData.getDeltaZ());
+				extendedWire = new Vector3d(catData.getDeltaX(), slopeAtPos*catData.getHorLength(), catData.getDeltaZ());
 			extendedWire = extendedWire.normalize();
 
 			double totalSpeed = playerMovement.dotProduct(extendedWire);
 			double horSpeed = totalSpeed/Math.sqrt(1+slopeAtPos*slopeAtPos);
 			SkylineHookEntity hook = new SkylineHookEntity(player.world, connection, cpA, linePos, hand, horSpeed, limitSpeed);
 			IELogger.logger.info("Speed keeping: Player {}, wire {}, Pos: {}", playerMovement, extendedWire,
-					hook.getPositionVector());
+					hook.getPositionVec());
 			if(hook.isValidPosition(hook.getPosX(), hook.getPosY(), hook.getPosZ(), player))
 			{
 				double vertSpeed = Math.sqrt(totalSpeed*totalSpeed-horSpeed*horSpeed);
@@ -121,7 +124,7 @@ public class SkylineHelper
 	{
 		List<VoxelShape> list = Lists.newArrayList();
 		getBlockCollisionBoxes(entityIn, aabb, list, w, ignored);
-		w.getEmptyCollisionShapes(entityIn, aabb, ImmutableSet.of()).forEach(list::add);
+		w.getCollisionShapes(entityIn, aabb).forEach(list::add);
 		return list;
 	}
 

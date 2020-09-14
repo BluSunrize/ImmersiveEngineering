@@ -11,7 +11,8 @@ package blusunrize.immersiveengineering.api.energy;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag;
+import net.minecraft.util.text.ITextComponent;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -36,12 +37,12 @@ public class ThermoelectricHandler
 		temperatureMap.add(new ThermoelectricSource(b, value, TemperatureScale.KELVIN));
 	}
 
-	public static void registerSourceInKelvin(Tag<Block> tag, int value)
+	public static void registerSourceInKelvin(ITag<Block> tag, int value)
 	{
 		temperatureMap.add(new ThermoelectricSource(tag, value, TemperatureScale.KELVIN));
 	}
 
-	public static void registerSourceInCelsius(Tag<Block> tag, int value)
+	public static void registerSourceInCelsius(ITag<Block> tag, int value)
 	{
 		temperatureMap.add(new ThermoelectricSource(tag, value, TemperatureScale.CELSIUS));
 	}
@@ -54,16 +55,19 @@ public class ThermoelectricHandler
 		return -1;
 	}
 
-	public static SortedMap<String, Integer> getThermalValuesSorted(boolean inverse)
+	public static SortedMap<ITextComponent, Integer> getThermalValuesSorted(boolean inverse)
 	{
-		SortedMap<String, Integer> existingMap = new TreeMap<>(
-				inverse?Comparator.<String>reverseOrder(): Comparator.<String>reverseOrder()
+		SortedMap<ITextComponent, Integer> existingMap = new TreeMap<>(
+				Comparator.comparing(
+						ITextComponent::getString,
+						inverse?Comparator.reverseOrder(): Comparator.reverseOrder()
+				)
 		);
 		for(ThermoelectricSource ingr : temperatureMap)
 		{
 			Optional<Block> exampleOpt = ingr.getExample.get();
 			exampleOpt.ifPresent(example ->
-					existingMap.put(new ItemStack(example).getDisplayName().getFormattedText(), ingr.temperature));
+					existingMap.put(new ItemStack(example).getDisplayName(), ingr.temperature));
 		}
 		return existingMap;
 	}
@@ -79,7 +83,7 @@ public class ThermoelectricHandler
 			this(b2 -> b2==b, temperature, () -> Optional.of(b), s);
 		}
 
-		public ThermoelectricSource(Tag<Block> tag, int temperature, TemperatureScale scale)
+		public ThermoelectricSource(ITag<Block> tag, int temperature, TemperatureScale scale)
 		{
 			this(b -> b.isIn(tag), temperature, () -> {
 				Collection<Block> allMatching = tag.getAllElements();

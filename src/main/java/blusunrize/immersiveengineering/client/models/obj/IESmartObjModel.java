@@ -32,19 +32,19 @@ import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.TransformationMatrix;
-import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ILightReader;
-import net.minecraft.world.World;
+import net.minecraft.util.math.vector.TransformationMatrix;
+import net.minecraft.util.math.vector.Vector4f;
+import net.minecraft.world.IBlockDisplayReader;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.IModelBuilder;
 import net.minecraftforge.client.model.IModelConfiguration;
@@ -81,20 +81,19 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 	BlockState tempState;
 	public LivingEntity tempEntity;
 	public static LivingEntity tempEntityStatic;
-	public TransformType lastCameraTransform;
 	public boolean isDynamic;
 
 	public final OBJModel baseModel;
 	private final IBakedModel baseBaked;
 	private final IModelConfiguration owner;
 	private final ModelBakery bakery;
-	private final Function<Material, TextureAtlasSprite> spriteGetter;
+	private final Function<RenderMaterial, TextureAtlasSprite> spriteGetter;
 	private final IModelTransform sprite;
 
 	private final IEObjState state;
 
 	public IESmartObjModel(OBJModel baseModel, IBakedModel baseBaked, IModelConfiguration owner, ModelBakery bakery,
-						   Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform sprite,
+						   Function<RenderMaterial, TextureAtlasSprite> spriteGetter, IModelTransform sprite,
 						   IEObjState state, boolean dynamic)
 	{
 
@@ -117,7 +116,6 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 	@Override
 	public IBakedModel handlePerspective(TransformType cameraTransformType, MatrixStack mat)
 	{
-		this.lastCameraTransform = cameraTransformType;
 		TransformationMatrix matrix =
 				PerspectiveMapWrapper.getTransforms(owner.getCombinedTransform()).getOrDefault(cameraTransformType, TransformationMatrix.identity());
 
@@ -193,8 +191,8 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 	ItemOverrideList overrideList = new ItemOverrideList()
 	{
 		@Override
-		public IBakedModel getModelWithOverrides(@Nonnull IBakedModel originalModel, @Nonnull ItemStack stack,
-												 @Nullable World world, @Nullable LivingEntity entity)
+		public IBakedModel func_239290_a_(@Nonnull IBakedModel originalModel, @Nonnull ItemStack stack,
+												 @Nullable ClientWorld world, @Nullable LivingEntity entity)
 		{
 			tempEntityStatic = entity;
 			ComparableItemStack comp = ComparableItemStack.create(stack, false, true);
@@ -292,7 +290,7 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 
 	@Nonnull
 	@Override
-	public IModelData getModelData(@Nonnull ILightReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData)
+	public IModelData getModelData(@Nonnull IBlockDisplayReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData)
 	{
 		List<IModelData> customData = new ArrayList<>();
 		if(state.getBlock() instanceof IAdvancedHasObjProperty)

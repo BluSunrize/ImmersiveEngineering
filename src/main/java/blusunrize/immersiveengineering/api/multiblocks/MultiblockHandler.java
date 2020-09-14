@@ -16,7 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.template.Template.BlockInfo;
 import net.minecraftforge.api.distmarker.Dist;
@@ -131,7 +131,7 @@ public class MultiblockHandler
 		@OnlyIn(Dist.CLIENT)
 		void renderFormedStructure(MatrixStack transform, IRenderTypeBuffer buffer);
 
-		Vec3i getSize();
+		Vector3i getSize();
 
 		void disassemble(World world, BlockPos startPos, boolean mirrored, Direction clickDirectionAtCreation);
 

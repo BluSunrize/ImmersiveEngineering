@@ -16,13 +16,13 @@ import blusunrize.immersiveengineering.common.blocks.metal.FeedthroughTileEntity
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.Property;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.TransformationMatrix;
 import net.minecraftforge.client.model.data.ModelProperty;
 
 import java.util.*;

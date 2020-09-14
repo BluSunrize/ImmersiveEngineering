@@ -18,13 +18,14 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.Quaternion;
 
 public class FluorescentTubeRenderer extends EntityRenderer<FluorescentTubeEntity>
 {
@@ -94,6 +95,6 @@ public class FluorescentTubeRenderer extends EntityRenderer<FluorescentTubeEntit
 		matrixStack.translate(-.5, .25, -.5);
 		ItemStack renderStack = active?tubeActive: tube;
 		FluorescentTubeItem.setRGB(renderStack, rgb);
-		IEOBJItemRenderer.INSTANCE.render(renderStack, matrixStack, buffer, light, overlay);
+		IEOBJItemRenderer.INSTANCE.func_239207_a_(renderStack, TransformType.FIXED, matrixStack, buffer, light, overlay);
 	}
 }

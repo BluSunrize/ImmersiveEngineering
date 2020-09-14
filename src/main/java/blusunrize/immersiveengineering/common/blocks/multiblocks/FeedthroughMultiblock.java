@@ -22,7 +22,6 @@ import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.player.PlayerEntity;
@@ -31,8 +30,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -89,9 +89,9 @@ public class FeedthroughMultiblock implements IMultiblock
 	}
 
 	@Override
-	public Vec3i getSize()
+	public Vector3i getSize()
 	{
-		return new Vec3i(3, 1, 1);
+		return new Vector3i(3, 1, 1);
 	}
 
 	@Override
@@ -137,7 +137,7 @@ public class FeedthroughMultiblock implements IMultiblock
 		if(connsHere.size() > 1||connHere.getConnectionPoints().size()!=1)
 			return null;
 		BlockState state = w.getBlockState(pos);
-		if(!state.has(FACING_ALL)||state.get(FACING_ALL)!=expectedDirection)
+		if(!state.hasProperty(FACING_ALL)||state.get(FACING_ALL)!=expectedDirection)
 			return null;
 		return WireApi.getWireType(state);
 	}
@@ -148,7 +148,7 @@ public class FeedthroughMultiblock implements IMultiblock
 		GlobalWireNetwork globalNet = GlobalWireNetwork.getNetwork(world);
 		//Check
 		BlockState stateHere = world.getBlockState(pos);
-		if(stateHere.getProperties().contains(FACING_ALL))
+		if(stateHere.hasProperty(FACING_ALL))
 			side = stateHere.get(FACING_ALL);
 		WireType wire = checkValidConnector(world, pos, globalNet, side);
 		if(wire==null)

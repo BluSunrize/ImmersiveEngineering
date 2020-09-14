@@ -1,0 +1,15 @@
+{
+  "type": "immersiveengineering:blueprint",
+  "inputs": [
+    {
+      "item": "minecraft:paper"
+    },
+    {
+      "item": "immersiveengineering:hammer"
+    }
+  ],
+  "category": "bannerpatterns",
+  "result": {
+    "item": "immersiveengineering:bannerpattern_hammer"
+  }
+}

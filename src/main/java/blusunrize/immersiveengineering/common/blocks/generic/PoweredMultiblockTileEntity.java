@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks.generic;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
@@ -241,7 +240,7 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 	@Override
 	public void tick()
 	{
-		ApiUtils.checkForNeedlessTicking(this);
+		checkForNeedlessTicking();
 		tickedProcesses = 0;
 		if(world.isRemote||isDummy()||isRSDisabled())
 			return;

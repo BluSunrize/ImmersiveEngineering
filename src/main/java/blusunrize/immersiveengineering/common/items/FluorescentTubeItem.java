@@ -13,14 +13,12 @@ import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.ToolConfigBoolean;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.ToolConfigFloat;
 import blusunrize.immersiveengineering.api.tool.IElectricEquipment;
-import blusunrize.immersiveengineering.client.ClientProxy;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
+import blusunrize.immersiveengineering.client.utils.FontUtils;
 import blusunrize.immersiveengineering.common.entities.FluorescentTubeEntity;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -34,7 +32,8 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector4f;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -67,7 +66,7 @@ public class FluorescentTubeItem extends IEBaseItem implements IConfigurableTool
 			if(!world.isRemote)
 			{
 				ItemStack stack = ctx.getItem();
-				Vec3d look = player.getLookVec();
+				Vector3d look = player.getLookVec();
 				float angle = (float)Math.toDegrees(Math.atan2(look.x, look.z));
 				FluorescentTubeEntity tube = new FluorescentTubeEntity(world, stack.copy(), angle);
 				tube.setPosition(ctx.getHitVec().x, ctx.getHitVec().y+1.5, ctx.getHitVec().z);
@@ -150,14 +149,11 @@ public class FluorescentTubeItem extends IEBaseItem implements IConfigurableTool
 	@Override
 	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
 	{
-		list.add(new TranslationTextComponent(Lib.DESC_INFO+"colour", "#"+hexColorString(stack)));
-	}
-
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public FontRenderer getFontRenderer(ItemStack stack)
-	{
-		return ClientProxy.itemFont;
+		int color = getRGBInt(stack, 1);
+		list.add(FontUtils.withAppendColoredColour(
+				new TranslationTextComponent(Lib.DESC_INFO+"colour"),
+				color
+		));
 	}
 
 	@Override
@@ -184,14 +180,6 @@ public class FluorescentTubeItem extends IEBaseItem implements IConfigurableTool
 	{
 		float[] scaled = getRGBFloat(stack, factor);
 		return (((int)(scaled[0]*255)<<16)+((int)(scaled[1]*255)<<8)+(int)(scaled[2]*255));
-	}
-
-	public static String hexColorString(ItemStack stack)
-	{
-		String hexCol = Integer.toHexString(getRGBInt(stack, 1));
-		while(hexCol.length() < 6)
-			hexCol = "0"+hexCol;
-		return hexCol;
 	}
 
 	private static final String LIT_TIME = "litTime";

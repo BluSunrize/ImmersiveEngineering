@@ -21,6 +21,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidUtil;
@@ -74,16 +75,17 @@ public class BarrelMinecartEntity extends IEMinecartEntity<WoodenBarrelTileEntit
 	}
 
 	@Override
-	public boolean processInitialInteract(PlayerEntity player, Hand hand)
+	public ActionResultType processInitialInteract(PlayerEntity player, Hand hand)
 	{
-		if(super.processInitialInteract(player, hand)) return true;
+		if(super.processInitialInteract(player, hand) == ActionResultType.SUCCESS)
+			return ActionResultType.SUCCESS;
 		ItemStack itemstack = player.getHeldItem(hand);
 		if(FluidUtil.getFluidHandler(itemstack).isPresent())
 		{
 			this.containedTileEntity.interact(null, player, hand, itemstack, 0, 0, 0);
-			return true;//always return true to avoid placing lava in the world
+			return ActionResultType.SUCCESS;//always return true to avoid placing lava in the world
 		}
-		return false;
+		return ActionResultType.PASS;
 	}
 
 	@Nonnull

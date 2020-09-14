@@ -13,9 +13,11 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonBoolean;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE;
+import blusunrize.immersiveengineering.client.utils.FakeGuiUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.AssemblerTileEntity;
 import blusunrize.immersiveengineering.common.gui.AssemblerContainer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.RenderHelper;
@@ -23,7 +25,10 @@ import net.minecraft.client.util.ITooltipFlag.TooltipFlags;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.*;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +59,7 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerContainer>
 		for(int i = 0; i < 3; ++i)
 		{
 			final int id = i;
-			this.addButton(new GuiButtonIE(guiLeft+11+i*59, guiTop+67, 10, 10, "", texture, 230, 50,
+			this.addButton(new GuiButtonIE(guiLeft+11+i*59, guiTop+67, 10, 10, StringTextComponent.EMPTY, texture, 230, 50,
 					btn -> sendButtonClick.accept(id))
 					.setHoverOffset(0, 10));
 		}
@@ -67,16 +72,16 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerContainer>
 	}
 
 	@Override
-	public void render(int mx, int my, float partial)
+	public void render(MatrixStack transform, int mx, int my, float partial)
 	{
-		super.render(mx, my, partial);
+		super.render(transform, mx, my, partial);
 		List<ITextComponent> tooltip = new ArrayList<>();
 		if(mx >= guiLeft+187&&mx < guiLeft+194&&my >= guiTop+12&&my < guiTop+59)
 			tooltip.add(new StringTextComponent(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" IF"));
 
-		ClientUtils.handleGuiTank(tile.tanks[0], guiLeft+204, guiTop+13, 16, 46, 250, 0, 20, 50, mx, my, texture, tooltip);
-		ClientUtils.handleGuiTank(tile.tanks[1], guiLeft+182, guiTop+70, 16, 46, 250, 0, 20, 50, mx, my, texture, tooltip);
-		ClientUtils.handleGuiTank(tile.tanks[2], guiLeft+204, guiTop+70, 16, 46, 250, 0, 20, 50, mx, my, texture, tooltip);
+		ClientUtils.handleGuiTank(transform, tile.tanks[0], guiLeft+204, guiTop+13, 16, 46, 250, 0, 20, 50, mx, my, texture, tooltip);
+		ClientUtils.handleGuiTank(transform, tile.tanks[1], guiLeft+182, guiTop+70, 16, 46, 250, 0, 20, 50, mx, my, texture, tooltip);
+		ClientUtils.handleGuiTank(transform, tile.tanks[2], guiLeft+204, guiTop+70, 16, 46, 250, 0, 20, 50, mx, my, texture, tooltip);
 
 		for(int i = 0; i < tile.patterns.length; i++)
 			if(tile.inventory.get(18+i).isEmpty()&&!tile.patterns[i].inv.get(9).isEmpty())
@@ -85,7 +90,10 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerContainer>
 					tooltip.add(tile.patterns[i].inv.get(9).getDisplayName());
 					tile.patterns[i].inv.get(9).getItem().addInformation(tile.patterns[i].inv.get(9), ClientUtils.mc().world, tooltip, TooltipFlags.NORMAL);
 					for(int j = 0; j < tooltip.size(); j++)
-						tooltip.get(j).setStyle(new Style().setColor(j==0?tile.patterns[i].inv.get(9).getRarity().color: TextFormatting.GRAY));
+						ClientUtils.applyFormat(
+								tooltip.get(j),
+								j==0?tile.patterns[i].inv.get(9).getRarity().color: TextFormatting.GRAY
+						);
 				}
 
 		if(((mx >= guiLeft+11&&mx < guiLeft+21)||(mx >= guiLeft+69&&mx < guiLeft+79)||(mx >= guiLeft+127&&mx < guiLeft+137))&&my > guiTop+67&&my < guiTop+77)
@@ -94,29 +102,27 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerContainer>
 			tooltip.add(new TranslationTextComponent(Lib.GUI_CONFIG+"assembler."+(tile.recursiveIngredients?"recursiveIngredients": "nonRecursiveIngredients")));
 
 		if(!tooltip.isEmpty())
-			ClientUtils.drawHoveringText(tooltip, mx, my, font, width, height);
+			FakeGuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float f, int mx, int my)
+	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float f, int mx, int my)
 	{
-		RenderSystem.color3f(1.0F, 1.0F, 1.0F);
 		ClientUtils.bindTexture(texture);
-		this.blit(guiLeft, guiTop, 0, 0, xSize, ySize);
+		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
 
 		int stored = (int)(46*(tile.getEnergyStored(null)/(float)tile.getMaxEnergyStored(null)));
 		ClientUtils.drawGradientRect(guiLeft+187, guiTop+13+(46-stored), guiLeft+194, guiTop+59, 0xffb51500, 0xff600b00);
 
-		ClientUtils.handleGuiTank(tile.tanks[0], guiLeft+204, guiTop+13, 16, 46, 230, 0, 20, 50, mx, my, texture, null);
-		ClientUtils.handleGuiTank(tile.tanks[1], guiLeft+182, guiTop+70, 16, 46, 230, 0, 20, 50, mx, my, texture, null);
-		ClientUtils.handleGuiTank(tile.tanks[2], guiLeft+204, guiTop+70, 16, 46, 230, 0, 20, 50, mx, my, texture, null);
+		ClientUtils.handleGuiTank(transform, tile.tanks[0], guiLeft+204, guiTop+13, 16, 46, 230, 0, 20, 50, mx, my, texture, null);
+		ClientUtils.handleGuiTank(transform, tile.tanks[1], guiLeft+182, guiTop+70, 16, 46, 230, 0, 20, 50, mx, my, texture, null);
+		ClientUtils.handleGuiTank(transform, tile.tanks[2], guiLeft+204, guiTop+70, 16, 46, 230, 0, 20, 50, mx, my, texture, null);
 
 		for(int i = 0; i < tile.patterns.length; i++)
 			if(tile.inventory.get(18+i).isEmpty()&&!tile.patterns[i].inv.get(9).isEmpty())
 			{
 				ItemStack stack = tile.patterns[i].inv.get(9);
-				RenderSystem.pushMatrix();
-				RenderSystem.color3f(1.0F, 1.0F, 1.0F);
+				transform.push();
 				RenderHelper.disableStandardItemLighting();
 				FontRenderer font = null;
 				if(!stack.isEmpty())
@@ -126,13 +132,11 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerContainer>
 				itemRenderer.renderItemAndEffectIntoGUI(stack, guiLeft+27+i*58, guiTop+64);
 				itemRenderer.renderItemOverlayIntoGUI(font, stack, guiLeft+27+i*58, guiTop+64, TextFormatting.GRAY.toString()+stack.getCount());
 
-				RenderSystem.disableLighting();
 				RenderSystem.disableDepthTest();
 				ClientUtils.drawColouredRect(guiLeft+27+i*58, guiTop+64, 16, 16, 0x77444444);
-				RenderSystem.enableLighting();
 				RenderSystem.enableDepthTest();
 
-				RenderSystem.popMatrix();
+				transform.pop();
 			}
 	}
 }

@@ -34,7 +34,6 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -46,7 +45,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.UseAction;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.*;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.TransformationMatrix;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -64,6 +64,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, IZoomTool, IScrollwheel, ITool, IOBJModelCallback<ItemStack>
@@ -119,7 +120,7 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 		if(slotChanged)
 			return true;
 		LazyOptional<ShaderWrapper> wrapperOld = oldStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
-		LazyOptional<Boolean> sameShader = wrapperOld.map(wOld -> {
+		Optional<Boolean> sameShader = wrapperOld.map(wOld -> {
 			LazyOptional<ShaderWrapper> wrapperNew = newStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
 			return wrapperNew.map(w -> ItemStack.areItemStacksEqual(wOld.getShaderItem(), w.getShaderItem()))
 					.orElse(true);
@@ -210,7 +211,7 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 			Triple<ItemStack, ShaderRegistryEntry, ShaderCase> shader = ShaderRegistry.getStoredShaderAndCase(stack);
 			if(shader!=null)
 			{
-				Vec3d pos = Utils.getLivingFrontPos(user, .4375, user.getHeight()*.75, user.getActiveHand()==Hand.MAIN_HAND?user.getPrimaryHand(): user.getPrimaryHand().opposite(), false, 1);
+				Vector3d pos = Utils.getLivingFrontPos(user, .4375, user.getHeight()*.75, user.getActiveHand()==Hand.MAIN_HAND?user.getPrimaryHand(): user.getPrimaryHand().opposite(), false, 1);
 				shader.getMiddle().getEffectFunction().execute(user.world, shader.getLeft(), stack, shader.getRight().getShaderType().toString(), pos, null, .0625f);
 			}
 		}
@@ -235,7 +236,7 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 				{
 					ItemStack ammoConsumed = ammo.split(1);
 					IRailgunProjectile projectileProperties = RailgunHandler.getProjectile(ammoConsumed);
-					Vec3d vec = user.getLookVec();
+					Vector3d vec = user.getLookVec();
 					float speed = 20;
 					Entity shot = new RailgunShotEntity(user.world, user, vec.x*speed, vec.y*speed, vec.z*speed, ammoConsumed);
 					shot = projectileProperties.getProjectile((PlayerEntity)user, ammoConsumed, shot);
@@ -247,10 +248,10 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 					Triple<ItemStack, ShaderRegistryEntry, ShaderCase> shader = ShaderRegistry.getStoredShaderAndCase(stack);
 					if(shader!=null)
 					{
-						Vec3d pos = Utils.getLivingFrontPos(user, .75, user.getHeight()*.75, user.getActiveHand()==Hand.MAIN_HAND?user.getPrimaryHand(): user.getPrimaryHand().opposite(), false, 1);
+						Vector3d pos = Utils.getLivingFrontPos(user, .75, user.getHeight()*.75, user.getActiveHand()==Hand.MAIN_HAND?user.getPrimaryHand(): user.getPrimaryHand().opposite(), false, 1);
 						shader.getMiddle().getEffectFunction().execute(world, shader.getLeft(), stack,
 								shader.getRight().getShaderType().toString(), pos,
-								Vec3d.fromPitchYaw(user.getPitchYaw()), .125f);
+								Vector3d.fromPitchYaw(user.getPitchYaw()), .125f);
 					}
 				}
 			}

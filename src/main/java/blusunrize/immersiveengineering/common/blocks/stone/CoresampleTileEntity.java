@@ -21,25 +21,25 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.loot.LootContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.ColumnPos;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.storage.MapData;
 import net.minecraft.world.storage.MapDecoration;
-import net.minecraft.world.storage.loot.LootContext;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -86,7 +86,7 @@ public class CoresampleTileEntity extends IEBaseTileEntity implements IStateBase
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
 	{
 		return true;
 	}
@@ -120,9 +120,9 @@ public class CoresampleTileEntity extends IEBaseTileEntity implements IStateBase
 				MapData mapData = FilledMapItem.getMapData(heldItem, player.getEntityWorld());
 				if(mapData!=null)
 				{
-					if(mapData.dimension!=DimensionType.byName(CoresampleItem.getDimenson(coresample)))
+					if(mapData.dimension!=CoresampleItem.getDimension(coresample))
 					{
-						player.sendMessage(new TranslationTextComponent(Lib.CHAT_INFO+"coresample.mapDimension"));
+						player.sendMessage(new TranslationTextComponent(Lib.CHAT_INFO+"coresample.mapDimension"), Util.DUMMY_UUID);
 						return true;
 					}
 
@@ -162,7 +162,7 @@ public class CoresampleTileEntity extends IEBaseTileEntity implements IStateBase
 						mapTagCompound.put("Decorations", nbttaglist);
 					}
 					else
-						player.sendMessage(new TranslationTextComponent(Lib.CHAT_INFO+"coresample.mapFail"));
+						player.sendMessage(new TranslationTextComponent(Lib.CHAT_INFO+"coresample.mapFail"), Util.DUMMY_UUID);
 				}
 			}
 			return true;
@@ -192,16 +192,16 @@ public class CoresampleTileEntity extends IEBaseTileEntity implements IStateBase
 		this.coresample = stack.copy();
 	}
 
-	private String[] overlay = null;
+	private ITextComponent[] overlay = null;
 
 	@Override
-	public String[] getOverlayText(PlayerEntity player, RayTraceResult mop, boolean hammer)
+	public ITextComponent[] getOverlayText(PlayerEntity player, RayTraceResult mop, boolean hammer)
 	{
 		if(overlay==null)
 		{
 			List<ITextComponent> list = new ArrayList<>();
 			CoresampleItem.getCoresampleInfo(coresample, list, TextFormatting.WHITE, world, false, false);
-			overlay = list.stream().map(ITextComponent::getFormattedText).toArray(String[]::new);
+			overlay = list.toArray(new ITextComponent[0]);
 		}
 		return overlay;
 	}

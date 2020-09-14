@@ -11,18 +11,17 @@ package blusunrize.immersiveengineering.client.render.entity;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler.RailgunRenderColors;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler.StandardRailgunProjectile;
-import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
 import blusunrize.immersiveengineering.common.entities.RailgunShotEntity;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Quaternion;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.util.math.vector.Vector3f;
 
 import javax.annotation.Nonnull;
 
@@ -48,7 +47,7 @@ public class RailgunShotRenderer extends EntityRenderer<RailgunShotEntity>
 		if(!ammo.isEmpty())
 		{
 			RailgunHandler.IRailgunProjectile prop = RailgunHandler.getProjectile(ammo);
-			if(prop instanceof RailgunHandler.StandardRailgunProjectile)
+			if(prop instanceof RailgunHandler.StandardRailgunProjectile&&((StandardRailgunProjectile)prop).getColorMap()!=null)
 				colors = ((StandardRailgunProjectile)prop).getColorMap();
 		}
 

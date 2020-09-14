@@ -15,7 +15,7 @@ import blusunrize.immersiveengineering.common.util.ListUtils;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
@@ -64,11 +64,11 @@ public class MetalPressRecipeCategory extends IERecipeCategory<MetalPressRecipe>
 	}
 
 	@Override
-	public void draw(MetalPressRecipe recipe, double mouseX, double mouseY)
+	public void draw(MetalPressRecipe recipe, MatrixStack transform, double mouseX, double mouseY)
 	{
-		RenderSystem.pushMatrix();
-		RenderSystem.scalef(3, 3, 1);
-		this.getIcon().draw(5, 0);
-		RenderSystem.popMatrix();
+		transform.push();
+		transform.scale(3, 3, 1);
+		this.getIcon().draw(transform, 5, 0);
+		transform.pop();
 	}
 }

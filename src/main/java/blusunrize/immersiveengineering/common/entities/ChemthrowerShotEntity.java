@@ -143,7 +143,7 @@ public class ChemthrowerShotEntity extends IEProjectileEntity
 			if(effect!=null)
 			{
 				ItemStack thrower = ItemStack.EMPTY;
-				PlayerEntity shooter = (PlayerEntity)this.getShooter();
+				PlayerEntity shooter = (PlayerEntity)this.func_234616_v_();
 				if(shooter!=null)
 					thrower = shooter.getHeldItem(Hand.MAIN_HAND);
 

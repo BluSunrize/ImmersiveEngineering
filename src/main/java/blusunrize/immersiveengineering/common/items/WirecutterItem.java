@@ -34,6 +34,7 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.ToolType;
 
 import javax.annotation.Nonnull;
@@ -161,7 +162,7 @@ public class WirecutterItem extends IEBaseItem implements ITool
 		ItemStack stack = player.getHeldItem(hand);
 		if(!world.isRemote)
 		{
-			double reachDistance = player.getAttribute(PlayerEntity.REACH_DISTANCE).getValue();
+			double reachDistance = player.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue();
 			Connection target = WireUtils.getTargetConnection(world, player, null, reachDistance);
 			if(target!=null)
 			{

@@ -9,22 +9,20 @@
 package blusunrize.immersiveengineering.api.wires.proxy;
 
 import blusunrize.immersiveengineering.api.TargetingInfo;
-import blusunrize.immersiveengineering.api.wires.*;
-import com.google.common.collect.ImmutableList;
+import blusunrize.immersiveengineering.api.wires.Connection;
+import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
+import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
+import blusunrize.immersiveengineering.api.wires.WireType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
-import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -34,23 +32,18 @@ import java.util.List;
 
 public class IICProxy implements IImmersiveConnectable
 {
-	private final DimensionType dim;
+	private final World world;
 	private final BlockPos pos;
 	private final List<Connection> internalConns;
 	private final List<ConnectionPoint> points;
 
-	public IICProxy(DimensionType dimension, BlockPos pos, Collection<Connection> internal,
+	public IICProxy(World world, BlockPos pos, Collection<Connection> internal,
 					Collection<ConnectionPoint> points)
 	{
-		dim = dimension;
+		this.world = world;
 		this.pos = pos;
 		this.internalConns = new ArrayList<>(internal);
 		this.points = new ArrayList<>(points);
-	}
-
-	public IICProxy(DimensionType dimension, BlockPos pos)
-	{
-		this(dimension, pos, ImmutableList.of(), ImmutableList.of());
 	}
 
 	@Override
@@ -59,28 +52,12 @@ public class IICProxy implements IImmersiveConnectable
 		return internalConns;
 	}
 
-	public BlockPos getPos()
-	{
-		return pos;
-	}
-
-	public DimensionType getDimension()
-	{
-		return dim;
-	}
-
 	@Override
 	public void removeCable(Connection connection, ConnectionPoint attachedPoint)
 	{
 		//TODO clean up
 		//this will load the chunk the TE is in for 1 tick since it needs to be notified about the removed wires
-		World w = DimensionManager.getWorld(ServerLifecycleHooks.getCurrentServer(), dim, false, true);
-		if(w==null)
-		{
-			WireLogger.logger.warn("Tried to remove a wire in dimension "+dim+" which does not exist");
-			return;
-		}
-		TileEntity te = w.getTileEntity(pos);
+		TileEntity te = world.getTileEntity(pos);
 		if(!(te instanceof IImmersiveConnectable))
 			return;
 		((IImmersiveConnectable)te).removeCable(connection, attachedPoint);
@@ -93,7 +70,7 @@ public class IICProxy implements IImmersiveConnectable
 	}
 
 	@Override
-	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vec3i offset)
+	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vector3i offset)
 	{
 		return false;
 	}
@@ -105,13 +82,13 @@ public class IICProxy implements IImmersiveConnectable
 
 	@Nullable
 	@Override
-	public ConnectionPoint getTargetedPoint(TargetingInfo info, Vec3i offset)
+	public ConnectionPoint getTargetedPoint(TargetingInfo info, Vector3i offset)
 	{
 		return null;
 	}
 
 	@Override
-	public Vec3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
+	public Vector3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
 		return null;
 	}
@@ -122,7 +99,7 @@ public class IICProxy implements IImmersiveConnectable
 		return points;
 	}
 
-	public static IICProxy readFromNBT(CompoundNBT nbt)
+	public static IICProxy readFromNBT(World world, CompoundNBT nbt)
 	{
 		ListNBT internalNBT = nbt.getList("internal", NBT.TAG_COMPOUND);
 		List<Connection> internal = new ArrayList<>(internalNBT.size());
@@ -132,14 +109,12 @@ public class IICProxy implements IImmersiveConnectable
 		List<ConnectionPoint> points = new ArrayList<>();
 		for(INBT c : pointNBT)
 			points.add(new ConnectionPoint((CompoundNBT)c));
-		return new IICProxy(DimensionType.byName(new ResourceLocation(nbt.getString("dim"))),
-				NBTUtil.readBlockPos(nbt.getCompound("pos")), internal, points);
+		return new IICProxy(world, NBTUtil.readBlockPos(nbt.getCompound("pos")), internal, points);
 	}
 
 	public CompoundNBT writeToNBT()
 	{
 		CompoundNBT ret = new CompoundNBT();
-		ret.putString("dim", dim.getRegistryName().toString());
 		ret.put("pos", NBTUtil.writeBlockPos(pos));
 		ListNBT points = new ListNBT();
 		for(ConnectionPoint cp : this.points)

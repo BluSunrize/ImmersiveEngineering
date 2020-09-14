@@ -41,8 +41,11 @@ import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.text.*;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
@@ -87,8 +90,10 @@ public class HammerItem extends IEBaseItem implements ITool
 		{
 			list.add(new StringTextComponent(s));
 			for(int i = 0; i < tagList.size(); i++)
-				list.add(new TranslationTextComponent(Lib.DESC_INFO+"multiblock."+tagList.getString(i))
-						.setStyle(new Style().setColor(TextFormatting.DARK_GRAY)));
+				list.add(ClientUtils.applyFormat(
+						new TranslationTextComponent(Lib.DESC_INFO+"multiblock."+tagList.getString(i)),
+						TextFormatting.DARK_GRAY
+				));
 		}
 	}
 
@@ -172,7 +177,7 @@ public class HammerItem extends IEBaseItem implements ITool
 		{
 			boolean rotate = !(tile instanceof IDirectionalTile)&&!(tile instanceof IHammerInteraction);
 			if(!rotate&&tile instanceof IDirectionalTile)
-				rotate = ((IDirectionalTile)tile).canHammerRotate(side, context.getHitVec().subtract(new Vec3d(pos)), player);
+				rotate = ((IDirectionalTile)tile).canHammerRotate(side, context.getHitVec().subtract(Vector3d.copy(pos)), player);
 			if(rotate&&RotationUtil.rotateBlock(world, pos, player!=null&&(player.isSneaking()!=side.equals(Direction.DOWN))))
 				return ActionResultType.SUCCESS;
 			else if(!rotate&&tile instanceof IHammerInteraction)
@@ -226,9 +231,12 @@ public class HammerItem extends IEBaseItem implements ITool
 	}
 
 	@Override
-	public boolean itemInteractionForEntity(ItemStack stack, PlayerEntity player, LivingEntity entity, Hand hand)
+	public ActionResultType itemInteractionForEntity(ItemStack stack, PlayerEntity player, LivingEntity entity, Hand hand)
 	{
-		return !player.world.isRemote&&RotationUtil.rotateEntity(entity, player);
+		if (!player.world.isRemote&&RotationUtil.rotateEntity(entity, player))
+			return ActionResultType.SUCCESS;
+		else
+			return ActionResultType.PASS;
 	}
 
 	@Nonnull

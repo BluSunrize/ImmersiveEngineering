@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
@@ -107,21 +108,21 @@ public class ArcFurnaceRecipeCategory extends IERecipeCategory<ArcFurnaceRecipe>
 	}
 
 	@Override
-	public void draw(ArcFurnaceRecipe recipe, double mouseX, double mouseY)
+	public void draw(ArcFurnaceRecipe recipe, MatrixStack transform, double mouseX, double mouseY)
 	{
-		JEIHelper.slotDrawable.draw(20, 0);
+		JEIHelper.slotDrawable.draw(transform, 20, 0);
 		for(int j = 0; j < 4; j++)
-			JEIHelper.slotDrawable.draw(12+j%2*18, 18+j/2*18);
+			JEIHelper.slotDrawable.draw(transform, 12+j%2*18, 18+j/2*18);
 		for(int j = 0; j < 6; j++)
-			JEIHelper.slotDrawable.draw(86+j%3*18, 0+j/3*18);
-		JEIHelper.slotDrawable.draw(122, 36);
+			JEIHelper.slotDrawable.draw(transform, 86+j%3*18, 0+j/3*18);
+		JEIHelper.slotDrawable.draw(transform, 122, 36);
 
 		float time = recipe.getTotalProcessTime();
 		float energy = recipe.getTotalProcessEnergy()/time;
 		Utils.formatDouble(energy, "#.##");
 		String s = I18n.format("desc.immersiveengineering.info.ift", Utils.formatDouble(energy, "#.##"));
-		ClientUtils.font().drawString(s, 54, 38, 0x777777);
+		ClientUtils.font().drawString(transform, s, 54, 38, 0x777777);
 		s = I18n.format("desc.immersiveengineering.info.seconds", Utils.formatDouble(time/20, "#.##"));
-		ClientUtils.font().drawString(s, 54, 48, 0x777777);
+		ClientUtils.font().drawString(transform, s, 54, 48, 0x777777);
 	}
 }

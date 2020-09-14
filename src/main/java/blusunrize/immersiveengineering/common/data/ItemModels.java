@@ -33,10 +33,10 @@ import net.minecraft.item.Item;
 import net.minecraft.resources.ResourcePackType;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.generators.ExistingFileHelper;
 import net.minecraftforge.client.model.generators.ModelBuilder;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.client.model.generators.ModelFile.UncheckedModelFile;
+import net.minecraftforge.common.data.ExistingFileHelper;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
@@ -239,6 +239,14 @@ public class ItemModels extends LoadedModelProvider
 		addItemModels("", Tools.sawblade, Tools.rockcutter);
 		addItemModels("", IEItems.Misc.maintenanceKit);
 		addItemModels("", IEItems.Misc.cartWoodenCrate, IEItems.Misc.cartReinforcedCrate, IEItems.Misc.cartWoodenBarrel, IEItems.Misc.cartMetalBarrel);
+		addItemModel("banner_pattern", IEItems.Misc.bannerPatternHammer);
+		addItemModel("banner_pattern", IEItems.Misc.bannerPatternBevels);
+		addItemModel("banner_pattern", IEItems.Misc.bannerPatternOrnate);
+		addItemModel("banner_pattern", IEItems.Misc.bannerPatternTreatedWood);
+		addItemModel("banner_pattern", IEItems.Misc.bannerPatternWindmill);
+		addItemModel("banner_pattern", IEItems.Misc.bannerPatternWolfR);
+		addItemModel("banner_pattern", IEItems.Misc.bannerPatternWolfL);
+		addItemModel("banner_pattern", IEItems.Misc.bannerPatternWolf);
 		addItemModels("", IEItems.Misc.iconBirthday, IEItems.Misc.iconLucky, IEItems.Misc.iconDrillbreak, IEItems.Misc.iconRavenholm);
 
 		obj(Tools.voltmeter, rl("item/voltmeter.obj"))

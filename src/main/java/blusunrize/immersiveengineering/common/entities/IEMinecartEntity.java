@@ -24,6 +24,7 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -110,16 +111,17 @@ public abstract class IEMinecartEntity<T extends IEBaseTileEntity> extends Abstr
 	}
 
 	@Override
-	public boolean processInitialInteract(PlayerEntity player, Hand hand)
+	public ActionResultType processInitialInteract(PlayerEntity player, Hand hand)
 	{
-		if(super.processInitialInteract(player, hand))
-			return true;
+		ActionResultType superResult = super.processInitialInteract(player, hand);
+		if(superResult == ActionResultType.SUCCESS)
+			return superResult;
 		if(!world.isRemote&&this.containedTileEntity instanceof IInteractionObjectIE)
 		{
 			NetworkHooks.openGui((ServerPlayerEntity)player, this, buffer -> buffer.writeInt(this.getEntityId()));
-			return true;
+			return ActionResultType.SUCCESS;
 		}
-		return false;
+		return ActionResultType.PASS;
 	}
 
 	@Nullable

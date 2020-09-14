@@ -16,7 +16,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -38,12 +38,12 @@ public class IngredientWithSize implements Predicate<ItemStack>
 		this(basePredicate, 1);
 	}
 
-	public IngredientWithSize(Tag<Item> basePredicate, int count)
+	public IngredientWithSize(ITag<Item> basePredicate, int count)
 	{
 		this(Ingredient.fromTag(basePredicate), count);
 	}
 
-	public IngredientWithSize(Tag<Item> basePredicate)
+	public IngredientWithSize(ITag<Item> basePredicate)
 	{
 		this(basePredicate, 1);
 	}

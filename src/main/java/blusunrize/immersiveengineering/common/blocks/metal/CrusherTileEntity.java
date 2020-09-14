@@ -35,10 +35,14 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -296,7 +300,7 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 			CrusherTileEntity master = master();
 			if(master==null)
 				return;
-			Vec3d center = new Vec3d(master.getPos()).add(.5, .75, .5);
+			Vector3d center = Vector3d.copyCentered(master.getPos()).add(0, 0.25, 0);
 			AxisAlignedBB crusherInternal = new AxisAlignedBB(center.x-1.0625, center.y, center.z-1.0625, center.x+1.0625, center.y+1.25, center.z+1.0625);
 			if(!entity.getBoundingBox().intersects(crusherInternal))
 				return;

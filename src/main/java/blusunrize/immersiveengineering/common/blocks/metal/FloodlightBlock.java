@@ -13,6 +13,8 @@ import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectorBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockReader;
 
 public class FloodlightBlock extends MiscConnectorBlock<FloodlightTileEntity>
 {
@@ -23,9 +25,8 @@ public class FloodlightBlock extends MiscConnectorBlock<FloodlightTileEntity>
 	}
 
 	@Override
-	public int getLightValue(BlockState state)
+	public int getLightValue(BlockState state, IBlockReader world, BlockPos pos)
 	{
 		return state.get(IEProperties.ACTIVE)?15: 0;
 	}
-
 }

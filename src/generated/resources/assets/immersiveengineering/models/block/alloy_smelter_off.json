@@ -1,5 +1,5 @@
 {
-  "parent": "block/block",
+  "parent": "minecraft:block/block",
   "textures": {
     "particle": "immersiveengineering:block/multiblocks/alloy_smelter_side",
     "side": "immersiveengineering:block/multiblocks/alloy_smelter_side",

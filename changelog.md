@@ -1,4 +1,8 @@
+##### Version 1.16.1-4.0.0-pre
+- Fixed crashes with wires under certain conditions (Malte)
+
 ##### Version 1.15.2-4.0.0-pre
+- Added Enderpeals as valid Railgun projectiles! (BluSunrize)
 - Fixed model issues with the metal press and refinery (Malte)
 - Fixed the metal press piston vanishing at certain angles (Malte)
 - Fixed wires rendering too many segments near chunk boundaries (Malte)
@@ -11,6 +15,13 @@
 - Fixed mixers voiding one tick worth of output (Malte)
 - Fixed screwdriver not being able to sneak+rightclick blocks (BluSunrize)
 - Fixed heavy shield not being repairable with a steel ingot (BluSunrize)
+
+##### Version 1.16.1-4.0.0-118
+- Re-added custom banner patterns. Craft the blueprint, make patterns, then use them on the loom! (BluSunrize)
+- Added a warning when switching to "fabulous" graphics while stencil is enabled (Malte)
+- Fixed log spam caused by wire sync issues (Malte)
+- Fixed manual page for shaders (BluSunrize)
+- Also includes the changes from 1.15.2-4.0.0-117
 
 ##### Version 1.15.2-4.0.0-117
 - Changed rendering of multiblocks to split models into blocks;
@@ -47,6 +58,10 @@
 - Fixed more concurrency exceptions with mineral veins (BluSunrize)
 - Fixed alloy grit recipes outputting too little (BluSunrize)
 
+##### Version 1.16.1-3.2.0-115
+- Fixed some derpy rendering in the manual (BluSunrize)
+- Also includes the changes from 1.15.2-3.2.0-114
+
 ##### Version 1.15.2-3.2.0-114
 - Fixed mirrored machines rendering incorrectly (Malte)
 - Fixed bucket wheels in mirrored excavators rendering incorrectly (Malte)
@@ -70,6 +85,17 @@
 - Fixed assembler connecting to pipes in wrong places (BluSunrize)
 - Translations Added/Updated: zh_zn (masakitenchi)
 
+##### Version 1.16.1-3.1-112
+- Require Forge version 32.0.99 or later
+- Moved to new version numbering system
+- Fixed a crash with railgun & chemthrower projectiles (BluSunrize)
+- Fixed manual rendering for blueprint recipes (BluSunrize)
+- Fixed scaffolding causing a suffocation overlay (BluSunrize)
+- Fixed crashes with the drill & sawblade overlay (BluSunrize)
+- Fixed crashes with wires (Malte)
+- Fixed crashes with explosions (Malte)
+- Also includes the changes from 1.15.2-3.1-111
+
 ##### Version 1.15.2-3.1-111
 - Moved to new version numbering system
 - Fixed broken HUD of the Heavy Plated Shield upgrades (BluSunrize)
@@ -92,6 +118,15 @@
 - Fixed snow buildup stopping windmills (BluSunrize)
 - Fixed one of the rendering issues with transformers (BluSunrize)
 
+##### Version 0.16-109 - BUILT
+- Requires Forge version 32.0.67 or later (BluSunrize)
+- Fixed formatting not persisting across linebreaks in the manual (Malte)
+- Fixed tooltips crashing in the manual (Malte)
+- Fixed recipes not loading on dedicated servers (BluSunrize)
+- Fixed fluid tank backgrounds being wrongly offset in JEI (BluSunrize)
+- Fixed revolver causing a crash with its attribute map (BluSunrize)
+- Also includes the changes from 0.14-107
+
 ##### Version 0.15-108 - BUILT
 - Also includes the changes from 0.14-107
 
@@ -103,6 +138,11 @@
 - Fixed potential crash on loading mineral veins (BluSunrize)
 - Fixed diesel generator forgetting about its redstone signal inversion (BluSunrize)
 - Fixed shader dupe bug with banners (BluSunrize)
+
+##### Version 0.16-106 - BUILT
+- Initial port to 1.16
+- Added mineral vein, crusher & arc furnace integration for the new Nether materials
+- Also includes all changes from 0.15-105
 
 ##### Version 0.15-105 - BUILT
 - Fixed invisible connectors with Optifine (Malte)

@@ -31,7 +31,11 @@ import net.minecraft.potion.Effects;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.EntityRayTraceResult;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -94,7 +98,7 @@ public class RevolvershotEntity extends IEProjectileEntity
 	{
 		this(eType, world, living, living.getPosX()+ax, living.getPosY()+living.getEyeHeight()+ay, living.getPosZ()+az, ax, ay, az, type);
 		setShooterSynced();
-		setMotion(Vec3d.ZERO);
+		setMotion(Vector3d.ZERO);
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -119,13 +123,13 @@ public class RevolvershotEntity extends IEProjectileEntity
 
 		if(this.bulletType!=null)
 		{
-			bulletType.onHitTarget(world, mop, this.shootingEntity, this, headshot);
+			bulletType.onHitTarget(world, mop, this.field_234609_b_, this, headshot);
 			if(mop instanceof EntityRayTraceResult)
 			{
 				Entity hitEntity = ((EntityRayTraceResult)mop).getEntity();
 				if(headshot&&hitEntity instanceof LivingEntity&&((LivingEntity)hitEntity).isChild()&&((LivingEntity)hitEntity).getHealth() <= 0)
 				{
-					PlayerEntity shooter = world.getPlayerByUuid(shootingEntity);
+					PlayerEntity shooter = world.getPlayerByUuid(field_234609_b_);
 					if(shooter!=null)
 						Utils.unlockIEAdvancement(shooter, "main/secret_birthdayparty");
 					world.playSound(null, getPosX(), getPosY(), getPosZ(), IESounds.birthdayParty, SoundCategory.PLAYERS, 1.0F, 1.2F/(this.rand.nextFloat()*0.2F+0.9F));
@@ -153,7 +157,7 @@ public class RevolvershotEntity extends IEProjectileEntity
 		Entity hitEntity = ((EntityRayTraceResult)mop).getEntity();
 		if(bulletElectro&&hitEntity instanceof LivingEntity)
 		{
-			PlayerEntity shooter = world.getPlayerByUuid(shootingEntity);
+			PlayerEntity shooter = world.getPlayerByUuid(field_234609_b_);
 			float percentualDrain = .15f/(bulletType==null?1: bulletType.getProjectileCount(shooter));
 			((LivingEntity)hitEntity).addPotionEffect(new EffectInstance(Effects.SLOWNESS, 15, 4));
 			for(EquipmentSlotType slot : EquipmentSlotType.values())

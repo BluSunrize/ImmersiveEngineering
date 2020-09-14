@@ -31,11 +31,11 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
@@ -250,7 +250,7 @@ public class StructuralArmTileEntity extends IEBaseTileEntity implements IOBJMod
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
 	{
 		return side.getAxis()==Axis.Y;
 	}
@@ -306,21 +306,21 @@ public class StructuralArmTileEntity extends IEBaseTileEntity implements IOBJMod
 		quads = new ArrayList<>();
 		Matrix4 mat = new Matrix4(facing);
 
-		Vec3d[] vertices;
+		Vector3d[] vertices;
 		{
 			float y03 = onCeiling?1: upperHeight;
 			float y12 = onCeiling?1: lowerHeight;
 			float y47 = onCeiling?1-upperHeight: 0;
 			float y56 = onCeiling?1-lowerHeight: 0;
-			vertices = new Vec3d[]{
-					new Vec3d(0, y03, 0),//0
-					new Vec3d(0, y12, 1),//1
-					new Vec3d(1, y12, 1),//2
-					new Vec3d(1, y03, 0),//3
-					new Vec3d(0, y47, 0),//4
-					new Vec3d(0, y56, 1),//5
-					new Vec3d(1, y56, 1),//6
-					new Vec3d(1, y47, 0),//7
+			vertices = new Vector3d[]{
+					new Vector3d(0, y03, 0),//0
+					new Vector3d(0, y12, 1),//1
+					new Vector3d(1, y12, 1),//2
+					new Vector3d(1, y03, 0),//3
+					new Vector3d(0, y47, 0),//4
+					new Vector3d(0, y56, 1),//5
+					new Vector3d(1, y56, 1),//6
+					new Vector3d(1, y47, 0),//7
 			};
 		}
 		for(int i = 0; i < vertices.length; i++)
@@ -351,7 +351,7 @@ public class StructuralArmTileEntity extends IEBaseTileEntity implements IOBJMod
 		SHRINK.translate(-.5, -.5, -.5);
 	}
 
-	private void addCulledQuad(List<BakedQuad> quads, VertexFormat format, Vec3d[] vertices, Direction side,
+	private void addCulledQuad(List<BakedQuad> quads, VertexFormat format, Vector3d[] vertices, Direction side,
 							   TextureAtlasSprite tas, double[] uvs, float[] alpha)
 	{
 		side = Utils.rotateFacingTowardsDir(side, this.facing);
@@ -361,7 +361,7 @@ public class StructuralArmTileEntity extends IEBaseTileEntity implements IOBJMod
 		quads.add(ClientUtils.createBakedQuad(format, vertices, side.getOpposite(), tas, uvs, alpha, true));
 	}
 
-	private void addSides(List<BakedQuad> quads, Vec3d[] vertices, TextureAtlasSprite tas, double lowerV,
+	private void addSides(List<BakedQuad> quads, Vector3d[] vertices, TextureAtlasSprite tas, double lowerV,
 						  double upperV, boolean invert)
 	{
 		if(invert)
@@ -376,7 +376,7 @@ public class StructuralArmTileEntity extends IEBaseTileEntity implements IOBJMod
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	private BakedQuad createSide(VertexFormat format, Vec3d[] vertices, Direction facing, TextureAtlasSprite sprite,
+	private BakedQuad createSide(VertexFormat format, Vector3d[] vertices, Direction facing, TextureAtlasSprite sprite,
 								 double leftV, double rightV, boolean invert)
 	{
 		facing = Utils.rotateFacingTowardsDir(facing, this.facing);
@@ -391,7 +391,7 @@ public class StructuralArmTileEntity extends IEBaseTileEntity implements IOBJMod
 		float[] colour = {1, 1, 1, 1};
 		BakedQuadBuilder builder = new BakedQuadBuilder(sprite);
 		builder.setQuadOrientation(facing);
-		Vec3d faceNormal = new Vec3d(facing.getDirectionVec());
+		Vector3d faceNormal = Vector3d.copy(facing.getDirectionVec());
 		int vertexId = invert?3: 0;
 		double v = onCeiling?16-leftV: 0;
 		putVertexData(format, builder, vertices[vertexId], faceNormal, vertexId > 1?16: 0, v, sprite, colour, 1);
@@ -407,9 +407,9 @@ public class StructuralArmTileEntity extends IEBaseTileEntity implements IOBJMod
 		return builder.build();
 	}
 
-	private Vec3d[] getArrayByIndices(Vec3d[] in, int... indices)
+	private Vector3d[] getArrayByIndices(Vector3d[] in, int... indices)
 	{
-		Vec3d[] ret = new Vec3d[indices.length];
+		Vector3d[] ret = new Vector3d[indices.length];
 		for(int i = 0; i < indices.length; i++)
 			ret[i] = in[indices[i]];
 		return ret;

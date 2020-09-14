@@ -1,5 +1,5 @@
 {
-  "parent": "block/block",
+  "parent": "minecraft:block/block",
   "textures": {
     "particle": "immersiveengineering:block/conveyor/conveyor"
   },
@@ -16,19 +16,14 @@
       0
     ],
     [
-      0,
-      -1,
-      0
-    ],
-    [
-      1,
-      -1,
-      0
-    ],
-    [
       -1,
       -1,
       1
+    ],
+    [
+      0,
+      -1,
+      0
     ],
     [
       0,
@@ -38,6 +33,11 @@
     [
       1,
       -1,
+      0
+    ],
+    [
+      1,
+      -1,
       1
     ],
     [
@@ -51,14 +51,14 @@
       0
     ],
     [
-      0,
-      0,
-      0
-    ],
-    [
       -1,
       0,
       1
+    ],
+    [
+      0,
+      0,
+      0
     ],
     [
       0,

@@ -23,12 +23,12 @@ class FluidTags extends FluidTagsProvider
 	@Override
 	protected void registerTags()
 	{
-		getBuilder(IETags.fluidCreosote).add(IEContent.fluidCreosote);
-		getBuilder(IETags.fluidPlantoil).add(IEContent.fluidPlantoil);
-		getBuilder(IETags.fluidEthanol).add(IEContent.fluidEthanol);
-		getBuilder(IETags.fluidBiodiesel).add(IEContent.fluidBiodiesel);
-		getBuilder(IETags.fluidConcrete).add(IEContent.fluidConcrete);
-		getBuilder(IETags.fluidHerbicide).add(IEContent.fluidHerbicide);
-		getBuilder(IETags.fluidPotion).add(IEContent.fluidPotion);
+		getOrCreateBuilder(IETags.fluidCreosote).add(IEContent.fluidCreosote);
+		getOrCreateBuilder(IETags.fluidPlantoil).add(IEContent.fluidPlantoil);
+		getOrCreateBuilder(IETags.fluidEthanol).add(IEContent.fluidEthanol);
+		getOrCreateBuilder(IETags.fluidBiodiesel).add(IEContent.fluidBiodiesel);
+		getOrCreateBuilder(IETags.fluidConcrete).add(IEContent.fluidConcrete);
+		getOrCreateBuilder(IETags.fluidHerbicide).add(IEContent.fluidHerbicide);
+		getOrCreateBuilder(IETags.fluidPotion).add(IEContent.fluidPotion);
 	}
 }

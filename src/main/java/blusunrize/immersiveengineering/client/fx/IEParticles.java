@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.client.fx;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.fx.FluidSplashParticle.DataDeserializer;
+import com.mojang.serialization.Codec;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.particles.BasicParticleType;
@@ -24,8 +25,24 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 @EventBusSubscriber(modid = ImmersiveEngineering.MODID, bus = Bus.MOD, value = Dist.CLIENT)
 public class IEParticles
 {
-	public static final ParticleType<FluidSplashParticle.Data> FLUID_SPLASH = new ParticleType<>(false, new DataDeserializer());
-	public static final ParticleType<FractalParticle.Data> FRACTAL = new ParticleType<>(false, new FractalParticle.DataDeserializer());
+	public static final ParticleType<FluidSplashParticle.Data> FLUID_SPLASH = new ParticleType<FluidSplashParticle.Data>(
+			false, new DataDeserializer())
+	{
+		@Override
+		public Codec<FluidSplashParticle.Data> func_230522_e_()
+		{
+			return FluidSplashParticle.CODEC;
+		}
+	};
+	public static final ParticleType<FractalParticle.Data> FRACTAL = new ParticleType<FractalParticle.Data>(
+			false, new FractalParticle.DataDeserializer())
+	{
+		@Override
+		public Codec<FractalParticle.Data> func_230522_e_()
+		{
+			return FractalParticle.CODEC;
+		}
+	};
 	public static final BasicParticleType IE_BUBBLE = new BasicParticleType(false);
 	public static final BasicParticleType SPARKS = new BasicParticleType(false);
 

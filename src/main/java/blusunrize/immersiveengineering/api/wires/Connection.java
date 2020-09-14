@@ -8,12 +8,12 @@
 
 package blusunrize.immersiveengineering.api.wires;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
 import com.google.common.base.Preconditions;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
@@ -117,14 +117,14 @@ public class Connection
 	{
 		LocalWireNetwork net = GlobalWireNetwork.getNetwork(world).getLocalNet(endA);
 		Preconditions.checkState(net==GlobalWireNetwork.getNetwork(world).getLocalNet(endB), endA+" and "+endB+" are in different local nets?");
-		Vec3d vecA = ApiUtils.getVecForIICAt(net, endA, this, false);
-		Vec3d vecB = ApiUtils.getVecForIICAt(net, endB, this, true);
+		Vector3d vecA = WireUtils.getVecForIICAt(net, endA, this, false);
+		Vector3d vecB = WireUtils.getVecForIICAt(net, endB, this, true);
 		generateCatenaryData(vecA, vecB);
 	}
 
-	public void generateCatenaryData(Vec3d vecA, Vec3d vecB)
+	public void generateCatenaryData(Vector3d vecA, Vector3d vecB)
 	{
-		Vec3d delta = vecB.subtract(vecA);
+		Vector3d delta = vecB.subtract(vecA);
 		double horLength = Math.sqrt(delta.x*delta.x+delta.z*delta.z);
 
 		if(Math.abs(delta.x) < 0.05&&Math.abs(delta.z) < 0.05)
@@ -181,17 +181,17 @@ public class Connection
 	}
 
 	//pos is relative to 1. 0 is the end corresponding to from, 1 is the other end.
-	public Vec3d getPoint(double pos, ConnectionPoint from)
+	public Vector3d getPoint(double pos, ConnectionPoint from)
 	{
 		pos = transformPosition(pos, from);
-		Vec3d basic;
+		Vector3d basic;
 		if(hasCatenaryData())
 			basic = getCatenaryData().getPoint(pos);
 		else
-			basic = new Vec3d(endB.getPosition().subtract(endA.getPosition())).scale(pos);
-		Vec3d add = Vec3d.ZERO;
+			basic = Vector3d.copy(endB.getPosition().subtract(endA.getPosition())).scale(pos);
+		Vector3d add = Vector3d.ZERO;
 		if(endB.equals(from))
-			add = new Vec3d(endA.getPosition().subtract(endB.getPosition()));
+			add = Vector3d.copy(endA.getPosition().subtract(endB.getPosition()));
 		return basic.add(add);
 	}
 
@@ -331,7 +331,7 @@ public class Connection
 			return result;
 		}
 
-		public Vec3d getPoint(int index)
+		public Vector3d getPoint(int index)
 		{
 			return data.getPoint(index/(double)POINTS_PER_WIRE);
 		}
@@ -344,11 +344,11 @@ public class Connection
 		private final double offsetX;
 		private final double offsetY;
 		private final double scale;
-		private final Vec3d delta;
+		private final Vector3d delta;
 		private final double horLength;
-		private final Vec3d vecA;
+		private final Vector3d vecA;
 
-		public CatenaryData(boolean isVertical, double offsetX, double offsetY, double scale, Vec3d delta, double horLength, Vec3d vecA)
+		public CatenaryData(boolean isVertical, double offsetX, double offsetY, double scale, Vector3d delta, double horLength, Vector3d vecA)
 		{
 			this.isVertical = isVertical;
 			this.offsetX = offsetX;
@@ -359,7 +359,7 @@ public class Connection
 			this.vecA = vecA;
 		}
 
-		public CatenaryData(CatenaryData old, boolean reverse, Vec3d otherEndAVec)
+		public CatenaryData(CatenaryData old, boolean reverse, Vector3d otherEndAVec)
 		{
 			this.isVertical = old.isVertical;
 			if(reverse)
@@ -389,7 +389,7 @@ public class Connection
 				return Math.sinh((pos*horLength-offsetX)/scale);
 		}
 
-		public Vec3d getPoint(double pos)
+		public Vector3d getPoint(double pos)
 		{
 			if(pos==1)
 				return vecA.add(delta);
@@ -443,7 +443,7 @@ public class Connection
 			return horLength;
 		}
 
-		public Vec3d getVecA()
+		public Vector3d getVecA()
 		{
 			return vecA;
 		}
@@ -455,7 +455,7 @@ public class Connection
 					vecA+", horizontal length: "+horLength+", delta: "+delta.x+", "+delta.y+", "+delta.z;
 		}
 
-		public Vec3d getDelta()
+		public Vector3d getDelta()
 		{
 			return delta;
 		}

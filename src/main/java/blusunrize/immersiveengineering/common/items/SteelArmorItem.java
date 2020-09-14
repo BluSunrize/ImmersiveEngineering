@@ -110,5 +110,11 @@ public class SteelArmorItem extends ArmorItem
 		{
 			return 1.0f;
 		}
+
+		@Override
+		public float getKnockbackResistance()
+		{
+			return 0;
+		}
 	}
 }

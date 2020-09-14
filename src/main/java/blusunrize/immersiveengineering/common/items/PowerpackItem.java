@@ -10,11 +10,9 @@ package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
-import blusunrize.immersiveengineering.client.ClientProxy;
 import blusunrize.immersiveengineering.client.models.ModelPowerpack;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEEnergyItem;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -74,13 +72,6 @@ public class PowerpackItem extends IEBaseItem implements IIEEnergyItem
 	{
 		String stored = this.getEnergyStored(stack)+"/"+this.getMaxEnergyStored(stack);
 		list.add(new TranslationTextComponent(Lib.DESC+"info.energyStored", stored));
-	}
-
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public FontRenderer getFontRenderer(ItemStack stack)
-	{
-		return ClientProxy.itemFont;
 	}
 
 	@Override

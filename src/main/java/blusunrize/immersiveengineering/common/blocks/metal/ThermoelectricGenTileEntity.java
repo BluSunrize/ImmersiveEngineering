@@ -20,8 +20,8 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxC
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockState;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.fluid.IFluidState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -98,7 +98,7 @@ public class ThermoelectricGenTileEntity extends IEBaseTileEntity implements ITi
 	Fluid getFluid(BlockPos pos)
 	{
 		BlockState state = world.getBlockState(pos);
-		IFluidState fState = state.getFluidState();
+		FluidState fState = state.getFluidState();
 		return fState.getFluid();
 	}
 

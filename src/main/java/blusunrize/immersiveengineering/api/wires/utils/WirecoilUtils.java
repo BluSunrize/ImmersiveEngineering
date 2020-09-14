@@ -21,20 +21,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 import static blusunrize.immersiveengineering.api.wires.utils.WireUtils.findObstructingBlocks;
@@ -80,7 +76,7 @@ public class WirecoilUtils
 					int distanceSq = (int)Math.ceil(otherLink.cp.getPosition().distanceSq(masterPos));
 					int maxLengthSq = coil.getMaxLength(stack); //not squared yet
 					maxLengthSq *= maxLengthSq;
-					if(!otherLink.dimension.equals(world.getDimension().getType().getRegistryName()))
+					if(!otherLink.dimension.equals(world.getDimensionKey()))
 						player.sendStatusMessage(new TranslationTextComponent(Lib.CHAT_WARN+"wrongDimension"), true);
 					else if(otherLink.cp.getPosition().equals(masterPos))
 						player.sendStatusMessage(new TranslationTextComponent(Lib.CHAT_WARN+"sameConnection"), true);
@@ -165,11 +161,11 @@ public class WirecoilUtils
 	public static class WireLink
 	{
 		public final ConnectionPoint cp;
-		public final ResourceLocation dimension;
+		public final RegistryKey<World> dimension;
 		public final BlockPos offset;
 		public final TargetingInfo target;
 
-		public WireLink(ConnectionPoint cp, ResourceLocation dimension, BlockPos offset, TargetingInfo info)
+		public WireLink(ConnectionPoint cp, RegistryKey<World> dimension, BlockPos offset, TargetingInfo info)
 		{
 			this.cp = cp;
 			this.dimension = dimension;
@@ -179,10 +175,9 @@ public class WirecoilUtils
 
 		public static WireLink create(ConnectionPoint cp, World world, BlockPos offset, TargetingInfo info)
 		{
-			DimensionType dimType = world.getDimension().getType();
 			return new WireLink(
 					cp,
-					Objects.requireNonNull(dimType.getRegistryName()),
+					world.getDimensionKey(),
 					offset,
 					info
 			);
@@ -191,7 +186,7 @@ public class WirecoilUtils
 		public void writeToItem(ItemStack stack)
 		{
 			CompoundNBT nbt = stack.getOrCreateTag();
-			nbt.putString("linkingDim", dimension.toString());
+			nbt.putString("linkingDim", dimension.func_240901_a_().toString());
 			nbt.put("linkingPos", cp.createTag());
 			nbt.put("linkingOffset", NBTUtil.writeBlockPos(offset));
 			CompoundNBT targetNBT = new CompoundNBT();
@@ -206,7 +201,7 @@ public class WirecoilUtils
 			ResourceLocation dim = new ResourceLocation(nbt.getString("linkingDim"));
 			BlockPos offset = NBTUtil.readBlockPos(nbt.getCompound("linkingOffset"));
 			TargetingInfo info = TargetingInfo.readFromNBT(nbt.getCompound("linkingTarget"));
-			return new WireLink(cp, dim, offset, info);
+			return new WireLink(cp, RegistryKey.func_240903_a_(Registry.WORLD_KEY, dim), offset, info);
 		}
 	}
 

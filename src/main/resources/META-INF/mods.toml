@@ -4,6 +4,7 @@
 modLoader="javafml"
 loaderVersion="[25,)"
 issueTrackerURL="https://github.com/BluSunrize/ImmersiveEngineering/issues"
+license="Blu's License of Common Sense"
 
 [[mods]]
 modId="immersiveengineering"
@@ -11,7 +12,7 @@ version="${version}"
 displayName="Immersive Engineering"
 description="A tech based mod focused on realism."
 authors="BluSunrize and Damien A.W. Hazard"
-updateJSONURL="https://raw.githubusercontent.com/BluSunrize/ImmersiveEngineering/1.14/changelog.json"
+updateJSONURL="https://raw.githubusercontent.com/BluSunrize/ImmersiveEngineering/1.16/changelog.json"
 displayURL="https://minecraft.curseforge.com/projects/immersive-engineering/"
 logoFile="logo.png"
 credits="All the great other Git Contributors, and the nerds on IRC!"
@@ -19,13 +20,13 @@ credits="All the great other Git Contributors, and the nerds on IRC!"
 [[dependencies.immersiveengineering]]
   modId="forge"
   mandatory=true
-  versionRange="[31.1.88,)"
+  versionRange="[33.0.0,)"
   ordering="NONE"
   side="BOTH"
 
 [[dependencies.immersiveengineering]]
   modId="minecraft"
   mandatory=true
-  versionRange="[1.15.2]"
+  versionRange="[1.16.2]"
   ordering="NONE"
   side="BOTH"

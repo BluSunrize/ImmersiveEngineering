@@ -58,11 +58,13 @@ import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.tags.ITag;
+import net.minecraft.tags.ITag.INamedTag;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
 import net.minecraft.util.IItemProvider;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.DimensionType;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;
@@ -78,6 +80,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
+
+import static blusunrize.immersiveengineering.api.IETags.getStorageBlock;
+import static blusunrize.immersiveengineering.common.data.DataGenUtils.createItemWrapper;
 
 public class Recipes extends RecipeProvider
 {
@@ -209,8 +214,9 @@ public class Recipes extends RecipeProvider
 		BlastFurnaceFuelBuilder.builder(IETags.charCoal)
 				.setTime(300)
 				.build(out, toRL("blastfurnace/fuel_charcoal"));
-		BlastFurnaceFuelBuilder.builder(IETags.getItemTag(IETags.charCoalBlocks))
-				.addCondition(new NotCondition(new TagEmptyCondition(IETags.charCoalBlocks.getId())))
+		INamedTag<Item> charCoalBlocks = createItemWrapper(getStorageBlock("charcoal"));
+		BlastFurnaceFuelBuilder.builder(charCoalBlocks)
+				.addCondition(new NotCondition(new TagEmptyCondition(charCoalBlocks.getName())))
 				.setTime(10*300)
 				.build(out, toRL("blastfurnace/fuel_charcoal_block"));
 
@@ -457,6 +463,39 @@ public class Recipes extends RecipeProvider
 		BlueprintCraftingRecipeBuilder.builder("electrode", Misc.graphiteElectrode)
 				.addInput(new IngredientWithSize(IETags.hopGraphiteIngot, 4))
 				.build(out, toRL("blueprint/electrode"));
+
+		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", Misc.bannerPatternHammer)
+				.addInput(Items.PAPER)
+				.addInput(Tools.hammer)
+				.build(out, toRL("blueprint/banner_hammer"));
+		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", Misc.bannerPatternBevels)
+				.addInput(Items.PAPER)
+				.addInput(IETags.plates)
+				.build(out, toRL("blueprint/banner_bevels"));
+		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", Misc.bannerPatternOrnate)
+				.addInput(Items.PAPER)
+				.addInput(IETags.getTagsFor(EnumMetals.SILVER).dust)
+				.build(out, toRL("blueprint/banner_ornate"));
+		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", Misc.bannerPatternTreatedWood)
+				.addInput(Items.PAPER)
+				.addInput(IETags.getItemTag(IETags.treatedWood))
+				.build(out, toRL("blueprint/banner_treatedwood"));
+		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", Misc.bannerPatternWindmill)
+				.addInput(Items.PAPER)
+				.addInput(WoodenDevices.windmill)
+				.build(out, toRL("blueprint/banner_windmill"));
+		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", Misc.bannerPatternWolfR)
+				.addInput(Items.PAPER)
+				.addInput(BulletHandler.getBulletItem(BulletItem.WOLFPACK))
+				.build(out, toRL("blueprint/banner_wolf_r"));
+		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", Misc.bannerPatternWolfL)
+				.addInput(Items.PAPER)
+				.addInput(BulletHandler.getBulletItem(BulletItem.WOLFPACK))
+				.build(out, toRL("blueprint/banner_wolf_l"));
+		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", Misc.bannerPatternWolf)
+				.addInput(Items.PAPER)
+				.addInput(BulletHandler.getBulletItem(BulletItem.WOLFPACK))
+				.build(out, toRL("blueprint/banner_wolf"));
 	}
 
 	private void recipesMultiblockMachines(@Nonnull Consumer<IFinishedRecipe> out)
@@ -521,7 +560,7 @@ public class Recipes extends RecipeProvider
 			}
 
 			// Plate
-			Tag<Item> plate = new ItemTags.Wrapper(IETags.getPlate(metal.getName()));
+			INamedTag<Item> plate = createItemWrapper(IETags.getPlate(metal.getName()));
 			pressBuilder = MetalPressRecipeBuilder.builder(Molds.moldPlate, plate, 1);
 			if(!metal.isNative())
 				pressBuilder.addCondition(getTagCondition(metal.getIngot())).addCondition(getTagCondition(plate));
@@ -530,7 +569,7 @@ public class Recipes extends RecipeProvider
 					.build(out, toRL("metalpress/plate_"+metal.getName()));
 
 			// Gear
-			Tag<Item> gear = new ItemTags.Wrapper(IETags.getGear(metal.getName()));
+			INamedTag<Item> gear = createItemWrapper(IETags.getGear(metal.getName()));
 			pressBuilder = MetalPressRecipeBuilder.builder(Molds.moldGear, gear, 1);
 			if(!metal.isNative())
 				pressBuilder.addCondition(getTagCondition(metal.getIngot()));
@@ -540,7 +579,7 @@ public class Recipes extends RecipeProvider
 					.build(out, toRL("metalpress/gear_"+metal.getName()));
 
 			// Rod
-			Tag<Item> rods = new ItemTags.Wrapper(IETags.getRod(metal.getName()));
+			INamedTag<Item> rods = createItemWrapper(IETags.getRod(metal.getName()));
 			pressBuilder = MetalPressRecipeBuilder.builder(Molds.moldRod, rods, 2);
 			if(!metal.isNative())
 				pressBuilder.addCondition(getTagCondition(metal.getIngot()));
@@ -550,7 +589,7 @@ public class Recipes extends RecipeProvider
 					.build(out, toRL("metalpress/rod_"+metal.getName()));
 
 			// Wire
-			Tag<Item> wire = new ItemTags.Wrapper(IETags.getWire(metal.getName()));
+			INamedTag<Item> wire = createItemWrapper(IETags.getWire(metal.getName()));
 			pressBuilder = MetalPressRecipeBuilder.builder(Molds.moldWire, wire, 2);
 			if(!metal.isNative())
 				pressBuilder.addCondition(getTagCondition(metal.getIngot()));
@@ -631,6 +670,13 @@ public class Recipes extends RecipeProvider
 				.setEnergy(204800)
 				.build(out, toRL("arcfurnace/steel"));
 
+		ArcFurnaceRecipeBuilder.builder(Items.NETHERITE_SCRAP)
+				.addIngredient("input", Items.ANCIENT_DEBRIS)
+				.addSlag(IETags.slag, 1)
+				.setTime(100)
+				.setEnergy(512000)
+				.build(out, toRL("arcfurnace/netherite_scrap"));
+
 		/* BOTTLING */
 		BottlingMachineRecipeBuilder.builder(Items.WET_SPONGE)
 				.addInput(Items.SPONGE)
@@ -690,7 +736,7 @@ public class Recipes extends RecipeProvider
 				.setEnergy(4800)
 				.build(out, toRL("crusher/coke_block"));
 
-		Tag<Item> coal_dust = new ItemTags.Wrapper(IETags.getDust("coal"));
+		INamedTag<Item> coal_dust = createItemWrapper(IETags.getDust("coal"));
 		CrusherRecipeBuilder.builder(coal_dust, 1)
 				.addCondition(getTagCondition(coal_dust))
 				.addInput(Items.COAL)
@@ -706,6 +752,11 @@ public class Recipes extends RecipeProvider
 				.addInput(ItemTags.WOOL)
 				.setEnergy(3200)
 				.build(out, toRL("crusher/wool"));
+
+		CrusherRecipeBuilder.builder(IETags.getTagsFor(EnumMetals.GOLD).dust, 2)
+				.addInput(Items.NETHER_GOLD_ORE)
+				.setEnergy(4200)
+				.build(out, toRL("crusher/nether_gold"));
 
 		/* SQUEEZER */
 		SqueezerRecipeBuilder.builder(IEContent.fluidPlantoil, 80)
@@ -776,46 +827,48 @@ public class Recipes extends RecipeProvider
 	private void mineralMixes(@Nonnull Consumer<IFinishedRecipe> out)
 	{
 		// Metals
-		Tag<Item> iron = Tags.Items.ORES_IRON;
-		Tag<Item> gold = Tags.Items.ORES_GOLD;
-		Tag<Item> copper = IETags.getItemTag(IETags.getTagsFor(EnumMetals.COPPER).ore);
-		Tag<Item> aluminum = IETags.getItemTag(IETags.getTagsFor(EnumMetals.ALUMINUM).ore);
-		Tag<Item> lead = IETags.getItemTag(IETags.getTagsFor(EnumMetals.LEAD).ore);
-		Tag<Item> silver = IETags.getItemTag(IETags.getTagsFor(EnumMetals.SILVER).ore);
-		Tag<Item> nickel = IETags.getItemTag(IETags.getTagsFor(EnumMetals.NICKEL).ore);
-		Tag<Item> uranium = IETags.getItemTag(IETags.getTagsFor(EnumMetals.URANIUM).ore);
-		Tag<Item> tin = new ItemTags.Wrapper(IETags.getOre("tin"));
-		Tag<Item> titanium = new ItemTags.Wrapper(IETags.getOre("titanium"));
-		Tag<Item> thorium = new ItemTags.Wrapper(IETags.getOre("thorium"));
-		Tag<Item> tungsten = new ItemTags.Wrapper(IETags.getOre("tungsten"));
-		Tag<Item> manganese = new ItemTags.Wrapper(IETags.getOre("manganese"));
-		Tag<Item> platinum = new ItemTags.Wrapper(IETags.getOre("platinum"));
-		Tag<Item> paladium = new ItemTags.Wrapper(IETags.getOre("paladium"));
-		Tag<Item> mercury = new ItemTags.Wrapper(IETags.getOre("mercury"));
+		INamedTag<Item> iron = Tags.Items.ORES_IRON;
+		INamedTag<Item> gold = Tags.Items.ORES_GOLD;
+		INamedTag<Item> copper = IETags.getItemTag(IETags.getTagsFor(EnumMetals.COPPER).ore);
+		INamedTag<Item> aluminum = IETags.getItemTag(IETags.getTagsFor(EnumMetals.ALUMINUM).ore);
+		INamedTag<Item> lead = IETags.getItemTag(IETags.getTagsFor(EnumMetals.LEAD).ore);
+		INamedTag<Item> silver = IETags.getItemTag(IETags.getTagsFor(EnumMetals.SILVER).ore);
+		INamedTag<Item> nickel = IETags.getItemTag(IETags.getTagsFor(EnumMetals.NICKEL).ore);
+		INamedTag<Item> uranium = IETags.getItemTag(IETags.getTagsFor(EnumMetals.URANIUM).ore);
+		INamedTag<Item> tin = createItemWrapper(IETags.getOre("tin"));
+		INamedTag<Item> titanium = createItemWrapper(IETags.getOre("titanium"));
+		INamedTag<Item> thorium = createItemWrapper(IETags.getOre("thorium"));
+		INamedTag<Item> tungsten = createItemWrapper(IETags.getOre("tungsten"));
+		INamedTag<Item> manganese = createItemWrapper(IETags.getOre("manganese"));
+		INamedTag<Item> platinum = createItemWrapper(IETags.getOre("platinum"));
+		INamedTag<Item> paladium = createItemWrapper(IETags.getOre("paladium"));
+		INamedTag<Item> mercury = createItemWrapper(IETags.getOre("mercury"));
 		// Gems & Dusts
-		Tag<Item> sulfur = IETags.sulfurDust;
-		Tag<Item> phosphorus = new ItemTags.Wrapper(IETags.getDust("phosphorus"));
-		Tag<Item> redstone = Tags.Items.ORES_REDSTONE;
-		Tag<Item> emerald = Tags.Items.ORES_EMERALD;
+		INamedTag<Item> sulfur = IETags.sulfurDust;
+		INamedTag<Item> phosphorus = createItemWrapper(IETags.getDust("phosphorus"));
+		INamedTag<Item> redstone = Tags.Items.ORES_REDSTONE;
+		INamedTag<Item> emerald = Tags.Items.ORES_EMERALD;
 		Block prismarine = Blocks.PRISMARINE;
-		Tag<Item> aquamarine = new ItemTags.Wrapper(IETags.getGem("aquamarine"));
+		INamedTag<Item> aquamarine = createItemWrapper(IETags.getGem("aquamarine"));
 
 		// Common things
-		MineralMixBuilder.builder(DimensionType.OVERWORLD)
+		RegistryKey<DimensionType> overworld = DimensionType.OVERWORLD;
+		RegistryKey<DimensionType> nether = DimensionType.THE_NETHER;
+		MineralMixBuilder.builder(overworld)
 				.addOre(Tags.Items.ORES_COAL, .8f)
 				.addOre(sulfur, .2f)
 				.addOre(phosphorus, .2f, getTagCondition(phosphorus))
 				.setWeight(25)
 				.setFailchance(.05f)
 				.build(out, toRL("mineral/bituminous_coal"));
-		MineralMixBuilder.builder(DimensionType.OVERWORLD)
+		MineralMixBuilder.builder(overworld)
 				.addOre(Items.CLAY, .5f)
 				.addOre(Items.SAND, .3f)
 				.addOre(Items.GRAVEL, .2f)
 				.setWeight(25)
 				.setFailchance(.05f)
 				.build(out, toRL("mineral/silt"));
-		MineralMixBuilder.builder(DimensionType.OVERWORLD)
+		MineralMixBuilder.builder(overworld)
 				.addOre(Blocks.GRANITE, .3f)
 				.addOre(Blocks.DIORITE, .3f)
 				.addOre(Blocks.ANDESITE, .3f)
@@ -824,41 +877,41 @@ public class Recipes extends RecipeProvider
 				.setFailchance(.05f)
 				.build(out, toRL("mineral/igneous_rock"));
 		// Metals
-		MineralMixBuilder.builder(DimensionType.OVERWORLD)
+		MineralMixBuilder.builder(overworld)
 				.addOre(iron, .35f)
 				.addOre(nickel, .35f)
 				.addOre(sulfur, .3f)
 				.setWeight(25)
 				.setFailchance(.05f)
 				.build(out, toRL("mineral/pentlandite"));
-		MineralMixBuilder.builder(DimensionType.OVERWORLD)
+		MineralMixBuilder.builder(overworld)
 				.addOre(iron, .35f)
 				.addOre(copper, .35f)
 				.addOre(sulfur, .3f)
 				.setWeight(20)
 				.setFailchance(.05f)
 				.build(out, toRL("mineral/chalcopyrite"));
-		MineralMixBuilder.builder(DimensionType.OVERWORLD)
+		MineralMixBuilder.builder(overworld)
 				.addOre(aluminum, .7f)
 				.addOre(iron, .2f)
 				.addOre(titanium, .1f, getTagCondition(titanium))
 				.setWeight(20)
 				.setFailchance(.05f)
 				.build(out, toRL("mineral/laterite"));
-		MineralMixBuilder.builder(DimensionType.OVERWORLD)
+		MineralMixBuilder.builder(overworld)
 				.addOre(copper, .75f)
 				.addOre(gold, .25f)
 				.setWeight(30)
 				.setFailchance(.1f)
 				.build(out, toRL("mineral/auricupride"));
-		MineralMixBuilder.builder(DimensionType.OVERWORLD)
+		MineralMixBuilder.builder(overworld)
 				.addOre(lead, .4f)
 				.addOre(sulfur, .4f)
 				.addOre(silver, .2f)
 				.setWeight(15)
 				.setFailchance(.05f)
 				.build(out, toRL("mineral/galena"));
-		MineralMixBuilder.builder(DimensionType.OVERWORLD)
+		MineralMixBuilder.builder(overworld)
 				.addOre(redstone, .6f)
 				.addOre(sulfur, .4f)
 				.addOre(mercury, .3f, getTagCondition(mercury))
@@ -866,14 +919,14 @@ public class Recipes extends RecipeProvider
 				.setFailchance(.1f)
 				.build(out, toRL("mineral/cinnabar"));
 		// Rare
-		MineralMixBuilder.builder(DimensionType.OVERWORLD)
+		MineralMixBuilder.builder(overworld)
 				.addOre(uranium, .7f)
 				.addOre(lead, .3f)
 				.addOre(thorium, .1f, getTagCondition(thorium))
 				.setWeight(10)
 				.setFailchance(.15f)
 				.build(out, toRL("mineral/uraninite"));
-		MineralMixBuilder.builder(DimensionType.OVERWORLD)
+		MineralMixBuilder.builder(overworld)
 				.addOre(emerald, .3f)
 				.addOre(prismarine, .7f)
 				.addOre(aquamarine, .3f, getTagCondition(aquamarine))
@@ -881,22 +934,30 @@ public class Recipes extends RecipeProvider
 				.setFailchance(.2f)
 				.build(out, toRL("mineral/beryl"));
 		// Nether
-		MineralMixBuilder.builder(DimensionType.THE_NETHER)
-				.addOre(Blocks.NETHER_QUARTZ_ORE, .8f)
+		MineralMixBuilder.builder(nether)
+				.addOre(Blocks.NETHER_QUARTZ_ORE, .6f)
+				.addOre(Blocks.NETHER_GOLD_ORE, .2f)
 				.addOre(sulfur, .2f)
 				.setWeight(20)
 				.setFailchance(.15f)
 				.setBackground(ForgeRegistries.BLOCKS.getKey(Blocks.NETHERRACK))
 				.build(out, toRL("mineral/mephitic_quarzite"));
+		MineralMixBuilder.builder(nether)
+				.addOre(Blocks.GRAVEL, .6f)
+				.addOre(Blocks.ANCIENT_DEBRIS, .4f)
+				.setWeight(8)
+				.setFailchance(.7f)
+				.setBackground(ForgeRegistries.BLOCKS.getKey(Blocks.NETHERRACK))
+				.build(out, toRL("mineral/ancient_debris"));
 
 		// Compat
-		MineralMixBuilder.builder(DimensionType.OVERWORLD)
+		MineralMixBuilder.builder(overworld)
 				.addCondition(getTagCondition(tin))
 				.addOre(tin, 1)
 				.setWeight(20)
 				.setFailchance(.05f)
 				.build(out, toRL("mineral/cassiterite"));
-		MineralMixBuilder.builder(DimensionType.OVERWORLD)
+		MineralMixBuilder.builder(overworld)
 				.addCondition(getTagCondition(platinum))
 				.addOre(platinum, .5f)
 				.addOre(paladium, .5f, getTagCondition(paladium))
@@ -904,7 +965,7 @@ public class Recipes extends RecipeProvider
 				.setWeight(5)
 				.setFailchance(.1f)
 				.build(out, toRL("mineral/cooperite"));
-		MineralMixBuilder.builder(DimensionType.OVERWORLD)
+		MineralMixBuilder.builder(overworld)
 				.addCondition(getTagCondition(tungsten))
 				.addOre(tungsten, .5f)
 				.addOre(iron, .5f)
@@ -1217,7 +1278,7 @@ public class Recipes extends RecipeProvider
 	{
 		for(DyeColor dye : DyeColor.values())
 		{
-			Tag<Item> dyeTag = new ItemTags.Wrapper(new ResourceLocation("forge", "dyes/"+dye.getTranslationKey()));
+			ITag<Item> dyeTag = DataGenUtils.createItemWrapper(new ResourceLocation("forge", "dyes/"+dye.getTranslationKey()));
 			Block coloredSheetmetal = MetalDecoration.coloredSheetmetal.get(dye);
 			ShapedRecipeBuilder.shapedRecipe(coloredSheetmetal, 8)
 					.patternLine("sss")
@@ -2368,6 +2429,16 @@ public class Recipes extends RecipeProvider
 				.key('p', Items.PAPER)
 				.addCriterion("has_"+toPath(Items.PAPER), hasItem(Items.PAPER))
 				.build(buildBlueprint(out, "bullet"), toRL("blueprint_bullets"));
+		ShapedRecipeBuilder.shapedRecipe(Misc.blueprint)
+				.patternLine(" b ")
+				.patternLine("ddd")
+				.patternLine("ppp")
+				.key('b', ItemTags.BANNERS)
+				.key('d', Tags.Items.DYES_BLUE)
+				//TODO tag?
+				.key('p', Items.PAPER)
+				.addCriterion("has_"+toPath(Items.PAPER), hasItem(Items.PAPER))
+				.build(buildBlueprint(out, "bannerpatterns"), toRL("blueprint_bannerpatterns"));
 
 		ShapedRecipeBuilder.shapedRecipe(Misc.blueprint)
 				.patternLine("ggg")
@@ -2708,8 +2779,7 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL(toPath(Misc.cartMetalBarrel)));
 	}
 
-	//TODO tag convention?
-	private void addArmor(Tag<Item> input, Map<EquipmentSlotType, Item> items, String name, Consumer<IFinishedRecipe> out)
+	private void addArmor(INamedTag<Item> input, Map<EquipmentSlotType, Item> items, String name, Consumer<IFinishedRecipe> out)
 	{
 		Item head = items.get(EquipmentSlotType.HEAD);
 		Item chest = items.get(EquipmentSlotType.CHEST);
@@ -2743,7 +2813,7 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL(toPath(feet)));
 	}
 
-	private void add3x3Conversion(IItemProvider bigItem, IItemProvider smallItem, Tag<Item> smallTag, Consumer<IFinishedRecipe> out)
+	private void add3x3Conversion(IItemProvider bigItem, IItemProvider smallItem, INamedTag<Item> smallTag, Consumer<IFinishedRecipe> out)
 	{
 		ShapedRecipeBuilder.shapedRecipe(bigItem)
 				.key('s', smallTag)
@@ -2856,30 +2926,30 @@ public class Recipes extends RecipeProvider
 	}
 
 	@Nonnull
-	private Ingredient makeIngredient(Tag<Item> in)
+	private Ingredient makeIngredient(ITag<Item> in)
 	{
 		return Ingredient.fromTag(in);
 	}
 
 	@Nonnull
-	private Ingredient makeIngredientFromBlock(Tag<Block> in)
+	private Ingredient makeIngredientFromBlock(INamedTag<Block> in)
 	{
-		Tag<Item> itemTag = IETags.getItemTag(in);
+		ITag<Item> itemTag = IETags.getItemTag(in);
 		if(itemTag==null)
 			//TODO this currently does not work, the tag collection is not initialized in data gen mode
-			itemTag = ItemTags.getCollection().getTagMap().get(in.getId());
-		Preconditions.checkNotNull(itemTag, "Failed to convert block tag "+in.getId()+" to item tag");
+			itemTag = ItemTags.getCollection().get(in.getName());
+		Preconditions.checkNotNull(itemTag, "Failed to convert block tag "+in.getName()+" to item tag");
 		return makeIngredient(itemTag);
 	}
 
-	public static ICondition getTagCondition(Tag<?> tag)
+	public static ICondition getTagCondition(INamedTag<?> tag)
 	{
-		return new NotCondition(new TagEmptyCondition(tag.getId()));
+		return new NotCondition(new TagEmptyCondition(tag.getName()));
 	}
 
 	public static ICondition getTagCondition(ResourceLocation tag)
 	{
-		return getTagCondition(new ItemTags.Wrapper(tag));
+		return getTagCondition(createItemWrapper(tag));
 	}
 
 	/**

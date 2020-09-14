@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.common.IEConfig;
@@ -22,6 +21,7 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.effect.LightningBoltEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
@@ -31,7 +31,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 
@@ -57,7 +57,7 @@ public class LightningrodTileEntity extends MultiblockPartTileEntity<Lightningro
 	@Override
 	public void tick()
 	{
-		ApiUtils.checkForNeedlessTicking(this);
+		checkForNeedlessTicking();
 		if(!world.isRemote&&formed&&new BlockPos(1, 1, 1).equals(posInMultiblock))
 		{
 			if(energyStorage.getEnergyStored() > 0)
@@ -85,9 +85,10 @@ public class LightningrodTileEntity extends MultiblockPartTileEntity<Lightningro
 				{
 					this.energyStorage.setEnergy(IEServerConfig.MACHINES.lightning_output.get());
 					BlockPos pos = fenceNet.get(Utils.RAND.nextInt(fenceNet.size()));
-					LightningBoltEntity entityLightningBolt = new LightningBoltEntity(world, pos.getX(), pos.getY(), pos.getZ(), true);
-					((ServerWorld)world).addLightningBolt(entityLightningBolt);
-					world.addEntity(entityLightningBolt);
+					LightningBoltEntity lightningboltentity = EntityType.LIGHTNING_BOLT.create(world);
+					lightningboltentity.moveForced(Vector3d.copyCenteredHorizontally(pos));
+					lightningboltentity.setEffectOnly(true);
+					world.addEntity(lightningboltentity);
 				}
 			}
 		}

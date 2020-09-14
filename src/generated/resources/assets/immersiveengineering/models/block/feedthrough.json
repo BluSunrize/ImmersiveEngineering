@@ -7,6 +7,7 @@
     "solid",
     "cutout_mipped",
     "cutout",
-    "translucent"
+    "translucent",
+    "tripwire"
   ]
 }

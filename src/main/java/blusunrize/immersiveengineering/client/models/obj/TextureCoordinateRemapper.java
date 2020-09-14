@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.client.models.obj;
 
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderLayer;
-import net.minecraft.util.math.Vec2f;
+import net.minecraft.util.math.vector.Vector2f;
 import net.minecraftforge.client.model.obj.OBJModel;
 
 import java.util.HashMap;
@@ -20,8 +20,8 @@ import java.util.Map;
 
 public class TextureCoordinateRemapper
 {
-	private final List<Vec2f> texCoords;
-	private final HashMap<Integer, Vec2f> backup;
+	private final List<Vector2f> texCoords;
+	private final HashMap<Integer, Vector2f> backup;
 	private final ShaderCase shaderCase;
 	private final boolean flipV;
 
@@ -71,11 +71,11 @@ public class TextureCoordinateRemapper
 			int texIndex = index[1];
 			if(this.backup.containsKey(texIndex)) // if this coordinate has already been modified, abort
 				continue;
-			Vec2f texCoord = texCoords.get(texIndex);
+			Vector2f texCoord = texCoords.get(texIndex);
 			this.backup.put(texIndex, texCoord);
 
 			if(flipV)
-				texCoord = new Vec2f(texCoord.x, 1-texCoord.y);
+				texCoord = new Vector2f(texCoord.x, 1-texCoord.y);
 
 			if(texBounds!=null)
 			{
@@ -89,7 +89,7 @@ public class TextureCoordinateRemapper
 				double dU = texBounds[2]-texBounds[0];
 				double dV = texBounds[3]-texBounds[1];
 				//Rescaling to the partial bounds that the texture represents
-				texCoord = new Vec2f(
+				texCoord = new Vector2f(
 						(float)((texCoord.x-texBounds[0])/dU),
 						(float)((texCoord.y-texBounds[1])/dV)
 				);
@@ -100,13 +100,13 @@ public class TextureCoordinateRemapper
 			{
 				double dU = cutBounds[2]-cutBounds[0];
 				double dV = cutBounds[3]-cutBounds[1];
-				texCoord = new Vec2f(
+				texCoord = new Vector2f(
 						(float)(cutBounds[0]+dU*texCoord.x),
 						(float)(cutBounds[1]+dV*texCoord.y)
 				);
 			}
 			if(flipV)
-				texCoord = new Vec2f(texCoord.x, 1-texCoord.y);
+				texCoord = new Vector2f(texCoord.x, 1-texCoord.y);
 			texCoords.set(texIndex, texCoord);
 		}
 		return true;
@@ -117,7 +117,7 @@ public class TextureCoordinateRemapper
 	 */
 	public void resetCoords()
 	{
-		for(Map.Entry<Integer, Vec2f> entry : this.backup.entrySet())
+		for(Map.Entry<Integer, Vector2f> entry : this.backup.entrySet())
 			this.texCoords.set(entry.getKey(), entry.getValue());
 		this.backup.clear();
 	}

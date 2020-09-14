@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
-import blusunrize.immersiveengineering.client.ClientProxy;
+import blusunrize.immersiveengineering.client.utils.FontUtils;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.entities.RevolvershotEntity;
 import blusunrize.immersiveengineering.common.entities.RevolvershotFlareEntity;
@@ -25,23 +25,21 @@ import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.AreaEffectCloudEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.FireworkRocketEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.FireworkRocketEntity;
 import net.minecraft.item.*;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.Explosion.Mode;
@@ -197,13 +195,6 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 		BulletHandler.registerBullet(WOLFPACK_PART, new WolfpackPartBullet());
 	}
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public FontRenderer getFontRenderer(ItemStack stack)
-	{
-		return ClientProxy.itemFont;
-	}
-
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
@@ -339,7 +330,7 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 								p = new EffectInstance(p.getPotion(), 1);
 							((LivingEntity)((EntityRayTraceResult)target).getEntity()).addPotionEffect(p);
 						}
-				world.playEvent(2002, new BlockPos(bullet), PotionUtils.getPotionColor(potionType));
+				world.playEvent(2002, bullet.getPosition(), PotionUtils.getPotionColor(potionType));
 			}
 		}
 
@@ -409,8 +400,11 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 		{
 			if(stack.getItem() instanceof IColouredItem)
 			{
-				String hexCol = Integer.toHexString(((IColouredItem)stack.getItem()).getColourForIEItem(stack, 1));
-				list.add(new TranslationTextComponent(Lib.DESC_INFO+"bullet.flareColour", "<hexcol="+hexCol+":#"+hexCol+">"));
+				int color = ((IColouredItem)stack.getItem()).getColourForIEItem(stack, 1);
+				list.add(FontUtils.withAppendColoredColour(
+						new TranslationTextComponent(Lib.DESC_INFO+"bullet.flareColour"),
+						color
+				));
 			}
 		}
 
@@ -443,7 +437,7 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 			ItemStack fireworkStack = new ItemStack(Items.FIREWORK_ROCKET);
 			fireworkStack.setTag(cartridge.hasTag()?cartridge.getTag().copy(): null);
 			FireworkRocketEntity firework = new FireworkRocketEntity(projectile.world, fireworkStack, shooter.getPosX(), shooter.getPosY()+(double)shooter.getEyeHeight()-(double)0.15F, shooter.getPosZ(), true);
-			Vec3d vector = projectile.getMotion();
+			Vector3d vector = projectile.getMotion();
 			firework.shoot(vector.getX(), vector.getY(), vector.getZ(), 1.6f, 1.0f);
 			return firework;
 		}
@@ -531,14 +525,14 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 		public void onHitTarget(World world, RayTraceResult target, UUID shooter, Entity projectile, boolean headshot)
 		{
 			super.onHitTarget(world, target, shooter, projectile, headshot);
-			Vec3d v = projectile.getMotion().scale(-1);
+			Vector3d v = projectile.getMotion().scale(-1);
 			int split = 6;
 			for(int i = 0; i < split; i++)
 			{
 				float angle = i*(360f/split);
 				Matrix4 matrix = new Matrix4();
 				matrix.rotate(angle, v.x, v.y, v.z);
-				Vec3d vecDir = new Vec3d(0, 1, 0);
+				Vector3d vecDir = new Vector3d(0, 1, 0);
 				vecDir = matrix.apply(vecDir);
 
 				WolfpackShotEntity bullet;

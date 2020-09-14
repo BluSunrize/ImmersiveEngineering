@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.api.energy;
 
 import net.minecraft.fluid.Fluid;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -22,14 +22,14 @@ import java.util.*;
  */
 public class DieselHandler
 {
-	static final List<Pair<Tag<Fluid>, Integer>> dieselGenBurnTime = new ArrayList<>();
-	static final Set<Tag<Fluid>> drillFuel = new HashSet<>();
+	static final List<Pair<ITag<Fluid>, Integer>> dieselGenBurnTime = new ArrayList<>();
+	static final Set<ITag<Fluid>> drillFuel = new HashSet<>();
 
 	/**
 	 * @param fuel the fluidtag to be used as fuel
 	 * @param time the total burn time gained from 1000 mB
 	 */
-	public static void registerFuel(Tag<Fluid> fuel, int time)
+	public static void registerFuel(ITag<Fluid> fuel, int time)
 	{
 		if(fuel!=null)
 			dieselGenBurnTime.add(Pair.of(fuel, time));
@@ -40,7 +40,7 @@ public class DieselHandler
 		if(fuel!=null)
 		{
 			ResourceLocation s = fuel.getRegistryName();
-			for(Map.Entry<Tag<Fluid>, Integer> entry : dieselGenBurnTime)
+			for(Map.Entry<ITag<Fluid>, Integer> entry : dieselGenBurnTime)
 				if(entry.getKey().contains(fuel))
 					return entry.getValue();
 		}
@@ -54,12 +54,12 @@ public class DieselHandler
 		return false;
 	}
 
-	public static List<Pair<Tag<Fluid>, Integer>> getFuelValues()
+	public static List<Pair<ITag<Fluid>, Integer>> getFuelValues()
 	{
 		return dieselGenBurnTime;
 	}
 
-	public static void registerDrillFuel(Tag<Fluid> fuel)
+	public static void registerDrillFuel(ITag<Fluid> fuel)
 	{
 		if(fuel!=null)
 			drillFuel.add(fuel);

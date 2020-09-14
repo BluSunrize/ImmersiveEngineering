@@ -15,7 +15,7 @@ import blusunrize.immersiveengineering.common.crafting.IEConfigConditionSerializ
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.IItemProvider;
 
 public class HammerCrushingRecipeBuilder extends IEFinishedRecipe<HammerCrushingRecipeBuilder>
@@ -38,7 +38,7 @@ public class HammerCrushingRecipeBuilder extends IEFinishedRecipe<HammerCrushing
 		return new HammerCrushingRecipeBuilder().addResult(result);
 	}
 
-	public static HammerCrushingRecipeBuilder builder(Tag<Item> result)
+	public static HammerCrushingRecipeBuilder builder(ITag<Item> result)
 	{
 		return new HammerCrushingRecipeBuilder().addResult(new IngredientWithSize(result));
 	}

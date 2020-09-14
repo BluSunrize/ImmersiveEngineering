@@ -12,12 +12,13 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonItem;
+import blusunrize.immersiveengineering.client.utils.FakeGuiUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.AutoWorkbenchTileEntity;
 import blusunrize.immersiveengineering.common.gui.AutoWorkbenchContainer;
 import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.nbt.CompoundNBT;
@@ -73,25 +74,24 @@ public class AutoWorkbenchScreen extends IEContainerScreen<AutoWorkbenchContaine
 	}
 
 	@Override
-	public void render(int mx, int my, float partial)
+	public void render(MatrixStack transform, int mx, int my, float partial)
 	{
-		super.render(mx, my, partial);
+		super.render(transform, mx, my, partial);
 
 		List<ITextComponent> tooltip = new ArrayList<>();
 		if(mx > guiLeft+80&&mx < guiLeft+87&&my > guiTop+36&&my < guiTop+82)
 			tooltip.add(new StringTextComponent(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" IF"));
 
 		if(!tooltip.isEmpty())
-			ClientUtils.drawHoveringText(tooltip, mx, my, font, width, height);
+			FakeGuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
 	}
 
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float f, int mx, int my)
+	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float f, int mx, int my)
 	{
-		RenderSystem.color3f(1.0F, 1.0F, 1.0F);
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/auto_workbench.png");
-		this.blit(guiLeft, guiTop, 0, 0, xSize, ySize);
+		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
 
 		int stored = (int)(46*(tile.getEnergyStored(null)/(float)tile.getMaxEnergyStored(null)));
 		ClientUtils.drawGradientRect(guiLeft+80, guiTop+36+(46-stored), guiLeft+87, guiTop+82, 0xffb51500, 0xff600b00);

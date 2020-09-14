@@ -18,8 +18,8 @@ import net.minecraft.block.ILiquidContainer;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.fluid.FlowingFluid;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.fluid.IFluidState;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.state.StateContainer;
 import net.minecraft.util.Direction;
@@ -68,7 +68,7 @@ public class ConcreteFluid extends IEFluid
 	boolean hasFlownInTick = false;
 
 	@Override
-	public void tick(World world, BlockPos pos, IFluidState state)
+	public void tick(World world, BlockPos pos, FluidState state)
 	{
 		hasFlownInTick = false;
 		super.tick(world, pos, state);
@@ -100,14 +100,14 @@ public class ConcreteFluid extends IEFluid
 	}
 
 	@Override
-	protected void fillStateContainer(StateContainer.Builder<Fluid, IFluidState> builder)
+	protected void fillStateContainer(StateContainer.Builder<Fluid, FluidState> builder)
 	{
 		super.fillStateContainer(builder);
 		builder.add(IEProperties.INT_16);
 	}
 
 	@Override
-	protected BlockState getBlockState(IFluidState state)
+	protected BlockState getBlockState(FluidState state)
 	{
 		return super.getBlockState(state).with(IEProperties.INT_16, state.get(IEProperties.INT_16));
 	}
@@ -118,7 +118,7 @@ public class ConcreteFluid extends IEFluid
 		ConcreteFluid ret = new ConcreteFluid(fluidName, stillTex, flowingTex, buildAttributes, false)
 		{
 			@Override
-			protected void fillStateContainer(StateContainer.Builder<Fluid, IFluidState> builder)
+			protected void fillStateContainer(StateContainer.Builder<Fluid, FluidState> builder)
 			{
 				super.fillStateContainer(builder);
 				builder.add(LEVEL_1_8);
@@ -147,7 +147,7 @@ public class ConcreteFluid extends IEFluid
 
 	@Nonnull
 	@Override
-	protected IFluidState calculateCorrectFlowingState(IWorldReader worldIn, BlockPos pos, @Nonnull BlockState blockStateIn)
+	protected FluidState calculateCorrectFlowingState(IWorldReader worldIn, BlockPos pos, @Nonnull BlockState blockStateIn)
 	{
 		//Based on super version, respects timer/decay
 		int maxNeighborLevel = 0;
@@ -157,7 +157,7 @@ public class ConcreteFluid extends IEFluid
 		{
 			BlockPos neighborPos = pos.offset(neighborSide);
 			BlockState neighborState = worldIn.getBlockState(neighborPos);
-			IFluidState fluidAtNeighbor = neighborState.getFluidState();
+			FluidState fluidAtNeighbor = neighborState.getFluidState();
 			if(fluidAtNeighbor.getFluid().isEquivalentTo(this)
 					&&this.doesSideHaveHoles(neighborSide, worldIn, pos, blockStateIn, neighborPos, neighborState)
 					&&fluidAtNeighbor.getLevel() > maxNeighborLevel
@@ -170,8 +170,8 @@ public class ConcreteFluid extends IEFluid
 
 		BlockPos abovePos = pos.up();
 		BlockState aboveState = worldIn.getBlockState(abovePos);
-		IFluidState aboveFluid = aboveState.getFluidState();
-		IFluidState currFluid = blockStateIn.getFluidState();
+		FluidState aboveFluid = aboveState.getFluidState();
+		FluidState currFluid = blockStateIn.getFluidState();
 		if(!aboveFluid.isEmpty()&&aboveFluid.getFluid().isEquivalentTo(this)&&this.doesSideHaveHoles(Direction.UP, worldIn, pos, blockStateIn, abovePos, aboveState))
 			return this.getFlowingFluidState(8, true, currFluid, Math.max(correspondingTimer, aboveFluid.get(IEProperties.INT_16)));
 		else
@@ -184,9 +184,9 @@ public class ConcreteFluid extends IEFluid
 		}
 	}
 
-	public IFluidState getFlowingFluidState(int level, boolean falling, IFluidState currentState, int baseDecay)
+	public FluidState getFlowingFluidState(int level, boolean falling, FluidState currentState, int baseDecay)
 	{
-		IFluidState baseState = super.getFlowingFluidState(level, falling);
+		FluidState baseState = super.getFlowingFluidState(level, falling);
 		if(isEquivalentTo(currentState.getFluid()))
 			baseDecay = Math.max(currentState.get(IEProperties.INT_16), baseDecay);
 		baseState = baseState.with(IEProperties.INT_16, baseDecay);
@@ -194,7 +194,7 @@ public class ConcreteFluid extends IEFluid
 	}
 
 	protected void flowInto(@Nonnull IWorld worldIn, @Nonnull BlockPos pos, BlockState blockStateIn, Direction direction,
-							@Nonnull IFluidState fluidStateIn)
+							@Nonnull FluidState fluidStateIn)
 	{
 		if(blockStateIn.getBlock() instanceof ILiquidContainer)
 			((ILiquidContainer)blockStateIn.getBlock()).receiveFluid(worldIn, pos, blockStateIn, fluidStateIn);

@@ -29,12 +29,12 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3i;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -106,13 +106,13 @@ public class TransformerTileEntity extends ImmersiveConnectableTileEntity implem
 	}
 
 	@Override
-	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vec3i offset)
+	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vector3i offset)
 	{
 		if(dummy==2)
 		{
 			TileEntity master = world.getTileEntity(getPos().add(0, -dummy, 0));
 			return master instanceof TransformerTileEntity&&((TransformerTileEntity)master).canConnectCable(cableType, target,
-					new Vec3i(0, 2, 0));
+					new Vector3i(0, 2, 0));
 		}
 		switch(target.getIndex())
 		{
@@ -190,29 +190,29 @@ public class TransformerTileEntity extends ImmersiveConnectableTileEntity implem
 	}
 
 	@Override
-	public Vec3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
+	public Vector3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
 		return getConnectionOffset(con, con.getEndFor(pos).getIndex()==RIGHT_INDEX);
 	}
 
-	private Vec3d getConnectionOffset(Connection con, boolean right)
+	private Vector3d getConnectionOffset(Connection con, boolean right)
 	{
 		double conRadius = con.type.getRenderDiameter()/2;
 		double offset = getHigherWiretype().equals(con.type.getCategory())?getHigherOffset(): getLowerOffset();
 		if(getFacing()==Direction.NORTH)
-			return new Vec3d(right?.8125: .1875, 2+offset-conRadius, .5);
+			return new Vector3d(right?.8125: .1875, 2+offset-conRadius, .5);
 		if(getFacing()==Direction.SOUTH)
-			return new Vec3d(right?.1875: .8125, 2+offset-conRadius, .5);
+			return new Vector3d(right?.1875: .8125, 2+offset-conRadius, .5);
 		if(getFacing()==Direction.WEST)
-			return new Vec3d(.5, 2+offset-conRadius, right?.1875: .8125);
+			return new Vector3d(.5, 2+offset-conRadius, right?.1875: .8125);
 		if(getFacing()==Direction.EAST)
-			return new Vec3d(.5, 2+offset-conRadius, right?.8125: .1875);
-		return new Vec3d(.5, .5, .5);
+			return new Vector3d(.5, 2+offset-conRadius, right?.8125: .1875);
+		return new Vector3d(.5, .5, .5);
 	}
 
 	@Nullable
 	@Override
-	public ConnectionPoint getTargetedPoint(TargetingInfo target, Vec3i offset)
+	public ConnectionPoint getTargetedPoint(TargetingInfo target, Vector3i offset)
 	{
 			if(offset.getY()!=2)
 				return null;
@@ -280,7 +280,7 @@ public class TransformerTileEntity extends ImmersiveConnectableTileEntity implem
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
 	{
 		return false;
 	}

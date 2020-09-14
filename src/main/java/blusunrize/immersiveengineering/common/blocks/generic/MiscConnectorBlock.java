@@ -16,7 +16,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.Item;
 import net.minecraft.state.EnumProperty;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.Property;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -40,15 +40,15 @@ public class MiscConnectorBlock<T extends TileEntity & IImmersiveConnectable> ex
 		this(name, tileType, ImmutableList.of(IEProperties.FACING_ALL, BlockStateProperties.WATERLOGGED), BlockItemIE::new);
 	}
 
-	public MiscConnectorBlock(String name, RegistryObject<TileEntityType<T>> tileType, IProperty<?>... extraProperties)
+	public MiscConnectorBlock(String name, RegistryObject<TileEntityType<T>> tileType, Property<?>... extraProperties)
 	{
 		this(name, tileType, ImmutableList.copyOf(extraProperties), BlockItemIE::new);
 	}
 
-	public MiscConnectorBlock(String name, RegistryObject<TileEntityType<T>> tileType, List<IProperty<?>> extraProps,
+	public MiscConnectorBlock(String name, RegistryObject<TileEntityType<T>> tileType, List<Property<?>> extraProps,
 							  BiFunction<Block, Item.Properties, Item> itemClass)
 	{
-		super(name, itemClass, extraProps.toArray(new IProperty[0]));
+		super(name, itemClass, extraProps.toArray(new Property[0]));
 		this.tileType = tileType;
 	}
 

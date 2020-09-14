@@ -81,6 +81,7 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.Effects;
 import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.tileentity.BannerPattern;
 import net.minecraft.tileentity.FurnaceTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -92,6 +93,7 @@ import net.minecraftforge.common.ToolType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.RegistryEvent.MissingMappings.Mapping;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -119,7 +121,7 @@ public class IEContent
 	public static IEFluid fluidHerbicide;
 	public static Fluid fluidPotion;
 
-	public static final Feature<OreFeatureConfig> ORE_RETROGEN = new OreRetrogenFeature(OreFeatureConfig::deserialize);
+	public static final Feature<OreFeatureConfig> ORE_RETROGEN = new OreRetrogenFeature(OreFeatureConfig.field_236566_a_);
 
 	public static void modConstruction()
 	{
@@ -206,6 +208,7 @@ public class IEContent
 				ore = new IEBaseBlock("ore_"+name,
 						Block.Properties.create(Material.ROCK)
 								.hardnessAndResistance(3, 5)
+								.setRequiresTool()
 								.harvestTool(ToolType.PICKAXE)
 								.harvestLevel(oreMiningLevels.get(m)), BlockItemIE::new);
 			}
@@ -214,6 +217,7 @@ public class IEContent
 				storage = new IEBaseBlock("storage_"+name, Block.Properties.create(Material.IRON)
 						.sound(SoundType.METAL)
 						.hardnessAndResistance(5, 10)
+						.setRequiresTool()
 						.harvestTool(ToolType.PICKAXE)
 						.harvestLevel(storageMiningLevels.get(m)), BlockItemIE::new);
 				nugget = new IEBaseItem("nugget_"+name);
@@ -251,9 +255,22 @@ public class IEContent
 			MetalDecoration.coloredSheetmetal.put(dye, sheetmetal);
 			addSlabFor(sheetmetal);
 		}
-		Block.Properties stoneDecoProps = Block.Properties.create(Material.ROCK).sound(SoundType.STONE).hardnessAndResistance(2, 10);
-		Block.Properties stoneDecoPropsNotSolid = Block.Properties.create(Material.ROCK).sound(SoundType.STONE).hardnessAndResistance(2, 10).notSolid();
-		Block.Properties stoneDecoLeadedProps = Block.Properties.create(Material.ROCK).sound(SoundType.STONE).hardnessAndResistance(2, 180);
+		Block.Properties stoneDecoProps = Block.Properties.create(Material.ROCK)
+				.sound(SoundType.STONE)
+				.setRequiresTool()
+				.harvestTool(ToolType.PICKAXE)
+				.hardnessAndResistance(2, 10);
+		Block.Properties stoneDecoPropsNotSolid = Block.Properties.create(Material.ROCK)
+				.sound(SoundType.STONE)
+				.setRequiresTool()
+				.harvestTool(ToolType.PICKAXE)
+				.hardnessAndResistance(2, 10)
+				.notSolid();
+		Block.Properties stoneDecoLeadedProps = Block.Properties.create(Material.ROCK)
+				.sound(SoundType.STONE)
+				.setRequiresTool()
+				.harvestTool(ToolType.PICKAXE)
+				.hardnessAndResistance(2, 180);
 
 		StoneDecoration.cokebrick = new IEBaseBlock("cokebrick", stoneDecoProps, BlockItemIE::new);
 		StoneDecoration.blastbrick = new IEBaseBlock("blastbrick", stoneDecoProps, BlockItemIE::new);
@@ -292,8 +309,14 @@ public class IEContent
 		StoneDecoration.coresample = new GenericTileBlock<>("coresample", IETileTypes.CORE_SAMPLE,
 				stoneDecoPropsNotSolid, (b, p) -> null, IEProperties.FACING_HORIZONTAL);
 
-		Block.Properties standardWoodProperties = Block.Properties.create(Material.WOOD).sound(SoundType.WOOD).hardnessAndResistance(2, 5);
-		Block.Properties standardWoodPropertiesNotSolid = Block.Properties.create(Material.WOOD).sound(SoundType.WOOD).hardnessAndResistance(2, 5).notSolid();
+		Block.Properties standardWoodProperties = Block.Properties.create(Material.WOOD)
+				.sound(SoundType.WOOD)
+				.hardnessAndResistance(2, 5);
+		Block.Properties standardWoodPropertiesNotSolid = Block.Properties.create(Material.WOOD)
+				.sound(SoundType.WOOD)
+				.hardnessAndResistance(2, 5)
+				.notSolid()
+				.setBlocksVision((state, blockReader, pos) -> false);
 		for(TreatedWoodStyles style : TreatedWoodStyles.values())
 		{
 			IEBaseBlock baseBlock = new IEBaseBlock("treated_wood_"+style.name().toLowerCase(), standardWoodProperties, BlockItemIE::new)
@@ -334,8 +357,18 @@ public class IEContent
 		Misc.fakeLight = new FakeLightBlock();
 
 
-		Block.Properties defaultMetalProperties = Block.Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(3, 15);
-		Block.Properties metalPropertiesNotSolid = Block.Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(3, 15).notSolid();
+		Block.Properties defaultMetalProperties = Block.Properties.create(Material.IRON)
+				.sound(SoundType.METAL)
+				.setRequiresTool()
+				.harvestTool(ToolType.PICKAXE)
+				.hardnessAndResistance(3, 15);
+		Block.Properties metalPropertiesNotSolid = Block.Properties.create(Material.IRON)
+				.sound(SoundType.METAL)
+				.hardnessAndResistance(3, 15)
+				.setRequiresTool()
+				.harvestTool(ToolType.PICKAXE)
+				.notSolid()
+				.setBlocksVision((state, blockReader, pos) -> false);
 		MetalDecoration.lvCoil = new IEBaseBlock("coil_lv", defaultMetalProperties, BlockItemIE::new);
 		MetalDecoration.mvCoil = new IEBaseBlock("coil_mv", defaultMetalProperties, BlockItemIE::new);
 		MetalDecoration.hvCoil = new IEBaseBlock("coil_hv", defaultMetalProperties, BlockItemIE::new);
@@ -573,6 +606,15 @@ public class IEContent
 			}
 		};
 
+		IEItems.Misc.bannerPatternHammer = addBanner("hammer", "hmr");
+		IEItems.Misc.bannerPatternBevels = addBanner("bevels", "bvl");
+		IEItems.Misc.bannerPatternOrnate = addBanner("ornate", "orn");
+		IEItems.Misc.bannerPatternTreatedWood = addBanner("treated_wood", "twd");
+		IEItems.Misc.bannerPatternWindmill = addBanner("windmill", "wnd");
+		IEItems.Misc.bannerPatternWolfR = addBanner("wolf_r", "wlfr");
+		IEItems.Misc.bannerPatternWolfL = addBanner("wolf_l", "wlfl");
+		IEItems.Misc.bannerPatternWolf = addBanner("wolf", "wlf");
+
 		IEItems.Misc.iconBirthday = new FakeIconItem("birthday");
 		IEItems.Misc.iconLucky = new FakeIconItem("lucky");
 		IEItems.Misc.iconDrillbreak = new FakeIconItem("drillbreak");
@@ -704,13 +746,17 @@ public class IEContent
 	public static void init()
 	{
 		/*WORLDGEN*/
-		addConfiguredWorldgen(Metals.ores.get(EnumMetals.COPPER), "copper", IEServerConfig.ORES.ore_copper);
-		addConfiguredWorldgen(Metals.ores.get(EnumMetals.ALUMINUM), "bauxite", IEServerConfig.ORES.ore_bauxite);
-		addConfiguredWorldgen(Metals.ores.get(EnumMetals.LEAD), "lead", IEServerConfig.ORES.ore_lead);
-		addConfiguredWorldgen(Metals.ores.get(EnumMetals.SILVER), "silver", IEServerConfig.ORES.ore_silver);
-		addConfiguredWorldgen(Metals.ores.get(EnumMetals.NICKEL), "nickel", IEServerConfig.ORES.ore_nickel);
-		addConfiguredWorldgen(Metals.ores.get(EnumMetals.URANIUM), "uranium", IEServerConfig.ORES.ore_uranium);
-		IEWorldGen.registerMineralVeinGen();
+		DeferredWorkQueue.runLater(
+				() -> {
+					addConfiguredWorldgen(Metals.ores.get(EnumMetals.COPPER), "copper", IEServerConfig.ORES.ore_copper);
+					addConfiguredWorldgen(Metals.ores.get(EnumMetals.ALUMINUM), "bauxite", IEServerConfig.ORES.ore_bauxite);
+					addConfiguredWorldgen(Metals.ores.get(EnumMetals.LEAD), "lead", IEServerConfig.ORES.ore_lead);
+					addConfiguredWorldgen(Metals.ores.get(EnumMetals.SILVER), "silver", IEServerConfig.ORES.ore_silver);
+					addConfiguredWorldgen(Metals.ores.get(EnumMetals.NICKEL), "nickel", IEServerConfig.ORES.ore_nickel);
+					addConfiguredWorldgen(Metals.ores.get(EnumMetals.URANIUM), "uranium", IEServerConfig.ORES.ore_uranium);
+					IEWorldGen.registerMineralVeinGen();
+				}
+		);
 
 		CapabilityShader.register();
 		NetHandlerCapability.register();
@@ -722,17 +768,6 @@ public class IEContent
 		ShaderRegistry.itemExamples.add(new ItemStack(Weapons.chemthrower));
 		ShaderRegistry.itemExamples.add(new ItemStack(Weapons.railgun));
 		ShaderRegistry.itemExamples.add(new ItemStack(IEItems.Misc.shield));
-
-		/*BANNERS*/
-		addBanner("hammer", "hmr", new ItemStack(Tools.hammer));
-		addBanner("bevels", "bvl", "plateIron");
-		addBanner("ornate", "orn", "dustSilver");
-		addBanner("treated_wood", "twd", "plankTreatedWood");
-		addBanner("windmill", "wnd", new ItemStack[]{new ItemStack(WoodenDevices.windmill)});
-		ItemStack wolfpackCartridge = new ItemStack(BulletHandler.getBulletItem(BulletItem.WOLFPACK));
-		addBanner("wolf_r", "wlfr", wolfpackCartridge, 1);
-		addBanner("wolf_l", "wlfl", wolfpackCartridge, -1);
-		addBanner("wolf", "wlf", wolfpackCartridge, 0, 0);
 
 		/*ASSEMBLER RECIPE ADAPTERS*/
 		//Fluid Ingredients
@@ -827,18 +862,14 @@ public class IEContent
 					config.veinsPerChunk.get());
 	}
 
-	public static void addBanner(String name, String id, Object item, int... offset)
+	public static Item addBanner(String name, String id)
 	{
-		name = MODID+"_"+name;
+		String enumName = MODID+"_"+name;
 		id = "ie_"+id;
-		ItemStack craftingStack = ItemStack.EMPTY;
-		if(item instanceof ItemStack&&(offset==null||offset.length < 1))
-			craftingStack = (ItemStack)item;
-		/*TODO
-		BannerPattern e = EnumHelper.addEnum(BannerPattern.class, name.toUpperCase(), new Class[]{String.class, String.class, ItemStack.class}, name, id, craftingStack);
-		if(craftingStack.isEmpty())
-			RecipeBannerAdvanced.addAdvancedPatternRecipe(e, ApiUtils.createIngredientStack(item), offset);
-
-		 */
+		BannerPattern pattern = BannerPattern.create(enumName.toUpperCase(), enumName, id, true);
+		Item patternItem = new BannerPatternItem(pattern, new Item.Properties().group(ImmersiveEngineering.itemGroup));
+		patternItem.setRegistryName(ImmersiveEngineering.MODID, "bannerpattern_"+name);
+		IEContent.registeredIEItems.add(patternItem);
+		return patternItem;
 	}
 }

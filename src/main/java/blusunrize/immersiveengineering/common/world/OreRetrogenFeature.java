@@ -13,29 +13,27 @@
  */
 package blusunrize.immersiveengineering.common.world;
 
-import com.mojang.datafixers.Dynamic;
+import com.mojang.serialization.Codec;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.ISeedReader;
 import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.GenerationSettings;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.OreFeature;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
 
 import javax.annotation.Nonnull;
 import java.util.Random;
-import java.util.function.Function;
 
 public class OreRetrogenFeature extends OreFeature
 {
-	public OreRetrogenFeature(Function<Dynamic<?>, ? extends OreFeatureConfig> configFactory)
+	public OreRetrogenFeature(Codec<OreFeatureConfig> configFactory)
 	{
 		super(configFactory);
 	}
 
 	@Override
-	public boolean place(@Nonnull IWorld world, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, OreFeatureConfig config)
+	public boolean func_241855_a(@Nonnull ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, OreFeatureConfig config)
 	{
 		float angle = rand.nextFloat()*(float)Math.PI;
 		float f1 = (float)config.size/8.0F;

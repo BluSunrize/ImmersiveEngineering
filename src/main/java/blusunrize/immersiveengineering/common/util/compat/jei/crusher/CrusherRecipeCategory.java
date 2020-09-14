@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
@@ -77,7 +78,7 @@ public class CrusherRecipeCategory extends IERecipeCategory<CrusherRecipe>
 	}
 
 	@Override
-	public void draw(CrusherRecipe recipe, double mouseX, double mouseY)
+	public void draw(CrusherRecipe recipe, MatrixStack transform, double mouseX, double mouseY)
 	{
 		List<StackWithChance> validSecondaries = getValidSecondaryOutputs(recipe);
 		int yBase = validSecondaries.isEmpty()?36: validSecondaries.size() < 2?27: 18;
@@ -86,6 +87,7 @@ public class CrusherRecipeCategory extends IERecipeCategory<CrusherRecipe>
 			int x = 77+i/2*44;
 			int y = yBase+i%2*18;
 			ClientUtils.font().drawString(
+					transform,
 					Utils.formatDouble(validSecondaries.get(i).getChance()*100, "0.##")+"%",
 					x+21,
 					y+6,
@@ -93,10 +95,10 @@ public class CrusherRecipeCategory extends IERecipeCategory<CrusherRecipe>
 			);
 			RenderSystem.color4f(1, 1, 1, 1);
 		}
-		RenderSystem.pushMatrix();
-		RenderSystem.scalef(3f, 3f, 1);
-		this.getIcon().draw(8, 0);
-		RenderSystem.popMatrix();
+		transform.push();
+		transform.scale(3f, 3f, 1);
+		this.getIcon().draw(transform, 8, 0);
+		transform.pop();
 	}
 
 	private List<StackWithChance> getValidSecondaryOutputs(CrusherRecipe recipe)

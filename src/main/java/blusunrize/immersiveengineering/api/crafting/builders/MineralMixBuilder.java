@@ -16,10 +16,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.IItemProvider;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.DimensionType;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 
@@ -35,7 +36,7 @@ public class MineralMixBuilder extends IEFinishedRecipe<MineralMixBuilder>
 		addWriter(jsonObject -> jsonObject.add("dimensions", dimensionsArray));
 	}
 
-	public static MineralMixBuilder builder(DimensionType dimension)
+	public static MineralMixBuilder builder(RegistryKey<DimensionType> dimension)
 	{
 		return new MineralMixBuilder().addDimension(dimension);
 	}
@@ -60,9 +61,9 @@ public class MineralMixBuilder extends IEFinishedRecipe<MineralMixBuilder>
 		return addWriter(jsonObject -> jsonObject.addProperty("sample_background", resourceLocation.toString()));
 	}
 
-	public MineralMixBuilder addDimension(DimensionType dimension)
+	public MineralMixBuilder addDimension(RegistryKey<DimensionType> dimension)
 	{
-		return addDimension(DimensionType.getKey(dimension));
+		return addDimension(dimension.func_240901_a_());
 	}
 
 	public MineralMixBuilder addDimension(ResourceLocation dimension)
@@ -85,12 +86,12 @@ public class MineralMixBuilder extends IEFinishedRecipe<MineralMixBuilder>
 		return this;
 	}
 
-	public MineralMixBuilder addOre(Tag<Item> tag, float chance)
+	public MineralMixBuilder addOre(ITag<Item> tag, float chance)
 	{
 		return addOre(new IngredientWithSize(tag), chance, null);
 	}
 
-	public MineralMixBuilder addOre(Tag<Item> tag, float chance, ICondition condition)
+	public MineralMixBuilder addOre(ITag<Item> tag, float chance, ICondition condition)
 	{
 		return addOre(new IngredientWithSize(tag), chance, condition);
 	}

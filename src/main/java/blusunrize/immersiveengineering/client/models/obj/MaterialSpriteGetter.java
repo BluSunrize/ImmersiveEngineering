@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.client.models.obj;
 
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
-import net.minecraft.client.renderer.model.Material;
+import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.ResourceLocation;
@@ -19,9 +19,9 @@ import net.minecraft.util.ResourceLocation;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-public class MaterialSpriteGetter<T> implements BiFunction<String, Material, TextureAtlasSprite>
+public class MaterialSpriteGetter<T> implements BiFunction<String, RenderMaterial, TextureAtlasSprite>
 {
-	private final Function<Material, TextureAtlasSprite> getter;
+	private final Function<RenderMaterial, TextureAtlasSprite> getter;
 	private final String groupName;
 	private final IOBJModelCallback<T> callback;
 	private final T callbackObject;
@@ -29,7 +29,7 @@ public class MaterialSpriteGetter<T> implements BiFunction<String, Material, Tex
 
 	private int renderPass = 0;
 
-	public MaterialSpriteGetter(Function<Material, TextureAtlasSprite> getter, String groupName,
+	public MaterialSpriteGetter(Function<RenderMaterial, TextureAtlasSprite> getter, String groupName,
 								IOBJModelCallback<T> callback, T callbackObject, ShaderCase shaderCase)
 	{
 		this.getter = getter;
@@ -50,7 +50,7 @@ public class MaterialSpriteGetter<T> implements BiFunction<String, Material, Tex
 	}
 
 	@Override
-	public TextureAtlasSprite apply(String material, Material resourceLocation)
+	public TextureAtlasSprite apply(String material, RenderMaterial resourceLocation)
 	{
 		TextureAtlasSprite sprite = null;
 		if(callback!=null)
@@ -59,7 +59,7 @@ public class MaterialSpriteGetter<T> implements BiFunction<String, Material, Tex
 		{
 			ResourceLocation rl = shaderCase.getTextureReplacement(groupName, renderPass);
 			if(rl!=null)
-				sprite = getter.apply(new Material(PlayerContainer.LOCATION_BLOCKS_TEXTURE, rl));
+				sprite = getter.apply(new RenderMaterial(PlayerContainer.LOCATION_BLOCKS_TEXTURE, rl));
 		}
 		if(sprite==null)
 			sprite = getter.apply(resourceLocation);

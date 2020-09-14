@@ -36,6 +36,9 @@ import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.loot.LootContext;
+import net.minecraft.loot.LootContext.Builder;
+import net.minecraft.loot.LootParameters;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -46,12 +49,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraft.world.storage.loot.LootContext;
-import net.minecraft.world.storage.loot.LootContext.Builder;
-import net.minecraft.world.storage.loot.LootParameters;
 import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fml.network.PacketDistributor;
@@ -293,13 +293,12 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 				ItemStack tool = new ItemStack(Items.IRON_PICKAXE);
 				tool.addEnchantment(Enchantments.SILK_TOUCH, 1);
 				LootContext.Builder dropContext = new Builder((ServerWorld)world)
-						.withNullableParameter(LootParameters.POSITION, pos)
+						.withNullableParameter(LootParameters.field_237457_g_, Vector3d.copyCentered(pos))
 						.withNullableParameter(LootParameters.TOOL, tool);
 
 				List<ItemStack> itemsNullable = blockstate.getDrops(dropContext);
 				NonNullList<ItemStack> items = NonNullList.create();
 				items.addAll(itemsNullable);
-				ForgeEventFactory.fireBlockHarvesting(items, world, pos, blockstate, 0, 1.0f, true, fakePlayer);
 
 				for(int i = 0; i < items.size(); i++)
 					if(i!=0)

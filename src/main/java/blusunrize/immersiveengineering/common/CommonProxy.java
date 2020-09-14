@@ -38,7 +38,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
@@ -126,13 +126,8 @@ public class CommonProxy
 	{
 	}
 
-	public void spawnFractalFX(World world, double x, double y, double z, Vec3d direction, double scale, int prefixColour, float[][] colour)
+	public void spawnFractalFX(World world, double x, double y, double z, Vector3d direction, double scale, int prefixColour, float[][] colour)
 	{
-	}
-
-	public String[] splitStringOnWidth(String s, int w)
-	{
-		return new String[]{s};
 	}
 
 	public World getClientWorld()

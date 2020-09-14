@@ -14,14 +14,13 @@ import com.google.gson.JsonObject;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag.INamedTag;
 import net.minecraftforge.common.crafting.IIngredientSerializer;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 /**
@@ -37,9 +36,9 @@ public class IngredientFluidStack extends Ingredient
 		this.fluidTagInput = fluidTagInput;
 	}
 
-	public IngredientFluidStack(Tag<Fluid> tag, int amount)
+	public IngredientFluidStack(INamedTag<Fluid> tag, int amount)
 	{
-		this(new FluidTagInput(tag.getId(), amount));
+		this(new FluidTagInput(tag.getName(), amount));
 	}
 
 	public FluidTagInput getFluidTagInput()
@@ -54,12 +53,10 @@ public class IngredientFluidStack extends Ingredient
 	public ItemStack[] getMatchingStacks()
 	{
 		if(cachedStacks==null)
-		{
 			cachedStacks = this.fluidTagInput.getMatchingFluidStacks()
 					.stream()
-					.map((Function<FluidStack, Object>)FluidUtil::getFilledBucket)
+					.map(FluidUtil::getFilledBucket)
 					.toArray(ItemStack[]::new);
-		}
 		return this.cachedStacks;
 	}
 

@@ -1,5 +1,5 @@
 {
-  "parent": "block/cube_bottom_top",
+  "parent": "minecraft:block/cube_bottom_top",
   "textures": {
     "side": "immersiveengineering:block/stone_decoration/alloybrick",
     "bottom": "immersiveengineering:block/stone_decoration/alloybrick",

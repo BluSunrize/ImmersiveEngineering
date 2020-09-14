@@ -99,22 +99,6 @@ public class WallmountBlock extends IEBaseBlock
 		return ActionResultType.PASS;
 	}
 
-	@Override
-	public boolean canBeConnectedTo(BlockState state, IBlockReader world, BlockPos pos, Direction fromSide)
-	{
-		Orientation o = state.get(ORIENTATION);
-		if(fromSide==Direction.UP)
-			return o.touchesTop();
-		else if(fromSide==Direction.DOWN)
-			return !o.touchesTop();
-		else
-		{
-			Direction mountSide = state.get(IEProperties.FACING_HORIZONTAL);
-			Direction actualSide = o.attachedToSide()?mountSide: mountSide.getOpposite();
-			return fromSide==actualSide;
-		}
-	}
-
 	//ordinal matches <=1.12 value
 	public enum Orientation implements IStringSerializable
 	{
@@ -126,7 +110,7 @@ public class WallmountBlock extends IEBaseBlock
 		VERT_UP;
 
 		@Override
-		public String getName()
+		public String getString()
 		{
 			return name().toLowerCase(Locale.ENGLISH);
 		}
@@ -176,7 +160,7 @@ public class WallmountBlock extends IEBaseBlock
 		@Override
 		public String toString()
 		{
-			return getName();
+			return getString();
 		}
 	}
 }

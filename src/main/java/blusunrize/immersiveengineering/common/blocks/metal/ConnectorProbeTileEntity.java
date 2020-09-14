@@ -17,7 +17,6 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.item.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -29,10 +28,13 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector4f;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -114,7 +116,7 @@ public class ConnectorProbeTileEntity extends ConnectorRedstoneTileEntity
 	}
 
 	@Override
-	public ActionResultType screwdriverUseSide(Direction side, PlayerEntity player, Hand hand, Vec3d hitVec)
+	public ActionResultType screwdriverUseSide(Direction side, PlayerEntity player, Hand hand, Vector3d hitVec)
 	{
 		ImmersiveEngineering.proxy.openTileScreen(Lib.GUIID_RedstoneProbe, this);
 		return ActionResultType.SUCCESS;
@@ -145,11 +147,11 @@ public class ConnectorProbeTileEntity extends ConnectorRedstoneTileEntity
 	}
 
 	@Override
-	public Vec3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
+	public Vector3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
 		Direction side = getFacing().getOpposite();
 		double conRadius = con.type.getRenderDiameter()/2;
-		return new Vec3d(.5+side.getXOffset()*(.375-conRadius), .5+side.getYOffset()*(.375-conRadius), .5+side.getZOffset()*(.375-conRadius));
+		return new Vector3d(.5+side.getXOffset()*(.375-conRadius), .5+side.getYOffset()*(.375-conRadius), .5+side.getZOffset()*(.375-conRadius));
 	}
 
 	@Override
@@ -205,13 +207,13 @@ public class ConnectorProbeTileEntity extends ConnectorRedstoneTileEntity
 	}
 
 	@Override
-	public String[] getOverlayText(PlayerEntity player, RayTraceResult mop, boolean hammer)
+	public ITextComponent[] getOverlayText(PlayerEntity player, RayTraceResult mop, boolean hammer)
 	{
 		if(!Utils.isScrewdriver(player.getHeldItem(Hand.MAIN_HAND)))
 			return null;
-		return new String[]{
-				I18n.format(Lib.DESC_INFO+"redstoneChannel.rec", I18n.format("item.minecraft.firework_star."+redstoneChannel.getTranslationKey())),
-				I18n.format(Lib.DESC_INFO+"redstoneChannel.send", I18n.format("item.minecraft.firework_star."+redstoneChannelSending.getTranslationKey()))
+		return new ITextComponent[]{
+				new TranslationTextComponent(Lib.DESC_INFO+"redstoneChannel.rec", I18n.format("item.minecraft.firework_star."+redstoneChannel.getTranslationKey())),
+				new TranslationTextComponent(Lib.DESC_INFO+"redstoneChannel.send", I18n.format("item.minecraft.firework_star."+redstoneChannelSending.getTranslationKey()))
 		};
 	}
 

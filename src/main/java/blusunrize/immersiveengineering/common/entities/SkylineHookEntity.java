@@ -32,10 +32,10 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -90,7 +90,7 @@ public class SkylineHookEntity extends Entity
 		this.limitSpeed = limitSpeed;
 		setConnectionAndPos(connection, start, linePos, horSpeed);
 
-		Vec3d motion = getMotion();
+		Vector3d motion = getMotion();
 		float f1 = MathHelper.sqrt(motion.x*motion.x+motion.z*motion.z);
 		this.rotationYaw = (float)(Math.atan2(motion.z, motion.x)*180.0D/Math.PI)+90.0F;
 		this.rotationPitch = (float)(Math.atan2(f1, motion.y)*180.0D/Math.PI)-90.0F;
@@ -111,7 +111,7 @@ public class SkylineHookEntity extends Entity
 		this.horizontalSpeed = speed;
 		this.connection = c;
 		this.start = start;
-		Vec3d pos = connection.getPoint(this.linePos, start).add(new Vec3d(start.getPosition()));
+		Vector3d pos = connection.getPoint(this.linePos, start).add(Vector3d.copy(start.getPosition()));
 		this.setLocationAndAngles(pos.x, pos.y, pos.z, this.rotationYaw, this.rotationPitch);
 		this.setPosition(pos.x, pos.y, pos.z);
 		if(!connection.getCatenaryData().isVertical())
@@ -246,7 +246,7 @@ public class SkylineHookEntity extends Entity
 		}
 		horizontalSpeed *= friction;
 		linePos += horSpeedToUse/getHorizontalLength();
-		Vec3d pos = connection.getPoint(linePos, start).add(new Vec3d(start.getPosition()));
+		Vector3d pos = connection.getPoint(linePos, start).add(Vector3d.copy(start.getPosition()));
 		setMotion(pos.x-getPosX(), pos.z-getPosZ(), pos.y-getPosY());
 		if(!isValidPosition(pos.x, pos.y, pos.z, player))
 		{
@@ -256,7 +256,7 @@ public class SkylineHookEntity extends Entity
 		this.setPosition(pos.x, pos.y, pos.z);
 
 		super.tick();
-		Vec3d motion = getMotion();
+		Vector3d motion = getMotion();
 		float f1 = MathHelper.sqrt(motion.x*motion.x+motion.z*motion.z);
 		this.rotationYaw = (float)(Math.atan2(motion.z, motion.x)*180.0D/Math.PI)+90.0F;
 		this.rotationPitch = (float)(Math.atan2(f1, motion.y)*180.0D/Math.PI)-90.0F;
@@ -318,7 +318,7 @@ public class SkylineHookEntity extends Entity
 		Collection<Connection> possible = net.getConnections(posForSwitch);
 		if(possible!=null)
 		{
-			Vec3d look = player.getLookVec();
+			Vector3d look = player.getLookVec();
 			line = possible.stream().filter(c -> !c.equals(connection))
 					.max(Comparator.comparingDouble(c -> {
 						c.generateCatenaryData(world);
@@ -495,7 +495,7 @@ public class SkylineHookEntity extends Entity
 		if(getMotion().y < 0)
 		{
 			passenger.fallDistance = SkylineHelper.fallDistanceFromSpeed(getMotion().y);
-			passenger.onGround = false;
+			passenger.setOnGround(false);
 		}
 		passenger.getCapability(SKYHOOK_USER_DATA, Direction.UP).ifPresent(SkyhookUserData::release);
 		if(hand!=null&&passenger instanceof PlayerEntity)

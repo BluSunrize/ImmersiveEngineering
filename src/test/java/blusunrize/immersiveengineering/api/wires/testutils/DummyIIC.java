@@ -14,8 +14,8 @@ import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3i;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -50,7 +50,7 @@ public class DummyIIC implements IImmersiveConnectable
 	}
 
 	@Override
-	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vec3i offset)
+	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vector3i offset)
 	{
 		return true;
 	}
@@ -63,7 +63,7 @@ public class DummyIIC implements IImmersiveConnectable
 
 	@Nullable
 	@Override
-	public ConnectionPoint getTargetedPoint(TargetingInfo info, Vec3i offset)
+	public ConnectionPoint getTargetedPoint(TargetingInfo info, Vector3i offset)
 	{
 		throw new UnsupportedOperationException();
 	}
@@ -74,9 +74,9 @@ public class DummyIIC implements IImmersiveConnectable
 	}
 
 	@Override
-	public Vec3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
+	public Vector3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
-		return Vec3d.ZERO;
+		return Vector3d.ZERO;
 	}
 
 	@Override

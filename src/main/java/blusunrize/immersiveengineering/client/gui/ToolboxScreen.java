@@ -10,12 +10,12 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.utils.FakeGuiUtils;
 import blusunrize.immersiveengineering.common.gui.ToolboxContainer;
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 
@@ -30,9 +30,9 @@ public class ToolboxScreen extends IEContainerScreen<ToolboxContainer>
 	}
 
 	@Override
-	public void render(int mx, int my, float partial)
+	public void render(MatrixStack transform, int mx, int my, float partial)
 	{
-		super.render(mx, my, partial);
+		super.render(transform, mx, my, partial);
 		ArrayList<ITextComponent> tooltip = new ArrayList<>();
 		int slot = -1;
 		for(int i = 0; i < this.container.internalSlots; i++)
@@ -45,17 +45,19 @@ public class ToolboxScreen extends IEContainerScreen<ToolboxContainer>
 		if(slot >= 0)
 			ss = slot < 3?"food": slot < 10?"tool": slot < 16?"wire": "any";
 		if(ss!=null)
-			tooltip.add(new TranslationTextComponent(Lib.DESC_INFO+"toolbox."+ss).setStyle(new Style().setColor(TextFormatting.GRAY)));
+			tooltip.add(ClientUtils.applyFormat(
+					new TranslationTextComponent(Lib.DESC_INFO+"toolbox."+ss),
+					TextFormatting.GRAY
+			));
 		if(!tooltip.isEmpty())
-			ClientUtils.drawHoveringText(tooltip, mx, my, font, width, height);
+			FakeGuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3)
+	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float par1, int par2, int par3)
 	{
-		RenderSystem.color3f(1.0F, 1.0F, 1.0F);
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/toolbox.png");
-		this.blit(guiLeft, guiTop-17, 0, 0, 176, ySize+17);
+		this.blit(transform, guiLeft, guiTop-17, 0, 0, 176, ySize+17);
 	}
 
 }

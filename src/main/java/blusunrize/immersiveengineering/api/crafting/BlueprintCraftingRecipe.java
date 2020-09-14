@@ -206,5 +206,6 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 		recipeCategories.add("bullet");
 		recipeCategories.add("specialBullet");
 		recipeCategories.add("electrode");
+		recipeCategories.add("bannerpatterns");
 	}
 }

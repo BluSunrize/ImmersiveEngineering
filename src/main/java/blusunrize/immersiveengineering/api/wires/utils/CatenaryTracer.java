@@ -16,7 +16,7 @@ import it.unimi.dsi.fastutil.doubles.DoubleIterator;
 import it.unimi.dsi.fastutil.doubles.DoubleSortedSet;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -48,10 +48,10 @@ public class CatenaryTracer
 	public void calculateIntegerIntersections()
 	{
 		integerIntersections = new DoubleAVLTreeSet();
-		Vec3d across = catenaryData.getDelta();
-		Vec3d start = catenaryData.getVecA();
-		Vec3d end = start.add(catenaryData.getDelta());
-		across = new Vec3d(across.x, 0, across.z);
+		Vector3d across = catenaryData.getDelta();
+		Vector3d start = catenaryData.getVecA();
+		Vector3d end = start.add(catenaryData.getDelta());
+		across = new Vector3d(across.x, 0, across.z);
 		double lengthHor = across.length();
 		integerIntersections.add(0);
 		integerIntersections.add(1);
@@ -122,7 +122,7 @@ public class CatenaryTracer
 	}
 
 	@VisibleForTesting
-	public void forEachCloseCoordinate(Vec3d coord, double eps, Consumer<BlockPos> out)
+	public void forEachCloseCoordinate(Vector3d coord, double eps, Consumer<BlockPos> out)
 	{
 		for(int x = MathHelper.floor(coord.x-eps); x < MathHelper.ceil(coord.x+eps); ++x)
 			for(int y = MathHelper.floor(coord.y-eps); y < MathHelper.ceil(coord.y+eps); ++y)
@@ -135,13 +135,13 @@ public class CatenaryTracer
 		final double epsilonIn = 1e-5;
 		final double epsilonNear = 0.3;
 		DoubleIterator it = integerIntersections.iterator();
-		Vec3d last = catenaryData.getPoint(it.nextDouble());
+		Vector3d last = catenaryData.getPoint(it.nextDouble());
 		while(it.hasNext())
 		{
-			Vec3d next = catenaryData.getPoint(it.nextDouble());
+			Vector3d next = catenaryData.getPoint(it.nextDouble());
 			Set<BlockPos> in = new HashSet<>();
 			Set<BlockPos> near = new HashSet<>();
-			for(Vec3d pos : new Vec3d[]{last, next})
+			for(Vector3d pos : new Vector3d[]{last, next})
 			{
 				forEachCloseCoordinate(pos, epsilonIn, in::add);
 				forEachCloseCoordinate(pos, epsilonNear, near::add);
@@ -153,13 +153,13 @@ public class CatenaryTracer
 		}
 	}
 
-	private void processSegments(Set<BlockPos> positions, Vec3d start, Vec3d end, boolean in, Consumer<Segment> out)
+	private void processSegments(Set<BlockPos> positions, Vector3d start, Vector3d end, boolean in, Consumer<Segment> out)
 	{
 		for(BlockPos p : positions)
 		{
-			Vec3d posVec = new Vec3d(p);
-			Vec3d startRel = start.subtract(posVec);
-			Vec3d endRel = end.subtract(posVec);
+			Vector3d posVec = new Vector3d(p.getX(), p.getY(), p.getZ());
+			Vector3d startRel = start.subtract(posVec);
+			Vector3d endRel = end.subtract(posVec);
 			BlockPos realPos = p.add(offset);
 			out.accept(new Segment(startRel, endRel, realPos, in));
 		}
@@ -167,12 +167,12 @@ public class CatenaryTracer
 
 	public static class Segment
 	{
-		public final Vec3d relativeSegmentStart;
-		public final Vec3d relativeSegmentEnd;
+		public final Vector3d relativeSegmentStart;
+		public final Vector3d relativeSegmentEnd;
 		public final BlockPos mainPos;
 		public final boolean inBlock;
 
-		public Segment(Vec3d relativeSegmentStart, Vec3d relativeSegmentEnd, BlockPos mainPos, boolean inBlock)
+		public Segment(Vector3d relativeSegmentStart, Vector3d relativeSegmentEnd, BlockPos mainPos, boolean inBlock)
 		{
 			this.relativeSegmentStart = relativeSegmentStart;
 			this.relativeSegmentEnd = relativeSegmentEnd;

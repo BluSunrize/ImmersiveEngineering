@@ -19,7 +19,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.template.PlacementSettings;
 import net.minecraft.world.gen.feature.template.Template;
@@ -60,7 +60,7 @@ public class UnionMultiblock implements IMultiblock
 	@Override
 	public List<BlockInfo> getStructure()
 	{
-		Vec3i min = getMin();
+		Vector3i min = getMin();
 		List<BlockInfo> ret = new ArrayList<>();
 		for(TransformedMultiblock part : parts)
 			for(BlockInfo i : part.multiblock.getStructure())
@@ -114,30 +114,30 @@ public class UnionMultiblock implements IMultiblock
 	}
 
 	@Override
-	public Vec3i getSize()
+	public Vector3i getSize()
 	{
-		Vec3i max = Vec3i.NULL_VECTOR;
+		Vector3i max = Vector3i.NULL_VECTOR;
 		for(TransformedMultiblock part : parts)
 			max = max(max, part.toUnionCoords(part.multiblock.getSize()));
-		Vec3i min = getMin();
-		return new Vec3i(
+		Vector3i min = getMin();
+		return new Vector3i(
 				max.getX()-min.getX(),
 				max.getY()-min.getY(),
 				max.getZ()-min.getZ()
 		);
 	}
 
-	private Vec3i getMin()
+	private Vector3i getMin()
 	{
-		Vec3i min = Vec3i.NULL_VECTOR;
+		Vector3i min = Vector3i.NULL_VECTOR;
 		for(TransformedMultiblock part : parts)
 		{
 			//TODO more intelligent approach?
-			final Vec3i size = part.multiblock.getSize();
+			final Vector3i size = part.multiblock.getSize();
 			for(int factorX = 0; factorX < 2; ++factorX)
 				for(int factorY = 0; factorY < 2; ++factorY)
 					for(int factorZ = 0; factorZ < 2; ++factorZ)
-						min = min(min, part.toUnionCoords(new Vec3i(
+						min = min(min, part.toUnionCoords(new Vector3i(
 								size.getX()*factorX,
 								size.getY()*factorY,
 								size.getZ()*factorZ
@@ -146,18 +146,18 @@ public class UnionMultiblock implements IMultiblock
 		return min;
 	}
 
-	private Vec3i min(Vec3i a, Vec3i b)
+	private Vector3i min(Vector3i a, Vector3i b)
 	{
-		return new Vec3i(
+		return new Vector3i(
 				Math.min(a.getX(), b.getX()),
 				Math.min(a.getY(), b.getY()),
 				Math.min(a.getZ(), b.getZ())
 		);
 	}
 
-	private Vec3i max(Vec3i a, Vec3i b)
+	private Vector3i max(Vector3i a, Vector3i b)
 	{
-		return new Vec3i(
+		return new Vector3i(
 				Math.max(a.getX(), b.getX()),
 				Math.max(a.getY(), b.getY()),
 				Math.max(a.getZ(), b.getZ())
@@ -179,17 +179,17 @@ public class UnionMultiblock implements IMultiblock
 	public static class TransformedMultiblock
 	{
 		private final IMultiblock multiblock;
-		private final Vec3i offset;
+		private final Vector3i offset;
 		private final Rotation rotation;
 
-		public TransformedMultiblock(IMultiblock multiblock, Vec3i offset, Rotation rotation)
+		public TransformedMultiblock(IMultiblock multiblock, Vector3i offset, Rotation rotation)
 		{
 			this.multiblock = multiblock;
 			this.offset = offset;
 			this.rotation = rotation;
 		}
 
-		public BlockPos toUnionCoords(Vec3i inMultiblockCoords)
+		public BlockPos toUnionCoords(Vector3i inMultiblockCoords)
 		{
 			return Template.transformedBlockPos(new PlacementSettings()
 					.setRotation(rotation), new BlockPos(inMultiblockCoords)).add(offset);

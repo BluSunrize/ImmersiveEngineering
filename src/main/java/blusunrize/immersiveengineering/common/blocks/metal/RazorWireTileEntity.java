@@ -34,11 +34,11 @@ import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Direction.AxisDirection;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -76,7 +76,7 @@ public class RazorWireTileEntity extends ImmersiveConnectableTileEntity implemen
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
 	{
 		return true;
 	}
@@ -92,7 +92,7 @@ public class RazorWireTileEntity extends ImmersiveConnectableTileEntity implemen
 	{
 		if(entity instanceof LivingEntity)
 		{
-			Vec3d motion = entity.getMotion();
+			Vector3d motion = entity.getMotion();
 			entity.setMotion(motion.getX()/5, motion.getY(), motion.getZ()/5);
 			applyDamage((LivingEntity)entity);
 		}
@@ -232,13 +232,13 @@ public class RazorWireTileEntity extends ImmersiveConnectableTileEntity implemen
 	}
 
 	@Override
-	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vec3i offset)
+	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vector3i offset)
 	{
 		return WireType.LV_CATEGORY.equals(cableType.getCategory());//TODO only allow one connection!
 	}
 
 	@Override
-	public Vec3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
+	public Vector3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
 		BlockPos other = con.getOtherEnd(here).getPosition();
 		int xDif = other.getX()-pos.getX();
@@ -249,19 +249,19 @@ public class RazorWireTileEntity extends ImmersiveConnectableTileEntity implemen
 		if(!isOnGround()||!(wallL||wallR))
 		{
 			if(yDif > 0)
-				return new Vec3d(getFacing().getXOffset()!=0?.5: xDif < 0?.40625: .59375, .9375, getFacing().getZOffset()!=0?.5: zDif < 0?.40625: .59375);
+				return new Vector3d(getFacing().getXOffset()!=0?.5: xDif < 0?.40625: .59375, .9375, getFacing().getZOffset()!=0?.5: zDif < 0?.40625: .59375);
 			else
 			{
 				boolean right = getFacing().rotateY().getAxisDirection().getOffset()==Math.copySign(1, getFacing().getXOffset()!=0?zDif: xDif);
 				int faceX = getFacing().getXOffset();
 				int faceZ = getFacing().getZOffset();
-				return new Vec3d(faceX!=0?.5+(right?0: faceX*.1875): (xDif < 0?0: 1), .046875, faceZ!=0?.5+(right?0: faceZ*.1875): (zDif < 0?0: 1));
+				return new Vector3d(faceX!=0?.5+(right?0: faceX*.1875): (xDif < 0?0: 1), .046875, faceZ!=0?.5+(right?0: faceZ*.1875): (zDif < 0?0: 1));
 			}
 		}
 		else
 		{
 			boolean wallN = getFacing()==Direction.NORTH||getFacing()==Direction.EAST?wallL: wallR;
-			return new Vec3d(getFacing().getXOffset()!=0?.5: xDif < 0&&wallN?.125: .875, .9375, getFacing().getZOffset()!=0?.5: zDif < 0&&wallN?.125: .875);
+			return new Vector3d(getFacing().getXOffset()!=0?.5: xDif < 0&&wallN?.125: .875, .9375, getFacing().getZOffset()!=0?.5: zDif < 0&&wallN?.125: .875);
 		}
 	}
 

@@ -25,13 +25,12 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec.IntValue;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Collection;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
@@ -218,7 +217,7 @@ public class IEWireTypes
 		@Override
 		public double getBasicLossRate(Connection c)
 		{
-			double length = Math.sqrt(c.getEndA().getPosition().distanceSq(new Vec3d(c.getEndB().getPosition()), false));
+			double length = Math.sqrt(c.getEndA().getPosition().distanceSq(Vector3d.copy(c.getEndB().getPosition()), false));
 			return getLossRatio()*length/getMaxLength();
 		}
 

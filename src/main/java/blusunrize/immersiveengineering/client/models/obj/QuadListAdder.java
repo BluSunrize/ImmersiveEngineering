@@ -8,11 +8,11 @@
 
 package blusunrize.immersiveengineering.client.models.obj;
 
-import net.minecraft.client.renderer.TransformationMatrix;
 import blusunrize.immersiveengineering.api.utils.QuadTransformer;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.vector.TransformationMatrix;
 import net.minecraftforge.client.model.IModelBuilder;
 
 import javax.annotation.Nonnull;

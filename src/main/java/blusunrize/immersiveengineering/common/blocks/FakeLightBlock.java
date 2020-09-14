@@ -39,7 +39,7 @@ public class FakeLightBlock extends IETileProviderBlock
 {
 	public FakeLightBlock()
 	{
-		super("fake_light", Properties.create(Material.AIR).notSolid(), (b, p) -> null);
+		super("fake_light", Properties.create(Material.AIR).notSolid().setLightLevel(b -> 15), (b, p) -> null);
 	}
 
 	@Override
@@ -70,12 +70,6 @@ public class FakeLightBlock extends IETileProviderBlock
 	public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world)
 	{
 		return new FakeLightTileEntity();
-	}
-
-	@Override
-	public int getLightValue(BlockState state)
-	{
-		return 15;
 	}
 
 	@Override
@@ -146,7 +140,7 @@ public class FakeLightBlock extends IETileProviderBlock
 				synchronized(EventHandler.interdictionTiles)
 				{
 					Set<ISpawnInterdiction> forDim = EventHandler.interdictionTiles.computeIfAbsent(
-							world.getDimension().getType(), x -> new HashSet<>()
+							world.getDimensionKey(), x -> new HashSet<>()
 					);
 					forDim.add(this);
 				}

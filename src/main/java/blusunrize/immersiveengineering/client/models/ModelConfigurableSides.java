@@ -23,7 +23,6 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -33,8 +32,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.ILightReader;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.world.IBlockDisplayReader;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.IModelLoader;
 import net.minecraftforge.client.model.data.IModelData;
@@ -63,7 +63,7 @@ public class ModelConfigurableSides extends BakedIEModel
 			@Override
 			public String nameFromSide(Direction side, IOSideConfig cfg)
 			{
-				return side.getAxis()==Axis.Y?side.getName(): "side";
+				return side.getAxis()==Axis.Y?side.getString(): "side";
 			}
 		});
 		TYPES.put("side_vertical", new ITextureNamer()
@@ -141,7 +141,7 @@ public class ModelConfigurableSides extends BakedIEModel
 
 	@Nonnull
 	@Override
-	public IModelData getModelData(@Nonnull ILightReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData)
+	public IModelData getModelData(@Nonnull IBlockDisplayReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData)
 	{
 		List<IModelData> data = new ArrayList<>();
 		data.add(tileData);
@@ -162,19 +162,19 @@ public class ModelConfigurableSides extends BakedIEModel
 	{
 		List<BakedQuad> quads = Lists.newArrayListWithExpectedSize(6);
 		float[] colour = {1, 1, 1, 1};
-		Vec3d[] vertices = {new Vec3d(0, 0, 0), new Vec3d(0, 0, 1), new Vec3d(1, 0, 1), new Vec3d(1, 0, 0)};
+		Vector3d[] vertices = {new Vector3d(0, 0, 0), new Vector3d(0, 0, 1), new Vector3d(1, 0, 1), new Vector3d(1, 0, 0)};
 		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.BLOCK, vertices, DOWN, sprites.get(DOWN), new double[]{0, 16, 16, 0}, colour, true));
-		vertices = new Vec3d[]{new Vec3d(0, 1, 0), new Vec3d(0, 1, 1), new Vec3d(1, 1, 1), new Vec3d(1, 1, 0)};
+		vertices = new Vector3d[]{new Vector3d(0, 1, 0), new Vector3d(0, 1, 1), new Vector3d(1, 1, 1), new Vector3d(1, 1, 0)};
 		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.BLOCK, vertices, UP, sprites.get(UP), new double[]{0, 0, 16, 16}, colour, false));
 
-		vertices = new Vec3d[]{new Vec3d(1, 0, 0), new Vec3d(1, 1, 0), new Vec3d(0, 1, 0), new Vec3d(0, 0, 0)};
+		vertices = new Vector3d[]{new Vector3d(1, 0, 0), new Vector3d(1, 1, 0), new Vector3d(0, 1, 0), new Vector3d(0, 0, 0)};
 		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.BLOCK, vertices, NORTH, sprites.get(NORTH), new double[]{0, 16, 16, 0}, colour, true));
-		vertices = new Vec3d[]{new Vec3d(1, 0, 1), new Vec3d(1, 1, 1), new Vec3d(0, 1, 1), new Vec3d(0, 0, 1)};
+		vertices = new Vector3d[]{new Vector3d(1, 0, 1), new Vector3d(1, 1, 1), new Vector3d(0, 1, 1), new Vector3d(0, 0, 1)};
 		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.BLOCK, vertices, SOUTH, sprites.get(SOUTH), new double[]{16, 16, 0, 0}, colour, false));
 
-		vertices = new Vec3d[]{new Vec3d(0, 0, 0), new Vec3d(0, 1, 0), new Vec3d(0, 1, 1), new Vec3d(0, 0, 1)};
+		vertices = new Vector3d[]{new Vector3d(0, 0, 0), new Vector3d(0, 1, 0), new Vector3d(0, 1, 1), new Vector3d(0, 0, 1)};
 		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.BLOCK, vertices, WEST, sprites.get(WEST), new double[]{0, 16, 16, 0}, colour, true));
-		vertices = new Vec3d[]{new Vec3d(1, 0, 0), new Vec3d(1, 1, 0), new Vec3d(1, 1, 1), new Vec3d(1, 0, 1)};
+		vertices = new Vector3d[]{new Vector3d(1, 0, 0), new Vector3d(1, 1, 0), new Vector3d(1, 1, 1), new Vector3d(1, 0, 1)};
 		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.BLOCK, vertices, EAST, sprites.get(EAST), new double[]{16, 16, 0, 0}, colour, false));
 		return quads;
 	}
@@ -253,14 +253,14 @@ public class ModelConfigurableSides extends BakedIEModel
 		{
 			final String name = modelContents.get("base_name").getAsString();
 			final String type = modelContents.get("type").getAsString();
-			ImmutableMap.Builder<String, Material> builder = ImmutableMap.builder();
+			ImmutableMap.Builder<String, RenderMaterial> builder = ImmutableMap.builder();
 			ITextureNamer namer = TYPES.get(type);
 			for(Direction f : Direction.VALUES)
 				for(IOSideConfig cfg : IOSideConfig.values())
 				{
-					String key = f.getName()+"_"+cfg.getTextureName();
+					String key = f.getString()+"_"+cfg.getTextureName();
 					String tex = name+"_"+namer.getTextureName(f, cfg);
-					builder.put(key, new Material(PlayerContainer.LOCATION_BLOCKS_TEXTURE, new ResourceLocation(tex)));
+					builder.put(key, new RenderMaterial(PlayerContainer.LOCATION_BLOCKS_TEXTURE, new ResourceLocation(tex)));
 				}
 			return new ConfigSidesModelBase(name, type, builder.build());
 		}
@@ -270,9 +270,9 @@ public class ModelConfigurableSides extends BakedIEModel
 	{
 		final String name;
 		final String type;
-		Map<String, Material> textures;
+		Map<String, RenderMaterial> textures;
 
-		public ConfigSidesModelBase(String name, String type, Map<String, Material> textures)
+		public ConfigSidesModelBase(String name, String type, Map<String, RenderMaterial> textures)
 		{
 			this.name = name;
 			this.type = type;
@@ -280,7 +280,7 @@ public class ModelConfigurableSides extends BakedIEModel
 		}
 
 		@Override
-		public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation)
+		public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<RenderMaterial, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation)
 		{
 			Map<Direction, Map<IOSideConfig, TextureAtlasSprite>> tex = new EnumMap<>(Direction.class);
 			for(Direction f : Direction.VALUES)
@@ -288,7 +288,7 @@ public class ModelConfigurableSides extends BakedIEModel
 				Map<IOSideConfig, TextureAtlasSprite> forSide = new EnumMap<>(IOSideConfig.class);
 				for(IOSideConfig cfg : IOSideConfig.values())
 				{
-					Material rl = textures.get(f.getName()+"_"+cfg.getTextureName());
+					RenderMaterial rl = textures.get(f.getString()+"_"+cfg.getTextureName());
 					if(rl!=null)
 						forSide.put(cfg, spriteGetter.apply(rl));
 				}
@@ -298,7 +298,7 @@ public class ModelConfigurableSides extends BakedIEModel
 		}
 
 		@Override
-		public Collection<Material> getTextures(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors)
+		public Collection<RenderMaterial> getTextures(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors)
 		{
 			return textures.values();
 		}
@@ -321,7 +321,7 @@ public class ModelConfigurableSides extends BakedIEModel
 
 		default String nameFromSide(Direction side, IOSideConfig cfg)
 		{
-			return side.getName();
+			return side.getString();
 		}
 
 		default String nameFromCfg(Direction side, IOSideConfig cfg)

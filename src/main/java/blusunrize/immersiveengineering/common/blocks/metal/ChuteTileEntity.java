@@ -8,12 +8,12 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorTile;
+import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedVoxelShapes;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
@@ -21,8 +21,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.Matrix4f;
-import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
@@ -36,10 +34,12 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.util.math.vector.TransformationMatrix;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
@@ -80,7 +80,7 @@ public class ChuteTileEntity extends IEBaseTileEntity implements IStateBasedDire
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
 	{
 		return !entity.isSneaking();
 	}
@@ -128,11 +128,11 @@ public class ChuteTileEntity extends IEBaseTileEntity implements IStateBasedDire
 			if(entity.getWidth() > 0.75||entity.getHeight() > 0.75)
 			{
 				// We're not going to redirect into a colliding block
-				if(world.getBlockState(target).causesSuffocation(world, target))
+				if(world.getBlockState(target).isSuffocating(world, target))
 					return;
 				if(!glitched)
 				{
-					Vec3d oldPos = entity.getPositionVec();
+					Vector3d oldPos = entity.getPositionVec();
 					double py = entity.getHeight() > 1?getPos().getY()+.125: entity.getPosY();
 					entity.setPosition(target.getX()+.5, py, target.getZ()+.5);
 					if(entity.isEntityInsideOpaqueBlock())
@@ -174,7 +174,7 @@ public class ChuteTileEntity extends IEBaseTileEntity implements IStateBasedDire
 				inventoryTile = world.getTileEntity(invPos);
 				if(!world.isRemote&&inventoryTile!=null&&!(inventoryTile instanceof IConveyorTile))
 				{
-					LazyOptional<IItemHandler> cap = ApiUtils.findItemHandlerAtPos(world, invPos, getFacing().getOpposite(), true);
+					LazyOptional<IItemHandler> cap = CapabilityUtils.findItemHandlerAtPos(world, invPos, getFacing().getOpposite(), true);
 					cap.ifPresent(itemHandler -> {
 						ItemStack stack = itemEntity.getItem();
 						ItemStack temp = ItemHandlerHelper.insertItem(itemHandler, stack.copy(), true);
@@ -357,7 +357,7 @@ public class ChuteTileEntity extends IEBaseTileEntity implements IStateBasedDire
 	}
 
 	@Override
-	public boolean hammerUseSide(Direction side, PlayerEntity player, Hand hand, Vec3d hitVec)
+	public boolean hammerUseSide(Direction side, PlayerEntity player, Hand hand, Vector3d hitVec)
 	{
 		if(player.isSneaking())
 		{

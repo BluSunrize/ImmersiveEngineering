@@ -23,6 +23,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.LootContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.state.EnumProperty;
@@ -31,12 +32,11 @@ import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.storage.loot.LootContext;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.items.CapabilityItemHandler;
 
@@ -59,7 +59,7 @@ public class ToolboxTileEntity extends IEBaseTileEntity implements IStateBasedDi
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		if(nbt.contains("name", NBT.TAG_STRING))
-			this.name = ITextComponent.Serializer.fromJson(nbt.getString("name"));
+			this.name = ITextComponent.Serializer.func_240643_a_(nbt.getString("name"));
 		if(nbt.contains("enchantments", NBT.TAG_LIST))
 			this.enchantments = nbt.getList("enchantments", NBT.TAG_COMPOUND);
 		if(!descPacket)
@@ -85,7 +85,7 @@ public class ToolboxTileEntity extends IEBaseTileEntity implements IStateBasedDi
 			if(!world.isRemote)
 			{
 				ItemEntity entityitem = new ItemEntity(world, getPos().getX()+.5, getPos().getY()+.5,
-						getPos().getZ()+.5, getPickBlock(player, getBlockState(), new BlockRayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos, false)));
+						getPos().getZ()+.5, getPickBlock(player, getBlockState(), new BlockRayTraceResult(new Vector3d(hitX, hitY, hitZ), side, pos, false)));
 				entityitem.setDefaultPickupDelay();
 				world.removeBlock(getPos(), false);
 				world.addEntity(entityitem);
@@ -188,7 +188,7 @@ public class ToolboxTileEntity extends IEBaseTileEntity implements IStateBasedDi
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, Vec3d hit, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
 	{
 		return false;
 	}

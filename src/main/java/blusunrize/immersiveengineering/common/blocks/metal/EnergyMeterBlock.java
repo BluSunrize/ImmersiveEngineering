@@ -15,7 +15,7 @@ import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectorBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.Property;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Mirror;
@@ -25,8 +25,8 @@ import net.minecraft.world.IWorld;
 
 public class EnergyMeterBlock extends MiscConnectorBlock<EnergyMeterTileEntity>
 {
-	public static final IProperty<Direction> FACING = IEProperties.FACING_HORIZONTAL;
-	public static final IProperty<Boolean> DUMMY = IEProperties.MULTIBLOCKSLAVE;
+	public static final Property<Direction> FACING = IEProperties.FACING_HORIZONTAL;
+	public static final Property<Boolean> DUMMY = IEProperties.MULTIBLOCKSLAVE;
 
 	public EnergyMeterBlock()
 	{

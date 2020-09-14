@@ -8,22 +8,31 @@
 
 package blusunrize.immersiveengineering.common.util.loot;
 
-import net.minecraft.world.storage.loot.LootEntryManager;
-import net.minecraft.world.storage.loot.functions.LootFunctionManager;
+import net.minecraft.loot.LootEntryManager;
+import net.minecraft.loot.LootFunctionType;
+import net.minecraft.loot.LootPoolEntryType;
+import net.minecraft.loot.functions.LootFunctionManager;
 
 /**
  * @author BluSunrize - 16.08.2018
  */
 public class IELootFunctions
 {
+	public static LootFunctionType bluprintz;
+	public static LootFunctionType windmill;
+
+	public static LootPoolEntryType dropInventory;
+	public static LootPoolEntryType tileDrop;
+	public static LootPoolEntryType multiblockOrigBlock;
+
 	public static void preInit()
 	{
-		LootFunctionManager.registerFunction(new BluprintzLootFunction.Serializer());
-		LootFunctionManager.registerFunction(new WindmillLootFunction.Serializer());
+		bluprintz = LootFunctionManager.func_237451_a_(BluprintzLootFunction.ID.toString(), new BluprintzLootFunction.Serializer());
+		windmill = LootFunctionManager.func_237451_a_(WindmillLootFunction.ID.toString(), new WindmillLootFunction.Serializer());
 
-		LootEntryManager.func_216194_a(new DropInventoryLootEntry.Serializer());
-		LootEntryManager.func_216194_a(new TileDropLootEntry.Serializer());
-		LootEntryManager.func_216194_a(new MBOriginalBlockLootEntry.Serializer());
+		dropInventory = LootEntryManager.register(DropInventoryLootEntry.ID.toString(), new DropInventoryLootEntry.Serializer());
+		tileDrop = LootEntryManager.register(TileDropLootEntry.ID.toString(), new TileDropLootEntry.Serializer());
+		multiblockOrigBlock = LootEntryManager.register(MBOriginalBlockLootEntry.ID.toString(), new MBOriginalBlockLootEntry.Serializer());
 	}
 
 }

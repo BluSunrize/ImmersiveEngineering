@@ -15,7 +15,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.IItemProvider;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;
@@ -40,7 +40,7 @@ public class CrusherRecipeBuilder extends IEFinishedRecipe<CrusherRecipeBuilder>
 		return new CrusherRecipeBuilder().addResult(result);
 	}
 
-	public static CrusherRecipeBuilder builder(Tag<Item> result, int count)
+	public static CrusherRecipeBuilder builder(ITag<Item> result, int count)
 	{
 		return new CrusherRecipeBuilder().addResult(new IngredientWithSize(result, count));
 	}
@@ -64,7 +64,7 @@ public class CrusherRecipeBuilder extends IEFinishedRecipe<CrusherRecipeBuilder>
 		return this;
 	}
 
-	public CrusherRecipeBuilder addSecondary(Tag<Item> tag, float chance)
+	public CrusherRecipeBuilder addSecondary(ITag<Item> tag, float chance)
 	{
 		return addSecondary(new IngredientWithSize(tag), chance);
 	}
