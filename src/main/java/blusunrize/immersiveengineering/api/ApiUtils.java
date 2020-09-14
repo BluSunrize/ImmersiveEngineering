@@ -14,21 +14,14 @@ import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.api.wires.Connection.CatenaryData;
 import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
 import blusunrize.immersiveengineering.api.wires.utils.WirecoilUtils;
-import blusunrize.immersiveengineering.common.EventHandler;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.client.renderer.vertex.VertexFormatElement;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
@@ -62,11 +55,14 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import static blusunrize.immersiveengineering.api.IETags.getIngot;
 
 public class ApiUtils
 {
+	public static final SetRestrictedField<Consumer<TileEntity>> disableTicking = new SetRestrictedField<>();
+
 	@Deprecated
 	public static boolean compareToOreName(ItemStack stack, ResourceLocation oreName)
 	{
@@ -405,11 +401,10 @@ public class ApiUtils
 		return sortedMap;
 	}
 
-	//TODO move to EventHandler(?), since IGeneeralMultiblock isn't API
-	public static <T extends TileEntity & IGeneralMultiblock> void checkForNeedlessTicking(T te)
+	public static <T extends TileEntity> void checkForNeedlessTicking(T te, Predicate<T> shouldDisable)
 	{
-		if(!te.getWorld().isRemote&&te.isDummy())
-			EventHandler.REMOVE_FROM_TICKING.add(te);
+		if(!te.getWorld().isRemote&&shouldDisable.test(te))
+			disableTicking.getValue().accept(te);
 	}
 
 	@Deprecated

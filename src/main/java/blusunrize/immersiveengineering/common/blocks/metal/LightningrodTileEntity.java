@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.common.IEConfig;
@@ -56,7 +55,7 @@ public class LightningrodTileEntity extends MultiblockPartTileEntity<Lightningro
 	@Override
 	public void tick()
 	{
-		ApiUtils.checkForNeedlessTicking(this);
+		checkForNeedlessTicking();
 		if(!world.isRemote&&formed&&new BlockPos(1, 1, 1).equals(posInMultiblock))
 		{
 			if(energyStorage.getEnergyStored() > 0)

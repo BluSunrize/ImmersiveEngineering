@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.energy.IRotationAcceptor;
@@ -56,7 +55,7 @@ public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTi
 	@Override
 	public void tick()
 	{
-		ApiUtils.checkForNeedlessTicking(this);
+		checkForNeedlessTicking();
 		if(offset[0]!=0||offset[1]!=0||world==null)
 			return;
 		if(isBlocked())

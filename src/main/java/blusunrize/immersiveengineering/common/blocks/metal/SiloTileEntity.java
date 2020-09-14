@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
 import blusunrize.immersiveengineering.common.IETileTypes;
@@ -70,7 +69,7 @@ public class SiloTileEntity extends MultiblockPartTileEntity<SiloTileEntity> imp
 	@Override
 	public void tick()
 	{
-		ApiUtils.checkForNeedlessTicking(this);
+		checkForNeedlessTicking();
 
 		if(!isDummy()&&!world.isRemote&&!this.identStack.isEmpty()&&storageAmount > 0&&world.getGameTime()%8==0&&!isRSDisabled())
 		{

@@ -106,6 +106,7 @@ public class ImmersiveEngineering
 
 	public void setup(FMLCommonSetupEvent event)
 	{
+		ApiUtils.disableTicking.setValue(EventHandler.REMOVE_FROM_TICKING::add);
 		proxy.preInit();
 
 		IEAdvancements.preInit();

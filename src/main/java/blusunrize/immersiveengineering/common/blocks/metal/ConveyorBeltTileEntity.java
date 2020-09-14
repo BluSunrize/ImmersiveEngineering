@@ -45,7 +45,7 @@ import javax.annotation.Nullable;
 
 public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IStateBasedDirectional, ICollisionBounds,
 		ISelectionBounds, IHammerInteraction, IPlayerInteraction, IConveyorTile, IPropertyPassthrough,
-		ITickableTileEntity, IGeneralMultiblock
+		ITickableTileEntity
 {
 	private final IConveyorBelt conveyorBeltSubtype;
 
@@ -130,22 +130,9 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IStateBa
 	}
 
 	@Override
-	public boolean isDummy()
-	{
-		return this.conveyorBeltSubtype!=null&&!this.conveyorBeltSubtype.isTicking();
-	}
-
-	@Nullable
-	@Override
-	public IGeneralMultiblock master()
-	{
-		return this;
-	}
-
-	@Override
 	public void tick()
 	{
-		ApiUtils.checkForNeedlessTicking(this);
+		ApiUtils.checkForNeedlessTicking(this, te -> te.conveyorBeltSubtype!=null&&!te.conveyorBeltSubtype.isTicking());
 		if(this.conveyorBeltSubtype!=null)
 			this.conveyorBeltSubtype.onUpdate();
 	}

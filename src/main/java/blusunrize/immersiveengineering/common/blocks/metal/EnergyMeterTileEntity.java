@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.TargetingInfo;
@@ -90,7 +89,7 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 	@Override
 	public void tick()
 	{
-		ApiUtils.checkForNeedlessTicking(this);
+		checkForNeedlessTicking();
 		if(isDummy()||world.isRemote)
 			return;
 		if(((world.getGameTime()&31)==(pos.toLong()&31)||compVal < 0))
