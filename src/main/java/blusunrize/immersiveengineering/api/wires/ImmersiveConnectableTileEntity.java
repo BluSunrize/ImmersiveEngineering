@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.api.wires;
 
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties.ConnectionModelData;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.TargetingInfo;
@@ -162,14 +163,15 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 	public void onLoad()
 	{
 		super.onLoad();
-		globalNet.onConnectorLoad(this, world);
+		//Delay to allow world access in getInternalConnections etc
+		ApiUtils.addFutureServerTask(world, () -> globalNet.onConnectorLoad(this, world), true);
 	}
 
 	@Override
 	public void remove()
 	{
 		super.remove();
-		globalNet.removeConnector(pos);
+		globalNet.removeConnector(this);
 	}
 	@Override
 	public Collection<ConnectionPoint> getConnectionPoints()
