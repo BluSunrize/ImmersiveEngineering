@@ -31,7 +31,6 @@ import blusunrize.immersiveengineering.api.wires.localhandlers.LocalNetworkHandl
 import blusunrize.immersiveengineering.api.wires.localhandlers.WireDamageHandler;
 import blusunrize.immersiveengineering.api.wires.redstone.RedstoneNetworkHandler;
 import blusunrize.immersiveengineering.client.utils.ClocheRenderFunctions;
-import blusunrize.immersiveengineering.common.IEConfig.Ores.OreConfig;
 import blusunrize.immersiveengineering.common.blocks.*;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
 import blusunrize.immersiveengineering.common.blocks.cloth.*;
@@ -747,12 +746,12 @@ public class IEContent
 		/*WORLDGEN*/
 		DeferredWorkQueue.runLater(
 				() -> {
-					addConfiguredWorldgen(Metals.ores.get(EnumMetals.COPPER), "copper", IEConfig.ORES.ore_copper);
-					addConfiguredWorldgen(Metals.ores.get(EnumMetals.ALUMINUM), "bauxite", IEConfig.ORES.ore_bauxite);
-					addConfiguredWorldgen(Metals.ores.get(EnumMetals.LEAD), "lead", IEConfig.ORES.ore_lead);
-					addConfiguredWorldgen(Metals.ores.get(EnumMetals.SILVER), "silver", IEConfig.ORES.ore_silver);
-					addConfiguredWorldgen(Metals.ores.get(EnumMetals.NICKEL), "nickel", IEConfig.ORES.ore_nickel);
-					addConfiguredWorldgen(Metals.ores.get(EnumMetals.URANIUM), "uranium", IEConfig.ORES.ore_uranium);
+					IEWorldGen.addOreGen(Metals.ores.get(EnumMetals.COPPER), "copper", IEConfig.ORES.ore_copper);
+					IEWorldGen.addOreGen(Metals.ores.get(EnumMetals.ALUMINUM), "bauxite", IEConfig.ORES.ore_bauxite);
+					IEWorldGen.addOreGen(Metals.ores.get(EnumMetals.LEAD), "lead", IEConfig.ORES.ore_lead);
+					IEWorldGen.addOreGen(Metals.ores.get(EnumMetals.SILVER), "silver", IEConfig.ORES.ore_silver);
+					IEWorldGen.addOreGen(Metals.ores.get(EnumMetals.NICKEL), "nickel", IEConfig.ORES.ore_nickel);
+					IEWorldGen.addOreGen(Metals.ores.get(EnumMetals.URANIUM), "uranium", IEConfig.ORES.ore_uranium);
 					IEWorldGen.registerMineralVeinGen();
 				}
 		);
@@ -850,15 +849,6 @@ public class IEContent
 	public static void postInit()
 	{
 		Villages.init();
-	}
-
-	public static void addConfiguredWorldgen(Block state, String name, OreConfig config)
-	{
-		if(config!=null&&config.veinSize.get() > 0)
-			IEWorldGen.addOreGen(name, state.getDefaultState(), config.veinSize.get(),
-					config.minY.get(),
-					config.maxY.get(),
-					config.veinsPerChunk.get());
 	}
 
 	public static Item addBanner(String name, String id)
