@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonDyeColor;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonState;
-import blusunrize.immersiveengineering.client.utils.FakeGuiUtils;
 import blusunrize.immersiveengineering.common.blocks.wooden.ItemBatcherTileEntity;
 import blusunrize.immersiveengineering.common.blocks.wooden.ItemBatcherTileEntity.BatchMode;
 import blusunrize.immersiveengineering.common.gui.ItemBatcherContainer;
@@ -27,6 +26,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import java.util.ArrayList;
 
@@ -124,7 +124,7 @@ public class ItemBatcherScreen extends IEContainerScreen<ItemBatcherContainer>
 			}
 
 		if(!tooltip.isEmpty())
-			FakeGuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
+			GuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
 	}
 
 	@Override

@@ -9,12 +9,12 @@
 package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.utils.FakeGuiUtils;
 import blusunrize.immersiveengineering.common.blocks.stone.CokeOvenTileEntity;
 import blusunrize.immersiveengineering.common.gui.CokeOvenContainer;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +36,7 @@ public class CokeOvenScreen extends IEContainerScreen<CokeOvenContainer>
 		List<ITextComponent> tooltip = new ArrayList<>();
 		ClientUtils.handleGuiTank(transform, tile.tank, guiLeft+129, guiTop+20, 16, 47, 176, 31, 20, 51, mx, my, "immersiveengineering:textures/gui/coke_oven.png", tooltip);
 		if(!tooltip.isEmpty())
-			FakeGuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
+			GuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
 	}
 
 	@Override

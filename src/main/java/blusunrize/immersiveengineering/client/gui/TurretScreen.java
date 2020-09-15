@@ -14,7 +14,6 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonCheckbox;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE;
 import blusunrize.immersiveengineering.client.gui.elements.GuiReactiveList;
-import blusunrize.immersiveengineering.client.utils.FakeGuiUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.TurretTileEntity;
 import blusunrize.immersiveengineering.common.gui.TurretContainer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
@@ -26,6 +25,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -149,7 +149,7 @@ public abstract class TurretScreen extends IEContainerScreen<TurretContainer>
 
 		renderCustom(transform, tooltip, mx, my);
 		if(!tooltip.isEmpty())
-			FakeGuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
+			GuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
 	}
 
 	@Override

@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonBoolean;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE;
-import blusunrize.immersiveengineering.client.utils.FakeGuiUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.AssemblerTileEntity;
 import blusunrize.immersiveengineering.common.gui.AssemblerContainer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
@@ -29,6 +28,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -102,7 +102,7 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerContainer>
 			tooltip.add(new TranslationTextComponent(Lib.GUI_CONFIG+"assembler."+(tile.recursiveIngredients?"recursiveIngredients": "nonRecursiveIngredients")));
 
 		if(!tooltip.isEmpty())
-			FakeGuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
+			GuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
 	}
 
 	@Override

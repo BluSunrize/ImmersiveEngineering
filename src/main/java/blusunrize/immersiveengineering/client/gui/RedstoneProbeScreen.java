@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonBoolean;
-import blusunrize.immersiveengineering.client.utils.FakeGuiUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.ConnectorProbeTileEntity;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -21,6 +20,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import java.util.ArrayList;
 
@@ -96,6 +96,6 @@ public class RedstoneProbeScreen extends ClientTileScreen<ConnectorProbeTileEnti
 			}
 
 		if(!tooltip.isEmpty())
-			FakeGuiUtils.drawHoveringText(transform, tooltip, mouseX, mouseY, width, height, -1, font);
+			GuiUtils.drawHoveringText(transform, tooltip, mouseX, mouseY, width, height, -1, font);
 	}
 }

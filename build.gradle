@@ -139,7 +139,7 @@ repositories {
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:${version_minecraft}-34.0.2"
+    minecraft "net.minecraftforge:forge:${version_minecraft}-34.0.4"
     //runtimeOnly fg.deobf("mezz.jei:jei-1.16.2:7.1.0.11")
     //runtimeOnly fg.deobf("nbtedit:NBTEdit:0.9.0")
     compileOnly fg.deobf("mezz.jei:jei-1.16.2:7.1.0.11:api")

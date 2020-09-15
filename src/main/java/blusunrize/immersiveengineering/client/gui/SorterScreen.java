@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.client.gui;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.utils.FakeGuiUtils;
 import blusunrize.immersiveengineering.common.blocks.wooden.SorterTileEntity;
 import blusunrize.immersiveengineering.common.gui.SorterContainer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
@@ -26,6 +25,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +63,7 @@ public class SorterScreen extends IEContainerScreen<SorterContainer>
 								new StringTextComponent(split[i]),
 								i==0?TextFormatting.WHITE: TextFormatting.GRAY
 						));
-					FakeGuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
+					GuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
 				}
 		}
 	}

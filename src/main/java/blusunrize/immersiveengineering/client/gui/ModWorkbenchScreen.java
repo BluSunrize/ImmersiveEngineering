@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.utils.FakeGuiUtils;
 import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchTileEntity;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.gui.ModWorkbenchContainer;
@@ -29,6 +28,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 import net.minecraftforge.items.ItemHandlerHelper;
 import org.lwjgl.opengl.GL11;
 
@@ -95,7 +95,7 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 									TextFormatting.GRAY
 							));
 
-						FakeGuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
+						GuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
 						RenderHelper.enableStandardItemLighting();
 					}
 			}
