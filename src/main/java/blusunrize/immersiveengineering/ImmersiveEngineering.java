@@ -47,7 +47,6 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.resources.DataPackRegistries;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
@@ -111,7 +110,7 @@ public class ImmersiveEngineering
 
 		IEWorldGen ieWorldGen = new IEWorldGen();
 		MinecraftForge.EVENT_BUS.register(ieWorldGen);
-		FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(Feature.class, ieWorldGen::registerFeatures);
+		IEWorldGen.init();
 	}
 
 	public void setup(FMLCommonSetupEvent event)
