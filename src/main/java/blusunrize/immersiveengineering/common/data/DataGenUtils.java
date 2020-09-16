@@ -26,7 +26,9 @@ import org.apache.commons.io.IOUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -95,26 +97,25 @@ public class DataGenUtils
 
 	public static INamedTag<Item> createItemWrapper(ResourceLocation name)
 	{
-		Optional<? extends INamedTag<Item>> existing = ItemTags.func_242177_b()
-				.stream()
-				.filter(tag -> tag.getName().equals(name))
-				.findAny();
-		if(existing.isPresent())
-			return existing.get();
-		else
-			return ItemTags.makeWrapperTag(name.toString());
+		return createWrapperTag(ItemTags.func_242177_b(), name, ItemTags::makeWrapperTag);
 	}
 
-	public static INamedTag<Block> createBlockWrapper(ResourceLocation name) {
-		//TODO deduplicate, maybe speed up?
-		Optional<? extends INamedTag<Block>> existing = BlockTags.func_242174_b()
+	public static INamedTag<Block> createBlockWrapper(ResourceLocation name)
+	{
+		return createWrapperTag(BlockTags.func_242174_b(), name, BlockTags::makeWrapperTag);
+	}
+
+	private static <T> INamedTag<T> createWrapperTag(List<? extends INamedTag<T>> allExisting, ResourceLocation name,
+													 Function<String, INamedTag<T>> createNew)
+	{
+		Optional<? extends INamedTag<T>> existing = allExisting
 				.stream()
 				.filter(tag -> tag.getName().equals(name))
 				.findAny();
 		if(existing.isPresent())
 			return existing.get();
 		else
-			return BlockTags.makeWrapperTag(name.toString());
+			return createNew.apply(name.toString());
 	}
 
 	public static INamedTag<Fluid> createFluidWrapper(ResourceLocation name)
