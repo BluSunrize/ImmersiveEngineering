@@ -14,14 +14,15 @@ import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler;
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler.EnergyConnector;
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Connectors;
 import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectorBlock;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
+import blusunrize.immersiveengineering.common.wires.IEWireTypes.IEWireType;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableList;
@@ -265,24 +266,24 @@ public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity im
 		return 0;
 	}
 
-	private int getVoltageIndex()
+	private IEWireType getWireType()
 	{
 		if(LV_CATEGORY.equals(voltage))
-			return 0;
+			return IEWireType.COPPER;
 		else if(WireType.MV_CATEGORY.equals(voltage))
-			return 1;
+			return IEWireType.ELECTRUM;
 		else
-			return 2;
+			return IEWireType.STEEL;
 	}
 
 	public int getMaxInput()
 	{
-		return IEConfig.CACHED.connectorInputRates[getVoltageIndex()];
+		return IEServerConfig.WIRES.energyWireConfigs.get(getWireType()).connectorRate;
 	}
 
 	public int getMaxOutput()
 	{
-		return IEConfig.CACHED.connectorInputRates[getVoltageIndex()];
+		return IEServerConfig.WIRES.energyWireConfigs.get(getWireType()).connectorRate;
 	}
 
 	private static final Object2FloatMap<Pair<String, Boolean>> LENGTH = new Object2FloatAVLTreeMap<>();

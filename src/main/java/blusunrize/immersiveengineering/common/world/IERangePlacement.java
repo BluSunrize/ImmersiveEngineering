@@ -9,8 +9,8 @@
 
 package blusunrize.immersiveengineering.common.world;
 
-import blusunrize.immersiveengineering.common.IEConfig;
-import blusunrize.immersiveengineering.common.IEConfig.Ores.OreConfig;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.config.IEServerConfig.Ores.OreConfig;
 import blusunrize.immersiveengineering.common.world.IERangePlacement.IETopSolidRangeConfig;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -64,12 +64,12 @@ public class IERangePlacement extends SimplePlacement<IETopSolidRangeConfig>
 
 		public int getMin()
 		{
-			return IEConfig.getRawConfig().getInt(min);
+			return IEServerConfig.getRawConfig().getInt(min);
 		}
 
 		public int getMax()
 		{
-			return IEConfig.getRawConfig().getInt(max);
+			return IEServerConfig.getRawConfig().getInt(max);
 		}
 	}
 }

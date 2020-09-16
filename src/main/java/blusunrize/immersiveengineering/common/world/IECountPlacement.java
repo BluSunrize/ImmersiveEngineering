@@ -9,8 +9,8 @@
 
 package blusunrize.immersiveengineering.common.world;
 
-import blusunrize.immersiveengineering.common.IEConfig;
-import blusunrize.immersiveengineering.common.IEConfig.Ores;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.config.IEServerConfig.Ores;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.math.BlockPos;
@@ -59,7 +59,7 @@ public class IECountPlacement extends SimplePlacement<IECountPlacement.IEFeature
 
 		public FeatureSpread getSpreadFeature()
 		{
-			return FeatureSpread.func_242252_a(IEConfig.getRawConfig().getInt(count));
+			return FeatureSpread.func_242252_a(IEServerConfig.getRawConfig().getInt(count));
 		}
 	}
 }

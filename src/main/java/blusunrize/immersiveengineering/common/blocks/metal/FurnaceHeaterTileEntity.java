@@ -13,11 +13,11 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler;
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler.IExternalHeatable;
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IActiveState;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -36,7 +36,7 @@ public class FurnaceHeaterTileEntity extends IEBaseTileEntity implements ITickab
 		IStateBasedDirectional
 {
 	public FluxStorage energyStorage = new FluxStorage(32000, Math.max(256,
-			Math.max(IEConfig.MACHINES.heater_consumption.get(), IEConfig.MACHINES.heater_speedupConsumption.get())));
+			Math.max(IEServerConfig.MACHINES.heater_consumption.get(), IEServerConfig.MACHINES.heater_speedupConsumption.get())));
 
 	public FurnaceHeaterTileEntity()
 	{

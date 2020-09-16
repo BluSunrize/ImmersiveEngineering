@@ -11,8 +11,8 @@ package blusunrize.immersiveengineering.common.crafting.serializers;
 import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
@@ -36,7 +36,7 @@ public class BottlingMachineRecipeSerializer extends IERecipeSerializer<Bottling
 		ItemStack output = readOutput(json.get("result"));
 		Ingredient input = Ingredient.deserialize(JSONUtils.getJsonObject(json, "input"));
 		FluidTagInput fluidInput = FluidTagInput.deserialize(JSONUtils.getJsonObject(json, "fluid"));
-		return IEConfig.MACHINES.bottlingMachineConfig.apply(
+		return IEServerConfig.MACHINES.bottlingMachineConfig.apply(
 				new BottlingMachineRecipe(recipeId, output, input, fluidInput)
 		);
 	}

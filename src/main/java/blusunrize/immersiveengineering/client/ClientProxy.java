@@ -36,13 +36,14 @@ import blusunrize.immersiveengineering.client.render.entity.*;
 import blusunrize.immersiveengineering.client.render.tile.*;
 import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
 import blusunrize.immersiveengineering.common.CommonProxy;
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IColouredBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTile;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
+import blusunrize.immersiveengineering.common.config.IEClientConfig;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.crafting.RecipeReloadListener;
 import blusunrize.immersiveengineering.common.entities.*;
 import blusunrize.immersiveengineering.common.gui.GuiHandler;
@@ -157,8 +158,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void preInit()
 	{
-		//TODO auto-detect old cards that don't support this?
-		if(IEConfig.GENERAL.stencilBufferEnabled.get())
+		if(IEClientConfig.stencilBufferEnabled.get())
 			DeferredWorkQueue.runLater(() -> {
 				Minecraft.getInstance().getFramebuffer().enableStencil();
 				stencilEnabled = true;
@@ -447,7 +447,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void spawnBucketWheelFX(BucketWheelTileEntity tile, ItemStack stack)
 	{
-		if(stack!=null&&IEConfig.MACHINES.excavator_particles.get())
+		if(stack!=null&&IEServerConfig.MACHINES.excavator_particles.get())
 		{
 			Direction facing = tile.getFacing();
 			for(int i = 0; i < 16; i++)

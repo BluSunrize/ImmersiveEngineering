@@ -9,9 +9,9 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.tool.ToolboxHandler;
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
@@ -33,9 +33,9 @@ public class ToolboxItem extends InternalStorageItem
 	public ToolboxItem()
 	{
 		super("toolbox", new Properties().maxStackSize(1));
-		ToolboxHandler.addToolType(stack -> IEConfig.TOOLS.toolbox_tools.get().contains(stack.getItem().getRegistryName().toString()));
-		ToolboxHandler.addFoodType(stack -> IEConfig.TOOLS.toolbox_foods.get().contains(stack.getItem().getRegistryName().toString()));
-		ToolboxHandler.addWiringType((stack, world) -> IEConfig.TOOLS.toolbox_wiring.get().contains(stack.getItem().getRegistryName().toString()));
+		ToolboxHandler.addToolType(stack -> IEServerConfig.TOOLS.toolbox_tools.get().contains(stack.getItem().getRegistryName().toString()));
+		ToolboxHandler.addFoodType(stack -> IEServerConfig.TOOLS.toolbox_foods.get().contains(stack.getItem().getRegistryName().toString()));
+		ToolboxHandler.addWiringType((stack, world) -> IEServerConfig.TOOLS.toolbox_wiring.get().contains(stack.getItem().getRegistryName().toString()));
 	}
 
 	@Nonnull

@@ -12,13 +12,13 @@ import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.client.utils.TextUtils;
-import blusunrize.immersiveengineering.common.IEConfig;
-import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop;
+import blusunrize.immersiveengineering.common.config.IEClientConfig;
+import blusunrize.immersiveengineering.common.config.IEServerConfig.Machines.CapacitorConfig;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
@@ -31,7 +31,6 @@ import net.minecraft.loot.LootContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -43,18 +42,20 @@ import javax.annotation.Nullable;
 import java.util.EnumMap;
 import java.util.List;
 
-public class CapacitorLVTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInternalFluxHandler, IBlockOverlayText,
+public class CapacitorTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInternalFluxHandler, IBlockOverlayText,
 		IConfigurableSides, IComparatorOverride, ITileDrop
 {
 	public EnumMap<Direction, IOSideConfig> sideConfig = new EnumMap<>(Direction.class);
+	private final CapacitorConfig configValues;
 
-	FluxStorage energyStorage = new FluxStorage(getMaxStorage(), getMaxInput(), getMaxOutput());
+	FluxStorage energyStorage;
 
 	public int comparatorOutput = 0;
 
-	public CapacitorLVTileEntity(TileEntityType<? extends CapacitorLVTileEntity> type)
+	public CapacitorTileEntity(CapacitorConfig configValues)
 	{
-		super(type);
+		super(configValues.tileType.get());
+		this.configValues = configValues;
 		for(Direction f : Direction.VALUES)
 		{
 			if(f==Direction.UP)
@@ -62,11 +63,7 @@ public class CapacitorLVTileEntity extends IEBaseTileEntity implements ITickable
 			else
 				sideConfig.put(f, IOSideConfig.NONE);
 		}
-	}
-
-	public CapacitorLVTileEntity()
-	{
-		this(IETileTypes.CAPACITOR_LV.get());
+		energyStorage = new FluxStorage(getMaxStorage(), getMaxInput(), getMaxOutput());
 	}
 
 	@Override
@@ -131,19 +128,19 @@ public class CapacitorLVTileEntity extends IEBaseTileEntity implements ITickable
 		return false;
 	}
 
-	public int getMaxStorage()
+	public final int getMaxStorage()
 	{
-		return IEConfig.MACHINES.capacitorLvStorage.get();
+		return configValues.storage.getAsInt();
 	}
 
-	public int getMaxInput()
+	public final int getMaxInput()
 	{
-		return IEConfig.MACHINES.capacitorLvInput.get();
+		return configValues.input.getAsInt();
 	}
 
-	public int getMaxOutput()
+	public final int getMaxOutput()
 	{
-		return IEConfig.MACHINES.capacitorLvOutput.get();
+		return configValues.output.getAsInt();
 	}
 
 	@Override
@@ -191,7 +188,7 @@ public class CapacitorLVTileEntity extends IEBaseTileEntity implements ITickable
 	@Override
 	public ITextComponent[] getOverlayText(PlayerEntity player, RayTraceResult mop, boolean hammer)
 	{
-		if(hammer&&IEConfig.GENERAL.showTextOverlay.get()&&mop instanceof BlockRayTraceResult)
+		if(hammer&&IEClientConfig.showTextOverlay.get()&&mop instanceof BlockRayTraceResult)
 		{
 			BlockRayTraceResult bmop = (BlockRayTraceResult)mop;
 			IOSideConfig here = sideConfig.get(bmop.getFace());

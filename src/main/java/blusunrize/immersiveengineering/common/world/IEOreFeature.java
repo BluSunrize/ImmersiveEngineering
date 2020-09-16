@@ -9,8 +9,8 @@
 
 package blusunrize.immersiveengineering.common.world;
 
-import blusunrize.immersiveengineering.common.IEConfig;
-import blusunrize.immersiveengineering.common.IEConfig.Ores.OreConfig;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.config.IEServerConfig.Ores.OreConfig;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.block.BlockState;
@@ -68,7 +68,7 @@ public class IEOreFeature extends Feature<IEOreFeature.IEOreFeatureConfig>
 
 		public int getSize()
 		{
-			return IEConfig.getRawConfig().get(size);
+			return IEServerConfig.getRawConfig().get(size);
 		}
 	}
 }

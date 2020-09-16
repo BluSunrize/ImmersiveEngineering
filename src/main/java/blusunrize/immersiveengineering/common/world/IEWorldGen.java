@@ -10,8 +10,8 @@ package blusunrize.immersiveengineering.common.world;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.IEConfig;
-import blusunrize.immersiveengineering.common.IEConfig.Ores.OreConfig;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.config.IEServerConfig.Ores.OreConfig;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.world.IECountPlacement.IEFeatureSpreadConfig;
 import blusunrize.immersiveengineering.common.world.IEOreFeature.IEOreFeatureConfig;
@@ -22,7 +22,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.DimensionType;
 import net.minecraft.world.ISeedReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
@@ -54,7 +53,6 @@ public class IEWorldGen
 {
 	public static Map<String, ConfiguredFeature<?, ?>> features = new HashMap<>();
 	public static Map<String, Pair<OreConfig, BlockState>> retroFeatures = new HashMap<>();
-	public static List<RegistryKey<DimensionType>> oreDimBlacklist = new ArrayList<>();
 	public static Set<String> retrogenOres = new HashSet<>();
 
 	public static void addOreGen(Block block, String name, OreConfig config)
@@ -90,21 +88,20 @@ public class IEWorldGen
 
 	private void generateOres(Random random, int chunkX, int chunkZ, ServerWorld world)
 	{
-		if(!oreDimBlacklist.contains(world.getDimensionKey()))
-			for(Entry<String, Pair<OreConfig, BlockState>> gen : retroFeatures.entrySet())
+		for(Entry<String, Pair<OreConfig, BlockState>> gen : retroFeatures.entrySet())
+		{
+			OreConfig config = gen.getValue().getKey();
+			BlockState state = gen.getValue().getRight();
+			if(retrogenOres.contains("retrogen_"+gen.getKey()))
 			{
-				OreConfig config = gen.getValue().getKey();
-				BlockState state = gen.getValue().getRight();
-				if(retrogenOres.contains("retrogen_"+gen.getKey()))
-				{
-					ConfiguredFeature<?, ?> retroFeature = Feature.ORE
-							.withConfiguration(new OreFeatureConfig(FillerBlockType.field_241882_a, state, config.veinSize.get()))
-							.withPlacement(new IERangePlacement().configure(new IETopSolidRangeConfig(config)))
-							.func_242728_a/* spreadHorizontally */()
-							.withPlacement(new IECountPlacement().configure(new IEFeatureSpreadConfig(config)));
-					retroFeature.func_242765_a(world, world.getChunkProvider().getChunkGenerator(), random, new BlockPos(16*chunkX, 0, 16*chunkZ));
-				}
+				ConfiguredFeature<?, ?> retroFeature = Feature.ORE
+						.withConfiguration(new OreFeatureConfig(FillerBlockType.field_241882_a, state, config.veinSize.get()))
+						.withPlacement(new IERangePlacement().configure(new IETopSolidRangeConfig(config)))
+						.func_242728_a/* spreadHorizontally */()
+						.withPlacement(new IECountPlacement().configure(new IEFeatureSpreadConfig(config)));
+				retroFeature.func_242765_a(world, world.getChunkProvider().getChunkGenerator(), random, new BlockPos(16*chunkX, 0, 16*chunkZ));
 			}
+		}
 	}
 
 	@SubscribeEvent
@@ -113,7 +110,7 @@ public class IEWorldGen
 		CompoundNBT levelTag = event.getData().getCompound("Level");
 		CompoundNBT nbt = new CompoundNBT();
 		levelTag.put("ImmersiveEngineering", nbt);
-		nbt.putBoolean(IEConfig.ORES.retrogen_key.get(), true);
+		nbt.putBoolean(IEServerConfig.ORES.retrogen_key.get(), true);
 	}
 
 	@SubscribeEvent
@@ -122,10 +119,10 @@ public class IEWorldGen
 		IWorld world = event.getWorld();
 		if(event.getChunk().getStatus()==ChunkStatus.FULL && world instanceof World)
 		{
-			if(!event.getData().getCompound("ImmersiveEngineering").contains(IEConfig.ORES.retrogen_key.get())&&
+			if(!event.getData().getCompound("ImmersiveEngineering").contains(IEServerConfig.ORES.retrogen_key.get())&&
 					!retrogenOres.isEmpty())
 			{
-				if(IEConfig.ORES.retrogen_log_flagChunk.get())
+				if(IEServerConfig.ORES.retrogen_log_flagChunk.get())
 					IELogger.info("Chunk "+event.getChunk().getPos()+" has been flagged for Ore RetroGeneration by IE.");
 				RegistryKey<World> dimension = ((World)world).getDimensionKey();
 				synchronized(retrogenChunks)
@@ -178,7 +175,7 @@ public class IEWorldGen
 			}
 			remaining = chunks==null?0: chunks.size();
 		}
-		if(counter > 0&&IEConfig.ORES.retrogen_log_remaining.get())
+		if(counter > 0&&IEServerConfig.ORES.retrogen_log_remaining.get())
 			IELogger.info("Retrogen was performed on "+counter+" Chunks, "+remaining+" chunks remaining");
 	}
 

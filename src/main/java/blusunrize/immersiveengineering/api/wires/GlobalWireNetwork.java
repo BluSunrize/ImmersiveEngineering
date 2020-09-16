@@ -13,7 +13,8 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.wires.localhandlers.ILocalHandlerProvider;
 import blusunrize.immersiveengineering.api.wires.localhandlers.IWorldTickable;
 import blusunrize.immersiveengineering.api.wires.proxy.IICProxyProvider;
-import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.config.IECommonConfig;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultiset;
@@ -380,7 +381,7 @@ public class GlobalWireNetwork implements IWorldTickable
 		for(LocalWireNetwork net : localNets.values())
 			if(ticked.add(net))
 				net.update(world);
-		if(IEConfig.WIRES.sanitizeConnections.get())
+		if(IEServerConfig.WIRES.sanitizeConnections.get())
 			NetworkSanitizer.tick(world, this);
 	}
 
@@ -388,7 +389,7 @@ public class GlobalWireNetwork implements IWorldTickable
 
 	private void validate(World world)
 	{
-		if(world.isRemote||!IEConfig.WIRES.validateNet.get())
+		if(world.isRemote||!IECommonConfig.validateNet.get())
 			return;
 		else
 			WireLogger.logger.info("Validating wire network...");

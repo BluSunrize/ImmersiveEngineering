@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.crafting.IEConfigConditionSerializer.ConditionIEConfig;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import com.electronwill.nightconfig.core.UnmodifiableConfig;
@@ -70,7 +70,7 @@ public class IEConfigConditionSerializer implements IConditionSerializer<Conditi
 		@Override
 		public boolean test()
 		{
-			UnmodifiableConfig config = IEConfig.ALL.getValues();
+			UnmodifiableConfig config = IEServerConfig.CONFIG_SPEC.getValues();
 			Object configEntry = config.get(key);
 			if(configEntry instanceof ForgeConfigSpec.BooleanValue)
 			{

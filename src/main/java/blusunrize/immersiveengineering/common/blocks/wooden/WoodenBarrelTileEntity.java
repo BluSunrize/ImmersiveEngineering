@@ -11,11 +11,11 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.utils.TextUtils;
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalBarrelTileEntity;
+import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -116,7 +116,7 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 			return new ITextComponent[]{
 					TextUtils.formatFluidStack(tank.getFluid())
 			};
-		if(hammer&&IEConfig.GENERAL.showTextOverlay.get()&&brtr.getFace().getAxis()==Axis.Y)
+		if(hammer&&IEClientConfig.showTextOverlay.get()&&brtr.getFace().getAxis()==Axis.Y)
 		{
 			IOSideConfig side = sideConfig.getOrDefault(brtr.getFace(), NONE);
 			IOSideConfig opposite = sideConfig.getOrDefault(brtr.getFace().getOpposite(), NONE);

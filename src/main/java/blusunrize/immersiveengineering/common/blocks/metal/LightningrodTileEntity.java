@@ -10,12 +10,12 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
@@ -42,7 +42,7 @@ import java.util.List;
 public class LightningrodTileEntity extends MultiblockPartTileEntity<LightningrodTileEntity> implements
 		IIEInternalFluxHandler, IBlockBounds
 {
-	FluxStorage energyStorage = new FluxStorage(IEConfig.MACHINES.lightning_output.get());
+	FluxStorage energyStorage = new FluxStorage(IEServerConfig.MACHINES.lightning_output.get());
 
 	@Nullable
 	private List<BlockPos> fenceNet = null;
@@ -82,7 +82,7 @@ public class LightningrodTileEntity extends MultiblockPartTileEntity<Lightningro
 				int i = this.height+this.fenceNet.size();
 				if(Utils.RAND.nextInt(4096*world.getHeight()) < i*(getPos().getY()+i))
 				{
-					this.energyStorage.setEnergy(IEConfig.MACHINES.lightning_output.get());
+					this.energyStorage.setEnergy(IEServerConfig.MACHINES.lightning_output.get());
 					BlockPos pos = fenceNet.get(Utils.RAND.nextInt(fenceNet.size()));
 					LightningBoltEntity lightningboltentity = EntityType.LIGHTNING_BOLT.create(world);
 					lightningboltentity.moveForced(Vector3d.copyCenteredHorizontally(pos));

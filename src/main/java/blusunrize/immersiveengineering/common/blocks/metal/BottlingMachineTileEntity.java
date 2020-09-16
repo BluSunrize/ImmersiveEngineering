@@ -12,11 +12,11 @@ import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttachable;
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableSet;
@@ -407,7 +407,7 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 	{
 		public NonNullList<ItemStack> items;
 		public int processTick;
-		public int maxProcessTick = (int)(120*IEConfig.MACHINES.bottlingMachineConfig.timeModifier.get());
+		public int maxProcessTick = (int)(120*IEServerConfig.MACHINES.bottlingMachineConfig.timeModifier.get());
 		boolean processFinished = false;
 
 		public BottlingProcess(ItemStack input)
@@ -418,7 +418,7 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 
 		public boolean processStep(BottlingMachineTileEntity tile)
 		{
-			int energyExtracted = (int)(8*IEConfig.MACHINES.bottlingMachineConfig.energyModifier.get());
+			int energyExtracted = (int)(8*IEServerConfig.MACHINES.bottlingMachineConfig.energyModifier.get());
 			if(tile.energyStorage.extractEnergy(energyExtracted, true) >= energyExtracted)
 			{
 				tile.energyStorage.extractEnergy(energyExtracted, false);

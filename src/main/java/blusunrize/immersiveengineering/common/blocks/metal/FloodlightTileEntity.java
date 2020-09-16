@@ -18,11 +18,11 @@ import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHan
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.EventHandler;
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.FakeLightBlock.FakeLightTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Misc;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
@@ -63,8 +63,8 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 		IOBJModelCallback<BlockState>, EnergyConnector, IStateBasedDirectional
 {
 	public int energyStorage = 0;
-	private int energyDraw = IEConfig.MACHINES.floodlight_energyDraw.get();
-	private int maximumStorage = IEConfig.MACHINES.floodlight_maximumStorage.get();
+	private int energyDraw = IEServerConfig.MACHINES.floodlight_energyDraw.get();
+	private int maximumStorage = IEServerConfig.MACHINES.floodlight_maximumStorage.get();
 	public boolean redstoneControlInverted = false;
 	public Direction facing = Direction.NORTH;
 	public float rotY = 0;

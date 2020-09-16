@@ -11,11 +11,11 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.utils.TextUtils;
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
+import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.IWaterLoggable;
 import net.minecraft.entity.player.PlayerEntity;
@@ -243,7 +243,7 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickable
 	@Override
 	public ITextComponent[] getOverlayText(PlayerEntity player, RayTraceResult rtr, boolean hammer)
 	{
-		if(hammer&&IEConfig.GENERAL.showTextOverlay.get()&&rtr instanceof BlockRayTraceResult)
+		if(hammer&&IEClientConfig.showTextOverlay.get()&&rtr instanceof BlockRayTraceResult)
 		{
 			BlockRayTraceResult brtr = (BlockRayTraceResult)rtr;
 			IOSideConfig here = sideConfig.get(brtr.getFace());

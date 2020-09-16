@@ -14,9 +14,9 @@ import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
@@ -143,7 +143,7 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 		if(world.getGameTime()%64==((getPos().getX()^getPos().getZ())&63))
 			markContainingBlockForUpdate(null);
 
-		int energy = IEConfig.MACHINES.turret_consumption.get();
+		int energy = IEServerConfig.MACHINES.turret_consumption.get();
 		if(isRSPowered()^redstoneControlInverted)
 		{
 			if(energyStorage.extractEnergy(energy, true)==energy)

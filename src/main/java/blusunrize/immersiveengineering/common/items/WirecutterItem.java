@@ -16,8 +16,8 @@ import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableSet;
@@ -48,7 +48,7 @@ public class WirecutterItem extends IEBaseItem implements ITool
 
 	public WirecutterItem()
 	{
-		super("wirecutter", new Properties().defaultMaxDamage(IEConfig.TOOLS.cutterDurabiliy.get()));
+		super("wirecutter", new Properties().defaultMaxDamage(IEServerConfig.TOOLS.cutterDurabiliy.get()));
 	}
 
 	@Nonnull
@@ -146,7 +146,7 @@ public class WirecutterItem extends IEBaseItem implements ITool
 	private void damageStack(ItemStack stack, PlayerEntity player, Hand hand)
 	{
 		int nbtDamage = ItemNBTHelper.getInt(stack, Lib.NBT_DAMAGE)+1;
-		if(nbtDamage < IEConfig.TOOLS.cutterDurabiliy.get())
+		if(nbtDamage < IEServerConfig.TOOLS.cutterDurabiliy.get())
 			ItemNBTHelper.putInt(stack, Lib.NBT_DAMAGE, nbtDamage);
 		else
 		{

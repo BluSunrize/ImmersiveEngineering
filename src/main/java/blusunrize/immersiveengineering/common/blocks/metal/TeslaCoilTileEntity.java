@@ -17,10 +17,10 @@ import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.tool.IElectricEquipment;
 import blusunrize.immersiveengineering.api.tool.IElectricEquipment.ElectricSource;
 import blusunrize.immersiveengineering.api.tool.ITeslaEntity;
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
@@ -96,7 +96,7 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 			effectMap.get(pos).removeIf(LightningAnimation::tick);
 
 		int timeKey = getPos().getX()^getPos().getZ();
-		int energyDrain = IEConfig.MACHINES.teslacoil_consumption.get();
+		int energyDrain = IEServerConfig.MACHINES.teslacoil_consumption.get();
 		if(lowPower)
 			energyDrain /= 2;
 		if(!world.isRemote&&world.getGameTime()%32==(timeKey&31)&&canRun(energyDrain))
@@ -113,14 +113,14 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 			LivingEntity target = null;
 			if(!targets.isEmpty())
 			{
-				ElectricDamageSource dmgsrc = IEDamageSources.causeTeslaDamage(IEConfig.MACHINES.teslacoil_damage.get().floatValue(), lowPower);
+				ElectricDamageSource dmgsrc = IEDamageSources.causeTeslaDamage(IEServerConfig.MACHINES.teslacoil_damage.get().floatValue(), lowPower);
 				int randomTarget = Utils.RAND.nextInt(targets.size());
 				target = (LivingEntity)targets.get(randomTarget);
 				if(target!=null)
 				{
 					if(!world.isRemote)
 					{
-						energyDrain = IEConfig.MACHINES.teslacoil_consumption_active.get();
+						energyDrain = IEServerConfig.MACHINES.teslacoil_consumption_active.get();
 						if(lowPower)
 							energyDrain /= 2;
 						if(energyStorage.extractEnergy(energyDrain, true)==energyDrain)
@@ -414,7 +414,7 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 		{
 			if(player.isSneaking())
 			{
-				int energyDrain = IEConfig.MACHINES.teslacoil_consumption.get();
+				int energyDrain = IEServerConfig.MACHINES.teslacoil_consumption.get();
 				if(lowPower)
 					energyDrain /= 2;
 				if(canRun(energyDrain))

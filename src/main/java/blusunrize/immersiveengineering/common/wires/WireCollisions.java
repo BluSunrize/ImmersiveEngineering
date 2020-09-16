@@ -16,7 +16,7 @@ import blusunrize.immersiveengineering.api.wires.WireCollisionData.CollisionInfo
 import blusunrize.immersiveengineering.api.wires.localhandlers.ICollisionHandler;
 import blusunrize.immersiveengineering.api.wires.localhandlers.LocalNetworkHandler;
 import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
-import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockState;
@@ -38,7 +38,7 @@ public class WireCollisions
 {
 	public static void handleEntityCollision(BlockPos p, Entity e)
 	{
-		if(!e.world.isRemote&&IEConfig.CACHED.wireDamage&&e instanceof LivingEntity&&
+		if(!e.world.isRemote&&IEServerConfig.CACHED.wireDamage&&e instanceof LivingEntity&&
 				!e.isInvulnerableTo(IEDamageSources.wireShock)&&
 				!(e instanceof PlayerEntity&&((PlayerEntity)e).abilities.disableDamage))
 		{
@@ -57,7 +57,7 @@ public class WireCollisions
 
 	public static void notifyBlockUpdate(@Nonnull World worldIn, @Nonnull BlockPos pos, @Nonnull BlockState oldState, @Nonnull BlockState newState, int flags)
 	{
-		if(IEConfig.CACHED.blocksBreakWires&&!worldIn.isRemote&&(flags&1)!=0&&!newState.getCollisionShape(worldIn, pos).isEmpty())
+		if(IEServerConfig.CACHED.blocksBreakWires&&!worldIn.isRemote&&(flags&1)!=0&&!newState.getCollisionShape(worldIn, pos).isEmpty())
 		{
 			GlobalWireNetwork globalNet = GlobalWireNetwork.getNetwork(worldIn);
 			Collection<CollisionInfo> data = globalNet.getCollisionData().getCollisionInfo(pos);

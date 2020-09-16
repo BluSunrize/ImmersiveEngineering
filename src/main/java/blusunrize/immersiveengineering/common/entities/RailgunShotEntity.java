@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.entities;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler.IRailgunProjectile;
-import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
@@ -144,7 +144,7 @@ public class RailgunShotEntity extends IEProjectileEntity
 					double damage = projectileProperties.getDamage(this.world, hit, shooterUuid, this);
 					hit.attackEntityFrom(
 							IEDamageSources.causeRailgunDamage(this, shooter),
-							(float)(damage*IEConfig.TOOLS.railgun_damage.get())
+							(float)(damage*IEServerConfig.TOOLS.railgun_damage.get())
 					);
 				}
 				else if(mop instanceof BlockRayTraceResult)

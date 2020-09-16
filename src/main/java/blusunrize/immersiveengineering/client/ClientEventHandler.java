@@ -32,9 +32,10 @@ import blusunrize.immersiveengineering.client.render.tile.AutoWorkbenchRenderer.
 import blusunrize.immersiveengineering.client.utils.FontUtils;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
 import blusunrize.immersiveengineering.common.blocks.wooden.TurntableTileEntity;
+import blusunrize.immersiveengineering.common.config.IEClientConfig;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IScrollwheel;
@@ -258,7 +259,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 					TextFormatting.GRAY
 			));
 
-		if(IEConfig.GENERAL.tagTooltips.get()&&event.getFlags().isAdvanced())
+		if(IEClientConfig.tagTooltips.get()&&event.getFlags().isAdvanced())
 		{
 			for(ResourceLocation oid : ItemTags.getCollection().getOwningTags(event.getItemStack().getItem()))
 				event.getToolTip().add(ClientUtils.applyFormat(
@@ -322,7 +323,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 					Misc.earmuffs==earmuffs.getItem()&&
 					!ItemNBTHelper.getBoolean(earmuffs, "IE:Earmuffs:Cat_"+event.getSound().getCategory().getName()))
 			{
-				for(String blacklist : IEConfig.TOOLS.earDefenders_SoundBlacklist.get())
+				for(String blacklist : IEClientConfig.earDefenders_SoundBlacklist.get())
 					if(blacklist!=null&&blacklist.equalsIgnoreCase(event.getSound().getSoundLocation().toString()))
 						return;
 				if(event.getSound() instanceof ITickableSound)
@@ -678,7 +679,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 								if(!drill&&player.isHandActive()&&player.getActiveHand()==hand)
 								{
 									int use = player.getItemInUseMaxCount();
-									amount -= use*IEConfig.TOOLS.chemthrower_consumption.get();
+									amount -= use*IEServerConfig.TOOLS.chemthrower_consumption.get();
 								}
 								float cap = (float)capacity;
 								float angle = 83-(166*amount/cap);
@@ -1021,7 +1022,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			// Handle sneak + scrolling
 			if(player.isSneaking())
 			{
-				if(IEConfig.TOOLS.chemthrower_scroll.get()&&equipped.getItem() instanceof IScrollwheel)
+				if(IEServerConfig.TOOLS.chemthrower_scroll.get()&&equipped.getItem() instanceof IScrollwheel)
 				{
 					ImmersiveEngineering.packetHandler.sendToServer(new MessageScrollwheelItem(event.getScrollDelta() < 0));
 					event.setCanceled(true);
