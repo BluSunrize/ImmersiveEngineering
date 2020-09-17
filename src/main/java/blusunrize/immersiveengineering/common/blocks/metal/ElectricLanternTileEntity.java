@@ -16,13 +16,13 @@ import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler.EnergyConnector;
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -40,8 +40,6 @@ import java.util.Set;
 public class ElectricLanternTileEntity extends ImmersiveConnectableTileEntity implements ISpawnInterdiction, ITickableTileEntity,
 		IStateBasedDirectional, IHammerInteraction, IBlockBounds, IActiveState, EnergyConnector
 {
-	public static TileEntityType<ElectricLanternTileEntity> TYPE;
-
 	public int energyStorage = 0;
 	private int energyDraw = IEConfig.MACHINES.lantern_energyDraw.get();
 	private int maximumStorage = IEConfig.MACHINES.lantern_maximumStorage.get();
@@ -49,7 +47,7 @@ public class ElectricLanternTileEntity extends ImmersiveConnectableTileEntity im
 
 	public ElectricLanternTileEntity()
 	{
-		super(TYPE);
+		super(IETileTypes.ELECTRIC_LANTERN.get());
 	}
 
 	@Override

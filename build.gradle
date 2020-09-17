@@ -34,11 +34,18 @@ sourceSets {
         }
     }
 }
+
+def version_replaces = [
+        'version': project.version,
+        'mc_version': version_minecraft,
+        'forge_version': version_forge
+]
+
 processResources {
     from(sourceSets.main.resources.srcDirs) {
         include 'META-INF/mods.toml'
 
-        expand 'version': project.version
+        expand version_replaces
     }
     from(sourceSets.main.resources.srcDirs) {
         exclude 'META-INF/mods.toml'
@@ -135,7 +142,7 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.1-32.0.108'
+    minecraft "net.minecraftforge:forge:1.16.1-${version_forge}"
     runtimeOnly fg.deobf("mezz.jei:jei-1.16.1:7.0.0.6")
     //runtimeOnly fg.deobf("nbtedit:NBTEdit:0.9.0")
     compileOnly fg.deobf("mezz.jei:jei-1.16.1:7.0.0.6:api")

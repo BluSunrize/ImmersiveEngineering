@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.stone;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.items.CoresampleItem;
@@ -24,7 +25,6 @@ import net.minecraft.loot.LootContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.state.EnumProperty;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
@@ -48,13 +48,11 @@ import java.util.List;
 public class CoresampleTileEntity extends IEBaseTileEntity implements IStateBasedDirectional, ITileDrop, IPlayerInteraction,
 		IBlockOverlayText, IBlockBounds
 {
-	public static TileEntityType<CoresampleTileEntity> TYPE;
-
 	public ItemStack coresample = ItemStack.EMPTY;
 
 	public CoresampleTileEntity()
 	{
-		super(TYPE);
+		super(IETileTypes.CORE_SAMPLE.get());
 	}
 
 	@Override

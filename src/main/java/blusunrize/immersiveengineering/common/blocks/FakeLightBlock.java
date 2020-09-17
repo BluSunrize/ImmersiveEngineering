@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.blocks;
 
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISpawnInterdiction;
 import blusunrize.immersiveengineering.common.blocks.metal.FloodlightTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -21,7 +22,6 @@ import net.minecraft.nbt.NBTUtil;
 import net.minecraft.pathfinding.PathType;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
@@ -79,13 +79,11 @@ public class FakeLightBlock extends IETileProviderBlock
 
 	public static class FakeLightTileEntity extends IEBaseTileEntity implements ITickableTileEntity, ISpawnInterdiction
 	{
-		public static TileEntityType<FakeLightTileEntity> TYPE;
-
 		public BlockPos floodlightCoords = null;
 
 		public FakeLightTileEntity()
 		{
-			super(TYPE);
+			super(IETileTypes.FAKE_LIGHT.get());
 		}
 
 		@Override

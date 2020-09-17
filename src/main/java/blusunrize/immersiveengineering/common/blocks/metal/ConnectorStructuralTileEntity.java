@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.ImmersiveConnectableTileEntity;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
@@ -39,11 +40,9 @@ public class ConnectorStructuralTileEntity extends ImmersiveConnectableTileEntit
 {
 	public float rotation = 0;
 
-	public static TileEntityType<ConnectorStructuralTileEntity> TYPE;
-
 	public ConnectorStructuralTileEntity()
 	{
-		super(TYPE);
+		super(IETileTypes.CONNECTOR_STRUCTURAL.get());
 	}
 
 	public ConnectorStructuralTileEntity(TileEntityType<? extends ConnectorStructuralTileEntity> type)

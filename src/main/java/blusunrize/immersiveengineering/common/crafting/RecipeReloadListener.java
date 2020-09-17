@@ -31,6 +31,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /* We can't use ISelectiveResourceReloadListener because it references a client-only class which crashes servers
  */
@@ -49,8 +50,8 @@ public class RecipeReloadListener implements IResourceManagerReloadListener
 		if(dataPackRegistries!=null)
 		{
 			RecipeManager recipeManager = dataPackRegistries.func_240967_e_();
+			startArcRecyclingRecipeGen(recipeManager);
 			buildRecipeLists(recipeManager);
-			generateArcRecyclingRecipes(recipeManager);
 		}
 	}
 
@@ -63,7 +64,7 @@ public class RecipeReloadListener implements IResourceManagerReloadListener
 		{
 			TagUtils.ITEM_TAG_COLLECTION = ItemTags.getCollection();
 			TagUtils.BLOCK_TAG_COLLECTION = BlockTags.getCollection();
-			generateArcRecyclingRecipes(clientRecipeManager);
+			startArcRecyclingRecipeGen(clientRecipeManager);
 		}
 	}
 
@@ -99,7 +100,6 @@ public class RecipeReloadListener implements IResourceManagerReloadListener
 		MetalPressPackingRecipes.CRAFTING_RECIPE_MAP = filterRecipes(recipes, ICraftingRecipe.class, IRecipeType.CRAFTING);
 		MetalPressRecipe.updateRecipesByMold();
 
-		ArcFurnaceRecipe.recipeList = filterRecipes(recipes, ArcFurnaceRecipe.class, ArcFurnaceRecipe.TYPE);
 		BottlingMachineRecipe.recipeList = filterRecipes(recipes, BottlingMachineRecipe.class, BottlingMachineRecipe.TYPE);
 		CrusherRecipe.recipeList = filterRecipes(recipes, CrusherRecipe.class, CrusherRecipe.TYPE);
 		FermenterRecipe.recipeList = filterRecipes(recipes, FermenterRecipe.class, FermenterRecipe.TYPE);
@@ -107,29 +107,25 @@ public class RecipeReloadListener implements IResourceManagerReloadListener
 		RefineryRecipe.recipeList = filterRecipes(recipes, RefineryRecipe.class, RefineryRecipe.TYPE);
 		MixerRecipe.recipeList = filterRecipes(recipes, MixerRecipe.class, MixerRecipe.TYPE);
 		MineralMix.mineralList = filterRecipes(recipes, MineralMix.class, MineralMix.TYPE);
-
-		MixerRecipePotion.initPotionRecipes();
+		ArcFurnaceRecipe.recipeList = filterRecipes(recipes, ArcFurnaceRecipe.class, ArcFurnaceRecipe.TYPE);
 	}
 
-	private void generateArcRecyclingRecipes(RecipeManager recipeManager)
+	private void startArcRecyclingRecipeGen(RecipeManager recipeManager)
 	{
 		Collection<IRecipe<?>> recipes = recipeManager.getRecipes();
-		ArcRecyclingThreadHandler recyclingHandler = new ArcRecyclingThreadHandler(recipes);
-		recyclingHandler.start();
-		try
-		{
-			recyclingHandler.join();
-			recyclingHandler.finishUp();
-		} catch(InterruptedException e)
-		{
-			e.printStackTrace();
-		}
+		new ArcRecyclingThreadHandler(recipes).start();
 	}
 
 	static <R extends IRecipe<?>> Map<ResourceLocation, R> filterRecipes(Collection<IRecipe<?>> recipes, Class<R> recipeClass, IRecipeType<R> recipeType)
 	{
 		return recipes.stream()
 				.filter(iRecipe -> iRecipe.getType()==recipeType)
+				.flatMap(r -> {
+					if(r instanceof GeneratedListRecipe)
+						return ((GeneratedListRecipe)r).getSubRecipes().stream();
+					else
+						return Stream.of(r);
+				})
 				.map(recipeClass::cast)
 				.collect(Collectors.toMap(recipe -> recipe.getId(), recipe -> recipe));
 	}

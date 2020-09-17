@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.api.wires.redstone.IRedstoneConnector;
 import blusunrize.immersiveengineering.api.wires.redstone.RedstoneNetworkHandler;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectorBlock;
 import blusunrize.immersiveengineering.common.util.SafeChunkUtils;
@@ -63,11 +64,9 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 	public boolean rsDirty = false;
 	//Only write to this in wire network updates!
 	private int output;
-	public static TileEntityType<ConnectorRedstoneTileEntity> TYPE;
-
 	public ConnectorRedstoneTileEntity()
 	{
-		this(TYPE);
+		this(IETileTypes.CONNECTOR_REDSTONE.get());
 	}
 
 	public ConnectorRedstoneTileEntity(TileEntityType<? extends ConnectorRedstoneTileEntity> type)

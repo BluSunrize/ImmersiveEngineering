@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IPostBlock;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Connectors;
 import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectorBlock;
 import com.google.common.collect.ImmutableList;
@@ -26,11 +27,11 @@ import net.minecraft.world.IWorld;
 import javax.annotation.Nullable;
 import java.util.Optional;
 
-public class PostTransformerBlock extends MiscConnectorBlock
+public class PostTransformerBlock extends MiscConnectorBlock<PostTransformerTileEntity>
 {
 	public PostTransformerBlock()
 	{
-		super("post_transformer", () -> PostTransformerTileEntity.TYPE,
+		super("post_transformer", IETileTypes.POST_TRANSFORMER,
 				ImmutableList.of(IEProperties.FACING_HORIZONTAL, BlockStateProperties.WATERLOGGED),
 				(b, p) -> null);
 	}

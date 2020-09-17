@@ -10,6 +10,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectorBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItemUseContext;
@@ -20,11 +21,11 @@ import net.minecraft.world.IBlockReader;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class TransformerHVBlock extends MiscConnectorBlock
+public class TransformerHVBlock extends MiscConnectorBlock<TransformerHVTileEntity>
 {
 	public TransformerHVBlock()
 	{
-		super("transformer_hv", () -> TransformerHVTileEntity.TYPE,
+		super("transformer_hv", IETileTypes.TRANSFORMER_HV,
 				IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE, IEProperties.MIRRORED, BlockStateProperties.WATERLOGGED);
 	}
 

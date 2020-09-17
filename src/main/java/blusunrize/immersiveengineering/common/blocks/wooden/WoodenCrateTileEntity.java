@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IEApi;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
@@ -18,6 +19,7 @@ import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import net.minecraft.block.Block;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -29,7 +31,6 @@ import net.minecraft.loot.LootParameters;
 import net.minecraft.loot.LootTable;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -50,22 +51,14 @@ import java.util.Random;
 
 public class WoodenCrateTileEntity extends IEBaseTileEntity implements IIEInventory, IInteractionObjectIE, ITileDrop, IComparatorOverride
 {
-	public static TileEntityType<WoodenCrateTileEntity> TYPE;
 	NonNullList<ItemStack> inventory = NonNullList.withSize(27, ItemStack.EMPTY);
 	public ResourceLocation lootTable;
 	public String name;
 	private ListNBT enchantments;
-	private boolean reinforced = false;
 
 	public WoodenCrateTileEntity()
 	{
-		super(TYPE);
-	}
-
-	public WoodenCrateTileEntity(boolean reinforced)
-	{
-		this();
-		this.reinforced = reinforced;
+		super(IETileTypes.WOODEN_CRATE.get());
 	}
 
 	@Override
@@ -82,7 +75,6 @@ public class WoodenCrateTileEntity extends IEBaseTileEntity implements IIEInvent
 			else
 				inventory = Utils.readInventory(nbt.getList("inventory", NBT.TAG_COMPOUND), 27);
 		}
-		this.reinforced = nbt.getBoolean("reinforced");
 	}
 
 	@Override
@@ -99,7 +91,6 @@ public class WoodenCrateTileEntity extends IEBaseTileEntity implements IIEInvent
 			else
 				writeInv(nbt, false);
 		}
-		nbt.putBoolean("reinforced", reinforced);
 	}
 
 	public void writeInv(CompoundNBT nbt, boolean toItem)
@@ -128,7 +119,8 @@ public class WoodenCrateTileEntity extends IEBaseTileEntity implements IIEInvent
 			return new StringTextComponent(name);
 		else
 		{
-			if(reinforced)
+			Block b = getBlockState().getBlock();
+			if(b instanceof CrateBlock&&((CrateBlock)b).isReinforced())
 				return new TranslationTextComponent("block.immersiveengineering.reinforced_crate");
 			else
 				return new TranslationTextComponent("block.immersiveengineering.crate");

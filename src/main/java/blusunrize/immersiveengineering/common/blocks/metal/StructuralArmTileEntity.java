@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICollisionBounds;
@@ -26,7 +27,6 @@ import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.*;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -52,8 +52,6 @@ import static net.minecraft.util.Direction.*;
 public class StructuralArmTileEntity extends IEBaseTileEntity implements IOBJModelCallback<BlockState>,
 		IDirectionalTile, ICollisionBounds, ISelectionBounds, IBlockBounds
 {
-	public static TileEntityType<StructuralArmTileEntity> TYPE;
-
 	private int totalLength = 1;
 	private int slopePosition = 0;
 	private Direction facing = NORTH;
@@ -61,7 +59,7 @@ public class StructuralArmTileEntity extends IEBaseTileEntity implements IOBJMod
 
 	public StructuralArmTileEntity()
 	{
-		super(TYPE);
+		super(IETileTypes.STRUCTURAL_ARM.get());
 	}
 
 	@Override

@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.fluid.IFluidPipe;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedVoxelShapes;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock.IELadderBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
@@ -40,7 +41,6 @@ import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
@@ -80,15 +80,13 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 		IOBJModelCallback<BlockState>, IColouredTile, IPlayerInteraction, IHammerInteraction, IPlacementInteraction,
 		ISelectionBounds, ICollisionBounds, IAdditionalDrops
 {
-	public static TileEntityType<FluidPipeTileEntity> TYPE;
-
 	static ConcurrentHashMap<BlockPos, Set<DirectionalFluidOutput>> indirectConnections = new ConcurrentHashMap<>();
 	public static ArrayList<Predicate<Block>> validPipeCovers = new ArrayList<>();
 	public static ArrayList<Predicate<Block>> climbablePipeCovers = new ArrayList<>();
 
 	public FluidPipeTileEntity()
 	{
-		super(TYPE);
+		super(IETileTypes.FLUID_PIPE.get());
 	}
 
 	public static void initCovers()

@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransfor
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
@@ -26,7 +27,6 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.NonNullList;
@@ -48,8 +48,6 @@ import java.util.List;
 public class BucketWheelTileEntity extends MultiblockPartTileEntity<BucketWheelTileEntity> implements
 		IOBJModelCallback<BlockState>, IBlockBounds
 {
-	public static TileEntityType<BucketWheelTileEntity> TYPE;
-
 	public float rotation = 0;
 	public final NonNullList<ItemStack> digStacks = NonNullList.withSize(8, ItemStack.EMPTY);
 	public boolean active = false;
@@ -57,7 +55,7 @@ public class BucketWheelTileEntity extends MultiblockPartTileEntity<BucketWheelT
 
 	public BucketWheelTileEntity()
 	{
-		super(IEMultiblocks.BUCKET_WHEEL, TYPE, false);
+		super(IEMultiblocks.BUCKET_WHEEL, IETileTypes.BUCKET_WHEEL.get(), false);
 	}
 
 	@Override
@@ -103,7 +101,7 @@ public class BucketWheelTileEntity extends MultiblockPartTileEntity<BucketWheelT
 	@Override
 	public void tick()
 	{
-		ApiUtils.checkForNeedlessTicking(this);
+		checkForNeedlessTicking();
 		if(!formed||!new BlockPos(3, 3, 0).equals(posInMultiblock))
 			return;
 

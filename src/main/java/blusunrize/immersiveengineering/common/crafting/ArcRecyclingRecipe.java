@@ -82,4 +82,9 @@ public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 	{
 		return !input.isEmpty()&&this.input.test(input);
 	}
+
+	public Map<ItemStack, Double> getOutputs()
+	{
+		return outputs;
+	}
 }

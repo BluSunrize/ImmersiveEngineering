@@ -8,14 +8,13 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.wooden.WoodenBarrelTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.fluids.FluidStack;
 
 public class MetalBarrelTileEntity extends WoodenBarrelTileEntity
 {
-	public static TileEntityType<MetalBarrelTileEntity> TYPE;
-
 	public MetalBarrelTileEntity(TileEntityType<? extends WoodenBarrelTileEntity> type)
 	{
 		super(type);
@@ -23,7 +22,7 @@ public class MetalBarrelTileEntity extends WoodenBarrelTileEntity
 
 	public MetalBarrelTileEntity()
 	{
-		this(TYPE);
+		this(IETileTypes.METAL_BARREL.get());
 	}
 
 	@Override

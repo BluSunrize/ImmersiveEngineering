@@ -8,10 +8,10 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
@@ -24,7 +24,6 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.effect.LightningBoltEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.BlockPos;
@@ -43,8 +42,6 @@ import java.util.List;
 public class LightningrodTileEntity extends MultiblockPartTileEntity<LightningrodTileEntity> implements
 		IIEInternalFluxHandler, IBlockBounds
 {
-	public static TileEntityType<LightningrodTileEntity> TYPE;
-
 	FluxStorage energyStorage = new FluxStorage(IEConfig.MACHINES.lightning_output.get());
 
 	@Nullable
@@ -53,13 +50,13 @@ public class LightningrodTileEntity extends MultiblockPartTileEntity<Lightningro
 
 	public LightningrodTileEntity()
 	{
-		super(IEMultiblocks.LIGHTNING_ROD, TYPE, false);
+		super(IEMultiblocks.LIGHTNING_ROD, IETileTypes.LIGHTNING_ROD.get(), false);
 	}
 
 	@Override
 	public void tick()
 	{
-		ApiUtils.checkForNeedlessTicking(this);
+		checkForNeedlessTicking();
 		if(!world.isRemote&&formed&&new BlockPos(1, 1, 1).equals(posInMultiblock))
 		{
 			if(energyStorage.getEnergyStored() > 0)

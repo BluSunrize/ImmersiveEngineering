@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.crafting.SqueezerRecipe;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICollisionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
@@ -27,7 +28,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -55,8 +55,6 @@ import java.util.*;
 public class SqueezerTileEntity extends PoweredMultiblockTileEntity<SqueezerTileEntity, SqueezerRecipe> implements
 		ISelectionBounds, ICollisionBounds, IInteractionObjectIE, IBlockBounds
 {
-	public static TileEntityType<SqueezerTileEntity> TYPE;
-	
 	public FluidTank[] tanks = new FluidTank[]{new FluidTank(24000)};
 	public NonNullList<ItemStack> inventory = NonNullList.withSize(11, ItemStack.EMPTY);
 	public float animation_piston = 0;
@@ -66,7 +64,7 @@ public class SqueezerTileEntity extends PoweredMultiblockTileEntity<SqueezerTile
 
 	public SqueezerTileEntity()
 	{
-		super(IEMultiblocks.SQUEEZER, 16000, true, TYPE);
+		super(IEMultiblocks.SQUEEZER, 16000, true, IETileTypes.SQUEEZER.get());
 	}
 
 	@Override

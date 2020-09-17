@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
@@ -113,6 +114,7 @@ public class ImmersiveEngineering
 
 	public void setup(FMLCommonSetupEvent event)
 	{
+		ApiUtils.disableTicking.setValue(EventHandler.REMOVE_FROM_TICKING::add);
 		proxy.preInit();
 
 		IEAdvancements.preInit();

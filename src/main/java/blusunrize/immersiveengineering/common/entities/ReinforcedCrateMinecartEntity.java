@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.entities;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
-import blusunrize.immersiveengineering.common.blocks.wooden.WoodenCrateTileEntity;
 import blusunrize.immersiveengineering.common.items.IEItems;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityClassification;
@@ -21,7 +20,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
-import java.util.function.Supplier;
 
 public class ReinforcedCrateMinecartEntity extends CrateMinecartEntity
 {
@@ -62,12 +60,6 @@ public class ReinforcedCrateMinecartEntity extends CrateMinecartEntity
 	public EntityType<?> getType()
 	{
 		return TYPE;
-	}
-
-	@Override
-	protected Supplier<WoodenCrateTileEntity> getTileProvider()
-	{
-		return () -> new WoodenCrateTileEntity(true);
 	}
 
 	@Override

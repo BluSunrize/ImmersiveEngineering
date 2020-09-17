@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
@@ -17,7 +18,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.EnumProperty;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Direction.AxisDirection;
@@ -28,7 +28,6 @@ import net.minecraft.util.math.vector.Vector3d;
 
 public class TurntableTileEntity extends IEBaseTileEntity implements IStateBasedDirectional, IHammerInteraction
 {
-	public static TileEntityType<TurntableTileEntity> TYPE;
 	//rotationMapping is rotating clockwise around the face of the turntable, starting at NORTH for top/bottom facing turntables and DOWN for sideways facing turntables
 	private Rotation[] rotationMapping = new Rotation[]{Rotation.CLOCKWISE_90, Rotation.CLOCKWISE_90, Rotation.CLOCKWISE_90, Rotation.CLOCKWISE_90};
 	private boolean[] redstone = {false, false, false, false};
@@ -36,7 +35,7 @@ public class TurntableTileEntity extends IEBaseTileEntity implements IStateBased
 
 	public TurntableTileEntity()
 	{
-		super(TYPE);
+		super(IETileTypes.TURNTABLE.get());
 	}
 
 	@Override

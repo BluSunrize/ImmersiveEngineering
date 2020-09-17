@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.tool.RailgunHandler;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler.RailgunRenderColors;
 import blusunrize.immersiveengineering.common.entities.SawbladeEntity;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EnderPearlEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.entity.projectile.TridentEntity;
@@ -100,6 +101,29 @@ public class RailgunProjectiles
 					if(shooter.abilities.isCreativeMode)
 						trident.pickupStatus = AbstractArrowEntity.PickupStatus.CREATIVE_ONLY;
 					return trident;
+				}
+				return defaultProjectile;
+			}
+		});
+
+		// Enderpearl
+		RailgunHandler.registerProjectile(() -> Ingredient.fromItems(Items.ENDER_PEARL), new RailgunHandler.IRailgunProjectile()
+		{
+			@Override
+			public boolean isValidForTurret()
+			{
+				return false;
+			}
+
+			@Override
+			public Entity getProjectile(@Nullable PlayerEntity shooter, ItemStack ammo, Entity defaultProjectile)
+			{
+				if(shooter!=null)
+				{
+					EnderPearlEntity pearl = new EnderPearlEntity(shooter.world, shooter);
+					pearl.setItem(ammo);
+					pearl.func_234612_a_(shooter, shooter.rotationPitch, shooter.rotationYaw, 0.0F, 2.5F, 1.0F);
+					return pearl;
 				}
 				return defaultProjectile;
 			}

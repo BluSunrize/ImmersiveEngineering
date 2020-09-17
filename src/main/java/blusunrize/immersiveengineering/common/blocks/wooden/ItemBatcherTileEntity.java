@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.redstone.CapabilityRedstoneNetwork;
 import blusunrize.immersiveengineering.api.wires.redstone.CapabilityRedstoneNetwork.RedstoneBundleConnection;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
@@ -28,7 +29,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
@@ -45,15 +45,13 @@ import java.util.stream.Collectors;
 public class ItemBatcherTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInventory,
 		IInteractionObjectIE, IStateBasedDirectional
 {
-	public static TileEntityType<ItemBatcherTileEntity> TYPE;
-
 	private NonNullList<ItemStack> inventory = NonNullList.withSize(27, ItemStack.EMPTY);
 	public BatchMode batchMode = BatchMode.ALL;
 	public NonNullList<DyeColor> redstoneColors = NonNullList.withSize(9, DyeColor.WHITE);
 
 	public ItemBatcherTileEntity()
 	{
-		super(TYPE);
+		super(IETileTypes.ITEM_BATCHER.get());
 	}
 
 	@Override

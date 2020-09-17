@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
 import net.minecraft.block.BlockState;
@@ -37,6 +38,6 @@ public class StructuralArmBlock extends IETileProviderBlock
 	@Override
 	public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world)
 	{
-		return StructuralArmTileEntity.TYPE.create();
+		return IETileTypes.STRUCTURAL_ARM.get().create();
 	}
 }

@@ -2,6 +2,7 @@
 - Fixed crashes with wires under certain conditions (Malte)
 
 ##### Version 1.15.2-4.0.0-pre
+- Added Enderpeals as valid Railgun projectiles! (BluSunrize)
 - Fixed model issues with the metal press and refinery (Malte)
 - Fixed the metal press piston vanishing at certain angles (Malte)
 - Fixed wires rendering too many segments near chunk boundaries (Malte)
@@ -12,6 +13,8 @@
 - Fixed blueprints not showing up in the creative menu and JEI (Malte)
 - Fixed turrets being rotated incorrectly (Malte)
 - Fixed mixers voiding one tick worth of output (Malte)
+- Fixed screwdriver not being able to sneak+rightclick blocks (BluSunrize)
+- Fixed heavy shield not being repairable with a steel ingot (BluSunrize)
 
 ##### Version 1.16.1-4.0.0-118
 - Re-added custom banner patterns. Craft the blueprint, make patterns, then use them on the loom! (BluSunrize)

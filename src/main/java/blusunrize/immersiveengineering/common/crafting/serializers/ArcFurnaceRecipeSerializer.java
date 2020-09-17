@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
+import blusunrize.immersiveengineering.common.crafting.ArcRecyclingRecipe;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
@@ -22,6 +23,9 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public class ArcFurnaceRecipeSerializer extends IERecipeSerializer<ArcFurnaceRecipe>
 {
@@ -73,7 +77,16 @@ public class ArcFurnaceRecipeSerializer extends IERecipeSerializer<ArcFurnaceRec
 		ItemStack slag = buffer.readItemStack();
 		int time = buffer.readInt();
 		int energy = buffer.readInt();
-		return new ArcFurnaceRecipe(recipeId, outputs, input, slag, time, energy, additives);
+		if(!buffer.readBoolean())
+			return new ArcFurnaceRecipe(recipeId, outputs, input, slag, time, energy, additives);
+		else
+		{
+			final int numOutputs = buffer.readVarInt();
+			Map<ItemStack, Double> recyclingOutputs = new HashMap<>(numOutputs);
+			for(int i = 0; i < numOutputs; ++i)
+				recyclingOutputs.put(buffer.readItemStack(), buffer.readDouble());
+			return new ArcRecyclingRecipe(recipeId, recyclingOutputs, input, time, energy);
+		}
 	}
 
 	@Override
@@ -89,5 +102,16 @@ public class ArcFurnaceRecipeSerializer extends IERecipeSerializer<ArcFurnaceRec
 		buffer.writeItemStack(recipe.slag);
 		buffer.writeInt(recipe.getTotalProcessTime());
 		buffer.writeInt(recipe.getTotalProcessEnergy());
+		buffer.writeBoolean(recipe instanceof ArcRecyclingRecipe);
+		if(recipe instanceof ArcRecyclingRecipe)
+		{
+			Map<ItemStack, Double> outputs = ((ArcRecyclingRecipe)recipe).getOutputs();
+			buffer.writeVarInt(outputs.size());
+			for(Entry<ItemStack, Double> e : outputs.entrySet())
+			{
+				buffer.writeItemStack(e.getKey());
+				buffer.writeDouble(e.getValue());
+			}
+		}
 	}
 }
