@@ -117,7 +117,7 @@ public class ModelItemDynamicOverride extends BakedIEModel
 	{
 		@Nullable
 		@Override
-		public IBakedModel func_239290_a_(@Nonnull IBakedModel originalModel, ItemStack stack, @Nullable ClientWorld worldIn, @Nullable LivingEntity entityIn)
+		public IBakedModel getOverrideModel(@Nonnull IBakedModel originalModel, ItemStack stack, @Nullable ClientWorld worldIn, @Nullable LivingEntity entityIn)
 		{
 			if(!stack.isEmpty()&&stack.getItem() instanceof IEItemInterfaces.ITextureOverride)
 			{

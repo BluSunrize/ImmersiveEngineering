@@ -54,9 +54,9 @@ public class CompositeBakedModel<T extends IBakedModel> implements IBakedModel
 	}
 
 	@Override
-	public boolean func_230044_c_()
+	public boolean isSideLit()
 	{
-		return base.func_230044_c_();
+		return base.isSideLit();
 	}
 
 	@Override

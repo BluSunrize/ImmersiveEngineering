@@ -1478,7 +1478,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	{
 		if(event.getGui() instanceof VideoSettingsScreen&&ClientProxy.stencilEnabled)
 		{
-			GPUWarning gpuWarning = Minecraft.getInstance().func_241558_U_();
+			GPUWarning gpuWarning = Minecraft.getInstance().getGPUWarning();
 			final String key = "renderer";
 			final String suffix = "tencil enabled in Immersive Engineering config";
 			if(!gpuWarning.field_241688_c_.containsKey(key)||!gpuWarning.field_241688_c_.get(key).endsWith(suffix))

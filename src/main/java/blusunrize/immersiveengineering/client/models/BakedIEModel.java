@@ -34,7 +34,7 @@ public abstract class BakedIEModel implements IBakedModel
 
 	//TODO isSideLit (Figure out what needs this set)
 	@Override
-	public boolean func_230044_c_()
+	public boolean isSideLit()
 	{
 		return true;
 	}

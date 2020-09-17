@@ -25,8 +25,8 @@ import java.util.HashSet;
 public class TagUtils
 {
 	// These will be overriden on the client side, because TagCollectionManager doesn't work there
-	public static ITagCollection<Item> ITEM_TAG_COLLECTION = TagCollectionManager.func_242178_a().func_241836_b();
-	public static ITagCollection<Block> BLOCK_TAG_COLLECTION = TagCollectionManager.func_242178_a().func_241835_a();
+	public static ITagCollection<Item> ITEM_TAG_COLLECTION = TagCollectionManager.getManager().getItemTags();
+	public static ITagCollection<Block> BLOCK_TAG_COLLECTION = TagCollectionManager.getManager().getBlockTags();
 
 	public static ITag<Item> getItemTag(ResourceLocation key)
 	{

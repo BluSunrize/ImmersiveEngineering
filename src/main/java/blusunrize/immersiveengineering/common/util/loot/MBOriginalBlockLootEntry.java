@@ -69,7 +69,7 @@ public class MBOriginalBlockLootEntry extends StandaloneLootEntry
 	{
 		@Nonnull
 		@Override
-		protected MBOriginalBlockLootEntry func_212829_b_(
+		protected MBOriginalBlockLootEntry deserialize(
 				@Nonnull JsonObject json,
 				@Nonnull JsonDeserializationContext context,
 				int weight,

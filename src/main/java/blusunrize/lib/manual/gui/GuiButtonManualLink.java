@@ -67,7 +67,7 @@ public class GuiButtonManualLink extends Button
 		else
 			tooltip = "Invalid link";
 		gui.renderToolTip(transform, ImmutableList.of(
-				IReorderingProcessor.func_242239_a(tooltip, Style.EMPTY)
+				IReorderingProcessor.fromString(tooltip, Style.EMPTY)
 		), mx+8, my+4, font);
 	}
 }

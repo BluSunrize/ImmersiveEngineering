@@ -58,7 +58,7 @@ public class IEWorldGen
 	public static void addOreGen(Block block, String name, OreConfig config)
 	{
 		IEOreFeatureConfig cfg = new IEOreFeatureConfig(FillerBlockType.field_241882_a, block.getDefaultState(), config);
-		ConfiguredFeature<?, ?> feature = Features.func_243968_a(Lib.MODID+":"+name,
+		ConfiguredFeature<?, ?> feature = Features.register(Lib.MODID+":"+name,
 				IE_CONFIG_ORE.get().withConfiguration(cfg)
 						.withPlacement(IE_RANGE_PLACEMENT.get().configure(new IETopSolidRangeConfig(config)))
 						.func_242728_a/* spreadHorizontally */()
@@ -70,7 +70,7 @@ public class IEWorldGen
 
 	public static void registerMineralVeinGen()
 	{
-		ConfiguredFeature<?, ?> veinFeature = Features.func_243968_a(Lib.MODID+":mineral_veins",
+		ConfiguredFeature<?, ?> veinFeature = Features.register(Lib.MODID+":mineral_veins",
 				MINERAL_VEIN_FEATURE.get().withConfiguration(new NoFeatureConfig())
 						.withPlacement(
 								new ConfiguredPlacement<>(Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG)
@@ -83,7 +83,7 @@ public class IEWorldGen
 	{
 		BiomeGenerationSettingsBuilder generation = ev.getGeneration();
 		for(Entry<String, ConfiguredFeature<?, ?>> e : features.entrySet())
-			generation.func_242513_a(Decoration.UNDERGROUND_ORES, e.getValue());
+			generation.withFeature(Decoration.UNDERGROUND_ORES, e.getValue());
 	}
 
 	private void generateOres(Random random, int chunkX, int chunkZ, ServerWorld world)

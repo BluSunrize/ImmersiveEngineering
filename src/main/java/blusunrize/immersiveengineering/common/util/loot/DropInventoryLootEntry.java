@@ -85,7 +85,7 @@ public class DropInventoryLootEntry extends StandaloneLootEntry
 	{
 		@Nonnull
 		@Override
-		protected DropInventoryLootEntry func_212829_b_(
+		protected DropInventoryLootEntry deserialize(
 				@Nonnull JsonObject json,
 				@Nonnull JsonDeserializationContext context,
 				int weight,

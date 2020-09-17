@@ -16,7 +16,7 @@ public class GuiButtonDyeColor extends GuiButtonState<DyeColor>
 {
 	public GuiButtonDyeColor(int x, int y, String name, DyeColor initialColor, IIEPressable<GuiButtonState<DyeColor>> handler)
 	{
-		super(x, y, 8, 8, ITextComponent.func_244388_a(name), DyeColor.values(), initialColor.ordinal(), "immersiveengineering:textures/gui/hud_elements.png", 0, 128, -1, handler);
+		super(x, y, 8, 8, ITextComponent.getTextComponentOrEmpty(name), DyeColor.values(), initialColor.ordinal(), "immersiveengineering:textures/gui/hud_elements.png", 0, 128, -1, handler);
 	}
 
 	@Override

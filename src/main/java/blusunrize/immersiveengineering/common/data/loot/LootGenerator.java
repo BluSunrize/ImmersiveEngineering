@@ -51,7 +51,7 @@ public abstract class LootGenerator implements IDataProvider
 				tables::get
 		);
 		tables.forEach((name, table) -> {
-			LootTableManager.func_227508_a_(validator, name, table);
+			LootTableManager.validateLootTable(validator, name, table);
 		});
 		Multimap<String, String> problems = validator.getProblems();
 		if(!problems.isEmpty())

@@ -144,7 +144,7 @@ public class ClientUtils
 		if(unicodeRenderer==null)
 			unicodeRenderer = new FontRenderer(rl -> {
 				FontResourceManager resourceManager = Minecraft.getInstance().fontResourceMananger;
-				return resourceManager.field_238546_d_.get(Minecraft.field_238177_c_);
+				return resourceManager.field_238546_d_.get(Minecraft.UNIFORM_FONT_RENDERER_NAME);
 			});
 		return unicodeRenderer;
 	}
@@ -875,7 +875,7 @@ public class ClientUtils
 			quads = model.getQuads(state, null, Utils.RAND);
 		if(quads==null||quads.isEmpty())//no quads at all D:
 			return null;
-		return quads.get(0).func_187508_a().getName();
+		return quads.get(0).getSprite().getName();
 	}
 
 	public static Vector4f pulseRGBAlpha(Vector4f rgba, int tickrate, float min, float max)

@@ -199,7 +199,7 @@ public class BakedConnectionModel extends BakedIEModel
 		}
 
 		@Override
-		public boolean func_230044_c_()
+		public boolean isSideLit()
 		{
 			return true;
 		}

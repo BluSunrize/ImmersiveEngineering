@@ -197,7 +197,7 @@ public class FeedthroughModel extends BakedIEModel
 
 		@Nonnull
 		@Override
-		public IBakedModel func_239290_a_(@Nonnull IBakedModel originalModel, ItemStack stack,
+		public IBakedModel getOverrideModel(@Nonnull IBakedModel originalModel, ItemStack stack,
 												 @Nullable ClientWorld world, @Nullable LivingEntity entity)
 		{
 			Item connItem = Item.getItemFromBlock(Connectors.feedthrough);

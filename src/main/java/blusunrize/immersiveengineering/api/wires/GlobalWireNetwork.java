@@ -72,7 +72,7 @@ public class GlobalWireNetwork implements IWorldTickable
 			return lastClientNet;
 		LazyOptional<GlobalWireNetwork> netOptional = w.getCapability(NetHandlerCapability.NET_CAPABILITY);
 		if(!netOptional.isPresent())
-			throw new RuntimeException("No net handler found for dimension "+w.getDimensionKey().func_240901_a_()+", remote: "+w.isRemote);
+			throw new RuntimeException("No net handler found for dimension "+w.getDimensionKey().getLocation()+", remote: "+w.isRemote);
 		GlobalWireNetwork ret = netOptional.orElseThrow(RuntimeException::new);
 		if(!w.isRemote)
 		{

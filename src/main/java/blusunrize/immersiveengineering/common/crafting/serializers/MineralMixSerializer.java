@@ -22,7 +22,7 @@ import net.minecraft.util.JSONUtils;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.world.DimensionType;
+import net.minecraft.world.World;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -61,10 +61,10 @@ public class MineralMixSerializer extends IERecipeSerializer<MineralMix>
 		int weight = JSONUtils.getInt(json, "weight");
 		float failChance = JSONUtils.getFloat(json, "fail_chance", 0);
 		array = json.getAsJsonArray("dimensions");
-		List<RegistryKey<DimensionType>> dimensions = new ArrayList<>();
+		List<RegistryKey<World>> dimensions = new ArrayList<>();
 		for(int i = 0; i < array.size(); i++)
-			dimensions.add(RegistryKey.func_240903_a_(
-					Registry.DIMENSION_TYPE_KEY,
+			dimensions.add(RegistryKey.getOrCreateKey(
+					Registry.WORLD_KEY,
 					new ResourceLocation(array.get(i).getAsString())
 			));
 		ResourceLocation rl = new ResourceLocation(JSONUtils.getString(json, "sample_background", "minecraft:stone"));
@@ -85,10 +85,10 @@ public class MineralMixSerializer extends IERecipeSerializer<MineralMix>
 		int weight = buffer.readInt();
 		float failChance = buffer.readFloat();
 		count = buffer.readInt();
-		List<RegistryKey<DimensionType>> dimensions = new ArrayList<>();
+		List<RegistryKey<World>> dimensions = new ArrayList<>();
 		for(int i = 0; i < count; i++)
-			dimensions.add(RegistryKey.func_240903_a_(
-					Registry.DIMENSION_TYPE_KEY,
+			dimensions.add(RegistryKey.getOrCreateKey(
+					Registry.WORLD_KEY,
 					buffer.readResourceLocation()
 			));
 		Block bg = ForgeRegistries.BLOCKS.getValue(buffer.readResourceLocation());
@@ -104,8 +104,8 @@ public class MineralMixSerializer extends IERecipeSerializer<MineralMix>
 		buffer.writeInt(recipe.weight);
 		buffer.writeFloat(recipe.failChance);
 		buffer.writeInt(recipe.dimensions.size());
-		for(RegistryKey<DimensionType> dimension : recipe.dimensions)
-			buffer.writeResourceLocation(dimension.func_240901_a_());
+		for(RegistryKey<World> dimension : recipe.dimensions)
+			buffer.writeResourceLocation(dimension.getLocation());
 		buffer.writeResourceLocation(ForgeRegistries.BLOCKS.getKey(recipe.background));
 	}
 }

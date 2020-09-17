@@ -59,7 +59,7 @@ public class ToolboxTileEntity extends IEBaseTileEntity implements IStateBasedDi
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		if(nbt.contains("name", NBT.TAG_STRING))
-			this.name = ITextComponent.Serializer.func_240643_a_(nbt.getString("name"));
+			this.name = ITextComponent.Serializer.getComponentFromJson(nbt.getString("name"));
 		if(nbt.contains("enchantments", NBT.TAG_LIST))
 			this.enchantments = nbt.getList("enchantments", NBT.TAG_COMPOUND);
 		if(!descPacket)

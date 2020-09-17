@@ -136,7 +136,7 @@ public class ExcavatorHandler
 				if(!crossover)
 				{
 					MineralMix mineralMix = null;
-					MineralSelection selection = new MineralSelection(world.func_230315_m_());
+					MineralSelection selection = new MineralSelection(world.getDimensionKey());
 					if(selection.getTotalWeight() > 0)
 					{
 						int weight = selection.getRandomWeight(rand);
@@ -168,12 +168,7 @@ public class ExcavatorHandler
 		private final int totalWeight;
 		private final Set<MineralMix> validMinerals;
 
-		public MineralSelection(DimensionType dimension)
-		{
-			this(RegistryKey.func_240903_a_(Registry.DIMENSION_TYPE_KEY, dimension.func_242725_p()));
-		}
-
-		public MineralSelection(RegistryKey<DimensionType> dimension)
+		public MineralSelection(RegistryKey<World> dimension)
 		{
 			int weight = 0;
 			this.validMinerals = new HashSet<>();

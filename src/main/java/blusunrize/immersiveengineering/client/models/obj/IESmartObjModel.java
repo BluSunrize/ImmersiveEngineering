@@ -163,7 +163,7 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 	}
 
 	@Override
-	public boolean func_230044_c_()
+	public boolean isSideLit()
 	{
 		return true;
 	}
@@ -191,7 +191,7 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 	ItemOverrideList overrideList = new ItemOverrideList()
 	{
 		@Override
-		public IBakedModel func_239290_a_(@Nonnull IBakedModel originalModel, @Nonnull ItemStack stack,
+		public IBakedModel getOverrideModel(@Nonnull IBakedModel originalModel, @Nonnull ItemStack stack,
 												 @Nullable ClientWorld world, @Nullable LivingEntity entity)
 		{
 			tempEntityStatic = entity;

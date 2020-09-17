@@ -18,7 +18,7 @@ public class FontUtils
 	public static IFormattableTextComponent withAppendColoredColour(IFormattableTextComponent base, int color) {
 		String hexCol = hexColorString(color);
 		IFormattableTextComponent coloredComponent = new StringTextComponent("#"+hexCol);
-		Style coloredStyle = coloredComponent.getStyle().setColor(Color.func_240743_a_(color));
+		Style coloredStyle = coloredComponent.getStyle().setColor(Color.fromInt(color));
 		coloredComponent.setStyle(coloredStyle);
 		return base.append(coloredComponent);
 	}

@@ -97,12 +97,12 @@ public class DataGenUtils
 
 	public static INamedTag<Item> createItemWrapper(ResourceLocation name)
 	{
-		return createWrapperTag(ItemTags.func_242177_b(), name, ItemTags::makeWrapperTag);
+		return createWrapperTag(ItemTags.getAllTags(), name, ItemTags::makeWrapperTag);
 	}
 
 	public static INamedTag<Block> createBlockWrapper(ResourceLocation name)
 	{
-		return createWrapperTag(BlockTags.func_242174_b(), name, BlockTags::makeWrapperTag);
+		return createWrapperTag(BlockTags.getAllTags(), name, BlockTags::makeWrapperTag);
 	}
 
 	private static <T> INamedTag<T> createWrapperTag(List<? extends INamedTag<T>> allExisting, ResourceLocation name,

@@ -62,7 +62,7 @@ public class TileDropLootEntry extends StandaloneLootEntry
 	{
 		@Nonnull
 		@Override
-		protected TileDropLootEntry func_212829_b_(
+		protected TileDropLootEntry deserialize(
 				@Nonnull JsonObject json,
 				@Nonnull JsonDeserializationContext context,
 				int weight,

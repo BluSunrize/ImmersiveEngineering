@@ -44,6 +44,7 @@ import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.DimensionType;
+import net.minecraft.world.World;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.VersionChecker;
@@ -217,10 +218,10 @@ public class IEManual
 			if(mineral.dimensions!=null&&mineral.dimensions.size() > 0)
 			{
 				StringBuilder validDims = new StringBuilder();
-				for(RegistryKey<DimensionType> dim : mineral.dimensions)
+				for(RegistryKey<World> dim : mineral.dimensions)
 					validDims.append((validDims.length() > 0)?", ": "")
 							.append("<dim;")
-							.append(dim.func_240901_a_())
+							.append(dim.getLocation())
 							.append(">");
 				dimensionString = I18n.format("ie.manual.entry.mineralsDimValid", toName.apply(mineral), validDims.toString());
 			}
@@ -331,10 +332,10 @@ public class IEManual
 					}
 				}
 				if(item==null)
-					item = ITextComponent.func_244388_a(entry.getKey().toString());
+					item = ITextComponent.getTextComponentOrEmpty(entry.getKey().toString());
 
 				int bt = entry.getValue();
-				ITextComponent am = ITextComponent.func_244388_a(bt+" "+valueType);
+				ITextComponent am = ITextComponent.getTextComponentOrEmpty(bt+" "+valueType);
 				list.add(new ITextComponent[]{item, am});
 			}
 		} catch(Exception e)

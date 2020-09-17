@@ -142,7 +142,7 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 						JsonArray row = arr.get(i).getAsJsonArray();
 						table[i] = new ITextComponent[row.size()];
 						for(int j = 0; j < row.size(); j++)
-							table[i][j] = ITextComponent.func_244388_a(row.get(j).getAsString());
+							table[i][j] = ITextComponent.getTextComponentOrEmpty(row.get(j).getAsString());
 					}
 					return new ManualElementTable(this, table, JSONUtils.getBoolean(s,
 							"horizontal_bars", false));

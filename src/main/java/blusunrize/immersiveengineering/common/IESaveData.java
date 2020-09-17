@@ -48,7 +48,7 @@ public class IESaveData extends WorldSavedData
 			{
 				CompoundNBT dimTag = dimensionList.getCompound(i);
 				ResourceLocation rl = new ResourceLocation(dimTag.getString("dimension"));
-				RegistryKey<World> dimensionType = RegistryKey.func_240903_a_(Registry.WORLD_KEY, rl);
+				RegistryKey<World> dimensionType = RegistryKey.getOrCreateKey(Registry.WORLD_KEY, rl);
 			ListNBT mineralList = dimTag.getList("veins", NBT.TAG_COMPOUND);
 
 				ExcavatorHandler.getMineralVeinList().
@@ -105,7 +105,7 @@ public class IESaveData extends WorldSavedData
 			for(RegistryKey<World> dimension : ExcavatorHandler.getMineralVeinList().keySet())
 			{
 				CompoundNBT dimTag = new CompoundNBT();
-				dimTag.putString("dimension", dimension.func_240901_a_().toString());
+				dimTag.putString("dimension", dimension.getLocation().toString());
 				ListNBT mineralList = new ListNBT();
 				for(MineralVein mineralVein : ExcavatorHandler.getMineralVeinList().get(dimension))
 					mineralList.add(mineralVein.writeToNBT());

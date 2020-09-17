@@ -429,7 +429,7 @@ public class ModelConveyor extends BakedIEModel
 	{
 		@Nullable
 		@Override
-		public IBakedModel func_239290_a_(@Nonnull IBakedModel originalModel, @Nonnull ItemStack stack, @Nullable ClientWorld world, @Nullable LivingEntity entity)
+		public IBakedModel getOverrideModel(@Nonnull IBakedModel originalModel, @Nonnull ItemStack stack, @Nullable ClientWorld world, @Nullable LivingEntity entity)
 		{
 			String key = "default";
 			if(stack.getItem() instanceof BlockItem)

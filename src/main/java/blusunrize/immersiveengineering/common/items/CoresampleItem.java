@@ -103,7 +103,7 @@ public class CoresampleItem extends IEBaseItem
 			RegistryKey<World> dimension = getDimension(coresample);
 			if(dimension!=null)
 			{
-				String s2 = dimension.func_240901_a_().getPath();
+				String s2 = dimension.getLocation().getPath();
 				if(s2.toLowerCase(Locale.ENGLISH).startsWith("the_"))
 					s2 = s2.substring(4);
 				list.add(new StringTextComponent(Utils.toCamelCase(s2)).mergeStyle(baseColor));
@@ -226,7 +226,7 @@ public class CoresampleItem extends IEBaseItem
 		if(stack.hasTag()&&stack.getOrCreateTag().contains("dimension"))
 		{
 			ResourceLocation name = new ResourceLocation(stack.getOrCreateTag().getString("dimension"));
-			return RegistryKey.func_240903_a_(Registry.WORLD_KEY, name);
+			return RegistryKey.getOrCreateKey(Registry.WORLD_KEY, name);
 		}
 		return null;
 	}
@@ -234,6 +234,6 @@ public class CoresampleItem extends IEBaseItem
 
 	public static void setDimension(ItemStack stack, RegistryKey<World> dimension)
 	{
-		stack.getOrCreateTag().putString("dimension", dimension.func_240901_a_().toString());
+		stack.getOrCreateTag().putString("dimension", dimension.getLocation().toString());
 	}
 }

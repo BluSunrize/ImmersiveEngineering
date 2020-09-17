@@ -136,7 +136,7 @@ public class Villages
 
 	private static void addToPool(ResourceLocation pool, ResourceLocation toAdd, int weight)
 	{
-		JigsawPattern old = WorldGenRegistries.field_243656_h.getOrDefault(pool);
+		JigsawPattern old = WorldGenRegistries.JIGSAW_POOL.getOrDefault(pool);
 		List<JigsawPiece> shuffled;
 		if(old!=null)
 			shuffled = old.getShuffledPieces(Utils.RAND);
@@ -149,7 +149,7 @@ public class Villages
 		}
 		newPieces.add(new Pair<>(new LegacySingleJigsawPiece(Either.left(toAdd), () -> ProcessorLists.field_244101_a, PlacementBehaviour.RIGID), weight));
 		ResourceLocation name = old.getName();
-		Registry.register(WorldGenRegistries.field_243656_h, pool, new JigsawPattern(pool, name, newPieces));
+		Registry.register(WorldGenRegistries.JIGSAW_POOL, pool, new JigsawPattern(pool, name, newPieces));
 	}
 
 	@Mod.EventBusSubscriber(modid = MODID, bus = Bus.MOD)

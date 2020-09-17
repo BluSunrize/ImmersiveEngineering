@@ -82,7 +82,7 @@ public class ManualElementTable extends SpecialManualElements
 							int xx = textOff.length > 0&&j > 0?textOff[j-1]: x;
 							int w = Math.max(10, 120-(j > 0?textOff[j-1]-x: 0));
 							ITextComponent lineText = line[j];
-							List<IReorderingProcessor> lines = manual.fontRenderer().func_238425_b_(lineText, w);
+							List<IReorderingProcessor> lines = manual.fontRenderer().trimStringToWidth(lineText, w);
 							for(IReorderingProcessor l : lines)
 								manual.fontRenderer().func_238422_b_(transform, l, xx, y+yOff, manual.getTextColour());
 							if(lines.size() > height)
@@ -123,7 +123,7 @@ public class ManualElementTable extends SpecialManualElements
 				bars = Arrays.copyOf(bars, tableLine.length-1);
 			for(int j = 0; j < tableLine.length-1; j++)
 			{
-				int fl = manual.fontRenderer().func_238414_a_(tableLine[j]);
+				int fl = manual.fontRenderer().getStringPropertyWidth(tableLine[j]);
 				if(fl > bars[j])
 					bars[j] = fl;
 			}
@@ -142,7 +142,7 @@ public class ManualElementTable extends SpecialManualElements
 					if(tableLine[j]!=null)
 					{
 						int w = Math.max(10, 120-(j > 0?textOff[j-1]: 0));
-						int l = manual.fontRenderer().func_238425_b_(tableLine[j], w).size();
+						int l = manual.fontRenderer().trimStringToWidth(tableLine[j], w).size();
 						if(j!=0)
 							yOff += l*(manual.fontRenderer().FONT_HEIGHT+1);
 					}

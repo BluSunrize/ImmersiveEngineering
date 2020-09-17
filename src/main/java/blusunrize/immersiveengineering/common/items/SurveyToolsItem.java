@@ -200,7 +200,7 @@ public class SurveyToolsItem extends IEBaseItem
 	{
 		ListNBT list = surveyTools.getOrCreateTag().getList(DATA_KEY, NBT.TAG_COMPOUND);
 		CompoundNBT tag = null;
-		String dimString = dimension.func_240901_a_().toString();
+		String dimString = dimension.getLocation().toString();
 		for(INBT nbt : list)
 		{
 			CompoundNBT tmp = (CompoundNBT)nbt;
