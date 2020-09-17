@@ -15,7 +15,9 @@ import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
 import net.minecraft.item.ItemStack;
@@ -32,6 +34,7 @@ import java.util.stream.Collectors;
 
 public class ArcRecyclingThreadHandler extends Thread
 {
+	private static ArcRecyclingThreadHandler runningHandler;
 	private ArrayList<RecyclingCalculation> validated;
 	private ArrayListMultimap<ItemStack, RecyclingCalculation> nonValidated;
 	private final List<IRecipe<?>> recipeList;
@@ -41,6 +44,7 @@ public class ArcRecyclingThreadHandler extends Thread
 		this.recipeList = allRecipes.stream()
 				.filter(ArcFurnaceRecipe.assembleRecyclingFilter())
 				.collect(Collectors.toList());
+		runningHandler = this;
 	}
 
 	@Override
@@ -106,26 +110,35 @@ public class ArcRecyclingThreadHandler extends Thread
 				+(System.currentTimeMillis()-timestamp)+" milliseconds");
 	}
 
-	public void finishUp()
-	{
-		//HashSet to avoid duplicates
-		HashSet<String> finishedRecycles = new HashSet<>();
-		for(RecyclingCalculation valid : validated)
-			if(finishedRecycles.add(valid.stack.toString())&&!valid.outputs.isEmpty())
-				makeRecipe(valid);
-		for(RecyclingCalculation invalid : Sets.newHashSet(nonValidated.values()))
-			if(finishedRecycles.add(invalid.stack.toString())&&!invalid.outputs.isEmpty())
-			{
-				IELogger.info("Couldn't fully analyze "+invalid.stack+", missing knowledge for "+invalid.queriedSubcomponents);
-				makeRecipe(invalid);
-			}
-	}
-
-	private void makeRecipe(RecyclingCalculation calculation)
+	private ArcRecyclingRecipe makeRecipe(RecyclingCalculation calculation)
 	{
 		ResourceLocation id = new ResourceLocation(Lib.MODID, "recycling/"+ForgeRegistries.ITEMS.getKey(calculation.stack.getItem()).getPath());
-		ArcRecyclingRecipe recipe = new ArcRecyclingRecipe(id, calculation.outputs, IngredientWithSize.of(calculation.stack), 100, 51200);
-		ArcFurnaceRecipe.recipeList.put(id, recipe);
+		return new ArcRecyclingRecipe(id, calculation.outputs, IngredientWithSize.of(calculation.stack), 100, 51200);
+	}
+
+	public static List<ArcFurnaceRecipe> getRecipesFromRunningThreads()
+	{
+		ArcRecyclingThreadHandler handler = Preconditions.checkNotNull(runningHandler);
+		try
+		{
+			handler.join();
+			//HashSet to avoid duplicates
+			HashSet<String> finishedRecycles = new HashSet<>();
+			List<ArcFurnaceRecipe> generatedRecipes = new ArrayList<>();
+			for(RecyclingCalculation valid : handler.validated)
+				if(finishedRecycles.add(valid.stack.toString())&&!valid.outputs.isEmpty())
+					generatedRecipes.add(handler.makeRecipe(valid));
+			for(RecyclingCalculation invalid : Sets.newHashSet(handler.nonValidated.values()))
+				if(finishedRecycles.add(invalid.stack.toString())&&!invalid.outputs.isEmpty())
+				{
+					IELogger.info("Couldn't fully analyze "+invalid.stack+", missing knowledge for "+invalid.queriedSubcomponents);
+					generatedRecipes.add(handler.makeRecipe(invalid));
+				}
+			return generatedRecipes;
+		} catch(InterruptedException x)
+		{
+			return ImmutableList.of();
+		}
 	}
 
 	public static class RegistryIterationThread extends Thread
