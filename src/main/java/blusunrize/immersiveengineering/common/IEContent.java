@@ -329,7 +329,7 @@ public class IEContent
 		WoodenDecoration.treatedFence = new IEFenceBlock("treated_fence", standardWoodPropertiesNotSolid);
 		WoodenDecoration.treatedScaffolding = new ScaffoldingBlock("treated_scaffold", standardWoodPropertiesNotSolid);
 
-		WoodenDevices.craftingTable = new GenericTileBlock<>("craftingtable", IETileTypes.CRAFTING_TABLE,
+		WoodenDevices.craftingTable = new GenericTileBlock("craftingtable", IETileTypes.CRAFTING_TABLE,
 				standardWoodPropertiesNotSolid, IEProperties.FACING_HORIZONTAL);
 		WoodenDevices.workbench = new ModWorkbenchBlock("workbench");
 		WoodenDevices.gunpowderBarrel = new GunpowderBarrelBlock("gunpowder_barrel");

@@ -20,13 +20,13 @@ credits="All the great other Git Contributors, and the nerds on IRC!"
 [[dependencies.immersiveengineering]]
   modId="forge"
   mandatory=true
-  versionRange="[33.0.0,)"
+  versionRange="[${forge_version},)"
   ordering="NONE"
   side="BOTH"
 
 [[dependencies.immersiveengineering]]
   modId="minecraft"
   mandatory=true
-  versionRange="[1.16.2]"
+  versionRange="[${mc_version}]"
   ordering="NONE"
   side="BOTH"

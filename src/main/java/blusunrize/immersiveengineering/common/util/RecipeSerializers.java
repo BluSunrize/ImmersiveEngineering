@@ -112,6 +112,9 @@ public class RecipeSerializers
 		MineralMix.SERIALIZER = RECIPE_SERIALIZERS.register(
 				"mineral_mix", MineralMixSerializer::new
 		);
+		GeneratedListRecipe.SERIALIZER = RECIPE_SERIALIZERS.register(
+				"generated_list", GeneratedListSerializer::new
+		);
 
 		CraftingHelper.register(new IEConfigConditionSerializer());
 	}

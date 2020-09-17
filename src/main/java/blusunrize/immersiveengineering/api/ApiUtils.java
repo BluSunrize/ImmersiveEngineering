@@ -8,6 +8,9 @@
 
 package blusunrize.immersiveengineering.api;
 
+import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
+import blusunrize.immersiveengineering.api.utils.IngredientUtils;
+import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
 import com.google.gson.JsonElement;
@@ -16,9 +19,11 @@ import com.google.gson.JsonObject;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.JSONUtils;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.concurrent.ThreadTaskExecutor;
 import net.minecraft.util.concurrent.TickDelayedTask;
@@ -32,17 +37,72 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import static blusunrize.immersiveengineering.api.IETags.getIngot;
-import static blusunrize.immersiveengineering.api.utils.ItemUtils.copyStackWithAmount;
 
 public class ApiUtils
 {
 	public static final SetRestrictedField<Consumer<TileEntity>> disableTicking = new SetRestrictedField<>();
+
+	@Deprecated
+	public static boolean compareToOreName(ItemStack stack, ResourceLocation oreName)
+	{
+		return TagUtils.isInBlockOrItemTag(stack, oreName);
+	}
+
+	@Deprecated
+	public static boolean stackMatchesObject(ItemStack stack, Object o)
+	{
+		return ItemUtils.stackMatchesObject(stack, o);
+	}
+
+	@Deprecated
+	public static boolean stackMatchesObject(ItemStack stack, Object o, boolean checkNBT)
+	{
+		return ItemUtils.stackMatchesObject(stack, o, checkNBT);
+	}
+
+	@Deprecated
+	public static ItemStack copyStackWithAmount(ItemStack stack, int amount)
+	{
+		return ItemUtils.copyStackWithAmount(stack, amount);
+	}
+
+	@Deprecated
+	public static boolean stacksMatchIngredientList(List<Ingredient> list, NonNullList<ItemStack> stacks)
+	{
+		return IngredientUtils.stacksMatchIngredientList(list, stacks);
+	}
+
+	@Deprecated
+	public static boolean stacksMatchIngredientWithSizeList(List<IngredientWithSize> list, NonNullList<ItemStack> stacks)
+	{
+		return IngredientUtils.stacksMatchIngredientWithSizeList(list, stacks);
+	}
+
+	@Deprecated
+	public static Ingredient createIngredientFromList(List<ItemStack> list)
+	{
+		return IngredientUtils.createIngredientFromList(list);
+	}
+
+	@Deprecated
+	public static ComparableItemStack createComparableItemStack(ItemStack stack, boolean copy)
+	{
+		return ComparableItemStack.create(stack, copy);
+	}
+
+	@Deprecated
+	public static ComparableItemStack createComparableItemStack(ItemStack stack, boolean copy, boolean useNbt)
+	{
+		return ComparableItemStack.create(stack, copy, useNbt);
+	}
+
 
 	public static JsonElement jsonSerializeFluidStack(FluidStack fluidStack)
 	{
@@ -143,6 +203,7 @@ public class ApiUtils
 				entity.isOnGround()?Math.min(0.4D, motionOld.y/2.0D+strength): motionOld.y,
 				motionOld.z/2.0D-toAdd.z);
 	}
+
 	public static void addFutureServerTask(World world, Runnable task, boolean forceFuture)
 	{
 		LogicalSide side = world.isRemote?LogicalSide.CLIENT: LogicalSide.SERVER;

@@ -30,6 +30,7 @@ import blusunrize.immersiveengineering.common.crafting.IEConfigConditionSerializ
 import blusunrize.immersiveengineering.common.crafting.IngredientFluidStack;
 import blusunrize.immersiveengineering.common.crafting.RevolverAssemblyRecipeBuilder;
 import blusunrize.immersiveengineering.common.crafting.TurnAndCopyRecipeBuilder;
+import blusunrize.immersiveengineering.common.crafting.serializers.GeneratedListRecipeBuilder;
 import blusunrize.immersiveengineering.common.data.resources.RecipeMetals;
 import blusunrize.immersiveengineering.common.data.resources.RecipeMetals.AlloyProperties;
 import blusunrize.immersiveengineering.common.data.resources.RecipeOres;
@@ -83,6 +84,7 @@ import java.util.function.Consumer;
 
 import static blusunrize.immersiveengineering.api.IETags.getStorageBlock;
 import static blusunrize.immersiveengineering.common.data.DataGenUtils.createItemWrapper;
+import static blusunrize.immersiveengineering.common.data.IEDataGenerator.rl;
 
 public class Recipes extends RecipeProvider
 {
@@ -191,6 +193,9 @@ public class Recipes extends RecipeProvider
 				.build(out, ImmersiveEngineering.MODID+":revolver_cycle");
 		CustomRecipeBuilder.customRecipe(RecipeSerializers.IE_REPAIR.get())
 				.build(out, ImmersiveEngineering.MODID+":ie_item_repair");
+		GeneratedListRecipeBuilder.build(out, rl("arc_recycling_list"));
+		GeneratedListRecipeBuilder.build(out, rl("mixer_potion_list"));
+		GeneratedListRecipeBuilder.build(out, rl("potion_bottling_list"));
 		addRGBRecipe(out, toRL("curtain_colour"), Ingredient.fromItems(Cloth.curtain), "colour");
 
 		recipesBlast(out);

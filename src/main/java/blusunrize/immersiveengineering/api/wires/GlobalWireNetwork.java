@@ -253,6 +253,7 @@ public class GlobalWireNetwork implements IWorldTickable
 
 	public void removeConnector(IImmersiveConnectable iic)
 	{
+		WireLogger.logger.info("Removing connector {} at {}", iic, iic.getPosition());
 		Set<LocalWireNetwork> netsToRemoveFrom = new ObjectArraySet<>();
 		final BlockPos iicPos = iic.getPosition();
 		for(ConnectionPoint c : iic.getConnectionPoints())
@@ -295,6 +296,7 @@ public class GlobalWireNetwork implements IWorldTickable
 
 	public void onConnectorLoad(IImmersiveConnectable iic, World world)
 	{
+		WireLogger.logger.info("Loading connector {} at {}", iic, iic.getPosition());
 		if(validating)
 			WireLogger.logger.error("Adding a connector during validation!");
 		onConnectorLoad(iic, world.isRemote);
@@ -350,6 +352,7 @@ public class GlobalWireNetwork implements IWorldTickable
 
 	public void onConnectorUnload(BlockPos pos, IImmersiveConnectable iic)
 	{
+		WireLogger.logger.info("Unloading connector {} at {}", iic, iic.getPosition());
 		Map<LocalWireNetwork, Boolean> handledNets = new HashMap<>();
 		for(ConnectionPoint connectionPoint : iic.getConnectionPoints())
 		{
@@ -477,7 +480,7 @@ public class GlobalWireNetwork implements IWorldTickable
 			local.removeCP(cp);
 	}
 
-	public void removeConnector(BlockPos pos)
+	void removeConnector(BlockPos pos)
 	{
 		Collection<ConnectionPoint> cpsAtInvalid = new ArrayList<>();
 		for(ConnectionPoint cp : localNets.keySet())

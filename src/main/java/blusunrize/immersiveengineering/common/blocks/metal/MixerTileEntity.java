@@ -18,7 +18,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBou
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
-import blusunrize.immersiveengineering.common.crafting.MixerRecipePotion;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
@@ -508,21 +507,6 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 				}
 			}
 			super.doProcessTick(multiblock);
-		}
-
-		@Override
-		protected void processFinish(PoweredMultiblockTileEntity<?, MixerRecipe> multiblock)
-		{
-			super.processFinish(multiblock);
-			if(this.recipe instanceof MixerRecipePotion)
-				for(int i : this.inputSlots)
-					if(!multiblock.getInventory().get(i).isEmpty()&&
-							BrewingRecipeRegistry.isValidIngredient(multiblock.getInventory().get(i)))
-					{
-						multiblock.getInventory().get(i).shrink(1);
-						if(multiblock.getInventory().get(i).getCount() <= 0)
-							multiblock.getInventory().set(i, ItemStack.EMPTY);
-					}
 		}
 	}
 
