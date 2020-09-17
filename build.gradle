@@ -34,11 +34,18 @@ sourceSets {
         }
     }
 }
+
+def version_replaces = [
+        'version': project.version,
+        'mc_version': version_minecraft,
+        'forge_version': version_forge
+]
+
 processResources {
     from(sourceSets.main.resources.srcDirs) {
         include 'META-INF/mods.toml'
 
-        expand 'version': project.version
+        expand version_replaces
     }
     from(sourceSets.main.resources.srcDirs) {
         exclude 'META-INF/mods.toml'
