@@ -253,16 +253,18 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 				}
 				else
 					 */
-				//todo: maybe this an approach to clone models?
-//				IESmartObjModel smrtModel = (IESmartObjModel)originalModel;
-//
-//				model = new IESmartObjModel(smrtModel.baseModel, smrtModel.baseBaked, smrtModel.owner, smrtModel.bakery,
-//						smrtModel.spriteGetter, smrtModel.sprite,
-//						smrtModel.format, smrtModel.state, smrtModel.isDynamic);
-//				((IESmartObjModel)model).tempStack = stack;
-//				((IESmartObjModel)model).tempEntity = entity;
+				if(originalModel instanceof IESmartObjModel)
+				{
+					IESmartObjModel smrtModel = (IESmartObjModel)originalModel;
 
-				model = originalModel;
+					model = new IESmartObjModel(smrtModel.baseModel, smrtModel.baseBaked, smrtModel.owner, smrtModel.bakery,
+							smrtModel.spriteGetter, smrtModel.sprite,
+							smrtModel.state, smrtModel.isDynamic);
+					((IESmartObjModel)model).tempStack = stack;
+					((IESmartObjModel)model).tempEntity = entity;
+				}
+				else
+					model = originalModel;
 				comp.copy();
 				cachedBakedItemModels.put(comp, model);
 			}
