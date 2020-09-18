@@ -1221,17 +1221,6 @@ public class ClientUtils
 		}
 	}
 
-	public static void setLightmapDisabled(boolean disabled)
-	{
-		//TODO
-		throw new UnsupportedOperationException();
-	}
-
-	public static void toggleLightmap(boolean pre, boolean disabled)
-	{
-		throw new UnsupportedOperationException();
-	}
-
 	public static boolean isSneakKeyPressed()
 	{
 		if(Minecraft.getInstance().gameSettings==null)

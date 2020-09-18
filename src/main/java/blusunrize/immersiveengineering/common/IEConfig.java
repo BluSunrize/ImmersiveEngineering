@@ -175,6 +175,9 @@ public class IEConfig
 			enableDebug = builder
 					.comment("A config setting to enable debug features. These features may vary between releases, may cause crashes, and are unsupported. Do not enable unless asked to by a developer of IE.")
 					.define("enableDebug", false);
+			enableVBOs = builder
+					//TODO comment
+					.define("enableVBO", true);
 			builder.pop();
 		}
 
@@ -194,6 +197,7 @@ public class IEConfig
 		public final BooleanValue stencilBufferEnabled;
 		public final Map<String, BooleanValue> compat = new HashMap<>();
 		public final BooleanValue enableDebug;
+		public final BooleanValue enableVBOs;
 	}
 
 	public static class Machines
