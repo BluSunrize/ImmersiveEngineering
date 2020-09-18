@@ -49,7 +49,7 @@ public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTi
 
 	public WatermillTileEntity()
 	{
-		super(IETileTypes.WINDMILL.get());
+		super(IETileTypes.WATERMILL.get());
 	}
 
 	@Override
@@ -153,11 +153,6 @@ public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTi
 	public double getPower()
 	{
 		return getFacing().getAxis()==Axis.Z?-getRotationVec().x: getRotationVec().z;
-	}
-
-	public void resetRotationVec()
-	{
-		rotationVec = null;
 	}
 
 	public Vec3d getRotationVec()
