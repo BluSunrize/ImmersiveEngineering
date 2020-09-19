@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
-import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.obj.IESmartObjModel;
 import blusunrize.immersiveengineering.client.utils.VertexBufferHolder;
 import blusunrize.immersiveengineering.common.IEConfig;
@@ -21,7 +20,6 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -30,7 +28,6 @@ import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Vector3f;
-import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
@@ -42,11 +39,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("deprecation")
 public class BucketWheelRenderer extends TileEntityRenderer<BucketWheelTileEntity>
 {
 	public static DynamicModel<Void> WHEEL;
+	private static final Cache<List<String>, VertexBufferHolder> CACHED_BUFFERS = CacheBuilder.newBuilder()
+			.maximumSize(100)
+			.expireAfterAccess(1, TimeUnit.MINUTES)
+			.<Object, VertexBufferHolder>removalListener(rem -> rem.getValue().reset())
+			.build();
 
 	public BucketWheelRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
 	{
@@ -58,12 +62,7 @@ public class BucketWheelRenderer extends TileEntityRenderer<BucketWheelTileEntit
 	{
 		if(!tile.formed||!tile.getWorldNonnull().isBlockLoaded(tile.getPos())||tile.isDummy())
 			return;
-		BlockState state = tile.getWorldNonnull().getBlockState(tile.getPos());
-		if(state.getBlock()!=Multiblocks.bucketWheel)
-			return;
-		IBakedModel model = WHEEL.get(null);
 		Map<String, String> texMap = new HashMap<>();
-		List<String> list = Lists.newArrayList("bucketWheel");
 		List<String> textures = new ArrayList<>(8);
 		int offset = 0;
 		synchronized(tile.digStacks)
@@ -80,7 +79,6 @@ public class BucketWheelRenderer extends TileEntityRenderer<BucketWheelTileEntit
 				ItemStack stackAtIndex = tile.digStacks.get(realIndex);
 				if(!stackAtIndex.isEmpty())
 				{
-					list.add("dig"+i);
 					Block b = Block.getBlockFromItem(stackAtIndex.getItem());
 					BlockState digState = b!=Blocks.AIR?b.getDefaultState(): Blocks.COBBLESTONE.getDefaultState();
 					IBakedModel digModel = Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes().getModel(digState);
@@ -88,10 +86,10 @@ public class BucketWheelRenderer extends TileEntityRenderer<BucketWheelTileEntit
 					texMap.put("dig"+i, texture);
 					textures.add(texture);
 				}
+				else
+					textures.add("");
 			}
 		}
-		IEObjState objState = new IEObjState(VisibilityList.show(list));
-
 		matrixStack.push();
 
 		matrixStack.translate(.5, .5, .5);
@@ -102,13 +100,28 @@ public class BucketWheelRenderer extends TileEntityRenderer<BucketWheelTileEntit
 		matrixStack.rotate(new Quaternion(new Vector3f(1, 0, 0), rot, true));
 
 		matrixStack.translate(-.5, -.5, -.5);
-		IVertexBuilder builder = bufferIn.getBuffer(RenderType.getSolid());
-		List<BakedQuad> quads;
-		if(model instanceof IESmartObjModel)
-			quads = ((IESmartObjModel)model).getQuads(state, objState, texMap, true, EmptyModelData.INSTANCE);
-		else
-			quads = model.getQuads(state, null, Utils.RAND, EmptyModelData.INSTANCE);
-		ClientUtils.renderModelTESRFast(quads, builder, matrixStack, combinedLightIn);
+		try
+		{
+			CACHED_BUFFERS.get(textures, () -> new VertexBufferHolder(() -> {
+				IBakedModel model = WHEEL.get(null);
+				BlockState state = Multiblocks.bucketWheel.getDefaultState();
+				List<String> list = Lists.newArrayList("bucketWheel");
+				list.addAll(texMap.keySet());
+				IEObjState objState = new IEObjState(VisibilityList.show(list));
+				if(model instanceof IESmartObjModel)
+					return ((IESmartObjModel)model).getQuads(state, objState, texMap, true, EmptyModelData.INSTANCE);
+				else
+					return model.getQuads(state, null, Utils.RAND, EmptyModelData.INSTANCE);
+			})).render(RenderType.getSolid(), combinedLightIn, combinedOverlayIn, bufferIn, matrixStack);
+		} catch(ExecutionException ex)
+		{
+			throw new RuntimeException(ex);
+		}
 		matrixStack.pop();
+	}
+
+	public static void reset()
+	{
+		CACHED_BUFFERS.invalidateAll();
 	}
 }
