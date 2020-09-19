@@ -86,6 +86,12 @@ public abstract class IEBaseTileEntity extends TileEntity implements BlockstateP
 	}
 
 	@Override
+	public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt)
+	{
+		this.readCustomNBT(pkt.getNbtCompound(), true);
+	}
+
+	@Override
 	public CompoundNBT getUpdateTag()
 	{
 		CompoundNBT nbt = super.getUpdateTag();
@@ -94,11 +100,10 @@ public abstract class IEBaseTileEntity extends TileEntity implements BlockstateP
 	}
 
 	@Override
-	public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt)
+	public void handleUpdateTag(CompoundNBT tag)
 	{
-		this.readCustomNBT(pkt.getNbtCompound(), true);
+		this.readCustomNBT(tag, true);
 	}
-
 
 	@Override
 	public void rotate(Rotation rot)

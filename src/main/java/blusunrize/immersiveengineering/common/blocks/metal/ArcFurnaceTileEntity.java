@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISelectio
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTile;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
+import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
@@ -57,6 +58,8 @@ import java.util.*;
 public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnaceTileEntity, ArcFurnaceRecipe>
 		implements ISoundTile, IInteractionObjectIE, ISelectionBounds, ICollisionBounds
 {
+	public static final int FIRST_ELECTRODE_SLOT = 23;
+	public static final int ELECTRODE_COUNT = 3;
 	private static final int SLAG_SLOT = 22;
 	private static final int FIRST_OUT_SLOT = 16;
 	private static final int OUT_SLOT_COUNT = 6;
@@ -93,6 +96,21 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 		super.readCustomNBT(nbt, descPacket);
 		if(!descPacket)
 			inventory = Utils.readInventory(nbt.getList("inventory", 10), 26);
+		else
+		{
+			byte electrodeStatus = nbt.getByte("electrodeStatus");
+			for(int i = 0; i < ELECTRODE_COUNT; ++i)
+			{
+				boolean hasElectrodeServer = (electrodeStatus&1)!=0;
+				int slot = FIRST_ELECTRODE_SLOT+i;
+				boolean hasElectrodeClient = !inventory.get(slot).isEmpty();
+				if(hasElectrodeServer&&!hasElectrodeClient)
+					inventory.set(slot, new ItemStack(Misc.graphiteElectrode));
+				else if(!hasElectrodeServer&&hasElectrodeClient)
+					inventory.set(slot, ItemStack.EMPTY);
+				electrodeStatus >>>= 1;
+			}
+		}
 	}
 
 	@Override
@@ -101,6 +119,18 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 		super.writeCustomNBT(nbt, descPacket);
 		if(!descPacket)
 			nbt.put("inventory", Utils.writeInventory(inventory));
+		else
+		{
+			byte packed = 0;
+			byte mask = 1;
+			for(int i = 0; i < ELECTRODE_COUNT; ++i)
+			{
+				if(!inventory.get(FIRST_ELECTRODE_SLOT+i).isEmpty())
+					packed += mask;
+				mask *= 2;
+			}
+			nbt.putByte("electrodeStatus", packed);
+		}
 	}
 
 	@Override
@@ -133,7 +163,7 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 		else if(!isRSDisabled()&&energyStorage.getEnergyStored() > 0)
 		{
 			if(this.tickedProcesses > 0)
-				for(int i = 23; i < 26; i++)
+				for(int i = FIRST_ELECTRODE_SLOT; i < FIRST_ELECTRODE_SLOT+ELECTRODE_COUNT; i++)
 					if(this.inventory.get(i).attemptDamageItem(1, Utils.RAND, null))
 					{
 						this.inventory.set(i, ItemStack.EMPTY);
@@ -436,7 +466,7 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 			if(master!=null)
 			{
 				float f = 0;
-				for(int i = 23; i < 26; i++)
+				for(int i = FIRST_ELECTRODE_SLOT; i < FIRST_ELECTRODE_SLOT+ELECTRODE_COUNT; i++)
 					if(!master.inventory.get(i).isEmpty())
 						f += 1-(master.inventory.get(i).getDamage()/(float)master.inventory.get(i).getMaxDamage());
 				return MathHelper.floor(Math.max(f/3f, 0)*15);
@@ -731,7 +761,7 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 
 	public boolean hasElectrodes()
 	{
-		for(int i = 23; i < 26; i++)
+		for(int i = FIRST_ELECTRODE_SLOT; i < FIRST_ELECTRODE_SLOT+ELECTRODE_COUNT; i++)
 			if(inventory.get(i).isEmpty())
 				return false;
 		return true;
