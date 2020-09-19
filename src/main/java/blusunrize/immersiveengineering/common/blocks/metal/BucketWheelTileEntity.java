@@ -9,25 +9,19 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
-import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
@@ -42,8 +36,7 @@ import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 
-public class BucketWheelTileEntity extends MultiblockPartTileEntity<BucketWheelTileEntity> implements
-		IOBJModelCallback<BlockState>, IBlockBounds
+public class BucketWheelTileEntity extends MultiblockPartTileEntity<BucketWheelTileEntity> implements IBlockBounds
 {
 	public float rotation = 0;
 	public final NonNullList<ItemStack> digStacks = NonNullList.withSize(8, ItemStack.EMPTY);
@@ -124,28 +117,6 @@ public class BucketWheelTileEntity extends MultiblockPartTileEntity<BucketWheelT
 			MessageTileSync sync = new MessageTileSync(this, nbt);
 			ImmersiveEngineering.packetHandler.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(pos)), sync);
 		}
-	}
-
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public TextureAtlasSprite getTextureReplacement(BlockState object, String group, String material)
-	{
-		if(group.startsWith("dig"))
-		{
-			int index = Integer.parseInt(group.substring(3));
-			if(!this.digStacks.get(index).isEmpty())
-			{
-				ResourceLocation rl = null;
-				BlockState state = Utils.getStateFromItemStack(this.digStacks.get(index));
-				if(state!=null)
-					rl = ClientUtils.getSideTexture(state, Direction.UP);
-				else
-					rl = ClientUtils.getSideTexture(this.digStacks.get(index), Direction.UP);
-				if(rl!=null)
-					return ClientUtils.getSprite(rl);
-			}
-		}
-		return null;
 	}
 
 	@Override
