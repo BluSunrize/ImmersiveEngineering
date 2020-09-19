@@ -28,31 +28,34 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraftforge.client.model.data.IModelData;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 //TODO maybe replace with Forge animations?
 public class WindmillRenderer extends TileEntityRenderer<WindmillTileEntity>
 {
 	public static DynamicModel<Void> MODEL;
-	private static final Map<ModelKey, VertexBufferHolder> buffers = new HashMap<>();
+	private static final VertexBufferHolder[] BUFFERS = new VertexBufferHolder[9];
 
 	public WindmillRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
 	{
 		super(rendererDispatcherIn);
 	}
 
-	private static VertexBufferHolder getBufferHolder(ModelKey key)
+	private static VertexBufferHolder getBufferHolder(int sails)
 	{
-		return buffers.computeIfAbsent(key, k -> new VertexBufferHolder(() -> {
-			IBakedModel model = MODEL.get(null);
-			List<String> parts = new ArrayList<>();
-			parts.add("base");
-			for(int i = 1; i <= k.sails; i++)
-				parts.add("sail_"+i);
-			IModelData data = new SinglePropertyModelData<>(
-					new IEObjState(VisibilityList.show(parts)), IEProperties.Model.IE_OBJ_STATE);
-			return model.getQuads(WoodenDevices.windmill.getDefaultState(), null, Utils.RAND, data);
-		}));
+		if(BUFFERS[sails]==null)
+			BUFFERS[sails] = new VertexBufferHolder(() -> {
+				IBakedModel model = MODEL.get(null);
+				List<String> parts = new ArrayList<>();
+				parts.add("base");
+				for(int i = 1; i <= sails; i++)
+					parts.add("sail_"+i);
+				IModelData data = new SinglePropertyModelData<>(
+						new IEObjState(VisibilityList.show(parts)), IEProperties.Model.IE_OBJ_STATE);
+				return model.getQuads(WoodenDevices.windmill.getDefaultState(), null, Utils.RAND, data);
+			});
+		return BUFFERS[sails];
 	}
 
 	@Override
@@ -71,38 +74,15 @@ public class WindmillRenderer extends TileEntityRenderer<WindmillTileEntity>
 		transform.rotate(new Quaternion(new Vector3f(0, 1, 0), dir, true));
 
 		transform.translate(-.5, -.5, -.5);
-		getBufferHolder(new ModelKey(tile.sails))
+		getBufferHolder(tile.sails)
 				.render(RenderType.getCutoutMipped(), combinedLightIn, combinedOverlayIn, bufferIn, transform);
 		transform.pop();
 	}
 
 	public static void reset()
 	{
-		buffers.values().forEach(VertexBufferHolder::reset);
-	}
-
-	private static class ModelKey
-	{
-		private final int sails;
-
-		private ModelKey(int sails)
-		{
-			this.sails = sails;
-		}
-
-		@Override
-		public boolean equals(Object o)
-		{
-			if(this==o) return true;
-			if(o==null||getClass()!=o.getClass()) return false;
-			ModelKey modelKey = (ModelKey)o;
-			return sails==modelKey.sails;
-		}
-
-		@Override
-		public int hashCode()
-		{
-			return Objects.hash(sails);
-		}
+		for(VertexBufferHolder vbo : BUFFERS)
+			if(vbo!=null)
+				vbo.reset();
 	}
 }
