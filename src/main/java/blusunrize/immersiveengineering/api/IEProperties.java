@@ -134,8 +134,25 @@ public class IEProperties
 			return show(ImmutableList.of());
 		}
 
-		public boolean isVisible(String group) {
+		public boolean isVisible(String group)
+		{
 			return showSelected==selected.contains(group);
+		}
+
+		@Override
+		public boolean equals(Object o)
+		{
+			if(this==o) return true;
+			if(o==null||getClass()!=o.getClass()) return false;
+			VisibilityList that = (VisibilityList)o;
+			return showSelected==that.showSelected&&
+					selected.equals(that.selected);
+		}
+
+		@Override
+		public int hashCode()
+		{
+			return Objects.hash(selected, showSelected);
 		}
 	}
 
@@ -153,6 +170,22 @@ public class IEProperties
 		{
 			this.visibility = visibility;
 			this.transform = transform;
+		}
+
+		@Override
+		public boolean equals(Object o)
+		{
+			if(this==o) return true;
+			if(o==null||getClass()!=o.getClass()) return false;
+			IEObjState that = (IEObjState)o;
+			return visibility.equals(that.visibility)&&
+					transform.equals(that.transform);
+		}
+
+		@Override
+		public int hashCode()
+		{
+			return Objects.hash(visibility, transform);
 		}
 	}
 
