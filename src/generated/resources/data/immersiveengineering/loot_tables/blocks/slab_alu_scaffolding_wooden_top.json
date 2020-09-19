@@ -13,6 +13,21 @@
         {
           "condition": "minecraft:survives_explosion"
         }
+      ],
+      "functions": [
+        {
+          "function": "minecraft:set_count",
+          "conditions": [
+            {
+              "condition": "minecraft:block_state_property",
+              "block": "immersiveengineering:slab_alu_scaffolding_wooden_top",
+              "properties": {
+                "type": "double"
+              }
+            }
+          ],
+          "count": 2
+        }
       ]
     }
   ]
