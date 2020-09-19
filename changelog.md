@@ -1,3 +1,6 @@
+##### Version 1.16.3-4.0.1-121
+- Initial release for 1.16.3
+
 ##### Version 1.16.1-4.0.1-120
 - Fixed crashes with wires under certain conditions (Malte)
 - Also includes the changes from 1.15.2-4.0.1-119

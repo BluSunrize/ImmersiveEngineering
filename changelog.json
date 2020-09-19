@@ -16,7 +16,9 @@
         "1.15.2-latest": "1.15.2-4.0.1-119",
         "1.15.2-recommended": "1.15.2-4.0.1-119",
         "1.16.1-latest": "1.16.1-4.0.1-120",
-        "1.16.1-recommended": "1.16.1-4.0.1-120"
+        "1.16.1-recommended": "1.16.1-4.0.1-120",
+        "1.16.3-latest": "1.16.3-4.0.1-121",
+        "1.16.3-recommended": "1.16.3-4.0.1-121"
     },
     "1.8.9": {
         "0.8-24": "- massive shoutout to Malte for figuring out some proper wire rendering! :D\n- added compat for DenseOres (crushing/smelting) \n- fixed lanterns not emitting light\n- fixed silver bullets causing a crash\n- fixed gunpowder barrels crashing because of a duplicate datamarker\n- fixed gunpowder barrels dropping from explosions\n- fixed CokeOvens not interacting with hoppers\n- fixed wires not outputting to RF-only receivers (thanks Malte)\n- fixed connections on HV relays (thanks Malte)\n- fixed a crash caused by hammering the top/bottom of a wooden post\n- fixed the stackoverflow in sheetmetal tanks\n- fixed the themoelectric gen crashing (thanks Malte)\n- fixed the waterwheels breaking more other wheels (thanks Malte)\n- fixed textures on stone slabs (thanks Malte)",
@@ -124,5 +126,8 @@
         "1.16.1-3.2.0-115": "- Fixed some derpy rendering in the manual (BluSunrize)\n- Also includes the changes from 1.15.2-3.2.0-114",
         "1.16.1-4.0.0-118": "- Re-added custom banner patterns. Craft the blueprint, make patterns, then use them on the loom! (BluSunrize)\n- Added a warning when switching to \"fabulous\" graphics while stencil is enabled (Malte)\n- Fixed log spam caused by wire sync issues (Malte)\n- Fixed manual page for shaders (BluSunrize)\n- Also includes the changes from 1.15.2-4.0.0-117",
         "1.16.1-4.0.1-120": "- Fixed crashes with wires under certain conditions (Malte)\n- Also includes the changes from 1.15.2-4.0.1-119"
+    },
+    "1.16.3": {
+        "1.16.3-4.0.1-121": "- Initial release for 1.16.3"
     }
 }
