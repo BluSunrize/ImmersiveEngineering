@@ -22,10 +22,12 @@ import blusunrize.immersiveengineering.common.util.loot.TileDropLootEntry;
 import blusunrize.immersiveengineering.common.util.loot.WindmillLootFunction;
 import net.minecraft.advancements.criterion.StatePropertiesPredicate;
 import net.minecraft.block.Block;
+import net.minecraft.block.SlabBlock;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.state.IProperty;
+import net.minecraft.state.properties.SlabType;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
@@ -35,6 +37,7 @@ import net.minecraft.world.storage.loot.conditions.BlockStateProperty;
 import net.minecraft.world.storage.loot.conditions.ILootCondition;
 import net.minecraft.world.storage.loot.conditions.SurvivesExplosion;
 import net.minecraft.world.storage.loot.functions.ApplyBonus;
+import net.minecraft.world.storage.loot.functions.SetCount;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
@@ -88,6 +91,7 @@ public class BlockLoot extends LootGenerator
 		registerSelfDropping(WoodenDevices.workbench, dropInv());
 		registerSelfDropping(MetalDevices.cloche, dropInv());
 		registerSelfDropping(MetalDevices.chargingStation, dropInv());
+		registerSlabs();
 
 		registerAllRemainingAsDefault();
 	}
@@ -115,6 +119,19 @@ public class BlockLoot extends LootGenerator
 		registerMultiblock(Multiblocks.arcFurnace);
 		registerMultiblock(Multiblocks.lightningrod);
 		registerMultiblock(Multiblocks.mixer);
+	}
+
+	private void registerSlabs()
+	{
+		for(SlabBlock slab : IEBlocks.toSlab.values())
+		{
+			LootFunction.Builder<?> doubleSlabFunction = SetCount.builder(new ConstantRange(2))
+					.acceptCondition(propertyIs(slab, SlabBlock.TYPE, SlabType.DOUBLE));
+			LootTable.Builder lootBuilder = LootTable.builder().addLootPool(
+					singleItem(slab).acceptFunction(doubleSlabFunction)
+			);
+			register(slab, lootBuilder);
+		}
 	}
 
 	private void registerAllRemainingAsDefault()
