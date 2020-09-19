@@ -13,8 +13,6 @@ import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.DynamicModelLoader;
-import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
@@ -62,8 +60,8 @@ public class ArcFurnaceRenderer extends TileEntityRenderer<ArcFurnaceTileEntity>
 		if(!te.formed||te.isDummy()||!te.getWorldNonnull().isBlockLoaded(te.getPos()))
 			return;
 		List<String> renderedParts = null;
-		for(int i = 0; i < 3; i++)
-			if(!te.getInventory().get(23+i).isEmpty())
+		for(int i = 0; i < ArcFurnaceTileEntity.ELECTRODE_COUNT; i++)
+			if(!te.getInventory().get(ArcFurnaceTileEntity.FIRST_ELECTRODE_SLOT+i).isEmpty())
 			{
 				if(renderedParts==null)
 					renderedParts = Lists.newArrayList("electrode"+(i+1));

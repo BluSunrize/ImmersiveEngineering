@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.common.util.loot.TileDropLootEntry;
 import blusunrize.immersiveengineering.common.util.loot.WindmillLootFunction;
 import net.minecraft.advancements.criterion.StatePropertiesPredicate;
 import net.minecraft.block.Block;
+import net.minecraft.block.SlabBlock;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.Enchantments;
@@ -31,7 +32,9 @@ import net.minecraft.loot.conditions.BlockStateProperty;
 import net.minecraft.loot.conditions.ILootCondition;
 import net.minecraft.loot.conditions.SurvivesExplosion;
 import net.minecraft.loot.functions.ApplyBonus;
+import net.minecraft.loot.functions.SetCount;
 import net.minecraft.state.Property;
+import net.minecraft.state.properties.SlabType;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
@@ -88,6 +91,7 @@ public class BlockLoot extends LootGenerator
 		registerSelfDropping(WoodenDevices.workbench, dropInv());
 		registerSelfDropping(MetalDevices.cloche, dropInv());
 		registerSelfDropping(MetalDevices.chargingStation, dropInv());
+		registerSlabs();
 
 		registerAllRemainingAsDefault();
 	}
@@ -115,6 +119,19 @@ public class BlockLoot extends LootGenerator
 		registerMultiblock(Multiblocks.arcFurnace);
 		registerMultiblock(Multiblocks.lightningrod);
 		registerMultiblock(Multiblocks.mixer);
+	}
+
+	private void registerSlabs()
+	{
+		for(SlabBlock slab : IEBlocks.toSlab.values())
+		{
+			LootFunction.Builder<?> doubleSlabFunction = SetCount.builder(new ConstantRange(2))
+					.acceptCondition(propertyIs(slab, SlabBlock.TYPE, SlabType.DOUBLE));
+			LootTable.Builder lootBuilder = LootTable.builder().addLootPool(
+					singleItem(slab).acceptFunction(doubleSlabFunction)
+			);
+			register(slab, lootBuilder);
+		}
 	}
 
 	private void registerAllRemainingAsDefault()

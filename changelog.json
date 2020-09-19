@@ -13,10 +13,10 @@
         "1.12.2-recommended": "0.12-90",
         "1.14.4-latest": "1.14.4-4.0.0-116",
         "1.14.4-recommended": "1.14.4-4.0.0-116",
-        "1.15.2-latest": "1.15.2-4.0.0-117",
-        "1.15.2-recommended": "1.15.2-4.0.0-117",
-        "1.16.1-latest": "1.16.1-4.0.0-118",
-        "1.16.1-recommended": "1.16.1-4.0.0-118"
+        "1.15.2-latest": "1.15.2-4.0.1-119",
+        "1.15.2-recommended": "1.15.2-4.0.1-119",
+        "1.16.1-latest": "1.16.1-4.0.1-120",
+        "1.16.1-recommended": "1.16.1-4.0.1-120"
     },
     "1.8.9": {
         "0.8-24": "- massive shoutout to Malte for figuring out some proper wire rendering! :D\n- added compat for DenseOres (crushing/smelting) \n- fixed lanterns not emitting light\n- fixed silver bullets causing a crash\n- fixed gunpowder barrels crashing because of a duplicate datamarker\n- fixed gunpowder barrels dropping from explosions\n- fixed CokeOvens not interacting with hoppers\n- fixed wires not outputting to RF-only receivers (thanks Malte)\n- fixed connections on HV relays (thanks Malte)\n- fixed a crash caused by hammering the top/bottom of a wooden post\n- fixed the stackoverflow in sheetmetal tanks\n- fixed the themoelectric gen crashing (thanks Malte)\n- fixed the waterwheels breaking more other wheels (thanks Malte)\n- fixed textures on stone slabs (thanks Malte)",
@@ -114,13 +114,15 @@
         "0.15-108": "- Also includes the changes from 0.14-107",
         "1.15.2-3.1-111": "- Moved to new version numbering system\n- Fixed broken HUD of the Heavy Plated Shield upgrades (BluSunrize)\n- Fixed crash when bottling potions (Malte)\n- Fixed rotation for structural connectors (BluSunrize)\n- Also includes the changes from 1.14.4-3.1-110",
         "1.15.2-3.2.0-114": "- Fixed mirrored machines rendering incorrectly (Malte)\n- Fixed bucket wheels in mirrored excavators rendering incorrectly (Malte)\n- Fixed crash when holding a drill with a damaged head (Malte)\n- Also includes the changes from 1.14.4-3.2.0-113",
-        "1.15.2-4.0.0-117": "- Changed rendering of multiblocks to split models into blocks;\n  - This should address weird issues with shadows and disappearing models (Malte)\n- Fixed broken rendering of components on the Automated Workbench (BluSunrize)\n- Fixed rendering of mirrored multiblocks (Malte)\n- Fixed rendering of conveyors in the manual; this caused confusion when building multiblocks (Malte)\n- Also includes the changes from 1.14.4-4.0.0-116"
+        "1.15.2-4.0.0-117": "- Changed rendering of multiblocks to split models into blocks;\n  - This should address weird issues with shadows and disappearing models (Malte)\n- Fixed broken rendering of components on the Automated Workbench (BluSunrize)\n- Fixed rendering of mirrored multiblocks (Malte)\n- Fixed rendering of conveyors in the manual; this caused confusion when building multiblocks (Malte)\n- Also includes the changes from 1.14.4-4.0.0-116",
+        "1.15.2-4.0.1-119": "- Added Enderpeals as valid Railgun projectiles! (BluSunrize)\n- Changed recipes for mixer and arc furnace to be synced properly (Malte)\n- Fixed model issues with the metal press and refinery (Malte)\n- Fixed the metal press piston vanishing at certain angles (Malte)\n- Fixed wires rendering too many segments near chunk boundaries (Malte)\n- Fixed broken lighting on split models (Malte)\n- Fixed each block of the garden cloche rotating on its own (Malte)\n- Fixed soil blocks not rendering in the garden cloche (Malte)\n- Fixed the hemp plant blocks appearing in the creative menu (Malte)\n- Fixed blueprints not showing up in the creative menu and JEI (Malte)\n- Fixed turrets being rotated incorrectly (Malte)\n- Fixed mixers voiding one tick worth of output (Malte)\n- Fixed screwdriver not being able to sneak+rightclick blocks (BluSunrize)\n- Fixed heavy shield not being repairable with a steel ingot (BluSunrize)\n- Fixed rendering issues with CTM (Malte)\n- Fixed rendering issues with IE's shaders & model caching (Malte)\n- Fixed slabs dropping only one item (Malte)\n- Fixed Arc Furnace not syncing its electrode render (Malte)"
     },
     "1.16.1": {
         "0.16-106": "- Initial port to 1.16\n- Added mineral vein, crusher & arc furnace integration for the new Nether materials\n- Also includes all changes from 0.15-105",
         "0.16-109": "- Requires Forge version 32.0.67 or later (BluSunrize)\n- Fixed formatting not persisting across linebreaks in the manual (Malte)\n- Fixed tooltips crashing in the manual (Malte)\n- Fixed recipes not loading on dedicated servers (BluSunrize)\n- Fixed fluid tank backgrounds being wrongly offset in JEI (BluSunrize)\n- Fixed revolver causing a crash with its attribute map (BluSunrize)\n- Also includes the changes from 0.14-107",
         "1.16.1-3.1-112": "- Require Forge version 32.0.99 or later\n- Moved to new version numbering system\n- Fixed a crash with railgun & chemthrower projectiles (BluSunrize)\n- Fixed manual rendering for blueprint recipes (BluSunrize)\n- Fixed scaffolding causing a suffocation overlay (BluSunrize)\n- Fixed crashes with the drill & sawblade overlay (BluSunrize)\n- Fixed crashes with wires (Malte)\n- Fixed crashes with explosions (Malte)\n- Also includes the changes from 1.15.2-3.1-111",
         "1.16.1-3.2.0-115": "- Fixed some derpy rendering in the manual (BluSunrize)\n- Also includes the changes from 1.15.2-3.2.0-114",
-        "1.16.1-4.0.0-118": "- Re-added custom banner patterns. Craft the blueprint, make patterns, then use them on the loom! (BluSunrize)\n- Added a warning when switching to \"fabulous\" graphics while stencil is enabled (Malte)\n- Fixed log spam caused by wire sync issues (Malte)\n- Fixed manual page for shaders (BluSunrize)\n- Also includes the changes from 1.15.2-4.0.0-117"
+        "1.16.1-4.0.0-118": "- Re-added custom banner patterns. Craft the blueprint, make patterns, then use them on the loom! (BluSunrize)\n- Added a warning when switching to \"fabulous\" graphics while stencil is enabled (Malte)\n- Fixed log spam caused by wire sync issues (Malte)\n- Fixed manual page for shaders (BluSunrize)\n- Also includes the changes from 1.15.2-4.0.0-117",
+        "1.16.1-4.0.1-120": "- Fixed crashes with wires under certain conditions (Malte)\n- Also includes the changes from 1.15.2-4.0.1-119"
     }
 }

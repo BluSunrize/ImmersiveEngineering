@@ -86,19 +86,18 @@ public abstract class IEBaseTileEntity extends TileEntity implements BlockstateP
 	}
 
 	@Override
+	public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt)
+	{
+		this.readCustomNBT(pkt.getNbtCompound(), true);
+	}
+
+	@Override
 	public CompoundNBT getUpdateTag()
 	{
 		CompoundNBT nbt = super.getUpdateTag();
 		writeCustomNBT(nbt, true);
 		return nbt;
 	}
-
-	@Override
-	public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt)
-	{
-		this.readCustomNBT(pkt.getNbtCompound(), true);
-	}
-
 
 	@Override
 	public void rotate(Rotation rot)

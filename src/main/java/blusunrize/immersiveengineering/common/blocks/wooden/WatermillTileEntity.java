@@ -49,7 +49,7 @@ public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTi
 
 	public WatermillTileEntity()
 	{
-		super(IETileTypes.WINDMILL.get());
+		super(IETileTypes.WATERMILL.get());
 	}
 
 	@Override

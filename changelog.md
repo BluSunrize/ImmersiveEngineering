@@ -1,8 +1,10 @@
-##### Version 1.16.1-4.0.0-pre
+##### Version 1.16.1-4.0.1-120
 - Fixed crashes with wires under certain conditions (Malte)
+- Also includes the changes from 1.15.2-4.0.1-119
 
-##### Version 1.15.2-4.0.0-pre
+##### Version 1.15.2-4.0.1-119
 - Added Enderpeals as valid Railgun projectiles! (BluSunrize)
+- Changed recipes for mixer and arc furnace to be synced properly (Malte)
 - Fixed model issues with the metal press and refinery (Malte)
 - Fixed the metal press piston vanishing at certain angles (Malte)
 - Fixed wires rendering too many segments near chunk boundaries (Malte)
@@ -15,6 +17,10 @@
 - Fixed mixers voiding one tick worth of output (Malte)
 - Fixed screwdriver not being able to sneak+rightclick blocks (BluSunrize)
 - Fixed heavy shield not being repairable with a steel ingot (BluSunrize)
+- Fixed rendering issues with CTM (Malte)
+- Fixed rendering issues with IE's shaders & model caching (Malte)
+- Fixed slabs dropping only one item (Malte)
+- Fixed Arc Furnace not syncing its electrode render (Malte)
 
 ##### Version 1.16.1-4.0.0-118
 - Re-added custom banner patterns. Craft the blueprint, make patterns, then use them on the loom! (BluSunrize)
