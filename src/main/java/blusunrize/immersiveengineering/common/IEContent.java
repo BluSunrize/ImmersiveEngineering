@@ -742,8 +742,9 @@ public class IEContent
 			else return null;
 		});
 
-		DieselHandler.registerFuel(IETags.fluidBiodiesel, 125);
+		DieselHandler.registerFuel(IETags.fluidBiodiesel, 250);
 		DieselHandler.registerDrillFuel(IETags.fluidBiodiesel);
+		DieselHandler.registerFuel(IETags.fluidCreosote, 20);
 
 		fluidCreosote.block.setEffect(IEPotions.flammable, 100, 0);
 		fluidEthanol.block.setEffect(Effects.NAUSEA, 70, 0);
