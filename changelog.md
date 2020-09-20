@@ -1,3 +1,15 @@
+##### Version 1.15.2-4.0.2-pre
+- Added blue ice to be used by the Thermoelectric Generator, nerfed packed ice in response (BluSunrize))
+- Experimental recipe changes: (BluSunrize)
+    - Doubled the burntime of Diesel in the generator
+    - Allowed creosote to be very inefficient generator fuel
+    - Increase sulfur output from coal, lapis and quartz
+    - Increase gunpowder output from sulfur & saltpeter recipe
+- Fixed GUI model for the alloy smelter (BluSunrize)
+- Fixed crash with mineral veins being saved (BluSunrize)
+- Fixed infinite crafting of firework rockets in the assembler (Malte)
+- Fixed lighting in the assembler GUI (Malte)
+
 ##### Version 1.16.1-4.0.1-120
 - Fixed crashes with wires under certain conditions (Malte)
 - Also includes the changes from 1.15.2-4.0.1-119

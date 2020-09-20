@@ -15,8 +15,10 @@ import blusunrize.immersiveengineering.common.util.Utils.InventoryCraftingFalse;
 import com.google.common.base.Preconditions;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.item.crafting.ShapelessRecipe;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -32,6 +34,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.function.Function;
 
+import static blusunrize.immersiveengineering.common.data.IEDataGenerator.rl;
+
 /**
  * @author BluSunrize - 01.09.2016
  */
@@ -46,18 +50,36 @@ public class AssemblerHandler
 		{
 			NonNullList<Ingredient> ingred = recipe.getIngredients();
 			CraftingInventory verificationInv = InventoryCraftingFalse.createFilledCraftingInventory(3, 3, input);
-			boolean matches;
 			ForgeHooks.setCraftingPlayer(FakePlayerUtil.getFakePlayer(world));
-			matches = recipe.matches(verificationInv, world);
+			// Check that the ingredients roughly match what the recipe actually requires.
+			// This is necessary to prevent infinite crafting for recipes like FireworkRocketRecipe which don't return
+			// meaningful values in getIngredients.
+			NonNullList<Ingredient> nonEmptyIngredients = NonNullList.create();
+			for(Ingredient i : ingred)
+				if(i.getMatchingStacks().length > 0)
+					nonEmptyIngredients.add(i);
+			ShapelessRecipe tempRecipe = new ShapelessRecipe(
+					rl("temp"), "temp", new ItemStack(Items.PUMPKIN), nonEmptyIngredients
+			);
+			boolean patternMatchesIngredients = tempRecipe.matches(verificationInv, world);
 			ForgeHooks.setCraftingPlayer(null);
-			if(!matches)
-				return null;
-			RecipeQuery[] query = new RecipeQuery[ingred.size()];
-			for(int i = 0; i < query.length; i++)
+			if(patternMatchesIngredients)
 			{
-				query[i] = AssemblerHandler.createQuery(ingred.get(i));
+				// If the ingredients provided by the recipe are plausible request those
+				RecipeQuery[] query = new RecipeQuery[ingred.size()];
+				for(int i = 0; i < query.length; i++)
+					query[i] = AssemblerHandler.createQuery(ingred.get(i));
+				return query;
 			}
-			return query;
+			else
+			{
+				// Otherwise request the exact stacks used in the input
+				// - 1: Input list contains the output slot
+				RecipeQuery[] query = new RecipeQuery[input.size()-1];
+				for(int i = 0; i < query.length; i++)
+					query[i] = AssemblerHandler.createQuery(input.get(i));
+				return query;
+			}
 		}
 	};
 
@@ -98,6 +120,8 @@ public class AssemblerHandler
 	public interface IRecipeAdapter<R extends IRecipe<CraftingInventory>>
 	{
 		@Nullable
+		@Deprecated
+		//TODO remove
 		default RecipeQuery[] getQueriedInputs(R recipe, World world)
 		{
 			return getQueriedInputs(recipe, NonNullList.create(), world);

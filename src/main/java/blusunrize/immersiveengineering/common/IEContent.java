@@ -772,8 +772,9 @@ public class IEContent
 			else return null;
 		});
 
-		DieselHandler.registerFuel(IETags.fluidBiodiesel, 125);
+		DieselHandler.registerFuel(IETags.fluidBiodiesel, 250);
 		DieselHandler.registerDrillFuel(IETags.fluidBiodiesel);
+		DieselHandler.registerFuel(IETags.fluidCreosote, 20);
 
 		fluidCreosote.block.setEffect(IEPotions.flammable, 100, 0);
 		fluidEthanol.block.setEffect(Effects.NAUSEA, 70, 0);
@@ -795,7 +796,8 @@ public class IEContent
 		ThermoelectricHandler.registerSourceInKelvin(Blocks.MAGMA_BLOCK, 1300);
 		//TODO tags?
 		ThermoelectricHandler.registerSourceInKelvin(Blocks.ICE, 273);
-		ThermoelectricHandler.registerSourceInKelvin(Blocks.PACKED_ICE, 200);
+		ThermoelectricHandler.registerSourceInKelvin(Blocks.PACKED_ICE, 240);
+		ThermoelectricHandler.registerSourceInKelvin(Blocks.BLUE_ICE, 200);
 		ThermoelectricHandler.registerSourceInKelvin(IETags.getTagsFor(EnumMetals.URANIUM).storage, 2000);
 		//ThermoelectricHandler.registerSourceInKelvin(new ResourceLocation("forge:storage_blocks/yellorium"), 2000);
 		//ThermoelectricHandler.registerSourceInKelvin(new ResourceLocation("forge:storage_blocks/plutonium"), 4000);
