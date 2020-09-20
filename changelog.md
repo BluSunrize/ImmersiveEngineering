@@ -1,3 +1,12 @@
+##### Version 1.15.2-4.0.2-pre
+- Added blue ice to be used by the Thermoelectric Generator, nerfed packed ice in response (BluSunrize))
+- Experimental recipe changes: (BluSunrize)
+    - Doubled the burntime of Diesel in the generator
+    - Allowed creosote to be very inefficient generator fuel
+    - Increase sulfur output from coal, lapis and quartz
+    - Increase gunpowder output from sulfur & saltpeter recipe
+- Fixed GUI model for the alloy smelter (BluSunrize)
+
 ##### Version 1.15.2-4.0.1-119
 - Added Enderpeals as valid Railgun projectiles! (BluSunrize)
 - Changed recipes for mixer and arc furnace to be synced properly (Malte)
