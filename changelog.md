@@ -7,6 +7,8 @@
     - Increase gunpowder output from sulfur & saltpeter recipe
 - Fixed GUI model for the alloy smelter (BluSunrize)
 - Fixed crash with mineral veins being saved (BluSunrize)
+- Fixed infinite crafting of firework rockets in the assembler (Malte)
+- Fixed lighting in the assembler GUI (Malte)
 
 ##### Version 1.15.2-4.0.1-119
 - Added Enderpeals as valid Railgun projectiles! (BluSunrize)
