@@ -366,7 +366,6 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 		RenderCacheKey key = getKey(blockState, modelData, addAnimationAndTex, visibility, tex);
 		try
 		{
-			modelCache.invalidateAll();
 			List<BakedQuad> quads = modelCache.get(key, () ->
 			{
 				IESmartObjModel model;
@@ -449,7 +448,7 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 		if(sCase!=null)
 			objCacheKey += ";"+sCase.getShaderType().toString();
 		Pair<String, String> cacheKey = Pair.of(groupName, objCacheKey);
-		if(allowCaching&&false)
+		if(allowCaching)
 		{
 			List<ShadedQuads> cached = groupCache.getIfPresent(cacheKey);
 			if(cached!=null)

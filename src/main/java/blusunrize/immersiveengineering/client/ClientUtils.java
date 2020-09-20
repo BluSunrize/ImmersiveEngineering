@@ -1178,47 +1178,26 @@ public class ClientUtils
 		return (val/scale)*(val/scale);
 	}
 
-	public static void renderModelTESRFast(List<BakedQuad> quads, IVertexBuilder renderer, MatrixStack transform, int light)
+	public static void renderModelTESRFast(List<BakedQuad> quads, IVertexBuilder renderer, MatrixStack transform,
+										   int light, int overlay)
 	{
-		renderModelTESRFast(quads, renderer, transform, -1, light);
+		renderModelTESRFast(quads, renderer, transform, -1, light, overlay);
 	}
 
-	public static void renderModelTESRFast(List<BakedQuad> quads, IVertexBuilder renderer, MatrixStack transform, int color, int light)
+	public static void renderModelTESRFast(List<BakedQuad> quads, IVertexBuilder renderer, MatrixStack transform,
+										   int color, int light, int overlay)
 	{
-		int[] rgba = {255, 255, 255, 255};
+		float red = 1;
+		float green = 1;
+		float blue = 1;
 		if(color >= 0)
 		{
-			rgba[0] = color >> 16&255;
-			rgba[1] = color >> 8&255;
-			rgba[2] = color&255;
+			red = (color >> 16&255)/255F;
+			green = (color >> 8&255)/255F;
+			blue = (color&255)/255F;
 		}
-		VertexFormat format = DefaultVertexFormats.BLOCK;
-		int size = format.getIntegerSize();
-		int uv = findTextureOffset(format);
-		int position = findPositionOffset(format);
-		int normal = findOffset(format, Usage.NORMAL, Type.BYTE);
 		for(BakedQuad quad : quads)
-		{
-			int[] vData = quad.getVertexData();
-			for(int i = 0; i < 4; ++i)
-			{
-				int normalPacked = vData[size*i+normal];
-				float normalX = (normalPacked&255)/255F;
-				float normalY = ((normalPacked >> 8)&255)/255F;
-				float normalZ = ((normalPacked >> 16)&255)/255F;
-				renderer
-						.pos(transform.getLast().getMatrix(),
-								Float.intBitsToFloat(vData[size*i+position]),
-								Float.intBitsToFloat(vData[size*i+position+1]),
-								Float.intBitsToFloat(vData[size*i+position+2]))
-						.color(rgba[0], rgba[1], rgba[2], rgba[3])
-						.tex(Float.intBitsToFloat(vData[size*i+uv]), Float.intBitsToFloat(vData[size*i+uv+1]))
-						.lightmap(light)
-						.normal(transform.getLast().getNormal(), normalX, normalY, normalZ)
-						.endVertex();
-			}
-
-		}
+			renderer.addQuad(transform.getLast(), quad, red, green, blue, light, overlay);
 	}
 
 	public static boolean isSneakKeyPressed()
