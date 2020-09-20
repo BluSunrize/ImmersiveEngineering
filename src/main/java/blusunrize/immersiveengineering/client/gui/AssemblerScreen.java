@@ -117,7 +117,6 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerContainer>
 				ItemStack stack = tile.patterns[i].inv.get(9);
 				RenderSystem.pushMatrix();
 				RenderSystem.color3f(1.0F, 1.0F, 1.0F);
-				RenderHelper.disableStandardItemLighting();
 				FontRenderer font = null;
 				if(!stack.isEmpty())
 					font = stack.getItem().getFontRenderer(stack);
@@ -133,6 +132,7 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerContainer>
 				RenderSystem.enableDepthTest();
 
 				RenderSystem.popMatrix();
+				RenderHelper.disableStandardItemLighting();
 			}
 	}
 }
