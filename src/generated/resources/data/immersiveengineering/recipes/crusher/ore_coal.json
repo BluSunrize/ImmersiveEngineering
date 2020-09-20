@@ -2,7 +2,7 @@
   "type": "immersiveengineering:crusher",
   "secondaries": [
     {
-      "chance": 0.05,
+      "chance": 0.15,
       "output": {
         "tag": "forge:dusts/sulfur"
       },

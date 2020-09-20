@@ -23,11 +23,11 @@ import net.minecraft.tags.Tag;
 public enum RecipeOres
 {
 	// Vanilla
-	COAL("coal", true, Items.COAL, 4, new SecondaryOutput(IETags.sulfurDust, .05f)),
+	COAL("coal", true, Items.COAL, 4, new SecondaryOutput(IETags.sulfurDust, .15f)),
 	DIAMOND("diamond", true, Items.DIAMOND, 2),
 	EMERALD("emerald", true, Items.EMERALD, 2),
-	LAPIS("lapis", true, Items.LAPIS_LAZULI, 9, new SecondaryOutput(IETags.sulfurDust, .1f)),
-	QUARTZ("quartz", true, Items.QUARTZ, 3, new SecondaryOutput(IETags.sulfurDust, .2f)),
+	LAPIS("lapis", true, Items.LAPIS_LAZULI, 9, new SecondaryOutput(IETags.sulfurDust, .20f)),
+	QUARTZ("quartz", true, Items.QUARTZ, 3, new SecondaryOutput(IETags.sulfurDust, .25f)),
 	REDSTONE("redstone", true, Items.REDSTONE, 6), // is cinnabar still a thing?
 
 	FLUORITE("fluorite", false, new IngredientWithSize(new ItemTags.Wrapper(IETags.getGem("fluorite")), 6));
