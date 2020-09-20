@@ -1,0 +1,6 @@
+Sawmill
+???
+The sawmill cuts logs into planks. More text goes here later!
+Applying a redstone signal to the control panel at the front will stop the machine, this behavior can be inverted by use of the Engineer's Screwdriver.
+The structure is formed by right clicking the central sheetmetal block at the front.
+

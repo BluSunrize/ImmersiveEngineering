@@ -433,6 +433,7 @@ public class IEContent
 		Multiblocks.alloySmelter = new StoneMultiBlock<>("alloy_smelter", IETileTypes.ALLOY_SMELTER);
 		Multiblocks.blastFurnaceAdv = new StoneMultiBlock<>("advanced_blast_furnace", IETileTypes.BLAST_FURNACE_ADVANCED);
 		Multiblocks.crusher = new MetalMultiblockBlock<>("crusher", IETileTypes.CRUSHER);
+		Multiblocks.sawmill = new MetalMultiblockBlock<>("sawmill", IETileTypes.SAWMILL);
 		Multiblocks.silo = new MetalMultiblockBlock<>("silo", IETileTypes.SILO);
 		Multiblocks.tank = new MetalMultiblockBlock<>("tank", IETileTypes.SHEETMETAL_TANK);
 		Multiblocks.arcFurnace = new MetalMultiblockBlock<>("arc_furnace", IETileTypes.ARC_FURNACE);
@@ -786,6 +787,7 @@ public class IEContent
 		MultiblockHandler.registerMultiblock(IEMultiblocks.ALLOY_SMELTER);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.BLAST_FURNACE);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.CRUSHER);
+		MultiblockHandler.registerMultiblock(IEMultiblocks.SAWMILL);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.ADVANCED_BLAST_FURNACE);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.METAL_PRESS);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.ASSEMBLER);

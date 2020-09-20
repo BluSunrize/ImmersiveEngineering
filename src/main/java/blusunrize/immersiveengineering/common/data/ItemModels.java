@@ -119,6 +119,8 @@ public class ItemModels extends LoadedModelProvider
 				.transforms(rl("item/multiblock"));
 		obj(Multiblocks.crusher, rl("block/metal_multiblock/crusher.obj"))
 				.transforms(rl("item/crusher"));
+		obj(Multiblocks.sawmill, rl("block/metal_multiblock/sawmill.obj"))
+				.transforms(rl("item/crusher"));
 		obj(Multiblocks.tank, rl("block/metal_multiblock/tank.obj"))
 				.transforms(rl("item/tank"));
 		obj(Multiblocks.silo, rl("block/metal_multiblock/silo.obj"))
