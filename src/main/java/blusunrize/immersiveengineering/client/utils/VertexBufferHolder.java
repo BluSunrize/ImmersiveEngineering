@@ -74,7 +74,6 @@ public class VertexBufferHolder
 	{
 		if(!JOBS.isEmpty())
 		{
-			//ClientUtils.mc().getModelManager().getAtlasTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
 			for(Entry<RenderType, List<BufferedJob>> typeEntry : JOBS.entrySet())
 			{
 				RenderType type = typeEntry.getKey();
