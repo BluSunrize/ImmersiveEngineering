@@ -6,6 +6,7 @@
     - Increase sulfur output from coal, lapis and quartz
     - Increase gunpowder output from sulfur & saltpeter recipe
 - Fixed GUI model for the alloy smelter (BluSunrize)
+- Fixed crash with mineral veins being saved (BluSunrize)
 
 ##### Version 1.15.2-4.0.1-119
 - Added Enderpeals as valid Railgun projectiles! (BluSunrize)

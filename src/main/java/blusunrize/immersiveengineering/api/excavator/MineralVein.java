@@ -86,7 +86,9 @@ public class MineralVein
 		CompoundNBT tag = new CompoundNBT();
 		tag.putInt("x", pos.x);
 		tag.putInt("z", pos.z);
-		tag.putString("mineral", mineral.get().getId().toString());
+		MineralMix mix = mineral.get();
+		if(mix!=null)
+			tag.putString("mineral", mix.getId().toString());
 		tag.putInt("radius", radius);
 		tag.putInt("depletion", depletion);
 		return tag;
