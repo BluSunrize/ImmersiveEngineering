@@ -2404,7 +2404,7 @@ public class Recipes extends RecipeProvider
 				.addIngredient(Ingredient.fromTag(IETags.fiberHemp), 3)
 				.addCriterion("has_hemp_fiber", hasItem(Ingredients.hempFiber))
 				.build(out, toRL(toPath(Items.STRING)));
-		ShapelessRecipeBuilder.shapelessRecipe(Items.GUNPOWDER, 3)
+		ShapelessRecipeBuilder.shapelessRecipe(Items.GUNPOWDER, 6)
 				.addIngredient(Ingredient.fromTag(IETags.saltpeterDust), 4)
 				.addIngredient(IETags.sulfurDust)
 				.addIngredient(Items.CHARCOAL)
