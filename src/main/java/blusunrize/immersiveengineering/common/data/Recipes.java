@@ -2473,6 +2473,11 @@ public class Recipes extends RecipeProvider
 				.addIngredient(Items.CHARCOAL)
 				.addCriterion("has_sulfur", hasItem(IETags.sulfurDust))
 				.build(out, toRL("gunpowder_from_dusts"));
+		ShapelessRecipeBuilder.shapelessRecipe(Items.PAPER, 2)
+				.addIngredient(Ingredient.fromTag(IETags.sawdust), 4)
+				.addIngredient(new IngredientFluidStack(FluidTags.WATER, 1000))
+				.addCriterion("has_sawdust", hasItem(IETags.sawdust))
+				.build(out, toRL("paper_from_sawdust"));
 	}
 
 	private Consumer<IFinishedRecipe> buildBlueprint(Consumer<IFinishedRecipe> out, String blueprint, ICondition... conditions)
