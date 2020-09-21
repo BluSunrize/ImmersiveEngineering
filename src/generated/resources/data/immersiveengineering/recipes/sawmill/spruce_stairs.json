@@ -9,11 +9,10 @@
     }
   ],
   "result": {
-    "item": "minecraft:oak_planks",
-    "count": 6
+    "item": "minecraft:spruce_planks"
   },
   "input": {
-    "item": "minecraft:stripped_oak_log"
+    "item": "minecraft:spruce_stairs"
   },
   "energy": 2400
 }

@@ -9,11 +9,10 @@
     }
   ],
   "result": {
-    "item": "minecraft:oak_planks",
-    "count": 6
+    "item": "minecraft:birch_planks"
   },
   "input": {
-    "item": "minecraft:stripped_oak_log"
+    "item": "minecraft:birch_door"
   },
-  "energy": 2400
+  "energy": 1600
 }

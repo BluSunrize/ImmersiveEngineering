@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.ClocheRenderFunction.ClocheRenderReference;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
-import blusunrize.immersiveengineering.api.crafting.SawmillRecipe;
 import blusunrize.immersiveengineering.api.crafting.builders.*;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
@@ -35,6 +34,7 @@ import blusunrize.immersiveengineering.common.crafting.serializers.GeneratedList
 import blusunrize.immersiveengineering.common.data.resources.RecipeMetals;
 import blusunrize.immersiveengineering.common.data.resources.RecipeMetals.AlloyProperties;
 import blusunrize.immersiveengineering.common.data.resources.RecipeOres;
+import blusunrize.immersiveengineering.common.data.resources.RecipeWoods;
 import blusunrize.immersiveengineering.common.data.resources.SecondaryOutput;
 import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.items.IEItems;
@@ -59,7 +59,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
@@ -716,24 +715,63 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL("crusher/wool"));
 
 		/* SAWMILL */
-		SawmillRecipeBuilder.builder(new ItemStack(Items.OAK_PLANKS, 6))
-				.addStripped(Items.STRIPPED_OAK_LOG)
-				.addInput(Items.OAK_LOG, Items.OAK_WOOD)
-				//todo, sawdust
-				.addSecondary(IETags.sulfurDust, true)
-				.addSecondary(IETags.sulfurDust, false)
-				.setEnergy(3200)
-				.build(out, toRL("sawmill/oak_log"));
-		SawmillRecipeBuilder.builder(new ItemStack(Items.OAK_PLANKS, 6))
-				.addInput(Items.STRIPPED_OAK_LOG, Items.STRIPPED_OAK_WOOD)
-				//todo, sawdust
-				.addSecondary(IETags.sulfurDust, false)
-				.setEnergy(3200)
-				.build(out, toRL("sawmill/stripped_oak_log"));
-		SawmillRecipeBuilder.builder(new ItemStack(Items.OAK_PLANKS, 6))
+		SawmillRecipeBuilder sawmillBuilder;
+		for(RecipeWoods wood : RecipeWoods.values())
+		{
+			// Basic log
+			if(wood.getLog()!=null)
+			{
+				sawmillBuilder = SawmillRecipeBuilder.builder(new ItemStack(wood.getPlank(), 6))
+						.setEnergy(3200);
+				// If there is an all-bark block
+				if(wood.getWood()!=null)
+					sawmillBuilder.addInput(wood.getLog(), wood.getWood());
+				else
+					sawmillBuilder.addInput(wood.getLog());
+				if(wood.getStripped()!=null)
+				{
+					sawmillBuilder.addStripped(wood.getStripped());
+					if(wood.produceSawdust())
+						sawmillBuilder.addSecondary(IETags.sawdust, true);
+				}
+				if(wood.produceSawdust())
+					sawmillBuilder.addSecondary(IETags.sawdust, false);
+				sawmillBuilder.build(out, toRL("sawmill/"+wood.getName()+"_log"));
+			}
+			// Already stripped log
+			if(wood.getStripped()!=null)
+			{
+				sawmillBuilder = SawmillRecipeBuilder.builder(new ItemStack(wood.getPlank(), 6))
+						.addInput(wood.getStripped())
+						.setEnergy(2400);
+				if(wood.produceSawdust())
+					sawmillBuilder.addSecondary(IETags.sawdust, false);
+				sawmillBuilder.build(out, toRL("sawmill/stripped_"+wood.getName()+"_log"));
+			}
+			// Door
+			if(wood.getDoor()!=null)
+			{
+				sawmillBuilder = SawmillRecipeBuilder.builder(new ItemStack(wood.getPlank(), 1))
+						.addInput(wood.getDoor())
+						.setEnergy(1600);
+				if(wood.produceSawdust())
+					sawmillBuilder.addSecondary(IETags.sawdust, false);
+				sawmillBuilder.build(out, toRL("sawmill/"+wood.getName()+"_door"));
+			}
+			// Stairs
+			if(wood.getStairs()!=null)
+			{
+				sawmillBuilder = SawmillRecipeBuilder.builder(new ItemStack(wood.getPlank(), 1))
+						.addInput(wood.getStairs())
+						.setEnergy(2400);
+				if(wood.produceSawdust())
+					sawmillBuilder.addSecondary(IETags.sawdust, false);
+				sawmillBuilder.build(out, toRL("sawmill/"+wood.getName()+"_stairs"));
+			}
+		}
+		SawmillRecipeBuilder.builder(new ItemStack(Items.OAK_PLANKS, 4))
 				.addInput(Items.BOOKSHELF)
-				//todo, sawdust
-				.addSecondary(IETags.sulfurDust, false)
+				.addSecondary(IETags.sawdust, false)
 				.addSecondary(new ItemStack(Items.BOOK, 3), false)
 				.setEnergy(3200)
 				.build(out, toRL("sawmill/bookshelf"));

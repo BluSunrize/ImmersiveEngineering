@@ -6,6 +6,13 @@
         "tag": "forge:dusts/wood"
       },
       "stripping": false
+    },
+    {
+      "output": {
+        "item": "minecraft:book",
+        "count": 3
+      },
+      "stripping": false
     }
   ],
   "result": {
@@ -13,7 +20,7 @@
     "count": 6
   },
   "input": {
-    "item": "minecraft:stripped_oak_log"
+    "item": "minecraft:bookshelf"
   },
-  "energy": 2400
+  "energy": 3200
 }

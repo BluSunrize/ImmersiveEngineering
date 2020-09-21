@@ -15,19 +15,19 @@
     }
   ],
   "result": {
-    "item": "minecraft:oak_planks",
+    "item": "minecraft:acacia_planks",
     "count": 6
   },
   "energy": 3200,
   "input": [
     {
-      "item": "minecraft:oak_log"
+      "item": "minecraft:acacia_log"
     },
     {
-      "item": "minecraft:oak_wood"
+      "item": "minecraft:acacia_wood"
     }
   ],
   "stripped": {
-    "item": "minecraft:stripped_oak_log"
+    "item": "minecraft:stripped_acacia_log"
   }
 }
