@@ -287,6 +287,7 @@ public class IEConfig
 			floodlight_maximumStorage = addPositive(builder, "floodlight_max_storage", 80, "How much Flux the floodlight can hold (must be at least 10x the power draw)");
 			metalPressConfig = addMachineEnergyTimeModifiers(builder, "metal press");
 			crusherConfig = addMachineEnergyTimeModifiers(builder, "crusher");
+			sawmillConfig = addMachineEnergyTimeModifiers(builder, "sawmill");
 			squeezerConfig = addMachineEnergyTimeModifiers(builder, "squeezer");
 			fermenterConfig = addMachineEnergyTimeModifiers(builder, "fermenter");
 			refineryConfig = addMachineEnergyTimeModifiers(builder, "refinery");
@@ -413,6 +414,7 @@ public class IEConfig
 		//Multiblock Recipes
 		public final MachineRecipeConfig<MetalPressRecipe> metalPressConfig;
 		public final MachineRecipeConfig<CrusherRecipe> crusherConfig;
+		public final MachineRecipeConfig<SawmillRecipe> sawmillConfig;
 		public final MachineRecipeConfig<SqueezerRecipe> squeezerConfig;
 		public final MachineRecipeConfig<FermenterRecipe> fermenterConfig;
 		public final MachineRecipeConfig<RefineryRecipe> refineryConfig;

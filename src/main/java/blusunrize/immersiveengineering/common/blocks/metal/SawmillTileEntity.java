@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.crafting.SawmillRecipe;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttachable;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
@@ -55,7 +54,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
-// Todo, replace all the commented out bottling machine code with proper code
 public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEntity, MultiblockRecipe>
 		implements IConveyorAttachable, IBlockBounds, IPlayerInteraction
 {
@@ -488,6 +486,7 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 		private final ItemStack input;
 		private final SawmillRecipe recipe;
 		private final float maxProcessTicks;
+		private final int energyPerTick;
 		private int processTick;
 		private boolean stripped = false;
 		private boolean sawed = false;
@@ -497,15 +496,23 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 		{
 			this.input = input;
 			this.recipe = SawmillRecipe.findRecipe(input);
-			this.maxProcessTicks = this.recipe!=null?this.recipe.getTotalProcessTime(): 80;
+			if(this.recipe!=null)
+			{
+				this.maxProcessTicks = this.recipe.getTotalProcessTime();
+				this.energyPerTick = this.recipe.getTotalProcessEnergy()/this.recipe.getTotalProcessTime();
+			}
+			else
+			{
+				this.maxProcessTicks = 80;
+				this.energyPerTick = 40;
+			}
 		}
 
 		public boolean processStep(SawmillTileEntity tile, Set<ItemStack> secondaries)
 		{
-			int energyExtracted = (int)(8*IEConfig.MACHINES.bottlingMachineConfig.energyModifier.get());
-			if(tile.energyStorage.extractEnergy(energyExtracted, true) >= energyExtracted)
+			if(tile.energyStorage.extractEnergy(energyPerTick, true) >= energyPerTick)
 			{
-				tile.energyStorage.extractEnergy(energyExtracted, false);
+				tile.energyStorage.extractEnergy(energyPerTick, false);
 				this.processTick++;
 				float relative = getRelativeProcessStep();
 				if(this.recipe!=null)

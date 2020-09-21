@@ -10,6 +10,8 @@ package blusunrize.immersiveengineering.common.crafting.serializers;
 
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.SawmillRecipe;
+import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -42,8 +44,7 @@ public class SawmillRecipeSerializer extends IERecipeSerializer<SawmillRecipe>
 
 		JsonArray array = json.getAsJsonArray("secondaries");
 		int energy = JSONUtils.getInt(json, "energy");
-		//todo: apply machine config
-		SawmillRecipe recipe = new SawmillRecipe(recipeId, output, stripped, input, energy);
+		SawmillRecipe recipe = IEConfig.MACHINES.sawmillConfig.apply(new SawmillRecipe(recipeId, output, stripped, input, energy));
 		for(int i = 0; i < array.size(); i++)
 		{
 			JsonObject element = array.get(i).getAsJsonObject();
