@@ -87,9 +87,9 @@ public class SawmillRecipe extends MultiblockRecipe
 	// Initialized by reload listener
 	public static Map<ResourceLocation, SawmillRecipe> recipeList = Collections.emptyMap();
 
-	public static SawmillRecipe findRecipe(ItemStack input, FluidStack fluid)
+	public static SawmillRecipe findRecipe(ItemStack input)
 	{
-		if(!input.isEmpty()&&fluid!=null)
+		if(!input.isEmpty())
 			for(SawmillRecipe recipe : recipeList.values())
 				if(ItemUtils.stackMatchesObject(input, recipe.input))
 					return recipe;
