@@ -31,6 +31,7 @@ import blusunrize.immersiveengineering.common.util.compat.jei.fermenter.Fermente
 import blusunrize.immersiveengineering.common.util.compat.jei.metalpress.MetalPressRecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.mixer.MixerRecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.refinery.RefineryRecipeCategory;
+import blusunrize.immersiveengineering.common.util.compat.jei.sawmill.SawmillRecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.squeezer.SqueezerRecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.workbench.WorkbenchRecipeCategory;
 import com.google.common.collect.Collections2;
@@ -86,6 +87,7 @@ public class JEIHelper implements IModPlugin
 				new ClocheRecipeCategory(guiHelper),
 				new MetalPressRecipeCategory(guiHelper),
 				new CrusherRecipeCategory(guiHelper),
+				new SawmillRecipeCategory(guiHelper),
 				new WorkbenchRecipeCategory(guiHelper),
 				new SqueezerRecipeCategory(guiHelper),
 				new FermenterRecipeCategory(guiHelper),
@@ -116,6 +118,7 @@ public class JEIHelper implements IModPlugin
 		registration.addRecipes(new ArrayList<>(ClocheRecipe.recipeList.values()), ClocheRecipeCategory.UID);
 		registration.addRecipes(new ArrayList<>(Collections2.filter(MetalPressRecipe.recipeList.values(), IJEIRecipe::listInJEI)), MetalPressRecipeCategory.UID);
 		registration.addRecipes(new ArrayList<>(Collections2.filter(CrusherRecipe.recipeList.values(), IJEIRecipe::listInJEI)), CrusherRecipeCategory.UID);
+		registration.addRecipes(new ArrayList<>(Collections2.filter(SawmillRecipe.recipeList.values(), IJEIRecipe::listInJEI)), SawmillRecipeCategory.UID);
 		registration.addRecipes(new ArrayList<>(Collections2.filter(BlueprintCraftingRecipe.recipeList.values(), IJEIRecipe::listInJEI)), WorkbenchRecipeCategory.UID);
 		registration.addRecipes(new ArrayList<>(Collections2.filter(SqueezerRecipe.recipeList.values(), IJEIRecipe::listInJEI)), SqueezerRecipeCategory.UID);
 		registration.addRecipes(new ArrayList<>(Collections2.filter(FermenterRecipe.recipeList.values(), IJEIRecipe::listInJEI)), FermenterRecipeCategory.UID);
@@ -145,6 +148,7 @@ public class JEIHelper implements IModPlugin
 		registration.addRecipeCatalyst(new ItemStack(MetalDevices.cloche), ClocheRecipeCategory.UID);
 		registration.addRecipeCatalyst(new ItemStack(Multiblocks.metalPress), MetalPressRecipeCategory.UID);
 		registration.addRecipeCatalyst(new ItemStack(Multiblocks.crusher), CrusherRecipeCategory.UID);
+		registration.addRecipeCatalyst(new ItemStack(Multiblocks.sawmill), SawmillRecipeCategory.UID);
 		registration.addRecipeCatalyst(new ItemStack(WoodenDevices.workbench), WorkbenchRecipeCategory.UID);
 		registration.addRecipeCatalyst(new ItemStack(Multiblocks.autoWorkbench), WorkbenchRecipeCategory.UID);
 		registration.addRecipeCatalyst(new ItemStack(Multiblocks.squeezer), SqueezerRecipeCategory.UID);
