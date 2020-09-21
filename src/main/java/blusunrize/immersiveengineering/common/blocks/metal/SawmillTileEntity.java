@@ -282,6 +282,31 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 		}
 	}
 
+	private void insertItemToProcess(ItemStack stack, boolean simulate)
+	{
+		if(this.sawmillProcessQueue.size() < this.getProcessQueueMaxLength())
+		{
+			float dist = 1;
+			SawmillProcess p = null;
+			if(this.sawmillProcessQueue.size() > 0)
+			{
+				p = this.sawmillProcessQueue.get(this.sawmillProcessQueue.size()-1);
+				if(p!=null)
+					dist = p.getRelativeProcessStep();
+			}
+			if(p!=null&&dist < this.getMinProcessDistance(null))
+				return;
+			if(!simulate)
+			{
+				p = new SawmillProcess(Utils.copyStackWithAmount(stack, 1));
+				this.sawmillProcessQueue.add(p);
+				this.markDirty();
+				this.markContainingBlockForUpdate(null);
+			}
+			stack.shrink(1);
+		}
+	}
+
 	@Override
 	public void onEntityCollision(World world, Entity entity)
 	{
@@ -293,28 +318,9 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 			ItemStack stack = ((ItemEntity)entity).getItem();
 			if(stack.isEmpty())
 				return;
-
-			if(master.sawmillProcessQueue.size() < master.getProcessQueueMaxLength())
-			{
-				float dist = 1;
-				SawmillProcess p = null;
-				if(master.sawmillProcessQueue.size() > 0)
-				{
-					p = master.sawmillProcessQueue.get(master.sawmillProcessQueue.size()-1);
-					if(p!=null)
-						dist = p.getRelativeProcessStep();
-				}
-				if(p!=null&&dist < master.getMinProcessDistance(null))
-					return;
-
-				p = new SawmillProcess(Utils.copyStackWithAmount(stack, 1));
-				master.sawmillProcessQueue.add(p);
-				master.markDirty();
-				master.markContainingBlockForUpdate(null);
-				stack.shrink(1);
-				if(stack.getCount() <= 0)
-					entity.remove();
-			}
+			master.insertItemToProcess(stack, false);
+			if(stack.getCount() <= 0)
+				entity.remove();
 		}
 	}
 
@@ -437,7 +443,15 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 		return null;
 	}
 
-//	LazyOptional<IItemHandler> insertionHandler = registerConstantCap(new BottlingMachineInventoryHandler(this));
+	LazyOptional<IItemHandler> insertionHandler = registerConstantCap(new MultiblockInventoryHandler_DirectProcessing(this){
+		@Override
+		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
+		{
+			stack = stack.copy();
+			SawmillTileEntity.this.insertItemToProcess(stack, simulate);
+			return stack;
+		}
+	});
 
 	@Nonnull
 	@Override
@@ -445,12 +459,12 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 	{
 		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
-//			SawmillTileEntity master = master();
-//			if(master==null)
-//				return LazyOptional.empty();
-//			if(new BlockPos(0, 1, 1).equals(posInMultiblock)&&facing==(getIsMirrored()?this.getFacing().rotateY(): this.getFacing().rotateYCCW()))
-//				return master.insertionHandler.cast();
-//			return LazyOptional.empty();
+			SawmillTileEntity master = master();
+			if(master==null)
+				return LazyOptional.empty();
+			if(new BlockPos(0, 1, 1).equals(posInMultiblock)&&facing==(getIsMirrored()?this.getFacing().rotateY(): this.getFacing().rotateYCCW()))
+				return master.insertionHandler.cast();
+			return LazyOptional.empty();
 		}
 		return super.getCapability(capability, facing);
 	}
