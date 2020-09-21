@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.ClocheRenderFunction.ClocheRenderReference;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
+import blusunrize.immersiveengineering.api.crafting.SawmillRecipe;
 import blusunrize.immersiveengineering.api.crafting.builders.*;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
@@ -58,6 +59,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
@@ -712,6 +714,29 @@ public class Recipes extends RecipeProvider
 				.addInput(ItemTags.WOOL)
 				.setEnergy(3200)
 				.build(out, toRL("crusher/wool"));
+
+		/* SAWMILL */
+		SawmillRecipeBuilder.builder(new ItemStack(Items.OAK_PLANKS, 6))
+				.addStripped(Items.STRIPPED_OAK_LOG)
+				.addInput(Items.OAK_LOG, Items.OAK_WOOD)
+				//todo, sawdust
+				.addSecondary(IETags.sulfurDust, true)
+				.addSecondary(IETags.sulfurDust, false)
+				.setEnergy(3200)
+				.build(out, toRL("sawmill/oak_log"));
+		SawmillRecipeBuilder.builder(new ItemStack(Items.OAK_PLANKS, 6))
+				.addInput(Items.STRIPPED_OAK_LOG, Items.STRIPPED_OAK_WOOD)
+				//todo, sawdust
+				.addSecondary(IETags.sulfurDust, false)
+				.setEnergy(3200)
+				.build(out, toRL("sawmill/stripped_oak_log"));
+		SawmillRecipeBuilder.builder(new ItemStack(Items.OAK_PLANKS, 6))
+				.addInput(Items.BOOKSHELF)
+				//todo, sawdust
+				.addSecondary(IETags.sulfurDust, false)
+				.addSecondary(new ItemStack(Items.BOOK, 3), false)
+				.setEnergy(3200)
+				.build(out, toRL("sawmill/bookshelf"));
 
 		/* SQUEEZER */
 		SqueezerRecipeBuilder.builder(IEContent.fluidPlantoil, 80)

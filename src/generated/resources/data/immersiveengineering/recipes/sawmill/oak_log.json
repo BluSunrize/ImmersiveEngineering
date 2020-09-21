@@ -1,0 +1,33 @@
+{
+  "type": "immersiveengineering:sawmill",
+  "secondaries": [
+    {
+      "output": {
+        "tag": "forge:dusts/sulfur"
+      },
+      "stripping": true
+    },
+    {
+      "output": {
+        "tag": "forge:dusts/sulfur"
+      },
+      "stripping": false
+    }
+  ],
+  "result": {
+    "item": "minecraft:oak_planks",
+    "count": 6
+  },
+  "stripped": {
+    "item": "minecraft:stripped_oak_log"
+  },
+  "input": [
+    {
+      "item": "minecraft:oak_log"
+    },
+    {
+      "item": "minecraft:oak_wood"
+    }
+  ],
+  "energy": 3200
+}

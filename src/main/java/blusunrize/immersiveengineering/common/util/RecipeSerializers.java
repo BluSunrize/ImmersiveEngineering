@@ -97,6 +97,9 @@ public class RecipeSerializers
 		CrusherRecipe.SERIALIZER = RECIPE_SERIALIZERS.register(
 				"crusher", CrusherRecipeSerializer::new
 		);
+		SawmillRecipe.SERIALIZER = RECIPE_SERIALIZERS.register(
+				"sawmill", SawmillRecipeSerializer::new
+		);
 		FermenterRecipe.SERIALIZER = RECIPE_SERIALIZERS.register(
 				"fermenter", FermenterRecipeSerializer::new
 		);
