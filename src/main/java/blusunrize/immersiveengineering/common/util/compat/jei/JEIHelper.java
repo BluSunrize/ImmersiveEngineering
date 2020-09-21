@@ -52,6 +52,7 @@ import java.util.ArrayList;
 public class JEIHelper implements IModPlugin
 {
 	private static final ResourceLocation UID = new ResourceLocation(Lib.MODID, "main");
+	public static final ResourceLocation JEI_GUI = new ResourceLocation(Lib.MODID, "textures/gui/jei_elements.png");
 	//	public static IJeiHelpers jeiHelpers;
 //	public static IModRegistry modRegistry;
 	public static IDrawableStatic slotDrawable;
