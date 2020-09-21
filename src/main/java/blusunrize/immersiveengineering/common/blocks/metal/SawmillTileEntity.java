@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
-import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.crafting.SawmillRecipe;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttachable;
@@ -20,7 +19,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBou
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
-import blusunrize.immersiveengineering.common.items.IEItems;
 import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -120,7 +118,7 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 		super.tick();
 		if(isDummy()||isRSDisabled())
 			return;
-		if(world.isRemote && shouldRenderAsActive())
+		if(world.isRemote&&shouldRenderAsActive())
 		{
 			animation_bladeRotation += 36f;
 			animation_bladeRotation %= 360f;
@@ -171,7 +169,7 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 				return true;
 			}
 			//todo handle with a tag
-			else if(heldItem.getItem() ==Tools.sawblade)
+			else if(heldItem.getItem()==Tools.sawblade)
 			{
 				ItemStack tempMold = !master.sawblade.isEmpty()?master.sawblade.copy(): ItemStack.EMPTY;
 				master.sawblade = Utils.copyStackWithAmount(heldItem, 1);
@@ -520,18 +518,20 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 					if(!this.sawed&&relative >= .8625)
 					{
 						this.sawed = true;
-						secondaries.addAll(this.recipe.secondaryOutputs);
+						if(!tile.sawblade.isEmpty())
+							secondaries.addAll(this.recipe.secondaryOutputs);
 					}
 				}
-				if(relative>=1)
+				if(relative >= 1)
 					this.processFinished = true;
 				return true;
 			}
 			return false;
 		}
 
-		public float getRelativeProcessStep(){
-			return this.processTick / this.maxProcessTicks;
+		public float getRelativeProcessStep()
+		{
+			return this.processTick/this.maxProcessTicks;
 		}
 
 		public ItemStack getCurrentStack(boolean sawblade)
