@@ -18,7 +18,7 @@
     "item": "minecraft:oak_planks",
     "count": 6
   },
-  "energy": 3200,
+  "energy": 1600,
   "input": [
     {
       "item": "minecraft:oak_log"

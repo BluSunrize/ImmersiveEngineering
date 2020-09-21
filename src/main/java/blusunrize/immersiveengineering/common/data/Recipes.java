@@ -473,6 +473,7 @@ public class Recipes extends RecipeProvider
 		ArcFurnaceRecipeBuilder arcBuilder;
 		MetalPressRecipeBuilder pressBuilder;
 		AlloyRecipeBuilder alloyBuilder;
+		SawmillRecipeBuilder sawmillBuilder;
 
 		/* Common Metals */
 		for(RecipeMetals metal : RecipeMetals.values())
@@ -715,14 +716,13 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL("crusher/wool"));
 
 		/* SAWMILL */
-		SawmillRecipeBuilder sawmillBuilder;
 		for(RecipeWoods wood : RecipeWoods.values())
 		{
 			// Basic log
 			if(wood.getLog()!=null)
 			{
 				sawmillBuilder = SawmillRecipeBuilder.builder(new ItemStack(wood.getPlank(), 6))
-						.setEnergy(3200);
+						.setEnergy(1600);
 				// If there is an all-bark block
 				if(wood.getWood()!=null)
 					sawmillBuilder.addInput(wood.getLog(), wood.getWood());
@@ -743,7 +743,7 @@ public class Recipes extends RecipeProvider
 			{
 				sawmillBuilder = SawmillRecipeBuilder.builder(new ItemStack(wood.getPlank(), 6))
 						.addInput(wood.getStripped())
-						.setEnergy(2400);
+						.setEnergy(800);
 				if(wood.produceSawdust())
 					sawmillBuilder.addSecondary(IETags.sawdust, false);
 				sawmillBuilder.build(out, toRL("sawmill/stripped_"+wood.getName()+"_log"));
@@ -753,7 +753,7 @@ public class Recipes extends RecipeProvider
 			{
 				sawmillBuilder = SawmillRecipeBuilder.builder(new ItemStack(wood.getPlank(), 1))
 						.addInput(wood.getDoor())
-						.setEnergy(1600);
+						.setEnergy(800);
 				if(wood.produceSawdust())
 					sawmillBuilder.addSecondary(IETags.sawdust, false);
 				sawmillBuilder.build(out, toRL("sawmill/"+wood.getName()+"_door"));
@@ -763,7 +763,7 @@ public class Recipes extends RecipeProvider
 			{
 				sawmillBuilder = SawmillRecipeBuilder.builder(new ItemStack(wood.getPlank(), 1))
 						.addInput(wood.getStairs())
-						.setEnergy(2400);
+						.setEnergy(1600);
 				if(wood.produceSawdust())
 					sawmillBuilder.addSecondary(IETags.sawdust, false);
 				sawmillBuilder.build(out, toRL("sawmill/"+wood.getName()+"_stairs"));
@@ -773,7 +773,7 @@ public class Recipes extends RecipeProvider
 				.addInput(Items.BOOKSHELF)
 				.addSecondary(IETags.sawdust, false)
 				.addSecondary(new ItemStack(Items.BOOK, 3), false)
-				.setEnergy(3200)
+				.setEnergy(1600)
 				.build(out, toRL("sawmill/bookshelf"));
 
 		/* SQUEEZER */
