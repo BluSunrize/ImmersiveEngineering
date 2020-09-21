@@ -143,6 +143,12 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 			{
 				doProcessOutput(process.getCurrentStack(!this.sawblade.isEmpty()).copy());
 				processIterator.remove();
+				// todo: make the damage configurable
+				if(this.sawblade.attemptDamageItem(5, Utils.RAND, null))
+				{
+					this.sawblade = ItemStack.EMPTY;
+					this.updateMasterBlock(null, true);
+				}
 			}
 		}
 		for(ItemStack output : secondaries)
