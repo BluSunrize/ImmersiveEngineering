@@ -218,7 +218,7 @@ public class ItemModels extends LoadedModelProvider
 				Ingredients.woodenGrip, Ingredients.gunpartBarrel, Ingredients.gunpartDrum, Ingredients.gunpartHammer,
 				Ingredients.dustCoke, Ingredients.dustHopGraphite, Ingredients.ingotHopGraphite,
 				Ingredients.wireCopper, Ingredients.wireElectrum, Ingredients.wireAluminum, Ingredients.wireSteel,
-				Ingredients.dustSaltpeter, Ingredients.dustSulfur, Ingredients.electronTube, Ingredients.circuitBoard);
+				Ingredients.dustSaltpeter, Ingredients.dustSulfur, Ingredients.dustWood, Ingredients.electronTube, Ingredients.circuitBoard);
 
 		addItemModels(
 				"tool_", mcLoc("item/handheld"), Tools.hammer, Tools.wirecutter, Tools.screwdriver,

@@ -79,6 +79,7 @@ class ItemTags extends ItemTagsProvider
 		getBuilder(IETags.steelWire).add(Ingredients.wireSteel);
 		getBuilder(IETags.saltpeterDust).add(Ingredients.dustSaltpeter);
 		getBuilder(IETags.sulfurDust).add(Ingredients.dustSulfur);
+		getBuilder(IETags.sawdust).add(Ingredients.dustWood);
 		getBuilder(IETags.metalRods).add(IETags.aluminumRod, IETags.ironRod, IETags.steelRod);
 	}
 }
