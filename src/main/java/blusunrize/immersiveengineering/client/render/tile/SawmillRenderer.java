@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.client.render.tile;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.SawmillTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.SawmillTileEntity.SawmillProcess;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.block.BlockState;
@@ -63,25 +64,28 @@ public class SawmillRenderer extends TileEntityRenderer<SawmillTileEntity>
 		matrixStack.rotate(new Quaternion(0, dir, 0, true));
 
 		// Sawblade
-		matrixStack.push();
-		matrixStack.translate(1, .125, -.5);
-		matrixStack.rotate(new Quaternion(0, 0, te.animation_bladeRotation, true));
-		ClientUtils.renderModelTESRFast(
-				BLADE.get(Direction.NORTH).getQuads(state, null, te.getWorldNonnull().rand, EmptyModelData.INSTANCE),
-				solidBuilder, matrixStack, combinedLightIn);
-		matrixStack.pop();
+		boolean sawblade = !te.sawblade.isEmpty();
+		if(sawblade)
+		{
+			matrixStack.push();
+			matrixStack.translate(1, .125, -.5);
+			float spin = te.animation_bladeRotation;
+			if(te.shouldRenderAsActive())
+				spin += 36f*partialTicks;
+			matrixStack.rotate(new Quaternion(0, 0, spin, true));
+			ClientUtils.renderModelTESRFast(
+					BLADE.get(Direction.NORTH).getQuads(state, null, te.getWorldNonnull().rand, EmptyModelData.INSTANCE),
+					solidBuilder, matrixStack, combinedLightIn);
+			matrixStack.pop();
+		}
 
 		// Items
-		ItemStack log = new ItemStack(Blocks.OAK_LOG);
-		ItemStack stripped = new ItemStack(Blocks.STRIPPED_OAK_LOG);
-		ItemStack planks = new ItemStack(Blocks.OAK_PLANKS);
-
-		int total = 200;
-		int step = ClientUtils.mc().player.ticksExisted%total;
-		float relative = step/(float)total;
-		ItemStack rendered = relative < .3125?log: relative < .8625?stripped: planks;
-		renderItem(rendered, relative, matrixStack, bufferIn, combinedLightIn, combinedOverlayIn);
-
+		for(SawmillProcess process : te.sawmillProcessQueue)
+		{
+			float relative = process.getRelativeProcessStep();
+			ItemStack rendered = process.getCurrentStack(sawblade);
+			renderItem(rendered, relative, matrixStack, bufferIn, combinedLightIn, combinedOverlayIn);
+		}
 		matrixStack.pop();
 	}
 

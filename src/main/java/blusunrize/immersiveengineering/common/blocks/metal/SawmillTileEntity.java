@@ -118,15 +118,15 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 	public void tick()
 	{
 		super.tick();
-
-		if(isDummy()||isRSDisabled()||world.isRemote)
+		if(isDummy()||isRSDisabled())
 			return;
-
-		if(shouldRenderAsActive())
+		if(world.isRemote && shouldRenderAsActive())
 		{
 			animation_bladeRotation += 36f;
 			animation_bladeRotation %= 360f;
 		}
+		if(world.isRemote)
+			return;
 
 		tickedProcesses = 0;
 		int max = getMaxProcessPerTick();
@@ -262,6 +262,11 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 		);
 	}
 
+	@Override
+	public boolean shouldRenderAsActive()
+	{
+		return getEnergyStored(null) > 0&&!isRSDisabled()&&!this.sawblade.isEmpty();
+	}
 
 	@Override
 	public void replaceStructureBlock(BlockPos pos, BlockState state, ItemStack stack, int h, int l, int w)
