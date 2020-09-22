@@ -297,7 +297,7 @@ public class BlockStates extends BlockStateProvider
 		UnaryOperator<BlockPos> transform = UnaryOperator.identity();
 		if(mirror)
 		{
-			Vec3i size = mb.getSize();
+			Vec3i size = mb.getSize(null);
 			transform = p -> new BlockPos(size.getX()-p.getX()-1, p.getY(), p.getZ());
 		}
 		return splitOBJ(loc, mb, transform);
@@ -327,7 +327,7 @@ public class BlockStates extends BlockStateProvider
 	)
 	{
 		final Vec3i offset = multiblock.getMasterFromOriginOffset();
-		Stream<Vec3i> partsStream = multiblock.getStructure()
+		Stream<Vec3i> partsStream = multiblock.getStructure(null)
 				.stream()
 				.filter(info -> !info.state.isAir())
 				.map(info -> info.pos)

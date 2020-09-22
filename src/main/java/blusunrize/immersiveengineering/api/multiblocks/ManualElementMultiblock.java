@@ -84,7 +84,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 	public void onOpened(ManualScreen gui, int x, int y, List<Button> pageButtons)
 	{
 		int yOff = 0;
-		if(multiblock.getStructure()!=null)
+		if(multiblock.getStructure(null)!=null)
 		{
 			boolean canRenderFormed = multiblock.canRenderFormedStructure();
 
@@ -175,7 +175,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 	@Override
 	public void render(ManualScreen gui, int x, int y, int mouseX, int mouseY)
 	{
-		if(multiblock.getStructure()!=null)
+		if(multiblock.getStructure(null)!=null)
 		{
 			MatrixStack transform = new MatrixStack();
 			IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
@@ -393,7 +393,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 		MultiblockRenderInfo(IMultiblock multiblock)
 		{
 			this.multiblock = multiblock;
-			init(multiblock.getStructure());
+			init(multiblock.getStructure(null));
 			maxBlockIndex = blockIndex = structureHeight*structureLength*structureWidth;
 		}
 
