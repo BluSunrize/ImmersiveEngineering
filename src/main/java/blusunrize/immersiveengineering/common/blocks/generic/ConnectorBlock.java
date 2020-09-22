@@ -20,6 +20,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.material.PushReaction;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -40,6 +41,7 @@ public abstract class ConnectorBlock extends IETileProviderBlock
 		super(name, Block.Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(3.0F, 15.0F).notSolid(),
 				item, additional);
 		lightOpacity = 0;
+		setMobility(PushReaction.BLOCK);
 	}
 
 	public ConnectorBlock(String name, IProperty... additional)
