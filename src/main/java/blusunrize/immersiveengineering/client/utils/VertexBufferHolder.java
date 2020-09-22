@@ -1,5 +1,16 @@
+/*
+ * BluSunrize
+ * Copyright (c) 2020
+ *
+ * This code is licensed under "Blu's License of Common Sense"
+ * Details can be found in the license file in the root folder of this project
+ *
+ */
+
 package blusunrize.immersiveengineering.client.utils;
 
+import blusunrize.immersiveengineering.api.client.IVertexBufferHolder;
+import blusunrize.immersiveengineering.api.utils.ResettableLazy;
 import blusunrize.immersiveengineering.common.IEConfig;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -20,7 +31,7 @@ import java.util.Map.Entry;
 
 import static net.minecraft.client.renderer.vertex.DefaultVertexFormats.*;
 
-public class VertexBufferHolder
+public class VertexBufferHolder implements IVertexBufferHolder
 {
 	public static final VertexFormat BUFFER_FORMAT = new VertexFormat(ImmutableList.of(
 			POSITION_3F, COLOR_4UB, TEX_2F, NORMAL_3B, PADDING_1B
@@ -30,7 +41,7 @@ public class VertexBufferHolder
 	private final ResettableLazy<VertexBuffer> buffer;
 	private final ResettableLazy<List<BakedQuad>> quads;
 
-	public VertexBufferHolder(NonNullSupplier<List<BakedQuad>> quads)
+	private VertexBufferHolder(NonNullSupplier<List<BakedQuad>> quads)
 	{
 		this.quads = new ResettableLazy<>(quads);
 		this.buffer = new ResettableLazy<>(
@@ -48,6 +59,12 @@ public class VertexBufferHolder
 		);
 	}
 
+	public static void addToAPI()
+	{
+		IVertexBufferHolder.CREATE.setValue(VertexBufferHolder::new);
+	}
+
+	@Override
 	public void render(RenderType type, int light, int overlay, IRenderTypeBuffer directOut, MatrixStack transform)
 	{
 		if(IEConfig.GENERAL.enableVBOs.get())
@@ -57,6 +74,7 @@ public class VertexBufferHolder
 			renderToBuilder(directOut.getBuffer(type), transform, light, overlay);
 	}
 
+	@Override
 	public void reset()
 	{
 		buffer.reset();

@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.client.utils.VertexBufferHolder;
+import blusunrize.immersiveengineering.api.client.IVertexBufferHolder;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.blocks.wooden.WatermillTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -27,7 +27,7 @@ import net.minecraftforge.client.model.data.EmptyModelData;
 public class WatermillRenderer extends TileEntityRenderer<WatermillTileEntity>
 {
 	public static DynamicModel<Void> MODEL;
-	private static final VertexBufferHolder MODEL_BUFFER = new VertexBufferHolder(() -> {
+	private static final IVertexBufferHolder MODEL_BUFFER = IVertexBufferHolder.create(() -> {
 		BlockState state = WoodenDevices.watermill.getDefaultState()
 				.with(IEProperties.FACING_HORIZONTAL, Direction.NORTH);
 		return MODEL.get(null).getQuads(state, null, Utils.RAND, EmptyModelData.INSTANCE);

@@ -10,8 +10,8 @@ package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
+import blusunrize.immersiveengineering.api.client.IVertexBufferHolder;
 import blusunrize.immersiveengineering.client.models.obj.IESmartObjModel;
-import blusunrize.immersiveengineering.client.utils.VertexBufferHolder;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.BucketWheelTileEntity;
@@ -46,10 +46,10 @@ import java.util.concurrent.TimeUnit;
 public class BucketWheelRenderer extends TileEntityRenderer<BucketWheelTileEntity>
 {
 	public static DynamicModel<Void> WHEEL;
-	private static final Cache<List<String>, VertexBufferHolder> CACHED_BUFFERS = CacheBuilder.newBuilder()
+	private static final Cache<List<String>, IVertexBufferHolder> CACHED_BUFFERS = CacheBuilder.newBuilder()
 			.maximumSize(100)
 			.expireAfterAccess(1, TimeUnit.MINUTES)
-			.<Object, VertexBufferHolder>removalListener(rem -> rem.getValue().reset())
+			.<Object, IVertexBufferHolder>removalListener(rem -> rem.getValue().reset())
 			.build();
 
 	public BucketWheelRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
@@ -102,7 +102,7 @@ public class BucketWheelRenderer extends TileEntityRenderer<BucketWheelTileEntit
 		matrixStack.translate(-.5, -.5, -.5);
 		try
 		{
-			CACHED_BUFFERS.get(textures, () -> new VertexBufferHolder(() -> {
+			CACHED_BUFFERS.get(textures, () -> IVertexBufferHolder.create(() -> {
 				IBakedModel model = WHEEL.get(null);
 				BlockState state = Multiblocks.bucketWheel.getDefaultState();
 				List<String> list = Lists.newArrayList("bucketWheel");

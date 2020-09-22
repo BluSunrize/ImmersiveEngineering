@@ -11,8 +11,8 @@ package blusunrize.immersiveengineering.client.render.tile;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
+import blusunrize.immersiveengineering.api.client.IVertexBufferHolder;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
-import blusunrize.immersiveengineering.client.utils.VertexBufferHolder;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.blocks.wooden.WindmillTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -35,17 +35,17 @@ import java.util.List;
 public class WindmillRenderer extends TileEntityRenderer<WindmillTileEntity>
 {
 	public static DynamicModel<Void> MODEL;
-	private static final VertexBufferHolder[] BUFFERS = new VertexBufferHolder[9];
+	private static final IVertexBufferHolder[] BUFFERS = new IVertexBufferHolder[9];
 
 	public WindmillRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
 	{
 		super(rendererDispatcherIn);
 	}
 
-	private static VertexBufferHolder getBufferHolder(int sails)
+	private static IVertexBufferHolder getBufferHolder(int sails)
 	{
 		if(BUFFERS[sails]==null)
-			BUFFERS[sails] = new VertexBufferHolder(() -> {
+			BUFFERS[sails] = IVertexBufferHolder.create(() -> {
 				IBakedModel model = MODEL.get(null);
 				List<String> parts = new ArrayList<>();
 				parts.add("base");
@@ -81,7 +81,7 @@ public class WindmillRenderer extends TileEntityRenderer<WindmillTileEntity>
 
 	public static void reset()
 	{
-		for(VertexBufferHolder vbo : BUFFERS)
+		for(IVertexBufferHolder vbo : BUFFERS)
 			if(vbo!=null)
 				vbo.reset();
 	}
