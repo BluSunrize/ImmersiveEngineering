@@ -64,6 +64,12 @@ public class IngredientFluidStack extends Ingredient
 	}
 
 	@Override
+	public boolean hasNoMatchingItems()
+	{
+		return this.fluidTagInput.getMatchingFluidStacks().isEmpty();
+	}
+
+	@Override
 	public boolean test(@Nullable ItemStack stack)
 	{
 		if(stack==null)
@@ -88,9 +94,9 @@ public class IngredientFluidStack extends Ingredient
 		return ret;
 	}
 
-	@Override
-	public boolean isSimple()
-	{
-		return false;
-	}
+//	@Override
+//	public boolean isSimple()
+//	{
+//		return false;
+//	}
 }
