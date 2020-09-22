@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
+import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.crafting.SawmillRecipe;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttachable;
@@ -166,8 +167,7 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 				this.updateMasterBlock(null, true);
 				return true;
 			}
-			//todo handle with a tag
-			else if(heldItem.getItem()==Tools.sawblade)
+			else if(IETags.sawblades.contains(heldItem.getItem()))
 			{
 				ItemStack tempMold = !master.sawblade.isEmpty()?master.sawblade.copy(): ItemStack.EMPTY;
 				master.sawblade = Utils.copyStackWithAmount(heldItem, 1);

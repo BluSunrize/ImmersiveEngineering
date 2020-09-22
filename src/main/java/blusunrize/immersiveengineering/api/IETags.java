@@ -70,6 +70,7 @@ public class IETags
 	public static final Tag<Item> sulfurDust = new ItemTags.Wrapper(getDust("sulfur"));
 	public static final Tag<Item> sawdust = new ItemTags.Wrapper(getDust("wood"));
 	public static final Tag<Item> plates = new ItemTags.Wrapper(forgeLoc("plates"));
+	public static final Tag<Item> sawblades = new ItemTags.Wrapper(forgeLoc("sawblades"));
 
 	public static final Tag<Fluid> fluidCreosote = new FluidTags.Wrapper(forgeLoc("creosote"));
 	public static final Tag<Fluid> fluidPlantoil = new FluidTags.Wrapper(forgeLoc("plantoil"));

@@ -2,5 +2,9 @@
   "start": {
     "type": "multiblock",
     "name": "multiblocks/sawmill"
+  },
+  "sawdust": {
+    "type": "crafting",
+    "recipe": "crafting/paper_from_sawdust"
   }
 }
