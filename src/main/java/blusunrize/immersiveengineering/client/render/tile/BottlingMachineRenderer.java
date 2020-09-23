@@ -37,6 +37,7 @@ import net.minecraftforge.fluids.FluidStack;
 public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineTileEntity>
 {
 	public static DynamicModel<Direction> DYNAMIC;
+	private static final float pixelHeight = 1f/16f;
 
 	public BottlingMachineRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
 	{
@@ -103,7 +104,6 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 					itemFill = 1;
 				}
 				itemY += lift;
-				lift += .0625;
 			}
 			else
 			{
@@ -125,7 +125,7 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 		float dir = te.getFacing()==Direction.SOUTH?180: te.getFacing()==Direction.NORTH?0: te.getFacing()==Direction.EAST?-90: 90;
 		matrixStack.rotate(new Quaternion(0, dir, 0, true));
 
-		float scale = .0625f;
+		float scale = pixelHeight;
 		FluidStack fs = te.tanks[0].getFluid();
 		if(!fs.isEmpty())
 		{
