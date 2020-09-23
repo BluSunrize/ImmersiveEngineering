@@ -49,8 +49,7 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 		this.output = output;
 		this.input = input;
 		this.slag = slag;
-		this.totalProcessTime = time;
-		this.totalProcessEnergy = energy;
+		setTimeAndEnergy(time, energy);
 		this.additives = additives;
 
 		List<IngredientWithSize> inputList = Lists.newArrayList(this.input);

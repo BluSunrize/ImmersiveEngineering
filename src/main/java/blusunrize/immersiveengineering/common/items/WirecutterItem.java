@@ -48,7 +48,13 @@ public class WirecutterItem extends IEBaseItem implements ITool
 
 	public WirecutterItem()
 	{
-		super("wirecutter", new Properties().defaultMaxDamage(IEServerConfig.TOOLS.cutterDurabiliy.get()));
+		super("wirecutter", new Properties().defaultMaxDamage(100));
+	}
+
+	@Override
+	public int getMaxDamage(ItemStack stack)
+	{
+		return IEServerConfig.TOOLS.cutterDurabiliy.get();
 	}
 
 	@Nonnull

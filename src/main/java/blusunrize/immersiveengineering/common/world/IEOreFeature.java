@@ -63,7 +63,7 @@ public class IEOreFeature extends Feature<IEOreFeature.IEOreFeatureConfig>
 
 		public IEOreFeatureConfig(RuleTest target, BlockState state, OreConfig config)
 		{
-			this(target, state, config.veinSize.getPath());
+			this(target, state, config.veinSize.getBase().getPath());
 		}
 
 		public int getSize()

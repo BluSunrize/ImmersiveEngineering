@@ -1,11 +1,9 @@
 {
   "type": "immersiveengineering:hammer_crushing",
+  "result": {
+    "tag": "forge:dusts/ardite"
+  },
   "conditions": [
-    {
-      "key": "tools.disable_hammer_crushing",
-      "value": false,
-      "type": "immersiveengineering:config"
-    },
     {
       "value": {
         "tag": "forge:dusts/ardite",
@@ -21,9 +19,6 @@
       "type": "forge:not"
     }
   ],
-  "result": {
-    "tag": "forge:dusts/ardite"
-  },
   "input": {
     "tag": "forge:ores/ardite"
   }

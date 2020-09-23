@@ -26,7 +26,6 @@ import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.crafting.HammerCrushingRecipeBuilder;
-import blusunrize.immersiveengineering.common.crafting.IEConfigConditionSerializer.ConditionIEConfig;
 import blusunrize.immersiveengineering.common.crafting.IngredientFluidStack;
 import blusunrize.immersiveengineering.common.crafting.RevolverAssemblyRecipeBuilder;
 import blusunrize.immersiveengineering.common.crafting.TurnAndCopyRecipeBuilder;
@@ -655,7 +654,7 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL("metalpress/bullet_casing"));
 
 		ItemStack electrode = new ItemStack(Misc.graphiteElectrode);
-		electrode.setDamage(IEServerConfig.MACHINES.arcfurnace_electrodeDamage.get()/2);
+		electrode.setDamage(IEServerConfig.MACHINES.arcfurnace_electrodeDamage.getOrDefault()/2);
 		MetalPressRecipeBuilder.builder(Molds.moldRod, electrode)
 				.addInput(new IngredientWithSize(IETags.hopGraphiteIngot, 4))
 				.setEnergy(4800)
@@ -2444,18 +2443,6 @@ public class Recipes extends RecipeProvider
 				.key('p', Items.PAPER)
 				.addCriterion("has_"+toPath(Items.PAPER), hasItem(Items.PAPER))
 				.build(buildBlueprint(out, "bannerpatterns"), toRL("blueprint_bannerpatterns"));
-
-		ShapedRecipeBuilder.shapedRecipe(Misc.blueprint)
-				.patternLine("ggg")
-				.patternLine("ddd")
-				.patternLine("ppp")
-				.key('g', IETags.hopGraphiteIngot)
-				.key('d', Tags.Items.DYES_BLUE)
-				//TODO tag?
-				.key('p', Items.PAPER)
-				.addCriterion("has_"+toPath(Items.PAPER), hasItem(Items.PAPER))
-				.build(buildBlueprint(out, "electrode", new ConditionIEConfig(true, "machines.arc_furnace.electrodeCrafting")),
-						toRL("blueprint_electrode"));
 	}
 
 	private void recipesVanilla(@Nonnull Consumer<IFinishedRecipe> out)

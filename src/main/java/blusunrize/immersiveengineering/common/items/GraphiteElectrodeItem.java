@@ -43,7 +43,7 @@ public class GraphiteElectrodeItem extends IEBaseItem
 	@Override
 	public double getDurabilityForDisplay(ItemStack stack)
 	{
-		return ItemNBTHelper.getInt(stack, "graphDmg")/(double)IEServerConfig.MACHINES.arcfurnace_electrodeDamage.get();
+		return ItemNBTHelper.getInt(stack, "graphDmg")/(double)IEServerConfig.MACHINES.arcfurnace_electrodeDamage.getOr(0);
 	}
 
 	@Override

@@ -103,7 +103,7 @@ public class ImmersiveEngineering
 		Villages.Registers.PROFESSIONS.register(FMLJavaModLoadingContext.get().getModEventBus());
 		ModLoadingContext.get().registerConfig(Type.COMMON, IECommonConfig.CONFIG_SPEC);
 		ModLoadingContext.get().registerConfig(Type.CLIENT, IEClientConfig.CONFIG_SPEC);
-		ModLoadingContext.get().registerConfig(Type.SERVER, IEServerConfig.CONFIG_SPEC);
+		ModLoadingContext.get().registerConfig(Type.SERVER, IEServerConfig.CONFIG_SPEC.getBaseSpec());
 		IEContent.modConstruction();
 		proxy.modConstruction();
 		IngredientSerializers.init();
@@ -171,19 +171,6 @@ public class ImmersiveEngineering
 
 		proxy.preInitEnd();
 		IEContent.init();
-
-		if(IEServerConfig.ORES.ore_bauxite.retrogenEnabled.get())
-			IEWorldGen.retrogenOres.add("retrogen_bauxite");
-		if(IEServerConfig.ORES.ore_lead.retrogenEnabled.get())
-			IEWorldGen.retrogenOres.add("retrogen_lead");
-		if(IEServerConfig.ORES.ore_silver.retrogenEnabled.get())
-			IEWorldGen.retrogenOres.add("retrogen_silver");
-		if(IEServerConfig.ORES.ore_nickel.retrogenEnabled.get())
-			IEWorldGen.retrogenOres.add("retrogen_nickel");
-		if(IEServerConfig.ORES.ore_uranium.retrogenEnabled.get())
-			IEWorldGen.retrogenOres.add("retrogen_uranium");
-		if(IEServerConfig.ORES.ore_copper.retrogenEnabled.get())
-			IEWorldGen.retrogenOres.add("retrogen_copper");
 
 		MinecraftForge.EVENT_BUS.register(new EventHandler());
 		proxy.init();

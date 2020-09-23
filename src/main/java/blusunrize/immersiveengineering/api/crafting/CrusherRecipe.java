@@ -45,8 +45,7 @@ public class CrusherRecipe extends MultiblockRecipe
 		super(output, TYPE, id);
 		this.output = output;
 		this.input = input;
-		this.totalProcessEnergy = energy;
-		this.totalProcessTime = 50;
+		setTimeAndEnergy(50, energy);
 
 		setInputList(Lists.newArrayList(this.input));
 		this.outputList = ListUtils.fromItem(this.output);

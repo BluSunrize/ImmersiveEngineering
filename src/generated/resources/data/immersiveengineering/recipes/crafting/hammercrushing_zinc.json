@@ -1,11 +1,9 @@
 {
   "type": "immersiveengineering:hammer_crushing",
+  "result": {
+    "tag": "forge:dusts/zinc"
+  },
   "conditions": [
-    {
-      "key": "tools.disable_hammer_crushing",
-      "value": false,
-      "type": "immersiveengineering:config"
-    },
     {
       "value": {
         "tag": "forge:dusts/zinc",
@@ -21,9 +19,6 @@
       "type": "forge:not"
     }
   ],
-  "result": {
-    "tag": "forge:dusts/zinc"
-  },
   "input": {
     "tag": "forge:ores/zinc"
   }

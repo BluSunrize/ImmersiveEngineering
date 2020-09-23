@@ -11,21 +11,24 @@ package blusunrize.immersiveengineering.common.config;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.*;
+import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
+import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.metal.CapacitorTileEntity;
-import blusunrize.immersiveengineering.common.config.IEServerConfig.Wires.WireConfig;
+import blusunrize.immersiveengineering.common.config.CachedConfig.*;
 import blusunrize.immersiveengineering.common.wires.IEWireTypes.IEWireType;
+import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import com.electronwill.nightconfig.core.Config;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.world.DimensionType;
 import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.common.ForgeConfigSpec.*;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.config.ModConfig.Type;
 
 import java.lang.reflect.Field;
 import java.util.EnumMap;
@@ -40,7 +43,7 @@ public class IEServerConfig
 {
 	public static class Wires
 	{
-		Wires(ForgeConfigSpec.Builder builder)
+		Wires(CachedConfig.Builder builder)
 		{
 			builder.comment("Configuration related to Immersive Engineering wires").push("wires");
 			// Server
@@ -100,65 +103,47 @@ public class IEServerConfig
 
 		public static class WireConfig
 		{
-			public final IntValue maxLengthGetter;
-			public int maxLength;
+			public final IntValue maxLength;
 
-			protected WireConfig(ForgeConfigSpec.Builder builder, String name, int defLength, boolean doPop)
+			protected WireConfig(CachedConfig.Builder builder, String name, int defLength, boolean doPop)
 			{
 				builder.push(name);
-				maxLengthGetter = builder.comment("The maximum length of "+name+" wires")
+				maxLength = builder.comment("The maximum length of "+name+" wires")
 						.defineInRange("maxLength", defLength, 0, Integer.MAX_VALUE);
 				if(doPop)
 					builder.pop();
 			}
 
-			public WireConfig(ForgeConfigSpec.Builder builder, String name, int defLength)
+			public WireConfig(CachedConfig.Builder builder, String name, int defLength)
 			{
 				this(builder, name, defLength, true);
-			}
-
-			void updateCachedValues()
-			{
-				maxLength = maxLengthGetter.get();
 			}
 		}
 
 		public static class EnergyWireConfig extends WireConfig
 		{
-			public final IntValue transferRateGetter;
-			public final IntValue connectorRateGetter;
-			public final DoubleValue lossRatioGetter;
-			public int transferRate;
-			public int connectorRate;
-			public double lossRatio;
+			public final IntValue transferRate;
+			public final IntValue connectorRate;
+			public final DoubleValue lossRatio;
 
 			public EnergyWireConfig(Builder builder, String name, int defLength, int defRate, double defLoss)
 			{
 				super(builder, name, defLength, false);
-				this.transferRateGetter = builder.comment("The transfer rate of "+name+" wire in IF/t")
+				this.transferRate = builder.comment("The transfer rate of "+name+" wire in IF/t")
 						.defineInRange("transferRate", defRate, 0, Integer.MAX_VALUE);
-				this.lossRatioGetter = builder.comment("The percentage of power lost every 16 blocks of distance in "+name+" wire")
+				this.lossRatio = builder.comment("The percentage of power lost every 16 blocks of distance in "+name+" wire")
 						.defineInRange("loss", defLoss, 0, 1);
-				this.connectorRateGetter = builder
+				this.connectorRate = builder
 						.comment("In- and output rates of "+name+" wire connectors. This is independant of the transferrate of the wires.")
 						.defineInRange("wireConnectorInput", defRate/8, 0, Integer.MAX_VALUE);
 				builder.pop();
-			}
-
-			@Override
-			void updateCachedValues()
-			{
-				super.updateCachedValues();
-				transferRate = transferRateGetter.get();
-				lossRatio = lossRatioGetter.get();
-				connectorRate = connectorRateGetter.get();
 			}
 		}
 	}
 
 	public static class Machines
 	{
-		Machines(ForgeConfigSpec.Builder builder)
+		Machines(CachedConfig.Builder builder)
 		{
 			builder.push("machines");
 			{
@@ -275,9 +260,6 @@ public class IEServerConfig
 			{
 				arcFurnaceConfig = addMachineEnergyTimeModifiers(builder, "arc furnace", false);
 				arcfurnace_electrodeDamage = addPositive(builder, "electrodeDamage", 96000, "The maximum amount of damage Graphite Electrodes can take. While the furnace is working, electrodes sustain 1 damage per tick, so this is effectively the lifetime in ticks. The default value of 96000 makes them last for 8 consecutive ingame days");
-				arcfurnace_electrodeCrafting = builder
-						.comment("Set this to true to make the blueprint for graphite electrodes craftable in addition to villager/dungeon loot")
-						.define("electrodeCrafting", false);
 				arcfurnace_recycle = builder
 						.comment("Set this to false to disable the Arc Furnace's recycling of armors and tools")
 						.define("recycle", true);
@@ -420,7 +402,6 @@ public class IEServerConfig
 		public final MachineRecipeConfig<RefineryRecipe> refineryConfig;
 		public final MachineRecipeConfig<ArcFurnaceRecipe> arcFurnaceConfig;
 		public final IntValue arcfurnace_electrodeDamage;
-		public final BooleanValue arcfurnace_electrodeCrafting;
 		public final BooleanValue arcfurnace_recycle;
 		public final MachineRecipeConfig<BlueprintCraftingRecipe> autoWorkbenchConfig;
 		public final MachineRecipeConfig<BottlingMachineRecipe> bottlingMachineConfig;
@@ -449,7 +430,7 @@ public class IEServerConfig
 
 			public T apply(T in)
 			{
-				in.modifyTimeAndEnergy(timeModifier.get(), energyModifier.get());
+				in.modifyTimeAndEnergy(timeModifier, energyModifier);
 				return in;
 			}
 		}
@@ -632,16 +613,15 @@ public class IEServerConfig
 				.defineInRange(name, defaultVal, 1, Integer.MAX_VALUE);
 	}
 
-	public static final ForgeConfigSpec CONFIG_SPEC;
+	public static final CachedConfig CONFIG_SPEC;
 	public static final Wires WIRES;
 	public static final Machines MACHINES;
 	public static final Ores ORES;
 	public static final Tools TOOLS;
-	public static final CachedConfigValues CACHED = new CachedConfigValues();
 
 	static
 	{
-		ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
+		CachedConfig.Builder builder = new CachedConfig.Builder();
 		WIRES = new Wires(builder);
 		MACHINES = new Machines(builder);
 		ORES = new Ores(builder);
@@ -671,15 +651,17 @@ public class IEServerConfig
 	@SubscribeEvent
 	public static void onConfigReload(ModConfig.ModConfigEvent ev)
 	{
-		WIRES.wireConfigs.values().forEach(WireConfig::updateCachedValues);
-		CACHED.blocksBreakWires = WIRES.blocksBreakWires.get();
-		CACHED.wireDamage = WIRES.enableWireDamage.get();
-		rawConfig = null;
-	}
+		if(ev.getConfig().getType()==Type.SERVER&&ImmersiveEngineering.MODID.equals(ev.getConfig().getModId()))
+		{
+			rawConfig = ev.getConfig().getConfigData();
+			CONFIG_SPEC.refreshCached();
 
-	public static class CachedConfigValues
-	{
-		public boolean blocksBreakWires;
-		public boolean wireDamage;
+			ExternalHeaterHandler.defaultFurnaceEnergyCost = IEServerConfig.MACHINES.heater_consumption.get();
+			ExternalHeaterHandler.defaultFurnaceSpeedupCost = IEServerConfig.MACHINES.heater_speedupConsumption.get();
+			ExcavatorHandler.mineralVeinYield = IEServerConfig.MACHINES.excavator_yield.get();
+			ExcavatorHandler.initialVeinDepletion = IEServerConfig.MACHINES.excavator_initial_depletion.get();
+			ExcavatorHandler.mineralNoiseThreshold = IEServerConfig.MACHINES.excavator_theshold.get();
+			IEWorldGen.onConfigUpdated();
+		}
 	}
 }

@@ -43,8 +43,7 @@ public class FermenterRecipe extends MultiblockRecipe
 		this.fluidOutput = fluidOutput;
 		this.itemOutput = itemOutput;
 		this.input = input;
-		this.totalProcessEnergy = energy;
-		this.totalProcessTime = 80;
+		setTimeAndEnergy(80, energy);
 
 		setInputListWithSizes(Lists.newArrayList(this.input));
 		this.fluidOutputList = Lists.newArrayList(this.fluidOutput);

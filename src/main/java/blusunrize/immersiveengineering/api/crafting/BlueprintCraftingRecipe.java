@@ -59,8 +59,7 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 		this.outputList = ListUtils.fromItem(this.output);
 
 		//Time and energy values are for the automatic workbench
-		this.totalProcessEnergy = 23040;
-		this.totalProcessTime = 180;
+		setTimeAndEnergy(180, 23040);
 	}
 
 	@Override

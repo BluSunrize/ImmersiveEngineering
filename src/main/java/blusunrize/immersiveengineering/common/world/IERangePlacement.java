@@ -53,7 +53,7 @@ public class IERangePlacement extends SimplePlacement<IETopSolidRangeConfig>
 
 		public IETopSolidRangeConfig(OreConfig config)
 		{
-			this(config.minY.getPath(), config.maxY.getPath());
+			this(config.minY.getBase().getPath(), config.maxY.getBase().getPath());
 		}
 
 		public IETopSolidRangeConfig(List<String> minPath, List<String> maxPath)

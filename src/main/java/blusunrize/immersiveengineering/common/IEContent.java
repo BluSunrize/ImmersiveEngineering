@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.api.*;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
-import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
@@ -44,7 +43,6 @@ import blusunrize.immersiveengineering.common.blocks.stone.PartialConcreteBlock;
 import blusunrize.immersiveengineering.common.blocks.stone.StoneMultiBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
-import blusunrize.immersiveengineering.common.config.IEServerConfig.Ores.OreConfig;
 import blusunrize.immersiveengineering.common.crafting.IngredientFluidStack;
 import blusunrize.immersiveengineering.common.entities.*;
 import blusunrize.immersiveengineering.common.items.*;
@@ -786,16 +784,10 @@ public class IEContent
 		fluidBiodiesel.block.setEffect(IEPotions.flammable, 100, 1);
 		fluidConcrete.block.setEffect(Effects.SLOWNESS, 20, 3);
 
-		ExcavatorHandler.mineralVeinYield = IEServerConfig.MACHINES.excavator_yield.get();
-		ExcavatorHandler.initialVeinDepletion = IEServerConfig.MACHINES.excavator_initial_depletion.get();
-		ExcavatorHandler.mineralNoiseThreshold = IEServerConfig.MACHINES.excavator_theshold.get();
-
 		ChemthrowerEffects.register();
 
 		RailgunProjectiles.register();
 
-		ExternalHeaterHandler.defaultFurnaceEnergyCost = IEServerConfig.MACHINES.heater_consumption.get();
-		ExternalHeaterHandler.defaultFurnaceSpeedupCost = IEServerConfig.MACHINES.heater_speedupConsumption.get();
 		ExternalHeaterHandler.registerHeatableAdapter(FurnaceTileEntity.class, new DefaultFurnaceAdapter());
 
 		ThermoelectricHandler.registerSourceInKelvin(Blocks.MAGMA_BLOCK, 1300);

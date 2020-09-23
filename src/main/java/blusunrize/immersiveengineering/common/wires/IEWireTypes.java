@@ -142,7 +142,7 @@ public class IEWireTypes
 		@Override
 		public int getMaxLength()
 		{
-			return config.maxLength;
+			return config.maxLength.get();
 		}
 
 		@Override
@@ -206,13 +206,13 @@ public class IEWireTypes
 
 		public double getLossRatio()
 		{
-			return config.lossRatio;
+			return config.lossRatio.get();
 		}
 
 		@Override
 		public int getTransferRate()
 		{
-			return config.transferRate;
+			return config.transferRate.get();
 		}
 
 		@Override

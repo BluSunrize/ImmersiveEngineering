@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.builders.IEFinishedRecipe;
-import blusunrize.immersiveengineering.common.crafting.IEConfigConditionSerializer.ConditionIEConfig;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -23,7 +22,6 @@ public class HammerCrushingRecipeBuilder extends IEFinishedRecipe<HammerCrushing
 	private HammerCrushingRecipeBuilder()
 	{
 		super(RecipeSerializers.HAMMER_CRUSHING_SERIALIZER.get());
-		this.addCondition(new ConditionIEConfig(false, "tools.disable_hammer_crushing"));
 		this.maxResultCount = 1;
 		this.maxInputCount = 1;
 	}

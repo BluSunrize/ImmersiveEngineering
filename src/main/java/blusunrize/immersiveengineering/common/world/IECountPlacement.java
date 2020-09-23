@@ -49,7 +49,7 @@ public class IECountPlacement extends SimplePlacement<IECountPlacement.IEFeature
 
 		public IEFeatureSpreadConfig(Ores.OreConfig config)
 		{
-			this(config.veinsPerChunk.getPath());
+			this(config.veinsPerChunk.getBase().getPath());
 		}
 
 		public IEFeatureSpreadConfig(List<String> path)

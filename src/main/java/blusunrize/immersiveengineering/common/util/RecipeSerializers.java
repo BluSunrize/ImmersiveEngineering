@@ -16,7 +16,6 @@ import blusunrize.immersiveengineering.common.crafting.*;
 import blusunrize.immersiveengineering.common.crafting.serializers.*;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.SpecialRecipeSerializer;
-import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -115,7 +114,5 @@ public class RecipeSerializers
 		GeneratedListRecipe.SERIALIZER = RECIPE_SERIALIZERS.register(
 				"generated_list", GeneratedListSerializer::new
 		);
-
-		CraftingHelper.register(new IEConfigConditionSerializer());
 	}
 }

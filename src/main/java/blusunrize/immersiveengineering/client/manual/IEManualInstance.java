@@ -48,15 +48,15 @@ public class IEManualInstance extends ManualInstance
 			//TODO change in manual?
 			if("wires.wireTransferRate".equals(s))
 				return ImmutableList.of(
-						IEServerConfig.WIRES.energyWireConfigs.get(IEWireType.COPPER).transferRate,
-						IEServerConfig.WIRES.energyWireConfigs.get(IEWireType.ELECTRUM).transferRate,
-						IEServerConfig.WIRES.energyWireConfigs.get(IEWireType.STEEL).transferRate
+						IEServerConfig.WIRES.energyWireConfigs.get(IEWireType.COPPER).transferRate.get(),
+						IEServerConfig.WIRES.energyWireConfigs.get(IEWireType.ELECTRUM).transferRate.get(),
+						IEServerConfig.WIRES.energyWireConfigs.get(IEWireType.STEEL).transferRate.get()
 				);
 			else if("machines.wireConnectorInput".equals(s))
 				return ImmutableList.of(
-						IEServerConfig.WIRES.energyWireConfigs.get(IEWireType.COPPER).connectorRate,
-						IEServerConfig.WIRES.energyWireConfigs.get(IEWireType.ELECTRUM).connectorRate,
-						IEServerConfig.WIRES.energyWireConfigs.get(IEWireType.STEEL).connectorRate
+						IEServerConfig.WIRES.energyWireConfigs.get(IEWireType.COPPER).connectorRate.get(),
+						IEServerConfig.WIRES.energyWireConfigs.get(IEWireType.ELECTRUM).connectorRate.get(),
+						IEServerConfig.WIRES.energyWireConfigs.get(IEWireType.STEEL).connectorRate.get()
 				);
 			//TODO forge PR or wait for Lex to fix this
 			Config actualCfg = IEServerConfig.getRawConfig();

@@ -278,12 +278,12 @@ public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity im
 
 	public int getMaxInput()
 	{
-		return IEServerConfig.WIRES.energyWireConfigs.get(getWireType()).connectorRate;
+		return IEServerConfig.WIRES.energyWireConfigs.get(getWireType()).connectorRate.get();
 	}
 
 	public int getMaxOutput()
 	{
-		return IEServerConfig.WIRES.energyWireConfigs.get(getWireType()).connectorRate;
+		return IEServerConfig.WIRES.energyWireConfigs.get(getWireType()).connectorRate.get();
 	}
 
 	private static final Object2FloatMap<Pair<String, Boolean>> LENGTH = new Object2FloatAVLTreeMap<>();

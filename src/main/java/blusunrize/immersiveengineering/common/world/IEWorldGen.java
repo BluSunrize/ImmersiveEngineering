@@ -53,7 +53,7 @@ public class IEWorldGen
 {
 	public static Map<String, ConfiguredFeature<?, ?>> features = new HashMap<>();
 	public static Map<String, Pair<OreConfig, BlockState>> retroFeatures = new HashMap<>();
-	public static Set<String> retrogenOres = new HashSet<>();
+	public static boolean anyRetrogenEnabled = false;
 
 	public static void addOreGen(Block block, String name, OreConfig config)
 	{
@@ -78,6 +78,13 @@ public class IEWorldGen
 		features.put("veins", veinFeature);
 	}
 
+	public static void onConfigUpdated()
+	{
+		anyRetrogenEnabled = false;
+		for(Pair<OreConfig, BlockState> config : retroFeatures.values())
+			anyRetrogenEnabled |= config.getLeft().retrogenEnabled.get();
+	}
+
 	@SubscribeEvent
 	public void onBiomeLoad(BiomeLoadingEvent ev)
 	{
@@ -92,7 +99,7 @@ public class IEWorldGen
 		{
 			OreConfig config = gen.getValue().getKey();
 			BlockState state = gen.getValue().getRight();
-			if(retrogenOres.contains("retrogen_"+gen.getKey()))
+			if(config.retrogenEnabled.get())
 			{
 				ConfiguredFeature<?, ?> retroFeature = Feature.ORE
 						.withConfiguration(new OreFeatureConfig(FillerBlockType.field_241882_a, state, config.veinSize.get()))
@@ -120,7 +127,7 @@ public class IEWorldGen
 		if(event.getChunk().getStatus()==ChunkStatus.FULL && world instanceof World)
 		{
 			if(!event.getData().getCompound("ImmersiveEngineering").contains(IEServerConfig.ORES.retrogen_key.get())&&
-					!retrogenOres.isEmpty())
+					anyRetrogenEnabled)
 			{
 				if(IEServerConfig.ORES.retrogen_log_flagChunk.get())
 					IELogger.info("Chunk "+event.getChunk().getPos()+" has been flagged for Ore RetroGeneration by IE.");
