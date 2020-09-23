@@ -94,9 +94,9 @@ public class IngredientFluidStack extends Ingredient
 		return ret;
 	}
 
-//	@Override
-//	public boolean isSimple()
-//	{
-//		return false;
-//	}
+	@Override
+	public boolean isSimple()
+	{
+		return true;
+	}
 }
