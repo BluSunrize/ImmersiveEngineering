@@ -37,6 +37,7 @@ import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.client.render.entity.*;
 import blusunrize.immersiveengineering.client.render.tile.*;
 import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
+import blusunrize.immersiveengineering.client.utils.VertexBufferHolder;
 import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
@@ -153,6 +154,7 @@ public class ClientProxy extends CommonProxy
 			ModelLoaderRegistry.registerLoader(MultiLayerLoader.LOCATION, new MultiLayerLoader());
 			ModelLoaderRegistry.registerLoader(FeedthroughLoader.LOCATION, new FeedthroughLoader());
 			ModelLoaderRegistry.registerLoader(SplitModelLoader.LOCATION, new SplitModelLoader());
+			VertexBufferHolder.addToAPI();
 
 			((IReloadableResourceManager)mc().getResourceManager()).addReloadListener(new IEFontReloadListener());
 			requestModelsAndTextures();
@@ -592,6 +594,7 @@ public class ClientProxy extends CommonProxy
 		IEApi.renderCacheClearers.add(ClocheRenderer::reset);
 		IEApi.renderCacheClearers.add(WatermillRenderer::reset);
 		IEApi.renderCacheClearers.add(WindmillRenderer::reset);
+		IEApi.renderCacheClearers.add(BucketWheelRenderer::reset);
 		IEApi.renderCacheClearers.add(ModelCoresample::clearCache);
 		IEApi.renderCacheClearers.add(ModelItemDynamicOverride.modelCache::clear);
 		IEApi.renderCacheClearers.add(ModelPowerpack.catenaryCacheLeft::invalidateAll);
