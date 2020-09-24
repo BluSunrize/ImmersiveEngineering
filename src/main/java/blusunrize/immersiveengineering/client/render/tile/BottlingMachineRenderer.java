@@ -41,6 +41,10 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 {
 	public static DynamicModel<Direction> DYNAMIC;
 	private static final float pixelHeight = 1f/16f;
+	private static final float translationDistance = 3f;
+	private static final float standardTransportTime = 16f*(translationDistance/2); //16 frames in conveyor animation, 1 frame/tick, 2.5 blocks of total translation distance, halved because transport time just affects half the distance
+	private static final float standardLiftTime = 3.75f;
+	private static final float minCycleTime = 60f; //set >= 2*(standardPressTime+standardTransportTime)
 
 	public BottlingMachineRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
 	{
@@ -225,5 +229,21 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 		ClientUtils.mc().getItemRenderer().renderItem(item, TransformType.FIXED,
 				combinedLightIn, combinedOverlayIn, matrix, batchBuffer);
 		batchBuffer.pipe(stencilWrapper);
+	}
+
+	private static float getTransportTime(float processMaxTicks)
+	{
+		if(processMaxTicks >= minCycleTime)
+			return standardTransportTime;
+		else
+			return processMaxTicks*standardTransportTime/minCycleTime;
+	}
+
+	private static float getPressTime(float processMaxTicks)
+	{
+		if(processMaxTicks >= minCycleTime)
+			return standardLiftTime;
+		else
+			return processMaxTicks*standardLiftTime/minCycleTime;
 	}
 }
