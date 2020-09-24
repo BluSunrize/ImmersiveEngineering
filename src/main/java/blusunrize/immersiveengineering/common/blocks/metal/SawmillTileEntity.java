@@ -19,7 +19,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBou
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
-import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableSet;
@@ -117,13 +116,15 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 		super.tick();
 		if(isDummy()||isRSDisabled())
 			return;
-		if(world.isRemote&&shouldRenderAsActive())
-		{
-			animation_bladeRotation += 36f;
-			animation_bladeRotation %= 360f;
-		}
 		if(world.isRemote)
+		{
+			if(shouldRenderAsActive())
+			{
+				animation_bladeRotation += 36f;
+				animation_bladeRotation %= 360f;
+			}
 			return;
+		}
 
 		tickedProcesses = 0;
 		int max = getMaxProcessPerTick();
@@ -157,6 +158,7 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 	{
 		SawmillTileEntity master = master();
 		if(master!=null)
+		{
 			if(player.isSneaking()&&!master.sawblade.isEmpty())
 			{
 				if(heldItem.isEmpty())
@@ -169,21 +171,24 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 			}
 			else if(IETags.sawblades.contains(heldItem.getItem()))
 			{
-				ItemStack tempMold = !master.sawblade.isEmpty()?master.sawblade.copy(): ItemStack.EMPTY;
+				ItemStack tempBlade = !master.sawblade.isEmpty()?master.sawblade.copy(): ItemStack.EMPTY;
 				master.sawblade = Utils.copyStackWithAmount(heldItem, 1);
 				heldItem.shrink(1);
 				if(heldItem.getCount() <= 0)
 					heldItem = ItemStack.EMPTY;
 				else
 					player.setHeldItem(hand, heldItem);
-				if(!tempMold.isEmpty())
+				if(!tempBlade.isEmpty())
+				{
 					if(heldItem.isEmpty())
-						player.setHeldItem(hand, tempMold);
+						player.setHeldItem(hand, tempBlade);
 					else if(!world.isRemote)
-						player.entityDropItem(tempMold, 0);
+						player.entityDropItem(tempBlade, 0);
+				}
 				this.updateMasterBlock(null, true);
 				return true;
 			}
+		}
 		return false;
 	}
 
@@ -443,7 +448,8 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 		return null;
 	}
 
-	LazyOptional<IItemHandler> insertionHandler = registerConstantCap(new MultiblockInventoryHandler_DirectProcessing(this){
+	LazyOptional<IItemHandler> insertionHandler = registerConstantCap(new MultiblockInventoryHandler_DirectProcessing(this)
+	{
 		@Override
 		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
 		{

@@ -45,7 +45,6 @@ public class SawmillRenderer extends TileEntityRenderer<SawmillTileEntity>
 			return;
 
 		//Grab model
-		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 		BlockPos blockPos = te.getPos();
 		BlockState state = te.getWorld().getBlockState(blockPos);
 		if(state.getBlock()!=Multiblocks.sawmill)
