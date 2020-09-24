@@ -452,37 +452,28 @@ public class ClientProxy extends CommonProxy
 		if(stack!=null&&IEConfig.MACHINES.excavator_particles.get())
 		{
 			Direction facing = tile.getFacing();
+			int sign = (tile.getIsMirrored()^facing.getAxisDirection()==AxisDirection.NEGATIVE)?1: -1;
+			double x = tile.getPos().getX()+.5;
+			double y = tile.getPos().getY()+2.5;
+			double z = tile.getPos().getZ()+.5;
+			double fixPosOffset = .5*sign;
+			double fixVelOffset = .075*sign;
 			for(int i = 0; i < 16; i++)
 			{
-				double x = tile.getPos().getX()+.5;
-				if(facing.getAxis()==Axis.Z)
-					x += .1*(2*(tile.getWorldNonnull().rand.nextDouble()-.5));
-				else
-					x -= .5*facing.getAxisDirection().getOffset();
-				double y = tile.getPos().getY()+2.5;
-				double z = tile.getPos().getZ()+.5+.1*0;
-				if(tile.getFacing().getAxis()==Axis.X)
-					z += .1*(2*(tile.getWorldNonnull().rand.nextGaussian()-.5));
-				else
-					z -= .5*facing.getAxisDirection().getOffset();
 				double mX = (tile.getWorldNonnull().rand.nextDouble()-.5)*.01;
-				;
-				if(facing.getAxis()==Axis.X)
-				{
-					int sign = (tile.getIsMirrored()^facing.getAxisDirection()==AxisDirection.NEGATIVE)?1: -1;
-					mX += .075*sign;
-				}
 				double mY = tile.getWorld().rand.nextDouble()*-0.05D;
 				double mZ = (tile.getWorldNonnull().rand.nextDouble()-.5)*.01;
-				;
-				if(facing.getAxis()==Axis.Z)
-				{
-					int sign = (tile.getIsMirrored()^facing.getAxisDirection()==AxisDirection.NEGATIVE)?1: -1;
-					mZ += .075*sign;
-				}
+				double rndPosOffset = .2*(tile.getWorldNonnull().rand.nextDouble()-.5);
 
-				Particle particle = new BreakingParticle.Factory().makeParticle(new ItemParticleData(ParticleTypes.ITEM, stack),
-						tile.getWorldNonnull(), x, y, z, mX, mY, mZ);
+				Particle particle;
+
+				if(facing.getAxis()==Axis.X)
+					particle = new BreakingParticle.Factory().makeParticle(new ItemParticleData(ParticleTypes.ITEM, stack),
+							tile.getWorldNonnull(), x+fixPosOffset, y, z+rndPosOffset, mX+fixVelOffset, mY, mZ);
+				else
+					particle = new BreakingParticle.Factory().makeParticle(new ItemParticleData(ParticleTypes.ITEM, stack),
+							tile.getWorldNonnull(), x+rndPosOffset, y, z+fixPosOffset, mX, mY, mZ+fixVelOffset);
+
 				mc().particles.addEffect(particle);
 			}
 		}

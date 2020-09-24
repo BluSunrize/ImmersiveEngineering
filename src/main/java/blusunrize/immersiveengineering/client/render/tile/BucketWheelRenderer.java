@@ -77,8 +77,9 @@ public class BucketWheelRenderer extends TileEntityRenderer<BucketWheelTileEntit
 		matrixStack.push();
 
 		matrixStack.translate(.5, .5, .5);
+		matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), 90, true)); //to mirror different plane. compensate on dir rotate
 		bufferIn = TileRenderUtils.mirror(tile, matrixStack, bufferIn);
-		float dir = tile.getFacing()==Direction.SOUTH?90: tile.getFacing()==Direction.NORTH?-90: tile.getFacing()==Direction.EAST?180: 0;
+		float dir = tile.getFacing()==Direction.SOUTH?0: tile.getFacing()==Direction.NORTH?180: tile.getFacing()==Direction.EAST?90: -90;
 		matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), dir, true));
 		float rot = tile.rotation+(float)(tile.active?IEConfig.MACHINES.excavator_speed.get()*partialTicks: 0);
 		matrixStack.rotate(new Quaternion(new Vector3f(1, 0, 0), rot, true));
