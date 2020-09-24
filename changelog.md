@@ -5,10 +5,12 @@
     - Allowed creosote to be very inefficient generator fuel
     - Increase sulfur output from coal, lapis and quartz
     - Increase gunpowder output from sulfur & saltpeter recipe
+- Allowed multiblock structures to be changed by data packs (Malte)
 - Fixed GUI model for the alloy smelter (BluSunrize)
 - Fixed crash with mineral veins being saved (BluSunrize)
 - Fixed infinite crafting of firework rockets in the assembler (Malte)
 - Fixed lighting in the assembler GUI (Malte)
+- Fixed connectors being pushed by pistons if quark is installed (Malte)
 
 ##### Version 1.15.2-4.0.1-119
 - Added Enderpeals as valid Railgun projectiles! (BluSunrize)

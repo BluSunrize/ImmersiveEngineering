@@ -21,7 +21,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBeltTileEntit
 import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
-import com.google.common.collect.Lists;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -42,9 +42,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.GameRules;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -52,13 +50,13 @@ import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.apache.commons.lang3.tuple.Triple;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -240,66 +238,62 @@ public class BasicConveyor implements IConveyorBelt
 
 	/* ============ AABB ============ */
 
-	static final VoxelShape topBox = VoxelShapes.create(0, .75, 0, 1, 1, 1);
+	private static final AxisAlignedBB topBox = new AxisAlignedBB(0, .75, 0, 1, 1, 1);
 
-	private static final CachedVoxelShapes<Triple<Boolean, Boolean, Direction>> SHAPES = new CachedVoxelShapes<>(BasicConveyor::getBoxes);
+	private static final CachedVoxelShapes<ShapeKey> SHAPES = new CachedVoxelShapes<>(BasicConveyor::getBoxes);
 
 	@Override
 	public VoxelShape getCollisionShape()
 	{
-		VoxelShape ret = IConveyorBelt.super.getCollisionShape();
+		VoxelShape baseShape = IConveyorBelt.super.getCollisionShape();
 		if(allowCovers())
-		{
-			VoxelShape other;
-			if(getConveyorDirection()==ConveyorDirection.HORIZONTAL)
-				other = topBox;
-			else
-			{
-				boolean up = getConveyorDirection()==ConveyorDirection.UP;
-				other = SHAPES.get(Triple.of(up, true, getFacing()));
-			}
-			ret = VoxelShapes.combineAndSimplify(ret, other, IBooleanFunction.OR);
-		}
-		return ret;
+			return SHAPES.get(new ShapeKey(this, false, baseShape));
+		return baseShape;
 	}
 
 	@Override
 	public VoxelShape getSelectionShape()
 	{
 		if(allowCovers())
-			if(getConveyorDirection()==ConveyorDirection.HORIZONTAL)
-				return VoxelShapes.fullCube();
-			else
-			{
-				boolean up = getConveyorDirection()==ConveyorDirection.UP;
-				return SHAPES.get(Triple.of(up, false, getFacing()));
-			}
+			return SHAPES.get(new ShapeKey(this, false, null));
 		return IConveyorBelt.super.getSelectionShape();
 	}
 
-	private static List<AxisAlignedBB> getBoxes(Triple<Boolean, Boolean, Direction> key)
+	private static List<AxisAlignedBB> getBoxes(ShapeKey key)
 	{
-		boolean up = key.getLeft();
-		boolean collision = key.getMiddle();
-		Direction facing = key.getRight();
-		return Lists.newArrayList(
-				new AxisAlignedBB(
-						(facing==Direction.WEST&&!up)||(facing==Direction.EAST&&up)?.5: 0,
-						collision?1.75:.5,
-						(facing==Direction.NORTH&&!up)||(facing==Direction.SOUTH&&up)?.5: 0,
-						(facing==Direction.WEST&&up)||(facing==Direction.EAST&&!up)?.5: 1,
-						2,
-						(facing==Direction.NORTH&&up)||(facing==Direction.SOUTH&&!up)?.5: 1
-				),
-				new AxisAlignedBB(
-						(facing==Direction.WEST&&up)||(facing==Direction.EAST&&!up)?.5: 0,
-						collision?1.25:0,
-						(facing==Direction.NORTH&&up)||(facing==Direction.SOUTH&&!up)?.5: 0,
-						(facing==Direction.WEST&&!up)||(facing==Direction.EAST&&up)?.5: 1,
-						1.5,
-						(facing==Direction.NORTH&&!up)||(facing==Direction.SOUTH&&up)?.5: 1
-				)
-		);
+		List<AxisAlignedBB> ret = new ArrayList<>();
+		if(key.superShape!=null)
+			ret.addAll(key.superShape.toBoundingBoxList());
+		if(key.direction==ConveyorDirection.HORIZONTAL)
+		{
+			if(!key.collision)
+				return ImmutableList.of(FULL_BLOCK.getBoundingBox());
+			else
+				ret.add(topBox);
+		}
+		else
+		{
+			boolean up = key.direction==ConveyorDirection.UP;
+			boolean collision = key.collision;
+			Direction facing = key.facing;
+			ret.add(new AxisAlignedBB(
+					(facing==Direction.WEST&&!up)||(facing==Direction.EAST&&up)?.5: 0,
+					collision?1.75: .5,
+					(facing==Direction.NORTH&&!up)||(facing==Direction.SOUTH&&up)?.5: 0,
+					(facing==Direction.WEST&&up)||(facing==Direction.EAST&&!up)?.5: 1,
+					2,
+					(facing==Direction.NORTH&&up)||(facing==Direction.SOUTH&&!up)?.5: 1
+			));
+			ret.add(new AxisAlignedBB(
+					(facing==Direction.WEST&&up)||(facing==Direction.EAST&&!up)?.5: 0,
+					collision?1.25: 0,
+					(facing==Direction.NORTH&&up)||(facing==Direction.SOUTH&&!up)?.5: 0,
+					(facing==Direction.WEST&&!up)||(facing==Direction.EAST&&up)?.5: 1,
+					1.5,
+					(facing==Direction.NORTH&&!up)||(facing==Direction.SOUTH&&up)?.5: 1
+			));
+		}
+		return ret;
 	}
 
 
@@ -415,5 +409,40 @@ public class BasicConveyor implements IConveyorBelt
 			return ((ConveyorBeltTileEntity)te).isRSPowered();
 		else
 			return te.getWorld().getRedstonePowerFromNeighbors(te.getPos()) > 0;
+	}
+
+	private static class ShapeKey
+	{
+		private final ConveyorDirection direction;
+		private final boolean collision;
+		private final Direction facing;
+		@Nullable
+		private final VoxelShape superShape;
+
+		public ShapeKey(BasicConveyor conveyor, boolean collision, @Nullable VoxelShape superShape)
+		{
+			this.direction = conveyor.getConveyorDirection();
+			this.collision = collision;
+			this.facing = conveyor.getFacing();
+			this.superShape = superShape;
+		}
+
+		@Override
+		public boolean equals(Object o)
+		{
+			if(this==o) return true;
+			if(o==null||getClass()!=o.getClass()) return false;
+			ShapeKey shapeKey = (ShapeKey)o;
+			return collision==shapeKey.collision&&
+					direction==shapeKey.direction&&
+					facing==shapeKey.facing&&
+					Objects.equals(superShape, shapeKey.superShape);
+		}
+
+		@Override
+		public int hashCode()
+		{
+			return Objects.hash(direction, collision, facing, superShape);
+		}
 	}
 }
