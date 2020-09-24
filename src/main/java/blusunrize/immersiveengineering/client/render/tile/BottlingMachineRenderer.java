@@ -103,8 +103,8 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 					lift = (85-processTimer)/20f*.125f;
 					itemFill = 1;
 				}
-				if (lift > pixelHeight)
-				itemY += lift-pixelHeight;
+				if(lift > pixelHeight)
+					itemY += lift-pixelHeight;
 			}
 			else
 			{
