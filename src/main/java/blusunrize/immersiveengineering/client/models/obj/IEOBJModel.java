@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.client.models.obj;
 
 import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
+import com.google.common.collect.ImmutableMap;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -39,7 +40,8 @@ public class IEOBJModel implements IModelGeometry<IEOBJModel>
 							IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation)
 	{
 		IBakedModel baseBaked = base.bake(owner, bakery, spriteGetter, modelTransform, overrides, modelLocation);
-		return new IESmartObjModel(base, baseBaked, owner, bakery, spriteGetter, modelTransform, state, dynamic);
+		return new IESmartObjModel(base, baseBaked, owner, bakery, spriteGetter, modelTransform, state, dynamic,
+				ImmutableMap.of());
 	}
 
 	@Override

@@ -21,11 +21,9 @@ import blusunrize.immersiveengineering.common.blocks.metal.BottlingMachineTileEn
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
@@ -34,9 +32,10 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.world.World;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.fluids.FluidStack;
+
+import java.util.List;
 
 public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineTileEntity>
 {
@@ -54,12 +53,11 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 			return;
 
 		//Grab model
-		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 		BlockPos blockPos = te.getPos();
 		BlockState state = te.getWorld().getBlockState(blockPos);
 		if(state.getBlock()!=Multiblocks.bottlingMachine)
 			return;
-		IBakedModel model = DYNAMIC.get(te.getFacing());
+		Direction facing = te.getFacing();
 
 		//Outer GL Wrapping, initial translation
 		matrixStack.push();
@@ -121,12 +119,12 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 		matrixStack.push();
 
 		matrixStack.translate(0, lift, 0);
-		renderModelPart(blockRenderer, matrixStack, solidBuilder, te.getWorldNonnull(), state, model, blockPos, combinedOverlayIn, "lift");
+		renderModelPart(matrixStack, solidBuilder, facing, combinedLightIn, combinedOverlayIn, "lift");
 		matrixStack.translate(0, -lift, 0);
 
 		matrixStack.pop();
 
-		float dir = te.getFacing()==Direction.SOUTH?180: te.getFacing()==Direction.NORTH?0: te.getFacing()==Direction.EAST?-90: 90;
+		float dir = facing==Direction.SOUTH?180: facing==Direction.NORTH?0: facing==Direction.EAST?-90: 90;
 		matrixStack.rotate(new Quaternion(0, dir, 0, true));
 
 		float scale = .0625f;
@@ -194,15 +192,14 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 		matrixStack.pop();
 	}
 
-	public static void renderModelPart(final BlockRendererDispatcher blockRenderer, MatrixStack matrixStack,
-									   IVertexBuilder builder, World world, BlockState state, IBakedModel model,
-									   BlockPos pos, int combinedOverlayIn, String... parts)
+	public static void renderModelPart(MatrixStack matrixStack, IVertexBuilder builder, Direction facing,
+									   int combinedLightIn, int combinedOverlayIn, String... parts)
 	{
 		IModelData data = new SinglePropertyModelData<>(new IEObjState(VisibilityList.show(parts)), Model.IE_OBJ_STATE);
 		matrixStack.push();
 		matrixStack.translate(-.5, -.5, -.5);
-		blockRenderer.getBlockModelRenderer().renderModel(world, model, state, pos, matrixStack, builder, true, world.rand, 0,
-				combinedOverlayIn, data);
+		List<BakedQuad> quads = DYNAMIC.getNullQuads(facing, Multiblocks.bottlingMachine.getDefaultState(), data);
+		ClientUtils.renderModelTESRFast(quads, builder, matrixStack, combinedLightIn, combinedOverlayIn);
 		matrixStack.pop();
 	}
 
