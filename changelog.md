@@ -1,5 +1,6 @@
-##### Version 1.15.2-4.0.2-pre
-- Added blue ice to be used by the Thermoelectric Generator, nerfed packed ice in response (BluSunrize))
+##### Version 1.15.2-4.1.0-pre
+- Added the sawmill! It strips logs and cuts them into planks! (BluSunrize)
+- Added blue ice to be used by the Thermoelectric Generator, nerfed packed ice in response (BluSunrize)
 - Experimental recipe changes: (BluSunrize)
     - Doubled the burntime of Diesel in the generator
     - Allowed creosote to be very inefficient generator fuel
