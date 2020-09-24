@@ -56,16 +56,19 @@ public class RecipeReloadListener implements IResourceManagerReloadListener
 	{
 		if(dataPackRegistries!=null)
 		{
-			MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
 			RecipeManager recipeManager = dataPackRegistries.func_240967_e_();
 			startArcRecyclingRecipeGen(recipeManager);
 			buildRecipeLists(recipeManager);
-			Iterator<ServerWorld> it = server.getWorlds().iterator();
-			// Should only be false when no players are loaded, so the data will be synced on login
-			if(it.hasNext())
-				ApiUtils.addFutureServerTask(it.next(),
-						() -> StaticTemplateManager.syncMultiblockTemplates(PacketDistributor.ALL.noArg(), true)
-				);
+			MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+			if(server!=null)
+			{
+				Iterator<ServerWorld> it = server.getWorlds().iterator();
+				// Should only be false when no players are loaded, so the data will be synced on login
+				if(it.hasNext())
+					ApiUtils.addFutureServerTask(it.next(),
+							() -> StaticTemplateManager.syncMultiblockTemplates(PacketDistributor.ALL.noArg(), true)
+					);
+			}
 		}
 	}
 
