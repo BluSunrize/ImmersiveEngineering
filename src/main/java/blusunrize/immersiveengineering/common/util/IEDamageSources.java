@@ -146,6 +146,8 @@ public class IEDamageSources
 
 	public static DamageSource crusher = new IEDamageSource(Lib.DMG_Crusher);
 
+	public static DamageSource sawmill = new IEDamageSource(Lib.DMG_Sawmill);
+
 	public static DamageSource razorWire = new IEDamageSource(Lib.DMG_RazorWire);
 
 	public static DamageSource razorShock = new IEDamageSource(Lib.DMG_RazorShock);

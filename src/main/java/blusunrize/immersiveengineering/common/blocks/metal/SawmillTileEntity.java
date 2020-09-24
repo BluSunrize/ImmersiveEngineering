@@ -20,16 +20,19 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerIn
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
+import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -53,6 +56,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 
 public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEntity, MultiblockRecipe>
 		implements IConveyorAttachable, IBlockBounds, IPlayerInteraction
@@ -312,20 +317,50 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 		}
 	}
 
+	private static final AxisAlignedBB SAWBLADE_AABB = new AxisAlignedBB(2.6875, 1, 1.375, 4.3125, 2, 1.625);
+	private static final Function<SawmillTileEntity, AxisAlignedBB> CACHED_SAWBLADE_AABB = new Function<SawmillTileEntity, AxisAlignedBB>()
+	{
+		Map<Pair<Direction, Boolean>, AxisAlignedBB> cache = new ConcurrentHashMap<>();
+
+		@Override
+		public AxisAlignedBB apply(SawmillTileEntity tile)
+		{
+			return cache.computeIfAbsent(Pair.of(tile.getFacing(), tile.getIsMirrored()),
+					key -> CachedShapesWithTransform.withFacingAndMirror(SAWBLADE_AABB, key.getLeft(), key.getRight()))
+					.offset(tile.getOrigin());
+		}
+	};
+
 	@Override
 	public void onEntityCollision(World world, Entity entity)
 	{
-		if(new BlockPos(0, 1, 1).equals(posInMultiblock)&&!world.isRemote&&entity!=null&&entity.isAlive()&&entity instanceof ItemEntity)
+		if(!world.isRemote&&entity!=null&&entity.isAlive())
 		{
 			SawmillTileEntity master = master();
 			if(master==null)
 				return;
-			ItemStack stack = ((ItemEntity)entity).getItem();
-			if(stack.isEmpty())
-				return;
-			master.insertItemToProcess(stack, false);
-			if(stack.getCount() <= 0)
-				entity.remove();
+			if(new BlockPos(0, 1, 1).equals(posInMultiblock)&&entity instanceof ItemEntity)
+			{
+				ItemStack stack = ((ItemEntity)entity).getItem();
+				if(stack.isEmpty())
+					return;
+				master.insertItemToProcess(stack, false);
+				if(stack.getCount() <= 0)
+					entity.remove();
+			}
+			else if(entity instanceof LivingEntity&&!master.sawblade.isEmpty()
+					&&CACHED_SAWBLADE_AABB.apply(master).intersects(entity.getBoundingBox()))
+			{
+				if(entity instanceof PlayerEntity&&((PlayerEntity)entity).abilities.disableDamage)
+					return;
+
+				int consumed = master.energyStorage.extractEnergy(80, true);
+				if(consumed > 0)
+				{
+					master.energyStorage.extractEnergy(consumed, false);
+					entity.attackEntityFrom(IEDamageSources.sawmill, 7);
+				}
+			}
 		}
 	}
 

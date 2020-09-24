@@ -521,6 +521,7 @@
   "death.attack.ieRevolver_potion.item": "%1$s was doused by %2$s's phial shot fired from %3$s",
   "death.attack.ieRevolver_potion.turret": "%1$s was doused by a turret's phial shot",
   "death.attack.ieCrushed": "%1$s was crushed",
+  "death.attack.ieSawmill": "%1$s fell into the sawmill",
   "death.attack.ieAcid": "%1$s was dissolved in acid",
   "death.attack.ieRazorWire": "%1$s was diced by razorwire",
   "death.attack.ieRazorShock": "%1$s was electrocuted by razorwire",
