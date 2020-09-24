@@ -32,7 +32,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.particles.RedstoneParticleData;
+import net.minecraft.particles.ItemParticleData;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -127,6 +128,25 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 			{
 				animation_bladeRotation += 36f;
 				animation_bladeRotation %= 360f;
+
+				if(!this.sawblade.isEmpty())
+				{
+					Optional<SawmillProcess> process = sawmillProcessQueue.stream()
+							.filter(SawmillProcess::isSawing).findFirst();
+					if(process.isPresent())
+					{
+						Direction particleDir = getIsMirrored()?getFacing().rotateY(): getFacing().rotateYCCW();
+						AxisAlignedBB aabb = CACHED_SAWBLADE_AABB.apply(this);
+						double posX = aabb.minX+world.rand.nextDouble()*(aabb.maxX-aabb.minX);
+						double posY = aabb.minY+world.rand.nextDouble()*(aabb.maxY-aabb.minY);
+						double posZ = aabb.minZ+world.rand.nextDouble()*(aabb.maxZ-aabb.minZ);
+						double vX = world.rand.nextDouble()*particleDir.getXOffset()*0.3;
+						double vY = world.rand.nextDouble()*0.3;
+						double vZ = world.rand.nextDouble()*particleDir.getZOffset()*0.3;
+						world.addParticle(new ItemParticleData(ParticleTypes.ITEM, process.get().getCurrentStack(true)),
+								posX, posY, posZ, vX, vY, vZ);
+					}
+				}
 			}
 			return;
 		}
@@ -612,6 +632,11 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 				return stripped;
 			// Finally, if there is a sawblade
 			return sawblade?this.recipe.output: stripped;
+		}
+
+		public boolean isSawing()
+		{
+			return getRelativeProcessStep() > .5375&&!this.sawed;
 		}
 
 		public CompoundNBT writeToNBT()
