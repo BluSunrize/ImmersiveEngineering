@@ -1,0 +1,18 @@
+{
+  "type": "immersiveengineering:sawmill",
+  "secondaries": [
+    {
+      "output": {
+        "tag": "forge:dusts/wood"
+      },
+      "stripping": false
+    }
+  ],
+  "result": {
+    "item": "minecraft:birch_planks"
+  },
+  "input": {
+    "item": "minecraft:birch_stairs"
+  },
+  "energy": 1600
+}

@@ -243,6 +243,7 @@ public class ClientProxy extends CommonProxy
 		// MULTIBLOCKS
 		ClientRegistry.bindTileEntityRenderer(IETileTypes.METAL_PRESS.get(), MetalPressRenderer::new);
 		ClientRegistry.bindTileEntityRenderer(IETileTypes.CRUSHER.get(), CrusherRenderer::new);
+		ClientRegistry.bindTileEntityRenderer(IETileTypes.SAWMILL.get(), SawmillRenderer::new);
 		ClientRegistry.bindTileEntityRenderer(IETileTypes.SHEETMETAL_TANK.get(), SheetmetalTankRenderer::new);
 		ClientRegistry.bindTileEntityRenderer(IETileTypes.SILO.get(), SiloRenderer::new);
 		ClientRegistry.bindTileEntityRenderer(IETileTypes.SQUEEZER.get(), SqueezerRenderer::new);
@@ -721,6 +722,10 @@ public class ClientProxy extends CommonProxy
 		CrusherRenderer.BARREL = DynamicModel.createSided(
 				new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/crusher_drum.obj"),
 				"crusher_barrel", ModelType.OBJ
+		);
+		SawmillRenderer.BLADE = DynamicModel.createSided(
+				new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/sawmill_animated.obj"),
+				"blade", ModelType.OBJ
 		);
 		DieselGeneratorRenderer.FAN = DynamicModel.createSided(
 				new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/diesel_generator_fan.obj"),

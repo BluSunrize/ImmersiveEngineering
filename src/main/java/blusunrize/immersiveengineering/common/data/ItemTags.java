@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.items.IEItems.Metals;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
+import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.ItemTagsProvider;
 import net.minecraft.item.Item;
@@ -79,6 +80,8 @@ class ItemTags extends ItemTagsProvider
 		getBuilder(IETags.steelWire).add(Ingredients.wireSteel);
 		getBuilder(IETags.saltpeterDust).add(Ingredients.dustSaltpeter);
 		getBuilder(IETags.sulfurDust).add(Ingredients.dustSulfur);
+		getBuilder(IETags.sawdust).add(Ingredients.dustWood);
 		getBuilder(IETags.metalRods).add(IETags.aluminumRod, IETags.ironRod, IETags.steelRod);
+		getBuilder(IETags.sawblades).add(Tools.sawblade);
 	}
 }

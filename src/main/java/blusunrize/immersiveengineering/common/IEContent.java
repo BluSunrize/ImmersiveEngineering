@@ -433,6 +433,7 @@ public class IEContent
 		Multiblocks.alloySmelter = new StoneMultiBlock<>("alloy_smelter", IETileTypes.ALLOY_SMELTER);
 		Multiblocks.blastFurnaceAdv = new StoneMultiBlock<>("advanced_blast_furnace", IETileTypes.BLAST_FURNACE_ADVANCED);
 		Multiblocks.crusher = new MetalMultiblockBlock<>("crusher", IETileTypes.CRUSHER);
+		Multiblocks.sawmill = new MetalMultiblockBlock<>("sawmill", IETileTypes.SAWMILL);
 		Multiblocks.silo = new MetalMultiblockBlock<>("silo", IETileTypes.SILO);
 		Multiblocks.tank = new MetalMultiblockBlock<>("tank", IETileTypes.SHEETMETAL_TANK);
 		Multiblocks.arcFurnace = new MetalMultiblockBlock<>("arc_furnace", IETileTypes.ARC_FURNACE);
@@ -491,6 +492,7 @@ public class IEContent
 		IEItems.Ingredients.wireSteel = new IEBaseItem("wire_steel");
 		IEItems.Ingredients.dustSaltpeter = new IEBaseItem("dust_saltpeter");
 		IEItems.Ingredients.dustSulfur = new IEBaseItem("dust_sulfur");
+		IEItems.Ingredients.dustWood = new IEBaseItem("dust_wood");
 		IEItems.Ingredients.electronTube = new IEBaseItem("electron_tube");
 		IEItems.Ingredients.circuitBoard = new IEBaseItem("circuit_board");
 		IEItems.Ingredients.emptyCasing = new IEBaseItem("empty_casing");
@@ -786,6 +788,7 @@ public class IEContent
 		MultiblockHandler.registerMultiblock(IEMultiblocks.ALLOY_SMELTER);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.BLAST_FURNACE);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.CRUSHER);
+		MultiblockHandler.registerMultiblock(IEMultiblocks.SAWMILL);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.ADVANCED_BLAST_FURNACE);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.METAL_PRESS);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.ASSEMBLER);

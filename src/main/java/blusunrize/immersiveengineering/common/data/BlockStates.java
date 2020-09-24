@@ -887,6 +887,9 @@ public class BlockStates extends BlockStateProvider
 
 	private void createMetalMultiblocks()
 	{
+		createMultiblock(Multiblocks.sawmill,
+				splitOBJ("block/metal_multiblock/sawmill.obj", IEMultiblocks.SAWMILL),
+				splitOBJ("block/metal_multiblock/sawmill_mirrored.obj", IEMultiblocks.SAWMILL, true));
 		createMultiblock(Multiblocks.excavator,
 				splitOBJ("block/metal_multiblock/excavator.obj", IEMultiblocks.EXCAVATOR),
 				splitOBJ("block/metal_multiblock/excavator_mirrored.obj", IEMultiblocks.EXCAVATOR, true));

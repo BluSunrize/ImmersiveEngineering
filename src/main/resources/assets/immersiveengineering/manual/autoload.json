@@ -85,6 +85,7 @@
     "entry_list": [
       "metal_press",
       "crusher",
+      "sawmill",
       "assembler",
       "refinery",
       "mixer",

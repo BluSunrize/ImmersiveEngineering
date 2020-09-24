@@ -1,0 +1,26 @@
+{
+  "type": "immersiveengineering:sawmill",
+  "secondaries": [
+    {
+      "output": {
+        "tag": "forge:dusts/wood"
+      },
+      "stripping": false
+    },
+    {
+      "output": {
+        "item": "minecraft:book",
+        "count": 3
+      },
+      "stripping": false
+    }
+  ],
+  "result": {
+    "item": "minecraft:oak_planks",
+    "count": 4
+  },
+  "input": {
+    "item": "minecraft:bookshelf"
+  },
+  "energy": 1600
+}
