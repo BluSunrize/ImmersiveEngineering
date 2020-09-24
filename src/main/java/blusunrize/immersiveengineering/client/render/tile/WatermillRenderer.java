@@ -9,12 +9,11 @@
 package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.api.client.IVertexBufferHolder;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.blocks.wooden.WatermillTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
@@ -26,12 +25,14 @@ import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.client.model.data.EmptyModelData;
 
-import java.util.List;
-
 public class WatermillRenderer extends TileEntityRenderer<WatermillTileEntity>
 {
-	private static List<BakedQuad> quads;
 	public static DynamicModel<Void> MODEL;
+	private static final IVertexBufferHolder MODEL_BUFFER = IVertexBufferHolder.create(() -> {
+		BlockState state = WoodenDevices.watermill.getDefaultState()
+				.with(IEProperties.FACING_HORIZONTAL, Direction.NORTH);
+		return MODEL.get(null).getQuads(state, null, Utils.RAND, EmptyModelData.INSTANCE);
+	});
 
 	public WatermillRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
 	{
@@ -39,33 +40,24 @@ public class WatermillRenderer extends TileEntityRenderer<WatermillTileEntity>
 	}
 
 	@Override
-	public void render(WatermillTileEntity tile, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn)
+	public void render(WatermillTileEntity tile, float partialTicks, MatrixStack transform, IRenderTypeBuffer bufferIn,
+					   int combinedLightIn, int combinedOverlayIn)
 	{
 		if(tile.isDummy()||!tile.getWorldNonnull().isBlockLoaded(tile.getPos()))
 			return;
-		if(quads==null)
-		{
-			BlockState state = tile.getWorldNonnull().getBlockState(tile.getPos());
-			if(state.getBlock()!=WoodenDevices.watermill)
-				return;
-			state = state.with(IEProperties.FACING_HORIZONTAL, Direction.NORTH);
-			quads = MODEL.get(null).getQuads(state, null, Utils.RAND, EmptyModelData.INSTANCE);
-		}
-		matrixStack.push();
-
-		matrixStack.translate(.5, .5, .5);
+		transform.push();
+		transform.translate(.5, .5, .5);
 		final float dir = (tile.getFacing().getHorizontalAngle()+180)%180;
 		float wheelRotation = 360*(tile.rotation+(!tile.canTurn||tile.rotation==0?0: partialTicks)*(float)tile.perTick);
-		matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), dir, true));
-		matrixStack.rotate(new Quaternion(new Vector3f(0, 0, 1), wheelRotation, true));
-		matrixStack.translate(-.5, -.5, -.5);
-		IVertexBuilder builder = bufferIn.getBuffer(RenderType.getCutout());
-		ClientUtils.renderModelTESRFast(quads, builder, matrixStack, combinedLightIn);
-		matrixStack.pop();
+		transform.rotate(new Quaternion(new Vector3f(0, 1, 0), dir, true));
+		transform.rotate(new Quaternion(new Vector3f(0, 0, 1), wheelRotation, true));
+		transform.translate(-.5, -.5, -.5);
+		MODEL_BUFFER.render(RenderType.getCutoutMipped(), combinedLightIn, combinedOverlayIn, bufferIn, transform);
+		transform.pop();
 	}
 
 	public static void reset()
 	{
-		quads = null;
+		MODEL_BUFFER.reset();
 	}
 }

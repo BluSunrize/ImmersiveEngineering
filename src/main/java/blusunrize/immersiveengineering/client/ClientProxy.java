@@ -35,6 +35,7 @@ import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.client.render.entity.*;
 import blusunrize.immersiveengineering.client.render.tile.*;
 import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
+import blusunrize.immersiveengineering.client.utils.VertexBufferHolder;
 import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.IETileTypes;
@@ -148,6 +149,7 @@ public class ClientProxy extends CommonProxy
 			ModelLoaderRegistry.registerLoader(MultiLayerLoader.LOCATION, new MultiLayerLoader());
 			ModelLoaderRegistry.registerLoader(FeedthroughLoader.LOCATION, new FeedthroughLoader());
 			ModelLoaderRegistry.registerLoader(SplitModelLoader.LOCATION, new SplitModelLoader());
+			VertexBufferHolder.addToAPI();
 
 			requestModelsAndTextures();
 		}
@@ -241,6 +243,7 @@ public class ClientProxy extends CommonProxy
 		// MULTIBLOCKS
 		ClientRegistry.bindTileEntityRenderer(IETileTypes.METAL_PRESS.get(), MetalPressRenderer::new);
 		ClientRegistry.bindTileEntityRenderer(IETileTypes.CRUSHER.get(), CrusherRenderer::new);
+		ClientRegistry.bindTileEntityRenderer(IETileTypes.SAWMILL.get(), SawmillRenderer::new);
 		ClientRegistry.bindTileEntityRenderer(IETileTypes.SHEETMETAL_TANK.get(), SheetmetalTankRenderer::new);
 		ClientRegistry.bindTileEntityRenderer(IETileTypes.SILO.get(), SiloRenderer::new);
 		ClientRegistry.bindTileEntityRenderer(IETileTypes.SQUEEZER.get(), SqueezerRenderer::new);
@@ -583,6 +586,7 @@ public class ClientProxy extends CommonProxy
 		IEApi.renderCacheClearers.add(ClocheRenderer::reset);
 		IEApi.renderCacheClearers.add(WatermillRenderer::reset);
 		IEApi.renderCacheClearers.add(WindmillRenderer::reset);
+		IEApi.renderCacheClearers.add(BucketWheelRenderer::reset);
 		IEApi.renderCacheClearers.add(ModelCoresample::clearCache);
 		IEApi.renderCacheClearers.add(ModelItemDynamicOverride.modelCache::clear);
 		IEApi.renderCacheClearers.add(ModelPowerpack.catenaryCacheLeft::invalidateAll);
@@ -713,6 +717,10 @@ public class ClientProxy extends CommonProxy
 		CrusherRenderer.BARREL = DynamicModel.createSided(
 				new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/crusher_drum.obj"),
 				"crusher_barrel", ModelType.OBJ
+		);
+		SawmillRenderer.BLADE = DynamicModel.createSided(
+				new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/sawmill_animated.obj"),
+				"blade", ModelType.OBJ
 		);
 		DieselGeneratorRenderer.FAN = DynamicModel.createSided(
 				new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/diesel_generator_fan.obj"),

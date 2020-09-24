@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "tag": "forge:dusts/wood"
+    },
+    {
+      "tag": "forge:dusts/wood"
+    },
+    {
+      "tag": "forge:dusts/wood"
+    },
+    {
+      "tag": "forge:dusts/wood"
+    },
+    {
+      "tag": "minecraft:water",
+      "amount": 1000,
+      "type": "immersiveengineering:fluid"
+    }
+  ],
+  "result": {
+    "item": "minecraft:paper",
+    "count": 2
+  }
+}

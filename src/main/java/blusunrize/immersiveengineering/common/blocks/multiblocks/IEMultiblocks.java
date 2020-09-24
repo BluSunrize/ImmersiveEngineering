@@ -30,6 +30,7 @@ import java.util.List;
 public class IEMultiblocks
 {
 	public static IETemplateMultiblock CRUSHER;
+	public static IETemplateMultiblock SAWMILL;
 	public static IETemplateMultiblock ALLOY_SMELTER;
 	public static IETemplateMultiblock ARC_FURNACE;
 	public static IETemplateMultiblock ASSEMBLER;
@@ -97,6 +98,7 @@ public class IEMultiblocks
 
 		//Init IE multiblocks
 		CRUSHER = new CrusherMultiblock();
+		SAWMILL = new SawmillMultiblock();
 		ALLOY_SMELTER = new AlloySmelterMultiblock();
 		ARC_FURNACE = new ArcFurnaceMultiblock();
 		ASSEMBLER = new AssemblerMultiblock();

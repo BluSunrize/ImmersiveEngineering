@@ -119,6 +119,8 @@ public class ItemModels extends LoadedModelProvider
 				.transforms(rl("item/multiblock"));
 		obj(Multiblocks.crusher, rl("block/metal_multiblock/crusher.obj"))
 				.transforms(rl("item/crusher"));
+		obj(Multiblocks.sawmill, rl("block/metal_multiblock/sawmill.obj"))
+				.transforms(rl("item/crusher"));
 		obj(Multiblocks.tank, rl("block/metal_multiblock/tank.obj"))
 				.transforms(rl("item/tank"));
 		obj(Multiblocks.silo, rl("block/metal_multiblock/silo.obj"))
@@ -216,7 +218,7 @@ public class ItemModels extends LoadedModelProvider
 				Ingredients.woodenGrip, Ingredients.gunpartBarrel, Ingredients.gunpartDrum, Ingredients.gunpartHammer,
 				Ingredients.dustCoke, Ingredients.dustHopGraphite, Ingredients.ingotHopGraphite,
 				Ingredients.wireCopper, Ingredients.wireElectrum, Ingredients.wireAluminum, Ingredients.wireSteel,
-				Ingredients.dustSaltpeter, Ingredients.dustSulfur, Ingredients.electronTube, Ingredients.circuitBoard);
+				Ingredients.dustSaltpeter, Ingredients.dustSulfur, Ingredients.dustWood, Ingredients.electronTube, Ingredients.circuitBoard);
 
 		addItemModels(
 				"tool_", mcLoc("item/handheld"), Tools.hammer, Tools.wirecutter, Tools.screwdriver,

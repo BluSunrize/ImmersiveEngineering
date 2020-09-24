@@ -195,6 +195,7 @@ public class ImmersiveEngineering
 		registerMessage(MessageWireSync.class, MessageWireSync::new);
 		registerMessage(MessageMaintenanceKit.class, MessageMaintenanceKit::new);
 		registerMessage(MessageRevolverRotate.class, MessageRevolverRotate::new);
+		registerMessage(MessageMultiblockSync.class, MessageMultiblockSync::new);
 
 		IEIMCHandler.init();
 		//TODO IEIMCHandler.handleIMCMessages(FMLInterModComms.fetchRuntimeMessages(this));

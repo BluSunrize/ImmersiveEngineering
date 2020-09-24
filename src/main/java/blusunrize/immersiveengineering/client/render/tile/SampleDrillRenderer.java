@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
+import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.SampleDrillTileEntity;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
@@ -17,12 +18,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3f;
-import net.minecraftforge.client.model.data.EmptyModelData;
+import java.util.List;
 
 public class SampleDrillRenderer extends TileEntityRenderer<SampleDrillTileEntity>
 {
@@ -40,9 +43,7 @@ public class SampleDrillRenderer extends TileEntityRenderer<SampleDrillTileEntit
 		if(tile.isDummy()||!tile.getWorldNonnull().isBlockLoaded(tile.getPos()))
 			return;
 
-		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 		BlockState state = tile.getWorldNonnull().getBlockState(tile.getPos());
-		IBakedModel model = DRILL.get(null);
 		if(state.getBlock()!=MetalDevices.sampleDrill)
 			return;
 
@@ -60,8 +61,10 @@ public class SampleDrillRenderer extends TileEntityRenderer<SampleDrillTileEntit
 		}
 
 		matrixStack.translate(-0.5, -0.5, -0.5);
-		blockRenderer.getBlockModelRenderer().renderModel(tile.getWorldNonnull(), model, state, tile.getPos(), matrixStack,
-				bufferIn.getBuffer(RenderType.getSolid()), true, tile.getWorld().rand, 0, combinedOverlayIn, EmptyModelData.INSTANCE);
+		List<BakedQuad> quads = DRILL.getNullQuads(null, state);
+		ClientUtils.renderModelTESRFast(
+				quads, bufferIn.getBuffer(RenderType.getSolid()), matrixStack, combinedLightIn, combinedOverlayIn
+		);
 		matrixStack.pop();
 	}
 }

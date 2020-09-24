@@ -203,6 +203,9 @@ public class IETileTypes
 	public static final RegistryObject<TileEntityType<CrusherTileEntity>> CRUSHER = REGISTER.register(
 			"crusher", makeType(CrusherTileEntity::new, () -> Multiblocks.crusher)
 	);
+	public static final RegistryObject<TileEntityType<SawmillTileEntity>> SAWMILL = REGISTER.register(
+			"sawmill", makeType(SawmillTileEntity::new, () -> Multiblocks.sawmill)
+	);
 	public static final RegistryObject<TileEntityType<SheetmetalTankTileEntity>> SHEETMETAL_TANK = REGISTER.register(
 			"sheetmetaltank", makeType(SheetmetalTankTileEntity::new, () -> Multiblocks.tank)
 	);

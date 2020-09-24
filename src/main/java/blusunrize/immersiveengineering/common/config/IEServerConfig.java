@@ -257,6 +257,7 @@ public class IEServerConfig
 			autoWorkbenchConfig = addMachineEnergyTimeModifiers(builder, "auto workbench");
 			bottlingMachineConfig = addMachineEnergyTimeModifiers(builder, "bottling machine");
 			mixerConfig = addMachineEnergyTimeModifiers(builder, "mixer");
+			sawmillConfig = addMachineEnergyTimeModifiers(builder, "sawmill");
 			{
 				arcFurnaceConfig = addMachineEnergyTimeModifiers(builder, "arc furnace", false);
 				arcfurnace_electrodeDamage = addPositive(builder, "electrodeDamage", 96000, "The maximum amount of damage Graphite Electrodes can take. While the furnace is working, electrodes sustain 1 damage per tick, so this is effectively the lifetime in ticks. The default value of 96000 makes them last for 8 consecutive ingame days");
@@ -406,6 +407,7 @@ public class IEServerConfig
 		public final MachineRecipeConfig<BlueprintCraftingRecipe> autoWorkbenchConfig;
 		public final MachineRecipeConfig<BottlingMachineRecipe> bottlingMachineConfig;
 		public final MachineRecipeConfig<MixerRecipe> mixerConfig;
+		public final MachineRecipeConfig<SawmillRecipe> sawmillConfig;
 
 		//Other Multiblock machines
 		public final IntValue assembler_consumption;

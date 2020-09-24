@@ -1,3 +1,18 @@
+##### Version 1.15.2-4.1.0-pre
+- Added the sawmill! It strips logs and cuts them into planks! (BluSunrize)
+- Added blue ice to be used by the Thermoelectric Generator, nerfed packed ice in response (BluSunrize)
+- Experimental recipe changes: (BluSunrize)
+    - Doubled the burntime of Diesel in the generator
+    - Allowed creosote to be very inefficient generator fuel
+    - Increase sulfur output from coal, lapis and quartz
+    - Increase gunpowder output from sulfur & saltpeter recipe
+- Allowed multiblock structures to be changed by data packs (Malte)
+- Fixed GUI model for the alloy smelter (BluSunrize)
+- Fixed crash with mineral veins being saved (BluSunrize)
+- Fixed infinite crafting of firework rockets in the assembler (Malte)
+- Fixed lighting in the assembler GUI (Malte)
+- Fixed connectors being pushed by pistons if quark is installed (Malte)
+
 ##### Version 1.16.3-4.0.1-121
 - Initial release for 1.16.3
 

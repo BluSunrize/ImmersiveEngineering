@@ -137,7 +137,7 @@ public class HammerItem extends IEBaseItem implements ITool
 		else
 			multiblockSide = side;
 		for(MultiblockHandler.IMultiblock mb : MultiblockHandler.getMultiblocks())
-			if(mb.isBlockTrigger(world.getBlockState(pos), multiblockSide))
+			if(mb.isBlockTrigger(world.getBlockState(pos), multiblockSide, world))
 			{
 				boolean b = permittedMultiblocks==null;
 				if(permittedMultiblocks!=null)

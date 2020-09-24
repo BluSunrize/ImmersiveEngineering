@@ -465,6 +465,7 @@ public class IEContent
 		Multiblocks.alloySmelter = new StoneMultiBlock<>("alloy_smelter", IETileTypes.ALLOY_SMELTER);
 		Multiblocks.blastFurnaceAdv = new StoneMultiBlock<>("advanced_blast_furnace", IETileTypes.BLAST_FURNACE_ADVANCED);
 		Multiblocks.crusher = new MetalMultiblockBlock<>("crusher", IETileTypes.CRUSHER);
+		Multiblocks.sawmill = new MetalMultiblockBlock<>("sawmill", IETileTypes.SAWMILL);
 		Multiblocks.silo = new MetalMultiblockBlock<>("silo", IETileTypes.SILO);
 		Multiblocks.tank = new MetalMultiblockBlock<>("tank", IETileTypes.SHEETMETAL_TANK);
 		Multiblocks.arcFurnace = new MetalMultiblockBlock<>("arc_furnace", IETileTypes.ARC_FURNACE);
@@ -523,6 +524,7 @@ public class IEContent
 		IEItems.Ingredients.wireSteel = new IEBaseItem("wire_steel");
 		IEItems.Ingredients.dustSaltpeter = new IEBaseItem("dust_saltpeter");
 		IEItems.Ingredients.dustSulfur = new IEBaseItem("dust_sulfur");
+		IEItems.Ingredients.dustWood = new IEBaseItem("dust_wood");
 		IEItems.Ingredients.electronTube = new IEBaseItem("electron_tube");
 		IEItems.Ingredients.circuitBoard = new IEBaseItem("circuit_board");
 		IEItems.Ingredients.emptyCasing = new IEBaseItem("empty_casing");
@@ -776,8 +778,9 @@ public class IEContent
 			else return null;
 		});
 
-		DieselHandler.registerFuel(IETags.fluidBiodiesel, 125);
+		DieselHandler.registerFuel(IETags.fluidBiodiesel, 250);
 		DieselHandler.registerDrillFuel(IETags.fluidBiodiesel);
+		DieselHandler.registerFuel(IETags.fluidCreosote, 20);
 
 		fluidCreosote.block.setEffect(IEPotions.flammable, 100, 0);
 		fluidEthanol.block.setEffect(Effects.NAUSEA, 70, 0);
@@ -793,7 +796,8 @@ public class IEContent
 		ThermoelectricHandler.registerSourceInKelvin(Blocks.MAGMA_BLOCK, 1300);
 		//TODO tags?
 		ThermoelectricHandler.registerSourceInKelvin(Blocks.ICE, 273);
-		ThermoelectricHandler.registerSourceInKelvin(Blocks.PACKED_ICE, 200);
+		ThermoelectricHandler.registerSourceInKelvin(Blocks.PACKED_ICE, 240);
+		ThermoelectricHandler.registerSourceInKelvin(Blocks.BLUE_ICE, 200);
 		ThermoelectricHandler.registerSourceInKelvin(IETags.getTagsFor(EnumMetals.URANIUM).storage, 2000);
 		//ThermoelectricHandler.registerSourceInKelvin(new ResourceLocation("forge:storage_blocks/yellorium"), 2000);
 		//ThermoelectricHandler.registerSourceInKelvin(new ResourceLocation("forge:storage_blocks/plutonium"), 4000);
@@ -812,6 +816,7 @@ public class IEContent
 		MultiblockHandler.registerMultiblock(IEMultiblocks.ALLOY_SMELTER);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.BLAST_FURNACE);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.CRUSHER);
+		MultiblockHandler.registerMultiblock(IEMultiblocks.SAWMILL);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.ADVANCED_BLAST_FURNACE);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.METAL_PRESS);
 		MultiblockHandler.registerMultiblock(IEMultiblocks.ASSEMBLER);

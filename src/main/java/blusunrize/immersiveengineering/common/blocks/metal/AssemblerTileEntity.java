@@ -623,12 +623,8 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 	public void setWorldAndPos(World world, BlockPos blockPos) {
 		super.setWorldAndPos(world, blockPos);
 		if(getWorld()!=null)
-		{
-			for(int i = 0; i < patterns.length; i++)
-			{
-				patterns[i].recalculateOutput();
-			}
-		}
+			for(CrafterPatternInventory pattern : patterns)
+				pattern.recalculateOutput();
 	}
 
 	public static class CrafterPatternInventory implements IInventory

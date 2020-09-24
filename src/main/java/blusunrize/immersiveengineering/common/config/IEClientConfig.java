@@ -31,6 +31,7 @@ public class IEClientConfig
 	public final static BooleanValue fancyItemHolding;
 	public final static BooleanValue stencilBufferEnabled;
 	public final static ConfigValue<List<? extends String>> earDefenders_SoundBlacklist;
+	public final static BooleanValue enableVBOs;
 	public final static BooleanValue disableFancyTESR;
 	public final static BooleanValue showTextOverlay;
 	public final static BooleanValue nixietubeFont;
@@ -86,6 +87,10 @@ public class IEClientConfig
 		earDefenders_SoundBlacklist = builder
 				.comment("A list of sounds that should not be muffled by the Ear Defenders. Adding to this list requires knowledge of the correct sound resource names.")
 				.defineList("earDefenders_SoundBlacklist", ImmutableList.of(), obj -> true);
+		enableVBOs = builder
+				.comment("Use VBOs to render certain blocks. This is significantly faster than the usual rendering,",
+						"but may not work correctly with visual effects from other mods")
+				.define("enableVBO", true);
 		builder.comment("Options to set the RGB color of all IE wire types")
 				.push("wire_colors");
 		addColor(builder, IEWireType.COPPER, 0xb36c3f);

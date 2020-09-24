@@ -33,6 +33,7 @@ import blusunrize.immersiveengineering.common.crafting.serializers.GeneratedList
 import blusunrize.immersiveengineering.common.data.resources.RecipeMetals;
 import blusunrize.immersiveengineering.common.data.resources.RecipeMetals.AlloyProperties;
 import blusunrize.immersiveengineering.common.data.resources.RecipeOres;
+import blusunrize.immersiveengineering.common.data.resources.RecipeWoods;
 import blusunrize.immersiveengineering.common.data.resources.SecondaryOutput;
 import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.items.IEItems;
@@ -509,6 +510,7 @@ public class Recipes extends RecipeProvider
 		ArcFurnaceRecipeBuilder arcBuilder;
 		MetalPressRecipeBuilder pressBuilder;
 		AlloyRecipeBuilder alloyBuilder;
+		SawmillRecipeBuilder sawmillBuilder;
 
 		/* Common Metals */
 		for(RecipeMetals metal : RecipeMetals.values())
@@ -761,6 +763,67 @@ public class Recipes extends RecipeProvider
 				.addInput(Items.NETHER_GOLD_ORE)
 				.setEnergy(4200)
 				.build(out, toRL("crusher/nether_gold"));
+
+		/* SAWMILL */
+		for(RecipeWoods wood : RecipeWoods.values())
+		{
+			// Basic log
+			if(wood.getLog()!=null)
+			{
+				sawmillBuilder = SawmillRecipeBuilder.builder(new ItemStack(wood.getPlank(), 6))
+						.setEnergy(1600);
+				// If there is an all-bark block
+				if(wood.getWood()!=null)
+					sawmillBuilder.addInput(wood.getLog(), wood.getWood());
+				else
+					sawmillBuilder.addInput(wood.getLog());
+				if(wood.getStripped()!=null)
+				{
+					sawmillBuilder.addStripped(wood.getStripped());
+					if(wood.produceSawdust())
+						sawmillBuilder.addSecondary(IETags.sawdust, true);
+				}
+				if(wood.produceSawdust())
+					sawmillBuilder.addSecondary(IETags.sawdust, false);
+				sawmillBuilder.build(out, toRL("sawmill/"+wood.getName()+"_log"));
+			}
+			// Already stripped log
+			if(wood.getStripped()!=null)
+			{
+				sawmillBuilder = SawmillRecipeBuilder.builder(new ItemStack(wood.getPlank(), 6))
+						.addInput(wood.getStripped())
+						.setEnergy(800);
+				if(wood.produceSawdust())
+					sawmillBuilder.addSecondary(IETags.sawdust, false);
+				sawmillBuilder.build(out, toRL("sawmill/stripped_"+wood.getName()+"_log"));
+			}
+			// Door
+			if(wood.getDoor()!=null)
+			{
+				sawmillBuilder = SawmillRecipeBuilder.builder(new ItemStack(wood.getPlank(), 1))
+						.addInput(wood.getDoor())
+						.setEnergy(800);
+				if(wood.produceSawdust())
+					sawmillBuilder.addSecondary(IETags.sawdust, false);
+				sawmillBuilder.build(out, toRL("sawmill/"+wood.getName()+"_door"));
+			}
+			// Stairs
+			if(wood.getStairs()!=null)
+			{
+				sawmillBuilder = SawmillRecipeBuilder.builder(new ItemStack(wood.getPlank(), 1))
+						.addInput(wood.getStairs())
+						.setEnergy(1600);
+				if(wood.produceSawdust())
+					sawmillBuilder.addSecondary(IETags.sawdust, false);
+				sawmillBuilder.build(out, toRL("sawmill/"+wood.getName()+"_stairs"));
+			}
+		}
+		SawmillRecipeBuilder.builder(new ItemStack(Items.OAK_PLANKS, 4))
+				.addInput(Items.BOOKSHELF)
+				.addSecondary(IETags.sawdust, false)
+				.addSecondary(new ItemStack(Items.BOOK, 3), false)
+				.setEnergy(1600)
+				.build(out, toRL("sawmill/bookshelf"));
 
 		/* SQUEEZER */
 		SqueezerRecipeBuilder.builder(IEContent.fluidPlantoil, 80)
@@ -2461,12 +2524,17 @@ public class Recipes extends RecipeProvider
 				.addIngredient(Ingredient.fromTag(IETags.fiberHemp), 3)
 				.addCriterion("has_hemp_fiber", hasItem(Ingredients.hempFiber))
 				.build(out, toRL(toPath(Items.STRING)));
-		ShapelessRecipeBuilder.shapelessRecipe(Items.GUNPOWDER, 3)
+		ShapelessRecipeBuilder.shapelessRecipe(Items.GUNPOWDER, 6)
 				.addIngredient(Ingredient.fromTag(IETags.saltpeterDust), 4)
 				.addIngredient(IETags.sulfurDust)
 				.addIngredient(Items.CHARCOAL)
 				.addCriterion("has_sulfur", hasItem(IETags.sulfurDust))
 				.build(out, toRL("gunpowder_from_dusts"));
+		ShapelessRecipeBuilder.shapelessRecipe(Items.PAPER, 2)
+				.addIngredient(Ingredient.fromTag(IETags.sawdust), 4)
+				.addIngredient(new IngredientFluidStack(FluidTags.WATER, 1000))
+				.addCriterion("has_sawdust", hasItem(IETags.sawdust))
+				.build(out, toRL("paper_from_sawdust"));
 	}
 
 	private Consumer<IFinishedRecipe> buildBlueprint(Consumer<IFinishedRecipe> out, String blueprint, ICondition... conditions)

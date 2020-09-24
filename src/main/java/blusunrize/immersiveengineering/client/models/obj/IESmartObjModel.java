@@ -82,6 +82,7 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 	public LivingEntity tempEntity;
 	public static LivingEntity tempEntityStatic;
 	public boolean isDynamic;
+	private final Map<String, String> texReplacements;
 
 	public final OBJModel baseModel;
 	private final IBakedModel baseBaked;
@@ -94,7 +95,7 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 
 	public IESmartObjModel(OBJModel baseModel, IBakedModel baseBaked, IModelConfiguration owner, ModelBakery bakery,
 						   Function<RenderMaterial, TextureAtlasSprite> spriteGetter, IModelTransform sprite,
-						   IEObjState state, boolean dynamic)
+						   IEObjState state, boolean dynamic, Map<String, String> texReplacements)
 	{
 
 		this.baseModel = baseModel;
@@ -105,6 +106,7 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 		this.sprite = sprite;
 		this.state = state;
 		this.isDynamic = dynamic;
+		this.texReplacements = texReplacements;
 	}
 
 	@Override
@@ -257,7 +259,7 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 
 					model = new IESmartObjModel(smrtModel.baseModel, smrtModel.baseBaked, smrtModel.owner, smrtModel.bakery,
 							smrtModel.spriteGetter, smrtModel.sprite,
-							smrtModel.state, smrtModel.isDynamic);
+							smrtModel.state, smrtModel.isDynamic, ImmutableMap.of());
 					((IESmartObjModel)model).tempStack = stack;
 					((IESmartObjModel)model).tempEntity = entity;
 				}
@@ -366,9 +368,9 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 			{
 				IESmartObjModel model;
 				if(visibility!=null)
-					model = new IESmartObjModel(baseModel, baseBaked, owner, bakery, spriteGetter, sprite, visibility, isDynamic);
+					model = new IESmartObjModel(baseModel, baseBaked, owner, bakery, spriteGetter, sprite, visibility, isDynamic, tex);
 				else
-					model = new IESmartObjModel(baseModel, baseBaked, owner, bakery, spriteGetter, sprite, this.state, isDynamic);
+					model = new IESmartObjModel(baseModel, baseBaked, owner, bakery, spriteGetter, sprite, this.state, isDynamic, tex);
 
 				model.tempState = blockState;
 				return model.buildQuads(modelData);
@@ -444,7 +446,7 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 		if(sCase!=null)
 			objCacheKey += ";"+sCase.getShaderType().toString();
 		Pair<String, String> cacheKey = Pair.of(groupName, objCacheKey);
-		if(allowCaching&&false)
+		if(allowCaching)
 		{
 			List<ShadedQuads> cached = groupCache.getIfPresent(cacheKey);
 			if(cached!=null)
@@ -476,11 +478,12 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 					coordinateRemapper.setRenderPass(pass);
 					//g.addQuads(owner, new QuadListAdder(quads::add, transform), bakery, spriteGetter, sprite, format);
 					IModelBuilder modelBuilder = new QuadListAdder(quads::add, transform);
-					addModelObjectQuads(g, owner, modelBuilder, spriteGetter, colorGetter, coordinateRemapper, optionalTransform);
+					Optional<String> texOverride = Optional.ofNullable(texReplacements.get(groupName));
+					addModelObjectQuads(g, owner, modelBuilder, spriteGetter, colorGetter, coordinateRemapper, optionalTransform, texOverride);
 					final TransformationMatrix finalTransform = optionalTransform;
 					g.getParts().stream().filter(part -> owner.getPartVisibility(part)&&part instanceof ModelObject)
 							.forEach(part -> addModelObjectQuads((ModelObject)part, owner, modelBuilder, spriteGetter,
-									colorGetter, coordinateRemapper, finalTransform));
+									colorGetter, coordinateRemapper, finalTransform, texOverride));
 					ShaderLayer layer = sCase!=null?sCase.getLayers()[pass]: new ShaderLayer(new ResourceLocation("missing/no"), -1)
 					{
 						@Override
@@ -502,7 +505,7 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 	private void addModelObjectQuads(ModelObject modelObject, IModelConfiguration owner, IModelBuilder<?> modelBuilder,
 									 MaterialSpriteGetter<?> spriteGetter, MaterialColorGetter<?> colorGetter,
 									 TextureCoordinateRemapper coordinateRemapper,
-									 TransformationMatrix transform)
+									 TransformationMatrix transform, Optional<String> textureOverride)
 	{
 		List<MeshWrapper> meshes = OBJHelper.getMeshes(modelObject);
 		for(MeshWrapper mesh : meshes)
@@ -512,7 +515,7 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 				continue;
 			TextureAtlasSprite texture = spriteGetter.apply(
 					mat.name,
-					ModelLoaderRegistry.resolveTexture(mat.diffuseColorMap, owner)
+					ModelLoaderRegistry.resolveTexture(textureOverride.orElse(mat.diffuseColorMap), owner)
 			);
 			int tintIndex = mat.diffuseTintIndex;
 			Vector4f colorTint = colorGetter.apply(mat.name, mat.diffuseColor);

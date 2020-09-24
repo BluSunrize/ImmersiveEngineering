@@ -61,6 +61,14 @@ public class IngredientFluidStack extends Ingredient
 	}
 
 	@Override
+	public boolean hasNoMatchingItems()
+	{
+		return false;
+		// todo? I don't think there is a way to do this now, because the tag isn't bound yet on world load
+		// this.fluidTagInput.getMatchingFluidStacks().isEmpty();
+	}
+
+	@Override
 	public boolean test(@Nullable ItemStack stack)
 	{
 		if(stack==null)
