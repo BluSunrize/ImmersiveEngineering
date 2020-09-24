@@ -297,7 +297,7 @@ public class BlockStates extends BlockStateProvider
 		UnaryOperator<BlockPos> transform = UnaryOperator.identity();
 		if(mirror)
 		{
-			Vector3i size = mb.getSize();
+			Vector3i size = mb.getSize(null);
 			transform = p -> new BlockPos(size.getX()-p.getX()-1, p.getY(), p.getZ());
 		}
 		return splitOBJ(loc, mb, transform);
@@ -327,7 +327,7 @@ public class BlockStates extends BlockStateProvider
 	)
 	{
 		final Vector3i offset = multiblock.getMasterFromOriginOffset();
-		Stream<Vector3i> partsStream = multiblock.getStructure()
+		Stream<Vector3i> partsStream = multiblock.getStructure(null)
 				.stream()
 				.filter(info -> !info.state.isAir())
 				.map(info -> info.pos)
@@ -887,6 +887,9 @@ public class BlockStates extends BlockStateProvider
 
 	private void createMetalMultiblocks()
 	{
+		createMultiblock(Multiblocks.sawmill,
+				splitOBJ("block/metal_multiblock/sawmill.obj", IEMultiblocks.SAWMILL),
+				splitOBJ("block/metal_multiblock/sawmill_mirrored.obj", IEMultiblocks.SAWMILL, true));
 		createMultiblock(Multiblocks.excavator,
 				splitOBJ("block/metal_multiblock/excavator.obj", IEMultiblocks.EXCAVATOR),
 				splitOBJ("block/metal_multiblock/excavator_mirrored.obj", IEMultiblocks.EXCAVATOR, true));

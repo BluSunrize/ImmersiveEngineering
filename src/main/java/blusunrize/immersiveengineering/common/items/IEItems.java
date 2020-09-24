@@ -67,6 +67,7 @@ public final class IEItems
 		public static Item wireSteel;
 		public static Item dustSaltpeter;
 		public static Item dustSulfur;
+		public static Item dustWood;
 		public static Item electronTube;
 		public static Item circuitBoard;
 		public static Item emptyCasing;

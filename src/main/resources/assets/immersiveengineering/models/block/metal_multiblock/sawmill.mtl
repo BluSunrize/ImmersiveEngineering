@@ -1,0 +1,8 @@
+newmtl blade
+map_Kd immersiveengineering:item/sawblade_blade
+
+newmtl conveyor
+map_Kd immersiveengineering:block/conveyor/conveyor
+
+newmtl sawmill
+map_Kd immersiveengineering:block/multiblocks/sawmill

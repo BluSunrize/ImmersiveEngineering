@@ -37,6 +37,7 @@ import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.gen.feature.template.Template.BlockInfo;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
@@ -62,7 +63,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	// stores the world time at which this block can only be disassembled by breaking the block associated with this TE.
 	// This prevents half/duplicate disassembly when working with the drill or TCon hammers
 	public long onlyLocalDissassembly = -1;
-	protected final Vector3i structureDimensions;
+	protected final Lazy<Vector3i> structureDimensions;
 	protected final boolean hasRedstoneControl;
 	protected boolean redstoneControlInverted = false;
 	//Absent means no controlling computers
@@ -72,7 +73,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	{
 		super(type);
 		this.multiblockInstance = multiblockInstance;
-		this.structureDimensions = multiblockInstance.getSize();
+		this.structureDimensions = Lazy.of(() -> multiblockInstance.getSize(world));
 		this.hasRedstoneControl = hasRSControl;
 	}
 
@@ -323,7 +324,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 
 	public BlockState getOriginalBlock()
 	{
-		for(BlockInfo block : multiblockInstance.getStructure())
+		for(BlockInfo block : multiblockInstance.getStructure(world))
 			if(block.pos.equals(posInMultiblock))
 				return block.state;
 		return Blocks.AIR.getDefaultState();
@@ -436,7 +437,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	public BlockPos getModelOffset(BlockState state)
 	{
 		BlockPos mirroredPosInMB = posInMultiblock;
-		final Vector3i size = multiblockInstance.getSize();
+		final Vector3i size = multiblockInstance.getSize(world);
 		if(getIsMirrored())
 			mirroredPosInMB = new BlockPos(
 					size.getX()-mirroredPosInMB.getX()-1,

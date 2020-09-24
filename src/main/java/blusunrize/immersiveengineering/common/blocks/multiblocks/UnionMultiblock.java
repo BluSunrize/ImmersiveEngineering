@@ -25,6 +25,7 @@ import net.minecraft.world.gen.feature.template.PlacementSettings;
 import net.minecraft.world.gen.feature.template.Template;
 import net.minecraft.world.gen.feature.template.Template.BlockInfo;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,12 +59,12 @@ public class UnionMultiblock implements IMultiblock
 	}
 
 	@Override
-	public List<BlockInfo> getStructure()
+	public List<BlockInfo> getStructure(@Nullable World world)
 	{
-		Vector3i min = getMin();
+		Vector3i min = getMin(world);
 		List<BlockInfo> ret = new ArrayList<>();
 		for(TransformedMultiblock part : parts)
-			for(BlockInfo i : part.multiblock.getStructure())
+			for(BlockInfo i : part.multiblock.getStructure(world))
 				ret.add(new BlockInfo(part.toUnionCoords(i.pos).subtract(min), i.state, i.nbt));
 		return ret;
 	}
@@ -114,12 +115,12 @@ public class UnionMultiblock implements IMultiblock
 	}
 
 	@Override
-	public Vector3i getSize()
+	public Vector3i getSize(@Nullable World world)
 	{
 		Vector3i max = Vector3i.NULL_VECTOR;
 		for(TransformedMultiblock part : parts)
-			max = max(max, part.toUnionCoords(part.multiblock.getSize()));
-		Vector3i min = getMin();
+			max = max(max, part.toUnionCoords(part.multiblock.getSize(world)));
+		Vector3i min = getMin(world);
 		return new Vector3i(
 				max.getX()-min.getX(),
 				max.getY()-min.getY(),
@@ -127,13 +128,13 @@ public class UnionMultiblock implements IMultiblock
 		);
 	}
 
-	private Vector3i getMin()
+	private Vector3i getMin(@Nullable World world)
 	{
 		Vector3i min = Vector3i.NULL_VECTOR;
 		for(TransformedMultiblock part : parts)
 		{
 			//TODO more intelligent approach?
-			final Vector3i size = part.multiblock.getSize();
+			final Vector3i size = part.multiblock.getSize(world);
 			for(int factorX = 0; factorX < 2; ++factorX)
 				for(int factorY = 0; factorY < 2; ++factorY)
 					for(int factorZ = 0; factorZ < 2; ++factorZ)

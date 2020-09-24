@@ -1,0 +1,19 @@
+{
+  "type": "immersiveengineering:sawmill",
+  "secondaries": [
+    {
+      "output": {
+        "tag": "forge:dusts/wood"
+      },
+      "stripping": false
+    }
+  ],
+  "result": {
+    "item": "minecraft:jungle_planks",
+    "count": 6
+  },
+  "input": {
+    "item": "minecraft:stripped_jungle_log"
+  },
+  "energy": 800
+}

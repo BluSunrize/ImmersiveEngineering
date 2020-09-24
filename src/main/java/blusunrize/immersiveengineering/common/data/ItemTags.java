@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.items.IEItems.Metals;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
+import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import net.minecraft.data.BlockTagsProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.ItemTagsProvider;
@@ -84,5 +85,6 @@ class ItemTags extends ItemTagsProvider
 				.func_240531_a_(IETags.aluminumRod)
 				.func_240531_a_(IETags.ironRod)
 				.func_240531_a_(IETags.steelRod);
+		func_240522_a_(IETags.sawblades).func_240532_a_(Tools.sawblade);
 	}
 }

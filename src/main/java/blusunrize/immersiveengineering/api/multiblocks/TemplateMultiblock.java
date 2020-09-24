@@ -22,6 +22,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tags.ITag;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.ResourceLocation;
@@ -89,14 +90,30 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 		));
 	}
 
-	@Nonnull
+	@Deprecated
 	protected Template getTemplate()
 	{
+		return getTemplate((World)null);
+	}
+
+	@Nonnull
+	protected Template getTemplate(@Nullable World world)
+	{
+		return getTemplate(world==null?null: world.getServer());
+	}
+
+	public ResourceLocation getTemplateLocation()
+	{
+		return loc;
+	}
+
+	@Nonnull
+	public Template getTemplate(@Nullable MinecraftServer server)
+	{
 		if(template==null)//TODO reset on resource reload
-		{
 			try
 			{
-				template = StaticTemplateManager.loadStaticTemplate(loc);
+				template = StaticTemplateManager.loadStaticTemplate(loc, server);
 				List<Template.BlockInfo> blocks = template.blocks.get(0).func_237157_a_();
 				for(int i = 0; i < blocks.size(); i++)
 				{
@@ -109,18 +126,20 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 						i--;
 					}
 					else if(info.state.isAir())
-					{
 						// Usually means it contains a block that has been renamed
 						IELogger.error("Found non-default air block in template "+loc);
-					}
 				}
 				materials = null;
 			} catch(IOException e)
 			{
 				throw new RuntimeException(e);
 			}
-		}
 		return template;
+	}
+
+	public void reset()
+	{
+		template = null;
 	}
 
 	@Override
@@ -130,9 +149,9 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 	}
 
 	@Override
-	public boolean isBlockTrigger(BlockState state, Direction d)
+	public boolean isBlockTrigger(BlockState state, Direction d, @Nullable World world)
 	{
-		getTemplate();
+		getTemplate(world);
 		Rotation rot = Utils.getRotationBetweenFacings(Direction.NORTH, d.getOpposite());
 		if(rot==null)
 			return false;
@@ -151,7 +170,7 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 		Rotation rot = Utils.getRotationBetweenFacings(Direction.NORTH, side.getOpposite());
 		if(rot==null)
 			return false;
-		Template template = getTemplate();
+		Template template = getTemplate(world);
 		mirrorLoop:
 		for(Mirror mirror : getPossibleMirrorStates())
 		{
@@ -189,7 +208,7 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 	protected void form(World world, BlockPos pos, Rotation rot, Mirror mirror, Direction sideHit)
 	{
 		BlockPos masterPos = withSettingsAndOffset(pos, masterFromOrigin, mirror, rot);
-		for(BlockInfo block : getStructure())
+		for(BlockInfo block : getStructure(world))
 		{
 			BlockPos actualPos = withSettingsAndOffset(pos, block.pos, mirror, rot);
 			replaceStructureBlock(block, world, actualPos, mirror!=Mirror.NONE, sideHit,
@@ -205,15 +224,15 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 	protected abstract void replaceStructureBlock(BlockInfo info, World world, BlockPos actualPos, boolean mirrored, Direction clickDirection, Vector3i offsetFromMaster);
 
 	@Override
-	public List<BlockInfo> getStructure()
+	public List<BlockInfo> getStructure(@Nullable World world)
 	{
-		return getTemplate().blocks.get(0).func_237157_a_();
+		return getTemplate(world).blocks.get(0).func_237157_a_();
 	}
 
 	@Override
-	public Vector3i getSize()
+	public Vector3i getSize(@Nullable World world)
 	{
-		return getTemplate().getSize();
+		return getTemplate(world).getSize();
 	}
 
 	@Override
@@ -243,7 +262,7 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 	{
 		if(materials==null)
 		{
-			List<BlockInfo> structure = getStructure();
+			List<BlockInfo> structure = getStructure(null);
 			List<ItemStack> ret = new ArrayList<>(structure.size());
 			RayTraceResult rtr = new BlockRayTraceResult(Vector3d.ZERO, Direction.DOWN, BlockPos.ZERO, false);
 			for(BlockInfo info : structure)
@@ -271,7 +290,7 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 		Mirror mirror = mirrored?Mirror.FRONT_BACK: Mirror.NONE;
 		Rotation rot = Utils.getRotationBetweenFacings(Direction.NORTH, clickDirectionAtCreation);
 		Preconditions.checkNotNull(rot);
-		for(BlockInfo block : getStructure())
+		for(BlockInfo block : getStructure(world))
 		{
 			BlockPos actualPos = withSettingsAndOffset(origin, block.pos, mirror, rot);
 			prepareBlockForDisassembly(world, actualPos);
@@ -293,5 +312,4 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 	{
 		return true;
 	}
-
 }
