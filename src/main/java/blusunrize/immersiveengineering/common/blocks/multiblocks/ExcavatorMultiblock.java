@@ -46,7 +46,7 @@ public class ExcavatorMultiblock extends IETemplateMultiblock
 			if(clickedTE instanceof ExcavatorTileEntity)
 			{
 				BlockPos wheelCenter = ((ExcavatorTileEntity)clickedTE).getWheelCenterPos();
-				IEMultiblocks.BUCKET_WHEEL.createStructure(world, wheelCenter, side.rotateY(), player);
+				IEMultiblocks.BUCKET_WHEEL.createStructure(world, wheelCenter, side.rotateYCCW(), player);
 			}
 		}
 		return excavatorFormed;
