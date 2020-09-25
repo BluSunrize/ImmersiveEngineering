@@ -143,16 +143,22 @@ repositories {
         //gigaherz maven for 1.16.2 mappings
         url 'https://www.dogforce-games.com/maven/'
     }
+    maven {
+        //JEI 1.16.3 tries to load 'mods:ftb-gui-library'
+        url 'https://maven.latmod.com/'
+    }
 }
 
 dependencies {
 //    minecraft "net.minecraftforge:forge:${version_minecraft}-${version_forge}"
     minecraft "net.minecraftforge:forge:1.16.3-34.0.7"
 
-    //runtimeOnly fg.deobf("mezz.jei:jei-1.16.2:7.1.0.11")
+    runtimeOnly fg.deobf("mezz.jei:jei-1.16.3:7.3.2.29")
     //runtimeOnly fg.deobf("nbtedit:NBTEdit:0.9.0")
-    compileOnly fg.deobf("mezz.jei:jei-1.16.2:7.3.2.25:api")
+    compileOnly fg.deobf("mezz.jei:jei-1.16.3:7.3.2.29:api")
     compile "malte0811:BlockModelSplitter:1.2.0"
+    //Apparently JEI 1.16.3 can't be applied here without...
+    compile fg.deobf('com.feed_the_beast.mods:ftb-gui-library:1.0.0.18')
     testImplementation('junit:junit:4.13')
 }
 
