@@ -51,6 +51,7 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.eventbus.api.*;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -96,7 +97,7 @@ public class ImmersiveEngineering
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::wrongSignature);
 		MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
 		MinecraftForge.EVENT_BUS.addListener(this::registerCommands);
-		MinecraftForge.EVENT_BUS.addListener(this::addReloadListeners);
+		MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::addReloadListeners);
 		MinecraftForge.EVENT_BUS.addListener(this::serverStarted);
 		RecipeSerializers.RECIPE_SERIALIZERS.register(FMLJavaModLoadingContext.get().getModEventBus());
 		Villages.Registers.POINTS_OF_INTEREST.register(FMLJavaModLoadingContext.get().getModEventBus());
