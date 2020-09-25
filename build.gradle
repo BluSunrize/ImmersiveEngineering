@@ -160,6 +160,11 @@ dependencies {
     //Apparently JEI 1.16.3 can't be applied here without...
     compile fg.deobf('com.feed_the_beast.mods:ftb-gui-library:1.0.0.18')
     testImplementation('junit:junit:4.13')
+
+    compile fg.deobf(group: "com.blamejared.crafttweaker", name: "CraftTweaker-1.16.3", version: "7.0.0.45")
+    compile group: "com.blamejared.crafttweaker", name: "Crafttweaker_Annotation_Processors-1.16.3", version: "1.0.0.45"
+    annotationProcessor group: "com.blamejared.crafttweaker", name: "Crafttweaker_Annotation_Processors-1.16.3", version: "1.0.0.45"
+    annotationProcessor group: "org.reflections", name: 'reflections', version: '0.9.12'
 }
 
 def customGradle = rootProject.file('custom.gradle');
