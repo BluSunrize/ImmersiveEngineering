@@ -29,11 +29,12 @@ import blusunrize.immersiveengineering.common.items.RevolverItem;
 import blusunrize.immersiveengineering.common.items.ToolUpgradeItem.ToolUpgrade;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -66,14 +67,11 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -101,7 +99,7 @@ public class Villages
 		// Register engineer's houses for each biome
 		for(String biome : new String[]{"plains", "snowy", "savanna", "desert", "taiga"})
 			addToPool(new ResourceLocation("village/"+biome+"/houses"),
-					rl("village/houses/"+biome+"_engineer"), 1);
+					rl("village/houses/"+biome+"_engineer"), 4);
 
 		// Register workstations
 		JigsawManager.REGISTRY.register(new JigsawPattern(
@@ -128,15 +126,18 @@ public class Villages
 	private static void addToPool(ResourceLocation pool, ResourceLocation toAdd, int weight)
 	{
 		JigsawPattern old = JigsawManager.REGISTRY.get(pool);
-		List<JigsawPiece> shuffled = old.getShuffledPieces(Utils.RAND);
-		List<Pair<JigsawPiece, Integer>> newPieces = new ArrayList<>();
+
+		// Fixed seed to prevent inconsistencies between different worlds
+		List<JigsawPiece> shuffled = old.getShuffledPieces(new Random(0));
+		Object2IntMap<JigsawPiece> newPieces = new Object2IntLinkedOpenHashMap<>();
 		for(JigsawPiece p : shuffled)
-		{
-			newPieces.add(new Pair<>(p, 1));
-		}
-		newPieces.add(new Pair<>(new SingleJigsawPiece(toAdd.toString()), weight));
-		ResourceLocation name = old.getName();
-		JigsawManager.REGISTRY.register(new JigsawPattern(pool, name, newPieces, PlacementBehaviour.RIGID));
+			newPieces.computeInt(p, (JigsawPiece pTemp, Integer i) -> (i==null?0: i)+1);
+		newPieces.put(new SingleJigsawPiece(toAdd.toString()), weight);
+		List<Pair<JigsawPiece, Integer>> newPieceList = newPieces.object2IntEntrySet().stream()
+				.map(e -> Pair.of(e.getKey(), e.getIntValue()))
+				.collect(Collectors.toList());
+
+		JigsawManager.REGISTRY.register(new JigsawPattern(pool, old.getFallback(), newPieceList, PlacementBehaviour.RIGID));
 	}
 
 	@Mod.EventBusSubscriber(modid = MODID, bus = Bus.MOD)
