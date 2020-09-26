@@ -40,11 +40,10 @@ import java.util.List;
 public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineTileEntity>
 {
 	public static DynamicModel<Direction> DYNAMIC;
-	private static final float pixelHeight = 1f/16f;
-	private static final float translationDistance = 3f;
-	private static final float standardTransportTime = 16f*(translationDistance/2); //16 frames in conveyor animation, 1 frame/tick, 2.5 blocks of total translation distance, halved because transport time just affects half the distance
-	private static final float standardLiftTime = 3.75f;
-	private static final float minCycleTime = 60f; //set >= 2*(standardPressTime+standardTransportTime)
+	private static final float TRANSLATION_DISTANCE = 3f;
+	private static final float STANDARD_TRANSPORT_TIME = 16f*(TRANSLATION_DISTANCE/2); //16 frames in conveyor animation, 1 frame/tick, 2.5 blocks of total translation distance, halved because transport time just affects half the distance
+	private static final float STANDARD_LIFT_TIME = 3.75f;
+	private static final float MIN_CYCLE_TIME = 60f; //set >= 2*(standardPressTime+standardTransportTime)
 
 	public BottlingMachineRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
 	{
@@ -63,6 +62,8 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 		if(state.getBlock()!=Multiblocks.bottlingMachine)
 			return;
 		Direction facing = te.getFacing();
+
+		final float pixelHeight = 1f/16f;
 
 		//Outer GL Wrapping, initial translation
 		matrixStack.push();
@@ -117,7 +118,7 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 				itemX = .5f+.5f*(fProcess-(processMaxTicks-transportTime))/transportTime;
 				itemFill = 1;
 			}
-			itemDisplays[i] = new float[]{fProcess, (itemX-0.5f)*translationDistance, itemY-.15625f, 1, itemFill};
+			itemDisplays[i] = new float[]{fProcess, (itemX-0.5f)*TRANSLATION_DISTANCE, itemY-.15625f, 1, itemFill};
 		}
 
 		matrixStack.push();
@@ -232,17 +233,17 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 
 	public static float getTransportTime(float processMaxTicks)
 	{
-		if(processMaxTicks >= minCycleTime)
-			return standardTransportTime;
+		if(processMaxTicks >= MIN_CYCLE_TIME)
+			return STANDARD_TRANSPORT_TIME;
 		else
-			return processMaxTicks*standardTransportTime/minCycleTime;
+			return processMaxTicks*STANDARD_TRANSPORT_TIME/MIN_CYCLE_TIME;
 	}
 
 	public static float getLiftTime(float processMaxTicks)
 	{
-		if(processMaxTicks >= minCycleTime)
-			return standardLiftTime;
+		if(processMaxTicks >= MIN_CYCLE_TIME)
+			return STANDARD_LIFT_TIME;
 		else
-			return processMaxTicks*standardLiftTime/minCycleTime;
+			return processMaxTicks*STANDARD_LIFT_TIME/MIN_CYCLE_TIME;
 	}
 }
