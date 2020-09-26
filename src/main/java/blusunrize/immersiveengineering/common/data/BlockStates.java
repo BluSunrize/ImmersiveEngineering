@@ -729,6 +729,9 @@ public class BlockStates extends BlockStateProvider
 							.loader(ConveyorLoader.LOCATION)
 			));
 		createHemp();
+		simpleBlockItem(Misc.pottedHemp, models().withExistingParent("potted_hemp", mcLoc("block/flower_pot_cross"))
+				.texture("plant", new ResourceLocation(ImmersiveEngineering.MODID, "block/hemp/potted")));
+
 		for(IEFluid f : IEFluid.IE_FLUIDS)
 		{
 			ResourceLocation stillTexture = f.getAttributes().getStillTexture();

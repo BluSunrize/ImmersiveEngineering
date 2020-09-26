@@ -105,6 +105,7 @@ public class BlockRenderLayers
 			);
 
 		RenderTypeLookup.setRenderLayer(Misc.hempPlant, RenderType.getCutout());
+		RenderTypeLookup.setRenderLayer(Misc.pottedHemp, RenderType.getCutout());
 		RenderTypeLookup.setRenderLayer(IEContent.fluidPotion, RenderType.getTranslucent());
 	}
 }
