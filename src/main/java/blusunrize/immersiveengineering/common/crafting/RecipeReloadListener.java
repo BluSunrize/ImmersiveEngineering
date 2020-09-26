@@ -64,6 +64,9 @@ public class RecipeReloadListener implements IResourceManagerReloadListener
 	static void buildRecipeLists(RecipeManager recipeManager)
 	{
 		Collection<IRecipe<?>> recipes = recipeManager.getRecipes();
+		// Empty recipe list shouldn't happen, but has been known to be caused by other mods
+		if(recipes.size()==0)
+			return;
 
 		// Start recycling
 		ArcRecyclingThreadHandler recyclingHandler = new ArcRecyclingThreadHandler(recipes);
