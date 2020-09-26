@@ -34,10 +34,10 @@ public class MetalPressRenderer extends TileEntityRenderer<MetalPressTileEntity>
 {
 	public static DynamicModel<Void> PISTON;
 
-	private static final float translationDistance = 2.5f;
-	private static final float standardTransportTime = 16f*(translationDistance/2); //16 frames in conveyor animation, 1 frame/tick, 2.5 blocks of total translation distance, halved because transport time just affects half the distance
-	private static final float standardPressTime = 3.75f;
-	private static final float minCycleTime = 60f; //set >= 2*(standardPressTime+standardTransportTime)
+	private static final float TRANSLATION_DISTANCE = 2.5f;
+	private static final float STANDARD_TRANSPORT_TIME = 16f*(TRANSLATION_DISTANCE/2); //16 frames in conveyor animation, 1 frame/tick, 2.5 blocks of total translation distance, halved because transport time just affects half the distance
+	private static final float STANDARD_PRESS_TIME = 3.75f;
+	private static final float MIN_CYCLE_TIME = 60f; //set >= 2*(standardPressTime+standardTransportTime)
 
 	public MetalPressRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
 	{
@@ -118,7 +118,7 @@ public class MetalPressRenderer extends TileEntityRenderer<MetalPressTileEntity>
 			if(!(process instanceof PoweredMultiblockTileEntity.MultiblockProcessInWorld))
 				continue;
 			matrixStack.push();
-			matrixStack.translate(0, 0, -translationDistance*shift[i]);
+			matrixStack.translate(0, 0, -TRANSLATION_DISTANCE*shift[i]);
 			if(piston > .92)
 				matrixStack.translate(0, .92-piston, 0);
 
@@ -138,17 +138,17 @@ public class MetalPressRenderer extends TileEntityRenderer<MetalPressTileEntity>
 
 	public static float getTransportTime(float processMaxTicks)
 	{
-		if(processMaxTicks >= minCycleTime)
-			return standardTransportTime;
+		if(processMaxTicks >= MIN_CYCLE_TIME)
+			return STANDARD_TRANSPORT_TIME;
 		else
-			return processMaxTicks*standardTransportTime/minCycleTime;
+			return processMaxTicks*STANDARD_TRANSPORT_TIME/MIN_CYCLE_TIME;
 	}
 
 	public static float getPressTime(float processMaxTicks)
 	{
-		if(processMaxTicks >= minCycleTime)
-			return standardPressTime;
+		if(processMaxTicks >= MIN_CYCLE_TIME)
+			return STANDARD_PRESS_TIME;
 		else
-			return processMaxTicks*standardPressTime/minCycleTime;
+			return processMaxTicks*STANDARD_PRESS_TIME/MIN_CYCLE_TIME;
 	}
 }
