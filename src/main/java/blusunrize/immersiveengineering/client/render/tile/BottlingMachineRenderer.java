@@ -43,7 +43,7 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 	private static final float TRANSLATION_DISTANCE = 3f;
 	private static final float STANDARD_TRANSPORT_TIME = 16f*(TRANSLATION_DISTANCE/2); //16 frames in conveyor animation, 1 frame/tick, 2.5 blocks of total translation distance, halved because transport time just affects half the distance
 	private static final float STANDARD_LIFT_TIME = 3.75f;
-	private static final float MIN_CYCLE_TIME = 60f; //set >= 2*(standardPressTime+standardTransportTime)
+	private static final float MIN_CYCLE_TIME = 60f; //set >= 2*(STANDARD_LIFT_TIME+STANDARD_TRANSPORT_TIME)
 
 	public BottlingMachineRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
 	{
