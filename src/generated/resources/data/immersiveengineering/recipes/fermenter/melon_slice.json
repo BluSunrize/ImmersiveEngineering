@@ -2,7 +2,7 @@
   "type": "immersiveengineering:fermenter",
   "fluid": {
     "fluid": "immersiveengineering:ethanol",
-    "amount": 80
+    "amount": 20
   },
   "input": {
     "item": "minecraft:melon_slice"

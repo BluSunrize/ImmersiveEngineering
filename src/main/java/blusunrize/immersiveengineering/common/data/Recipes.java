@@ -807,7 +807,7 @@ public class Recipes extends RecipeProvider
 				.addInput(Items.SUGAR_CANE)
 				.setEnergy(6400)
 				.build(out, toRL("fermenter/sugar_cane"));
-		FermenterRecipeBuilder.builder(IEContent.fluidEthanol, 80)
+		FermenterRecipeBuilder.builder(IEContent.fluidEthanol, 20)
 				.addInput(Items.MELON_SLICE)
 				.setEnergy(6400)
 				.build(out, toRL("fermenter/melon_slice"));
