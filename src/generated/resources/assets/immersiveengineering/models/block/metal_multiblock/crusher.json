@@ -1,7 +1,7 @@
 {
   "parent": "block/block",
   "textures": {
-    "particle": "immersiveengineering:block/multiblocks/crusher"
+    "particle": "immersiveengineering:block/multiblocks/multiblock_base"
   },
   "loader": "immersiveengineering:basic_split",
   "base_loader": "forge:obj",
