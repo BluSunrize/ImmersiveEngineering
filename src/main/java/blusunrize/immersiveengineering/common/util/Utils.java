@@ -79,6 +79,7 @@ import net.minecraft.world.storage.loot.functions.ILootFunction;
 import net.minecraft.world.storage.loot.functions.LootFunctionManager;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.fluids.FluidActionResult;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -667,7 +668,7 @@ public class Utils
 		{
 			if(action.execute())
 				((IBucketPickupHandler)b.getBlock()).pickupFluid(world, pos, b);
-			return new FluidStack(f.getFluid(), 1000);
+			return new FluidStack(f.getFluid(), FluidAttributes.BUCKET_VOLUME);
 		}
 		return FluidStack.EMPTY;
 	}
@@ -681,7 +682,7 @@ public class Utils
 	public static boolean placeFluidBlock(World worldIn, BlockPos posIn, FluidStack fluidStack)
 	{
 		Fluid fluid = fluidStack.getFluid();
-		if(!(fluid instanceof FlowingFluid)||fluidStack.getAmount() < 1000)
+		if(!(fluid instanceof FlowingFluid)||fluidStack.getAmount() < FluidAttributes.BUCKET_VOLUME)
 			return false;
 		else
 		{
@@ -710,7 +711,7 @@ public class Utils
 
 					worldIn.setBlockState(posIn, fluid.getDefaultState().getBlockState(), 11);
 				}
-				fluidStack.shrink(1000);
+				fluidStack.shrink(FluidAttributes.BUCKET_VOLUME);
 				return true;
 			}
 			else

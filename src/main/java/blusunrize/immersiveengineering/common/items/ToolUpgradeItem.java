@@ -21,6 +21,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.FluidAttributes;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -83,7 +84,7 @@ public class ToolUpgradeItem extends IEBaseItem implements IUpgrade
 			ItemNBTHelper.modifyFloat(modifications, "speed", upgrade.getCount()*2f);
 			ItemNBTHelper.modifyInt(modifications, "damage", upgrade.getCount());
 		}),
-		DRILL_CAPACITY(ImmutableSet.of("DRILL", "CHEMTHROWER", "BUZZSAW"), 1, (target, upgrade) -> !((IUpgradeableTool)target.getItem()).getUpgrades(target).contains("multitank"), (upgrade, modifications) -> ItemNBTHelper.modifyInt(modifications, "capacity", 2000)),
+		DRILL_CAPACITY(ImmutableSet.of("DRILL", "CHEMTHROWER", "BUZZSAW"), 1, (target, upgrade) -> !((IUpgradeableTool)target.getItem()).getUpgrades(target).contains("multitank"), (upgrade, modifications) -> ItemNBTHelper.modifyInt(modifications, "capacity", 2*FluidAttributes.BUCKET_VOLUME)),
 		REVOLVER_BAYONET(ImmutableSet.of("REVOLVER"), (upgrade, modifications) -> ItemNBTHelper.modifyFloat(modifications, "melee", 6f)),
 		REVOLVER_MAGAZINE(ImmutableSet.of("REVOLVER"), 1, (target, upgrade) -> !((IUpgradeableTool)target.getItem()).getUpgrades(target).contains("bullets"), (upgrade, modifications) -> ItemNBTHelper.modifyInt(modifications, "bullets", 6)),
 		REVOLVER_ELECTRO(ImmutableSet.of("REVOLVER"), (upgrade, modifications) -> modifications.putBoolean("electro", true)),

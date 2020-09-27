@@ -48,6 +48,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -76,7 +77,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 		}
 	}
 
-	public FluidTank tank = new FluidTank(4000);
+	public FluidTank tank = new FluidTank(4*FluidAttributes.BUCKET_VOLUME);
 	public FluxStorage energyStorage = new FluxStorage(8000);
 	public boolean placeCobble = true;
 
@@ -137,7 +138,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 					else if(world.getGameTime()%20==((getPos().getX()^getPos().getZ())&19)
 							&&world.getFluidState(getPos().offset(f)).getFluid().isIn(FluidTags.WATER)
 							&&IEConfig.MACHINES.pump_infiniteWater.get()
-							&&tank.fill(new FluidStack(Fluids.WATER, 1000), FluidAction.SIMULATE)==1000
+							&&tank.fill(new FluidStack(Fluids.WATER, FluidAttributes.BUCKET_VOLUME), FluidAction.SIMULATE)==FluidAttributes.BUCKET_VOLUME
 							&&this.energyStorage.extractEnergy(consumption, true) >= consumption)
 					{
 						int connectedSources = 0;
@@ -150,7 +151,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 						if(connectedSources > 1)
 						{
 							this.energyStorage.extractEnergy(consumption, false);
-							this.tank.fill(new FluidStack(Fluids.WATER, 1000), FluidAction.EXECUTE);
+							this.tank.fill(new FluidStack(Fluids.WATER, FluidAttributes.BUCKET_VOLUME), FluidAction.EXECUTE);
 						}
 					}
 				}

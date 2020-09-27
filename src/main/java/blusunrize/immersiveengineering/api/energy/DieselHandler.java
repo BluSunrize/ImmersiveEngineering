@@ -27,7 +27,7 @@ public class DieselHandler
 
 	/**
 	 * @param fuel the fluidtag to be used as fuel
-	 * @param time the total burn time gained from 1000 mB
+	 * @param time the total burn time gained from one bucket
 	 */
 	public static void registerFuel(Tag<Fluid> fuel, int time)
 	{

@@ -25,6 +25,7 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.FluidAttributes;
 
 import java.util.Arrays;
 
@@ -61,7 +62,7 @@ public class BottlingMachineRecipeCategory extends IERecipeCategory<BottlingMach
 		guiItemStacks.setBackground(1, JEIHelper.slotDrawable);
 
 		IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
-		guiFluidStacks.init(0, true, 75, 0, 16, 47, 4000, false, tankOverlay);
+		guiFluidStacks.init(0, true, 75, 0, 16, 47, 4*FluidAttributes.BUCKET_VOLUME, false, tankOverlay);
 		guiFluidStacks.set(0, recipe.fluidInput.getMatchingFluidStacks());
 		guiFluidStacks.addTooltipCallback(JEIHelper.fluidTooltipCallback);
 	}

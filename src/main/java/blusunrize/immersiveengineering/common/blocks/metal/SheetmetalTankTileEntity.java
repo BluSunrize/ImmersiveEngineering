@@ -32,6 +32,7 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidTank;
@@ -44,7 +45,7 @@ import java.util.Set;
 public class SheetmetalTankTileEntity extends MultiblockPartTileEntity<SheetmetalTankTileEntity>
 		implements IBlockOverlayText, IPlayerInteraction, IComparatorOverride, IBlockBounds
 {
-	public FluidTank tank = new FluidTank(512000);
+	public FluidTank tank = new FluidTank(512*FluidAttributes.BUCKET_VOLUME);
 	private int[] oldComps = new int[4];
 	private int masterCompOld;
 

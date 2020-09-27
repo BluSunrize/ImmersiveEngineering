@@ -24,6 +24,7 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.FluidAttributes;
 
 import java.util.Arrays;
 
@@ -57,10 +58,10 @@ public class MixerRecipeCategory extends IERecipeCategory<MixerRecipe>
 	public void setRecipe(IRecipeLayout recipeLayout, MixerRecipe recipe, IIngredients ingredients)
 	{
 		IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
-		guiFluidStacks.init(0, true, 48, 3, 58, 47, 4000, false, null);
+		guiFluidStacks.init(0, true, 48, 3, 58, 47, 4*FluidAttributes.BUCKET_VOLUME, false, null);
 		guiFluidStacks.set(0, recipe.fluidInput.getMatchingFluidStacks());
 
-		guiFluidStacks.init(1, false, 138, 2, 16, 47, 4000, false, tankOverlay);
+		guiFluidStacks.init(1, false, 138, 2, 16, 47, 4*FluidAttributes.BUCKET_VOLUME, false, tankOverlay);
 		guiFluidStacks.set(1, recipe.fluidOutput);
 		guiFluidStacks.addTooltipCallback(JEIHelper.fluidTooltipCallback);
 

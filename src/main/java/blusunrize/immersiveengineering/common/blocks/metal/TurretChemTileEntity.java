@@ -21,6 +21,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -32,7 +33,7 @@ import javax.annotation.Nullable;
 
 public class TurretChemTileEntity extends TurretTileEntity
 {
-	public FluidTank tank = new FluidTank(4000);
+	public FluidTank tank = new FluidTank(4*FluidAttributes.BUCKET_VOLUME);
 	public boolean ignite = false;
 
 	public TurretChemTileEntity()

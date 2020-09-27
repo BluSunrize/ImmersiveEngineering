@@ -34,6 +34,7 @@ import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
@@ -47,7 +48,7 @@ import java.util.Set;
 public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGeneratorTileEntity>
 		implements IBlockBounds, ISoundTile
 {
-	public FluidTank[] tanks = new FluidTank[]{new FluidTank(24000)};
+	public FluidTank[] tanks = new FluidTank[]{new FluidTank(24*FluidAttributes.BUCKET_VOLUME)};
 	public boolean active = false;
 
 	public float animation_fanRotationStep = 0;
@@ -131,7 +132,7 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 				int burnTime = DieselHandler.getBurnTime(tanks[0].getFluid().getFluid());
 				if(burnTime > 0)
 				{
-					int fluidConsumed = 1000/burnTime;
+					int fluidConsumed = FluidAttributes.BUCKET_VOLUME/burnTime;
 					int output = IEConfig.MACHINES.dieselGen_output.get();
 					int connected = 0;
 					TileEntity[] receivers = new TileEntity[3];

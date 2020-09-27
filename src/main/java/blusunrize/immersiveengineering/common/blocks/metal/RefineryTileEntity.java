@@ -30,6 +30,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidTank;
@@ -46,7 +47,11 @@ import java.util.Set;
 public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTileEntity, RefineryRecipe> implements
 		ISelectionBounds, ICollisionBounds, IInteractionObjectIE, IBlockBounds
 {
-	public FluidTank[] tanks = new FluidTank[]{new FluidTank(24000), new FluidTank(24000), new FluidTank(24000)};
+	public FluidTank[] tanks = new FluidTank[]{
+			new FluidTank(24*FluidAttributes.BUCKET_VOLUME),
+			new FluidTank(24*FluidAttributes.BUCKET_VOLUME),
+			new FluidTank(24*FluidAttributes.BUCKET_VOLUME)
+	};
 	public NonNullList<ItemStack> inventory = NonNullList.withSize(6, ItemStack.EMPTY);
 
 	public RefineryTileEntity()

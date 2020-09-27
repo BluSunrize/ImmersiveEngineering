@@ -34,6 +34,7 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
@@ -53,7 +54,7 @@ public class CokeOvenTileEntity extends MultiblockPartTileEntity<CokeOvenTileEnt
 	public static final int EMPTY_CONTAINER_SLOT = 2;
 	public static final int FULL_CONTAINER_SLOT = 3;
 
-	public FluidTank tank = new FluidTank(12000);
+	public FluidTank tank = new FluidTank(12*FluidAttributes.BUCKET_VOLUME);
 	private NonNullList<ItemStack> inventory = NonNullList.withSize(4, ItemStack.EMPTY);
 	public int process = 0;
 	public int processMax = 0;

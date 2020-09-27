@@ -74,6 +74,7 @@ import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -96,6 +97,8 @@ import java.util.function.Supplier;
 
 public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem, IOBJModelCallback<ItemStack>, ITool
 {
+	private static final int CAPACITY = 2*FluidAttributes.BUCKET_VOLUME;
+
 	public static Material[] validMaterials = {Material.ANVIL, Material.CLAY, Material.GLASS, Material.ORGANIC, Material.EARTH,
 			Material.ICE, Material.IRON, Material.PACKED_ICE, Material.PISTON, Material.ROCK, Material.SAND, Material.SNOW};
 
@@ -139,7 +142,7 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 		if(!stack.isEmpty())
 			return new IEItemStackHandler(stack)
 			{
-				LazyOptional<IEItemFluidHandler> fluids = CapabilityUtils.constantOptional(new IEItemFluidHandler(stack, 2000));
+				LazyOptional<IEItemFluidHandler> fluids = CapabilityUtils.constantOptional(new IEItemFluidHandler(stack, CAPACITY));
 				LazyOptional<ShaderWrapper_Item> shaders = CapabilityUtils.constantOptional(new ShaderWrapper_Item(new ResourceLocation(ImmersiveEngineering.MODID, "drill"), stack));
 
 				@Nonnull
@@ -211,9 +214,9 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 	{
 		super.recalculateUpgrades(stack, w, player);
 		FluidStack fs = getFluid(stack);
-		if(fs!=null&&fs.getAmount() > this.getCapacity(stack, 2000))
+		if(fs!=null&&fs.getAmount() > this.getCapacity(stack, CAPACITY))
 		{
-			fs.setAmount(this.getCapacity(stack, 2000));
+			fs.setAmount(this.getCapacity(stack, CAPACITY));
 			ItemNBTHelper.setFluidStack(stack, "Fluid", fs);
 		}
 	}
@@ -222,9 +225,9 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 	public void finishUpgradeRecalculation(ItemStack stack)
 	{
 		FluidStack fs = getFluid(stack);
-		if(fs!=null&&fs.getAmount() > getCapacity(stack, 2000))
+		if(fs!=null&&fs.getAmount() > getCapacity(stack, CAPACITY))
 		{
-			fs.setAmount(getCapacity(stack, 2000));
+			fs.setAmount(getCapacity(stack, CAPACITY));
 			ItemNBTHelper.setFluidStack(stack, "Fluid", fs);
 		}
 	}
@@ -258,7 +261,7 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 	@Override
 	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
 	{
-		list.add(IEItemFluidHandler.fluidItemInfoFlavor(getFluid(stack), getCapacity(stack, 2000)));
+		list.add(IEItemFluidHandler.fluidItemInfoFlavor(getFluid(stack), getCapacity(stack, CAPACITY)));
 		if(getHead(stack).isEmpty())
 			list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"drill.noHead").setStyle(new Style().setColor(TextFormatting.GRAY)));
 		else

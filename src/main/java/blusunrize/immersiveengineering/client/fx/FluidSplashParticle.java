@@ -33,6 +33,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -59,7 +60,7 @@ public class FluidSplashParticle extends SpriteTexturedParticle
 		this.particleGravity = 0.06F;
 		this.maxAge = (int)(8.0D/(Math.random()*0.8D+0.2D));
 		this.particleScale = .375f;
-		this.setFluidTexture(new FluidStack(fluid, 1000));
+		this.setFluidTexture(new FluidStack(fluid, FluidAttributes.BUCKET_VOLUME));
 	}
 
 	@Override
