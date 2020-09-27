@@ -1,0 +1,14 @@
+{
+  "type": "immersiveengineering:arc_furnace",
+  "results": [
+    {
+      "tag": "forge:ingots/constantan"
+    }
+  ],
+  "additives": [],
+  "input": {
+    "tag": "forge:dusts/constantan"
+  },
+  "time": 100,
+  "energy": 51200
+}

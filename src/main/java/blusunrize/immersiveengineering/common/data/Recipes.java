@@ -500,14 +500,6 @@ public class Recipes extends RecipeProvider
 						.setEnergy(6000)
 						.build(out, toRL("crusher/ore_"+metal.getName()));
 
-				// Crush ingot
-				crusherBuilder = CrusherRecipeBuilder.builder(metal.getDust(), 1);
-				if(!metal.isNative())
-					crusherBuilder.addCondition(getTagCondition(metal.getDust())).addCondition(getTagCondition(metal.getIngot()));
-				crusherBuilder.addInput(metal.getIngot())
-						.setEnergy(3000)
-						.build(out, toRL("crusher/ingot_"+metal.getName()));
-
 				// Arcfurnace ore
 				arcBuilder = ArcFurnaceRecipeBuilder.builder(metal.getIngot(), 2);
 				if(!metal.isNative())
@@ -517,16 +509,24 @@ public class Recipes extends RecipeProvider
 						.setTime(200)
 						.setEnergy(102400)
 						.build(out, toRL("arcfurnace/ore_"+metal.getName()));
-
-				// Arcfurnace dust
-				arcBuilder = ArcFurnaceRecipeBuilder.builder(metal.getIngot(), 1);
-				if(!metal.isNative())
-					arcBuilder.addCondition(getTagCondition(metal.getIngot())).addCondition(getTagCondition(metal.getDust()));
-				arcBuilder.addIngredient("input", metal.getDust())
-						.setTime(100)
-						.setEnergy(51200)
-						.build(out, toRL("arcfurnace/dust_"+metal.getName()));
 			}
+
+			// Crush ingot
+			crusherBuilder = CrusherRecipeBuilder.builder(metal.getDust(), 1);
+			if(!metal.isNative())
+				crusherBuilder.addCondition(getTagCondition(metal.getDust())).addCondition(getTagCondition(metal.getIngot()));
+			crusherBuilder.addInput(metal.getIngot())
+					.setEnergy(3000)
+					.build(out, toRL("crusher/ingot_"+metal.getName()));
+
+			// Arcfurnace dust
+			arcBuilder = ArcFurnaceRecipeBuilder.builder(metal.getIngot(), 1);
+			if(!metal.isNative())
+				arcBuilder.addCondition(getTagCondition(metal.getIngot())).addCondition(getTagCondition(metal.getDust()));
+			arcBuilder.addIngredient("input", metal.getDust())
+					.setTime(100)
+					.setEnergy(51200)
+					.build(out, toRL("arcfurnace/dust_"+metal.getName()));
 
 			// Plate
 			Tag<Item> plate = new ItemTags.Wrapper(IETags.getPlate(metal.getName()));

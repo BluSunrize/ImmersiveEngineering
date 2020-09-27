@@ -1,0 +1,30 @@
+{
+  "type": "immersiveengineering:arc_furnace",
+  "results": [
+    {
+      "tag": "forge:ingots/brass"
+    }
+  ],
+  "additives": [],
+  "conditions": [
+    {
+      "value": {
+        "tag": "forge:ingots/brass",
+        "type": "forge:tag_empty"
+      },
+      "type": "forge:not"
+    },
+    {
+      "value": {
+        "tag": "forge:dusts/brass",
+        "type": "forge:tag_empty"
+      },
+      "type": "forge:not"
+    }
+  ],
+  "input": {
+    "tag": "forge:dusts/brass"
+  },
+  "time": 100,
+  "energy": 51200
+}
