@@ -48,7 +48,7 @@ public class BottlingMachineMultiblock extends IETemplateMultiblock
 		if(renderStack==null)
 			renderStack = new ItemStack(Multiblocks.bottlingMachine);
 		transform.push();
-		transform.translate(1.5, 1.5, 1.5);
+		transform.translate(1.375, 1, .875);
 		transform.rotate(new Quaternion(0, 45, 0, true));
 		transform.rotate(new Quaternion(-20, 0, 0, true));
 		transform.scale(4, 4, 4);

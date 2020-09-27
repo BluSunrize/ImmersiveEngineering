@@ -46,7 +46,7 @@ public class RefineryMultiblock extends IETemplateMultiblock
 	{
 		if(renderStack==null)
 			renderStack = new ItemStack(Multiblocks.refinery);
-		transform.translate(1, 1.5, 3);
+		transform.translate(3, 1.5, 2);
 		transform.rotate(new Quaternion(0, 45, 0, true));
 		transform.rotate(new Quaternion(-20, 0, 0, true));
 		transform.scale(5.5F, 5.5F, 5.5F);

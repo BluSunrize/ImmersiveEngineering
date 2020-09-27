@@ -68,7 +68,7 @@ public class ExcavatorMultiblock extends IETemplateMultiblock
 	{
 		if(renderStack==null)
 			renderStack = new ItemStack(Multiblocks.excavator);
-		transform.translate(2, 1.5, 2.875);
+		transform.translate(3, 1.5, 4);
 		transform.rotate(new Quaternion(0, 225, 0, true));
 		transform.rotate(new Quaternion(-20, 0, 0, true));
 		transform.scale(5.25F, 5.25F, 5.25F);
