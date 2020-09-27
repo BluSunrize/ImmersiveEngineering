@@ -94,7 +94,7 @@ public class BucketWheelRenderer extends TileEntityRenderer<BucketWheelTileEntit
 
 		matrixStack.translate(.5, .5, .5);
 		matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), 90, true)); //to mirror different plane. compensate on dir rotate
-		bufferIn = TileRenderUtils.mirror(tile, matrixStack, bufferIn);
+		TileRenderUtils.mirror(tile, matrixStack);
 		float dir = tile.getFacing()==Direction.SOUTH?0: tile.getFacing()==Direction.NORTH?180: tile.getFacing()==Direction.EAST?90: -90;
 		matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), dir, true));
 		float rot = tile.rotation-45*offset+(float)(tile.active?IEConfig.MACHINES.excavator_speed.get()*partialTicks: 0);
@@ -113,7 +113,7 @@ public class BucketWheelRenderer extends TileEntityRenderer<BucketWheelTileEntit
 					return ((IESmartObjModel)model).getQuads(state, objState, texMap, true, EmptyModelData.INSTANCE);
 				else
 					return model.getQuads(state, null, Utils.RAND, EmptyModelData.INSTANCE);
-			})).render(RenderType.getSolid(), combinedLightIn, combinedOverlayIn, bufferIn, matrixStack);
+			})).render(RenderType.getSolid(), combinedLightIn, combinedOverlayIn, bufferIn, matrixStack, tile.getIsMirrored());
 		} catch(ExecutionException ex)
 		{
 			throw new RuntimeException(ex);
