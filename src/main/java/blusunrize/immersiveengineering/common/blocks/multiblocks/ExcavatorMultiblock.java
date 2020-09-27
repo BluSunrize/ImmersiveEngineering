@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
+import blusunrize.immersiveengineering.common.blocks.metal.BucketWheelTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.ExcavatorTileEntity;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -45,8 +46,12 @@ public class ExcavatorMultiblock extends IETemplateMultiblock
 			TileEntity clickedTE = world.getTileEntity(pos);
 			if(clickedTE instanceof ExcavatorTileEntity)
 			{
-				BlockPos wheelCenter = ((ExcavatorTileEntity)clickedTE).getWheelCenterPos();
+				ExcavatorTileEntity excavator = (ExcavatorTileEntity)clickedTE;
+				BlockPos wheelCenter = excavator.getWheelCenterPos();
 				IEMultiblocks.BUCKET_WHEEL.createStructure(world, wheelCenter, side.rotateYCCW(), player);
+				TileEntity wheel = world.getTileEntity(wheelCenter);
+				if (wheel != null && wheel instanceof BucketWheelTileEntity)
+					((BucketWheelTileEntity)wheel).adjustStructureFacingAndMirrored(side.rotateYCCW(), excavator.getIsMirrored());
 			}
 		}
 		return excavatorFormed;
