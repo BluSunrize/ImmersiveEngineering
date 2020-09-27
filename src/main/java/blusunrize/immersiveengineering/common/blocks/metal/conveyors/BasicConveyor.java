@@ -247,7 +247,7 @@ public class BasicConveyor implements IConveyorBelt
 	{
 		VoxelShape baseShape = IConveyorBelt.super.getCollisionShape();
 		if(allowCovers())
-			return SHAPES.get(new ShapeKey(this, false, baseShape));
+			return SHAPES.get(new ShapeKey(this, true, baseShape));
 		return baseShape;
 	}
 
