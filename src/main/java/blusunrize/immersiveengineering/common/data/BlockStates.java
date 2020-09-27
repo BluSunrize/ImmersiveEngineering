@@ -525,7 +525,7 @@ public class BlockStates extends BlockStateProvider
 			simpleBlock(chute.getValue(), model);
 		}
 
-		simpleBlockItem(Misc.fakeLight, EMPTY_MODEL);
+		simpleBlock(Misc.fakeLight, EMPTY_MODEL);
 
 		createMultistateSingleModel(WoodenDevices.windmill, EMPTY_MODEL);
 		createMultistateSingleModel(WoodenDevices.watermill, EMPTY_MODEL);
@@ -729,7 +729,7 @@ public class BlockStates extends BlockStateProvider
 							.loader(ConveyorLoader.LOCATION)
 			));
 		createHemp();
-		simpleBlockItem(Misc.pottedHemp, models().withExistingParent("potted_hemp", mcLoc("block/flower_pot_cross"))
+		simpleBlock(Misc.pottedHemp, models().withExistingParent("potted_hemp", mcLoc("block/flower_pot_cross"))
 				.texture("plant", new ResourceLocation(ImmersiveEngineering.MODID, "block/hemp/potted")));
 
 		for(IEFluid f : IEFluid.IE_FLUIDS)
