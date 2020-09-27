@@ -429,8 +429,6 @@ public class ChuteTileEntity extends IEBaseTileEntity implements IStateBasedDire
 				entity.setMotion(Vec3d.ZERO);
 				chute.getWorldNonnull().addEntity(entity);
 				entity.setPickupDelay(10);
-//				if(chute.conveyorBeltSubtype!=null)
-//					chute.conveyorBeltSubtype.onItemDeployed(entity);
 			}
 			return ItemStack.EMPTY;
 		}
