@@ -7,11 +7,14 @@
     - Increase sulfur output from coal, lapis and quartz
     - Increase gunpowder output from sulfur & saltpeter recipe
 - Allowed multiblock structures to be changed by data packs (Malte)
+- Changed the renders for waterwheels, windmills and bucket wheel to use VBOs (Malte)
 - Fixed GUI model for the alloy smelter (BluSunrize)
 - Fixed crash with mineral veins being saved (BluSunrize)
 - Fixed infinite crafting of firework rockets in the assembler (Malte)
 - Fixed lighting in the assembler GUI (Malte)
 - Fixed connectors being pushed by pistons if quark is installed (Malte)
+- Fixed connectors accepting too much energy sometimes (Malte)
+- Fixed recipes for steel, electrum and constantan dust (Malte)
 
 ##### Version 1.15.2-4.0.1-119
 - Added Enderpeals as valid Railgun projectiles! (BluSunrize)
