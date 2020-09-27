@@ -41,10 +41,14 @@ import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
@@ -172,7 +176,7 @@ public class ChuteTileEntity extends IEBaseTileEntity implements IStateBasedDire
 				TileEntity inventoryTile;
 				BlockPos invPos = diagonal?getPos().offset(facing): getPos().down();
 				inventoryTile = world.getTileEntity(invPos);
-				if(!world.isRemote&&inventoryTile!=null&&!(inventoryTile instanceof IConveyorTile))
+				if(!world.isRemote&&inventoryTile!=null&&!(inventoryTile instanceof IConveyorTile||inventoryTile instanceof ChuteTileEntity))
 				{
 					LazyOptional<IItemHandler> cap = ApiUtils.findItemHandlerAtPos(world, invPos, getFacing().getOpposite(), true);
 					cap.ifPresent(itemHandler -> {
@@ -384,4 +388,74 @@ public class ChuteTileEntity extends IEBaseTileEntity implements IStateBasedDire
 		return false;
 	}
 
+	private LazyOptional<IItemHandler> insertionCap = registerCap(() -> new ChuteTileEntity.ChuteInventoryHandler(this));
+
+	@Nonnull
+	@Override
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side)
+	{
+		if(cap==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY&&side==Direction.UP)
+			return insertionCap.cast();
+		return super.getCapability(cap, side);
+	}
+
+	public static class ChuteInventoryHandler implements IItemHandlerModifiable
+	{
+		ChuteTileEntity chute;
+
+		public ChuteInventoryHandler(ChuteTileEntity chute)
+		{
+			this.chute = chute;
+		}
+
+		@Override
+		public int getSlots()
+		{
+			return 1;
+		}
+
+		@Override
+		public ItemStack getStackInSlot(int slot)
+		{
+			return ItemStack.EMPTY;
+		}
+
+		@Override
+		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
+		{
+			if(!simulate)
+			{
+				ItemEntity entity = new ItemEntity(chute.getWorldNonnull(), chute.getPos().getX()+.5, chute.getPos().getY()+.5, chute.getPos().getZ()+.5, stack.copy());
+				entity.setMotion(Vec3d.ZERO);
+				chute.getWorldNonnull().addEntity(entity);
+				entity.setPickupDelay(10);
+//				if(chute.conveyorBeltSubtype!=null)
+//					chute.conveyorBeltSubtype.onItemDeployed(entity);
+			}
+			return ItemStack.EMPTY;
+		}
+
+		@Override
+		public ItemStack extractItem(int slot, int amount, boolean simulate)
+		{
+			return ItemStack.EMPTY;
+		}
+
+		@Override
+		public int getSlotLimit(int slot)
+		{
+			return 64;
+		}
+
+		@Override
+		public boolean isItemValid(int slot, @Nonnull ItemStack stack)
+		{
+			return true;
+		}
+
+		@Override
+		public void setStackInSlot(int slot, ItemStack stack)
+		{
+		}
+	}
 }
