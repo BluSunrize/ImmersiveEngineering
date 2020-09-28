@@ -532,7 +532,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 	{
 		if(!sideConfig.getBoolean(connection))
 			return 0;
-		if((connections&(1<<connection.ordinal()))==0)
+		if((connections&(1<<connection.getIndex()))==0)
 			return 0;
 
 		if(connections!=3&&connections!=12&&connections!=48)
@@ -560,6 +560,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 			connected.markDirty();
 			world.addBlockEvent(getPos().offset(side), getBlockState().getBlock(), 0, 0);
 		}
+		updateConnectionByte(side);
 		world.addBlockEvent(getPos(), getBlockState().getBlock(), 0, 0);
 	}
 
@@ -601,7 +602,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 		double[] baseAABB = key.hasCover?new double[]{.002, .998, .002, .998, .002, .998}: new double[]{.25, .75, .25, .75, .25, .75};
 		for(Direction d : Direction.VALUES)
 		{
-			int i = d.ordinal();
+			int i = d.getIndex();
 			if((availableConnections&0x1)==1)
 			{
 				if((activeConnections&1)==1)
