@@ -26,12 +26,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.data.IModelData;
-import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.*;
-import java.util.function.Consumer;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity implements IImmersiveConnectable
 {
@@ -169,7 +169,7 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 	public void remove()
 	{
 		super.remove();
-		globalNet.removeConnector(pos);
+		globalNet.removeConnector(this);
 	}
 	@Override
 	public Collection<ConnectionPoint> getConnectionPoints()

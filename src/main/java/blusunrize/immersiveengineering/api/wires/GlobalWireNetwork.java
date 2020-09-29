@@ -19,6 +19,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multiset;
+import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArraySet;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.item.ItemEntity;
@@ -56,6 +57,8 @@ public class GlobalWireNetwork implements IWorldTickable
 	private final WireCollisionData collisionData;
 	private final IICProxyProvider proxyProvider;
 	private final IWireSyncManager syncManager;
+
+	private List<Pair<IImmersiveConnectable, World>> queuedLoads = new ArrayList<>();
 
 	@Nonnull
 	public static GlobalWireNetwork getNetwork(World w)
@@ -95,6 +98,7 @@ public class GlobalWireNetwork implements IWorldTickable
 
 	public void addConnection(Connection conn)
 	{
+		processQueuedLoads();
 		ConnectionPoint posA = conn.getEndA();
 		ConnectionPoint posB = conn.getEndB();
 		LocalWireNetwork netA = getLocalNet(posA);
@@ -125,6 +129,7 @@ public class GlobalWireNetwork implements IWorldTickable
 
 	public void removeAllConnectionsAt(ConnectionPoint pos, Consumer<Connection> handler)
 	{
+		processQueuedLoads();
 		LocalWireNetwork net = getLocalNet(pos);
 		List<Connection> conns = new ArrayList<>(net.getConnections(pos));
 		//TODO batch removal method
@@ -138,6 +143,7 @@ public class GlobalWireNetwork implements IWorldTickable
 
 	public void removeConnection(Connection c)
 	{
+		processQueuedLoads();
 		collisionData.removeConnection(c);
 		LocalWireNetwork oldNet = getNullableLocalNet(c.getEndA());
 		if(oldNet==null)
@@ -192,6 +198,7 @@ public class GlobalWireNetwork implements IWorldTickable
 			for(ConnectionPoint p : localNet.getConnectionPoints())
 				putLocalNet(p, localNet);
 		}
+		queuedLoads.clear();
 	}
 
 	public CompoundNBT writeToNBT()
@@ -213,6 +220,7 @@ public class GlobalWireNetwork implements IWorldTickable
 
 	public LocalWireNetwork getLocalNet(ConnectionPoint pos)
 	{
+		processQueuedLoads();
 		LocalWireNetwork ret = localNets.computeIfAbsent(pos, p -> {
 			LocalWireNetwork newNet = new LocalWireNetwork(this);
 			IImmersiveConnectable proxy = proxyProvider.create(
@@ -234,6 +242,7 @@ public class GlobalWireNetwork implements IWorldTickable
 
 	public LocalWireNetwork getNullableLocalNet(ConnectionPoint pos)
 	{
+		processQueuedLoads();
 		LocalWireNetwork ret = localNets.get(pos);
 		if(ret!=null)
 			Preconditions.checkState(ret.isValid(pos), "%s is not valid for position %s", ret, pos);
@@ -242,6 +251,8 @@ public class GlobalWireNetwork implements IWorldTickable
 
 	public void removeConnector(IImmersiveConnectable iic)
 	{
+		processQueuedLoads();
+		WireLogger.logger.info("Removing connector {} at {}", iic, iic.getPosition());
 		Set<LocalWireNetwork> netsToRemoveFrom = new ObjectArraySet<>();
 		final BlockPos iicPos = iic.getPosition();
 		for(ConnectionPoint c : iic.getConnectionPoints())
@@ -284,13 +295,35 @@ public class GlobalWireNetwork implements IWorldTickable
 
 	public void onConnectorLoad(IImmersiveConnectable iic, World world)
 	{
-		if(validating)
-			WireLogger.logger.error("Adding a connector during validation!");
-		onConnectorLoad(iic, world.isRemote);
-		ApiUtils.addFutureServerTask(world, () -> initializeConnectionsOn(iic, world), true);
-		validateNextTick = true;
-		if(world.isRemote)
-			updateModelData(iic, world);
+		queuedLoads.add(Pair.of(iic, world));
+	}
+
+	private boolean processingLoadQueue = false;
+
+	private void processQueuedLoads()
+	{
+		if(queuedLoads.isEmpty()||processingLoadQueue)
+			return;
+		processingLoadQueue = true;
+		List<Pair<IImmersiveConnectable, World>> failedLoads = new ArrayList<>();
+		for(Pair<IImmersiveConnectable, World> load : queuedLoads)
+			if(isChunkSafe(load.getSecond(), load.getFirst().getPosition()))
+			{
+				IImmersiveConnectable iic = load.getFirst();
+				World world = load.getSecond();
+				WireLogger.logger.info("Loading connector {} at {}", iic, iic.getPosition());
+				if(validating)
+					WireLogger.logger.error("Adding a connector during validation!");
+				onConnectorLoad(iic, world.isRemote);
+				ApiUtils.addFutureServerTask(world, () -> initializeConnectionsOn(iic, world), true);
+				validateNextTick = true;
+				if(world.isRemote)
+					updateModelData(iic, world);
+			}
+			else
+				failedLoads.add(load);
+		queuedLoads = failedLoads;
+		processingLoadQueue = false;
 	}
 
 	private void updateModelData(IImmersiveConnectable iic, World world)
@@ -339,6 +372,8 @@ public class GlobalWireNetwork implements IWorldTickable
 
 	public void onConnectorUnload(BlockPos pos, IImmersiveConnectable iic)
 	{
+		processQueuedLoads();
+		WireLogger.logger.info("Unloading connector {} at {}", iic, iic.getPosition());
 		Map<LocalWireNetwork, Boolean> handledNets = new HashMap<>();
 		for(ConnectionPoint connectionPoint : iic.getConnectionPoints())
 		{
@@ -366,6 +401,7 @@ public class GlobalWireNetwork implements IWorldTickable
 			validate(world);
 			validateNextTick = false;
 		}
+		processQueuedLoads();
 		Set<LocalWireNetwork> ticked = new HashSet<>();
 		for(LocalWireNetwork net : localNets.values())
 			if(ticked.add(net))
@@ -466,7 +502,7 @@ public class GlobalWireNetwork implements IWorldTickable
 			local.removeCP(cp);
 	}
 
-	public void removeConnector(BlockPos pos)
+	void removeConnector(BlockPos pos)
 	{
 		Collection<ConnectionPoint> cpsAtInvalid = new ArrayList<>();
 		for(ConnectionPoint cp : localNets.keySet())
@@ -478,6 +514,7 @@ public class GlobalWireNetwork implements IWorldTickable
 
 	public void updateCatenaryData(Connection conn, World world)
 	{
+		processQueuedLoads();
 		collisionData.removeConnection(conn);
 		conn.resetCatenaryData();
 		conn.generateCatenaryData(world);
