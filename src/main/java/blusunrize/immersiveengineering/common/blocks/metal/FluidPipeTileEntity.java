@@ -502,7 +502,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 		int i = dir.getIndex();
 		int mask = 1<<i;
 		connections &= ~mask;
-		if(sideConfig.getBoolean(dir)&&neighbors.get(dir).isPresent())
+		if(sideConfig.getBoolean(dir)&&neighbors.get(dir).isPresent()) //TODO: this probably fails at first pass
 		{
 			IFluidHandler handler = neighbors.get(dir).get();
 			if(handler.getTanks() > 0)
@@ -535,7 +535,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 		if((connections&(1<<connection.getIndex()))==0)
 			return 0;
 
-		if(connections!=3&&connections!=12&&connections!=48)
+		if(connections!=(Direction.DOWN.getIndex()+Direction.UP.getIndex())&&connections!=(Direction.NORTH.getIndex()+Direction.SOUTH.getIndex())&&connections!=Direction.WEST.getIndex()+Direction.EAST.getIndex())
 			return 1;
 		TileEntity con = Utils.getExistingTileEntity(world, getPos().offset(connection));
 		if(con instanceof FluidPipeTileEntity)
