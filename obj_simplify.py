@@ -22,6 +22,7 @@ def fix_duplicates(array_in, segments):
     """ Remove duplicates from an array and create a map to reassign values referring to it"""
     array_out = []
     reassign = {}
+    out_segments = []
     prev_start = 0
     for end in segments:
         sub_array_in = array_in[prev_start:end]
@@ -35,8 +36,9 @@ def fix_duplicates(array_in, segments):
                 sub_array_out.append(value)
                 reassign[prev_start + index + 1] = offset + len(sub_array_out)
         array_out += sub_array_out
+        out_segments.append(len(array_out))
         prev_start = end
-    return array_out, reassign
+    return array_out, reassign, out_segments
 
 
 # Read file
@@ -101,9 +103,9 @@ for line in lines:
 finish_object()
 
 # Get reduced lists and reassigning maps
-fixed_verts, reassign_verts = fix_duplicates(vertices, [obj['max_v'] for obj in objects])
-fixed_uvs, reassign_uvs = fix_duplicates(texture_coordinates, [obj['max_vt'] for obj in objects])
-fixed_normals, reassign_normals = fix_duplicates(vertex_normals, [obj['max_vn'] for obj in objects])
+fixed_verts, reassign_verts, vert_segments = fix_duplicates(vertices, [obj['max_v'] for obj in objects])
+fixed_uvs, reassign_uvs, uv_segments = fix_duplicates(texture_coordinates, [obj['max_vt'] for obj in objects])
+fixed_normals, reassign_normals, norm_segments = fix_duplicates(vertex_normals, [obj['max_vn'] for obj in objects])
 
 # Log changes
 print('Removed {v} duplicate vertices, {vt} duplicate texture coords and {vn} duplicate normals'.format(
@@ -113,16 +115,19 @@ print('Removed {v} duplicate vertices, {vt} duplicate texture coords and {vn} du
 ))
 
 offsetV = offsetVt = offsetVn = 0
-for obj in objects:
+for index, obj in enumerate(objects):
     print('Handling object {name}'.format(name=obj['name']))
 
     # Assign partial lists on the object
-    obj['vertices'] = fixed_verts[offsetV:reassign_verts[obj['max_v']]]
-    obj['texture_coordinates'] = fixed_uvs[offsetVt:reassign_uvs[obj['max_vt']]]
-    obj['vertex_normals'] = fixed_normals[offsetVn:reassign_normals[obj['max_vn']]]
-    offsetV = reassign_verts[obj['max_v']]
-    offsetVt = reassign_uvs[obj['max_vt']]
-    offsetVn = reassign_normals[obj['max_vn']]
+    obj['vertices'] = fixed_verts[offsetV:vert_segments[index]]
+    obj['texture_coordinates'] = fixed_uvs[offsetVt:uv_segments[index]]
+    obj['vertex_normals'] = fixed_normals[offsetVn:norm_segments[index]]
+    offsetV = vert_segments[index]
+    offsetVt = uv_segments[index]
+    offsetVn = norm_segments[index]
+    print(' object contains {} verts, {} uvs and {} normals'.format(
+        len(obj['vertices']),len(obj['texture_coordinates']),len(obj['vertex_normals'])
+    ))
 
     # Reassign indices in faces
     for face in obj['faces']:
