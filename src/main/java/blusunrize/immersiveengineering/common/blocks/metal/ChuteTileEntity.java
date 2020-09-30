@@ -45,7 +45,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
@@ -399,7 +398,7 @@ public class ChuteTileEntity extends IEBaseTileEntity implements IStateBasedDire
 		return super.getCapability(cap, side);
 	}
 
-	public static class ChuteInventoryHandler implements IItemHandlerModifiable
+	public static class ChuteInventoryHandler implements IItemHandler
 	{
 		ChuteTileEntity chute;
 
@@ -449,11 +448,6 @@ public class ChuteTileEntity extends IEBaseTileEntity implements IStateBasedDire
 		public boolean isItemValid(int slot, @Nonnull ItemStack stack)
 		{
 			return true;
-		}
-
-		@Override
-		public void setStackInSlot(int slot, ItemStack stack)
-		{
 		}
 	}
 }
