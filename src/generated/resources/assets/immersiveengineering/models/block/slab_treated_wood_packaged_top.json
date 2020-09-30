@@ -1,5 +1,5 @@
 {
-  "parent": "block/slab_top",
+  "parent": "minecraft:block/slab_top",
   "textures": {
     "side": "immersiveengineering:block/wooden_decoration/treated_wood_packaged",
     "bottom": "immersiveengineering:block/wooden_decoration/treated_wood_packaged",

@@ -356,7 +356,7 @@ public class BlockStates extends BlockStateProvider
 				.additional("model", addModelsPrefix(model))
 				.additional("flip-v", true)
 				.texture("particle", particleTexture);
-		JsonArray partsJson = parts.collect(POSITIONS_TO_JSON);
+		JsonArray partsJson = parts.sorted().collect(POSITIONS_TO_JSON);
 		ret.additional(SplitModelLoader.PARTS, partsJson);
 		return ret;
 	}
@@ -883,7 +883,7 @@ public class BlockStates extends BlockStateProvider
 				splitModel.add(e.getKey(), e.getValue());
 		}
 		splitModel.addProperty("loader", SplitModelLoader.LOCATION.toString());
-		splitModel.add(SplitModelLoader.PARTS, parts.stream().collect(POSITIONS_TO_JSON));
+		splitModel.add(SplitModelLoader.PARTS, parts.stream().sorted().collect(POSITIONS_TO_JSON));
 		splitModel.addProperty(SplitModelLoader.DYNAMIC, false);
 		return splitModel;
 	}
