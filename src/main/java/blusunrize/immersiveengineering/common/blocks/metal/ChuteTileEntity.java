@@ -173,10 +173,7 @@ public class ChuteTileEntity extends IEBaseTileEntity implements IStateBasedDire
 				TileEntity inventoryTile;
 				BlockPos invPos = diagonal?getPos().offset(facing): getPos().down();
 				inventoryTile = world.getTileEntity(invPos);
-				if(!world.isRemote&&inventoryTile!=null&&
-						(!(inventoryTile instanceof IConveyorTile)||
-								(((IConveyorTile)inventoryTile).getConveyorSubtype() instanceof BasicConveyor //TODO: change this to IConveyorTile.isCovered() when the API changes
-										&&((BasicConveyor)(((IConveyorTile)inventoryTile).getConveyorSubtype())).isCovered())))
+				if(!world.isRemote&&isValidTargetInventory(inventoryTile))
 				{
 					LazyOptional<IItemHandler> cap = ApiUtils.findItemHandlerAtPos(world, invPos, getFacing().getOpposite(), true);
 					cap.ifPresent(itemHandler -> {
@@ -194,6 +191,22 @@ public class ChuteTileEntity extends IEBaseTileEntity implements IStateBasedDire
 				}
 			}
 		}
+	}
+
+	private boolean isValidTargetInventory(@Nullable TileEntity inventoryTile)
+	{
+		if(inventoryTile!=null)
+		{
+			if(!(inventoryTile instanceof IConveyorTile))
+				return true;
+			else
+			{
+				IConveyorTile conveyorTile = ((IConveyorTile)inventoryTile);
+				if(conveyorTile.getConveyorSubtype() instanceof BasicConveyor) //TODO: change this to IConveyorTile.isCovered() and maybe inline this whole method
+					return ((BasicConveyor)conveyorTile.getConveyorSubtype()).isCovered();
+			}
+		}
+		return false;
 	}
 
 	@Override
