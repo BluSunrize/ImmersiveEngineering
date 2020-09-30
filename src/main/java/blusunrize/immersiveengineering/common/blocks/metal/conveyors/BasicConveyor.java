@@ -113,7 +113,8 @@ public class BasicConveyor implements IConveyorBelt
 		return true;
 	}
 
-	protected boolean allowCovers()
+	@Override
+	public boolean isCovered()
 	{
 		return false;
 	}
@@ -128,7 +129,7 @@ public class BasicConveyor implements IConveyorBelt
 	{
 		collisionTracker.onEntityCollided(entity);
 		IConveyorBelt.super.onEntityCollision(entity);
-		if(allowCovers()&&entity instanceof ItemEntity)
+		if(isCovered()&&entity instanceof ItemEntity)
 			((ItemEntity)entity).setPickupDelay(10);
 	}
 
@@ -142,14 +143,14 @@ public class BasicConveyor implements IConveyorBelt
 	public void onItemDeployed(ItemEntity entity)
 	{
 		IConveyorBelt.super.onItemDeployed(entity);
-		if(allowCovers())
+		if(isCovered())
 			entity.setPickupDelay(10);
 	}
 
 	@Override
 	public boolean playerInteraction(PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ, Direction side)
 	{
-		if(allowCovers())
+		if(isCovered())
 			return handleCoverInteraction(player, hand, heldItem);
 		return false;
 	}
@@ -163,7 +164,7 @@ public class BasicConveyor implements IConveyorBelt
 		nbt.putInt("direction", direction.ordinal());
 		if(dyeColour!=null)
 			nbt.putInt("dyeColour", dyeColour.getId());
-		if(allowCovers()&&cover!=Blocks.AIR)
+		if(isCovered()&&cover!=Blocks.AIR)
 			nbt.putString("cover", ForgeRegistries.BLOCKS.getKey(cover).toString());
 		return nbt;
 	}
@@ -176,7 +177,7 @@ public class BasicConveyor implements IConveyorBelt
 			dyeColour = DyeColor.byId(nbt.getInt("dyeColour"));
 		else
 			dyeColour = null;
-		if(allowCovers())
+		if(isCovered())
 			cover = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(nbt.getString("cover")));
 	}
 
@@ -222,7 +223,7 @@ public class BasicConveyor implements IConveyorBelt
 	public String getModelCacheKey()
 	{
 		String key = IConveyorBelt.super.getModelCacheKey();
-		if(allowCovers()&&cover!=Blocks.AIR)
+		if(isCovered()&&cover!=Blocks.AIR)
 			key += "s"+cover.getRegistryName();
 		return key;
 	}
@@ -231,7 +232,7 @@ public class BasicConveyor implements IConveyorBelt
 	@OnlyIn(Dist.CLIENT)
 	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel)
 	{
-		if(allowCovers())
+		if(isCovered())
 			addCoverToQuads(baseModel);
 		return baseModel;
 	}
@@ -246,7 +247,7 @@ public class BasicConveyor implements IConveyorBelt
 	public VoxelShape getCollisionShape()
 	{
 		VoxelShape baseShape = IConveyorBelt.super.getCollisionShape();
-		if(allowCovers())
+		if(isCovered())
 			return SHAPES.get(new ShapeKey(this, true, baseShape));
 		return baseShape;
 	}
@@ -254,7 +255,7 @@ public class BasicConveyor implements IConveyorBelt
 	@Override
 	public VoxelShape getSelectionShape()
 	{
-		if(allowCovers())
+		if(isCovered())
 			return SHAPES.get(new ShapeKey(this, false, null));
 		return IConveyorBelt.super.getSelectionShape();
 	}

@@ -26,7 +26,7 @@ public class DropCoveredConveyor extends DropConveyor
 	}
 
 	@Override
-	protected boolean allowCovers()
+	public boolean isCovered()
 	{
 		return true;
 	}

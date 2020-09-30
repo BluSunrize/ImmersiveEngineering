@@ -319,6 +319,11 @@ public class ConveyorHandler
 		boolean isActive();
 
 		/**
+		 * @return true if it is a covered conveyor
+		 */
+		boolean isCovered();
+
+		/**
 		 * @return true if the conveyor can be dyed
 		 */
 		boolean canBeDyed();
