@@ -172,7 +172,7 @@ public class ChuteTileEntity extends IEBaseTileEntity implements IStateBasedDire
 				TileEntity inventoryTile;
 				BlockPos invPos = diagonal?getPos().offset(facing): getPos().down();
 				inventoryTile = world.getTileEntity(invPos);
-				if(!world.isRemote&&inventoryTile!=null&&(!(inventoryTile instanceof IConveyorTile) || ((IConveyorTile)inventoryTile).getConveyorSubtype().isCovered()))
+				if(!world.isRemote&&inventoryTile!=null&&(!(inventoryTile instanceof IConveyorTile)||((IConveyorTile)inventoryTile).getConveyorSubtype().isCovered()))
 				{
 					LazyOptional<IItemHandler> cap = ApiUtils.findItemHandlerAtPos(world, invPos, getFacing().getOpposite(), true);
 					cap.ifPresent(itemHandler -> {
