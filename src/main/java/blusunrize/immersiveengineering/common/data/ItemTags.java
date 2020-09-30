@@ -81,6 +81,7 @@ class ItemTags extends ItemTagsProvider
 		func_240522_a_(IETags.steelWire).func_240532_a_(Ingredients.wireSteel);
 		func_240522_a_(IETags.saltpeterDust).func_240532_a_(Ingredients.dustSaltpeter);
 		func_240522_a_(IETags.sulfurDust).func_240532_a_(Ingredients.dustSulfur);
+		func_240522_a_(IETags.sawdust).func_240532_a_(Ingredients.dustWood);
 		func_240522_a_(IETags.metalRods)
 				.func_240531_a_(IETags.aluminumRod)
 				.func_240531_a_(IETags.ironRod)
