@@ -23,42 +23,40 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.WorldTickEvent;
 import net.minecraftforge.event.world.ChunkEvent;
-import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.WeakHashMap;
 
 @EventBusSubscriber(modid = ImmersiveEngineering.MODID)
 public class SafeChunkUtils
 {
 	private static final Map<IWorld, Set<ChunkPos>> unloadingChunks = new WeakHashMap<>();
 
-	//Stolen from Ellpeck and slightly extended
-	public static Chunk getSafeChunk(IWorld w, ChunkPos chunkPos)
+	//Based on a version by Ellpeck, but changed to use canTick and slightly extended
+	public static Chunk getSafeChunk(IWorld w, BlockPos pos)
 	{
 		AbstractChunkProvider provider = w.getChunkProvider();
+		ChunkPos chunkPos = new ChunkPos(pos);
 		if(unloadingChunks.getOrDefault(w, ImmutableSet.of()).contains(chunkPos))
 			return null;
-		else if(provider.isChunkLoaded(chunkPos))
+		else if(provider.canTick(pos))
 			return provider.getChunk(chunkPos.x, chunkPos.z, false);
 		else
 			return null;
 	}
 
-	public static boolean isChunkSafe(IWorld w, ChunkPos pos)
+	public static boolean isChunkSafe(IWorld w, BlockPos pos)
 	{
 		return getSafeChunk(w, pos)!=null;
 	}
 
-	public static boolean isChunkSafe(IWorld w, BlockPos pos)
-	{
-		return isChunkSafe(w, new ChunkPos(pos));
-	}
-
 	public static TileEntity getSafeTE(IWorld w, BlockPos pos)
 	{
-		Chunk c = getSafeChunk(w, new ChunkPos(pos));
+		Chunk c = getSafeChunk(w, pos);
 		if(c==null)
 			return null;
 		else
@@ -68,7 +66,7 @@ public class SafeChunkUtils
 	@Nonnull
 	public static BlockState getBlockState(IWorld w, BlockPos pos)
 	{
-		Chunk c = getSafeChunk(w, new ChunkPos(pos));
+		Chunk c = getSafeChunk(w, pos);
 		if(c==null)
 			return Blocks.AIR.getDefaultState();
 		else

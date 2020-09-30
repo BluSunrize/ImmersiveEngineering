@@ -19,6 +19,7 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.potion.Potions;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.FluidAttributes;
 
 import java.util.*;
 import java.util.function.Function;
@@ -76,8 +77,8 @@ public class PotionRecipeGenerators
 			ResourceLocation baseName = output.getRegistryName();
 			ResourceLocation name = new ResourceLocation(baseName.getNamespace(), baseName.getPath()+"_"+existing.size());
 
-			MixerRecipe recipe = new MixerRecipe(name, getFluidStackForType(output, 1000),
-					getFluidTagForType(input, 1000), new IngredientWithSize[]{reagent}, 6400);
+			MixerRecipe recipe = new MixerRecipe(name, getFluidStackForType(output, FluidAttributes.BUCKET_VOLUME),
+					getFluidTagForType(input, FluidAttributes.BUCKET_VOLUME), new IngredientWithSize[]{reagent}, 6400);
 			existing.add(recipe);
 		}
 	}

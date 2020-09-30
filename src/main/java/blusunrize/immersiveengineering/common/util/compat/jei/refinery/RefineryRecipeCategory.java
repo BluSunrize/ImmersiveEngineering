@@ -21,6 +21,7 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.ArrayList;
@@ -58,15 +59,15 @@ public class RefineryRecipeCategory extends IERecipeCategory<RefineryRecipe>
 		IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
 		if(recipe.input0!=null)
 		{
-			guiFluidStacks.init(0, true, 7, 10, 16, 47, 50, false, tankOverlay);
+			guiFluidStacks.init(0, true, 7, 10, 16, 47, FluidAttributes.BUCKET_VOLUME/20, false, tankOverlay);
 			guiFluidStacks.set(0, recipe.input0.getMatchingFluidStacks());
 		}
 		if(recipe.input1!=null)
 		{
-			guiFluidStacks.init(1, true, 55, 10, 16, 47, 50, false, tankOverlay);
+			guiFluidStacks.init(1, true, 55, 10, 16, 47, FluidAttributes.BUCKET_VOLUME/20, false, tankOverlay);
 			guiFluidStacks.set(1, recipe.input1.getMatchingFluidStacks());
 		}
-		guiFluidStacks.init(2, false, 103, 10, 16, 47, 50, false, tankOverlay);
+		guiFluidStacks.init(2, false, 103, 10, 16, 47, FluidAttributes.BUCKET_VOLUME/20, false, tankOverlay);
 		guiFluidStacks.set(2, recipe.output);
 		guiFluidStacks.addTooltipCallback(JEIHelper.fluidTooltipCallback);
 	}

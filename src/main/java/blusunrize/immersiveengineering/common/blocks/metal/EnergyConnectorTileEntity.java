@@ -78,23 +78,24 @@ public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity im
 	private final boolean relay;
 	public int currentTickToMachine = 0;
 	public int currentTickToNet = 0;
-	private FluxStorage storageToNet = new FluxStorage(getMaxInput(), getMaxInput(), getMaxInput());
-	private FluxStorage storageToMachine = new FluxStorage(getMaxInput(), getMaxInput(), getMaxInput());
+	private FluxStorage storageToNet;
+	private FluxStorage storageToMachine;
+
 	private CapabilityReference<IEnergyStorage> output = CapabilityReference.forNeighbor(this, CapabilityEnergy.ENERGY, this::getFacing);
 
 	public EnergyConnectorTileEntity(TileEntityType<? extends EnergyConnectorTileEntity> type)
 	{
 		super(type);
 		Pair<String, Boolean> data = DATA_TYPE_MAP.inverse().get(type);
-		voltage = data.getKey();
-		relay = data.getValue();
+		this.voltage = data.getKey();
+		this.relay = data.getValue();
+		this.storageToMachine = new FluxStorage(getMaxInput(), getMaxInput(), getMaxInput());
+		this.storageToNet = new FluxStorage(getMaxInput(), getMaxInput(), getMaxInput());
 	}
 
 	public EnergyConnectorTileEntity(String voltage, boolean relay)
 	{
-		super(DATA_TYPE_MAP.get(new ImmutablePair<>(voltage, relay)));
-		this.voltage = voltage;
-		this.relay = relay;
+		this(DATA_TYPE_MAP.get(new ImmutablePair<>(voltage, relay)));
 	}
 
 	@Override

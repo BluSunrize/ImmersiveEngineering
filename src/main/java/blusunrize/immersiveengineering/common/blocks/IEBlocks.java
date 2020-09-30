@@ -208,6 +208,7 @@ public final class IEBlocks
 	public static final class Misc
 	{
 		public static Block hempPlant;
+		public static Block pottedHemp;
 		public static Block fakeLight;
 	}
 }

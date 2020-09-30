@@ -309,7 +309,7 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 									if(dist < 16D)
 									{
 										double dist2 = 1-Math.sqrt(dist)/4D;
-										if(living==((EntityRayTraceResult)target).getEntity())
+										if(target instanceof EntityRayTraceResult&&living==((EntityRayTraceResult)target).getEntity())
 											dist2 = 1D;
 										for(EffectInstance p : effects)
 											if(p.getPotion().isInstant())

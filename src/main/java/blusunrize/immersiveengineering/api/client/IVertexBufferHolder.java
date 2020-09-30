@@ -34,7 +34,13 @@ public interface IVertexBufferHolder
 		return CREATE.getValue().apply(getQuads);
 	}
 
-	void render(RenderType type, int light, int overlay, IRenderTypeBuffer directOut, MatrixStack transform);
+	default void render(RenderType type, int light, int overlay, IRenderTypeBuffer directOut, MatrixStack transform)
+	{
+		render(type, light, overlay, directOut, transform, false);
+	}
+
+	void render(RenderType type, int light, int overlay, IRenderTypeBuffer directOut, MatrixStack transform,
+				boolean inverted);
 
 	void reset();
 }

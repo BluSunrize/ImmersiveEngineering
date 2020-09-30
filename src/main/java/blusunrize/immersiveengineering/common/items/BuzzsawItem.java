@@ -85,6 +85,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -104,6 +105,8 @@ import java.util.function.Supplier;
 
 public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidItem, IOBJModelCallback<ItemStack>, ITool, IScrollwheel
 {
+	private static final int CAPACITY = 2*FluidAttributes.BUCKET_VOLUME;
+
 	public static Collection<SawbladeItem> sawblades = new ArrayList(2);
 
 	public BuzzsawItem()
@@ -146,7 +149,7 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 		if(!stack.isEmpty())
 			return new IEItemStackHandler(stack)
 			{
-				LazyOptional<IEItemFluidHandler> fluids = CapabilityUtils.constantOptional(new IEItemFluidHandler(stack, 2000));
+				LazyOptional<IEItemFluidHandler> fluids = CapabilityUtils.constantOptional(new IEItemFluidHandler(stack, CAPACITY));
 				LazyOptional<ShaderWrapper_Item> shaders = CapabilityUtils.constantOptional(new ShaderWrapper_Item(new ResourceLocation(ImmersiveEngineering.MODID, "buzzsaw"), stack));
 
 				@Nonnull
@@ -258,9 +261,9 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 			}
 		});
 		FluidStack fs = getFluid(stack);
-		if(fs!=null&&fs.getAmount() > this.getCapacity(stack, 2000))
+		if(fs!=null&&fs.getAmount() > this.getCapacity(stack, CAPACITY))
 		{
-			fs.setAmount(this.getCapacity(stack, 2000));
+			fs.setAmount(this.getCapacity(stack, CAPACITY));
 			ItemNBTHelper.setFluidStack(stack, "Fluid", fs);
 		}
 	}
@@ -269,9 +272,9 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 	public void finishUpgradeRecalculation(ItemStack stack)
 	{
 		FluidStack fs = getFluid(stack);
-		if(fs!=null&&fs.getAmount() > getCapacity(stack, 2000))
+		if(fs!=null&&fs.getAmount() > getCapacity(stack, CAPACITY))
 		{
-			fs.setAmount(getCapacity(stack, 2000));
+			fs.setAmount(getCapacity(stack, CAPACITY));
 			ItemNBTHelper.setFluidStack(stack, "Fluid", fs);
 		}
 	}
@@ -327,7 +330,7 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 	@Override
 	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
 	{
-		list.add(IEItemFluidHandler.fluidItemInfoFlavor(getFluid(stack), getCapacity(stack, 2000)));
+		list.add(IEItemFluidHandler.fluidItemInfoFlavor(getFluid(stack), getCapacity(stack, CAPACITY)));
 		if(getSawblade(stack).isEmpty())
 			list.add(ClientUtils.applyFormat(
 					new TranslationTextComponent(Lib.DESC_FLAVOUR+"buzzsaw.noBlade"),

@@ -51,7 +51,7 @@ public class VertexBufferHolder implements IVertexBufferHolder
 					Tessellator tes = Tessellator.getInstance();
 					BufferBuilder bb = tes.getBuffer();
 					bb.begin(GL11.GL_QUADS, BUFFER_FORMAT);
-					renderToBuilder(bb, new MatrixStack(), 0, 0);
+					renderToBuilder(bb, new MatrixStack(), 0, 0, false);
 					bb.finishDrawing();
 					vb.upload(bb);
 					return vb;
@@ -66,13 +66,13 @@ public class VertexBufferHolder implements IVertexBufferHolder
 	}
 
 	@Override
-	public void render(RenderType type, int light, int overlay, IRenderTypeBuffer directOut, MatrixStack transform)
+	public void render(RenderType type, int light, int overlay, IRenderTypeBuffer directOut, MatrixStack transform, boolean inverted)
 	{
 		if(IEClientConfig.enableVBOs.get())
 			JOBS.computeIfAbsent(type, t -> new ArrayList<>())
-					.add(new BufferedJob(this, light, overlay, transform));
+					.add(new BufferedJob(this, light, overlay, transform, inverted));
 		else
-			renderToBuilder(directOut.getBuffer(type), transform, light, overlay);
+			renderToBuilder(directOut.getBuffer(type), transform, light, overlay, inverted);
 	}
 
 	@Override
@@ -82,8 +82,10 @@ public class VertexBufferHolder implements IVertexBufferHolder
 		quads.reset();
 	}
 
-	private void renderToBuilder(IVertexBuilder builder, MatrixStack transform, int light, int overlay)
+	private void renderToBuilder(IVertexBuilder builder, MatrixStack transform, int light, int overlay, boolean inverted)
 	{
+		if(inverted)
+			builder = new InvertingVertexBuffer(4, builder);
 		for(BakedQuad quad : quads.get())
 			builder.addQuad(transform.getLast(), quad, 1, 1, 1, light, overlay);
 	}
@@ -97,15 +99,23 @@ public class VertexBufferHolder implements IVertexBufferHolder
 			{
 				RenderType type = typeEntry.getKey();
 				type.setupRenderState();
+				boolean inverted = false;
 				for(BufferedJob job : typeEntry.getValue())
 				{
 					RenderSystem.glMultiTexCoord2f(33986, 16*LightTexture.getLightBlock(job.light), 16*LightTexture.getLightSky(job.light));
 					RenderSystem.glMultiTexCoord2f(33985, job.overlay&0xffff, job.overlay >>> 16);
+					if(job.inverted&&!inverted)
+						GL11.glCullFace(GL11.GL_FRONT);
+					else if(!job.inverted&&inverted)
+						GL11.glCullFace(GL11.GL_BACK);
+					inverted = job.inverted;
 					VertexBuffer buffer = job.buffer.buffer.get();
 					buffer.bindBuffer();
 					BUFFER_FORMAT.setupBufferState(0);
 					buffer.draw(job.transform, GL11.GL_QUADS);
 				}
+				if(inverted)
+					GL11.glCullFace(GL11.GL_BACK);
 				type.clearRenderState();
 			}
 			VertexBuffer.unbindBuffer();
@@ -120,13 +130,15 @@ public class VertexBufferHolder implements IVertexBufferHolder
 		private final int light;
 		private final int overlay;
 		private final Matrix4f transform;
+		private final boolean inverted;
 
-		private BufferedJob(VertexBufferHolder buffer, int light, int overlay, MatrixStack transform)
+		private BufferedJob(VertexBufferHolder buffer, int light, int overlay, MatrixStack transform, boolean inverted)
 		{
 			this.buffer = buffer;
 			this.light = light;
 			this.overlay = overlay;
 			this.transform = transform.getLast().getMatrix();
+			this.inverted = inverted;
 		}
 	}
 }

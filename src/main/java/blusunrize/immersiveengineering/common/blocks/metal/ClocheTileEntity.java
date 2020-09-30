@@ -61,6 +61,7 @@ import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -85,7 +86,7 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 
 	public int dummy = 0;
 	private NonNullList<ItemStack> inventory = NonNullList.withSize(7, ItemStack.EMPTY);
-	public final FluidTank tank = new FluidTank(4000)
+	public final FluidTank tank = new FluidTank(4*FluidAttributes.BUCKET_VOLUME)
 	{
 		@Override
 		protected void onContentsChanged()

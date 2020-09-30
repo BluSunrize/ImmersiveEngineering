@@ -96,6 +96,9 @@ public class RecipeReloadListener implements IResourceManagerReloadListener
 	static void buildRecipeLists(RecipeManager recipeManager)
 	{
 		Collection<IRecipe<?>> recipes = recipeManager.getRecipes();
+		// Empty recipe list shouldn't happen, but has been known to be caused by other mods
+		if(recipes.size()==0)
+			return;
 
 		AlloyRecipe.recipeList = filterRecipes(recipes, AlloyRecipe.class, AlloyRecipe.TYPE);
 		BlastFurnaceRecipe.recipeList = filterRecipes(recipes, BlastFurnaceRecipe.class, BlastFurnaceRecipe.TYPE);

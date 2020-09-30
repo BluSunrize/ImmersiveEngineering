@@ -357,7 +357,7 @@ public class BlockStates extends BlockStateProvider
 				.additional("model", addModelsPrefix(model))
 				.additional("flip-v", true)
 				.texture("particle", particleTexture);
-		JsonArray partsJson = parts.collect(POSITIONS_TO_JSON);
+		JsonArray partsJson = parts.sorted().collect(POSITIONS_TO_JSON);
 		ret.additional(SplitModelLoader.PARTS, partsJson);
 		return ret;
 	}
@@ -526,7 +526,7 @@ public class BlockStates extends BlockStateProvider
 			simpleBlock(chute.getValue(), model);
 		}
 
-		simpleBlockItem(Misc.fakeLight, EMPTY_MODEL);
+		simpleBlock(Misc.fakeLight, EMPTY_MODEL);
 
 		createMultistateSingleModel(WoodenDevices.windmill, EMPTY_MODEL);
 		createMultistateSingleModel(WoodenDevices.watermill, EMPTY_MODEL);
@@ -730,6 +730,9 @@ public class BlockStates extends BlockStateProvider
 							.loader(ConveyorLoader.LOCATION)
 			));
 		createHemp();
+		simpleBlock(Misc.pottedHemp, models().withExistingParent("potted_hemp", mcLoc("block/flower_pot_cross"))
+				.texture("plant", new ResourceLocation(ImmersiveEngineering.MODID, "block/hemp/potted")));
+
 		for(IEFluid f : IEFluid.IE_FLUIDS)
 		{
 			ResourceLocation stillTexture = f.getAttributes().getStillTexture();
@@ -881,7 +884,7 @@ public class BlockStates extends BlockStateProvider
 				splitModel.add(e.getKey(), e.getValue());
 		}
 		splitModel.addProperty("loader", SplitModelLoader.LOCATION.toString());
-		splitModel.add(SplitModelLoader.PARTS, parts.stream().collect(POSITIONS_TO_JSON));
+		splitModel.add(SplitModelLoader.PARTS, parts.stream().sorted().collect(POSITIONS_TO_JSON));
 		splitModel.addProperty(SplitModelLoader.DYNAMIC, false);
 		return splitModel;
 	}

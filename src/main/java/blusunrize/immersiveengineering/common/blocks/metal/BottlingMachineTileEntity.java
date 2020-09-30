@@ -39,6 +39,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
@@ -57,7 +58,7 @@ import java.util.Set;
 public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<BottlingMachineTileEntity, MultiblockRecipe>
 		implements IConveyorAttachable, IBlockBounds
 {
-	public FluidTank[] tanks = new FluidTank[]{new FluidTank(8000)};
+	public FluidTank[] tanks = new FluidTank[]{new FluidTank(8*FluidAttributes.BUCKET_VOLUME)};
 	public List<BottlingProcess> bottlingProcessQueue = new ArrayList<>();
 
 	public BottlingMachineTileEntity()

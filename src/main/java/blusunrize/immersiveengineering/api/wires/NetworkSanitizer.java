@@ -15,7 +15,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -39,7 +38,7 @@ public class NetworkSanitizer
 			for(Iterator<ChunkPos> iterator = relevant.iterator(); iterator.hasNext(); )
 			{
 				ChunkPos chunk = iterator.next();
-				if(!SafeChunkUtils.isChunkSafe(w, chunk))
+				if(!SafeChunkUtils.isChunkSafe(w, chunk.asBlockPos()))
 					continue;
 				Collection<ConnectionPoint> extraCPs = new ArrayList<>();
 				Set<BlockPos> missingConnectors = new HashSet<>();

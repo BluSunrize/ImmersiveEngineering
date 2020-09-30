@@ -104,7 +104,7 @@ public class StaticTemplateManager
 
 	public static Template loadStaticTemplate(ResourceLocation loc, @Nullable MinecraftServer server) throws IOException
 	{
-		if(server==null)
+		if(server==null && IEDataGenerator.EXISTING_HELPER==null)
 			return Objects.requireNonNull(SYNCED_CLIENT_TEMPLATES.get(loc));
 		else
 		{

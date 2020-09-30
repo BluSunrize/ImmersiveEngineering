@@ -87,8 +87,8 @@ public class WireSyncManager implements IWireSyncManager
 	{
 		ApiUtils.addFutureServerTask(ev.getWorld(),
 				() -> {
-					wireWatchedChunksByPlayer.put(ev.getPlayer().getUniqueID(), ev.getPos());
-					sendMessagesForChunk(ev.getWorld(), ev.getPos(), ev.getPlayer(), true);
+					if(wireWatchedChunksByPlayer.put(ev.getPlayer().getUniqueID(), ev.getPos()))
+						sendMessagesForChunk(ev.getWorld(), ev.getPos(), ev.getPlayer(), true);
 				}, true);
 	}
 
@@ -97,8 +97,8 @@ public class WireSyncManager implements IWireSyncManager
 	{
 		ApiUtils.addFutureServerTask(ev.getWorld(),
 				() -> {
-					wireWatchedChunksByPlayer.remove(ev.getPlayer().getUniqueID(), ev.getPos());
-					sendMessagesForChunk(ev.getWorld(), ev.getPos(), ev.getPlayer(), false);
+					if(wireWatchedChunksByPlayer.remove(ev.getPlayer().getUniqueID(), ev.getPos()))
+						sendMessagesForChunk(ev.getWorld(), ev.getPos(), ev.getPlayer(), false);
 				}, true);
 	}
 

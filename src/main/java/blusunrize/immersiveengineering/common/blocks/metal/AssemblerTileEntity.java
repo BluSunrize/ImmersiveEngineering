@@ -45,6 +45,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
@@ -71,7 +72,11 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 		super(IEMultiblocks.ASSEMBLER, 32000, true, IETileTypes.ASSEMBLER.get());
 	}
 
-	public FluidTank[] tanks = {new FluidTank(8000), new FluidTank(8000), new FluidTank(8000)};
+	public FluidTank[] tanks = {
+			new FluidTank(8*FluidAttributes.BUCKET_VOLUME),
+			new FluidTank(8*FluidAttributes.BUCKET_VOLUME),
+			new FluidTank(8*FluidAttributes.BUCKET_VOLUME)
+	};
 	public NonNullList<ItemStack> inventory = NonNullList.withSize(18+3, ItemStack.EMPTY);
 	public CrafterPatternInventory[] patterns = {new CrafterPatternInventory(this), new CrafterPatternInventory(this), new CrafterPatternInventory(this)};
 	public boolean recursiveIngredients = false;

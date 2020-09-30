@@ -62,6 +62,7 @@ import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -376,7 +377,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 		@Override
 		public int getTankCapacity(int tank)
 		{
-			return 1000;
+			return FluidAttributes.BUCKET_VOLUME;
 		}
 
 		@Override
@@ -448,7 +449,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 		{
 			return (resource.hasTag()&&resource.getOrCreateTag().contains("pressurized"))||
 					pipe.canOutputPressurized(output.containingTile, false)
-					?1000: 50;
+					?FluidAttributes.BUCKET_VOLUME: FluidAttributes.BUCKET_VOLUME/20;
 		}
 
 		@Nonnull

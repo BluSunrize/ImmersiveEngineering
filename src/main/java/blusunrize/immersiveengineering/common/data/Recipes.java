@@ -50,6 +50,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.data.*;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.EquipmentSlotType.Group;
 import net.minecraft.item.DyeColor;
@@ -71,6 +72,7 @@ import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.common.crafting.conditions.NotCondition;
 import net.minecraftforge.common.crafting.conditions.TagEmptyCondition;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
@@ -242,17 +244,17 @@ public class Recipes extends RecipeProvider
 	{
 		CokeOvenRecipeBuilder.builder(IETags.coalCoke, 1)
 				.addInput(Items.COAL)
-				.setOil(500)
+				.setOil(FluidAttributes.BUCKET_VOLUME/2)
 				.setTime(1800)
 				.build(out, toRL("cokeoven/coke"));
 		CokeOvenRecipeBuilder.builder(IETags.getItemTag(IETags.coalCokeBlock), 1)
 				.addInput(Blocks.COAL_BLOCK)
-				.setOil(5000)
+				.setOil(FluidAttributes.BUCKET_VOLUME*5)
 				.setTime(9*1800)
 				.build(out, toRL("cokeoven/coke_block"));
 		CokeOvenRecipeBuilder.builder(Items.CHARCOAL)
 				.addInput(ItemTags.LOGS)
-				.setOil(250)
+				.setOil(FluidAttributes.BUCKET_VOLUME/4)
 				.setTime(900)
 				.build(out, toRL("cokeoven/charcoal"));
 	}
@@ -537,14 +539,6 @@ public class Recipes extends RecipeProvider
 						.setEnergy(6000)
 						.build(out, toRL("crusher/ore_"+metal.getName()));
 
-				// Crush ingot
-				crusherBuilder = CrusherRecipeBuilder.builder(metal.getDust(), 1);
-				if(!metal.isNative())
-					crusherBuilder.addCondition(getTagCondition(metal.getDust())).addCondition(getTagCondition(metal.getIngot()));
-				crusherBuilder.addInput(metal.getIngot())
-						.setEnergy(3000)
-						.build(out, toRL("crusher/ingot_"+metal.getName()));
-
 				// Arcfurnace ore
 				arcBuilder = ArcFurnaceRecipeBuilder.builder(metal.getIngot(), 2);
 				if(!metal.isNative())
@@ -554,16 +548,24 @@ public class Recipes extends RecipeProvider
 						.setTime(200)
 						.setEnergy(102400)
 						.build(out, toRL("arcfurnace/ore_"+metal.getName()));
-
-				// Arcfurnace dust
-				arcBuilder = ArcFurnaceRecipeBuilder.builder(metal.getIngot(), 1);
-				if(!metal.isNative())
-					arcBuilder.addCondition(getTagCondition(metal.getIngot())).addCondition(getTagCondition(metal.getDust()));
-				arcBuilder.addIngredient("input", metal.getDust())
-						.setTime(100)
-						.setEnergy(51200)
-						.build(out, toRL("arcfurnace/dust_"+metal.getName()));
 			}
+
+			// Crush ingot
+			crusherBuilder = CrusherRecipeBuilder.builder(metal.getDust(), 1);
+			if(!metal.isNative())
+				crusherBuilder.addCondition(getTagCondition(metal.getDust())).addCondition(getTagCondition(metal.getIngot()));
+			crusherBuilder.addInput(metal.getIngot())
+					.setEnergy(3000)
+					.build(out, toRL("crusher/ingot_"+metal.getName()));
+
+			// Arcfurnace dust
+			arcBuilder = ArcFurnaceRecipeBuilder.builder(metal.getIngot(), 1);
+			if(!metal.isNative())
+				arcBuilder.addCondition(getTagCondition(metal.getIngot())).addCondition(getTagCondition(metal.getDust()));
+			arcBuilder.addIngredient("input", metal.getDust())
+					.setTime(100)
+					.setEnergy(51200)
+					.build(out, toRL("arcfurnace/dust_"+metal.getName()));
 
 			// Plate
 			INamedTag<Item> plate = createItemWrapper(IETags.getPlate(metal.getName()));
@@ -686,7 +688,7 @@ public class Recipes extends RecipeProvider
 		/* BOTTLING */
 		BottlingMachineRecipeBuilder.builder(Items.WET_SPONGE)
 				.addInput(Items.SPONGE)
-				.addFluidTag(FluidTags.WATER, 1000)
+				.addFluidTag(FluidTags.WATER, FluidAttributes.BUCKET_VOLUME)
 				.build(out, toRL("bottling/sponge"));
 
 		/* CRUSHER */
@@ -856,7 +858,7 @@ public class Recipes extends RecipeProvider
 				.addInput(Items.SUGAR_CANE)
 				.setEnergy(6400)
 				.build(out, toRL("fermenter/sugar_cane"));
-		FermenterRecipeBuilder.builder(IEContent.fluidEthanol, 80)
+		FermenterRecipeBuilder.builder(IEContent.fluidEthanol, 20)
 				.addInput(Items.MELON_SLICE)
 				.setEnergy(6400)
 				.build(out, toRL("fermenter/melon_slice"));
@@ -875,15 +877,16 @@ public class Recipes extends RecipeProvider
 				.setEnergy(80)
 				.build(out, toRL("refinery/biodiesel"));
 		/* MIXER */
-		MixerRecipeBuilder.builder(IEContent.fluidConcrete, 500)
-				.addFluidTag(FluidTags.WATER, 500)
+		int half_bucket = FluidAttributes.BUCKET_VOLUME/2;
+		MixerRecipeBuilder.builder(IEContent.fluidConcrete, half_bucket)
+				.addFluidTag(FluidTags.WATER, half_bucket)
 				.addInput(new IngredientWithSize(Tags.Items.SAND, 2))
 				.addInput(Tags.Items.GRAVEL)
 				.addInput(IETags.clay)
 				.setEnergy(3200)
 				.build(out, toRL("mixer/concrete"));
-		MixerRecipeBuilder.builder(IEContent.fluidConcrete, 500)
-				.addFluidTag(FluidTags.WATER, 500)
+		MixerRecipeBuilder.builder(IEContent.fluidConcrete, half_bucket)
+				.addFluidTag(FluidTags.WATER, half_bucket)
 				.addInput(new IngredientWithSize(IETags.slag, 2))
 				.addInput(Tags.Items.GRAVEL)
 				.addInput(IETags.clay)
@@ -1119,7 +1122,7 @@ public class Recipes extends RecipeProvider
 				.key('s', Tags.Items.SAND)
 				.key('c', IETags.clay)
 				.key('g', Tags.Items.GRAVEL)
-				.key('b', new IngredientFluidStack(FluidTags.WATER, 1000))
+				.key('b', new IngredientFluidStack(FluidTags.WATER, FluidAttributes.BUCKET_VOLUME))
 				.addCriterion("has_clay", hasItem(IETags.clay))
 				.build(out, toRL("concrete"));
 		TurnAndCopyRecipeBuilder.builder(StoneDecoration.concrete, 12)
@@ -1131,7 +1134,7 @@ public class Recipes extends RecipeProvider
 				.key('s', IEItems.Ingredients.slag)
 				.key('c', IETags.clay)
 				.key('g', Tags.Items.GRAVEL)
-				.key('b', new IngredientFluidStack(FluidTags.WATER, 1000))
+				.key('b', new IngredientFluidStack(FluidTags.WATER, FluidAttributes.BUCKET_VOLUME))
 				.addCriterion("has_slag", hasItem(IEItems.Ingredients.slag))
 				.build(out, toRL("concrete"));
 		ShapedRecipeBuilder.shapedRecipe(StoneDecoration.concreteTile, 4)
@@ -1206,7 +1209,7 @@ public class Recipes extends RecipeProvider
 				.patternLine("wbw")
 				.patternLine("www")
 				.key('w', ItemTags.PLANKS)
-				.key('b', new IngredientFluidStack(IETags.fluidCreosote, 1000))
+				.key('b', new IngredientFluidStack(IETags.fluidCreosote, FluidAttributes.BUCKET_VOLUME))
 				.addCriterion("has_creosote", hasItem(IEContent.fluidCreosote.getFilledBucket()))
 				.build(out, toRL(toPath(WoodenDecoration.treatedWood.get(TreatedWoodStyles.HORIZONTAL))));
 	}
@@ -1508,7 +1511,7 @@ public class Recipes extends RecipeProvider
 				.patternLine("ici")
 				.key('i', IETags.getItemTag(IETags.getTagsFor(EnumMetals.STEEL).sheetmetal))
 				.key('c', IETags.getTagsFor(EnumMetals.COPPER).plate)
-				.key('b', new IngredientFluidStack(FluidTags.WATER, 1000))
+				.key('b', new IngredientFluidStack(FluidTags.WATER, FluidAttributes.BUCKET_VOLUME))
 				.addCriterion("has_steel_sheetmetal", hasItem(IETags.getItemTag(IETags.getTagsFor(EnumMetals.STEEL).sheetmetal)))
 				.addCriterion("has_water_bucket", hasItem(Items.WATER_BUCKET))
 				.addCriterion("has_copper_ingot", hasItem(IETags.getTagsFor(EnumMetals.COPPER).ingot))
@@ -2313,7 +2316,7 @@ public class Recipes extends RecipeProvider
 				.patternLine(" ic")
 				.key('i', IETags.getTagsFor(EnumMetals.IRON).ingot)
 				.key('c', Ingredients.componentIron)
-				.key('b', new IngredientFluidStack(IETags.fluidPlantoil, 1000))
+				.key('b', new IngredientFluidStack(IETags.fluidPlantoil, FluidAttributes.BUCKET_VOLUME))
 				.addCriterion("has_drill", hasItem(Tools.drill))
 				.build(out, toRL(toPath(Misc.toolUpgrades.get(ToolUpgrade.DRILL_LUBE))));
 		ShapedRecipeBuilder.shapedRecipe(Misc.toolUpgrades.get(ToolUpgrade.DRILL_DAMAGE))
@@ -2514,7 +2517,7 @@ public class Recipes extends RecipeProvider
 				.patternLine("wc ")
 				.patternLine("sss")
 				.key('w', ItemTags.WOOL)
-				.key('c', new IngredientFluidStack(IETags.fluidCreosote, 1000))
+				.key('c', new IngredientFluidStack(IETags.fluidCreosote, FluidAttributes.BUCKET_VOLUME))
 				.key('s', Tags.Items.RODS_WOODEN)
 				.addCriterion("has_wool", hasItem(ItemTags.WOOL))
 				.addCriterion("has_stick", hasItem(Tags.Items.RODS_WOODEN))
@@ -2532,7 +2535,7 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL("gunpowder_from_dusts"));
 		ShapelessRecipeBuilder.shapelessRecipe(Items.PAPER, 2)
 				.addIngredient(Ingredient.fromTag(IETags.sawdust), 4)
-				.addIngredient(new IngredientFluidStack(FluidTags.WATER, 1000))
+				.addIngredient(new IngredientFluidStack(FluidTags.WATER, FluidAttributes.BUCKET_VOLUME))
 				.addCriterion("has_sawdust", hasItem(IETags.sawdust))
 				.build(out, toRL("paper_from_sawdust"));
 	}

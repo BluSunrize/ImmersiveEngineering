@@ -23,6 +23,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -37,7 +38,7 @@ import java.util.Optional;
 
 public class JerrycanItem extends IEBaseItem
 {
-	private final int jerrycanMaxMB = 10000;
+	private final int jerrycanMaxMB = 10*FluidAttributes.BUCKET_VOLUME;
 
 	public JerrycanItem()
 	{
@@ -96,7 +97,7 @@ public class JerrycanItem extends IEBaseItem
 		{
 			ItemStack ret = stack.copy();
 			IFluidHandler handler = FluidUtil.getFluidHandler(ret).orElseThrow(RuntimeException::new);
-			handler.drain(1000, FluidAction.EXECUTE);
+			handler.drain(FluidAttributes.BUCKET_VOLUME, FluidAction.EXECUTE);
 			return ret;
 		}
 		return stack;

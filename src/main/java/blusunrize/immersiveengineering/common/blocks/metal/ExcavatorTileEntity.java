@@ -127,11 +127,15 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 
 			if(center instanceof BucketWheelTileEntity)
 			{
+				BucketWheelTileEntity wheel = ((BucketWheelTileEntity)center);
+				if(wheel!=wheel.master())
+					return;
 				float rot = 0;
 				int target = -1;
-				BucketWheelTileEntity wheel = ((BucketWheelTileEntity)center);
 				Direction fRot = this.getFacing().rotateYCCW();
-				if(wheel.getFacing()==fRot)
+				boolean mirrored = getIsMirrored();
+
+				if((wheel.getFacing()==fRot)&&(wheel.getIsMirrored()==mirrored))
 				{
 					if(active!=wheel.active)
 						world.addBlockEvent(wheel.getPos(), wheel.getBlockState().getBlock(), 0, active?1: 0);
@@ -139,18 +143,22 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 					if(rot%45 > 40)
 						target = Math.round(rot/360f*8)%8;
 				}
-
-				if(wheel.getFacing()!=fRot)
+				else
 				{
+					boolean changePos = (wheel.getFacing()!=fRot)^mirrored;
 					for(int h = -3; h <= 3; h++)
 						for(int w = -3; w <= 3; w++)
 						{
+							if((Math.abs(h)==3&&w!=0)||(Math.abs(w)==3&&h!=0))
+								continue;
 							TileEntity te = world.getTileEntity(wheelPos.add(0, h, 0).offset(getFacing(), w));
 							if(te instanceof BucketWheelTileEntity)
 							{
 								BucketWheelTileEntity bucketTE = (BucketWheelTileEntity)te;
 								bucketTE.setFacing(fRot);
-								bucketTE.posInMultiblock = new BlockPos(6-bucketTE.posInMultiblock.getX(), bucketTE.posInMultiblock.getY(), bucketTE.posInMultiblock.getZ());
+								bucketTE.setMirrored(mirrored);
+								if(changePos)
+									bucketTE.posInMultiblock = new BlockPos(6-bucketTE.posInMultiblock.getX(), bucketTE.posInMultiblock.getY(), bucketTE.posInMultiblock.getZ());
 								te.markDirty();
 								bucketTE.markContainingBlockForUpdate(null);
 								world.addBlockEvent(te.getPos(), te.getBlockState().getBlock(), 255, 0);
