@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.api.utils.shapes.CachedVoxelShapes;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
+import blusunrize.immersiveengineering.common.blocks.metal.conveyors.BasicConveyor;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.block.BlockState;
@@ -172,7 +173,10 @@ public class ChuteTileEntity extends IEBaseTileEntity implements IStateBasedDire
 				TileEntity inventoryTile;
 				BlockPos invPos = diagonal?getPos().offset(facing): getPos().down();
 				inventoryTile = world.getTileEntity(invPos);
-				if(!world.isRemote&&inventoryTile!=null&&(!(inventoryTile instanceof IConveyorTile)||((IConveyorTile)inventoryTile).getConveyorSubtype().isCovered()))
+				if(!world.isRemote&&inventoryTile!=null&&
+						(!(inventoryTile instanceof IConveyorTile)||
+								(((IConveyorTile)inventoryTile).getConveyorSubtype() instanceof BasicConveyor //TODO: change this to IConveyorTile.isCovered() when the API changes
+										&&((BasicConveyor)(((IConveyorTile)inventoryTile).getConveyorSubtype())).isCovered())))
 				{
 					LazyOptional<IItemHandler> cap = ApiUtils.findItemHandlerAtPos(world, invPos, getFacing().getOpposite(), true);
 					cap.ifPresent(itemHandler -> {

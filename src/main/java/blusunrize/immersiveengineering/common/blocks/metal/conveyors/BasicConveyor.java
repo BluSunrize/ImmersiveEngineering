@@ -113,7 +113,6 @@ public class BasicConveyor implements IConveyorBelt
 		return true;
 	}
 
-	@Override
 	public boolean isCovered()
 	{
 		return false;
