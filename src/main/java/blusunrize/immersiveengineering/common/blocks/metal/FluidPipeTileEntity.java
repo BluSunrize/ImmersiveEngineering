@@ -550,7 +550,18 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 
 	public void toggleSide(Direction side)
 	{
-		sideConfig.put(side, !sideConfig.getBoolean(side));
+		boolean newSideConnected = !sideConfig.getBoolean(side);
+		sideConfig.put(side, newSideConnected);
+		if (newSideConnected) {
+			if (!sidedHandlers.get(side).isPresent())
+				sidedHandlers.put(side, registerConstantCap(new PipeFluidHandler(this, side)));
+		}
+		else {
+			LazyOptional<IFluidHandler> handler = sidedHandlers.get(side);
+			if(handler.isPresent())
+				sidedHandlers.get(side).invalidate();
+		}
+
 		markDirty();
 
 		TileEntity connected = world.getTileEntity(getPos().offset(side));
