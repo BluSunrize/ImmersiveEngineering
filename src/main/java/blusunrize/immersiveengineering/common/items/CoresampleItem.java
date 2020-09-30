@@ -73,6 +73,12 @@ public class CoresampleItem extends IEBaseItem
 				nbtList.forEach(inbt -> {
 					CompoundNBT tag = (CompoundNBT)inbt;
 					MineralMix mineral = MineralMix.mineralList.get(new ResourceLocation(tag.getString("mineral")));
+					if(mineral == null)
+					{
+						list.add(new StringTextComponent("INVALID MINERAL ID. NO MINERAL FOUND."));
+						return;
+					}
+
 					IFormattableTextComponent component = new StringTextComponent(
 							Utils.formatDouble(tag.getDouble("percentage")*100, "0.00")+"% "
 					);

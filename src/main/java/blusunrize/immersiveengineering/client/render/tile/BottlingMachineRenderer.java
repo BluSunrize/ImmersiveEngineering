@@ -40,6 +40,7 @@ import java.util.List;
 public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineTileEntity>
 {
 	public static DynamicModel<Direction> DYNAMIC;
+	private static final float pixelHeight = 1f/16f;
 
 	public BottlingMachineRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
 	{
@@ -104,8 +105,8 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 					lift = (85-processTimer)/20f*.125f;
 					itemFill = 1;
 				}
-				itemY += lift;
-				lift += .0625;
+				if(lift > pixelHeight)
+					itemY += lift-pixelHeight;
 			}
 			else
 			{
@@ -127,7 +128,7 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 		float dir = facing==Direction.SOUTH?180: facing==Direction.NORTH?0: facing==Direction.EAST?-90: 90;
 		matrixStack.rotate(new Quaternion(0, dir, 0, true));
 
-		float scale = .0625f;
+		float scale = pixelHeight;
 		FluidStack fs = te.tanks[0].getFluid();
 		if(!fs.isEmpty())
 		{

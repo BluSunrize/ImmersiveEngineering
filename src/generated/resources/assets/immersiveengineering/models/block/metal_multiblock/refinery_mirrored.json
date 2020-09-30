@@ -1,7 +1,7 @@
 {
   "parent": "minecraft:block/block",
   "textures": {
-    "particle": "immersiveengineering:block/multiblocks/refinery"
+    "particle": "immersiveengineering:block/multiblocks/multiblock_components"
   },
   "loader": "immersiveengineering:basic_split",
   "base_loader": "forge:obj",

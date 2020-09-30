@@ -54,7 +54,7 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickable
 		sideConfig.put(Direction.UP, IOSideConfig.INPUT);
 	}
 
-	public FluidTank tank = new FluidTank(4000);
+	public FluidTank tank = new FluidTank(4*FluidAttributes.BUCKET_VOLUME);
 
 	private int tickCount = 0;
 
@@ -101,7 +101,7 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickable
 
 	private static boolean place(BlockPos pos, FluidTank tank, World world)
 	{
-		if(tank.getFluidAmount() < 1000)
+		if(tank.getFluidAmount() < FluidAttributes.BUCKET_VOLUME)
 			return false;
 		FluidStack stack = tank.getFluid();
 		BucketItem bucketitem;
@@ -116,7 +116,7 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickable
 		ItemStack bucketStack = new ItemStack(bucketitem);
 		if(bucketitem.tryPlaceContainedLiquid(null, world, pos, null))
 		{
-			tank.drain(1000, FluidAction.EXECUTE);
+			tank.drain(FluidAttributes.BUCKET_VOLUME, FluidAction.EXECUTE);
 			bucketitem.onLiquidPlaced(world, bucketStack, pos);
 			return true;
 		}

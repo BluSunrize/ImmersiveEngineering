@@ -24,6 +24,7 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.Arrays;
@@ -64,7 +65,7 @@ public class CokeOvenRecipeCategory extends IERecipeCategory<CokeOvenRecipe>
 		if(recipe.creosoteOutput > 0)
 		{
 			IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
-			guiFluidStacks.init(0, false, 121, 4, 16, 47, 5000, false, tankOverlay);
+			guiFluidStacks.init(0, false, 121, 4, 16, 47, 5*FluidAttributes.BUCKET_VOLUME, false, tankOverlay);
 			guiFluidStacks.set(0, new FluidStack(IEContent.fluidCreosote, recipe.creosoteOutput));
 			guiFluidStacks.addTooltipCallback(JEIHelper.fluidTooltipCallback);
 		}

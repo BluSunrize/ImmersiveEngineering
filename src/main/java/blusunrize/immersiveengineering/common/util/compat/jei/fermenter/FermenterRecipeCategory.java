@@ -23,6 +23,7 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.FluidAttributes;
 
 import java.util.Arrays;
 
@@ -62,7 +63,7 @@ public class FermenterRecipeCategory extends IERecipeCategory<FermenterRecipe>
 		if(recipe.fluidOutput!=null)
 		{
 			IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
-			guiFluidStacks.init(0, false, 106, 9, 16, 47, 500, false, tankOverlay);
+			guiFluidStacks.init(0, false, 106, 9, 16, 47, FluidAttributes.BUCKET_VOLUME/2, false, tankOverlay);
 			guiFluidStacks.set(0, recipe.fluidOutput);
 			guiFluidStacks.addTooltipCallback(JEIHelper.fluidTooltipCallback);
 		}

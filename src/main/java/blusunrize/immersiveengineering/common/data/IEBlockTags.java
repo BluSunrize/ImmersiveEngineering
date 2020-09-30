@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.IETags.MetalTags;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDecoration;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.Misc;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.StoneDecoration;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDecoration;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
@@ -80,5 +81,7 @@ class IEBlockTags extends BlockTagsProvider
 		}
 		func_240522_a_(IETags.coalCokeBlock)
 				.func_240532_a_(StoneDecoration.coke);
+		func_240522_a_(BlockTags.FLOWER_POTS)
+				.func_240532_a_(Misc.pottedHemp);
 	}
 }

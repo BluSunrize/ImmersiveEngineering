@@ -37,6 +37,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -61,7 +62,7 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 			Direction.DOWN, OUTPUT,
 			Direction.UP, IOSideConfig.INPUT
 	));
-	public FluidTank tank = new FluidTank(12000, this::isFluidValid);
+	public FluidTank tank = new FluidTank(12*FluidAttributes.BUCKET_VOLUME, this::isFluidValid);
 
 	public WoodenBarrelTileEntity(TileEntityType<? extends WoodenBarrelTileEntity> type)
 	{

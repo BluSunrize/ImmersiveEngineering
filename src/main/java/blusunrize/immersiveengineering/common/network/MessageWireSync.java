@@ -71,6 +71,7 @@ public class MessageWireSync implements IMessage
 					start, end, type, added);
 			PlayerEntity player = ImmersiveEngineering.proxy.getClientPlayer();
 			World w = player.world;
+
 			GlobalWireNetwork globalNet = GlobalWireNetwork.getNetwork(w);
 			if(added)
 				globalNet.addConnection(new Connection(type, start, end));

@@ -223,6 +223,8 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 					maxSum += requiredAtSource;
 				}
 			}
+			if(maxSum==0)
+				continue;
 			double allowedFactor = Math.min(1, available/maxSum);
 			for(Path p : maxOut.keySet())
 			{

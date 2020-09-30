@@ -63,6 +63,8 @@ import java.util.function.Supplier;
 
 public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFluidItem, IOBJModelCallback<ItemStack>, ITool, IScrollwheel
 {
+	private static final int CAPACITY = 2*FluidAttributes.BUCKET_VOLUME;
+
 	public ChemthrowerItem()
 	{
 		super("chemthrower", new Item.Properties().setISTER(() -> () -> IEOBJItemRenderer.INSTANCE).maxStackSize(1), "CHEMTHROWER");
@@ -71,7 +73,7 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 	@Override
 	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
 	{
-		int cap = getCapacity(stack, 2000);
+		int cap = getCapacity(stack, CAPACITY);
 
 		int numberOfTanks = getUpgrades(stack).getBoolean("multitank")?3: 1;
 
@@ -234,9 +236,9 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 	public void finishUpgradeRecalculation(ItemStack stack)
 	{
 		FluidStack fs = getFluid(stack);
-		if(!fs.isEmpty()&&fs.getAmount() > getCapacity(stack, 2000))
+		if(!fs.isEmpty()&&fs.getAmount() > getCapacity(stack, CAPACITY))
 		{
-			fs.setAmount(getCapacity(stack, 2000));
+			fs.setAmount(getCapacity(stack, CAPACITY));
 			ItemNBTHelper.setFluidStack(stack, FluidHandlerItemStack.FLUID_NBT_KEY, fs);
 		}
 	}
@@ -278,7 +280,7 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 		if(!stack.isEmpty())
 			return new IEItemStackHandler(stack)
 			{
-				LazyOptional<IEItemFluidHandler> fluids = CapabilityUtils.constantOptional(new IEItemFluidHandler(stack, 2000));
+				LazyOptional<IEItemFluidHandler> fluids = CapabilityUtils.constantOptional(new IEItemFluidHandler(stack, CAPACITY));
 				LazyOptional<ShaderWrapper_Item> shaders = CapabilityUtils.constantOptional(new ShaderWrapper_Item(new ResourceLocation(ImmersiveEngineering.MODID, "chemthrower"), stack));
 
 				@Nonnull

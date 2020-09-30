@@ -21,6 +21,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
@@ -277,7 +278,7 @@ public class FluidSorterTileEntity extends IEBaseTileEntity implements IInteract
 		@Override
 		public int getTankCapacity(int tank)
 		{
-			return 1000;
+			return FluidAttributes.BUCKET_VOLUME;
 		}
 
 		@Override

@@ -39,6 +39,7 @@ import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidTank;
@@ -55,7 +56,7 @@ import java.util.*;
 public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity, MixerRecipe> implements
 		IInteractionObjectIE, IBlockBounds
 {
-	public MultiFluidTank tank = new MultiFluidTank(8000);
+	public MultiFluidTank tank = new MultiFluidTank(8*FluidAttributes.BUCKET_VOLUME);
 	public NonNullList<ItemStack> inventory = NonNullList.withSize(8, ItemStack.EMPTY);
 	public float animation_agitator = 0;
 	public boolean outputAll;

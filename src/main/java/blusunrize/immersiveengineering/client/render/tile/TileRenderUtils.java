@@ -24,13 +24,19 @@ public class TileRenderUtils
 			IRenderTypeBuffer builderIn
 	)
 	{
+		mirror(tile, mat);
 		if(!tile.getIsMirrored())
 			return builderIn;
 		else
+			return type -> new InvertingVertexBuffer(4, builderIn.getBuffer(type));
+	}
+
+	public static <T extends IMirrorAble & IDirectionalTile> void mirror(T tile, MatrixStack mat)
+	{
+		if(tile.getIsMirrored())
 		{
 			Direction facing = tile.getFacing();
 			mat.scale(facing.getXOffset()==0?-1: 1, 1, facing.getZOffset()==0?-1: 1);
-			return type -> new InvertingVertexBuffer(4, builderIn.getBuffer(type));
 		}
 	}
 }

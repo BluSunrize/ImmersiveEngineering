@@ -6,12 +6,16 @@
     - Allowed creosote to be very inefficient generator fuel
     - Increase sulfur output from coal, lapis and quartz
     - Increase gunpowder output from sulfur & saltpeter recipe
+    - Reduced ethanol output from melon slices
 - Allowed multiblock structures to be changed by data packs (Malte)
+- Changed the renders for waterwheels, windmills and bucket wheel to use VBOs (Malte)
 - Fixed GUI model for the alloy smelter (BluSunrize)
 - Fixed crash with mineral veins being saved (BluSunrize)
 - Fixed infinite crafting of firework rockets in the assembler (Malte)
 - Fixed lighting in the assembler GUI (Malte)
 - Fixed connectors being pushed by pistons if quark is installed (Malte)
+- Fixed connectors accepting too much energy sometimes (Malte)
+- Fixed recipes for steel, electrum and constantan dust (Malte)
 
 ##### Version 1.16.1-4.0.1-120
 - Fixed crashes with wires under certain conditions (Malte)
