@@ -194,7 +194,6 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 			indirectConnections.clear();
 	}
 
-
 	@Override
 	public void onEntityCollision(World world, Entity entity)
 	{
@@ -219,10 +218,23 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 	{
 		int[] config = nbt.getIntArray("sideConfig");
 		for(int i = 0; i < 6; ++i)
+		{
+			Direction curDir = Direction.byIndex(i);
 			if(i < config.length)
-				sideConfig.put(Direction.byIndex(i), config[i]!=0);
+			{
+				boolean connected = config[i]!=0;
+				sideConfig.put(curDir, connected);
+				if(connected)
+					setValidHandler(curDir);
+				else
+					invalidateHandler(curDir);
+			}
 			else
-				sideConfig.put(Direction.byIndex(i), false);
+			{
+				sideConfig.put(curDir, false);
+				invalidateHandler(curDir);
+			}
+		}
 		cover = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(nbt.getString("cover")));
 		DyeColor oldColor = color;
 		if(nbt.contains("color", NBT.TAG_INT))
@@ -253,7 +265,6 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 			nbt.putInt("color", color.getId());
 	}
 
-
 	boolean canOutputPressurized(TileEntity output, boolean consumePower)
 	{
 		if(output instanceof IFluidPipe)
@@ -270,6 +281,23 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 			sidedHandlers.put(f, registerConstantCap(new PipeFluidHandler(this, f)));
 			neighbors.put(f, CapabilityReference.forNeighbor(this, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f));
 		}
+	}
+
+	private void invalidateHandler(Direction side)
+	{
+		LazyOptional<IFluidHandler> handler = sidedHandlers.get(side);
+		if(handler!=null&&handler.isPresent())
+		{
+			handler.invalidate();
+			sidedHandlers.put(side, null);
+		}
+	}
+
+	private void setValidHandler(Direction side)
+	{
+		LazyOptional<IFluidHandler> handler = sidedHandlers.get(side);
+		if(handler==null||!handler.isPresent())
+			sidedHandlers.put(side, registerConstantCap(new PipeFluidHandler(this, side)));
 	}
 
 	@Nonnull
@@ -501,13 +529,14 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 		final byte oldConn = connections;
 		int i = dir.getIndex();
 		int mask = 1<<i;
-		connections &= ~mask;
-		if(sideConfig.getBoolean(dir)&&neighbors.get(dir).isPresent()) //TODO: this probably fails at first pass
+		if(sideConfig.getBoolean(dir)&&neighbors.get(dir).isPresent())
 		{
 			IFluidHandler handler = neighbors.get(dir).get();
 			if(handler.getTanks() > 0)
 				connections |= mask;
 		}
+		else
+			connections &= ~mask;
 		return oldConn!=connections;
 	}
 
@@ -551,27 +580,29 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 	public void toggleSide(Direction side)
 	{
 		boolean newSideConnected = !sideConfig.getBoolean(side);
-		sideConfig.put(side, newSideConnected);
-		if (newSideConnected) {
-			if (!sidedHandlers.get(side).isPresent())
-				sidedHandlers.put(side, registerConstantCap(new PipeFluidHandler(this, side)));
-		}
-		else {
-			LazyOptional<IFluidHandler> handler = sidedHandlers.get(side);
-			if(handler.isPresent())
-				sidedHandlers.get(side).invalidate();
-		}
+		setSide(side, newSideConnected);
+	}
 
+	public void setSide(Direction side, boolean connectable)
+	{
+		setSide(side, connectable, true);
+	}
+
+	public void setSide(Direction side, boolean connectable, boolean firstPipe)
+	{
+		sideConfig.put(side, connectable);
+		if(connectable)
+			setValidHandler(side);
+		else
+			invalidateHandler(side);
 		markDirty();
-
-		TileEntity connected = world.getTileEntity(getPos().offset(side));
-		if(connected instanceof FluidPipeTileEntity)
+		if(firstPipe)
 		{
-			((FluidPipeTileEntity)connected).sideConfig.put(side.getOpposite(), sideConfig.getBoolean(side));
-			connected.markDirty();
-			world.addBlockEvent(getPos().offset(side), getBlockState().getBlock(), 0, 0);
+			TileEntity neighborTile = world.getTileEntity(getPos().offset(side));
+			if(neighborTile instanceof FluidPipeTileEntity)
+				((FluidPipeTileEntity)neighborTile).setSide(side.getOpposite(), connectable, false);
+			updateConnectionByte(side); //yes, this is not meant for neighborTile
 		}
-		updateConnectionByte(side);
 		world.addBlockEvent(getPos(), getBlockState().getBlock(), 0, 0);
 	}
 
