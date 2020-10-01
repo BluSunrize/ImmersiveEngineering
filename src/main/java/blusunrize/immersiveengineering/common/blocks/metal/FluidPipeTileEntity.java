@@ -564,7 +564,9 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 		if((connections&(1<<connection.getIndex()))==0)
 			return 0;
 
-		if(connections!=(Direction.DOWN.getIndex()+Direction.UP.getIndex())&&connections!=(Direction.NORTH.getIndex()+Direction.SOUTH.getIndex())&&connections!=Direction.WEST.getIndex()+Direction.EAST.getIndex())
+		if(connections!=((1<<Direction.DOWN.getIndex())+(1<<Direction.UP.getIndex()))&&
+				connections!=((1<<Direction.NORTH.getIndex())+(1<<Direction.SOUTH.getIndex()))&&
+				connections!=((1<<Direction.WEST.getIndex())+(1<<Direction.EAST.getIndex())))
 			return 1;
 		TileEntity con = Utils.getExistingTileEntity(world, getPos().offset(connection));
 		if(con instanceof FluidPipeTileEntity)
