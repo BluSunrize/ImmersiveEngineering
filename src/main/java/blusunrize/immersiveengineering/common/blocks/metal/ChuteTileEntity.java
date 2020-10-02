@@ -300,7 +300,7 @@ public class ChuteTileEntity extends IEBaseTileEntity implements IStateBasedDire
 		String s = "base";
 		for(Direction dir : Direction.BY_HORIZONTAL_INDEX)
 			if(!isInwardConveyor(dir))
-				s += ":"+dir.name().toLowerCase();
+				s += ":"+dir.name().toLowerCase(Locale.US);
 		return s;
 	}
 
