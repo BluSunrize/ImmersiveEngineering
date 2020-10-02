@@ -564,14 +564,13 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 		if((connections&(1<<connection.getIndex()))==0)
 			return 0;
 
-		if(connections!=3&&connections!=12&&connections!=48)
+		if(connections!=3&&connections!=12&&connections!=48) //add flange if not a straight pipe
 			return 1;
 		TileEntity con = Utils.getExistingTileEntity(world, getPos().offset(connection));
 		if(con instanceof FluidPipeTileEntity)
 		{
 			byte tileConnections = ((FluidPipeTileEntity)con).connections;
-			//TODO doesn't seem right to me
-			if(connections==tileConnections)
+			if(connections==tileConnections) //if neighbor pipe is also straight and in same direction, don't add flanges
 				return 0;
 		}
 		return 1;
