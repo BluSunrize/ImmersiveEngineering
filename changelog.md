@@ -1,3 +1,7 @@
+##### Version 1.16.3-4.1.0-pre
+- Fixed crash with gunpowder barrels (BluSunrize)
+- Also includes the changes from 1.15.2-4.0.1-119
+
 ##### Version 1.15.2-4.1.0-pre
 - Added the sawmill! It strips logs and cuts them into planks! (BluSunrize)
 - Added blue ice to be used by the Thermoelectric Generator, nerfed packed ice in response (BluSunrize)
