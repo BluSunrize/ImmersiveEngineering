@@ -179,7 +179,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 	/* ------------- INTERNAL INVENTORY ------------- */
 
 	@Override
-	public int getSlotCount(ItemStack stack)
+	public int getSlotCount()
 	{
 		return 18+2+1;
 	}

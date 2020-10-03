@@ -29,7 +29,7 @@ public abstract class InternalStorageItem extends IEBaseItem
 		super(name, props);
 	}
 
-	public abstract int getSlotCount(ItemStack stack);
+	public abstract int getSlotCount();
 
 	@Nullable
 	@Override

@@ -300,7 +300,7 @@ public class IEShieldItem extends UpgradeableToolItem implements IIEEnergyItem, 
 	}
 
 	@Override
-	public int getSlotCount(ItemStack stack)
+	public int getSlotCount()
 	{
 		return 2;
 	}

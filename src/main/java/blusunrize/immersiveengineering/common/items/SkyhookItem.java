@@ -189,7 +189,7 @@ public class SkyhookItem extends UpgradeableToolItem implements ITool
 	}
 
 	@Override
-	public int getSlotCount(ItemStack stack)
+	public int getSlotCount()
 	{
 		return 2;
 	}
