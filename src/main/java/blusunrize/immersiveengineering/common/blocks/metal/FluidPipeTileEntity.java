@@ -30,7 +30,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.Vector4f;
@@ -630,7 +629,8 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 	@Override
 	public VoxelShape getSelectionShape(@Nullable ISelectionContext ctx)
 	{
-		return SHAPES.get(new BoundingBoxKey(ctx!=null&&ctx.getEntity() instanceof ClientPlayerEntity&&Utils.isHammer(((ClientPlayerEntity)ctx.getEntity()).getHeldItemMainhand()), this));
+		boolean hammer = ctx!=null&&ctx.getEntity() instanceof PlayerEntity&&Utils.isHammer(((PlayerEntity)ctx.getEntity()).getHeldItemMainhand());
+		return SHAPES.get(new BoundingBoxKey(hammer, this));
 	}
 
 	private static List<AxisAlignedBB> getBoxes(BoundingBoxKey key)

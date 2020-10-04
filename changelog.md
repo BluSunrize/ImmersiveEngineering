@@ -27,6 +27,7 @@
 - Fixed rendering of fluids in world (Malte)
 - Fixed issues with the mineral commands (Malte)
 - Fixed crash related to non-bullet items in the gun turret (Malte)
+- Fixed fluid pipes having janky behavior and rendering (MalkContent)
 
 ##### Version 1.15.2-4.0.1-119
 - Added Enderpeals as valid Railgun projectiles! (BluSunrize)
