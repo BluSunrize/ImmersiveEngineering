@@ -49,9 +49,12 @@ public class ExcavatorMultiblock extends IETemplateMultiblock
 				ExcavatorTileEntity excavator = (ExcavatorTileEntity)clickedTE;
 				BlockPos wheelCenter = excavator.getWheelCenterPos();
 				IEMultiblocks.BUCKET_WHEEL.createStructure(world, wheelCenter, side.rotateYCCW(), player);
-				TileEntity wheel = world.getTileEntity(wheelCenter);
-				if (wheel != null && wheel instanceof BucketWheelTileEntity)
-					((BucketWheelTileEntity)wheel).adjustStructureFacingAndMirrored(side.rotateYCCW(), excavator.getIsMirrored());
+				if(excavator.getIsMirrored())
+				{
+					TileEntity wheel = world.getTileEntity(wheelCenter);
+					if(wheel!=null&&wheel instanceof BucketWheelTileEntity)
+						((BucketWheelTileEntity)wheel).adjustStructureFacingAndMirrored(side.rotateY(), excavator.getIsMirrored());
+				}
 			}
 		}
 		return excavatorFormed;
