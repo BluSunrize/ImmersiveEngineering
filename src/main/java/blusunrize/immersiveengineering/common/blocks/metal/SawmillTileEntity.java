@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.crafting.SawmillRecipe;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttachable;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
+import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
@@ -168,8 +169,7 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 			{
 				doProcessOutput(process.getCurrentStack(!this.sawblade.isEmpty()).copy());
 				processIterator.remove();
-				// todo: make the damage configurable
-				if(this.sawblade.attemptDamageItem(5, Utils.RAND, null))
+				if(this.sawblade.attemptDamageItem(IEConfig.MACHINES.sawmill_bladeDamage.get(), Utils.RAND, null))
 				{
 					this.sawblade = ItemStack.EMPTY;
 					this.updateMasterBlock(null, true);
