@@ -40,10 +40,6 @@ import java.util.List;
 public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineTileEntity>
 {
 	public static DynamicModel<Direction> DYNAMIC;
-	private static final float TRANSLATION_DISTANCE = 2.5f;
-	private static final float STANDARD_TRANSPORT_TIME = 16f*(TRANSLATION_DISTANCE/2); //16 frames in conveyor animation, 1 frame/tick, 2.5 blocks of total translation distance, halved because transport time just affects half the distance
-	private static final float STANDARD_LIFT_TIME = 3.75f;
-	private static final float MIN_CYCLE_TIME = 60f; //set >= 2*(STANDARD_LIFT_TIME+STANDARD_TRANSPORT_TIME)
 
 	public BottlingMachineRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
 	{
@@ -83,8 +79,8 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 			if(process==null)
 				continue;
 			float processMaxTicks = process.maxProcessTick;
-			float transportTime = getTransportTime(processMaxTicks);
-			float liftTime = getLiftTime(processMaxTicks);
+			float transportTime = BottlingMachineTileEntity.getTransportTime(processMaxTicks);
+			float liftTime = BottlingMachineTileEntity.getLiftTime(processMaxTicks);
 			//+partialTicks
 			float fProcess = process.processTick;
 
@@ -118,7 +114,7 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 				itemX = .5f+.5f*(fProcess-(processMaxTicks-transportTime))/transportTime;
 				itemFill = 1;
 			}
-			itemDisplays[i] = new float[]{fProcess, (itemX-0.5f)*TRANSLATION_DISTANCE, itemY-.15625f, 1, itemFill};
+			itemDisplays[i] = new float[]{fProcess, (itemX-0.5f)*BottlingMachineTileEntity.TRANSLATION_DISTANCE, itemY-.15625f, 1, itemFill};
 		}
 
 		matrixStack.push();
@@ -229,21 +225,5 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 		ClientUtils.mc().getItemRenderer().renderItem(item, TransformType.FIXED,
 				combinedLightIn, combinedOverlayIn, matrix, batchBuffer);
 		batchBuffer.pipe(stencilWrapper);
-	}
-
-	public static float getTransportTime(float processMaxTicks)
-	{
-		if(processMaxTicks >= MIN_CYCLE_TIME)
-			return STANDARD_TRANSPORT_TIME;
-		else
-			return processMaxTicks*STANDARD_TRANSPORT_TIME/MIN_CYCLE_TIME;
-	}
-
-	public static float getLiftTime(float processMaxTicks)
-	{
-		if(processMaxTicks >= MIN_CYCLE_TIME)
-			return STANDARD_LIFT_TIME;
-		else
-			return processMaxTicks*STANDARD_LIFT_TIME/MIN_CYCLE_TIME;
 	}
 }
