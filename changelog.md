@@ -1,6 +1,11 @@
 ##### Version 1.16.3-4.1.0-pre
 - Fixed crash with gunpowder barrels (BluSunrize)
-- Also includes the changes from 1.15.2-4.0.1-119
+- Also includes the changes from 1.16.1-4.1.0-123
+
+##### Version 1.16.1-4.1.0-123
+- Fixed further issues with wires loading (Malte)
+- Fixed issues with ItemStack NBTs, caused problems with Mekanism (Malte)
+- Also includes the changes from 1.15.2-4.1.0-122
 
 ##### Version 1.15.2-4.1.0-pre
 - Added the sawmill! It strips logs and cuts them into planks! (BluSunrize)

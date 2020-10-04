@@ -8,6 +8,8 @@
 
 package blusunrize.immersiveengineering.common.blocks;
 
+import java.util.Locale;
+
 public enum EnumMetals
 {
 	COPPER(0.3f),
@@ -54,7 +56,7 @@ public enum EnumMetals
 
 	public String tagName()
 	{
-		return name().toLowerCase();
+		return name().toLowerCase(Locale.US);
 	}
 
 	private enum Type

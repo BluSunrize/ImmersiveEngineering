@@ -40,7 +40,6 @@ import java.util.List;
 public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineTileEntity>
 {
 	public static DynamicModel<Direction> DYNAMIC;
-	private static final float pixelHeight = 1f/16f;
 
 	public BottlingMachineRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
 	{
@@ -60,6 +59,8 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 			return;
 		Direction facing = te.getFacing();
 
+		final float pixelHeight = 1f/16f;
+
 		//Outer GL Wrapping, initial translation
 		matrixStack.push();
 		matrixStack.translate(.5, .5, .5);
@@ -75,46 +76,45 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 		for(int i = 0; i < itemDisplays.length; i++)
 		{
 			BottlingProcess process = te.bottlingProcessQueue.get(i);
-			if(process==null||process.processTick==process.maxProcessTick)
+			if(process==null)
 				continue;
-
+			float processMaxTicks = process.maxProcessTick;
+			float transportTime = BottlingMachineTileEntity.getTransportTime(processMaxTicks);
+			float liftTime = BottlingMachineTileEntity.getLiftTime(processMaxTicks);
 			//+partialTicks
-			float processTimer = ((float)process.processTick)/process.maxProcessTick*120;
+			float fProcess = process.processTick;
 
-			float itemX = -1.5f;//-1;
-			float itemY = -.15625f;// -.34375f;
-			float itemZ = 1;//-.9375f;
-			float itemFill = 0;//ClientUtils.mc().player.ticksExisted%100; //0f;
+			float itemX;
+			float itemY = 0;
+			float itemFill = 0;
 
-			if(processTimer <= 35)//slide
+			if(fProcess < transportTime)
+				itemX = .5f*fProcess/transportTime;
+			else if(fProcess < (processMaxTicks-transportTime))
 			{
-				itemX += processTimer/35f*1.5;
-			}
-			else if(processTimer <= 85)//slide
-			{
-				itemX = 0;
-				if(processTimer <= 55)
-					lift = (processTimer-35)/20f*.125f;
-				else if(processTimer <= 65)
+				itemX = .5f;
+				if(fProcess < transportTime+liftTime)
+					lift = (fProcess-transportTime)/liftTime;
+				else if(fProcess < processMaxTicks-(transportTime+liftTime))
 				{
-					lift = .125f;
-					itemFill = (processTimer-55)/10f;
+					lift = 1;
+					itemFill = (fProcess-(transportTime+liftTime))/(processMaxTicks-2*(transportTime+liftTime));
 				}
 				else
 				{
-					lift = (85-processTimer)/20f*.125f;
+					lift = 1-(fProcess-(processMaxTicks-transportTime-liftTime))/liftTime;
 					itemFill = 1;
 				}
+				lift *= .125f;
 				if(lift > pixelHeight)
 					itemY += lift-pixelHeight;
 			}
 			else
 			{
-				itemX = (processTimer-85)/35f*1.5f;
+				itemX = .5f+.5f*(fProcess-(processMaxTicks-transportTime))/transportTime;
 				itemFill = 1;
 			}
-			itemDisplays[i] = new float[]{processTimer, itemX, itemY, itemZ, itemFill};
-
+			itemDisplays[i] = new float[]{fProcess, (itemX-0.5f)*BottlingMachineTileEntity.TRANSLATION_DISTANCE, itemY-.15625f, 1, itemFill};
 		}
 
 		matrixStack.push();

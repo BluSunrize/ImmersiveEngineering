@@ -94,7 +94,7 @@ public class VerticalConveyor extends BasicConveyor
 			key += renderBottomWall(getTile(), getFacing(), 1)?"1": "0";
 		}
 		key += "c"+getDyeColour();
-		if(allowCovers()&&cover!=Blocks.AIR)
+		if(isCovered()&&cover!=Blocks.AIR)
 			key += "s"+cover.getRegistryName();
 		return key;
 	}
@@ -288,7 +288,7 @@ public class VerticalConveyor extends BasicConveyor
 			}
 		}
 
-		if(allowCovers()&&entity instanceof ItemEntity)
+		if(isCovered()&&entity instanceof ItemEntity)
 			((ItemEntity)entity).setPickupDelay(10);
 	}
 

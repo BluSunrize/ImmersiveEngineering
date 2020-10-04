@@ -181,7 +181,7 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 	/* ------------- WORKBENCH & INVENTORY ------------- */
 
 	@Override
-	public int getSlotCount(ItemStack stack)
+	public int getSlotCount()
 	{
 		return 5;
 	}

@@ -83,7 +83,7 @@ public class ToolboxItem extends InternalStorageItem
 	}
 
 	@Override
-	public int getSlotCount(ItemStack stack)
+	public int getSlotCount()
 	{
 		return SLOT_COUNT;
 	}

@@ -85,7 +85,7 @@ public class TurretGunTileEntity extends TurretTileEntity
 	{
 		int energy = IEServerConfig.MACHINES.turret_gun_consumption.get();
 		ItemStack bulletStack = inventory.get(0);
-		if(!bulletStack.isEmpty()&&this.energyStorage.extractEnergy(energy, true)==energy)
+		if(bulletStack.getItem() instanceof BulletItem&&this.energyStorage.extractEnergy(energy, true)==energy)
 		{
 			IBullet bullet = ((BulletItem)bulletStack.getItem()).getType();
 			if(bullet!=null&&bullet.isValidForTurret())
@@ -170,7 +170,10 @@ public class TurretGunTileEntity extends TurretTileEntity
 	@Override
 	public boolean isStackValid(int slot, ItemStack stack)
 	{
-		return true;
+		if(slot==0)
+			return stack.getItem() instanceof BulletItem;
+		else
+			return true;
 	}
 
 	@Override

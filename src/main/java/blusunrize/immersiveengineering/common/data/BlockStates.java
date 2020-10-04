@@ -362,6 +362,24 @@ public class BlockStates extends BlockStateProvider
 		return ret;
 	}
 
+	private LoadedModelBuilder splitIEOBJ(String loc, TemplateMultiblock mb, boolean mirror)
+	{
+		UnaryOperator<BlockPos> transform = UnaryOperator.identity();
+		if(mirror)
+		{
+			Vector3i size = mb.getSize(null);
+			transform = p -> new BlockPos(size.getX()-p.getX()-1, p.getY(), p.getZ());
+		}
+		final Vector3i offset = mb.getMasterFromOriginOffset();
+		Stream<Vector3i> partsStream = mb.getStructure(null)
+				.stream()
+				.filter(info -> !info.state.isAir())
+				.map(info -> info.pos)
+				.map(transform)
+				.map(p -> p.subtract(offset));
+		return splitIEOBJ(loc, partsStream.collect(Collectors.toList()));
+	}
+
 	private LoadedModelBuilder splitIEOBJ(
 			String model,
 			List<Vector3i> parts
@@ -914,8 +932,8 @@ public class BlockStates extends BlockStateProvider
 		createMultiblock(Multiblocks.silo, splitOBJ("block/metal_multiblock/silo.obj", IEMultiblocks.SILO));
 		createMultiblock(Multiblocks.tank, splitOBJ("block/metal_multiblock/tank.obj", IEMultiblocks.SHEETMETAL_TANK));
 		createMultiblock(Multiblocks.bottlingMachine,
-				splitOBJ("block/metal_multiblock/bottling_machine.obj", IEMultiblocks.BOTTLING_MACHINE),
-				splitOBJ("block/metal_multiblock/bottling_machine_mirrored.obj", IEMultiblocks.BOTTLING_MACHINE, true));
+				splitIEOBJ("block/metal_multiblock/bottling_machine.obj.ie", IEMultiblocks.BOTTLING_MACHINE, false),
+				splitIEOBJ("block/metal_multiblock/bottling_machine_mirrored.obj.ie", IEMultiblocks.BOTTLING_MACHINE, true));
 		createMultiblock(Multiblocks.fermenter,
 				splitOBJ("block/metal_multiblock/fermenter.obj", IEMultiblocks.FERMENTER),
 				splitOBJ("block/metal_multiblock/fermenter_mirrored.obj", IEMultiblocks.FERMENTER, true));

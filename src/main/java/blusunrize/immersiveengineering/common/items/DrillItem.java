@@ -175,7 +175,7 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 	/* ------------- WORKBENCH & INVENTORY ------------- */
 
 	@Override
-	public int getSlotCount(ItemStack stack)
+	public int getSlotCount()
 	{
 		return 5;
 	}

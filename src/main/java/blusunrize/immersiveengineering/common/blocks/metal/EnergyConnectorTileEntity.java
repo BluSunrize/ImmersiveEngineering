@@ -50,6 +50,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.Locale;
 
 import static blusunrize.immersiveengineering.api.wires.WireType.*;
 
@@ -68,7 +69,7 @@ public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity im
 				ImmutablePair<String, Boolean> key = new ImmutablePair<>(type, relay);
 				TileEntityType<EnergyConnectorTileEntity> teType = new TileEntityType<>(() -> new EnergyConnectorTileEntity(type, relay),
 						ImmutableSet.of(Connectors.ENERGY_CONNECTORS.get(key)), null);
-				teType.setRegistryName(ImmersiveEngineering.MODID, type.toLowerCase()+"_"+(relay?"relay": "conn"));
+				teType.setRegistryName(ImmersiveEngineering.MODID, type.toLowerCase(Locale.US)+"_"+(relay?"relay": "conn"));
 				event.getRegistry().register(teType);
 				DATA_TYPE_MAP.put(key, teType);
 			}

@@ -23,6 +23,7 @@ import net.minecraftforge.fluids.FluidAttributes;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
@@ -33,7 +34,7 @@ public class ToolUpgradeItem extends IEBaseItem implements IUpgrade
 
 	public ToolUpgradeItem(ToolUpgrade type)
 	{
-		super("toolupgrade_"+type.name().toLowerCase(), new Properties().maxStackSize(1));
+		super("toolupgrade_"+type.name().toLowerCase(Locale.US), new Properties().maxStackSize(1));
 		this.type = type;
 	}
 

@@ -110,7 +110,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 				int split = key.lastIndexOf("_");
 				if(split < 0)
 					split = key.length();
-				evt.addSprite(new ResourceLocation(ImmersiveEngineering.MODID, "revolvers/revolver_"+key.substring(0, split).toLowerCase()));
+				evt.addSprite(new ResourceLocation(ImmersiveEngineering.MODID, "revolvers/revolver_"+key.substring(0, split).toLowerCase(Locale.US)));
 			}
 	}
 
@@ -123,7 +123,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 				int split = key.lastIndexOf("_");
 				if(split < 0)
 					split = key.length();
-				revolverIcons.put(key, map.getSprite(new ResourceLocation("immersiveengineering:revolvers/revolver_"+key.substring(0, split).toLowerCase())));
+				revolverIcons.put(key, map.getSprite(new ResourceLocation("immersiveengineering:revolvers/revolver_"+key.substring(0, split).toLowerCase(Locale.US))));
 			}
 	}
 
@@ -179,7 +179,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 	/* ------------- INTERNAL INVENTORY ------------- */
 
 	@Override
-	public int getSlotCount(ItemStack stack)
+	public int getSlotCount()
 	{
 		return 18+2+1;
 	}
@@ -867,7 +867,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 
 		public String getNBTKey()
 		{
-			return name().toLowerCase();
+			return name().toLowerCase(Locale.US);
 		}
 
 		public ITextComponent getDisplayString(double value)
@@ -887,7 +887,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 				double dTier = (value-perk.generate_median)/perk.generate_deviation*3;
 				averageTier += dTier;
 				int iTier = (int)MathHelper.clamp((dTier < 0?Math.floor(dTier): Math.ceil(dTier)), -3, 3);
-				String translate = Lib.DESC_INFO+"revolver.perk."+perk.name().toLowerCase()+".tier"+iTier;
+				String translate = Lib.DESC_INFO+"revolver.perk."+perk.name().toLowerCase(Locale.US)+".tier"+iTier;
 				name = new TranslationTextComponent(translate).append(name);
 			}
 
@@ -925,14 +925,14 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 		@Override
 		public String toString()
 		{
-			return this.name().toLowerCase();
+			return this.name().toLowerCase(Locale.US);
 		}
 
 		public static RevolverPerk get(String name)
 		{
 			try
 			{
-				return valueOf(name.toUpperCase());
+				return valueOf(name.toUpperCase(Locale.US));
 			} catch(Exception e)
 			{
 				return null;

@@ -75,7 +75,7 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 	}
 
 	@Override
-	public int getSlotCount(ItemStack stack)
+	public int getSlotCount()
 	{
 		return 2+1;
 	}

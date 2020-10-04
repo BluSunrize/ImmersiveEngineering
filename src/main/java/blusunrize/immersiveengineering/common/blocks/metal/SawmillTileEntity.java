@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBou
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -66,6 +67,8 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 	public float animation_bladeRotation = 0;
 	public ItemStack sawblade = ItemStack.EMPTY;
 	public List<SawmillProcess> sawmillProcessQueue = new ArrayList<>();
+	// this is a temporary counter to keep track of the "same" kind of log inserted. Allows combining them into threes.
+	private int combinedLogs = 0;
 
 	public SawmillTileEntity()
 	{
@@ -166,8 +169,7 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 			{
 				doProcessOutput(process.getCurrentStack(!this.sawblade.isEmpty()).copy());
 				processIterator.remove();
-				// todo: make the damage configurable
-				if(this.sawblade.attemptDamageItem(5, Utils.RAND, null))
+				if(this.sawblade.attemptDamageItem(IEServerConfig.MACHINES.sawmill_bladeDamage.get(), Utils.RAND, null))
 				{
 					this.sawblade = ItemStack.EMPTY;
 					this.updateMasterBlock(null, true);
@@ -317,14 +319,27 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 		if(this.sawmillProcessQueue.size() < this.getProcessQueueMaxLength())
 		{
 			float dist = 1;
+			float minProcessDist = 0.1f;
 			SawmillProcess p = null;
 			if(this.sawmillProcessQueue.size() > 0)
 			{
 				p = this.sawmillProcessQueue.get(this.sawmillProcessQueue.size()-1);
 				if(p!=null)
+				{
 					dist = p.getRelativeProcessStep();
+					// either it's a different item or we have 3 together already
+					if(!stack.isItemEqual(p.input)||combinedLogs > 2)
+					{
+						if(!simulate)
+							combinedLogs = 0;
+						minProcessDist = 0.5f;
+					}
+				}
 			}
-			if(p!=null&&dist < this.getMinProcessDistance(null))
+			else if(combinedLogs > 0)
+				combinedLogs = 0;
+
+			if(p!=null&&dist < minProcessDist)
 				return;
 			if(!simulate)
 			{
@@ -332,6 +347,7 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 				this.sawmillProcessQueue.add(p);
 				this.markDirty();
 				this.markContainingBlockForUpdate(null);
+				combinedLogs++;
 			}
 			stack.shrink(1);
 		}
@@ -415,7 +431,7 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 		{
 			Direction outDir = getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY();
 			BlockPos pos = getPos().offset(outDir, 1).offset(getFacing(), -2).down();
-			Utils.dropStackAtPos(world, pos, output, outDir);
+			Utils.dropStackAtPos(world, pos, output, getFacing().getOpposite());
 		}
 	}
 
@@ -432,13 +448,13 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 	@Override
 	public int getMaxProcessPerTick()
 	{
-		return 2;
+		return 6;
 	}
 
 	@Override
 	public int getProcessQueueMaxLength()
 	{
-		return 2;
+		return 6;
 	}
 
 	@Override

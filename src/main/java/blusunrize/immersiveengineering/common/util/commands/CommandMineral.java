@@ -157,10 +157,7 @@ public class CommandMineral
 		if(mineral!=null)
 		{
 			MineralVein vein = new MineralVein(pos, mineral.getId(), radius);
-			synchronized(ExcavatorHandler.getMineralVeinList())
-			{
-				ExcavatorHandler.getMineralVeinList().put(sender.getWorld().getDimensionKey(), vein);
-			}
+			ExcavatorHandler.addVein(sender.getWorld().getDimensionKey(), vein);
 			IESaveData.setDirty();
 			sender.sendFeedback(new TranslationTextComponent(Lib.CHAT_COMMAND+
 					"mineral.put.success", mineral.getId(), radius, pos.x, pos.z), true);

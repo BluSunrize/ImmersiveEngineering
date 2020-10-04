@@ -50,7 +50,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.data.*;
-import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.EquipmentSlotType.Group;
 import net.minecraft.item.DyeColor;
@@ -80,6 +79,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
@@ -1174,7 +1174,7 @@ public class Recipes extends RecipeProvider
 			ShapelessRecipeBuilder.shapelessRecipe(WoodenDecoration.treatedWood.get(to))
 					.addIngredient(WoodenDecoration.treatedWood.get(from))
 					.addCriterion("has_"+toPath(WoodenDecoration.treatedWood.get(from)), hasItem(WoodenDecoration.treatedWood.get(from)))
-					.build(out, toRL(toPath(WoodenDecoration.treatedWood.get(to))+"_from_"+from.toString().toLowerCase()));
+					.build(out, toRL(toPath(WoodenDecoration.treatedWood.get(to))+"_from_"+from.toString().toLowerCase(Locale.US)));
 		}
 		ShapedRecipeBuilder.shapedRecipe(WoodenDecoration.treatedScaffolding, 6)
 				.patternLine("iii")
@@ -1373,11 +1373,11 @@ public class Recipes extends RecipeProvider
 			ShapelessRecipeBuilder.shapelessRecipe(MetalDecoration.aluScaffolding.get(to))
 					.addIngredient(MetalDecoration.aluScaffolding.get(from))
 					.addCriterion("has_"+toPath(MetalDecoration.aluScaffolding.get(from)), hasItem(MetalDecoration.aluScaffolding.get(from)))
-					.build(out, toRL("alu_scaffolding_"+to.name().toLowerCase()+"_from_"+from.name().toLowerCase()));
+					.build(out, toRL("alu_scaffolding_"+to.name().toLowerCase(Locale.US)+"_from_"+from.name().toLowerCase(Locale.US)));
 			ShapelessRecipeBuilder.shapelessRecipe(MetalDecoration.steelScaffolding.get(to))
 					.addIngredient(MetalDecoration.steelScaffolding.get(from))
 					.addCriterion("has_"+toPath(MetalDecoration.steelScaffolding.get(from)), hasItem(MetalDecoration.steelScaffolding.get(from)))
-					.build(out, toRL("steel_scaffolding_"+to.name().toLowerCase()+"_from_"+from.name().toLowerCase()));
+					.build(out, toRL("steel_scaffolding_"+to.name().toLowerCase(Locale.US)+"_from_"+from.name().toLowerCase(Locale.US)));
 		}
 
 		ShapedRecipeBuilder.shapedRecipe(MetalDecoration.aluScaffolding.get(MetalScaffoldingType.STANDARD), 6)

@@ -56,6 +56,7 @@ public class IESaveData extends WorldSavedData
 								.map(inbt -> MineralVein.readFromNBT((CompoundNBT)inbt))
 								.collect(Collectors.toList()));
 			}
+			ExcavatorHandler.resetCache();
 		}
 		// Legacy, using mineralDepletion key
 		if(nbt.contains("mineralDepletion", NBT.TAG_LIST))

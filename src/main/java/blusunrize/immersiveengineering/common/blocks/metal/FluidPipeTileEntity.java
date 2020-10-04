@@ -194,7 +194,6 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 			indirectConnections.clear();
 	}
 
-
 	@Override
 	public void onEntityCollision(World world, Entity entity)
 	{
@@ -219,10 +218,23 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 	{
 		int[] config = nbt.getIntArray("sideConfig");
 		for(int i = 0; i < 6; ++i)
+		{
+			Direction curDir = Direction.byIndex(i);
 			if(i < config.length)
-				sideConfig.put(Direction.byIndex(i), config[i]!=0);
+			{
+				boolean connected = config[i]!=0;
+				sideConfig.put(curDir, connected);
+				if(connected)
+					setValidHandler(curDir);
+				else
+					invalidateHandler(curDir);
+			}
 			else
-				sideConfig.put(Direction.byIndex(i), false);
+			{
+				sideConfig.put(curDir, false);
+				invalidateHandler(curDir);
+			}
+		}
 		cover = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(nbt.getString("cover")));
 		DyeColor oldColor = color;
 		if(nbt.contains("color", NBT.TAG_INT))
@@ -253,7 +265,6 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 			nbt.putInt("color", color.getId());
 	}
 
-
 	boolean canOutputPressurized(TileEntity output, boolean consumePower)
 	{
 		if(output instanceof IFluidPipe)
@@ -270,6 +281,23 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 			sidedHandlers.put(f, registerConstantCap(new PipeFluidHandler(this, f)));
 			neighbors.put(f, CapabilityReference.forNeighbor(this, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f));
 		}
+	}
+
+	private void invalidateHandler(Direction side)
+	{
+		LazyOptional<IFluidHandler> handler = sidedHandlers.get(side);
+		if(handler!=null&&handler.isPresent())
+		{
+			handler.invalidate();
+			sidedHandlers.put(side, null);
+		}
+	}
+
+	private void setValidHandler(Direction side)
+	{
+		LazyOptional<IFluidHandler> handler = sidedHandlers.get(side);
+		if(handler==null||!handler.isPresent())
+			sidedHandlers.put(side, registerConstantCap(new PipeFluidHandler(this, side)));
 	}
 
 	@Nonnull
@@ -501,48 +529,50 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 		final byte oldConn = connections;
 		int i = dir.getIndex();
 		int mask = 1<<i;
-		connections &= ~mask;
 		if(sideConfig.getBoolean(dir)&&neighbors.get(dir).isPresent())
 		{
 			IFluidHandler handler = neighbors.get(dir).get();
 			if(handler.getTanks() > 0)
 				connections |= mask;
 		}
+		else
+			connections &= ~mask;
 		return oldConn!=connections;
 	}
 
 	public byte getAvailableConnectionByte()
 	{
-		byte connections = 0;
+		byte availableConnections = connections;
 		int mask = 1;
 		for(Direction dir : Direction.VALUES)
 		{
-			if(neighbors.get(dir).isPresent())
+			if((availableConnections&mask)==0)
 			{
-				IFluidHandler handler = neighbors.get(dir).get();
-				if(handler.getTanks() > 0)
-					connections |= mask;
+				if(world.getTileEntity(getPos().offset(dir)) instanceof FluidPipeTileEntity)
+					availableConnections |= mask;
+				else if(neighbors.get(dir).isPresent())
+				{
+					IFluidHandler handler = neighbors.get(dir).get();
+					if(handler.getTanks() > 0)
+						availableConnections |= mask;
+				}
 			}
 			mask <<= 1;
 		}
-		return connections;
+		return availableConnections;
 	}
 
 	public int getConnectionStyle(Direction connection)
 	{
-		if(!sideConfig.getBoolean(connection))
-			return 0;
-		if((connections&(1<<connection.ordinal()))==0)
-			return 0;
+		int styleConnections = connections|(1<<connection.getIndex());//for previewing connection styles
 
-		if(connections!=3&&connections!=12&&connections!=48)
+		if(styleConnections!=3&&styleConnections!=12&&styleConnections!=48) //add flange if not a straight pipe
 			return 1;
 		TileEntity con = Utils.getExistingTileEntity(world, getPos().offset(connection));
 		if(con instanceof FluidPipeTileEntity)
 		{
-			byte tileConnections = ((FluidPipeTileEntity)con).connections;
-			//TODO doesn't seem right to me
-			if(connections==tileConnections)
+			int tileConnections = ((FluidPipeTileEntity)con).connections|(1<<connection.getOpposite().getIndex());
+			if(styleConnections==tileConnections) //if neighbor pipe is also straight and in same direction, don't add flanges
 				return 0;
 		}
 		return 1;
@@ -550,15 +580,29 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 
 	public void toggleSide(Direction side)
 	{
-		sideConfig.put(side, !sideConfig.getBoolean(side));
-		markDirty();
+		boolean newSideConnected = !sideConfig.getBoolean(side);
+		setSide(side, newSideConnected);
+	}
 
-		TileEntity connected = world.getTileEntity(getPos().offset(side));
-		if(connected instanceof FluidPipeTileEntity)
+	public void setSide(Direction side, boolean connectable)
+	{
+		setSide(side, connectable, true);
+	}
+
+	public void setSide(Direction side, boolean connectable, boolean firstPipe)
+	{
+		sideConfig.put(side, connectable);
+		if(connectable)
+			setValidHandler(side);
+		else
+			invalidateHandler(side);
+		markDirty();
+		if(firstPipe)
 		{
-			((FluidPipeTileEntity)connected).sideConfig.put(side.getOpposite(), sideConfig.getBoolean(side));
-			connected.markDirty();
-			world.addBlockEvent(getPos().offset(side), getBlockState().getBlock(), 0, 0);
+			TileEntity neighborTile = world.getTileEntity(getPos().offset(side));
+			if(neighborTile instanceof FluidPipeTileEntity)
+				((FluidPipeTileEntity)neighborTile).setSide(side.getOpposite(), connectable, false);
+			updateConnectionByte(side); //yes, this is not meant for neighborTile
 		}
 		world.addBlockEvent(getPos(), getBlockState().getBlock(), 0, 0);
 	}
@@ -579,19 +623,20 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 	@Override
 	public VoxelShape getCollisionShape(ISelectionContext ctx)
 	{
-		return SHAPES.get(new BoundingBoxKey(true, this));
+		return SHAPES.get(new BoundingBoxKey(false, this));
 	}
 
 	@Override
 	public VoxelShape getSelectionShape(@Nullable ISelectionContext ctx)
 	{
-		return SHAPES.get(new BoundingBoxKey(false, this));
+		boolean hammer = ctx!=null&&ctx.getEntity() instanceof PlayerEntity&&Utils.isHammer(((PlayerEntity)ctx.getEntity()).getHeldItemMainhand());
+		return SHAPES.get(new BoundingBoxKey(hammer, this));
 	}
 
 	private static List<AxisAlignedBB> getBoxes(BoundingBoxKey key)
 	{
 		List<AxisAlignedBB> list = Lists.newArrayList();
-		if(key.collisions&&key.hasCover)
+		if(!key.showToolView&&key.hasCover)
 		{
 			list.add(new AxisAlignedBB(0, 0, 0, 1, 1, 1).grow(-.03125f));
 			return list;
@@ -601,19 +646,21 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 		double[] baseAABB = key.hasCover?new double[]{.002, .998, .002, .998, .002, .998}: new double[]{.25, .75, .25, .75, .25, .75};
 		for(Direction d : Direction.VALUES)
 		{
-			int i = d.ordinal();
-			if((availableConnections&0x1)==1)
+			int i = d.getIndex();
+			if((availableConnections&1)==1)
 			{
-				if((activeConnections&1)==1)
+				if((activeConnections&1)==1||key.showToolView)
+				{
 					list.add(new AxisAlignedBB(
 							i==4?0: i==5?0.75: 0.25, i==0?0: i==1?0.75: 0.25, i==2?0: i==3?0.75: 0.25,
 							i==4?0.25: i==5?1: 0.75, i==0?0.25: i==1?1: 0.75, i==2?0.25: i==3?1: 0.75
 					));
-				if(((activeConnections&1)==0&&!key.collisions)||key.connectionStyles.get(d)==1)
-					list.add(new AxisAlignedBB(
-							i==4?0: i==5?0.875: 0.125, i==0?0: i==1?0.875: 0.125, i==2?0: i==3?0.875: 0.125,
-							i==4?0.125: i==5?1: 0.875, i==0?0.125: i==1?1: 0.875, i==2?0.125: i==3?1: 0.875
-					));
+					if(key.connectionStyles.get(d)==1)
+						list.add(new AxisAlignedBB(
+								i==4?0: i==5?0.875: 0.125, i==0?0: i==1?0.875: 0.125, i==2?0: i==3?0.875: 0.125,
+								i==4?0.125: i==5?1: 0.875, i==0?0.125: i==1?1: 0.875, i==2?0.125: i==3?1: 0.875
+						));
+				}
 			}
 			availableConnections = (byte)(availableConnections >> 1);
 			activeConnections = (byte)(activeConnections >> 1);
@@ -624,15 +671,15 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 
 	private static class BoundingBoxKey
 	{
-		private final boolean collisions;
+		private final boolean showToolView;
 		private final byte connections;
 		private final byte availableConnections;
 		private final boolean hasCover;
 		private final Map<Direction, Integer> connectionStyles = new EnumMap<>(Direction.class);
 
-		private BoundingBoxKey(boolean collisions, FluidPipeTileEntity te)
+		private BoundingBoxKey(boolean showToolView, FluidPipeTileEntity te)
 		{
-			this.collisions = collisions;
+			this.showToolView = showToolView;
 			this.connections = te.connections;
 			this.availableConnections = te.getAvailableConnectionByte();
 			this.hasCover = te.hasCover();
@@ -646,7 +693,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 			if(this==o) return true;
 			if(o==null||getClass()!=o.getClass()) return false;
 			BoundingBoxKey that = (BoundingBoxKey)o;
-			return collisions==that.collisions&&
+			return showToolView==that.showToolView&&
 					connections==that.connections&&
 					availableConnections==that.availableConnections&&
 					hasCover==that.hasCover&&
@@ -656,7 +703,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 		@Override
 		public int hashCode()
 		{
-			return Objects.hash(collisions, connections, availableConnections, hasCover, connectionStyles);
+			return Objects.hash(showToolView, connections, availableConnections, hasCover, connectionStyles);
 		}
 
 	}
@@ -1055,11 +1102,17 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 	@Override
 	public void onTilePlaced(World world, BlockPos pos, BlockState state, Direction side, float hitX, float hitY, float hitZ, LivingEntity placer, ItemStack stack)
 	{
-		TileEntity te;
-		for(Direction dir : Direction.values())
-			if((te = world.getTileEntity(pos.offset(dir))) instanceof FluidPipeTileEntity)
-				if(((FluidPipeTileEntity)te).color!=this.color)
-					this.toggleSide(dir);
+		if(!world.isRemote())
+		{
+			TileEntity te;
+			for(Direction dir : Direction.values())
+				if((te = world.getTileEntity(pos.offset(dir))) instanceof FluidPipeTileEntity)
+				{
+					FluidPipeTileEntity neighborPipe = (FluidPipeTileEntity)te;
+					if(neighborPipe.color!=this.color||!neighborPipe.sideConfig.getBoolean(dir.getOpposite()))
+						this.setSide(dir, false);
+				}
+		}
 	}
 
 	@Override

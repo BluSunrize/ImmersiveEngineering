@@ -35,7 +35,7 @@ public class SpeedloaderItem extends InternalStorageItem implements ITool, IBull
 	}
 
 	@Override
-	public int getSlotCount(ItemStack stack)
+	public int getSlotCount()
 	{
 		return 8;
 	}
@@ -73,7 +73,7 @@ public class SpeedloaderItem extends InternalStorageItem implements ITool, IBull
 	@Override
 	public int getBulletCount(ItemStack container)
 	{
-		return getSlotCount(container);
+		return getSlotCount();
 	}
 
 	@Override
@@ -84,9 +84,9 @@ public class SpeedloaderItem extends InternalStorageItem implements ITool, IBull
 		else if(remote&&!ItemNBTHelper.hasKey(revolver, "bullets"))
 			remote = false;
 		if(!remote)
-			return ListUtils.fromItems(this.getContainedItems(revolver).subList(0, getSlotCount(revolver)));
+			return ListUtils.fromItems(this.getContainedItems(revolver).subList(0, getSlotCount()));
 		else
-			return Utils.readInventory(revolver.getOrCreateTag().getList("bullets", 10), getSlotCount(revolver));
+			return Utils.readInventory(revolver.getOrCreateTag().getList("bullets", 10), getSlotCount());
 	}
 
 	@Nullable
@@ -101,8 +101,8 @@ public class SpeedloaderItem extends InternalStorageItem implements ITool, IBull
 		final CompoundNBT retConst = ret;
 		stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).ifPresent(handler->
 		{
-			NonNullList<ItemStack> bullets = NonNullList.withSize(getSlotCount(stack), ItemStack.EMPTY);
-			for(int i = 0; i < getSlotCount(stack); i++)
+			NonNullList<ItemStack> bullets = NonNullList.withSize(getSlotCount(), ItemStack.EMPTY);
+			for(int i = 0; i < getSlotCount(); i++)
 				bullets.set(i, handler.getStackInSlot(i));
 			retConst.put("bullets", Utils.writeInventory(bullets));
 		});

@@ -27,13 +27,14 @@ import javax.annotation.Nullable;
 
 public class IEItemStackHandler extends ItemStackHandler implements ICapabilityProvider
 {
-	private boolean first = true;
-	private ItemStack stack;
-
 	public IEItemStackHandler(ItemStack stack)
 	{
 		super();
-		this.stack = stack;
+		int idealSize = ((InternalStorageItem)stack.getItem()).getSlotCount();
+		NonNullList<ItemStack> newList = NonNullList.withSize(idealSize, ItemStack.EMPTY);
+		for(int i = 0; i < Math.min(stacks.size(), idealSize); i++)
+			newList.set(i, stacks.get(i));
+		stacks = newList;
 	}
 
 	@Nonnull
@@ -74,25 +75,13 @@ public class IEItemStackHandler extends ItemStackHandler implements ICapabilityP
 	}
 
 	//TODO invalidate the LazyOptional objects after use?
-	private LazyOptional<IItemHandler> thisOpt = CapabilityUtils.constantOptional(this);
+	private final LazyOptional<IItemHandler> thisOpt = CapabilityUtils.constantOptional(this);
 
 	@Nonnull
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
-		if(first&&!stack.isEmpty())
-		{
-			int idealSize = ((InternalStorageItem)stack.getItem()).getSlotCount(stack);
-			NonNullList<ItemStack> newList = NonNullList.withSize(idealSize, ItemStack.EMPTY);
-			for(int i = 0; i < Math.min(stacks.size(), idealSize); i++)
-				newList.set(i, stacks.get(i));
-			stacks = newList;
-			stack = ItemStack.EMPTY;
-			first = false;
-		}
-		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-			return thisOpt.cast();
-		return LazyOptional.empty();
+		return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(capability, thisOpt);
 	}
 
 	public NonNullList<ItemStack> getContainedItems()
