@@ -31,6 +31,7 @@ import net.minecraftforge.common.ToolType;
 
 import javax.annotation.Nullable;
 import java.util.EnumMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class MetalLadderBlock extends LadderBlock
@@ -70,7 +71,7 @@ public class MetalLadderBlock extends LadderBlock
 						.notSolid()
 		);
 		this.type = type;
-		setRegistryName(new ResourceLocation(ImmersiveEngineering.MODID, "metal_ladder_"+type.name().toLowerCase()));
+		setRegistryName(new ResourceLocation(ImmersiveEngineering.MODID, "metal_ladder_"+type.name().toLowerCase(Locale.US)));
 
 		IEContent.registeredIEBlocks.add(this);
 		IEContent.registeredIEItems.add(new BlockItemIE(this));

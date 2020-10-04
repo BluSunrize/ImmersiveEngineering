@@ -1,5 +1,12 @@
-##### Version 1.15.2-4.1.0-pre
+##### Version 1.16.1-4.1.0-123
+- Fixed further issues with wires loading (Malte)
+- Fixed issues with ItemStack NBTs, caused problems with Mekanism (Malte)
+- Also includes the changes from 1.15.2-4.1.0-122
+
+##### Version 1.15.2-4.1.0-122
 - Added the sawmill! It strips logs and cuts them into planks! (BluSunrize)
+    - It also produces sawdust, which can be burnt in a furnace or crafted into paper!
+    - It'll get more uses in the future :D
 - Added blue ice to be used by the Thermoelectric Generator, nerfed packed ice in response (BluSunrize)
 - Experimental recipe changes: (BluSunrize)
     - Doubled the burntime of Diesel in the generator
@@ -8,7 +15,13 @@
     - Increase gunpowder output from sulfur & saltpeter recipe
     - Reduced ethanol output from melon slices
 - Allowed multiblock structures to be changed by data packs (Malte)
+- Added potted hemp: You can now put hemp seeds in a flower pot! (BluSunrize)
 - Changed the renders for waterwheels, windmills and bucket wheel to use VBOs (Malte)
+- Changed various multiblocks to have smaller textures and draw their elements from central sheets (BluSunrize)
+    - This will break existing resource packs that change multiblocks, but it makes them easier to create in the future!
+- Changed chutes to act as inventories for hoppers, conveyors, etc (MalkContent)
+- Changed chutes to insert properly into covered conveyors (MalkContent)
+- Changed metal press and bottling machine to process items faster and improved their animations (MalkContent)
 - Fixed GUI model for the alloy smelter (BluSunrize)
 - Fixed crash with mineral veins being saved (BluSunrize)
 - Fixed infinite crafting of firework rockets in the assembler (Malte)
@@ -16,6 +29,12 @@
 - Fixed connectors being pushed by pistons if quark is installed (Malte)
 - Fixed connectors accepting too much energy sometimes (Malte)
 - Fixed recipes for steel, electrum and constantan dust (Malte)
+- Fixed crash with potion bullets (BluSunrize)
+- Fixed crash with the voting handler on MacOS (BluSunrize)
+- Fixed rendering of fluids in world (Malte)
+- Fixed issues with the mineral commands (Malte)
+- Fixed crash related to non-bullet items in the gun turret (Malte)
+- Fixed fluid pipes having janky behavior and rendering (MalkContent)
 
 ##### Version 1.16.1-4.0.1-120
 - Fixed crashes with wires under certain conditions (Malte)

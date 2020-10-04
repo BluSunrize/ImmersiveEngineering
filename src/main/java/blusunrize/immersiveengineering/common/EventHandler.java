@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.CapabilitySkyhookData.SimpleSkyhookProvider;
+import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Direct;
@@ -455,7 +456,7 @@ public class EventHandler
 	{
 		if(Utils.isFluidRelatedItemStack(event.getItemStack()))
 			FluidUtil.getFluidContained(event.getItemStack()).ifPresent(fs -> {
-				if(!fs.isEmpty()&&fs.getFluid()==IEContent.fluidCreosote)
+				if(!fs.isEmpty()&&IETags.fluidCreosote.contains(fs.getFluid()))
 					event.setBurnTime((int)(0.8*fs.getAmount()));
 			});
 	}

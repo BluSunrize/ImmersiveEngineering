@@ -34,6 +34,8 @@ import net.minecraftforge.client.model.data.EmptyModelData;
 
 import java.util.List;
 
+import static blusunrize.immersiveengineering.common.blocks.metal.MetalPressTileEntity.*;
+
 public class MetalPressRenderer extends TileEntityRenderer<MetalPressTileEntity>
 {
 	public static DynamicModel<Void> PISTON;
@@ -60,30 +62,33 @@ public class MetalPressRenderer extends TileEntityRenderer<MetalPressTileEntity>
 		matrixStack.translate(.5, .5, .5);
 		float piston = 0;
 		float[] shift = new float[te.processQueue.size()];
+
 		for(int i = 0; i < shift.length; i++)
 		{
 			MultiblockProcess<MetalPressRecipe> process = te.processQueue.get(i);
 			if(process==null)
 				continue;
-			float transportTime = 52.5f/120f;
-			float pressTime = 3.75f/120f;
-			float fProcess = (process.processTick+(te.shouldRenderAsActive()?partialTicks: 0))/(float)process.maxTicks;
+			float processMaxTicks = process.maxTicks;
+			float transportTime = getTransportTime(processMaxTicks);
+			float pressTime = getPressTime(processMaxTicks);
+			//+partialTicks
+			float fProcess = process.processTick;
 
 			if(fProcess < transportTime)
-				shift[i] = fProcess/transportTime*.5f;
-			else if(fProcess < (1-transportTime))
+				shift[i] = .5f*fProcess/transportTime;
+			else if(fProcess < (processMaxTicks-transportTime))
 				shift[i] = .5f;
 			else
-				shift[i] = .5f+(fProcess-(1-transportTime))/transportTime*.5f;
+				shift[i] = .5f+.5f*(fProcess-(processMaxTicks-transportTime))/transportTime;
 			if(!te.mold.isEmpty())
-				if(fProcess >= transportTime&&fProcess < (1-transportTime))
+				if(fProcess >= transportTime&&fProcess < (processMaxTicks-transportTime))
 				{
 					if(fProcess < (transportTime+pressTime))
 						piston = (fProcess-transportTime)/pressTime;
-					else if(fProcess < (1-transportTime-pressTime))
+					else if(fProcess < (processMaxTicks-transportTime-pressTime))
 						piston = 1;
 					else
-						piston = 1-(fProcess-(1-transportTime-pressTime))/pressTime;
+						piston = 1-(fProcess-(processMaxTicks-transportTime-pressTime))/pressTime;
 				}
 		}
 
@@ -110,11 +115,11 @@ public class MetalPressRenderer extends TileEntityRenderer<MetalPressTileEntity>
 		matrixStack.translate(0, -.35, 1.25);
 		for(int i = 0; i < shift.length; i++)
 		{
-			MultiblockProcess process = te.processQueue.get(i);
+			MultiblockProcess<?> process = te.processQueue.get(i);
 			if(!(process instanceof PoweredMultiblockTileEntity.MultiblockProcessInWorld))
 				continue;
 			matrixStack.push();
-			matrixStack.translate(0, 0, -2.5*shift[i]);
+			matrixStack.translate(0, 0, -TRANSLATION_DISTANCE*shift[i]);
 			if(piston > .92)
 				matrixStack.translate(0, .92-piston, 0);
 

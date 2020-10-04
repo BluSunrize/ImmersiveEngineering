@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttachable;
+import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
@@ -21,6 +22,7 @@ import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
@@ -36,6 +38,9 @@ import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
@@ -56,8 +61,12 @@ import java.util.List;
 import java.util.Set;
 
 public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<BottlingMachineTileEntity, MultiblockRecipe>
-		implements IConveyorAttachable, IBlockBounds
+		implements IConveyorAttachable, IBlockBounds, IOBJModelCallback<BlockState>
 {
+	public static final float TRANSLATION_DISTANCE = 2.5f;
+	private static final float STANDARD_TRANSPORT_TIME = 16f*(TRANSLATION_DISTANCE/2); //16 frames in conveyor animation, 1 frame/tick, 2.5 blocks of total translation distance, halved because transport time just affects half the distance
+	private static final float STANDARD_LIFT_TIME = 3.75f;
+	private static final float MIN_CYCLE_TIME = 60f; //set >= 2*(STANDARD_LIFT_TIME+STANDARD_TRANSPORT_TIME)
 	public FluidTank[] tanks = new FluidTank[]{new FluidTank(8*FluidAttributes.BUCKET_VOLUME)};
 	public List<BottlingProcess> bottlingProcessQueue = new ArrayList<>();
 
@@ -98,6 +107,13 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 	{
 	}
 
+	@Override
+	@OnlyIn(Dist.CLIENT)
+	public boolean shouldRenderGroup(BlockState object, String group)
+	{
+		return "glass".equals(group)==(MinecraftForgeClient.getRenderLayer()==RenderType.getTranslucent());
+	}
+
 	private CapabilityReference<IItemHandler> outputCap = CapabilityReference.forTileEntity(this, () -> {
 		Direction outDir = getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY();
 		return new DirectionalBlockPos(getBlockPosForPos(new BlockPos(2, 1, 1)).offset(outDir), outDir.getOpposite());
@@ -110,8 +126,6 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 
 		if(isDummy()||isRSDisabled()||world.isRemote)
 			return;
-
-		tickedProcesses = 0;
 
 		int max = getMaxProcessPerTick();
 		int i = 0;
@@ -287,10 +301,27 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 		return 2;
 	}
 
+	public static float getTransportTime(float processMaxTicks)
+	{
+		if(processMaxTicks >= MIN_CYCLE_TIME)
+			return STANDARD_TRANSPORT_TIME;
+		else
+			return processMaxTicks*STANDARD_TRANSPORT_TIME/MIN_CYCLE_TIME;
+	}
+
+	public static float getLiftTime(float processMaxTicks)
+	{
+		if(processMaxTicks >= MIN_CYCLE_TIME)
+			return STANDARD_LIFT_TIME;
+		else
+			return processMaxTicks*STANDARD_LIFT_TIME/MIN_CYCLE_TIME;
+	}
+
 	@Override
 	public float getMinProcessDistance(MultiblockProcess<MultiblockRecipe> process)
 	{
-		return .5f;
+		float maxTicks = BottlingProcess.getMaxProcessTick();
+		return 1f-(getTransportTime(maxTicks)+getLiftTime(maxTicks))/maxTicks;
 	}
 
 	@Override
@@ -408,7 +439,7 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 	{
 		public NonNullList<ItemStack> items;
 		public int processTick;
-		public int maxProcessTick = (int)(120*IEConfig.MACHINES.bottlingMachineConfig.timeModifier.get());
+		public int maxProcessTick = getMaxProcessTick();
 		boolean processFinished = false;
 
 		public BottlingProcess(ItemStack input)
@@ -423,7 +454,9 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 			if(tile.energyStorage.extractEnergy(energyExtracted, true) >= energyExtracted)
 			{
 				tile.energyStorage.extractEnergy(energyExtracted, false);
-				if(++processTick==(int)(maxProcessTick*.4375))
+				processTick++;
+				float transformationPoint = getTransportTime(maxProcessTick)+getLiftTime(maxProcessTick);
+				if(processTick >= transformationPoint&&processTick < 1+transformationPoint)
 				{
 					FluidStack fs = tile.tanks[0].getFluid();
 					if(!fs.isEmpty())
@@ -452,6 +485,11 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 				return true;
 			}
 			return false;
+		}
+
+		public static int getMaxProcessTick()
+		{
+			return (int)(60*IEConfig.MACHINES.bottlingMachineConfig.timeModifier.get());
 		}
 
 		public CompoundNBT writeToNBT()

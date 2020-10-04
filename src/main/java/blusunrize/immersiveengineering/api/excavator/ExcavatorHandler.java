@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
 public class ExcavatorHandler
 {
 	private static final Multimap<RegistryKey<World>, MineralVein> MINERAL_VEIN_LIST = ArrayListMultimap.create();
+	// Only access when synchronized on MINERAL_VEIN_LIST
 	private static final Map<Pair<RegistryKey<World>, ColumnPos>, MineralWorldInfo> MINERAL_INFO_CACHE = new HashMap<>();
 	public static int mineralVeinYield = 0;
 	public static double initialVeinDepletion = 0;
@@ -49,11 +50,11 @@ public class ExcavatorHandler
 		return info.getMineralVein(Utils.RAND);
 	}
 
+	// Always call "resetCache" after modifying the map returned here!
 	public static Multimap<RegistryKey<World>, MineralVein> getMineralVeinList()
 	{
 		return MINERAL_VEIN_LIST;
 	}
-
 
 	public static MineralWorldInfo getMineralWorldInfo(World world, BlockPos pos)
 	{
@@ -66,14 +67,14 @@ public class ExcavatorHandler
 			return null;
 		RegistryKey<World> dimension = world.func_234923_W_();
 		Pair<RegistryKey<World>, ColumnPos> cacheKey = Pair.of(dimension, columnPos);
-		MineralWorldInfo worldInfo = MINERAL_INFO_CACHE.get(cacheKey);
-		if(worldInfo==null)
+		synchronized(MINERAL_VEIN_LIST)
 		{
-			List<Pair<MineralVein, Double>> inVeins = new ArrayList<>();
-			double totalSaturation = 0;
-			// Iterate all known veins
-			synchronized(MINERAL_VEIN_LIST)
+			MineralWorldInfo worldInfo = MINERAL_INFO_CACHE.get(cacheKey);
+			if(worldInfo==null)
 			{
+				List<Pair<MineralVein, Double>> inVeins = new ArrayList<>();
+				double totalSaturation = 0;
+				// Iterate all known veins
 				for(MineralVein vein : MINERAL_VEIN_LIST.get(dimension))
 				{
 					int dX = vein.getPos().x-columnPos.x;
@@ -87,15 +88,15 @@ public class ExcavatorHandler
 						totalSaturation += saturation;
 					}
 				}
+				final double finalTotalSaturation = totalSaturation;
+				worldInfo = new MineralWorldInfo(inVeins.stream()
+						.map(pair -> Pair.of(pair.getLeft(), (int)(pair.getRight()/finalTotalSaturation*1000)))
+						.collect(Collectors.toList())
+				);
+				MINERAL_INFO_CACHE.put(cacheKey, worldInfo);
 			}
-			final double finalTotalSaturation = totalSaturation;
-			worldInfo = new MineralWorldInfo(inVeins.stream()
-					.map(pair -> Pair.of(pair.getLeft(), (int)(pair.getRight()/finalTotalSaturation*1000)))
-					.collect(Collectors.toList())
-			);
-			MINERAL_INFO_CACHE.put(cacheKey, worldInfo);
+			return worldInfo;
 		}
-		return worldInfo;
 	}
 
 	public static void generatePotentialVein(World world, ChunkPos chunkpos, Random rand)
@@ -155,11 +156,28 @@ public class ExcavatorHandler
 						// generate initial depletion
 						if(initialVeinDepletion > 0)
 							vein.setDepletion((int)(mineralVeinYield*(rand.nextDouble()*initialVeinDepletion)));
-						MINERAL_VEIN_LIST.put(world.func_234923_W_(), vein);
+						addVein(world.func_234923_W_(), vein);
 						IESaveData.setDirty();
 					}
 				}
 			}
+	}
+
+	public static void addVein(RegistryKey<World> dimension, MineralVein vein)
+	{
+		synchronized(MINERAL_VEIN_LIST)
+		{
+			MINERAL_VEIN_LIST.put(dimension, vein);
+			resetCache();
+		}
+	}
+
+	public static void resetCache()
+	{
+		synchronized(MINERAL_VEIN_LIST)
+		{
+			MINERAL_INFO_CACHE.clear();
+		}
 	}
 
 	public static class MineralSelection

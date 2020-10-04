@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal.conveyors;
 
-import com.google.common.collect.Lists;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.shapes.VoxelShape;
@@ -28,7 +27,7 @@ public class ExtractCoveredConveyor extends ExtractConveyor
 	}
 
 	@Override
-	protected boolean allowCovers()
+	public boolean isCovered()
 	{
 		return true;
 	}

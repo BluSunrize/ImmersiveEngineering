@@ -17,6 +17,7 @@ import net.minecraft.world.IBlockReader;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Locale;
 
 public class PowerConnectorBlock extends ConnectorBlock
 {
@@ -25,7 +26,7 @@ public class PowerConnectorBlock extends ConnectorBlock
 
 	public PowerConnectorBlock(String voltage, boolean relay)
 	{
-		super("connector_"+voltage.toLowerCase()+(relay?"_relay": ""), IEProperties.FACING_ALL, BlockStateProperties.WATERLOGGED);
+		super("connector_"+voltage.toLowerCase(Locale.US)+(relay?"_relay": ""), IEProperties.FACING_ALL, BlockStateProperties.WATERLOGGED);
 		this.voltage = voltage;
 		this.relay = relay;
 	}

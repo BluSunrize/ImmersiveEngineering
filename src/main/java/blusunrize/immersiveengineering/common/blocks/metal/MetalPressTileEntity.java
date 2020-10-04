@@ -49,6 +49,11 @@ import java.util.Set;
 public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPressTileEntity, MetalPressRecipe> implements
 		IPlayerInteraction, IConveyorAttachable, IBlockBounds
 {
+	public static final float TRANSLATION_DISTANCE = 2.5f;
+	private static final float STANDARD_TRANSPORT_TIME = 16f*(TRANSLATION_DISTANCE/2); //16 frames in conveyor animation, 1 frame/tick, 2.5 blocks of total translation distance, halved because transport time just affects half the distance
+	private static final float STANDARD_PRESS_TIME = 3.75f;
+	private static final float MIN_CYCLE_TIME = 60f; //set >= 2*(STANDARD_PRESS_TIME+STANDARD_TRANSPORT_TIME)
+
 	public MetalPressTileEntity()
 	{
 		super(IEMultiblocks.METAL_PRESS, 16000, true, IETileTypes.METAL_PRESS.get());
@@ -64,15 +69,16 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 			return;
 		for(MultiblockProcess process : processQueue)
 		{
-			float tick = 1/(float)process.maxTicks;
-			float transportTime = 52.5f/120f;
-			float pressTime = 3.75f/120f;
-			float fProcess = process.processTick*tick;
-			if(fProcess >= transportTime&&fProcess < transportTime+tick)
+			float maxTicks = process.maxTicks;
+			float transportTime = getTransportTime(maxTicks);
+			float pressTime = getPressTime(maxTicks);
+			float fProcess = process.processTick;
+			//Note: the >= and < check instead of a single == is because fProcess is an int and transportTime and pressTime are floats. Because of that it has to be windowed
+			if(fProcess >= transportTime&&fProcess < transportTime+1f)
 				world.playSound(null, getPos(), IESounds.metalpress_piston, SoundCategory.BLOCKS, .3F, 1);
-			if(fProcess >= (transportTime+pressTime)&&fProcess < (transportTime+pressTime+tick))
+			if(fProcess >= (transportTime+pressTime)&&fProcess < (transportTime+pressTime+1f))
 				world.playSound(null, getPos(), IESounds.metalpress_smash, SoundCategory.BLOCKS, .3F, 1);
-			if(fProcess >= (1-transportTime)&&fProcess < (1-transportTime+tick))
+			if(fProcess >= (maxTicks-transportTime)&&fProcess < (maxTicks-transportTime+1f))
 				world.playSound(null, getPos(), IESounds.metalpress_piston, SoundCategory.BLOCKS, .3F, 1);
 		}
 	}
@@ -164,7 +170,9 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 			if(recipe==null)
 				return;
 			ItemStack displayStack = recipe.getDisplayStack(stack);
-			float transformationPoint = 56.25f/120f;
+//			float processMaxTicks = recipe.getTotalProcessTime();
+//			float transformationPoint = (MetalPressRenderer.getPressTime(processMaxTicks)+MetalPressRenderer.getPressTime(processMaxTicks))/processMaxTicks;
+			float transformationPoint = 0.5f;
 			MultiblockProcess<MetalPressRecipe> process = new MultiblockProcessInWorld<>(recipe, transformationPoint,
 					Utils.createNonNullItemStackListFromItemStack(displayStack));
 			if(master.addProcessToQueue(process, true))
@@ -249,7 +257,8 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 	@Override
 	public float getMinProcessDistance(MultiblockProcess<MetalPressRecipe> process)
 	{
-		return 63.75f/120f;
+		float maxTicks = process.maxTicks;
+		return 1f-(getTransportTime(maxTicks)+getPressTime(maxTicks))/maxTicks;
 	}
 
 
@@ -361,5 +370,21 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 		if(new BlockPos(2, 1, 0).equals(posInMultiblock))
 			return new Direction[]{this.getFacing()};
 		return new Direction[0];
+	}
+
+	public static float getTransportTime(float processMaxTicks)
+	{
+		if(processMaxTicks >= MIN_CYCLE_TIME)
+			return STANDARD_TRANSPORT_TIME;
+		else
+			return processMaxTicks*STANDARD_TRANSPORT_TIME/MIN_CYCLE_TIME;
+	}
+
+	public static float getPressTime(float processMaxTicks)
+	{
+		if(processMaxTicks >= MIN_CYCLE_TIME)
+			return STANDARD_PRESS_TIME;
+		else
+			return processMaxTicks*STANDARD_PRESS_TIME/MIN_CYCLE_TIME;
 	}
 }

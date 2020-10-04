@@ -289,6 +289,7 @@ public class IEConfig
 			metalPressConfig = addMachineEnergyTimeModifiers(builder, "metal press");
 			crusherConfig = addMachineEnergyTimeModifiers(builder, "crusher");
 			sawmillConfig = addMachineEnergyTimeModifiers(builder, "sawmill");
+			sawmill_bladeDamage = addPositive(builder, "sawmill_bladeDamage", 5, "The amount of damage a sawblade in the sawmill takes for a single recipe.");
 			squeezerConfig = addMachineEnergyTimeModifiers(builder, "squeezer");
 			fermenterConfig = addMachineEnergyTimeModifiers(builder, "fermenter");
 			refineryConfig = addMachineEnergyTimeModifiers(builder, "refinery");
@@ -416,6 +417,7 @@ public class IEConfig
 		public final MachineRecipeConfig<MetalPressRecipe> metalPressConfig;
 		public final MachineRecipeConfig<CrusherRecipe> crusherConfig;
 		public final MachineRecipeConfig<SawmillRecipe> sawmillConfig;
+		public final IntValue sawmill_bladeDamage;
 		public final MachineRecipeConfig<SqueezerRecipe> squeezerConfig;
 		public final MachineRecipeConfig<FermenterRecipe> fermenterConfig;
 		public final MachineRecipeConfig<RefineryRecipe> refineryConfig;

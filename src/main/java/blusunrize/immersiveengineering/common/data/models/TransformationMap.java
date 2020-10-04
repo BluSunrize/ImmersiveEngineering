@@ -18,11 +18,8 @@ import net.minecraftforge.client.model.generators.ModelBuilder.Perspective;
 import net.minecraftforge.common.model.TransformationHelper;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.TreeMap;
 
 public class TransformationMap
 {
@@ -123,7 +120,7 @@ public class TransformationMap
 	private String alternateName(Perspective type)
 	{
 		return type.vanillaType.name()
-				.toLowerCase();
+				.toLowerCase(Locale.US);
 	}
 
 	public JsonObject toJson()

@@ -36,9 +36,7 @@ import blusunrize.immersiveengineering.common.blocks.*;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
 import blusunrize.immersiveengineering.common.blocks.cloth.*;
 import blusunrize.immersiveengineering.common.blocks.generic.*;
-import blusunrize.immersiveengineering.common.blocks.generic.ScaffoldingBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
-import blusunrize.immersiveengineering.common.blocks.metal.LanternBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.CoverType;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
@@ -47,7 +45,6 @@ import blusunrize.immersiveengineering.common.blocks.plant.PottedHempBlock;
 import blusunrize.immersiveengineering.common.blocks.stone.PartialConcreteBlock;
 import blusunrize.immersiveengineering.common.blocks.stone.StoneMultiBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
-import blusunrize.immersiveengineering.common.blocks.wooden.BarrelBlock;
 import blusunrize.immersiveengineering.common.crafting.IngredientFluidStack;
 import blusunrize.immersiveengineering.common.entities.*;
 import blusunrize.immersiveengineering.common.items.*;
@@ -69,7 +66,10 @@ import blusunrize.immersiveengineering.common.world.OreRetrogenFeature;
 import blusunrize.immersiveengineering.common.world.Villages;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.ShulkerBoxBlock;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityType;
 import net.minecraft.fluid.Fluid;
@@ -318,12 +318,12 @@ public class IEContent
 				.setBlocksVision((state, blockReader, pos) -> false);
 		for(TreatedWoodStyles style : TreatedWoodStyles.values())
 		{
-			IEBaseBlock baseBlock = new IEBaseBlock("treated_wood_"+style.name().toLowerCase(), standardWoodProperties, BlockItemIE::new)
+			IEBaseBlock baseBlock = new IEBaseBlock("treated_wood_"+style.name().toLowerCase(Locale.US), standardWoodProperties, BlockItemIE::new)
 					.setHasFlavour(true);
 			WoodenDecoration.treatedWood.put(style, baseBlock);
 			addSlabFor(baseBlock);
 			WoodenDecoration.treatedStairs.put(style,
-					new IEStairsBlock("stairs_treated_wood_"+style.name().toLowerCase(), standardWoodPropertiesNotSolid, baseBlock));
+					new IEStairsBlock("stairs_treated_wood_"+style.name().toLowerCase(Locale.US), standardWoodPropertiesNotSolid, baseBlock));
 		}
 		WoodenDecoration.treatedFence = new IEFenceBlock("treated_fence", standardWoodPropertiesNotSolid);
 		WoodenDecoration.treatedScaffolding = new ScaffoldingBlock("treated_scaffold", standardWoodPropertiesNotSolid);
@@ -526,7 +526,8 @@ public class IEContent
 		IEItems.Ingredients.wireSteel = new IEBaseItem("wire_steel");
 		IEItems.Ingredients.dustSaltpeter = new IEBaseItem("dust_saltpeter");
 		IEItems.Ingredients.dustSulfur = new IEBaseItem("dust_sulfur");
-		IEItems.Ingredients.dustWood = new IEBaseItem("dust_wood");
+		IEItems.Ingredients.dustWood = new IEBaseItem("dust_wood")
+				.setBurnTime(100);
 		IEItems.Ingredients.electronTube = new IEBaseItem("electron_tube");
 		IEItems.Ingredients.circuitBoard = new IEBaseItem("circuit_board");
 		IEItems.Ingredients.emptyCasing = new IEBaseItem("empty_casing");

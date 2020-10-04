@@ -52,7 +52,7 @@ public class VerticalCoveredConveyor extends VerticalConveyor
 	}
 
 	@Override
-	protected boolean allowCovers()
+	public boolean isCovered()
 	{
 		return true;
 	}

@@ -1,13 +1,13 @@
 {
   "parent": "minecraft:block/block",
   "textures": {
-    "particle": "immersiveengineering:block/conveyor/conveyor"
+    "particle": "immersiveengineering:block/multiblocks/bottling_machine"
   },
   "loader": "immersiveengineering:basic_split",
-  "base_loader": "forge:obj",
-  "dynamic": false,
+  "base_loader": "immersiveengineering:ie_obj",
+  "dynamic": true,
   "detectCullableFaces": false,
-  "model": "immersiveengineering:models/block/metal_multiblock/bottling_machine_mirrored.obj",
+  "model": "immersiveengineering:models/block/metal_multiblock/bottling_machine_mirrored.obj.ie",
   "flip-v": true,
   "split_parts": [
     [
