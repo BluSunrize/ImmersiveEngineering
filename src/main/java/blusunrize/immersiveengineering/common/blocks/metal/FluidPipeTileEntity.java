@@ -20,7 +20,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBaseBlock.IELadderBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDecoration;
-import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
@@ -31,6 +30,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.Vector4f;
@@ -630,12 +630,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 	@Override
 	public VoxelShape getSelectionShape(@Nullable ISelectionContext ctx)
 	{
-		boolean hasHammer;
-		if(ctx!=null&&ctx.hasItem(Tools.hammer))
-			hasHammer = true;
-		else
-			hasHammer = false;
-		return SHAPES.get(new BoundingBoxKey(hasHammer, this));
+		return SHAPES.get(new BoundingBoxKey(ctx!=null&&ctx.getEntity() instanceof ClientPlayerEntity&&Utils.isHammer(((ClientPlayerEntity)ctx.getEntity()).getHeldItemMainhand()), this));
 	}
 
 	private static List<AxisAlignedBB> getBoxes(BoundingBoxKey key)
