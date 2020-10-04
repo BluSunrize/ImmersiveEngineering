@@ -26,7 +26,7 @@ public class CoveredConveyor extends BasicConveyor
 	}
 
 	@Override
-	protected boolean allowCovers()
+	public boolean isCovered()
 	{
 		return true;
 	}

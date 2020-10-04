@@ -24,7 +24,7 @@ public class SplitCoveredConveyor extends SplitConveyor
 	}
 
 	@Override
-	protected boolean allowCovers()
+	public boolean isCovered()
 	{
 		return true;
 	}
