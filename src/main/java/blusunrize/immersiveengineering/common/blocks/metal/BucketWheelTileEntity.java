@@ -197,28 +197,30 @@ public class BucketWheelTileEntity extends MultiblockPartTileEntity<BucketWheelT
 		return VoxelShapes.create(0, 0, 0, 1, 1, 1);
 	}
 
-	public void adjustStructureFacingAndMirrored(Direction targetFacing, boolean targetMirrored) {
-		if (this != this.master() || targetFacing.getAxis() == Direction.Axis.Y || (this.getFacing()==targetFacing && this.getIsMirrored()==targetMirrored))
-			return;//world.isRemote ||
-		boolean changePos = (this.getFacing()!=targetFacing)^(this.getIsMirrored()^targetMirrored);
-		BlockPos centerPos = this.getPos();
-		for(int h = -3; h <= 3; h++)
-			for(int w = -3; w <= 3; w++)
-			{
-				if((Math.abs(h)==3&&w!=0)||(Math.abs(w)==3&&h!=0))
-					continue;
-				TileEntity te = world.getTileEntity(centerPos.add(0, h, 0).offset(getFacing(), w));
-				if(te instanceof BucketWheelTileEntity)
+	public void adjustStructureFacingAndMirrored(Direction targetFacing, boolean targetMirrored)
+	{
+		if(this==this.master()&&targetFacing.getAxis()!=Direction.Axis.Y&&(this.getFacing()!=targetFacing||this.getIsMirrored()!=targetMirrored))
+		{
+			boolean changePos = (this.getFacing()!=targetFacing)^(this.getIsMirrored()^targetMirrored);
+			BlockPos centerPos = this.getPos();
+			for(int h = -3; h <= 3; h++)
+				for(int w = -3; w <= 3; w++)
 				{
-					BucketWheelTileEntity bucketTE = (BucketWheelTileEntity)te;
-					bucketTE.setFacing(targetFacing);
-					bucketTE.setMirrored(targetMirrored);
-					if(changePos)
-						bucketTE.posInMultiblock = new BlockPos(6-bucketTE.posInMultiblock.getX(), bucketTE.posInMultiblock.getY(), bucketTE.posInMultiblock.getZ());
-					te.markDirty();
-					bucketTE.markContainingBlockForUpdate(null);
-					world.addBlockEvent(te.getPos(), te.getBlockState().getBlock(), 255, 0);
+					if((Math.abs(h)==3&&w!=0)||(Math.abs(w)==3&&h!=0))
+						continue;
+					TileEntity te = world.getTileEntity(centerPos.add(0, h, 0).offset(getFacing(), w));
+					if(te instanceof BucketWheelTileEntity)
+					{
+						BucketWheelTileEntity bucketTE = (BucketWheelTileEntity)te;
+						bucketTE.setFacing(targetFacing);
+						bucketTE.setMirrored(targetMirrored);
+						if(changePos)
+							bucketTE.posInMultiblock = new BlockPos(6-bucketTE.posInMultiblock.getX(), bucketTE.posInMultiblock.getY(), bucketTE.posInMultiblock.getZ());
+						te.markDirty();
+						bucketTE.markContainingBlockForUpdate(null);
+						world.addBlockEvent(te.getPos(), te.getBlockState().getBlock(), 255, 0);
+					}
 				}
-			}
+		}
 	}
 }
