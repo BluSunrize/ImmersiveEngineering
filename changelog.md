@@ -1,5 +1,7 @@
 ##### Version 1.15.2-4.1.0-pre
 - Added the sawmill! It strips logs and cuts them into planks! (BluSunrize)
+    - It also produces sawdust, which can be burnt in a furnace or crafted into paper!
+    - It'll get more uses in the future :D
 - Added blue ice to be used by the Thermoelectric Generator, nerfed packed ice in response (BluSunrize)
 - Experimental recipe changes: (BluSunrize)
     - Doubled the burntime of Diesel in the generator
