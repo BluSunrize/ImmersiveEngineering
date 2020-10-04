@@ -66,6 +66,8 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 	public float animation_bladeRotation = 0;
 	public ItemStack sawblade = ItemStack.EMPTY;
 	public List<SawmillProcess> sawmillProcessQueue = new ArrayList<>();
+	// this is a temporary counter to keep track of the "same" kind of log inserted. Allows combining them into threes.
+	private int combinedLogs = 0;
 
 	public SawmillTileEntity()
 	{
@@ -317,14 +319,27 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 		if(this.sawmillProcessQueue.size() < this.getProcessQueueMaxLength())
 		{
 			float dist = 1;
+			float minProcessDist = 0.1f;
 			SawmillProcess p = null;
 			if(this.sawmillProcessQueue.size() > 0)
 			{
 				p = this.sawmillProcessQueue.get(this.sawmillProcessQueue.size()-1);
 				if(p!=null)
+				{
 					dist = p.getRelativeProcessStep();
+					// either it's a different item or we have 3 together already
+					if(!stack.isItemEqual(p.input)||combinedLogs > 2)
+					{
+						if(!simulate)
+							combinedLogs = 0;
+						minProcessDist = 0.5f;
+					}
+				}
 			}
-			if(p!=null&&dist < this.getMinProcessDistance(null))
+			else if(combinedLogs > 0)
+				combinedLogs = 0;
+
+			if(p!=null&&dist < minProcessDist)
 				return;
 			if(!simulate)
 			{
@@ -332,6 +347,7 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 				this.sawmillProcessQueue.add(p);
 				this.markDirty();
 				this.markContainingBlockForUpdate(null);
+				combinedLogs++;
 			}
 			stack.shrink(1);
 		}
@@ -432,13 +448,13 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 	@Override
 	public int getMaxProcessPerTick()
 	{
-		return 2;
+		return 6;
 	}
 
 	@Override
 	public int getProcessQueueMaxLength()
 	{
-		return 2;
+		return 6;
 	}
 
 	@Override
