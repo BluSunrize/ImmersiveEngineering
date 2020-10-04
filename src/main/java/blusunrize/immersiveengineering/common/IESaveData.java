@@ -57,6 +57,7 @@ public class IESaveData extends WorldSavedData
 							);
 				}
 			}
+			ExcavatorHandler.resetCache();
 		}
 		// Legacy, using mineralDepletion key
 		if(nbt.contains("mineralDepletion", NBT.TAG_LIST))
