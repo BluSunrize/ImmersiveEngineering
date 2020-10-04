@@ -129,7 +129,7 @@ public class ItemModels extends LoadedModelProvider
 				.transforms(rl("item/multiblock"));
 		obj(Multiblocks.autoWorkbench, rl("block/metal_multiblock/auto_workbench.obj"))
 				.transforms(rl("item/multiblock"));
-		obj(Multiblocks.bottlingMachine, rl("block/metal_multiblock/bottling_machine.obj"))
+		obj(Multiblocks.bottlingMachine, rl("block/metal_multiblock/bottling_machine.obj.ie"))
 				.transforms(rl("item/bottling_machine"));
 		obj(Multiblocks.squeezer, rl("block/metal_multiblock/squeezer.obj"))
 				.transforms(rl("item/multiblock"));

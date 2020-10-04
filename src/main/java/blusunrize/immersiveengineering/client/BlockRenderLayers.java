@@ -89,6 +89,10 @@ public class BlockRenderLayers
 				rt -> rt==RenderType.getSolid()||rt==RenderType.getTranslucent()
 		);
 		RenderTypeLookup.setRenderLayer(Multiblocks.tank, RenderType.getCutoutMipped());
+		RenderTypeLookup.setRenderLayer(
+				Multiblocks.bottlingMachine,
+				rt -> rt==RenderType.getSolid()||rt==RenderType.getTranslucent()
+		);
 
 		for(Entry<Block, SlabBlock> slab : IEBlocks.toSlab.entrySet())
 			RenderTypeLookup.setRenderLayer(

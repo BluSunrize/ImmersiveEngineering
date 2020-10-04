@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttachable;
+import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
@@ -21,6 +22,7 @@ import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
@@ -36,6 +38,9 @@ import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
@@ -56,7 +61,7 @@ import java.util.List;
 import java.util.Set;
 
 public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<BottlingMachineTileEntity, MultiblockRecipe>
-		implements IConveyorAttachable, IBlockBounds
+		implements IConveyorAttachable, IBlockBounds, IOBJModelCallback<BlockState>
 {
 	public FluidTank[] tanks = new FluidTank[]{new FluidTank(8*FluidAttributes.BUCKET_VOLUME)};
 	public List<BottlingProcess> bottlingProcessQueue = new ArrayList<>();
@@ -96,6 +101,13 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 	@Override
 	public void receiveMessageFromClient(CompoundNBT message)
 	{
+	}
+
+	@Override
+	@OnlyIn(Dist.CLIENT)
+	public boolean shouldRenderGroup(BlockState object, String group)
+	{
+		return "glass".equals(group)==(MinecraftForgeClient.getRenderLayer()==RenderType.getTranslucent());
 	}
 
 	private CapabilityReference<IItemHandler> outputCap = CapabilityReference.forTileEntity(this, () -> {

@@ -1,6 +1,6 @@
 {
   "loader": "forge:obj",
-  "model": "immersiveengineering:models/block/metal_multiblock/bottling_machine.obj",
+  "model": "immersiveengineering:models/block/metal_multiblock/bottling_machine.obj.ie",
   "flip-v": true,
   "transform": {
     "thirdperson_righthand": {
