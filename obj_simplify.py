@@ -18,18 +18,27 @@ def split_corner(corner):
         return split[0], split[1], None
 
 
-def fix_duplicates(array_in):
+def fix_duplicates(array_in, segments):
     """ Remove duplicates from an array and create a map to reassign values referring to it"""
     array_out = []
     reassign = {}
-    for index, value in enumerate(array_in):
-        # obj files start their indices for everything at 1
-        if value in array_out:
-            reassign[index + 1] = array_out.index(value) + 1
-        else:
-            array_out.append(value)
-            reassign[index + 1] = len(array_out)
-    return array_out, reassign
+    out_segments = []
+    prev_start = 0
+    for end in segments:
+        sub_array_in = array_in[prev_start:end]
+        offset = len(array_out)
+        sub_array_out = []
+        for index, value in enumerate(sub_array_in):
+            # obj files start their indices for everything at 1
+            if value in sub_array_out:
+                reassign[prev_start + index + 1] = offset + sub_array_out.index(value) + 1
+            else:
+                sub_array_out.append(value)
+                reassign[prev_start + index + 1] = offset + len(sub_array_out)
+        array_out += sub_array_out
+        out_segments.append(len(array_out))
+        prev_start = end
+    return array_out, reassign, out_segments
 
 
 # Read file
@@ -38,9 +47,25 @@ with open(input_file, 'r') as f:
 
 # Parse all objects
 file_header = ''
+
+# Store all objects
+vertices = []
+texture_coordinates = []
+vertex_normals = []
 objects = []
 cur_object = None
 cur_mat = None
+
+
+def finish_object():
+    """ Finish the current object, setting its max indices and appending it to the list"""
+    if cur_object:
+        cur_object['max_v'] = len(vertices)
+        cur_object['max_vt'] = len(texture_coordinates)
+        cur_object['max_vn'] = len(vertex_normals)
+        objects.append(cur_object)
+
+
 for line in lines:
     if not re.search(PATTERN_START, line):
         if not cur_object:
@@ -50,23 +75,19 @@ for line in lines:
     line = line.rstrip()
     if line.startswith('o '):
         # Append current object to list, start new object
-        if cur_object:
-            objects.append(cur_object)
+        finish_object()
         cur_object = {
             'name': line[2:],
-            'vertices': [],
-            'texture_coordinates': [],
-            'vertex_normals': [],
             'faces': []
         }
     elif line.startswith('usemtl '):
         cur_mat = line[7:]
     elif line.startswith('v '):
-        cur_object['vertices'].append(line)
+        vertices.append(line)
     elif line.startswith('vt '):
-        cur_object['texture_coordinates'].append(line)
+        texture_coordinates.append(line)
     elif line.startswith('vn '):
-        cur_object['vertex_normals'].append(line)
+        vertex_normals.append(line)
     elif line.startswith('f '):
         corners = re.findall(PATTERN_FACE, line)
         face = {'mat': cur_mat, 'verts': [], 'uvs': [], 'normals': [], 'size': len(corners)}
@@ -79,25 +100,34 @@ for line in lines:
         cur_object['faces'].append(face)
 
 # Wrap up
-objects.append(cur_object)
+finish_object()
 
-for obj in objects:
+# Get reduced lists and reassigning maps
+fixed_verts, reassign_verts, vert_segments = fix_duplicates(vertices, [obj['max_v'] for obj in objects])
+fixed_uvs, reassign_uvs, uv_segments = fix_duplicates(texture_coordinates, [obj['max_vt'] for obj in objects])
+fixed_normals, reassign_normals, norm_segments = fix_duplicates(vertex_normals, [obj['max_vn'] for obj in objects])
+
+# Log changes
+print('Removed {v} duplicate vertices, {vt} duplicate texture coords and {vn} duplicate normals'.format(
+    v=len(vertices) - len(fixed_verts),
+    vt=len(texture_coordinates) - len(fixed_uvs),
+    vn=len(vertex_normals) - len(fixed_normals)
+))
+
+offsetV = offsetVt = offsetVn = 0
+for index, obj in enumerate(objects):
     print('Handling object {name}'.format(name=obj['name']))
-    # Get reduced lists and reassigning maps
-    fixed_verts, reassign_verts = fix_duplicates(obj['vertices'])
-    fixed_uvs, reassign_uvs = fix_duplicates(obj['texture_coordinates'])
-    fixed_normals, reassign_normals = fix_duplicates(obj['vertex_normals'])
-    # Log changes
-    print('Removed {v} duplicate vertices, {vt} duplicate texture coords and {vn} duplicate normals'.format(
-        v=len(obj['vertices']) - len(fixed_verts),
-        vt=len(obj['texture_coordinates']) - len(fixed_uvs),
-        vn=len(obj['vertex_normals']) - len(fixed_normals)
-    ))
 
-    # Set new lists
-    obj['vertices'] = fixed_verts
-    obj['texture_coordinates'] = fixed_uvs
-    obj['vertex_normals'] = fixed_normals
+    # Assign partial lists on the object
+    obj['vertices'] = fixed_verts[offsetV:vert_segments[index]]
+    obj['texture_coordinates'] = fixed_uvs[offsetVt:uv_segments[index]]
+    obj['vertex_normals'] = fixed_normals[offsetVn:norm_segments[index]]
+    offsetV = vert_segments[index]
+    offsetVt = uv_segments[index]
+    offsetVn = norm_segments[index]
+    print(' object contains {} verts, {} uvs and {} normals'.format(
+        len(obj['vertices']),len(obj['texture_coordinates']),len(obj['vertex_normals'])
+    ))
 
     # Reassign indices in faces
     for face in obj['faces']:

@@ -24,6 +24,7 @@ import net.minecraft.world.World;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Locale;
 
 
 public class WireCoilItem extends IEBaseItem implements IWireCoil
@@ -34,7 +35,7 @@ public class WireCoilItem extends IEBaseItem implements IWireCoil
 
 	public WireCoilItem(WireType type)
 	{
-		super("wirecoil_"+type.getUniqueName().toLowerCase(), new Properties());
+		super("wirecoil_"+type.getUniqueName().toLowerCase(Locale.US), new Properties());
 		this.type = type;
 	}
 

@@ -1,2 +1,8 @@
 newmtl mixer
 map_Kd immersiveengineering:block/multiblocks/mixer
+
+newmtl multiblock_base
+map_Kd immersiveengineering:block/multiblocks/multiblock_base
+
+newmtl multiblock_components
+map_Kd immersiveengineering:block/multiblocks/multiblock_components
