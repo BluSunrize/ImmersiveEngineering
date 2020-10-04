@@ -431,7 +431,7 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 		{
 			Direction outDir = getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY();
 			BlockPos pos = getPos().offset(outDir, 1).offset(getFacing(), -2).down();
-			Utils.dropStackAtPos(world, pos, output, outDir);
+			Utils.dropStackAtPos(world, pos, output, getFacing().getOpposite());
 		}
 	}
 
