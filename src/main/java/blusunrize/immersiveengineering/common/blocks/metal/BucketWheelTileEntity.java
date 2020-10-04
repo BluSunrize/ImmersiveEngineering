@@ -199,16 +199,15 @@ public class BucketWheelTileEntity extends MultiblockPartTileEntity<BucketWheelT
 
 	public void adjustStructureFacingAndMirrored(Direction targetFacing, boolean targetMirrored)
 	{
-		if(this==this.master()&&targetFacing.getAxis()!=Direction.Axis.Y&&(this.getFacing()!=targetFacing||this.getIsMirrored()!=targetMirrored))
+		if(this==master()&&targetFacing.getAxis()!=Direction.Axis.Y&&(getFacing()!=targetFacing||getIsMirrored()!=targetMirrored))
 		{
-			boolean changePos = (this.getFacing()!=targetFacing)^(this.getIsMirrored()^targetMirrored);
-			BlockPos centerPos = this.getPos();
+			boolean changePos = (getFacing()!=targetFacing)^(getIsMirrored()^targetMirrored);
 			for(int h = -3; h <= 3; h++)
 				for(int w = -3; w <= 3; w++)
 				{
 					if((Math.abs(h)==3&&w!=0)||(Math.abs(w)==3&&h!=0))
 						continue;
-					TileEntity te = world.getTileEntity(centerPos.add(0, h, 0).offset(getFacing(), w));
+					TileEntity te = world.getTileEntity(getPos().add(0, h, 0).offset(getFacing(), w));
 					if(te instanceof BucketWheelTileEntity)
 					{
 						BucketWheelTileEntity bucketTE = (BucketWheelTileEntity)te;
