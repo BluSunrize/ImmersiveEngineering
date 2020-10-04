@@ -64,19 +64,11 @@ public class BucketWheelRenderer extends TileEntityRenderer<BucketWheelTileEntit
 			return;
 		Map<String, String> texMap = new HashMap<>();
 		List<String> textures = new ArrayList<>(8);
-		int offset = 0;
 		synchronized(tile.digStacks)
 		{
 			for(int i = 0; i < tile.digStacks.size(); i++)
-				if(!tile.digStacks.get(i).isEmpty())
-				{
-					offset = i;
-					break;
-				}
-			for(int i = 0; i < tile.digStacks.size(); i++)
 			{
-				int realIndex = (i+offset)%tile.digStacks.size();
-				ItemStack stackAtIndex = tile.digStacks.get(realIndex);
+				ItemStack stackAtIndex = tile.digStacks.get(i);
 				if(!stackAtIndex.isEmpty())
 				{
 					Block b = Block.getBlockFromItem(stackAtIndex.getItem());
@@ -97,7 +89,7 @@ public class BucketWheelRenderer extends TileEntityRenderer<BucketWheelTileEntit
 		TileRenderUtils.mirror(tile, matrixStack);
 		float dir = tile.getFacing()==Direction.SOUTH?0: tile.getFacing()==Direction.NORTH?180: tile.getFacing()==Direction.EAST?90: -90;
 		matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), dir, true));
-		float rot = tile.rotation-45*offset+(float)(tile.active?IEConfig.MACHINES.excavator_speed.get()*partialTicks: 0);
+		float rot = tile.rotation+(float)(tile.active?IEConfig.MACHINES.excavator_speed.get()*partialTicks: 0);
 		matrixStack.rotate(new Quaternion(new Vector3f(1, 0, 0), rot, true));
 
 		matrixStack.translate(-.5, -.5, -.5);
