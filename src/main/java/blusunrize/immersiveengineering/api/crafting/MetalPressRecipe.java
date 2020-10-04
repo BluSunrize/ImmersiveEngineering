@@ -42,7 +42,7 @@ public class MetalPressRecipe extends MultiblockRecipe
 		this.input = input;
 		this.mold = mold;
 		this.totalProcessEnergy = energy;
-		this.totalProcessTime = 120;
+		this.totalProcessTime = 60;
 
 		setInputListWithSizes(Lists.newArrayList(this.input));
 		this.outputList = ListUtils.fromItem(this.output);

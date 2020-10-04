@@ -34,6 +34,11 @@ public class MetalPressRenderer extends TileEntityRenderer<MetalPressTileEntity>
 {
 	public static DynamicModel<Void> PISTON;
 
+	private static final float TRANSLATION_DISTANCE = 2.5f;
+	private static final float STANDARD_TRANSPORT_TIME = 16f*(TRANSLATION_DISTANCE/2); //16 frames in conveyor animation, 1 frame/tick, 2.5 blocks of total translation distance, halved because transport time just affects half the distance
+	private static final float STANDARD_PRESS_TIME = 3.75f;
+	private static final float MIN_CYCLE_TIME = 60f; //set >= 2*(STANDARD_PRESS_TIME+STANDARD_TRANSPORT_TIME)
+
 	public MetalPressRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
 	{
 		super(rendererDispatcherIn);
@@ -56,30 +61,33 @@ public class MetalPressRenderer extends TileEntityRenderer<MetalPressTileEntity>
 		matrixStack.translate(.5, .5, .5);
 		float piston = 0;
 		float[] shift = new float[te.processQueue.size()];
+
 		for(int i = 0; i < shift.length; i++)
 		{
 			MultiblockProcess<MetalPressRecipe> process = te.processQueue.get(i);
 			if(process==null)
 				continue;
-			float transportTime = 52.5f/120f;
-			float pressTime = 3.75f/120f;
-			float fProcess = (process.processTick+(te.shouldRenderAsActive()?partialTicks: 0))/(float)process.maxTicks;
+			float processMaxTicks = process.maxTicks;
+			float transportTime = getTransportTime(processMaxTicks);
+			float pressTime = getPressTime(processMaxTicks);
+			//+partialTicks
+			float fProcess = process.processTick;
 
 			if(fProcess < transportTime)
-				shift[i] = fProcess/transportTime*.5f;
-			else if(fProcess < (1-transportTime))
+				shift[i] = .5f*fProcess/transportTime;
+			else if(fProcess < (processMaxTicks-transportTime))
 				shift[i] = .5f;
 			else
-				shift[i] = .5f+(fProcess-(1-transportTime))/transportTime*.5f;
+				shift[i] = .5f+.5f*(fProcess-(processMaxTicks-transportTime))/transportTime;
 			if(!te.mold.isEmpty())
-				if(fProcess >= transportTime&&fProcess < (1-transportTime))
+				if(fProcess >= transportTime&&fProcess < (processMaxTicks-transportTime))
 				{
 					if(fProcess < (transportTime+pressTime))
 						piston = (fProcess-transportTime)/pressTime;
-					else if(fProcess < (1-transportTime-pressTime))
+					else if(fProcess < (processMaxTicks-transportTime-pressTime))
 						piston = 1;
 					else
-						piston = 1-(fProcess-(1-transportTime-pressTime))/pressTime;
+						piston = 1-(fProcess-(processMaxTicks-transportTime-pressTime))/pressTime;
 				}
 		}
 
@@ -110,7 +118,7 @@ public class MetalPressRenderer extends TileEntityRenderer<MetalPressTileEntity>
 			if(!(process instanceof PoweredMultiblockTileEntity.MultiblockProcessInWorld))
 				continue;
 			matrixStack.push();
-			matrixStack.translate(0, 0, -2.5*shift[i]);
+			matrixStack.translate(0, 0, -TRANSLATION_DISTANCE*shift[i]);
 			if(piston > .92)
 				matrixStack.translate(0, .92-piston, 0);
 
@@ -126,5 +134,21 @@ public class MetalPressRenderer extends TileEntityRenderer<MetalPressTileEntity>
 			}
 		}
 		matrixStack.pop();
+	}
+
+	public static float getTransportTime(float processMaxTicks)
+	{
+		if(processMaxTicks >= MIN_CYCLE_TIME)
+			return STANDARD_TRANSPORT_TIME;
+		else
+			return processMaxTicks*STANDARD_TRANSPORT_TIME/MIN_CYCLE_TIME;
+	}
+
+	public static float getPressTime(float processMaxTicks)
+	{
+		if(processMaxTicks >= MIN_CYCLE_TIME)
+			return STANDARD_PRESS_TIME;
+		else
+			return processMaxTicks*STANDARD_PRESS_TIME/MIN_CYCLE_TIME;
 	}
 }
