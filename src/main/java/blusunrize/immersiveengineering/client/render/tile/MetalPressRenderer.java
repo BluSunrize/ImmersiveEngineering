@@ -30,14 +30,11 @@ import net.minecraftforge.client.model.data.EmptyModelData;
 
 import java.util.List;
 
+import static blusunrize.immersiveengineering.common.blocks.metal.MetalPressTileEntity.*;
+
 public class MetalPressRenderer extends TileEntityRenderer<MetalPressTileEntity>
 {
 	public static DynamicModel<Void> PISTON;
-
-	private static final float TRANSLATION_DISTANCE = 2.5f;
-	private static final float STANDARD_TRANSPORT_TIME = 16f*(TRANSLATION_DISTANCE/2); //16 frames in conveyor animation, 1 frame/tick, 2.5 blocks of total translation distance, halved because transport time just affects half the distance
-	private static final float STANDARD_PRESS_TIME = 3.75f;
-	private static final float MIN_CYCLE_TIME = 60f; //set >= 2*(STANDARD_PRESS_TIME+STANDARD_TRANSPORT_TIME)
 
 	public MetalPressRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
 	{
@@ -114,7 +111,7 @@ public class MetalPressRenderer extends TileEntityRenderer<MetalPressTileEntity>
 		matrixStack.translate(0, -.35, 1.25);
 		for(int i = 0; i < shift.length; i++)
 		{
-			MultiblockProcess process = te.processQueue.get(i);
+			MultiblockProcess<?> process = te.processQueue.get(i);
 			if(!(process instanceof PoweredMultiblockTileEntity.MultiblockProcessInWorld))
 				continue;
 			matrixStack.push();
@@ -134,21 +131,5 @@ public class MetalPressRenderer extends TileEntityRenderer<MetalPressTileEntity>
 			}
 		}
 		matrixStack.pop();
-	}
-
-	public static float getTransportTime(float processMaxTicks)
-	{
-		if(processMaxTicks >= MIN_CYCLE_TIME)
-			return STANDARD_TRANSPORT_TIME;
-		else
-			return processMaxTicks*STANDARD_TRANSPORT_TIME/MIN_CYCLE_TIME;
-	}
-
-	public static float getPressTime(float processMaxTicks)
-	{
-		if(processMaxTicks >= MIN_CYCLE_TIME)
-			return STANDARD_PRESS_TIME;
-		else
-			return processMaxTicks*STANDARD_PRESS_TIME/MIN_CYCLE_TIME;
 	}
 }

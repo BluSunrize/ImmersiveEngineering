@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttachable;
-import blusunrize.immersiveengineering.client.render.tile.MetalPressRenderer;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
@@ -50,6 +49,11 @@ import java.util.Set;
 public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPressTileEntity, MetalPressRecipe> implements
 		IPlayerInteraction, IConveyorAttachable, IBlockBounds
 {
+	public static final float TRANSLATION_DISTANCE = 2.5f;
+	private static final float STANDARD_TRANSPORT_TIME = 16f*(TRANSLATION_DISTANCE/2); //16 frames in conveyor animation, 1 frame/tick, 2.5 blocks of total translation distance, halved because transport time just affects half the distance
+	private static final float STANDARD_PRESS_TIME = 3.75f;
+	private static final float MIN_CYCLE_TIME = 60f; //set >= 2*(STANDARD_PRESS_TIME+STANDARD_TRANSPORT_TIME)
+
 	public MetalPressTileEntity()
 	{
 		super(IEMultiblocks.METAL_PRESS, 16000, true, IETileTypes.METAL_PRESS.get());
@@ -66,8 +70,8 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 		for(MultiblockProcess process : processQueue)
 		{
 			float maxTicks = process.maxTicks;
-			float transportTime = MetalPressRenderer.getTransportTime(maxTicks);
-			float pressTime = MetalPressRenderer.getPressTime(maxTicks);
+			float transportTime = getTransportTime(maxTicks);
+			float pressTime = getPressTime(maxTicks);
 			float fProcess = process.processTick;
 			//Note: the >= and < check instead of a single == is because fProcess is an int and transportTime and pressTime are floats. Because of that it has to be windowed
 			if(fProcess >= transportTime&&fProcess < transportTime+1f)
@@ -254,7 +258,7 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 	public float getMinProcessDistance(MultiblockProcess<MetalPressRecipe> process)
 	{
 		float maxTicks = process.maxTicks;
-		return 1f-(MetalPressRenderer.getTransportTime(maxTicks)+MetalPressRenderer.getPressTime(maxTicks))/maxTicks;
+		return 1f-(getTransportTime(maxTicks)+getPressTime(maxTicks))/maxTicks;
 	}
 
 
@@ -366,5 +370,21 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 		if(new BlockPos(2, 1, 0).equals(posInMultiblock))
 			return new Direction[]{this.getFacing()};
 		return new Direction[0];
+	}
+
+	public static float getTransportTime(float processMaxTicks)
+	{
+		if(processMaxTicks >= MIN_CYCLE_TIME)
+			return STANDARD_TRANSPORT_TIME;
+		else
+			return processMaxTicks*STANDARD_TRANSPORT_TIME/MIN_CYCLE_TIME;
+	}
+
+	public static float getPressTime(float processMaxTicks)
+	{
+		if(processMaxTicks >= MIN_CYCLE_TIME)
+			return STANDARD_PRESS_TIME;
+		else
+			return processMaxTicks*STANDARD_PRESS_TIME/MIN_CYCLE_TIME;
 	}
 }
