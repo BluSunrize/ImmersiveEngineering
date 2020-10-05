@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ss"
+  ],
+  "key": {
+    "s": {
+      "tag": "forge:dusts/wood"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:sawdust"
+  }
+}

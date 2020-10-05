@@ -1153,6 +1153,12 @@ public class Recipes extends RecipeProvider
 				.key('b', new IngredientFluidStack(IETags.fluidCreosote, FluidAttributes.BUCKET_VOLUME))
 				.addCriterion("has_creosote", hasItem(IEContent.fluidCreosote.getFilledBucket()))
 				.build(out, toRL(toPath(WoodenDecoration.treatedWood.get(TreatedWoodStyles.HORIZONTAL))));
+
+		ShapedRecipeBuilder.shapedRecipe(WoodenDecoration.sawdust)
+				.patternLine("ss")
+				.key('s', IETags.sawdust)
+				.addCriterion("has_sawdust", hasItem(IETags.sawdust))
+				.build(out, toRL(toPath(WoodenDecoration.sawdust)));
 	}
 
 	private void recipesWoodenDevices(@Nonnull Consumer<IFinishedRecipe> out)

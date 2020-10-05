@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/sawdust"
+    ]
+  },
+  "criteria": {
+    "has_sawdust": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:dusts/wood"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/sawdust"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_sawdust",
+      "has_the_recipe"
+    ]
+  ]
+}
