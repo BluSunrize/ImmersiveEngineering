@@ -17,13 +17,13 @@ import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler.EnergyConnector;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
-import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.FakeLightBlock.FakeLightTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Misc;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
+import blusunrize.immersiveengineering.common.util.SpawnInterdictionHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.block.BlockState;
@@ -282,21 +282,22 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 	@Override
 	public void remove()
 	{
-		synchronized(EventHandler.interdictionTiles)
-		{
-			EventHandler.interdictionTiles.remove(this);
-		}
+		SpawnInterdictionHandler.removeFromInterdictionTiles(this);
 		super.remove();
 	}
 
 	@Override
 	public void onChunkUnloaded()
 	{
-		synchronized(EventHandler.interdictionTiles)
-		{
-			EventHandler.interdictionTiles.remove(this);
-		}
+		SpawnInterdictionHandler.removeFromInterdictionTiles(this);
 		super.onChunkUnloaded();
+	}
+
+	@Override
+	public void onLoad()
+	{
+		super.onLoad();
+		SpawnInterdictionHandler.addInterdictionTile(this);
 	}
 
 	@Override
@@ -417,9 +418,6 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 	{
 		if(!world.isRemote)
 		{
-			double hitX = hitVec.x;
-			double hitY = hitVec.y;
-			double hitZ = hitVec.z;
 			if(side.getAxis()==this.getFacing().getAxis())
 				turnY(player.isSneaking(), false);
 			else
