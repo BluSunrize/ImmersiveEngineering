@@ -13,13 +13,11 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
 import blusunrize.immersiveengineering.common.blocks.plant.EnumHempGrowth;
 import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
+import blusunrize.immersiveengineering.common.blocks.wooden.SawdustBlock;
 import blusunrize.immersiveengineering.common.data.loot.LootGenerator;
 import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
-import blusunrize.immersiveengineering.common.util.loot.DropInventoryLootEntry;
-import blusunrize.immersiveengineering.common.util.loot.MBOriginalBlockLootEntry;
-import blusunrize.immersiveengineering.common.util.loot.TileDropLootEntry;
-import blusunrize.immersiveengineering.common.util.loot.WindmillLootFunction;
+import blusunrize.immersiveengineering.common.util.loot.*;
 import net.minecraft.advancements.criterion.StatePropertiesPredicate;
 import net.minecraft.block.Block;
 import net.minecraft.block.SlabBlock;
@@ -92,6 +90,7 @@ public class BlockLoot extends LootGenerator
 		registerSelfDropping(MetalDevices.cloche, dropInv());
 		registerSelfDropping(MetalDevices.chargingStation, dropInv());
 		registerSlabs();
+		registerSawdust();
 
 		registerAllRemainingAsDefault();
 	}
@@ -223,6 +222,14 @@ public class BlockLoot extends LootGenerator
 				);
 			}
 		register(IEBlocks.Misc.hempPlant, ret);
+	}
+
+	private void registerSawdust()
+	{
+		LootTable.Builder ret = LootTable.builder()
+				.addLootPool(singleItem(WoodenDecoration.sawdust))
+				.acceptFunction(new PropertyCountLootFunction.Builder(SawdustBlock.LAYERS.getName()));
+		register(WoodenDecoration.sawdust, ret);
 	}
 
 	private LootPool.Builder binBonusLootPool(IItemProvider item, Enchantment ench, float prob, int extra)

@@ -1,0 +1,7 @@
+{
+  "parent": "block/snow_height4",
+  "textures": {
+    "particle": "immersiveengineering:block/wooden_decoration/sawdust",
+    "texture": "immersiveengineering:block/wooden_decoration/sawdust"
+  }
+}

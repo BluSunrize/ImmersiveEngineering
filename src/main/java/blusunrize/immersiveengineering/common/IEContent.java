@@ -325,6 +325,7 @@ public class IEContent
 		WoodenDevices.treatedWallmount = new WallmountBlock("treated_wallmount", standardWoodPropertiesNotSolid);
 		Misc.hempPlant = new HempBlock("hemp");
 		Misc.pottedHemp = new PottedHempBlock("potted_hemp");
+		WoodenDecoration.sawdust = new SawdustBlock();
 
 		Cloth.cushion = new CushionBlock();
 		Cloth.balloon = new BalloonBlock();
