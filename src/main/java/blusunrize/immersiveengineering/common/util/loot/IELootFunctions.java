@@ -20,6 +20,7 @@ public class IELootFunctions
 	{
 		LootFunctionManager.registerFunction(new BluprintzLootFunction.Serializer());
 		LootFunctionManager.registerFunction(new WindmillLootFunction.Serializer());
+		LootFunctionManager.registerFunction(new PropertyCountLootFunction.Serializer());
 
 		LootEntryManager.func_216194_a(new DropInventoryLootEntry.Serializer());
 		LootEntryManager.func_216194_a(new TileDropLootEntry.Serializer());
