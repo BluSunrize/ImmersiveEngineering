@@ -1,0 +1,22 @@
+{
+  "type": "immersiveengineering:cloche",
+  "results": [
+    {
+      "item": "simplefarming:sorghum_seeds"
+    },
+	{
+	  "item": "simplefarming:sorghum"
+	}
+  ],
+  "input": {
+    "item": "simplefarming:sorghum_seeds"
+  },
+  "soil": {
+    "item": "minecraft:dirt"
+  },
+  "time": 1200,
+  "render": {
+    "type": "crop",
+    "block": "simplefarming:sorghum_crop"
+  }
+}

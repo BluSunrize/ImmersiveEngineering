@@ -1,0 +1,22 @@
+{
+  "type": "immersiveengineering:cloche",
+  "results": [
+    {
+      "item": "simplefarming:turnip_seeds"
+    },
+	{
+	  "item": "simplefarming:turnip"
+	}
+  ],
+  "input": {
+    "item": "simplefarming:turnip_seeds"
+  },
+  "soil": {
+    "item": "minecraft:dirt"
+  },
+  "time": 1200,
+  "render": {
+    "type": "crop",
+    "block": "simplefarming:turnip_crop"
+  }
+}

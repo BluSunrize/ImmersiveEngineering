@@ -1,0 +1,28 @@
+{
+  "type": "immersiveengineering:cloche",
+  "results": [
+    {
+	  "chance":0.75,
+      "item": "mysticalagriculture:stone_essence"
+    },
+	{
+	  "chance":0.05,
+      "item": "mysticalagriculture:stone_seeds"
+    },
+	{
+	  "chance":0.05,
+      "item": "mysticalagriculture:fertilized_essence"
+	}
+  ],
+  "input": {
+    "item": "mysticalagriculture:stone_seeds"
+  },
+  "soil": {
+    "item": "mysticalagriculture:inferium_farmland"
+  },
+  "time": 1200,
+  "render": {
+    "type": "crop",
+    "block": "mysticalagriculture:stone_crop"
+  }
+}

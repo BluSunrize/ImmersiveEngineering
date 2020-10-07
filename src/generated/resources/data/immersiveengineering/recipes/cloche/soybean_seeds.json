@@ -1,0 +1,22 @@
+{
+  "type": "immersiveengineering:cloche",
+  "results": [
+    {
+      "item": "simplefarming:soybean_seeds"
+    },
+	{
+	  "item": "simplefarming:soybean"
+	}
+  ],
+  "input": {
+    "item": "simplefarming:soybean_seeds"
+  },
+  "soil": {
+    "item": "minecraft:dirt"
+  },
+  "time": 1200,
+  "render": {
+    "type": "crop",
+    "block": "simplefarming:soybean_crop"
+  }
+}

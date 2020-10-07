@@ -1,0 +1,22 @@
+{
+  "type": "immersiveengineering:cloche",
+  "results": [
+    {
+      "item": "simplefarming:zucchini_seeds"
+    },
+	{
+	  "item": "simplefarming:zucchini"
+	}
+  ],
+  "input": {
+    "item": "simplefarming:zucchini_seeds"
+  },
+  "soil": {
+    "item": "minecraft:dirt"
+  },
+  "time": 1200,
+  "render": {
+    "type": "crop",
+    "block": "simplefarming:zucchini_crop"
+  }
+}

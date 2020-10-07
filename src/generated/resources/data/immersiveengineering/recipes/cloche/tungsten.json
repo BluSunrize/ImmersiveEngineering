@@ -1,0 +1,28 @@
+{
+  "type": "immersiveengineering:cloche",
+  "results": [
+    {
+	  "chance":0.75,
+      "item": "mysticalagriculture:tungsten_essence"
+    },
+	{
+	  "chance":0.05,
+      "item": "mysticalagriculture:tungsten_seeds"
+    },
+	{
+	  "chance":0.05,
+      "item": "mysticalagriculture:fertilized_essence"
+	}
+  ],
+  "input": {
+    "item": "mysticalagriculture:tungsten_seeds"
+  },
+  "soil": {
+    "item": "mysticalagriculture:imperium_farmland"
+  },
+  "time": 1200,
+  "render": {
+    "type": "crop",
+    "block": "mysticalagriculture:tungsten_crop"
+  }
+}

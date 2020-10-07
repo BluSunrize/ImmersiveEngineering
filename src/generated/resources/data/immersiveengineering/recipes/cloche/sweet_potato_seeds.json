@@ -1,0 +1,22 @@
+{
+  "type": "immersiveengineering:cloche",
+  "results": [
+    {
+      "item": "simplefarming:sweet_potato_seeds"
+    },
+	{
+	  "item": "simplefarming:sweet_potato"
+	}
+  ],
+  "input": {
+    "item": "simplefarming:sweet_potato_seeds"
+  },
+  "soil": {
+    "item": "minecraft:dirt"
+  },
+  "time": 1200,
+  "render": {
+    "type": "crop",
+    "block": "simplefarming:sweet_potato_crop"
+  }
+}

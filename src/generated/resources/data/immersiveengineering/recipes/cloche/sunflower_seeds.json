@@ -1,0 +1,22 @@
+{
+  "type": "immersiveengineering:cloche",
+  "results": [
+    {
+      "item": "simplefarming:sunflower_seeds"
+    },
+	{
+	  "item": "minecraft:sunflower"
+	}
+  ],
+  "input": {
+    "item": "simplefarming:sunflower_seeds"
+  },
+  "soil": {
+    "item": "minecraft:dirt"
+  },
+  "time": 1200,
+  "render": {
+    "type": "crop",
+    "block": "simplefarming:sunflower"
+  }
+}

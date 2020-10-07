@@ -1,0 +1,22 @@
+{
+  "type": "immersiveengineering:cloche",
+  "results": [
+    {
+      "item": "simplefarming:tomato_seeds"
+    },
+	{
+	  "item": "simplefarming:tomato"
+	}
+  ],
+  "input": {
+    "item": "simplefarming:tomato_seeds"
+  },
+  "soil": {
+    "item": "minecraft:dirt"
+  },
+  "time": 1200,
+  "render": {
+    "type": "crop",
+    "block": "simplefarming:tomato_crop"
+  }
+}

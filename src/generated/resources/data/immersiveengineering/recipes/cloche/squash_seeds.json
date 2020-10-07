@@ -1,0 +1,22 @@
+{
+  "type": "immersiveengineering:cloche",
+  "results": [
+    {
+      "item": "simplefarming:squash_seeds"
+    },
+	{
+	  "item": "simplefarming:squash"
+	}
+  ],
+  "input": {
+    "item": "simplefarming:squash_seeds"
+  },
+  "soil": {
+    "item": "minecraft:dirt"
+  },
+  "time": 1200,
+  "render": {
+    "type": "crop",
+    "block": "simplefarming:squash_crop"
+  }
+}
