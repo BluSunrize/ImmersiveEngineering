@@ -1,0 +1,22 @@
+{
+  "type": "immersiveengineering:cloche",
+  "results": [
+    {
+      "item": "simplefarming:pepper_seeds"
+    },
+	{
+	  "item": "simplefarming:pepper"
+	}
+  ],
+  "input": {
+    "item": "simplefarming:pepper_seeds"
+  },
+  "soil": {
+    "item": "minecraft:dirt"
+  },
+  "time": 1200,
+  "render": {
+    "type": "crop",
+    "block": "simplefarming:pepper_crop"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "type": "immersiveengineering:cloche",
+  "results": [
+    {
+      "item": "simplefarming:honeydew_seeds"
+    },
+	{
+	  "item": "simplefarming:honeydew"
+	}
+  ],
+  "input": {
+    "item": "simplefarming:honeydew_seeds"
+  },
+  "soil": {
+    "item": "minecraft:dirt"
+  },
+  "time": 1200,
+  "render": {
+    "type": "crop",
+    "block": "simplefarming:honeydew_crop"
+  }
+}

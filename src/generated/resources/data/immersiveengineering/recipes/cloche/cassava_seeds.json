@@ -1,0 +1,22 @@
+{
+  "type": "immersiveengineering:cloche",
+  "results": [
+    {
+      "item": "simplefarming:cassava_seeds"
+    },
+	{
+	  "item": "simplefarming:cassava"
+	}
+  ],
+  "input": {
+    "item": "simplefarming:cassava_seeds"
+  },
+  "soil": {
+    "item": "minecraft:dirt"
+  },
+  "time": 1200,
+  "render": {
+    "type": "crop",
+    "block": "simplefarming:cassava_crop"
+  }
+}

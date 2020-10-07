@@ -1,0 +1,28 @@
+{
+  "type": "immersiveengineering:cloche",
+  "results": [
+    {
+	  "chance":0.75,
+      "item": "mysticalagriculture:nature_essence"
+    },
+	{
+	  "chance":0.05,
+      "item": "mysticalagriculture:nature_seeds"
+    },
+	{
+	  "chance":0.05,
+      "item": "mysticalagriculture:fertilized_essence"
+	}
+  ],
+  "input": {
+    "item": "mysticalagriculture:nature_seeds"
+  },
+  "soil": {
+    "item": "mysticalagriculture:prudentium_farmland"
+  },
+  "time": 1200,
+  "render": {
+    "type": "crop",
+    "block": "mysticalagriculture:nature_crop"
+  }
+}

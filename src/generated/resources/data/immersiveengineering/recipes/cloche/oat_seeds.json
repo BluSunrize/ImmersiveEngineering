@@ -1,0 +1,22 @@
+{
+  "type": "immersiveengineering:cloche",
+  "results": [
+    {
+      "item": "simplefarming:oat_seeds"
+    },
+	{
+	  "item": "simplefarming:oat"
+	}
+  ],
+  "input": {
+    "item": "simplefarming:oat_seeds"
+  },
+  "soil": {
+    "item": "minecraft:dirt"
+  },
+  "time": 1200,
+  "render": {
+    "type": "crop",
+    "block": "simplefarming:oat_crop"
+  }
+}

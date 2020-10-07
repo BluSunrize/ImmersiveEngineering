@@ -1,0 +1,22 @@
+{
+  "type": "immersiveengineering:cloche",
+  "results": [
+    {
+      "item": "simplefarming:barley_seeds"
+    },
+	{
+	  "item": "simplefarming:barley"
+	}
+  ],
+  "input": {
+    "item": "simplefarming:barley_seeds"
+  },
+  "soil": {
+    "item": "minecraft:dirt"
+  },
+  "time": 1200,
+  "render": {
+    "type": "crop",
+    "block": "simplefarming:barley_crop"
+  }
+}

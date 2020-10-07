@@ -1,0 +1,22 @@
+{
+  "type": "immersiveengineering:cloche",
+  "results": [
+    {
+      "item": "simplefarming:lettuce_seeds"
+    },
+	{
+	  "item": "simplefarming:lettuce"
+	}
+  ],
+  "input": {
+    "item": "simplefarming:lettuce_seeds"
+  },
+  "soil": {
+    "item": "minecraft:dirt"
+  },
+  "time": 1200,
+  "render": {
+    "type": "crop",
+    "block": "simplefarming:lettuce_crop"
+  }
+}

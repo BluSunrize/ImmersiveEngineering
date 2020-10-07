@@ -1,0 +1,19 @@
+{
+  "type": "immersiveengineering:cloche",
+  "results": [
+    {
+      "item": "forbidden_arcanus:arcane_gold_nugget"
+    }
+  ],
+  "input": {
+    "item": "forbidden_arcanus:golden_orchid_seeds"
+  },
+  "soil": {
+    "item": "minecraft:dirt"
+  },
+  "time": 800,
+  "render": {
+    "type": "crop",
+    "block": "forbidden_arcanus:golden_orchid"
+  }
+}

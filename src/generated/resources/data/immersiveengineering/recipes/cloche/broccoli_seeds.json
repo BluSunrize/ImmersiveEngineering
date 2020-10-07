@@ -1,0 +1,22 @@
+{
+  "type": "immersiveengineering:cloche",
+  "results": [
+    {
+      "item": "simplefarming:broccoli_seeds"
+    },
+	{
+	  "item": "simplefarming:broccoli"
+	}
+  ],
+  "input": {
+    "item": "simplefarming:broccoli_seeds"
+  },
+  "soil": {
+    "item": "minecraft:dirt"
+  },
+  "time": 1200,
+  "render": {
+    "type": "crop",
+    "block": "simplefarming:broccoli_crop"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "type": "immersiveengineering:cloche",
+  "results": [
+    {
+	  "chance":0.75,
+      "item": "mysticalagriculture:manasteel_essence"
+    },
+	{
+	  "chance":0.05,
+      "item": "mysticalagriculture:manasteel_seeds"
+    },
+	{
+	  "chance":0.05,
+      "item": "mysticalagriculture:fertilized_essence"
+	}
+  ],
+  "input": {
+    "item": "mysticalagriculture:manasteel_seeds"
+  },
+  "soil": {
+    "item": "mysticalagriculture:tertium_farmland"
+  },
+  "time": 1200,
+  "render": {
+    "type": "crop",
+    "block": "mysticalagriculture:manasteel_crop"
+  }
+}

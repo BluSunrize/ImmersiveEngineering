@@ -1,0 +1,21 @@
+{
+  "type": "immersiveengineering:cloche",
+  "results": [
+    {
+      "item": "simplefarming:radish_seeds"
+    }.
+	{
+	  "item": "simplefarming:radish"
+  ],
+  "input": {
+    "item": "simplefarming:radish_seeds"
+  },
+  "soil": {
+    "item": "minecraft:dirt"
+  },
+  "time": 1200,
+  "render": {
+    "type": "crop",
+    "block": "simplefarming:radish_crop"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "type": "immersiveengineering:cloche",
+  "results": [
+    {
+      "item": "simplefarming:eggplant_seeds"
+    },
+	{
+	  "item": "simplefarming:eggplant"
+	}
+  ],
+  "input": {
+    "item": "simplefarming:eggplant_seeds"
+  },
+  "soil": {
+    "item": "minecraft:dirt"
+  },
+  "time": 1200,
+  "render": {
+    "type": "crop",
+    "block": "simplefarming:eggplant_crop"
+  }
+}

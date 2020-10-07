@@ -1,0 +1,22 @@
+{
+  "type": "immersiveengineering:cloche",
+  "results": [
+    {
+      "item": "simplefarming:cantaloupe_seeds"
+    },
+	{
+	  "item": "simplefarming:cantaloupe"
+	}
+  ],
+  "input": {
+    "item": "simplefarming:cantaloupe_seeds"
+  },
+  "soil": {
+    "item": "minecraft:dirt"
+  },
+  "time": 1200,
+  "render": {
+    "type": "crop",
+    "block": "simplefarming:cantaloupe_crop"
+  }
+}

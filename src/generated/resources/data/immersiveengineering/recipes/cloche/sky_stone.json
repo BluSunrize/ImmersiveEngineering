@@ -1,0 +1,28 @@
+{
+  "type": "immersiveengineering:cloche",
+  "results": [
+    {
+	  "chance":0.75,
+      "item": "mysticalagriculture:sky_stone_essence"
+    },
+	{
+	  "chance":0.05,
+      "item": "mysticalagriculture:sky_stone_seeds"
+    },
+	{
+	  "chance":0.05,
+      "item": "mysticalagriculture:fertilized_essence"
+	}
+  ],
+  "input": {
+    "item": "mysticalagriculture:sky_stone_seeds"
+  },
+  "soil": {
+    "item": "mysticalagriculture:tertium_farmland"
+  },
+  "time": 1200,
+  "render": {
+    "type": "crop",
+    "block": "mysticalagriculture:sky_stone_crop"
+  }
+}

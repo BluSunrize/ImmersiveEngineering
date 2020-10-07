@@ -1,0 +1,21 @@
+{
+  "type": "immersiveengineering:cloche",
+  "results": [
+    {
+      "item": "simplefarming:rye_seeds"
+    }.
+	{
+	  "item": "simplefarming:rye"
+  ],
+  "input": {
+    "item": "simplefarming:rye_seeds"
+  },
+  "soil": {
+    "item": "minecraft:dirt"
+  },
+  "time": 1200,
+  "render": {
+    "type": "crop",
+    "block": "simplefarming:rye_crop"
+  }
+}
