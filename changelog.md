@@ -14,6 +14,7 @@
 - Fixed firework and wolfpack cartridges crashing in turrets (BluSunrize)
 - Fixed dispensers not being able to use IE buckets (BluSunrize)
 - Fixed various issues with gunpowder barrels (BluSunrize)
+- Fixed a crash in turret GUIs (TwistedGate)
 - Translations Added/Updated: pt_br (felipeboff)
 
 ##### Version 1.15.2-4.1.0-122
