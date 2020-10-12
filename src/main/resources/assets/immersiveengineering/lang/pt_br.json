@@ -150,7 +150,7 @@
   "material.hemp.name": "Fibra de Cânhamo",
   "modifier.thermalinversion.name": "Inversão Térmica",
   "modifier.thermalinversion.desc": "§oQuente & frio!§r\nAtingir um inimigo em um ambiente quente ou frio irá congelá-lo ou queimá-lo.",
-  "entity.minecraft.villager.immersiveengineering.engineer": "Engenharia Estrutural",
+  "entity.minecraft.villager.immersiveengineering.engineer": "Engenheiro",
   "entity.minecraft.villager.immersiveengineering.machinist": "Mecânico",
   "entity.minecraft.villager.immersiveengineering.electrician": "Eletricista",
   "entity.minecraft.villager.immersiveengineering.outfitter": "Fornecedor",
