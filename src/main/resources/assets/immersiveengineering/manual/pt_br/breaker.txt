@@ -1,0 +1,6 @@
+Disjuntores
+Liga - Desliga
+<&manual_breaker>Disjuntores são simplesmente interruptores que podem interromper a Energia de energia através dos fios. Eles podem conectar dois fios do mesmo tipo e só permitirão a passagem de energia quando ativados. Isso pode ser usado para separar máquinas que consomem muita energia da rede ou conectar um conjunto adicional de geradores quando necessário! Devido ao alto risco, essas chaves não aceitam fios de alta tensão.
+Eles também emitirão um sinal de redstone quando forem ligados; esse comportamento pode ser invertido clicando no botão com uma chave de fenda do engenheiro.
+Além disso, são uma excelente forma de controlar a sua <link;lighting;Lanterna Elétrica;electric_lantern>!<np>
+<&rs_breaker>O Disjuntor Redstone é semelhante a um Disjuntor normal, mas não pode ser operado manualmente. Em vez disso, será necessário um sinal redstone para interromper a conexão. Em compensação, este dispositivo é isolado bem o suficiente para permitir a conexão de fios de alta tensão também!

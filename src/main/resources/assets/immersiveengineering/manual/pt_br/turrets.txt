@@ -1,0 +1,14 @@
+Torreta
+Você ainda está aí?
+Torretas são o próximo passo, é a defesa automatizada de sua fábrica. Eles apresentam um sistema óptico complexo combinado com um "cérebro" mecânico para distinguir e adquirir alvos de forma eficaz e usar o armamento embutido para neutralizá-los.
+Todos as torretas possuem portas de energia em sua base e requerem um sinal redstone para serem ativados, embora esse comportamento possa ser invertido com shift e clicando com o botão direito nele com uma chave de fenda do engenheiro.<np>
+Ao serem colocados, Torretas lembrará de seu dono e não permitirá que outros usuários os quebrem ou modifiquem. Clicar com o botão direito na torre abre a GUI que apresenta uma lista de nomes com um campo de entrada, bem como várias opções de segmentação.
+Por padrão, a lista é uma lista negra de alvos que não podem ser atacados. Esta lista utiliza nomes de criaturas, portanto, colocar animais na lista de permissões é possível.<np>
+<&turret_chemthrower_recipe>A Torreta de Lançador Químico utiliza as capacidades de propulsão fluida do <link;chemthrower;ferramenta de mesmo nome;start> para cobrir alvos em qualquer coisa, desde água a apagar chamas e óleo diesel para iniciá-los.<np>
+Esta Torreta possui uma porta de fluido na parte inferior e traseira da base para permitir que os tubos se conectem a ela. Além disso, a GUI possui um botão à esquerda que desabilita a chama piloto, acendendo o fluido dispensado, desde que seja inflamável.
+
+§oOs fornecedores deste plano não são responsáveis por quaisquer danos ao usuário, vizinhos ou vários animais de fazenda que possam incorrer.§r<np>
+<&turret_gun_recipe>A Arma da Torreta apresenta uma versão fortemente modificada do <link;revolver;Revólver;start> internos em uma Cápsula muito maior e mais imponente. A construção também envolve um carregador estendido para permitir um maior armazenamento interno de munição.<np>
+Uma porta para a inserção automática de munição e extração da Cápsula gasta está localizada na parte traseira e inferior da base. Esta torre pode armazenar até uma pilha completa de munições e a GUI apresenta um botão para alternar a expulsão automática de cápsulas usadas.
+
+§oObserve que certas munições podem causar danos colaterais ao usuário ou à sua propriedade.§r

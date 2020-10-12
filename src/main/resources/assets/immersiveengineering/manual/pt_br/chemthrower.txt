@@ -1,0 +1,10 @@
+Lançador Químico
+QUEIME TODAS AS COISAS!
+O Lançador Químico é um dispositivo que impulsiona fluidos de seu tanque interno. O dispositivo pode ser carregado com qualquer fluido, líquido ou gás e, ao clicar com o botão direito, irá borrifar.
+Também possui a função de inflamar o fluido, caso seja inflamável. Para alternar, segure Shift + clique com o botão direito.
+Como algumas outras ferramentas, o lançador de produtos químicos pode ser modificado na <link;workbench;Bancada de Trabalho do Engenheiro>. Essas atualizações afetam o tamanho do tanque, alcance e propagação.
+
+<&large>O §2Tanque Grande§r aumenta a capacidade de fluido do Lançador Químico em 2000 mb.
+<&focus>O §2Bocal Focado§r diminui a propagação dos fluidos pulverizados e também aumenta ligeiramente seu alcance, permitindo que você atinja outros alvos com mais precisão.
+<&multi>O §2Multitanque§r permite ao Lançador Químico armazenar até três Fluidos diferentes. Você pode selecionar o tanque ativo pelos atalhos de teclado se tiver sido definido nas opções.
+Esta atualização é mutuamente exclusiva para o §2Tanque Grande.§r

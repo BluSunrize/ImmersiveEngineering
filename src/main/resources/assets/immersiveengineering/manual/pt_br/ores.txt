@@ -1,0 +1,14 @@
+Minérios
+Escavando buraco
+<&copper>O §lMinério de Cobre§r é encontrado no mundo entre as camadas <config;i;ores.copper.min_y> e <config;i;ores.copper.max_y>, e requer uma picareta de pedra para coletar.
+O minério será fundido em barras de cobre, que são usados na elaboração de fios básicos de cobre, bobinas e outras partes integrantes da arquitetura do IE.
+<&alu>O §lMinério de Bauxita§R é encontrado no mundo entre camadas <config;i;ores.bauxite.min_y> e <config;i;ores.bauxite.max_y>, e requer uma picareta de pedra para coletar.
+O minério se transformará em barras de alumínio que, junto com o aço, são usados para criar fios de alta tensão.
+<&lead>§O §lMinério de Chumbo§r é encontrado no mundo entre as camadas <config;i;ores.lead.min_y> e <config;i;ores.lead.max_y>, e requer uma picareta de ferro para coletar.
+O minério será transformado em barras de chumbo, que são usados na criação de capacitores.
+<&silver>O §2Minério de Prata§r é encontrado no mundo entre as camadas <config;i;ores.silver.min_y> e <config;i;ores.silver.max_y>, e requer uma picareta de ferro para coletar.
+O minério se fundirá em barras de prata, que se ligam ao ouro para criar o Electrum, um condutor muito mais eficaz.
+<&nickel>O §lMinério de Níquel§r é encontrado no mundo entre camadas <config;i;ores.nickel.min_y> e <config;i;ores.nickel.max_y>, e requer uma picareta de ferro para coletar.
+O minério será fundido em barras de níquel, que se ligam ao cobre para criar constantan, um condutor resistente ao calor usado na criação de <link;thermoelectric;Geradores Termoelétricos;start>.
+<&uranium>O §LMinério de Urânio§r é encontrado no mundo entre as camadas <config;i;ores.uranium.min_y> e <config;i;ores.uranium.max_y>, e requer uma picareta de ferro para coletar.
+O minério vai se transformar em barras de urânio, mas atualmente não há muitos usos para o metal. Um bloco de urânio pode servir como fonte de calor para o <link;thermoelectric;Geradores Termoelétricos;start> e o metal será usado em empreendimentos futuros.

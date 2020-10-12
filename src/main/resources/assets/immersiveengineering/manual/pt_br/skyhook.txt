@@ -1,0 +1,8 @@
+Gancho do Engenheiro
+Pega!
+O Gancho do Engineer é um sistema de garra motorizado projetado para enganchar em fios, cordas de cânhamo ou cabos de aço.
+Com ele, os engenheiros podem percorrer rapidamente o comprimento de uma linha de transmissão para se mover entre subestações ou outras instalações. Simplesmente segure o botão direito do mouse próximo a um fio e você será conectado a ele.
+O botão pode ser liberado durante a condução do cabo, mas se você soltar o Gacnho ou segurar Shift, você cairá.
+
+A gravidade será suficiente para mover ao longo dos fios descendentes a uma velocidade decente, as teclas de movimento padrão podem ser usadas para mover ao longo dos fios ascendentes.
+Quando o Gancho atinge um cruzamento, ele continuará o mais próximo possível da direção que o jogador está olhando.

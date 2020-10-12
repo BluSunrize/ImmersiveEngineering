@@ -1,0 +1,6 @@
+Misturador
+Tonéis de massa de biscoito!
+O Misturador é uma estrutura multibloco que dissolve sólidos em fluidos, misturando-os. A estrutura é construída conforme mostrado acima e formada usando o Martelo do Engenheiro no bloco central de chapa metálica.
+Os usos mais comuns para esta máquina é para fazer concreto líquido, 2 partes de areia 1 parte de cascalho e 1 parte de argila, ou a criação de poções de água e seus vários ingredientes.
+Os fluidos são introduzidos no Misturador através da porta na parte inferior de sua fonte de alimentação. Os itens podem ser inseridos por meio das duas hachuras na parte de trás. A porta de fluido na frente serve como saída de fluido.
+Aplicar um sinal de redstone ao painel de controle frontal irá interromper o processo da máquina, este comportamento pode ser invertido com o uso do Martelo do Engenheiro.

@@ -1,0 +1,6 @@
+Aquecedor Externo
+Agora você está cozinhando com Energia!
+<&recipe>O Aquecedor Externo faz exatamente o que o nome indica, ele gera energia térmica a partir da Energia. Quando colocada ao lado de um forno normal, essa energia térmica alimentará o forno, permitindo que ele funda sem nenhum combustível dentro dele.<np>
+Clique em um lado do aquecedor com um martelo para torná-lo um aceitador de energia, shift para mirar no lado oposto.
+O aquecedor consumirá §o8 Energia/tick§r para cada unidade de calor adicionada. Durante a fase inicial do forno, o aquecedor produzirá até §o4§r unidades de calor por tick, mas assim que o forno atingir a temperatura máxima, precisará de apenas §o1§r unidade de calor para mantê-lo funcionando.<np>
+Melhor ainda, enquanto o forno está na temperatura máxima, o aquecedor irá consumir §o24 Energia/tick§r adicional para aumentar a velocidade de processamento do forno. O aquecedor afetará apenas um forno com entrada e espaço válidos no espaço de saída, a fim de conservar energia. No entanto, você pode aplicar um sinal de redstone ao aquecedor para desativar essa funcionalidade e mantê-lo no aquecimento total.

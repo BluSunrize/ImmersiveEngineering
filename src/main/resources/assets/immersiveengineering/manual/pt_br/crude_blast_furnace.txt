@@ -1,0 +1,6 @@
+Alto-forno Bruto
+Aço Simples
+<&block>O Alto-Forno Bruto é utilizado para aumentar o teor de carbono do ferro, transformando-o em aço. Para conseguir isso, apenas combustíveis puros com alto teor de carbono podem ser usados na fornalha, especificamente carvão de coque e carvão vegetal.
+Junto com o aço, o forno também criará escória, que você deve remover ou o forno deixará de funcionar. Embora seja tecnicamente um resíduo, você pode usar escória para criar concreto.
+<&multiblock>Para formar um Alto-Forno, organize 27 desses blocos em um cubo 3x3x3 e clique com o botão direito em um dos blocos centrais laterais com um Martelo do Engenheiro.
+O alto-forno bruto não é automatizável. Todas as entradas e saídas devem ser organizadas manualmente. Se você deseja automatizar a criação de aço, provavelmente deve considerar a criação de um <link;improved_blast_furnace;Alto-forno Aprimorado;>.

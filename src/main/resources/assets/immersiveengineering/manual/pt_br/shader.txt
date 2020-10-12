@@ -1,0 +1,8 @@
+Camuflagem
+Azul! Não, amarelo!
+Camuflagem são itens que você pode encontrar no mundo ou adquirir trocando com os aldeões. Eles não têm um propósito por si próprios, mas podem ser equipados para <link;revolver;Revólveres>, <link;mining_drill;Minerdouras>, <link;chemthrower;Lançador Químico Químicos>, <link;shield;Escudo Cromado> ou <link;railgun;Canhão Elétrico> (e possivelmente outras coisas que você ainda precisa descobrir) para alterar os designs do item. Basta colocar o item em um <link;workbench;Bancada de Trabalho do Engenheiro> e equipar o Camuflagem no espaço apropriado.
+Você também pode aplicá-los a um Minecart, Banner ou um <link;balloon;Balão> clicando com o botão direito!
+
+Para uma lista completa de todos os Camuflagem disponíveis, seus looks, referências e mais detalhes, <link;shader_list;verifique aqui><np>
+<&grab_bag>Saco de Camuflagem são itens que contêm um Camuflagem aleatório. Eles podem ser encontrados em caixotes, negociados com os moradores ou deixados pelos chefes. A raridade do Camuflagem contido é igual ou melhor do que a raridade do saco. Ao usar uma bolsa, é mais provável que você obtenha um pãozinho ou que ainda não possui, do que um que já possui.
+Os sacos de Camuflagem podem ser transformados em dois sacos de nível inferior. Isso diminuirá suas chances de obter Camuflagem mais raros, mas fornecerá mais tentativas.

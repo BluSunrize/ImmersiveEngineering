@@ -1,0 +1,7 @@
+Plataforma Giratória
+Eu não consigo acompanhar
+<&recipe>As Plataforma Giratória irão girar os blocos colocados encima dela.
+Segurar um Martelo do Engenheiro enquanto olha para um lado da máquina exibe seu lado giratório e a direção de giro associada ao lado visado.
+A direção de giro é definida individualmente para cada um dos 4 lados ao redor do eixo de giro, permitindo giros de ± 90 ° ou 180 °, dependendo de qual lado recebe o sinal de redstone.
+
+Clicar com o botão direito do martelo irá reorientá-lo, mas se segurar Shift ao fazer isso, irá inverter as direções de curva da Plataforma Giratória.

@@ -1,0 +1,6 @@
+Refinaria
+Mistura de fluidos!
+<&multiblock>O Refinaria é um multibloco complexo que pode refinar um ou dois fluidos em outro. A aplicação mais comum disso é o refinamento de <link;squeezer;Óleo Vegetal;start> e <link;fermenter;Etanol;start> em biodiesel.
+Para formar a estrutura, clique com o botão direito no Bloco de Engenharia Pesada na camada do meio.
+Os fluidos são introduzidos pelas duas portas em cada lado do bloco e a saída através da porta marcada em laranja na frente.
+Aplicar um sinal de redstone ao painel de controle frontal irá interromper o processo da máquina, este comportamento pode ser invertido com o uso do Martelo do Engenheiro.

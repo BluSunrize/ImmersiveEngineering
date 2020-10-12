@@ -1,0 +1,6 @@
+Alto-forno Aprimorado
+Refinamento Industrializado
+<&brick_recipe>O Alto-Forno Aprimorado é uma forma muito mais profissional de <link;crude_blast_furnace;criação de aço;>. Não só permite a automação de entradas e saídas, como também pode ser equipado com pré-aquecedores para acelerar o processo de refinamento por adição de ar quente.
+A fornalha é feita de tijolos refratários reforçados, portanto, recomendamos que você gaste seus primeiros lotes de aço nesta atualização.
+<&multiblock>A estrutura do forno é semelhante ao seu antecessor bruto, mas os tijolos foram reforçados e um funil foi adicionado no topo para as entradas de itens. O aço é produzido na frente do forno, a escória na parte traseira, e o forno irá automaticamente expelir para os estoques conectados ou esteiras. O Ferro e Carvão de Coque é alimentado pela parte superior.<np>
+<&preheater>Os Pré-aquecedores de Alto-forno são usados para aquecer o ar e depois soprá-lo no forno para acelerar o processo de refinamento do ferro. Cada forno pode ter até dois pré-aquecedores conectados às portas de cada lado, e cada Pré-aquecedor requer <config;i;machines.preheater_consumption> Energia/tick para operar.
