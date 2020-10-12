@@ -1,0 +1,7 @@
+Para-raios
+Thunderstruck!
+O relâmpago é um fenômeno da natureza. Ele contém uma grande quantidade de energia bruta, e este Para-raios é capaz de aproveitar essa energia.
+Ao empilhar muitas cercas de aço neste multibloco, você aumenta a chance de um raio atingi-lo durante a chuva ou tempestades.
+Quando o poste de aço é atingido, as enormes quantidades de energia criadas são armazenadas na base dos Para-raios e, então, lentamente distribuídas para as conexões de energia nas laterais.
+
+Você pode aumentar as chances de os Para-raios serem atingidos criando uma "rede" de cercas de aço conectadas à cerca superior.

@@ -1,0 +1,7 @@
+Iluminação
+Ilumine sua vida, ou não!
+<&lantern>Nos corredores das fábricas pode estar bastante escuro. Para ainda se orientar nas máquinas, você provavelmente deveria iluminar o local com algumas lanternas. Essas lanternas fornecem quase tanta luz quanto um bloco de pedra luminosa.
+<&electric_lantern>As lanternas elétricas são um dos primeiros usos já inventados para a energia elétrica. Para executá-los, você precisa conectá-los diretamente à rede elétrica usando fios. Eles permitirão que a energia seja transferida por meio deles, para que você possa vinculá-los em uma linha.
+Usar o Martelo do Engenheiro sobre eles vai virá-los de cabeça para baixo. Contanto que sejam fornecidos com um pouco de energia, eles iluminarão a área ao redor como uma lanterna normal, mas além disso, eles também impedirão que mobs hostis gerem em um raio de 32 blocos!<np>
+<&floodlight>Os holofotes são fontes de luz fortes. Embora exijam mais energia do que uma simples lanterna elétrica, eles criarão um cone de luz de até 32 blocos de comprimento. Use um Martelo do Engenheiro nas faces superior ou inferior do bloco para girar a luz ou clique nas laterais para alterar sua inclinação.
+Geralmente, os holofotes exigem um sinal de redstone para funcionar, no entanto, seu comportamento de controle pode ser invertido clicando com o botão direito na base com uma chave de fenda do engenheiro.

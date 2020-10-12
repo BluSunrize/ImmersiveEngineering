@@ -1,0 +1,9 @@
+Construções Metálicas
+Rebitagem
+<&storage_and_sheetmetal_recipes>Além da Madeira Tratada, os metais processados são blocos de construção comuns. Você pode transformar quase qualquer metal em blocos e folhas, ou martelar barras de ferro em um bloco de chapa metálica.<np>
+<&architecture_recipes>O aço não é apenas parte integrante das arquiteturas de alta tensão, mas também é bastante útil, bem, na arquitetura. Armação de aço podem ser usados para criar estruturas escaláveis rapidamente, cercas de aço mantém os vilões afastados e os braços estruturais são ótimos pontos de fixação para seus relés de alta tensão.<np>
+<&connector_recipes>Os conectores estruturais funcionam de maneira semelhante aos conectores normais, mas em vez de transferir energia, eles são puramente decorativos.
+Eles não aceitam fios normais, mas sim cordas de cânhamo e cabos de aço (consulte a próxima página).
+Você também pode girá-los clicando com o botão direito com um Martelo do Engenheiro.<np>
+<&ladder_recipes>Escadas de metal são ... bem, escadas feitas de metal. Você pode escalá-los, e eles parecem legais.
+Você também pode combiná-los com Armação para transformá-los em escadas cobertas.

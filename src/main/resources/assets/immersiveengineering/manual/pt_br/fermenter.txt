@@ -1,0 +1,6 @@
+Fermentadora
+Skál!
+A Fermentadora é uma estrutura multibloco que extrai etanol de certas frutas, grãos e vegetais por meio de um processo de fermentação. A estrutura é construída conforme a figura acima e formada utilizando o Martelo do Engenheiro no caldeirão central, do lado que contém os Blocos de Engenharia.
+Os itens podem ser inseridos na Fermentadora por meio das duas hachuras na parte de trás marcadas com pontos azuis. A hachura com o ponto laranja serve como saída de item e o bloco abaixo para saída de fluidos.
+Aplicar um sinal de redstone ao painel de controle frontal irá interromper o processo da máquina, este comportamento pode ser invertido com o uso do Martelo do Engenheiro.
+A lista a seguir mostra vários itens que podem ser fermentados em etanol e a quantidade que eles produzem.<&list>

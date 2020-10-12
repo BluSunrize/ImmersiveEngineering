@@ -1,0 +1,3 @@
+Planta do Engenheiro
+De volta à prancheta
+Esta página apresenta todas as Plantas do Engenheiro que podem ser feitas por meios normais. Outros projetos podem precisar ser adquiridos dos aldeões ou encontrados no mundo. Todos eles podem ser usados em um <link;workbench;Bancada de Trabalho do Engenheiro> para criar os itens que eles descrevem.

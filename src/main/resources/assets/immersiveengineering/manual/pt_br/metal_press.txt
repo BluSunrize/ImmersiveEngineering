@@ -1,0 +1,7 @@
+Prensa de Metal
+Sob pressão!
+<&multiblock>A Prensa de Metal é uma forma automatizada de modelar metal. Ele usa um pistão de alta pressão para pressionar um molde em uma barra, transformando-o em uma folha de metal, haste ou outros componentes de metal.
+A estrutura é criada conforme mostrado acima, para formar o multibloco, clique no pistão com um Martelo do Engenheiro. A energia é fornecida pela parte superior e os itens pelos transportadores, obviamente na direção do movimento. O bloco do meio inferior é a porta de controle do redstone, clicar com o botão direito nele com um Martelo do Engenheiro permite que você inverta o controle do redstone.<np>
+<&mold_blueprint>Para funcionar realmente, a Prensa de Metal requer um molde a ser anexado ao pistão. Esses moldes são criados na <link;workbench;Bancada de Trabalho do Engenheiro> usando a planta exibida acima.<np>
+<&mold_recipes>Os moldes são fabricados conforme mostrado acima, com o cortador de arame sofrendo algum dano a cada operação de fabricação. Eles são então inseridos na Prensa de Metal clicando com o botão direito do mouse no multibloco com um molde em mãos.<np>
+<&packing>Os moldes de montagem e desmontagem podem ser usados para comprimir 4 ou 9 do mesmo item em sua forma de armazenamento relevante, bem como desempacotá-los novamente. Isso pode ser utilizado para armazenar barras como blocos ou criar blocos simples como Arenito automaticamente.

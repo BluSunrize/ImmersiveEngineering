@@ -1,0 +1,15 @@
+Fornalha de Arco
+Não é um reator
+A Fornalha de Arco é uma estrutura maciça utilizada para fundir metais rapidamente. Consiste em uma cuba de aço encimada por eletrodos que aquecem o metal.
+O forno se destaca na fundição de minérios e na criação de aço devido à sua alta velocidade e capacidade de processar vários itens ao mesmo tempo, mas também é complexo em seu funcionamento e exigirá manutenção para continuar funcionando.
+A escória deve ser removida da máquina ou ela deixará de funcionar e os eletrodos degradados precisarão ser substituídos com o tempo.
+Para formar a estrutura monte-a conforme mostrado na primeira página, depois clique no caldeirão com um Martelo do Engenheiro.
+A energia é fornecida por meio dos três conectores na parte traseira e fornecer um sinal de redstone ao painel de controle frontal desligará a máquina. Clicar com o botão direito do mouse no painel abrirá a interface.<np>
+§lInterface:§r
+A interface pode parecer confusa ao vê-la pela primeira vez, mas é bastante simples.
+
+Os três espaço no topo são para os <link;graphite;Eletrodos de Grafite;electrode>.
+Os doze espaços à esquerda são os espaços de entrada para metais e minérios. Cada espaços tem uma barra de temperatura próxima a ele, representando o andamento da fundição.
+As quatro ranhuras à direita são para "aditivos", diferentes materiais adicionados ao metal fundido durante o processo de fabricação. Um exemplo disso seria adicionar Carvão de Coque Pulverizado a barra de ferro para criar aço.
+As entradas e aditivos são inseridos através das duas hachuras no topo da estrutura, entradas à esquerda e aditivos à direita dos eletrodos.
+Os sete espaços na parte inferior são seis espaços de saída e um espaço para escória. As saídas são retiradas da 'caçamba' na frente da estrutura, e a escória passa pela porta na parte de trás da máquina. A Fornalha de Arco irá empurrar automaticamente a produção e a escória para os estoques conectados (isso inclui Esteiras).

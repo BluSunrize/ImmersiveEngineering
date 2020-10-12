@@ -1,0 +1,12 @@
+Tubo de Fluidos
+Encanador Profissional
+<&pipe_recipe>O transporte de fluidos tornou-se essencial no negócio de engenharia. Tubos de fluido e bombas de fluido fazem exatamente isso. Por conta própria, os tubos de fluido são bastante lentos na transferência de fluidos, mas se uma bomba for usada para inserir o fluido, ele se moverá muito mais rápido. <np>
+Você pode clicar com o botão direito na peça de conexão de um cano com um Martelo do Engenheiro para evitar que ele se conecte àquele lado.
+Os tubos de fluido podem ser cobertos com armação de madeira ou aço. Basta clicar com o botão direito com uma armação em um tubo para cobri-lo. Quebre o tubo para recuperar a armação.<np>
+<&pump_recipe>As Bombas de Fluido têm três funções essenciais. Eles podem ser usados para inserir em tubos em alta pressão, para transferir fluidos muito mais rápido, ou podem coletar fluidos do mundo.
+Usar seu martelo na base da bomba irá alternar os lados entre entrada e saída.<np>
+Para que a bomba pegue os blocos de fluido, ela precisará de uma entrada de energia na parte superior e um sinal de redstone. As bombas também podem ser usadas para extrair de tanques e outros recipientes de fluidos que não têm saída automática. Isso também exigirá um sinal redstone, mas não consumirá energia.<np>
+Os blocos de água servirão como uma fonte infinita de fluido para a bomba, desde que mais de 3 blocos estejam conectados.
+
+Os blocos de fluido recolhidos serão substituídos por paralelepípedos para reduzir o atraso do fluxo de fluidos. Este comportamento pode ser ativado e desativado usando um Martelo do Engenheiro na bomba.<np>
+<&outlet_recipe>A Saída de Fluido atua como um ponto final para um sistema de tubulação, permitindo que o Fluido seja colocado no mundo. Os lados podem ser configurados entre entrada, saída (porta aberta) ou fechada, um sinal redstone pode ser usado para desligar a saída. O bloco só produzirá fluido até seu próprio nível de altura.

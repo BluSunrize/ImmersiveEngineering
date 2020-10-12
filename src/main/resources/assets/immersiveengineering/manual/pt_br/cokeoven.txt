@@ -1,0 +1,3 @@
+Forno de Coque
+Tópico quente!
+<&recipe>O Forno de Coque é a primeira máquina importante que você precisa criar para prosseguir com o Immersive Engineer . Sua funcionalidade é simples, ele vai aquecer carvão ou blocos de carvão sem fornecer oxigênio, criando o Carvão de Coque, um combustível rico em carbono. Mais importante, deste processo é a criação do §lÓleo de Creosoto,§r que é usado como um <link;treated_wood;conservante para madeira>. Da mesma forma, você também pode queimar toras de madeira em carvão com este forno, embora com um rendimento menor de creosoto. <&multiblock>Para formar um Forno de Coque, organize 27 desses blocos em um cubo 3x3x3 e clique com o botão direito em um dos blocos centrais laterais com um Martelo do Engenheiro.

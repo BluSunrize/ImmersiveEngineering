@@ -1,0 +1,8 @@
+Balão
+...basta fazer 99 deles
+<&recipe>Balões são sacos de tecido com uma fonte de calor embaixo para mantê-los flutuando. Eles também emitem luz, mas, apesar da tocha, não representam perigo de incêndio.
+Os balões podem ser colocados como blocos normais ou, quando nenhum bloco for direcionado, eles serão colocados no ar na sua frente.
+Igual a <link;metalconstruction;Conectores Estruturais;connector_recipes>, você pode prender fibra de cânhamo e arame de aço ao balão.
+Clicar com shift permite que você defina um deslocamento de altura para o balão, permitindo que você coloque-o até 5 blocos acima do alvo.
+Você também pode usar corantes em um balão colocado; a parte que você tinge depende de onde você a direciona.
+Clicar com o botão direito + Martelo do Engenheiro alternará o design do balão entre listras horizontais ou verticais.

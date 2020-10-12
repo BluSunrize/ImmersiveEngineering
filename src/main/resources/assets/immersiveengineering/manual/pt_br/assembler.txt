@@ -1,0 +1,10 @@
+Montador
+Requer alguma montagem
+<&multiblock>O Montador é uma máquina complexa capaz de criar itens, semelhante ao que um jogador faria.
+Para formar a estrutura, construa como demonstrado acima e use o martelo em uma das esteiras.<np>
+A esteira em que você clicou será o lado da entrada, indicada pelo marcador azul acima dela e a seta na lateral da máquina.
+O Montador permite armazenar no seu interior até 3 receitas que serão executadas em ordem. As saídas de receitas anteriores podem ser usadas como entradas para as receitas seguintes.
+As 3 grades de artesanato armazenam as receitas e os 18 espaços abaixo delas são o inventário de materiais.<np>
+O lado de entrada, além de uma entrada de item, também possui uma entrada de fluido para encher os três tanques internos da máquina.
+O fluido nesses tanques pode ser usado para substituir recipientes de fluido, como baldes de água em receitas.
+A alimentação da máquina é fornecida através do bloco central superior.

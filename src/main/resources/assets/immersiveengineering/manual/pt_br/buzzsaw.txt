@@ -1,0 +1,11 @@
+Serra Elétrica
+
+<&recipes>Esta grande e portátil Serra Elétrica foi projetada para fazer um trabalho rápido com árvores e outros pedaços de folhagem que possam atrapalhar a construção de uma fábrica intocada.
+Depois de usar o <link;workbench;Bancada de Trabalho do Engenheiro;start> colocar uma serra nele e carregá-lo com <link;refinery;Biodiesel;start> ou outro combustível, pode ser usado para cortar tudo, desde pequenas bétulas até grandes árvores da selva.
+
+Como algumas outras ferramentas, a Serra Elétrica pode ser modificada na <link;workbench;Bancada de Trabalho do Engenheiro>. Essas atualizações afetam o tamanho do tanque interno e a durabilidade de sua lâmina de serra.
+<np>
+<&rockcutter_recipe>Ao substituir a lâmina de serra normal por uma §2lâmina cortadora de rochas,§r o Serra Elétrica pode ser usado para cortar cubos de pedra do solo de forma limpa, de maneira semelhante ao encantamento de §2Toque Suave.§r No entanto, a lâmina com ponta de diamante não é mais útil para entalhar madeira ou derrubar árvores.<np>
+<&tank_recipe>O §2Tanque Grande§r aumenta a capacidade de fluido da Serra Elétrica em 2.000 mb.<np>
+<&lube_recipe>O §2Sistema de Lubrificação Avançada§r aplica lubrificante adicional à lâmina de serra, reduzindo a velocidade na qual ela perde durabilidade.<np>
+<&quiver_recipe>Ao prender o §2Coldre de Lâmina§r na lateral da Serra Elétrica, você pode carregar duas lâminas de serra adicionais. Você pode alternar entre as lâminas armazenadas usando os atalhos de teclado se tiver sido definido nas opções.
