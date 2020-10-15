@@ -1,6 +1,6 @@
 Canhão Elétrico
 Velocitas Eradico
-O Canhão Elétrico (ou mais precisamente a Catapulta de Indução Portátil) é uma maravilha da engenharia. É composto por dois trilhos pelos quais uma corrente elétrica flui e acelera um trenó e, com isso, um projétil.
+O Canhão Elétrico (ou mais precisamente a Catapulta de Indução Portátil) é uma maravilha da engenharia. É composto por dois trilhos pelos quais uma Energia elétrica flui e acelera um trenó e, com isso, um projétil.
 O processo consome muita energia, mas acelera vários projéteis a altas velocidades.
 Para lançar um projétil de seu inventário, clique e segure o botão de uso até que o nível de carga alcance 99 e, em seguida, solte.
 

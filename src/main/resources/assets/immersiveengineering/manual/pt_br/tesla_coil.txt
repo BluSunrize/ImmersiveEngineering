@@ -1,7 +1,7 @@
 Bobina de Tesla
 Este vai até 11
 <&tesla_coil_recipe>O Bobina de Tesla começou como um conceito de transferência de energia sem fio. No entanto, devido às suas taxas de perda potencialmente altas e sua propriedade bastante interessante de fritar todos os seres vivos em um raio de 6 metros, foi rapidamente convertido no sonho de um engenheiro de defesa doméstica.<np>
-O custo de manutenção desta máquina é alto, com clock de 256 Corrente normal em um consumo passivo mais 512 adicionais cada vez que aplica dano.
+O custo de manutenção desta máquina é alto, com clock de 256 Energia normal em um consumo passivo mais 512 adicionais cada vez que aplica dano.
 A bobina é desativada, a menos que seja fornecida com um sinal redstone. Clicar com o botão direito com uma chave de fenda do engenheiro inverterá esse comportamento.
 Além do dano, os choques também aplicarão um debuff persistente, "Atordoado", impedindo a entidade de se teletransportar.
 Clicar com o botão direito na bobina com shift alternará a bobina entre o modo de alta e baixa potência. para poder fazer isso com segurança, a bobina deve ser desligada. Ele está no modo de alta potência por padrão. Quando a bobina está no modo de baixa potência, ela usa metade da energia normal e tem metade do alcance.<np>
