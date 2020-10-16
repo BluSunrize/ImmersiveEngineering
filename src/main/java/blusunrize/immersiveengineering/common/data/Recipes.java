@@ -25,11 +25,8 @@ import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.Cove
 import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
-import blusunrize.immersiveengineering.common.crafting.HammerCrushingRecipeBuilder;
+import blusunrize.immersiveengineering.common.crafting.*;
 import blusunrize.immersiveengineering.common.crafting.IEConfigConditionSerializer.ConditionIEConfig;
-import blusunrize.immersiveengineering.common.crafting.IngredientFluidStack;
-import blusunrize.immersiveengineering.common.crafting.RevolverAssemblyRecipeBuilder;
-import blusunrize.immersiveengineering.common.crafting.TurnAndCopyRecipeBuilder;
 import blusunrize.immersiveengineering.common.crafting.serializers.GeneratedListRecipeBuilder;
 import blusunrize.immersiveengineering.common.data.resources.RecipeMetals;
 import blusunrize.immersiveengineering.common.data.resources.RecipeMetals.AlloyProperties;
@@ -1145,7 +1142,7 @@ public class Recipes extends RecipeProvider
 				.addCriterion("has_"+toPath(WoodenDecoration.treatedFence), hasItem(WoodenDecoration.treatedFence))
 				.build(out, toRL(toPath(WoodenDecoration.treatedPost)));
 
-		ShapedRecipeBuilder.shapedRecipe(WoodenDecoration.treatedWood.get(TreatedWoodStyles.HORIZONTAL), 8)
+		CompressedShapedBuilder.shapedRecipe(WoodenDecoration.treatedWood.get(TreatedWoodStyles.HORIZONTAL), 8)
 				.patternLine("www")
 				.patternLine("wbw")
 				.patternLine("www")
@@ -1291,7 +1288,7 @@ public class Recipes extends RecipeProvider
 		{
 			Tag<Item> dyeTag = new ItemTags.Wrapper(new ResourceLocation("forge", "dyes/"+dye.getTranslationKey()));
 			Block coloredSheetmetal = MetalDecoration.coloredSheetmetal.get(dye);
-			ShapedRecipeBuilder.shapedRecipe(coloredSheetmetal, 8)
+			CompressedShapedBuilder.shapedRecipe(coloredSheetmetal, 8)
 					.patternLine("sss")
 					.patternLine("sds")
 					.patternLine("sss")
@@ -1614,7 +1611,7 @@ public class Recipes extends RecipeProvider
 				.key('e', IETags.getTagsFor(EnumMetals.CONSTANTAN).plate)
 				.addCriterion("has_"+toPath(MetalDecoration.lvCoil), hasItem(MetalDecoration.lvCoil))
 				.build(out, toRL(toPath(MetalDevices.thermoelectricGen)));
-		ShapedRecipeBuilder.shapedRecipe(MetalDevices.electricLantern)
+		CompressedShapedBuilder.shapedRecipe(MetalDevices.electricLantern)
 				.patternLine(" i ")
 				.patternLine("pep")
 				.patternLine("iri")
@@ -1624,7 +1621,7 @@ public class Recipes extends RecipeProvider
 				.key('r', Tags.Items.DUSTS_REDSTONE)
 				.addCriterion("has_"+toPath(Ingredients.electronTube), hasItem(Ingredients.electronTube))
 				.build(out, toRL(toPath(MetalDevices.electricLantern)));
-		ShapedRecipeBuilder.shapedRecipe(MetalDevices.chargingStation)
+		CompressedShapedBuilder.shapedRecipe(MetalDevices.chargingStation)
 				.patternLine("ici")
 				.patternLine("ggg")
 				.patternLine("wlw")
@@ -1697,7 +1694,7 @@ public class Recipes extends RecipeProvider
 				.key('e', MetalDecoration.engineeringRS)
 				.addCriterion("has_"+toPath(Weapons.revolver), hasItem(Weapons.revolver))
 				.build(out, toRL(toPath(MetalDevices.turretGun)));
-		ShapedRecipeBuilder.shapedRecipe(MetalDevices.cloche)
+		CompressedShapedBuilder.shapedRecipe(MetalDevices.cloche)
 				.patternLine("geg")
 				.patternLine("g g")
 				.patternLine("wcw")
@@ -1794,7 +1791,7 @@ public class Recipes extends RecipeProvider
 				.key('r', Tags.Items.DUSTS_REDSTONE)
 				.addCriterion("has_electrum_nugget", hasItem(IETags.getTagsFor(EnumMetals.ELECTRUM).nugget))
 				.build(out, toRL(toPath(Connectors.connectorRedstone)));
-		ShapedRecipeBuilder.shapedRecipe(IEBlocks.Connectors.connectorProbe)
+		CompressedShapedBuilder.shapedRecipe(IEBlocks.Connectors.connectorProbe)
 				.patternLine(" c ")
 				.patternLine("gpg")
 				.patternLine(" q ")
@@ -2322,7 +2319,7 @@ public class Recipes extends RecipeProvider
 				.addCriterion("has_chemthrower", hasItem(Weapons.chemthrower))
 				.build(out, toRL(toPath(Misc.toolUpgrades.get(ToolUpgrade.CHEMTHROWER_MULTITANK))));
 
-		ShapedRecipeBuilder.shapedRecipe(Misc.toolUpgrades.get(ToolUpgrade.RAILGUN_SCOPE))
+		CompressedShapedBuilder.shapedRecipe(Misc.toolUpgrades.get(ToolUpgrade.RAILGUN_SCOPE))
 				.patternLine("pi ")
 				.patternLine("c i")
 				.patternLine(" cp")
@@ -2340,7 +2337,7 @@ public class Recipes extends RecipeProvider
 				.addCriterion("has_railgun", hasItem(Weapons.railgun))
 				.build(out, toRL(toPath(Misc.toolUpgrades.get(ToolUpgrade.RAILGUN_CAPACITORS))));
 
-		ShapedRecipeBuilder.shapedRecipe(Misc.toolUpgrades.get(ToolUpgrade.SHIELD_FLASH))
+		CompressedShapedBuilder.shapedRecipe(Misc.toolUpgrades.get(ToolUpgrade.SHIELD_FLASH))
 				.patternLine("ipi")
 				.patternLine("pep")
 				.key('i', IETags.getTagsFor(EnumMetals.ALUMINUM).plate)
@@ -2727,7 +2724,7 @@ public class Recipes extends RecipeProvider
 				.key('c', Items.SHIELD)
 				.addCriterion("has_shield", hasItem(Items.SHIELD))
 				.build(out, toRL(toPath(Misc.shield)));
-		ShapedRecipeBuilder.shapedRecipe(Misc.fluorescentTube)
+		CompressedShapedBuilder.shapedRecipe(Misc.fluorescentTube)
 				.patternLine("GeG")
 				.patternLine("GgG")
 				.patternLine("GgG")
@@ -2737,7 +2734,7 @@ public class Recipes extends RecipeProvider
 				.addCriterion("has_electrode", hasItem(Misc.graphiteElectrode))
 				.build(out, toRL(toPath(Misc.fluorescentTube)));
 		addArmor(IETags.getTagsFor(EnumMetals.ALUMINUM).plate, Misc.faradaySuit, "alu_plate", out);
-		ShapedRecipeBuilder.shapedRecipe(Misc.earmuffs)
+		CompressedShapedBuilder.shapedRecipe(Misc.earmuffs)
 				.patternLine(" S ")
 				.patternLine("S S")
 				.patternLine("W W")
@@ -2745,13 +2742,13 @@ public class Recipes extends RecipeProvider
 				.key('W', ItemTags.WOOL)
 				.addCriterion("has_iron_rod", hasItem(IETags.ironRod))
 				.build(out, toRL(toPath(Misc.earmuffs)));
-		ShapedRecipeBuilder.shapedRecipe(MetalDecoration.lantern)
+		CompressedShapedBuilder.shapedRecipe(MetalDecoration.lantern)
 				.patternLine(" I ")
 				.patternLine("PGP")
 				.patternLine(" I ")
 				.key('I', IETags.getTagsFor(EnumMetals.IRON).plate)
 				.key('G', Tags.Items.DUSTS_GLOWSTONE)
-				.key('P', Items.GLASS_PANE)
+				.key('P', Tags.Items.GLASS_PANES)
 				.addCriterion("has_glowstone", hasItem(Tags.Items.DUSTS_GLOWSTONE))
 				.build(out, toRL(toPath(MetalDecoration.lantern)));
 
