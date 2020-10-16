@@ -54,11 +54,11 @@ public class MixerRecipeSerializer extends IERecipeSerializer<MixerRecipe>
 	{
 		FluidStack fluidOutput = buffer.readFluidStack();
 		FluidTagInput fluidInput = FluidTagInput.read(buffer);
-		int ingredientCount = buffer.readInt();
+		int ingredientCount = buffer.readVarInt();
 		IngredientWithSize[] itemInputs = new IngredientWithSize[ingredientCount];
 		for(int i = 0; i < ingredientCount; i++)
 			itemInputs[i] = IngredientWithSize.read(buffer);
-		int energy = buffer.readInt();
+		int energy = buffer.readVarInt();
 		return new MixerRecipe(recipeId, fluidOutput, fluidInput, itemInputs, energy);
 	}
 
@@ -67,9 +67,9 @@ public class MixerRecipeSerializer extends IERecipeSerializer<MixerRecipe>
 	{
 		buffer.writeFluidStack(recipe.fluidOutput);
 		recipe.fluidInput.write(buffer);
-		buffer.writeInt(recipe.itemInputs.length);
+		buffer.writeVarInt(recipe.itemInputs.length);
 		for(IngredientWithSize input : recipe.itemInputs)
 			input.write(buffer);
-		buffer.writeInt(recipe.getTotalProcessEnergy());
+		buffer.writeVarInt(recipe.getTotalProcessEnergy());
 	}
 }

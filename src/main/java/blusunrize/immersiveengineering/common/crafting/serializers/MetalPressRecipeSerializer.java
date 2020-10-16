@@ -49,7 +49,7 @@ public class MetalPressRecipeSerializer extends IERecipeSerializer<MetalPressRec
 		ItemStack output = buffer.readItemStack();
 		IngredientWithSize input = IngredientWithSize.read(buffer);
 		ItemStack mold = buffer.readItemStack();
-		int energy = buffer.readInt();
+		int energy = buffer.readVarInt();
 		return new MetalPressRecipe(recipeId, output, input, new ComparableItemStack(mold), energy);
 	}
 
@@ -59,6 +59,6 @@ public class MetalPressRecipeSerializer extends IERecipeSerializer<MetalPressRec
 		buffer.writeItemStack(recipe.output);
 		recipe.input.write(buffer);
 		buffer.writeItemStack(recipe.mold.stack);
-		buffer.writeInt(recipe.getTotalProcessEnergy());
+		buffer.writeVarInt(recipe.getTotalProcessEnergy());
 	}
 }

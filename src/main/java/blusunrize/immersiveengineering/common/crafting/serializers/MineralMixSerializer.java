@@ -73,13 +73,13 @@ public class MineralMixSerializer extends IERecipeSerializer<MineralMix>
 	@Override
 	public MineralMix read(ResourceLocation recipeId, PacketBuffer buffer)
 	{
-		int count = buffer.readInt();
+		int count = buffer.readVarInt();
 		StackWithChance[] outputs = new StackWithChance[count];
 		for(int i = 0; i < count; i++)
 			outputs[i] = StackWithChance.read(buffer);
-		int weight = buffer.readInt();
+		int weight = buffer.readVarInt();
 		float failChance = buffer.readFloat();
-		count = buffer.readInt();
+		count = buffer.readVarInt();
 		DimensionType[] dimensions = new DimensionType[count];
 		for(int i = 0; i < count; i++)
 			dimensions[i] = DimensionType.byName(buffer.readResourceLocation());
@@ -90,12 +90,12 @@ public class MineralMixSerializer extends IERecipeSerializer<MineralMix>
 	@Override
 	public void write(PacketBuffer buffer, MineralMix recipe)
 	{
-		buffer.writeInt(recipe.outputs.length);
+		buffer.writeVarInt(recipe.outputs.length);
 		for(StackWithChance secondaryOutput : recipe.outputs)
 			secondaryOutput.write(buffer);
-		buffer.writeInt(recipe.weight);
+		buffer.writeVarInt(recipe.weight);
 		buffer.writeFloat(recipe.failChance);
-		buffer.writeInt(recipe.dimensions.size());
+		buffer.writeVarInt(recipe.dimensions.size());
 		for(DimensionType dimension : recipe.dimensions)
 			buffer.writeResourceLocation(DimensionType.getKey(dimension));
 		buffer.writeResourceLocation(ForgeRegistries.BLOCKS.getKey(recipe.background));

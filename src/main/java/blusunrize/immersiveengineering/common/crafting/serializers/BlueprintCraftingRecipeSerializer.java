@@ -50,7 +50,7 @@ public class BlueprintCraftingRecipeSerializer extends IERecipeSerializer<Bluepr
 	{
 		String category = buffer.readString();
 		ItemStack output = buffer.readItemStack();
-		int inputCount = buffer.readInt();
+		int inputCount = buffer.readVarInt();
 		IngredientWithSize[] ingredients = new IngredientWithSize[inputCount];
 		for(int i = 0; i < ingredients.length; i++)
 			ingredients[i] = IngredientWithSize.read(buffer);
@@ -62,7 +62,7 @@ public class BlueprintCraftingRecipeSerializer extends IERecipeSerializer<Bluepr
 	{
 		buffer.writeString(recipe.blueprintCategory);
 		buffer.writeItemStack(recipe.output);
-		buffer.writeInt(recipe.inputs.length);
+		buffer.writeVarInt(recipe.inputs.length);
 		for(IngredientWithSize ingredient : recipe.inputs)
 			ingredient.write(buffer);
 	}

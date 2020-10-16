@@ -48,7 +48,7 @@ public class RefineryRecipeSerializer extends IERecipeSerializer<RefineryRecipe>
 		FluidStack output = buffer.readFluidStack();
 		FluidTagInput input0 = FluidTagInput.read(buffer);
 		FluidTagInput input1 = FluidTagInput.read(buffer);
-		int energy = buffer.readInt();
+		int energy = buffer.readVarInt();
 		return new RefineryRecipe(recipeId, output, input0, input1, energy);
 	}
 
@@ -58,6 +58,6 @@ public class RefineryRecipeSerializer extends IERecipeSerializer<RefineryRecipe>
 		buffer.writeFluidStack(recipe.output);
 		recipe.input0.write(buffer);
 		recipe.input1.write(buffer);
-		buffer.writeInt(recipe.getTotalProcessEnergy());
+		buffer.writeVarInt(recipe.getTotalProcessEnergy());
 	}
 }

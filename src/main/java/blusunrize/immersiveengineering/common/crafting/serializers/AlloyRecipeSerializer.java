@@ -45,7 +45,7 @@ public class AlloyRecipeSerializer extends IERecipeSerializer<AlloyRecipe>
 		ItemStack output = buffer.readItemStack();
 		IngredientWithSize input0 = IngredientWithSize.read(buffer);
 		IngredientWithSize input1 = IngredientWithSize.read(buffer);
-		int time = buffer.readInt();
+		int time = buffer.readVarInt();
 		return new AlloyRecipe(recipeId, output, input0, input1, time);
 	}
 
@@ -55,6 +55,6 @@ public class AlloyRecipeSerializer extends IERecipeSerializer<AlloyRecipe>
 		buffer.writeItemStack(recipe.output);
 		recipe.input0.write(buffer);
 		recipe.input1.write(buffer);
-		buffer.writeInt(recipe.time);
+		buffer.writeVarInt(recipe.time);
 	}
 }

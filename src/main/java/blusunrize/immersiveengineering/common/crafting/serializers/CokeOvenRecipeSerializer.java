@@ -44,8 +44,8 @@ public class CokeOvenRecipeSerializer extends IERecipeSerializer<CokeOvenRecipe>
 	{
 		ItemStack output = buffer.readItemStack();
 		IngredientWithSize input = IngredientWithSize.read(buffer);
-		int time = buffer.readInt();
-		int oil = buffer.readInt();
+		int time = buffer.readVarInt();
+		int oil = buffer.readVarInt();
 		return new CokeOvenRecipe(recipeId, output, input, time, oil);
 	}
 
@@ -54,7 +54,7 @@ public class CokeOvenRecipeSerializer extends IERecipeSerializer<CokeOvenRecipe>
 	{
 		buffer.writeItemStack(recipe.output);
 		recipe.input.write(buffer);
-		buffer.writeInt(recipe.time);
-		buffer.writeInt(recipe.creosoteOutput);
+		buffer.writeVarInt(recipe.time);
+		buffer.writeVarInt(recipe.creosoteOutput);
 	}
 }

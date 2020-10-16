@@ -54,7 +54,7 @@ public class SqueezerRecipeSerializer extends IERecipeSerializer<SqueezerRecipe>
 		FluidStack fluidOutput = buffer.readFluidStack();
 		ItemStack itemOutput = buffer.readItemStack();
 		IngredientWithSize input = IngredientWithSize.read(buffer);
-		int energy = buffer.readInt();
+		int energy = buffer.readVarInt();
 		return new SqueezerRecipe(recipeId, fluidOutput, itemOutput, input, energy);
 	}
 
@@ -64,6 +64,6 @@ public class SqueezerRecipeSerializer extends IERecipeSerializer<SqueezerRecipe>
 		buffer.writeFluidStack(recipe.fluidOutput);
 		buffer.writeItemStack(recipe.itemOutput);
 		recipe.input.write(buffer);
-		buffer.writeInt(recipe.getTotalProcessEnergy());
+		buffer.writeVarInt(recipe.getTotalProcessEnergy());
 	}
 }

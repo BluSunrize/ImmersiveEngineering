@@ -46,7 +46,7 @@ public class HammerCrushingRecipeSerializer extends IERecipeSerializer<Shapeless
 	@Override
 	public ShapelessRecipe read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer)
 	{
-		int count = buffer.readInt();
+		int count = buffer.readVarInt();
 		NonNullList<Ingredient> ingredients = NonNullList.withSize(count, Ingredient.EMPTY);
 		for(int i = 0; i < count; i++)
 			ingredients.set(i, Ingredient.read(buffer));
@@ -58,7 +58,7 @@ public class HammerCrushingRecipeSerializer extends IERecipeSerializer<Shapeless
 	public void write(@Nonnull PacketBuffer buffer, @Nonnull ShapelessRecipe recipe)
 	{
 		NonNullList<Ingredient> ingredients = recipe.getIngredients();
-		buffer.writeInt(ingredients.size());
+		buffer.writeVarInt(ingredients.size());
 		for(Ingredient ingredient : ingredients)
 			CraftingHelper.write(buffer, ingredient);
 		buffer.writeItemStack(recipe.getRecipeOutput());

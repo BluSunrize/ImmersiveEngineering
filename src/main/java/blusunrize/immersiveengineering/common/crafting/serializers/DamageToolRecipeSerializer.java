@@ -46,7 +46,7 @@ public class DamageToolRecipeSerializer extends ForgeRegistryEntry<IRecipeSerial
 	@Override
 	public DamageToolRecipe read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer)
 	{
-		int stdCount = buffer.readInt();
+		int stdCount = buffer.readVarInt();
 		NonNullList<Ingredient> stdIngr = NonNullList.create();
 		for(int i = 0; i < stdCount; ++i)
 			stdIngr.add(Ingredient.read(buffer));
@@ -60,7 +60,7 @@ public class DamageToolRecipeSerializer extends ForgeRegistryEntry<IRecipeSerial
 	public void write(@Nonnull PacketBuffer buffer, @Nonnull DamageToolRecipe recipe)
 	{
 		int standardCount = recipe.getIngredients().size()-1;
-		buffer.writeInt(standardCount);
+		buffer.writeVarInt(standardCount);
 		for(int i = 0; i < standardCount; ++i)
 			CraftingHelper.write(buffer, recipe.getIngredients().get(i));
 		CraftingHelper.write(buffer, recipe.getTool());

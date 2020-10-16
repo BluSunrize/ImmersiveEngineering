@@ -54,13 +54,13 @@ public class ClocheRecipeSerializer extends IERecipeSerializer<ClocheRecipe>
 	@Override
 	public ClocheRecipe read(ResourceLocation recipeId, PacketBuffer buffer)
 	{
-		int outputCount = buffer.readInt();
+		int outputCount = buffer.readVarInt();
 		List<ItemStack> outputs = new ArrayList<>(outputCount);
 		for(int i = 0; i < outputCount; i++)
 			outputs.add(buffer.readItemStack());
 		Ingredient seed = Ingredient.read(buffer);
 		Ingredient soil = Ingredient.read(buffer);
-		int time = buffer.readInt();
+		int time = buffer.readVarInt();
 		ClocheRenderReference renderReference = ClocheRenderReference.read(buffer);
 		return new ClocheRecipe(recipeId, outputs, seed, soil, time, renderReference);
 	}
@@ -68,12 +68,12 @@ public class ClocheRecipeSerializer extends IERecipeSerializer<ClocheRecipe>
 	@Override
 	public void write(PacketBuffer buffer, ClocheRecipe recipe)
 	{
-		buffer.writeInt(recipe.outputs.size());
+		buffer.writeVarInt(recipe.outputs.size());
 		for(ItemStack stack : recipe.outputs)
 			buffer.writeItemStack(stack);
 		recipe.seed.write(buffer);
 		recipe.soil.write(buffer);
-		buffer.writeInt(recipe.time);
+		buffer.writeVarInt(recipe.time);
 		recipe.renderReference.write(buffer);
 	}
 }

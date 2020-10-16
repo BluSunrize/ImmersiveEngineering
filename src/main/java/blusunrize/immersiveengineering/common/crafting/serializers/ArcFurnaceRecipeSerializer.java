@@ -65,18 +65,18 @@ public class ArcFurnaceRecipeSerializer extends IERecipeSerializer<ArcFurnaceRec
 	@Override
 	public ArcFurnaceRecipe read(ResourceLocation recipeId, PacketBuffer buffer)
 	{
-		int outputCount = buffer.readInt();
+		int outputCount = buffer.readVarInt();
 		NonNullList<ItemStack> outputs = NonNullList.withSize(outputCount, ItemStack.EMPTY);
 		for(int i = 0; i < outputCount; i++)
 			outputs.set(i, buffer.readItemStack());
 		IngredientWithSize input = IngredientWithSize.read(buffer);
-		int additiveCount = buffer.readInt();
+		int additiveCount = buffer.readVarInt();
 		IngredientWithSize[] additives = new IngredientWithSize[additiveCount];
 		for(int i = 0; i < additiveCount; i++)
 			additives[i] = IngredientWithSize.read(buffer);
 		ItemStack slag = buffer.readItemStack();
-		int time = buffer.readInt();
-		int energy = buffer.readInt();
+		int time = buffer.readVarInt();
+		int energy = buffer.readVarInt();
 		if(!buffer.readBoolean())
 			return new ArcFurnaceRecipe(recipeId, outputs, input, slag, time, energy, additives);
 		else
@@ -92,16 +92,16 @@ public class ArcFurnaceRecipeSerializer extends IERecipeSerializer<ArcFurnaceRec
 	@Override
 	public void write(PacketBuffer buffer, ArcFurnaceRecipe recipe)
 	{
-		buffer.writeInt(recipe.output.size());
+		buffer.writeVarInt(recipe.output.size());
 		for(ItemStack stack : recipe.output)
 			buffer.writeItemStack(stack);
 		recipe.input.write(buffer);
-		buffer.writeInt(recipe.additives.length);
+		buffer.writeVarInt(recipe.additives.length);
 		for(IngredientWithSize ingr : recipe.additives)
 			ingr.write(buffer);
 		buffer.writeItemStack(recipe.slag);
-		buffer.writeInt(recipe.getTotalProcessTime());
-		buffer.writeInt(recipe.getTotalProcessEnergy());
+		buffer.writeVarInt(recipe.getTotalProcessTime());
+		buffer.writeVarInt(recipe.getTotalProcessEnergy());
 		buffer.writeBoolean(recipe instanceof ArcRecyclingRecipe);
 		if(recipe instanceof ArcRecyclingRecipe)
 		{

@@ -41,7 +41,7 @@ public class BlastFurnaceFuelSerializer extends IERecipeSerializer<BlastFurnaceF
 	public BlastFurnaceFuel read(ResourceLocation recipeId, PacketBuffer buffer)
 	{
 		Ingredient input = Ingredient.read(buffer);
-		int time = buffer.readInt();
+		int time = buffer.readVarInt();
 		return new BlastFurnaceFuel(recipeId, input, time);
 	}
 
@@ -49,6 +49,6 @@ public class BlastFurnaceFuelSerializer extends IERecipeSerializer<BlastFurnaceF
 	public void write(PacketBuffer buffer, BlastFurnaceFuel recipe)
 	{
 		recipe.input.write(buffer);
-		buffer.writeInt(recipe.burnTime);
+		buffer.writeVarInt(recipe.burnTime);
 	}
 }

@@ -46,7 +46,7 @@ public class BlastFurnaceRecipeSerializer extends IERecipeSerializer<BlastFurnac
 	{
 		ItemStack output = buffer.readItemStack();
 		IngredientWithSize input = IngredientWithSize.read(buffer);
-		int time = buffer.readInt();
+		int time = buffer.readVarInt();
 		ItemStack slag = ItemStack.EMPTY;
 		if(buffer.readBoolean())
 			slag = buffer.readItemStack();
@@ -58,7 +58,7 @@ public class BlastFurnaceRecipeSerializer extends IERecipeSerializer<BlastFurnac
 	{
 		buffer.writeItemStack(recipe.output);
 		recipe.input.write(buffer);
-		buffer.writeInt(recipe.time);
+		buffer.writeVarInt(recipe.time);
 		buffer.writeBoolean(!recipe.slag.isEmpty());
 		if(!recipe.slag.isEmpty())
 			buffer.writeItemStack(recipe.slag);

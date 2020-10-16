@@ -28,14 +28,14 @@ public class IngredientWithSizeSerializer
 	@Nonnull
 	public IngredientWithSize parse(@Nonnull PacketBuffer buffer)
 	{
-		final int count = buffer.readInt();
+		final int count = buffer.readVarInt();
 		final Ingredient base = Ingredient.read(buffer);
 		return new IngredientWithSize(base, count);
 	}
 
 	public void write(@Nonnull PacketBuffer buffer, @Nonnull IngredientWithSize ingredient)
 	{
-		buffer.writeInt(ingredient.getCount());
+		buffer.writeVarInt(ingredient.getCount());
 		CraftingHelper.write(buffer, ingredient.getBaseIngredient());
 	}
 

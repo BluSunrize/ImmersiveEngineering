@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.crafting.serializers;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.SawmillRecipe;
 import blusunrize.immersiveengineering.common.IEConfig;
-import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -68,12 +67,12 @@ public class SawmillRecipeSerializer extends IERecipeSerializer<SawmillRecipe>
 		ItemStack output = buffer.readItemStack();
 		ItemStack stripped = buffer.readItemStack();
 		Ingredient input = Ingredient.read(buffer);
-		int energy = buffer.readInt();
+		int energy = buffer.readVarInt();
 		SawmillRecipe recipe = new SawmillRecipe(recipeId, output, stripped, input, energy);
-		int secondaryCount = buffer.readInt();
+		int secondaryCount = buffer.readVarInt();
 		for(int i = 0; i < secondaryCount; i++)
 			recipe.addToSecondaryStripping(buffer.readItemStack());
-		secondaryCount = buffer.readInt();
+		secondaryCount = buffer.readVarInt();
 		for(int i = 0; i < secondaryCount; i++)
 			recipe.addToSecondaryOutput(buffer.readItemStack());
 		return recipe;
@@ -85,11 +84,11 @@ public class SawmillRecipeSerializer extends IERecipeSerializer<SawmillRecipe>
 		buffer.writeItemStack(recipe.output);
 		buffer.writeItemStack(recipe.stripped);
 		recipe.input.write(buffer);
-		buffer.writeInt(recipe.getTotalProcessEnergy());
-		buffer.writeInt(recipe.secondaryStripping.size());
+		buffer.writeVarInt(recipe.getTotalProcessEnergy());
+		buffer.writeVarInt(recipe.secondaryStripping.size());
 		for(ItemStack secondaryOutput : recipe.secondaryStripping)
 			buffer.writeItemStack(secondaryOutput);
-		buffer.writeInt(recipe.secondaryOutputs.size());
+		buffer.writeVarInt(recipe.secondaryOutputs.size());
 		for(ItemStack secondaryOutput : recipe.secondaryOutputs)
 			buffer.writeItemStack(secondaryOutput);
 	}
