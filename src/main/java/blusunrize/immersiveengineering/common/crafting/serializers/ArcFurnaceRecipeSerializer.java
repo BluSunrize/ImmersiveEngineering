@@ -84,7 +84,7 @@ public class ArcFurnaceRecipeSerializer extends IERecipeSerializer<ArcFurnaceRec
 			final int numOutputs = buffer.readVarInt();
 			Map<ItemStack, Double> recyclingOutputs = new HashMap<>(numOutputs);
 			for(int i = 0; i < numOutputs; ++i)
-				recyclingOutputs.put(buffer.readItemStack(), buffer.readDouble());
+				recyclingOutputs.put(buffer.readItemStack(), buffer.readVarInt()/100D);
 			return new ArcRecyclingRecipe(recipeId, recyclingOutputs, input, time, energy);
 		}
 	}
@@ -110,7 +110,7 @@ public class ArcFurnaceRecipeSerializer extends IERecipeSerializer<ArcFurnaceRec
 			for(Entry<ItemStack, Double> e : outputs.entrySet())
 			{
 				buffer.writeItemStack(e.getKey());
-				buffer.writeDouble(e.getValue());
+				buffer.writeVarInt((int)(100*e.getValue()));
 			}
 		}
 	}
