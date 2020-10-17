@@ -19,12 +19,15 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
-public abstract class IERecipeSerializer<R extends IRecipe<?>> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<R>
+import javax.annotation.Nonnull;
+
+//TODO new interface technically breaks binary compat?
+public abstract class IERecipeSerializer<R extends IRecipe<?>> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IIEBufferRecipeSerializer<R>
 {
 	public abstract ItemStack getIcon();
 
 	@Override
-	public final R read(ResourceLocation recipeId, JsonObject json)
+	public final R read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json)
 	{
 		if(CraftingHelper.processConditions(json, "conditions"))
 			return readFromJson(recipeId, json);

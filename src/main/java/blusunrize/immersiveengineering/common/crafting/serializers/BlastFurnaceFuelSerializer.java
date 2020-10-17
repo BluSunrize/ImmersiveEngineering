@@ -10,14 +10,15 @@ package blusunrize.immersiveengineering.common.crafting.serializers;
 
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
+import blusunrize.immersiveengineering.api.utils.IEPacketBuffer;
 import blusunrize.immersiveengineering.common.items.IEItems;
 import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class BlastFurnaceFuelSerializer extends IERecipeSerializer<BlastFurnaceFuel>
@@ -38,7 +39,7 @@ public class BlastFurnaceFuelSerializer extends IERecipeSerializer<BlastFurnaceF
 
 	@Nullable
 	@Override
-	public BlastFurnaceFuel read(ResourceLocation recipeId, PacketBuffer buffer)
+	public BlastFurnaceFuel read(ResourceLocation recipeId, @Nonnull IEPacketBuffer buffer)
 	{
 		Ingredient input = Ingredient.read(buffer);
 		int time = buffer.readVarInt();
@@ -46,7 +47,7 @@ public class BlastFurnaceFuelSerializer extends IERecipeSerializer<BlastFurnaceF
 	}
 
 	@Override
-	public void write(PacketBuffer buffer, BlastFurnaceFuel recipe)
+	public void write(@Nonnull IEPacketBuffer buffer, BlastFurnaceFuel recipe)
 	{
 		recipe.input.write(buffer);
 		buffer.writeVarInt(recipe.burnTime);

@@ -11,13 +11,14 @@ package blusunrize.immersiveengineering.common.crafting.serializers;
 import blusunrize.immersiveengineering.api.crafting.AlloyRecipe;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
+import blusunrize.immersiveengineering.api.utils.IEPacketBuffer;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class AlloyRecipeSerializer extends IERecipeSerializer<AlloyRecipe>
@@ -40,7 +41,7 @@ public class AlloyRecipeSerializer extends IERecipeSerializer<AlloyRecipe>
 
 	@Nullable
 	@Override
-	public AlloyRecipe read(ResourceLocation recipeId, PacketBuffer buffer)
+	public AlloyRecipe read(ResourceLocation recipeId, @Nonnull IEPacketBuffer buffer)
 	{
 		ItemStack output = buffer.readItemStack();
 		IngredientWithSize input0 = IngredientWithSize.read(buffer);
@@ -50,7 +51,7 @@ public class AlloyRecipeSerializer extends IERecipeSerializer<AlloyRecipe>
 	}
 
 	@Override
-	public void write(PacketBuffer buffer, AlloyRecipe recipe)
+	public void write(@Nonnull IEPacketBuffer buffer, AlloyRecipe recipe)
 	{
 		buffer.writeItemStack(recipe.output);
 		recipe.input0.write(buffer);

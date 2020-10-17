@@ -11,15 +11,16 @@ package blusunrize.immersiveengineering.common.crafting.serializers;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
+import blusunrize.immersiveengineering.api.utils.IEPacketBuffer;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDevices;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class BlueprintCraftingRecipeSerializer extends IERecipeSerializer<BlueprintCraftingRecipe>
@@ -46,7 +47,7 @@ public class BlueprintCraftingRecipeSerializer extends IERecipeSerializer<Bluepr
 
 	@Nullable
 	@Override
-	public BlueprintCraftingRecipe read(ResourceLocation recipeId, PacketBuffer buffer)
+	public BlueprintCraftingRecipe read(ResourceLocation recipeId, @Nonnull IEPacketBuffer buffer)
 	{
 		String category = buffer.readString();
 		ItemStack output = buffer.readItemStack();
@@ -58,7 +59,7 @@ public class BlueprintCraftingRecipeSerializer extends IERecipeSerializer<Bluepr
 	}
 
 	@Override
-	public void write(PacketBuffer buffer, BlueprintCraftingRecipe recipe)
+	public void write(@Nonnull IEPacketBuffer buffer, BlueprintCraftingRecipe recipe)
 	{
 		buffer.writeString(recipe.blueprintCategory);
 		buffer.writeItemStack(recipe.output);

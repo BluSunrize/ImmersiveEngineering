@@ -11,15 +11,16 @@ package blusunrize.immersiveengineering.common.crafting.serializers;
 import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
+import blusunrize.immersiveengineering.api.utils.IEPacketBuffer;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class BottlingMachineRecipeSerializer extends IERecipeSerializer<BottlingMachineRecipe>
@@ -43,7 +44,7 @@ public class BottlingMachineRecipeSerializer extends IERecipeSerializer<Bottling
 
 	@Nullable
 	@Override
-	public BottlingMachineRecipe read(ResourceLocation recipeId, PacketBuffer buffer)
+	public BottlingMachineRecipe read(ResourceLocation recipeId, @Nonnull IEPacketBuffer buffer)
 	{
 		ItemStack output = buffer.readItemStack();
 		Ingredient input = Ingredient.read(buffer);
@@ -52,7 +53,7 @@ public class BottlingMachineRecipeSerializer extends IERecipeSerializer<Bottling
 	}
 
 	@Override
-	public void write(PacketBuffer buffer, BottlingMachineRecipe recipe)
+	public void write(@Nonnull IEPacketBuffer buffer, BottlingMachineRecipe recipe)
 	{
 		buffer.writeItemStack(recipe.output);
 		recipe.input.write(buffer);

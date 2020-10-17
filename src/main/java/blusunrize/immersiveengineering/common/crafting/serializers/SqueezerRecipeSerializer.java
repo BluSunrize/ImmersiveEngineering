@@ -12,15 +12,16 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.SqueezerRecipe;
+import blusunrize.immersiveengineering.api.utils.IEPacketBuffer;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class SqueezerRecipeSerializer extends IERecipeSerializer<SqueezerRecipe>
@@ -49,7 +50,7 @@ public class SqueezerRecipeSerializer extends IERecipeSerializer<SqueezerRecipe>
 
 	@Nullable
 	@Override
-	public SqueezerRecipe read(ResourceLocation recipeId, PacketBuffer buffer)
+	public SqueezerRecipe read(ResourceLocation recipeId, @Nonnull IEPacketBuffer buffer)
 	{
 		FluidStack fluidOutput = buffer.readFluidStack();
 		ItemStack itemOutput = buffer.readItemStack();
@@ -59,7 +60,7 @@ public class SqueezerRecipeSerializer extends IERecipeSerializer<SqueezerRecipe>
 	}
 
 	@Override
-	public void write(PacketBuffer buffer, SqueezerRecipe recipe)
+	public void write(@Nonnull IEPacketBuffer buffer, SqueezerRecipe recipe)
 	{
 		buffer.writeFluidStack(recipe.fluidOutput);
 		buffer.writeItemStack(recipe.itemOutput);

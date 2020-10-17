@@ -9,7 +9,8 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
-import blusunrize.immersiveengineering.common.network.PacketUtils;
+import blusunrize.immersiveengineering.api.crafting.IIEBufferRecipeSerializer;
+import blusunrize.immersiveengineering.api.utils.IEPacketBuffer;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
@@ -43,7 +44,7 @@ public class CompressedShapedRecipe extends ShapedRecipe
 		return RecipeSerializers.COMPRESSED_SHAPED_SERIALIZER.get();
 	}
 
-	public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<CompressedShapedRecipe>
+	public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IIEBufferRecipeSerializer<CompressedShapedRecipe>
 	{
 		@Nonnull
 		@Override
@@ -55,7 +56,7 @@ public class CompressedShapedRecipe extends ShapedRecipe
 
 		@Nullable
 		@Override
-		public CompressedShapedRecipe read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer)
+		public CompressedShapedRecipe read(@Nonnull ResourceLocation recipeId, @Nonnull IEPacketBuffer buffer)
 		{
 			int width = buffer.readVarInt();
 			int height = buffer.readVarInt();
@@ -73,7 +74,7 @@ public class CompressedShapedRecipe extends ShapedRecipe
 				}
 				else
 				{
-					List<ItemStack> matching = PacketUtils.readList(buffer, PacketBuffer::readItemStack);
+					List<ItemStack> matching = buffer.readList(PacketBuffer::readItemStack);
 					nextIngredient = Ingredient.fromStacks(matching.toArray(new ItemStack[0]));
 					known.add(nextIngredient);
 				}
@@ -85,7 +86,7 @@ public class CompressedShapedRecipe extends ShapedRecipe
 		}
 
 		@Override
-		public void write(@Nonnull PacketBuffer buffer, @Nonnull CompressedShapedRecipe recipe)
+		public void write(@Nonnull IEPacketBuffer buffer, @Nonnull CompressedShapedRecipe recipe)
 		{
 			buffer.writeVarInt(recipe.getRecipeWidth());
 			buffer.writeVarInt(recipe.getRecipeHeight());
@@ -122,7 +123,7 @@ public class CompressedShapedRecipe extends ShapedRecipe
 				else
 				{
 					buffer.writeVarInt(0);
-					PacketUtils.writeList(buffer, Arrays.asList(matching), (stack, buf) -> buf.writeItemStack(stack));
+					buffer.writeList(Arrays.asList(matching), (stack, buf) -> buf.writeItemStack(stack));
 					knownIngredients.add(matching);
 				}
 			}

@@ -11,15 +11,16 @@ package blusunrize.immersiveengineering.common.crafting.serializers;
 import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
 import blusunrize.immersiveengineering.api.crafting.ClocheRenderFunction.ClocheRenderReference;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
+import blusunrize.immersiveengineering.api.utils.IEPacketBuffer;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +53,7 @@ public class ClocheRecipeSerializer extends IERecipeSerializer<ClocheRecipe>
 
 	@Nullable
 	@Override
-	public ClocheRecipe read(ResourceLocation recipeId, PacketBuffer buffer)
+	public ClocheRecipe read(ResourceLocation recipeId, @Nonnull IEPacketBuffer buffer)
 	{
 		int outputCount = buffer.readVarInt();
 		List<ItemStack> outputs = new ArrayList<>(outputCount);
@@ -66,7 +67,7 @@ public class ClocheRecipeSerializer extends IERecipeSerializer<ClocheRecipe>
 	}
 
 	@Override
-	public void write(PacketBuffer buffer, ClocheRecipe recipe)
+	public void write(@Nonnull IEPacketBuffer buffer, ClocheRecipe recipe)
 	{
 		buffer.writeVarInt(recipe.outputs.size());
 		for(ItemStack stack : recipe.outputs)

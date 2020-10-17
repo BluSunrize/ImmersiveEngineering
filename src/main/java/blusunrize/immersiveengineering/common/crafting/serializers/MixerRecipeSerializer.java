@@ -13,16 +13,17 @@ import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
+import blusunrize.immersiveengineering.api.utils.IEPacketBuffer;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class MixerRecipeSerializer extends IERecipeSerializer<MixerRecipe>
@@ -50,7 +51,7 @@ public class MixerRecipeSerializer extends IERecipeSerializer<MixerRecipe>
 
 	@Nullable
 	@Override
-	public MixerRecipe read(ResourceLocation recipeId, PacketBuffer buffer)
+	public MixerRecipe read(ResourceLocation recipeId, @Nonnull IEPacketBuffer buffer)
 	{
 		FluidStack fluidOutput = buffer.readFluidStack();
 		FluidTagInput fluidInput = FluidTagInput.read(buffer);
@@ -63,8 +64,9 @@ public class MixerRecipeSerializer extends IERecipeSerializer<MixerRecipe>
 	}
 
 	@Override
-	public void write(PacketBuffer buffer, MixerRecipe recipe)
+	public void write(@Nonnull IEPacketBuffer buffer, MixerRecipe recipe)
 	{
+		//TODO special-case potions? Same for bottling?
 		buffer.writeFluidStack(recipe.fluidOutput);
 		recipe.fluidInput.write(buffer);
 		buffer.writeVarInt(recipe.itemInputs.length);

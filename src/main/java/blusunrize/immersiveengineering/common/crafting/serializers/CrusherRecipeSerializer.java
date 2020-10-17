@@ -11,13 +11,13 @@ package blusunrize.immersiveengineering.common.crafting.serializers;
 import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.StackWithChance;
+import blusunrize.immersiveengineering.api.utils.IEPacketBuffer;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.crafting.CraftingHelper;
@@ -56,7 +56,7 @@ public class CrusherRecipeSerializer extends IERecipeSerializer<CrusherRecipe>
 
 	@Nullable
 	@Override
-	public CrusherRecipe read(@Nonnull ResourceLocation recipeId, PacketBuffer buffer)
+	public CrusherRecipe read(@Nonnull ResourceLocation recipeId, @Nonnull IEPacketBuffer buffer)
 	{
 		ItemStack output = buffer.readItemStack();
 		Ingredient input = Ingredient.read(buffer);
@@ -69,7 +69,7 @@ public class CrusherRecipeSerializer extends IERecipeSerializer<CrusherRecipe>
 	}
 
 	@Override
-	public void write(PacketBuffer buffer, CrusherRecipe recipe)
+	public void write(@Nonnull IEPacketBuffer buffer, CrusherRecipe recipe)
 	{
 		buffer.writeItemStack(recipe.output);
 		recipe.input.write(buffer);

@@ -10,13 +10,13 @@ package blusunrize.immersiveengineering.common.crafting.serializers;
 
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.SawmillRecipe;
+import blusunrize.immersiveengineering.api.utils.IEPacketBuffer;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.crafting.CraftingHelper;
@@ -62,7 +62,7 @@ public class SawmillRecipeSerializer extends IERecipeSerializer<SawmillRecipe>
 
 	@Nullable
 	@Override
-	public SawmillRecipe read(@Nonnull ResourceLocation recipeId, PacketBuffer buffer)
+	public SawmillRecipe read(@Nonnull ResourceLocation recipeId, @Nonnull IEPacketBuffer buffer)
 	{
 		ItemStack output = buffer.readItemStack();
 		ItemStack stripped = buffer.readItemStack();
@@ -79,7 +79,7 @@ public class SawmillRecipeSerializer extends IERecipeSerializer<SawmillRecipe>
 	}
 
 	@Override
-	public void write(PacketBuffer buffer, SawmillRecipe recipe)
+	public void write(@Nonnull IEPacketBuffer buffer, SawmillRecipe recipe)
 	{
 		buffer.writeItemStack(recipe.output);
 		buffer.writeItemStack(recipe.stripped);

@@ -10,13 +10,13 @@
 package blusunrize.immersiveengineering.common.crafting.serializers;
 
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
+import blusunrize.immersiveengineering.api.utils.IEPacketBuffer;
 import blusunrize.immersiveengineering.common.items.IEItems;
 import com.google.gson.JsonObject;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapelessRecipe;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -44,7 +44,7 @@ public class HammerCrushingRecipeSerializer extends IERecipeSerializer<Shapeless
 
 	@Nonnull
 	@Override
-	public ShapelessRecipe read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer)
+	public ShapelessRecipe read(@Nonnull ResourceLocation recipeId, @Nonnull IEPacketBuffer buffer)
 	{
 		int count = buffer.readVarInt();
 		NonNullList<Ingredient> ingredients = NonNullList.withSize(count, Ingredient.EMPTY);
@@ -55,7 +55,7 @@ public class HammerCrushingRecipeSerializer extends IERecipeSerializer<Shapeless
 	}
 
 	@Override
-	public void write(@Nonnull PacketBuffer buffer, @Nonnull ShapelessRecipe recipe)
+	public void write(@Nonnull IEPacketBuffer buffer, @Nonnull ShapelessRecipe recipe)
 	{
 		NonNullList<Ingredient> ingredients = recipe.getIngredients();
 		buffer.writeVarInt(ingredients.size());

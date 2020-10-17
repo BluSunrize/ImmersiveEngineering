@@ -9,19 +9,20 @@
 
 package blusunrize.immersiveengineering.common.crafting.serializers;
 
+import blusunrize.immersiveengineering.api.crafting.IIEBufferRecipeSerializer;
+import blusunrize.immersiveengineering.api.utils.IEPacketBuffer;
 import blusunrize.immersiveengineering.common.crafting.TurnAndCopyRecipe;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.ShapedRecipe;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nonnull;
 
-public class TurnAndCopyRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<TurnAndCopyRecipe>
+public class TurnAndCopyRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IIEBufferRecipeSerializer<TurnAndCopyRecipe>
 {
 	@Nonnull
 	@Override
@@ -54,7 +55,7 @@ public class TurnAndCopyRecipeSerializer extends ForgeRegistryEntry<IRecipeSeria
 
 	@Nonnull
 	@Override
-	public TurnAndCopyRecipe read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer)
+	public TurnAndCopyRecipe read(@Nonnull ResourceLocation recipeId, @Nonnull IEPacketBuffer buffer)
 	{
 		ShapedRecipe basic = IRecipeSerializer.CRAFTING_SHAPED.read(recipeId, buffer);
 		TurnAndCopyRecipe recipe = new TurnAndCopyRecipe(recipeId, basic.getGroup(), basic.getWidth(), basic.getHeight(),
@@ -75,7 +76,7 @@ public class TurnAndCopyRecipeSerializer extends ForgeRegistryEntry<IRecipeSeria
 	}
 
 	@Override
-	public void write(@Nonnull PacketBuffer buffer, @Nonnull TurnAndCopyRecipe recipe)
+	public void write(@Nonnull IEPacketBuffer buffer, @Nonnull TurnAndCopyRecipe recipe)
 	{
 		IRecipeSerializer.CRAFTING_SHAPED.write(buffer, recipe);
 		buffer.writeBoolean(recipe.isQuarterTurn());

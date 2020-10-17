@@ -10,6 +10,8 @@
 package blusunrize.immersiveengineering.common.crafting.serializers;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.crafting.IIEBufferRecipeSerializer;
+import blusunrize.immersiveengineering.api.utils.IEPacketBuffer;
 import blusunrize.immersiveengineering.common.crafting.DamageToolRecipe;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -17,7 +19,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapedRecipe;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.crafting.CraftingHelper;
@@ -25,7 +26,7 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nonnull;
 
-public class DamageToolRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<DamageToolRecipe>
+public class DamageToolRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IIEBufferRecipeSerializer<DamageToolRecipe>
 {
 	public static final IRecipeSerializer<DamageToolRecipe> INSTANCE = IRecipeSerializer.register(
 			ImmersiveEngineering.MODID+":damage_tool", new DamageToolRecipeSerializer()
@@ -44,7 +45,7 @@ public class DamageToolRecipeSerializer extends ForgeRegistryEntry<IRecipeSerial
 
 	@Nonnull
 	@Override
-	public DamageToolRecipe read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer)
+	public DamageToolRecipe read(@Nonnull ResourceLocation recipeId, @Nonnull IEPacketBuffer buffer)
 	{
 		int stdCount = buffer.readVarInt();
 		NonNullList<Ingredient> stdIngr = NonNullList.create();
@@ -57,7 +58,7 @@ public class DamageToolRecipeSerializer extends ForgeRegistryEntry<IRecipeSerial
 	}
 
 	@Override
-	public void write(@Nonnull PacketBuffer buffer, @Nonnull DamageToolRecipe recipe)
+	public void write(@Nonnull IEPacketBuffer buffer, @Nonnull DamageToolRecipe recipe)
 	{
 		int standardCount = recipe.getIngredients().size()-1;
 		buffer.writeVarInt(standardCount);
