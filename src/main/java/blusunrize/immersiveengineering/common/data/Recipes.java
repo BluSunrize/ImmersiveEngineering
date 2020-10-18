@@ -2253,7 +2253,7 @@ public class Recipes extends RecipeProvider
 				.patternLine("lbl")
 				.patternLine(" lc")
 				.key('b', Items.BUCKET)
-				.key('l', Tags.Items.GEMS_LAPIS)
+				.key('l', Tags.Items.DYES_BLUE)
 				.key('c', Ingredients.componentIron)
 				.addCriterion("has_drill", hasItem(Tools.drill))
 				.build(out, toRL(toPath(Misc.toolUpgrades.get(ToolUpgrade.DRILL_WATERPROOF))));
