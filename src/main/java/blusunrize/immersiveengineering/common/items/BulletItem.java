@@ -437,7 +437,9 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 		{
 			ItemStack fireworkStack = new ItemStack(Items.FIREWORK_ROCKET);
 			fireworkStack.setTag(cartridge.hasTag()?cartridge.getTag().copy(): null);
-			FireworkRocketEntity firework = new FireworkRocketEntity(projectile.world, fireworkStack, shooter.getPosX(), shooter.getPosY()+(double)shooter.getEyeHeight()-(double)0.15F, shooter.getPosZ(), true);
+			FireworkRocketEntity firework = shooter != null ?
+					new FireworkRocketEntity(projectile.world, fireworkStack, shooter.getPosX(), shooter.getPosY()+(double)shooter.getEyeHeight()-(double)0.15F, shooter.getPosZ(), true)
+					: new FireworkRocketEntity(projectile.world, fireworkStack, projectile.getPosX(), projectile.getPosY(), projectile.getPosZ(), true);
 			Vector3d vector = projectile.getMotion();
 			firework.shoot(vector.getX(), vector.getY(), vector.getZ(), 1.6f, 1.0f);
 			return firework;
