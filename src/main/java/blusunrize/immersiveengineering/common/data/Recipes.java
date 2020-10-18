@@ -1336,7 +1336,7 @@ public class Recipes extends RecipeProvider
 				.addCriterion("has_alu_ingot", hasItem(IETags.getTagsFor(EnumMetals.ALUMINUM).ingot))
 				.addCriterion("has_alu_sticks", hasItem(IETags.aluminumRod))
 				.build(out, toRL(toPath(MetalDecoration.aluScaffolding.get(MetalScaffoldingType.STANDARD))));
-		ShapedRecipeBuilder.shapedRecipe(MetalDecoration.slopeAlu)
+		ShapedRecipeBuilder.shapedRecipe(MetalDecoration.slopeAlu, 4)
 				.patternLine("sss")
 				.patternLine("ss ")
 				.patternLine("s  ")
@@ -1353,7 +1353,7 @@ public class Recipes extends RecipeProvider
 				.addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot))
 				.addCriterion("has_steel_sticks", hasItem(IETags.steelRod))
 				.build(out, toRL(toPath(MetalDecoration.steelScaffolding.get(MetalScaffoldingType.STANDARD))));
-		ShapedRecipeBuilder.shapedRecipe(MetalDecoration.slopeSteel)
+		ShapedRecipeBuilder.shapedRecipe(MetalDecoration.slopeSteel, 4)
 				.patternLine("sss")
 				.patternLine("ss ")
 				.patternLine("s  ")
