@@ -11,7 +11,11 @@ package blusunrize.immersiveengineering.common.util.fluids;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.IEContent;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.DispenserBlock;
 import net.minecraft.block.FlowingFluidBlock;
+import net.minecraft.dispenser.DefaultDispenseItemBehavior;
+import net.minecraft.dispenser.IBlockSource;
+import net.minecraft.dispenser.IDispenseItemBehavior;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FlowingFluid;
 import net.minecraft.fluid.Fluid;
@@ -32,9 +36,11 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
+import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.fluids.DispenseFluidContainer;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.wrappers.FluidBucketWrapper;
@@ -115,6 +121,7 @@ public class IEFluid extends FlowingFluid
 			};
 			this.bucket.setRegistryName(ImmersiveEngineering.MODID, fluidName+"_bucket");
 			IEContent.registeredIEItems.add(this.bucket);
+			DispenserBlock.registerDispenseBehavior(this.bucket, BUCKET_DISPENSE_BEHAVIOR);
 			flowing = createFlowingVariant();
 			setRegistryName(ImmersiveEngineering.MODID, fluidName);
 			IE_FLUIDS.add(this);
@@ -283,4 +290,22 @@ public class IEFluid extends FlowingFluid
 		}
 	};
 
+	public static final IDispenseItemBehavior BUCKET_DISPENSE_BEHAVIOR = new DefaultDispenseItemBehavior()
+	{
+		private final DefaultDispenseItemBehavior defaultBehavior = new DefaultDispenseItemBehavior();
+
+		public ItemStack dispenseStack(IBlockSource source, ItemStack stack)
+		{
+			BucketItem bucketitem = (BucketItem)stack.getItem();
+			BlockPos blockpos = source.getBlockPos().offset(source.getBlockState().get(DispenserBlock.FACING));
+			World world = source.getWorld();
+			if(bucketitem.tryPlaceContainedLiquid(null, world, blockpos, null))
+			{
+				bucketitem.onLiquidPlaced(world, stack, blockpos);
+				return new ItemStack(Items.BUCKET);
+			}
+			else
+				return this.defaultBehavior.dispense(source, stack);
+		}
+	};
 }
