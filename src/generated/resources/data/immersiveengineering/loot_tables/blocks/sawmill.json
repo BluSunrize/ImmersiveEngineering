@@ -2,11 +2,23 @@
   "type": "minecraft:block",
   "pools": [
     {
-      "rolls": 1,
+      "rolls": 1.0,
       "entries": [
         {
-          "type": "minecraft:item",
-          "name": "immersiveengineering:sawmill"
+          "type": "immersiveengineering:drop_inv"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
+    },
+    {
+      "rolls": 1.0,
+      "entries": [
+        {
+          "type": "immersiveengineering:multiblock_original_block"
         }
       ],
       "conditions": [
