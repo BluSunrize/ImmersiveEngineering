@@ -542,9 +542,9 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 				vecDir = matrix.apply(vecDir);
 
 				WolfpackShotEntity bullet;
-				if(shooter!=null)
-					bullet = new WolfpackShotEntity(world, world.getPlayerByUuid(shooter),
-							vecDir.x*1.5, vecDir.y*1.5, vecDir.z*1.5, this);
+				PlayerEntity player = shooter!=null?world.getPlayerByUuid(shooter): null;
+				if(player!=null)
+					bullet = new WolfpackShotEntity(world, player, vecDir.x*1.5, vecDir.y*1.5, vecDir.z*1.5, this);
 				else
 					bullet = new WolfpackShotEntity(world, 0, 0, 0, 0, 0, 0, this);
 				if(target instanceof EntityRayTraceResult)
