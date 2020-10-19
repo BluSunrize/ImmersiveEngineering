@@ -1,7 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "ss"
+    "sss",
+    "sss",
+    "sss"
   ],
   "key": {
     "s": {
@@ -9,6 +11,7 @@
     }
   },
   "result": {
-    "item": "immersiveengineering:sawdust"
+    "item": "immersiveengineering:sawdust",
+    "count": 9
   }
 }
