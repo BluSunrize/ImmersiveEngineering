@@ -19,7 +19,6 @@ import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.wires.NetHandlerCapability;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IEntityProof;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISpawnInterdiction;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.blocks.IEMultiblockBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
@@ -34,7 +33,6 @@ import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamageSource;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.boss.WitherEntity;
 import net.minecraft.entity.item.ItemEntity;
@@ -58,15 +56,16 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.WorldTickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
-import net.minecraftforge.event.entity.living.*;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteractSpecific;
 import net.minecraftforge.event.furnace.FurnaceFuelBurnTimeEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidUtil;
@@ -77,8 +76,6 @@ import java.util.*;
 
 public class EventHandler
 {
-	//TODO move to a capability
-	public static final Map<RegistryKey<World>, Set<ISpawnInterdiction>> interdictionTiles = new HashMap<>();
 	public static HashSet<IEExplosion> currentExplosions = new HashSet<IEExplosion>();
 	public static final Queue<Pair<RegistryKey<World>, BlockPos>> requestedBlockUpdates = new LinkedList<>();
 	public static final Set<TileEntity> REMOVE_FROM_TICKING = new HashSet<>();
@@ -302,82 +299,6 @@ public class EventHandler
 		}
 	}
 
-	@SubscribeEvent
-	public void onEnderTeleport(EnderTeleportEvent event)
-	{
-		if(event.getEntityLiving().getType().getClassification()==EntityClassification.MONSTER)
-		{
-			synchronized(interdictionTiles)
-			{
-				Set<ISpawnInterdiction> dimSet = interdictionTiles.get(event.getEntity().world.getDimensionKey());
-				if(dimSet!=null)
-				{
-					Iterator<ISpawnInterdiction> it = dimSet.iterator();
-					while(it.hasNext())
-					{
-						ISpawnInterdiction interdictor = it.next();
-						if(interdictor instanceof TileEntity)
-						{
-							if(((TileEntity)interdictor).isRemoved()||((TileEntity)interdictor).getWorld()==null)
-								it.remove();
-							else if(
-									Vector3d.copy(((TileEntity)interdictor).getPos()).squareDistanceTo(event.getEntity().getPositionVec())
-											<= interdictor.getInterdictionRangeSquared()
-							)
-								event.setCanceled(true);
-						}
-						else if(interdictor instanceof Entity)
-						{
-							if(!((Entity)interdictor).isAlive()||((Entity)interdictor).world==null)
-								it.remove();
-							else if(((Entity)interdictor).getDistanceSq(event.getEntity()) <= interdictor.getInterdictionRangeSquared())
-								event.setCanceled(true);
-						}
-					}
-				}
-			}
-		}
-		if(event.getEntityLiving().getActivePotionEffect(IEPotions.stunned)!=null)
-			event.setCanceled(true);
-	}
-
-	@SubscribeEvent
-	public void onEntitySpawnCheck(LivingSpawnEvent.CheckSpawn event)
-	{
-		if(event.getResult()==Event.Result.ALLOW||event.getResult()==Event.Result.DENY
-				||event.isSpawner())
-			return;
-		if(event.getEntityLiving().getType().getClassification()==EntityClassification.MONSTER)
-		{
-			synchronized(interdictionTiles)
-			{
-				RegistryKey<World> dimension = event.getEntity().world.getDimensionKey();
-				if(interdictionTiles.containsKey(dimension))
-				{
-					Iterator<ISpawnInterdiction> it = interdictionTiles.get(dimension).iterator();
-					while(it.hasNext())
-					{
-						ISpawnInterdiction interdictor = it.next();
-						if(interdictor instanceof TileEntity)
-						{
-							if(((TileEntity)interdictor).isRemoved()||((TileEntity)interdictor).getWorld()==null)
-								it.remove();
-							else if(Vector3d.copyCentered(((TileEntity)interdictor).getPos()).squareDistanceTo(event.getEntity().getPositionVec()) <= interdictor.getInterdictionRangeSquared())
-								event.setResult(Event.Result.DENY);
-						}
-						else if(interdictor instanceof Entity)
-						{
-							if(!((Entity)interdictor).isAlive()||((Entity)interdictor).world==null)
-								it.remove();
-							else if(((Entity)interdictor).getDistanceSq(event.getEntity()) <= interdictor.getInterdictionRangeSquared())
-								event.setResult(Event.Result.DENY);
-						}
-					}
-				}
-			}
-		}
-	}
-
 	@SubscribeEvent()
 	public void digSpeedEvent(PlayerEvent.BreakSpeed event)
 	{
@@ -429,7 +350,7 @@ public class EventHandler
 						event.getOutput().clearCustomName();
 					}
 				}
-				else if(!event.getName().equals(event.getLeft().getDisplayName()))
+				else if(!event.getName().equals(event.getLeft().getDisplayName().getString()))
 				{
 					event.setCost(event.getCost()+5);
 					if(event.getLeft().hasDisplayName())

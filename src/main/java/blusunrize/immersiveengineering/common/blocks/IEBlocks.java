@@ -99,6 +99,7 @@ public final class IEBlocks
 		public static IEFenceBlock treatedFence;
 		public static Block treatedScaffolding;
 		public static Block treatedPost;
+		public static Block sawdust;
 	}
 
 	public static final class WoodenDevices

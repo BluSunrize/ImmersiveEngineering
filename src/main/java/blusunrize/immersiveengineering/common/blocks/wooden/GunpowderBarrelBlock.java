@@ -48,8 +48,7 @@ public class GunpowderBarrelBlock extends TNTBlock
 	@Override
 	public void catchFire(BlockState state, World world, BlockPos pos, @Nullable Direction face, @Nullable LivingEntity igniter)
 	{
-		IEExplosiveEntity explosive = new IEExplosiveEntity(world, pos, igniter, state, 4).setDropChance(1);
-		world.addEntity(explosive);
+		IEExplosiveEntity explosive = spawnExplosive(world, pos, state, igniter);
 		world.playSound(null, explosive.getPosX(), explosive.getPosY(), explosive.getPosZ(), SoundEvents.ENTITY_TNT_PRIMED, SoundCategory.BLOCKS, 1.0F, 1.0F);
 		world.removeBlock(pos, false);
 	}
@@ -60,10 +59,17 @@ public class GunpowderBarrelBlock extends TNTBlock
 		super.onBlockExploded(state, world, pos, explosion);
 		if(!world.isRemote)
 		{
-			IEExplosiveEntity explosive = new IEExplosiveEntity(world, pos, explosion.getExplosivePlacedBy(), state, 4);
+			IEExplosiveEntity explosive = spawnExplosive(world, pos, state, explosion.getExplosivePlacedBy());
 			explosive.setFuse((short)(world.rand.nextInt(explosive.getFuse()/4)+explosive.getFuse()/8));
-			world.addEntity(explosive);
 		}
+	}
+
+	private IEExplosiveEntity spawnExplosive(World world, BlockPos pos, BlockState state, @Nullable LivingEntity igniter)
+	{
+		IEExplosiveEntity explosive = new IEExplosiveEntity(world, pos, igniter, state, 5);
+		explosive.setDropChance(1);
+		world.addEntity(explosive);
+		return explosive;
 	}
 
 	@Override

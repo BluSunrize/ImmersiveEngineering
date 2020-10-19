@@ -144,27 +144,7 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 						target = Math.round(rot/360f*8)%8;
 				}
 				else
-				{
-					boolean changePos = (wheel.getFacing()!=fRot)^mirrored;
-					for(int h = -3; h <= 3; h++)
-						for(int w = -3; w <= 3; w++)
-						{
-							if((Math.abs(h)==3&&w!=0)||(Math.abs(w)==3&&h!=0))
-								continue;
-							TileEntity te = world.getTileEntity(wheelPos.add(0, h, 0).offset(getFacing(), w));
-							if(te instanceof BucketWheelTileEntity)
-							{
-								BucketWheelTileEntity bucketTE = (BucketWheelTileEntity)te;
-								bucketTE.setFacing(fRot);
-								bucketTE.setMirrored(mirrored);
-								if(changePos)
-									bucketTE.posInMultiblock = new BlockPos(6-bucketTE.posInMultiblock.getX(), bucketTE.posInMultiblock.getY(), bucketTE.posInMultiblock.getZ());
-								te.markDirty();
-								bucketTE.markContainingBlockForUpdate(null);
-								world.addBlockEvent(te.getPos(), te.getBlockState().getBlock(), 255, 0);
-							}
-						}
-				}
+					wheel.adjustStructureFacingAndMirrored(fRot,mirrored);
 
 				if(!isRSDisabled())
 				{

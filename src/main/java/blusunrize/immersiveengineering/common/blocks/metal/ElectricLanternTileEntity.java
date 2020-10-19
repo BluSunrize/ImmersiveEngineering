@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.util.SpawnInterdictionHandler;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -34,8 +35,6 @@ import net.minecraft.util.math.vector.Vector3i;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.HashSet;
-import java.util.Set;
 
 public class ElectricLanternTileEntity extends ImmersiveConnectableTileEntity implements ISpawnInterdiction, ITickableTileEntity,
 		IStateBasedDirectional, IHammerInteraction, IBlockBounds, IActiveState, EnergyConnector
@@ -43,7 +42,6 @@ public class ElectricLanternTileEntity extends ImmersiveConnectableTileEntity im
 	public int energyStorage = 0;
 	private int energyDraw = IEServerConfig.MACHINES.lantern_energyDraw.get();
 	private int maximumStorage = IEServerConfig.MACHINES.lantern_maximumStorage.get();
-	private boolean interdictionList = false;
 
 	public ElectricLanternTileEntity()
 	{
@@ -55,15 +53,6 @@ public class ElectricLanternTileEntity extends ImmersiveConnectableTileEntity im
 	{
 		if(world.isRemote)
 			return;
-		if(!interdictionList&&IEServerConfig.MACHINES.lantern_spawnPrevent.get())
-		{
-			synchronized(EventHandler.interdictionTiles)
-			{
-				Set<ISpawnInterdiction> tileForDim = EventHandler.interdictionTiles.computeIfAbsent(world.getDimensionKey(), k -> new HashSet<>());
-				tileForDim.add(this);
-			}
-			interdictionList = true;
-		}
 		boolean activeBeforeTick = getIsActive();
 		if(energyStorage >= energyDraw)
 		{
@@ -89,21 +78,22 @@ public class ElectricLanternTileEntity extends ImmersiveConnectableTileEntity im
 	@Override
 	public void remove()
 	{
-		synchronized(EventHandler.interdictionTiles)
-		{
-			EventHandler.interdictionTiles.remove(this);
-		}
+		SpawnInterdictionHandler.removeFromInterdictionTiles(this);
 		super.remove();
 	}
 
 	@Override
 	public void onChunkUnloaded()
 	{
-		synchronized(EventHandler.interdictionTiles)
-		{
-			EventHandler.interdictionTiles.remove(this);
-		}
+		SpawnInterdictionHandler.removeFromInterdictionTiles(this);
 		super.onChunkUnloaded();
+	}
+
+	@Override
+	public void onLoad()
+	{
+		super.onLoad();
+		SpawnInterdictionHandler.addInterdictionTile(this);
 	}
 
 	@Override

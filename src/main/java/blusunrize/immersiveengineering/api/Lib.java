@@ -121,7 +121,7 @@ public class Lib
 		@Override
 		public float getAttackDamage()
 		{
-			return 2.5F;
+			return 3F;
 		}
 
 		@Override

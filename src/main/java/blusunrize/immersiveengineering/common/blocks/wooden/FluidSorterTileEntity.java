@@ -66,7 +66,9 @@ public class FluidSorterTileEntity extends IEBaseTileEntity implements IInteract
 			boolean first = startRouting();
 			Direction[][] validOutputs = getValidOutputs(inputSide, stack);
 			ret += doInsert(stack, validOutputs[0], doFill);
-			ret += doInsert(stack, validOutputs[1], doFill);
+			// Only if no filtered outputs were found, use unfiltered
+			if(validOutputs[0].length==0)
+				ret += doInsert(stack, validOutputs[1], doFill);
 			if(first)
 				usedRouters = null;
 		}

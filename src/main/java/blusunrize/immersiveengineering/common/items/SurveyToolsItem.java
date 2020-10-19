@@ -11,7 +11,9 @@ package blusunrize.immersiveengineering.common.items;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.excavator.MineralVein;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
@@ -60,7 +62,12 @@ public class SurveyToolsItem extends IEBaseItem
 					||state.getMaterial()==Material.ORGANIC||state.getMaterial()==Material.SAND;
 		});
 		// Stone, Diorite, Andesite, etc.
-		CAN_USE_ON.add(((world, pos) -> Tags.Blocks.STONE.contains(world.getBlockState(pos).getBlock())));
+		CAN_USE_ON.add((world, pos) -> Tags.Blocks.STONE.contains(world.getBlockState(pos).getBlock()));
+		// Stone, Diorite, Andesite, etc.
+		CAN_USE_ON.add((world, pos) -> {
+			Block block = world.getBlockState(pos).getBlock();
+			return block==Blocks.BLACKSTONE||block==Blocks.BASALT;
+		});
 		// soft rocks
 		CAN_USE_ON.add((world, pos) -> {
 			BlockState state = world.getBlockState(pos);

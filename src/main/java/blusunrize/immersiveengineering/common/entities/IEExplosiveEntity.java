@@ -52,7 +52,7 @@ public class IEExplosiveEntity extends TNTEntity
 	}
 
 	private float size;
-	private Explosion.Mode mode = Mode.DESTROY;
+	private Explosion.Mode mode = Mode.BREAK;
 	private boolean isFlaming = false;
 	private float explosionDropChance;
 	public BlockState block;
@@ -193,15 +193,12 @@ public class IEExplosiveEntity extends TNTEntity
 		{
 			this.remove();
 
-			if(!this.world.isRemote)
+			Explosion explosion = new IEExplosion(world, this, getPosX(), getPosY()+(getHeight()/16f), getPosZ(), size, isFlaming, mode)
+					.setDropChance(explosionDropChance);
+			if(!ForgeEventFactory.onExplosionStart(world, explosion))
 			{
-				Explosion explosion = new IEExplosion(world, this, getPosX(), getPosY()+(getHeight()/16f), getPosZ(), size, isFlaming, mode)
-						.setDropChance(explosionDropChance);
-				if(!ForgeEventFactory.onExplosionStart(world, explosion))
-				{
-					explosion.doExplosionA();
-					explosion.doExplosionB(true);
-				}
+				explosion.doExplosionA();
+				explosion.doExplosionB(true);
 			}
 		}
 		else

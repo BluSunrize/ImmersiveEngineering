@@ -19,6 +19,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Vector3f;
 
 public class IEExplosiveRenderer extends EntityRenderer<IEExplosiveEntity>
 {
@@ -45,16 +46,15 @@ public class IEExplosiveRenderer extends EntityRenderer<IEExplosiveEntity>
 			float f1 = 1.0F+f*0.3F;
 			matrixStackIn.scale(f1, f1, f1);
 		}
+		matrixStackIn.rotate(Vector3f.YP.rotationDegrees(-90.0F));
+		matrixStackIn.translate(-0.5D, -0.5D, 0.5D);
+		matrixStackIn.rotate(Vector3f.YP.rotationDegrees(90.0F));
 
 		int overlay;
 		if(entity.getFuse()/5%2==0)
-		{
 			overlay = OverlayTexture.getPackedUV(OverlayTexture.getU(1.0F), 10);
-		}
 		else
-		{
 			overlay = OverlayTexture.NO_OVERLAY;
-		}
 		blockrendererdispatcher.renderBlock(entity.block, matrixStackIn, bufferIn, packedLightIn, overlay);
 
 		matrixStackIn.pop();

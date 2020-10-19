@@ -62,7 +62,8 @@ public class WolfpackShotEntity extends RevolvershotHomingEntity
 			Entity hit = ((EntityRayTraceResult)mop).getEntity();
 			if(hit.hurtResistantTime > 0)
 				hit.hurtResistantTime = 0;
-			hit.attackEntityFrom(IEDamageSources.causeWolfpackDamage(this, world.getPlayerByUuid(field_234609_b_)),
+			Entity shooter = field_234609_b_!=null?world.getPlayerByUuid(field_234609_b_): null;
+			hit.attackEntityFrom(IEDamageSources.causeWolfpackDamage(this, shooter),
 					IEServerConfig.TOOLS.bulletDamage_WolfpackPart.get().floatValue());
 		}
 		this.remove();

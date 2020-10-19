@@ -8,11 +8,10 @@
 
 package blusunrize.immersiveengineering.common.blocks;
 
-import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISpawnInterdiction;
 import blusunrize.immersiveengineering.common.blocks.metal.FloodlightTileEntity;
-import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.util.SpawnInterdictionHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -31,8 +30,6 @@ import net.minecraft.world.IWorldReader;
 import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nonnull;
-import java.util.HashSet;
-import java.util.Set;
 
 public class FakeLightBlock extends IETileProviderBlock
 {
@@ -115,34 +112,22 @@ public class FakeLightBlock extends IETileProviderBlock
 		@Override
 		public void remove()
 		{
-			synchronized(EventHandler.interdictionTiles)
-			{
-				EventHandler.interdictionTiles.remove(this);
-			}
+			SpawnInterdictionHandler.removeFromInterdictionTiles(this);
 			super.remove();
 		}
 
 		@Override
 		public void onChunkUnloaded()
 		{
-			synchronized(EventHandler.interdictionTiles)
-			{
-				EventHandler.interdictionTiles.remove(this);
-			}
+			SpawnInterdictionHandler.removeFromInterdictionTiles(this);
 			super.onChunkUnloaded();
 		}
 
 		@Override
 		public void onLoad()
 		{
-			if(world!=null&&IEServerConfig.MACHINES.floodlight_spawnPrevent.get())
-				synchronized(EventHandler.interdictionTiles)
-				{
-					Set<ISpawnInterdiction> forDim = EventHandler.interdictionTiles.computeIfAbsent(
-							world.getDimensionKey(), x -> new HashSet<>()
-					);
-					forDim.add(this);
-				}
+			super.onLoad();
+			SpawnInterdictionHandler.addInterdictionTile(this);
 		}
 
 		@Override

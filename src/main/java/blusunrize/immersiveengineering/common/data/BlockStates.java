@@ -31,6 +31,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.plant.EnumHempGrowth;
 import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchTileEntity;
+import blusunrize.immersiveengineering.common.blocks.wooden.SawdustBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
 import blusunrize.immersiveengineering.common.data.models.LoadedModelBuilder;
 import blusunrize.immersiveengineering.common.util.fluids.IEFluid;
@@ -750,6 +751,7 @@ public class BlockStates extends BlockStateProvider
 		createHemp();
 		simpleBlock(Misc.pottedHemp, models().withExistingParent("potted_hemp", mcLoc("block/flower_pot_cross"))
 				.texture("plant", new ResourceLocation(ImmersiveEngineering.MODID, "block/hemp/potted")));
+		createSawdust();
 
 		for(IEFluid f : IEFluid.IE_FLUIDS)
 		{
@@ -1431,6 +1433,42 @@ public class BlockStates extends BlockStateProvider
 					.with(HempBlock.GROWTH, g)
 					.setModels(new ConfiguredModel(model));
 		}
+	}
+
+	private void createSawdust()
+	{
+		VariantBlockStateBuilder builder = getVariantBuilder(WoodenDecoration.sawdust);
+		ResourceLocation sawdustTexture = new ResourceLocation(ImmersiveEngineering.MODID, "block/wooden_decoration/sawdust");
+		ModelFile singleModel = null;
+		for(int layer : SawdustBlock.LAYERS.getAllowedValues())
+		{
+			String name = "block/sawdust_"+layer;
+			ModelFile model;
+			if(layer==9)
+				model = models().cubeAll(name, sawdustTexture);
+			else
+			{
+				int height = layer*2-1;
+				model = models().withExistingParent(name, new ResourceLocation("block/thin_block"))
+						.texture("particle", sawdustTexture)
+						.texture("texture", sawdustTexture)
+						.element().from(0, 0, 0).to(16, height, 16).allFaces((direction, faceBuilder) -> {
+							if(direction.getAxis()==Axis.Y)
+								faceBuilder.uvs(0, 0, 16, 16).texture("#texture");
+							else
+								faceBuilder.uvs(0, 16-height, 16, 16).texture("#texture").cullface(direction);
+							if(direction!=Direction.UP)
+								faceBuilder.cullface(direction);
+						})
+						.end();
+			}
+			if(layer==1)
+				singleModel = model;
+			builder.partialState()
+					.with(SawdustBlock.LAYERS, layer)
+					.setModels(new ConfiguredModel(model));
+		}
+		itemModels.put(WoodenDecoration.sawdust, singleModel);
 	}
 
 	private ModelFile createRouterModel(ResourceLocation baseTexName, String outName)
