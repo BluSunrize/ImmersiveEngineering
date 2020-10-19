@@ -70,7 +70,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.tags.ItemTags;
@@ -89,15 +88,11 @@ import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.InputEvent.MouseScrollEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.client.gui.ForgeIngameGui;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.resource.IResourceType;
 import net.minecraftforge.resource.ISelectiveResourceReloadListener;
@@ -608,15 +603,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						if(containedTile instanceof IBlockOverlayText)
 						{
 							String[] text = ((IBlockOverlayText)containedTile).getOverlayText(player, mop, false);
-							int i = 0;
-							IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
-							for(String s : text)
-								if(s!=null)
-									ClientUtils.font().renderString(
-											s, scaledWidth/2+8, scaledHeight/2+8+(i++)*ClientUtils.font().FONT_HEIGHT, 0xffffff, true,
-											transform.getLast().getMatrix(), buffer, false, 0, 0xf000f0
-									);
-							buffer.finish();
+							BlockOverlayUtils.drawBlockOverlayText(transform, text, scaledWidth, scaledHeight);
 						}
 					}
 				}
@@ -629,21 +616,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 					{
 						IBlockOverlayText overlayBlock = (IBlockOverlayText)tileEntity;
 						String[] text = overlayBlock.getOverlayText(ClientUtils.mc().player, mop, hammer);
-						boolean useNixie = overlayBlock.useNixieFont(ClientUtils.mc().player, mop);
-						if(text!=null&&text.length > 0)
-						{
-							FontRenderer font = useNixie?ClientProxy.nixieFontOptional: ClientUtils.font();
-							int col = (useNixie&&IEConfig.GENERAL.nixietubeFont.get())?Lib.colour_nixieTubeText: 0xffffff;
-							int i = 0;
-							IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
-							for(String s : text)
-								if(s!=null)
-									font.renderString(
-											s, scaledWidth/2+8, scaledHeight/2+8+(i++)*font.FONT_HEIGHT, col, true,
-											transform.getLast().getMatrix(), buffer, false, 0, 0xf000f0
-									);
-							buffer.finish();
-						}
+						BlockOverlayUtils.drawBlockOverlayText(transform, text, scaledWidth, scaledHeight);
 					}
 					else
 					{

@@ -9,10 +9,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.multiplayer.PlayerController;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Matrix4f;
-import net.minecraft.client.renderer.Quaternion;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.item.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -38,6 +35,26 @@ import java.util.Collection;
 
 public class BlockOverlayUtils
 {
+	/* ----------- OVERLAY TEXT ----------- */
+
+	public static void drawBlockOverlayText(MatrixStack transform, String[] text, int scaledWidth, int scaledHeight)
+	{
+		if(text!=null&&text.length > 0)
+		{
+			int i = 0;
+			IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
+			for(String s : text)
+				if(s!=null)
+					ClientUtils.font().renderString(
+							s, scaledWidth/2+8, scaledHeight/2+8+(i++)*ClientUtils.font().FONT_HEIGHT, 0xffffffff, true,
+							transform.getLast().getMatrix(), buffer, false, 0, 0xf000f0
+					);
+			buffer.finish();
+		}
+	}
+
+	/* ----------- ARROWS ----------- */
+
 	private final static float[][] quarterRotationArrowCoords = {
 			{.375F, 0},
 			{.5F, -.125F},
@@ -242,7 +259,7 @@ public class BlockOverlayUtils
 		transform.pop();
 	}
 
-	/* ----------- MAPS ------------ */
+	/* ----------- MAPS ----------- */
 
 	/**
 	 * Draw overlay for a map in a frame, based on where the player's cursor is on the map
