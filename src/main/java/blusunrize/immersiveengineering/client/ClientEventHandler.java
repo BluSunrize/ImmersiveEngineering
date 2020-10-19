@@ -630,19 +630,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						if(containedTile instanceof IBlockOverlayText)
 						{
 							ITextComponent[] text = ((IBlockOverlayText)containedTile).getOverlayText(player, mop, false);
-							if(text!=null&&text.length > 0)
-							{
-								FontRenderer font = ClientUtils.font();
-								int i = 0;
-								IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
-								for(ITextComponent s : text)
-									if(s!=null)
-										font.func_238416_a_(
-												s, scaledWidth/2+8, scaledHeight/2+8+(i++)*font.FONT_HEIGHT, 0xffffffff, true,
-												transform.getLast().getMatrix(), buffer, false, 0, 0xf000f0
-										);
-								buffer.finish();
-							}
+							BlockOverlayUtils.drawBlockOverlayText(transform, text, scaledWidth, scaledHeight);
 						}
 					}
 				}
@@ -655,19 +643,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 					{
 						IBlockOverlayText overlayBlock = (IBlockOverlayText)tileEntity;
 						ITextComponent[] text = overlayBlock.getOverlayText(ClientUtils.mc().player, mop, hammer);
-						if(text!=null&&text.length > 0)
-						{
-							FontRenderer font = ClientUtils.font();
-							int i = 0;
-							IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
-							for(ITextComponent s : text)
-								if(s!=null)
-									font.func_238416_a_(
-											s, scaledWidth/2+8, scaledHeight/2+8+(i++)*font.FONT_HEIGHT, 0xffffffff, true,
-											transform.getLast().getMatrix(), buffer, false, 0, 0xf000f0
-									);
-							buffer.finish();
-						}
+						BlockOverlayUtils.drawBlockOverlayText(transform, text, scaledWidth, scaledHeight);
 					}
 					else
 					{
