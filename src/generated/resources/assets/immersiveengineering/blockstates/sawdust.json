@@ -23,6 +23,9 @@
     },
     "layers=8": {
       "model": "immersiveengineering:block/sawdust_8"
+    },
+    "layers=9": {
+      "model": "immersiveengineering:block/sawdust_9"
     }
   }
 }
