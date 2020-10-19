@@ -1,3 +1,18 @@
+##### Version 1.15.2-4.1.1-pre
+- Added sawdust flooring! It's a snow-like block made from sawdust! (BluSunrize)
+- Changed recipe for Pressurized Air Tank to use blue dye instead of lapis (BluSunrize)
+- Changed item and fluid routers to not output to unfiltered sides, if a filter exists (BluSunrize)
+    - This behavior now matches what is described in the manual
+    - Existing systems using routers may now derp up a little
+- Fixed spawn interdiction code for lanterns (Malte)
+- Fixed flickering when the bucket wheel is formed (MalkContent)
+- Fixed dispensers not being able to use IE buckets (BluSunrize)
+- Fixed missing backwards faces for the windmill (BluSunrize)
+- Fixed output amounts for structural arm recipes (BluSunrize)
+- Fixed sawmill dropping the wrong item when broken (BluSunrize)
+- Fixed firework and wolfpack cartridges crashing in turrets (BluSunrize)
+- Fixed dispensers not being able to use IE buckets (BluSunrize)
+
 ##### Version 1.15.2-4.1.0-122
 - Added the sawmill! It strips logs and cuts them into planks! (BluSunrize)
     - It also produces sawdust, which can be burnt in a furnace or crafted into paper!
