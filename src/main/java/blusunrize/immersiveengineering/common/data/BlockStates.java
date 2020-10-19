@@ -1441,15 +1441,26 @@ public class BlockStates extends BlockStateProvider
 		ModelFile singleModel = null;
 		for(int layer : SawdustBlock.LAYERS.getAllowedValues())
 		{
-			ModelFile model;
 			String name = "block/sawdust_"+layer;
-			if(layer==8)
+			ModelFile model;
+			if(layer==9)
 				model = models().cubeAll(name, sawdustTexture);
 			else
-				model = models().withExistingParent(name,
-						new ResourceLocation("block/snow_height"+(layer*2)))
+			{
+				int height = layer*2-1;
+				model = models().withExistingParent(name, new ResourceLocation("block/thin_block"))
 						.texture("particle", sawdustTexture)
-						.texture("texture", sawdustTexture);
+						.texture("texture", sawdustTexture)
+						.element().from(0, 0, 0).to(16, height, 16).allFaces((direction, faceBuilder) -> {
+							if(direction.getAxis()==Axis.Y)
+								faceBuilder.uvs(0, 0, 16, 16).texture("#texture");
+							else
+								faceBuilder.uvs(0, 16-height, 16, 16).texture("#texture").cullface(direction);
+							if(direction!=Direction.UP)
+								faceBuilder.cullface(direction);
+						})
+						.end();
+			}
 			if(layer==1)
 				singleModel = model;
 			builder.partialState()

@@ -1,7 +1,46 @@
 {
-  "parent": "minecraft:block/snow_height4",
+  "parent": "block/thin_block",
   "textures": {
     "particle": "immersiveengineering:block/wooden_decoration/sawdust",
     "texture": "immersiveengineering:block/wooden_decoration/sawdust"
-  }
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        3,
+        16
+      ],
+      "faces": {
+        "down": {
+          "texture": "#texture",
+          "cullface": "down"
+        },
+        "up": {
+          "texture": "#texture"
+        },
+        "north": {
+          "texture": "#texture",
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "#texture",
+          "cullface": "south"
+        },
+        "west": {
+          "texture": "#texture",
+          "cullface": "west"
+        },
+        "east": {
+          "texture": "#texture",
+          "cullface": "east"
+        }
+      }
+    }
+  ]
 }

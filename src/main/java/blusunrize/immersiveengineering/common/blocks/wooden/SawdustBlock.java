@@ -12,16 +12,12 @@ import blusunrize.immersiveengineering.api.utils.shapes.CachedVoxelShapes;
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.SoundType;
+import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.pathfinding.PathType;
 import net.minecraft.state.IntegerProperty;
-import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -31,15 +27,22 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraftforge.common.ToolType;
+import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nullable;
 
 public class SawdustBlock extends IEBaseBlock
 {
-	public static final IntegerProperty LAYERS = BlockStateProperties.LAYERS_1_8;
-
+	protected static final int MAX_LAYER = 9;
+	public static final IntegerProperty LAYERS = IntegerProperty.create("layers", 1, MAX_LAYER);
 	protected static final CachedVoxelShapes<Integer> SHAPES = new CachedVoxelShapes<>(
-			layer -> layer==0?null: ImmutableList.of(new AxisAlignedBB(0, 0, 0, 1, 0.125*layer, 1))
+			layer -> {
+				if(layer==0) // First layer
+					return null;
+				if(layer==MAX_LAYER) // Full block
+					return ImmutableList.of(new AxisAlignedBB(0, 0, 0, 1, 1, 1));
+				return ImmutableList.of(new AxisAlignedBB(0, 0, 0, 1, 0.0625+0.125*(layer-1), 1));
+			}
 	);
 
 	public SawdustBlock()
@@ -48,6 +51,7 @@ public class SawdustBlock extends IEBaseBlock
 				Block.Properties.create(Material.WOOD, MaterialColor.SAND).sound(SoundType.SAND)
 						.harvestTool(ToolType.SHOVEL).hardnessAndResistance(0.5F).doesNotBlockMovement().notSolid(),
 				BlockItemIE::new, LAYERS);
+		((FireBlock)Blocks.FIRE).setFireInfo(this, 60, 60);
 	}
 
 	@Override
@@ -82,7 +86,7 @@ public class SawdustBlock extends IEBaseBlock
 		BlockState blockstate = worldIn.getBlockState(pos.down());
 		Block block = blockstate.getBlock();
 		return Block.doesSideFillSquare(blockstate.getCollisionShape(worldIn, pos.down()), Direction.UP)
-				||block==this&&blockstate.get(LAYERS)==8;
+				||block==this&&blockstate.get(LAYERS)==MAX_LAYER;
 	}
 
 	@Override
@@ -95,7 +99,7 @@ public class SawdustBlock extends IEBaseBlock
 	public boolean isReplaceable(BlockState state, BlockItemUseContext useContext)
 	{
 		int i = state.get(LAYERS);
-		if(useContext.getItem().getItem()==this.asItem()&&i < 8)
+		if(useContext.getItem().getItem()==this.asItem()&&i < MAX_LAYER)
 		{
 			if(useContext.replacingClickedOnBlock())
 				return useContext.getFace()==Direction.UP;
@@ -112,7 +116,7 @@ public class SawdustBlock extends IEBaseBlock
 	{
 		BlockState blockstate = context.getWorld().getBlockState(context.getPos());
 		if(blockstate.getBlock()==this)
-			return blockstate.with(LAYERS, Math.min(8, blockstate.get(LAYERS)+1));
+			return blockstate.with(LAYERS, Math.min(MAX_LAYER, blockstate.get(LAYERS)+1));
 		else
 			return super.getStateForPlacement(context);
 	}

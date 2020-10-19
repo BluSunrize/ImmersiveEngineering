@@ -31,7 +31,9 @@ import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 
 public class BlastFurnaceAdvancedTileEntity extends BlastFurnaceTileEntity
 {
@@ -136,17 +138,23 @@ public class BlastFurnaceAdvancedTileEntity extends BlastFurnaceTileEntity
 	{
 		int i = 1;
 		for(int j = 0; j < 2; j++)
-		{
-			Direction phf = j==0?getFacing().rotateY(): getFacing().rotateYCCW();
-			BlockPos pos = getPos().add(0, -1, 0).offset(phf, 2);
-			TileEntity te = Utils.getExistingTileEntity(world, pos);
-			if(te instanceof BlastFurnacePreheaterTileEntity)
-			{
-				if(((BlastFurnacePreheaterTileEntity)te).getFacing()==phf.getOpposite())
-					i += ((BlastFurnacePreheaterTileEntity)te).doSpeedup();
-			}
-		}
+			i += getFromPreheater(j==0, BlastFurnacePreheaterTileEntity::doSpeedup, 0);
 		return i;
+	}
+
+	public <V> V getFromPreheater(boolean left, Function<BlastFurnacePreheaterTileEntity, V> getter, V orElse)
+	{
+		return getPreheater(left).map(getter).orElse(orElse);
+	}
+
+	public Optional<BlastFurnacePreheaterTileEntity> getPreheater(boolean left)
+	{
+		Direction phf = left?getFacing().rotateY(): getFacing().rotateYCCW();
+		BlockPos pos = getPos().add(0, -1, 0).offset(phf, 2);
+		TileEntity te = Utils.getExistingTileEntity(world, pos);
+		if(te instanceof BlastFurnacePreheaterTileEntity)
+			return Optional.of((BlastFurnacePreheaterTileEntity)te);
+		return Optional.empty();
 	}
 
 	private LazyOptional<IItemHandler> inputHandler = registerConstantCap(
@@ -163,6 +171,7 @@ public class BlastFurnaceAdvancedTileEntity extends BlastFurnaceTileEntity
 	private static final BlockPos slagOutputOffset = new BlockPos(1, 0, 2);
 	private static final BlockPos inputOffset = new BlockPos(1, 3, 1);
 	private static final Set<BlockPos> ioOffsets = ImmutableSet.of(inputOffset, outputOffset, slagOutputOffset);
+
 	@Nonnull
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)

@@ -1214,8 +1214,10 @@ public class Recipes extends RecipeProvider
 				.addCriterion("has_creosote", hasItem(IEContent.fluidCreosote.getFilledBucket()))
 				.build(out, toRL(toPath(WoodenDecoration.treatedWood.get(TreatedWoodStyles.HORIZONTAL))));
 
-		ShapedRecipeBuilder.shapedRecipe(WoodenDecoration.sawdust)
-				.patternLine("ss")
+		ShapedRecipeBuilder.shapedRecipe(WoodenDecoration.sawdust, 9)
+				.patternLine("sss")
+				.patternLine("sss")
+				.patternLine("sss")
 				.key('s', IETags.sawdust)
 				.addCriterion("has_sawdust", hasItem(IETags.sawdust))
 				.build(out, toRL(toPath(WoodenDecoration.sawdust)));

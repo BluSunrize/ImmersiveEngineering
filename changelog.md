@@ -5,6 +5,7 @@
 
 ##### Version 1.15.2-4.1.1-pre
 - Added sawdust flooring! It's a snow-like block made from sawdust! (BluSunrize)
+- Added indicators for attached Preheaters to the Blast Furnace GUI (BluSunrize)
 - Changed recipe for Pressurized Air Tank to use blue dye instead of lapis (BluSunrize)
 - Changed item and fluid routers to not output to unfiltered sides, if a filter exists (BluSunrize)
     - This behavior now matches what is described in the manual
@@ -17,6 +18,7 @@
 - Fixed sawmill dropping the wrong item when broken (BluSunrize)
 - Fixed firework and wolfpack cartridges crashing in turrets (BluSunrize)
 - Fixed dispensers not being able to use IE buckets (BluSunrize)
+- Fixed various issues with gunpowder barrels (BluSunrize)
 
 ##### Version 1.16.1-4.1.0-123
 - Fixed further issues with wires loading (Malte)

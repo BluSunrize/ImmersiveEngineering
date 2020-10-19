@@ -224,7 +224,8 @@ public class IEExplosion extends Explosion
 	public void doExplosionB(boolean spawnParticles)
 	{
 		Vector3d pos = getPosition();
-		this.world.playSound(pos.x, pos.y, pos.z, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.NEUTRAL, 4.0F, (1.0F+(Utils.RAND.nextFloat()-Utils.RAND.nextFloat())*0.2F)*0.7F, true);
+		if(this.world.isRemote)
+			this.world.playSound(pos.x, pos.y, pos.z, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.NEUTRAL, 4.0F, (1.0F+(Utils.RAND.nextFloat()-Utils.RAND.nextFloat())*0.2F)*0.7F, true);
 
 		if(this.size >= 2.0F&&this.damagesTerrain!=Mode.NONE)
 			this.world.addParticle(ParticleTypes.EXPLOSION_EMITTER, pos.x, pos.y, pos.z, 1.0D, 0.0D, 0.0D);
