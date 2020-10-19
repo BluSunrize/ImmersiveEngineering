@@ -12,10 +12,7 @@ import blusunrize.immersiveengineering.api.utils.shapes.CachedVoxelShapes;
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.SoundType;
+import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
 import net.minecraft.item.BlockItemUseContext;
@@ -54,6 +51,7 @@ public class SawdustBlock extends IEBaseBlock
 				Block.Properties.create(Material.WOOD, MaterialColor.SAND).sound(SoundType.SAND)
 						.harvestTool(ToolType.SHOVEL).hardnessAndResistance(0.5F).doesNotBlockMovement().notSolid(),
 				BlockItemIE::new, LAYERS);
+		((FireBlock)Blocks.FIRE).setFireInfo(this, 60, 60);
 	}
 
 	@Override
