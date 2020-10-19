@@ -20,7 +20,7 @@ public class IELootFunctions
 {
 	public static LootFunctionType bluprintz;
 	public static LootFunctionType windmill;
-	public static LootFunctionType count;
+	public static LootFunctionType propertyCount;
 
 	public static LootPoolEntryType dropInventory;
 	public static LootPoolEntryType tileDrop;
@@ -30,7 +30,7 @@ public class IELootFunctions
 	{
 		bluprintz = LootFunctionManager.func_237451_a_(BluprintzLootFunction.ID.toString(), new BluprintzLootFunction.Serializer());
 		windmill = LootFunctionManager.func_237451_a_(WindmillLootFunction.ID.toString(), new WindmillLootFunction.Serializer());
-		count =  LootFunctionManager.func_237451_a_(PropertyCountLootFunction.ID.toString(), new PropertyCountLootFunction.Serializer());
+		propertyCount =  LootFunctionManager.func_237451_a_(PropertyCountLootFunction.ID.toString(), new PropertyCountLootFunction.Serializer());
 
 		dropInventory = LootEntryManager.register(DropInventoryLootEntry.ID.toString(), new DropInventoryLootEntry.Serializer());
 		tileDrop = LootEntryManager.register(TileDropLootEntry.ID.toString(), new TileDropLootEntry.Serializer());

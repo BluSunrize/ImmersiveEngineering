@@ -15,8 +15,9 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISpawnInt
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.event.entity.living.EnderTeleportEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.eventbus.api.Event;
@@ -29,7 +30,7 @@ import java.util.*;
 @EventBusSubscriber(modid = ImmersiveEngineering.MODID, bus = Bus.FORGE)
 public class SpawnInterdictionHandler
 {
-	private static final Map<DimensionType, Set<ISpawnInterdiction>> interdictionTiles = new HashMap<>();
+	private static final Map<RegistryKey<World>, Set<ISpawnInterdiction>> interdictionTiles = new HashMap<>();
 
 	@SubscribeEvent
 	public static void onEnderTeleport(EnderTeleportEvent event)
@@ -38,7 +39,7 @@ public class SpawnInterdictionHandler
 		{
 			synchronized(interdictionTiles)
 			{
-				Set<ISpawnInterdiction> dimSet = interdictionTiles.get(event.getEntity().world.getDimension().getType());
+				Set<ISpawnInterdiction> dimSet = interdictionTiles.get(event.getEntity().world.func_234923_W_());
 				if(dimSet!=null)
 				{
 					Iterator<ISpawnInterdiction> it = dimSet.iterator();
@@ -49,7 +50,7 @@ public class SpawnInterdictionHandler
 						{
 							if(((TileEntity)interdictor).isRemoved()||((TileEntity)interdictor).getWorld()==null)
 								it.remove();
-							else if(((TileEntity)interdictor).getDistanceSq(event.getEntity().getPosX(), event.getEntity().getPosY(), event.getEntity().getPosZ()) <= interdictor.getInterdictionRangeSquared())
+							else if(Vector3d.func_237489_a_(((TileEntity)interdictor).getPos()).squareDistanceTo(event.getEntity().getPositionVec()) <= interdictor.getInterdictionRangeSquared())
 								event.setCanceled(true);
 						}
 						else if(interdictor instanceof Entity)
@@ -77,7 +78,7 @@ public class SpawnInterdictionHandler
 		{
 			synchronized(interdictionTiles)
 			{
-				DimensionType dimension = event.getEntity().world.getDimension().getType();
+				RegistryKey<World> dimension = event.getEntity().world.func_234923_W_();
 				if(interdictionTiles.containsKey(dimension))
 				{
 					Iterator<ISpawnInterdiction> it = interdictionTiles.get(dimension).iterator();
@@ -88,7 +89,7 @@ public class SpawnInterdictionHandler
 						{
 							if(((TileEntity)interdictor).isRemoved()||((TileEntity)interdictor).getWorld()==null)
 								it.remove();
-							else if(((TileEntity)interdictor).getDistanceSq(event.getEntity().getPosX(), event.getEntity().getPosY(), event.getEntity().getPosZ()) <= interdictor.getInterdictionRangeSquared())
+							else if(Vector3d.func_237489_a_(((TileEntity)interdictor).getPos()).squareDistanceTo(event.getEntity().getPositionVec()) <= interdictor.getInterdictionRangeSquared())
 							{
 								event.setResult(Event.Result.DENY);
 								break;
@@ -105,7 +106,7 @@ public class SpawnInterdictionHandler
 	{
 		synchronized(interdictionTiles)
 		{
-			Set<ISpawnInterdiction> inDimension = interdictionTiles.get(tile.getWorld().getDimension().getType());
+			Set<ISpawnInterdiction> inDimension = interdictionTiles.get(tile.getWorld().func_234923_W_());
 			if(inDimension!=null)
 				inDimension.remove(tile);
 		}
@@ -119,7 +120,7 @@ public class SpawnInterdictionHandler
 			synchronized(interdictionTiles)
 			{
 				Set<ISpawnInterdiction> forDim = interdictionTiles.computeIfAbsent(
-						world.getDimension().getType(), x -> new HashSet<>()
+						world.func_234923_W_(), x -> new HashSet<>()
 				);
 				forDim.add(tile);
 			}

@@ -15,20 +15,23 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
-import net.minecraft.state.IProperty;
+import net.minecraft.loot.LootContext;
+import net.minecraft.loot.LootFunction;
+import net.minecraft.loot.LootFunctionType;
+import net.minecraft.loot.LootParameters;
+import net.minecraft.loot.conditions.ILootCondition;
+import net.minecraft.loot.functions.ILootFunction;
 import net.minecraft.state.IntegerProperty;
+import net.minecraft.state.Property;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.storage.loot.LootContext;
-import net.minecraft.world.storage.loot.LootFunction;
-import net.minecraft.world.storage.loot.LootParameters;
-import net.minecraft.world.storage.loot.conditions.ILootCondition;
-import net.minecraft.world.storage.loot.functions.ILootFunction;
 
 import javax.annotation.Nonnull;
 
 public class PropertyCountLootFunction extends LootFunction
 {
+	public static final ResourceLocation ID = new ResourceLocation(ImmersiveEngineering.MODID, "property_count");
+
 	private final String propertyName;
 
 	protected PropertyCountLootFunction(ILootCondition[] conditionsIn, String propertyName)
@@ -49,25 +52,26 @@ public class PropertyCountLootFunction extends LootFunction
 
 	private int getPropertyValue(BlockState blockState)
 	{
-		for(IProperty<?> prop : blockState.getProperties())
+		for(Property<?> prop : blockState.func_235904_r_())
 			if(prop instanceof IntegerProperty&&prop.getName().equals(this.propertyName))
 				return blockState.get((IntegerProperty)prop);
 		return 1;
+	}
+
+	@Override
+	public LootFunctionType func_230425_b_()
+	{
+		return IELootFunctions.propertyCount;
 	}
 
 	public static class Serializer extends LootFunction.Serializer<PropertyCountLootFunction>
 	{
 		private final static String JSON_KEY = "propery_name";
 
-		public Serializer()
-		{
-			super(new ResourceLocation(ImmersiveEngineering.MODID, "property_count"), PropertyCountLootFunction.class);
-		}
-
 		@Override
-		public void serialize(JsonObject object, PropertyCountLootFunction function, JsonSerializationContext context)
+		public void func_230424_a_(JsonObject object, PropertyCountLootFunction function, JsonSerializationContext context)
 		{
-			super.serialize(object, function, context);
+			super.func_230424_a_(object, function, context);
 			object.addProperty(JSON_KEY, function.propertyName);
 		}
 
