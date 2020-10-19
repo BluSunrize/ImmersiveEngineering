@@ -1,5 +1,5 @@
 {
-  "parent": "block/snow_height2",
+  "parent": "minecraft:block/snow_height2",
   "textures": {
     "particle": "immersiveengineering:block/wooden_decoration/sawdust",
     "texture": "immersiveengineering:block/wooden_decoration/sawdust"
