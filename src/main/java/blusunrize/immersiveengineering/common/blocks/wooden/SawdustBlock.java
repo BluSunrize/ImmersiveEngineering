@@ -51,7 +51,18 @@ public class SawdustBlock extends IEBaseBlock
 				Block.Properties.create(Material.WOOD, MaterialColor.SAND).sound(SoundType.SAND)
 						.harvestTool(ToolType.SHOVEL).hardnessAndResistance(0.5F).doesNotBlockMovement().notSolid(),
 				BlockItemIE::new, LAYERS);
-		((FireBlock)Blocks.FIRE).setFireInfo(this, 60, 60);
+	}
+
+	@Override
+	public int getFireSpreadSpeed(BlockState state, IBlockReader world, BlockPos pos, Direction face)
+	{
+		return 60;
+	}
+
+	@Override
+	public int getFlammability(BlockState state, IBlockReader world, BlockPos pos, Direction face)
+	{
+		return 60;
 	}
 
 	@Override
