@@ -16,8 +16,11 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.extensions.IForgeEntityMinecart;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -26,12 +29,12 @@ import java.util.List;
 
 public class CapabilityUtils
 {
-	public static LazyOptional<IItemHandler> findItemHandlerAtPos(World world, BlockPos pos, Direction side, boolean allowCart)
+	public static <T> LazyOptional<T> findCapabilityAtPos(Capability<T> capability, World world, BlockPos pos, Direction side, boolean allowCart)
 	{
 		TileEntity neighbourTile = world.getTileEntity(pos);
 		if(neighbourTile!=null)
 		{
-			LazyOptional<IItemHandler> cap = neighbourTile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side);
+			LazyOptional<T> cap = neighbourTile.getCapability(capability, side);
 			if(cap.isPresent())
 				return cap;
 		}
@@ -42,13 +45,23 @@ public class CapabilityUtils
 				List<Entity> list = world.getEntitiesInAABBexcluding(null, new AxisAlignedBB(pos), entity -> entity instanceof IForgeEntityMinecart);
 				if(!list.isEmpty())
 				{
-					LazyOptional<IItemHandler> cap = list.get(world.rand.nextInt(list.size())).getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+					LazyOptional<T> cap = list.get(world.rand.nextInt(list.size())).getCapability(capability);
 					if(cap.isPresent())
 						return cap;
 				}
 			}
 		}
 		return LazyOptional.empty();
+	}
+
+	public static LazyOptional<IItemHandler> findItemHandlerAtPos(World world, BlockPos pos, Direction side, boolean allowCart)
+	{
+		return findCapabilityAtPos(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, world, pos, side, allowCart);
+	}
+
+	public static LazyOptional<IFluidHandler> findFluidHandlerAtPos(World world, BlockPos pos, Direction side, boolean allowCart)
+	{
+		return findCapabilityAtPos(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, world, pos, side, allowCart);
 	}
 
 	public static boolean canInsertStackIntoInventory(TileEntity inventory, ItemStack stack, Direction side)

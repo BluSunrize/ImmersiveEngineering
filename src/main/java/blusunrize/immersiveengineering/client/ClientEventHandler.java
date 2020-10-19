@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
-import blusunrize.immersiveengineering.api.excavator.MineralMix;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
@@ -33,8 +32,10 @@ import blusunrize.immersiveengineering.client.utils.FontUtils;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
 import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
 import blusunrize.immersiveengineering.common.blocks.wooden.TurntableTileEntity;
+import blusunrize.immersiveengineering.common.entities.IEMinecartEntity;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IScrollwheel;
@@ -48,7 +49,6 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.IEPotions;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
-import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.sound.IEMuffledSound;
 import blusunrize.immersiveengineering.common.util.sound.IEMuffledTickableSound;
 import com.google.common.collect.ImmutableList;
@@ -62,7 +62,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ITickableSound;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.VideoSettingsScreen;
-import net.minecraft.client.multiplayer.PlayerController;
 import net.minecraft.client.renderer.GPUWarning;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
@@ -76,13 +75,8 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.nbt.ListNBT;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.tags.ItemTags;
@@ -97,21 +91,15 @@ import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.*;
 import net.minecraft.world.World;
-import net.minecraft.world.storage.MapData;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.InputEvent.MouseScrollEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.client.gui.ForgeIngameGui;
-import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.resource.IResourceType;
 import net.minecraftforge.resource.ISelectiveResourceReloadListener;
@@ -247,7 +235,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				event.getToolTip().add(ClientUtils.applyFormat(
 						new StringTextComponent(EnergyHelper.getEnergyStored(powerpack)+"/"+EnergyHelper.getMaxEnergyStored(powerpack)+" IF"),
 						TextFormatting.GRAY
-						));
+				));
 			}
 		}
 		if(ClientUtils.mc().currentScreen!=null
@@ -517,10 +505,6 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			PlayerEntity player = ClientUtils.mc().player;
 			MatrixStack transform = new MatrixStack();
 
-			int rightOffset = 0;
-			if(ClientUtils.mc().gameSettings.showSubtitles)
-				rightOffset += 100;
-
 			for(Hand hand : Hand.values())
 				if(!player.getHeldItem(hand).isEmpty())
 				{
@@ -555,7 +539,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 					else if(equipped.getItem()==Misc.fluorescentTube)
 					{
 						int color = FluorescentTubeItem.getRGBInt(equipped, 1);
-						String s = I18n.format(Lib.DESC_INFO+"colour") + "#"+FontUtils.hexColorString(color);
+						String s = I18n.format(Lib.DESC_INFO+"colour")+"#"+FontUtils.hexColorString(color);
 						ClientUtils.font().renderString(s, scaledWidth/2-ClientUtils.font().getStringWidth(s)/2,
 								scaledHeight-ForgeIngameGui.left_height-20, FluorescentTubeItem.getRGBInt(equipped, 1),
 								true, transform.getLast().getMatrix(), buffer, false, 0, 0xf000f0
@@ -563,198 +547,27 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 					}
 					else if(equipped.getItem() instanceof RevolverItem||equipped.getItem() instanceof SpeedloaderItem)
 					{
-						NonNullList<ItemStack> bullets = ((IBulletContainer)equipped.getItem()).getBullets(equipped, true);
-						if(bullets!=null)
-						{
-							int bulletAmount = ((IBulletContainer)equipped.getItem()).getBulletCount(equipped);
-							HandSide side = hand==Hand.MAIN_HAND?player.getPrimaryHand(): player.getPrimaryHand().opposite();
-							boolean right = side==HandSide.RIGHT;
-							float dx = right?scaledWidth-32-48: 48;
-							float dy = scaledHeight-64;
-							transform.push();
-							transform.push();
-							transform.translate(dx, dy, 0);
-							transform.scale(.5f, .5f, 1);
-							RevolverScreen.drawExternalGUI(bullets, bulletAmount, transform);
-							transform.pop();
-
-							if(equipped.getItem() instanceof RevolverItem)
-							{
-								int cd = ((RevolverItem)equipped.getItem()).getShootCooldown(equipped);
-								float cdMax = ((RevolverItem)equipped.getItem()).getMaxShootCooldown(equipped);
-								float cooldown = 1-cd/cdMax;
-								if(cooldown > 0)
-								{
-									transform.translate(scaledWidth/2+(right?1: -6), scaledHeight/2-7, 0);
-
-									float h1 = cooldown > .33?.5f: cooldown*1.5f;
-									float h2 = cooldown;
-									float x2 = cooldown < .75?1: 4*(1-cooldown);
-
-									float uMin = (88+(right?0: 7*x2))/256f;
-									float uMax = (88+(right?7*x2: 0))/256f;
-									float vMin1 = (112+(right?h1: h2)*15)/256f;
-									float vMin2 = (112+(right?h2: h1)*15)/256f;
-
-									IVertexBuilder builder = buffer.getBuffer(IERenderTypes.getGui(rl("textures/gui/hud_elements.png")));
-									Matrix4f mat = transform.getLast().getMatrix();
-									builder.pos(mat, (right?0: 1-x2)*7, 15, 0)
-											.color(1F, 1F, 1F, 1F)
-											.tex(uMin, 127/256f)
-											.endVertex();
-									builder.pos(mat, (right?x2: 1)*7, 15, 0)
-											.color(1F, 1F, 1F, 1F)
-											.tex(uMax, 127/256f)
-											.endVertex();
-									builder.pos(mat, (right?x2: 1)*7, (right?h2: h1)*15, 0)
-											.color(1F, 1F, 1F, 1F)
-											.tex(uMax, vMin2)
-											.endVertex();
-									builder.pos(mat, (right?0: 1-x2)*7, (right?h1: h2)*15, 0)
-											.color(1F, 1F, 1F, 1F)
-											.tex(uMin, vMin1)
-											.endVertex();
-								}
-							}
-							transform.pop();
-						}
+						ItemOverlayUtils.renderRevolverOverlay(buffer, transform, scaledWidth, scaledHeight, player, hand, equipped);
 					}
 					else if(equipped.getItem() instanceof RailgunItem)
 					{
-						int duration = 72000-(player.isHandActive()&&player.getActiveHand()==hand?player.getItemInUseCount(): 0);
-						int chargeTime = ((RailgunItem)equipped.getItem()).getChargeTime(equipped);
-						int chargeLevel = duration < 72000?Math.min(99, (int)(duration/(float)chargeTime*100)): 0;
-						float scale = 1.5f;
-
-						IVertexBuilder builder = buffer.getBuffer(IERenderTypes.getGui(rl("textures/gui/hud_elements.png")));
-						boolean boundLeft = (player.getPrimaryHand()==HandSide.RIGHT)==(hand==Hand.OFF_HAND);
-						float dx = boundLeft?24: (scaledWidth-24-64);
-						float dy = scaledHeight-16;
-						transform.push();
-						transform.translate(dx, dy, 0);
-						ClientUtils.drawTexturedRect(builder, transform, 0, -32, 64, 32, 1, 1, 1, 1, 0, 64/256f, 96/256f, 128/256f);
-
-						ItemStack ammo = RailgunItem.findAmmo(equipped, player);
-						if(!ammo.isEmpty())
-							ClientUtils.renderItemWithOverlayIntoGUI(buffer, transform, ammo, 6, -22);
-
-						transform.translate(30, -27.5, 0);
-						transform.scale(scale, scale, 1);
-						String chargeTxt = chargeLevel < 10?"0 "+chargeLevel: chargeLevel/10+" "+chargeLevel%10;
-						ClientUtils.font().renderString(
-								chargeTxt, 0, 0, Lib.COLOUR_I_ImmersiveOrange,
-								true, transform.getLast().getMatrix(), buffer, false,
-								0, 0xf000f0
-						);
-						transform.pop();
+						ItemOverlayUtils.renderRailgunOverlay(buffer, transform, scaledWidth, scaledHeight, player, hand, equipped);
 					}
-					else if(equipped.getItem() instanceof DrillItem||equipped.getItem() instanceof ChemthrowerItem||equipped.getItem() instanceof BuzzsawItem)
+					else if(equipped.getItem() instanceof DrillItem)
 					{
-						boolean drill = equipped.getItem() instanceof DrillItem;
-						boolean buzzsaw = equipped.getItem() instanceof BuzzsawItem;
-						IVertexBuilder builder = buffer.getBuffer(IERenderTypes.getGui(rl("textures/gui/hud_elements.png")));
-						float dx = scaledWidth-rightOffset-16;
-						float dy = scaledHeight;
-						transform.push();
-						transform.translate(dx, dy, 0);
-						int w = 31;
-						int h = 62;
-						float uMin = 179/256f;
-						float uMax = 210/256f;
-						float vMin = 9/256f;
-						float vMax = 71/256f;
-						ClientUtils.drawTexturedRect(builder, transform, -24, -68, w, h, 1, 1, 1, 1, uMin, uMax, vMin, vMax);
-
-						transform.translate(-23, -37, 0);
-						LazyOptional<IFluidHandlerItem> handlerOpt = FluidUtil.getFluidHandler(equipped);
-						handlerOpt.ifPresent(handler -> {
-							int capacity = -1;
-							if(handler.getTanks() > 0)
-								capacity = handler.getTankCapacity(0);
-							if(capacity > 0)
-							{
-								FluidStack fuel = handler.getFluidInTank(0);
-								int amount = fuel.getAmount();
-								if(!drill&&player.isHandActive()&&player.getActiveHand()==hand)
-								{
-									int use = player.getItemInUseMaxCount();
-									amount -= use*IEConfig.TOOLS.chemthrower_consumption.get();
-								}
-								float cap = (float)capacity;
-								float angle = 83-(166*amount/cap);
-								transform.push();
-								transform.rotate(new Quaternion(0, 0, angle, true));
-								ClientUtils.drawTexturedRect(builder, transform, 6, -2, 24, 4, 1, 1, 1, 1, 91/256f, 123/256f, 80/256f, 87/256f);
-								transform.pop();
-								transform.translate(23, 37, 0);
-								if(drill)
-								{
-									ClientUtils.drawTexturedRect(builder, transform, -54, -73, 66, 72, 1, 1, 1, 1, 108/256f, 174/256f, 4/256f, 76/256f);
-									ItemStack head = ((DrillItem)equipped.getItem()).getHead(equipped);
-									if(!head.isEmpty())
-										ClientUtils.renderItemWithOverlayIntoGUI(buffer, transform, head, -51, -45);
-								}
-								else if(buzzsaw)
-								{
-									ClientUtils.drawTexturedRect(builder, transform, -54, -73, 66, 72, 1, 1, 1, 1, 108/256f, 174/256f, 4/256f, 76/256f);
-									ItemStack blade = ((BuzzsawItem)equipped.getItem()).getSawblade(equipped);
-									if(!blade.isEmpty())
-										ClientUtils.renderItemWithOverlayIntoGUI(buffer, transform, blade, -51, -45);
-								}
-								else
-								{
-									ClientUtils.drawTexturedRect(builder, transform, -41, -73, 53, 72, 1, 1, 1, 1, 8/256f, 61/256f, 4/256f, 76/256f);
-									boolean ignite = ChemthrowerItem.isIgniteEnable(equipped);
-									ClientUtils.drawTexturedRect(builder, transform, -32, -43, 12, 12, 1, 1, 1, 1, 66/256f, 78/256f, (ignite?21: 9)/256f, (ignite?33: 21)/256f);
-
-									ClientUtils.drawTexturedRect(builder, transform, -100, -20, 64, 16, 1, 1, 1, 1, 0/256f, 64/256f, 76/256f, 92/256f);
-									if(!fuel.isEmpty())
-									{
-										String name = ClientUtils.font().func_238417_a_(fuel.getDisplayName(), 50).getString().trim();
-										ClientUtils.font().renderString(
-												name, -68-ClientUtils.font().getStringWidth(name)/2, -15, 0,
-												false, transform.getLast().getMatrix(), buffer, false,
-												0, 0xf000f0
-										);
-									}
-								}
-							}
-						});
-						transform.pop();
+						ItemOverlayUtils.renderDrillOverlay(buffer, transform, scaledWidth, scaledHeight, player, hand, equipped);
+					}
+					else if(equipped.getItem() instanceof BuzzsawItem)
+					{
+						ItemOverlayUtils.renderBuzzsawOverlay(buffer, transform, scaledWidth, scaledHeight, player, hand, equipped);
+					}
+					else if(equipped.getItem() instanceof ChemthrowerItem)
+					{
+						ItemOverlayUtils.renderChemthrowerOverlay(buffer, transform, scaledWidth, scaledHeight, player, hand, equipped);
 					}
 					else if(equipped.getItem() instanceof IEShieldItem)
 					{
-						CompoundNBT upgrades = ((IEShieldItem)equipped.getItem()).getUpgrades(equipped);
-						if(!upgrades.isEmpty())
-						{
-							IVertexBuilder builder = buffer.getBuffer(IERenderTypes.getGui(rl("textures/gui/hud_elements.png")));
-							boolean boundLeft = (player.getPrimaryHand()==HandSide.RIGHT)==(hand==Hand.OFF_HAND);
-							float dx = boundLeft?16: (scaledWidth-16-64);
-							float dy = scaledHeight;
-							transform.push();
-							transform.translate(dx, dy, 0);
-							ClientUtils.drawTexturedRect(builder, transform, 0, -22, 64, 22, 1, 1, 1, 1, 0, 64/256f, 176/256f, 198/256f);
-
-							if(upgrades.getBoolean("flash"))
-							{
-								ClientUtils.drawTexturedRect(builder, transform, 11, -38, 16, 16, 1, 1, 1, 1, 11/256f, 27/256f, 160/256f, 176/256f);
-								if(upgrades.contains("flash_cooldown"))
-								{
-									float h = upgrades.getInt("flash_cooldown")/40f*16;
-									ClientUtils.drawTexturedRect(builder, transform, 11, -22-h, 16, h, 1, 1, 1, 1, 11/256f, 27/256f, (214-h)/256f, 214/256f);
-								}
-							}
-							if(upgrades.getBoolean("shock"))
-							{
-								ClientUtils.drawTexturedRect(builder, transform, 40, -38, 12, 16, 1, 1, 1, 1, 40/256f, 52/256f, 160/256f, 176/256f);
-								if(upgrades.contains("shock_cooldown"))
-								{
-									float h = upgrades.getInt("shock_cooldown")/40f*16;
-									ClientUtils.drawTexturedRect(builder, transform, 40, -22-h, 12, h, 1, 1, 1, 1, 40/256f, 52/256f, (214-h)/256f, 214/256f);
-								}
-							}
-							transform.pop();
-						}
+						ItemOverlayUtils.renderShieldOverlay(buffer, transform, scaledWidth, scaledHeight, player, hand, equipped);
 					}
 					if(equipped.getItem()==Tools.voltmeter)
 					{
@@ -803,11 +616,36 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				}
 			if(ClientUtils.mc().objectMouseOver!=null)
 			{
-				boolean hammer = !player.getHeldItem(Hand.MAIN_HAND).isEmpty()&&Utils.isHammer(player.getHeldItem(Hand.MAIN_HAND));
+				ItemStack held = player.getHeldItem(Hand.MAIN_HAND);
+				boolean hammer = !held.isEmpty()&&Utils.isHammer(held);
 				RayTraceResult mop = ClientUtils.mc().objectMouseOver;
-				ItemFrameEntity frameEntity = null;
-				if(mop instanceof EntityRayTraceResult&&((EntityRayTraceResult)mop).getEntity() instanceof ItemFrameEntity)
-					frameEntity = (ItemFrameEntity)((EntityRayTraceResult)mop).getEntity();
+				if(mop instanceof EntityRayTraceResult)
+				{
+					Entity entity = ((EntityRayTraceResult)mop).getEntity();
+					if(entity instanceof ItemFrameEntity)
+						BlockOverlayUtils.renderOreveinMapOverlays(transform, (ItemFrameEntity)entity, mop, scaledWidth, scaledHeight);
+					else if(entity instanceof IEMinecartEntity)
+					{
+						IEBaseTileEntity containedTile = ((IEMinecartEntity<?>)entity).getContainedTileEntity();
+						if(containedTile instanceof IBlockOverlayText)
+						{
+							ITextComponent[] text = ((IBlockOverlayText)containedTile).getOverlayText(player, mop, false);
+							if(text!=null&&text.length > 0)
+							{
+								FontRenderer font = ClientUtils.font();
+								int i = 0;
+								IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
+								for(ITextComponent s : text)
+									if(s!=null)
+										font.func_238416_a_(
+												s, scaledWidth/2+8, scaledHeight/2+8+(i++)*font.FONT_HEIGHT, 0xffffffff, true,
+												transform.getLast().getMatrix(), buffer, false, 0, 0xf000f0
+										);
+								buffer.finish();
+							}
+						}
+					}
+				}
 				else if(mop instanceof BlockRayTraceResult)
 				{
 					BlockPos pos = ((BlockRayTraceResult)mop).getPos();
@@ -836,107 +674,10 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						List<ItemFrameEntity> list = player.world.getEntitiesWithinAABB(ItemFrameEntity.class,
 								new AxisAlignedBB(pos.offset(face)), entity -> entity!=null&&entity.getHorizontalFacing()==face);
 						if(list.size()==1)
-							frameEntity = list.get(0);
+							BlockOverlayUtils.renderOreveinMapOverlays(transform, list.get(0), mop, scaledWidth, scaledHeight);
 					}
 				}
 
-				if(frameEntity!=null)
-				{
-					ItemStack frameItem = frameEntity.getDisplayedItem();
-					if(frameItem.getItem()==Items.FILLED_MAP&&ItemNBTHelper.hasKey(frameItem, "Decorations", 9))
-					{
-						World world = frameEntity.getEntityWorld();
-						MapData mapData = FilledMapItem.getMapData(frameItem, world);
-						if(mapData!=null)
-						{
-							FontRenderer font = ClientUtils.font();
-							// Map center is usually only calculated serverside, so we gotta do it manually
-							mapData.calculateMapCenter(world.getWorldInfo().getSpawnX(), world.getWorldInfo().getSpawnZ(), mapData.scale);
-							int mapScale = 1<<mapData.scale;
-							float mapRotation = (frameEntity.getRotation()%4)*1.5708f;
-
-							// Player hit vector, relative to frame block pos
-							Vector3d hitVec = mop.getHitVec().subtract(Vector3d.func_237491_b_(frameEntity.getHangingPosition()));
-							Direction frameDir = frameEntity.getHorizontalFacing();
-							double cursorH = 0;
-							double cursorV = 0;
-							// Get a 0-1 cursor coordinate; this could be ternary operator, but switchcase is easier to read
-							switch(frameDir)
-							{
-								case DOWN:
-									cursorH = hitVec.x;
-									cursorV = 1-hitVec.z;
-									break;
-								case UP:
-									cursorH = hitVec.x;
-									cursorV = hitVec.z;
-									break;
-								case NORTH:
-									cursorH = 1-hitVec.x;
-									cursorV = 1-hitVec.y;
-									break;
-								case SOUTH:
-									cursorH = hitVec.x;
-									cursorV = 1-hitVec.y;
-									break;
-								case WEST:
-									cursorH = hitVec.z;
-									cursorV = 1-hitVec.y;
-									break;
-								case EAST:
-									cursorH = 1-hitVec.z;
-									cursorV = 1-hitVec.y;
-									break;
-							}
-							// Multiply it to the number scale vanilla maps use
-							cursorH *= 128;
-							cursorV *= 128;
-
-							ListNBT minerals = null;
-							double lastDist = Double.MAX_VALUE;
-							ListNBT nbttaglist = frameItem.getTag().getList("Decorations", 10);
-							for(INBT inbt : nbttaglist)
-							{
-								CompoundNBT tagCompound = (CompoundNBT)inbt;
-								String id = tagCompound.getString("id");
-								if(id.startsWith("ie:coresample_")&&tagCompound.contains("minerals"))
-								{
-									double sampleX = tagCompound.getDouble("x");
-									double sampleZ = tagCompound.getDouble("z");
-									// Map coordinates require some pretty funky maths. I tried to simplify this,
-									// and ran into issues that made highlighting fail on certain markers.
-									// This implementation works, so I just won't touch it again.
-									float f = (float)(sampleX-(double)mapData.xCenter)/(float)mapScale;
-									float f1 = (float)(sampleZ-(double)mapData.zCenter)/(float)mapScale;
-									byte b0 = (byte)((int)((double)(f*2.0F)+0.5D));
-									byte b1 = (byte)((int)((double)(f1*2.0F)+0.5D));
-									// Make it a vector, rotate it around the map center
-									Vector3d mapPos = new Vector3d(0, b1, b0);
-									mapPos = mapPos.rotatePitch(mapRotation);
-									// Turn it into a 0.0 to 128.0 offset
-									double offsetH = (mapPos.z/2.0F+64.0F);
-									double offsetV = (mapPos.y/2.0F+64.0F);
-									// Get cursor distance
-									double dH = cursorH-offsetH;
-									double dV = cursorV-offsetV;
-									double dist = dH*dH+dV*dV;
-									if(dist < 10&&dist < lastDist)
-									{
-										lastDist = dist;
-										minerals = tagCompound.getList("minerals", NBT.TAG_STRING);
-									}
-								}
-							}
-							if(minerals!=null)
-								for(int i = 0; i < minerals.size(); i++)
-								{
-									MineralMix mix = MineralMix.mineralList.get(new ResourceLocation(minerals.getString(i)));
-									if(mix!=null)
-										font.drawStringWithShadow(transform, I18n.format(mix.getTranslationKey()), scaledWidth/2+8, scaledHeight/2+8+i*font.FONT_HEIGHT, 0xffffff);
-								}
-						}
-					}
-				}
 			}
 		}
 	}
@@ -1072,7 +813,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						angle = player.ticksExisted%80/40d;
 					double stepDistance = (cw180?2: 4)*Math.PI;
 					angle = -(angle-Math.sin(angle*stepDistance)/stepDistance)*Math.PI;
-					drawCircularRotationArrows(buffer, transform, (float)angle, rotation==Rotation.COUNTERCLOCKWISE_90, cw180);
+					BlockOverlayUtils.drawCircularRotationArrows(buffer, transform, (float)angle, rotation==Rotation.COUNTERCLOCKWISE_90, cw180);
 					transform.pop();
 					transform.pop();
 				}
@@ -1133,7 +874,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				float zFromMid = side.getAxis()==Axis.Z?0: (float)rtr.getHitVec().z-pos.getZ()-.5f;
 				float max = Math.max(Math.abs(yFromMid), Math.max(Math.abs(xFromMid), Math.abs(zFromMid)));
 				Vector3d dir = new Vector3d(max==Math.abs(xFromMid)?Math.signum(xFromMid): 0, max==Math.abs(yFromMid)?Math.signum(yFromMid): 0, max==Math.abs(zFromMid)?Math.signum(zFromMid): 0);
-				drawBlockOverlayArrow(mat, buffers, dir, side, targetedBB);
+				BlockOverlayUtils.drawBlockOverlayArrow(mat, buffers, dir, side, targetedBB);
 
 			}
 
@@ -1146,205 +887,10 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				{
 					ImmutableList<BlockPos> blocks = ((IDrillHead)head.getItem()).getExtraBlocksDug(head, world,
 							(PlayerEntity)player, event.getTarget());
-					drawAdditionalBlockbreak(event, (PlayerEntity)player, event.getPartialTicks(), blocks);
+					BlockOverlayUtils.drawAdditionalBlockbreak(event, (PlayerEntity)player, event.getPartialTicks(), blocks);
 				}
 			}
 		}
-	}
-
-	private final static float[][] quarterRotationArrowCoords = {
-			{.375F, 0},
-			{.5F, -.125F},
-			{.4375F, -.125F},
-			{.4375F, -.25F},
-			{.25F, -.4375F},
-			{0, -.4375F},
-			{0, -.3125F},
-			{.1875F, -.3125F},
-			{.3125F, -.1875F},
-			{.3125F, -.125F},
-			{.25F, -.125F}
-	};
-	private final static float[][] quarterRotationArrowQuads = {
-			quarterRotationArrowCoords[5],
-			quarterRotationArrowCoords[6],
-			quarterRotationArrowCoords[4],
-			quarterRotationArrowCoords[7],
-			quarterRotationArrowCoords[3],
-			quarterRotationArrowCoords[8],
-			quarterRotationArrowCoords[2],
-			quarterRotationArrowCoords[9],
-			quarterRotationArrowCoords[1],
-			quarterRotationArrowCoords[10],
-			quarterRotationArrowCoords[0],
-			quarterRotationArrowCoords[0]
-	};
-
-	private final static float[][] halfRotationArrowCoords = {
-			{.375F, 0},
-			{.5F, -.125F},
-			{.4375F, -.125F},
-			{.4375F, -.25F},
-			{.25F, -.4375F},
-			{-.25F, -.4375F},
-			{-.4375F, -.25F},
-			{-.4375F, -.0625F},
-			{-.3125F, -.0625F},
-			{-.3125F, -.1875F},
-			{-.1875F, -.3125F},
-			{.1875F, -.3125F},
-			{.3125F, -.1875F},
-			{.3125F, -.125F},
-			{.25F, -.125F}
-	};
-	private final static float[][] halfRotationArrowQuads = {
-			halfRotationArrowCoords[7],
-			halfRotationArrowCoords[8],
-			halfRotationArrowCoords[6],
-			halfRotationArrowCoords[9],
-			halfRotationArrowCoords[5],
-			halfRotationArrowCoords[10],
-			halfRotationArrowCoords[4],
-			halfRotationArrowCoords[11],
-			halfRotationArrowCoords[3],
-			halfRotationArrowCoords[12],
-			halfRotationArrowCoords[2],
-			halfRotationArrowCoords[13],
-			halfRotationArrowCoords[1],
-			halfRotationArrowCoords[14],
-			halfRotationArrowCoords[0],
-			halfRotationArrowCoords[0]
-	};
-
-	public static void drawCircularRotationArrows(IRenderTypeBuffer buffer, MatrixStack transform, float rotation, boolean flip, boolean halfCircle)
-	{
-		transform.push();
-		transform.translate(0, 0.502, 0);
-		float[][] rotationArrowCoords;
-		float[][] rotationArrowQuads;
-		if(halfCircle)
-		{
-			rotationArrowCoords = halfRotationArrowCoords;
-			rotationArrowQuads = halfRotationArrowQuads;
-		}
-		else
-		{
-			rotationArrowCoords = quarterRotationArrowCoords;
-			rotationArrowQuads = quarterRotationArrowQuads;
-		}
-
-		int[] vertexOrder;
-		if(flip)
-		{
-			transform.rotate(new Quaternion(0, -rotation, 0, false));
-			transform.scale(1, 1, -1);
-			vertexOrder = new int[]{2, 3, 1, 0};
-		}
-		else
-		{
-			transform.rotate(new Quaternion(0, rotation, 0, false));
-			vertexOrder = new int[]{0, 1, 3, 2};
-		}
-		transform.push();
-		IVertexBuilder builder = buffer.getBuffer(IERenderTypes.LINES);
-		for(int arrowId = 0; arrowId < 2; ++arrowId)
-		{
-			Matrix4f mat = transform.getLast().getMatrix();
-			for(int i = 0; i <= rotationArrowCoords.length; i++)
-			{
-				float[] p = rotationArrowCoords[i%rotationArrowCoords.length];
-				if(i > 0)
-					builder.pos(mat, p[0], 0, p[1]).color(0, 0, 0, 0.4F).endVertex();
-				if(i!=rotationArrowCoords.length)
-					builder.pos(mat, p[0], 0, p[1]).color(0, 0, 0, 0.4F).endVertex();
-			}
-			transform.rotate(new Quaternion(0, 180, 0, true));
-		}
-		transform.pop();
-		transform.push();
-		builder = buffer.getBuffer(IERenderTypes.TRANSLUCENT_POSITION_COLOR);
-		for(int arrowId = 0; arrowId < 2; ++arrowId)
-		{
-			Matrix4f mat = transform.getLast().getMatrix();
-			for(int i = 0; i+3 < rotationArrowQuads.length; i += 2)
-				for(int offset : vertexOrder)
-				{
-					float[] p = rotationArrowQuads[i+offset];
-					builder.pos(mat, p[0], 0, p[1]).color(Lib.COLOUR_F_ImmersiveOrange[0], Lib.COLOUR_F_ImmersiveOrange[1], Lib.COLOUR_F_ImmersiveOrange[2], 0.4F).endVertex();
-				}
-			transform.rotate(new Quaternion(0, 180, 0, true));
-		}
-		transform.pop();
-		transform.pop();
-	}
-
-	private final static float[][] arrowCoords = {{0, .375f}, {.3125f, .0625f}, {.125f, .0625f}, {.125f, -.375f}, {-.125f, -.375f}, {-.125f, .0625f}, {-.3125f, .0625f}};
-
-	public static void drawBlockOverlayArrow(Matrix4f transform, IRenderTypeBuffer buffers, Vector3d directionVec,
-											 Direction side, AxisAlignedBB targetedBB)
-	{
-		Vector3d[] translatedPositions = new Vector3d[arrowCoords.length];
-		Matrix4 mat = new Matrix4();
-		Vector3d defaultDir = side.getAxis()==Axis.Y?new Vector3d(0, 0, 1): new Vector3d(0, 1, 0);
-		directionVec = directionVec.normalize();
-		double angle = Math.acos(defaultDir.dotProduct(directionVec));
-		Vector3d axis = defaultDir.crossProduct(directionVec);
-		mat.rotate(angle, axis.x, axis.y, axis.z);
-		if(side.getAxis()==Axis.Z)
-			mat.rotate(Math.PI/2, 1, 0, 0).rotate(Math.PI, 0, 1, 0);
-		else if(side.getAxis()==Axis.X)
-			mat.rotate(Math.PI/2, 0, 0, 1).rotate(Math.PI/2, 0, 1, 0);
-		for(int i = 0; i < translatedPositions.length; i++)
-		{
-			Vector3d vec = mat.apply(new Vector3d(arrowCoords[i][0], 0, arrowCoords[i][1])).add(.5, .5, .5);
-			if(targetedBB!=null)
-				vec = new Vector3d(side==Direction.WEST?targetedBB.minX-.002: side==Direction.EAST?targetedBB.maxX+.002: vec.x, side==Direction.DOWN?targetedBB.minY-.002: side==Direction.UP?targetedBB.maxY+.002: vec.y, side==Direction.NORTH?targetedBB.minZ-.002: side==Direction.SOUTH?targetedBB.maxZ+.002: vec.z);
-			translatedPositions[i] = vec;
-		}
-
-		IVertexBuilder triBuilder = buffers.getBuffer(IERenderTypes.TRANSLUCENT_TRIANGLES);
-		Vector3d center = translatedPositions[0];
-		for(int i = 2; i < translatedPositions.length; i++)
-		{
-			Vector3d point = translatedPositions[i];
-			Vector3d prevPoint = translatedPositions[i-1];
-			for(Vector3d p : new Vector3d[]{center, prevPoint, point})
-				triBuilder.pos(transform, (float)p.x, (float)p.y, (float)p.z)
-						.color(Lib.COLOUR_F_ImmersiveOrange[0], Lib.COLOUR_F_ImmersiveOrange[1], Lib.COLOUR_F_ImmersiveOrange[2], 0.4F)
-						.endVertex();
-		}
-		IVertexBuilder lineBuilder = buffers.getBuffer(IERenderTypes.TRANSLUCENT_LINES);
-		for(int i = 0; i <= translatedPositions.length; i++)
-		{
-			Vector3d point = translatedPositions[i%translatedPositions.length];
-			int max = i==0||i==translatedPositions.length?1: 2;
-			for(int j = 0; j < max; ++j)
-				lineBuilder.pos(transform, (float)point.x, (float)point.y, (float)point.z)
-						.color(0, 0, 0, 0.4F)
-						.endVertex();
-		}
-	}
-
-	public static void drawAdditionalBlockbreak(DrawHighlightEvent ev, PlayerEntity player, float partialTicks, Collection<BlockPos> blocks)
-	{
-		Vector3d renderView = ev.getInfo().getProjectedView();
-		for(BlockPos pos : blocks)
-			ev.getContext().drawSelectionBox(
-					ev.getMatrix(),
-					ev.getBuffers().getBuffer(RenderType.getLines()),
-					player,
-					renderView.x, renderView.y, renderView.z,
-					pos,
-					ClientUtils.mc().world.getBlockState(pos)
-			);
-
-		MatrixStack transform = ev.getMatrix();
-		transform.push();
-		transform.translate(-renderView.x, -renderView.y, -renderView.z);
-		PlayerController controllerMP = ClientUtils.mc().playerController;
-		if(controllerMP.isHittingBlock)
-			ClientUtils.drawBlockDamageTexture(transform, ev.getBuffers(), player, partialTicks, player.world, blocks);
-		transform.pop();
 	}
 
 	@SubscribeEvent
