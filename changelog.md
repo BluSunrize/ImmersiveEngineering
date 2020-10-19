@@ -1,3 +1,7 @@
+##### Version 1.16.1-4.1.1-pre
+- Fixed steel hoes doing too much damage. As a result of this fix, all other steel tools now match diamond in damage (BluSunrize)
+- Also includes the changes from 1.15.2-4.1.1-pre
+
 ##### Version 1.15.2-4.1.1-pre
 - Added sawdust flooring! It's a snow-like block made from sawdust! (BluSunrize)
 - Changed recipe for Pressurized Air Tank to use blue dye instead of lapis (BluSunrize)
