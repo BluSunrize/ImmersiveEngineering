@@ -32,7 +32,7 @@ public class BlastFurnaceScreen extends IEContainerScreen<BlastFurnaceContainer>
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(MatrixStack transform, int mouseX, int mouseY)
+	protected void func_230451_b_(MatrixStack transform, int mouseX, int mouseY)
 	{
 		if(container.tile instanceof BlastFurnaceAdvancedTileEntity)
 		{
@@ -55,7 +55,7 @@ public class BlastFurnaceScreen extends IEContainerScreen<BlastFurnaceContainer>
 			BlastFurnaceAdvancedTileEntity tile = (BlastFurnaceAdvancedTileEntity)container.tile;
 			this.blit(transform, guiLeft+140, guiTop+11, 176, 32, 70, 46);
 			if(tile.getFromPreheater(true, PREHEATER_ACTIVE, false))
-				this.blit(guiLeft+182, guiTop+27, 200, 22, 10, 10);
+				this.blit(transform, guiLeft+182, guiTop+27, 200, 22, 10, 10);
 			if(tile.getFromPreheater(false, PREHEATER_ACTIVE, false))
 				this.blit(transform, guiLeft+182, guiTop+39, 200, 22, 10, 10);
 		}

@@ -1,5 +1,5 @@
 {
-  "parent": "block/thin_block",
+  "parent": "minecraft:block/thin_block",
   "textures": {
     "particle": "immersiveengineering:block/wooden_decoration/sawdust",
     "texture": "immersiveengineering:block/wooden_decoration/sawdust"
