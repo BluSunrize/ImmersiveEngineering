@@ -13,6 +13,7 @@
 - Fixed sawmill dropping the wrong item when broken (BluSunrize)
 - Fixed firework and wolfpack cartridges crashing in turrets (BluSunrize)
 - Fixed dispensers not being able to use IE buckets (BluSunrize)
+- Fixed various issues with gunpowder barrels (BluSunrize)
 
 ##### Version 1.15.2-4.1.0-122
 - Added the sawmill! It strips logs and cuts them into planks! (BluSunrize)

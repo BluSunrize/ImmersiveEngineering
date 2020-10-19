@@ -13,6 +13,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -45,6 +46,9 @@ public class IEExplosiveRenderer extends EntityRenderer<IEExplosiveEntity>
 			float f1 = 1.0F+f*0.3F;
 			matrixStackIn.scale(f1, f1, f1);
 		}
+		matrixStackIn.rotate(Vector3f.YP.rotationDegrees(-90.0F));
+		matrixStackIn.translate(-0.5D, -0.5D, 0.5D);
+		matrixStackIn.rotate(Vector3f.YP.rotationDegrees(90.0F));
 
 		int overlay;
 		if(entity.getFuse()/5%2==0)
