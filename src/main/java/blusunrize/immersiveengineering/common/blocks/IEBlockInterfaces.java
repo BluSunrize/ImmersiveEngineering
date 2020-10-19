@@ -75,6 +75,7 @@ public class IEBlockInterfaces
 		@Nullable
 		ITextComponent[] getOverlayText(PlayerEntity player, RayTraceResult mop, boolean hammer);
 
+		@Deprecated
 		boolean useNixieFont(PlayerEntity player, RayTraceResult mop);
 	}
 

@@ -34,6 +34,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -110,13 +111,15 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 	@Override
 	public ITextComponent[] getOverlayText(PlayerEntity player, RayTraceResult rtr, boolean hammer)
 	{
-		if(!(rtr instanceof BlockRayTraceResult))
+		if(rtr.getType()==Type.MISS)
 			return null;
-		BlockRayTraceResult brtr = (BlockRayTraceResult)rtr;
 		if(Utils.isFluidRelatedItemStack(player.getHeldItem(Hand.MAIN_HAND)))
 			return new ITextComponent[]{
 					TextUtils.formatFluidStack(tank.getFluid())
 			};
+		if(!(rtr instanceof BlockRayTraceResult))
+			return null;
+		BlockRayTraceResult brtr = (BlockRayTraceResult)rtr;
 		if(hammer&&IEClientConfig.showTextOverlay.get()&&brtr.getFace().getAxis()==Axis.Y)
 		{
 			IOSideConfig side = sideConfig.getOrDefault(brtr.getFace(), NONE);
