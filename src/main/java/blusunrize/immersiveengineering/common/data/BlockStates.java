@@ -31,6 +31,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.plant.EnumHempGrowth;
 import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchTileEntity;
+import blusunrize.immersiveengineering.common.blocks.wooden.SawdustBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
 import blusunrize.immersiveengineering.common.data.models.LoadedModelBuilder;
 import blusunrize.immersiveengineering.common.util.fluids.IEFluid;
@@ -749,6 +750,7 @@ public class BlockStates extends BlockStateProvider
 		createHemp();
 		simpleBlock(Misc.pottedHemp, models().withExistingParent("potted_hemp", mcLoc("block/flower_pot_cross"))
 				.texture("plant", new ResourceLocation(ImmersiveEngineering.MODID, "block/hemp/potted")));
+		createSawdust();
 
 		for(IEFluid f : IEFluid.IE_FLUIDS)
 		{
@@ -1430,6 +1432,31 @@ public class BlockStates extends BlockStateProvider
 					.with(HempBlock.GROWTH, g)
 					.setModels(new ConfiguredModel(model));
 		}
+	}
+
+	private void createSawdust()
+	{
+		VariantBlockStateBuilder builder = getVariantBuilder(WoodenDecoration.sawdust);
+		ResourceLocation sawdustTexture = new ResourceLocation(ImmersiveEngineering.MODID, "block/wooden_decoration/sawdust");
+		ModelFile singleModel = null;
+		for(int layer : SawdustBlock.LAYERS.getAllowedValues())
+		{
+			ModelFile model;
+			String name = "block/sawdust_"+layer;
+			if(layer==8)
+				model = models().cubeAll(name, sawdustTexture);
+			else
+				model = models().withExistingParent(name,
+						new ResourceLocation("block/snow_height"+(layer*2)))
+						.texture("particle", sawdustTexture)
+						.texture("texture", sawdustTexture);
+			if(layer==1)
+				singleModel = model;
+			builder.partialState()
+					.with(SawdustBlock.LAYERS, layer)
+					.setModels(new ConfiguredModel(model));
+		}
+		itemModels.put(WoodenDecoration.sawdust, singleModel);
 	}
 
 	private ModelFile createRouterModel(ResourceLocation baseTexName, String outName)

@@ -66,7 +66,9 @@ public class SorterTileEntity extends IEBaseTileEntity implements IInteractionOb
 			boolean first = startRouting();
 			Direction[][] validOutputs = getValidOutputs(inputSide, stack);
 			stack = doInsert(stack, validOutputs[0], simulate);
-			stack = doInsert(stack, validOutputs[1], simulate);
+			// Only if no filtered outputs were found, use unfiltered
+			if(validOutputs[0].length==0)
+				stack = doInsert(stack, validOutputs[1], simulate);
 			if(first)
 				routed = null;
 		}
@@ -90,7 +92,7 @@ public class SorterTileEntity extends IEBaseTileEntity implements IInteractionOb
 	private ItemStack doInsert(ItemStack stack, Direction[] sides, boolean simulate)
 	{
 		int lengthFiltered = sides.length;
-		while(lengthFiltered > 0 && !stack.isEmpty())
+		while(lengthFiltered > 0&&!stack.isEmpty())
 		{
 			int rand = Utils.RAND.nextInt(lengthFiltered);
 			stack = this.outputItemToInv(stack, sides[rand], simulate);
@@ -218,8 +220,8 @@ public class SorterTileEntity extends IEBaseTileEntity implements IInteractionOb
 	}
 
 	/**
-	 * @param stack         the stack to check
-	 * @param side          the side the filter is on
+	 * @param stack the stack to check
+	 * @param side  the side the filter is on
 	 * @return If the stack is permitted by the given filter
 	 */
 	private EnumFilterResult checkStackAgainstFilter(ItemStack stack, Direction side)

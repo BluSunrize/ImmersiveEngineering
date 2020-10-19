@@ -436,7 +436,7 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 		{
 			ItemStack fireworkStack = new ItemStack(Items.FIREWORK_ROCKET);
 			fireworkStack.setTag(cartridge.hasTag()?cartridge.getTag().copy(): null);
-			FireworkRocketEntity firework = new FireworkRocketEntity(projectile.world, fireworkStack, shooter.getPosX(), shooter.getPosY()+(double)shooter.getEyeHeight()-(double)0.15F, shooter.getPosZ(), true);
+			FireworkRocketEntity firework = new FireworkRocketEntity(projectile.world, fireworkStack, projectile.getPosX(), projectile.getPosY(), projectile.getPosZ(), true);
 			Vector3d vector = projectile.getMotion();
 			firework.shoot(vector.getX(), vector.getY(), vector.getZ(), 1.6f, 1.0f);
 			return firework;
@@ -536,9 +536,9 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 				vecDir = matrix.apply(vecDir);
 
 				WolfpackShotEntity bullet;
-				if(shooter!=null)
-					bullet = new WolfpackShotEntity(world, world.getPlayerByUuid(shooter),
-							vecDir.x*1.5, vecDir.y*1.5, vecDir.z*1.5, this);
+				PlayerEntity player = shooter!=null?world.getPlayerByUuid(shooter): null;
+				if(player!=null)
+					bullet = new WolfpackShotEntity(world, player, vecDir.x*1.5, vecDir.y*1.5, vecDir.z*1.5, this);
 				else
 					bullet = new WolfpackShotEntity(world, 0, 0, 0, 0, 0, 0, this);
 				if(target instanceof EntityRayTraceResult)

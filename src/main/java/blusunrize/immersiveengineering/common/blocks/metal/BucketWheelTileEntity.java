@@ -21,6 +21,7 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.NonNullList;
@@ -206,5 +207,31 @@ public class BucketWheelTileEntity extends MultiblockPartTileEntity<BucketWheelT
 		else
 			ret = new AxisAlignedBB(0, 0, 0, 1, 1, 1);
 		return ImmutableList.of(ret);
+	}
+
+	public void adjustStructureFacingAndMirrored(Direction targetFacing, boolean targetMirrored)
+	{
+		if(this==master()&&targetFacing.getAxis()!=Direction.Axis.Y&&(getFacing()!=targetFacing||getIsMirrored()!=targetMirrored))
+		{
+			boolean changePos = (getFacing()!=targetFacing)^(getIsMirrored()^targetMirrored);
+			for(int h = -3; h <= 3; h++)
+				for(int w = -3; w <= 3; w++)
+				{
+					if((Math.abs(h)==3&&w!=0)||(Math.abs(w)==3&&h!=0))
+						continue;
+					TileEntity te = world.getTileEntity(getPos().add(0, h, 0).offset(getFacing(), w));
+					if(te instanceof BucketWheelTileEntity)
+					{
+						BucketWheelTileEntity bucketTE = (BucketWheelTileEntity)te;
+						bucketTE.setFacing(targetFacing);
+						bucketTE.setMirrored(targetMirrored);
+						if(changePos)
+							bucketTE.posInMultiblock = new BlockPos(6-bucketTE.posInMultiblock.getX(), bucketTE.posInMultiblock.getY(), bucketTE.posInMultiblock.getZ());
+						te.markDirty();
+						bucketTE.markContainingBlockForUpdate(null);
+						world.addBlockEvent(te.getPos(), te.getBlockState().getBlock(), 255, 0);
+					}
+				}
+		}
 	}
 }

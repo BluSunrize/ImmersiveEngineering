@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "layers=1": {
+      "model": "immersiveengineering:block/sawdust_1"
+    },
+    "layers=2": {
+      "model": "immersiveengineering:block/sawdust_2"
+    },
+    "layers=3": {
+      "model": "immersiveengineering:block/sawdust_3"
+    },
+    "layers=4": {
+      "model": "immersiveengineering:block/sawdust_4"
+    },
+    "layers=5": {
+      "model": "immersiveengineering:block/sawdust_5"
+    },
+    "layers=6": {
+      "model": "immersiveengineering:block/sawdust_6"
+    },
+    "layers=7": {
+      "model": "immersiveengineering:block/sawdust_7"
+    },
+    "layers=8": {
+      "model": "immersiveengineering:block/sawdust_8"
+    }
+  }
+}

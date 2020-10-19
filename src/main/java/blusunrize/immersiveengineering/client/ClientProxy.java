@@ -25,7 +25,10 @@ import blusunrize.immersiveengineering.client.gui.*;
 import blusunrize.immersiveengineering.client.models.*;
 import blusunrize.immersiveengineering.client.models.ModelConveyor.ConveyorLoader;
 import blusunrize.immersiveengineering.client.models.ModelCoresample.CoresampleLoader;
-import blusunrize.immersiveengineering.client.models.connection.*;
+import blusunrize.immersiveengineering.client.models.connection.BakedConnectionModel;
+import blusunrize.immersiveengineering.client.models.connection.ConnectionLoader;
+import blusunrize.immersiveengineering.client.models.connection.FeedthroughLoader;
+import blusunrize.immersiveengineering.client.models.connection.FeedthroughModel;
 import blusunrize.immersiveengineering.client.models.multilayer.MultiLayerLoader;
 import blusunrize.immersiveengineering.client.models.obj.IEOBJLoader;
 import blusunrize.immersiveengineering.client.models.obj.IESmartObjModel;
@@ -61,7 +64,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayListMultimap;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IHasContainer;
 import net.minecraft.client.gui.ScreenManager;
@@ -69,7 +71,6 @@ import net.minecraft.client.gui.ScreenManager.IScreenFactory;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.particle.BreakingParticle;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.ArmorStandRenderer;
 import net.minecraft.client.renderer.entity.BipedRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
@@ -542,29 +543,6 @@ public class ClientProxy extends CommonProxy
 		Screen currentScreen = mc().currentScreen;
 		if(currentScreen instanceof IEContainerScreen)
 			currentScreen.init(mc(), currentScreen.width, currentScreen.height);
-	}
-
-	@Override
-	public void removeStateFromSmartModelCache(BlockState state)
-	{
-		for(RenderType r : RenderType.getBlockRenderTypes())
-			IESmartObjModel.modelCache.invalidate(new RenderCacheKey(state, r));
-		IESmartObjModel.modelCache.invalidate(new RenderCacheKey(state, null));
-	}
-
-	@Override
-	public void removeStateFromConnectionModelCache(BlockState state)
-	{
-		//TODO
-		for(RenderType r : RenderType.getBlockRenderTypes())
-			BakedConnectionModel.cache.invalidate(new RenderCacheKey(state, r));
-		BakedConnectionModel.cache.invalidate(new RenderCacheKey(state, null));
-	}
-
-	@Override
-	public void clearConnectionModelCache()
-	{
-		BakedConnectionModel.cache.invalidateAll();
 	}
 
 	@Override

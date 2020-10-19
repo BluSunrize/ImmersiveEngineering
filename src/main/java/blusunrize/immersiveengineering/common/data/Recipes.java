@@ -1213,6 +1213,12 @@ public class Recipes extends RecipeProvider
 				.key('b', new IngredientFluidStack(IETags.fluidCreosote, FluidAttributes.BUCKET_VOLUME))
 				.addCriterion("has_creosote", hasItem(IEContent.fluidCreosote.getFilledBucket()))
 				.build(out, toRL(toPath(WoodenDecoration.treatedWood.get(TreatedWoodStyles.HORIZONTAL))));
+
+		ShapedRecipeBuilder.shapedRecipe(WoodenDecoration.sawdust)
+				.patternLine("ss")
+				.key('s', IETags.sawdust)
+				.addCriterion("has_sawdust", hasItem(IETags.sawdust))
+				.build(out, toRL(toPath(WoodenDecoration.sawdust)));
 	}
 
 	private void recipesWoodenDevices(@Nonnull Consumer<IFinishedRecipe> out)
@@ -1390,7 +1396,7 @@ public class Recipes extends RecipeProvider
 				.addCriterion("has_alu_ingot", hasItem(IETags.getTagsFor(EnumMetals.ALUMINUM).ingot))
 				.addCriterion("has_alu_sticks", hasItem(IETags.aluminumRod))
 				.build(out, toRL(toPath(MetalDecoration.aluScaffolding.get(MetalScaffoldingType.STANDARD))));
-		ShapedRecipeBuilder.shapedRecipe(MetalDecoration.slopeAlu)
+		ShapedRecipeBuilder.shapedRecipe(MetalDecoration.slopeAlu, 4)
 				.patternLine("sss")
 				.patternLine("ss ")
 				.patternLine("s  ")
@@ -1407,7 +1413,7 @@ public class Recipes extends RecipeProvider
 				.addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot))
 				.addCriterion("has_steel_sticks", hasItem(IETags.steelRod))
 				.build(out, toRL(toPath(MetalDecoration.steelScaffolding.get(MetalScaffoldingType.STANDARD))));
-		ShapedRecipeBuilder.shapedRecipe(MetalDecoration.slopeSteel)
+		ShapedRecipeBuilder.shapedRecipe(MetalDecoration.slopeSteel, 4)
 				.patternLine("sss")
 				.patternLine("ss ")
 				.patternLine("s  ")
@@ -2307,7 +2313,7 @@ public class Recipes extends RecipeProvider
 				.patternLine("lbl")
 				.patternLine(" lc")
 				.key('b', Items.BUCKET)
-				.key('l', Tags.Items.GEMS_LAPIS)
+				.key('l', Tags.Items.DYES_BLUE)
 				.key('c', Ingredients.componentIron)
 				.addCriterion("has_drill", hasItem(Tools.drill))
 				.build(out, toRL(toPath(Misc.toolUpgrades.get(ToolUpgrade.DRILL_WATERPROOF))));
