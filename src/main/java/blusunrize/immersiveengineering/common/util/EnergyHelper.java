@@ -17,10 +17,15 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @author BluSunrize - 29.11.2016
@@ -136,6 +141,40 @@ public class EnergyHelper
 		return tile.getCapability(CapabilityEnergy.ENERGY, facing)
 				.map(storage -> storage.extractEnergy(energy, simulate))
 				.orElse(0);
+	}
+
+	/**
+	 * This method takes a list of IEnergyStorages and a total output amount. It sorts the storage by how much they
+	 * accept, distributes the energy evenly between them, starting with the lowest acceptance.
+	 * Overflow lands in the storage with the highest acceptance.
+	 *
+	 * @param storages a collection of outputs
+	 * @param amount   the total amount to be distributed
+	 * @param simulate true if no energy should be inserted into the outputs
+	 */
+	public static void distributeFlux(Collection<IEnergyStorage> storages, int amount, boolean simulate)
+	{
+		final int finalAmount = amount;
+		storages = storages.stream()
+				// Remove null storages
+				.filter(Objects::nonNull)
+				// Map to how much each storage can accept
+				.map(storage -> Pair.of(storage, storage.receiveEnergy(finalAmount, true)))
+				// Sort ascending by acceptance
+				.sorted(Comparator.comparingInt(Pair::getRight))
+				// Unmap them
+				.map(Pair::getLeft)
+				// Collect
+				.collect(Collectors.toList());
+
+		int remainingOutputs = storages.size();
+		for(IEnergyStorage storage : storages)
+		{
+			int possibleOutput = (int)Math.ceil(amount/(float)remainingOutputs);
+			int inserted = storage.receiveEnergy(possibleOutput, simulate);
+			amount -= inserted;
+			remainingOutputs--;
+		}
 	}
 
 	public interface IIEInternalFluxHandler extends IIEInternalFluxConnector, IFluxReceiver, IFluxProvider
