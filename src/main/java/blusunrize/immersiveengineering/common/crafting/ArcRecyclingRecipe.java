@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.util.Lazy;
 
 import java.util.AbstractCollection;
 import java.util.AbstractList;
@@ -26,6 +27,15 @@ import java.util.Map.Entry;
 public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 {
 	private Map<ItemStack, Double> outputs;
+	private final Lazy<NonNullList<ItemStack>> defaultOutputs = Lazy.of(() -> {
+		NonNullList<ItemStack> ret = NonNullList.create();
+		for(Entry<ItemStack, Double> e : outputs.entrySet())
+		{
+			double scaledOut = e.getValue();
+			addOutputToList(scaledOut, ret, e);
+		}
+		return ret;
+	});
 
 	public ArcRecyclingRecipe(ResourceLocation id, Map<ItemStack, Double> outputs, IngredientWithSize input, int time, int energyPerTick)
 	{
@@ -33,12 +43,6 @@ public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 				input, ItemStack.EMPTY, time, energyPerTick);
 		this.outputs = outputs;
 		this.setSpecialRecipeType("Recycling");
-		this.outputList = NonNullList.create();
-		for(Entry<ItemStack, Double> e : outputs.entrySet())
-		{
-			double scaledOut = e.getValue();
-			addOutputToList(scaledOut, outputList, e);
-		}
 	}
 
 	@Override
@@ -58,6 +62,12 @@ public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 			addOutputToList(scaledOut, outs, e);
 		}
 		return outs;
+	}
+
+	@Override
+	public NonNullList<ItemStack> getItemOutputs()
+	{
+		return defaultOutputs.get();
 	}
 
 	private void addOutputToList(double scaledOut, NonNullList<ItemStack> outs, Entry<ItemStack, Double> e)
