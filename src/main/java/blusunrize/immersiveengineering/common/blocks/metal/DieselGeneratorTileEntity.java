@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
 import blusunrize.immersiveengineering.common.IEConfig;
@@ -18,6 +19,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTil
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.blocks.generic.ScaffoldingBlock;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
+import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -26,7 +28,6 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -34,6 +35,8 @@ import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
@@ -42,8 +45,11 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGeneratorTileEntity>
 		implements IBlockBounds, ISoundTile
@@ -82,6 +88,19 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 		nbt.putInt("animation_fanFadeIn", animation_fanFadeIn);
 		nbt.putInt("animation_fanFadeOut", animation_fanFadeOut);
 	}
+
+
+	private final List<CapabilityReference<IEnergyStorage>> outputs = Arrays.asList(
+			CapabilityReference.forTileEntity(this,
+					() -> new DirectionalBlockPos(this.getBlockPosForPos(new BlockPos(0, 1, 4)).add(0, 1, 0), Direction.DOWN),
+					CapabilityEnergy.ENERGY),
+			CapabilityReference.forTileEntity(this,
+					() -> new DirectionalBlockPos(this.getBlockPosForPos(new BlockPos(1, 1, 4)).add(0, 1, 0), Direction.DOWN),
+					CapabilityEnergy.ENERGY),
+			CapabilityReference.forTileEntity(this,
+					() -> new DirectionalBlockPos(this.getBlockPosForPos(new BlockPos(2, 1, 4)).add(0, 1, 0), Direction.DOWN),
+					CapabilityEnergy.ENERGY)
+	);
 
 	@Override
 	public void tick()
@@ -134,18 +153,11 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 				{
 					int fluidConsumed = FluidAttributes.BUCKET_VOLUME/burnTime;
 					int output = IEConfig.MACHINES.dieselGen_output.get();
-					int connected = 0;
-					TileEntity[] receivers = new TileEntity[3];
-					for(int i = 0; i < 3; i++)
-					{
-						receivers[i] = getEnergyOutput(i==1?-1: i==2?1: 0);
-						if(receivers[i]!=null)
-						{
-							if(EnergyHelper.insertFlux(receivers[i], Direction.DOWN, 4096, true) > 0)
-								connected++;
-						}
-					}
-					if(connected > 0&&tanks[0].getFluidAmount() >= fluidConsumed)
+					List<IEnergyStorage> presentOutputs = outputs.stream()
+							.map(CapabilityReference::getNullable)
+							.filter(Objects::nonNull)
+							.collect(Collectors.toList());
+					if(!presentOutputs.isEmpty()&&tanks[0].getFluidAmount() >= fluidConsumed)
 					{
 						if(!active)
 						{
@@ -153,11 +165,8 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 							animation_fanFadeIn = 80;
 						}
 						tanks[0].drain(fluidConsumed, FluidAction.EXECUTE);
-						int splitOutput = output/connected;
-						int leftover = output%connected;
-						for(int i = 0; i < 3; i++)
-							if(receivers[i]!=null)
-								EnergyHelper.insertFlux(receivers[i], Direction.DOWN, splitOutput+(leftover-- > 0?1: 0), false);
+						// Sort receivers by lowest input
+						EnergyHelper.distributeFlux(presentOutputs, output, false);
 					}
 					else if(active)
 					{
@@ -178,17 +187,6 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 				this.markContainingBlockForUpdate(null);
 			}
 		}
-	}
-
-	//TODO move to CapRef's
-	@Nullable
-	TileEntity getEnergyOutput(int w)
-	{
-		BlockPos outPos = this.getBlockPosForPos(new BlockPos(1+w, 1, 4)).add(0, 1, 0);
-		TileEntity eTile = Utils.getExistingTileEntity(world, outPos);
-		if(EnergyHelper.isFluxReceiver(eTile, Direction.DOWN))
-			return eTile;
-		return null;
 	}
 
 	public static AxisAlignedBB getBlockBounds(BlockPos posInMultiblock)

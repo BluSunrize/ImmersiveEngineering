@@ -14,6 +14,9 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
+//TODO do not extend BlockPos, can cause strange bugs when used in world access
 public class DirectionalBlockPos extends BlockPos
 {
 	public Direction direction;
@@ -43,5 +46,12 @@ public class DirectionalBlockPos extends BlockPos
 	public TileEntity getTile(World world)
 	{
 		return world.getTileEntity(this);
+	}
+
+	@Nonnull
+	@Override
+	public BlockPos toImmutable()
+	{
+		return new BlockPos(this);
 	}
 }
