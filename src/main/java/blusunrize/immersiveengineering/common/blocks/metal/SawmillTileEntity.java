@@ -109,15 +109,14 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 	{
 	}
 
-	private CapabilityReference<IItemHandler> outputCap = CapabilityReference.forTileEntity(this, () -> {
+	private final CapabilityReference<IItemHandler> outputCap = CapabilityReference.forTileEntity(this, () -> {
 		Direction outDir = getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY();
 		return new DirectionalBlockPos(getBlockPosForPos(new BlockPos(4, 1, 1)).offset(outDir), outDir.getOpposite());
 	}, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 
-	private CapabilityReference<IItemHandler> secondaryOutputCap = CapabilityReference.forTileEntity(this, () -> {
-		Direction shiftDir = getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY();
-		return new DirectionalBlockPos(getBlockPosForPos(new BlockPos(3, 1, 2)).offset(shiftDir), getFacing().getOpposite());
-	}, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+	private final CapabilityReference<IItemHandler> secondaryOutputCap = CapabilityReference.forTileEntity(
+			this, this::getSecondaryOutputCapPos, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
+	);
 
 	@Override
 	public void tick()
@@ -429,9 +428,8 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 		output = Utils.insertStackIntoInventory(secondaryOutputCap, output, false);
 		if(!output.isEmpty())
 		{
-			Direction outDir = getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY();
-			BlockPos pos = getPos().offset(outDir, 1).offset(getFacing(), -2).down();
-			Utils.dropStackAtPos(world, pos, output, getFacing().getOpposite());
+			DirectionalBlockPos secondaryPos = getSecondaryOutputCapPos();
+			Utils.dropStackAtPos(world, secondaryPos, output, secondaryPos.direction.getOpposite());
 		}
 	}
 
@@ -570,6 +568,12 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 		if(new BlockPos(4, 1, 1).equals(posInMultiblock))
 			return new Direction[]{getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY()};
 		return new Direction[0];
+	}
+
+	private DirectionalBlockPos getSecondaryOutputCapPos()
+	{
+		Direction shiftDir = getFacing().getOpposite();
+		return new DirectionalBlockPos(getBlockPosForPos(new BlockPos(3, 0, 2)).offset(shiftDir), shiftDir.getOpposite());
 	}
 
 	public static class SawmillProcess
