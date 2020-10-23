@@ -68,7 +68,7 @@ public class HammerItem extends IEBaseItem implements ITool
 	@Override
 	public int getMaxDamage(ItemStack stack)
 	{
-		return IEServerConfig.TOOLS.hammerDurabiliy.get();
+		return IEServerConfig.TOOLS.hammerDurabiliy.getOrDefault();
 	}
 
 	@Override

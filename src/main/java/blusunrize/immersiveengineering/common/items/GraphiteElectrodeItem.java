@@ -49,7 +49,7 @@ public class GraphiteElectrodeItem extends IEBaseItem
 	@Override
 	public int getMaxDamage(ItemStack stack)
 	{
-		return IEServerConfig.MACHINES.arcfurnace_electrodeDamage.get();
+		return IEServerConfig.MACHINES.arcfurnace_electrodeDamage.getOrDefault();
 	}
 
 	@Override
