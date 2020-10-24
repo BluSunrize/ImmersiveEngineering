@@ -9,18 +9,19 @@
 
 package blusunrize.immersiveengineering.common.crafting.serializers;
 
+import blusunrize.immersiveengineering.api.crafting.IIEBufferRecipeSerializer;
+import blusunrize.immersiveengineering.api.utils.IEPacketBuffer;
 import blusunrize.immersiveengineering.common.crafting.RGBColourationRecipe;
 import com.google.gson.JsonObject;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nonnull;
 
-public class RGBRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<RGBColourationRecipe>
+public class RGBRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IIEBufferRecipeSerializer<RGBColourationRecipe>
 {
 	@Nonnull
 	@Override
@@ -33,7 +34,7 @@ public class RGBRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>
 
 	@Nonnull
 	@Override
-	public RGBColourationRecipe read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer)
+	public RGBColourationRecipe read(@Nonnull ResourceLocation recipeId, @Nonnull IEPacketBuffer buffer)
 	{
 		Ingredient target = Ingredient.read(buffer);
 		String key = buffer.readString(512);
@@ -41,7 +42,7 @@ public class RGBRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>
 	}
 
 	@Override
-	public void write(@Nonnull PacketBuffer buffer, @Nonnull RGBColourationRecipe recipe)
+	public void write(@Nonnull IEPacketBuffer buffer, @Nonnull RGBColourationRecipe recipe)
 	{
 		CraftingHelper.write(buffer, recipe.getTarget());
 		buffer.writeString(recipe.getColorKey());

@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.crafting.serializers;
 
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
+import blusunrize.immersiveengineering.api.utils.IEPacketBuffer;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.common.crafting.GeneratedListRecipe;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
@@ -19,7 +20,6 @@ import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.RegistryObject;
 
@@ -44,7 +44,7 @@ public class GeneratedListSerializer extends IERecipeSerializer<GeneratedListRec
 
 	@Nullable
 	@Override
-	public GeneratedListRecipe read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer)
+	public GeneratedListRecipe read(@Nonnull ResourceLocation recipeId, @Nonnull IEPacketBuffer buffer)
 	{
 		int length = buffer.readVarInt();
 		List<IESerializableRecipe> subRecipes = new ArrayList<>(length);
@@ -65,7 +65,7 @@ public class GeneratedListSerializer extends IERecipeSerializer<GeneratedListRec
 	}
 
 	@Override
-	public void write(@Nonnull PacketBuffer buffer, @Nonnull GeneratedListRecipe recipe)
+	public void write(@Nonnull IEPacketBuffer buffer, @Nonnull GeneratedListRecipe recipe)
 	{
 		List<? extends IESerializableRecipe> recipes = recipe.getSubRecipes();
 		buffer.writeVarInt(recipes.size());

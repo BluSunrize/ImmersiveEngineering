@@ -1,5 +1,5 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "type": "immersiveengineering:compressed_shaped",
   "pattern": [
     " I ",
     "PGP",
@@ -13,7 +13,7 @@
       "tag": "forge:dusts/glowstone"
     },
     "P": {
-      "item": "minecraft:glass_pane"
+      "tag": "forge:glass_panes"
     }
   },
   "result": {

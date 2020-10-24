@@ -11,13 +11,14 @@ package blusunrize.immersiveengineering.common.crafting.serializers;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
+import blusunrize.immersiveengineering.api.utils.IEPacketBuffer;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class BlastFurnaceRecipeSerializer extends IERecipeSerializer<BlastFurnaceRecipe>
@@ -42,11 +43,11 @@ public class BlastFurnaceRecipeSerializer extends IERecipeSerializer<BlastFurnac
 
 	@Nullable
 	@Override
-	public BlastFurnaceRecipe read(ResourceLocation recipeId, PacketBuffer buffer)
+	public BlastFurnaceRecipe read(ResourceLocation recipeId, @Nonnull IEPacketBuffer buffer)
 	{
 		ItemStack output = buffer.readItemStack();
 		IngredientWithSize input = IngredientWithSize.read(buffer);
-		int time = buffer.readInt();
+		int time = buffer.readVarInt();
 		ItemStack slag = ItemStack.EMPTY;
 		if(buffer.readBoolean())
 			slag = buffer.readItemStack();
@@ -54,11 +55,11 @@ public class BlastFurnaceRecipeSerializer extends IERecipeSerializer<BlastFurnac
 	}
 
 	@Override
-	public void write(PacketBuffer buffer, BlastFurnaceRecipe recipe)
+	public void write(@Nonnull IEPacketBuffer buffer, BlastFurnaceRecipe recipe)
 	{
 		buffer.writeItemStack(recipe.output);
 		recipe.input.write(buffer);
-		buffer.writeInt(recipe.time);
+		buffer.writeVarInt(recipe.time);
 		buffer.writeBoolean(!recipe.slag.isEmpty());
 		if(!recipe.slag.isEmpty())
 			buffer.writeItemStack(recipe.slag);

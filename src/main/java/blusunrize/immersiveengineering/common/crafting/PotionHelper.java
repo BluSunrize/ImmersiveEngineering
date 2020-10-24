@@ -56,6 +56,10 @@ public class PotionHelper
 		}
 	}
 
+	public static Potion getPotionFromStack(FluidStack stack) {
+		return PotionUtils.getPotionTypeFromNBT(stack.getTag());
+	}
+
 	public static void applyToAllPotionRecipes(PotionRecipeProcessor out)
 	{
 		// Vanilla

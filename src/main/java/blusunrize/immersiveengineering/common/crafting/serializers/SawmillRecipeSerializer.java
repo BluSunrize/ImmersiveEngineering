@@ -10,14 +10,13 @@ package blusunrize.immersiveengineering.common.crafting.serializers;
 
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.SawmillRecipe;
+import blusunrize.immersiveengineering.api.utils.IEPacketBuffer;
 import blusunrize.immersiveengineering.common.IEConfig;
-import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.crafting.CraftingHelper;
@@ -63,33 +62,33 @@ public class SawmillRecipeSerializer extends IERecipeSerializer<SawmillRecipe>
 
 	@Nullable
 	@Override
-	public SawmillRecipe read(@Nonnull ResourceLocation recipeId, PacketBuffer buffer)
+	public SawmillRecipe read(@Nonnull ResourceLocation recipeId, @Nonnull IEPacketBuffer buffer)
 	{
 		ItemStack output = buffer.readItemStack();
 		ItemStack stripped = buffer.readItemStack();
 		Ingredient input = Ingredient.read(buffer);
-		int energy = buffer.readInt();
+		int energy = buffer.readVarInt();
 		SawmillRecipe recipe = new SawmillRecipe(recipeId, output, stripped, input, energy);
-		int secondaryCount = buffer.readInt();
+		int secondaryCount = buffer.readVarInt();
 		for(int i = 0; i < secondaryCount; i++)
 			recipe.addToSecondaryStripping(buffer.readItemStack());
-		secondaryCount = buffer.readInt();
+		secondaryCount = buffer.readVarInt();
 		for(int i = 0; i < secondaryCount; i++)
 			recipe.addToSecondaryOutput(buffer.readItemStack());
 		return recipe;
 	}
 
 	@Override
-	public void write(PacketBuffer buffer, SawmillRecipe recipe)
+	public void write(@Nonnull IEPacketBuffer buffer, SawmillRecipe recipe)
 	{
 		buffer.writeItemStack(recipe.output);
 		buffer.writeItemStack(recipe.stripped);
 		recipe.input.write(buffer);
-		buffer.writeInt(recipe.getTotalProcessEnergy());
-		buffer.writeInt(recipe.secondaryStripping.size());
+		buffer.writeVarInt(recipe.getTotalProcessEnergy());
+		buffer.writeVarInt(recipe.secondaryStripping.size());
 		for(ItemStack secondaryOutput : recipe.secondaryStripping)
 			buffer.writeItemStack(secondaryOutput);
-		buffer.writeInt(recipe.secondaryOutputs.size());
+		buffer.writeVarInt(recipe.secondaryOutputs.size());
 		for(ItemStack secondaryOutput : recipe.secondaryOutputs)
 			buffer.writeItemStack(secondaryOutput);
 	}

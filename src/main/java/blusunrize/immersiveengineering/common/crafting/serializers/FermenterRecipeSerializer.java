@@ -12,15 +12,16 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.FermenterRecipe;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
+import blusunrize.immersiveengineering.api.utils.IEPacketBuffer;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class FermenterRecipeSerializer extends IERecipeSerializer<FermenterRecipe>
@@ -49,21 +50,21 @@ public class FermenterRecipeSerializer extends IERecipeSerializer<FermenterRecip
 
 	@Nullable
 	@Override
-	public FermenterRecipe read(ResourceLocation recipeId, PacketBuffer buffer)
+	public FermenterRecipe read(ResourceLocation recipeId, @Nonnull IEPacketBuffer buffer)
 	{
 		FluidStack fluidOutput = buffer.readFluidStack();
 		ItemStack itemOutput = buffer.readItemStack();
 		IngredientWithSize input = IngredientWithSize.read(buffer);
-		int energy = buffer.readInt();
+		int energy = buffer.readVarInt();
 		return new FermenterRecipe(recipeId, fluidOutput, itemOutput, input, energy);
 	}
 
 	@Override
-	public void write(PacketBuffer buffer, FermenterRecipe recipe)
+	public void write(@Nonnull IEPacketBuffer buffer, FermenterRecipe recipe)
 	{
 		buffer.writeFluidStack(recipe.fluidOutput);
 		buffer.writeItemStack(recipe.itemOutput);
 		recipe.input.write(buffer);
-		buffer.writeInt(recipe.getTotalProcessEnergy());
+		buffer.writeVarInt(recipe.getTotalProcessEnergy());
 	}
 }

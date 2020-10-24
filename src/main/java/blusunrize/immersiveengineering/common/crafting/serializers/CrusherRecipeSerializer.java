@@ -11,13 +11,13 @@ package blusunrize.immersiveengineering.common.crafting.serializers;
 import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.StackWithChance;
+import blusunrize.immersiveengineering.api.utils.IEPacketBuffer;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.crafting.CraftingHelper;
@@ -56,12 +56,12 @@ public class CrusherRecipeSerializer extends IERecipeSerializer<CrusherRecipe>
 
 	@Nullable
 	@Override
-	public CrusherRecipe read(@Nonnull ResourceLocation recipeId, PacketBuffer buffer)
+	public CrusherRecipe read(@Nonnull ResourceLocation recipeId, @Nonnull IEPacketBuffer buffer)
 	{
 		ItemStack output = buffer.readItemStack();
 		Ingredient input = Ingredient.read(buffer);
-		int energy = buffer.readInt();
-		int secondaryCount = buffer.readInt();
+		int energy = buffer.readVarInt();
+		int secondaryCount = buffer.readVarInt();
 		CrusherRecipe recipe = new CrusherRecipe(recipeId, output, input, energy);
 		for(int i = 0; i < secondaryCount; i++)
 			recipe.addToSecondaryOutput(StackWithChance.read(buffer));
@@ -69,12 +69,12 @@ public class CrusherRecipeSerializer extends IERecipeSerializer<CrusherRecipe>
 	}
 
 	@Override
-	public void write(PacketBuffer buffer, CrusherRecipe recipe)
+	public void write(@Nonnull IEPacketBuffer buffer, CrusherRecipe recipe)
 	{
 		buffer.writeItemStack(recipe.output);
 		recipe.input.write(buffer);
-		buffer.writeInt(recipe.getTotalProcessEnergy());
-		buffer.writeInt(recipe.secondaryOutputs.size());
+		buffer.writeVarInt(recipe.getTotalProcessEnergy());
+		buffer.writeVarInt(recipe.secondaryOutputs.size());
 		for(StackWithChance secondaryOutput : recipe.secondaryOutputs)
 			secondaryOutput.write(buffer);
 	}

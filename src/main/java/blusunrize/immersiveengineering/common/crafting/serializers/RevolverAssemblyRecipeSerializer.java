@@ -10,19 +10,20 @@
 package blusunrize.immersiveengineering.common.crafting.serializers;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.crafting.IIEBufferRecipeSerializer;
+import blusunrize.immersiveengineering.api.utils.IEPacketBuffer;
 import blusunrize.immersiveengineering.common.crafting.RevolverAssemblyRecipe;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.ShapedRecipe;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nonnull;
 
-public class RevolverAssemblyRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<RevolverAssemblyRecipe>
+public class RevolverAssemblyRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IIEBufferRecipeSerializer<RevolverAssemblyRecipe>
 {
 	public static final IRecipeSerializer<RevolverAssemblyRecipe> INSTANCE = IRecipeSerializer.register(
 			ImmersiveEngineering.MODID+":revolver_assembly", new RevolverAssemblyRecipeSerializer()
@@ -53,7 +54,7 @@ public class RevolverAssemblyRecipeSerializer extends ForgeRegistryEntry<IRecipe
 
 	@Nonnull
 	@Override
-	public RevolverAssemblyRecipe read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer)
+	public RevolverAssemblyRecipe read(@Nonnull ResourceLocation recipeId, @Nonnull IEPacketBuffer buffer)
 	{
 		ShapedRecipe basic = IRecipeSerializer.CRAFTING_SHAPED.read(recipeId, buffer);
 		RevolverAssemblyRecipe recipe = new RevolverAssemblyRecipe(recipeId, basic.getGroup(), basic.getWidth(), basic.getHeight(),
@@ -74,7 +75,7 @@ public class RevolverAssemblyRecipeSerializer extends ForgeRegistryEntry<IRecipe
 	}
 
 	@Override
-	public void write(@Nonnull PacketBuffer buffer, @Nonnull RevolverAssemblyRecipe recipe)
+	public void write(@Nonnull IEPacketBuffer buffer, @Nonnull RevolverAssemblyRecipe recipe)
 	{
 		IRecipeSerializer.CRAFTING_SHAPED.write(buffer, recipe);
 		buffer.writeBoolean(recipe.isQuarterTurn());

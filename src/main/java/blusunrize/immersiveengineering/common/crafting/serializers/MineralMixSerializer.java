@@ -11,19 +11,20 @@ package blusunrize.immersiveengineering.common.crafting.serializers;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.StackWithChance;
 import blusunrize.immersiveengineering.api.excavator.MineralMix;
+import blusunrize.immersiveengineering.api.utils.IEPacketBuffer;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,15 +72,15 @@ public class MineralMixSerializer extends IERecipeSerializer<MineralMix>
 
 	@Nullable
 	@Override
-	public MineralMix read(ResourceLocation recipeId, PacketBuffer buffer)
+	public MineralMix read(ResourceLocation recipeId, @Nonnull IEPacketBuffer buffer)
 	{
-		int count = buffer.readInt();
+		int count = buffer.readVarInt();
 		StackWithChance[] outputs = new StackWithChance[count];
 		for(int i = 0; i < count; i++)
 			outputs[i] = StackWithChance.read(buffer);
-		int weight = buffer.readInt();
+		int weight = buffer.readVarInt();
 		float failChance = buffer.readFloat();
-		count = buffer.readInt();
+		count = buffer.readVarInt();
 		DimensionType[] dimensions = new DimensionType[count];
 		for(int i = 0; i < count; i++)
 			dimensions[i] = DimensionType.byName(buffer.readResourceLocation());
@@ -88,14 +89,14 @@ public class MineralMixSerializer extends IERecipeSerializer<MineralMix>
 	}
 
 	@Override
-	public void write(PacketBuffer buffer, MineralMix recipe)
+	public void write(@Nonnull IEPacketBuffer buffer, MineralMix recipe)
 	{
-		buffer.writeInt(recipe.outputs.length);
+		buffer.writeVarInt(recipe.outputs.length);
 		for(StackWithChance secondaryOutput : recipe.outputs)
 			secondaryOutput.write(buffer);
-		buffer.writeInt(recipe.weight);
+		buffer.writeVarInt(recipe.weight);
 		buffer.writeFloat(recipe.failChance);
-		buffer.writeInt(recipe.dimensions.size());
+		buffer.writeVarInt(recipe.dimensions.size());
 		for(DimensionType dimension : recipe.dimensions)
 			buffer.writeResourceLocation(DimensionType.getKey(dimension));
 		buffer.writeResourceLocation(ForgeRegistries.BLOCKS.getKey(recipe.background));

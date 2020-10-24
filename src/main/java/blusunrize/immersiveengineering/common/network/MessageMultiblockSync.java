@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
+import blusunrize.immersiveengineering.api.utils.IEPacketBuffer;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.StaticTemplateManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
@@ -42,13 +43,13 @@ public class MessageMultiblockSync implements IMessage
 
 	public MessageMultiblockSync(PacketBuffer buf)
 	{
-		templates = PacketUtils.readList(buf, SyncedTemplate::new);
+		templates = IEPacketBuffer.wrap(buf).readList(SyncedTemplate::new);
 	}
 
 	@Override
 	public void toBytes(PacketBuffer buf)
 	{
-		PacketUtils.writeList(buf, templates, SyncedTemplate::writeTo);
+		IEPacketBuffer.wrap(buf).writeList(templates, SyncedTemplate::writeTo);
 	}
 
 	@Override
@@ -88,18 +89,18 @@ public class MessageMultiblockSync implements IMessage
 			this.name = name;
 		}
 
-		public SyncedTemplate(PacketBuffer buffer)
+		public SyncedTemplate(IEPacketBuffer buffer)
 		{
 			this.size = buffer.readBlockPos();
 			this.name = buffer.readResourceLocation();
-			this.parts = PacketUtils.readList(buffer, SyncedTemplate::readPart);
+			this.parts = buffer.readList(SyncedTemplate::readPart);
 		}
 
-		public void writeTo(PacketBuffer buffer)
+		public void writeTo(IEPacketBuffer buffer)
 		{
 			buffer.writeBlockPos(size);
 			buffer.writeResourceLocation(name);
-			PacketUtils.writeList(buffer, parts, SyncedTemplate::writePart);
+			buffer.writeList(parts, SyncedTemplate::writePart);
 		}
 
 		private static BlockInfo readPart(PacketBuffer buffer)

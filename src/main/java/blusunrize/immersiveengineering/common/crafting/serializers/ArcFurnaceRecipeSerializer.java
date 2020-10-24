@@ -11,17 +11,18 @@ package blusunrize.immersiveengineering.common.crafting.serializers;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
+import blusunrize.immersiveengineering.api.utils.IEPacketBuffer;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.crafting.ArcRecyclingRecipe;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
@@ -63,20 +64,20 @@ public class ArcFurnaceRecipeSerializer extends IERecipeSerializer<ArcFurnaceRec
 
 	@Nullable
 	@Override
-	public ArcFurnaceRecipe read(ResourceLocation recipeId, PacketBuffer buffer)
+	public ArcFurnaceRecipe read(ResourceLocation recipeId, @Nonnull IEPacketBuffer buffer)
 	{
-		int outputCount = buffer.readInt();
+		int outputCount = buffer.readVarInt();
 		NonNullList<ItemStack> outputs = NonNullList.withSize(outputCount, ItemStack.EMPTY);
 		for(int i = 0; i < outputCount; i++)
 			outputs.set(i, buffer.readItemStack());
 		IngredientWithSize input = IngredientWithSize.read(buffer);
-		int additiveCount = buffer.readInt();
+		int additiveCount = buffer.readVarInt();
 		IngredientWithSize[] additives = new IngredientWithSize[additiveCount];
 		for(int i = 0; i < additiveCount; i++)
 			additives[i] = IngredientWithSize.read(buffer);
 		ItemStack slag = buffer.readItemStack();
-		int time = buffer.readInt();
-		int energy = buffer.readInt();
+		int time = buffer.readVarInt();
+		int energy = buffer.readVarInt();
 		if(!buffer.readBoolean())
 			return new ArcFurnaceRecipe(recipeId, outputs, input, slag, time, energy, additives);
 		else
@@ -84,24 +85,24 @@ public class ArcFurnaceRecipeSerializer extends IERecipeSerializer<ArcFurnaceRec
 			final int numOutputs = buffer.readVarInt();
 			Map<ItemStack, Double> recyclingOutputs = new HashMap<>(numOutputs);
 			for(int i = 0; i < numOutputs; ++i)
-				recyclingOutputs.put(buffer.readItemStack(), buffer.readDouble());
+				recyclingOutputs.put(buffer.readItemStack(), buffer.readVarInt()/100D);
 			return new ArcRecyclingRecipe(recipeId, recyclingOutputs, input, time, energy);
 		}
 	}
 
 	@Override
-	public void write(PacketBuffer buffer, ArcFurnaceRecipe recipe)
+	public void write(@Nonnull IEPacketBuffer buffer, ArcFurnaceRecipe recipe)
 	{
-		buffer.writeInt(recipe.output.size());
+		buffer.writeVarInt(recipe.output.size());
 		for(ItemStack stack : recipe.output)
 			buffer.writeItemStack(stack);
 		recipe.input.write(buffer);
-		buffer.writeInt(recipe.additives.length);
+		buffer.writeVarInt(recipe.additives.length);
 		for(IngredientWithSize ingr : recipe.additives)
 			ingr.write(buffer);
 		buffer.writeItemStack(recipe.slag);
-		buffer.writeInt(recipe.getTotalProcessTime());
-		buffer.writeInt(recipe.getTotalProcessEnergy());
+		buffer.writeVarInt(recipe.getTotalProcessTime());
+		buffer.writeVarInt(recipe.getTotalProcessEnergy());
 		buffer.writeBoolean(recipe instanceof ArcRecyclingRecipe);
 		if(recipe instanceof ArcRecyclingRecipe)
 		{
@@ -110,7 +111,7 @@ public class ArcFurnaceRecipeSerializer extends IERecipeSerializer<ArcFurnaceRec
 			for(Entry<ItemStack, Double> e : outputs.entrySet())
 			{
 				buffer.writeItemStack(e.getKey());
-				buffer.writeDouble(e.getValue());
+				buffer.writeVarInt((int)(100*e.getValue()));
 			}
 		}
 	}
