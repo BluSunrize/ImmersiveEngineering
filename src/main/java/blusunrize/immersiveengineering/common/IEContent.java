@@ -741,7 +741,7 @@ public class IEContent
 
 		/*ASSEMBLER RECIPE ADAPTERS*/
 		//Fluid Ingredients
-		AssemblerHandler.registerSpecialQueryConverters((o) ->
+		AssemblerHandler.registerSpecialIngredientConverter((o) ->
 		{
 			if(o instanceof IngredientFluidStack)
 				return new RecipeQuery(((IngredientFluidStack)o).getFluidTagInput(), ((IngredientFluidStack)o).getFluidTagInput().getAmount());
