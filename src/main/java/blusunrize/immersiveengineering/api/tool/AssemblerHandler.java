@@ -12,18 +12,16 @@ import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.common.util.FakePlayerUtil;
-import blusunrize.immersiveengineering.common.util.Utils.InventoryCraftingFalse;
 import com.google.common.base.Preconditions;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapelessRecipe;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.util.RecipeMatcher;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
@@ -34,8 +32,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.function.Function;
-
-import static blusunrize.immersiveengineering.common.data.IEDataGenerator.rl;
+import java.util.function.Predicate;
 
 /**
  * @author BluSunrize - 01.09.2016
@@ -52,37 +49,41 @@ public class AssemblerHandler
 		public RecipeQuery[] getQueriedInputs(IRecipe<CraftingInventory> recipe, NonNullList<ItemStack> input, World world)
 		{
 			NonNullList<Ingredient> ingred = recipe.getIngredients();
-			CraftingInventory verificationInv = InventoryCraftingFalse.createFilledCraftingInventory(3, 3, input);
-			ForgeHooks.setCraftingPlayer(FakePlayerUtil.getFakePlayer(world));
 			// Check that the ingredients roughly match what the recipe actually requires.
 			// This is necessary to prevent infinite crafting for recipes like FireworkRocketRecipe which don't return
 			// meaningful values in getIngredients.
-			NonNullList<Ingredient> nonEmptyIngredients = NonNullList.create();
+			NonNullList<Predicate<ItemStack>> ingredientsForMatching = NonNullList.create();
+			List<ItemStack> inputList = input.subList(0, input.size()-1);
 			for(Ingredient i : ingred)
-				if(i.getMatchingStacks().length > 0)
-					nonEmptyIngredients.add(i);
-			ShapelessRecipe tempRecipe = new ShapelessRecipe(
-					rl("temp"), "temp", new ItemStack(Items.PUMPKIN), nonEmptyIngredients
-			);
-			boolean patternMatchesIngredients = tempRecipe.matches(verificationInv, world);
+				if(!i.hasNoMatchingItems())
+					ingredientsForMatching.add(i);
+			final int numNonEmpty = ingredientsForMatching.size();
+			while(ingredientsForMatching.size() < inputList.size())
+				ingredientsForMatching.add(ItemStack::isEmpty);
+			ForgeHooks.setCraftingPlayer(FakePlayerUtil.getFakePlayer(world));
+			int[] ingredientAssignment = RecipeMatcher.findMatches(inputList, ingredientsForMatching);
 			ForgeHooks.setCraftingPlayer(null);
-			List<RecipeQuery> query = new ArrayList<>();
-			if(patternMatchesIngredients)
-			{
+
+			// - 1: Input list contains the output slot
+			RecipeQuery[] query = new RecipeQuery[input.size()-1];
+			if(ingredientAssignment!=null)
 				// If the ingredients provided by the recipe are plausible request those
-				for(Ingredient in : ingred)
-					if(!in.hasNoMatchingItems())
-						query.add(AssemblerHandler.createQueryFromIngredient(in));
-			}
+				// Try to request each ingredient at the index where it is in the input pattern, this is needed for
+				// some CraftTweaker recipes
+				for(int stackIndex = 0; stackIndex < ingredientAssignment.length; stackIndex++)
+				{
+					int ingredIndex = ingredientAssignment[stackIndex];
+					if(ingredIndex < numNonEmpty)
+						query[stackIndex] = AssemblerHandler.createQueryFromIngredient(
+								(Ingredient)ingredientsForMatching.get(ingredIndex)
+						);
+				}
 			else
-			{
 				// Otherwise request the exact stacks used in the input
-				// - 1: Input list contains the output slot
-				for(int i = 0; i < input.size()-1; i++)
+				for(int i = 0; i < query.length; i++)
 					if(!input.get(i).isEmpty())
-						query.add(AssemblerHandler.createQueryFromItemStack(input.get(i)));
-			}
-			return query.toArray(new RecipeQuery[0]);
+						query[i] = AssemblerHandler.createQueryFromItemStack(input.get(i));
+			return query;
 		}
 	};
 
@@ -149,6 +150,7 @@ public class AssemblerHandler
 	}
 
 	@Deprecated
+	@Nullable
 	public static RecipeQuery createQuery(Object o)
 	{
 		if(o==null)
@@ -174,6 +176,7 @@ public class AssemblerHandler
 		return null;
 	}
 
+	@Nullable
 	public static RecipeQuery createQueryFromIngredient(Ingredient ingr)
 	{
 		RecipeQuery special = fromFunctions(ingr, specialIngredientConverters);
@@ -181,11 +184,17 @@ public class AssemblerHandler
 			special = fromFunctions(ingr, specialQueryConverters);
 		if(special!=null)
 			return special;
-		return RecipeQuery.create(ingr, 1);
+		if(ingr.hasNoMatchingItems())
+			return null;
+		else
+			return RecipeQuery.create(ingr, 1);
 	}
 
+	@Nullable
 	public static RecipeQuery createQueryFromItemStack(ItemStack stack)
 	{
+		if(stack.isEmpty())
+			return null;
 		RecipeQuery special = fromFunctions(stack, specialItemStackConverters);
 		if(special==null)
 			special = fromFunctions(stack, specialQueryConverters);
