@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
-import blusunrize.immersiveengineering.common.crafting.serializers.DamageToolRecipeSerializer;
+import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
@@ -95,7 +95,7 @@ public class DamageToolRecipe extends ShapelessRecipe
 	@Override
 	public IRecipeSerializer<?> getSerializer()
 	{
-		return DamageToolRecipeSerializer.INSTANCE;
+		return RecipeSerializers.DAMAGE_TOOL_SERIALIZER.get();
 	}
 
 	public Ingredient getTool()

@@ -9,7 +9,6 @@
 
 package blusunrize.immersiveengineering.common.crafting.serializers;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.crafting.DamageToolRecipe;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -27,10 +26,6 @@ import javax.annotation.Nonnull;
 
 public class DamageToolRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<DamageToolRecipe>
 {
-	public static final IRecipeSerializer<DamageToolRecipe> INSTANCE = IRecipeSerializer.register(
-			ImmersiveEngineering.MODID+":damage_tool", new DamageToolRecipeSerializer()
-	);
-
 	@Nonnull
 	@Override
 	public DamageToolRecipe read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json)
