@@ -19,8 +19,9 @@ import com.mojang.datafixers.util.Either;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.tags.FluidTags;
-import net.minecraft.tags.ITag.INamedTag;
+import net.minecraft.tags.ITag;
+import net.minecraft.tags.ITagCollection;
+import net.minecraft.tags.TagCollectionManager;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
@@ -36,25 +37,25 @@ import java.util.stream.Collectors;
 public class FluidTagInput implements Predicate<FluidStack>
 {
 	// Generally left on the server, right on the client
-	protected final Either<INamedTag<Fluid>, List<ResourceLocation>> fluidTag;
+	protected final Either<ITag<Fluid>, List<ResourceLocation>> fluidTag;
 	protected final int amount;
 	protected final CompoundNBT nbtTag;
 
-	public FluidTagInput(Either<INamedTag<Fluid>, List<ResourceLocation>> matching, int amount, CompoundNBT nbtTag)
+	public FluidTagInput(Either<ITag<Fluid>, List<ResourceLocation>> matching, int amount, CompoundNBT nbtTag)
 	{
 		this.fluidTag = matching;
 		this.amount = amount;
 		this.nbtTag = nbtTag;
 	}
 
-	public FluidTagInput(INamedTag<Fluid> fluidTag, int amount, CompoundNBT nbtTag)
+	public FluidTagInput(ITag<Fluid> fluidTag, int amount, CompoundNBT nbtTag)
 	{
 		this(Either.left(fluidTag), amount, nbtTag);
 	}
 
 	public FluidTagInput(ResourceLocation resourceLocation, int amount, CompoundNBT nbtTag)
 	{
-		this(FluidTags.makeWrapperTag(resourceLocation.toString()), amount, nbtTag);
+		this(getTagCollection().get(resourceLocation), amount, nbtTag);
 	}
 
 	public FluidTagInput(ResourceLocation resourceLocation, int amount)
@@ -119,7 +120,9 @@ public class FluidTagInput implements Predicate<FluidStack>
 	public JsonElement serialize()
 	{
 		JsonObject jsonObject = new JsonObject();
-		jsonObject.addProperty("tag", this.fluidTag.orThrow().getName().toString());
+		ITag<Fluid> unnamedTag = this.fluidTag.orThrow();
+		ResourceLocation name = getTagCollection().getValidatedIdFromTag(unnamedTag);
+		jsonObject.addProperty("tag", name.toString());
 		jsonObject.addProperty("amount", this.amount);
 		if(this.nbtTag!=null)
 			jsonObject.addProperty("nbt", this.nbtTag.toString());
@@ -161,5 +164,10 @@ public class FluidTagInput implements Predicate<FluidStack>
 		out.writeBoolean(this.nbtTag!=null);
 		if(this.nbtTag!=null)
 			out.writeCompoundTag(this.nbtTag);
+	}
+
+	private static ITagCollection<Fluid> getTagCollection()
+	{
+		return TagCollectionManager.getManager().getFluidTags();
 	}
 }
