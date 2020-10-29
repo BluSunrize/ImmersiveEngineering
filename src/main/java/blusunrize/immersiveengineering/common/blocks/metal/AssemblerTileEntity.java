@@ -9,11 +9,9 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
-import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.tool.AssemblerHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttachable;
-import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
@@ -292,36 +290,18 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 		for(int i = 0; i < queries.length; i++)
 		{
 			AssemblerHandler.RecipeQuery recipeQuery = queries[i];
-			if(recipeQuery!=null&&recipeQuery.query!=null)
+			if(recipeQuery!=null)
 			{
 				int querySize = recipeQuery.querySize;
-				if(recipeQuery.query instanceof FluidStack)
+				if(recipeQuery.isFluid())
 				{
-					FluidStack fs = (FluidStack)recipeQuery.query;
 					boolean hasFluid = false;
 					for(FluidTank tank : tanks)
-						if(tank.getFluid().containsFluid(fs))
+						if(recipeQuery.matchesFluid(tank.getFluid()))
 						{
 							hasFluid = true;
 							if(doConsume)
-								tank.drain(fs.getAmount(), FluidAction.EXECUTE);
-							break;
-						}
-					if(hasFluid)
-						continue;
-					else
-						querySize = 1;
-				}
-				if(recipeQuery.query instanceof FluidTagInput)
-				{
-					FluidTagInput fti = (FluidTagInput)recipeQuery.query;
-					boolean hasFluid = false;
-					for(FluidTank tank : tanks)
-						if(fti.test(tank.getFluid()))
-						{
-							hasFluid = true;
-							if(doConsume)
-								tank.drain(fti.getAmount(), FluidAction.EXECUTE);
+								tank.drain(recipeQuery.getFluidSize(), FluidAction.EXECUTE);
 							break;
 						}
 					if(hasFluid)
@@ -333,7 +313,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 				while(it.hasNext())
 				{
 					ItemStack next = it.next();
-					if(!next.isEmpty()&&ItemUtils.stackMatchesObject(next, recipeQuery.query, true))
+					if(!next.isEmpty()&&recipeQuery.matchesIgnoringSize(next))
 					{
 						int taken = Math.min(querySize, next.getCount());
 						ItemStack forGrid = next.split(taken);

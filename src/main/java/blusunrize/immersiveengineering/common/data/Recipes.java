@@ -194,7 +194,7 @@ public class Recipes extends RecipeProvider
 				.build(out, ImmersiveEngineering.MODID+":jerrycan_refill");
 		CustomRecipeBuilder.customRecipe(RecipeSerializers.REVOLVER_CYCLE_SERIALIZER.get())
 				.build(out, ImmersiveEngineering.MODID+":revolver_cycle");
-		CustomRecipeBuilder.customRecipe(RecipeSerializers.IE_REPAIR.get())
+		CustomRecipeBuilder.customRecipe(RecipeSerializers.IE_REPAIR_SERIALIZER.get())
 				.build(out, ImmersiveEngineering.MODID+":ie_item_repair");
 		GeneratedListRecipeBuilder.build(out, rl("arc_recycling_list"));
 		GeneratedListRecipeBuilder.build(out, rl("mixer_potion_list"));

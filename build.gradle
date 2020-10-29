@@ -51,6 +51,16 @@ processResources {
         exclude 'META-INF/mods.toml'
     }
 }
+
+// When using "Run using IntelliJ" (the only option with well-working hotswapping) the used "resources" directory is
+// different from the one used by gradle/the processResources task
+task copyResourcesForIntelliJ(type: Copy) {
+    from processResources.destinationDir
+    into "$projectDir/out/production/resources"
+}
+
+processResources.finalizedBy copyResourcesForIntelliJ
+
 minecraft {
     // The mappings can be changed at any time, and must be in the following format.
     // snapshot_YYYYMMDD   Snapshot are built nightly.

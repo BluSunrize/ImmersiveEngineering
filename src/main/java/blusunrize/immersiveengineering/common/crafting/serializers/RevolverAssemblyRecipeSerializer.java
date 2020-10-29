@@ -9,7 +9,6 @@
 
 package blusunrize.immersiveengineering.common.crafting.serializers;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.crafting.RevolverAssemblyRecipe;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -24,10 +23,6 @@ import javax.annotation.Nonnull;
 
 public class RevolverAssemblyRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<RevolverAssemblyRecipe>
 {
-	public static final IRecipeSerializer<RevolverAssemblyRecipe> INSTANCE = IRecipeSerializer.register(
-			ImmersiveEngineering.MODID+":revolver_assembly", new RevolverAssemblyRecipeSerializer()
-	);
-
 	@Nonnull
 	@Override
 	public RevolverAssemblyRecipe read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json)
