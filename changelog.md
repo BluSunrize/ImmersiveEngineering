@@ -6,6 +6,7 @@
 - Added Basalt and Blackstone to the blocks that the survey tool works on (BluSunrize)
 - Fixed steel hoes doing too much damage. As a result of this fix, all other steel tools now match diamond in damage (BluSunrize)
 - Fixed missing localization for metal barrel minecart (BluSunrize)
+- Fixed transparency issues with banners (BluSunrize)
 - Also includes the changes from 1.15.2-4.1.1-pre
 
 ##### Version 1.15.2-4.1.1-pre

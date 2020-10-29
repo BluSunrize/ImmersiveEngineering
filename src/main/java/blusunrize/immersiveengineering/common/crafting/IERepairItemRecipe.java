@@ -64,7 +64,7 @@ public class IERepairItemRecipe extends SpecialRecipe
 	@Override
 	public IRecipeSerializer<IERepairItemRecipe> getSerializer()
 	{
-		return Objects.requireNonNull(RecipeSerializers.IE_REPAIR.get());
+		return Objects.requireNonNull(RecipeSerializers.IE_REPAIR_SERIALIZER.get());
 	}
 
 	private Optional<Pair<ItemStack, ItemStack>> findInputSlots(CraftingInventory inv)
