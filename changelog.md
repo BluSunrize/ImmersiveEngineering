@@ -23,7 +23,7 @@
 - Fixed cacti and sugarcane not growing on red sand in the cloche (MalkContent)
 - Fixed red sandstone crushing into normal sand (MalkContent)
 - Fixed a crash in turret GUIs (TwistedGate)
-- Translations Added/Updated: pt_br (felipeboff)
+- Translations Added/Updated: pt_br (felipeboff), zh_cn (AethLi)
 
 ##### Version 1.15.2-4.1.0-122
 - Added the sawmill! It strips logs and cuts them into planks! (BluSunrize)
