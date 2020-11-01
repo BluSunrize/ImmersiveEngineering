@@ -10,7 +10,7 @@
 - Fixed transparency issues with banners (BluSunrize)
 - Also includes the changes from 1.15.2-4.1.1-pre
 
-##### Version 1.15.2-4.1.1-pre
+##### Version 1.15.2-4.1.1-125
 - Added sawdust flooring! It's a snow-like block made from sawdust! (BluSunrize)
 - Added indicators for attached Preheaters to the Blast Furnace GUI (BluSunrize)
 - Changed recipe for Pressurized Air Tank to use blue dye instead of lapis (BluSunrize)
