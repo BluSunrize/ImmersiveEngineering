@@ -60,7 +60,6 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ITickableSound;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.VideoSettingsScreen;
 import net.minecraft.client.renderer.GPUWarning;
 import net.minecraft.client.renderer.IRenderTypeBuffer;

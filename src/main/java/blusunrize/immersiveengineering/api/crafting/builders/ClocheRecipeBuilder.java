@@ -54,7 +54,7 @@ public class ClocheRecipeBuilder extends IEFinishedRecipe<ClocheRecipeBuilder>
 		return addItem("soil", itemStack);
 	}
 
-	public ClocheRecipeBuilder addSoil(Tag<Item> tag)
+	public ClocheRecipeBuilder addSoil(ITag<Item> tag)
 	{
 		return addSoil(Ingredient.fromTag(tag));
 	}
