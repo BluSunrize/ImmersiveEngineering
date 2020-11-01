@@ -1,6 +1,7 @@
 ##### Version 1.16.3-4.1.1-pre
 - Fixed Arc Recycling accessing Tags too early (Malte)
 - Fixed null calls in IE's config for item max damage (BluSunrize)
+- Fixed electrodes not taking and displaying damage properly (BluSunrize)
 
 ##### Version 1.16.1-4.1.1-pre
 - Added Basalt and Blackstone to the blocks that the survey tool works on (BluSunrize)
