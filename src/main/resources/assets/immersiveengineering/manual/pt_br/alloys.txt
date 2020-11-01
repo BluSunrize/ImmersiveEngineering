@@ -1,0 +1,3 @@
+Ligas
+Misturando
+A mistura de pós cria uma mistura de liga que pode ser fundida em barras. Constantan tem propriedades termoelétricas e é usado na criação do <link;generator;gerador termoelétrico> e o Electrum é um excelente condutor elétrico usado em <link;wiring;arquitetura de média tensão>.

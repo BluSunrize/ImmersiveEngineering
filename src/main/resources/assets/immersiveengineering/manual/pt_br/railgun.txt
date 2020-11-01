@@ -1,0 +1,13 @@
+Canhão Elétrico
+Velocitas Eradico
+O Canhão Elétrico (ou mais precisamente a Catapulta de Indução Portátil) é uma maravilha da engenharia. É composto por dois trilhos pelos quais uma Energia elétrica flui e acelera um trenó e, com isso, um projétil.
+O processo consome muita energia, mas acelera vários projéteis a altas velocidades.
+Para lançar um projétil de seu inventário, clique e segure o botão de uso até que o nível de carga alcance 99 e, em seguida, solte.
+
+Projéteis comuns incluem §2barras de ferro, alumínio e aço, bem como eletrodos de grafite.§r No entanto, você também pode disparar projéteis mais exóticos, como <link;buzzsaw;§2lâminas de serra§r> ou §2tridentes§r.
+Para alternar entre projéteis, deslize e role a roda do mouse ou use o atalho de tecla se estiver definido nas opções.
+
+Devido ao baixo armazenamento interno de energia, é recomendável usar o Canhão Elétrico junto com um <link;powerpack;Capacitor>.
+Tal como acontece com outras ferramentas do IE, o Canhão Elétrico pode ser modificado na <link;workbench;Bancada de Trabalho do Engenheiro> e ser personalizado com <link;shader;Camuflagens>.<np>
+<&speed>Os §2Dissipadores Avançados§r ajudam a mitigar o acúmulo de calor durante o processo de carga, reduzindo bastante o tempo de carga do Canhão Elétrico.<np>
+<&scope>A §2Mira de Precisão§r permite aumentar o zoom com o Canhão Elétrico. Usar §l<keybind;key.immersiveengineering.railgunZoom>§r para usar o escopo e role a roda do mouse para alternar entre os níveis de ampliação.

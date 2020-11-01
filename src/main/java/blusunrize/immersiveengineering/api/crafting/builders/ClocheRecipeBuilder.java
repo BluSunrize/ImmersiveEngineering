@@ -54,6 +54,11 @@ public class ClocheRecipeBuilder extends IEFinishedRecipe<ClocheRecipeBuilder>
 		return addItem("soil", itemStack);
 	}
 
+	public ClocheRecipeBuilder addSoil(Tag<Item> tag)
+	{
+		return addSoil(Ingredient.fromTag(tag));
+	}
+
 	public ClocheRecipeBuilder addSoil(Ingredient ingredient)
 	{
 		return addWriter(jsonObject -> jsonObject.add("soil", ingredient.serialize()));
@@ -69,6 +74,6 @@ public class ClocheRecipeBuilder extends IEFinishedRecipe<ClocheRecipeBuilder>
 	@Override
 	protected boolean isComplete()
 	{
-		return super.isComplete() && hasRender;
+		return super.isComplete()&&hasRender;
 	}
 }

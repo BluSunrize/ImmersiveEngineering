@@ -1,0 +1,5 @@
+Kit de Manutenção
+Reparos em trânsito
+<&recipe>Entre os Engenheiros que viajam pelo mundo ou passam grande parte do tempo em minas, um problema se cristaliza. Suas ferramentas requerem manutenção constante e carregar uma bancada inteira simplesmente não é viável. Felizmente, a maioria dos pequenos reparos e reconfigurações podem ser executados com um kit de manutenção.
+
+Um conjunto de ferramentas, envolto em tecido de cânhamo resistente, o kit de manutenção permite que você personalize suas ferramentas da mesma forma que o <link;workbench;Bancada de Trabalho do Engenheiro> faz. Você não terá mais que lidar com o recapeamento para mudar a cabeça em sua broca de mineração ou voltar para sua oficina para configurar seus protetores de ouvido. Tudo isso agora pode ser executado em trânsito com o Kit de manutenção!

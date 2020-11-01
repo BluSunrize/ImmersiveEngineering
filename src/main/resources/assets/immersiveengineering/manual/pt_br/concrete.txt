@@ -1,0 +1,3 @@
+Concreto
+Material de Fortaleza
+<&recipe>O concreto é um material composto muito duro e resistente. É barato de fabricar e é um excelente uso para o excesso de escória produzida pelo <link;crude_blast_furnace;Alto-forno Bruto>.

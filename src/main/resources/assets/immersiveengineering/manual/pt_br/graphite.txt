@@ -1,0 +1,5 @@
+Grafite
+Coisa de carvão
+Grafite Pirolítica Altamente Ordenada (HOP) é um material de carbono complexo e altamente comprimido, usado em construções especiais de engenharia.
+Pó de Grafite é criado comprimindo oito pedaços de Pó de Coque no <link;squeezer;Espremedor>. Esse pó pode então ser fundido em uma barra.
+<&electrode>O uso mais comum para Grafite é a criação de eletrodos para serem usados na <link;arc_furnace;Fornalha de Arco>. Esses eletrodos são criados com uma <link;blueprints;Planta do Engenheiro>, qual você pode encontrar em certos baús ou troque com um aldeão. Você também pode criar eletrodos na prensa de metal, usando o molde de haste em 4 barras, mas os eletrodos fabricados desta forma têm menos durabilidade.

@@ -12,6 +12,7 @@
 - Changed item and fluid routers to not output to unfiltered sides, if a filter exists (BluSunrize)
     - This behavior now matches what is described in the manual
     - Existing systems using routers may now derp up a little
+- Changed drill overlay to not show all targeted blocks when sneaking (BluSunrize)
 - Fixed spawn interdiction code for lanterns (Malte)
 - Fixed flickering when the bucket wheel is formed (MalkContent)
 - Fixed dispensers not being able to use IE buckets (BluSunrize)
@@ -21,6 +22,15 @@
 - Fixed firework and wolfpack cartridges crashing in turrets (BluSunrize)
 - Fixed dispensers not being able to use IE buckets (BluSunrize)
 - Fixed various issues with gunpowder barrels (BluSunrize)
+- Fixed additional crashes with connectors loading (Malte)
+- Fixed secondary output on the sawmill (Malte)
+- Fixed derpy splitting of energy on the dieselgen (BluSunrize)
+- Fixed multiple crashes due to Forge making breaking changes to a running version (Malte)
+- Fixed assembler not handling certain Craftweaker recipes properly (Malte)
+- Fixed cacti and sugarcane not growing on red sand in the cloche (MalkContent)
+- Fixed red sandstone crushing into normal sand (MalkContent)
+- Fixed a crash in turret GUIs (TwistedGate)
+- Translations Added/Updated: pt_br (felipeboff), zh_cn (AethLi)
 
 ##### Version 1.16.1-4.1.0-123
 - Fixed further issues with wires loading (Malte)

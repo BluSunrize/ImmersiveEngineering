@@ -1,0 +1,7 @@
+Construindo Componentes
+Peças Integrais
+<&mech_components>Muitas máquinas e ferramentas são construídas a partir de vários subcomponentes. Alguns deles você terá que usar regularmente, e é por isso que eles têm sua própria entrada neste manual. Os componentes mecânicos de §2Ferro§r e §2Aço§r são parte integrante da maioria dos multiblocos e máquinas.<np>
+<&create_bp>Como você criará esses componentes com mais frequência, pode ser aconselhável elaborar uma <link;blueprints;Planta do Engenheiro> para eles. Usando esta planta em uma <link;workbench;Bancada de Trabalho do Engenheiro> permitirá que você construa os componentes a um custo reduzido.
+As receitas da Bancada de Trabalho do Engenheiro se encontram na página seguinte.<np>
+<&tubes>Outro componente, embora menos usado, são os §2Tubos de Vácuo.§r Esses tubos de vidro são usados como elementos em máquinas eletrônicas e usados em <link;lighting;dispositivos emissores de luz>.<np>
+<&pcb>Um componente raramente usado, mas crucial em máquinas avançadas que requerem cálculos precisos, é a §2Placa de Circuito.§r Eles são muito grandes e desajeitados, mas podem realizar operações matemáticas básicas em menos de um segundo!

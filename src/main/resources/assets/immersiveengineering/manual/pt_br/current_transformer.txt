@@ -1,0 +1,3 @@
+Medidor de Energia
+Energia de 88 por hora!
+O Medidor de Energia é um dispositivo de medição de energia elétrica. Ele pode ser conectado a qualquer linha de força e manterá o controle da energia transferida através dele, retornando uma Energia média ao clicar com o botão direito.

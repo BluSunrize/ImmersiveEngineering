@@ -1,0 +1,3 @@
+Folhas Metálicas
+Plano como uma solha
+As folhas de metal são um material de artesanato necessário para a criação de algumas máquinas ou blocos. São feitos martelando uma barra com um Martelo do Engenheiro ou em um <link;metal_press;Prensa de Metal>.

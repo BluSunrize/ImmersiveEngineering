@@ -1,0 +1,6 @@
+Distrubuidor de Fluidos
+O leite vai para a esquerda, o ácido vai para a direita
+<&recipe>O Distrubuidor de Fluido funciona de forma muito semelhante ao <link;item_router;Distribuidor de Itens;start>. A entrada de fluidos por qualquer lado será redistribuída com base em como os seis filtros laterais são configurados.
+Clicar em um balde ou qualquer outro tipo de recipiente de fluido nas ranhuras da GUI configurará o filtro para esse fluido.<np>
+Quando quaisquer fluidos são canalizados para o roteador, eles serão encaminhados para uma saída cujo filtro corresponda ao fluido ou, se nenhum filtro correspondente for encontrado, o fluido será encaminhado para uma saída não filtrada. Se não houver rota disponível ou válida, nenhum fluido será aceito.
+Os botões acima de cada filtro podem ser usados para que o roteador respeite ou ignore os dados NBT do fluido.

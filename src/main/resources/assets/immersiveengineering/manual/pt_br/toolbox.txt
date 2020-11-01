@@ -1,0 +1,4 @@
+Caixa de Ferramentas do Engenheiro
+A Bolsa do Engenheiro
+A caixa de ferramentas é um contêiner simples, usado para armazenar todos os itens essenciais de um engenheiro! Passar o mouse sobre os espaços relevantes informa o que eles aceitarão.
+'Alimentos' e 'Qualquer coisa' são bastante autoexplicativos, os espaços de 'Fiação' são para bobinas, conectores e itens semelhantes e 'Ferramentas' armazenam qualquer ferramenta do IE, bem como picaretas, pás e machados! Arrastar e clicar com o botão direito a caixa de ferramentas é colocada como um bloco. Enquanto colocado, seu inventário ainda pode ser acessado com um clique com o botão direito. Shift + clique com o botão direito novamente conseguirá retirar a caixa de ferramentas.

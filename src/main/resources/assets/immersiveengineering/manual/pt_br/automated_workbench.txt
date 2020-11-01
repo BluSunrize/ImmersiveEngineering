@@ -1,0 +1,7 @@
+Bancada de Trabalho do Engenheiro Automatizada
+Para quem não sabe conduzir
+<&multiblock>A Bancada de Trabalho do Engenheiro Automatizada é um dos primeiros grandes sucessos da engenharia de pequena escala.
+A máquina é capaz de seguir um conjunto de instruções descritas por uma <link;blueprints;Planta do Engenheiro;start> para montar os itens por ele detalhados.<np>
+Ao montar o multibloco, uma Planta do Engenheiro pode ser colocada em sua mesa de desenho. Após selecionar o item que deve ser criado, será iniciado o processo de montagem. Para que a máquina funcione, ela precisará ser fornecida com materiais e energia.
+As entradas de itens são duas hachuras marcadas com pontos azuis, a entrada de energia fica acima deles. Os itens acabados são descartados no final da esteira.
+Um sinal de redstone abaixo da mesa de desenho pode ser usado para controle.

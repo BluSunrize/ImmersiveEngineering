@@ -63,7 +63,7 @@ public abstract class TurretScreen extends IEContainerScreen<TurretContainer>
 					CompoundNBT tag = new CompoundNBT();
 					int listOffset = -1;
 					int rem = list.selectedOption;
-					if(rem>=0)
+					if(rem>=0&&tile.targetList.size()>0)
 					{
 						tile.targetList.remove(rem);
 						tag.putInt("remove", rem);

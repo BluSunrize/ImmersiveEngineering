@@ -1,0 +1,5 @@
+Distribuidor de Itens
+Pé esquerdo amarelo, mão direita verde
+<&recipe>O Distribuidor de Itens é um bloco que aceita e redistribui itens por caminhos filtrados. Coloque-o para baixo e clique com o botão direito para abrir a interface, que mostra seis filtros coordenados de cores e direções diferentes.<np>
+Quando um item entra no distribuidor, ele é roteado para uma saída cujo filtro corresponde ao item ou, se nenhum filtro compatível for encontrado, ele é roteado para uma saída não filtrada. Se o distribuidor não puder rotear o item em primeiro lugar, ele não permitirá que o item entre no distribuidor.
+Os itens também não podem ser enviados para o lado de onde foram inseridos. Os botões acima de cada filtro podem ser usados para que o distribuidor respeite ou ignore OreDictionary, NBT e Metadata.

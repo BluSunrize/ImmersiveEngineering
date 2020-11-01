@@ -1,0 +1,7 @@
+Estufa
+Plante uma floresta tropical
+<&recipe>A Estufa, ou Redoma, é um dispositivo projetado para acelerar o crescimento das plantas. Ele permite que até mesmo o engenheiro com problemas agrícolas cultive plantas e colha seu rendimento.<np>
+O dispositivo aceita energia, fluido e itens por meio de suas respectivas portas.
+Água e energia são sempre necessários, e você pode adicionar fertilizante na fenda à esquerda para aumentar a velocidade de crescimento.
+O solo e as sementes são colocados no meio; cada semente requer o solo correto para crescer, com a terra sendo automaticamente lavrada em terras agrícolas. <np>
+Os itens produzidos são armazenados à direita e sairão automaticamente pela escotilha na frente da cúpula de vidro.

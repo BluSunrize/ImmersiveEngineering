@@ -1,0 +1,7 @@
+Máquina de Lote de Item
+Venha junto, agora mesmo
+<&recipe>A Máquina de Lote de Item é projetado para coletar um conjunto de itens de uma esteira de entrada antes de enviá-los adiante, a fim de transferir tamanhos de lote otimizados para o maquinário.<np>
+Coloque o bloco e abra sua interface para definir uma variedade de filtros. Quaisquer itens recebidos serão aceitos nos espaços diretamente abaixo dos filtros, e o lote coletado só será enviado quando todos os filtros forem satisfeitos.
+Este comportamento pode ser ajustado com o botão denominado "Modo de saída". O comportamento padrão observado acima é conhecido como §2modo em lote.§r No §2modo único,§r qualquer item que satisfaça sua quantidade filtrada será liberado.<np>
+Usando os 9 botões abaixo do buffer, você pode alternar entre as cores de <link;redstone_wire;fios de redstone>. Ao anexar um <link;redstone_wire;Conector de Interface Redstone;bundled>, a Máquina de Lote de Item enviará sinais ao longo dos fios redstone quando um filtro for satisfeito.
+Isso permite que você desabilite qualquer extração de esteiras ou máquinas de produção quando sua quantidade necessária de itens for atingida. Observe que, se vários filtros usarem a mesma cor, todos eles precisam ser satisfeitos para que um sinal seja enviado.

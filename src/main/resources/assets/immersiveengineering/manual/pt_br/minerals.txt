@@ -1,0 +1,16 @@
+Depósitos de Minérios
+Incrível
+Os depósitos de minério encontrados em todo o mundo não são novidade para você. O que você deixou de considerar até agora são veios minerais, que contêm uma mistura de diferentes minérios. Devido à sua ampla e fina distribuição, a mineração comum não consegue encontrá-los, mas uma <link;excavator;máquina especial> pode ser capaz de ajudar com isso.
+<&survey_tools>Para começar a procurar veios de minério, você vai querer criar algumas §2Ferramentas de Pesquisa§r. Ao se aventurar e usar essas ferramentas em vários blocos de solo natural, você pode identificar veios e encontrar suas posições aproximadas.
+
+Cada amostra que você tira da mesma veia permite uma leitura mais precisa do que ela contém e de onde se origina. Observe que as veias podem se sobrepor, então você pode encontrar traços de veias diferentes bem próximos uns dos outros.
+<np>
+<&sample_drill>Depois de estreitar o tipo e a posição da veia, use uma §2Broca de Amostra de Núcleo§r para obter uma leitura precisa de quais veias são encontradas em uma posição exata.
+Forneça energia à máquina e clique com o botão direito ou use o redstone para ativá-la. A broca consome Energia para então extrair uma amostra de núcleo em seu local que fornece informações detalhadas sobre a veia de minério.
+<np>
+<&core_sample>A amostra não apenas dirá exatamente quais minérios são encontrados lá, incluindo sua presença relativa, mas também sua §2saturação§r individual. Uma saturação mais alta significa uma chance maior de uma escavadeira encher sua roda caçamba.
+
+Clicando com Shift + botão direito do mouse em uma amostra central para colocá-la no mundo, permitindo que você leia sua posição e informações. Além disso, quando colocado, você pode clicar com o botão direito nele com um mapa para marcar sua posição original nele.
+
+As páginas a seguir listam todos os tipos de veios e os minérios que podem ser retirados deles.
+<np>

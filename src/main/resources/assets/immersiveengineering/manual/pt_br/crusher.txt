@@ -1,0 +1,6 @@
+Trituradora
+Mantenha as mãos estendidas!
+A trituração de um minério é uma forma eficaz de aumentar seu rendimento, pois cada minério cria duas poeiras que podem ser fundidas. Este britador de tamanho industrial é uma maneira rápida de fazer isso. A velocidade de processamento da máquina depende da energia fornecida a ela.
+Aplicar um sinal de redstone ao painel de controle frontal irá interromper o processo de britagem, este comportamento pode ser invertido com o uso do Martelo do Engenheiro.
+A estrutura é formada clicando com o botão direito do mouse no bloco central da frente. A frente é o lado largo da estrutura que tem um bloco de engenharia leve na parte inferior.
+No entanto, não é usado apenas para esmagar minérios. Cada ser vivo que cair na máquina sofrerá graves danos e o triturador produzirá as gotas relevantes. Da mesma forma, todos os itens que não podem ser processados serão destruídos.

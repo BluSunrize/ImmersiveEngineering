@@ -47,6 +47,16 @@ class IEBlockTags extends BlockTagsProvider
 				.func_240532_a_(Blocks.CLAY);
 		func_240522_a_(IETags.glowstoneBlock)
 				.func_240532_a_(Blocks.GLOWSTONE);
+		func_240522_a_(IETags.colorlessSandstoneBlocks)
+				.func_240532_a_(Blocks.SANDSTONE)
+				.func_240532_a_(Blocks.CUT_SANDSTONE)
+				.func_240532_a_(Blocks.CHISELED_SANDSTONE)
+				.func_240532_a_(Blocks.SMOOTH_SANDSTONE);
+		func_240522_a_(IETags.redSandstoneBlocks)
+				.func_240532_a_(Blocks.RED_SANDSTONE)
+				.func_240532_a_(Blocks.CUT_RED_SANDSTONE)
+				.func_240532_a_(Blocks.CHISELED_RED_SANDSTONE)
+				.func_240532_a_(Blocks.SMOOTH_RED_SANDSTONE);
 		for(EnumMetals metal : EnumMetals.values())
 		{
 			MetalTags tags = IETags.getTagsFor(metal);

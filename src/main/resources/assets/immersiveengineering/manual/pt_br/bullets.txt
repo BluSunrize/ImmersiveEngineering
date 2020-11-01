@@ -1,0 +1,14 @@
+Munições de Revólver
+
+As Munições são confeccionados na Bancada de Trabalho do Engenheiro, mediante a utilização de <link;blueprints;Plantas do Engenheiro>. Plantas para munição normal você mesmo pode criar, mas alguns tipos mais avançados exigirão que você compre plantas adequadas de outra pessoa.<np>
+<&empty>§lCápsulas §lVazias§r e §lPólvora§r são a base de todo projétil. Cápsulas vazias também podem ser fabricados na <link;metal_press;Prensa de Metal>, usando o molde apropriado, a um custo muito reduzido.<np>
+<&casull>Os §lMunições §lde §lCasull§r são criados com uma planta "Projéteis comuns". Eles são um simples projétil de chumbo que inflige danos médios.<np>
+<&ap>Os §lMunições §lPerfuranção §lde §lArmadura§r são criados com a mesma planta. Eles causam a mesma quantidade de dano, mas penetram a armadura por pura força cinética.<np>
+<&buckshot>§lMunição §lde §lChumbo §lGrosso,§r criados com as plantas acima mencionadas, são preenchidos com vários pequenos projéteis que são disparados em forma de cone. Este Munição é altamente eficaz em curto alcance.<np>
+<&he>§lMunições §lAltamente §lExplosivos§r são criados com uma planta "Projéteis comuns". Eles disparam um projétil que explode com o impacto, causando danos a criaturas vivas e ao terreno.<np>
+<&silver>Os §lMunições §lde §lPrata,§r também criados com um projeto de "Projéteis comuns", consistem em um núcleo de chumbo envolto em prata, tornando-os altamente eficazes contra mortos-vivos.<np>
+<&dragon>Os §lMunição §lde §lBafo §ldo §lDragão§r são criados com uma planta "Projéteis especializados". Semelhante ao Buckshot, eles são eficazes em curto alcance, mas em vez de pequenos tiros de metal, eles são preenchidos com um pó de metal inflamável, criando uma explosão de chamas.<np>
+<&potion>§lMunições §lde §lFrasco§r também são criados com uma planta "especializada". Eles podem ser preenchidos com qualquer poção criando-os juntos em uma grade de criação e esta poção será aplicada no impacto. Poções normais requerem um ataque direto, poções splash têm uma área de efeito e Poções Prolongadas criarão uma nuvem de poção temporária e persistente.<np>
+<&flare>§lMunição Sinalizadoura§r são criadas com uma planta "especializada". Quando disparado, o sinalizador explode após uma certa distância e então lentamente afunda no chão. Você pode combinar o Munição com corantes em uma mesa de artesanato para mudar sua cor.<np>
+<&homing>Os §lMunições §lTeleguiado§r são criados com uma planta "Projéteis especializados". Usando as propriedades intrigantes de um Olho de Ender, esses projéteis ganham a habilidade de procurar e perseguir o alvo mais próximo.
+<&wolfpack>Os §lMunições §lEstilhaçantes§r são criados com a mesma planta e consistem em uma coleção de vários tiros de orientação em uma única concha. O projétil inicial não é guiado, mas no impacto, ele se divide em seis tiros de busca de alvos que destroem os inimigos ao redor.

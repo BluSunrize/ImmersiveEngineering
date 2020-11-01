@@ -1,0 +1,6 @@
+Bancada de Trabalho & Plantas
+Sempre bagunçado
+A Bancada de Trabalho do Engenheiro é uma mesa de trabalho profissional para o engenheiro formado. É amplamente utilizado para construir os itens descritos nas <link;blueprints;Plantas do Engenheiro>.
+Uma grande variedade de projetos podem ser criados, conforme detalhado na respectiva entrada do manual, enquanto alguns selecionados só podem ser descobertos no mundo ou comprados dos aldeões.
+Para usar uma planta na Bancada de Trabalho, coloque-a na esquerda e os ingredientes necessários nos espaços do meio. Os itens resultantes podem ser reirado no lado direito. Passar o mouse sobre esses espaços de saída informará exatamente quais materiais são necessários para cada item.<np>
+Uma função secundária da Bancada de Trabalho é a modificação e configuração de ferramentas e dispositivos mais complexos. A <link;mining_drill;Mineradoura>, <link;shield;Escudo Cromado Pesado> or <link;revolver;Revólver> são exemplos de tais itens. Quando colocado no espaço principal da bancada, seu uso passa a ser o de modificar essas ferramentas, inserindo upgrades aplicáveis nos novos espaços que aparecem.
