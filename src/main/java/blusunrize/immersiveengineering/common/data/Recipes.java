@@ -315,13 +315,13 @@ public class Recipes extends RecipeProvider
 
 		ClocheRecipeBuilder.builder(Items.SUGAR_CANE)
 				.addInput(Items.SUGAR_CANE)
-				.addSoil(Blocks.SAND)
+				.addSoil(Tags.Items.SAND)
 				.setTime(560)
 				.setRender(new ClocheRenderReference("stacking", Blocks.SUGAR_CANE))
 				.build(out, toRL("cloche/sugar_cane"));
 		ClocheRecipeBuilder.builder(Items.CACTUS)
 				.addInput(Items.CACTUS)
-				.addSoil(Blocks.SAND)
+				.addSoil(Tags.Items.SAND)
 				.setTime(560)
 				.setRender(new ClocheRenderReference("stacking", Blocks.CACTUS))
 				.build(out, toRL("cloche/cactus"));
@@ -667,9 +667,14 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL("crusher/glass"));
 		CrusherRecipeBuilder.builder(new ItemStack(Items.SAND, 2))
 				.addSecondary(IETags.saltpeterDust, .5f)
-				.addInput(Tags.Items.SANDSTONE)
+				.addInput(IETags.getItemTag(IETags.colorlessSandstoneBlocks))
 				.setEnergy(3200)
 				.build(out, toRL("crusher/sandstone"));
+		CrusherRecipeBuilder.builder(new ItemStack(Items.RED_SAND, 2))
+				.addSecondary(IETags.saltpeterDust, .5f)
+				.addInput(IETags.getItemTag(IETags.redSandstoneBlocks))
+				.setEnergy(3200)
+				.build(out, toRL("crusher/red_sandstone"));
 		CrusherRecipeBuilder.builder(new ItemStack(Items.CLAY_BALL, 4))
 				.addInput(IETags.getItemTag(IETags.clayBlock))
 				.setEnergy(1600)

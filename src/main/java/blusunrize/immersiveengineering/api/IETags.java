@@ -40,6 +40,8 @@ public class IETags
 	public static final Tag<Block> clayBlock = createBlockTag(getStorageBlock("clay"));
 	public static final Tag<Item> charCoal = new ItemTags.Wrapper(forgeLoc("charcoal"));
 	public static final Tag<Block> glowstoneBlock = createBlockTag(getStorageBlock("glowstone"));
+	public static final Tag<Block> colorlessSandstoneBlocks = createBlockTag(forgeLoc("sandstone/colorless"));
+	public static final Tag<Block> redSandstoneBlocks = createBlockTag(forgeLoc("sandstone/red"));
 	//Other mods
 	public static final Tag<Block> charCoalBlocks = createBlockTag(getStorageBlock("charcoal"));
 	//IE Blocks

@@ -9,7 +9,7 @@
     "item": "minecraft:cactus"
   },
   "soil": {
-    "item": "minecraft:sand"
+    "tag": "forge:sand"
   },
   "time": 560,
   "render": {
