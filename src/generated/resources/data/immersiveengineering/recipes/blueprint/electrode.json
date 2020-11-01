@@ -10,6 +10,7 @@
   ],
   "category": "electrode",
   "result": {
-    "item": "immersiveengineering:graphite_electrode"
+    "item": "immersiveengineering:graphite_electrode",
+    "nbt": "{Damage:0}"
   }
 }
