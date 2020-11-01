@@ -5,6 +5,7 @@
 - Changed item and fluid routers to not output to unfiltered sides, if a filter exists (BluSunrize)
     - This behavior now matches what is described in the manual
     - Existing systems using routers may now derp up a little
+- Changed drill overlay to not show all targeted blocks when sneaking (BluSunrize)
 - Fixed spawn interdiction code for lanterns (Malte)
 - Fixed flickering when the bucket wheel is formed (MalkContent)
 - Fixed dispensers not being able to use IE buckets (BluSunrize)

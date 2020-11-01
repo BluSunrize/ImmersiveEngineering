@@ -57,7 +57,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.client.audio.ITickableSound;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.model.EntityModel;
@@ -832,7 +831,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 					((DrillItem)stack.getItem()).isEffective(world.getBlockState(rtr.getPos()).getMaterial()))
 			{
 				ItemStack head = ((DrillItem)stack.getItem()).getHead(stack);
-				if(!head.isEmpty()&&player instanceof PlayerEntity)
+				if(!head.isEmpty()&&player instanceof PlayerEntity&&!player.isSneaking())
 				{
 					ImmutableList<BlockPos> blocks = ((IDrillHead)head.getItem()).getExtraBlocksDug(head, world,
 							(PlayerEntity)player, event.getTarget());
