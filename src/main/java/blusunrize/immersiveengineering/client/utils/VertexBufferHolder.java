@@ -12,6 +12,7 @@ package blusunrize.immersiveengineering.client.utils;
 import blusunrize.immersiveengineering.api.client.IVertexBufferHolder;
 import blusunrize.immersiveengineering.api.utils.ResettableLazy;
 import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -21,6 +22,7 @@ import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.vertex.VertexBuffer;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.NonNullSupplier;
 import org.lwjgl.opengl.GL11;
 
@@ -37,6 +39,20 @@ public class VertexBufferHolder implements IVertexBufferHolder
 	public static final VertexFormat BUFFER_FORMAT = new VertexFormat(ImmutableList.of(
 			POSITION_3F, COLOR_4UB, TEX_2F, NORMAL_3B, PADDING_1B
 	));
+	private static final Lazy<Boolean> HAS_OPTIFINE = Lazy.of(() -> {
+		try
+		{
+			Class.forName("net.optifine.Config");
+			IELogger.logger.warn(
+					"OptiFine detected! Automatically disabling VBOs, this will make windmills and some"+
+							" other objects render much less efficiently"
+			);
+			return true;
+		} catch(Exception x)
+		{
+			return false;
+		}
+	});
 	//TODO also sort by buffer to get rid of bindBuffer calls?
 	private static final Map<RenderType, List<BufferedJob>> JOBS = new IdentityHashMap<>();
 	private final ResettableLazy<VertexBuffer> buffer;
@@ -68,7 +84,7 @@ public class VertexBufferHolder implements IVertexBufferHolder
 	@Override
 	public void render(RenderType type, int light, int overlay, IRenderTypeBuffer directOut, MatrixStack transform, boolean inverted)
 	{
-		if(IEConfig.GENERAL.enableVBOs.get())
+		if(IEConfig.GENERAL.enableVBOs.get()&&!HAS_OPTIFINE.get())
 			JOBS.computeIfAbsent(type, t -> new ArrayList<>())
 					.add(new BufferedJob(this, light, overlay, transform, inverted));
 		else
