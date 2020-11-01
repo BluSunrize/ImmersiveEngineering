@@ -47,7 +47,6 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLFingerprintViolationEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
@@ -85,7 +84,6 @@ public class ImmersiveEngineering
 		IELogger.logger = LogManager.getLogger(MODID);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::loadComplete);
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::wrongSignature);
 		MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
 		MinecraftForge.EVENT_BUS.addListener(this::serverAboutToStart);
 		MinecraftForge.EVENT_BUS.addListener(this::serverStarted);
@@ -235,7 +233,8 @@ public class ImmersiveEngineering
 			"MavenKeyHere"//TODO maven
 	};
 
-	//TODO doesn't seem to be fired any more?
+	/*
+	//TODO This has been removed in some forge versions. Apparently cpw is making something better soon?
 	public void wrongSignature(FMLFingerprintViolationEvent event)
 	{
 		System.out.println("[Immersive Engineering/Error] THIS IS NOT AN OFFICIAL BUILD OF IMMERSIVE ENGINEERING! Found these fingerprints: "+event.getFingerprints());
@@ -247,6 +246,7 @@ public class ImmersiveEngineering
 				break;
 			}
 	}
+	*/
 
 	public void serverStarting(FMLServerStartingEvent event)
 	{
