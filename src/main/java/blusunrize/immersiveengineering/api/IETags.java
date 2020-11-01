@@ -42,8 +42,6 @@ public class IETags
 	public static final INamedTag<Block> glowstoneBlock = createBlockTag(getStorageBlock("glowstone"));
 	public static final INamedTag<Block> colorlessSandstoneBlocks = createBlockTag(forgeLoc("sandstone/colorless"));
 	public static final INamedTag<Block> redSandstoneBlocks = createBlockTag(forgeLoc("sandstone/red"));
-	//Other mods
-	public static final INamedTag<Block> charCoalBlocks = createBlockTag(getStorageBlock("charcoal"));
 	//IE Blocks
 	public static final INamedTag<Block> treatedWood = createBlockTag(forgeLoc("treated_wood"));
 	public static final INamedTag<Block> treatedWoodSlab = createBlockTag(forgeLoc("treated_wood_slab"));
