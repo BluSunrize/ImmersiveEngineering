@@ -14,6 +14,13 @@
 - Fixed firework and wolfpack cartridges crashing in turrets (BluSunrize)
 - Fixed dispensers not being able to use IE buckets (BluSunrize)
 - Fixed various issues with gunpowder barrels (BluSunrize)
+- Fixed additional crashes with connectors loading (Malte)
+- Fixed secondary output on the sawmill (Malte)
+- Fixed derpy splitting of energy on the dieselgen (BluSunrize)
+- Fixed multiple crashes due to Forge making breaking changes to a running version (Malte)
+- Fixed assembler not handling certain Craftweaker recipes properly (Malte)
+- Fixed cacti and sugarcane not growing on red sand in the cloche (MalkContent)
+- Fixed red sandstone crushing into normal sand (MalkContent)
 - Fixed a crash in turret GUIs (TwistedGate)
 - Translations Added/Updated: pt_br (felipeboff)
 
