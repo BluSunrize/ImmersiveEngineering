@@ -1,0 +1,4 @@
+Mesa de Artesanato do Engenheiro
+Para vários projetos
+A Mesa de Artesanato do Engenheiro é uma atualização simples da Mesa de Artesanato normal. Além da superfície de madeira polida e tratada, ele mantém o ingrediente dentro da grade de artesanato quando a interface é fechada.
+Ele também possui uma pequena gaveta para armazenar alguns de seus componentes de artesanato.

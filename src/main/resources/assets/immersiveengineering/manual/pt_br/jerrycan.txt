@@ -1,0 +1,3 @@
+Galão
+Melhor que baldes
+<&recipe>Galãos são recipientes de metal simples usados para transportar fluidos. Eles podem armazenar até 10 baldes e podem derramar esse fluido no mundo, bem como em máquinas. Eles não podem pegar fluidos. Além disso, eles podem ser usados para reabastecer itens que consomem líquidos, como o <link;mining_drill;Mineradoura;start> elaborando-os juntos.

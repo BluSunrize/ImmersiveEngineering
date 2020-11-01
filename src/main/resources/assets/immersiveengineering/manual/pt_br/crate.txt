@@ -1,0 +1,6 @@
+Caixa de Armazenamento de Madeira
+Mova essa marcha!
+<&normal>As caixas de armazenamento de madeira são blocos bastante semelhantes a um baú. Confeccionados com madeira tratada, oferecem 27 espaços de armazenamento, porém, quando quebrados, irão manter esse armazenamento, permitindo que você os mova junto com seu conteúdo.
+Como os baús, eles emitem um sinal de comparação com base na quantidade de itens armazenados.<np>
+
+<&reinforced>A caixa de armazenamento reforçada oferece a mesma capacidade de uma caixa normal, mas ao contrário delas, essas são impermeáveis a explosões. Os creepers irritantes ou dinamites mal colocadas não vão mais destruir seus objetos de valor!

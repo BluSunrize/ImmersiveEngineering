@@ -1,0 +1,7 @@
+Protetores de Ouvidos
+BARULHOS ALTOS!
+<&recipe>Protetores de Ouvidos são dispositivos para proteger sua audição. Eles são muito importantes para engenheiros que trabalham próximos a <link;diesel_generator;Geradores de diesel;> ou outra máquina barulhenta.
+Ao usar Protetor de ouvido, todos os ruídos são reduzidos em 90%.
+<&color_and_armor>Colocando os protetores de ouvido na <link;workbench;Bancada de Trabalho do Engenheiro;> permite que você especifique quais tipos de ruídos você deseja cancelar e em quanto seu volume deve ser reduzido.
+Você pode tingi-los como se fosse uma armadura de couro.
+Fabricá-los com qualquer outro capacete irá prender os Protetor a essa peça de equipamento, fabricar o capacete sozinho removerá os Protetor novamente, para permitir uma personalização posterior.

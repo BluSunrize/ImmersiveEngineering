@@ -1,0 +1,4 @@
+Escavadora
+Melhor que anões
+<&excavator>A Escavadora é um dos pináculos da engenharia moderna. É capaz de desenterrar <link;minerals;minerais> de veias inacessíveis pela mineração normal. Em troca, no entanto, a escavadeira é uma estrutura complexa que requer Energia para operar.
+<&wheel><&full>A estrutura é composta por duas peças: O motor mostrado na primeira página e a roda de caçamba exibida na segunda, que se encaixa nas 'travas' do motor conforme exibido na página anterior. A entrada de energia para o motor está do lado, a parte traseira possui um painel de controle redstone e a saída de itens. <br> Conforme a escavadeira desenterra minérios, o rendimento do veio diminui lentamente.

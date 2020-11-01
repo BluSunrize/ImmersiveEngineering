@@ -1,0 +1,4 @@
+Arame Farpado
+Cortador de ovo grande
+<&recipe>Arame Farpado é um fio com peças afiadas de metal presas. Isso tornará mais lento e cortará qualquer entidade que tentar passar por ele.
+Arame Farpado só pode ser removido com Cortador de Fios, qualquer outra tentativa irá danificar o jogador. Além disso, um fio de baixa tensão pode ser conectado para eletrificar o Arame Farpado para danos extras.

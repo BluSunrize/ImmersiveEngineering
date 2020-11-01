@@ -1,0 +1,9 @@
+Serraria
+
+A Serraria é uma montagem de máquina que corta troncos de madeira em tábuas empilhadas ordenadamente. A máquina opera em duas fases, primeiro removendo a casca do tronco e, em seguida, usando uma <link;buzzsaw;lâmina de serra> para cortar o tronco.<np>
+<&sawdust>Ambas as etapas do processo criam §2Serragem,§r que é coletada e enviada pela porta na parte frontal da máquina. Essa serragem pode então ser transformada em papel mais tarde.<np>
+A máquina é construída conforme mostrado na primeira página e formada usando um martelo do engenheiro no bloco de folha de metal central.
+Aplicar um sinal de redstone ao painel de controle na frente irá parar a máquina. Este comportamento pode ser invertido usando a §2chave de fenda do engenheiro.§r<np>
+Para estar totalmente pronto para o processamento, você precisará criar uma <link;buzzsaw;lâmina de serra> e insira-o na parte traseira clicando com o botão direito. Clique com o botão direito do mouse para retirar a lâmina de serra novamente.
+Passar toras pela máquina sem lâmina de serra criará §2troncos descascados§r que não serão cortadas. Este processo é muito mais rápido do que removê-los manualmente.
+A lâmina de serra será danificada durante o uso e poderá precisar ser substituída após um tempo.

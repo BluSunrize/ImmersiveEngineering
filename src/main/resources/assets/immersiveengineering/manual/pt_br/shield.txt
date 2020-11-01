@@ -1,0 +1,7 @@
+Escudo Cromado Pesado
+Um Homem Falange
+<&recipe>O Escudo Cromado Pesado é um upgrade direto para os escudos de madeira normais que você já conhece. De forma semelhante, este escudo irá bloquear a maioria dos danos recebidos pela frente, mas sua durabilidade aumentou consideravelmente e pode ser atualizado.<np>
+<&flashbulb>A atualização de §2Lâmpada de Flash§r
+ adiciona uma lâmpada brilhante e uma tela refletora ao escudo. Ao ser atacado, o dispositivo produzirá um flash brilhante e ofuscante, desorientando todos na frente.<np>
+<&electric>Adicionar §2Emissores de Choque§r ao escudo permite retaliar contra o ataque de inimigos. Quando o escudo é atingido, ele emitirá um choque, causando danos menores ao agressor. Além disso, ele vaporizará projéteis em vez de apenas pará-los.<np>
+<&magnetic>A §2Luva Magnética§r serve como uma maneira fácil de acessar o escudo quando ameaçada. Com esta atualização equipada, basta tocar duas vezes na tecla configurada que você equipe o escudo de seu inventário e coloque-o em seu espaço improvisado.

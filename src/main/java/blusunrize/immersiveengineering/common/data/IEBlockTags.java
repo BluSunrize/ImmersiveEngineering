@@ -47,6 +47,16 @@ class IEBlockTags extends BlockTagsProvider
 				.addItemEntry(Blocks.CLAY);
 		getOrCreateBuilder(IETags.glowstoneBlock)
 				.addItemEntry(Blocks.GLOWSTONE);
+		getOrCreateBuilder(IETags.colorlessSandstoneBlocks)
+				.addItemEntry(Blocks.SANDSTONE)
+				.addItemEntry(Blocks.CUT_SANDSTONE)
+				.addItemEntry(Blocks.CHISELED_SANDSTONE)
+				.addItemEntry(Blocks.SMOOTH_SANDSTONE);
+		getOrCreateBuilder(IETags.redSandstoneBlocks)
+				.addItemEntry(Blocks.RED_SANDSTONE)
+				.addItemEntry(Blocks.CUT_RED_SANDSTONE)
+				.addItemEntry(Blocks.CHISELED_RED_SANDSTONE)
+				.addItemEntry(Blocks.SMOOTH_RED_SANDSTONE);
 		for(EnumMetals metal : EnumMetals.values())
 		{
 			MetalTags tags = IETags.getTagsFor(metal);

@@ -1,0 +1,9 @@
+Cânhamo
+
+<&items>O Cânhamo é uma planta notável! Não são apenas suas sementes úteis para a criação de <link;refinery;Biodiesel;start>, as fibras de cânhamo também são usadas para a criação de tecido resistente.
+As sementes podem ser obtidas quebrando a grama alta.<np>
+<&fabric_recipe>Tecido resistente é um feito de fibra de cânhamo. É usado para criar <link;generator;Moinhos de Vento Aprimorados;sail_recipe> assim como <link;balloon;Balões;start> e <link;this;Almofadas de Salto;cushion_recipe>.<np>
+<&cushion_recipe>Almofadas de Salto são blocos simples feitos de tecido resistente e inflados com ar. Eles são capazes de absorver impactos e evitar danos em queda quando pousados, mas, ao contrário dos blocos de slime, não o farão saltar para cima.<np>
+<&curtain_recipe>Cortinas de tira são pedaços de tecido que são montados em batentes de portas ou outras aberturas para bloquear a visão.
+Quando uma entidade passa por eles, eles emitem um sinal redstone. Clique com o botão direito neles com uma chave de fenda do engenheiro para habilitar sinais fortes.
+Eles podem ser tingidos da mesma forma que as armaduras de couro.

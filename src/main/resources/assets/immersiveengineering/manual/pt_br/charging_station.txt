@@ -1,0 +1,5 @@
+Estação de Carregamento
+Carregue seus óculos!
+<&recipe>A Estação de Carregamento é um aparelho que permite carregar ferramentas e outros itens.
+A energia pode ser inserida pela parte inferior ou traseira e os itens podem ser colocados manualmente ou inseridos automaticamente.<np>
+Os tubo de vácuo na frente fornecem uma regenração sobre a carga atual do item, mas o bloco também emitirá um sinal comparador para os mesmos fins.

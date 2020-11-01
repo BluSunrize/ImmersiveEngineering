@@ -1,0 +1,7 @@
+Máquina de Engarrafamento
+Encha-o!
+<&multiblock>A Máquina de Engarrafamento coloca fluidos em recipientes.
+A estrutura é criada conforme mostrado acima, mas pode ser espelhada. Para formá-lo, clique com o botão direito na esteira central com um Martelo do Engenheiro. A direção das esteiras é importante.<np>
+O fluido é introduzido através das portas no bloco inferior do tanque de metal. A energia é introduzida através da porta no topo do lado oposto.
+Geralmente, a Máquina de Engarrafamento poderá encher qualquer recipiente que tenha disponível uma versão cheia (balde, frasco de vidro). Também aceitará outros itens que podem armazenar fluidos, como a <link;mining_drill;Mineradoura;start> ou o <link;jerrycan;Galão;start>.
+Além disso, receitas especiais podem estar disponíveis.

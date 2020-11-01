@@ -1,0 +1,8 @@
+Mineradoura
+Vamos minerar!
+<&drill_base_recipes>Uma mineradoura portátil movida a diesel é um grande avanço na mineração. Com brocas intercambiáveis e atualizações, suas propriedades são quase totalmente modificáveis. Para modificá-lo, coloque-o em uma <link;workbench;Bancada de Trabalho do Engenheiro;start>. A Mineradoura funciona com <link;refinery;Biodiesel;start> e pode ser abastecido diretamente na refinaria.<np>
+<&drill_head_recipes>A Broca determina o §2nível de mineração básico, velocidade e tamanho, bem como o dano de ataque.§r Conforme você escava blocos, a cabeça de perfuração sofre danos, mas pode ser reparada em uma bigorna.<np>
+<&drill_waterproof_recipe>Como a Mineradoura é movida por um motor de combustão, ela não funcionará embaixo d'água a menos que você a equipe com a atualização do §2Tanque de Ar Pressurizado.§r No entanto, com este upgrade equipado, ele não só funcionará enquanto estiver submerso, mas também ignorará a desaceleração normalmente experimentada ao cavar na água.<np>
+<&drill_lube_recipe>O §2Sistema de Lubrificação Avançada§r aplicava lubrificante adicional à broca regularmente, diminuindo a perda de durabilidade da cabeça da broca.<np>
+<&drill_damage_recipe>Adicionando §2Trados Adicionais§r à broca, seu potencial destrutivo é aumentado, aumentando seu dano contra criaturas vivas e permitindo que corra e escave mais rápido. A atualização acumula até três vezes.<np>
+<&drill_capacity_recipe>O §2Tanque Grande de Combustível§r permite que a mineradoura armazene mais combustível internamente, estendendo o tempo que você pode usá-lo antes de reabastecer.
