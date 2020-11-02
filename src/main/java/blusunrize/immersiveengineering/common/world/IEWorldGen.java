@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.world;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Ores.OreConfig;
 import blusunrize.immersiveengineering.common.util.IELogger;
@@ -101,12 +102,17 @@ public class IEWorldGen
 			BlockState state = gen.getValue().getRight();
 			if(config.retrogenEnabled.get())
 			{
-				ConfiguredFeature<?, ?> retroFeature = Feature.ORE
+				ConfiguredFeature<?, ?> retroFeature = IEContent.ORE_RETROGEN
 						.withConfiguration(new OreFeatureConfig(FillerBlockType.field_241882_a, state, config.veinSize.get()))
 						.withPlacement(new IERangePlacement().configure(new IETopSolidRangeConfig(config)))
 						.func_242728_a/* spreadHorizontally */()
 						.withPlacement(new IECountPlacement().configure(new IEFeatureSpreadConfig(config)));
-				retroFeature.func_242765_a(world, world.getChunkProvider().getChunkGenerator(), random, new BlockPos(16*chunkX, 0, 16*chunkZ));
+				retroFeature.func_242765_a(
+						world,
+						world.getChunkProvider().getChunkGenerator(),
+						random,
+						new BlockPos(16*chunkX, 0, 16*chunkZ)
+				);
 			}
 		}
 	}
