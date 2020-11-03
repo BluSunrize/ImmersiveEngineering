@@ -3,7 +3,8 @@
 - Fixed steel hoes doing too much damage. As a result of this fix, all other steel tools now match diamond in damage (BluSunrize)
 - Fixed missing localization for metal barrel minecart (BluSunrize)
 - Fixed transparency issues with banners (BluSunrize)
-- Also includes the changes from 1.15.2-4.1.1-pre
+- Fixed redstone connector GUI opening for everyone on a LAN world (BluSunrize)
+- Also includes the changes from 1.15.2-4.1.1-125
 
 ##### Version 1.15.2-4.1.1-125
 - Added sawdust flooring! It's a snow-like block made from sawdust! (BluSunrize)
