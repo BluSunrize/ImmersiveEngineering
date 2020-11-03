@@ -214,7 +214,7 @@ public class IEContent
 			if(!m.isVanillaMetal())
 			{
 				storage = new IEBaseBlock("storage_"+name, Block.Properties.create(Material.IRON)
-						.sound(SoundType.METAL)
+						.sound(m==EnumMetals.STEEL?SoundType.field_235594_P_:SoundType.METAL)
 						.hardnessAndResistance(5, 10)
 						.setRequiresTool()
 						.harvestTool(ToolType.PICKAXE)
