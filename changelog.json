@@ -16,9 +16,9 @@
         "1.15.2-latest": "1.15.2-4.1.1-125",
         "1.15.2-recommended": "1.15.2-4.1.1-125",
         "1.16.1-latest": "1.16.1-4.1.1-126",
-        "1.16.1-recommended": "1.16.1-4.1.1-126"
-        "1.16.3-latest": "1.16.3-4.1.0-124",
-        "1.16.3-recommended": "1.16.3-4.1.0-124"
+        "1.16.1-recommended": "1.16.1-4.1.1-126",
+        "1.16.3-latest": "1.16.3-4.1.1-127",
+        "1.16.3-recommended": "1.16.3-4.1.1-127"
     },
     "1.8.9": {
         "0.8-24": "- massive shoutout to Malte for figuring out some proper wire rendering! :D\n- added compat for DenseOres (crushing/smelting) \n- fixed lanterns not emitting light\n- fixed silver bullets causing a crash\n- fixed gunpowder barrels crashing because of a duplicate datamarker\n- fixed gunpowder barrels dropping from explosions\n- fixed CokeOvens not interacting with hoppers\n- fixed wires not outputting to RF-only receivers (thanks Malte)\n- fixed connections on HV relays (thanks Malte)\n- fixed a crash caused by hammering the top/bottom of a wooden post\n- fixed the stackoverflow in sheetmetal tanks\n- fixed the themoelectric gen crashing (thanks Malte)\n- fixed the waterwheels breaking more other wheels (thanks Malte)\n- fixed textures on stone slabs (thanks Malte)",
@@ -132,6 +132,7 @@
     },
     "1.16.3": {
         "1.16.3-4.0.1-121": "- Initial release for 1.16.3",
-        "1.16.3-4.1.0-124": "- Fixed crash with gunpowder barrels (BluSunrize)\n- Also includes the changes from 1.16.1-4.1.0-123"
+        "1.16.3-4.1.0-124": "- Fixed crash with gunpowder barrels (BluSunrize)\n- Also includes the changes from 1.16.1-4.1.0-123",
+        "1.16.3-4.1.1-127": "- Fixed Arc Recycling accessing Tags too early (Malte)\n- Fixed null calls in IE's config for item max damage (BluSunrize)\n- Fixed electrodes not taking and displaying damage properly (BluSunrize)\n- Fixed retrogen crashing (BluSunrize)\n- Also includes the changes from 1.16.1-4.1.1-126"
     }
 }
