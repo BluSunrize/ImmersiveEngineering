@@ -1,5 +1,6 @@
 ##### Version 1.16.1-4.1.1-pre
 - Added Basalt and Blackstone to the blocks that the survey tool works on (BluSunrize)
+- Changed Ancient Debris to produce twice the netherite scrap in the Arc Furnace (BluSunrize)
 - Fixed steel hoes doing too much damage. As a result of this fix, all other steel tools now match diamond in damage (BluSunrize)
 - Fixed missing localization for metal barrel minecart (BluSunrize)
 - Fixed transparency issues with banners (BluSunrize)

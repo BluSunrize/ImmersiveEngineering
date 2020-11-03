@@ -2,7 +2,8 @@
   "type": "immersiveengineering:arc_furnace",
   "results": [
     {
-      "item": "minecraft:netherite_scrap"
+      "item": "minecraft:netherite_scrap",
+      "count": 2
     }
   ],
   "additives": [],
