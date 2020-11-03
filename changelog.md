@@ -3,9 +3,9 @@
 - Fixed null calls in IE's config for item max damage (BluSunrize)
 - Fixed electrodes not taking and displaying damage properly (BluSunrize)
 - Fixed retrogen crashing (BluSunrize)
-- Also includes the changes from 1.16.1-4.1.1-pre
+- Also includes the changes from 1.16.1-4.1.1-126
 
-##### Version 1.16.1-4.1.1-pre
+##### Version 1.16.1-4.1.1-126
 - Added Basalt and Blackstone to the blocks that the survey tool works on (BluSunrize)
 - Changed Ancient Debris to produce twice the netherite scrap in the Arc Furnace (BluSunrize)
 - Fixed steel hoes doing too much damage. As a result of this fix, all other steel tools now match diamond in damage (BluSunrize)
