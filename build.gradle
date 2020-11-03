@@ -1,4 +1,5 @@
 import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
 import net.minecraftforge.gradle.common.task.SignJar
 
 buildscript {
@@ -41,6 +42,8 @@ def version_replaces = [
         'forge_version': version_forge
 ]
 
+def jsonPatterns = ["**/*.json", "**/*.mcmeta"]
+
 processResources {
     from(sourceSets.main.resources.srcDirs) {
         include 'META-INF/mods.toml'
@@ -49,6 +52,12 @@ processResources {
     }
     from(sourceSets.main.resources.srcDirs) {
         exclude 'META-INF/mods.toml'
+    }
+    //Minify json resources
+    doLast {
+        fileTree(dir: getOutputs().getFiles().getAsPath(), includes: jsonPatterns).each {
+            File file -> file.setText(JsonOutput.toJson(new JsonSlurper().parse(file)))
+        }
     }
 }
 
@@ -243,6 +252,32 @@ shadowJar {
 
 reobf {
     shadowJar {}
+}
+
+//Minimize/optimize all png files, requires optipng on the PATH
+// Credits: BrainStone
+void minimizePNGFile(File file) {
+    long size = file.length()
+    exec {
+        executable "optipng"
+        args "-q", "-o7", "-zm1-9", "-strip", "all", file
+    }
+    long newSize = file.length()
+    if (newSize < size) {
+        System.out.format("Reduced File size of %s from %d bytes to %d bytes (reduced by %.2f%%)\n",
+                file, size, newSize, ((double) (size - newSize)) / ((double) size) * 100.0)
+    }
+}
+
+task optimizePng {
+    def pngPatterns = ["**/*.png"]
+    doLast {
+        //Ensure the logo is minimized (we add this file to each jar)
+        //Minimize any PNGs in the source sets
+        for (dir in sourceSets.main.resources.srcDirs) {
+            fileTree(dir: dir, includes: pngPatterns).each { minimizePNGFile(it) }
+        }
+    }
 }
 
 apply plugin: 'maven'
