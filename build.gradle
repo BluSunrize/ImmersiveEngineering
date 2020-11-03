@@ -84,12 +84,6 @@ minecraft {
 
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
-            // Necessary for VisualVM
-            property 'com.sun.management.jmxremote', 'true'
-            property 'com.sun.management.jmxremote.port', '9010'
-            property 'com.sun.management.jmxremote.local.only', 'false'
-            property 'com.sun.management.jmxremote.authenticate', 'false'
-            property 'com.sun.management.jmxremote.ssl', 'false'
             mods {
                 immersiveengineering {
                     source sourceSets.main
