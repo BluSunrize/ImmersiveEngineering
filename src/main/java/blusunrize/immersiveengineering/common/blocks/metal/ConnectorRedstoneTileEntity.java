@@ -64,6 +64,7 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 	public boolean rsDirty = false;
 	//Only write to this in wire network updates!
 	private int output;
+
 	public ConnectorRedstoneTileEntity()
 	{
 		this(IETileTypes.CONNECTOR_REDSTONE.get());
@@ -142,7 +143,8 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 	@Override
 	public ActionResultType screwdriverUseSide(Direction side, PlayerEntity player, Hand hand, Vector3d hitVec)
 	{
-		ImmersiveEngineering.proxy.openTileScreen(Lib.GUIID_RedstoneConnector, this);
+		if(world.isRemote)
+			ImmersiveEngineering.proxy.openTileScreen(Lib.GUIID_RedstoneConnector, this);
 		return ActionResultType.SUCCESS;
 	}
 
