@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.items.HammerItem;
+import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.LadderBlock;
 import net.minecraft.block.SoundType;
@@ -40,7 +41,7 @@ public class MetalLadderBlock extends LadderBlock
 
 	static
 	{
-		for(Direction dir : Direction.BY_HORIZONTAL_INDEX)
+		for(Direction dir : DirectionUtils.BY_HORIZONTAL_INDEX)
 		{
 			VoxelShape forDir = VoxelShapes.empty();
 			if(dir!=Direction.NORTH)

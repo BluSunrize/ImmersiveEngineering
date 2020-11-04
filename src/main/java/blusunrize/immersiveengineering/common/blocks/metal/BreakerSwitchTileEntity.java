@@ -15,10 +15,7 @@ import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectorBlock;
-import blusunrize.immersiveengineering.common.util.ChatUtils;
-import blusunrize.immersiveengineering.common.util.IELogger;
-import blusunrize.immersiveengineering.common.util.IESounds;
-import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.BlockState;
@@ -201,7 +198,7 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 	{
 		markDirty();
 		world.notifyNeighborsOfStateChange(getPos(), getBlockState().getBlock());
-		for(Direction f : Direction.VALUES)
+		for(Direction f : DirectionUtils.VALUES)
 			world.notifyNeighborsOfStateChange(getPos().offset(f), getBlockState().getBlock());
 	}
 

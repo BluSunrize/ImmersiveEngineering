@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "blusunrize.immersiveengineering.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "immersiveengineering.refmap.json",
+  "mixins": ["accessors.EntityAccess", "accessors.FurnaceTEAccess", "accessors.TemplateAccess"],
+  "client": ["accessors.NewChatGuiAccess", "accessors.PlayerControllerAccess"],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "minVersion": "0.8"
+}

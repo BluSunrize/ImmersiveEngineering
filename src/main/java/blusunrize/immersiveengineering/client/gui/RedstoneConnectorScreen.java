@@ -130,7 +130,7 @@ public class RedstoneConnectorScreen extends ClientTileScreen<ConnectorRedstoneT
 				super.render(transform, mouseX, mouseY, partialTicks);
 				if(this.visible)
 				{
-					int col = color.colorValue;
+					int col = color.getColorValue();
 					if(!getState())
 						col = ClientUtils.getDarkenedTextColour(col);
 					col = 0xff000000|col;

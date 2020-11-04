@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.multiblocks.BlockMatcher.Result;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.StaticTemplateManager;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.mixin.accessors.TemplateAccess;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -21,8 +22,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tags.ITag;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.ResourceLocation;
@@ -114,7 +115,7 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 			try
 			{
 				template = StaticTemplateManager.loadStaticTemplate(loc, server);
-				List<Template.BlockInfo> blocks = template.blocks.get(0).func_237157_a_();
+				List<Template.BlockInfo> blocks = getStructureFromTemplate(template);
 				for(int i = 0; i < blocks.size(); i++)
 				{
 					Template.BlockInfo info = blocks.get(i);
@@ -170,13 +171,13 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 		Rotation rot = Utils.getRotationBetweenFacings(Direction.NORTH, side.getOpposite());
 		if(rot==null)
 			return false;
-		Template template = getTemplate(world);
+		List<BlockInfo> structure = getStructure(world);
 		mirrorLoop:
 		for(Mirror mirror : getPossibleMirrorStates())
 		{
 			PlacementSettings placeSet = new PlacementSettings().setMirror(mirror).setRotation(rot);
 			BlockPos origin = pos.subtract(Template.transformedBlockPos(placeSet, triggerFromOrigin));
-			for(Template.BlockInfo info : template.blocks.get(0).func_237157_a_())
+			for(Template.BlockInfo info : structure)
 			{
 				BlockPos realRelPos = Template.transformedBlockPos(placeSet, info.pos);
 				BlockPos here = origin.add(realRelPos);
@@ -226,7 +227,12 @@ public abstract class TemplateMultiblock implements MultiblockHandler.IMultibloc
 	@Override
 	public List<BlockInfo> getStructure(@Nullable World world)
 	{
-		return getTemplate(world).blocks.get(0).func_237157_a_();
+		return getStructureFromTemplate(getTemplate(world));
+	}
+
+	private static List<BlockInfo> getStructureFromTemplate(Template template)
+	{
+		return ((TemplateAccess)template).getBlocks().get(0).func_237157_a_();
 	}
 
 	@Override

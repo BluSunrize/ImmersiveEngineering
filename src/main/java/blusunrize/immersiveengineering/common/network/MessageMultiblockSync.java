@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.StaticTemplateManager;
+import blusunrize.immersiveengineering.mixin.accessors.TemplateAccess;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -57,7 +58,7 @@ public class MessageMultiblockSync implements IMessage
 			{
 				Template template = new Template();
 				template.size = synced.size;
-				template.blocks.add(synced.parts);
+				((TemplateAccess)template).getBlocks().add(synced.parts);
 				StaticTemplateManager.SYNCED_CLIENT_TEMPLATES.put(synced.name, template);
 			}
 			for(IMultiblock mb : MultiblockHandler.getMultiblocks())
@@ -76,7 +77,7 @@ public class MessageMultiblockSync implements IMessage
 		public SyncedTemplate(Template template, ResourceLocation name)
 		{
 			this.size = template.getSize();
-			this.parts = template.blocks.get(0);
+			this.parts = ((TemplateAccess)template).getBlocks().get(0);
 			this.name = name;
 		}
 

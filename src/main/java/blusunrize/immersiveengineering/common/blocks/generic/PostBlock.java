@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IModelDataBlock;
+import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -25,8 +26,8 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootContext.Builder;
 import net.minecraft.item.ItemUseContext;
+import net.minecraft.loot.LootContext.Builder;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.properties.BlockStateProperties;
@@ -89,7 +90,7 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBloc
 				spawnAsEntity(world, pos, new ItemStack(this));
 				final int highestBlock = 3;
 				BlockPos armStart = pos.up(highestBlock);
-				for(Direction d : Direction.BY_HORIZONTAL_INDEX)
+				for(Direction d : DirectionUtils.BY_HORIZONTAL_INDEX)
 				{
 					BlockPos armPos = armStart.offset(d);
 					BlockState armState = world.getBlockState(armPos);
@@ -235,7 +236,7 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBloc
 				return VoxelShapes.empty();
 			final double baseWidth = dummy==3?6./16: 4./16;
 			VoxelShape ret = VoxelShapes.empty();
-			for(Direction neighbor : Direction.BY_HORIZONTAL_INDEX)
+			for(Direction neighbor : DirectionUtils.BY_HORIZONTAL_INDEX)
 			{
 				if(hasConnection(state, neighbor, world, pos))
 				{
@@ -366,7 +367,7 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBloc
 			BlockState upperState = world.getBlockState(upperPos);
 			if(upperState.getBlock()==this)
 			{
-				for(Direction f : Direction.BY_HORIZONTAL_INDEX)
+				for(Direction f : DirectionUtils.BY_HORIZONTAL_INDEX)
 					if(hasConnection(upperState, f, world, upperPos))
 					{
 						String name = f.getOpposite().getString();

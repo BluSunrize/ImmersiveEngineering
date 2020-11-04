@@ -318,6 +318,8 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				else
 					event.setResultSound(new IEMuffledSound(event.getSound(), EarmuffsItem.getVolumeMod(earmuffs)));
 
+				// TODO this is 1.7.10 code, and is the only use of the AT for mapSoundPositions. It looks like this
+				// was fixed, remove?
 				if(event.getSound().getCategory()==SoundCategory.RECORDS)
 				{
 					BlockPos pos = new BlockPos(event.getSound().getX(), event.getSound().getY(), event.getSound().getZ());

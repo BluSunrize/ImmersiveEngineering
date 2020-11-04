@@ -34,6 +34,7 @@ import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchTileEnti
 import blusunrize.immersiveengineering.common.blocks.wooden.SawdustBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
 import blusunrize.immersiveengineering.common.data.models.LoadedModelBuilder;
+import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.fluids.IEFluid;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -194,7 +195,7 @@ public class BlockStates extends BlockStateProvider
 				.add(new Vector3i(0, 1, 0))
 				.add(new Vector3i(0, 2, 0))
 				.add(new Vector3i(0, 3, 0));
-		for(Direction d : Direction.BY_HORIZONTAL_INDEX)
+		for(Direction d : DirectionUtils.BY_HORIZONTAL_INDEX)
 			parts.add(new BlockPos(0, 3, 0).offset(d));
 		LoadedModelBuilder builder = splitModel(
 				name(b), IEOBJLoader.LOADER_NAME, model, texture.toString(), parts.build().stream(), true
@@ -1153,7 +1154,7 @@ public class BlockStates extends BlockStateProvider
 	private void createDirectionalBlock(Block b, Property<Direction> prop, ModelFile model)
 	{
 		VariantBlockStateBuilder builder = getVariantBuilder(b);
-		for(Direction d : Direction.BY_HORIZONTAL_INDEX)
+		for(Direction d : DirectionUtils.BY_HORIZONTAL_INDEX)
 			builder.partialState()
 					.with(prop, d)
 					.setModels(new ConfiguredModel(model, 0, getAngle(d, 180), true));
@@ -1162,7 +1163,7 @@ public class BlockStates extends BlockStateProvider
 	private void createWallmount(Block b, ResourceLocation texture)
 	{
 		VariantBlockStateBuilder stateBuilder = getVariantBuilder(b);
-		for(Direction d : Direction.BY_HORIZONTAL_INDEX)
+		for(Direction d : DirectionUtils.BY_HORIZONTAL_INDEX)
 		{
 			int rotation = getAngle(d, 0);
 			for(WallmountBlock.Orientation or : Orientation.values())
@@ -1474,7 +1475,7 @@ public class BlockStates extends BlockStateProvider
 	private ModelFile createRouterModel(ResourceLocation baseTexName, String outName)
 	{
 		BlockModelBuilder builder = models().withExistingParent(outName, modLoc("block/ie_six_sides"));
-		for(Direction d : Direction.VALUES)
+		for(Direction d : DirectionUtils.VALUES)
 			builder.texture(d.getString(), new ResourceLocation(baseTexName.getNamespace(),
 					baseTexName.getPath()+"_"+d.ordinal()));
 		builder.texture("particle", new ResourceLocation(baseTexName.getNamespace(),

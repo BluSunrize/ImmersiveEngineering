@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.BasicConveyor;
+import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.block.BlockState;
@@ -252,7 +253,7 @@ public class ChuteTileEntity extends IEBaseTileEntity implements IStateBasedDire
 		{
 			this.diagonal = te.diagonal;
 			this.sidesToAdd = EnumSet.noneOf(Direction.class);
-			for(Direction dir : Direction.BY_HORIZONTAL_INDEX)
+			for(Direction dir : DirectionUtils.BY_HORIZONTAL_INDEX)
 				if(!te.isInwardConveyor(dir)&&(!diagonal||dir!=te.getFacing()))
 					this.sidesToAdd.add(dir);
 		}
@@ -264,7 +265,7 @@ public class ChuteTileEntity extends IEBaseTileEntity implements IStateBasedDire
 			for(Direction d : sidesToAdd)
 				list.add(AABB_SIDES.get(d));
 			//CORNERS
-			for(Direction sideA : Direction.BY_HORIZONTAL_INDEX)
+			for(Direction sideA : DirectionUtils.BY_HORIZONTAL_INDEX)
 			{
 				Direction sideB = sideA.rotateY();
 				if(!sidesToAdd.contains(sideA)&&!sidesToAdd.contains(sideB))
@@ -318,7 +319,7 @@ public class ChuteTileEntity extends IEBaseTileEntity implements IStateBasedDire
 		if(diagonal)
 			return "diagonal:"+getFacing().name();
 		String s = "base";
-		for(Direction dir : Direction.BY_HORIZONTAL_INDEX)
+		for(Direction dir : DirectionUtils.BY_HORIZONTAL_INDEX)
 			if(!isInwardConveyor(dir))
 				s += ":"+dir.name().toLowerCase(Locale.US);
 		return s;

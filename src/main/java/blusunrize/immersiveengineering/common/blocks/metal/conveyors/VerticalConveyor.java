@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransfor
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.ModelConveyor;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
+import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -106,7 +107,7 @@ public class VerticalConveyor extends BasicConveyor
 			for(Direction f : ((IConveyorTile)te).getConveyorSubtype().sigTransportDirections())
 				if(f==Direction.UP)
 					return false;
-		for(Direction f : Direction.BY_HORIZONTAL_INDEX)
+		for(Direction f : DirectionUtils.BY_HORIZONTAL_INDEX)
 			if(f!=facing&&isInwardConveyor(tile, f))
 				return true;
 		return false;

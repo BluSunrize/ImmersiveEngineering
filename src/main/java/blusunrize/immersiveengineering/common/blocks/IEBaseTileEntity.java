@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.client.utils.CombinedModelData;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
+import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.SafeChunkUtils;
@@ -349,14 +350,14 @@ public abstract class IEBaseTileEntity extends TileEntity implements BlockstateP
 	protected int getMaxRSInput()
 	{
 		int ret = 0;
-		for(Direction d : Direction.VALUES)
+		for(Direction d : DirectionUtils.VALUES)
 			ret = Math.max(ret, getRSInput(d));
 		return ret;
 	}
 
 	protected boolean isRSPowered()
 	{
-		for(Direction d : Direction.VALUES)
+		for(Direction d : DirectionUtils.VALUES)
 			if(getRSInput(d) > 0)
 				return true;
 		return false;

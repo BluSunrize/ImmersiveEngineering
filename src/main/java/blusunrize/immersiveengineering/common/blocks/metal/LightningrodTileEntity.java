@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
@@ -62,7 +63,7 @@ public class LightningrodTileEntity extends MultiblockPartTileEntity<Lightningro
 			if(energyStorage.getEnergyStored() > 0)
 			{
 				TileEntity tileEntity;
-				for(Direction f : Direction.BY_HORIZONTAL_INDEX)
+				for(Direction f : DirectionUtils.BY_HORIZONTAL_INDEX)
 				{
 					tileEntity = Utils.getExistingTileEntity(world, getPos().offset(f, 2));
 					int output = EnergyHelper.insertFlux(tileEntity, f.getOpposite(), energyStorage.getLimitExtract(), true);

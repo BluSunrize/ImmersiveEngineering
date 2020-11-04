@@ -261,7 +261,7 @@ public class BlockOverlayUtils
 		transform.push();
 		transform.translate(-renderView.x, -renderView.y, -renderView.z);
 		PlayerController controllerMP = ClientUtils.mc().playerController;
-		if(controllerMP.isHittingBlock)
+		if(controllerMP.getIsHittingBlock())
 			ClientUtils.drawBlockDamageTexture(transform, ev.getBuffers(), player, partialTicks, player.world, blocks);
 		transform.pop();
 	}

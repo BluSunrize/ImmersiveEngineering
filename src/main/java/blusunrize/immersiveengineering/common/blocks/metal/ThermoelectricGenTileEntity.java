@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxConnector;
@@ -53,7 +54,7 @@ public class ThermoelectricGenTileEntity extends IEBaseTileEntity implements ITi
 
 	public void outputEnergy(int amount)
 	{
-		for(Direction fd : Direction.VALUES)
+		for(Direction fd : DirectionUtils.VALUES)
 		{
 			TileEntity te = Utils.getExistingTileEntity(world, getPos().offset(fd));
 			amount -= EnergyHelper.insertFlux(te, fd.getOpposite(), amount, false);
