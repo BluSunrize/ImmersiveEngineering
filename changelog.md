@@ -1,3 +1,7 @@
+##### Version 1.16.4-4.1.1-128
+- First 1.16.4 release
+- Includes the changes from 1.16.3-4.1.1-127
+
 ##### Version 1.16.3-4.1.1-127
 - Fixed Arc Recycling accessing Tags too early (Malte)
 - Fixed null calls in IE's config for item max damage (BluSunrize)
