@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.BakedIEModel;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces;
+import blusunrize.immersiveengineering.mixin.accessors.client.RenderTypeAccess;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
@@ -139,7 +140,7 @@ public class BakedConnectionModel extends BakedIEModel
 
 	private List<BakedQuad> getBaseQuads(RenderType currentLayer, BlockState state, Direction side, Random rand, IModelData data)
 	{
-		if(base!=null&&(currentLayer==null||layers.contains(currentLayer.name)))
+		if(base!=null&&(currentLayer==null||layers.contains(((RenderTypeAccess)currentLayer).getName())))
 			return base.getQuads(state, side, rand, data);
 		return ImmutableList.of();
 	}

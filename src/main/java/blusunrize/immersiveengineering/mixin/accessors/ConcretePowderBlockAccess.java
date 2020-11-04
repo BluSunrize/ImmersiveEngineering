@@ -9,20 +9,14 @@
 
 package blusunrize.immersiveengineering.mixin.accessors;
 
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.gen.feature.template.Template;
-import net.minecraft.world.gen.feature.template.Template.Palette;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.ConcretePowderBlock;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import java.util.List;
-
-@Mixin(Template.class)
-public interface TemplateAccess
+@Mixin(ConcretePowderBlock.class)
+public interface ConcretePowderBlockAccess
 {
 	@Accessor
-	void setSize(BlockPos size);
-
-	@Accessor
-	List<Palette> getBlocks();
+	BlockState getSolidifiedState();
 }

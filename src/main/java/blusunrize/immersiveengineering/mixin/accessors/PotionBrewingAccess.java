@@ -9,20 +9,18 @@
 
 package blusunrize.immersiveengineering.mixin.accessors;
 
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.gen.feature.template.Template;
-import net.minecraft.world.gen.feature.template.Template.Palette;
+import net.minecraft.potion.PotionBrewing;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 import java.util.List;
 
-@Mixin(Template.class)
-public interface TemplateAccess
+@Mixin(PotionBrewing.class)
+public interface PotionBrewingAccess
 {
-	@Accessor
-	void setSize(BlockPos size);
-
-	@Accessor
-	List<Palette> getBlocks();
+	@Accessor("POTION_TYPE_CONVERSIONS")
+	static List<?> getConversions()
+	{
+		throw new UnsupportedOperationException("Replaced by Mixin");
+	}
 }

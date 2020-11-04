@@ -8,10 +8,13 @@
 
 package blusunrize.immersiveengineering.common.util.loot;
 
-import net.minecraft.loot.LootEntryManager;
+import net.minecraft.loot.ILootSerializer;
+import net.minecraft.loot.LootEntry;
 import net.minecraft.loot.LootFunctionType;
 import net.minecraft.loot.LootPoolEntryType;
-import net.minecraft.loot.functions.LootFunctionManager;
+import net.minecraft.loot.functions.ILootFunction;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.Registry;
 
 /**
  * @author BluSunrize - 16.08.2018
@@ -28,13 +31,26 @@ public class IELootFunctions
 
 	public static void preInit()
 	{
-		bluprintz = LootFunctionManager.func_237451_a_(BluprintzLootFunction.ID.toString(), new BluprintzLootFunction.Serializer());
-		windmill = LootFunctionManager.func_237451_a_(WindmillLootFunction.ID.toString(), new WindmillLootFunction.Serializer());
-		propertyCount =  LootFunctionManager.func_237451_a_(PropertyCountLootFunction.ID.toString(), new PropertyCountLootFunction.Serializer());
+		bluprintz = registerFunction(BluprintzLootFunction.ID, new BluprintzLootFunction.Serializer());
+		windmill = registerFunction(WindmillLootFunction.ID, new WindmillLootFunction.Serializer());
+		propertyCount = registerFunction(PropertyCountLootFunction.ID, new PropertyCountLootFunction.Serializer());
 
-		dropInventory = LootEntryManager.register(DropInventoryLootEntry.ID.toString(), new DropInventoryLootEntry.Serializer());
-		tileDrop = LootEntryManager.register(TileDropLootEntry.ID.toString(), new TileDropLootEntry.Serializer());
-		multiblockOrigBlock = LootEntryManager.register(MBOriginalBlockLootEntry.ID.toString(), new MBOriginalBlockLootEntry.Serializer());
+		dropInventory = registerEntry(DropInventoryLootEntry.ID, new DropInventoryLootEntry.Serializer());
+		tileDrop = registerEntry(TileDropLootEntry.ID, new TileDropLootEntry.Serializer());
+		multiblockOrigBlock = registerEntry(MBOriginalBlockLootEntry.ID, new MBOriginalBlockLootEntry.Serializer());
 	}
 
+	private static LootPoolEntryType registerEntry(ResourceLocation id, ILootSerializer<? extends LootEntry> serializer)
+	{
+		return Registry.register(
+				Registry.LOOT_POOL_ENTRY_TYPE, id, new LootPoolEntryType(serializer)
+		);
+	}
+
+	private static LootFunctionType registerFunction(ResourceLocation id, ILootSerializer<? extends ILootFunction> serializer)
+	{
+		return Registry.register(
+				Registry.LOOT_FUNCTION_TYPE, id, new LootFunctionType(serializer)
+		);
+	}
 }

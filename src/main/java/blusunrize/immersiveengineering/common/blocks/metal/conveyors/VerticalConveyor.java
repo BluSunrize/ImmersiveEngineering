@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.client.models.ModelConveyor;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.mixin.accessors.ItemEntityAccess;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import net.minecraft.block.Blocks;
@@ -262,8 +263,9 @@ public class VerticalConveyor extends BasicConveyor
 			ItemEntity item = (ItemEntity)entity;
 			if(!contact)
 			{
-				if(item.age > item.lifespan-60*20)
-					item.age = item.lifespan-60*20;
+				ItemEntityAccess access = (ItemEntityAccess)item;
+				if(access.getAgeNonsided() > item.lifespan-60*20)
+					access.setAge(item.lifespan-60*20);
 			}
 			else
 			{

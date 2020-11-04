@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.common.EventHandler;
+import blusunrize.immersiveengineering.mixin.accessors.ExplosionAccess;
 import com.google.common.collect.Sets;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -108,7 +109,7 @@ public class IEExplosion extends Explosion
 					if(damagesTerrain==Explosion.Mode.DESTROY)
 						lootCtx.withParameter(LootParameters.EXPLOSION_RADIUS, this.size);
 					state.getDrops(lootCtx).forEach((p_229977_2_) -> {
-						handleExplosionDrops(objectarraylist, p_229977_2_, pos);
+						ExplosionAccess.callHandleExplosionDrops(objectarraylist, p_229977_2_, pos);
 					});
 					state.onBlockExploded(world, pos, this);
 				}

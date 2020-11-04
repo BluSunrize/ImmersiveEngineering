@@ -9,20 +9,20 @@
 
 package blusunrize.immersiveengineering.mixin.accessors;
 
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.gen.feature.template.Template;
+import net.minecraft.world.gen.feature.template.Template.BlockInfo;
 import net.minecraft.world.gen.feature.template.Template.Palette;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
+import org.spongepowered.asm.mixin.gen.Invoker;
 
 import java.util.List;
 
-@Mixin(Template.class)
-public interface TemplateAccess
+@Mixin(Template.Palette.class)
+public interface PaletteAccess
 {
-	@Accessor
-	void setSize(BlockPos size);
-
-	@Accessor
-	List<Palette> getBlocks();
+	@Invoker("<init>")
+	static Palette construct(List<BlockInfo> blocks)
+	{
+		throw new UnsupportedOperationException("This will be replaced by Mixin");
+	}
 }

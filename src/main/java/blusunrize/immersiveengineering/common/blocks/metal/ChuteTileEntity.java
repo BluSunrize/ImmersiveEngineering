@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.conveyors.BasicConvey
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import blusunrize.immersiveengineering.mixin.accessors.ItemEntityAccess;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -169,8 +170,9 @@ public class ChuteTileEntity extends IEBaseTileEntity implements IStateBasedDire
 			itemEntity.setPickupDelay(10);
 			if(!contact)
 			{
-				if(itemEntity.age > itemEntity.lifespan-60*20)
-					itemEntity.age = itemEntity.lifespan-60*20;
+				ItemEntityAccess access = (ItemEntityAccess)itemEntity;
+				if(access.getAgeNonsided() > itemEntity.lifespan-60*20)
+					access.setAge(itemEntity.lifespan-60*20);
 			}
 			else
 			{

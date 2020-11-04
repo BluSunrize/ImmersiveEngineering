@@ -9,13 +9,14 @@
 
 package blusunrize.immersiveengineering.mixin.accessors;
 
-import net.minecraft.client.multiplayer.PlayerController;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.item.TNTEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-@Mixin(PlayerController.class)
-public interface PlayerControllerAccess
+@Mixin(TNTEntity.class)
+public interface TNTEntityAccess
 {
 	@Accessor
-	float getCurBlockDamageMP();
+	void setTntPlacedBy(LivingEntity newPlacer);
 }

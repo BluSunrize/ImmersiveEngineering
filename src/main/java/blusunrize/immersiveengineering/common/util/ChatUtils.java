@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.network.MessageNoSpamChatComponents;
-import blusunrize.immersiveengineering.mixin.accessors.NewChatGuiAccess;
+import blusunrize.immersiveengineering.mixin.accessors.client.NewChatGuiAccess;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.NewChatGui;
 import net.minecraft.entity.player.PlayerEntity;

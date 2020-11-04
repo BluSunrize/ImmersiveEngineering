@@ -36,6 +36,7 @@ import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
 import blusunrize.immersiveengineering.common.data.models.LoadedModelBuilder;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.fluids.IEFluid;
+import blusunrize.immersiveengineering.mixin.accessors.client.RenderTypeAccess;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -1207,7 +1208,7 @@ public class BlockStates extends BlockStateProvider
 			List<Property<?>> additional, RenderType... layers)
 	{
 		final List<String> layersList = Arrays.stream(layers)
-				.map(rt -> rt.name)
+				.map(rt -> ((RenderTypeAccess)rt).getName())
 				.collect(Collectors.toList());
 		createConnector(b, s -> {
 			Pair<ResourceLocation, JsonObject> m = model.apply(s);
@@ -1221,7 +1222,7 @@ public class BlockStates extends BlockStateProvider
 			List<Property<?>> additional, RenderType... layers)
 	{
 		final List<String> layersList = Arrays.stream(layers)
-				.map(rt -> rt.name)
+				.map(rt -> ((RenderTypeAccess)rt).getName())
 				.collect(Collectors.toList());
 		createConnector(b, s -> forConnectorModel(s, model.apply(s), layersList, textures.apply(s)), additional, layers);
 	}
@@ -1258,7 +1259,7 @@ public class BlockStates extends BlockStateProvider
 		VariantBlockStateBuilder builder = getVariantBuilder(b);
 		forEachState(builder.partialState(), additional, map -> {
 			final List<String> layersList = Arrays.stream(layers)
-					.map(r -> r.name)
+					.map(r -> ((RenderTypeAccess)r).getName())
 					.collect(Collectors.toList());
 			if(facingProp!=null)
 			{

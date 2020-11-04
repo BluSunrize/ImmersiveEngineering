@@ -7,7 +7,7 @@
  *
  */
 
-package blusunrize.immersiveengineering.mixin.accessors;
+package blusunrize.immersiveengineering.mixin.accessors.client;
 
 import net.minecraft.client.gui.NewChatGui;
 import net.minecraft.util.text.ITextComponent;

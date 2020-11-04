@@ -9,20 +9,17 @@
 
 package blusunrize.immersiveengineering.mixin.accessors;
 
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.gen.feature.template.Template;
-import net.minecraft.world.gen.feature.template.Template.Palette;
+import net.minecraft.entity.item.ItemEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import java.util.List;
-
-@Mixin(Template.class)
-public interface TemplateAccess
+@Mixin(ItemEntity.class)
+public interface ItemEntityAccess
 {
-	@Accessor
-	void setSize(BlockPos size);
+	// There is a getter for it already, but it's client side only
+	@Accessor("age")
+	int getAgeNonsided();
 
 	@Accessor
-	List<Palette> getBlocks();
+	void setAge(int newAge);
 }

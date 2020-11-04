@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.gui;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
 import blusunrize.immersiveengineering.api.tool.IUpgradeableTool;
+import blusunrize.immersiveengineering.mixin.accessors.ContainerAccess;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -54,7 +55,7 @@ public class MaintenanceKitContainer extends ItemContainer
 					if(ItemStack.areItemStacksEqual(((IESlot.Upgrades)slot).upgradeableTool, inv.getStackInSlot(0)))
 						return this.internalSlots;
 		this.inventorySlots.clear();
-		this.inventoryItemStacks.clear();
+		((ContainerAccess)this).getInventoryItemStacks().clear();
 		this.addSlot(new IESlot.Maintenance(this, this.inv, 0, 28, 10));
 		int slotCount = 1;
 

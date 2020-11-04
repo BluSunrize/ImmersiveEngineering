@@ -5,6 +5,7 @@ import blusunrize.immersiveengineering.api.excavator.MineralMix;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import blusunrize.immersiveengineering.mixin.accessors.client.WorldRendererAccess;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.gui.FontRenderer;
@@ -248,7 +249,7 @@ public class BlockOverlayUtils
 	{
 		Vector3d renderView = ev.getInfo().getProjectedView();
 		for(BlockPos pos : blocks)
-			ev.getContext().drawSelectionBox(
+			((WorldRendererAccess)ev.getContext()).callDrawSelectionBox(
 					ev.getMatrix(),
 					ev.getBuffers().getBuffer(RenderType.getLines()),
 					player,

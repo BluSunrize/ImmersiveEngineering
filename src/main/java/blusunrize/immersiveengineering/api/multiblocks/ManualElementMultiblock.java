@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.api.multiblocks;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
+import blusunrize.immersiveengineering.mixin.accessors.TileEntityAccess;
 import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.ManualUtils;
 import blusunrize.lib.manual.SpecialManualElements;
@@ -325,7 +326,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 					TileEntity te = TileEntity.readTileEntity(p.getValue().state, p.getValue().nbt);
 					if(te!=null)
 					{
-						te.cachedBlockState = p.getValue().state;
+						((TileEntityAccess)te).setCachedBlockState(p.getValue().state);
 						tiles.put(p.getKey(), te);
 					}
 				}
