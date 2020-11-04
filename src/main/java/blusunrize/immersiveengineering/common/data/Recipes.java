@@ -678,7 +678,7 @@ public class Recipes extends RecipeProvider
 				.setEnergy(204800)
 				.build(out, toRL("arcfurnace/steel"));
 
-		ArcFurnaceRecipeBuilder.builder(Items.NETHERITE_SCRAP)
+		ArcFurnaceRecipeBuilder.builder(new ItemStack(Items.NETHERITE_SCRAP, 2))
 				.addIngredient("input", Items.ANCIENT_DEBRIS)
 				.addSlag(IETags.slag, 1)
 				.setTime(100)

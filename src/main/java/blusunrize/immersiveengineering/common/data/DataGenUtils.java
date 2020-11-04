@@ -26,9 +26,6 @@ import org.apache.commons.io.IOUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -97,25 +94,12 @@ public class DataGenUtils
 
 	public static INamedTag<Item> createItemWrapper(ResourceLocation name)
 	{
-		return createWrapperTag(ItemTags.getAllTags(), name, ItemTags::makeWrapperTag);
+		return ItemTags.makeWrapperTag(name.toString());
 	}
 
 	public static INamedTag<Block> createBlockWrapper(ResourceLocation name)
 	{
-		return createWrapperTag(BlockTags.getAllTags(), name, BlockTags::makeWrapperTag);
-	}
-
-	private static <T> INamedTag<T> createWrapperTag(List<? extends INamedTag<T>> allExisting, ResourceLocation name,
-													 Function<String, INamedTag<T>> createNew)
-	{
-		Optional<? extends INamedTag<T>> existing = allExisting
-				.stream()
-				.filter(tag -> tag.getName().equals(name))
-				.findAny();
-		if(existing.isPresent())
-			return existing.get();
-		else
-			return createNew.apply(name.toString());
+		return BlockTags.makeWrapperTag(name.toString());
 	}
 
 	public static INamedTag<Fluid> createFluidWrapper(ResourceLocation name)
