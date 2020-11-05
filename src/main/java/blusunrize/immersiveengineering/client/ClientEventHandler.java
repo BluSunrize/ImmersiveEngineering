@@ -204,7 +204,6 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	{
 		if(event.getItemStack().isEmpty())
 			return;
-		event.getItemStack().getBurnTime();
 		event.getItemStack().getCapability(CapabilityShader.SHADER_CAPABILITY).ifPresent(wrapper ->
 		{
 			ItemStack shader = wrapper.getShaderItem();
