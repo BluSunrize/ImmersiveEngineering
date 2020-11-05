@@ -95,7 +95,7 @@ minecraft {
 
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
-            arg "-mixin.config="+archivesBaseName+".mixins.json"
+            arg "-mixin.config="+modid+".mixins.json"
             mods {
                 immersiveengineering {
                     source sourceSets.main
@@ -114,7 +114,7 @@ minecraft {
 
             // Disable GUI by default, the IDE console can be used to enter commands
             arg '-nogui'
-            arg "-mixin.config="+archivesBaseName+".mixins.json"
+            arg "-mixin.config="+modid+".mixins.json"
 
             mods {
                 immersiveengineering {
@@ -134,7 +134,7 @@ minecraft {
 
             args '--mod', 'immersiveengineering', '--all', '--output', file('src/generated/resources/'), '--validate',
                     '--existing', sourceSets.main.resources.srcDirs[0]
-            arg "-mixin.config="+archivesBaseName+".mixins.json"
+            arg "-mixin.config="+modid+".mixins.json"
 
             mods {
                 immersiveengineering {
@@ -297,7 +297,7 @@ task optimizePng {
 jar {
     manifest {
         attributes([
-                "MixinConfigs": "${archivesBaseName}.mixins.json"
+                "MixinConfigs": "${modid}.mixins.json"
         ])
     }
 }
@@ -470,3 +470,9 @@ class GenerateUpdateJSON extends DefaultTask {
 task updateJson(type: GenerateUpdateJSON)
 
 processResources.dependsOn updateJson
+
+apply plugin: 'org.spongepowered.mixin'
+
+mixin {
+    add sourceSets.main, "${modid}.refmap.json"
+}
