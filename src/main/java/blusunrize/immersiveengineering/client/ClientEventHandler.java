@@ -202,9 +202,9 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	@SubscribeEvent
 	public void onItemTooltip(ItemTooltipEvent event)
 	{
-		event.getItemStack();
 		if(event.getItemStack().isEmpty())
 			return;
+		event.getItemStack().getBurnTime();
 		event.getItemStack().getCapability(CapabilityShader.SHADER_CAPABILITY).ifPresent(wrapper ->
 		{
 			ItemStack shader = wrapper.getShaderItem();

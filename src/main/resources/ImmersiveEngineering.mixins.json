@@ -8,13 +8,14 @@
     "accessors.ExplosionAccess", "accessors.FurnaceTEAccess", "accessors.HeroGiftsTaskAccess",
     "accessors.ItemEntityAccess", "accessors.PaletteAccess", "accessors.PoITypeAccess", "accessors.PotionBrewingAccess",
     "accessors.RecipeManagerAccess", "accessors.SingleJigsawAccess", "accessors.TemplateAccess",
-    "accessors.TileEntityAccess", "accessors.TNTEntityAccess"
+    "accessors.TileEntityAccess", "accessors.TNTEntityAccess", "coremods.EntityMixin", "coremods.ServerWorldMixin",
+    "coremods.client.WorldRendererMixin"
   ],
   "client": [
     "accessors.client.FontResourceManagerAccess", "accessors.client.GPUWarningAccess",
     "accessors.client.MinecartRendererAccess", "accessors.client.MinecraftAccess", "accessors.client.NewChatGuiAccess",
     "accessors.client.PlayerControllerAccess", "accessors.client.RenderTypeAccess",
-    "accessors.client.WorldRendererAccess"
+    "accessors.client.WorldRendererAccess", "coremods.client.BipedModelMixin"
   ],
   "injectors": {
     "defaultRequire": 1
