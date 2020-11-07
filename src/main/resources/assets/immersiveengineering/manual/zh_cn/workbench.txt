@@ -1,6 +1,6 @@
-Workbench & Blueprints
-Always cluttered
-The Engineer's Workbench is a professional worktable for the educated engineer. It is widely used to construct the items described in <link;blueprints;Engineer's Blueprints>.
-A wide variety of blueprints can be crafted, as detailed in the respective manual entry, whereas a few select ones can only be discovered in the world or purchased from villagers.
-To use a blueprint in the Workbench, put it in the slot on the left of the GUI and the necessary ingredients in the six slots in the middle. The resulting items can then be retrieved from the right side. Hovering your mouse over these output slots will inform you exactly which materials are needed for each item.<np>
-A secondary function of the Workbench is the modification and configuration of more complex tools and gadgets. The <link;mining_drill;Mining Drill>, <link;shield;Heavy Plated Shield> or <link;revolver;Revolver> are examples of such items. When placed in the main slot of the workbench, it's use becomes that of modifying these tools by inserting applicable upgrades into the new slots that appear.
+装配台和蓝图
+总是乱糟糟的
+工程师装配台是为受过教育的工程师准备的专业工作台。它被广泛地用于构造<link;blueprints;蓝图>中所描述的物品。
+各种各样的蓝图都可以制作出来，详见各自的手册记录，而少数的蓝图只能在世界中发现或者从村民那里购买。
+要在装配台中使用蓝图，请将它放在GUI左侧的槽中，并将必要的材料放在中间的6个槽中。然后可以从右侧取得结果。将鼠标悬停在这些输出槽上将会准确地告诉你每个物品需要哪些材料。<np>
+装配台的第二个功能是修改和配置更复杂的工具和小工具。例如:<link;mining_drill;采矿机械钻>，<link;shield;重型盾牌>或<link;revolver;左轮手枪>。当工具被放置在装配台的主槽中时，它的用途就变成了通过将适用的升级插入出现的新槽来修改这些工具。

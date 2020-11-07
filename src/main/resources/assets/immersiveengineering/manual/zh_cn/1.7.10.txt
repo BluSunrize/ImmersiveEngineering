@@ -1,0 +1,1001 @@
+# BLOCKS
+tile.ImmersiveEngineering.ore.Copper.name=铜矿石
+tile.ImmersiveEngineering.ore.Aluminum.name=铝土矿石
+tile.ImmersiveEngineering.ore.Lead.name=铅矿石
+tile.ImmersiveEngineering.ore.Silver.name=银矿石
+tile.ImmersiveEngineering.ore.Nickel.name=镍矿石
+tile.ImmersiveEngineering.storage.Copper.name=铜块
+tile.ImmersiveEngineering.storage.Aluminum.name=铝块
+tile.ImmersiveEngineering.storage.Lead.name=铅块
+tile.ImmersiveEngineering.storage.Silver.name=银块
+tile.ImmersiveEngineering.storage.Nickel.name=镍块
+tile.ImmersiveEngineering.storage.Constantan.name=康铜块
+tile.ImmersiveEngineering.storage.Electrum.name=琥珀金块
+tile.ImmersiveEngineering.storage.Steel.name=钢块
+tile.ImmersiveEngineering.storage.CoilCopper.name=铜线圈
+tile.ImmersiveEngineering.storage.CoilElectrum.name=琥珀金线圈
+tile.ImmersiveEngineering.storage.CoilHV.name=高压线圈
+
+tile.ImmersiveEngineering.storageSlab.Copper.name=铜台阶
+tile.ImmersiveEngineering.storageSlab.Aluminum.name=铝台阶
+tile.ImmersiveEngineering.storageSlab.Lead.name=铅台阶
+tile.ImmersiveEngineering.storageSlab.Silver.name=银台阶
+tile.ImmersiveEngineering.storageSlab.Nickel.name=镍台阶
+tile.ImmersiveEngineering.storageSlab.Constantan.name=康铜台阶
+tile.ImmersiveEngineering.storageSlab.Electrum.name=琥珀金台阶
+tile.ImmersiveEngineering.storageSlab.Steel.name=钢台阶
+
+tile.ImmersiveEngineering.metalDevice.connectorLV.name=低压接线器
+tile.ImmersiveEngineering.metalDevice.capacitorLV.name=低压电容器
+tile.ImmersiveEngineering.metalDevice.connectorMV.name=中压接线器
+tile.ImmersiveEngineering.metalDevice.capacitorMV.name=中压电容器
+tile.ImmersiveEngineering.metalDevice.transformer.name=变压器
+tile.ImmersiveEngineering.metalDevice.relayHV.name=高压继电器
+tile.ImmersiveEngineering.metalDevice.connectorHV.name=高压接线器
+tile.ImmersiveEngineering.metalDevice.capacitorHV.name=高压电容器
+tile.ImmersiveEngineering.metalDevice.transformerHV.name=高压变压器
+tile.ImmersiveEngineering.metalDevice.dynamo.name=动能发电机
+tile.ImmersiveEngineering.metalDevice.thermoelectricGen.name=热传导发电机
+tile.ImmersiveEngineering.metalDevice.conveyorBelt.name=传送带
+tile.ImmersiveEngineering.metalDevice.furnaceHeater.name=外置加热器
+tile.ImmersiveEngineering.metalDevice.sorter.name=物品路由器
+tile.ImmersiveEngineering.metalDevice.sampleDrill.name=岩芯钻井
+tile.ImmersiveEngineering.metalDevice.conveyorDropper.name=卸货传送带
+
+tile.ImmersiveEngineering.metalMultiblock.lightningRod.name=避雷针基座
+tile.ImmersiveEngineering.metalMultiblock.dieselGenerator.name=柴油发电机
+tile.ImmersiveEngineering.metalMultiblock.industrialSqueezer.name=工业挤压机
+tile.ImmersiveEngineering.metalMultiblock.fermenter.name=发酵机
+tile.ImmersiveEngineering.metalMultiblock.refinery.name=炼油厂
+tile.ImmersiveEngineering.metalMultiblock.crusher.name=粉碎机
+tile.ImmersiveEngineering.metalMultiblock.bucketWheel.name=斗轮
+tile.ImmersiveEngineering.metalMultiblock.excavator.name=挖掘机
+tile.ImmersiveEngineering.metalMultiblock.arcFurnace.name=电弧炉
+tile.ImmersiveEngineering.metalMultiblock.tank.name=液体储罐
+tile.ImmersiveEngineering.metalMultiblock.silo.name=储物筒仓
+tile.ImmersiveEngineering.metalMultiblock.assembler.name=装配机
+tile.ImmersiveEngineering.metalMultiblock.bottlingMachine.name=灌装机
+tile.ImmersiveEngineering.metalMultiblock.metalPress.name=金属冲压机
+
+tile.ImmersiveEngineering.metalDecoration.fence.name=钢栅栏
+tile.ImmersiveEngineering.metalDecoration.scaffolding.name=钢制脚手架
+tile.ImmersiveEngineering.metalDecoration.lantern.name=灯
+tile.ImmersiveEngineering.metalDecoration.structuralArm.name=钢制臂架构
+tile.ImmersiveEngineering.metalDecoration.radiator.name=散热器模块
+tile.ImmersiveEngineering.metalDecoration.heavyEngineering.name=重型工程块
+tile.ImmersiveEngineering.metalDecoration.generator.name=发电机模块
+tile.ImmersiveEngineering.metalDecoration.lightEngineering.name=轻型工程块
+tile.ImmersiveEngineering.metalDecoration.connectorStructural.name=钢制接线器
+tile.ImmersiveEngineering.metalDecoration.wallMount.name=钢制壁挂支架
+tile.ImmersiveEngineering.metalDecoration.sheetMetal.name=金属板方块
+tile.ImmersiveEngineering.metalDecoration.scaffolding2.name=钢制脚手架
+tile.ImmersiveEngineering.metalDecoration.aluminiumFence.name=铝栅栏
+tile.ImmersiveEngineering.metalDecoration.aluminiumScaffolding.name=铝制脚手架
+tile.ImmersiveEngineering.metalDecoration.aluminiumScaffolding2.name=铝制脚手架
+tile.ImmersiveEngineering.metalDecoration.aluminiumStructuralArm.name=铝制臂架构
+tile.ImmersiveEngineering.metalDecoration2.sheetMetalAlu.name=铝板金属块
+tile.ImmersiveEngineering.metalDecoration2.sheetMetalLead.name=铅板金属块
+tile.ImmersiveEngineering.metalDecoration2.sheetMetalSteel.name=钢板金属块
+
+tile.ImmersiveEngineering.metalDevice2.breakerSwitch.name=断路刀闸
+tile.ImmersiveEngineering.metalDevice2.energyMeter.name=电流互感器
+tile.ImmersiveEngineering.metalDevice2.electricLantern.name=电灯
+tile.ImmersiveEngineering.metalDevice2.floodlight.name=泛光灯
+tile.ImmersiveEngineering.metalDevice2.fluidPipe.name=输液管
+tile.ImmersiveEngineering.metalDevice2.fluidPump.name=液泵
+tile.ImmersiveEngineering.metalDevice2.barrel.name=金属桶
+tile.ImmersiveEngineering.metalDevice2.capacitorCreative.name=创造电容器
+tile.ImmersiveEngineering.metalDevice2.redstoneBreaker.name=红石断路器
+tile.ImmersiveEngineering.metalDevice2.chargingStation.name=充电站
+tile.ImmersiveEngineering.metalDevice2.blastFurnacePreheater.name=高炉鼓风机
+
+tile.ImmersiveEngineering.treatedWood.0.name=防腐木板
+tile.ImmersiveEngineering.treatedWood.1.name=防腐木板
+tile.ImmersiveEngineering.treatedWood.2.name=防腐木板
+
+tile.ImmersiveEngineering.woodenDevice.post.name=木杆
+tile.ImmersiveEngineering.woodenDevice.watermill.name=水车
+tile.ImmersiveEngineering.woodenDevice.windmill.name=风车
+tile.ImmersiveEngineering.woodenDevice.windmillAdvanced.name=改良风车
+tile.ImmersiveEngineering.woodenDevice.crate.name=木质储存箱
+tile.ImmersiveEngineering.woodenDevice.modificationWorkbench.name=工程师装配台
+tile.ImmersiveEngineering.woodenDevice.barrel.name=木桶
+
+tile.ImmersiveEngineering.woodenDecoration.treatedWood.name=防腐木板
+tile.ImmersiveEngineering.woodenDecoration.fence.name=防腐木栅栏
+tile.ImmersiveEngineering.woodenDecoration.slab0.name=防腐木台阶
+tile.ImmersiveEngineering.woodenDecoration.slab1.name=防腐木台阶
+tile.ImmersiveEngineering.woodenDecoration.doubleSlab.name=防腐木台阶
+tile.ImmersiveEngineering.woodenDecoration.scaffolding.name=防腐木脚手架
+tile.ImmersiveEngineering.woodenDecoration.wallMount.name=木质壁挂支架
+
+tile.ImmersiveEngineering.woodenStairs.name=防腐木楼梯
+tile.ImmersiveEngineering.woodenStairs1.name=防腐木楼梯
+tile.ImmersiveEngineering.woodenStairs2.name=防腐木楼梯
+
+tile.ImmersiveEngineering.stoneDevice.hempcrete.name=麻凝土
+tile.ImmersiveEngineering.stoneDevice.cokeOven.name=焦炉
+tile.ImmersiveEngineering.stoneDevice.blastFurnace.name=高炉
+tile.ImmersiveEngineering.stoneDevice.coalCoke.name=焦煤块
+tile.ImmersiveEngineering.stoneDevice.insulatorGlass.name=绝缘玻璃
+tile.ImmersiveEngineering.stoneDevice.blastFurnaceAdvanced.name=精制高炉
+
+tile.ImmersiveEngineering.stoneDecoration.hempcrete.name=麻凝土
+tile.ImmersiveEngineering.stoneDecoration.cokeBrick.name=焦炉砖
+tile.ImmersiveEngineering.stoneDecoration.blastBrick.name=高炉砖
+tile.ImmersiveEngineering.stoneDecoration.coalCoke.name=焦煤块
+tile.ImmersiveEngineering.stoneDecoration.concrete.name=混凝土
+tile.ImmersiveEngineering.stoneDecoration.concreteTile.name=混凝土砖
+tile.ImmersiveEngineering.stoneDecoration.blastBrickReinforced.name=强化高炉砖
+tile.ImmersiveEngineering.concreteStairs.name=混凝土楼梯
+tile.ImmersiveEngineering.concreteTileStairs.name=混凝土砖楼梯
+tile.ImmersiveEngineering.stoneSlab.hempcrete.name=麻凝土台阶
+tile.ImmersiveEngineering.stoneSlab.concrete.name=混凝土台阶
+tile.ImmersiveEngineering.stoneSlab.concreteTile.name=混凝土砖台阶
+
+tile.ImmersiveEngineering.hemp.name=工业大麻
+
+tile.ImmersiveEngineering.clothDevice.balloon.name=气球
+
+#Hydraulicraft Support/液压工艺兼容组件
+tile.harvesterTrolley.ieCrop.name=工业大麻收割车
+
+fluid.creosote=杂酚油
+fluid.plantoil=植物油
+fluid.ethanol=乙醇
+fluid.biodiesel=生物柴油
+
+
+# ITEMS
+item.ImmersiveEngineering.metal.ingotCopper.name=铜锭
+item.ImmersiveEngineering.metal.ingotAluminum.name=铝锭
+item.ImmersiveEngineering.metal.ingotLead.name=铅锭
+item.ImmersiveEngineering.metal.ingotSilver.name=银锭
+item.ImmersiveEngineering.metal.ingotNickel.name=镍锭
+item.ImmersiveEngineering.metal.ingotConstantan.name=康铜锭
+item.ImmersiveEngineering.metal.ingotElectrum.name=琥珀金锭
+item.ImmersiveEngineering.metal.ingotSteel.name=钢锭
+item.ImmersiveEngineering.metal.dustIron.name=铁粉
+item.ImmersiveEngineering.metal.dustGold.name=金粉
+item.ImmersiveEngineering.metal.dustCopper.name=铜粉
+item.ImmersiveEngineering.metal.dustAluminum.name=铝粉
+item.ImmersiveEngineering.metal.dustLead.name=铅粉
+item.ImmersiveEngineering.metal.dustSilver.name=银粉
+item.ImmersiveEngineering.metal.dustNickel.name=镍粉
+item.ImmersiveEngineering.metal.dustConstantan.name=康铜粉
+item.ImmersiveEngineering.metal.dustElectrum.name=琥珀金粉
+item.ImmersiveEngineering.metal.dustSteel.name=钢粉
+item.ImmersiveEngineering.metal.dustCoke.name=焦煤粉
+item.ImmersiveEngineering.metal.dustQuartz.name=下界石英粉
+item.ImmersiveEngineering.metal.dustHOPGraphite.name=HOP石墨粉
+item.ImmersiveEngineering.metal.ingotHOPGraphite.name=HOP石墨锭
+item.ImmersiveEngineering.metal.nuggetIron.name=铁粒
+item.ImmersiveEngineering.metal.nuggetCopper.name=铜粒
+item.ImmersiveEngineering.metal.nuggetAluminum.name=铝粒
+item.ImmersiveEngineering.metal.nuggetLead.name=铅粒
+item.ImmersiveEngineering.metal.nuggetSilver.name=银粒
+item.ImmersiveEngineering.metal.nuggetNickel.name=镍粒
+item.ImmersiveEngineering.metal.nuggetConstantan.name=康铜粒
+item.ImmersiveEngineering.metal.nuggetElectrum.name=琥珀金粒
+item.ImmersiveEngineering.metal.nuggetSteel.name=钢粒
+item.ImmersiveEngineering.metal.plateIron.name=铁板
+item.ImmersiveEngineering.metal.plateCopper.name=铜板
+item.ImmersiveEngineering.metal.plateAluminum.name=铝板
+item.ImmersiveEngineering.metal.plateLead.name=铅板
+item.ImmersiveEngineering.metal.plateSilver.name=银板
+item.ImmersiveEngineering.metal.plateNickel.name=镍板
+item.ImmersiveEngineering.metal.plateConstantan.name=康铜板
+item.ImmersiveEngineering.metal.plateElectrum.name=琥珀金板
+item.ImmersiveEngineering.metal.plateSteel.name=钢板
+
+
+item.ImmersiveEngineering.material.treatedStick.name=防腐木棍
+item.ImmersiveEngineering.material.waterwheelSegment.name=水车部件
+item.ImmersiveEngineering.material.windmillBlade.name=风车叶片
+item.ImmersiveEngineering.material.hempFiber.name=工业大麻纤维
+item.ImmersiveEngineering.material.fabric.name=坚韧布料
+item.ImmersiveEngineering.material.windmillBladeAdvanced.name=改良风车叶片
+item.ImmersiveEngineering.material.coalCoke.name=焦煤
+item.ImmersiveEngineering.material.gunpartBarrel.name=枪管
+item.ImmersiveEngineering.material.gunpartDrum.name=左筒
+item.ImmersiveEngineering.material.gunpartGrip.name=握柄
+item.ImmersiveEngineering.material.gunpartHammer.name=击锤
+item.ImmersiveEngineering.material.componentIron.name=铁质机械零件
+item.ImmersiveEngineering.material.componentSteel.name=钢质机械零件
+item.ImmersiveEngineering.material.slag.name=矿渣
+item.ImmersiveEngineering.material.stickIron.name=铁杆
+item.ImmersiveEngineering.material.stickSteel.name=钢杆
+item.ImmersiveEngineering.material.stickAluminum.name=铝杆
+item.ImmersiveEngineering.seed.hemp.name=工业大麻种子
+
+item.ImmersiveEngineering.fluidContainers.bottleCreosote.name=杂酚油瓶
+item.ImmersiveEngineering.fluidContainers.bucketCreosote.name=杂酚油桶
+item.ImmersiveEngineering.fluidContainers.bottlePlantoil.name=植物油瓶
+item.ImmersiveEngineering.fluidContainers.bucketPlantoil.name=植物油桶
+item.ImmersiveEngineering.fluidContainers.bottleEthanol.name=乙醇瓶
+item.ImmersiveEngineering.fluidContainers.bucketEthanol.name=乙醇桶
+item.ImmersiveEngineering.fluidContainers.bottleBiodiesel.name=生物柴油瓶
+item.ImmersiveEngineering.fluidContainers.bucketBiodiesel.name=生物柴油桶
+
+item.ImmersiveEngineering.coil.copper.name=低压线圈
+item.ImmersiveEngineering.coil.electrum.name=中压线圈
+item.ImmersiveEngineering.coil.HV.name=高压线圈
+item.ImmersiveEngineering.coil.rope.name=麻绳线圈
+item.ImmersiveEngineering.coil.structural.name=钢线圈
+item.ImmersiveEngineering.tool.hammer.name=工程师锤
+item.ImmersiveEngineering.tool.wirecutter.name=工程师剪线钳
+item.ImmersiveEngineering.tool.voltmeter.name=工程师电表
+item.ImmersiveEngineering.tool.manual.name=工程师手册
+
+item.ImmersiveEngineering.revolver.normal.name=左轮手枪
+item.ImmersiveEngineering.revolver.speedloader.name=左轮快速装弹器
+item.ImmersiveEngineering.revolver.dev.name=♛皇家征服者♚
+item.ImmersiveEngineering.revolver.infinity.name=催化
+item.ImmersiveEngineering.revolver.sns.name=蒸汽动力
+item.ImmersiveEngineering.revolver.nerf.name=玩具左轮
+item.ImmersiveEngineering.revolver.oblivion.name=湮灭
+item.ImmersiveEngineering.revolver.oathkeeper.name=誓约之守护
+item.ImmersiveEngineering.revolver.bee.name=黄蜂左轮
+item.ImmersiveEngineering.revolver.fenrir.name=芬里尔巨狼
+item.ImmersiveEngineering.revolver.earthshaker.name=§b撼地者§r
+item.ImmersiveEngineering.revolver.warlord.name=光束
+item.ImmersiveEngineering.revolver.superchief.name=超级领袖
+item.ImmersiveEngineering.revolver.noName.name=无名
+item.ImmersiveEngineering.revolver.patreonBlu.name=§6遗言§r
+item.ImmersiveEngineering.revolver.patreonHazard.name=§4扭曲的幻影§r
+
+item.ImmersiveEngineering.bullet.emptyCasing.name=小型空弹壳
+item.ImmersiveEngineering.bullet.emptyShell.name=大型空弹壳
+item.ImmersiveEngineering.bullet.casull.name=卡苏尔弹
+item.ImmersiveEngineering.bullet.armorPiercing.name=穿甲弹
+item.ImmersiveEngineering.bullet.buckshot.name=鹿弹
+item.ImmersiveEngineering.bullet.HE.name=高爆弹
+item.ImmersiveEngineering.bullet.dragonsbreath.name=龙息弹
+item.ImmersiveEngineering.bullet.homing.name=叶绿弹
+item.ImmersiveEngineering.bullet.wolfpack.name=狼群弹
+item.ImmersiveEngineering.bullet.silver.name=银弹
+item.ImmersiveEngineering.bullet.potion.name=药剂弹头
+item.ImmersiveEngineering.bullet.potion.splash.name=飞溅药剂弹头
+item.ImmersiveEngineering.bullet.potion.linger.name=持久药剂弹头
+
+item.ImmersiveEngineering.drill.diesel.name=采矿机械钻
+item.ImmersiveEngineering.drillhead.iron.name=铁制钻头
+item.ImmersiveEngineering.drillhead.steel.name=钢制钻头
+
+item.ImmersiveEngineering.skyhook.name=工程师天钩
+
+item.ImmersiveEngineering.toolupgrade.drillWaterproof.name=内置氧化剂罐
+item.ImmersiveEngineering.toolupgrade.drillSpeed.name=高级润滑系统
+item.ImmersiveEngineering.toolupgrade.drillDamage.name=附加螺旋钻
+item.ImmersiveEngineering.toolupgrade.drillCapacity.name=大型燃料缸
+item.ImmersiveEngineering.toolupgrade.revolverBayonet.name=刺刀
+item.ImmersiveEngineering.toolupgrade.revolverMagazine.name=扩充弹夹
+item.ImmersiveEngineering.toolupgrade.revolverElectro.name=加强电子管
+item.ImmersiveEngineering.toolupgrade.chemthrowerFocus.name=聚焦喷嘴
+item.ImmersiveEngineering.toolupgrade.railgunScope.name=瞄准镜
+item.ImmersiveEngineering.toolupgrade.railgunCapacitors.name=附加电容
+
+item.ImmersiveEngineering.blueprint.name=工程师蓝图
+
+item.ImmersiveEngineering.graphiteElectrode.name=石墨电极
+
+item.ImmersiveEngineering.shader.name=皮肤
+item.ImmersiveEngineering.shaderBag.name=皮肤奖励袋
+
+item.ImmersiveEngineering.jerrycan.name=油罐
+
+item.ImmersiveEngineering.chemthrower.name=化学喷射器
+
+item.ImmersiveEngineering.railgun.name=轨道炮
+
+item.ImmersiveEngineering.mold.plate.name=金属冲压模具:板材
+item.ImmersiveEngineering.mold.gear.name=金属冲压模具:齿轮
+item.ImmersiveEngineering.mold.rod.name=金属冲压模具:金属杆
+
+item.ImmersiveEngineering.toolbox.name=工程师工具箱
+
+#CREATIVE
+itemGroup.ImmersiveEngineering=Immersive Engineering
+
+#DESCRIPTIONS
+description.villager.profession.immersiveengineering.villager_engineer=工程师
+
+desc.ImmersiveEngineering.name.blastFurnace=高炉
+
+desc.ImmersiveEngineering.info.attachedTo=连接从%1$s,%2$s,%3$s
+desc.ImmersiveEngineering.info.attachedToDim=连接从%4$s世界的%1$s,%2$s,%3$s
+desc.ImmersiveEngineering.info.energyStored=存储能量： %1$s RF
+desc.ImmersiveEngineering.info.energyStoredEU=存储能量： %1$s EU
+desc.ImmersiveEngineering.info.blastFuelTime=高炉燃料热值： %1$s Ticks
+
+desc.ImmersiveEngineering.info.blockSide.facing=正面：
+desc.ImmersiveEngineering.info.blockSide.opposite=反面：
+desc.ImmersiveEngineering.info.blockSide.UP=上面
+desc.ImmersiveEngineering.info.blockSide.DOWN=下面
+desc.ImmersiveEngineering.info.blockSide.NORTH=北面
+desc.ImmersiveEngineering.info.blockSide.SOUTH=南面
+desc.ImmersiveEngineering.info.blockSide.EAST=东面
+desc.ImmersiveEngineering.info.blockSide.WEST=西面
+desc.ImmersiveEngineering.info.blockSide.connectEnergy.-1=未连接
+desc.ImmersiveEngineering.info.blockSide.connectEnergy.0=能量输入
+desc.ImmersiveEngineering.info.blockSide.connectEnergy.1=能量输出
+desc.ImmersiveEngineering.info.blockSide.connectFluid.-1=未连接
+desc.ImmersiveEngineering.info.blockSide.connectFluid.0=流体输入
+desc.ImmersiveEngineering.info.blockSide.connectFluid.1=流体输出
+
+desc.ImmersiveEngineering.info.filter.oreDict=过滤器: 矿物辞典<br>基于矿物辞典<br>名称过滤物品.
+desc.ImmersiveEngineering.info.filter.nbt=过滤器: NBT数据<br>基于NBT数据对<br>物品进行过滤.
+desc.ImmersiveEngineering.info.filter.fuzzy=过滤器: 模糊<br>在过滤物品时<br>无视耐久损耗.
+
+desc.ImmersiveEngineering.info.oreDict.off=矿物辞典：禁用
+desc.ImmersiveEngineering.info.oreDict.on=矿物辞典：启用
+
+desc.ImmersiveEngineering.info.mininglvl.-1=无
+desc.ImmersiveEngineering.info.mininglvl.0=§7石头
+desc.ImmersiveEngineering.info.mininglvl.1=§4铁
+desc.ImmersiveEngineering.info.mininglvl.2=§c红石
+desc.ImmersiveEngineering.info.mininglvl.3=§d黑曜石
+desc.ImmersiveEngineering.info.mininglvl.4=§9钴
+desc.ImmersiveEngineering.info.mininglvl.5=§5玛玉灵
+desc.ImmersiveEngineering.info.mininglvl.6=§5玛玉灵§d+
+
+desc.ImmersiveEngineering.info.durability=耐久：%1$s
+
+desc.ImmersiveEngineering.info.holdShift=§6按住 Shift§r
+
+desc.ImmersiveEngineering.info.mineral.Iron=铁矿
+desc.ImmersiveEngineering.info.mineral.Magnetite=磁铁矿
+desc.ImmersiveEngineering.info.mineral.Pyrite=黄铁矿
+desc.ImmersiveEngineering.info.mineral.Bauxite=铝土矿
+desc.ImmersiveEngineering.info.mineral.Copper=铜矿
+desc.ImmersiveEngineering.info.mineral.Cassiterite=锡矿
+desc.ImmersiveEngineering.info.mineral.Gold=金矿
+desc.ImmersiveEngineering.info.mineral.Nickel=镍矿
+desc.ImmersiveEngineering.info.mineral.Platinum=铂矿
+desc.ImmersiveEngineering.info.mineral.Uranium=铀矿
+desc.ImmersiveEngineering.info.mineral.Quartzite=石英矿
+desc.ImmersiveEngineering.info.mineral.Galena=方铅矿
+desc.ImmersiveEngineering.info.mineral.Lead=铅矿
+desc.ImmersiveEngineering.info.mineral.Silver=银矿
+desc.ImmersiveEngineering.info.mineral.Lapis=青金石矿
+desc.ImmersiveEngineering.info.mineral.Coal=煤矿
+desc.ImmersiveEngineering.info.mineral.Wolframite=钨矿
+
+desc.ImmersiveEngineering.info.reqMaterial=所需材料:
+desc.ImmersiveEngineering.info.chance=概率:
+
+desc.ImmersiveEngineering.info.blueprint.creates0=可制作：§6按住Shift查看§r
+desc.ImmersiveEngineering.info.blueprint.creates1=可制作：
+desc.ImmersiveEngineering.info.blueprint.bullet=普通子弹
+desc.ImmersiveEngineering.info.blueprint.specialBullet=特种子弹
+desc.ImmersiveEngineering.info.blueprint.electrode=电弧炉电极
+
+desc.ImmersiveEngineering.info.electrodeIntegrity=完整度
+
+desc.ImmersiveEngineering.info.shader.applyTo=可应用于:
+desc.ImmersiveEngineering.info.shader.revolver=左轮手枪
+desc.ImmersiveEngineering.info.shader.chemthrower=化学喷射器
+desc.ImmersiveEngineering.info.shader.drill=挖掘机
+desc.ImmersiveEngineering.info.shader.railgun=轨道炮
+desc.ImmersiveEngineering.info.shader.minecart=矿车
+desc.ImmersiveEngineering.info.shader.balloon=气球
+
+desc.ImmersiveEngineering.info.toolbox.food=食物
+desc.ImmersiveEngineering.info.toolbox.tool=工具
+desc.ImmersiveEngineering.info.toolbox.wire=线材
+desc.ImmersiveEngineering.info.toolbox.any=任意物品
+
+desc.ImmersiveEngineering.flavour.treatedWood.0=横纹木板
+desc.ImmersiveEngineering.flavour.treatedWood.1=纵纹木板
+desc.ImmersiveEngineering.flavour.treatedWood.2=打包的木板
+desc.ImmersiveEngineering.flavour.woodenStairs=横纹木板
+desc.ImmersiveEngineering.flavour.woodenStairs1=纵纹木板
+desc.ImmersiveEngineering.flavour.woodenStairs2=打包的木板
+desc.ImmersiveEngineering.flavour.crate=破坏时仍保留其中物品！
+desc.ImmersiveEngineering.flavour.barrel=破坏时仍保留其中液体！
+desc.ImmersiveEngineering.flavour.barrelTemp=不能储存高温液体
+desc.ImmersiveEngineering.flavour.coil.construction0=仅装饰用途
+desc.ImmersiveEngineering.flavour.coil.construction1=不传输能量
+desc.ImmersiveEngineering.flavour.revolver=让你们高兴高兴!
+desc.ImmersiveEngineering.flavour.revolver.dev=弑君!
+desc.ImmersiveEngineering.flavour.revolver.infinity=你只需要一点infinity
+desc.ImmersiveEngineering.flavour.revolver.sns=鲜血,汗水,蒸汽,钢铁
+desc.ImmersiveEngineering.flavour.revolver.nerf=儿童可安全玩耍
+desc.ImmersiveEngineering.flavour.revolver.oblivion=往昔之忆
+desc.ImmersiveEngineering.flavour.revolver.oathkeeper=寻路者
+desc.ImmersiveEngineering.flavour.revolver.bee=苦痛
+desc.ImmersiveEngineering.flavour.revolver.fenrir=没什么我不珍惜!
+desc.ImmersiveEngineering.flavour.revolver.earthshaker=挥之不去的意志
+desc.ImmersiveEngineering.flavour.revolver.warlord=不要带走我的玩具!
+desc.ImmersiveEngineering.flavour.revolver.superchief=CHOO CHOO!
+desc.ImmersiveEngineering.flavour.revolver.rommie=包括针对AI“Rommie”！
+desc.ImmersiveEngineering.flavour.revolver.noName=窥视到黑暗
+desc.ImmersiveEngineering.flavour.revolver.patreonBlu=猎人的选择
+desc.ImmersiveEngineering.flavour.revolver.patreonHazard=独家DLC
+
+desc.ImmersiveEngineering.flavour.drill.noHead=未装配钻头
+desc.ImmersiveEngineering.flavour.drill.headDamage=钻头状态:
+desc.ImmersiveEngineering.flavour.drill.fuel=燃料:
+desc.ImmersiveEngineering.flavour.drill.empty=没有燃料
+
+desc.ImmersiveEngineering.flavour.drillhead.size=采矿区域：%1$sx%1$sx%2$s 
+desc.ImmersiveEngineering.flavour.drillhead.level=采矿等级：%1$s
+desc.ImmersiveEngineering.flavour.drillhead.speed=采矿速度：%1$s
+desc.ImmersiveEngineering.flavour.drillhead.damage=攻击伤害：%1$s
+
+desc.ImmersiveEngineering.flavour.skyhook=未全部完成!
+
+desc.ImmersiveEngineering.flavour.toolupgrade.drillWaterproof=允许采矿机械钻在水下工作
+desc.ImmersiveEngineering.flavour.toolupgrade.drillSpeed=提升采矿机械钻开采速度
+desc.ImmersiveEngineering.flavour.toolupgrade.drillDamage=提升采矿机械钻攻击伤害,最高叠加至3
+desc.ImmersiveEngineering.flavour.toolupgrade.drillCapacity=提升采矿机械钻和化学喷射器的内部燃料储量
+desc.ImmersiveEngineering.flavour.toolupgrade.revolverBayonet=为左轮手枪添加近战伤害
+desc.ImmersiveEngineering.flavour.toolupgrade.revolverMagazine=提升左轮手枪弹夹容量
+desc.ImmersiveEngineering.flavour.toolupgrade.revolverElectro=左轮手枪射击造成电击伤害
+desc.ImmersiveEngineering.flavour.toolupgrade.chemthrowerFocus=减少化学喷射器的喷射速度,并增加其范围
+desc.ImmersiveEngineering.flavour.toolupgrade.railgunScope=可以让轨道炮视野放大
+desc.ImmersiveEngineering.flavour.toolupgrade.railgunCapacitors=减少充电时间,并增加轨道炮的能量存储
+
+gui.ImmersiveEngineering.empty=空
+
+#CHAT
+chat.ImmersiveEngineering.warning.wrongCable=你无法在此处连接线缆
+chat.ImmersiveEngineering.warning.wrongDimension=你处在一个错误的世界中
+chat.ImmersiveEngineering.warning.sameConnection=你不能将线缆接在同一个点上
+chat.ImmersiveEngineering.warning.tooFar=你离上一个连接点太远了
+chat.ImmersiveEngineering.warning.cantSee=连接被阻断
+chat.ImmersiveEngineering.warning.connectionExists=连接已存在
+chat.ImmersiveEngineering.warning.invalidPoint=存在无效连接点
+chat.ImmersiveEngineering.info.averageLoss=两点间平均能量损耗：%1$s%%
+chat.ImmersiveEngineering.info.energyStorage=存储能量：%1$s/%2$s RF
+chat.ImmersiveEngineering.info.tooHot=此容器无法承受该液体的温度！
+chat.ImmersiveEngineering.info.noGasAllowed=此容器无法盛装气体!
+chat.ImmersiveEngineering.info.invertedOn=开启红石信号反转
+chat.ImmersiveEngineering.info.invertedOff=关闭红石信号反转
+
+chat.ImmersiveEngineering.info.forChunk=§8对于位于%1$s至%2$s的区域
+chat.ImmersiveEngineering.info.coreDrill.progress=岩芯分析中：%1$s
+chat.ImmersiveEngineering.info.coreDrill.result.mineral=§7岩芯分析完毕,发现%1$s§7矿脉
+chat.ImmersiveEngineering.info.coreDrill.result.depl=§7矿脉完整度为%1$s§7 
+chat.ImmersiveEngineering.info.coreDrill.result.none=岩芯分析完毕,未检测到矿物
+chat.ImmersiveEngineering.info.coreDrill.infinite=无限
+
+chat.ImmersiveEngineering.info.pump.placeCobble.true=这个泵可以将液体替换为圆石.
+chat.ImmersiveEngineering.info.pump.placeCobble.false=这个泵可以将不再把液体替换为圆石. §6警告:§f 在处理大量液体时可能会产生延迟不建议使用!
+		
+chat.ImmersiveEngineering.info.energyTransfered=%1$sticks内平均能量流动: %2$s RF/t
+
+chat.ImmersiveEngineering.command.available=§6可用命令：§r %1$s
+chat.ImmersiveEngineering.command.help.help=§6用法：/ie help <命令> [子命令...]§r<br> 获取指定命令的详细信息,也可指定子命令以获得对应信息
+chat.ImmersiveEngineering.command.mineral.help=§6用法：/ie mineral <list|get|set|setDepletion>§r
+chat.ImmersiveEngineering.command.mineral.list.help=§6用法：/ie mineral list§r<br> 列出全部已注册矿物
+chat.ImmersiveEngineering.command.mineral.get.help=§6用法：/ie mineral get§r<br> 显示当前区块所含矿物
+chat.ImmersiveEngineering.command.mineral.set.help=§6用法：/ie mineral set [矿物名]§r<br> 为当前区块设定矿物重载.不指定新矿藏则将清除矿物重载.
+chat.ImmersiveEngineering.command.mineral.setDepletion.help=§6用法：/ie mineral setDepletion <数值>§r<br> 设定该区块的矿物的开采量.设定为-1表示该矿脉可无限开采.
+chat.ImmersiveEngineering.command.mineral.get=该区块含有：%1$s
+chat.ImmersiveEngineering.command.mineral.set.invalidMineral=§c'%1$s'不是一个有效矿物名.请使用'/ie mineral list'获取有效矿物名列表.§r
+chat.ImmersiveEngineering.command.mineral.set.sucess=矿物重载已设定为'%1$s'.
+chat.ImmersiveEngineering.command.mineral.set.clear=矿物重载(%1$s)已清除.
+chat.ImmersiveEngineering.command.mineral.setDepletion.NFE=错误：'%1$s'不是一个有效数字
+chat.ImmersiveEngineering.command.mineral.setDepletion.sucess=矿物开采量已设定为'%1$s'
+chat.ImmersiveEngineering.command.shaders.help=§6用法: /ie shaders <clear>§r
+chat.ImmersiveEngineering.command.shaders.clear.help=§6用法: /ie shaders clear [player]§r<br> 给指定的玩家清除皮肤. 如果没有指定玩家则清除自己的.
+chat.ImmersiveEngineering.command.shaders.clear.sucess=皮肤已被清除'%1$s'
+
+#RECIPES
+recipe.ImmersiveEngineering.hammerCrushing=粉碎
+
+#DEATH
+death.attack.ieRevolver_casull=%1$s被%2$s射杀
+death.attack.ieRevolver_armorPiercing=%1$s被%2$s射杀
+death.attack.ieRevolver_buckshot=%1$s被%2$s用猎枪击中
+death.attack.ieRevolver_dragonsbreath=%1$s被%2$s的吐息焚烧殆尽
+death.attack.ieRevolver_homing=%1$s被%2$s的叶绿弹击杀
+death.attack.ieRevolver_wolfpack=%1$s被%2$s的狼群弹头们撕成碎片
+death.attack.ieRevolver_silver=%1$s被%2$s的银弹所净化
+death.attack.ieRevolver_potion=%2$s的弹头里的药水溅到了%1$s身上
+death.attack.ieCrushed=%1$s被粉碎
+death.attack.ieAcid=%1$s被酸液腐蚀分解掉了
+death.attack.ieRailgun=%1$s被%2$s's的轨道炮刺穿
+
+#ACHIEVEMENTS
+achievement.immersiveengineering.openManual=请阅读下面的说明书
+achievement.immersiveengineering.openManual.desc=打开工程师手册
+achievement.immersiveengineering.craftHammer=HAMMAH!
+achievement.immersiveengineering.craftHammer.desc=制作一把工程师锤子
+achievement.immersiveengineering.connectWire=电线上的鸟儿
+achievement.immersiveengineering.connectWire.desc=连接导线
+achievement.immersiveengineering.blastfurnace=真正的热门话题
+achievement.immersiveengineering.blastfurnace.desc=建造一台高炉
+achievement.immersiveengineering.makeSteel=升级
+achievement.immersiveengineering.makeSteel.desc=获得钢锭
+
+achievement.immersiveengineering.placeConveyor=到处都是路
+achievement.immersiveengineering.placeConveyor.desc=放置传送带
+achievement.immersiveengineering.placeWindmill=风车的土地
+achievement.immersiveengineering.placeWindmill.desc=放置一个风车
+achievement.immersiveengineering.craftHeater=传播温暖
+achievement.immersiveengineering.craftHeater.desc=制作一个外置加热器
+achievement.immersiveengineering.craftPump=压力作用下
+achievement.immersiveengineering.craftPump.desc=制作一个流体泵
+achievement.immersiveengineering.placeFloodlight=Aziz! Light!
+achievement.immersiveengineering.placeFloodlight.desc=放置一个泛光灯
+achievement.immersiveengineering.craftWorkbench=朋克时间
+achievement.immersiveengineering.craftWorkbench.desc=制作一个工程师工作台
+achievement.immersiveengineering.craftRevolver=来让我们高兴一下
+achievement.immersiveengineering.craftRevolver.desc=制作一把左轮手枪
+achievement.immersiveengineering.upgradeRevolver=Shalashaska
+achievement.immersiveengineering.upgradeRevolver.desc=给左轮手枪加装尽可能多的升级
+achievement.immersiveengineering.craftWolfPack=毁灭之美
+achievement.immersiveengineering.craftWolfPack.desc=制造狼群弹头
+achievement.immersiveengineering.craftDrill=储能镐
+achievement.immersiveengineering.craftDrill.desc=制作采矿钻头
+achievement.immersiveengineering.upgradeDrill=Big Daddy
+achievement.immersiveengineering.upgradeDrill.desc=给采矿钻头加装尽可能多的升级
+achievement.immersiveengineering.craftSkyhook=Booker, catch!
+achievement.immersiveengineering.craftSkyhook.desc=制作工程师天钩
+achievement.immersiveengineering.skyhookPro=天际线大师
+achievement.immersiveengineering.skyhookPro.desc=使用天钩滑行至少一千米
+achievement.immersiveengineering.craftChemthrower=Spray and Pray
+achievement.immersiveengineering.craftChemthrower.desc=制作一个化学喷射器
+achievement.immersiveengineering.craftRailgun=财富的赠送
+achievement.immersiveengineering.craftRailgun.desc=制作一个轨道炮
+achievement.immersiveengineering.mbImprovedBlastFurnace=精炼的艺术
+achievement.immersiveengineering.mbImprovedBlastFurnace.desc=来自于精制高炉
+achievement.immersiveengineering.mbSilo=金属片掩盖的秘密仓库
+achievement.immersiveengineering.mbSilo.desc=建造筒仓
+achievement.immersiveengineering.mbCrusher=危险机械
+achievement.immersiveengineering.mbCrusher.desc=建造粉碎机
+achievement.immersiveengineering.mbDieselGen=污染环境
+achievement.immersiveengineering.mbDieselGen.desc=建造柴油发电机
+achievement.immersiveengineering.mbExcavator=挖吧挖吧挖洞吧
+achievement.immersiveengineering.mbExcavator.desc=建造斗轮式挖掘机
+achievement.immersiveengineering.mbArcFurnace=最热话题
+achievement.immersiveengineering.mbArcFurnace.desc=建造电弧炉
+
+achievement.immersiveengineering.secret_birthdayParty=Grunt Birthday Party
+achievement.immersiveengineering.secret_birthdayParty.desc=擦亮火柴...
+achievement.immersiveengineering.secret_luckOfTheDraw=抽奖的运气
+achievement.immersiveengineering.secret_luckOfTheDraw.desc=全有即全无
+
+
+
+stat.skyhookOneCm=使用天钩滑行的距离
+
+immersiveengineering.potion.flammable=易燃
+immersiveengineering.potion.slippery=滑
+immersiveengineering.potion.conductive=导电
+immersiveengineering.potion.sticky=粘性
+
+#MANUAL
+#ie.manual.entry..name=
+#ie.manual.entry..subtext=
+#ie.manual.entry.=
+
+ie.manual.category.update.name=最新动态!
+ie.manual.entry.updateNews_0.name=版本0.6更新内容
+ie.manual.entry.updateNews_0.subtext=Old, new; borrowed and Blu
+ie.manual.entry.updateNews_00=亲爱的工程师们!<br><br>自从你们上次与ImmersiveEngineering合作,许多东西都发生了改变!新的内容包括: 村民房屋,<link;lighting;§o§n全新的照明§r>, <link;barrel;§o§n木桶§r>, <link;tanksilo;§o§n储罐§r>, <link;tanksilo;§o§n筒仓§r;1> 和 <link;fluidPipes;§o§n液体管道§r>, 新的成就, <link;shader;§o§n左轮皮肤§r>, <link;assembler;§o§n装配机§r> 和 <link;bottlingMachine;§o§n灌装机§r>!
+ie.manual.entry.updateNews_01=然而最重要的是,能量传输的处理方式进行了较大的变更.为了避免错误的发生,请认真阅读<link;wiring;§o§n基 §o§n础布线§r>,尤其是第5页,详细的讲解了线缆传输速率和接线器输入输出的区别.
+
+ie.manual.entry.updateNews_1.name=版本0.6.1更新内容
+ie.manual.entry.updateNews_1.subtext=Old, new; borrowed and Blu
+ie.manual.entry.updateNews_10=亲爱的工程师们!<br><br>这次的更新为ImmersiveEngineering带来了一些改动并添加了些许新的特性:<br><br><link;metalbarrel;§o§n金属桶§r>提供了一个更稳定的便携式液体存储方案;电弧得到了进一步的改善,它现在能够冶炼金属同时还能够回收旧工具和盔甲;用于遮盖<link;fluidPipes;§o§n流体管道§r>的脚手架现在可以攀爬了.
+
+ie.manual.entry.updateNews_2.name=版本0.6.2更新内容
+ie.manual.entry.updateNews_2.subtext=Old, new; borrowed and Blu
+ie.manual.entry.updateNews_20=亲爱的工程师们!<br><br>这次的更新为ImmersiveEngineering带来了一些改动并添加了些许新的特性:<br><br>一种新型脚手架被发明了出来.原本使用开放式钢架结构进行支撑,然后在上面随意搭几块木板的安全系数较低的结构正在逐渐被取代. 铝在装饰方面竟出乎意料的实用,因此现在你本地的工程师商店里已经有铝制栅栏和脚手架出售了.
+ie.manual.entry.updateNews_21=一种全新的<link;breaker;§o§n断路开关§r;2>被发明了出来.它能够通过红石信号进行控制并且可以连接高压线缆.说到高压线缆,因为它能够危及生命的高压,现在已经禁止连接到普通的断路开关了,我们并不想找相关部门的麻烦.
+
+ie.manual.entry.updateNews_3.name=版本0.6.3更新内容
+ie.manual.entry.updateNews_3.subtext=Old, new; borrowed and Blu
+ie.manual.entry.updateNews_30=亲爱的工程师们!<br><br>这次的更新为ImmersiveEngineering带来了一些改动并添加了些许新的特性:<br><br>在遭受剧烈脑震荡之后,首席工程师亚当准备着手设计<link;chemthrower;§o§n化学喷 §o§n射器§r>,一种能够把任何液体喷射到任何地方的设备.它还内置了一个点火装置来引燃喷射的液体.我们觉得亚当可能是疯掉了.
+ie.manual.entry.updateNews_31=科研部门的另一项新发明是<link;chargingStation;§o§n充 §o§n电站§r>,它能够让你将能量导入到你的物品当中为其充电.<br>助理工程师"眼镜蛇"也展示了他的最新发明,<link;conveyor;§o§n卸货传送带§r;2>,它能够将通过它的物品放置到它下方的存储容器中.<br>比<link;sorter;§o§n物品路由器§r>更棒的是,它能够通过设置矿物辞典,NBT数据或模糊筛选来对物品进行过滤!
+ie.manual.entry.updateNews_32=其它一些值得一提的变动均和传输与装饰相关:<br>- <link;shader;§o§n皮肤§r> 现在能够被使用在矿车上<br>- <link;skyhook;§o§n工程师天钩§r> 一个能让你在电网上高速滑行并赶超矿车的工具<br>- <link;balloon;§o§n气球§r> 能够让你更方便的高空悬挂接线器并为之前提到的天钩搭建架空索<br>- <link;concrete;§o§n混凝土§r> 当你从空索上掉落时为你提供一个硬着陆~
+ie.manual.entry.updateNews_33=最后,财政部门因为无法准确追踪我们的用电量而时常找我们麻烦.在经过激烈的争论之后,他们给了我们一份有关<link;eMeter;§o§n电流 §o§n互感器§r>的蓝图,一种能够测量流通能量的仪器.不用说,当他们知道电弧炉的真正能耗之后他们变得更加不开心了.
+
+ie.manual.entry.updateNews_4.name=版本0.6.4更新内容
+ie.manual.entry.updateNews_4.subtext=Old, new; borrowed and Blu
+ie.manual.entry.updateNews_40=亲爱的工程师们!<br><br>这次更新的变化不大.<br>能量传输系统的区块短路bug被修复了.<br><link;furnaceHeater;§o§n外置加热器§r>也进行了加强,现在可以和神秘的炼金炉和Cutting Edge的电力蒸馏器配合.<br><br>目前就是这些,我们希望让它保持足够稳定.
+
+ie.manual.entry.updateNews_5.name=版本0.7.0更新内容
+ie.manual.entry.updateNews_5.subtext=Old, new; borrowed and Blu
+ie.manual.entry.updateNews_50=亲爱的工程师们!<br><br>你现在使用的新版本IE相比于之前的版本有一些重要改动!<br><link;plates;§o§n金属板§r>作为一种新型材料添加到新版本中.这些板材并没有完全取代金属锭,但对于一些合成表来说不可或缺.板材可以通过工程师锤或<link;metalPress;§o§n金属冲压机§r>进行制作.
+ie.manual.entry.updateNews_51=这些金属般的用途之一就是用于制作强化高炉砖来搭建<link;improvedBlastfurnace;§o§n精制 §o§n高炉§r>.这种新型高炉能够更快的冶炼钢铁并且能够自动化."旧"高炉被重新命名为<link;blastfurnace;§o§n粗制高炉§r>并且已经无法自动化生产.现在两种高炉均会产出炉渣.<br><link;arcfurnace;§o§n电弧炉§r>也伴随之进行了新的平衡.它的钢材耗量被降低许多,部分材料被强化高炉砖所代替.  
+
+ie.manual.entry.updateNews_6.name=版本0.7.1更新内容
+ie.manual.entry.updateNews_6.subtext=Old, new; borrowed and Blu
+ie.manual.entry.updateNews_60=亲爱的工程师们!<br><br>这次的更新为ImmersiveEngineering带来了一些改动并添加了些许新的特性.最大的改动莫过于添加了电脑mod的联动(当然只有在同computercraft同时使用时才会有效).<br>一些其他的细小改动包括添加物品整理对木质储物箱的支持以及各种bug修复.
+
+ie.manual.category.general.name=概念和资源
+ie.manual.category.construction.name=建筑结构
+ie.manual.category.energy.name=能量,线缆,发电机
+ie.manual.category.machines.name=工具与机械
+ie.manual.category.heavymachines.name=重型机械
+
+ie.manual.entry.introduction.name=介绍
+ie.manual.entry.introduction.subtext=开始你的工程！
+ie.manual.entry.introduction0=诸位年轻的工程师,你们好!欢迎使用ImmersiveEngineering模组,这本手册将会作为你的向导,介绍本模组应提供的新型机器的建造流程和使用方法.<br>那就让我们从基础的事情开始吧:ImmersiveEngineering是围绕复古未来主义风格产生与能源运输两个要素而构建起来的.本模组使用红石通量(RF)作为能源,它能与现有的大部分模组的能源通用.
+ie.manual.entry.introduction1=能源是通过§l线缆§r在§l接线器§r间来传输的.线缆的长度是有限制的,因此在这些线缆之间你需要更多的接线器来作为§l中继§r.<br>你能在三种不同导线之间进行选择,它们的差异在于不同的传输速率,分别为:<config;iA;cableTransferRate;l3>RF/tick.你需要§l变压器§r实现对不同类型线缆间的切换.
+ie.manual.entry.introductionHammer=工程师锤是你当前最重要的工具.它可以用于搭建多方块结构,例如焦炉和高炉,将矿石打碎成粉末,将矿锭打制成板材或者是用来修改方块的设置,比如木杆.
+
+ie.manual.entry.ores.name=矿石
+ie.manual.entry.ores.subtext=挖吧挖吧挖洞吧
+ie.manual.entry.oresCopper=§l铜矿石§r能在主世界<config;iA;ore_copper;1>到<config;iA;ore_copper;2>层找到,需要用石镐开采.<br><br>这种矿物冶炼成铜锭,用于制作基础铜导线,线圈,以及一些IE的建筑部件的原材料.
+ie.manual.entry.oresBauxite=§l铝土矿石§r能在主世界<config;iA;ore_bauxite;1>到<config;iA;ore_bauxite;2>层找到,需要用石镐开采.<br><br>这种矿物能冶炼出铝锭,与钢一同加工能做出高压电线.
+ie.manual.entry.oresLead=§l铅矿石§r能在主世界<config;iA;ore_lead;1>到<config;iA;ore_lead;2>层找到,需要用铁镐开采.<br><br>这种矿物能冶炼出铅锭,用来制作电容.
+ie.manual.entry.oresSilver=§l银矿石§r能在主世界<config;iA;ore_silver;1>到<config;iA;ore_silver;2>层找到,需要用铁镐开采.<br><br>这种矿物能冶炼出银锭,与黄金一同加工能做出琥珀合金,它是一种更为高效的导体.
+ie.manual.entry.oresNickel=§l镍矿石§r能在主世界<config;iA;ore_nickel;1>到<config;iA;ore_nickel;2>层找到,需要用铁镐开采.<br><br>这种矿物能冶炼出镍锭,与铜锭一同加工能做出康铜合金,用于制作<link;thermoElectric;§o§n热传导发电机§r;0>中的耐热导线.
+
+ie.manual.entry.oreProcessing.name=矿物处理
+ie.manual.entry.oreProcessing.subtext=粉碎 粉碎 粉碎
+ie.manual.entry.oreProcessing0=将矿石与锤子合成便可将其粉碎成粉末.这些粉末可以重新烧成锭,但更重要的是它们可以用于<link;alloys;§o§n冶炼合金§r>.
+
+ie.manual.entry.alloys.name=合金
+ie.manual.entry.alloys.subtext=混合起来!
+ie.manual.entry.alloys0=你可以通过混合金属粉末制造出各种不同用途的合金.具备温差发电特性的康铜能够用于制作<link;thermoElectric;§o§n热传导发电机§r;0>同时,琥珀合金制作的优质电导体被广泛用于<link;wiring;§o§n中压电器§r>中.
+
+ie.manual.entry.plates.name=金属板材
+ie.manual.entry.plates.subtext=平而光滑
+ie.manual.entry.plates0=金属板是一种用于制作一些机器或方块的必要材料.它们可以通过工程师锤打制金属锭或使用<link;metalPress;§o§n金属冲压机§r>进行制作。
+
+ie.manual.entry.hemp.name=工业大麻
+ie.manual.entry.hemp.subtext=530纺织物
+ie.manual.entry.hemp0=工业大麻是一种备受瞩目的作物!不仅其种子可以用于加工<link;biodiesel;§o§n生 §o§n物柴油§r>,工业大麻纤维对于制作坚韧布料也至关重要.种子可以通过清理草丛获得.
+ie.manual.entry.hemp1=坚韧布料是一种使用大麻纤维制作的极富弹性的材料.它被广泛用于<link;generator;§o§n改良风车§r;3>以及<link;balloon;§o§n气球§r>的制作.
+
+ie.manual.entry.cokeoven.name=焦炉
+ie.manual.entry.cokeoven.subtext=热门话题!
+ie.manual.entry.cokeoven0=焦炉是你在发展ImmersiveEngineering时所建造的第一台重要设备.它的功能十分简单,让煤以及煤块在无氧环境下进行燃烧以产出焦煤,一种能长时间燃烧的燃料.更重要的是,这一加工过程能产生出§l杂酚油§r,它被用于<link;treatedwood;§o§n防腐木§r>的制作.同样你可以用原木在里面烧制得到木炭,同时得到少量的杂酚油.
+ie.manual.entry.cokeovenBlock=搭建一个焦炉,首先需要27个焦炉方块搭建出一个3x3x3的正方体结构,用工程师锤右击侧面的中心来完成建造.<br>看接下来的图页
+
+ie.manual.entry.treatedwood.name=防腐木
+ie.manual.entry.treatedwood.subtext=非常耐用
+ie.manual.entry.treatedwood0=防腐木实际上就是被杂酚油浸泡过的木板.然而,它是ImmersiveEngineering里用到最重要的材料之一,为此你需要大量制作.
+ie.manual.entry.treatedwoodPost0=你的线缆接线器需要有一个依附点,这时用防腐木做成的木杆将会是最好选择.它有四格高,所以你不能把将它放在空间不够的地方
+ie.manual.entry.treatedwoodPost1=不过使用工程师锤子你也可以在木杆的顶端的侧面位置加装另一个<link;wiring;§o§n变压器§r;3>,这使得它不怎么显眼.<br>在木杆侧面支架下方放置方块会使支架改变朝向.
+
+ie.manual.entry.concrete.name=混凝土
+ie.manual.entry.concrete.subtext=要塞建材
+ie.manual.entry.concrete0=混凝土是一种极为坚硬,防御力极强的复合型材料.它的合成十分廉价,是<link;arcfurnace;§n§o电弧炉§r>所产生的矿渣的一种极佳用途. 
+
+ie.manual.entry.balloon.name=气球
+ie.manual.entry.balloon.subtext=...制作99个就对了
+ie.manual.entry.balloon0=气球其实就是一个麻布袋下面加一个加热装置让它们保持悬浮.它们同样会释放光亮,但不同于火把,他们并没有火灾隐患.<br>气球能够像其它方块一样放置,或者,当没有目标方块时,它们会被放置在你前方的空气方块中.
+ie.manual.entry.balloon1=同<link;metalconstruction;§o§n钢制接线器§r;5>类似,你可以将麻绳或钢线连接到上面.<br>潜行右击可以设置气球的放置高度差,允许你将其放置在目标方块上方最多5格高的地方.<br>你还可以对已放置的气球使用染料;染色的部位取决于你对准的部位.<br>手持工程师锤右键气球会改变条纹形状.
+
+ie.manual.entry.crate.name=木制储物箱
+ie.manual.entry.crate.subtext=移动装备了!
+ie.manual.entry.crate0=木质储存箱非常类似于箱子. 用处理过的木材精致而成,他有27个物品槽,打破的时候物品不会掉出来,可以跟箱子一起移动.<br>像箱子,他们将输出基于物品的量的比较器信号.
+
+ie.manual.entry.barrel.name=木桶
+ie.manual.entry.barrel.subtext=拒绝滚动
+ie.manual.entry.barrel0=木桶是一种简单的储液容器.一个木桶可以存储12桶液体,但材质毕竟是木质,所以木桶并不能存储高温液体.<br>用锤子右击桶的顶部或底部可以在输入,输出和不连接三种模式中切换.
+
+ie.manual.entry.jerrycan.name=油罐
+ie.manual.entry.jerrycan.subtext=比桶强多了
+ie.manual.entry.jerrycan0=油罐是一种简易的用于盛放液体的金属容器.它们最多能够存储10桶液体并能够将液体灌注到机器或倾倒至世界当中.它们无法回收液体.值得一提的是,它们还能够为一些消耗液体的物品比如<link;drill;§o§n采矿机械钻§r>进行装填,只需将两者一起合成即可e.
+
+ie.manual.entry.toolbox.name=工程师工具箱
+ie.manual.entry.toolbox.subtext=工程师的手袋
+ie.manual.entry.toolbox0=工具箱是一种简单便捷的存储容器,用于存放工程师的一些必要物品!鼠标悬停在对应格子上时会显示其可存放的物品类型.<br>'食物'和'任意物品'意义一目了然,'线材'栏对应线圈,接线器以及一些类似物品,而'工具'栏会存放任何IE工具或镐,锄,斧类工具!
+
+ie.manual.entry.graphite.name=石墨
+ie.manual.entry.graphite.subtext=煤炭工业产品
+ie.manual.entry.graphite0=高定向热解石墨(HOP)是一类结构复杂,且高度压缩的碳材料,常用于特种工程结构.<br>HOP石墨粉可由八份焦煤粉在<link;biodiesel;§o§n工 §o§n业挤压机§r;1>中加工制取.这种粉末进一步烧制可得到HOP石墨锭.
+ie.manual.entry.graphite1=HOP石墨广泛用于制作<link;arcfurnace;§o§n电弧炉§r>中的电极.制造这些电极需要<link;blueprints;§o§n工程 §o§n师蓝图§r>,这种蓝图可以通过<config;b;arcfurnace_electrodeCrafting;合成获得,>在某些箱子里找到,还可以通过和村民交易获得.
+
+ie.manual.entry.wiring.name=基础布线
+ie.manual.entry.wiring.subtext=滋滋滋!
+ie.manual.entry.wiring0=IE的能源网络主要有四个重要设备:§l电容器§r用于储存能量,§l接线器§r用于网络内能源的输入输出,§l继电器§r将线缆连接在一起,§l变压器§r用于不同线缆间的切换 <br>在低压中压能源网里(铜与琥珀金电线),接线器与继电器是同种方块,但高压的接线器只能用一种线缆.
+ie.manual.entry.wiring1=要连接两个方块,只需手持线圈右击一个方块,然后使用相同的线圈右击另一个.两点间总传输速率由最差的线缆决定.
+ie.manual.entry.wiring2=注意到这些方块还有一定的限制:接线器跟继电器只能与已经与其连接的同种导线相连接,而变压器只能连接两根不同种类的导线.
+ie.manual.entry.wiring3=并且线缆只能与之电压相匹配的方块相连.
+ie.manual.entry.wiring4=布线中有两个重要的数值需要注意:<br>每个接线器会有输入值(§o<config;iA;wireConnectorInput>§r) 而每种线缆会有最大传输速率(§o<config;iA;cableTransferRate;l3>§r).<br>接线器会限制输入输出能量的大小,但多个接线器可以§o合并§r至同一根线缆,让你能够在远距离传输后合并能量.然而要注意的是一定不要超过线缆的§o最大传输速率§r,否则线缆会§o烧毁§r.
+ie.manual.entry.wiringConnector=§l接线器§r是IE能源网络的输入输出端.你可以把它加装在电容器或者是其他支持RF的设备上,它们将通过连接的线缆传输能量. 高压继电器可以连接线缆但不支持输入输出,它仅仅只是作为导线间的连接点.
+ie.manual.entry.wiringCapacitor=§l电容器§r作为能量储存单元而存在.你可以用锤子调整每一面的配置,蓝色为输入,橙色为输出,若为无色则任何线缆都不会与其相连接.潜行时使用锤子将会调整相对于你所面向的一面的配置.
+ie.manual.entry.wiringTransformer0=§l变压器§r允许你在2种不同类型的线缆间运输能源.最弱的线缆会限制传输的速率.另外高压变压器可以变压为低压或中压,所以你并不需要接2个变压器.
+ie.manual.entry.wiringTransformer1=你可以将<link;wiring;§o§n变压器与木杆§r;3>像第四页的第二张图那样搭建,然而只有非高压变压器才能这样搭建.
+ie.manual.entry.wiringCutters=§l剪线钳§r用于移除已经被安装好的线缆.只需右击便可移除线缆.
+ie.manual.entry.wiringVoltmeter=§l电压表§r用于测量连接情况.右键右击一个电容器能读取当前的能量储存,按住shift+右击2个接线器还能计算它们之间的平均损耗.
+
+ie.manual.entry.generator.name=发电
+ie.manual.entry.generator.subtext=
+ie.manual.entry.generator0=只有当你产出能源时,能源的运输才是有意义的.为了能够真正产出RF,你可以使用风车或者是水轮机所产生的动能.将其与发电机相连接便可产生能源,产出速度则取决于风车或水轮机的转速.
+ie.manual.entry.generatorWindmill=风车是一种免费而简单的发电方式,虽然功率并不高.它的速度很大程度上取决于它所处的高度以及前方运作空间,当下雨或者风暴降临时,它能运作的更快.
+ie.manual.entry.generatorWatermill=水车是相当简单的发电方式.它的转动速度是基于驱动它的流水,所以为了能达到最佳的效果,你将需要引导流水从半轮的上方流到下方直到流经底部.你最多可以将三个水车叠加在同一侧.
+ie.manual.entry.generatorWindmillImproved=改良风车是风车的升级版.虽然它有2倍的输出量但造价更昂贵,需要由工业大麻做成的坚硬布料.大麻种子可以通过打草获得.
+
+ie.manual.entry.breaker.name=断路刀闸
+ie.manual.entry.breaker.subtext=扳开-扣合
+ie.manual.entry.breaker0=断路刀闸是能够让线缆中的能量流动停止的一种简单闸门. 它们能够连接两种相同的线缆并仅有在激活时让能量通过. 它能够被用于将高能耗机器从电网中分离或者在需要时连接附加发电机组!
+ie.manual.entry.breaker1=断路刀闸在开启状态下会发射红石信号；你可以使用工程师锤子来反转它的输出.<br>同时它们还是用来控制 <link;lighting;§n电灯§r;1> 的好方法!
+ie.manual.entry.breaker2=红石断路器功能同断路刀闸类似,但是无法手动操控.取而代之,它需要一个红石信号来断开连接.而作为回报,它良好的绝缘性使其能够连接高压线缆!
+
+ie.manual.entry.eMeter.name=电流互感器
+ie.manual.entry.eMeter.subtext=88通量每小时!
+ie.manual.entry.eMeter0=电流互感器是测量能量流动的一种仪器.它能够接入到任何一种电网当中并检测通过的能量,右键它会反馈 RF/t.
+
+ie.manual.entry.thermoElectric.name=热传导发电机
+ie.manual.entry.thermoElectric.subtext=冷和热
+ie.manual.entry.thermoElectric0=热传导发电机是另一种可用发电方式,它不依靠其他机械部件,而是借助两个温度差之间的梯度发电.
+ie.manual.entry.thermoElectric1=在发电机侧面放置热源和冷源各一,即可根据温差来产生能量.<br>下表中包括了其他可用作热源或冷源的非流体方块.
+
+ie.manual.entry.blastfurnace.name=粗制高炉
+ie.manual.entry.blastfurnace.subtext=简易炼钢！
+ie.manual.entry.blastfurnace0=粗制高炉用于提高铁的含碳量,使之成为钢.为了达成目的,只有含碳量高的燃料才被高炉所接受,特别是焦煤和木炭.<br><br>伴随着钢的冶炼,高炉冶炼还会产生炉渣,你必须定期清除否则高炉便会停止工作.理论上来说炉渣属于废弃物,但你还是可以用它来合成混凝土.
+ie.manual.entry.blastfurnaceBlock=搭建一个高炉,你需要用这27个方块搭建出3x3x3的结构,然后用工程师锤右击其中一面的中央方块<br>见下一页的图.
+ie.manual.entry.blastfurnace1=粗制高炉无法自动化生产.所有输入输出必须通过手动打开GUI完成.如果你想要自动化冶炼钢铁,你可能需要查看<link;improvedBlastfurnace;§o§n精制高炉§r;>的相关搭建信息.
+
+ie.manual.entry.improvedBlastfurnace.name=精制高炉
+ie.manual.entry.improvedBlastfurnace.subtext=工业精炼
+ie.manual.entry.improvedBlastfurnace0=精制高炉是一种更专业的<link;blastfurnace;§o§n冶炼 §o§n钢铁§r;>的方法.它不仅能够自动化输入输出,它同样可以通过配备鼓风机来添加灼热空气从而加快精炼的过程.<br>这种高炉是由强化高炉砖搭建,因此建议你将第一批钢材用于升级高炉.
+ie.manual.entry.improvedBlastfurnace1=<br>精制高炉的结构同它的粗制版本相似,但是砖块被替换为了强化高炉砖并且上方需要一个漏斗作为输入端.
+ie.manual.entry.improvedBlastfurnace2=钢材会从高炉前面输出,炉渣会从后面输出,并且高炉会向连接的容器或传送带自动输出产物.铁和焦煤需要从上方输入.
+ie.manual.entry.improvedBlastfurnace3=高炉鼓风机被用于加热空气并将其鼓入高炉以加快铁的精炼过程.每个高炉可以最多在两侧各加装一个鼓风机,每个鼓风机需要<config;i;preheater_consumption>RF/t来运作.
+
+ie.manual.entry.metalconstruction.name=金属结构
+ie.manual.entry.metalconstruction.subtext=铆接
+ie.manual.entry.metalconstruction0=除了防腐木,加工过的金属也可用于建筑.你可以将绝大多数金属制成块或台阶,你还可以用锤子把铁锭敲成金属板方块.
+ie.manual.entry.metalconstruction1=钢不仅是高压设备不可或缺的一部分,还是非常有用的上好建筑材料,钢制脚手架可用于快速搭建建筑结构,钢围栏能让你建立防线抵御敌人,钢制臂架构是你搭建高压继电器的接点.
+ie.manual.entry.metalconstruction2=钢制接线器的作用与普通接线器类似,但它们是纯装饰性物品,不能用于传输能量.<br>它们无法与普通线缆相连接,但能够与麻线圈或钢线圈连接（见下页）.<br>你可以手持工程师锤右击来旋转它们.
+
+ie.manual.entry.lighting.name=工程照明
+ie.manual.entry.lighting.subtext=照亮荒芜之地
+ie.manual.entry.lighting0=工厂长廊的深处可能会十分昏暗.为了能够找到通往机器的路,你可能需要用一些灯来照亮这些区域.这些灯能够提供等同于萤石块的亮度.
+ie.manual.entry.lighting1=电灯是最早使用电能的发明之一.你需要用线缆将它们直接连至你的电网当中来使其工作.电能可以通过它们,因此你可以将它们连成一排.
+ie.manual.entry.lighting2=只需为它们提供一点点能量,它们就可以像正常灯一样照亮周围区域,不仅如此,它们还能防止敌对生物在半径32格范围内生成!
+ie.manual.entry.lighting3=泛光灯是一种强光源.尽管它们对电能的需求比普通电灯高一些,它们能够产生一个32格远的光锥.对其顶部或底部使用工程师锤来旋转灯光或对其侧面使用来改变倾角.
+
+ie.manual.entry.tanksilo.name=储罐与筒仓
+ie.manual.entry.tanksilo.subtext=正好堆满！
+ie.manual.entry.tanksilo0=你可以使用金属板储罐和筒仓来储存大量同种液体或物品.<br>储罐可以存储512桶液体,你可以从储罐顶或底部将液体泵入.
+ie.manual.entry.tanksilo1=筒仓可以储存大量同种物品,极其适合用于储存种子,炉渣和圆石.一个筒仓可储存41472个物品,相当于24个箱子的容积.
+ie.manual.entry.tanksilo2=你必须从筒仓顶部输入物品,并从底部提取物品.若在底部向筒仓提供红石信号,它将会自动输出.
+ie.manual.entry.tanksilo3=在输出方块旁放置一个比较器会让它输出一个强度正比于储量的红石信号.若将比较器放置在6层筒仓或4层储罐的中间一层会让其发出一个强度与该层储量成正比的红石信号.例如,一个被放置在了储罐的第二层的比较器在储量到达1/4之前不会发出任何信号,当该层储量已满,也就是储量到达1/2时会输出强度15的红石信号.
+
+ie.manual.entry.metalbarrel.name=金属桶
+ie.manual.entry.metalbarrel.subtext=拒绝滚动
+ie.manual.entry.metalbarrel0=金属桶功能同<link;barrel;§o§n木桶§r;>完全一样.它们的储量相同,输入输出的配置方式也相同,但和木桶不同的是,金属桶能够存储气体和高温液体. 
+
+ie.manual.entry.metalPress.name=金属冲压机
+ie.manual.entry.metalPress.subtext=压力山大!
+ie.manual.entry.metalPress0=金属冲压机可用于一些金属的自动化成型.它通过使用一个高压活塞将模具压到金属锭上,将其成型为金属板材,金属杆或其他金属元件.<br>结构如上图所示,用工程师锤敲击活塞来完成搭建.
+ie.manual.entry.metalPress1=能量从上方输入,物品通过传送带,沿着其显示方向输入输出.
+ie.manual.entry.metalPress2=若想正常工作,需要在活塞上加装一个模具.模具的制作如上图所示,手持模具右键金属冲压机可将其放入.
+
+ie.manual.entry.assembler.name=装配机
+ie.manual.entry.assembler.subtext=需要一些装配
+ie.manual.entry.assembler0=装配机是一个能够合成物品的复杂机器,和玩家合成类似.<br>为了建造这台机器,请按上图展示搭建并用工程师锤右击传送带.
+ie.manual.entry.assembler1=你敲击的传送带将成为输入端,上方会有蓝色标记并且机器侧面也会有箭头指示.<br>装配机内部最多可存储三个合成表并且会按顺序执行.前一个合成表的输出产物可以作为后一个的输入材料.<br>三个合成狂用于存储合成表,而下方18格子用于存放材料.
+ie.manual.entry.assembler2=输入侧不光可以输入物品,还能够输入液体用于装填机器内部的三个储罐.这些储罐中的液体可以被用于取代合成表中的液体容器例如水桶.<br>机器的能量输入在顶部中央的方块.
+
+ie.manual.entry.bottlingMachine.name=灌装机
+ie.manual.entry.bottlingMachine.subtext=装满它!
+ie.manual.entry.bottlingMachine0=灌装机能够将液体注入到容器当中.搭建结构如上方展示,传送带的方向很重要不过可以镜像.为了完成该结构,用工程师锤右击中间的传送带.
+ie.manual.entry.bottlingMachine1=液体的输入端位于底层中央,物品通过传送带输入.传送带的方向应该很清楚的展示了输入输出的方向.能量输入端位于顶部.<br>通常情况下,灌装机能够装填任何可装填的容器(桶,玻璃瓶).他同样能够接受一些特定的液体容器,例如<link;drill;§o§n采矿机械钻§r>或<link;jerrycan;§o§n油罐§r>.
+
+ie.manual.entry.chargingStation.name=充电站
+ie.manual.entry.chargingStation.subtext=
+ie.manual.entry.chargingStation0=充电站允许你为工具或其它物品进行充电.能量能够从底部或后部输入,而物品可以手动放入或自动输入.<config;b;ic2Manual;充电站同样兼容使用EU的工具.;>
+ie.manual.entry.chargingStation1=在前面的电子管得到物品的电流充电反馈时,充电站也将输出一个相同的比较器信号.
+
+ie.manual.entry.highvoltage.name=高压
+ie.manual.entry.highvoltage.subtext=你无法撼动的冲击
+ie.manual.entry.highvoltage0=高压线缆拥有最高的能源运输速率(<config;iA;cableTransferRate;2>RF/t)并需要特殊的接线器连接.值得注意的是,与高电压连接时,接线器与继电器是不同的类型时,继电器将无法从能源网络中输入或输出能源.而且,继电器只能安装于方块的下面.<br>要从高压到低压或中压的过渡,你将需要用到高压变压器,要牢记,最低等级的线缆会限制整个能源传输的运输速率.
+
+ie.manual.entry.multiblocks.name=多方块结构
+ie.manual.entry.multiblocks.subtext=我的内六角扳手在哪?
+ie.manual.entry.multiblocks0=除非你有魔法或者缩小光线,否则在1x1x1大小的空间内搭建多方块结构是一件极其艰难的任务,为了能搭建出拥有更为复杂的操作系统的机器,你需要用到组装块.那些最为常见的将在下面揭晓.
+
+ie.manual.entry.workbench.name=工程师装配台
+ie.manual.entry.workbench.subtext=超频
+ie.manual.entry.workbench0=在你的工程师职业生涯当中,可能会涉及到一些工具的优化与改造.为了完成这些修改,你需要使用到设备齐全的工程师装配台.<br>右键装配台,将物品放入物品栏中,然后将合适的升级放入随后出现的物品栏中.
+
+ie.manual.entry.blueprints.name=工程师蓝图
+ie.manual.entry.blueprints.subtext=请阅读下面**的说明书
+ie.manual.entry.blueprints0=仅仅是一块木头做成的九宫格工作台,是无法胜任制作结构异常精细的物品的.这些物品需要遵循精密的蓝图的指导才能在<link;workbench;§o§n工程师§o§n装配台§r>中制作.<br><br>若你能获得工程师蓝图(抑或你能制作出工程师蓝图),你就可以把它放进工程师装配台中以加工物品.
+ie.manual.entry.blueprints1=要借助蓝图制作物品,首先你需要将材料放入中间的六个格子中,然后在右边的格子中提取成品.鼠标指针指向输出格时会显示当前缺失的材料. 
+
+ie.manual.entry.dieselgen.name=柴油发电机
+ie.manual.entry.dieselgen.subtext=比产量更重要的是:更高的产量.
+ie.manual.entry.dieselgen0=高电压结构是令人着迷的,但要让它变得有用,你得有一个发电机来输出能源.<br>柴油发电机是其中一种产生这类能量的方式.它由复杂的多结构方式组成并且将要用到<link;biodiesel;§o§n生物 §o§n柴油§r>或者是其他燃料.由于其产出高,它将会快速消耗燃料来运作,所以请确保你有足够的燃料来支撑它的运转.
+ie.manual.entry.dieselgen1=该装置由引擎,发电机及散热器块组建而成.将这些零件如上方所示形状放置好,接着用工程师锤子敲一下位于中央的任意发电机模块或散热器模块即可.
+ie.manual.entry.dieselgen2=燃料需要从发电机的底部位置输入,而能量的输出口允许增加至三个.它所拥有的<config;i;dieselGen_output>RF/t的输出量将会平均分散在各个连接点上.<br>用红石信号激活右侧的控制面板可以关闭发电机.<br>你可以通过手持工程师锤敲击顶部中央的发电机模块来镜像翻转发电机.
+ie.manual.entry.dieselgen3=下表列出了柴油发电机的所有有效燃料以及它们的燃烧时间(ticks).
+
+ie.manual.entry.biodiesel.name=生物柴油
+ie.manual.entry.biodiesel.subtext=绿色能源!
+ie.manual.entry.biodiesel0=燃料需要一个方便且高效的来源,但石油是一种不可再生资源,为此生物柴油成为了最终的解决方案!由植物油和乙醇混合而成,你制造出了一种液体燃料供<link;dieselgen;§o§n柴油发电机§r>使用.
+ie.manual.entry.biodiesel1=作物种子投入工业挤压机加工能得到植物油.根据图片搭建出相应的结构并使用工程师锤敲打其中一面以完成组装.能源可以从顶部或底部输入,流体则可以从底部任意一面的端口输出.
+ie.manual.entry.biodiesel1T=下方表格列出了多种能够被压榨为植物油的物品以及它们的产量.
+ie.manual.entry.biodiesel2=乙醇可以从发酵机那获得.发酵机的搭建方式类似工业挤压机,对功率的需求,能源接受以及流体输出的方式也与工业挤压机相同.
+ie.manual.entry.biodiesel2T=下方表格列出了多种能够被压榨为乙醇的物品以及它们的产量.
+ie.manual.entry.biodiesel3=为了最终把植物油加工成生物柴油,你需要把流体灌入炼油厂并提供充足的能源.根据图片搭建相应的结构并用工程师锤右击其前面的中心位置.
+ie.manual.entry.biodiesel4=炼油厂的正前方位置是作为流体输出的,侧面的小孔为输入端,能源是通过组装在其后方的接线器导入,通过对右侧的控制面板输入红石信号可以停止其炼油过程.
+
+ie.manual.entry.conveyor.name=传送带
+ie.manual.entry.conveyor.subtext=谁还需要铁路?
+ie.manual.entry.conveyor0=传送带运输是把附近物品搬回家的便捷途径,当它有足够的动力时可以搬运像是牛,羊之类的生物,它们真正的优势在于物品的运输.<br>把物品丢到传送带上即可实现搬运.如果末端是能够接收物品的容器,那物品将会被放入到容器里.
+ie.manual.entry.conveyor1=对着传送带的漏斗可以把物品输出为可掉落形态,使用工程师锤可以转动传送器的方向(右击),或是调整为上行或下行(潜行时右击).<br>
+ie.manual.entry.conveyor2=卸货传送带仅仅是普通传送带中间多了一个舱口,允许货物从中间传输到下面.<br>物品会自动输送进下放的存储容器或者,如果下方是空的物品会被扔在地上.
+
+ie.manual.entry.furnaceHeater.name=外置加热器
+ie.manual.entry.furnaceHeater.subtext=你现在可以用能量烹饪食物啦!
+ie.manual.entry.furnaceHeater0=外置加热器正如它名字所暗示的,能从RF中产生热量,当旁边有一个普通的熔炉时,它能为熔炉的烧制提供热量,而无需添加任何燃料.
+ie.manual.entry.furnaceHeater1=使用锤子单击一个面可以将其调整为能量的输入面<br>加热器的能量消耗§o<config;i;heater_consumption>RF/t§r会随着每单位的热量增加而增加.最初为熔炉升温时,加热器会产生高达§o4§r热量每tick,但熔炉一旦达到最高温时,它就会以§o1§r的热量来让温度保持下去.
+ie.manual.entry.furnaceHeater2=还有更好的,当熔炉达到最高温时,加热器将会消耗额外的§o<config;i;heater_speedupConsumption>RF/t§r来提高熔炉的加工速度.<br>加热器只会影响熔炉的一个有效输入和输出空间,以达到节约能源的目的.然而,你可以提供一个红石信号来禁止这一功能并让炉子保持熔炉的温度.
+
+ie.manual.entry.fluidPipes.name=液体传输
+ie.manual.entry.fluidPipes.subtext=专业水管工
+ie.manual.entry.fluidPipes0=液体传输在工程业变得越发重要.输液管和液泵就是干这个的.单独使用,输液管的液体传输速率较低,但如果用液泵输入液体,速度便会增快不少.
+ie.manual.entry.fluidPipes1=你可以通过用工程师锤右击一个管道来防止它连接那一侧.<br>输液管可以嵌入木制或钢制脚手架中.只需手持脚手架右击管道即可.破坏管道会返还脚手架.
+ie.manual.entry.fluidPipes2=液泵有两个重要功能.它们能够用于将液体高压泵入管道中,让传输速率变快,或者它们还能够从世界当中抽取液体.用工程师锤右击液泵底部会转换输入输出端.
+ie.manual.entry.fluidPipes3=为了使液泵能够抽取液体方块,它需要从顶部接受能量以及一个红石信号.液泵同样能够用于从一些无法自动输出的储罐或液体容器中抽取液体.这同样需要红石信号,不过并不需要能量.
+ie.manual.entry.fluidPipes4=<config;b;pump_infiniteWater;泵抽取的水方块超过3x3,将当做无限水源.<br><br>;><config;b;pump_placeCobble;被抽取的水将以圆石取代,以减少流动水. 这种模式可以用工程师剪线钳关闭.;>
+
+ie.manual.entry.sorter.name=物品路由器
+ie.manual.entry.sorter.subtext=左脚放黄色上,右手放绿色上
+ie.manual.entry.sorter0=物品路由器能够接受物品并经过通道过滤后重新分配它们.将其放置并右键可打开交互界面,会显示出六种根据颜色和方向划分的过滤器.
+ie.manual.entry.sorter1=当物品进入到路由器后,它会被转至与其相匹配的输出口,或者,如果没有相匹配的输出口,它会被转入未设置过滤的输出口.如果物品无法被分配,它将无法进入路由器.物品同样无法被输出到它进入路由器的方向.<br>潜行右键一侧使其路由规则遵从矿物辞典.需要注意该路由规则对游戏有着较高的负荷.
+
+ie.manual.entry.drill.name=采矿机械钻
+ie.manual.entry.drill.subtext=我的钻头将打穿基岩!
+ie.manual.entry.drill0=这把手持的柴油动力机械钻是采矿领域的一次卓越进步.通过可更换的钻头和升级,它的性能几乎可以自由调整.想要改造它,只需将其放入<link;workbench;§o§n工程师装配台§r>.<br>如若机械钻的<link;biodiesel;§o§n生物柴油§r>耗尽,可以直接在炼油厂中填满.
+ie.manual.entry.drill1=钻头将决定基础采矿等级,速度,范围以及攻击伤害.当你在挖掘方块时,钻头会受到磨损,但它能够在铁砧中被修复.
+ie.manual.entry.drill2=因为机械钻由内燃机驱动,它无法在水下工作,除非你为它安装了内置氧化剂罐.然而,当装配这项升级后,它不仅能够在水下工作,水下挖掘所造成的迟缓也会消失不见.
+ie.manual.entry.drill3=高级润滑系统在正常基础上为机械钻提供了额外的润滑效果,使其运行与挖掘更加快速.
+ie.manual.entry.drill4=通过为机械钻添加附加螺旋钻,它对于生物的破坏性得到了提升.该项升级最高可叠加3次每次升级会提供一点额外伤害.
+ie.manual.entry.drill5=大型燃料缸允许机械钻在内部存储更多燃料,延长再次填充之前你的使用时间.
+
+ie.manual.entry.revolver.name=左轮手枪
+ie.manual.entry.revolver.subtext=通缉:死或生
+ie.manual.entry.revolver0=左轮手枪,一把来自文明时代的优雅武器,可谓是小型机械的智慧结晶.小型仅仅是相对而言,毕竟这把武器填装的是12号弹药.<br>同采矿机械钻类似,左轮手枪同样能够在<link;workbench;§o§n工程师装配台§r>进行改造.关于改造的详细信息在本条目的最后一页中有详细叙述.
+ie.manual.entry.revolver1=左轮手枪可装载不同类型的弹药.若想装填弹药,潜行右键武器,之后将弹药放入物品栏中.<br>若物品栏中有快速装弹器,装弹器将会在你发射出最后一颗子弹后对左轮进行装填.
+ie.manual.entry.revolver2=通过在左轮上安插刺刀,你将得到一把近身格斗武器,让你能够在近距离造成和铁剑一样的伤害.
+ie.manual.entry.revolver3=扩充弹夹让你能够在左轮手枪中额外装填六发弹药.该弹夹无法被快速装弹器装填
+ie.manual.entry.revolver4=加强电子管能够在弹药上附加电流.电击会在击中目标前一直保持(不要问它的工作原理)然后传递出去.目标会被眩晕不到一秒的时间同时他们装备的所有能量武器会受到轻微的能量流失.
+
+ie.manual.entry.bullets.name=左轮弹药
+ie.manual.entry.bullets.subtext=
+ie.manual.entry.bullets0=左轮手枪弹药需要工程师装配台以及特定的<link;blueprints;§o§n工程师§o§n蓝图§r>才能制作.你自己就可以绘制一般军火的制造蓝图,但一些高级军火的蓝图需要你从他人手中购买才能得到.
+ie.manual.entry.bullets1=<br>§l卡苏尔弹§r可以通过使用"普通子弹"蓝图制作.它们是简易的铅弹,能够造成中等的伤害.
+ie.manual.entry.bullets2=<br>§l穿甲弹§r可以通过使用同种蓝图制作.它们能够造成同等伤害但却能通过高动能穿透装甲.
+ie.manual.entry.bullets3=<br>§l鹿弹§r可以通过使用同种蓝图制作.内含大量小型弹丸,弹道呈圆锥状.短距离效果拔群.
+ie.manual.entry.bullets4=<br>§l高爆弹§r可以通过使用"普通子弹"蓝图制作.它们在击中后会造成小型爆炸,对生物和地形造成伤害.
+ie.manual.entry.bullets5=<br>§l银弹§r是由铅芯被银所包裹而制成,会对...狼人十分有效?!
+ie.manual.entry.bullets6=<br>§l龙息弹§r可以通过使用"特种子弹"蓝图制作.类似鹿弹,短距离十分有效,不过内部充满的是易燃金属粉末,产生一束短距离火舌.
+ie.manual.entry.bullets7=<br>§l药剂弹头§r同样通过使用"特种子弹"蓝图制作.它们能够通过和对应药剂一起合成来装填任何药剂并且在弹药击中时生效.普通药剂需要精准命中,而溅射药剂会有范围效果<config;b;etfuturumBullets; and Lingering Potions will create a temporary, lingering potion cloud.;.>
+ie.manual.entry.bulletsBotania0=<br>§l叶绿弹§r通过使用"特种子弹"蓝图和魔力金属"泰拉钢"制作,这让它们能够自动寻找并跟踪目标.
+ie.manual.entry.bulletsBotania1=<br>§l狼群弹§r集束子弹,发射时不会制导,击中目标时会分裂出六枚自动制导的弹头.
+#ie.manual.entry.bullets1=These are common types of ammunition, created with simple, selfmade blueprints:<br><br>§lCasull:§r Simple lead projectile, capable of inflicting medium damage.<br>§lArmor-Piercing:§r Dense metal projectile, penetrates the armor by sheer kinetic force.<br>§lBuckshot:§r Collection of small projectiles, spreading in a cone shape. Effective at short range.<br>§lHigh-Explosive:§r Creates small explosion on impact.<br>§lSilver:§r Lead core in silver, effective against...werewolves?!
+#ie.manual.entry.bullets2=These are more intricate types of ammunition, created with unique blueprints that cannot be crafted, only found or bought.<br><br>§lDragon's Breath:§r Flammable metal dust, creates a short-ranged inferno.<config;b;botaniaBullets;<br>§lHoming:§r Will home in on the closest target.<br>§lWolfpack:§r Unguided cluster projectile, splits into 6 small, homing, shots.;><br>§lPhial:§r Can be crafted with any potion to create a shot that inflicts the potion effect.
+
+ie.manual.entry.chemthrower.name=化学喷射器
+ie.manual.entry.chemthrower.subtext=
+ie.manual.entry.chemthrower0=化学喷射器是一种能够将内部储液罐中液体喷射出去的装置.该装置能够装在任何液体或气体,并且,右键就会将其喷洒出去.<br>它还有点燃液体的功能,当然必须是可燃液体.潜行右键来使用点火装置.
+ie.manual.entry.chemthrower1=同其它工具一样,化学喷射器可以在<link;workbench;§o§n工程师装配台§r>中进行改装.这些升级将会影响储罐的大小,喷射的范围以及喷射速度.<br><br>大型燃料缸能够增加化学喷射器的储量至2000mb. 
+ie.manual.entry.chemthrower2=聚焦喷嘴会降低喷射速度但会略微增加喷射范围,让你能够更精准的击中远处目标.
+
+ie.manual.entry.skyhook.name=工程师天钩
+ie.manual.entry.skyhook.subtext=Booker, catch!
+ie.manual.entry.skyhook0=工程师天钩是一个机动化的锁扣系统用于钩挂线缆,麻绳或钢线.<br>有了它,工程师们就可以通过电网快速穿梭于各种分站或设备中心.
+ie.manual.entry.skyhook1=只需在接近接线器时按住右键,你就会勾住线缆.<br>在任何时候松开按键或潜行都会松开索扣并掉落.<br>你无法在线缆中间进行钩挂,你必须要在接线器处使用.
+
+ie.manual.entry.shader.name=皮肤
+ie.manual.entry.shader.subtext=蓝色! 不,黄色!
+
+ie.manual.entry.shader0=皮肤是一些你能够在世界当中找到或与村民交易获得的物品.它们本身没有什么功能,但它们可以装配到<link;revolver;§o§n左轮手枪§r>,<link;drill;§o§n机械钻§r>或者<link;chemthrower;§o§n化学喷射器§r>上(或者其它等待你发现的东西上)来改变物品设计.简单的将它们放入<link;workbench;§o§n工程师装 §o§n配台§r>并将皮肤放入合适的装配栏中即可.<br>你也可以将其右键应用在矿车或者<link;balloon;§o§n气球§r>上!
+ie.manual.entry.shader1=皮肤奖励袋包含有一种随机皮肤. 可以在地牢箱子中找到,或者和村民交易以及怪物掉落. 所开出的皮肤稀有度和袋子本身相同或者更稀有. 当使用一个袋子时,你得到未拥有的皮肤的概率要比已获取的更高一些.
+ie.manual.entry.shader2=皮肤奖励袋能够被重新逆合成为两个低级奖励袋, 让你能够有机会重新尝试.皮肤本身也能够和成为一个低级的奖励袋.
+
+ie.manual.entry.railgun.name=轨道炮
+ie.manual.entry.railgun.subtext=摆脱速度的束缚
+ie.manual.entry.railgun0=轨道炮(或者更准确地说是便携式电磁发射器)是工程的奇迹.它有两个导轨流通电流,从而给子弹提供加速.<br>这是个能量强化的过程,会加速各种高速度的弹丸.
+ie.manual.entry.railgun1=按住鼠标右键,一直充电到99%,然后发射物品栏的子弹.<br><br>子弹包括,§6铁杆§r,§6钢杆§r<config;b;literalRailGun;,§6rebar§r and almost §6every rail§r from Railcraft;>,以及 §6石墨棒§r.
+ie.manual.entry.railgun2=和其它IE工具一样,轨道炮可以在<link;workbench;§o§n工程师装配台§r>修改和定制<link;shader;§o§n皮 §o§n肤§r>.<br><br>§6附加电容§r可以增加轨道炮的能量储存和减少充电时间.
+ie.manual.entry.railgun3=§6瞄准镜§r可以增加视野距离.shift使用瞄准镜,鼠标滚轮调节视角.
+
+ie.manual.entry.crusher.name=粉碎机
+ie.manual.entry.crusher.subtext=管好你的手!
+ie.manual.entry.crusher0=粉碎矿物是提高产量的有效途径,因为每个矿物都可以加工得到两份可以烧制的矿粉.这台工业级粉碎机让这个过程变得更加方便.机器的持续运作最大需要<config;i;crusher_consumption>RF/t的能量,其加工速度取决于能源供应量.
+ie.manual.entry.crusher1=然而粉碎机不仅仅是用于粉碎矿物.生物落入粉碎机将会受到持续的伤害而最终的掉落物会从粉碎机的输出端输出.同样的,所有无法被处理的物品将会被销毁.<br>通过给前端的控制面板输入红石信号将暂停粉碎机的处理过程.<br>右击正前面中心方块以完成建造过程.它的前面是底部有一个轻型工程块的宽面.
+
+ie.manual.entry.lightningrod.name=避雷针
+ie.manual.entry.lightningrod.subtext=雷击!
+ie.manual.entry.lightningrod0=闪电是一种自然现象.它包含了大量的原始力量,而避雷针能够驾驭这种力量.<br>通过在多方块结构上堆叠大量钢栅栏,你增加了在雨天或雷暴天气闪电击中它的概率. 
+ie.manual.entry.lightningrod1=当钢柱被击中时,产生的大量能量会被储存在避雷针中然后缓慢的传输到侧面的能量连接点.<br><br>结构搭建如上图所示,手持工程师锤右键中央方块完成搭建. 
+ie.manual.entry.lightningrod2=你能够通过在最顶端的钢栅栏搭建一个相互连接的钢栅栏"网"来增加避雷针被击中的概率. 
+
+ie.manual.entry.minerals.name=矿床
+ie.manual.entry.minerals.subtext=矿石相关
+ie.manual.entry.minerals0=在你的世界中发现的矿床分布对你来说并不新鲜.而如今我们一直忽略的是矿脉,其中混合着多种矿石的存在.由于它们细长的分布,普通的矿工难以发现它们,但一种<link;excavator;§o§n特殊机器§r>或许能够提供一些帮助.
+ie.manual.entry.minerals1=为了寻找并确定分布在世界中的矿产,你会想合成一个岩芯钻井.这台机器在通电时能够钻入区块并确定分布矿物的种类.钻井会消耗<config;i;coredrill_consumption>RF/t并需要<config;i;coredrill_time>ticks来完整的获取与检测样本.
+ie.manual.entry.minerals2=下面将会列出所有矿脉的种类以及在其中能够找到的矿石种类.
+ie.manual.entry.minerals3=%1$s<br>它包含 %2$s.
+ie.manual.entry.mineralsDimValid=§l%1$s§r 是一种会在 %2$s 生成的矿脉.
+ie.manual.entry.mineralsDimInvalid=§l%1$s§r 是一种会在任何地方除了 %2$s 生成的矿脉.
+ie.manual.entry.mineralsDimAny=§l%1$s§r 是一种会在任何世界生成的矿脉.
+
+ie.manual.entry.arcfurnace.name=电弧炉
+ie.manual.entry.arcfurnace.subtext=不是反应堆 
+ie.manual.entry.arcfurnace0=电弧炉是一种用于快速熔炼金属的重型结构.它外表被钢质外壳覆盖,顶部装有用于加热的电极.
+ie.manual.entry.arcfurnace1=因为它的高速和同时加工多个物品的能力,电弧炉相当擅长冶炼金属和炼钢,但它的工作流程也比较复杂,需要时常维护才能保持功能正常运转.<br>为保持工作,矿渣必须时常清理,损坏电极也应及时更换.
+ie.manual.entry.arcfurnace2=要搭建一台电弧炉,需要按照第一页的方式进行建造,然后用工程师锤右击炼药锅.<br><br>能量需要从后方的三个插孔中输入,并且给前端的控制面板输入红石信号将会关闭机器. 右击控制面板,"桶"或外壳将会打开交互界面.
+ie.manual.entry.arcfurnace3=§l交互界面:§r<br>第一眼看过去可能会有些迷惑,但是它实际上表达很直截了当.<br><br>顶部的三个格子是<link;graphite;§o§n石墨§o§n电极§r;1>插槽.<br>左侧的十二个格子用于输入金属和矿石.每一个格子都有一个用于显示烧炼进度的温度条.
+ie.manual.entry.arcfurnace4=右侧的四个格子用于输入"辅料",这是指那些加工过程中加入的不同的原料. 举个例子,在熔炼铁时加焦煤粉来制得钢.<br>主料和辅料的输入可分别通过电弧炉顶部电极左右两侧的输入仓完成.
+ie.manual.entry.arcfurnace5=底部的七个格子有六个用于输出成品,还有一个输出矿渣. 成品可以从电弧炉正面的"桶"中提取,矿渣则会通过电弧炉背后的通道导出. 电弧炉会自动输出成品和矿渣到邻近的容器中(这包括传送带).
+
+ie.manual.entry.excavator.name=斗轮式挖掘机
+ie.manual.entry.excavator.subtext=比矮人更为高效
+ie.manual.entry.excavator0=斗轮式挖掘机可谓是现代机械的巅峰之作.它能够将正常挖矿采集不到的<link;minerals;§o§n矿物§r;0>从矿脉中挖掘出来.作为代价,斗轮式挖掘机拥有极为复杂的结构,并且需要消耗<config;i;excavator_consumption>RF/t来维持运作.
+ie.manual.entry.excavator1=结构由两部分组成:第一页中的机器和前一页展示的斗轮,它正好能够嵌入机器的"吊带"位置.能量输入端在机器的侧面,后面添加了红石控制面板以及物品输出口.<br>当挖掘机开采矿物时,矿脉的范围会缓慢减小,不过一个矿脉能够支撑<config;i;excavator_depletion_days>天的连续开采.
+
+ie.manual.category.computers.name=Computer support
+
+ie.manual.entry.computer.general.name=General information
+ie.manual.entry.computer.general.subtext=Still need some idea for this
+ie.manual.entry.computer.general0=Many of the machines described in this manual can be controlled using computers from OpenComputers or ComputerCraft. When using OpenComputers, an Adapter has to be used to connect the machine to the network. If the machine is a multiblock that has a redstone port, that is where you can attach your computer. Otherwise please check the machine-specific entry in this chapter. The following pages describe some commonly used return types.
+ie.manual.entry.computer.general1=§lItem stacks§r are a very common return type. They consist of a table containing these entries:<br>§lname§r: the internal name of the item, i.e. "minecraft:cobblestone" for cobblestone<br>§lsize§r: the size of the item stack<br>§lnameUnlocalized§r: the unlocalized name of the item, i.e. "tile.stonebrick" for cobblestone. Only available on ComputerCraft<br>§llabel§r: The name of the stack. Changes when the stack is renamed in an anvil.
+ie.manual.entry.computer.general2=§ldamage§r: The damage (or, in most cases, metadata) of the item stack<br>§lmaxDamage§r: The maximum amount of damage the item can have before breaking<br>§lmaxSize§r: the maximum stack size for this item. 64 in most cases<br>§lhasTag§r: whether the stack has a nbt tag
+ie.manual.entry.computer.general3=§lFluid stacks§r: A fluid stack represents some amount of a specific fluid that isn't necessarily in a tank. These entries are available in the returned table:<br>§lname§r: the unlocalized name of the fluid<br>§lamount§r: the amount of fluid, in millibuckets<br>§lhasTag§r: whether the fluid has a nbt tag
+ie.manual.entry.computer.general4=§lFluid tanks§r are similar to fluid stacks, with the difference that this fluid is inside a tank. The returned table has the same entries as the table for a fluid stack. Additionally the capacity of the tank the fluid is in is stored in the entry §lcapacity§r
+
+ie.manual.entry.computer.arcfurnace.name=Arc Furnace
+ie.manual.entry.computer.arcfurnace.subtext=Not a reactor 
+ie.manual.entry.computer.arcFurnace0=§lsetEnabled(boolean active)§r: allows or disallows the arc furnace to operate, as if a redstone signal was applied to the control panel<br>§lisActive()§r: returns a boolean that is true if the arc furnace is currently processing something and false otherwise<br>§lgetInputStack(int slot)§r:returns the stack in the specified input slot (0-11). The table additionally has the keys §lprogress§r and §lmaxProgress§r to store the current progress and the progress at which it will be finished on the
+ie.manual.entry.computer.arcFurnace1=specified slot (both values in ticks)<br>§lgetOutputStack(int slot)§r:returns the stack in the specified output slot(0-5)<br>§lgetAdditiveStack(int slot)§r: returns the stack in the specified additive slot (0-3)<br>§lgetSlagStack()§r: returns the stack in the slag slot<br>§lhasElectrodes()§r:returns a boolean indicating whether all 3 electrodes in the arc furnace are valid<br>§lgetElectrode(int slot)§r: returns the item stack of the specified electrode (0-3)
+ie.manual.entry.computer.arcFurnace2=§lgetMaxEnergyStored()§r: returns the maximum amount of energy that can be stored in this arc furnace<br>§lgetEnergyStored()§r: returns the amount of energy currently stored in this arc furnace
+
+ie.manual.entry.computer.sampleDrill.name=Core sample drill
+ie.manual.entry.computer.sampleDrill.subtext=No idea for this either
+ie.manual.entry.computer.sampleDrill0=The sample drill can be connected to a computer on its bottom block.<br>§lgetSampleProgress()§r: returns the current sample progress, 1 means that the sampling is finished, 0 means that the sampling hasn't started yet<br>§lisSamplingFinished()§r: returns true if the drill has finished sampling, otherwise it returns false<br>§lgetVeinUnlocalizedName()§r: returns the unlocalized name of the found vein
+ie.manual.entry.computer.sampleDrill1=§lgetVeinLocalizedName()§r: returns the localized name of the found vein<br>§lgetVeinIntegrity()§r: returns the integrity of the vein, 1 represents a full vein, 0 an empty vein and -1 an infinite vein<br>§lgetEnergyStored()§r: returns the amount of energy stored in the drill<br>§lgetMaxEnergyStored()§r: returns the maximum amount of energy stored in this drill
+
+ie.manual.entry.computer.crusher.name=Crusher
+ie.manual.entry.computer.crusher.subtext=Keep your hands out!
+ie.manual.entry.computer.crusher0=§lgetQueueLength()§r: The amount of stacks that are waiting to be processed<br>§lsetEnabled(boolean active)§r: allows or disallows the crusher to operate, as if a redstone signal was applied to the control panel<br>§lisActive()§r: returns whether the crusher is currently crushing items<br>§lgetInputStack(int pos)§r: returns the stack in the specified position in the queue (the queue starts at 0)<br>§lgetCurrentMaxProgress()§r and §lgetCurrentProgress()§r
+ie.manual.entry.computer.crusher1=are meant to be used together, they return the amount of RF required to crush the current input and the energy already consumed processing the current input<br>§lgetMaxEnergyStored()§r: returns the maximum amount of energy stored in this crusher<br>§lgetEnergyStored()§r: returns the amount of energy that is stored in this crusher
+
+ie.manual.entry.computer.dieselgen.name=Diesel Generator
+ie.manual.entry.computer.dieselgen.subtext=Better than volume: More volume.
+ie.manual.entry.computer.dieselgen0=§lsetEnabled(boolean active)§r: allows or disallows the diesel generator to run<br>§lisActive()§r: returns whether the generator is running<br>§lgetTankInfo()§r: returns the internal diesel tank
+
+ie.manual.entry.computer.energymeter.name=Current Transformer
+ie.manual.entry.computer.energymeter.subtext=88 Flux per hour!
+ie.manual.entry.computer.energymeter0=The bottom block of a current transformer can be connected to a computer. It will provide a single method, §LgetAvgEnergy§r , that returns the average amount of energy per tick that was transferred through the transformer during the last 20 ticks.
+
+ie.manual.entry.computer.excavator.name=Excavator
+ie.manual.entry.computer.excavator.subtext=Better than Dwarves
+ie.manual.entry.computer.excavator0=§lisActive()§r: returns whether the excavator is running. This does not say anything about the existence of a mineral vein<br>§lsetEnabled(boolean active)§r: allows or disallows the excavator to run<br>§lgetEnergyStored()§r: returns the amount of energy currently stored in this excavator<br>§lgetMaxEnergyStored()§r: returns the maximum amount of energy that can be stored in this excavator
+
+ie.manual.entry.computer.squeezerAndFermenter.name=Fermenter and squeezer
+ie.manual.entry.computer.squeezerAndFermenter.subtext=Double post
+ie.manual.entry.computer.squeezerAndFermenter0=The computer support for fermenters and squeezers is extremely similar. The computer can be connected anywhere on the multiblock.<br>§lgetRecipe(int slot)§r: returns 3 tables and 1 integer describing the recipe that has the item in the specified input slot (0-8) as the input. The first table is the input stack, the second table the output item, the third table the output fluid and the integer is the time it takes for this recipe to process. If no recipe is found, only the string "No recipe
+ie.manual.entry.computer.squeezerAndFermenter1=found" will be returned.<br>§lgetInputStack(int slot)§r: returns the stack in the specified input slot (0-8)<br>§lgetOutputStack()§r: returns the stack in the item output slot<br>§lgetFluid()§r: returns the output fluid tank<br>§lgetEmptyCannisters§r: returns the stack of empty cannisters in the top right slot<br>§lgetFilledCannisters()§r: returns the stack of filled cannisters in the bottom right<br>§lgetEnergyStored§r: returns the amount of energy stored in this machine
+ie.manual.entry.computer.squeezerAndFermenter2=§lgetMaxEnergyStored()§r: returns the maximum amount of energy that can be stored in this machine
+
+ie.manual.entry.computer.floodlight.name=Floodlight
+ie.manual.entry.computer.floodlight.subtext=NO IDEA
+ie.manual.entry.computer.floodlight0=The following assumes that the floodlight is placed on the ground. The floodlight can be connected to a computer on it's bottom face. After rotating a floodlight using a computer you have to wait for one second before you can rotate it again.<br>§lturnAroundXZ(boolean dir)§r: changes the pitch of the floodlight<br>§lturnAroundY(boolean dir)§r: turns the floodlight as if it was rightclicked on its top or bottom<br>§lcanTurn()§r: returns whether the floodlight can rotate again yet
+ie.manual.entry.computer.floodlight1=§lwaitForTimeout()§r: waits until the floodlight can turn again. Only available when using ComputerCraft<br>§lsetEnabled(boolean on)§r: turns the floodlight on or off<br>§lisActive()§r: returns whether this floodlight is currently active<br>§lgetEnergyStored()§r: returns the amount of energy stored in the floodlight<br>§lgetMaxEnergyStored()§r: returns the maximum amount of energy that can be stored in the floodlight
+
+ie.manual.entry.computer.refinery.name=Refinery
+ie.manual.entry.computer.refinery.subtext=STOP ASKING
+ie.manual.entry.computer.refinery0=§lgetInputFluidTanks()§r: returns a table storing the input tanks in the keys "input0" and "input1"<br>§lgetOutputTank()§r: returns the output tank<br>§lgetRecipe()§r: returns a table containing the input fluids in the keys "input0" and "input1" and the output fluid in the key "output"<br>§lsetEnabled(boolean on)§r: allows or disallows the refinery to run<br>§lisValidRecipe()§r: returns whether a recipe with the current input fluids exists
+ie.manual.entry.computer.refinery1=§lgetEmptyCannisters()§r: returns a table containing the stacks of empty cannisters, the keys "input0" and "input1" for the input tanks, the key "output" for the output tank<br>§lgetMaxEnergyStored()§r: returns the maximum of energy that can be stored in this refinery<br>§lgetEnergyStored()§r: returns the amount of energy stored in the refinery
+
+ie.manual.entry.computer.assembler.name=Assembler
+ie.manual.entry.computer.assembler.subtext=Some assembly required
+ie.manual.entry.computer.assembler0=The bottom row of an assembler can be connected to a computer.<br>§lhasIngredients(int recipe)§r: returns whether the ingredients for the specified recipe (0-2) are available<br>§lsetEnabled(int slot, boolean on)§r: enables or disables the specified recipe (0-2). If a recipe is disabled, it will not be crafted even if the materials are available.<br>§lgetRecipe(int recipe)l§r: returns a table containing the specified recipe (0-2). The keys "in1", "in2", ..., "in9" store the recipe inputs, the key "out"
+ie.manual.entry.computer.assembler1=stores the output<br>§lgetTank(int tank)§r: returns the specified tank (0-2)<br>§lgetMaxEnergyStored()§r: returns the maximum amount of energy that can be stored in the assembler<br>§lgetEnergyStored()§r: returns the amount of energy stored in the assembler<br>§lgetStackInSlot(int slot)§r: returns the stack in the specified input slot.<br>§lgetBufferStack(recipe:int)§r: returns the output buffer slot for the specified recipe (0-2)
+
+ie.manual.entry.computer.bottlingMachine.name=Bottling Machine
+ie.manual.entry.computer.bottlingMachine.subtext=Fill 'er up!
+ie.manual.entry.computer.bottlingMachine0=The block in the bottom middle of the front of a bottling machine and the back bottom row can be connected to a computer. A cannister is considered filled if it has passed the black box on the conveyor.<br>§lgetFluid()§r: returns the internal fluid tank of the bottling machine<br>§lgetEmptyCannister(int n)§r: returns the n'th empty cannister, starting where the cannisters enter the machine. The table contains the current filling progress in ticks in the key "process". A bottle is filled
+ie.manual.entry.computer.bottlingMachine1=at progress 72 and output at progress 120.<br>§lgetEmptyCannisterCount()§r: returns the amount of empty cannisters in the bottling machine<br>§lgetFilledCannister(int n)§r: returns the n'th filled cannister, starting at the black box. The returned table contains the filling progress stored in the key "process".<br>§lgetFilledCannisterCount()§r: returns the amount of filled cannisters in the bottling machine<br>§lgetEnergyStored()§r: returns
+ie.manual.entry.computer.bottlingMachine2=the amount of energy stored in the bottling machine<br>§lgetMaxEnergyStored()§r: returns the maximum amount of energy stored in this bottling machine<br>§lsetEnabled(boolean on)§r: turns the bottling machine on or off
+
+ie.manual.entry.computer.capacitor.name=Capacitors (computers)
+ie.manual.entry.computer.capacitor.subtext=Many Farads at a lot of Volts
+ie.manual.entry.computer.capacitor0=Any capacitor can be connected to a computer on any side.<br>§lgetEnergyStored()§r: returns the amount of energy that is stored<br>§lgetMaxEnergyStored()§r: returns the amount of energy that can be stored
