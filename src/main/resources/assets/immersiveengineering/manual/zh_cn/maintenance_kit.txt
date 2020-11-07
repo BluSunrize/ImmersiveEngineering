@@ -1,5 +1,5 @@
-Maintenance Kit
-On the go repairs
-<&recipe>Among those Engineers that travel the world or spend much of their time in mines, one problem crystalizes itself. Their tools require constant maintenance, and carrying around an entire workbench just isn't viable. Fortunately, the majority of minor repairs and re-configurations can be performed with a maintenance kit.
+维护工具包
+忙着修理
+<&recipe>在那些周游世界或花大量时间在矿下的工程师中，有一个问题会变得清晰起来。他们的工具需要经常维护，而且携带整个工作台是不可行的。幸运的是，大部分的小维修和重新配置都可以通过维护工具包来完成。
 
-A set of tools, wrapped in sturdy hemp cloth, the maintenance kit allows you to customize your tools much in the way the <link;workbench;Engineer's Workbench> does. No longer will you have to deal with resurfacing to change the head on your Mining Drill or head back to your workshop to configure your Ear Defenders. All of this can now be performed on the go with the Maintenance Kit!
+包裹在坚韧布料中的一组工具可以使你如在<link;workbench;工程师装配台>中那样自定义工具。你将不再需要重新浮出水面来改变你的采矿钻头或回到你的工作室来配置你的耳罩。所有这些现在都可以通过维护工具包执行了！

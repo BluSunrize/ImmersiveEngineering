@@ -1,3 +1,4 @@
-Tank
-Full to the brim!
-The Tank is a multiblock that provides space for large amounts of fluid. It will store up to 512 buckets of any fluid, which can be piped in through the top or bottom block. Fluids can only be extracted from the bottom center block. Applying a redstone signal to the bottom center block will make the tank output automatically, a comparator placed there will emit a redstone signal proportional to how full the tank is. Attaching the comparator to one of the top 4 layers results in a signal proportional to the height of the comparator. For example, a comparator attached to the second layer of a tank would not emit any signal until the tank is 1/4 full and have a signal strength of 15 if the tank is half full or more.
+储罐
+全部装满！
+储罐是一个多方块结构，为大量的液体提供了空间。它可以储存多达512桶的任何液体，这些液体可以用管道通过顶部或底部的方块输入。液体只能从底部中心块中提取。
+将红石信号用于底部中心块将使储罐自动输出，放置在那里的比较器将发出与其满度相关的红石信号。将比较器附加到上面的层之一，可以产生与比较器的高度成比例的信号。例如，一个附在第二层的比较器不会发出任何信号，直到储罐是1/4满，并发出强度15的信号，如果储罐是半满或更多。

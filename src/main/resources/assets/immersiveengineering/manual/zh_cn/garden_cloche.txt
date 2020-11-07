@@ -1,7 +1,7 @@
-Garden Cloche
-Localized Rainforest
-<&recipe>The Garden Cloche, or Belljar, is a device designed to hasten the growth of plants. It allows even the agriculturally challenged engineer to grow plants and harvest their yield.<np>
-The device accepts power, fluid and items through its respective ports.
-Water and power are always required, and you may add fertilizer to the slot on the left to increase growth speed.
-Soil and seeds are placed in the middle; each seed requires the correct soil to grow on, with dirt being automatically tilled into farmland.<np>
-Produced items are stored in the slots on the right, and will be automatically output through the hatch at the front of the glass dome.
+园艺玻璃罩
+本地雨林
+<&recipe>园艺玻璃罩，又称花园钟罩，是一种用来加速植物生长的装置。它甚至可以使农业苦手的工程师们很好地种植植物和收获它们的产物。<np>
+该设备通过其各端口接受电量、流体和物品。
+水和动力总是需要的，你可以添加肥料到左边的槽增加生长速度。
+土壤和种子放在中间；每颗种子都需要合适的土壤来生长，土壤会被自动翻耕为耕地。<np>
+产品存储在右边的槽，并可以通过玻璃罩前方的端口自动输出。
