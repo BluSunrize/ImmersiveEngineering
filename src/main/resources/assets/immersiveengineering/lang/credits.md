@@ -4,6 +4,6 @@ CODE
 	- AtomicBlom for porting *everything* to 1.11.2!
 
 LOCALIZATION
-	- zh_CN: 3TUSK, Amamiya-Nagisa, bakaxyf, CannonFotter, crafteverywhere, IamAchang, Joccob, LYDfalse, UUUii
+	- zh_CN: 3TUSK, Amamiya-Nagisa, bakaxyf, CannonFotter, crafteverywhere, IamAchang, Joccob, LYDfalse, UUUii, Fodoth_jinzi89
 	- ru_RU: lex1975
 	- zh_TW: xaxa123, vongola12324
