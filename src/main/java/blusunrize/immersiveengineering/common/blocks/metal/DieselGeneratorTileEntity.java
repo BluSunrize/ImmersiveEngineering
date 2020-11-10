@@ -157,7 +157,10 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 							.map(CapabilityReference::getNullable)
 							.filter(Objects::nonNull)
 							.collect(Collectors.toList());
-					if(!presentOutputs.isEmpty()&&tanks[0].getFluidAmount() >= fluidConsumed)
+					if(!presentOutputs.isEmpty()&&
+							tanks[0].getFluidAmount() >= fluidConsumed&&
+							// Sort receivers by lowest input
+							EnergyHelper.distributeFlux(presentOutputs, output, false) < output)
 					{
 						if(!active)
 						{
@@ -165,8 +168,6 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 							animation_fanFadeIn = 80;
 						}
 						tanks[0].drain(fluidConsumed, FluidAction.EXECUTE);
-						// Sort receivers by lowest input
-						EnergyHelper.distributeFlux(presentOutputs, output, false);
 					}
 					else if(active)
 					{
