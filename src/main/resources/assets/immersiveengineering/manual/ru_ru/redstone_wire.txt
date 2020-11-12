@@ -1,22 +1,19 @@
-Redstone Wires
-Integration Takeover
-<&coil>§2Redstone Wires§r are aluminium coated in redstone dust. The resulting cables provide an easy way to transfer redstone signals over long distance without losing any signal strength.<&connector>The §2connectors§r work like any other wire connector in terms of connecting them, however, redstone wiring does not require relays; connectors and relays are the same block.
-With the Engineer's Screwdriver, the connectors can be configured between in- and output mode and set to one of 16 coloured frequencies.
-<&probe>§2Redstone Probe Connectors§r have a functionality partially comparable to Redstone Comparators. While they are not able to actively compare signals, they are able to read inventories for how full they are. Additionally, these probes can operate on two channels, sending their read signal on one, and still receiving signals on another. These channels can be also configured by using the Engineer's Screwdriver.
+Редстоун провода
+Приобретение интеграции
+<&coil>§2Коннекторы краснокаменного провода§r алюминиевые и покрыты пылью из красного камня. Полученные в результате кабели обеспечивают простой способ передачи сигналов красного камня на большие расстояния без потери мощности сигнала.<&connector>§2cКоннекторы§r работают так же, как и любой другой проводной соединитель с точки зрения их соединения, однако, проводка Редстоун не требует с реле; разъемы и реле совмещены в одном блоке.
+С помощью Инженерной отвертки разъемы можно настроить между режимами ввода и вывода и установить на одну из 16 цветных частот.
+<&probe>§2Коннектор краснокаменного зонда§r имеют функциональность, частично сопоставимую с компараторами Редстоун. Хотя они не могут активно сравнивать сигналы, зато они могут читать инвентаризацию, чтобы определить, насколько они заполнены. Кроме того, эти зонды могут работать по двум каналам, посылая свой сигнал чтения по одному и все еще принимая сигналы по другому. Эти каналы также можно настроить с помощью Инженерной отвертки.
 
-Note that many of IE's multiblocks feature comparator-functionality, as described on the following pages. Where available, the redstone control surface of the multiblock is the designated spot to connect a comparator.<np>
-§lTank: §rAs detailed in its <link;tank;manual entry>
-§lSilo: §rAs detailed in its <link;silo;manual entry>
-§lAssembler: §rOutputs a signal relative to the fill of the inventory.
-§lAutoWorkbench: §rOutputs a signal relative to the fill of the inventory.
-§lSqueezer: §rOutputs a signal relative to the fill of the inventory.
-§lFermenter: §rOutputs a signal relative to the fill of the inventory.
-§lExcavator: §rOutputs a signal relative to the remaining ore in the vein.
-§lArcFurnace: §rOutputs a signal relative to the fill of the inventory.
-Additionally, connecting a comparator to the electrodes at the top will send a signal based on their integrity.
-§lMixer: §rOutputs a signal relative to the fill of the inventory.
-<np>
-<&bundled>§2Redstone Interface Connectors§r are designed to be attached to other blocks that can make use of the coloured redstone signals.
-The interface connector is innert and does not posses a colour, input- or output-state, but it allows blocks such as the <link;item_batcher;Item Batcher> to interface directly with the wire network.
-
-
+Обратите внимание, что многие из мультиблоков IE имеют функции компаратора, как описано на следующих страницах. Если возможно, управляющая поверхность из красного камня мультиблока является местом, предназначенным для подключения компаратора.<np>
+§lРезервуар: §rПодробно описано в его <link;tank;описании>
+§lСилос: §rПодробно описан в его <link;silo;описании>
+§lСборщик: §rВыводит сигнал о заполнении инвентаря.
+§lАвтоматизированный верстак инженера: §rВыходит сигнал относительно заполнения инвентаря.
+§lПромышленная маслобойня: §rВыводит сигнал относительно заполнения инвентаря.
+§lБродильный аппарат: §rВыводит сигнал относительно заполнения инвентаря.
+§lЭкскавато: §rВыходит сигнал относительно оставшейся руды в жиле.
+§lДуговая печь: §rВыводит сигнал о заполнении инвентаря.
+Кроме того, подключение компаратора к электродам наверху отправит сигнал в зависимости от их целостности.
+§lМиксер: §rВыходит сигнал относительно заполнения инвентаря.<np>
+<&bundled>§2Краснокаменный интерфейсный коннектор§r предназначены для подключения к другим блокам, которые могут использовать цветные сигналы красного камня.
+Разъем интерфейса является внутренним и не имеет цвета, состояния ввода или вывода, но он позволяет блокам, таким как <link;item_batcher;Дозатор предметов>, взаимодействовать напрямую с проводной сетью.
