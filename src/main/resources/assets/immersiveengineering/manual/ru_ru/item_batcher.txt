@@ -1,7 +1,7 @@
-Item Batcher
-Come together, right now
-<&recipe>The Item Batcher is designed to collect a set of items from an inputting conveyor before sending them onwards, in order to transfer optimized batch sizes to machinery.<np>
-Place the block and open its interface to set a variety of filters. Any incoming items will be accepted into the slots directly below the filters, and the collected batch will only be output when all filters are satisfied.
-This behavior can be adjusted with the button labeled "Output Mode". The default behavior noted above is known as §2batched mode§r. In §2single mode§r, any item that satisfies its filtered quantity will be output instead.<np>
-Using the 9 buttons below the buffer, you can toggle through the colours of <link;redstone_wire;redstone wires>. By attaching a <link;redstone_wire;Redstone Interface Connector;bundled>, the Item Batcher will send signals along the redstone wires when a filter is satisfied.
-This allows you to disable any extracting conveyors or producing machinery when your required amount of items is reached. Note that if multiple filters use the same colour, they all need to be satisfied for a signal to be sent.
+Дозатор предметов
+Приходите вместе, прямо сейчас
+<&recipe>Дозатор предметов предназначен для сбора предметов с конвейера перед отправкой их, чтобы передать определенные размеры партии на оборудование.<np>
+Поместите блок и откройте его интерфейс, чтобы установить различные фильтры. Все входящие элементы будут приниматься в слоты непосредственно под фильтрами, а собранная партия будет выводиться только тогда, когда все фильтры будут удовлетворены.
+Это поведение можно настроить с помощью кнопки с надписью "режим вывода". Поведение по умолчанию, отмеченное выше, известно как §2Дозированный режим§r. В режиме §2одиночный§r вместо этого будет выведен любой элемент, удовлетворяющий своему отфильтрованному количеству.<np>
+Используя 9 кнопок под буфером, вы можете переключаться между цветами <link;redstone_wire;редстоун проводов>. Подключив <link;redstone_wire;Редстоун коннектор;bundled>, дозатор элементов будет посылать сигналы по редстоун проводам, когда фильтр будет удовлетворен.
+Это позволяет вам отключить любые извлекающие конвейеры или производящие машины, когда будет достигнуто необходимое количество изделий. Обратите внимание, что если несколько фильтров используют один и тот же цвет, то все они должны быть удовлетворены для отправки сигнала.
