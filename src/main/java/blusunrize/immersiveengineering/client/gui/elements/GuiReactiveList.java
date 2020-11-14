@@ -28,6 +28,9 @@ public class GuiReactiveList extends Button
 	private Function<String, String> translationFunction;
 	private int scrollMode = 0;
 	private float textScale = 1;
+	
+	private int textFGColor = 0xE0E0E0;
+	private int textFGColorHover = Lib.COLOUR_I_ImmersiveOrange;
 
 	private int offset;
 	private int maxOffset;
@@ -88,6 +91,24 @@ public class GuiReactiveList extends Button
 		return this;
 	}
 
+	/**
+	 * Sets the text color for the list entries
+	 */
+	public GuiReactiveList setTextColor(int textColor)
+	{
+		this.textFGColor = textColor;
+		return this;
+	}
+
+	/**
+	 * Sets the text color, when hovered over, for the list entries 
+	 */
+	public GuiReactiveList setTextHoverColor(int textHoverColor)
+	{
+		this.textFGColorHover = textHoverColor;
+		return this;
+	}
+
 	public int getOffset()
 	{
 		return this.offset;
@@ -101,6 +122,16 @@ public class GuiReactiveList extends Button
 	public int getMaxOffset()
 	{
 		return this.maxOffset;
+	}
+
+	public int getTextColor()
+	{
+		return this.textFGColor;
+	}
+
+	public int getTextHoverColor()
+	{
+		return this.textFGColorHover;
 	}
 
 	@Override
@@ -133,7 +164,7 @@ public class GuiReactiveList extends Button
 		for(int i = 0; i < Math.min(perPage, entries.length); i++)
 		{
 			int j = offset+i;
-			int col = 0xE0E0E0;
+			int col = this.getTextColor();
 			boolean selectionHover = isHovered&&mmY >= i*fr.FONT_HEIGHT&&mmY < (i+1)*fr.FONT_HEIGHT;
 			if(selectionHover)
 			{
@@ -145,7 +176,7 @@ public class GuiReactiveList extends Button
 				}
 				else
 					hoverTimer++;
-				col = Lib.COLOUR_I_ImmersiveOrange;
+				col = this.getTextHoverColor();
 			}
 			if(j > entries.length-1)
 				j = entries.length-1;
