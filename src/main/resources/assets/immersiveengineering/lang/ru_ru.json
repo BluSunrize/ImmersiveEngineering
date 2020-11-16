@@ -1196,7 +1196,7 @@
   "ie.manual.entry.shaderList.noInfo": "Вы еще не разблокировали этот шейдер!",
   "ie.manual.entry.shaderList.unlock": "Разблокируйте этот шейдер",
   "ie.manual.entry.shaderList.order": "Приобрести:",
-  "ie.manual.entry.minerals_desc": "%1$s\nIt состоит из %2$s.",
+  "ie.manual.entry.minerals_desc": "%1$s\nОна состоит из %2$s.",
   "ie.manual.entry.mineralsDimValid": "§l%1$s§r это минеральная жила, которую можно найти в %2$s.",
   "ie.manual.entry.mineralsDimInvalid": "§l%1$s§r это минеральная жила, которая может быть найдена в любом месте, кроме %2$s.",
   "ie.manual.entry.mineralsDimAny": "§l%1$s§r это минеральная жила, которую можно найти в любом измерении.",
