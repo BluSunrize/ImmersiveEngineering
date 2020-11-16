@@ -588,62 +588,6 @@ public class ClientUtils
 	private static float[] alphaFirst2Fading = {0, 0, 1, 1};
 	private static float[] alphaNoFading = {1, 1, 1, 1};
 
-	public static List<BakedQuad> convertConnectionFromBlockstate(BlockPos here, Set<Connection.RenderData> data, TextureAtlasSprite t)
-	{
-		List<BakedQuad> ret = new ArrayList<>();
-		if(data==null)
-			return ret;
-		Vector3d dir = Vector3d.ZERO;
-
-		Vector3d up = new Vector3d(0, 1, 0);
-		for(Connection.RenderData connData : data)
-		{
-			int color = connData.color;
-			float[] rgb = {(color >> 16&255)/255f, (color >> 8&255)/255f, (color&255)/255f, (color >> 24&255)/255f};
-			if(rgb[3]==0)
-				rgb[3] = 1;
-			float radius = (float)(connData.type.getRenderDiameter()/2);
-
-			for(int segmentEndId = 1; segmentEndId <= connData.pointsToRenderSolid; segmentEndId++)
-			{
-				int segmentStartId = segmentEndId-1;
-				Vector3d segmentEnd = connData.getPoint(segmentEndId);
-				Vector3d segmentStart = connData.getPoint(segmentStartId);
-				boolean vertical = segmentEnd.x==segmentStart.x&&segmentEnd.z==segmentStart.z;
-				Vector3d cross;
-				if(!vertical)
-				{
-					dir = segmentEnd.subtract(segmentStart);
-					cross = up.crossProduct(dir);
-					cross = cross.scale(radius/cross.length());
-				}
-				else
-					cross = new Vector3d(radius, 0, 0);
-				Vector3d[] vertices = {segmentEnd.add(cross),
-						segmentEnd.subtract(cross),
-						segmentStart.subtract(cross),
-						segmentStart.add(cross)};
-				ret.add(createSmartLightingBakedQuad(DefaultVertexFormats.BLOCK, vertices, Direction.DOWN, t, rgb, false, alphaNoFading, here));
-				ret.add(createSmartLightingBakedQuad(DefaultVertexFormats.BLOCK, vertices, Direction.UP, t, rgb, true, alphaNoFading, here));
-
-				if(!vertical)
-				{
-					cross = dir.crossProduct(cross);
-					cross = cross.scale(radius/cross.length());
-				}
-				else
-					cross = new Vector3d(0, 0, radius);
-				vertices = new Vector3d[]{segmentEnd.add(cross),
-						segmentEnd.subtract(cross),
-						segmentStart.subtract(cross),
-						segmentStart.add(cross)};
-				ret.add(createSmartLightingBakedQuad(DefaultVertexFormats.BLOCK, vertices, Direction.WEST, t, rgb, false, alphaNoFading, here));
-				ret.add(createSmartLightingBakedQuad(DefaultVertexFormats.BLOCK, vertices, Direction.EAST, t, rgb, true, alphaNoFading, here));
-			}
-		}
-		return ret;
-	}
-
 	public static int getSolidVertexCountForSide(ConnectionPoint start, Connection conn, int totalPoints)
 	{
 		List<Integer> crossings = new ArrayList<>();
@@ -765,9 +709,9 @@ public class ClientUtils
 		return createBakedQuad(format, vertices, facing, sprite, new double[]{0, 0, 16, 16}, colour, invert, alpha);
 	}
 
-	public static BakedQuad createSmartLightingBakedQuad(VertexFormat format, Vector3d[] vertices, Direction facing, TextureAtlasSprite sprite, float[] colour, boolean invert, float[] alpha, BlockPos base)
+	public static BakedQuad createSmartLightingBakedQuad(VertexFormat format, Vector3d[] vertices, Direction facing, TextureAtlasSprite sprite, float[] colour, boolean invert, BlockPos base)
 	{
-		return createBakedQuad(format, vertices, facing, sprite, new double[]{0, 0, 16, 16}, colour, invert, alpha, true, base);
+		return createBakedQuad(format, vertices, facing, sprite, new double[]{0, 0, 16, 16}, colour, invert, alphaNoFading, true, base);
 	}
 
 	public static BakedQuad createBakedQuad(VertexFormat format, Vector3d[] vertices, Direction facing, TextureAtlasSprite sprite, double[] uvs, float[] colour, boolean invert)

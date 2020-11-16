@@ -28,11 +28,13 @@ import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockDisplayReader;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.ModelLoader.White;
@@ -48,10 +50,10 @@ import java.util.concurrent.TimeUnit;
 
 public class BakedConnectionModel extends BakedIEModel
 {
-	Lazy<TextureAtlasSprite> textureAtlasSprite =  Lazy.of(() -> Minecraft.getInstance().getModelManager()
+	Lazy<TextureAtlasSprite> textureAtlasSprite = Lazy.of(() -> Minecraft.getInstance().getModelManager()
 			.getAtlasTexture(PlayerContainer.LOCATION_BLOCKS_TEXTURE)
 			.getSprite(new ResourceLocation(ImmersiveEngineering.MODID, "block/wire")));
-	public static final Cache<ModelKey, IBakedModel> cache = CacheBuilder.newBuilder()
+	public static final Cache<ModelKey, SpecificConnectionModel> cache = CacheBuilder.newBuilder()
 			.expireAfterAccess(2, TimeUnit.MINUTES)
 			.maximumSize(100)
 			.build();
@@ -92,8 +94,11 @@ public class BakedConnectionModel extends BakedIEModel
 			ModelKey key = new ModelKey(data, ad, orig.here);
 			try
 			{
-				IBakedModel ret = cache.get(key, () -> new AssembledBakedModel(key, textureAtlasSprite.get(), base));
-				return ret.getQuads(state, null, rand, extraData);
+				SpecificConnectionModel ret = cache.get(key, () -> new SpecificConnectionModel(key, textureAtlasSprite.get()));
+				RenderType current = MinecraftForgeClient.getRenderLayer();
+				List<BakedQuad> connectionQuads = new ArrayList<>(ret.getQuads(current));
+				connectionQuads.addAll(getBaseQuads(current, state, side, rand, extraData));
+				return connectionQuads;
 			} catch(ExecutionException e)
 			{
 				e.printStackTrace();
@@ -154,76 +159,79 @@ public class BakedConnectionModel extends BakedIEModel
 			return base.getModelData(world, pos, state, tileData);
 	}
 
-	public class AssembledBakedModel implements IBakedModel
+	public static List<BakedQuad> convertConnectionFromBlockstate(BlockPos here, Set<Connection.RenderData> data, TextureAtlasSprite t)
 	{
-		ModelKey key;
-		List<BakedQuad> lists;
-		TextureAtlasSprite texture;
+		List<BakedQuad> ret = new ArrayList<>();
+		if(data==null)
+			return ret;
+		Vector3d dir = Vector3d.ZERO;
 
-		public AssembledBakedModel(ModelKey key, TextureAtlasSprite tex, IBakedModel b)
+		Vector3d up = new Vector3d(0, 1, 0);
+		for(Connection.RenderData connData : data)
 		{
-			this.key = key;
-			texture = tex;
+			int color = connData.color;
+			float[] rgb = {(color >> 16&255)/255f, (color >> 8&255)/255f, (color&255)/255f, (color >> 24&255)/255f};
+			if(rgb[3]==0)
+				rgb[3] = 1;
+			float radius = (float)(connData.type.getRenderDiameter()/2);
+
+			for(int segmentEndId = 1; segmentEndId <= connData.pointsToRenderSolid; segmentEndId++)
+			{
+				int segmentStartId = segmentEndId-1;
+				Vector3d segmentEnd = connData.getPoint(segmentEndId);
+				Vector3d segmentStart = connData.getPoint(segmentStartId);
+				boolean vertical = segmentEnd.x==segmentStart.x&&segmentEnd.z==segmentStart.z;
+				Vector3d cross;
+				if(!vertical)
+				{
+					dir = segmentEnd.subtract(segmentStart);
+					cross = up.crossProduct(dir);
+					cross = cross.scale(radius/cross.length());
+				}
+				else
+					cross = new Vector3d(radius, 0, 0);
+				Vector3d[] vertices = {segmentEnd.add(cross),
+						segmentEnd.subtract(cross),
+						segmentStart.subtract(cross),
+						segmentStart.add(cross)};
+				ret.add(ClientUtils.createSmartLightingBakedQuad(DefaultVertexFormats.BLOCK, vertices, Direction.DOWN, t, rgb, false, here));
+				ret.add(ClientUtils.createSmartLightingBakedQuad(DefaultVertexFormats.BLOCK, vertices, Direction.UP, t, rgb, true, here));
+
+				if(!vertical)
+				{
+					cross = dir.crossProduct(cross);
+					cross = cross.scale(radius/cross.length());
+				}
+				else
+					cross = new Vector3d(0, 0, radius);
+				vertices = new Vector3d[]{segmentEnd.add(cross),
+						segmentEnd.subtract(cross),
+						segmentStart.subtract(cross),
+						segmentStart.add(cross)};
+				ret.add(ClientUtils.createSmartLightingBakedQuad(DefaultVertexFormats.BLOCK, vertices, Direction.WEST, t, rgb, false, here));
+				ret.add(ClientUtils.createSmartLightingBakedQuad(DefaultVertexFormats.BLOCK, vertices, Direction.EAST, t, rgb, true, here));
+			}
+		}
+		return ret;
+	}
+
+	public static class SpecificConnectionModel
+	{
+		private final Lazy<List<BakedQuad>> connectionQuads;
+
+		public SpecificConnectionModel(ModelKey key, TextureAtlasSprite texture)
+		{
+			connectionQuads = Lazy.concurrentOf(() -> convertConnectionFromBlockstate(key.here, key.connections, texture));
 		}
 
 		@Nonnull
-		@Override
-		public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand, IModelData data)
+		public List<BakedQuad> getQuads(RenderType layer)
 		{
-			RenderType layer = MinecraftForgeClient.getRenderLayer();
 			if(layer!=RenderType.getSolid())
-				return getBaseQuads(layer, state, side, rand, data);
-			if(lists==null)
-				lists = ClientUtils.convertConnectionFromBlockstate(key.here, key.connections, texture);
-			List<BakedQuad> l = new ArrayList<>(lists);
-			l.addAll(getBaseQuads(layer, state, side, rand, data));
-			return l;
+				return ImmutableList.of();
+			else
+				return connectionQuads.get();
 		}
-
-		@Override
-		public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand)
-		{
-			return ImmutableList.of();
-		}
-
-		@Override
-		public boolean isAmbientOcclusion()
-		{
-			return false;
-		}
-
-		@Override
-		public boolean isGui3d()
-		{
-			return false;
-		}
-
-		@Override
-		public boolean isSideLit()
-		{
-			return true;
-		}
-
-		@Override
-		public boolean isBuiltInRenderer()
-		{
-			return false;
-		}
-
-		@Nonnull
-		@Override
-		public TextureAtlasSprite getParticleTexture()
-		{
-			throw new UnsupportedOperationException();
-		}
-
-		@Nonnull
-		@Override
-		public ItemOverrideList getOverrides()
-		{
-			return ItemOverrideList.EMPTY;
-		}
-
 	}
 
 	private static class ModelKey
