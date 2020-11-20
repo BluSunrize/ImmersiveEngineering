@@ -30,14 +30,11 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 
-import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.IntSupplier;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-
-import static net.minecraft.util.text.TextFormatting.RESET;
 
 import static net.minecraft.util.text.TextFormatting.RESET;
 
@@ -128,13 +125,13 @@ public class TextSplitter
 			Page nextPage = parsePage(
 					pageOverflow,
 					wordsAndSpaces,
-					anchor -> noCollidingElements(anchor, entry.size(), pageByAnchor),
+					anchors -> noCollidingElements(anchors, entry.size(), pageByAnchor),
 					str -> {
 						Optional<SpecialManualElement> element = findElement(pageByAnchor, entry.size(), str);
 						return getLinesOnPage(element);
 					}
 			);
-			nextPage.anchor.ifPresent(anchor -> pageByAnchor.put(anchor, entry.size()));
+			nextPage.anchorsOnPage.forEach(anchor -> pageByAnchor.put(anchor, entry.size()));
 			entry.add(nextPage.lines);
 			pageOverflow = nextPage.nextPage;
 		}
@@ -166,14 +163,16 @@ public class TextSplitter
 		return new SplitResult(entry, pageByAnchor, specialByPage);
 	}
 
-	private boolean noCollidingElements(String newAnchor, int anchorPage, Object2IntMap<String> pageByAnchor)
+	private boolean noCollidingElements(List<String> newAnchors, int anchorPage, Object2IntMap<String> pageByAnchor)
 	{
-		IntSet newSpecials = new IntArraySet();
-		for(int offset : getElements(newAnchor).keySet())
-			newSpecials.add(offset+anchorPage);
+		IntSet pagesWithSpecials = new IntArraySet();
+		for(String newAnchor : newAnchors)
+			for(int offset : getElements(newAnchor).keySet())
+				if(!pagesWithSpecials.add(offset+anchorPage))
+					return false;
 		for(Entry<String> e : pageByAnchor.object2IntEntrySet())
 			for(int offset : getElements(e.getKey()).keySet())
-				if(newSpecials.contains(e.getIntValue()+offset))
+				if(!pagesWithSpecials.add(offset+e.getIntValue()))
 					return false;
 		return true;
 	}
@@ -181,12 +180,12 @@ public class TextSplitter
 	private Optional<SpecialManualElement> findElement(
 			Object2IntMap<String> pageByAnchor,
 			int newAnchorPage,
-			Optional<String> newAnchor
+			List<String> newAnchors
 	)
 	{
-		if(newAnchor.isPresent())
+		for(String newAnchor : newAnchors)
 		{
-			Map<Integer, SpecialManualElement> forNewAnchor = getElements(newAnchor.get());
+			Map<Integer, SpecialManualElement> forNewAnchor = getElements(newAnchor);
 			if(forNewAnchor.containsKey(0))
 				return Optional.of(forNewAnchor.get(0));
 		}
@@ -214,38 +213,33 @@ public class TextSplitter
 	private Page parsePage(
 			NextPageData overflow,
 			List<TokenWithWidth> wordsAndSpaces,
-			Predicate<String> canPlaceAnchor,
-			Function<Optional<String>, Integer> getLines
+			Predicate<List<String>> canPlaceAnchors,
+			Function<List<String>, Integer> getLines
 	)
 	{
 		List<List<Token>> page = new ArrayList<>();
 		NextLineData lineOverflow = overflow.topLine;
-		Optional<String> anchorOnPage = Optional.empty();
-		while(page.size() < getLines.apply(anchorOnPage)&&lineOverflow!=null)
+		List<String> anchorsOnPage = new ArrayList<>();
+		while(page.size() < getLines.apply(anchorsOnPage)&&lineOverflow!=null)
 		{
-			Optional<String> finalAnchorOnPage = anchorOnPage;
-			Function<String, AnchorViability> getAnchorViability = anchor -> {
-				if(finalAnchorOnPage.isPresent())
+			Function<List<String>, AnchorViability> getAnchorViability = anchors -> {
+				List<String> withNewAnchor = new ArrayList<>(anchorsOnPage);
+				withNewAnchor.addAll(anchors);
+				if(!canPlaceAnchors.test(withNewAnchor))
 					return AnchorViability.NOT_VALID;
-				else if(!canPlaceAnchor.test(anchor))
-					return AnchorViability.NOT_VALID;
-				else if(page.size()+1 > getLines.apply(Optional.of(anchor)))
+				else if(page.size()+1 > getLines.apply(withNewAnchor))
 					// Allow specials larger than the page only if nothing else is placed on that page
 					return AnchorViability.VALID_IF_ALONE;
 				else
 					return AnchorViability.VALID;
 			};
 			Line next = parseLine(lineOverflow, getAnchorViability, wordsAndSpaces);
-			if(next.anchorBeforeLine.isPresent())
-			{
-				String newAnchor = next.anchorBeforeLine.get();
-				AnchorViability viability = getAnchorViability.apply(newAnchor);
-				Preconditions.checkState(viability!=AnchorViability.NOT_VALID);
-				if(viability==AnchorViability.VALID_IF_ALONE&&!page.isEmpty())
-					break;
-				else
-					anchorOnPage = next.anchorBeforeLine;
-			}
+			AnchorViability viability = getAnchorViability.apply(next.anchorsBeforeLine);
+			Preconditions.checkState(viability!=AnchorViability.NOT_VALID);
+			if(viability==AnchorViability.VALID_IF_ALONE&&!page.isEmpty())
+				break;
+			else
+				anchorsOnPage.addAll(next.anchorsBeforeLine);
 			if(!page.isEmpty()||!next.line.isEmpty())
 				page.add(next.line);
 			lineOverflow = next.overflow;
@@ -255,17 +249,17 @@ public class TextSplitter
 		// Remove empty lines at the end of the page
 		while(!page.isEmpty()&&page.get(page.size()-1).stream().allMatch(t -> t.getText().trim().isEmpty()))
 			page.remove(page.size()-1);
-		return new Page(page, anchorOnPage, lineOverflow);
+		return new Page(page, anchorsOnPage, lineOverflow);
 	}
 
 	private Line parseLine(
 			NextLineData lastOverflow,
-			Function<String, AnchorViability> canPlaceAnchor,
+			Function<List<String>, AnchorViability> canPlaceAnchors,
 			List<TokenWithWidth> wordsAndSpaces
 	)
 	{
 		int pos = lastOverflow.firstToken;
-		Optional<String> anchorBeforeLine = Optional.empty();
+		List<String> anchorsBeforeLine = new ArrayList<>();
 		List<TokenWithWidth> lineTokens = new ArrayList<>();
 		int currentWidth;
 		if(!lastOverflow.overflow.getText().isEmpty())
@@ -282,19 +276,22 @@ public class TextSplitter
 			if(currentWidth+token.width <= lineWidth||currentWidth==0)
 			{
 				if(token.getText().equals("<np>"))
-					return new Line(lineTokens, pos+1, true, anchorBeforeLine);
+					return new Line(lineTokens, pos+1, true, anchorsBeforeLine);
 				else if(isLinebreak(token.getText()))
-					return new Line(lineTokens, pos+1, false, anchorBeforeLine);
+					return new Line(lineTokens, pos+1, false, anchorsBeforeLine);
 				else if(token.getText().startsWith("<&")&&token.getText().endsWith(">"))
 				{
 					String anchor = toAnchor(token.getText());
-					AnchorViability allowed = canPlaceAnchor.apply(anchor);
-					if(allowed==AnchorViability.VALID_IF_ALONE&&currentWidth==0)
-						return new Line(ImmutableList.of(), pos+1, true, Optional.of(anchor));
+					List<String> withNewAdded = new ArrayList<>(anchorsBeforeLine);
+					withNewAdded.add(anchor);
+					AnchorViability allowed = canPlaceAnchors.apply(withNewAdded);
+
+					if(allowed==AnchorViability.VALID_IF_ALONE&&currentWidth==0&&anchorsBeforeLine.isEmpty())
+						return new Line(ImmutableList.of(), pos+1, true, ImmutableList.of(anchor));
 					else if(allowed!=AnchorViability.VALID)
-						return new Line(lineTokens, pos, true, Optional.empty());
+						return new Line(lineTokens, pos, true, anchorsBeforeLine);
 					else
-						anchorBeforeLine = Optional.of(anchor);
+						anchorsBeforeLine.add(anchor);
 				}
 				else if(!token.baseToken.isWhitespace()||currentWidth!=0)
 				{
@@ -321,12 +318,12 @@ public class TextSplitter
 			Token overflow = lastToken.baseToken.copyWithText(overflowText);
 			TokenWithWidth trimmedLastToken = lastToken.copyWithText(upToWidth, trimTo);
 			lineTokens.set(lineTokens.size()-1, trimmedLastToken);
-			return new Line(lineTokens, pos, false, anchorBeforeLine, overflow);
+			return new Line(lineTokens, pos, false, anchorsBeforeLine, overflow);
 		}
 		else if(pos < wordsAndSpaces.size())
-			return new Line(lineTokens, pos, false, anchorBeforeLine);
+			return new Line(lineTokens, pos, false, anchorsBeforeLine);
 		else
-			return new Line(lineTokens, null, anchorBeforeLine);
+			return new Line(lineTokens, null, anchorsBeforeLine);
 	}
 
 	private int removeEndWhitespace(List<TokenWithWidth> tokens, int totalLength)
@@ -414,18 +411,18 @@ public class TextSplitter
 	{
 		private final List<Token> line;
 		private final NextLineData overflow;
-		private final Optional<String> anchorBeforeLine;
+		private final List<String> anchorsBeforeLine;
 
-		private Line(List<TokenWithWidth> line, NextLineData overflow, @Nullable Optional<String> anchorBeforeLine)
+		private Line(List<TokenWithWidth> line, NextLineData overflow, List<String> anchorsBeforeLine)
 		{
 			this.line = line.stream()
 					.map(t -> t.baseToken)
 					.collect(Collectors.toList());
 			this.overflow = overflow;
-			this.anchorBeforeLine = anchorBeforeLine;
+			this.anchorsBeforeLine = anchorsBeforeLine;
 		}
 
-		public Line(List<TokenWithWidth> line, int firstToken, boolean endPageAfterLine, Optional<String> anchorBeforeLine, Token textOverflow)
+		public Line(List<TokenWithWidth> line, int firstToken, boolean endPageAfterLine, List<String> anchorBeforeLine, Token textOverflow)
 		{
 			this(line, new NextLineData(
 					firstToken,
@@ -434,7 +431,7 @@ public class TextSplitter
 			), anchorBeforeLine);
 		}
 
-		public Line(List<TokenWithWidth> line, int firstToken, boolean endPageAfterLine, Optional<String> anchorBeforeLine)
+		public Line(List<TokenWithWidth> line, int firstToken, boolean endPageAfterLine, List<String> anchorBeforeLine)
 		{
 			this(line, firstToken, endPageAfterLine, anchorBeforeLine, new Token(""));
 		}
@@ -487,19 +484,19 @@ public class TextSplitter
 	private static class Page
 	{
 		private final List<List<Token>> lines;
-		private final Optional<String> anchor;
+		private final List<String> anchorsOnPage;
 		private final NextPageData nextPage;
 
-		private Page(List<List<Token>> lines, Optional<String> anchor, NextPageData nextPage)
+		private Page(List<List<Token>> lines, List<String> anchorsOnPage, NextPageData nextPage)
 		{
 			this.lines = lines;
-			this.anchor = anchor;
+			this.anchorsOnPage = anchorsOnPage;
 			this.nextPage = nextPage;
 		}
 
-		public Page(List<List<Token>> page, Optional<String> anchor, NextLineData overflow)
+		public Page(List<List<Token>> page, List<String> anchorsOnPage, NextLineData overflow)
 		{
-			this(page, anchor, overflow==null?null: new NextPageData(overflow));
+			this(page, anchorsOnPage, overflow==null?null: new NextPageData(overflow));
 		}
 	}
 

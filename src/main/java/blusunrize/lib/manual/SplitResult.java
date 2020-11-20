@@ -83,6 +83,12 @@ public class SplitResult
 					l -> new LinkPart(l.getParent(), text)
 			));
 		}
+
+		@Override
+		public String toString()
+		{
+			return getContent().map(s -> "Text: "+s, lp -> "Link part: "+lp.text);
+		}
 	}
 
 
