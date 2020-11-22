@@ -94,11 +94,13 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 	public float renderGrowth = 0;
 	public boolean renderActive = false;
 
+	private int lastRedstonePowerSideIndex;
+
 	@Override
 	public void update()
 	{
 		ApiUtils.checkForNeedlessTicking(this);
-		if(dummy!=0||world.getRedstonePowerFromNeighbors(getPos()) > 0)
+		if(dummy!=0||isRedstonePowered())
 			return;
 		ItemStack soil = inventory.get(SLOT_SOIL);
 		ItemStack seed = inventory.get(SLOT_SEED);
@@ -106,6 +108,7 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 		{
 			if(energyStorage.getEnergyStored() > IEConfig.Machines.belljar_consumption&&fertilizerAmount > 0&&renderActive)
 			{
+				updateCurrentPlantHandler();
 				IPlantHandler handler = getCurrentPlantHandler();
 				if(handler!=null&&handler.isCorrectSoil(seed, soil)&&fertilizerAmount > 0)
 				{
@@ -130,6 +133,7 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 		{
 			if(!seed.isEmpty())
 			{
+				updateCurrentPlantHandler();
 				IPlantHandler handler = getCurrentPlantHandler();
 				if(handler!=null&&handler.isCorrectSoil(seed, soil)&&fertilizerAmount > 0&&energyStorage.extractEnergy(IEConfig.Machines.belljar_consumption, true)==IEConfig.Machines.belljar_consumption)
 				{
@@ -250,10 +254,17 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 
 	public IPlantHandler getCurrentPlantHandler()
 	{
+		return curPlantHandler;
+	}
+
+	/**
+	 * Re-checks if the current plant handler is valid and updates it accordingly. Not done in the getter to avoid
+	 * isValid checks in the render code
+	 */
+	private void updateCurrentPlantHandler() {
 		ItemStack seed = inventory.get(SLOT_SEED);
 		if(curPlantHandler==null||!curPlantHandler.isValid(seed))
 			curPlantHandler = BelljarHandler.getHandler(seed);
-		return curPlantHandler;
 	}
 
 	protected void sendSyncPacket(int type)
@@ -421,6 +432,24 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 		}
 	}
 
+	private boolean isRedstonePowered() {
+		EnumFacing[] values = EnumFacing.values();
+		for (int i = lastRedstonePowerSideIndex; i < values.length; i++) {
+			EnumFacing enumfacing = values[i];
+			if (this.world.getRedstonePower(pos.offset(enumfacing), enumfacing) > 0) {
+				lastRedstonePowerSideIndex = i;
+				return true;
+			}
+
+			if(i == lastRedstonePowerSideIndex - 1)
+				break;
+
+			if(i == values.length - 1 && lastRedstonePowerSideIndex != 0)
+				i = 0;
+		}
+
+		return false;
+	}
 
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
