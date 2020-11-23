@@ -36,7 +36,8 @@ import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 public class DropConveyor extends BasicConveyor
 {
 	public static final ResourceLocation NAME = new ResourceLocation(MODID, "dropper");
-	private static final VoxelShape REQ_SPACE = VoxelShapes.create(0.25, 0.75, 0.25, 0.75, 1.0, 0.75);
+	/// Items will be spawned when this space is empty in the block below:
+	private static final VoxelShape REQUIRED_SPACE = VoxelShapes.create(0.25, 0.75, 0.25, 0.75, 1.0, 0.75);
 	private VoxelShape cachedDownShape = VoxelShapes.empty();
 	private boolean cachedOpenBelow = true;
 
@@ -89,6 +90,9 @@ public class DropConveyor extends BasicConveyor
 
 	boolean isEmptySpace(World world, BlockPos pos, TileEntity tile)
 	{
+		// Special case conveyors, so items can be dropped through covered ones.
+		if(tile instanceof IConveyorTile)
+			return true;
 		BlockState state = world.getBlockState(pos);
 		VoxelShape shape = state.getCollisionShape(world, pos);
 		// Combining voxelshapes is a little expensive, so only calculate
@@ -96,7 +100,7 @@ public class DropConveyor extends BasicConveyor
 		// usually precomputed.
 		if (shape != cachedDownShape)
 		{
-			cachedOpenBelow = VoxelShapes.compare(REQ_SPACE, shape, IBooleanFunction.AND);
+			cachedOpenBelow = !VoxelShapes.compare(REQUIRED_SPACE, shape, IBooleanFunction.AND);
 			cachedDownShape = shape;
 		}
 		return cachedOpenBelow;
