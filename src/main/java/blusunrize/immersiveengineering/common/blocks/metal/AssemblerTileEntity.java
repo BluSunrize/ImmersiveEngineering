@@ -11,8 +11,8 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.tool.AssemblerHandler;
+import blusunrize.immersiveengineering.api.tool.AssemblerHandler.RecipeQuery;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttachable;
-import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
@@ -24,6 +24,8 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
+import it.unimi.dsi.fastutil.booleans.BooleanArrayList;
+import it.unimi.dsi.fastutil.booleans.BooleanList;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
@@ -204,19 +206,24 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 				AssemblerHandler.RecipeQuery[] queries = adapter.getQueriedInputs(pattern.recipe, pattern.inv, world);
 				if(queries==null)
 					continue;
-				if(this.energyStorage.extractEnergy(consumed, true)==consumed&&this.consumeIngredients(queries, availableStacks, false, null))
+				if(this.energyStorage.extractEnergy(consumed, true)==consumed&&
+						this.consumeIngredients(queries, availableStacks, false, null, null))
 				{
 					this.energyStorage.extractEnergy(consumed, false);
 					NonNullList<ItemStack> outputList = NonNullList.create();//List of all outputs for the current recipe. This includes discarded containers
 					outputList.add(output);
 
-					NonNullList<ItemStack> gridItems = NonNullList.withSize(9, ItemStack.EMPTY);
-					this.consumeIngredients(queries, availableStacks, true, gridItems);
+					BooleanList providedByNonItem = new BooleanArrayList(new boolean[9]);
+					NonNullList<ItemStack> gridItems = NonNullList.from(ItemStack.EMPTY, pattern.inv.toArray(new ItemStack[0]));
+					this.consumeIngredients(queries, availableStacks, true, gridItems, providedByNonItem);
 
 					NonNullList<ItemStack> remainingItems = pattern.recipe.getRemainingItems(Utils.InventoryCraftingFalse.createFilledCraftingInventory(3, 3, gridItems));
-					for(ItemStack rem : remainingItems)
-						if(!rem.isEmpty())
+					for(int i = 0; i < remainingItems.size(); i++)
+					{
+						ItemStack rem = remainingItems.get(i);
+						if(!providedByNonItem.getBoolean(i)&&!rem.isEmpty())
 							outputList.add(rem);
+					}
 
 					outputBuffer[p] = outputList;
 					update = true;
@@ -279,8 +286,12 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 		}
 	}
 
-	public boolean consumeIngredients(AssemblerHandler.RecipeQuery[] queries, ArrayList<ItemStack> itemStacks, boolean doConsume, @Nullable NonNullList<ItemStack> gridItems)
+	public boolean consumeIngredients(
+			RecipeQuery[] queries, ArrayList<ItemStack> itemStacks, boolean doConsume,
+			@Nullable NonNullList<ItemStack> gridItems, @Nullable BooleanList providedByNonItem
+	)
 	{
+		Preconditions.checkArgument((gridItems==null)==(providedByNonItem==null));
 		if(!doConsume)
 		{
 			ArrayList<ItemStack> dupeList = new ArrayList<>(itemStacks.size());
@@ -306,7 +317,11 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 							break;
 						}
 					if(hasFluid)
+					{
+						if(providedByNonItem!=null)
+							providedByNonItem.set(i, true);
 						continue;
+					}
 					else
 						querySize = 1;
 				}
@@ -319,7 +334,10 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 						int taken = Math.min(querySize, next.getCount());
 						ItemStack forGrid = next.split(taken);
 						if(gridItems!=null)
+						{
 							gridItems.set(i, forGrid);
+							providedByNonItem.set(i, false);
+						}
 						if(next.getCount() <= 0)
 							it.remove();
 						querySize -= taken;
