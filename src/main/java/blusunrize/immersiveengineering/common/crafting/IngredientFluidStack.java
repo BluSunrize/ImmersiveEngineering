@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
@@ -18,9 +17,12 @@ import net.minecraft.tags.ITag.INamedTag;
 import net.minecraftforge.common.crafting.IIngredientSerializer;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
@@ -77,25 +79,37 @@ public class IngredientFluidStack extends Ingredient
 			return this.fluidTagInput.test(FluidUtil.getFluidContained(stack).orElse(FluidStack.EMPTY));
 	}
 
+	//TODO this is a bit problematic
 	@Nonnull
 	@Override
 	public IIngredientSerializer<? extends Ingredient> getSerializer()
 	{
-		return IngredientSerializerFluidStack.INSTANCE;
+		throw new UnsupportedOperationException("IngredientFluidStack is for internal use only!");
 	}
 
 	@Nonnull
 	@Override
 	public JsonElement serialize()
 	{
-		JsonObject ret = (JsonObject)this.fluidTagInput.serialize();
-		ret.addProperty("type", IngredientSerializerFluidStack.NAME.toString());
-		return ret;
+		throw new UnsupportedOperationException("IngredientFluidStack is for internal use only!");
 	}
 
 	@Override
 	public boolean isSimple()
 	{
 		return false;
+	}
+
+	public ItemStack getExtractedStack(ItemStack input)
+	{
+		Optional<IFluidHandlerItem> handlerOpt = FluidUtil.getFluidHandler(input).resolve();
+		if(handlerOpt.isPresent())
+		{
+			IFluidHandlerItem handler = handlerOpt.get();
+			handler.drain(fluidTagInput.getAmount(), FluidAction.EXECUTE);
+			return handler.getContainer();
+		}
+		//TODO throw XCP?
+		return input;
 	}
 }

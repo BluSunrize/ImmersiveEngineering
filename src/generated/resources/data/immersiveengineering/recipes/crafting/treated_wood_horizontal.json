@@ -1,5 +1,5 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "type": "immersiveengineering:shaped_fluid",
   "pattern": [
     "www",
     "wbw",
@@ -8,7 +8,9 @@
   "key": {
     "w": {
       "tag": "minecraft:planks"
-    },
+    }
+  },
+  "fluidKey": {
     "b": {
       "tag": "forge:creosote",
       "amount": 1000,

@@ -23,7 +23,6 @@ import blusunrize.immersiveengineering.common.IESaveData;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.config.IECommonConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
-import blusunrize.immersiveengineering.common.crafting.IngredientSerializers;
 import blusunrize.immersiveengineering.common.crafting.RecipeReloadListener;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
@@ -104,7 +103,6 @@ public class ImmersiveEngineering
 		ModLoadingContext.get().registerConfig(Type.SERVER, IEServerConfig.CONFIG_SPEC.getBaseSpec());
 		IEContent.modConstruction();
 		proxy.modConstruction();
-		IngredientSerializers.init();
 
 		IEWorldGen ieWorldGen = new IEWorldGen();
 		MinecraftForge.EVENT_BUS.register(ieWorldGen);

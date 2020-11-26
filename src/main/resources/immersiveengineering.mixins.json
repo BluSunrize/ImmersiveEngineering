@@ -7,9 +7,9 @@
     "accessors.ConcretePowderBlockAccess", "accessors.ContainerAccess", "accessors.EntityAccess",
     "accessors.ExplosionAccess", "accessors.FurnaceTEAccess", "accessors.HeroGiftsTaskAccess",
     "accessors.ItemEntityAccess", "accessors.PaletteAccess", "accessors.PoITypeAccess", "accessors.PotionBrewingAccess",
-    "accessors.RecipeManagerAccess", "accessors.SingleJigsawAccess", "accessors.TemplateAccess",
-    "accessors.TileEntityAccess", "accessors.TNTEntityAccess", "coremods.AbstractBlockStateMixin",
-    "coremods.ServerWorldMixin"
+    "accessors.RecipeManagerAccess", "accessors.ShapedRecipeAccess", "accessors.SingleJigsawAccess",
+    "accessors.TemplateAccess", "accessors.TileEntityAccess", "accessors.TNTEntityAccess",
+    "coremods.AbstractBlockStateMixin", "coremods.ServerWorldMixin"
   ],
   "client": [
     "accessors.client.FontResourceManagerAccess", "accessors.client.GPUWarningAccess",
