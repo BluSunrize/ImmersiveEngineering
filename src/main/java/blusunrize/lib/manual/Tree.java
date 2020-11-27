@@ -128,7 +128,11 @@ public class Tree<NT extends Comparable<NT>, LT extends Comparable<LT>>
 		@Override
 		public List<AbstractNode<NT, LT>> getChildren()
 		{
-			return children;
+			synchronized(children)
+			{
+				// Do not allow external modification, otherwise we'll get CMEs we can't trace
+				return ImmutableList.copyOf(children);
+			}
 		}
 
 		@Override
@@ -150,9 +154,12 @@ public class Tree<NT extends Comparable<NT>, LT extends Comparable<LT>>
 
 		public InnerNode<NT, LT> addNewSubnode(NT data, DoubleSupplier weight)
 		{
-			InnerNode<NT, LT> newNode = new InnerNode<>(data, this, weight);
-			children.add(newNode);
-			return newNode;
+			synchronized(children)
+			{
+				InnerNode<NT, LT> newNode = new InnerNode<>(data, this, weight);
+				children.add(newNode);
+				return newNode;
+			}
 		}
 
 		public InnerNode<NT, LT> getOrCreateSubnode(NT data)
@@ -173,20 +180,29 @@ public class Tree<NT extends Comparable<NT>, LT extends Comparable<LT>>
 
 		public Optional<InnerNode<NT, LT>> getSubnode(NT data)
 		{
-			for(AbstractNode<NT, LT> child : children)
-				if(!child.isLeaf()&&data.equals(child.getNodeData()))
-					return Optional.of((InnerNode<NT, LT>)child);
+			synchronized(children)
+			{
+				for(AbstractNode<NT, LT> child : children)
+					if(!child.isLeaf()&&data.equals(child.getNodeData()))
+						return Optional.of((InnerNode<NT, LT>)child);
+			}
 			return Optional.empty();
 		}
 
 		public void removeLeaf(LT data)
 		{
-			children.removeIf(child -> child.isLeaf()&&((Leaf<NT, LT>)child).data.equals(data));
+			synchronized(children)
+			{
+				children.removeIf(child -> child.isLeaf()&&((Leaf<NT, LT>)child).data.equals(data));
+			}
 		}
 
 		public void removeSubnode(NT data)
 		{
-			children.removeIf(child -> !child.isLeaf()&&((InnerNode<NT, LT>)child).data.equals(data));
+			synchronized(children)
+			{
+				children.removeIf(child -> !child.isLeaf()&&((InnerNode<NT, LT>)child).data.equals(data));
+			}
 		}
 
 		public void addNewLeaf(LT data)
@@ -201,14 +217,20 @@ public class Tree<NT extends Comparable<NT>, LT extends Comparable<LT>>
 
 		public void addNewLeaf(LT data, DoubleSupplier weight)
 		{
-			Leaf<NT, LT> newLeaf = new Leaf<>(data, this, weight);
-			children.add(newLeaf);
+			synchronized(children)
+			{
+				Leaf<NT, LT> newLeaf = new Leaf<>(data, this, weight);
+				children.add(newLeaf);
+			}
 		}
 
 		public void sortChildren()
 		{
-			children.sort(compare);
-			for(AbstractNode<NT, LT> c : children)
+			synchronized(children)
+			{
+				children.sort(compare);
+			}
+			for(AbstractNode<NT, LT> c : getChildren())
 				if(c instanceof InnerNode)
 					((InnerNode<NT, LT>)c).sortChildren();
 		}
@@ -225,7 +247,7 @@ public class Tree<NT extends Comparable<NT>, LT extends Comparable<LT>>
 		void resetWeights()
 		{
 			super.resetWeights();
-			children.forEach(AbstractNode::resetWeights);
+			getChildren().forEach(AbstractNode::resetWeights);
 		}
 	}
 
