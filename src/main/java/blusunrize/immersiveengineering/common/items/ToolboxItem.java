@@ -33,9 +33,9 @@ public class ToolboxItem extends InternalStorageItem
 	public ToolboxItem()
 	{
 		super("toolbox", new Properties().maxStackSize(1));
-		ToolboxHandler.addToolType(stack -> IEServerConfig.TOOLS.toolbox_tools.get().contains(stack.getItem().getRegistryName().toString()));
-		ToolboxHandler.addFoodType(stack -> IEServerConfig.TOOLS.toolbox_foods.get().contains(stack.getItem().getRegistryName().toString()));
-		ToolboxHandler.addWiringType((stack, world) -> IEServerConfig.TOOLS.toolbox_wiring.get().contains(stack.getItem().getRegistryName().toString()));
+		ToolboxHandler.addToolType(stack -> itemMatchesNameOrTag(IEServerConfig.TOOLS.toolbox_tools.get(), stack));
+		ToolboxHandler.addFoodType(stack -> itemMatchesNameOrTag(IEServerConfig.TOOLS.toolbox_foods.get(), stack));
+		ToolboxHandler.addWiringType((stack, world) -> itemMatchesNameOrTag(IEServerConfig.TOOLS.toolbox_wiring.get(), stack));
 	}
 
 	@Nonnull
@@ -86,5 +86,12 @@ public class ToolboxItem extends InternalStorageItem
 	public int getSlotCount()
 	{
 		return SLOT_COUNT;
+	}
+
+	private static final boolean itemMatchesNameOrTag(java.util.List<? extends String> configList, ItemStack stack)
+	{
+		return configList.contains(stack.getItem().getRegistryName().toString())||
+				configList.stream().filter(cfg -> cfg.startsWith("#"))
+						.anyMatch(cfgTag -> stack.getItem().getTags().stream().anyMatch(tag -> tag.toString().equals(cfgTag.substring(1))));
 	}
 }
