@@ -97,6 +97,9 @@ public class RecipeSerializers
 		BlueprintCraftingRecipe.SERIALIZER = RECIPE_SERIALIZERS.register(
 				"blueprint", BlueprintCraftingRecipeSerializer::new
 		);
+		BlueprintCopyRecipe.SERIALIZER = RECIPE_SERIALIZERS.register(
+				"blueprint_copy", BlueprintCopyRecipeSerializer::new
+		);
 		MetalPressRecipe.SERIALIZER = RECIPE_SERIALIZERS.register(
 				"metal_press", MetalPressRecipeSerializer::new
 		);
