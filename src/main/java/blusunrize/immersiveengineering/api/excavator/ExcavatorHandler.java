@@ -17,8 +17,6 @@ import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.ColumnPos;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.INoiseGenerator;
 import org.apache.commons.lang3.tuple.Pair;
@@ -78,9 +76,12 @@ public class ExcavatorHandler
 				// Iterate all known veins
 				for(MineralVein vein : MINERAL_VEIN_LIST.get(dimension))
 				{
-					int dX = vein.getPos().x-columnPos.x;
-					int dZ = vein.getPos().z-columnPos.z;
-					int d = dX*dX+dZ*dZ;
+					// Use longs here to avoid overflow issues (#4468)
+					// With longs we can handle distances up to roughly 2**31 * sqrt(2), much larger than the maximum
+					// distance in an MC world (6*10**6*sqrt(2))
+					long dX = vein.getPos().x-columnPos.x;
+					long dZ = vein.getPos().z-columnPos.z;
+					long d = dX*dX+dZ*dZ;
 					double rSq = vein.getRadius()*vein.getRadius();
 					if(d < rSq)
 					{
