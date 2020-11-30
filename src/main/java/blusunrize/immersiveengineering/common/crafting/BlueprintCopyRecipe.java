@@ -39,16 +39,16 @@ public class BlueprintCopyRecipe extends ShapedRecipe
 	@Override
 	public NonNullList<ItemStack> getRemainingItems(@Nonnull CraftingInventory inv)
 	{
-	NonNullList<ItemStack> items = NonNullList.withSize(inv.getSizeInventory(), ItemStack.EMPTY);
+		NonNullList<ItemStack> items = NonNullList.withSize(inv.getSizeInventory(), ItemStack.EMPTY);
 
-	for(int i = 0; i < items.size(); ++i)
-	{
-		ItemStack item = inv.getStackInSlot(i);
-		if (item.hasContainerItem())
-			items.set(i, item.getContainerItem());
-		else if (item.getItem() == Misc.blueprint)
-			items.set(i, item);
-	}
-	return items;
+		for(int i = 0; i < items.size(); ++i)
+		{
+			ItemStack item = inv.getStackInSlot(i);
+			if (item.hasContainerItem())
+				items.set(i, item.getContainerItem());
+			else if (item.getItem() == Misc.blueprint)
+				items.set(i, item.copy());
+		}
+		return items;
 	}
 }
