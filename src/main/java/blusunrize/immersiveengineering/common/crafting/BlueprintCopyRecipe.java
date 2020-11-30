@@ -30,6 +30,12 @@ public class BlueprintCopyRecipe extends ShapedRecipe
 		super(id, group, recipeWidth, recipeHeight, recipeItems, getDispBlueprint());
 	}
 
+	// For the JEI handler, return a recipe with a specific output. It can then be displayed constrained to that.
+	public BlueprintCopyRecipe(BlueprintCopyRecipe recipe, ItemStack blueprint)
+	{
+		super(recipe.getId(), recipe.getGroup(), recipe.getWidth(), recipe.getHeight(), recipe.getIngredients(), blueprint);
+	}
+
 	@Nonnull
 	@Override
 	public ItemStack getCraftingResult(@Nonnull CraftingInventory inv)

@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.crafting.ArcRecyclingRecipe;
+import blusunrize.immersiveengineering.common.crafting.BlueprintCopyRecipe;
 import blusunrize.immersiveengineering.common.gui.CraftingTableContainer;
 import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
@@ -33,20 +34,28 @@ import blusunrize.immersiveengineering.common.util.compat.jei.mixer.MixerRecipeC
 import blusunrize.immersiveengineering.common.util.compat.jei.refinery.RefineryRecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.sawmill.SawmillRecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.squeezer.SqueezerRecipeCategory;
+import blusunrize.immersiveengineering.common.util.compat.jei.workbench.BlueprintCopyHandler;
 import blusunrize.immersiveengineering.common.util.compat.jei.workbench.WorkbenchRecipeCategory;
 import com.google.common.collect.Collections2;
+import com.google.gson.internal.Streams;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
 import mezz.jei.api.gui.ingredient.ITooltipCallback;
 import mezz.jei.api.helpers.IGuiHelper;
+import mezz.jei.api.recipe.IRecipeManager;
 import mezz.jei.api.registration.*;
 import mezz.jei.api.runtime.IJeiRuntime;
+import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.item.crafting.RecipeManager;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @JeiPlugin
 public class JEIHelper implements IModPlugin
@@ -105,7 +114,7 @@ public class JEIHelper implements IModPlugin
 	@Override
 	public void registerVanillaCategoryExtensions(IVanillaCategoryExtensionRegistration registration)
 	{
-
+		registration.getCraftingCategory().addCategoryExtension(BlueprintCopyRecipe.class, BlueprintCopyHandler::new);
 	}
 
 	@Override
@@ -128,6 +137,9 @@ public class JEIHelper implements IModPlugin
 		registration.addRecipes(new ArrayList<>(Collections2.filter(ArcFurnaceRecipe.recipeList.values(), input -> !(input instanceof ArcRecyclingRecipe)&&input.listInJEI())), ArcFurnaceRecipeCategory.UID);
 		registration.addRecipes(new ArrayList<>(Collections2.filter(BottlingMachineRecipe.recipeList.values(), IJEIRecipe::listInJEI)), BottlingMachineRecipeCategory.UID);
 		registration.addRecipes(new ArrayList<>(Collections2.filter(MixerRecipe.recipeList.values(), IJEIRecipe::listInJEI)), MixerRecipeCategory.UID);
+
+		// Expand into one recipe per specific blueprint.
+		registration.addRecipes(BlueprintCopyHandler.getSubRecipes(), VanillaRecipeCategoryUid.CRAFTING);
 	}
 
 	@Override
