@@ -904,42 +904,52 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			FractalParticle.PARTICLE_FRACTAL_DEQUE.clear();
 		}
 
-		/* Debug for Mineral Veins. Causes concurrent modification errors, so only use for testing
+		/* Debug for Mineral Veins
 
-		if(Screen.hasShiftDown())
+		boolean show;
+		// Default <=> shift is sneak, use ctrl instead
+		if (Minecraft.getInstance().gameSettings.keyBindSneak.isDefault())
+			show = Screen.hasControlDown();
+		else
+			show = Screen.hasShiftDown();
+		if(show)
 		{
 			RegistryKey<World> dimension = ClientUtils.mc().player.getEntityWorld().getDimensionKey();
 			List<ResourceLocation> keyList = new ArrayList<>(MineralMix.mineralList.keySet());
 			keyList.sort(Comparator.comparing(ResourceLocation::toString));
-			for(MineralVein vein : ExcavatorHandler.getMineralVeinList().get(dimension))
+			Multimap<RegistryKey<World>, MineralVein> minerals;
+			synchronized(minerals = ExcavatorHandler.getMineralVeinList())
 			{
-				transform.push();
-				ColumnPos pos = vein.getPos();
-				int iC = keyList.indexOf(vein.getMineral().getId());
-				DyeColor color = DyeColor.values()[iC%16];
-				float[] rgb = color.getColorComponentValues();
-				float r = rgb[0];
-				float g = rgb[1];
-				float b = rgb[2];
-				transform.translate(pos.x, 0, pos.z);
-				IVertexBuilder bufferBuilder = buffers.getBuffer(IERenderTypes.CHUNK_MARKER);
-				Matrix4f mat = transform.getLast().getMatrix();
-				bufferBuilder.pos(mat, 0, 0, 0).color(r, g, b, .75f).endVertex();
-				bufferBuilder.pos(mat, 0, 128, 0).color(r, g, b, .75f).endVertex();
-
-				bufferBuilder = buffers.getBuffer(IERenderTypes.VEIN_MARKER);
-				int radius = vein.getRadius();
-				float angle;
-				double x1;
-				double z1;
-				for(int p = 0; p < 12; p++)
+				for(MineralVein vein : minerals.get(dimension))
 				{
-					angle = 360.0f/12*p;
-					x1 = radius*Math.cos(angle*Math.PI/180);
-					z1 = radius*Math.sin(angle*Math.PI/180);
-					bufferBuilder.pos(mat, (float)x1, 70, (float)z1).color(r, g, b, .75f).endVertex();
+					transform.push();
+					ColumnPos pos = vein.getPos();
+					int iC = keyList.indexOf(vein.getMineral().getId());
+					DyeColor color = DyeColor.values()[iC%16];
+					float[] rgb = color.getColorComponentValues();
+					float r = rgb[0];
+					float g = rgb[1];
+					float b = rgb[2];
+					transform.translate(pos.x, 0, pos.z);
+					IVertexBuilder bufferBuilder = buffers.getBuffer(IERenderTypes.CHUNK_MARKER);
+					Matrix4f mat = transform.getLast().getMatrix();
+					bufferBuilder.pos(mat, 0, 0, 0).color(r, g, b, .75f).endVertex();
+					bufferBuilder.pos(mat, 0, 128, 0).color(r, g, b, .75f).endVertex();
+
+					bufferBuilder = buffers.getBuffer(IERenderTypes.VEIN_MARKER);
+					int radius = vein.getRadius();
+					float angle;
+					double x1;
+					double z1;
+					for(int p = 0; p < 12; p++)
+					{
+						angle = 360.0f/12*p;
+						x1 = radius*Math.cos(angle*Math.PI/180);
+						z1 = radius*Math.sin(angle*Math.PI/180);
+						bufferBuilder.pos(mat, (float)x1, 70, (float)z1).color(r, g, b, .75f).endVertex();
+					}
+					transform.pop();
 				}
-				transform.pop();
 			}
 		}
 		*/
