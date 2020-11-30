@@ -16,10 +16,18 @@ import javax.annotation.Nonnull;
 public class BlueprintCopyRecipe extends ShapedRecipe
 {
 	public static RegistryObject<IERecipeSerializer<BlueprintCopyRecipe>> SERIALIZER;
+	public static final String IS_COPY_RESULT = "copyResult";
+
+	// Create a blueprint marked to show explanatory lore.
+	private static ItemStack getDispBlueprint() {
+		ItemStack stack = new ItemStack(Misc.blueprint, 2);
+		stack.setTagInfo(IS_COPY_RESULT, ByteNBT.valueOf(true));
+		return stack;
+	}
 
 	public BlueprintCopyRecipe(ResourceLocation id, String group, int recipeWidth, int recipeHeight, NonNullList<Ingredient> recipeItems)
 	{
-		super(id, group, recipeWidth, recipeHeight, recipeItems, new ItemStack(Misc.blueprint));
+		super(id, group, recipeWidth, recipeHeight, recipeItems, getDispBlueprint());
 	}
 
 	@Nonnull

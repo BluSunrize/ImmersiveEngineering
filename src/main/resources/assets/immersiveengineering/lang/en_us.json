@@ -251,6 +251,7 @@
   "desc.immersiveengineering.info.blueprint.specialBullet": "Specialized Projectiles",
   "desc.immersiveengineering.info.blueprint.electrode": "Arc Furnace Electrodes",
   "desc.immersiveengineering.info.blueprint.bannerpatterns": "Banner Patterns",
+  "desc.immersiveengineering.info.blueprint.copy": "Copy of Blueprint",
   "desc.immersiveengineering.info.electrodeIntegrity": "Integrity %1$s %%",
   "desc.immersiveengineering.info.revolver.perk.cooldown": "Firerate: %1$s%%",
   "desc.immersiveengineering.info.revolver.perk.cooldown.tier-3": "Slow %1$s",
