@@ -43,6 +43,7 @@ public class IEDataGenerator
 			gen.addProvider(loadedModels);
 			gen.addProvider(new ItemModels(gen, event.getExistingFileHelper(), blockStates));
 			gen.addProvider(new Advancements(gen));
+			gen.addProvider(new TileTags(gen, event.getExistingFileHelper()));
 		}
 	}
 
