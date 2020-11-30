@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/blueprint_copy"
+    ]
+  },
+  "criteria": {
+    "has_blueprint": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:blueprint"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/blueprint_copy"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_blueprint",
+      "has_the_recipe"
+    ]
+  ]
+}

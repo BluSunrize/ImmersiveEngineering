@@ -1,0 +1,19 @@
+{
+  "type": "immersiveengineering:blueprint_copy",
+  "pattern": [
+    " b ",
+    "ddd",
+    "ppp"
+  ],
+  "key": {
+    "b": {
+      "item": "immersiveengineering:blueprint"
+    },
+    "d": {
+      "tag": "forge:dyes/blue"
+    },
+    "p": {
+      "item": "minecraft:paper"
+    }
+  }
+}

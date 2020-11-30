@@ -2522,6 +2522,18 @@ public class Recipes extends RecipeProvider
 				.key('p', Items.PAPER)
 				.addCriterion("has_"+toPath(Items.PAPER), hasItem(Items.PAPER))
 				.build(buildBlueprint(out, "bannerpatterns"), toRL("blueprint_bannerpatterns"));
+
+		ShapedRecipeBuilder.shapedRecipe(Misc.blueprint)
+				.patternLine(" b ")
+				.patternLine("ddd")
+				.patternLine("ppp")
+				.key('b', Misc.blueprint)
+				.key('d', Tags.Items.DYES_BLUE)
+				//TODO tag?
+				.key('p', Items.PAPER)
+				.addCriterion("has_blueprint", hasItem(Misc.blueprint))
+				// Convert from shaped to special recipe type.
+				.build((finished -> out.accept(new BlueprintCopyRecipeWrapper(finished))), toRL("blueprint_copy"));
 	}
 
 	private void recipesVanilla(@Nonnull Consumer<IFinishedRecipe> out)
