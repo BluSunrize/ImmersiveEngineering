@@ -11,7 +11,6 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.RecipeManager;
-import net.minecraft.nbt.ByteNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.Size2i;
@@ -36,23 +35,21 @@ public class BlueprintCopyHandler implements ICraftingCategoryExtension
 		this.id = new ResourceLocation(id.getNamespace(), id.getPath() + "/" + category);
 	}
 
-	// Find all the original BlueprintCopyRecipe recipes.
-	public static Stream<BlueprintCopyRecipe> getOriginals()
-	{
-		RecipeManager world = Minecraft.getInstance().world.getRecipeManager();
-		return world.getRecipes(IRecipeType.CRAFTING).values().stream()
-				.filter(BlueprintCopyRecipe.class::isInstance).map(BlueprintCopyRecipe.class::cast);
-	}
-
 	// Convert each of the originals into one recipe for each category.
 	public static List<BlueprintCopyRecipe> getSubRecipes()
 	{
-		// Get all the kinds of blueprints.
+		// Get all the blueprint subitems.
 		NonNullList<ItemStack> blueprints = NonNullList.create();
 		Misc.blueprint.fillItemGroup(ItemGroup.SEARCH, blueprints);
 
-		return getOriginals()
+		RecipeManager world = Minecraft.getInstance().world.getRecipeManager();
+
+		// Find each original recipe (one, but users could add others),
+		// and expand that into a recipe for each specific blueprint.
+		return world.getRecipes(IRecipeType.CRAFTING).values().stream()
+				.filter(BlueprintCopyRecipe.class::isInstance).map(BlueprintCopyRecipe.class::cast)
 				.flatMap(recipe -> blueprints.stream()
+						.filter(print -> recipe.getIngredients().stream().anyMatch(ing -> ing.test(print)))
 						.map(print -> new BlueprintCopyRecipe(recipe, print)))
 				.collect(Collectors.toList());
 	}
@@ -65,7 +62,13 @@ public class BlueprintCopyHandler implements ICraftingCategoryExtension
 		if (category.isEmpty()) return;
 
 		ingredients.setInputLists(VanillaTypes.ITEM, recipe.getIngredients().stream()
-				.map(item -> item.test(print) ? Collections.singletonList(recipe.getRecipeOutput()): Arrays.asList(item.getMatchingStacks()))
+				.map(item -> {
+					// If it's the blueprint ingredient, show only this specific input.
+					if(Arrays.stream(item.getMatchingStacks()).anyMatch(stack -> stack.getItem()==Misc.blueprint))
+						return Collections.singletonList(recipe.getRecipeOutput());
+					else // Otherwise, set to the normal stacks it matches.
+						return Arrays.asList(item.getMatchingStacks());
+				})
 				.collect(Collectors.toList())
 		);
 		// Use two blueprints in the output, to more clearly show it copies the blueprint.
