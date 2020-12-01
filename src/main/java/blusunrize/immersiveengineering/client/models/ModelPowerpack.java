@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
 import blusunrize.immersiveengineering.common.items.PowerpackItem;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.mixin.accessors.client.ModelAccess;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -48,6 +49,7 @@ public class ModelPowerpack<T extends LivingEntity> extends ModelIEArmorBase<T>
 	public ModelPowerpack(float modelSize, float p_i1149_2_, int textureWidthIn, int textureHeightIn)
 	{
 		super(modelSize, p_i1149_2_, textureWidthIn, textureHeightIn);
+		((ModelAccess)this).setRenderType(RenderType::getEntityTranslucent);
 		modelParts = new ModelRenderer[8];
 		colouredParts = new ModelRenderer[4];
 
@@ -293,12 +295,6 @@ public class ModelPowerpack<T extends LivingEntity> extends ModelIEArmorBase<T>
 					}
 			}
 		}
-	}
-
-	@Override
-	public RenderType getRenderType(ResourceLocation locationIn)
-	{
-		return RenderType.getEntityTranslucent(locationIn);
 	}
 
 	static final DecimalFormat keyFormat = new DecimalFormat("0.0000");

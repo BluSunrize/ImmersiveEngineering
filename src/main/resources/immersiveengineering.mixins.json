@@ -13,10 +13,9 @@
   ],
   "client": [
     "accessors.client.FontResourceManagerAccess", "accessors.client.GPUWarningAccess",
-    "accessors.client.MinecartRendererAccess", "accessors.client.MinecraftAccess", "accessors.client.NewChatGuiAccess",
-    "accessors.client.PlayerControllerAccess", "accessors.client.RenderTypeAccess",
-    "accessors.client.WorldRendererAccess", "coremods.client.BipedModelMixin",
-    "coremods.client.WorldRendererMixin"
+    "accessors.client.MinecartRendererAccess", "accessors.client.MinecraftAccess", "accessors.client.ModelAccess",
+    "accessors.client.NewChatGuiAccess", "accessors.client.PlayerControllerAccess", "accessors.client.RenderTypeAccess",
+    "accessors.client.WorldRendererAccess", "coremods.client.BipedModelMixin", "coremods.client.WorldRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
