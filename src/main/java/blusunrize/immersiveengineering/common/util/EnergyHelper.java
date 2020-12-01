@@ -151,8 +151,9 @@ public class EnergyHelper
 	 * @param storages a collection of outputs
 	 * @param amount   the total amount to be distributed
 	 * @param simulate true if no energy should be inserted into the outputs
+	 * @return the amount of energy remaining after insertion
 	 */
-	public static void distributeFlux(Collection<IEnergyStorage> storages, int amount, boolean simulate)
+	public static int distributeFlux(Collection<IEnergyStorage> storages, int amount, boolean simulate)
 	{
 		final int finalAmount = amount;
 		storages = storages.stream()
@@ -175,6 +176,7 @@ public class EnergyHelper
 			amount -= inserted;
 			remainingOutputs--;
 		}
+		return amount;
 	}
 
 	public interface IIEInternalFluxHandler extends IIEInternalFluxConnector, IFluxReceiver, IFluxProvider

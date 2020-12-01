@@ -17,6 +17,7 @@ public class TextSplitterTest
 	private static final int LINES_PER_PAGE = 3;
 	private static final String ZERO_WIDTH_TEXT = "\u00a7b";
 	private static final SpecialManualElement HEIGHT_1 = new DummyElement(1);
+	private static final SpecialManualElement HEIGHT_1_B = new DummyElement(1);
 	private static final SpecialManualElement HEIGHT_10 = new DummyElement(10);
 	private TextSplitter splitter;
 
@@ -132,6 +133,18 @@ public class TextSplitterTest
 		assertLines(result, ZERO_WIDTH_TEXT+longWordA, ZERO_WIDTH_TEXT+longWordB);
 	}
 
+	@Test
+	public void testSuccessiveAnchors()
+	{
+		splitter.addSpecialPage("test_a", 0, HEIGHT_1);
+		splitter.addSpecialPage("test_b", 0, HEIGHT_1_B);
+		SplitResult result = splitter.split("<&test_a><&test_b>test");
+		assertSpecialAt(result, 0, HEIGHT_1);
+		assertSpecialAt(result, 1, HEIGHT_1_B);
+		assertLineCounts(result, 0, 1);
+		assertLines(result, "test");
+	}
+
 	private static class DummyElement extends SpecialManualElement
 	{
 		private final int lines;
@@ -171,6 +184,12 @@ public class TextSplitterTest
 		@Override
 		public void recalculateCraftingRecipes()
 		{
+		}
+
+		@Override
+		public String toString()
+		{
+			return "Dummy elements with "+this.lines+" lines";
 		}
 	}
 }

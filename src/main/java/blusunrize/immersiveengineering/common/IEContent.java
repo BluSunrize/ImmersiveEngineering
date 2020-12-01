@@ -33,7 +33,9 @@ import blusunrize.immersiveengineering.client.utils.ClocheRenderFunctions;
 import blusunrize.immersiveengineering.common.blocks.*;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
 import blusunrize.immersiveengineering.common.blocks.cloth.*;
+import blusunrize.immersiveengineering.common.blocks.generic.ScaffoldingBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.*;
+import blusunrize.immersiveengineering.common.blocks.metal.LanternBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.CoverType;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
@@ -42,9 +44,9 @@ import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
 import blusunrize.immersiveengineering.common.blocks.plant.PottedHempBlock;
 import blusunrize.immersiveengineering.common.blocks.stone.PartialConcreteBlock;
 import blusunrize.immersiveengineering.common.blocks.stone.StoneMultiBlock;
+import blusunrize.immersiveengineering.common.blocks.wooden.BarrelBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
-import blusunrize.immersiveengineering.common.blocks.wooden.BarrelBlock;
 import blusunrize.immersiveengineering.common.crafting.IngredientFluidStack;
 import blusunrize.immersiveengineering.common.entities.*;
 import blusunrize.immersiveengineering.common.items.*;
@@ -66,10 +68,7 @@ import blusunrize.immersiveengineering.common.world.OreRetrogenFeature;
 import blusunrize.immersiveengineering.common.world.Villages;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.ShulkerBoxBlock;
-import net.minecraft.block.SoundType;
+import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityType;
 import net.minecraft.fluid.Fluid;
@@ -101,6 +100,7 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import java.util.*;
+import java.util.function.Supplier;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 import static blusunrize.immersiveengineering.common.util.fluids.IEFluid.createBuilder;
@@ -312,11 +312,13 @@ public class IEContent
 		Block.Properties standardWoodProperties = Block.Properties.create(Material.WOOD)
 				.sound(SoundType.WOOD)
 				.hardnessAndResistance(2, 5);
-		Block.Properties standardWoodPropertiesNotSolid = Block.Properties.create(Material.WOOD)
-				.sound(SoundType.WOOD)
-				.hardnessAndResistance(2, 5)
-				.notSolid()
-				.setBlocksVision((state, blockReader, pos) -> false);
+		Supplier<AbstractBlock.Properties> createNonBlockingWoodProperties =
+				() -> Block.Properties.create(Material.WOOD)
+						.sound(SoundType.WOOD)
+						.hardnessAndResistance(2, 5)
+						.setBlocksVision((state, blockReader, pos) -> false);
+		Block.Properties standardWoodPropertiesNotSolid = createNonBlockingWoodProperties.get().notSolid();
+		Block.Properties standardWoodPropertiesNoOverlay = createNonBlockingWoodProperties.get();
 		for(TreatedWoodStyles style : TreatedWoodStyles.values())
 		{
 			IEBaseBlock baseBlock = new IEBaseBlock("treated_wood_"+style.name().toLowerCase(Locale.US), standardWoodProperties, BlockItemIE::new)
@@ -326,10 +328,10 @@ public class IEContent
 			WoodenDecoration.treatedStairs.put(style,
 					new IEStairsBlock("stairs_treated_wood_"+style.name().toLowerCase(Locale.US), standardWoodPropertiesNotSolid, baseBlock));
 		}
-		WoodenDecoration.treatedFence = new IEFenceBlock("treated_fence", standardWoodPropertiesNotSolid);
+		WoodenDecoration.treatedFence = new IEFenceBlock("treated_fence", standardWoodPropertiesNoOverlay);
 		WoodenDecoration.treatedScaffolding = new ScaffoldingBlock("treated_scaffold", standardWoodPropertiesNotSolid);
 
-		WoodenDevices.craftingTable = new GenericTileBlock("craftingtable", IETileTypes.CRAFTING_TABLE,
+		WoodenDevices.craftingTable = new GenericTileBlock<>("craftingtable", IETileTypes.CRAFTING_TABLE,
 				standardWoodPropertiesNotSolid, IEProperties.FACING_HORIZONTAL);
 		WoodenDevices.workbench = new ModWorkbenchBlock("workbench");
 		WoodenDevices.gunpowderBarrel = new GunpowderBarrelBlock("gunpowder_barrel");
@@ -344,8 +346,8 @@ public class IEContent
 		WoodenDevices.fluidSorter = new SorterBlock("fluid_sorter", true);
 		WoodenDevices.windmill = new WindmillBlock("windmill");
 		WoodenDevices.watermill = new WatermillBlock("watermill");
-		WoodenDecoration.treatedPost = new PostBlock("treated_post", standardWoodPropertiesNotSolid);
-		WoodenDevices.treatedWallmount = new WallmountBlock("treated_wallmount", standardWoodPropertiesNotSolid);
+		WoodenDecoration.treatedPost = new PostBlock("treated_post", standardWoodPropertiesNoOverlay);
+		WoodenDevices.treatedWallmount = new WallmountBlock("treated_wallmount", standardWoodPropertiesNoOverlay);
 		Misc.hempPlant = new HempBlock("hemp");
 		Misc.pottedHemp = new PottedHempBlock("potted_hemp");
 		WoodenDecoration.sawdust = new SawdustBlock();
@@ -364,13 +366,15 @@ public class IEContent
 				.setRequiresTool()
 				.harvestTool(ToolType.PICKAXE)
 				.hardnessAndResistance(3, 15);
-		Block.Properties metalPropertiesNotSolid = Block.Properties.create(Material.IRON)
-				.sound(SoundType.METAL)
-				.hardnessAndResistance(3, 15)
-				.setRequiresTool()
-				.harvestTool(ToolType.PICKAXE)
-				.notSolid()
-				.setBlocksVision((state, blockReader, pos) -> false);
+		Supplier<AbstractBlock.Properties> createMetalPropertiesNoOverlay =
+				() -> Block.Properties.create(Material.IRON)
+						.sound(SoundType.METAL)
+						.hardnessAndResistance(3, 15)
+						.setRequiresTool()
+						.harvestTool(ToolType.PICKAXE)
+						.setBlocksVision((state, blockReader, pos) -> false);
+		Block.Properties metalPropertiesNotSolid = createMetalPropertiesNoOverlay.get().notSolid();
+		Block.Properties metalPropertiesNoOverlay = createMetalPropertiesNoOverlay.get();
 		MetalDecoration.lvCoil = new IEBaseBlock("coil_lv", defaultMetalProperties, BlockItemIE::new);
 		MetalDecoration.mvCoil = new IEBaseBlock("coil_mv", defaultMetalProperties, BlockItemIE::new);
 		MetalDecoration.hvCoil = new IEBaseBlock("coil_hv", defaultMetalProperties, BlockItemIE::new);
@@ -379,12 +383,12 @@ public class IEContent
 		MetalDecoration.engineeringLight = new IEBaseBlock("light_engineering", defaultMetalProperties, BlockItemIE::new);
 		MetalDecoration.generator = new IEBaseBlock("generator", defaultMetalProperties, BlockItemIE::new);
 		MetalDecoration.radiator = new IEBaseBlock("radiator", defaultMetalProperties, BlockItemIE::new);
-		MetalDecoration.steelFence = new IEFenceBlock("steel_fence", metalPropertiesNotSolid);
-		MetalDecoration.aluFence = new IEFenceBlock("alu_fence", metalPropertiesNotSolid);
-		MetalDecoration.steelWallmount = new WallmountBlock("steel_wallmount", metalPropertiesNotSolid);
-		MetalDecoration.aluWallmount = new WallmountBlock("alu_wallmount", metalPropertiesNotSolid);
-		MetalDecoration.steelPost = new PostBlock("steel_post", metalPropertiesNotSolid);
-		MetalDecoration.aluPost = new PostBlock("alu_post", metalPropertiesNotSolid);
+		MetalDecoration.steelFence = new IEFenceBlock("steel_fence", metalPropertiesNoOverlay);
+		MetalDecoration.aluFence = new IEFenceBlock("alu_fence", metalPropertiesNoOverlay);
+		MetalDecoration.steelWallmount = new WallmountBlock("steel_wallmount", metalPropertiesNoOverlay);
+		MetalDecoration.aluWallmount = new WallmountBlock("alu_wallmount", metalPropertiesNoOverlay);
+		MetalDecoration.steelPost = new PostBlock("steel_post", metalPropertiesNoOverlay);
+		MetalDecoration.aluPost = new PostBlock("alu_post", metalPropertiesNoOverlay);
 		MetalDecoration.lantern = new LanternBlock("lantern");
 		MetalDecoration.slopeSteel = new StructuralArmBlock("steel_slope");
 		MetalDecoration.slopeAlu = new StructuralArmBlock("alu_slope");
@@ -435,7 +439,7 @@ public class IEContent
 				metalPropertiesNotSolid);
 		MetalDevices.razorWire = new MiscConnectorBlock<>("razor_wire", IETileTypes.RAZOR_WIRE,
 				IEProperties.FACING_HORIZONTAL, BlockStateProperties.WATERLOGGED);
-		MetalDevices.toolbox = new GenericTileBlock<>("toolbox_block", IETileTypes.TOOLBOX, metalPropertiesNotSolid,
+		MetalDevices.toolbox = new GenericTileBlock<>("toolbox_block", IETileTypes.TOOLBOX, metalPropertiesNoOverlay,
 				(b, p) -> null, IEProperties.FACING_HORIZONTAL);
 		MetalDevices.capacitorLV = new GenericTileBlock<>("capacitor_lv", IETileTypes.CAPACITOR_LV, defaultMetalProperties);
 		MetalDevices.capacitorMV = new GenericTileBlock<>("capacitor_mv", IETileTypes.CAPACITOR_MV, defaultMetalProperties);
@@ -452,8 +456,8 @@ public class IEContent
 		MetalDevices.electricLantern = new ElectricLanternBlock("electric_lantern",
 				IEProperties.FACING_TOP_DOWN, IEProperties.ACTIVE, BlockStateProperties.WATERLOGGED);
 		MetalDevices.chargingStation = new GenericTileBlock<>("charging_station", IETileTypes.CHARGING_STATION,
-				metalPropertiesNotSolid, IEProperties.FACING_HORIZONTAL);
-		MetalDevices.fluidPipe = new GenericTileBlock<>("fluid_pipe", IETileTypes.FLUID_PIPE, metalPropertiesNotSolid, BlockStateProperties.WATERLOGGED);
+				metalPropertiesNoOverlay, IEProperties.FACING_HORIZONTAL);
+		MetalDevices.fluidPipe = new GenericTileBlock<>("fluid_pipe", IETileTypes.FLUID_PIPE, metalPropertiesNoOverlay, BlockStateProperties.WATERLOGGED);
 		MetalDevices.sampleDrill = new SampleDrillBlock();
 		MetalDevices.teslaCoil = new TeslaCoilBlock();
 		MetalDevices.floodlight = new FloodlightBlock("floodlight");

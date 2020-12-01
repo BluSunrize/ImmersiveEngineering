@@ -92,6 +92,7 @@ minecraft {
             // Recommended logging data for a userdev environment
             property 'forge.logging.markers', ''
             property 'fml.earlyprogresswindow', 'false'
+            property 'mixin.env.disableRefMap', 'true'
 
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
@@ -111,6 +112,7 @@ minecraft {
 
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
+            property 'mixin.env.disableRefMap', 'true'
 
             // Disable GUI by default, the IDE console can be used to enter commands
             arg '-nogui'
@@ -131,6 +133,7 @@ minecraft {
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
             property 'fml.earlyprogresswindow', 'false'
+            property 'mixin.env.disableRefMap', 'true'
 
             args '--mod', 'immersiveengineering', '--all', '--output', file('src/generated/resources/'), '--validate',
                     '--existing', sourceSets.main.resources.srcDirs[0]

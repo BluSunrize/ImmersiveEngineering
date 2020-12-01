@@ -658,14 +658,19 @@ public class IEServerConfig
 		if(ev.getConfig().getType()==Type.SERVER&&ImmersiveEngineering.MODID.equals(ev.getConfig().getModId()))
 		{
 			rawConfig = ev.getConfig().getConfigData();
-			CONFIG_SPEC.refreshCached();
-
-			ExternalHeaterHandler.defaultFurnaceEnergyCost = IEServerConfig.MACHINES.heater_consumption.get();
-			ExternalHeaterHandler.defaultFurnaceSpeedupCost = IEServerConfig.MACHINES.heater_speedupConsumption.get();
-			ExcavatorHandler.mineralVeinYield = IEServerConfig.MACHINES.excavator_yield.get();
-			ExcavatorHandler.initialVeinDepletion = IEServerConfig.MACHINES.excavator_initial_depletion.get();
-			ExcavatorHandler.mineralNoiseThreshold = IEServerConfig.MACHINES.excavator_theshold.get();
-			IEWorldGen.onConfigUpdated();
+			refresh();
 		}
+	}
+
+	public static void refresh()
+	{
+		CONFIG_SPEC.refreshCached();
+
+		ExternalHeaterHandler.defaultFurnaceEnergyCost = IEServerConfig.MACHINES.heater_consumption.get();
+		ExternalHeaterHandler.defaultFurnaceSpeedupCost = IEServerConfig.MACHINES.heater_speedupConsumption.get();
+		ExcavatorHandler.mineralVeinYield = IEServerConfig.MACHINES.excavator_yield.get();
+		ExcavatorHandler.initialVeinDepletion = IEServerConfig.MACHINES.excavator_initial_depletion.get();
+		ExcavatorHandler.mineralNoiseThreshold = IEServerConfig.MACHINES.excavator_theshold.get();
+		IEWorldGen.onConfigUpdated();
 	}
 }
