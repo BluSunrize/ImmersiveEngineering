@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparat
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
+import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -61,7 +62,7 @@ public class SiloTileEntity extends MultiblockPartTileEntity<SiloTileEntity> imp
 	private EnumMap<Direction, CapabilityReference<IItemHandler>> outputCaps = new EnumMap<>(Direction.class);
 
 	{
-		for(Direction f : Direction.VALUES)
+		for(Direction f : DirectionUtils.VALUES)
 			if(f!=Direction.UP)
 				outputCaps.put(f, CapabilityReference.forNeighbor(this, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, f));
 	}

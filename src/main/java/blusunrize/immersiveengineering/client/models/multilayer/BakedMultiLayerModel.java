@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.client.models.multilayer;
 
 import blusunrize.immersiveengineering.client.models.BakedIEModel;
+import blusunrize.immersiveengineering.mixin.accessors.client.RenderTypeAccess;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -21,6 +22,7 @@ import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Direction;
 import net.minecraftforge.client.MinecraftForgeClient;
+import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
 
 import javax.annotation.Nonnull;
@@ -37,18 +39,21 @@ public class BakedMultiLayerModel extends BakedIEModel
 	public BakedMultiLayerModel(Map<String, IBakedModel> models)
 	{
 		this.models = models;
-		String[] preferences = {
-				RenderType.getSolid().name,
-				RenderType.getCutout().name,
-				RenderType.getCutoutMipped().name,
-				RenderType.getTranslucent().name
+		RenderType[] preferences = {
+				RenderType.getSolid(),
+				RenderType.getCutout(),
+				RenderType.getCutoutMipped(),
+				RenderType.getTranslucent(),
 		};
-		for(String layer : preferences)
-			if(models.containsKey(layer))
+		for(RenderType layer : preferences)
+		{
+			String name = ((RenderTypeAccess)layer).getName();
+			if(models.containsKey(name))
 			{
-				model = models.get(layer);
+				model = models.get(name);
 				return;
 			}
+		}
 		throw new IllegalArgumentException("Can't create multi layer model without any submodels");
 	}
 
@@ -64,10 +69,11 @@ public class BakedMultiLayerModel extends BakedIEModel
 				ret.addAll(model.getQuads(state, side, rand));
 			return ret.build();
 		}
-		else if(models.containsKey(current.name))
+		String name = ((RenderTypeAccess)current).getName();
+		if(models.containsKey(name))
 		{
 			ImmutableList.Builder<BakedQuad> ret = new Builder<>();
-			ret.addAll(models.get(current.name).getQuads(state, side, rand));
+			ret.addAll(models.get(name).getQuads(state, side, rand, EmptyModelData.INSTANCE));
 			return ret.build();
 		}
 		else

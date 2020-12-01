@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.utils.CombinedModelData;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
+import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableMap;
@@ -119,7 +120,7 @@ public class ModelConfigurableSides extends BakedIEModel
 		else
 		{
 			config = new EnumMap<>(Direction.class);
-			for(Direction d : Direction.VALUES)
+			for(Direction d : DirectionUtils.VALUES)
 				config.put(d, IOSideConfig.NONE);
 		}
 		assert (config!=null);
@@ -129,7 +130,7 @@ public class ModelConfigurableSides extends BakedIEModel
 			modelCache.invalidateAll();
 			return modelCache.get(key, () -> {
 				Map<Direction, TextureAtlasSprite> tex = new EnumMap<>(Direction.class);
-				for(Direction d : Direction.VALUES)
+				for(Direction d : DirectionUtils.VALUES)
 					tex.put(d, this.textures.get(d).get(config.get(d)));
 				return bakeQuads(tex);
 			});
@@ -151,7 +152,7 @@ public class ModelConfigurableSides extends BakedIEModel
 		{
 			IConfigurableSides confTE = (IConfigurableSides)te;
 			Map<Direction, IOSideConfig> conf = new HashMap<>();
-			for(Direction d : VALUES)
+			for(Direction d : DirectionUtils.VALUES)
 				conf.put(d, confTE.getSideConfig(d));
 			data.add(new SinglePropertyModelData<>(conf, Model.SIDECONFIG));
 		}
@@ -255,7 +256,7 @@ public class ModelConfigurableSides extends BakedIEModel
 			final String type = modelContents.get("type").getAsString();
 			ImmutableMap.Builder<String, RenderMaterial> builder = ImmutableMap.builder();
 			ITextureNamer namer = TYPES.get(type);
-			for(Direction f : Direction.VALUES)
+			for(Direction f : DirectionUtils.VALUES)
 				for(IOSideConfig cfg : IOSideConfig.values())
 				{
 					String key = f.getString()+"_"+cfg.getTextureName();
@@ -283,7 +284,7 @@ public class ModelConfigurableSides extends BakedIEModel
 		public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<RenderMaterial, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation)
 		{
 			Map<Direction, Map<IOSideConfig, TextureAtlasSprite>> tex = new EnumMap<>(Direction.class);
-			for(Direction f : Direction.VALUES)
+			for(Direction f : DirectionUtils.VALUES)
 			{
 				Map<IOSideConfig, TextureAtlasSprite> forSide = new EnumMap<>(IOSideConfig.class);
 				for(IOSideConfig cfg : IOSideConfig.values())

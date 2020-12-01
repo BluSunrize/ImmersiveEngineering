@@ -335,7 +335,7 @@ public class FeedthroughModel extends BakedIEModel
 			};
 			for(int j = 0; j < 7; j++)
 			{
-				Direction side = j < 6?Direction.VALUES[j]: null;
+				Direction side = j < 6?DirectionUtils.VALUES[j]: null;
 				Direction facing = k.facing;
 				switch(k.offset)
 				{

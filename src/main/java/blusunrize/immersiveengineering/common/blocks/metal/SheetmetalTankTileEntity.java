@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparat
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
+import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.entity.player.PlayerEntity;
@@ -77,7 +78,7 @@ public class SheetmetalTankTileEntity extends MultiblockPartTileEntity<Sheetmeta
 	{
 		checkForNeedlessTicking();
 		if(!isDummy()&&!world.isRemote&&!isRSDisabled())
-			for(Direction f : Direction.VALUES)
+			for(Direction f : DirectionUtils.VALUES)
 				if(f!=Direction.UP&&tank.getFluidAmount() > 0)
 				{
 					int outSize = Math.min(144, tank.getFluidAmount());

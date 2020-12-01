@@ -16,10 +16,14 @@ import blusunrize.immersiveengineering.client.utils.BatchingRenderTypeBuffer;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.items.*;
+import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.fluids.IEFluid;
 import blusunrize.immersiveengineering.common.util.sound.IETileSound;
+import blusunrize.immersiveengineering.mixin.accessors.client.FontResourceManagerAccess;
+import blusunrize.immersiveengineering.mixin.accessors.client.MinecraftAccess;
+import blusunrize.immersiveengineering.mixin.accessors.client.PlayerControllerAccess;
 import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -30,8 +34,10 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound.AttenuationType;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.fonts.Font;
 import net.minecraft.client.gui.fonts.FontResourceManager;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.multiplayer.PlayerController;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.model.*;
@@ -143,8 +149,9 @@ public class ClientUtils
 	{
 		if(unicodeRenderer==null)
 			unicodeRenderer = new FontRenderer(rl -> {
-				FontResourceManager resourceManager = Minecraft.getInstance().fontResourceMananger;
-				return resourceManager.field_238546_d_.get(Minecraft.UNIFORM_FONT_RENDERER_NAME);
+				FontResourceManager resourceManager = ((MinecraftAccess)Minecraft.getInstance()).getFontResourceMananger();
+				Map<ResourceLocation, Font> fonts = ((FontResourceManagerAccess)resourceManager).getFonts();
+				return fonts.get(Minecraft.UNIFORM_FONT_RENDERER_NAME);
 			});
 		return unicodeRenderer;
 	}
@@ -316,7 +323,8 @@ public class ClientUtils
 	//Cheers boni =P
 	public static void drawBlockDamageTexture(MatrixStack matrix, IRenderTypeBuffer buffers, Entity entityIn, float partialTicks, World world, Collection<BlockPos> blocks)
 	{
-		int progress = (int)(Minecraft.getInstance().playerController.curBlockDamageMP*10f)-1; // 0-10
+		PlayerController controller = Minecraft.getInstance().playerController;
+		int progress = (int)(((PlayerControllerAccess)controller).getCurBlockDamageMP()*10f)-1; // 0-10
 		if(progress < 0||progress >= ModelBakery.DESTROY_RENDER_TYPES.size())
 			return;
 		BlockRendererDispatcher blockrendererdispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
@@ -1004,7 +1012,7 @@ public class ClientUtils
 			if(!useCached)
 			{
 				// Calculate surrounding brighness and split into block and sky light
-				for(Direction f : Direction.VALUES)
+				for(Direction f : DirectionUtils.VALUES)
 				{
 					int val = WorldRenderer.getCombinedLight(world, pos.offset(f));
 					neighbourBrightness[0][f.getIndex()] = (val >> 16)&255;

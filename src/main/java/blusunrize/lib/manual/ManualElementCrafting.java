@@ -8,6 +8,7 @@
 
 package blusunrize.lib.manual;
 
+import blusunrize.immersiveengineering.mixin.accessors.RecipeManagerAccess;
 import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.ManualScreen;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -20,7 +21,10 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.*;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.item.crafting.ShapelessRecipe;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
@@ -76,8 +80,8 @@ public class ManualElementCrafting extends SpecialManualElements
 
 	private void checkAllRecipesFor(Object stack, int recipeIndex)
 	{
-		RecipeManager recipeManager = Minecraft.getInstance().world.getRecipeManager();
-		Map<ResourceLocation, IRecipe<CraftingInventory>> recipes = recipeManager.getRecipes(IRecipeType.CRAFTING);
+		RecipeManagerAccess recipeManager = (RecipeManagerAccess)Minecraft.getInstance().world.getRecipeManager();
+		Map<ResourceLocation, IRecipe<CraftingInventory>> recipes = recipeManager.callGetRecipes(IRecipeType.CRAFTING);
 		if(stack instanceof ResourceLocation)
 		{
 			IRecipe<CraftingInventory> recipe = recipes.get(stack);
@@ -106,8 +110,8 @@ public class ManualElementCrafting extends SpecialManualElements
 			}
 			else if(rec instanceof IShapedRecipe)
 			{
-				recipeWidth = ((IShapedRecipe)rec).getRecipeWidth();
-				recipeHeight = ((IShapedRecipe)rec).getRecipeHeight();
+				recipeWidth = ((IShapedRecipe<?>)rec).getRecipeWidth();
+				recipeHeight = ((IShapedRecipe<?>)rec).getRecipeHeight();
 			}
 			else
 				return;

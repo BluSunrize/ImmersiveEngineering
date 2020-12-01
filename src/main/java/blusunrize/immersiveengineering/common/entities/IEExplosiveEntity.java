@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.entities;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.util.IEExplosion;
+import blusunrize.immersiveengineering.mixin.accessors.TNTEntityAccess;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityClassification;
@@ -76,7 +77,7 @@ public class IEExplosiveEntity extends TNTEntity
 		this.prevPosX = x;
 		this.prevPosY = y;
 		this.prevPosZ = z;
-		this.tntPlacedBy = igniter;
+		((TNTEntityAccess)this).setTntPlacedBy(igniter);
 		this.size = size;
 		this.block = blockstate;
 		this.explosionDropChance = 1/size;

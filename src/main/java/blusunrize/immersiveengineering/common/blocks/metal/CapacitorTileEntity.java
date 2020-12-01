@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigur
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Machines.CapacitorConfig;
+import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
@@ -56,7 +57,7 @@ public class CapacitorTileEntity extends IEBaseTileEntity implements ITickableTi
 	{
 		super(configValues.tileType.get());
 		this.configValues = configValues;
-		for(Direction f : Direction.VALUES)
+		for(Direction f : DirectionUtils.VALUES)
 		{
 			if(f==Direction.UP)
 				sideConfig.put(f, IOSideConfig.INPUT);
@@ -71,7 +72,7 @@ public class CapacitorTileEntity extends IEBaseTileEntity implements ITickableTi
 	{
 		if(!world.isRemote)
 		{
-			for(Direction f : Direction.VALUES)
+			for(Direction f : DirectionUtils.VALUES)
 				this.transferEnergy(f);
 
 			if(world.getGameTime()%32==((getPos().getX()^getPos().getZ())&31))
@@ -146,7 +147,7 @@ public class CapacitorTileEntity extends IEBaseTileEntity implements ITickableTi
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		for(Direction f : Direction.VALUES)
+		for(Direction f : DirectionUtils.VALUES)
 			nbt.putInt("sideConfig_"+f.ordinal(), sideConfig.get(f).ordinal());
 		energyStorage.writeToNBT(nbt);
 	}
@@ -154,7 +155,7 @@ public class CapacitorTileEntity extends IEBaseTileEntity implements ITickableTi
 	@Override
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		for(Direction f : Direction.VALUES)
+		for(Direction f : DirectionUtils.VALUES)
 			sideConfig.put(f, IOSideConfig.values()[nbt.getInt("sideConfig_"+f.ordinal())]);
 		energyStorage.readFromNBT(nbt);
 	}

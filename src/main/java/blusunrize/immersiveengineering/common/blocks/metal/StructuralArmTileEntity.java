@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBou
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICollisionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISelectionBounds;
+import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.collect.ImmutableList;
@@ -75,7 +76,7 @@ public class StructuralArmTileEntity extends IEBaseTileEntity implements IOBJMod
 			world.notifyBlockUpdate(pos, state, state, 3);
 			bounds = null;
 		}
-		facing = Direction.VALUES[nbt.getInt("facing")];
+		facing = DirectionUtils.VALUES[nbt.getInt("facing")];
 	}
 
 	@Override

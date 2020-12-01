@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
+import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -54,7 +55,7 @@ public class FluidSorterTileEntity extends IEBaseTileEntity implements IInteract
 	public FluidSorterTileEntity()
 	{
 		super(IETileTypes.FLUID_SORTER.get());
-		for(Direction f : Direction.VALUES)
+		for(Direction f : DirectionUtils.VALUES)
 			neighborCaps.put(f, CapabilityReference.forNeighbor(this, FLUID_HANDLER_CAPABILITY, f));
 	}
 
@@ -217,7 +218,7 @@ public class FluidSorterTileEntity extends IEBaseTileEntity implements IInteract
 	private EnumMap<Direction, LazyOptional<IFluidHandler>> insertionHandlers = new EnumMap<>(Direction.class);
 
 	{
-		for(Direction f : Direction.VALUES)
+		for(Direction f : DirectionUtils.VALUES)
 		{
 			LazyOptional<IFluidHandler> forSide = registerConstantCap(new SorterFluidHandler(this, f));
 			insertionHandlers.put(f, forSide);

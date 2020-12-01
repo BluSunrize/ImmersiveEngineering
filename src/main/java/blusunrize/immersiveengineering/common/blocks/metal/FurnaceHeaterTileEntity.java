@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IActiveState;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -54,7 +55,7 @@ public class FurnaceHeaterTileEntity extends IEBaseTileEntity implements ITickab
 			if(activeBeforeTick&&!redstonePower)
 				newActive = false;
 			if(energyStorage.getEnergyStored() > 3200||activeBeforeTick)
-				for(Direction fd : Direction.VALUES)
+				for(Direction fd : DirectionUtils.VALUES)
 				{
 					TileEntity tileEntity = Utils.getExistingTileEntity(world, getPos().offset(fd));
 					int consumed = 0;

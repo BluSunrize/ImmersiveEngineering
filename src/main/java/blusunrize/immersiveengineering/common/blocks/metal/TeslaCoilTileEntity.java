@@ -26,6 +26,7 @@ import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamageSource;
+import blusunrize.immersiveengineering.mixin.accessors.EntityAccess;
 import com.google.common.collect.ArrayListMultimap;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
@@ -128,10 +129,11 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 							energyStorage.extractEnergy(energyDrain, false);
 							if(dmgsrc.apply(target))
 							{
-								int prevFire = target.fire;
-								target.fire = 1;
+								EntityAccess targetAccessor = (EntityAccess)target;
+								int prevFire = targetAccessor.getFire();
+								targetAccessor.setFire(1);
 								target.addPotionEffect(new EffectInstance(IEPotions.stunned, 128));
-								target.fire = prevFire;
+								targetAccessor.setFire(prevFire);
 							}
 							this.sendRenderPacket(target);
 						}

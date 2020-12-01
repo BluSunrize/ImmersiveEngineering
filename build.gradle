@@ -7,10 +7,12 @@ buildscript {
         maven { url = 'https://files.minecraftforge.net/maven' }
         jcenter()
         mavenCentral()
+        maven {url='https://dist.creeper.host/Sponge/maven'}
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
         classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.0'
+        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
@@ -94,6 +96,7 @@ minecraft {
 
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
+            arg "-mixin.config="+modid+".mixins.json"
             mods {
                 immersiveengineering {
                     source sourceSets.main
@@ -112,7 +115,8 @@ minecraft {
             property 'mixin.env.disableRefMap', 'true'
 
             // Disable GUI by default, the IDE console can be used to enter commands
-            args '-nogui'
+            arg '-nogui'
+            arg "-mixin.config="+modid+".mixins.json"
 
             mods {
                 immersiveengineering {
@@ -133,6 +137,7 @@ minecraft {
 
             args '--mod', 'immersiveengineering', '--all', '--output', file('src/generated/resources/'), '--validate',
                     '--existing', sourceSets.main.resources.srcDirs[0]
+            arg "-mixin.config="+modid+".mixins.json"
 
             mods {
                 immersiveengineering {
@@ -290,6 +295,20 @@ task optimizePng {
             fileTree(dir: dir, includes: pngPatterns).each { minimizePNGFile(it) }
         }
     }
+}
+
+jar {
+    manifest {
+        attributes([
+                "MixinConfigs": "${modid}.mixins.json"
+        ])
+    }
+}
+
+apply plugin: 'org.spongepowered.mixin'
+
+mixin {
+    add sourceSets.main, "${archivesBaseName}.refmap.json"
 }
 
 apply plugin: 'maven'
@@ -454,3 +473,9 @@ class GenerateUpdateJSON extends DefaultTask {
 task updateJson(type: GenerateUpdateJSON)
 
 processResources.dependsOn updateJson
+
+apply plugin: 'org.spongepowered.mixin'
+
+mixin {
+    add sourceSets.main, "${modid}.refmap.json"
+}

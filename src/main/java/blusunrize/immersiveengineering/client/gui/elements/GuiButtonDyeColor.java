@@ -26,7 +26,7 @@ public class GuiButtonDyeColor extends GuiButtonState<DyeColor>
 		if(this.visible)
 		{
 			DyeColor dye = getState();
-			int col = 0xff000000|dye.colorValue;
+			int col = 0xff000000|dye.getColorValue();
 			this.fillGradient(transform, x+2, y+2, x+6, y+6, col, col);
 		}
 	}

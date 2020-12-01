@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.IPostBlock;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Connectors;
 import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectorBlock;
+import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -73,7 +74,7 @@ public class PostTransformerBlock extends MiscConnectorBlock<PostTransformerTile
 	private static Optional<Direction> findAttacheablePost(BlockPos transformerPos, IBlockReader world, Direction preferred)
 	{
 		Optional<Direction> ret = Optional.empty();
-		for(Direction d : Direction.BY_HORIZONTAL_INDEX)
+		for(Direction d : DirectionUtils.BY_HORIZONTAL_INDEX)
 			if(isAttacheablePost(transformerPos.offset(d), world))
 			{
 				ret = Optional.of(d);

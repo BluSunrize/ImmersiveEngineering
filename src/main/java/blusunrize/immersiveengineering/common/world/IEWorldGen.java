@@ -21,8 +21,11 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.RegistryKey;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.ISeedReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
@@ -59,7 +62,7 @@ public class IEWorldGen
 	public static void addOreGen(Block block, String name, OreConfig config)
 	{
 		IEOreFeatureConfig cfg = new IEOreFeatureConfig(FillerBlockType.field_241882_a, block.getDefaultState(), config);
-		ConfiguredFeature<?, ?> feature = Features.register(Lib.MODID+":"+name,
+		ConfiguredFeature<?, ?> feature = register(new ResourceLocation(Lib.MODID, name),
 				IE_CONFIG_ORE.get().withConfiguration(cfg)
 						.withPlacement(IE_RANGE_PLACEMENT.get().configure(new IETopSolidRangeConfig(config)))
 						.func_242728_a/* spreadHorizontally */()
@@ -71,7 +74,7 @@ public class IEWorldGen
 
 	public static void registerMineralVeinGen()
 	{
-		ConfiguredFeature<?, ?> veinFeature = Features.register(Lib.MODID+":mineral_veins",
+		ConfiguredFeature<?, ?> veinFeature = register(new ResourceLocation(Lib.MODID, "mineral_veins"),
 				MINERAL_VEIN_FEATURE.get().withConfiguration(new NoFeatureConfig())
 						.withPlacement(
 								new ConfiguredPlacement<>(Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG)
@@ -212,5 +215,11 @@ public class IEWorldGen
 		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
 		FEATURE_REGISTER.register(bus);
 		PLACEMENT_REGISTER.register(bus);
+	}
+
+	private static <FC extends IFeatureConfig>
+	ConfiguredFeature<FC, ?> register(ResourceLocation key, ConfiguredFeature<FC, ?> configuredFeature)
+	{
+		return Registry.register(WorldGenRegistries.CONFIGURED_FEATURE, key, configuredFeature);
 	}
 }

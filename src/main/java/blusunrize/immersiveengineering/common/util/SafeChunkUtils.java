@@ -84,7 +84,7 @@ public class SafeChunkUtils
 	public static int getRedstonePowerFromNeighbors(World w, BlockPos pos)
 	{
 		int ret = 0;
-		for(Direction d : Direction.VALUES)
+		for(Direction d : DirectionUtils.VALUES)
 		{
 			int atNeighbor = getRedstonePower(w, pos.offset(d), d);
 			ret = Math.max(ret, atNeighbor);

@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
+import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.IWaterLoggable;
 import net.minecraft.entity.player.PlayerEntity;
@@ -49,7 +50,7 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickable
 	private final Map<Direction, IOSideConfig> sideConfig = new EnumMap<>(Direction.class);
 
 	{
-		for(Direction d : Direction.VALUES)
+		for(Direction d : DirectionUtils.VALUES)
 			sideConfig.put(d, IOSideConfig.OUTPUT);
 		sideConfig.put(Direction.UP, IOSideConfig.INPUT);
 	}
@@ -194,7 +195,7 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickable
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		CompoundNBT sideConfigNBT = nbt.getCompound("sideConfig");
-		for(Direction d : Direction.VALUES)
+		for(Direction d : DirectionUtils.VALUES)
 			sideConfig.put(d, IOSideConfig.VALUES[sideConfigNBT.getInt(d.getString())]);
 		tank.readFromNBT(nbt.getCompound("tank"));
 		if(descPacket)
@@ -205,7 +206,7 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickable
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		CompoundNBT sideConfigNBT = new CompoundNBT();
-		for(Direction d : Direction.VALUES)
+		for(Direction d : DirectionUtils.VALUES)
 			sideConfigNBT.putInt(d.getString(), sideConfig.get(d).ordinal());
 		nbt.put("sideConfig", sideConfigNBT);
 		nbt.put("tank", tank.writeToNBT(new CompoundNBT()));

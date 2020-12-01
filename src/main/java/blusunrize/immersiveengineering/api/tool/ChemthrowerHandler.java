@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.api.tool;
 
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.mixin.accessors.ConcretePowderBlockAccess;
 import net.minecraft.block.Block;
 import net.minecraft.block.ConcretePowderBlock;
 import net.minecraft.block.FireBlock;
@@ -200,7 +201,7 @@ public class ChemthrowerHandler
 			BlockPos pos = rtr.getPos();
 			Block b = world.getBlockState(pos).getBlock();
 			if(b instanceof ConcretePowderBlock)
-				world.setBlockState(pos, ((ConcretePowderBlock)b).solidifiedState, 3);
+				world.setBlockState(pos, ((ConcretePowderBlockAccess)b).getSolidifiedState(), 3);
 
 			// Interactions with block at offset position
 			pos = rtr.getPos().offset(rtr.getFace());

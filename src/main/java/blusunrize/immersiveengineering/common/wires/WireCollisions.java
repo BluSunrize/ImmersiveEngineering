@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.api.wires.localhandlers.ICollisionHandler
 import blusunrize.immersiveengineering.api.wires.localhandlers.LocalNetworkHandler;
 import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockState;
@@ -76,7 +77,7 @@ public class WireCollisions
 						BlockPos dropPos = pos;
 						if(WireUtils.preventsConnection(worldIn, pos, newState, info.intersectA, info.intersectB))
 						{
-							for(Direction f : Direction.VALUES)
+							for(Direction f : DirectionUtils.VALUES)
 								if(worldIn.isAirBlock(pos.offset(f)))
 								{
 									dropPos = dropPos.offset(f);

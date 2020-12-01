@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderLayer;
 import blusunrize.immersiveengineering.api.shader.impl.ShaderCaseMinecart;
+import blusunrize.immersiveengineering.mixin.accessors.client.MinecartRendererAccess;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -23,6 +24,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.MinecartRenderer;
+import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.MinecartModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -105,8 +107,9 @@ public class ShaderMinecartRenderer<T extends AbstractMinecartEntity> extends Mi
 
 	private MinecartModel<?> getModel()
 	{
-		if(baseRenderer.modelMinecart instanceof MinecartModel<?>)
-			return (MinecartModel<?>)baseRenderer.modelMinecart;
+		EntityModel<?> model = ((MinecartRendererAccess)baseRenderer).getModelMinecart();
+		if(model instanceof MinecartModel<?>)
+			return (MinecartModel<?>)model;
 		else
 			return new MinecartModel<>();
 	}

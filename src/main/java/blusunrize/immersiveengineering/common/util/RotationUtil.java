@@ -51,7 +51,7 @@ public class RotationUtil
 		if(newState!=state)
 		{
 			world.setBlockState(pos, newState);
-			for(Direction d : Direction.VALUES)
+			for(Direction d : DirectionUtils.VALUES)
 			{
 				final BlockPos otherPos = pos.offset(d);
 				final BlockState otherState = world.getBlockState(otherPos);
@@ -70,7 +70,7 @@ public class RotationUtil
 					}
 				}
 			}
-			for(Direction d : Direction.VALUES)
+			for(Direction d : DirectionUtils.VALUES)
 			{
 				final BlockPos otherPos = pos.offset(d);
 				final BlockState otherState = world.getBlockState(otherPos);

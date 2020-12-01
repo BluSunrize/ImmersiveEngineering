@@ -21,6 +21,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDecoration;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
+import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.collect.Lists;
@@ -104,7 +105,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 	public Object2BooleanMap<Direction> sideConfig = new Object2BooleanOpenHashMap<>();
 
 	{
-		for(Direction d : Direction.VALUES)
+		for(Direction d : DirectionUtils.VALUES)
 			sideConfig.put(d, true);
 	}
 
@@ -175,7 +176,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 			//TODO this really shouldn't be necessary IMO...
 			ApiUtils.addFutureServerTask(world, () -> {
 				boolean changed = false;
-				for(Direction f : Direction.VALUES)
+				for(Direction f : DirectionUtils.VALUES)
 					changed |= updateConnectionByte(f);
 				if(changed)
 				{
@@ -276,7 +277,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 	private EnumMap<Direction, CapabilityReference<IFluidHandler>> neighbors = new EnumMap<>(Direction.class);
 
 	{
-		for(Direction f : Direction.VALUES)
+		for(Direction f : DirectionUtils.VALUES)
 		{
 			sidedHandlers.put(f, registerConstantCap(new PipeFluidHandler(this, f)));
 			neighbors.put(f, CapabilityReference.forNeighbor(this, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f));
@@ -544,7 +545,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 	{
 		byte availableConnections = connections;
 		int mask = 1;
-		for(Direction dir : Direction.VALUES)
+		for(Direction dir : DirectionUtils.VALUES)
 		{
 			if((availableConnections&mask)==0)
 			{
@@ -644,7 +645,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 		byte availableConnections = key.availableConnections;
 		byte activeConnections = key.connections;
 		double[] baseAABB = key.hasCover?new double[]{.002, .998, .002, .998, .002, .998}: new double[]{.25, .75, .25, .75, .25, .75};
-		for(Direction d : Direction.VALUES)
+		for(Direction d : DirectionUtils.VALUES)
 		{
 			int i = d.getIndex();
 			if((availableConnections&1)==1)
@@ -683,7 +684,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 			this.connections = te.connections;
 			this.availableConnections = te.getAvailableConnectionByte();
 			this.hasCover = te.hasCover();
-			for(Direction d : Direction.VALUES)
+			for(Direction d : DirectionUtils.VALUES)
 				connectionStyles.put(d, te.getConnectionStyle(d));
 		}
 
@@ -1078,7 +1079,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 		for(AxisAlignedBB box : boxes)
 			if(box.grow(.002).contains(hitVec))
 			{
-				for(Direction d : Direction.VALUES)
+				for(Direction d : DirectionUtils.VALUES)
 				{
 					Vector3d testVec = new Vector3d(0.5+0.5*d.getXOffset(), 0.5+0.5*d.getYOffset(), 0.5+0.5*d.getZOffset());
 					if(box.grow(0.002).contains(testVec))

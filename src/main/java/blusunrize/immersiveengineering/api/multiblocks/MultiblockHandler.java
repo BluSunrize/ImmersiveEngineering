@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.api.multiblocks;
 
+import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -84,7 +85,7 @@ public class MultiblockHandler
 		@Deprecated
 		default boolean isBlockTrigger(BlockState state)
 		{
-			for(Direction d : Direction.BY_HORIZONTAL_INDEX)
+			for(Direction d : DirectionUtils.BY_HORIZONTAL_INDEX)
 				if(isBlockTrigger(state, d, null))
 					return true;
 			return false;

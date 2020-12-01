@@ -156,7 +156,7 @@ public class WirecutterItem extends IEBaseItem implements ITool
 			ItemNBTHelper.putInt(stack, Lib.NBT_DAMAGE, nbtDamage);
 		else
 		{
-			player.renderBrokenItemStack(stack);
+			player.sendBreakAnimation(hand);
 			player.setHeldItem(hand, ItemStack.EMPTY);
 		}
 	}

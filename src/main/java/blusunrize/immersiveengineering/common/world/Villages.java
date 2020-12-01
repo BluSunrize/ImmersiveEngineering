@@ -29,6 +29,9 @@ import blusunrize.immersiveengineering.common.items.RevolverItem;
 import blusunrize.immersiveengineering.common.items.ToolUpgradeItem.ToolUpgrade;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.mixin.accessors.HeroGiftsTaskAccess;
+import blusunrize.immersiveengineering.mixin.accessors.PoITypeAccess;
+import blusunrize.immersiveengineering.mixin.accessors.SingleJigsawAccess;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.util.Either;
@@ -40,7 +43,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.ai.brain.task.GiveHeroGiftsTask;
 import net.minecraft.entity.merchant.villager.AbstractVillagerEntity;
 import net.minecraft.entity.merchant.villager.VillagerProfession;
 import net.minecraft.entity.merchant.villager.VillagerTrades.ITrade;
@@ -61,7 +63,6 @@ import net.minecraft.world.gen.feature.jigsaw.JigsawPattern;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPattern.PlacementBehaviour;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPatternRegistry;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
-import net.minecraft.world.gen.feature.jigsaw.LegacySingleJigsawPiece;
 import net.minecraft.world.gen.feature.structure.*;
 import net.minecraft.world.gen.feature.template.ProcessorLists;
 import net.minecraft.world.storage.MapData;
@@ -119,16 +120,16 @@ public class Villages
 		));
 
 		// Register gifts
-		GiveHeroGiftsTask.GIFTS.put(Registers.PROF_ENGINEER.get(), rl("gameplay/hero_of_the_village/engineer"));
-		GiveHeroGiftsTask.GIFTS.put(Registers.PROF_MACHINIST.get(), rl("gameplay/hero_of_the_village/machinist"));
-		GiveHeroGiftsTask.GIFTS.put(Registers.PROF_ELECTRICIAN.get(), rl("gameplay/hero_of_the_village/electrician"));
-		GiveHeroGiftsTask.GIFTS.put(Registers.PROF_OUTFITTER.get(), rl("gameplay/hero_of_the_village/outfitter"));
-		GiveHeroGiftsTask.GIFTS.put(Registers.PROF_GUNSMITH.get(), rl("gameplay/hero_of_the_village/gunsmith"));
+		HeroGiftsTaskAccess.getGifts().put(Registers.PROF_ENGINEER.get(), rl("gameplay/hero_of_the_village/engineer"));
+		HeroGiftsTaskAccess.getGifts().put(Registers.PROF_MACHINIST.get(), rl("gameplay/hero_of_the_village/machinist"));
+		HeroGiftsTaskAccess.getGifts().put(Registers.PROF_ELECTRICIAN.get(), rl("gameplay/hero_of_the_village/electrician"));
+		HeroGiftsTaskAccess.getGifts().put(Registers.PROF_OUTFITTER.get(), rl("gameplay/hero_of_the_village/outfitter"));
+		HeroGiftsTaskAccess.getGifts().put(Registers.PROF_GUNSMITH.get(), rl("gameplay/hero_of_the_village/gunsmith"));
 	}
 
 	private static JigsawPiece createWorkstation(String name)
 	{
-		return new LegacySingleJigsawPiece(
+		return SingleJigsawAccess.construct(
 				Either.left(rl(name)),
 				() -> ProcessorLists.field_244101_a,
 				PlacementBehaviour.RIGID
@@ -148,7 +149,9 @@ public class Villages
 		Object2IntMap<JigsawPiece> newPieces = new Object2IntLinkedOpenHashMap<>();
 		for(JigsawPiece p : shuffled)
 			newPieces.computeInt(p, (JigsawPiece pTemp, Integer i) -> (i==null?0: i)+1);
-		newPieces.put(new LegacySingleJigsawPiece(Either.left(toAdd), () -> ProcessorLists.field_244101_a, PlacementBehaviour.RIGID), weight);
+		newPieces.put(SingleJigsawAccess.construct(
+				Either.left(toAdd), () -> ProcessorLists.field_244101_a, PlacementBehaviour.RIGID
+		), weight);
 		List<Pair<JigsawPiece, Integer>> newPieceList = newPieces.object2IntEntrySet().stream()
 				.map(e -> Pair.of(e.getKey(), e.getIntValue()))
 				.collect(Collectors.toList());
@@ -199,7 +202,7 @@ public class Villages
 		private static PointOfInterestType createPOI(String name, Collection<BlockState> block)
 		{
 			PointOfInterestType type = new PointOfInterestType(MODID+":"+name, ImmutableSet.copyOf(block), 1, 1);
-			PointOfInterestType.registerBlockStates(type);
+			PoITypeAccess.callRegisterBlockStates(type);
 			return type;
 		}
 

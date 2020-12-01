@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxConnector;
@@ -43,7 +44,7 @@ public class DynamoTileEntity extends IEBaseTileEntity implements IIEInternalFlu
 		if(side!=this.getFacing().getOpposite())
 			return;
 		int output = (int)(IEServerConfig.MACHINES.dynamo_output.get()*rotation);
-		for(Direction fd : Direction.VALUES)
+		for(Direction fd : DirectionUtils.VALUES)
 		{
 			BlockPos outputPos = getPos().offset(fd);
 			TileEntity te = Utils.getExistingTileEntity(world, outputPos);

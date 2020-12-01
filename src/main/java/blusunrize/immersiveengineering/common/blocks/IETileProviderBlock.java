@@ -236,7 +236,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 			switch(limit)
 			{
 				case SIDE_CLICKED:
-					f = Direction.VALUES[Math.floorMod(f.ordinal()+(player.isSneaking()?-1: 1), Direction.VALUES.length)];
+					f = DirectionUtils.VALUES[Math.floorMod(f.ordinal()+(player.isSneaking()?-1: 1), DirectionUtils.VALUES.length)];
 					break;
 				case PISTON_LIKE:
 					f = player.isSneaking()!=(side.getAxisDirection()==AxisDirection.NEGATIVE)?DirectionUtils.rotateAround(f, side.getAxis()).getOpposite(): DirectionUtils.rotateAround(f, side.getAxis());

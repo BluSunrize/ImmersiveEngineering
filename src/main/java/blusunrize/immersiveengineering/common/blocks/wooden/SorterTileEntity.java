@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
+import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
@@ -54,7 +55,7 @@ public class SorterTileEntity extends IEBaseTileEntity implements IInteractionOb
 	{
 		super(IETileTypes.SORTER.get());
 		filter = new SorterInventory(this);
-		for(Direction f : Direction.VALUES)
+		for(Direction f : DirectionUtils.VALUES)
 			neighborCaps.put(f, CapabilityReference.forNeighbor(this, ITEM_HANDLER_CAPABILITY, f));
 	}
 
@@ -314,7 +315,7 @@ public class SorterTileEntity extends IEBaseTileEntity implements IInteractionOb
 	private EnumMap<Direction, LazyOptional<IItemHandler>> insertionHandlers = new EnumMap<>(Direction.class);
 
 	{
-		for(Direction f : Direction.VALUES)
+		for(Direction f : DirectionUtils.VALUES)
 		{
 			LazyOptional<IItemHandler> forSide = registerConstantCap(new SorterInventoryHandler(this, f));
 			insertionHandlers.put(f, forSide);

@@ -24,6 +24,7 @@ import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
+import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -70,7 +71,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 	public Map<Direction, IOSideConfig> sideConfig = new EnumMap<>(Direction.class);
 
 	{
-		for(Direction d : Direction.VALUES)
+		for(Direction d : DirectionUtils.VALUES)
 		{
 			if(d==Direction.DOWN)
 				sideConfig.put(d, IOSideConfig.INPUT);
@@ -97,7 +98,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 	private Map<Direction, CapabilityReference<IFluidHandler>> neighborFluids = new EnumMap<>(Direction.class);
 
 	{
-		for(Direction neighbor : Direction.VALUES)
+		for(Direction neighbor : DirectionUtils.VALUES)
 			neighborFluids.put(neighbor,
 					CapabilityReference.forNeighbor(this, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, neighbor));
 	}
@@ -144,7 +145,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 							&&this.energyStorage.extractEnergy(consumption, true) >= consumption)
 					{
 						int connectedSources = 0;
-						for(Direction f2 : Direction.BY_HORIZONTAL_INDEX)
+						for(Direction f2 : DirectionUtils.BY_HORIZONTAL_INDEX)
 						{
 							FluidState waterState = world.getFluidState(getPos().offset(f).offset(f2));
 							if(waterState.getFluid().isIn(FluidTags.WATER)&&waterState.isSource())
@@ -300,7 +301,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		int[] sideConfigArray = nbt.getIntArray("sideConfig");
-		for(Direction d : Direction.VALUES)
+		for(Direction d : DirectionUtils.VALUES)
 			sideConfig.put(d, IOSideConfig.VALUES[sideConfigArray[d.ordinal()]]);
 		if(nbt.contains("placeCobble", NBT.TAG_BYTE))
 			placeCobble = nbt.getBoolean("placeCobble");
@@ -314,7 +315,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		int[] sideConfigArray = new int[6];
-		for(Direction d : Direction.VALUES)
+		for(Direction d : DirectionUtils.VALUES)
 			sideConfigArray[d.ordinal()] = sideConfig.get(d).ordinal();
 		nbt.putIntArray("sideConfig", sideConfigArray);
 		nbt.putBoolean("placeCobble", placeCobble);

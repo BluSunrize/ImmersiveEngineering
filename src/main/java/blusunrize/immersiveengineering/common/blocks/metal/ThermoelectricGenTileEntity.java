@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxConnector;
@@ -40,7 +41,7 @@ public class ThermoelectricGenTileEntity extends IEBaseTileEntity implements ITi
 	public ThermoelectricGenTileEntity()
 	{
 		super(IETileTypes.THERMOELECTRIC_GEN.get());
-		for(Direction d : Direction.VALUES)
+		for(Direction d : DirectionUtils.VALUES)
 			energyWrappers.put(d, CapabilityReference.forNeighbor(this, CapabilityEnergy.ENERGY, d));
 	}
 
@@ -58,7 +59,7 @@ public class ThermoelectricGenTileEntity extends IEBaseTileEntity implements ITi
 
 	public void outputEnergy(int amount)
 	{
-		for(Direction fd : Direction.VALUES)
+		for(Direction fd : DirectionUtils.VALUES)
 		{
 			IEnergyStorage forSide = energyWrappers.get(fd).getNullable();
 			if(forSide!=null)
