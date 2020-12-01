@@ -69,10 +69,6 @@ public class EngineersBlueprintItem extends IEBaseItem
 			else
 				list.add(new TranslationTextComponent(Lib.DESC_INFO+"blueprint.creates0"));
 		}
-		if (ItemNBTHelper.getBoolean(stack, BlueprintCopyRecipe.IS_COPY_RESULT))
-		{
-			list.add(new TranslationTextComponent(Lib.DESC_INFO+"blueprint.copy").func_230530_a_(Style.EMPTY.setItalic(true)));
-		}
 	}
 
 

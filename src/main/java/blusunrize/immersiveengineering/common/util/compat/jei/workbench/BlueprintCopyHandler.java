@@ -71,7 +71,6 @@ public class BlueprintCopyHandler implements ICraftingCategoryExtension
 		// Use two blueprints in the output, to more clearly show it copies the blueprint.
 		ItemStack output = recipe.getRecipeOutput().copy();
 		output.setCount(2);
-		output.setTagInfo(BlueprintCopyRecipe.IS_COPY_RESULT, ByteNBT.valueOf(true));
 		ingredients.setOutput(VanillaTypes.ITEM, output);
 	}
 
