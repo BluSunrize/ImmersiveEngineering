@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
-import blusunrize.immersiveengineering.common.crafting.BlueprintCopyRecipe;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resources.I18n;
@@ -20,7 +19,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;

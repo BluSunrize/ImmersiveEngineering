@@ -37,25 +37,18 @@ import blusunrize.immersiveengineering.common.util.compat.jei.squeezer.SqueezerR
 import blusunrize.immersiveengineering.common.util.compat.jei.workbench.BlueprintCopyHandler;
 import blusunrize.immersiveengineering.common.util.compat.jei.workbench.WorkbenchRecipeCategory;
 import com.google.common.collect.Collections2;
-import com.google.gson.internal.Streams;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
 import mezz.jei.api.gui.ingredient.ITooltipCallback;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.recipe.IRecipeManager;
 import mezz.jei.api.registration.*;
 import mezz.jei.api.runtime.IJeiRuntime;
-import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.RecipeManager;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @JeiPlugin
 public class JEIHelper implements IModPlugin
