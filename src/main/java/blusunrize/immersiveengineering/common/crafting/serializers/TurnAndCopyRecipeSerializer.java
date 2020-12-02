@@ -9,7 +9,7 @@
 
 package blusunrize.immersiveengineering.common.crafting.serializers;
 
-import blusunrize.immersiveengineering.common.crafting.TurnAndCopyRecipe;
+import blusunrize.immersiveengineering.common.crafting.fluidaware.TurnAndCopyRecipe;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.item.crafting.IRecipeSerializer;

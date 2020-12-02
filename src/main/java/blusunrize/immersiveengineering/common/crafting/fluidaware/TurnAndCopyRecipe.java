@@ -1,15 +1,15 @@
 /*
  * BluSunrize
- * Copyright (c) 2017
+ * Copyright (c) 2020
  *
  * This code is licensed under "Blu's License of Common Sense"
  * Details can be found in the license file in the root folder of this project
+ *
  */
 
-package blusunrize.immersiveengineering.common.crafting;
+package blusunrize.immersiveengineering.common.crafting.fluidaware;
 
-import blusunrize.immersiveengineering.common.crafting.TurnAndCopyRecipe.MatchLocation;
-import blusunrize.immersiveengineering.common.crafting.shaped.IEShapedRecipe;
+import blusunrize.immersiveengineering.common.crafting.fluidaware.TurnAndCopyRecipe.MatchLocation;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import net.minecraft.inventory.CraftingInventory;
@@ -25,7 +25,7 @@ import javax.annotation.Nullable;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-public class TurnAndCopyRecipe extends IEShapedRecipe<MatchLocation>
+public class TurnAndCopyRecipe extends AbstractShapedRecipe<MatchLocation>
 {
 	protected boolean allowQuarter;
 	protected boolean allowEighth;
@@ -91,7 +91,7 @@ public class TurnAndCopyRecipe extends IEShapedRecipe<MatchLocation>
 					{
 						if(!rot.allowed.test(this))
 							continue;
-						MatchLocation loc = new MatchLocation(xOffset, yOffset, mirror, rot);
+						MatchLocation loc = new MatchLocation(xOffset, yOffset, mirror, rot, getWidth(), getHeight());
 						if(checkMatchDo(inv, loc))
 							return loc;
 					}
@@ -105,7 +105,7 @@ public class TurnAndCopyRecipe extends IEShapedRecipe<MatchLocation>
 			{
 				Ingredient target = Ingredient.EMPTY;
 
-				int index = loc.getListIndex(x, y, getWidth(), getHeight());
+				int index = loc.getListIndex(x, y);
 				if(index >= 0)
 					target = getIngredients().get(index);
 
@@ -148,30 +148,36 @@ public class TurnAndCopyRecipe extends IEShapedRecipe<MatchLocation>
 		return nbtCopyPredicate.pattern();
 	}
 
-	public static class MatchLocation implements IMatchLocation
+	public static class MatchLocation implements AbstractFluidAwareRecipe.IMatchLocation
 	{
 		private final int offsetX;
 		private final int offsetY;
 		private final boolean mirrored;
 		private final Rotation rotation;
+		private final int recipeWidth;
+		private final int recipeHeight;
 
-		public MatchLocation(int offsetX, int offsetY, boolean mirrored, Rotation rotation)
+		public MatchLocation(
+				int offsetX, int offsetY, boolean mirrored, Rotation rotation, int recipeWidth, int recipeHeight
+		)
 		{
 			this.offsetX = offsetX;
 			this.offsetY = offsetY;
 			this.mirrored = mirrored;
 			this.rotation = rotation;
+			this.recipeWidth = recipeWidth;
+			this.recipeHeight = recipeHeight;
 		}
 
 		@Override
-		public int getListIndex(int x, int y, int width, int height)
+		public int getListIndex(int x, int y)
 		{
 			x -= offsetX;
 			y -= offsetY;
 			if(mirrored)
-				x = width-1-x;
-			if(rotation.isValid(x, y, width, height))
-				return rotation.getIndex(x, y, width, height);
+				x = recipeWidth-1-x;
+			if(rotation.isValid(x, y, recipeWidth, recipeHeight))
+				return rotation.getIndex(x, y, recipeWidth, recipeHeight);
 			else
 				return -1;
 		}

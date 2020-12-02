@@ -1,23 +1,22 @@
 /*
  * BluSunrize
- * Copyright (c) 2017
+ * Copyright (c) 2020
  *
  * This code is licensed under "Blu's License of Common Sense"
  * Details can be found in the license file in the root folder of this project
+ *
  */
 
-package blusunrize.immersiveengineering.common.crafting;
+package blusunrize.immersiveengineering.common.data.recipebuilder;
 
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.data.ShapedRecipeBuilder;
-import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 
-import javax.annotation.Nullable;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
@@ -77,17 +76,16 @@ public class TurnAndCopyRecipeBuilder extends ShapedRecipeBuilder
 		super.build(dummyConsumer, id);
 	}
 
-	public static class TurnAndCopyResult implements IFinishedRecipe
+	public static class TurnAndCopyResult extends WrappedFinishedRecipe
 	{
-		final IFinishedRecipe base;
-		final boolean allowQuarterTurn;
-		final boolean allowEighthTurn;
-		final int[] nbtCopyTargetSlot;
-		final Pattern nbtCopyPredicate;
+		private final boolean allowQuarterTurn;
+		private final boolean allowEighthTurn;
+		private final int[] nbtCopyTargetSlot;
+		private final Pattern nbtCopyPredicate;
 
 		public TurnAndCopyResult(IFinishedRecipe base, boolean allowQuarterTurn, boolean allowEighthTurn, int[] nbtCopyTargetSlot, Pattern nbtCopyPredicate)
 		{
-			this.base = base;
+			super(base, RecipeSerializers.TURN_AND_COPY_SERIALIZER);
 			this.allowQuarterTurn = allowQuarterTurn;
 			this.allowEighthTurn = allowEighthTurn;
 			this.nbtCopyTargetSlot = nbtCopyTargetSlot;
@@ -97,7 +95,7 @@ public class TurnAndCopyRecipeBuilder extends ShapedRecipeBuilder
 		@Override
 		public void serialize(JsonObject json)
 		{
-			base.serialize(json);
+			super.serialize(json);
 			if(allowQuarterTurn)
 				json.addProperty("quarter_turn", true);
 			if(allowEighthTurn)
@@ -117,32 +115,6 @@ public class TurnAndCopyRecipeBuilder extends ShapedRecipeBuilder
 				if(nbtCopyPredicate!=null)
 					json.addProperty("copy_nbt_predicate", nbtCopyPredicate.pattern());
 			}
-		}
-
-		@Override
-		public ResourceLocation getID()
-		{
-			return base.getID();
-		}
-
-		@Override
-		public IRecipeSerializer<?> getSerializer()
-		{
-			return RecipeSerializers.TURN_AND_COPY_SERIALIZER.get();
-		}
-
-		@Nullable
-		@Override
-		public JsonObject getAdvancementJson()
-		{
-			return base.getAdvancementJson();
-		}
-
-		@Nullable
-		@Override
-		public ResourceLocation getAdvancementID()
-		{
-			return base.getAdvancementID();
 		}
 	}
 }

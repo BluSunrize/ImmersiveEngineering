@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
+import blusunrize.immersiveengineering.common.crafting.fluidaware.TurnAndCopyRecipe;
 import blusunrize.immersiveengineering.common.items.RevolverItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.inventory.CraftingInventory;

@@ -7,9 +7,9 @@
  *
  */
 
-package blusunrize.immersiveengineering.common.crafting.shaped;
+package blusunrize.immersiveengineering.common.crafting.fluidaware;
 
-import blusunrize.immersiveengineering.common.crafting.shaped.BasicShapedRecipe.MatchLocation;
+import blusunrize.immersiveengineering.common.crafting.fluidaware.BasicShapedRecipe.MatchLocation;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
@@ -19,7 +19,7 @@ import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
 
-public class BasicShapedRecipe extends IEShapedRecipe<MatchLocation>
+public class BasicShapedRecipe extends AbstractShapedRecipe<MatchLocation>
 {
 	public BasicShapedRecipe(ResourceLocation idIn, String groupIn, int recipeWidthIn, int recipeHeightIn, NonNullList<Ingredient> recipeItemsIn, ItemStack recipeOutputIn)
 	{
@@ -65,7 +65,7 @@ public class BasicShapedRecipe extends IEShapedRecipe<MatchLocation>
 			for(int yOffset = 0; yOffset <= inv.getHeight()-this.getHeight(); ++yOffset)
 				for(boolean mirror : BOOLEANS)
 				{
-					MatchLocation loc = new MatchLocation(xOffset, yOffset, mirror);
+					MatchLocation loc = new MatchLocation(xOffset, yOffset, mirror, getWidth());
 					if(this.checkMatch(inv, loc))
 						return loc;
 				}
@@ -73,28 +73,30 @@ public class BasicShapedRecipe extends IEShapedRecipe<MatchLocation>
 		return null;
 	}
 
-	public static class MatchLocation implements IEShapedRecipe.IMatchLocation
+	public static class MatchLocation implements AbstractFluidAwareRecipe.IMatchLocation
 	{
 		private final int xOffset;
 		private final int yOffset;
 		private final boolean mirrored;
+		private final int recipeWidth;
 
-		private MatchLocation(int x, int y, boolean mirrored)
+		private MatchLocation(int x, int y, boolean mirrored, int recipeWidth)
 		{
 			this.xOffset = x;
 			this.yOffset = y;
 			this.mirrored = mirrored;
+			this.recipeWidth = recipeWidth;
 		}
 
 		@Override
-		public int getListIndex(int x, int y, int width, int height)
+		public int getListIndex(int x, int y)
 		{
 			int localX = x-xOffset;
 			int localY = y-yOffset;
 			if(mirrored)
-				return width-localX-1+localY*width;
+				return recipeWidth-localX-1+localY*recipeWidth;
 			else
-				return localX+localY*width;
+				return localX+localY*recipeWidth;
 		}
 	}
 }
