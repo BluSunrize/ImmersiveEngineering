@@ -99,7 +99,7 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 		double range = getRange();
 		if(targetId!=null)
 		{
-			AxisAlignedBB validBox = new AxisAlignedBB(0, 0, 0, 1, 1, 1).offset(pos).grow(range);
+			AxisAlignedBB validBox = VoxelShapes.fullCube().getBoundingBox().offset(pos).grow(range);
 			List<LivingEntity> entities = world.getEntitiesWithinAABB(LivingEntity.class, validBox);
 			for(LivingEntity entity : entities)
 				if(entity.getUniqueID().equals(targetId)&&isValidTarget(entity, true))

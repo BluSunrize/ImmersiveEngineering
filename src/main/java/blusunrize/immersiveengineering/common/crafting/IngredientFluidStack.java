@@ -112,10 +112,8 @@ public class IngredientFluidStack extends Ingredient
 		{
 			IFluidHandlerItem handler = handlerOpt.get();
 			fluidTagInput.extractFrom(handler);
-			//TODO somehow handle failure to extract?
 			return handler.getContainer();
 		}
-		//TODO throw XCP if not present?
 		return input;
 	}
 }
