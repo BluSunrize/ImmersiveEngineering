@@ -168,20 +168,24 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 				if(!world.isAirBlock(targetBlock))
 				{
 					BlockState state = world.getBlockState(targetBlock);
-					AxisAlignedBB blockBounds = state.getShape(world, targetBlock).getBoundingBox();
-					if(getFacing()==Direction.UP)
-						tL = targetBlock.getY()-getPos().getY()+blockBounds.maxY;
-					else if(getFacing()==Direction.DOWN)
-						tL = targetBlock.getY()-getPos().getY()+blockBounds.minY;
-					else if(getFacing()==Direction.NORTH)
-						tL = targetBlock.getZ()-getPos().getZ()+blockBounds.minZ;
-					else if(getFacing()==Direction.SOUTH)
-						tL = targetBlock.getZ()-getPos().getZ()+blockBounds.maxZ;
-					else if(getFacing()==Direction.WEST)
-						tL = targetBlock.getX()-getPos().getX()+blockBounds.minX;
-					else
-						tL = targetBlock.getX()-getPos().getX()+blockBounds.maxX;
-					targetFound = true;
+					VoxelShape shape = state.getShape(world, targetBlock);
+					if(!shape.isEmpty())
+					{
+						AxisAlignedBB blockBounds = shape.getBoundingBox();
+						if(getFacing()==Direction.UP)
+							tL = targetBlock.getY()-getPos().getY()+blockBounds.maxY;
+						else if(getFacing()==Direction.DOWN)
+							tL = targetBlock.getY()-getPos().getY()+blockBounds.minY;
+						else if(getFacing()==Direction.NORTH)
+							tL = targetBlock.getZ()-getPos().getZ()+blockBounds.minZ;
+						else if(getFacing()==Direction.SOUTH)
+							tL = targetBlock.getZ()-getPos().getZ()+blockBounds.maxZ;
+						else if(getFacing()==Direction.WEST)
+							tL = targetBlock.getX()-getPos().getX()+blockBounds.minX;
+						else
+							tL = targetBlock.getX()-getPos().getX()+blockBounds.maxX;
+						targetFound = true;
+					}
 				}
 				else
 				{

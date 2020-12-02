@@ -29,7 +29,7 @@ public class RevolverAssemblyRecipe extends TurnAndCopyRecipe
 
 	@Nonnull
 	@Override
-	public ItemStack getCraftingResult(CraftingInventory matrix)
+	public ItemStack getCraftingResult(@Nonnull CraftingInventory matrix)
 	{
 		if(nbtCopyTargetSlot!=null)
 		{

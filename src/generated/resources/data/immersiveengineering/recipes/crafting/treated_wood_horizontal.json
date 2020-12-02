@@ -8,9 +8,7 @@
   "key": {
     "w": {
       "tag": "minecraft:planks"
-    }
-  },
-  "fluidKey": {
+    },
     "b": {
       "tag": "forge:creosote",
       "amount": 1000,

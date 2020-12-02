@@ -10,6 +10,7 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.utils.ItemUtils;
+import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -25,6 +26,8 @@ import net.minecraft.tags.TagCollectionManager;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
@@ -169,5 +172,23 @@ public class FluidTagInput implements Predicate<FluidStack>
 	private static ITagCollection<Fluid> getTagCollection()
 	{
 		return TagCollectionManager.getManager().getFluidTags();
+	}
+
+	public boolean extractFrom(IFluidHandler handler)
+	{
+		int remaining = amount;
+		for(int tank = 0; tank < handler.getTanks(); tank++)
+		{
+			FluidStack inTank = handler.getFluidInTank(tank);
+			if(testIgnoringAmount(inTank))
+			{
+				int extractAmount = Math.min(inTank.getAmount(), remaining);
+				FluidStack extractStack = Utils.copyFluidStackWithAmount(inTank, extractAmount, false);
+				remaining -= handler.drain(extractStack, FluidAction.EXECUTE).getAmount();
+				if(remaining <= 0)
+					return true;
+			}
+		}
+		return false;
 	}
 }

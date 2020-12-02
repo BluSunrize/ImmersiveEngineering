@@ -71,7 +71,7 @@ public class RevolverAssemblyRecipeSerializer extends ForgeRegistryEntry<IRecipe
 	@Override
 	public void write(@Nonnull PacketBuffer buffer, @Nonnull RevolverAssemblyRecipe recipe)
 	{
-		IRecipeSerializer.CRAFTING_SHAPED.write(buffer, recipe);
+		IRecipeSerializer.CRAFTING_SHAPED.write(buffer, recipe.toVanilla());
 		buffer.writeBoolean(recipe.isQuarterTurn());
 		buffer.writeBoolean(recipe.isEightTurn());
 		int[] copying = recipe.getCopyTargets();

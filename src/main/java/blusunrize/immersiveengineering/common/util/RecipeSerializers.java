@@ -73,8 +73,8 @@ public class RecipeSerializers
 	public static final RegistryObject<DamageToolRecipeSerializer> DAMAGE_TOOL_SERIALIZER = RECIPE_SERIALIZERS.register(
 			"damage_tool", DamageToolRecipeSerializer::new
 	);
-	public static final RegistryObject<ShapedFluidInputRecipeSerializer> SHAPED_FLUID_SERIALIZER = RECIPE_SERIALIZERS.register(
-			"shaped_fluid", ShapedFluidInputRecipeSerializer::new
+	public static final RegistryObject<IEShapedRecipeSerializer> IE_SHAPED_SERIALIZER = RECIPE_SERIALIZERS.register(
+			"shaped_fluid", IEShapedRecipeSerializer::new
 	);
 
 	static

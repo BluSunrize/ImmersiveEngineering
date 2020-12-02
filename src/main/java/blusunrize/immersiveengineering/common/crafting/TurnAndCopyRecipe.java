@@ -8,37 +8,29 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
-import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
+import blusunrize.immersiveengineering.common.crafting.TurnAndCopyRecipe.MatchLocation;
+import blusunrize.immersiveengineering.common.crafting.shaped.IEShapedRecipe;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
-import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapedRecipe;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-public class TurnAndCopyRecipe extends ShapedRecipe
+public class TurnAndCopyRecipe extends IEShapedRecipe<MatchLocation>
 {
-	protected NonNullList<Ingredient> ingredientsQuarterTurn;
-	protected NonNullList<Ingredient> ingredientsEighthTurn;
+	protected boolean allowQuarter;
+	protected boolean allowEighth;
 	protected int[] nbtCopyTargetSlot = null;
 	protected Pattern nbtCopyPredicate = null;
-	protected int lastMatch = 0;
-	protected int lastStartX = 0;
-	protected int lastStartY = 0;
 
 	public TurnAndCopyRecipe(ResourceLocation id, String group, int width, int height, NonNullList<Ingredient> ingr,
 							 ItemStack output)
@@ -48,27 +40,13 @@ public class TurnAndCopyRecipe extends ShapedRecipe
 
 	public void allowQuarterTurn()
 	{
-		ingredientsQuarterTurn = NonNullList.withSize(getIngredients().size(), Ingredient.EMPTY);
-		int maxH = (getRecipeHeight()-1);
-		for(int h = 0; h < getRecipeHeight(); h++)
-			for(int w = 0; w < getRecipeWidth(); w++)
-				ingredientsQuarterTurn.set(w*getRecipeHeight()+(maxH-h), getIngredients().get(h*getRecipeWidth()+w));
+		allowQuarter = true;
 	}
-
-	private static int[] eighthTurnMap = {3, -1, -1, 3, 0, -3, 1, 1, -3};
 
 	public void allowEighthTurn()
 	{
-		if(getRecipeWidth()!=3||getRecipeHeight()!=3)//Recipe won't allow 8th turn when not a 3x3 square
-			return;
-		ingredientsEighthTurn = NonNullList.withSize(getIngredients().size(), Ingredient.EMPTY);
-		int maxH = (getRecipeHeight()-1);
-		for(int h = 0; h < getRecipeHeight(); h++)
-			for(int w = 0; w < getRecipeWidth(); w++)
-			{
-				int i = h*getRecipeWidth()+w;
-				ingredientsEighthTurn.set(i+eighthTurnMap[i], getIngredients().get(i));
-			}
+		if(getWidth()==3&&getHeight()==3)//Recipe won't allow 8th turn when not a 3x3 square
+			allowEighth = true;
 	}
 
 	public void setNBTCopyTargetRecipe(int... slot)
@@ -83,7 +61,7 @@ public class TurnAndCopyRecipe extends ShapedRecipe
 
 	@Nonnull
 	@Override
-	public ItemStack getCraftingResult(CraftingInventory matrix)
+	public ItemStack getCraftingResult(@Nonnull CraftingInventory matrix)
 	{
 		if(nbtCopyTargetSlot!=null)
 		{
@@ -102,88 +80,34 @@ public class TurnAndCopyRecipe extends ShapedRecipe
 			return super.getCraftingResult(matrix);
 	}
 
-	@Nonnull
+	@Nullable
 	@Override
-	public NonNullList<ItemStack> getRemainingItems(CraftingInventory inv)
+	protected MatchLocation findMatch(CraftingInventory inv)
 	{
-		NonNullList<ItemStack> remains = NonNullList.withSize(inv.getSizeInventory(), ItemStack.EMPTY);
-		for(int yy = 0; yy < this.getRecipeHeight(); yy++)
-			for(int xx = 0; xx < this.getRecipeWidth(); xx++)
-			{
-				int i = this.getRecipeWidth()*yy+xx;
-				int transposedI = inv.getWidth()*(yy+lastStartY)+(xx+lastStartX);
-				ItemStack s = inv.getStackInSlot(transposedI);
-				NonNullList<Ingredient> matchedIngr = lastMatch==1?ingredientsQuarterTurn: lastMatch==2?ingredientsEighthTurn: this.getIngredients();
-				if(matchedIngr.get(i) instanceof IngredientFluidStack)
-				{
-					LazyOptional<IFluidHandlerItem> handlerLazy = FluidUtil.getFluidHandler(s.getCount() > 1?Utils.copyStackWithAmount(s, 1): s);
-					handlerLazy.ifPresent(handler ->
+		for(int xOffset = 0; xOffset <= inv.getWidth()-this.getWidth(); ++xOffset)
+			for(int yOffset = 0; yOffset <= inv.getHeight()-this.getHeight(); ++yOffset)
+				for(boolean mirror : BOOLEANS)
+					for(Rotation rot : Rotation.values())
 					{
-						FluidTagInput fluid = ((IngredientFluidStack)matchedIngr.get(i)).getFluidTagInput();
-						handler.drain(fluid.getAmount(), FluidAction.EXECUTE);
-						remains.set(transposedI, handler.getContainer().copy());
-					});
-					if(!handlerLazy.isPresent())
-						remains.set(transposedI, ForgeHooks.getContainerItem(s));
-				}
-				else
-					remains.set(transposedI, ForgeHooks.getContainerItem(s));
-			}
-		return remains;
+						if(!rot.allowed.test(this))
+							continue;
+						MatchLocation loc = new MatchLocation(xOffset, yOffset, mirror, rot);
+						if(checkMatchDo(inv, loc))
+							return loc;
+					}
+		return null;
 	}
 
-	@Override
-	public boolean checkMatch(CraftingInventory inv, int startX, int startY, boolean mirror)
-	{
-		if(checkMatchDo(inv, getIngredients(), startX, startY, mirror, false))
-		{
-			lastMatch = 0;
-			lastStartX = startX;
-			lastStartY = startY;
-			return true;
-		}
-		else if(ingredientsQuarterTurn!=null&&checkMatchDo(inv, ingredientsQuarterTurn, startX, startY, mirror, true))
-		{
-			lastMatch = 1;
-			lastStartX = startX;
-			lastStartY = startY;
-			return true;
-		}
-		else if(ingredientsEighthTurn!=null&&checkMatchDo(inv, ingredientsEighthTurn, startX, startY, mirror, false))
-		{
-			lastMatch = 2;
-			lastStartX = startX;
-			lastStartY = startY;
-			return true;
-		}
-		return false;
-	}
-
-	private boolean checkMatchDo(CraftingInventory inv, NonNullList<Ingredient> ingredients, int startX, int startY, boolean mirror, boolean rotate)
+	private boolean checkMatchDo(CraftingInventory inv, MatchLocation loc)
 	{
 		for(int x = 0; x < inv.getWidth(); x++)
 			for(int y = 0; y < inv.getHeight(); y++)
 			{
-				int subX = x-startX;
-				int subY = y-startY;
 				Ingredient target = Ingredient.EMPTY;
 
-				if(!rotate)
-				{
-					if(subX >= 0&&subY >= 0&&subX < getRecipeWidth()&&subY < getRecipeHeight())
-						if(mirror)
-							target = ingredients.get(getRecipeWidth()-subX-1+subY*getRecipeWidth());
-						else
-							target = ingredients.get(subX+subY*getRecipeWidth());
-				}
-				else
-				{
-					if(subX >= 0&&subY >= 0&&subX < getRecipeHeight()&&subY < getRecipeWidth())
-						if(mirror)
-							target = ingredients.get(getRecipeHeight()-subX-1+subY*getRecipeWidth());
-						else
-							target = ingredients.get(subY+subX*getRecipeHeight());
-				}
+				int index = loc.getListIndex(x, y, getWidth(), getHeight());
+				if(index >= 0)
+					target = getIngredients().get(index);
 
 				ItemStack slot = inv.getStackInSlot(x+y*inv.getWidth());
 				if(!target.test(slot))
@@ -201,12 +125,12 @@ public class TurnAndCopyRecipe extends ShapedRecipe
 
 	public boolean isQuarterTurn()
 	{
-		return ingredientsQuarterTurn!=null;
+		return allowQuarter;
 	}
 
 	public boolean isEightTurn()
 	{
-		return ingredientsEighthTurn!=null;
+		return allowEighth;
 	}
 
 	public int[] getCopyTargets()
@@ -222,5 +146,75 @@ public class TurnAndCopyRecipe extends ShapedRecipe
 	public String getBufferPredicate()
 	{
 		return nbtCopyPredicate.pattern();
+	}
+
+	public static class MatchLocation implements IMatchLocation
+	{
+		private final int offsetX;
+		private final int offsetY;
+		private final boolean mirrored;
+		private final Rotation rotation;
+
+		public MatchLocation(int offsetX, int offsetY, boolean mirrored, Rotation rotation)
+		{
+			this.offsetX = offsetX;
+			this.offsetY = offsetY;
+			this.mirrored = mirrored;
+			this.rotation = rotation;
+		}
+
+		@Override
+		public int getListIndex(int x, int y, int width, int height)
+		{
+			x -= offsetX;
+			y -= offsetY;
+			if(mirrored)
+				x = width-1-x;
+			if(rotation.isValid(x, y, width, height))
+				return rotation.getIndex(x, y, width, height);
+			else
+				return -1;
+		}
+	}
+
+	private enum Rotation
+	{
+		NONE(s -> true),
+		QUARTER(TurnAndCopyRecipe::isQuarterTurn),
+		EIGHTH(TurnAndCopyRecipe::isEightTurn);
+
+		private static final int[] eighthTurnMap = {3, -1, -1, 3, 0, -3, 1, 1, -3};
+		private final Predicate<TurnAndCopyRecipe> allowed;
+
+		Rotation(Predicate<TurnAndCopyRecipe> allowed)
+		{
+			this.allowed = allowed;
+		}
+
+		public boolean isValid(int x, int y, int width, int height)
+		{
+			if(this==QUARTER)
+			{
+				int temp = x;
+				x = y;
+				y = temp;
+			}
+			return x >= 0&&x < width&&y >= 0&&y < height;
+		}
+
+		public int getIndex(int x, int y, int width, int height)
+		{
+			switch(this)
+			{
+				case NONE:
+					return y*width+x;
+				case QUARTER:
+					return x*width+((height-1)-y);
+				case EIGHTH:
+					int i = y*width+x;
+					return i+eighthTurnMap[i];
+			}
+			throw new UnsupportedOperationException();
+		}
 	}
 }

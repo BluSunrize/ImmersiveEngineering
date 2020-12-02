@@ -10,14 +10,13 @@ package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.tags.ITag.INamedTag;
 import net.minecraftforge.common.crafting.IIngredientSerializer;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
 import javax.annotation.Nonnull;
@@ -75,8 +74,12 @@ public class IngredientFluidStack extends Ingredient
 	{
 		if(stack==null)
 			return false;
-		else
-			return this.fluidTagInput.test(FluidUtil.getFluidContained(stack).orElse(FluidStack.EMPTY));
+		// Copy the stack here, that allows us to be (more) sure that we can actually extract the required amount (and
+		// won't run into issues where extracting from one tank affects the other one)
+		Optional<IFluidHandlerItem> handler = FluidUtil.getFluidHandler(stack.copy()).resolve();
+		if(!handler.isPresent())
+			return false;
+		return fluidTagInput.extractFrom(handler.get());
 	}
 
 	//TODO this is a bit problematic
@@ -84,14 +87,16 @@ public class IngredientFluidStack extends Ingredient
 	@Override
 	public IIngredientSerializer<? extends Ingredient> getSerializer()
 	{
-		throw new UnsupportedOperationException("IngredientFluidStack is for internal use only!");
+		return IngredientSerializerFluidStack.INSTANCE;
 	}
 
 	@Nonnull
 	@Override
 	public JsonElement serialize()
 	{
-		throw new UnsupportedOperationException("IngredientFluidStack is for internal use only!");
+		JsonObject ret = (JsonObject)this.fluidTagInput.serialize();
+		ret.addProperty("type", IngredientSerializerFluidStack.NAME.toString());
+		return ret;
 	}
 
 	@Override
@@ -106,10 +111,11 @@ public class IngredientFluidStack extends Ingredient
 		if(handlerOpt.isPresent())
 		{
 			IFluidHandlerItem handler = handlerOpt.get();
-			handler.drain(fluidTagInput.getAmount(), FluidAction.EXECUTE);
+			fluidTagInput.extractFrom(handler);
+			//TODO somehow handle failure to extract?
 			return handler.getContainer();
 		}
-		//TODO throw XCP?
+		//TODO throw XCP if not present?
 		return input;
 	}
 }
