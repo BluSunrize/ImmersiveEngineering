@@ -105,7 +105,7 @@ public abstract class AbstractFluidAwareRecipe<MatchLocation extends IMatchLocat
 					final ItemStack item = inv.getStackInSlot(invIndex);
 					ItemStack result = ItemStack.EMPTY;
 					if(ingr instanceof IngredientFluidStack)
-						result = ((IngredientFluidStack)ingr).getExtractedStack(item).copy();
+						result = ((IngredientFluidStack)ingr).getExtractedStack(item.copy());
 					else if(item.hasContainerItem())
 						result = item.getContainerItem();
 					if(result==item)

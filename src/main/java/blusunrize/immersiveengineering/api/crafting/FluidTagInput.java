@@ -182,9 +182,8 @@ public class FluidTagInput implements Predicate<FluidStack>
 			FluidStack inTank = handler.getFluidInTank(tank);
 			if(testIgnoringAmount(inTank))
 			{
-				int extractAmount = Math.min(inTank.getAmount(), remaining);
-				FluidStack extractStack = Utils.copyFluidStackWithAmount(inTank, extractAmount, false);
-				remaining -= handler.drain(extractStack, FluidAction.EXECUTE).getAmount();
+				FluidStack toExtract = Utils.copyFluidStackWithAmount(inTank, remaining, false);
+				remaining -= handler.drain(toExtract, FluidAction.EXECUTE).getAmount();
 				if(remaining <= 0)
 					return true;
 			}
