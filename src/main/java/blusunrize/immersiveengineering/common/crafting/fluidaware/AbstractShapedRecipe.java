@@ -11,17 +11,19 @@ package blusunrize.immersiveengineering.common.crafting.fluidaware;
 
 import blusunrize.immersiveengineering.common.crafting.fluidaware.AbstractFluidAwareRecipe.IMatchLocation;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapedRecipe;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.crafting.IShapedRecipe;
 
 import javax.annotation.Nonnull;
 
 public abstract class AbstractShapedRecipe<MatchLocation extends IMatchLocation>
-		extends AbstractFluidAwareRecipe<MatchLocation>
+		extends AbstractFluidAwareRecipe<MatchLocation> implements IShapedRecipe<CraftingInventory>
 {
 	private final int recipeWidth;
 	private final int recipeHeight;
@@ -60,5 +62,17 @@ public abstract class AbstractShapedRecipe<MatchLocation extends IMatchLocation>
 	public ShapedRecipe toVanilla()
 	{
 		return new ShapedRecipe(getId(), getGroup(), getWidth(), getHeight(), getIngredients(), getRecipeOutput());
+	}
+
+	@Override
+	public int getRecipeWidth()
+	{
+		return recipeWidth;
+	}
+
+	@Override
+	public int getRecipeHeight()
+	{
+		return recipeHeight;
 	}
 }
