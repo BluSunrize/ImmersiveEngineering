@@ -174,18 +174,28 @@ public class FluidTagInput implements Predicate<FluidStack>
 		return TagCollectionManager.getManager().getFluidTags();
 	}
 
-	public boolean extractFrom(IFluidHandler handler)
+	public boolean extractFrom(IFluidHandler handler, FluidAction action)
 	{
-		int remaining = amount;
+		// This is not ideal, but probably the best possible without issues with other mods:
+		// - This does not handle the case where an item contains two separate tanks of matching fluids, neither of
+		// them large enough to fulfill the input, but both combined are sufficient
+		// - However handling that will result in one of two issues in simulation calls:
+		//   - Either it will not detect one tank affecting the other (because it only uses simulation calls)
+		//   - Or we actually drain (EXECUTE), which will break for Endertank-style items even if we run the code on a
+		//     copy of the item stack
 		for(int tank = 0; tank < handler.getTanks(); tank++)
 		{
 			FluidStack inTank = handler.getFluidInTank(tank);
 			if(testIgnoringAmount(inTank))
 			{
-				FluidStack toExtract = Utils.copyFluidStackWithAmount(inTank, remaining, false);
-				remaining -= handler.drain(toExtract, FluidAction.EXECUTE).getAmount();
-				if(remaining <= 0)
+				FluidStack toExtract = Utils.copyFluidStackWithAmount(inTank, this.amount, false);
+				FluidStack extractedSim = handler.drain(toExtract, FluidAction.SIMULATE);
+				if(extractedSim.getAmount() >= this.amount)
+				{
+					if(action!=FluidAction.SIMULATE)
+						handler.drain(toExtract, action);
 					return true;
+				}
 			}
 		}
 		return false;

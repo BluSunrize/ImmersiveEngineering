@@ -1,14 +1,16 @@
 /*
  * BluSunrize
- * Copyright (c) 2017
+ * Copyright (c) 2020
  *
  * This code is licensed under "Blu's License of Common Sense"
  * Details can be found in the license file in the root folder of this project
+ *
  */
 
-package blusunrize.immersiveengineering.common.crafting;
+package blusunrize.immersiveengineering.common.crafting.fluidaware;
 
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
+import blusunrize.immersiveengineering.common.crafting.IngredientSerializerFluidStack;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.fluid.Fluid;
@@ -17,6 +19,7 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.tags.ITag.INamedTag;
 import net.minecraftforge.common.crafting.IIngredientSerializer;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
 import javax.annotation.Nonnull;
@@ -76,13 +79,12 @@ public class IngredientFluidStack extends Ingredient
 			return false;
 		// Copy the stack here, that allows us to be (more) sure that we can actually extract the required amount (and
 		// won't run into issues where extracting from one tank affects the other one)
-		Optional<IFluidHandlerItem> handler = FluidUtil.getFluidHandler(stack.copy()).resolve();
+		Optional<IFluidHandlerItem> handler = FluidUtil.getFluidHandler(stack).resolve();
 		if(!handler.isPresent())
 			return false;
-		return fluidTagInput.extractFrom(handler.get());
+		return fluidTagInput.extractFrom(handler.get(), FluidAction.SIMULATE);
 	}
 
-	//TODO this is a bit problematic
 	@Nonnull
 	@Override
 	public IIngredientSerializer<? extends Ingredient> getSerializer()
@@ -111,7 +113,7 @@ public class IngredientFluidStack extends Ingredient
 		if(handlerOpt.isPresent())
 		{
 			IFluidHandlerItem handler = handlerOpt.get();
-			fluidTagInput.extractFrom(handler);
+			fluidTagInput.extractFrom(handler, FluidAction.EXECUTE);
 			return handler.getContainer();
 		}
 		return input;

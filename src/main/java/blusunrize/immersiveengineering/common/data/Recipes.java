@@ -25,7 +25,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
-import blusunrize.immersiveengineering.common.crafting.IngredientFluidStack;
+import blusunrize.immersiveengineering.common.crafting.fluidaware.IngredientFluidStack;
 import blusunrize.immersiveengineering.common.data.recipebuilder.*;
 import blusunrize.immersiveengineering.common.data.resources.RecipeMetals;
 import blusunrize.immersiveengineering.common.data.resources.RecipeMetals.AlloyProperties;

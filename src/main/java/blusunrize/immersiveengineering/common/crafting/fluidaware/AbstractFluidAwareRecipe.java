@@ -9,7 +9,6 @@
 
 package blusunrize.immersiveengineering.common.crafting.fluidaware;
 
-import blusunrize.immersiveengineering.common.crafting.IngredientFluidStack;
 import blusunrize.immersiveengineering.common.crafting.fluidaware.AbstractFluidAwareRecipe.IMatchLocation;
 import com.google.common.base.Preconditions;
 import net.minecraft.inventory.CraftingInventory;
