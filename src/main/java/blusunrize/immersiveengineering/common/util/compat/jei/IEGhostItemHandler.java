@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.util.compat.jei;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.gui.IEContainerScreen;
 import blusunrize.immersiveengineering.common.gui.IEBaseContainer;
-import blusunrize.immersiveengineering.common.gui.IESlot.Ghost;
+import blusunrize.immersiveengineering.common.gui.IESlot.ItemHandlerGhost;
 import blusunrize.immersiveengineering.common.network.MessageSetGhostSlots;
 import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -32,8 +32,8 @@ public class IEGhostItemHandler implements IGhostIngredientHandler<IEContainerSc
 		{
 			ImmutableList.Builder<Target<I>> builder = ImmutableList.builder();
 			for(Slot s : gui.getContainer().inventorySlots)
-				if(s instanceof Ghost)
-					builder.add((Target<I>)new GhostSlotTarget((Ghost)s, gui));
+				if(s instanceof ItemHandlerGhost)
+					builder.add((Target<I>)new GhostSlotTarget((ItemHandlerGhost)s, gui));
 			return builder.build();
 		}
 		return ImmutableList.of();
@@ -47,13 +47,13 @@ public class IEGhostItemHandler implements IGhostIngredientHandler<IEContainerSc
 
 	private static class GhostSlotTarget implements Target<ItemStack>
 	{
-		final Ghost slot;
-		final IEContainerScreen gui;
+		final ItemHandlerGhost slot;
+		final IEContainerScreen<?> gui;
 		final IEBaseContainer<?> container;
 		Rectangle2d area;
 		int lastGuiLeft, lastGuiTop;
 
-		public GhostSlotTarget(Ghost slot, IEContainerScreen gui)
+		public GhostSlotTarget(ItemHandlerGhost slot, IEContainerScreen<?> gui)
 		{
 			this.slot = slot;
 			this.container = (IEBaseContainer<?>)gui.getContainer();

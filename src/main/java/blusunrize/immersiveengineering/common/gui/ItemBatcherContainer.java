@@ -13,27 +13,25 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
+
+import static blusunrize.immersiveengineering.common.blocks.wooden.ItemBatcherTileEntity.NUM_SLOTS;
 
 public class ItemBatcherContainer extends IEBaseContainer<ItemBatcherTileEntity>
 {
 	public ItemBatcherContainer(int id, PlayerInventory inventoryPlayer, ItemBatcherTileEntity tile)
 	{
 		super(inventoryPlayer, tile, id);
-		for(int i = 0; i < 9; i++)
-			this.addSlot(new IESlot.Ghost(this, this.inv, i, 8+i*18, 30)
-			{
-				@Override
-				public int getSlotStackLimit()
-				{
-					return 64;
-				}
-			});
-		for(int i = 0; i < 9; i++)
-			this.addSlot(new Slot(this.inv, 9+i, 8+i*18, 59));
+		IItemHandler filterItemHandler = new ItemStackHandler(tile.getFilters());
+		for(int i = 0; i < NUM_SLOTS; i++)
+			this.addSlot(new IESlot.ItemHandlerGhost(filterItemHandler, i, 8+i*18, 30));
+		for(int i = 0; i < NUM_SLOTS; i++)
+			this.addSlot(new Slot(this.inv, i, 8+i*18, 59));
 
-		this.slotCount = tile.getInventory().size();
+		this.slotCount = 2*NUM_SLOTS;
 		this.tile = tile;
 
 		for(int i = 0; i < 3; i++)

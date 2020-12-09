@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.network;
 
-import blusunrize.immersiveengineering.common.gui.IESlot.Ghost;
+import blusunrize.immersiveengineering.common.gui.IESlot.ItemHandlerGhost;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap.Entry;
@@ -18,14 +18,13 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 import java.util.function.Supplier;
 
 public class MessageSetGhostSlots implements IMessage
 {
-	private Int2ObjectMap<ItemStack> stacksToSet;
+	private final Int2ObjectMap<ItemStack> stacksToSet;
 
 	public MessageSetGhostSlots(Int2ObjectMap<ItemStack> stacksToSet)
 	{
@@ -60,7 +59,6 @@ public class MessageSetGhostSlots implements IMessage
 		Context ctx = context.get();
 		ServerPlayerEntity player = ctx.getSender();
 		assert player!=null;
-		ServerWorld world = player.getServerWorld();
 		ctx.enqueueWork(() -> {
 			Container container = player.openContainer;
 			if(container!=null)
@@ -70,7 +68,7 @@ public class MessageSetGhostSlots implements IMessage
 					if(slot >= 0&&slot < container.inventorySlots.size())
 					{
 						Slot target = container.inventorySlots.get(slot);
-						if(!(target instanceof Ghost))
+						if(!(target instanceof ItemHandlerGhost))
 						{
 							IELogger.error("Player "+player.getDisplayName()+" tried to set the contents of a non-ghost slot."+
 									"This is either a bug in IE or an attempt at cheating.");

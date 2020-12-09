@@ -45,9 +45,11 @@ import java.util.stream.Collectors;
 public class ItemBatcherTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInventory,
 		IInteractionObjectIE, IStateBasedDirectional
 {
-	private NonNullList<ItemStack> inventory = NonNullList.withSize(27, ItemStack.EMPTY);
+	public static final int NUM_SLOTS = 9;
+	private final NonNullList<ItemStack> filters = NonNullList.withSize(NUM_SLOTS, ItemStack.EMPTY);
+	private final NonNullList<ItemStack> buffers = NonNullList.withSize(NUM_SLOTS, ItemStack.EMPTY);
 	public BatchMode batchMode = BatchMode.ALL;
-	public NonNullList<DyeColor> redstoneColors = NonNullList.withSize(9, DyeColor.WHITE);
+	public NonNullList<DyeColor> redstoneColors = NonNullList.withSize(NUM_SLOTS, DyeColor.WHITE);
 
 	public ItemBatcherTileEntity()
 	{
@@ -72,7 +74,7 @@ public class ItemBatcherTileEntity extends IEBaseTileEntity implements ITickable
 		return placer.isSneaking();
 	}
 
-	private CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntity(this,
+	private final CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntity(this,
 			() -> new DirectionalBlockPos(pos.offset(getFacing()), getFacing().getOpposite()),
 			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 
@@ -84,20 +86,20 @@ public class ItemBatcherTileEntity extends IEBaseTileEntity implements ITickable
 			boolean matched = true;
 			if(this.batchMode==BatchMode.ALL)
 			{
-				for(int slot = 0; slot < 9; slot++)
-					if(!this.inventory.get(slot).isEmpty())
+				for(int slot = 0; slot < NUM_SLOTS; slot++)
+					if(!this.filters.get(slot).isEmpty())
 						matched &= isFilterMatched(slot);
 			}
 			if(matched)
 			{
-				for(int slot = 0; slot < 9; slot++)
+				for(int slot = 0; slot < NUM_SLOTS; slot++)
 				{
-					ItemStack filterStack = this.inventory.get(slot);
+					ItemStack filterStack = this.filters.get(slot);
 					if(filterStack.isEmpty())
 						continue;
 					if(this.batchMode==BatchMode.ALL||isFilterMatched(slot))
 					{
-						ItemStack outStack = inventory.get(slot+9);
+						ItemStack outStack = buffers.get(slot);
 						int outSize = filterStack.getCount();
 						ItemStack stack = Utils.copyStackWithAmount(outStack, outSize);
 						stack = Utils.insertStackIntoInventory(output, stack, false);
@@ -105,7 +107,7 @@ public class ItemBatcherTileEntity extends IEBaseTileEntity implements ITickable
 							outSize -= stack.getCount();
 						outStack.shrink(outSize);
 						if(outStack.getCount() <= 0)
-							this.inventory.set(slot+9, ItemStack.EMPTY);
+							this.buffers.set(slot, ItemStack.EMPTY);
 					}
 				}
 				redstoneCap.ifPresent(RedstoneBundleConnection::markDirty);
@@ -120,15 +122,15 @@ public class ItemBatcherTileEntity extends IEBaseTileEntity implements ITickable
 
 	protected boolean isFilterMatched(int slot)
 	{
-		return ItemStack.areItemsEqualIgnoreDurability(this.inventory.get(slot), this.inventory.get(slot+9))
-				&&this.inventory.get(slot+9).getCount() >= this.inventory.get(slot).getCount();
+		return ItemStack.areItemsEqualIgnoreDurability(this.filters.get(slot), this.buffers.get(slot))
+				&&this.buffers.get(slot).getCount() >= this.filters.get(slot).getCount();
 	}
 
 	protected Set<DyeColor> calculateRedstoneOutputs()
 	{
 		Map<DyeColor, Boolean> map = new EnumMap<>(DyeColor.class);
-		for(int slot = 0; slot < 9; slot++)
-			if(!inventory.get(slot).isEmpty())
+		for(int slot = 0; slot < NUM_SLOTS; slot++)
+			if(!filters.get(slot).isEmpty())
 			{
 				DyeColor dye = redstoneColors.get(slot);
 				Boolean ex = map.get(dye);
@@ -142,13 +144,18 @@ public class ItemBatcherTileEntity extends IEBaseTileEntity implements ITickable
 	{
 		if(!descPacket)
 		{
-			inventory = NonNullList.withSize(18, ItemStack.EMPTY);
-			ItemStackHelper.loadAllItems(nbt, this.inventory);
+			NonNullList<ItemStack> merged = NonNullList.withSize(2*NUM_SLOTS, ItemStack.EMPTY);
+			ItemStackHelper.loadAllItems(nbt, merged);
+			for(int i = 0; i < NUM_SLOTS; ++i)
+			{
+				this.buffers.set(i, merged.get(i+NUM_SLOTS));
+				this.filters.set(i, merged.get(i));
+			}
 		}
 		this.batchMode = BatchMode.values()[nbt.getByte("batchMode")];
 		int[] redstoneConfig = nbt.getIntArray("redstoneColors");
-		if(redstoneConfig.length >= 9)
-			for(int i = 0; i < 9; i++)
+		if(redstoneConfig.length >= NUM_SLOTS)
+			for(int i = 0; i < NUM_SLOTS; i++)
 				this.redstoneColors.set(i, DyeColor.byId(redstoneConfig[i]));
 	}
 
@@ -156,10 +163,18 @@ public class ItemBatcherTileEntity extends IEBaseTileEntity implements ITickable
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		if(!descPacket)
-			ItemStackHelper.saveAllItems(nbt, this.inventory);
+		{
+			NonNullList<ItemStack> merged = NonNullList.withSize(2*NUM_SLOTS, ItemStack.EMPTY);
+			for(int i = 0; i < NUM_SLOTS; ++i)
+			{
+				merged.set(i+NUM_SLOTS, this.buffers.get(i));
+				merged.set(i, this.filters.get(i));
+			}
+			ItemStackHelper.saveAllItems(nbt, merged);
+		}
 		nbt.putByte("batchMode", (byte)this.batchMode.ordinal());
-		int[] redstoneConfig = new int[9];
-		for(int i = 0; i < 9; i++)
+		int[] redstoneConfig = new int[NUM_SLOTS];
+		for(int i = 0; i < NUM_SLOTS; i++)
 			redstoneConfig[i] = this.redstoneColors.get(i).getId();
 		nbt.putIntArray("redstoneColors", redstoneConfig);
 	}
@@ -187,15 +202,13 @@ public class ItemBatcherTileEntity extends IEBaseTileEntity implements ITickable
 	@Override
 	public NonNullList<ItemStack> getInventory()
 	{
-		return inventory;
+		return buffers;
 	}
 
 	@Override
 	public boolean isStackValid(int slot, ItemStack stack)
 	{
-		if(slot >= 9)
-			return ItemStack.areItemsEqualIgnoreDurability(this.inventory.get(slot-9), stack);
-		return true;
+		return ItemStack.areItemsEqualIgnoreDurability(this.filters.get(slot), stack);
 	}
 
 	@Override
@@ -211,11 +224,11 @@ public class ItemBatcherTileEntity extends IEBaseTileEntity implements ITickable
 		redstoneCap.ifPresent(RedstoneBundleConnection::markDirty);
 	}
 
-	private LazyOptional<IItemHandler> insertionCap = registerConstantCap(
-			new IEInventoryHandler(18, this, 0, true, false).blockInsert(0, 1, 2, 3, 4, 5, 6, 7, 8)
+	private final LazyOptional<IItemHandler> insertionCap = registerConstantCap(
+			new IEInventoryHandler(NUM_SLOTS, this, 0, true, false)
 	);
 
-	private LazyOptional<RedstoneBundleConnection> redstoneCap = registerConstantCap(
+	private final LazyOptional<RedstoneBundleConnection> redstoneCap = registerConstantCap(
 			new RedstoneBundleConnection()
 			{
 				@Override
@@ -237,6 +250,11 @@ public class ItemBatcherTileEntity extends IEBaseTileEntity implements ITickable
 		if(capability==CapabilityRedstoneNetwork.REDSTONE_BUNDLE_CONNECTION)
 			return redstoneCap.cast();
 		return super.getCapability(capability, facing);
+	}
+
+	public NonNullList<ItemStack> getFilters()
+	{
+		return filters;
 	}
 
 	public enum BatchMode

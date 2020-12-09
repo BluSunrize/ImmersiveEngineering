@@ -30,7 +30,7 @@ public class SorterContainer extends IEBaseContainer<SorterTileEntity>
 				int x = 4+(side/2)*58+(i < 3?i*18: i > 4?(i-5)*18: i==3?0: 36);
 				int y = 22+(side%2)*76+(i < 3?0: i > 4?36: 18);
 				int id = side*SorterTileEntity.filterSlotsPerSide+i;
-				this.addSlot(new IESlot.Ghost(this, tile.filter, id, x, y));
+				this.addSlot(new IESlot.ItemHandlerGhost(tile.filter, id, x, y));
 			}
 		slotCount = 6*SorterTileEntity.filterSlotsPerSide;
 

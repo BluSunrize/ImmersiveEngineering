@@ -48,7 +48,7 @@ public class IEBaseContainer<T extends TileEntity> extends Container
 	public ItemStack slotClick(int id, int dragType, ClickType clickType, PlayerEntity player)
 	{
 		Slot slot = id < 0?null: this.inventorySlots.get(id);
-		if(!(slot instanceof IESlot.Ghost))
+		if(!(slot instanceof IESlot.ItemHandlerGhost))
 			return super.slotClick(id, dragType, clickType, player);
 		//Spooky Ghost Slots!!!!
 		ItemStack stack = ItemStack.EMPTY;
