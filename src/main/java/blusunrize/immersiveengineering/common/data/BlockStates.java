@@ -36,7 +36,6 @@ import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
 import blusunrize.immersiveengineering.common.data.models.LoadedModelBuilder;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.fluids.IEFluid;
-import blusunrize.immersiveengineering.mixin.accessors.client.RenderTypeAccess;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -47,6 +46,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.FenceBlock;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.block.StairsBlock;
+import net.minecraft.client.renderer.RenderState;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.item.DyeColor;
@@ -65,6 +65,7 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
@@ -1208,7 +1209,7 @@ public class BlockStates extends BlockStateProvider
 			List<Property<?>> additional, RenderType... layers)
 	{
 		final List<String> layersList = Arrays.stream(layers)
-				.map(rt -> ((RenderTypeAccess)rt).getName())
+				.map(this::getName)
 				.collect(Collectors.toList());
 		createConnector(b, s -> {
 			Pair<ResourceLocation, JsonObject> m = model.apply(s);
@@ -1222,9 +1223,25 @@ public class BlockStates extends BlockStateProvider
 			List<Property<?>> additional, RenderType... layers)
 	{
 		final List<String> layersList = Arrays.stream(layers)
-				.map(rt -> ((RenderTypeAccess)rt).getName())
+				.map(this::getName)
 				.collect(Collectors.toList());
 		createConnector(b, s -> forConnectorModel(s, model.apply(s), layersList, textures.apply(s)), additional, layers);
+	}
+
+	private String getName(RenderState state)
+	{
+		//TODO clean up/speed up
+		try
+		{
+			// Datagen should only ever run in a deobf environment, so no need to use unreadable SRG names here
+			// This is a workaround for the fact that client-side Mixins are not applied in datagen
+			Field f = RenderState.class.getDeclaredField("name");
+			f.setAccessible(true);
+			return (String)f.get(state);
+		} catch(Exception e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 
 	private void createConnector(
@@ -1258,9 +1275,6 @@ public class BlockStates extends BlockStateProvider
 				b+" does not have "+facingProp);
 		VariantBlockStateBuilder builder = getVariantBuilder(b);
 		forEachState(builder.partialState(), additional, map -> {
-			final List<String> layersList = Arrays.stream(layers)
-					.map(r -> ((RenderTypeAccess)r).getName())
-					.collect(Collectors.toList());
 			if(facingProp!=null)
 			{
 				for(Direction d : facingProp.getAllowedValues())

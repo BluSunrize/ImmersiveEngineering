@@ -7,7 +7,7 @@
  *
  */
 
-package blusunrize.immersiveengineering.common.crafting.serializers;
+package blusunrize.immersiveengineering.common.data.recipebuilder;
 
 import blusunrize.immersiveengineering.common.crafting.GeneratedListRecipe;
 import com.google.common.base.Preconditions;

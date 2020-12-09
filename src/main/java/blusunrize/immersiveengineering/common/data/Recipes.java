@@ -25,11 +25,8 @@ import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
-import blusunrize.immersiveengineering.common.crafting.HammerCrushingRecipeBuilder;
-import blusunrize.immersiveengineering.common.crafting.IngredientFluidStack;
-import blusunrize.immersiveengineering.common.crafting.RevolverAssemblyRecipeBuilder;
-import blusunrize.immersiveengineering.common.crafting.TurnAndCopyRecipeBuilder;
-import blusunrize.immersiveengineering.common.crafting.serializers.GeneratedListRecipeBuilder;
+import blusunrize.immersiveengineering.common.crafting.fluidaware.IngredientFluidStack;
+import blusunrize.immersiveengineering.common.data.recipebuilder.*;
 import blusunrize.immersiveengineering.common.data.resources.RecipeMetals;
 import blusunrize.immersiveengineering.common.data.resources.RecipeMetals.AlloyProperties;
 import blusunrize.immersiveengineering.common.data.resources.RecipeOres;
@@ -1209,7 +1206,7 @@ public class Recipes extends RecipeProvider
 				.addCriterion("has_"+toPath(WoodenDecoration.treatedFence), hasItem(WoodenDecoration.treatedFence))
 				.build(out, toRL(toPath(WoodenDecoration.treatedPost)));
 
-		ShapedRecipeBuilder.shapedRecipe(WoodenDecoration.treatedWood.get(TreatedWoodStyles.HORIZONTAL), 8)
+		FluidAwareShapedRecipeBuilder.builder(WoodenDecoration.treatedWood.get(TreatedWoodStyles.HORIZONTAL), 8)
 				.patternLine("www")
 				.patternLine("wbw")
 				.patternLine("www")
@@ -2323,7 +2320,7 @@ public class Recipes extends RecipeProvider
 				.key('c', Ingredients.componentIron)
 				.addCriterion("has_drill", hasItem(Tools.drill))
 				.build(out, toRL(toPath(Misc.toolUpgrades.get(ToolUpgrade.DRILL_WATERPROOF))));
-		ShapedRecipeBuilder.shapedRecipe(Misc.toolUpgrades.get(ToolUpgrade.DRILL_LUBE))
+		FluidAwareShapedRecipeBuilder.builder(Misc.toolUpgrades.get(ToolUpgrade.DRILL_LUBE))
 				.patternLine("bi ")
 				.patternLine("ibi")
 				.patternLine(" ic")
@@ -2526,7 +2523,7 @@ public class Recipes extends RecipeProvider
 
 	private void recipesVanilla(@Nonnull Consumer<IFinishedRecipe> out)
 	{
-		ShapedRecipeBuilder.shapedRecipe(Items.TORCH, 12)
+		FluidAwareShapedRecipeBuilder.builder(Items.TORCH, 12)
 				.patternLine("wc ")
 				.patternLine("sss")
 				.key('w', ItemTags.WOOL)
@@ -2546,7 +2543,7 @@ public class Recipes extends RecipeProvider
 				.addIngredient(Items.CHARCOAL)
 				.addCriterion("has_sulfur", hasItem(IETags.sulfurDust))
 				.build(out, toRL("gunpowder_from_dusts"));
-		ShapelessRecipeBuilder.shapelessRecipe(Items.PAPER, 2)
+		FluidAwareShapelessRecipeBuilder.builder(Items.PAPER, 2)
 				.addIngredient(Ingredient.fromTag(IETags.sawdust), 4)
 				.addIngredient(new IngredientFluidStack(FluidTags.WATER, FluidAttributes.BUCKET_VOLUME))
 				.addCriterion("has_sawdust", hasItem(IETags.sawdust))
