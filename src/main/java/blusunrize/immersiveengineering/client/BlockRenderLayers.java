@@ -39,11 +39,12 @@ public class BlockRenderLayers
 	{
 		RenderTypeLookup.setRenderLayer(StoneDecoration.insulatingGlass, RenderType.getTranslucent());
 		RenderTypeLookup.setRenderLayer(StoneDecoration.concreteSprayed, RenderType.getCutout());
-		for(Block b : IEContent.registeredIEBlocks)
-			if(b instanceof ConnectorBlock)
-				RenderTypeLookup.setRenderLayer(b, RenderType.getSolid());
 		RenderTypeLookup.setRenderLayer(
 				Connectors.getEnergyConnector(WireType.HV_CATEGORY, true),
+				rt -> rt==RenderType.getSolid()||rt==RenderType.getTranslucent()
+		);
+		RenderTypeLookup.setRenderLayer(
+				MetalDevices.floodlight,
 				rt -> rt==RenderType.getSolid()||rt==RenderType.getTranslucent()
 		);
 
