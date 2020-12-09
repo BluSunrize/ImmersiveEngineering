@@ -38,6 +38,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -237,7 +238,7 @@ public class ModWorkbenchTileEntity extends IEBaseTileEntity implements IIEInven
 	}
 
 	@Override
-	public BlockPos getModelOffset(BlockState state)
+	public BlockPos getModelOffset(BlockState state, @Nullable Vector3i size)
 	{
 		if(isDummy())
 			return DUMMY_POS;

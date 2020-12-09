@@ -362,7 +362,7 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 	}
 
 	@Override
-	public BlockPos getModelOffset(BlockState state)
+	public BlockPos getModelOffset(BlockState state, @Nullable Vector3i size)
 	{
 		if(isDummy())
 			return BlockPos.ZERO;

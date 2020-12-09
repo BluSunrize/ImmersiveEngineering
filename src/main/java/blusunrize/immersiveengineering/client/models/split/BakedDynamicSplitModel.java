@@ -11,10 +11,6 @@ package blusunrize.immersiveengineering.client.models.split;
 
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.client.ICacheKeyProvider;
-import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
-import blusunrize.immersiveengineering.client.models.CompositeBakedModel;
-import blusunrize.immersiveengineering.client.utils.CombinedModelData;
-import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
@@ -22,11 +18,9 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.IModelTransform;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3i;
-import net.minecraft.world.IBlockDisplayReader;
 import net.minecraftforge.client.model.data.IModelData;
 
 import javax.annotation.Nonnull;
@@ -38,7 +32,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-public class BakedDynamicSplitModel<K, T extends ICacheKeyProvider<K> & IBakedModel> extends CompositeBakedModel<T>
+public class BakedDynamicSplitModel<K, T extends ICacheKeyProvider<K> & IBakedModel> extends AbstractSplitModel<T>
 {
 	private final Set<Vector3i> parts;
 	private final IModelTransform transform;
@@ -47,9 +41,9 @@ public class BakedDynamicSplitModel<K, T extends ICacheKeyProvider<K> & IBakedMo
 			.expireAfterAccess(1, TimeUnit.MINUTES)
 			.build();
 
-	public BakedDynamicSplitModel(T base, Set<Vector3i> parts, IModelTransform transform)
+	public BakedDynamicSplitModel(T base, Set<Vector3i> parts, IModelTransform transform, Vector3i size)
 	{
-		super(base);
+		super(base, size);
 		this.parts = parts;
 		this.transform = transform;
 	}
@@ -71,40 +65,12 @@ public class BakedDynamicSplitModel<K, T extends ICacheKeyProvider<K> & IBakedMo
 					key,
 					() -> {
 						List<BakedQuad> baseQuads = base.getQuads(state, side, rand, extraData);
-						return BakedBasicSplitModel.split(baseQuads, parts, transform);
+						return split(baseQuads, parts, transform);
 					}
 			).getOrDefault(offset, ImmutableList.of());
 		} catch(ExecutionException e)
 		{
 			throw new RuntimeException(e);
 		}
-	}
-
-	@Nonnull
-	@Override
-	public IModelData getModelData(
-			@Nonnull IBlockDisplayReader world,
-			@Nonnull BlockPos pos,
-			@Nonnull BlockState state,
-			@Nonnull IModelData tileData
-	)
-	{
-		IModelData baseData = super.getModelData(world, pos, state, tileData);
-		TileEntity te = world.getTileEntity(pos);
-		BlockPos offset = null;
-		if(te instanceof IModelOffsetProvider)
-			offset = ((IModelOffsetProvider)te).getModelOffset(state);
-		else if(state.getBlock() instanceof IModelOffsetProvider)
-			offset = ((IModelOffsetProvider)state.getBlock()).getModelOffset(state);
-		if(offset!=null)
-			return new CombinedModelData(
-					new SinglePropertyModelData<>(
-							offset,
-							Model.SUBMODEL_OFFSET
-					),
-					baseData
-			);
-		else
-			return baseData;
 	}
 }

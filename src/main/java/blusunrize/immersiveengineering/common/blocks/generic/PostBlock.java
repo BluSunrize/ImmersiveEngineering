@@ -52,6 +52,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.model.data.IModelData;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -398,7 +399,7 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBloc
 
 	@Nonnull
 	@Override
-	public BlockPos getModelOffset(BlockState state)
+	public BlockPos getModelOffset(BlockState state, @Nullable Vector3i size)
 	{
 		HorizontalOffset d = state.get(HORIZONTAL_OFFSET);
 		return new BlockPos(0, state.get(POST_SLAVE), 0).add(d.getOffset());
