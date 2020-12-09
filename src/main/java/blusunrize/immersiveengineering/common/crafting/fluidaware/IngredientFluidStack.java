@@ -77,12 +77,8 @@ public class IngredientFluidStack extends Ingredient
 	{
 		if(stack==null)
 			return false;
-		// Copy the stack here, that allows us to be (more) sure that we can actually extract the required amount (and
-		// won't run into issues where extracting from one tank affects the other one)
 		Optional<IFluidHandlerItem> handler = FluidUtil.getFluidHandler(stack).resolve();
-		if(!handler.isPresent())
-			return false;
-		return fluidTagInput.extractFrom(handler.get(), FluidAction.SIMULATE);
+		return handler.isPresent()&&fluidTagInput.extractFrom(handler.get(), FluidAction.SIMULATE);
 	}
 
 	@Nonnull
