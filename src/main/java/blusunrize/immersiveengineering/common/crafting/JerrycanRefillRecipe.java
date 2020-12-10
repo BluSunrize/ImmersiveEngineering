@@ -100,7 +100,7 @@ public class JerrycanRefillRecipe extends SpecialRecipe
 		NonNullList<ItemStack> remaining = super.getRemainingItems(inv);
 		for(int i = 0; i < inv.getSizeInventory(); i++)
 		{
-			if(FluidUtil.getFluidHandler(inv.getStackInSlot(i))!=null)
+			if(FluidUtil.getFluidHandler(inv.getStackInSlot(i))==null)
 			{
 				remaining.set(i, ItemStack.EMPTY);
 				break;
