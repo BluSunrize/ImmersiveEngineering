@@ -573,7 +573,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 							if(tileEntity instanceof IFluxReceiver)
 								receiver = (IFluxReceiver)tileEntity;
 							side = mop.getFace();
-							if(player.world.getGameTime()%20==0)
+							if(receiver!=null && player.world.getGameTime()%20==0)
 								ImmersiveEngineering.packetHandler.sendToServer(new MessageRequestBlockUpdate(mop.getPos()));
 						}
 						else if(rrt instanceof EntityRayTraceResult&&((EntityRayTraceResult)rrt).getEntity() instanceof IFluxReceiver)
