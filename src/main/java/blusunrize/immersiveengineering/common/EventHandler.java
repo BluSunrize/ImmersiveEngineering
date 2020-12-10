@@ -72,6 +72,7 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fml.network.PacketDistributor;
 import org.apache.commons.lang3.tuple.Pair;
@@ -385,7 +386,7 @@ public class EventHandler
 		if(Utils.isFluidRelatedItemStack(event.getItemStack()))
 			FluidUtil.getFluidContained(event.getItemStack()).ifPresent(fs -> {
 				if(!fs.isEmpty()&&lazy_creosote_tag.get().contains(fs.getFluid()))
-					event.setBurnTime((int)(0.8*fs.getAmount()));
+					event.setBurnTime((int)(0.8*Math.min(fs.getAmount(), FluidAttributes.BUCKET_VOLUME)));
 			});
 	}
 }
