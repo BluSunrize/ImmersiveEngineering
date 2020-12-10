@@ -20,7 +20,7 @@ import java.util.function.Supplier;
 
 public class MessageRequestBlockUpdate implements IMessage
 {
-	private BlockPos pos;
+	private final BlockPos pos;
 
 	public MessageRequestBlockUpdate(BlockPos pos)
 	{

@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.CapabilitySkyhookData.SimpleSkyhookProvider;
-import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Direct;
@@ -51,9 +50,12 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.SectionPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.ChunkSection;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -77,7 +79,6 @@ import net.minecraftforge.fml.network.PacketDistributor;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
-import java.util.function.Supplier;
 
 public class EventHandler
 {
@@ -199,8 +200,14 @@ public class EventHandler
 				Pair<RegistryKey<World>, BlockPos> curr = it.next();
 				if(curr.getLeft().equals(event.world.getDimensionKey()))
 				{
-					BlockState state = event.world.getBlockState(curr.getRight());
-					event.world.notifyBlockUpdate(curr.getRight(), state, state, 3);
+					Chunk chunk = event.world.getChunkAt(curr.getRight());
+					int sectionId = SectionPos.from(curr.getRight()).getSectionY();
+					ChunkSection[] sections = chunk.getSections();
+					if(sectionId >= 0&&sectionId < sections.length&&sections[sectionId]!=null)
+					{
+						BlockState state = event.world.getBlockState(curr.getRight());
+						event.world.notifyBlockUpdate(curr.getRight(), state, state, 3);
+					}
 					it.remove();
 				}
 			}
