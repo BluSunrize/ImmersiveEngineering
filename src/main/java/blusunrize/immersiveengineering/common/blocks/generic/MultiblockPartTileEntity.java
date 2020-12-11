@@ -26,6 +26,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
+import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -52,7 +53,7 @@ import java.util.Optional;
 import java.util.Set;
 
 public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntity<T>> extends IEBaseTileEntity
-		implements ITickableTileEntity, IDirectionalTile, IGeneralMultiblock, IScrewdriverInteraction, IMirrorAble,
+		implements ITickableTileEntity, IStateBasedDirectional, IGeneralMultiblock, IScrewdriverInteraction, IMirrorAble,
 		IModelOffsetProvider
 {
 	public boolean formed = false;
@@ -78,19 +79,18 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 		this.hasRedstoneControl = hasRSControl;
 	}
 
+	// This fixes compile errors with subclasses also extending IConveyorAttachable, as that also defines getFacing
+	@Nonnull
 	@Override
 	public Direction getFacing()
 	{
-		BlockState state = getBlockState();
-		return state.get(IEProperties.FACING_HORIZONTAL);
+		return IStateBasedDirectional.super.getFacing();
 	}
 
 	@Override
-	public void setFacing(Direction facing)
+	public EnumProperty<Direction> getFacingProperty()
 	{
-		BlockState oldState = getWorldNonnull().getBlockState(pos);
-		BlockState newState = oldState.with(IEProperties.FACING_HORIZONTAL, facing);
-		getWorldNonnull().setBlockState(pos, newState);
+		return IEProperties.FACING_HORIZONTAL;
 	}
 
 	@Override
