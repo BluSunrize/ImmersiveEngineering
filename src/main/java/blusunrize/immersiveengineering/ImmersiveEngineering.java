@@ -221,26 +221,6 @@ public class ImmersiveEngineering
 		IECompatModule.doModulesLoadComplete();
 	}
 
-	private static final String[] alternativeCerts = {
-			"7e11c175d1e24007afec7498a1616bef0000027d",// malte0811
-			"MavenKeyHere"//TODO maven
-	};
-
-	/*
-	//TODO This has been removed in some forge versions. Apparently cpw is making something better soon?
-	public void wrongSignature(FMLFingerprintViolationEvent event)
-	{
-		System.out.println("[Immersive Engineering/Error] THIS IS NOT AN OFFICIAL BUILD OF IMMERSIVE ENGINEERING! Found these fingerprints: "+event.getFingerprints());
-		for(String altCert : alternativeCerts)
-			if(event.getFingerprints().contains(altCert))
-			{
-				System.out.println("[Immersive Engineering/Error] "+altCert+" is considered an alternative certificate (which may be ok to use in some cases). "+
-						"If you thought this was an official build you probably shouldn't use it.");
-				break;
-			}
-	}
-	*/
-
 	public void serverStarting(FMLServerStartingEvent event)
 	{
 		proxy.serverStarting();
