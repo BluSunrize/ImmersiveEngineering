@@ -105,18 +105,12 @@ public class Tree<NT extends Comparable<NT>, LT extends Comparable<LT>>
 	{
 		private final List<AbstractNode<NT, LT>> children = new ArrayList<>();
 
-		private final Comparator<AbstractNode<NT, LT>> compare = (n1, n2) -> {
-			if(n1.isLeaf()&&!n2.isLeaf())
-				return 1;
-			else if(!n1.isLeaf()&&n2.isLeaf())
-				return -1;
-			else if(n1.weight!=n2.weight)
-				return Double.compare(n1.getWeight(), n2.getWeight());
-			else if(n1.isLeaf())
-				return n1.getLeafData().compareTo(n2.getLeafData());
-			else
-				return n1.getNodeData().compareTo(n2.getNodeData());
-		};
+		private final Comparator<AbstractNode<NT, LT>> compare =
+				Comparator.<AbstractNode<NT, LT>, Boolean>comparing(AbstractNode::isLeaf)
+						.thenComparingDouble(AbstractNode::getWeight)
+						//Nulls should be irrelevant (either both or neither are null)
+						.thenComparing(AbstractNode::getNodeData, Comparator.nullsFirst(Comparator.naturalOrder()))
+						.thenComparing(AbstractNode::getLeafData, Comparator.nullsFirst(Comparator.naturalOrder()));
 		private final NT data;
 
 		InnerNode(NT data, @Nullable InnerNode<NT, LT> superNode, DoubleSupplier weight)
