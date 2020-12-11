@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.utils.CombinedModelData;
 import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.collect.ImmutableList;
@@ -98,7 +99,11 @@ public class ModelConveyor extends BakedIEModel
 			if(extraData.hasProperty(Model.CONVEYOR))
 				conveyor = extraData.getData(Model.CONVEYOR);
 			if(extraData.hasProperty(Model.TILEENTITY_PASSTHROUGH))
+			{
 				tile = extraData.getData(Model.TILEENTITY_PASSTHROUGH);
+				if(tile instanceof IDirectionalTile)
+					facing = ((IDirectionalTile)tile).getFacing();
+			}
 			if(conveyor==null)
 				conveyor = ConveyorHandler.getConveyor(new ResourceLocation(key), tile);
 			if(conveyor!=null&&tile!=null)
