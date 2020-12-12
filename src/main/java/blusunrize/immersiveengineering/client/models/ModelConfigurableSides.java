@@ -127,7 +127,6 @@ public class ModelConfigurableSides extends BakedIEModel
 		ModelKey key = new ModelKey(name, config);
 		try
 		{
-			modelCache.invalidateAll();
 			return modelCache.get(key, () -> {
 				Map<Direction, TextureAtlasSprite> tex = new EnumMap<>(Direction.class);
 				for(Direction d : DirectionUtils.VALUES)

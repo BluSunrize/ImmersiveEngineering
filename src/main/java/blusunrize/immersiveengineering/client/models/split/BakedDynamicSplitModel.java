@@ -60,7 +60,6 @@ public class BakedDynamicSplitModel<K, T extends ICacheKeyProvider<K> & IBakedMo
 			return ImmutableList.of();
 		try
 		{
-			subModelCache.invalidateAll();
 			return subModelCache.get(
 					key,
 					() -> {
