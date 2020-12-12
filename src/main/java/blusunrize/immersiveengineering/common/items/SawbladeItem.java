@@ -39,6 +39,12 @@ public class SawbladeItem extends IEBaseItem
 		return false;
 	}
 
+	@Override
+	public boolean isBookEnchantable(ItemStack stack, ItemStack book)
+	{
+		return false;
+	}
+
 	public ResourceLocation getSawbladeTexture()
 	{
 		return null;
