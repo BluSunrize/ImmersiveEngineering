@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirectio
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorTile;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.TrapDoorBlock;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -21,6 +20,9 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.IBooleanFunction;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
@@ -34,6 +36,10 @@ import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 public class DropConveyor extends BasicConveyor
 {
 	public static final ResourceLocation NAME = new ResourceLocation(MODID, "dropper");
+	/// Items will be spawned when this space is empty in the block below:
+	private static final VoxelShape REQUIRED_SPACE = VoxelShapes.create(0.25, 0.75, 0.25, 0.75, 1.0, 0.75);
+	private VoxelShape cachedDownShape = VoxelShapes.empty();
+	private boolean cachedOpenBelow = true;
 
 	public DropConveyor(TileEntity tile)
 	{
@@ -84,14 +90,20 @@ public class DropConveyor extends BasicConveyor
 
 	boolean isEmptySpace(World world, BlockPos pos, TileEntity tile)
 	{
-		if(world.isAirBlock(pos))
-			return true;
+		// Special case conveyors, so items can be dropped through covered ones.
 		if(tile instanceof IConveyorTile)
 			return true;
 		BlockState state = world.getBlockState(pos);
-		if(state.getBlock() instanceof TrapDoorBlock)
-			return state.get(TrapDoorBlock.OPEN);
-		return false;
+		VoxelShape shape = state.getCollisionShape(world, pos);
+		// Combining voxelshapes is a little expensive, so only calculate
+		// when the voxelshape changes. Identity compare is sufficent since they're
+		// usually precomputed.
+		if (shape != cachedDownShape)
+		{
+			cachedOpenBelow = !VoxelShapes.compare(REQUIRED_SPACE, shape, IBooleanFunction.AND);
+			cachedDownShape = shape;
+		}
+		return cachedOpenBelow;
 	}
 
 	public static ResourceLocation texture_on = new ResourceLocation("immersiveengineering:block/conveyor/dropper");
