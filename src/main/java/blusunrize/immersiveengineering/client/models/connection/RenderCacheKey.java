@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.client.models.connection;
 
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.mixin.accessors.client.RenderTypeAccess;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.RenderType;
@@ -70,7 +71,7 @@ public class RenderCacheKey
 	@Override
 	public int hashCode()
 	{
-		int val = layer==null?0: layer.toString().hashCode();
+		int val = layer==null?0: ((RenderTypeAccess)layer).getName().hashCode();
 		final int prime = 31;
 		val = prime*val+Utils.hashBlockstate(state);
 		val = prime*val+Arrays.hashCode(additionalProperties);
