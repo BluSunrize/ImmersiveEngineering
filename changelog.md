@@ -1,3 +1,26 @@
+##### Version 1.16.4-4.1.1-pre
+ - Re-added client side commands to clear render caches and reset the manual (Malte)
+ - Replaced JS coremods and access transformers with Mixins (Malte)
+ - Limit creosote-burning in furnaces to buckets to avoid issues with other containers (Malte)
+ - Fixed issues with crafting recipes involving fluid and tanks from other mods (Malte)
+ - Fixed crashes on login related to multiblock rendering (Malte)
+ - Fixed obscure crash when holding the voltmeter in empty chunk sections (Malte)
+ - Fixed the front part of the floodlight not rendering (Malte)
+ - Fixed missing page in excavator manual entry (Malte)
+ - Fixed some pathfinding issues with MineColonies NPCs (Malte)
+ - Fixed concurrency issues with the manual (Malte)
+ - Fixed connectors and multiblock parts being picked up by Mekanism cardboard boxes (Malte)
+ - Fixed overflow issue with mineral veins far away from the player (Malte)
+ - Fixed item batchers not dropping their contents when broken (Malte)
+ - Fixed a crash with the tesla coil (Malte)
+ - Fixed a bug with conveyor belts and structure blocks (Malte)
+ - Fixed scrolling in the turret GUI (Malte)
+ - Fixed default mineral dimension blacklist in the config (Malte)
+ - Fixed crash related to projectiles fired by turrets (Malte)
+ - Fixed CraftTweaker's `addJSONRecipe` for IE recipes (SkySom)
+ - Fixed buzzsaw not updating its enchantments until a block is broken (Malte)
+ - Many minor performance improvements (Malte)
+
 ##### Version 1.16.4-4.1.1-128
 - First 1.16.4 release
 - Includes the changes from 1.16.3-4.1.1-127
