@@ -38,12 +38,9 @@ import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
-import net.minecraft.tags.ITag;
-import net.minecraft.tags.TagCollectionManager;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
@@ -56,7 +53,6 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkSection;
-import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
@@ -69,12 +65,10 @@ import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteractSpecific;
-import net.minecraftforge.event.furnace.FurnaceFuelBurnTimeEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fml.network.PacketDistributor;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -382,17 +376,5 @@ public class EventHandler
 			if(te instanceof MultiblockPartTileEntity)
 				((MultiblockPartTileEntity)te).onlyLocalDissassembly = event.getWorld().getWorldInfo().getGameTime();
 		}
-	}
-
-	Lazy<ITag<Fluid>> lazy_creosote_tag = Lazy.of(() -> TagCollectionManager.getManager().getFluidTags().get(new ResourceLocation("forge", "creosote")));
-
-	@SubscribeEvent
-	public void onFurnaceBurnTime(FurnaceFuelBurnTimeEvent event)
-	{
-		if(Utils.isFluidRelatedItemStack(event.getItemStack()))
-			FluidUtil.getFluidContained(event.getItemStack()).ifPresent(fs -> {
-				if(!fs.isEmpty()&&lazy_creosote_tag.get().contains(fs.getFluid()))
-					event.setBurnTime((int)(0.8*fs.getAmount()));
-			});
 	}
 }
