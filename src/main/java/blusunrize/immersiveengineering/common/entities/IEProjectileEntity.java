@@ -54,6 +54,7 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 	public int ticksInGround;
 	public int ticksInAir;
 	protected IntSet piercedEntities;
+	@Nullable
 	protected UUID shooterUUID;
 
 	private int tickLimit = 40;
@@ -120,6 +121,7 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 		return s.orElse(null);
 	}
 
+	@Nullable
 	public UUID getShooterUUID()
 	{
 		return shooterUUID;
@@ -403,7 +405,10 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 			stuckIn = null;
 		}
 		this.inGround = nbt.getByte("inGround")==1;
-		this.shooterUUID = nbt.getUniqueId("Owner");
+		if(nbt.contains("Owner"))
+			this.shooterUUID = nbt.getUniqueId("Owner");
+		else
+			this.shooterUUID = null;
 	}
 
 	@Override
