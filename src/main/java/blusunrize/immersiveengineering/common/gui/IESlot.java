@@ -42,6 +42,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
 import javax.annotation.Nonnull;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -175,11 +176,19 @@ public abstract class IESlot extends Slot
 	public static class WithPredicate extends SlotItemHandler
 	{
 		final Predicate<ItemStack> predicate;
+		final Consumer<ItemStack> onChange;
 
 		public WithPredicate(IItemHandler inv, int id, int x, int y, Predicate<ItemStack> predicate)
 		{
+			this(inv, id, x, y, predicate, s -> {
+			});
+		}
+
+		public WithPredicate(IItemHandler inv, int id, int x, int y, Predicate<ItemStack> predicate, Consumer<ItemStack> onChange)
+		{
 			super(inv, id, x, y);
 			this.predicate = predicate;
+			this.onChange = onChange;
 		}
 
 		@Override
@@ -192,6 +201,13 @@ public abstract class IESlot extends Slot
 		public int getSlotStackLimit()
 		{
 			return 1;
+		}
+
+		@Override
+		public void onSlotChanged()
+		{
+			super.onSlotChanged();
+			onChange.accept(getStack());
 		}
 	}
 

@@ -107,7 +107,7 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 {
 	private static final int CAPACITY = 2*FluidAttributes.BUCKET_VOLUME;
 
-	public static Collection<SawbladeItem> sawblades = new ArrayList(2);
+	public static final Collection<SawbladeItem> SAWBLADES = new ArrayList<>(2);
 
 	public BuzzsawItem()
 	{
@@ -191,22 +191,20 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 	{
 		IItemHandler inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)
 				.orElseThrow(RuntimeException::new);
+		final boolean hasQuiver = hasQuiverUpgrade(stack);
+		final int mainHeadX = hasQuiver?88: 98;
+		List<Slot> slots = new ArrayList<>(5);
+		slots.add(new IESlot.WithPredicate(
+				inv, 0, mainHeadX, 22, BuzzsawItem::isSawblade, newBlade -> setSawblade(stack, newBlade)
+		));
+		slots.add(new IESlot.Upgrades(container, inv, 1, 88, 52, "BUZZSAW", stack, true, getWorld, getPlayer));
+		slots.add(new IESlot.Upgrades(container, inv, 2, 108, 52, "BUZZSAW", stack, true, getWorld, getPlayer));
 		if(hasQuiverUpgrade(stack))
-			return new Slot[]
-					{
-							new IESlot.WithPredicate(inv, 0, 88, 22, (itemStack) -> sawblades.contains(itemStack.getItem())),
-							new IESlot.Upgrades(container, inv, 1, 88, 52, "BUZZSAW", stack, true, getWorld, getPlayer),
-							new IESlot.Upgrades(container, inv, 2, 108, 52, "BUZZSAW", stack, true, getWorld, getPlayer),
-							new IESlot.WithPredicate(inv, 3, 108, 12, (itemStack) -> sawblades.contains(itemStack.getItem())),
-							new IESlot.WithPredicate(inv, 4, 108, 32, (itemStack) -> sawblades.contains(itemStack.getItem()))
-					};
-		else
-			return new Slot[]
-					{
-							new IESlot.WithPredicate(inv, 0, 98, 22, (itemStack) -> sawblades.contains(itemStack.getItem())),
-							new IESlot.Upgrades(container, inv, 1, 88, 52, "BUZZSAW", stack, true, getWorld, getPlayer),
-							new IESlot.Upgrades(container, inv, 2, 108, 52, "BUZZSAW", stack, true, getWorld, getPlayer)
-					};
+		{
+			slots.add(new IESlot.WithPredicate(inv, 3, 108, 12, BuzzsawItem::isSawblade));
+			slots.add(new IESlot.WithPredicate(inv, 4, 108, 32, BuzzsawItem::isSawblade));
+		}
+		return slots.toArray(new Slot[0]);
 	}
 
 	@Override
@@ -302,7 +300,7 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 			sawblade = ItemStack.read(ItemNBTHelper.getTagCompound(itemStack, key));
 		else
 			sawblade = cap.orElseThrow(RuntimeException::new).getStackInSlot(slot);
-		return !sawblade.isEmpty()&&sawblades.contains(sawblade.getItem())?sawblade: ItemStack.EMPTY;
+		return !sawblade.isEmpty()&&isSawblade(sawblade)?sawblade: ItemStack.EMPTY;
 	}
 
 	public void setSawblade(ItemStack buzzsaw, ItemStack sawblade)
@@ -839,4 +837,10 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 	{
 		return ((BuzzsawItem)Tools.buzzsaw).getUpgrades(stack).getBoolean("spareblades");
 	}
+
+	public static boolean isSawblade(ItemStack stack)
+	{
+		return SAWBLADES.contains(stack.getItem());
+	}
+
 }
