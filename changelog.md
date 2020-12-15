@@ -1,6 +1,8 @@
 ##### Version 1.16.4-4.1.1-pre
  - Re-added client side commands to clear render caches and reset the manual (Malte)
  - Replaced JS coremods and access transformers with Mixins (Malte)
+ - Changed Dropping Conveyors to be able to drop *into* other blocks, if collision allows (TeamSpen)
+ - Changed Sawblades and Drillheads to not allow enchantments (ConductiveFoam)
  - Limit creosote-burning in furnaces to buckets to avoid issues with other containers (Malte)
  - Fixed issues with crafting recipes involving fluid and tanks from other mods (Malte)
  - Fixed crashes on login related to multiblock rendering (Malte)
