@@ -68,7 +68,12 @@ public class BlockLoot extends LootGenerator
 						ItemLootEntry.builder(WoodenDevices.windmill)
 								.acceptFunction(new WindmillLootFunction.Builder())
 				)));
-		register(WoodenDevices.crate, tileDrop());
+
+		LootEntry.Builder<?> tileOrInv = AlternativesLootEntry.builder(
+				TileDropLootEntry.builder().acceptCondition(SurvivesExplosion.builder()),
+				DropInventoryLootEntry.builder()
+		);
+		register(WoodenDevices.crate, LootPool.builder().addEntry(tileOrInv));
 		register(WoodenDevices.reinforcedCrate, tileDrop());
 		register(StoneDecoration.coresample, tileDrop());
 		register(MetalDevices.toolbox, tileDrop());
