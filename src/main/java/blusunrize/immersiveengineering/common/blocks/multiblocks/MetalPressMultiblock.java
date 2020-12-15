@@ -36,7 +36,8 @@ public class MetalPressMultiblock extends IETemplateMultiblock
 	public MetalPressMultiblock()
 	{
 		super(new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/metal_press"),
-				new BlockPos(1, 1, 0), new BlockPos(1, 1, 0), () -> Multiblocks.metalPress.getDefaultState());
+				new BlockPos(1, 1, 0), new BlockPos(1, 1, 0), new BlockPos(3, 3, 1),
+				() -> Multiblocks.metalPress.getDefaultState());
 	}
 
 	@Override

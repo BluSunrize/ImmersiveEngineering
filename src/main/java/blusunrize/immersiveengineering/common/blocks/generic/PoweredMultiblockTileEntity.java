@@ -116,23 +116,8 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 			nbt.putByte("computerOn", (byte)2);
 	}
 
-	ArrayDeque<R> lastCachedRecipes = new ArrayDeque(5);
-
 	@Nullable
 	protected abstract R getRecipeForId(ResourceLocation id);
-	//{
-//		for(R recipe : lastCachedRecipes)
-//			if(id.equals(recipe.getId()))
-//				return recipe;
-//		Optional<R> opt = (Optional<R>)this.world.getRecipeManager().getRecipe(id);
-//		if(!opt.isPresent())
-//			return null;
-//		R recipe = opt.get();
-//		if(lastCachedRecipes.size()==5)
-//			lastCachedRecipes.pop();
-//		lastCachedRecipes.add(recipe);
-//		return recipe;
-//	}
 
 	@Nullable
 	protected MultiblockProcess<R> loadProcessFromNBT(CompoundNBT tag)
