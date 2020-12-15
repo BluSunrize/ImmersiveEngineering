@@ -24,6 +24,7 @@ import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.config.IECommonConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.crafting.IngredientSerializers;
+import blusunrize.immersiveengineering.common.crafting.RecipeCachingReloadListener;
 import blusunrize.immersiveengineering.common.crafting.RecipeReloadListener;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
@@ -51,6 +52,7 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -100,6 +102,7 @@ public class ImmersiveEngineering
 		MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
 		MinecraftForge.EVENT_BUS.addListener(this::registerCommands);
 		MinecraftForge.EVENT_BUS.addListener(this::addReloadListeners);
+		MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::addReloadListenersLowest);
 		MinecraftForge.EVENT_BUS.addListener(this::serverStarted);
 		RecipeSerializers.RECIPE_SERIALIZERS.register(FMLJavaModLoadingContext.get().getModEventBus());
 		Villages.Registers.POINTS_OF_INTEREST.register(FMLJavaModLoadingContext.get().getModEventBus());
@@ -259,6 +262,11 @@ public class ImmersiveEngineering
 	{
 		DataPackRegistries dataPackRegistries = event.getDataPackRegistries();
 		event.addListener(new RecipeReloadListener(dataPackRegistries));
+	}
+
+	public void addReloadListenersLowest(AddReloadListenerEvent event)
+	{
+		event.addListener(new RecipeCachingReloadListener(event.getDataPackRegistries()));
 	}
 
 	public void serverStarted(FMLServerStartedEvent event)
