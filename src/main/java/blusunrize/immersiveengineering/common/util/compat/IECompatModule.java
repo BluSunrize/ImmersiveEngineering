@@ -22,56 +22,12 @@ import java.util.Set;
 
 public abstract class IECompatModule
 {
-	public static HashMap<String, Class<? extends IECompatModule>> moduleClasses = new HashMap<String, Class<? extends IECompatModule>>();
-	public static Set<IECompatModule> modules = new HashSet<IECompatModule>();
+	public static HashMap<String, Class<? extends IECompatModule>> moduleClasses = new HashMap<>();
+	public static Set<IECompatModule> modules = new HashSet<>();
 
 	static
 	{
-		//moduleClasses.put("actuallyadditions", ActuallyAdditionsHelper.class);
-		//moduleClasses.put("albedo", AlbedoHelper.class);
-		//moduleClasses.put("attaineddrops2", AttainedDropsHelper.class);
-		//moduleClasses.put("baubles", BaublesHelper.class);
-		//moduleClasses.put("betterwithmods", BetterWithModsHelper.class);
-		//moduleClasses.put("bloodmagic", BloodMagicHelper.class);
-		//moduleClasses.put("botania", BotaniaHelper.class);
-		//moduleClasses.put("chisel", ChiselHelper.class);
-		//moduleClasses.put("chiselsandbits", ChiselsAndBitsHelper.class);
-		//moduleClasses.put("cofhcore", CoFHHelper.class);
-		//moduleClasses.put("crafttweaker", CraftTweakerHelper.class);
-		//moduleClasses.put("denseores", DenseOresHelper.class);
-		//moduleClasses.put("enderio", EnderIOHelper.class);
-		//moduleClasses.put("extrautils2", ExtraUtilsHelper.class);
-		//moduleClasses.put("forestry", ForestryHelper.class);
-		//moduleClasses.put("foundry", FoundryHelper.class);
-		//moduleClasses.put("harvestcraft", HarvestcraftHelper.class);
-		//moduleClasses.put("ic2", IC2Helper.class);
-		//moduleClasses.put("inspirations", InspirationsHelper.class);
-		//moduleClasses.put("mysticalagriculture", MysticalAgricultureHelper.class);
-		//moduleClasses.put("opencomputers", OCHelper.class);
-		//moduleClasses.put("theoneprobe", OneProbeHelper.class);
-		//moduleClasses.put("tconstruct", TConstructHelper.class);
-		//moduleClasses.put("thermalfoundation", ThermalFoundationHelper.class);
-		//moduleClasses.put("thaumcraft", ThaumcraftHelper.class);
-		//moduleClasses.put("railcraft", RailcraftHelper.class);
-		//moduleClasses.put("waila", WailaHelper.class);
-//		moduleClasses.put("MineFactoryReloaded", MFRHelper.class);
-//		moduleClasses.put("EE3", EE3Helper.class);
-//		moduleClasses.put("ForgeMicroblock", FMPHelper.class);
-//		moduleClasses.put("Forestry", ForestryHelper.class);
-//		moduleClasses.put("BackTools", BacktoolsHelper.class);
-//		moduleClasses.put("gregtech", GregTechHelper.class);
-//		moduleClasses.put("HydCraft", HydCraftHelper.class);
-//		moduleClasses.put("ThermalExpansion", ThermalExpansionHelper.class);
-//		moduleClasses.put("ThermalDynamics", ThermalDynamicsHelper.class);
-//		moduleClasses.put("harvestcraft", HarvestCraftHelper.class);
-//		moduleClasses.put("CarpentersBlocks", CarpentersHelper.class);
-//		moduleClasses.put("etfuturum", EtFuturumHelper.class);
-//		moduleClasses.put("steamcraft2", SteamCraftHelper.class);
-//		moduleClasses.put("ExtraUtilities", ExtraUtilsHelper.class);
-
-//		moduleClasses.put("Mekanism", MekanismHelper.class);
-//		moduleClasses.put("cuttingedge", CuttingEdgeHelper.class);
-//		moduleClasses.put("Avaritia", AvaritiaHelper.class);
+		moduleClasses.put("computercraft", ComputerCraftCompatModule.class);
 	}
 
 	public static void doModulesPreInit()

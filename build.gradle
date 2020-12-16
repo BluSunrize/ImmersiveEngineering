@@ -166,8 +166,8 @@ repositories {
         }
     }
     maven {
-        //gigaherz maven for 1.16.2 mappings
-        url 'https://www.dogforce-games.com/maven/'
+        // CC-Tweaked
+        url 'https://squiddev.cc/maven/'
     }
 }
 
@@ -178,6 +178,7 @@ dependencies {
     //runtimeOnly fg.deobf("nbtedit:NBTEdit:0.9.0")
     compileOnly fg.deobf("mezz.jei:jei-1.16.3:7.6.0.49:api")
     compileOnly fg.deobf('com.feed_the_beast.mods:ftb-gui-library:1.0.0.18')
+    compileOnly fg.deobf("org.squiddev:cc-tweaked-${version_minecraft}:1.94.0")
     compile "malte0811:BlockModelSplitter:1.2.0"
     testImplementation('junit:junit:4.13')
 }
