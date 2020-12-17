@@ -439,7 +439,7 @@ public class Villages
 				int offX = random.nextInt(SEARCH_RADIUS*2)-SEARCH_RADIUS;
 				int offZ = random.nextInt(SEARCH_RADIUS*2)-SEARCH_RADIUS;
 				MineralVein vein = ExcavatorHandler.getRandomMineral(world, merchantPos.add(offX, 0, offZ));
-				if(vein!=null&&!veins.contains(vein))
+				if(vein!=null&&vein.getMineral()!=null&&!veins.contains(vein))
 					veins.add(vein);
 			}
 			if(veins.size() > 0)
