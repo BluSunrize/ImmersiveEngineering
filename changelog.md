@@ -3,6 +3,7 @@
  - Replaced JS coremods and access transformers with Mixins (Malte)
  - Changed Dropping Conveyors to be able to drop *into* other blocks, if collision allows (TeamSpen)
  - Changed Sawblades and Drillheads to not allow enchantments (ConductiveFoam)
+ - Changed Sawmill to output a comparator signal based on the integrity of the saw (BluSunrize)
  - Limit creosote-burning in furnaces to buckets to avoid issues with other containers (Malte)
  - Fixed issues with crafting recipes involving fluid and tanks from other mods (Malte)
  - Fixed crashes on login related to multiblock rendering (Malte)
