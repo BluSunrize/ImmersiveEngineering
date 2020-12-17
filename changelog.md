@@ -1,4 +1,4 @@
-##### Version 1.16.4-4.1.1-pre
+##### Version 1.16.4-4.1.2-129
  - Re-added client side commands to clear render caches and reset the manual (Malte)
  - Replaced JS coremods and access transformers with Mixins (Malte)
  - Changed Dropping Conveyors to be able to drop *into* other blocks, if collision allows (TeamSpen)
