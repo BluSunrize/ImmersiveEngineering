@@ -22,6 +22,7 @@
  - Fixed crash related to projectiles fired by turrets (Malte)
  - Fixed CraftTweaker's `addJSONRecipe` for IE recipes (SkySom)
  - Fixed buzzsaw not updating its enchantments until a block is broken (Malte)
+ - Fixed mineral veins crashing on world load (SkySom)
  - Many minor performance improvements (Malte)
 
 ##### Version 1.16.4-4.1.1-128
