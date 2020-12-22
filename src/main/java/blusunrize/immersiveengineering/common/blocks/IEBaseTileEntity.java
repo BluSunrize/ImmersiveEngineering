@@ -9,8 +9,8 @@
 package blusunrize.immersiveengineering.common.blocks;
 
 import blusunrize.immersiveengineering.api.IEProperties.Model;
-import blusunrize.immersiveengineering.client.utils.CombinedModelData;
-import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
+import blusunrize.immersiveengineering.api.utils.client.CombinedModelData;
+import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
@@ -282,7 +282,9 @@ public abstract class IEBaseTileEntity extends TileEntity implements BlockstateP
 	{
 		IModelData base = super.getModelData();
 		if(this instanceof IPropertyPassthrough)
-			return new CombinedModelData(base, new SinglePropertyModelData<>(this, Model.TILEENTITY_PASSTHROUGH));
+			return CombinedModelData.combine(
+					base, new SinglePropertyModelData<>(this, Model.TILEENTITY_PASSTHROUGH)
+			);
 		else
 			return base;
 	}

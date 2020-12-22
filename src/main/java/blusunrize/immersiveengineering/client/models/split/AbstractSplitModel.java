@@ -11,9 +11,9 @@ package blusunrize.immersiveengineering.client.models.split;
 
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
+import blusunrize.immersiveengineering.api.utils.client.CombinedModelData;
+import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
 import blusunrize.immersiveengineering.client.models.CompositeBakedModel;
-import blusunrize.immersiveengineering.client.utils.CombinedModelData;
-import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import malte0811.modelsplitter.ClumpedModel;
 import malte0811.modelsplitter.SplitModel;
 import malte0811.modelsplitter.math.ModelSplitterVec3i;
@@ -63,13 +63,7 @@ public abstract class AbstractSplitModel<T extends IBakedModel> extends Composit
 		else if(state.getBlock() instanceof IModelOffsetProvider)
 			offset = ((IModelOffsetProvider)state.getBlock()).getModelOffset(state, size);
 		if(offset!=null)
-			return new CombinedModelData(
-					new SinglePropertyModelData<>(
-							offset,
-							Model.SUBMODEL_OFFSET
-					),
-					baseData
-			);
+			return CombinedModelData.combine(new SinglePropertyModelData<>(offset, Model.SUBMODEL_OFFSET), baseData);
 		else
 			return baseData;
 	}
