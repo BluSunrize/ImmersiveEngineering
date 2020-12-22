@@ -196,11 +196,10 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 			if(mop.getType()!=Type.ENTITY)
 			{
 				Entity entity = null;
-				List list = this.world.getEntitiesInAABBexcluding(this, this.getBoundingBox().expand(getMotion()).grow(1), Entity::canBeCollidedWith);
+				List<Entity> list = this.world.getEntitiesInAABBexcluding(this, this.getBoundingBox().expand(getMotion()).grow(1), Entity::canBeCollidedWith);
 				double d0 = 0.0D;
-				for(int i = 0; i < list.size(); ++i)
+				for(Entity entity1 : list)
 				{
-					Entity entity1 = (Entity)list.get(i);
 					if(entity1.canBeCollidedWith()&&(!entity1.getUniqueID().equals(this.shooterUUID)||this.ticksInAir > 5))
 					{
 						float f = 0.3F;

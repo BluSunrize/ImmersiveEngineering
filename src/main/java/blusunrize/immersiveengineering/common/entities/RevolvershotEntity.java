@@ -127,7 +127,7 @@ public class RevolvershotEntity extends IEProjectileEntity
 			if(mop instanceof EntityRayTraceResult)
 			{
 				Entity hitEntity = ((EntityRayTraceResult)mop).getEntity();
-				if(headshot&&hitEntity instanceof LivingEntity&&((LivingEntity)hitEntity).isChild()&&((LivingEntity)hitEntity).getHealth() <= 0)
+				if(shooterUUID!=null&&headshot&&hitEntity instanceof LivingEntity&&((LivingEntity)hitEntity).isChild()&&((LivingEntity)hitEntity).getHealth() <= 0)
 				{
 					PlayerEntity shooter = world.getPlayerByUuid(shooterUUID);
 					if(shooter!=null)
@@ -155,7 +155,7 @@ public class RevolvershotEntity extends IEProjectileEntity
 		if(!(mop instanceof EntityRayTraceResult))
 			return;
 		Entity hitEntity = ((EntityRayTraceResult)mop).getEntity();
-		if(bulletElectro&&hitEntity instanceof LivingEntity)
+		if(bulletElectro&&hitEntity instanceof LivingEntity&&shooterUUID!=null)
 		{
 			PlayerEntity shooter = world.getPlayerByUuid(shooterUUID);
 			float percentualDrain = .15f/(bulletType==null?1: bulletType.getProjectileCount(shooter));
