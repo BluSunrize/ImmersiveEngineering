@@ -12,8 +12,8 @@ package blusunrize.immersiveengineering.api.wires;
 import blusunrize.immersiveengineering.api.IEProperties.ConnectionModelData;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.TargetingInfo;
-import blusunrize.immersiveengineering.client.utils.CombinedModelData;
-import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
+import blusunrize.immersiveengineering.api.utils.client.CombinedModelData;
+import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -147,8 +147,9 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 	@Override
 	public IModelData getModelData()
 	{
-		return new CombinedModelData(new SinglePropertyModelData<>(genConnBlockstate(), Model.CONNECTIONS),
-				super.getModelData());
+		return CombinedModelData.combine(
+				new SinglePropertyModelData<>(genConnBlockstate(), Model.CONNECTIONS), super.getModelData()
+		);
 	}
 
 	@Override
