@@ -405,6 +405,12 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBloc
 		return new BlockPos(0, state.get(POST_SLAVE), 0).add(d.getOffset());
 	}
 
+	@Override
+	public int getOpacity(@Nonnull BlockState state, @Nonnull IBlockReader worldIn, @Nonnull BlockPos pos)
+	{
+		return 0;
+	}
+
 	enum HorizontalOffset implements IStringSerializable
 	{
 		NONE,
