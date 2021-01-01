@@ -13,8 +13,6 @@ import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.api.wires.utils.BinaryHeap;
 import blusunrize.immersiveengineering.api.wires.utils.BinaryHeap.HeapEntry;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMaps;
 import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
@@ -34,7 +32,7 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 {
 	public static final ResourceLocation ID = new ResourceLocation(ImmersiveEngineering.MODID, "energy_transfer");
 
-	private final Table<ConnectionPoint, ConnectionPoint, Path> energyPaths = HashBasedTable.create();
+	private final Map<ConnectionPoint, Map<ConnectionPoint, Path>> energyPaths = new HashMap<>();
 	private Object2DoubleOpenHashMap<Connection> transferredNextTick = new Object2DoubleOpenHashMap<>();
 	private Object2DoubleMap<Connection> transferredLastTick = new Object2DoubleOpenHashMap<>();
 	private final Map<ConnectionPoint, EnergyConnector> sources = new HashMap<>();
@@ -131,12 +129,23 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 	@Nullable
 	public Path getPath(ConnectionPoint source, ConnectionPoint sink)
 	{
-		if(!energyPaths.containsRow(source))
+		return getPathsFromSource(source).get(sink);
+	}
+
+	public Map<ConnectionPoint, Path> getPathsFromSource(ConnectionPoint source)
+	{
+		Map<ConnectionPoint, Path> mutableResult = energyPaths.get(source);
+		if(mutableResult==null)
+		{
+			mutableResult = new HashMap<>();
+			Map<ConnectionPoint, Path> finalMutableResult = mutableResult;
 			runDijkstraWithSource(source, p -> {
-				energyPaths.put(source, p.end, p);
+				finalMutableResult.put(p.end, p);
 				return false;
 			});
-		return energyPaths.get(source, sink);
+			energyPaths.put(source, mutableResult);
+		}
+		return Collections.unmodifiableMap(mutableResult);
 	}
 
 	private void updateSourcesAndSinks()
@@ -207,11 +216,12 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 			int available = source.getAvailableEnergy();
 			if(available <= 0)
 				continue;
+			final Map<ConnectionPoint, Path> pathsToSinks = getPathsFromSource(sourceCp);
 			double maxSum = 0;
 			Object2DoubleMap<Path> maxOut = new Object2DoubleOpenHashMap<>();
 			for(Entry<ConnectionPoint, EnergyConnector> sinkEntry : sinks.entrySet())
 			{
-				Path p = getPath(sourceCp, sinkEntry.getKey());
+				Path p = pathsToSinks.get(sinkEntry.getKey());
 				if(p!=null)
 				{
 					EnergyConnector sink = sinkEntry.getValue();
