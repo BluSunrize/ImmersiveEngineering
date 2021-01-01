@@ -52,7 +52,7 @@ import java.util.Set;
 public class SheetmetalTankTileEntity extends MultiblockPartTileEntity<SheetmetalTankTileEntity>
 		implements IBlockOverlayText, IPlayerInteraction, IComparatorOverride, IBlockBounds
 {
-	public FluidTank tank = new FluidTank(150*FluidAttributes.BUCKET_VOLUME);
+	public FluidTank tank = new FluidTank(512*FluidAttributes.BUCKET_VOLUME);
 	private final LayeredComparatorOutput comparatorHelper = new LayeredComparatorOutput(
 			tank.getCapacity(),
 			4,
