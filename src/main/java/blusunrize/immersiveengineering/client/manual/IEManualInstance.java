@@ -34,6 +34,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.regex.Matcher;
 
 public class IEManualInstance extends ManualInstance
 {
@@ -131,7 +132,7 @@ public class IEManualInstance extends ManualInstance
 						result = Utils.toCamelCase(result);
 					break;
 				}
-			s = s.replaceFirst(rep, result);
+			s = s.replaceFirst(rep, Matcher.quoteReplacement(result));
 		}
 
 		return s;
