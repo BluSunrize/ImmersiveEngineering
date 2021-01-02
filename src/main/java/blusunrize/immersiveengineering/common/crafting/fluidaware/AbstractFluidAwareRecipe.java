@@ -98,7 +98,7 @@ public abstract class AbstractFluidAwareRecipe<MatchLocation extends IMatchLocat
 			{
 				final int invIndex = getInventoryIndex(inv, x, y);
 				final int ingrIndex = offset.getListIndex(x, y);
-				if(ingrIndex >= 0)
+				if(ingrIndex >= 0&&ingrIndex < getIngredients().size())
 				{
 					Ingredient ingr = getIngredients().get(ingrIndex);
 					final ItemStack item = inv.getStackInSlot(invIndex);
