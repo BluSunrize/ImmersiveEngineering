@@ -821,15 +821,10 @@ public class IEContent
 		MultiblockHandler.registerMultiblock(IEMultiblocks.EXCAVATOR_DEMO);
 
 		/*BLOCK ITEMS FROM CRATES*/
-		IEApi.forbiddenInCrates.add((stack) -> {
-			if(stack.getItem()==Tools.toolbox)
-				return true;
-			if(stack.getItem()==WoodenDevices.crate.asItem())
-				return true;
-			if(stack.getItem()==WoodenDevices.reinforcedCrate.asItem())
-				return true;
-			return Block.getBlockFromItem(stack.getItem()) instanceof ShulkerBoxBlock;
-		});
+		IEApi.forbiddenInCrates.add(
+				stack -> stack.getItem().isIn(IETags.forbiddenInCrates)||
+						Block.getBlockFromItem(stack.getItem()) instanceof ShulkerBoxBlock
+		);
 
 		FluidPipeTileEntity.initCovers();
 		LocalNetworkHandler.register(EnergyTransferHandler.ID, EnergyTransferHandler::new);
