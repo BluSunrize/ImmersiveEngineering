@@ -30,6 +30,7 @@ public abstract class IECompatModule
 	{
 		moduleClasses.put("computercraft", ComputerCraftCompatModule.class);
 		moduleClasses.put("crafttweaker", CraftTweakerCompatModule.class);
+		moduleClasses.put("theoneprobe", OneProbeCompatModule.class);
 	}
 
 	public static void doModulesPreInit()
