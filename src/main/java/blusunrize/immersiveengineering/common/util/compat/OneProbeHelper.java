@@ -1,6 +1,6 @@
 /*
- * BluSunrize
- * Copyright (c) 2017
+ * BluSunrize, RobustProgram
+ * Copyright (c) 2020
  *
  * This code is licensed under "Blu's License of Common Sense"
  * Details can be found in the license file in the root folder of this project
@@ -14,9 +14,9 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxProvider;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces;
-//import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
+import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.SheetmetalTankTileEntity;
-//import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTeslaCoil;
+import blusunrize.immersiveengineering.common.blocks.metal.TeslaCoilTileEntity;
 import com.google.common.base.Function;
 import mcjty.theoneprobe.Tools;
 import mcjty.theoneprobe.api.*;
@@ -30,39 +30,32 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.world.World;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fml.InterModComms;
 
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
 /**
- * @author BluSunrize - 12.10.2016
+ * @author BluSunrize, Robustprogram - 3.1.2020
  */
 public class OneProbeHelper extends IECompatModule implements Function<ITheOneProbe, Void>
 {
 	@Override
 	public void preInit()
 	{
-		Supplier<Function<ITheOneProbe, Void>> callbackClass = () -> this;
-		InterModComms.sendTo("theoneprobe", "getTheOneProbe", callbackClass);
+		Supplier<Function<ITheOneProbe, Void>> supplier = () -> this;
+		InterModComms.sendTo("theoneprobe", "getTheOneProbe", supplier);
 	}
 
 	@Override
-	public void registerRecipes()
-	{
-	}
+	public void registerRecipes() { }
 
 	@Override
-	public void init()
-	{
-
-	}
+	public void init() { }
 
 	@Override
-	public void postInit()
-	{
-
-	}
+	public void postInit() { }
 
 	@Nullable
 	@Override
@@ -72,9 +65,10 @@ public class OneProbeHelper extends IECompatModule implements Function<ITheOnePr
 		input.registerProvider(energyInfo);
 		input.registerProbeConfigProvider(energyInfo);
 		input.registerProvider(new ProcessProvider());
+		input.registerProvider(new TeslaCoilProvider());
 		input.registerProvider(new SideConfigProvider());
 		input.registerProvider(new FluidInfoProvider());
-//		input.registerBlockDisplayOverride(new MultiblockDisplayOverride());
+		input.registerBlockDisplayOverride(new MultiblockDisplayOverride());
 		return null;
 	}
 
@@ -88,12 +82,19 @@ public class OneProbeHelper extends IECompatModule implements Function<ITheOnePr
 		}
 
 		@Override
-		public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data)
+		public void addProbeInfo(
+			ProbeMode mode,
+			IProbeInfo probeInfo,
+			PlayerEntity player,
+			World world,
+			BlockState blockState,
+			IProbeHitData data
+		)
 		{
-			TileEntity te = world.getTileEntity(data.getPos());
-			if(te instanceof SheetmetalTankTileEntity)
+			TileEntity tileEntity = world.getTileEntity(data.getPos());
+			if(tileEntity instanceof SheetmetalTankTileEntity)
 			{
-				SheetmetalTankTileEntity master = ((SheetmetalTankTileEntity)te).master();
+				SheetmetalTankTileEntity master = ((SheetmetalTankTileEntity) tileEntity).master();
 				int current = master.tank.getFluidAmount();
 				int max = master.tank.getCapacity();
 
@@ -119,22 +120,29 @@ public class OneProbeHelper extends IECompatModule implements Function<ITheOnePr
 		}
 
 		@Override
-		public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data)
+		public void addProbeInfo(
+			ProbeMode mode,
+			IProbeInfo probeInfo,
+			PlayerEntity player,
+			World world,
+			BlockState blockState,
+			IProbeHitData data
+		)
 		{
-			TileEntity te = world.getTileEntity(data.getPos());
+			TileEntity tileEntity = world.getTileEntity(data.getPos());
 			int cur = 0;
 			int max = 0;
-			if(te instanceof IFluxReceiver)
+			if (tileEntity instanceof IFluxReceiver)
 			{
-				cur = ((IFluxReceiver)te).getEnergyStored(null);
-				max = ((IFluxReceiver)te).getMaxEnergyStored(null);
+				cur = ((IFluxReceiver) tileEntity).getEnergyStored(null);
+				max = ((IFluxReceiver) tileEntity).getMaxEnergyStored(null);
 			}
-			else if(te instanceof IFluxProvider)
+			else if (tileEntity instanceof IFluxProvider)
 			{
-				cur = ((IFluxProvider)te).getEnergyStored(null);
-				max = ((IFluxProvider)te).getMaxEnergyStored(null);
+				cur = ((IFluxProvider) tileEntity).getEnergyStored(null);
+				max = ((IFluxProvider) tileEntity).getMaxEnergyStored(null);
 			}
-			if(max > 0)
+			if (max > 0)
 			{
 				probeInfo.progress(cur, max,
 						probeInfo.defaultProgressStyle()
@@ -147,16 +155,30 @@ public class OneProbeHelper extends IECompatModule implements Function<ITheOnePr
 		}
 
 		@Override
-		public void getProbeConfig(IProbeConfig config, PlayerEntity player, World world, Entity entity, IProbeHitEntityData data)
+		public void getProbeConfig(
+			IProbeConfig config,
+			PlayerEntity player,
+			World world,
+			Entity entity,
+			IProbeHitEntityData data
+		)
 		{
 		}
 
 		@Override
-		public void getProbeConfig(IProbeConfig config, PlayerEntity player, World world, BlockState blockState, IProbeHitData data)
+		public void getProbeConfig(
+			IProbeConfig config,
+			PlayerEntity player,
+			World world,
+			BlockState blockState,
+			IProbeHitData data
+		)
 		{
-			TileEntity te = world.getTileEntity(data.getPos());
-			if(te instanceof IFluxReceiver||te instanceof IFluxProvider)
-				config.setRFMode(0);
+			TileEntity tileEntity = world.getTileEntity(data.getPos());
+			if(tileEntity instanceof IFluxReceiver||tileEntity instanceof IFluxProvider)
+			{
+				config.setRFMode(0);				
+			}
 		}
 	}
 
@@ -170,24 +192,92 @@ public class OneProbeHelper extends IECompatModule implements Function<ITheOnePr
 		}
 
 		@Override
-		public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data)
+		public void addProbeInfo(
+			ProbeMode mode,
+			IProbeInfo probeInfo,
+			PlayerEntity player,
+			World world,
+			BlockState blockState,
+			IProbeHitData data
+		)
 		{
-			TileEntity te = world.getTileEntity(data.getPos());
-			if(te instanceof IEBlockInterfaces.IProcessTile)
+			TileEntity tileEntity = world.getTileEntity(data.getPos());
+			if(tileEntity instanceof IEBlockInterfaces.IProcessTile)
 			{
-				int[] curTicks = ((IEBlockInterfaces.IProcessTile)te).getCurrentProcessesStep();
-				int[] maxTicks = ((IEBlockInterfaces.IProcessTile)te).getCurrentProcessesMax();
+				int[] curTicks = ((IEBlockInterfaces.IProcessTile) tileEntity).getCurrentProcessesStep();
+				int[] maxTicks = ((IEBlockInterfaces.IProcessTile) tileEntity).getCurrentProcessesMax();
 				int h = Math.max(4, (int)Math.ceil(12/(float)curTicks.length));
+	
 				for(int i = 0; i < curTicks.length; i++)
+				{
 					if(maxTicks[i] > 0)
 					{
-						float f = curTicks[i]/(float)maxTicks[i]*100;
-						probeInfo.progress((int)f, 100, probeInfo.defaultProgressStyle().showText(h >= 10).suffix("%").height(h));
+						float current = curTicks[i]/(float)maxTicks[i]*100;
+						probeInfo.progress(
+							(int)current,
+							100,
+							probeInfo.defaultProgressStyle().showText(h >= 10).suffix("%").height(h)
+						);
 					}
+				}
 			}
 		}
 	}
 
+	public static class TeslaCoilProvider implements IProbeInfoProvider
+	{
+
+		@Override
+		public String getID()
+		{
+			return ImmersiveEngineering.MODID+":"+"TeslaCoilInfo";
+		}
+
+		@Override
+		public void addProbeInfo(
+			ProbeMode mode,
+			IProbeInfo probeInfo,
+			PlayerEntity player,
+			World world,
+			BlockState blockState,
+			IProbeHitData data
+		)
+		{
+			TileEntity tileEntity = world.getTileEntity(data.getPos());
+			
+			if(tileEntity instanceof TeslaCoilTileEntity)
+			{
+				TeslaCoilTileEntity teslaCoil = (TeslaCoilTileEntity) tileEntity;
+				if(teslaCoil.isDummy())
+				{
+					tileEntity = world.getTileEntity(
+							data.getPos().offset(teslaCoil.getFacing(), -1));
+
+					if(tileEntity instanceof TeslaCoilTileEntity)
+					{
+						teslaCoil = (TeslaCoilTileEntity) tileEntity;
+					}
+					else
+					{
+						probeInfo.text(new StringTextComponent("<ERROR>"));
+						return;
+					}
+				}
+
+				probeInfo.text(new TranslationTextComponent(
+					Lib.CHAT_INFO+"rsControl." + 
+					(teslaCoil.redstoneControlInverted?"invertedOn": "invertedOff")
+				));
+
+				probeInfo.text(new TranslationTextComponent(
+					Lib.CHAT_INFO+"tesla." + 
+					(teslaCoil.lowPower?"lowPower": "highPower")
+				));
+
+			}
+		}
+	}
+	
 	public static class SideConfigProvider implements IProbeInfoProvider
 	{
 
@@ -198,7 +288,14 @@ public class OneProbeHelper extends IECompatModule implements Function<ITheOnePr
 		}
 
 		@Override
-		public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data)
+		public void addProbeInfo(
+			ProbeMode mode,
+			IProbeInfo probeInfo,
+			PlayerEntity player,
+			World world,
+			BlockState blockState,
+			IProbeHitData data
+		)
 		{
 			TileEntity te = world.getTileEntity(data.getPos());
 			if(te instanceof IEBlockInterfaces.IConfigurableSides&&data.getSideHit()!=null)
@@ -214,32 +311,39 @@ public class OneProbeHelper extends IECompatModule implements Function<ITheOnePr
 		}
 	}
 
-//	public static class MultiblockDisplayOverride implements IBlockDisplayOverride
-//	{
-//		@Override
-//		public boolean overrideStandardInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data)
-//		{
-//			TileEntity te = world.getTileEntity(data.getPos());
-//			if(te instanceof TileEntityMultiblockPart)
-//			{
-//				ItemStack stack = new ItemStack(blockState.getBlock(), 1, blockState.getBlock().getMetaFromState(blockState));
-//				if(Tools.show(mode, Config.getRealConfig().getShowModName()))
-//				{
-//					probeInfo.horizontal()
-//							.item(stack)
-//							.vertical()
-//							.itemLabel(stack)
-//							.text(TextStyleClass.MODNAME+ImmersiveEngineering.MODNAME);
-//				}
-//				else
-//				{
-//					probeInfo.horizontal(probeInfo.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER))
-//							.item(stack)
-//							.itemLabel(stack);
-//				}
-//				return true;
-//			}
-//			return false;
-//		}
-//	}
+	public static class MultiblockDisplayOverride implements IBlockDisplayOverride
+	{
+		@Override
+		public boolean overrideStandardInfo(
+			ProbeMode mode,
+			IProbeInfo probeInfo,
+			PlayerEntity player,
+			World world,
+			BlockState blockState,
+			IProbeHitData data
+		)
+		{
+			TileEntity te = world.getTileEntity(data.getPos());
+			if(te instanceof MultiblockPartTileEntity)
+			{
+				ItemStack stack = new ItemStack(blockState.getBlock(), 1);
+				if(Tools.show(mode, Config.getRealConfig().getShowModName()))
+				{
+					probeInfo.horizontal()
+							.item(stack)
+							.vertical()
+							.itemLabel(stack)
+							.text(new StringTextComponent(TextStyleClass.MODNAME+ImmersiveEngineering.MODNAME));
+				}
+				else
+				{
+					probeInfo.horizontal(probeInfo.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER))
+							.item(stack)
+							.itemLabel(stack);
+				}
+				return true;
+			}
+			return false;
+		}
+	}
 }
