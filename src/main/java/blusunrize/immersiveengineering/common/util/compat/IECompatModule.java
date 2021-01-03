@@ -28,6 +28,7 @@ public abstract class IECompatModule
 	static
 	{
 		moduleClasses.put("computercraft", ComputerCraftCompatModule.class);
+		moduleClasses.put("theoneprobe", OneProbeHelper.class);
 	}
 
 	public static void doModulesPreInit()
