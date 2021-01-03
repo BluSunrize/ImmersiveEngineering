@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.util.compat;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-//import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
+import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxProvider;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
@@ -26,9 +26,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-//import net.minecraft.util.EnumFacing;
-//import net.minecraft.util.text.translation.I18n;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.world.World;
+import net.minecraft.util.Direction;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.fml.InterModComms;
 
 import javax.annotation.Nullable;
@@ -71,7 +72,7 @@ public class OneProbeHelper extends IECompatModule implements Function<ITheOnePr
 		input.registerProvider(energyInfo);
 		input.registerProbeConfigProvider(energyInfo);
 		input.registerProvider(new ProcessProvider());
-//		input.registerProvider(new SideConfigProvider());
+		input.registerProvider(new SideConfigProvider());
 		input.registerProvider(new FluidInfoProvider());
 //		input.registerBlockDisplayOverride(new MultiblockDisplayOverride());
 		return null;
@@ -187,34 +188,36 @@ public class OneProbeHelper extends IECompatModule implements Function<ITheOnePr
 		}
 	}
 
-//	public static class SideConfigProvider implements IProbeInfoProvider
-//	{
-//
-//		@Override
-//		public String getID()
-//		{
-//			return ImmersiveEngineering.MODID+":"+"SideConfigInfo";
-//		}
-//
-//		@Override
-//		public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world, IBlockState blockState, IProbeHitData data)
-//		{
-//			TileEntity te = world.getTileEntity(data.getPos());
-//			if(te instanceof IEBlockInterfaces.IConfigurableSides&&data.getSideHit()!=null)
-//			{
-//				boolean flip = player.isSneaking();
-//				EnumFacing side = flip?data.getSideHit().getOpposite(): data.getSideHit();
-//				SideConfig sc = ((IEBlockInterfaces.IConfigurableSides)te).getSideConfig(side.getIndex());
-//				String s = I18n.translateToLocal(Lib.DESC_INFO+"blockSide."+(flip?"opposite": "facing"))+": ";
-//				probeInfo.text(s+I18n.translateToLocal(Lib.DESC_INFO+"blockSide.io."+(sc.ordinal()-1)));
-//			}
-//		}
-//	}
-//
+	public static class SideConfigProvider implements IProbeInfoProvider
+	{
+
+		@Override
+		public String getID()
+		{
+			return ImmersiveEngineering.MODID+":"+"SideConfigInfo";
+		}
+
+		@Override
+		public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data)
+		{
+			TileEntity te = world.getTileEntity(data.getPos());
+			if(te instanceof IEBlockInterfaces.IConfigurableSides&&data.getSideHit()!=null)
+			{
+				boolean flip = player.isSneaking();
+				Direction side = flip ? data.getSideHit().getOpposite() : data.getSideHit();
+				IOSideConfig config = ((IEBlockInterfaces.IConfigurableSides)te).getSideConfig(side);
+				
+				String direction = I18n.format(Lib.DESC_INFO+"blockSide." + (flip?"opposite": "facing")) + ": ";
+				String connection = I18n.format(Lib.DESC_INFO+"blockSide.io." + config.getString());
+				probeInfo.text(new StringTextComponent(direction + connection));
+			}
+		}
+	}
+
 //	public static class MultiblockDisplayOverride implements IBlockDisplayOverride
 //	{
 //		@Override
-//		public boolean overrideStandardInfo(ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world, IBlockState blockState, IProbeHitData data)
+//		public boolean overrideStandardInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data)
 //		{
 //			TileEntity te = world.getTileEntity(data.getPos());
 //			if(te instanceof TileEntityMultiblockPart)
