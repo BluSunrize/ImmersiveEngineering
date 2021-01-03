@@ -39,7 +39,7 @@ import java.util.function.Supplier;
 /**
  * @author BluSunrize, Robustprogram - 3.1.2020
  */
-public class OneProbeHelper extends IECompatModule implements Function<ITheOneProbe, Void>
+public class OneProbeCompatModule extends IECompatModule implements Function<ITheOneProbe, Void>
 {
 	@Override
 	public void preInit()
