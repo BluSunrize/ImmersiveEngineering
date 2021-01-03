@@ -26,7 +26,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.world.World;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.StringTextComponent;
@@ -304,9 +303,17 @@ public class OneProbeCompatModule extends IECompatModule implements Function<ITh
 				Direction side = flip ? data.getSideHit().getOpposite() : data.getSideHit();
 				IOSideConfig config = ((IEBlockInterfaces.IConfigurableSides)te).getSideConfig(side);
 				
-				String direction = I18n.format(Lib.DESC_INFO+"blockSide." + (flip?"opposite": "facing")) + ": ";
-				String connection = I18n.format(Lib.DESC_INFO+"blockSide.io." + config.getString());
-				probeInfo.text(new StringTextComponent(direction + connection));
+				StringTextComponent combined = new StringTextComponent("");
+				TranslationTextComponent direction =
+						new TranslationTextComponent(Lib.DESC_INFO+"blockSide." + (flip?"opposite": "facing"));
+				TranslationTextComponent connection = 
+						new TranslationTextComponent(Lib.DESC_INFO+"blockSide.io." + config.getString());
+				
+				combined.append(direction);
+				combined.appendString(": ");
+				combined.append(connection);
+				
+				probeInfo.text(combined);
 			}
 		}
 	}
