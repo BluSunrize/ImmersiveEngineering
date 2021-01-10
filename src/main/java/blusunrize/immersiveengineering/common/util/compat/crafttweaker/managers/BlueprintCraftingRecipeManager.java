@@ -76,8 +76,8 @@ public class BlueprintCraftingRecipeManager implements IRecipeManager
 			{
 				if(!BlueprintCraftingRecipe.recipeCategories.contains(blueprintCategory))
 				{
-					final String format = "Blueprint Category '%s' does not exist yet. You can add it with '<recipetype:immersiveengineering:blueprint>.addBlueprintCategory(\"%s\");'";
-					logger.error(String.format(format, blueprintCategory, blueprintCategory));
+					final String format = "Blueprint Category '%s' does not exist!";
+					logger.error(String.format(format, blueprintCategory));
 					return false;
 				}
 				return true;
