@@ -182,6 +182,8 @@ dependencies {
     compile "malte0811:BlockModelSplitter:1.2.0"
     testImplementation('junit:junit:4.13')
     annotationProcessor 'org.spongepowered:mixin:0.8.2:processor'
+
+    compile fg.deobf(group: "com.blamejared.crafttweaker", name: "CraftTweaker-1.16.4", version: "7.1.0.79")
 }
 
 def customGradle = rootProject.file('custom.gradle');
