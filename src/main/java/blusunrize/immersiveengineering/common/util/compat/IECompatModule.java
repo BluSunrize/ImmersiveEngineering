@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.util.compat;
 
 import blusunrize.immersiveengineering.common.config.IECommonConfig;
 import blusunrize.immersiveengineering.common.util.IELogger;
+import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CraftTweakerCompatModule;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
@@ -28,6 +29,7 @@ public abstract class IECompatModule
 	static
 	{
 		moduleClasses.put("computercraft", ComputerCraftCompatModule.class);
+		moduleClasses.put("crafttweaker", CraftTweakerCompatModule.class);
 	}
 
 	public static void doModulesPreInit()
