@@ -33,7 +33,7 @@ public class OreRetrogenFeature extends OreFeature
 	}
 
 	@Override
-	public boolean func_241855_a(@Nonnull ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, OreFeatureConfig config)
+	public boolean generate(@Nonnull ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, OreFeatureConfig config)
 	{
 		float angle = rand.nextFloat()*(float)Math.PI;
 		float f1 = (float)config.size/8.0F;

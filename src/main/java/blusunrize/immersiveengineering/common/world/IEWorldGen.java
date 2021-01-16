@@ -61,11 +61,11 @@ public class IEWorldGen
 
 	public static void addOreGen(Block block, String name, OreConfig config)
 	{
-		IEOreFeatureConfig cfg = new IEOreFeatureConfig(FillerBlockType.field_241882_a, block.getDefaultState(), config);
+		IEOreFeatureConfig cfg = new IEOreFeatureConfig(FillerBlockType.BASE_STONE_OVERWORLD, block.getDefaultState(), config);
 		ConfiguredFeature<?, ?> feature = register(new ResourceLocation(Lib.MODID, name),
 				IE_CONFIG_ORE.get().withConfiguration(cfg)
 						.withPlacement(IE_RANGE_PLACEMENT.get().configure(new IETopSolidRangeConfig(config)))
-						.func_242728_a/* spreadHorizontally */()
+						.square()
 						.withPlacement(IE_COUNT_PLACEMENT.get().configure(new IEFeatureSpreadConfig(config)))
 		);
 		features.put(name, feature);
@@ -106,15 +106,12 @@ public class IEWorldGen
 			if(config.retrogenEnabled.get())
 			{
 				ConfiguredFeature<?, ?> retroFeature = IEContent.ORE_RETROGEN
-						.withConfiguration(new OreFeatureConfig(FillerBlockType.field_241882_a, state, config.veinSize.get()))
+						.withConfiguration(new OreFeatureConfig(FillerBlockType.BASE_STONE_OVERWORLD, state, config.veinSize.get()))
 						.withPlacement(new IERangePlacement().configure(new IETopSolidRangeConfig(config)))
-						.func_242728_a/* spreadHorizontally */()
+						.square()
 						.withPlacement(new IECountPlacement().configure(new IEFeatureSpreadConfig(config)));
-				retroFeature.func_242765_a(
-						world,
-						world.getChunkProvider().getChunkGenerator(),
-						random,
-						new BlockPos(16*chunkX, 0, 16*chunkZ)
+				retroFeature.generate(
+						world, world.getChunkProvider().getChunkGenerator(), random, new BlockPos(16*chunkX, 0, 16*chunkZ)
 				);
 			}
 		}

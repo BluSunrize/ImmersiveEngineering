@@ -119,7 +119,7 @@ public class IEContent
 	public static IEFluid fluidHerbicide;
 	public static Fluid fluidPotion;
 
-	public static final Feature<OreFeatureConfig> ORE_RETROGEN = new OreRetrogenFeature(OreFeatureConfig.field_236566_a_);
+	public static final Feature<OreFeatureConfig> ORE_RETROGEN = new OreRetrogenFeature(OreFeatureConfig.CODEC);
 
 	public static void modConstruction()
 	{

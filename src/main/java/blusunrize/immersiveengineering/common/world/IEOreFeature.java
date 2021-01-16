@@ -22,6 +22,7 @@ import net.minecraft.world.gen.feature.IFeatureConfig;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
 import net.minecraft.world.gen.feature.template.RuleTest;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Random;
 
@@ -32,10 +33,12 @@ public class IEOreFeature extends Feature<IEOreFeature.IEOreFeatureConfig>
 		super(IEOreFeatureConfig.CODEC);
 	}
 
-	public boolean func_241855_a(ISeedReader world, ChunkGenerator gen, Random rand, BlockPos pos, IEOreFeatureConfig config)
+	@Override
+	public boolean generate(@Nonnull ISeedReader world, @Nonnull ChunkGenerator gen, @Nonnull Random rand,
+							@Nonnull BlockPos pos, IEOreFeatureConfig config)
 	{
 		OreFeatureConfig vanillaConfig = new OreFeatureConfig(config.target, config.state, config.getSize());
-		return Feature.ORE.func_241855_a(world, gen, rand, pos, vanillaConfig);
+		return Feature.ORE.generate(world, gen, rand, pos, vanillaConfig);
 	}
 
 	public static class IEOreFeatureConfig implements IFeatureConfig

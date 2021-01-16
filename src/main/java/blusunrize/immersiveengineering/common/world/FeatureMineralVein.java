@@ -23,6 +23,7 @@ import net.minecraft.world.gen.PerlinNoiseGenerator;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
 
+import javax.annotation.Nonnull;
 import java.util.Random;
 import java.util.stream.IntStream;
 
@@ -35,8 +36,10 @@ class FeatureMineralVein extends Feature<NoFeatureConfig>
 		super(NoFeatureConfig.field_236558_a_);
 	}
 
+
 	@Override
-	public boolean func_241855_a(ISeedReader worldIn, ChunkGenerator p_241855_2_, Random random, BlockPos pos, NoFeatureConfig p_241855_5_)
+	public boolean generate(@Nonnull ISeedReader worldIn, @Nonnull ChunkGenerator generator, @Nonnull Random random,
+							@Nonnull BlockPos pos, @Nonnull NoFeatureConfig config)
 	{
 		if(ExcavatorHandler.noiseGenerator==null)
 			ExcavatorHandler.noiseGenerator = new PerlinNoiseGenerator(
