@@ -6,6 +6,7 @@ import net.minecraft.data.IDataProvider;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class RunCompleteHelper implements IDataProvider
@@ -13,7 +14,9 @@ public class RunCompleteHelper implements IDataProvider
 	@Override
 	public void act(DirectoryCache cache) throws IOException
 	{
-		Files.createFile(Paths.get("ie_data_gen_done"));
+		Path toCreate = Paths.get("ie_data_gen_done");
+		if(!Files.exists(toCreate))
+			Files.createFile(toCreate);
 	}
 
 	@Nonnull

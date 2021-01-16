@@ -37,10 +37,8 @@ public class IEDataGenerator
 			gen.addProvider(new FluidTags(gen, EXISTING_HELPER));
 			gen.addProvider(new BlockLoot(gen));
 			gen.addProvider(new GeneralLoot(gen));
-			LoadedModels loadedModels = new LoadedModels(gen, EXISTING_HELPER);
-			BlockStates blockStates = new BlockStates(gen, EXISTING_HELPER, loadedModels);
+			BlockStates blockStates = new BlockStates(gen, EXISTING_HELPER);
 			gen.addProvider(blockStates);
-			gen.addProvider(loadedModels);
 			gen.addProvider(new ItemModels(gen, EXISTING_HELPER, blockStates));
 			gen.addProvider(new Advancements(gen));
 			gen.addProvider(new TileTags(gen, EXISTING_HELPER));

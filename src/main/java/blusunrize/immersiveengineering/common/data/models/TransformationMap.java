@@ -39,7 +39,7 @@ public class TransformationMap
 		}
 	}
 
-	private final Map<Perspective, TransformationMatrix> transforms = new TreeMap<>();
+	private final Map<Perspective, TransformationMatrix> transforms = new EnumMap<>(Perspective.class);
 
 	public TransformationMap setTransformations(Perspective t, Matrix4 mat)
 	{

@@ -12,12 +12,9 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
 import blusunrize.immersiveengineering.api.wires.WireType;
-import blusunrize.immersiveengineering.client.models.ModelConfigurableSides.Loader;
+import blusunrize.immersiveengineering.client.models.ModelConfigurableSides.Type;
 import blusunrize.immersiveengineering.client.models.ModelConveyor.ConveyorLoader;
-import blusunrize.immersiveengineering.client.models.connection.ConnectionLoader;
 import blusunrize.immersiveengineering.client.models.connection.FeedthroughLoader;
-import blusunrize.immersiveengineering.client.models.multilayer.MultiLayerLoader;
-import blusunrize.immersiveengineering.client.models.obj.IEOBJLoader;
 import blusunrize.immersiveengineering.client.models.split.SplitModelLoader;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
@@ -33,7 +30,7 @@ import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchTileEntity;
 import blusunrize.immersiveengineering.common.blocks.wooden.SawdustBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
-import blusunrize.immersiveengineering.common.data.models.LoadedModelBuilder;
+import blusunrize.immersiveengineering.common.data.models.*;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.fluids.IEFluid;
 import com.google.common.base.Preconditions;
@@ -61,6 +58,7 @@ import net.minecraft.util.math.vector.Vector3i;
 import net.minecraftforge.client.model.generators.*;
 import net.minecraftforge.client.model.generators.ModelFile.ExistingModelFile;
 import net.minecraftforge.client.model.generators.VariantBlockStateBuilder.PartialBlockstate;
+import net.minecraftforge.client.model.generators.loaders.OBJLoaderBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -84,7 +82,6 @@ public class BlockStates extends BlockStateProvider
 	private static final ResourceLocation STEEL_FENCE_TEXTURE = rl("block/metal/storage_steel");
 	private static final ResourceLocation TREATED_FENCE_TEXTURE = rl("block/wooden_decoration/treated_wood_horizontal");
 	private final ConfiguredModel EMPTY_MODEL;
-	private final LoadedModels loadedModels;
 	final Map<Block, ModelFile> itemModels = new HashMap<>();
 	private final ExistingFileHelper existingFileHelper;
 
@@ -95,10 +92,9 @@ public class BlockStates extends BlockStateProvider
 	public ModelFile alloySmelterOff;
 	public ModelFile alloySmelterOn;
 
-	public BlockStates(DataGenerator gen, ExistingFileHelper exHelper, LoadedModels loaded)
+	public BlockStates(DataGenerator gen, ExistingFileHelper exHelper)
 	{
 		super(gen, MODID, exHelper);
-		loadedModels = loaded;
 		this.existingFileHelper = exHelper;
 		EMPTY_MODEL = new ConfiguredModel(
 				new ExistingModelFile(modLoc("block/ie_empty"), existingFileHelper)
@@ -199,10 +195,11 @@ public class BlockStates extends BlockStateProvider
 				.add(new Vector3i(0, 3, 0));
 		for(Direction d : DirectionUtils.BY_HORIZONTAL_INDEX)
 			parts.add(new BlockPos(0, 3, 0).offset(d));
-		LoadedModelBuilder builder = splitModel(
-				name(b), IEOBJLoader.LOADER_NAME, model, texture.toString(), parts.build().stream(), true
+		ModelFile baseModel = ieObj(name(b), model)
+				.texture("texture", texture);
+		BlockModelBuilder builder = splitModel(
+				name(b)+"_split", baseModel, parts.build().stream(), true
 		);
-		builder.texture("texture", texture);
 		getVariantBuilder(b)
 				.partialState()
 				.setModels(new ConfiguredModel(builder));
@@ -211,53 +208,44 @@ public class BlockStates extends BlockStateProvider
 	private ModelFile cubeTwo(String name, ResourceLocation top, ResourceLocation bottom,
 							  ResourceLocation side, ResourceLocation front)
 	{
-		return splitModel(
-				name,
-				forgeLoc("obj"),
-				rl("block/stone_multiblocks/cube_two.obj"),
-				side.toString(),
-				CUBE_TWO.stream(),
-				false
-		)
-				.texture("side", side)
-				.texture("top", top)
-				.texture("bottom", bottom)
-				.texture("front", front);
+		ModelFile baseModel = obj(name, rl("block/stone_multiblocks/cube_two.obj"),
+				ImmutableMap.<String, ResourceLocation>builder()
+						.put("side", side)
+						.put("top", top)
+						.put("bottom", bottom)
+						.put("front", front)
+						.build()
+		);
+		return splitModel(name+"_split", baseModel, CUBE_TWO.stream(), false);
 	}
 
 	private ModelFile cubeThree(String name, ResourceLocation def, ResourceLocation front)
 	{
-		return splitModel(
-				name,
-				forgeLoc("obj"),
-				rl("block/stone_multiblocks/cube_three.obj"),
-				def.toString(),
-				CUBE_THREE.stream(),
-				false
-		)
-				.texture("side", def)
-				.texture("front", front);
+		ModelFile baseModel = obj(name, rl("block/stone_multiblocks/cube_three.obj"),
+				ImmutableMap.of("side", def, "front", front));
+		return splitModel(name+"_split", baseModel, CUBE_THREE.stream(), false);
 	}
 
-	private ModelFile obj(String loc)
+	private BlockModelBuilder obj(String loc)
 	{
 		Preconditions.checkArgument(loc.endsWith(".obj"));
 		return obj(loc.substring(0, loc.length()-4), modLoc(loc));
 	}
 
-	private ModelFile obj(String name, ResourceLocation model)
+	private BlockModelBuilder obj(String name, ResourceLocation model)
 	{
 		return obj(name, model, ImmutableMap.of());
 	}
 
-	private ModelFile obj(String name, ResourceLocation model, Map<String, ResourceLocation> textures)
+	private BlockModelBuilder obj(String name, ResourceLocation model, Map<String, ResourceLocation> textures)
 	{
 		assertModelExists(model);
-		LoadedModelBuilder ret = loadedModels.withExistingParent(name, mcLoc("block"))
-				.loader(forgeLoc("obj"))
-				.additional("detectCullableFaces", false)
-				.additional("model", addModelsPrefix(model))
-				.additional("flip-v", true);
+		BlockModelBuilder ret = models().withExistingParent(name, mcLoc("block"))
+				.customLoader(OBJLoaderBuilder::begin)
+				.detectCullableFaces(false)
+				.modelLocation(addModelsPrefix(model))
+				.flipV(true)
+				.end();
 		String particleTex = DataGenUtils.getTextureFromObj(model, existingFileHelper);
 		if(particleTex.charAt(0)=='#')
 			particleTex = textures.get(particleTex.substring(1)).toString();
@@ -292,12 +280,12 @@ public class BlockStates extends BlockStateProvider
 			.map(BlockPos::toImmutable)
 			.collect(Collectors.toList());
 
-	private LoadedModelBuilder splitOBJ(String loc, TemplateMultiblock mb)
+	private BlockModelBuilder splitOBJ(String loc, TemplateMultiblock mb)
 	{
 		return splitOBJ(loc, mb, false);
 	}
 
-	private LoadedModelBuilder splitOBJ(String loc, TemplateMultiblock mb, boolean mirror)
+	private BlockModelBuilder splitOBJ(String loc, TemplateMultiblock mb, boolean mirror)
 	{
 		UnaryOperator<BlockPos> transform = UnaryOperator.identity();
 		if(mirror)
@@ -308,23 +296,22 @@ public class BlockStates extends BlockStateProvider
 		return splitOBJ(loc, mb, transform);
 	}
 
-	private LoadedModelBuilder splitOBJ(String loc, TemplateMultiblock mb, UnaryOperator<BlockPos> transform)
+	private BlockModelBuilder splitOBJ(String loc, TemplateMultiblock mb, UnaryOperator<BlockPos> transform)
 	{
 		Preconditions.checkArgument(loc.endsWith(".obj"));
 		return splitOBJ(loc.substring(0, loc.length()-4), modLoc(loc), mb, transform);
 	}
 
-	private LoadedModelBuilder splitOBJ(String loc, List<Vector3i> parts)
+	private BlockModelBuilder splitOBJ(String loc, List<Vector3i> parts)
 	{
 		Preconditions.checkArgument(loc.endsWith(".obj"));
 		ResourceLocation modelLoc = modLoc(loc);
-		return splitModel(
-				loc.substring(0, loc.length()-4), forgeLoc("obj"), modelLoc, DataGenUtils.getTextureFromObj(
-						modelLoc, existingFileHelper
-				), parts.stream(), false);
+		String baseName = loc.substring(0, loc.length()-4);
+		ModelFile baseModel = obj(baseName, modelLoc);
+		return splitModel(baseName+"_split", baseModel, parts.stream(), false);
 	}
 
-	private LoadedModelBuilder splitOBJ(
+	private BlockModelBuilder splitOBJ(
 			String name,
 			ResourceLocation model,
 			TemplateMultiblock multiblock,
@@ -338,35 +325,25 @@ public class BlockStates extends BlockStateProvider
 				.map(info -> info.pos)
 				.map(transform)
 				.map(p -> p.subtract(offset));
-		return splitModel(name, forgeLoc("obj"), model, DataGenUtils.getTextureFromObj(
-				model, existingFileHelper
-		), partsStream, false);
+		return splitModel(name+"_split", obj(name, model), partsStream, false);
 	}
 
-	private LoadedModelBuilder splitModel(
+	private BlockModelBuilder splitModel(
 			String name,
-			ResourceLocation loader,
-			ResourceLocation model,
-			String particleTexture,
+			ModelFile model,
 			Stream<Vector3i> parts,
 			boolean dynamic
 	)
 	{
-		assertModelExists(model);
-		LoadedModelBuilder ret = loadedModels.withExistingParent(name, mcLoc("block"))
-				.loader(SplitModelLoader.LOCATION)
-				.additional(SplitModelLoader.BASE_LOADER, loader)
-				.additional(SplitModelLoader.DYNAMIC, dynamic)
-				.additional("detectCullableFaces", false)
-				.additional("model", addModelsPrefix(model))
-				.additional("flip-v", true)
-				.texture("particle", particleTexture);
-		JsonArray partsJson = parts.sorted().collect(POSITIONS_TO_JSON);
-		ret.additional(SplitModelLoader.PARTS, partsJson);
-		return ret;
+		return models().withExistingParent(name, mcLoc("block"))
+				.customLoader(SplitModelBuilder::begin)
+				.innerModel(model)
+				.parts(parts.collect(Collectors.toList()))
+				.dynamic(dynamic)
+				.end();
 	}
 
-	private LoadedModelBuilder splitIEOBJ(String loc, TemplateMultiblock mb, boolean mirror)
+	private BlockModelBuilder splitIEOBJ(String loc, TemplateMultiblock mb, boolean mirror)
 	{
 		UnaryOperator<BlockPos> transform = UnaryOperator.identity();
 		if(mirror)
@@ -384,36 +361,29 @@ public class BlockStates extends BlockStateProvider
 		return splitIEOBJ(loc, partsStream.collect(Collectors.toList()));
 	}
 
-	private LoadedModelBuilder splitIEOBJ(
+	private BlockModelBuilder splitIEOBJ(
 			String model,
 			List<Vector3i> parts
 	)
 	{
 		Preconditions.checkArgument(model.endsWith(".obj.ie"));
 		String name = model.substring(0, model.length()-7);
-		ResourceLocation modelLoc = modLoc(model);
-		return splitModel(
-				name,
-				IEOBJLoader.LOADER_NAME,
-				modelLoc,
-				DataGenUtils.getTextureFromObj(modelLoc, existingFileHelper),
-				parts.stream(),
-				true
-		);
+		return splitModel(name+"_split", ieObj(model), parts.stream(), true);
 	}
 
-	private LoadedModelBuilder ieObj(String loc)
+	private BlockModelBuilder ieObj(String loc)
 	{
 		Preconditions.checkArgument(loc.endsWith(".obj.ie"));
 		return ieObj(loc.substring(0, loc.length()-7), modLoc(loc));
 	}
 
-	private LoadedModelBuilder ieObj(String name, ResourceLocation model)
+	private BlockModelBuilder ieObj(String name, ResourceLocation model)
 	{
-		return loadedModels.withExistingParent(name, mcLoc("block"))
-				.loader(modLoc("ie_obj"))
-				.additional("model", addModelsPrefix(model))
-				.additional("flip-v", true)
+		return models().withExistingParent(name, mcLoc("block"))
+				.customLoader(IEOBJBuilder::begin)
+				.modelLocation(addModelsPrefix(model))
+				.flipV(true)
+				.end()
 				.texture("particle", DataGenUtils.getTextureFromObj(model, existingFileHelper));
 	}
 
@@ -591,11 +561,11 @@ public class BlockStates extends BlockStateProvider
 			ModelFile steelModel = ieObj("block/slope.obj.ie")
 					.texture("texture", modLoc("block/metal_decoration/steel_scaffolding"))
 					.texture("particle", modLoc("block/metal_decoration/steel_scaffolding"))
-					.transforms(modLoc("item/block"));
+					.parent(new ExistingModelFile(mcLoc("block/block"), existingFileHelper));
 			ModelFile aluModel = ieObj("slope_alu", modLoc("block/slope.obj.ie"))
 					.texture("texture", modLoc("block/metal_decoration/aluminum_scaffolding"))
 					.texture("particle", modLoc("block/metal_decoration/aluminum_scaffolding"))
-					.transforms(modLoc("item/block"));
+					.parent(new ExistingModelFile(mcLoc("block/block"), existingFileHelper));
 			createMultistateSingleModel(MetalDecoration.slopeSteel, new ConfiguredModel(steelModel));
 			itemModels.put(MetalDecoration.slopeSteel, steelModel);
 			createMultistateSingleModel(MetalDecoration.slopeAlu, new ConfiguredModel(aluModel));
@@ -636,10 +606,11 @@ public class BlockStates extends BlockStateProvider
 		simpleBlockItem(WoodenDevices.fluidSorter, createRouterModel(rl("block/wooden_device/fluid_sorter"),
 				"fluid_router"));
 		simpleBlockItem(WoodenDevices.woodenBarrel,
-				loadedModels.getBuilder("wooden_devices/barrel")
-						.loader(Loader.NAME)
-						.additional("type", "vertical")
-						.additional("base_name", modLoc("block/wooden_device/barrel"))
+				models().getBuilder("wooden_devices/barrel")
+						.customLoader(SideConfigBuilder::begin)
+						.type(Type.VERTICAL)
+						.baseName(modLoc("block/wooden_device/barrel"))
+						.end()
 		);
 
 		createRotatedBlock(Cloth.curtain,
@@ -654,10 +625,11 @@ public class BlockStates extends BlockStateProvider
 		createMultistateSingleModel(Cloth.shaderBannerWall, EMPTY_MODEL);
 
 		simpleBlockItem(MetalDevices.barrel,
-				loadedModels.getBuilder("metal_devices/barrel")
-						.loader(Loader.NAME)
-						.additional("type", "vertical")
-						.additional("base_name", modLoc("block/metal_device/barrel")));
+				models().getBuilder("metal_devices/barrel")
+						.customLoader(SideConfigBuilder::begin)
+						.type(Type.VERTICAL)
+						.baseName(modLoc("block/metal_device/barrel"))
+						.end());
 
 		for(Entry<Block, String> cap : ImmutableMap.of(
 				MetalDevices.capacitorCreative, "creative",
@@ -666,17 +638,19 @@ public class BlockStates extends BlockStateProvider
 				MetalDevices.capacitorHV, "hv"
 		).entrySet())
 		{
-			ModelFile model = loadedModels.getBuilder("block/metal_device/capacitor_"+cap.getValue())
-					.loader(Loader.NAME)
-					.additional("type", "side_top_bottom")
-					.additional("base_name", modLoc("block/metal_device/capacitor_"+cap.getValue()));
+			ModelFile model = models().getBuilder("block/metal_device/capacitor_"+cap.getValue())
+					.customLoader(SideConfigBuilder::begin)
+					.type(Type.SIDE_TOP_BOTTOM)
+					.baseName(modLoc("block/metal_device/capacitor_"+cap.getValue()))
+					.end();
 			simpleBlockItem(cap.getKey(), model);
 		}
 		{
-			ModelFile model = loadedModels.getBuilder("block/metal_device/fluid_placer")
-					.loader(Loader.NAME)
-					.additional("type", "all_same_texture")
-					.additional("base_name", modLoc("block/metal_device/fluid_placer"));
+			ModelFile model = models().getBuilder("block/metal_device/fluid_placer")
+					.customLoader(SideConfigBuilder::begin)
+					.type(Type.ALL_SAME_TEXTURE)
+					.baseName(modLoc("block/metal_device/fluid_placer"))
+					.end();
 			simpleBlockItem(MetalDevices.fluidPlacer, model);
 		}
 		createMultiblock(
@@ -730,11 +704,12 @@ public class BlockStates extends BlockStateProvider
 			translucent.addProperty("detectCullableFaces", false);
 			translucent.addProperty("flip-v", true);
 			translucent.addProperty("model", modLoc("models/block/metal_device/charging_station_glass.obj").toString());
-			ModelFile full = loadedModels.getBuilder("metal_device/charging_station")
-					.loader(MultiLayerLoader.LOCATION)
-					.additional("solid", solid)
-					.additional("translucent", translucent)
-					.transforms(modLoc("item/block"))
+			ModelFile full = models().getBuilder("metal_device/charging_station")
+					.customLoader(MultiLayerBuilder::begin)
+					.addLayer("solid", solid)
+					.addLayer("translucent", translucent)
+					.end()
+					.parent(new ExistingModelFile(mcLoc("block/block"), existingFileHelper))
 					.texture("particle", DataGenUtils.getTextureFromObj(
 							modLoc("block/metal_device/charging_station.obj"),
 							existingFileHelper
@@ -748,8 +723,9 @@ public class BlockStates extends BlockStateProvider
 		}
 		for(Block b : MetalDevices.CONVEYORS.values())
 			createMultistateSingleModel(b, new ConfiguredModel(
-					loadedModels.getBuilder("metal_device/conveyor")
-							.loader(ConveyorLoader.LOCATION)
+					models().getBuilder("metal_device/conveyor")
+							.customLoader(SpecialModelBuilder.forLoader(ConveyorLoader.LOCATION))
+							.end()
 			));
 		createHemp();
 		simpleBlock(Misc.pottedHemp, models().withExistingParent("potted_hemp", mcLoc("block/flower_pot_cross"))
@@ -765,8 +741,6 @@ public class BlockStates extends BlockStateProvider
 		}
 		createRotatedBlock(MetalDevices.toolbox, state -> obj("block/toolbox.obj"),
 				IEProperties.FACING_HORIZONTAL, ImmutableList.of());
-
-		loadedModels.backupModels();
 	}
 
 	public void turret(Block b, ModelFile masterModel)
@@ -790,15 +764,6 @@ public class BlockStates extends BlockStateProvider
 		itemModels.put(b,
 				models().withExistingParent(b.getRegistryName().getPath()+"_inventory", mcLoc("block/fence_inventory"))
 						.texture("texture", texture));
-	}
-
-	private ModelFile retexture(String name, ResourceLocation baseModel, ImmutableMap<String, ResourceLocation> textures)
-	{
-		LoadedModelBuilder ret = loadedModels.getBuilder(name)
-				.loader(guessLoader(baseModel).get());
-		for(Entry<String, ResourceLocation> e : textures.entrySet())
-			ret.texture(e.getKey(), e.getValue());
-		return ret;
 	}
 
 	private void createConnectors()
@@ -1031,10 +996,11 @@ public class BlockStates extends BlockStateProvider
 		builder.partialState()
 				.with(IEProperties.MULTIBLOCKSLAVE, false)
 				.setModels(new ConfiguredModel(
-						loadedModels.getBuilder("metal_device/pump_bottom")
-								.loader(Loader.NAME)
-								.additional("type", "side_vertical")
-								.additional("base_name", modLoc("block/metal_device/fluid_pump"))
+						models().getBuilder("metal_device/pump_bottom")
+								.customLoader(SideConfigBuilder::begin)
+								.type(Type.SIDE_VERTICAL)
+								.baseName(modLoc("block/metal_device/fluid_pump"))
+								.end()
 				));
 	}
 
@@ -1145,9 +1111,7 @@ public class BlockStates extends BlockStateProvider
 		else
 			parent = new ResourceLocation(ImmersiveEngineering.MODID, "block/ie_ladder");
 		textures.put("ladder", rl("block/metal_decoration/metal_ladder"));
-		LoadedModelBuilder ret = loadedModels.withExistingParent(name, parent);
-		if(bottomTop!=null)
-			ret.transforms(rl("item/block"));
+		BlockModelBuilder ret = models().withExistingParent(name, parent);
 		for(Entry<String, ResourceLocation> e : textures.entrySet())
 			ret.texture(e.getKey(), e.getValue());
 		return ret;
@@ -1353,12 +1317,13 @@ public class BlockStates extends BlockStateProvider
 			ResourceLocation modelLocName,
 			List<String> layers)
 	{
-		LoadedModelBuilder ret = loadedModels.getBuilder(
+		BlockModelBuilder ret = models().getBuilder(
 				nameFor(state.getOwner(), modelLocName, texForState)
 		)
-				.loader(ConnectionLoader.LOADER_NAME)
-				.additional("base_model", model)
-				.additional("layers", layers);
+				.customLoader(ConnectorBuilder::begin)
+				.baseModel(model)
+				.layers(layers)
+				.end();
 		for(Entry<String, ResourceLocation> e : texForState.entrySet())
 			ret.texture(e.getKey(), e.getValue());
 		return ret;

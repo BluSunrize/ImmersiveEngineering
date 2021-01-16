@@ -57,25 +57,25 @@ public class ModelConfigurableSides extends BakedIEModel
 {
 	private static HashMap<String, ITextureNamer> TYPES = new HashMap<>();
 
-	static
+	public enum Type
 	{
-		TYPES.put("side_top_bottom", new ITextureNamer()
+		SIDE_TOP_BOTTOM(new ITextureNamer()
 		{//horizontal, up, down
 			@Override
 			public String nameFromSide(Direction side, IOSideConfig cfg)
 			{
 				return side.getAxis()==Axis.Y?side.getString(): "side";
 			}
-		});
-		TYPES.put("side_vertical", new ITextureNamer()
+		}),
+		SIDE_VERTICAL(new ITextureNamer()
 		{//horizontal, vertical
 			@Override
 			public String nameFromSide(Direction side, IOSideConfig cfg)
 			{
 				return side.getAxis()==Axis.Y?"up": "side";
 			}
-		});
-		TYPES.put("vertical", new ITextureNamer()
+		}),
+		VERTICAL(new ITextureNamer()
 		{//vertical, sides not configureable
 			@Override
 			public String nameFromSide(Direction side, IOSideConfig cfg)
@@ -88,8 +88,8 @@ public class ModelConfigurableSides extends BakedIEModel
 			{
 				return side.getAxis()==Axis.Y?cfg.getTextureName(): null;
 			}
-		});
-		TYPES.put("all_same_texture", new ITextureNamer()
+		}),
+		ALL_SAME_TEXTURE(new ITextureNamer()
 		{//all sides, same texture
 			@Override
 			public String nameFromSide(Direction side, IOSideConfig cfg)
@@ -97,6 +97,23 @@ public class ModelConfigurableSides extends BakedIEModel
 				return "side";
 			}
 		});
+		private final ITextureNamer nameMapper;
+
+		Type(ITextureNamer nameMapper)
+		{
+			this.nameMapper = nameMapper;
+		}
+
+		public String getName()
+		{
+			return name().toLowerCase(Locale.US);
+		}
+	}
+
+	static
+	{
+		for(Type type : Type.values())
+			TYPES.put(type.getName(), type.nameMapper);
 	}
 
 	public static Cache<ModelKey, List<BakedQuad>> modelCache = CacheBuilder.newBuilder().expireAfterAccess(60, TimeUnit.SECONDS).build();

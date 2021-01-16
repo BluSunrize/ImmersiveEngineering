@@ -17,8 +17,10 @@ import blusunrize.immersiveengineering.client.models.connection.FeedthroughLoade
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.CoverType;
-import blusunrize.immersiveengineering.common.data.models.LoadedModelBuilder;
-import blusunrize.immersiveengineering.common.data.models.LoadedModelProvider;
+import blusunrize.immersiveengineering.common.data.models.IEOBJBuilder;
+import blusunrize.immersiveengineering.common.data.models.SpecialModelBuilder;
+import blusunrize.immersiveengineering.common.data.models.TRSRItemModelProvider;
+import blusunrize.immersiveengineering.common.data.models.TRSRModelBuilder;
 import blusunrize.immersiveengineering.common.items.IEItems;
 import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.items.IEItems.Molds;
@@ -33,9 +35,9 @@ import net.minecraft.item.Item;
 import net.minecraft.resources.ResourcePackType;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.generators.ModelBuilder;
 import net.minecraftforge.client.model.generators.ModelFile;
-import net.minecraftforge.client.model.generators.ModelFile.UncheckedModelFile;
+import net.minecraftforge.client.model.generators.loaders.DynamicBucketModelBuilder;
+import net.minecraftforge.client.model.generators.loaders.OBJLoaderBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 import javax.annotation.Nonnull;
@@ -45,13 +47,13 @@ import java.util.Map.Entry;
 
 import static blusunrize.immersiveengineering.common.data.IEDataGenerator.rl;
 
-public class ItemModels extends LoadedModelProvider
+public class ItemModels extends TRSRItemModelProvider
 {
-	BlockStates blockStates;
+	private final BlockStates blockStates;
 
 	public ItemModels(DataGenerator generator, ExistingFileHelper existingFileHelper, BlockStates blockStates)
 	{
-		super(generator, ImmersiveEngineering.MODID, "item", existingFileHelper);
+		super(generator, existingFileHelper);
 		this.blockStates = blockStates;
 	}
 
@@ -158,8 +160,7 @@ public class ItemModels extends LoadedModelProvider
 				.transforms(modLoc("item/wallmount"));
 
 		for(Block b : MetalDevices.CONVEYORS.values())
-			getBuilder(b)
-					.loader(ConveyorLoader.LOCATION);
+			getBuilder(b).customLoader(SpecialModelBuilder.forLoader(ConveyorLoader.LOCATION));
 
 		obj(MetalDecoration.lantern, modLoc("block/lantern_inventory.obj"))
 				.transforms(modLoc("item/block"));
@@ -257,15 +258,18 @@ public class ItemModels extends LoadedModelProvider
 				.transforms(rl("item/toolbox"));
 		ieObj(IEItems.Misc.shield, rl("item/shield.obj.ie"))
 				.transforms(rl("item/shield"));
-		ieObj(Weapons.revolver, modLoc("item/revolver.obj.ie"))
-				.transforms(modLoc("item/revolver"))
-				.additional("dynamic", true);
-		ieObj(Tools.drill, modLoc("item/drill/drill_diesel.obj.ie"))
-				.transforms(modLoc("item/drill"))
-				.additional("dynamic", true);
-		ieObj(Tools.buzzsaw, modLoc("item/buzzsaw_diesel.obj.ie"))
-				.transforms(modLoc("item/buzzsaw"))
-				.additional("dynamic", true);
+		ieObjBuilder(Weapons.revolver, modLoc("item/revolver.obj.ie"))
+				.dynamic(true)
+				.end()
+				.transforms(modLoc("item/revolver"));
+		ieObjBuilder(Tools.drill, modLoc("item/drill/drill_diesel.obj.ie"))
+				.dynamic(true)
+				.end()
+				.transforms(modLoc("item/drill"));
+		ieObjBuilder(Tools.buzzsaw, modLoc("item/buzzsaw_diesel.obj.ie"))
+				.dynamic(true)
+				.end()
+				.transforms(modLoc("item/buzzsaw"));
 		ieObj(Weapons.railgun, modLoc("item/railgun.obj.ie"))
 				.transforms(modLoc("item/railgun"));
 		ieObj(Weapons.chemthrower, modLoc("item/chemthrower.obj.ie"))
@@ -277,16 +281,14 @@ public class ItemModels extends LoadedModelProvider
 		ieObj(IEItems.Misc.fluorescentTube, rl("item/fluorescent_tube.obj.ie"))
 				.transforms(modLoc("item/fluorescent_tube"));
 		getBuilder(IEItems.Misc.coresample)
-				.loader(CoresampleLoader.LOCATION);
+				.customLoader(SpecialModelBuilder.forLoader(CoresampleLoader.LOCATION));
 	}
 
 	private void createBucket(Fluid f)
 	{
-		getBuilder(f.getFilledBucket())
-				.loader(forgeLoc("bucket"))
-				.additional("fluid", f.getRegistryName())
-				//TODO add forge as --existing
-				.parent(new UncheckedModelFile(forgeLoc("item/bucket")));
+		withExistingParent(name(f.getFilledBucket()), forgeLoc("item/bucket"))
+				.customLoader(DynamicBucketModelBuilder::begin)
+				.fluid(f);
 	}
 
 	private void createStoneModels()
@@ -354,28 +356,34 @@ public class ItemModels extends LoadedModelProvider
 		obj(MetalDevices.floodlight, rl("block/metal_device/floodlight.obj.ie"))
 				.transforms(rl("item/floodlight"));
 		getBuilder(Connectors.feedthrough)
-				.loader(FeedthroughLoader.LOCATION);
+				.customLoader(SpecialModelBuilder.forLoader(FeedthroughLoader.LOCATION));
 	}
 
-	private LoadedModelBuilder obj(IItemProvider item, ResourceLocation model)
+	private TRSRModelBuilder obj(IItemProvider item, ResourceLocation model)
 	{
 		Preconditions.checkArgument(existingFileHelper.exists(model, ResourcePackType.CLIENT_RESOURCES, "", "models"));
 		return getBuilder(item)
-				.loader(forgeLoc("obj"))
-				.additional("model", new ResourceLocation(model.getNamespace(), "models/"+model.getPath()))
-				.additional("flip-v", true);
+				.customLoader(OBJLoaderBuilder::begin)
+				.flipV(true)
+				.modelLocation(new ResourceLocation(model.getNamespace(), "models/"+model.getPath()))
+				.end();
 	}
 
-	private LoadedModelBuilder ieObj(IItemProvider item, ResourceLocation model)
+	private IEOBJBuilder<TRSRModelBuilder> ieObjBuilder(IItemProvider item, ResourceLocation model)
 	{
 		Preconditions.checkArgument(existingFileHelper.exists(model, ResourcePackType.CLIENT_RESOURCES, "", "models"));
 		return getBuilder(item)
-				.loader(modLoc("ie_obj"))
-				.additional("model", new ResourceLocation(model.getNamespace(), "models/"+model.getPath()))
-				.additional("flip-v", true);
+				.customLoader(IEOBJBuilder::begin)
+				.flipV(true)
+				.modelLocation(new ResourceLocation(model.getNamespace(), "models/"+model.getPath()));
 	}
 
-	private LoadedModelBuilder getBuilder(IItemProvider item)
+	private TRSRModelBuilder ieObj(IItemProvider item, ResourceLocation model)
+	{
+		return ieObjBuilder(item, model).end();
+	}
+
+	private TRSRModelBuilder getBuilder(IItemProvider item)
 	{
 		return getBuilder(name(item));
 	}
@@ -451,7 +459,7 @@ public class ItemModels extends LoadedModelProvider
 	private void addLayeredItemModel(Item item, ResourceLocation... layers)
 	{
 		String path = name(item);
-		ModelBuilder<LoadedModelBuilder> modelBuilder = withExistingParent(path, mcLoc("item/generated"));
+		TRSRModelBuilder modelBuilder = withExistingParent(path, mcLoc("item/generated"));
 		int layerIdx = 0;
 		for(ResourceLocation layer : layers)
 			modelBuilder.texture("layer"+(layerIdx++), layer);
