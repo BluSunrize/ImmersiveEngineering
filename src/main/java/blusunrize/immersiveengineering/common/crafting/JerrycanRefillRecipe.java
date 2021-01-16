@@ -98,12 +98,18 @@ public class JerrycanRefillRecipe extends SpecialRecipe
 	public NonNullList<ItemStack> getRemainingItems(CraftingInventory inv)
 	{
 		NonNullList<ItemStack> remaining = super.getRemainingItems(inv);
+		boolean foundJerrycan = false;
 		for(int i = 0; i < inv.getSizeInventory(); i++)
 		{
-			if(FluidUtil.getFluidHandler(inv.getStackInSlot(i))==null)
+			ItemStack stackInSlot = inv.getStackInSlot(i);
+			if(!stackInSlot.isEmpty())
 			{
+				if(Misc.jerrycan.equals(stackInSlot.getItem())&&!foundJerrycan)
+				{
+					foundJerrycan = true;
+					continue;
+				}
 				remaining.set(i, ItemStack.EMPTY);
-				break;
 			}
 		}
 		return remaining;
