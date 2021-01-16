@@ -23,6 +23,7 @@ import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.resources.IReloadableResourceManager;
@@ -31,11 +32,14 @@ import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.resource.IResourceType;
 import net.minecraftforge.resource.ISelectiveResourceReloadListener;
-import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
@@ -60,6 +64,7 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 	public Map<ResourceLocation, ManualEntry> contentsByName = new HashMap<>();
 	public final int pageWidth;
 	public final int pageHeight;
+	private int numFailedEntries = 0;
 
 	private boolean initialized = false;
 
@@ -256,6 +261,19 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 			long start = System.currentTimeMillis();
 			reload();
 			ManualLogger.LOGGER.info("Manual reload took {} ms", System.currentTimeMillis()-start);
+			if(numFailedEntries > 0)
+			{
+				PlayerEntity player = Minecraft.getInstance().player;
+				String error = numFailedEntries+" entries failed to load! Please report this as an issue with your log file!";
+				if(player!=null)
+					player.sendMessage(
+							new StringTextComponent(error).setStyle(Style.EMPTY.applyFormatting(TextFormatting.RED)),
+							Util.DUMMY_UUID
+					);
+				else
+					ManualLogger.LOGGER.error(error);
+				return null;
+			}
 		}
 		return new ManualScreen(this, texture, useLastActive);
 	}
@@ -374,7 +392,7 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 	public void reload()
 	{
 		cleanupOldAutoloadedEntries();
-		MutableInt numErrors = new MutableInt();
+		numFailedEntries = 0;
 		getAllEntries().forEach(manualEntry -> {
 			try
 			{
@@ -382,17 +400,18 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 			} catch(Exception x)
 			{
 				x.printStackTrace();
-				numErrors.incrementAndGet();
+				++numFailedEntries;
 			}
 		});
-		numErrors.add(loadAutoEntries());
-		if(numErrors.intValue()!=0)
-			throw new RuntimeException(numErrors.intValue()+" manual entries failed to load, see log for details!");
-		contentTree.sortAll();
-		contentsByName.clear();
-		contentTree.leafStream().forEach(e -> this.contentsByName.put(e.getLocation(), e));
-		indexRecipes();
-		initialized = true;
+		loadAutoEntries();
+		if(numFailedEntries==0)
+		{
+			contentTree.sortAll();
+			contentsByName.clear();
+			contentTree.leafStream().forEach(e -> this.contentsByName.put(e.getLocation(), e));
+			indexRecipes();
+			initialized = true;
+		}
 	}
 
 	private void cleanupOldAutoloadedEntries()
@@ -406,14 +425,16 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 		{
 			List<ResourceLocation> parent = toRemove.subList(0, toRemove.size()-1);
 			getOrCreatePath(parent, p -> {
-				throw new RuntimeException(p.toString());
+				throw new RuntimeException(
+						p.toString()+" does not exist, but "+toRemove.get(parent.size())+" should exist?"
+				);
 			}, 0).removeSubnode(toRemove.get(parent.size()));
 		}
 		autoloadedEntries.clear();
 		autoloadedSections.clear();
 	}
 
-	private int loadAutoEntries()
+	private void loadAutoEntries()
 	{
 		ResourceLocation autoLoc = ManualUtils.getLocationForManual("manual/autoload.json", this);
 		try
@@ -429,17 +450,15 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 					priority = priorityElement.getAsDouble();
 				autoloadSources.add(Pair.of(priority, autoloadJson));
 			}
-			int failed = 0;
 			for(Pair<Double, JsonObject> p : autoloadSources.descendingSet())
-				failed += autoloadEntriesFromJson(p.getRight(), new ArrayList<>());
-			return failed;
+				autoloadEntriesFromJson(p.getRight(), new ArrayList<>());
 		} catch(IOException e)
 		{
 			throw new RuntimeException(e);
 		}
 	}
 
-	private int autoloadEntriesFromJson(JsonObject obj, List<ResourceLocation> backtrace)
+	private void autoloadEntriesFromJson(JsonObject obj, List<ResourceLocation> backtrace)
 	{
 		final String entryListKey = "entry_list";
 		final String weightKey = "category_weight";
@@ -459,24 +478,19 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 			if(!parentIsAutoloaded)
 				autoloadedSections.add(path);
 		}, catWeight);
-		int failCount;
 		if(obj.has(entryListKey))
-			failCount = loadEntriesInArray(obj.remove(entryListKey).getAsJsonArray(), backtrace, node);
-		else
-			failCount = 0;
+			loadEntriesInArray(obj.remove(entryListKey).getAsJsonArray(), backtrace, node);
 		for(Entry<String, JsonElement> otherEntry : obj.entrySet())
 		{
 			Preconditions.checkState(otherEntry.getValue().isJsonObject(), "At backtrace %s, key %s", backtrace, otherEntry.getKey());
 			backtrace.add(ManualUtils.getLocationForManual(otherEntry.getKey(), this));
-			failCount += autoloadEntriesFromJson(otherEntry.getValue().getAsJsonObject(), new ArrayList<>(backtrace));
+			autoloadEntriesFromJson(otherEntry.getValue().getAsJsonObject(), new ArrayList<>(backtrace));
 			backtrace.remove(backtrace.size()-1);
 		}
-		return failCount;
 	}
 
-	private int loadEntriesInArray(JsonArray entriesOnLevel, List<ResourceLocation> backtrace, InnerNode<ResourceLocation, ManualEntry> mainNode)
+	private void loadEntriesInArray(JsonArray entriesOnLevel, List<ResourceLocation> backtrace, InnerNode<ResourceLocation, ManualEntry> mainNode)
 	{
-		int failCount = 0;
 		for(JsonElement e : entriesOnLevel)
 		{
 			String source;
@@ -497,15 +511,14 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 				builder.readFromFile(ManualUtils.getLocationForManual(source, this));
 				ManualEntry entry = builder.create();
 				mainNode.addNewLeaf(entry, () -> weight);
-				entry.refreshPages();
 				autoloadedEntries.add(Pair.of(backtrace, entry));
+				entry.refreshPages();
 			} catch(Exception x)
 			{
 				x.printStackTrace();
-				++failCount;
+				++numFailedEntries;
 			}
 		}
-		return failCount;
 	}
 
 	private Tree.InnerNode<ResourceLocation, ManualEntry> getOrCreatePath(

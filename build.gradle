@@ -265,6 +265,7 @@ String buildVersionString() {
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
     from sourceSets.main.allSource
+    from sourceSets.manual.allSource
 }
 
 artifacts {
@@ -277,6 +278,7 @@ shadowJar {
     dependencies {
         include(dependency('malte0811:BlockModelSplitter:.*'))
     }
+    from(sourceSets.manual.output)
 }
 
 reobf {
@@ -315,12 +317,6 @@ jar {
                 "MixinConfigs": "${modid}.mixins.json"
         ])
     }
-}
-
-apply plugin: 'org.spongepowered.mixin'
-
-mixin {
-    add sourceSets.main, "${archivesBaseName}.refmap.json"
 }
 
 apply plugin: 'maven'

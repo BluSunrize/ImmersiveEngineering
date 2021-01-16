@@ -38,7 +38,6 @@ public class ManualScreen extends Screen
 	private int ySize = 198;
 	private int guiLeft;
 	private int guiTop;
-	private int manualTick = 0;
 	private List<Button> pageButtons = new ArrayList<>();
 
 	@Nonnull
@@ -177,7 +176,6 @@ public class ManualScreen extends Screen
 	@Override
 	public void render(MatrixStack transform, int mouseX, int mouseY, float f)
 	{
-		manualTick++;
 		manual.entryRenderPre();
 
 		ManualUtils.bindTexture(texture);
