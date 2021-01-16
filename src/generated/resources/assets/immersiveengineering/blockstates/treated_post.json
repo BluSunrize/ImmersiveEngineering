@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "immersiveengineering:block/treated_post"
+      "model": "immersiveengineering:block/treated_post_split"
     }
   }
 }

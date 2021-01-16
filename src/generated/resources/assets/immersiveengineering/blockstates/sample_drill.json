@@ -1,21 +1,21 @@
 {
   "variants": {
     "facing=north": {
-      "model": "immersiveengineering:block/metal_device/core_drill",
+      "model": "immersiveengineering:block/metal_device/core_drill_split",
       "uvlock": true
     },
     "facing=south": {
-      "model": "immersiveengineering:block/metal_device/core_drill",
+      "model": "immersiveengineering:block/metal_device/core_drill_split",
       "y": 180,
       "uvlock": true
     },
     "facing=west": {
-      "model": "immersiveengineering:block/metal_device/core_drill",
+      "model": "immersiveengineering:block/metal_device/core_drill_split",
       "y": 270,
       "uvlock": true
     },
     "facing=east": {
-      "model": "immersiveengineering:block/metal_device/core_drill",
+      "model": "immersiveengineering:block/metal_device/core_drill_split",
       "y": 90,
       "uvlock": true
     }

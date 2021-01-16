@@ -1,40 +1,40 @@
 {
   "variants": {
     "facing=north,mirrored=false": {
-      "model": "immersiveengineering:block/metal_multiblock/arc_furnace",
+      "model": "immersiveengineering:block/metal_multiblock/arc_furnace_split",
       "uvlock": true
     },
     "facing=south,mirrored=false": {
-      "model": "immersiveengineering:block/metal_multiblock/arc_furnace",
+      "model": "immersiveengineering:block/metal_multiblock/arc_furnace_split",
       "y": 180,
       "uvlock": true
     },
     "facing=west,mirrored=false": {
-      "model": "immersiveengineering:block/metal_multiblock/arc_furnace",
+      "model": "immersiveengineering:block/metal_multiblock/arc_furnace_split",
       "y": 270,
       "uvlock": true
     },
     "facing=east,mirrored=false": {
-      "model": "immersiveengineering:block/metal_multiblock/arc_furnace",
+      "model": "immersiveengineering:block/metal_multiblock/arc_furnace_split",
       "y": 90,
       "uvlock": true
     },
     "facing=north,mirrored=true": {
-      "model": "immersiveengineering:block/metal_multiblock/arc_furnace_mirrored",
+      "model": "immersiveengineering:block/metal_multiblock/arc_furnace_mirrored_split",
       "uvlock": true
     },
     "facing=south,mirrored=true": {
-      "model": "immersiveengineering:block/metal_multiblock/arc_furnace_mirrored",
+      "model": "immersiveengineering:block/metal_multiblock/arc_furnace_mirrored_split",
       "y": 180,
       "uvlock": true
     },
     "facing=west,mirrored=true": {
-      "model": "immersiveengineering:block/metal_multiblock/arc_furnace_mirrored",
+      "model": "immersiveengineering:block/metal_multiblock/arc_furnace_mirrored_split",
       "y": 270,
       "uvlock": true
     },
     "facing=east,mirrored=true": {
-      "model": "immersiveengineering:block/metal_multiblock/arc_furnace_mirrored",
+      "model": "immersiveengineering:block/metal_multiblock/arc_furnace_mirrored_split",
       "y": 90,
       "uvlock": true
     }

@@ -4,7 +4,7 @@
     "particle": "immersiveengineering:block/stone_decoration/concrete_sprayed"
   },
   "loader": "forge:obj",
-  "detectCullableFaces": false,
   "model": "immersiveengineering:models/block/sprayed_concrete.obj",
+  "detectCullableFaces": false,
   "flip-v": true
 }

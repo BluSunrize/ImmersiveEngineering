@@ -1,0 +1,18 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "immersiveengineering:basic_split",
+  "dynamic": false,
+  "base_model": "immersiveengineering:block/metal_device/teslacoil",
+  "split_parts": [
+    [
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      -1
+    ]
+  ]
+}

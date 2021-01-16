@@ -4,7 +4,7 @@
     "particle": "immersiveengineering:block/wooden_decoration/treated_wood_vertical"
   },
   "loader": "forge:obj",
-  "detectCullableFaces": false,
   "model": "immersiveengineering:models/block/coresample.obj",
+  "detectCullableFaces": false,
   "flip-v": true
 }
