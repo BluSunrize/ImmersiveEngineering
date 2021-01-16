@@ -448,7 +448,7 @@
   "chat.immersiveengineering.info.tesla.highPower": "パワーモード: 高",
   "chat.immersiveengineering.info.tesla.lowPower": "パワーモード: 低",
   "chat.immersiveengineering.info.notOwner": "所有者 '%1$s' だけがこのブロックにアクセスできます",
-  "chat.immersiveengineering.info.tickrate": "このブロックは%1$stickごとに動きます",
+  "chat.immersiveengineering.info.tickrate": "このブロックは%1$stickごとに動作します",
   "chat.immersiveengineering.info.coreDrill.progress": "地質調査の進捗: %1$s",
   "chat.immersiveengineering.info.coreDrill.result.mineral": "§7地質調査の結果、%1$s§7鉱脈を発見しました",
   "chat.immersiveengineering.info.coreDrill.result.depl": "§7鉱脈の整合性は%1$s§7です",
