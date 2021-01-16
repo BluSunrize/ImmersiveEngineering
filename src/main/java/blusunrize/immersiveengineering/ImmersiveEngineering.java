@@ -204,7 +204,7 @@ public class ImmersiveEngineering
 		IEIMCHandler.init();
 		//TODO IEIMCHandler.handleIMCMessages(FMLInterModComms.fetchRuntimeMessages(this));
 
-		IEContent.postInit();
+		event.enqueueWork(Villages::init);
 		proxy.postInit();
 		IECompatModule.doModulesPostInit();
 		proxy.postInitEnd();
