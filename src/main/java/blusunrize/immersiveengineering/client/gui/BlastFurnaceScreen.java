@@ -29,6 +29,7 @@ public class BlastFurnaceScreen extends IEContainerScreen<BlastFurnaceContainer>
 		super(container, inventoryPlayer, title);
 		if(container.tile instanceof BlastFurnaceAdvancedTileEntity)
 			this.xSize = 210;
+		clearIntArray(container.tile.getGuiInts());
 	}
 
 	@Override

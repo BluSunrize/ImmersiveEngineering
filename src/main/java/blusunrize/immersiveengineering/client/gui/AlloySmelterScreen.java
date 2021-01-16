@@ -23,6 +23,7 @@ public class AlloySmelterScreen extends IEContainerScreen<AlloySmelterContainer>
 	{
 		super(container, inventoryPlayer, title);
 		this.tile = container.tile;
+		clearIntArray(tile.guiState);
 	}
 
 	@Override

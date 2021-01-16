@@ -27,6 +27,7 @@ public class CokeOvenScreen extends IEContainerScreen<CokeOvenContainer>
 	{
 		super(container, inventoryPlayer, title);
 		this.tile = container.tile;
+		clearIntArray(tile.guiData);
 	}
 
 	@Override
