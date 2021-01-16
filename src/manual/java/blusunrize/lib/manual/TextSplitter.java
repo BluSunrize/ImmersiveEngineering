@@ -10,11 +10,11 @@
 package blusunrize.lib.manual;
 
 
-import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.lib.manual.SplitResult.LinkPart;
 import blusunrize.lib.manual.SplitResult.Token;
 import blusunrize.lib.manual.links.EntryWithLinks;
 import blusunrize.lib.manual.links.Link;
+import blusunrize.lib.manual.utils.ManualLogger;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -201,7 +201,7 @@ public class TextSplitter
 	{
 		if(!specialByAnchor.containsKey(anchor))
 		{
-			IELogger.warn("Tried to access invalid key \""+anchor+"\"");
+			ManualLogger.LOGGER.warn("Tried to access invalid anchor \"{}\"", anchor);
 			return ImmutableMap.of();
 		}
 		else

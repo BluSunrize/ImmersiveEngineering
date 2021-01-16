@@ -8,13 +8,12 @@
 
 package blusunrize.lib.manual;
 
-import blusunrize.immersiveengineering.client.utils.IERenderTypes;
-import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.lib.manual.SplitResult.Token;
 import blusunrize.lib.manual.Tree.AbstractNode;
 import blusunrize.lib.manual.gui.GuiButtonManualLink;
 import blusunrize.lib.manual.gui.ManualScreen;
 import blusunrize.lib.manual.links.Link;
+import blusunrize.lib.manual.utils.ManualRenderTypes;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -48,6 +47,8 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.Function;
+
+import static blusunrize.lib.manual.utils.ManualLogger.LOGGER;
 
 public class ManualUtils
 {
@@ -114,7 +115,7 @@ public class ManualUtils
 	public static void drawTexturedRect(MatrixStack transform, IRenderTypeBuffer buffers, ResourceLocation texture,
 										int x, int y, int w, int h, float... uv)
 	{
-		IVertexBuilder buffer = buffers.getBuffer(IERenderTypes.getGui(texture));
+		IVertexBuilder buffer = buffers.getBuffer(ManualRenderTypes.getGui(texture));
 		Matrix4f mat = transform.getLast().getMatrix();
 		buffer.pos(mat, x, y+h, 0)
 				.color(1F, 1F, 1F, 1F)
@@ -214,9 +215,9 @@ public class ManualUtils
 					else
 					{
 						if(bEntry==null)
-							IELogger.logger.error("Unknown manual entry: {} (link from {})", bkey, entry.getLocation());
+							LOGGER.error("Unknown manual entry: {} (link from {})", bkey, entry.getLocation());
 						else if(!bEntry.hasAnchor(link.getTargetAnchor()))
-							IELogger.logger.error("Unknown anchor {} in entry {} (link from {})", link.getTargetAnchor(), bkey,
+							LOGGER.error("Unknown anchor {} in entry {} (link from {})", link.getTargetAnchor(), bkey,
 									entry.getLocation());
 						outputLink = null;
 					}

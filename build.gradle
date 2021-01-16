@@ -38,7 +38,11 @@ sourceSets {
                     "$rootDir/src/generated/resources"
             ]
         }
+        compileClasspath += manual.output
         runtimeClasspath += manual.output
+    }
+    test {
+        compileClasspath += manual.output
         runtimeClasspath += manual.output
     }
 }
@@ -104,6 +108,7 @@ minecraft {
             mods {
                 immersiveengineering {
                     source sourceSets.main
+                    source sourceSets.manual
                 }
             }
         }
@@ -146,6 +151,7 @@ minecraft {
             mods {
                 immersiveengineering {
                     source sourceSets.main
+                    source sourceSets.manual
                 }
             }
         }

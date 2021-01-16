@@ -8,7 +8,6 @@
 
 package blusunrize.lib.manual.gui;
 
-import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.lib.manual.ManualEntry;
 import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.ManualInstance.ManualLink;
@@ -374,7 +373,6 @@ public class ManualScreen extends Screen
 				previousSelectedEntry.pop().changePage(this, false);
 			else if(currentNode.getSuperNode()!=null)
 			{
-				IELogger.logger.info("Changing to super node {}", currentNode.getSuperNode());
 				setCurrentNode(currentNode.getSuperNode());
 				page = 0;
 			}

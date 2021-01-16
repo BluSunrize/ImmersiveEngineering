@@ -8,9 +8,9 @@
 
 package blusunrize.lib.manual;
 
-import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.lib.manual.gui.ManualScreen;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.item.ItemStack;
@@ -71,7 +71,7 @@ public abstract class SpecialManualElements extends SpecialManualElement
 			List<IReorderingProcessor> tooltip = LanguageMap.getInstance().func_244260_a(
 					Collections.unmodifiableList(gui.getTooltipFromItem(highlighted))
 			);
-			gui.renderToolTip(transform, tooltip, mx, my, font!=null?font: ClientUtils.font());
+			gui.renderToolTip(transform, tooltip, mx, my, font!=null?font: Minecraft.getInstance().fontRenderer);
 			GuiUtils.postItemToolTip();
 		}
 	}

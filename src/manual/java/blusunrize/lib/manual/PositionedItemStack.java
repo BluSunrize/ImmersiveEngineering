@@ -8,7 +8,6 @@
 
 package blusunrize.lib.manual;
 
-import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.tags.ITag;
@@ -50,15 +49,15 @@ public class PositionedItemStack
 			Collections.addAll(displayList, (ItemStack[])stack);
 		else if(stack instanceof Ingredient)
 			displayList.addAll(Arrays.asList(((Ingredient)stack).getMatchingStacks()));
-		else if(stack instanceof IngredientWithSize)
-			displayList.addAll(Arrays.asList(((IngredientWithSize)stack).getMatchingStacks()));
-		else if(stack instanceof List&&!((List)stack).isEmpty())
+		else if(stack instanceof List&&!((List<?>)stack).isEmpty())
 			displayList.addAll((List<ItemStack>)this.stack);
 		else if(stack instanceof ITag)
 			((ITag<?>)stack).getAllElements().stream()
 					.map(o -> ((IItemProvider)o).asItem())
 					.map(ItemStack::new)
 					.forEach(displayList::add);
+		else
+			throw new RuntimeException("Unexpected stack object: "+stack);
 	}
 
 	public ItemStack getStack()

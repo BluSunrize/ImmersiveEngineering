@@ -8,14 +8,13 @@
 
 package blusunrize.lib.manual;
 
-import blusunrize.immersiveengineering.api.ManualHelper;
-import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.lib.manual.ManualElementImage.ManualImage;
 import blusunrize.lib.manual.ManualEntry.ManualEntryBuilder;
 import blusunrize.lib.manual.Tree.AbstractNode;
 import blusunrize.lib.manual.Tree.InnerNode;
 import blusunrize.lib.manual.Tree.Leaf;
 import blusunrize.lib.manual.gui.ManualScreen;
+import blusunrize.lib.manual.utils.ManualLogger;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.google.gson.JsonArray;
@@ -256,7 +255,7 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 		{
 			long start = System.currentTimeMillis();
 			reload();
-			IELogger.logger.info("Manual reload took {} ms", System.currentTimeMillis()-start);
+			ManualLogger.LOGGER.info("Manual reload took {} ms", System.currentTimeMillis()-start);
 		}
 		return new ManualScreen(this, texture, useLastActive);
 	}
@@ -297,7 +296,7 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 
 	public ManualEntry addEntry(InnerNode<ResourceLocation, ManualEntry> node, ResourceLocation source, DoubleSupplier priority)
 	{
-		ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());
+		ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(this);
 		builder.readFromFile(source);
 		ManualEntry entry = builder.create();
 		addEntry(node, entry, priority);
