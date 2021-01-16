@@ -10,6 +10,7 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.utils.ItemUtils;
+import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -25,6 +26,8 @@ import net.minecraft.tags.TagCollectionManager;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
@@ -169,5 +172,32 @@ public class FluidTagInput implements Predicate<FluidStack>
 	private static ITagCollection<Fluid> getTagCollection()
 	{
 		return TagCollectionManager.getManager().getFluidTags();
+	}
+
+	public boolean extractFrom(IFluidHandler handler, FluidAction action)
+	{
+		// This is not ideal, but probably the best possible without issues with other mods:
+		// - This does not handle the case where an item contains two separate tanks of matching fluids, neither of
+		// them large enough to fulfill the input, but both combined are sufficient
+		// - However handling that will result in one of two issues in simulation calls:
+		//   - Either it will not detect one tank affecting the other (because it only uses simulation calls)
+		//   - Or we actually drain (EXECUTE), which will break for Endertank-style items even if we run the code on a
+		//     copy of the item stack
+		for(int tank = 0; tank < handler.getTanks(); tank++)
+		{
+			FluidStack inTank = handler.getFluidInTank(tank);
+			if(testIgnoringAmount(inTank))
+			{
+				FluidStack toExtract = Utils.copyFluidStackWithAmount(inTank, this.amount, false);
+				FluidStack extractedSim = handler.drain(toExtract, FluidAction.SIMULATE);
+				if(extractedSim.getAmount() >= this.amount)
+				{
+					if(action!=FluidAction.SIMULATE)
+						handler.drain(toExtract, action);
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 }

@@ -54,6 +54,7 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 	public int ticksInGround;
 	public int ticksInAir;
 	protected IntSet piercedEntities;
+	@Nullable
 	protected UUID shooterUUID;
 
 	private int tickLimit = 40;
@@ -120,6 +121,7 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 		return s.orElse(null);
 	}
 
+	@Nullable
 	public UUID getShooterUUID()
 	{
 		return shooterUUID;
@@ -194,11 +196,10 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 			if(mop.getType()!=Type.ENTITY)
 			{
 				Entity entity = null;
-				List list = this.world.getEntitiesInAABBexcluding(this, this.getBoundingBox().expand(getMotion()).grow(1), Entity::canBeCollidedWith);
+				List<Entity> list = this.world.getEntitiesInAABBexcluding(this, this.getBoundingBox().expand(getMotion()).grow(1), Entity::canBeCollidedWith);
 				double d0 = 0.0D;
-				for(int i = 0; i < list.size(); ++i)
+				for(Entity entity1 : list)
 				{
-					Entity entity1 = (Entity)list.get(i);
 					if(entity1.canBeCollidedWith()&&(!entity1.getUniqueID().equals(this.shooterUUID)||this.ticksInAir > 5))
 					{
 						float f = 0.3F;
@@ -403,7 +404,10 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 			stuckIn = null;
 		}
 		this.inGround = nbt.getByte("inGround")==1;
-		this.shooterUUID = nbt.getUniqueId("Owner");
+		if(nbt.contains("Owner"))
+			this.shooterUUID = nbt.getUniqueId("Owner");
+		else
+			this.shooterUUID = null;
 	}
 
 	@Override

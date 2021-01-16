@@ -40,7 +40,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.fluids.DispenseFluidContainer;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.wrappers.FluidBucketWrapper;
@@ -68,6 +67,7 @@ public class IEFluid extends FlowingFluid
 	protected final Consumer<FluidAttributes.Builder> buildAttributes;
 	public IEFluidBlock block;
 	protected Item bucket;
+	private int burnTime = -1;
 
 	public IEFluid(String fluidName, ResourceLocation stillTex, ResourceLocation flowingTex)
 	{
@@ -117,6 +117,12 @@ public class IEFluid extends FlowingFluid
 				public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundNBT nbt)
 				{
 					return new FluidBucketWrapper(stack);
+				}
+
+				@Override
+				public int getBurnTime(ItemStack itemStack)
+				{
+					return burnTime;
 				}
 			};
 			this.bucket.setRegistryName(ImmersiveEngineering.MODID, fluidName+"_bucket");
@@ -232,6 +238,11 @@ public class IEFluid extends FlowingFluid
 	protected int getLevelDecreasePerBlock(IWorldReader iWorldReader)
 	{
 		return 1;
+	}
+
+	public void setBurnTime(int burnTime)
+	{
+		this.burnTime = burnTime;
 	}
 
 	protected IEFluid createFlowingVariant()

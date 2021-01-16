@@ -1,43 +1,42 @@
 /*
  * BluSunrize
- * Copyright (c) 2017
+ * Copyright (c) 2020
  *
  * This code is licensed under "Blu's License of Common Sense"
  * Details can be found in the license file in the root folder of this project
+ *
  */
 
-package blusunrize.immersiveengineering.client.utils;
+package blusunrize.immersiveengineering.api.utils.client;
 
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
 
 import javax.annotation.Nullable;
 
-public class CombinedModelData implements IModelData
+public class SinglePropertyModelData<T> implements IModelData
 {
-	private final IModelData[] subDatas;
+	private T value;
+	private final ModelProperty<T> prop;
 
-	public CombinedModelData(IModelData... datas)
+	public SinglePropertyModelData(T value, ModelProperty<T> prop)
 	{
-		subDatas = datas;
+		this.value = value;
+		this.prop = prop;
 	}
 
 	@Override
 	public boolean hasProperty(ModelProperty<?> prop)
 	{
-		for(IModelData d : subDatas)
-			if(d.hasProperty(prop))
-				return true;
-		return false;
+		return prop==this.prop;
 	}
 
 	@Nullable
 	@Override
 	public <T2> T2 getData(ModelProperty<T2> prop)
 	{
-		for(IModelData d : subDatas)
-			if(d.hasProperty(prop))
-				return d.getData(prop);
+		if(hasProperty(prop))
+			return (T2)value;
 		return null;
 	}
 
@@ -45,7 +44,12 @@ public class CombinedModelData implements IModelData
 	@Override
 	public <T2> T2 setData(ModelProperty<T2> prop, T2 data)
 	{
-		//TODO implement
-		return null;
+		if(hasProperty(prop))
+		{
+			value = (T)data;
+			return data;
+		}
+		else
+			return null;
 	}
 }

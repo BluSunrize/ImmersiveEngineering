@@ -34,6 +34,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
+import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -52,13 +53,12 @@ public class RecipeReloadListener implements IResourceManagerReloadListener
 	}
 
 	@Override
-	public void onResourceManagerReload(IResourceManager resourceManager)
+	public void onResourceManagerReload(@Nonnull IResourceManager resourceManager)
 	{
 		if(dataPackRegistries!=null)
 		{
 			RecipeManager recipeManager = dataPackRegistries.getRecipeManager();
 			startArcRecyclingRecipeGen(recipeManager);
-			buildRecipeLists(recipeManager);
 			MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
 			if(server!=null)
 			{
@@ -93,7 +93,7 @@ public class RecipeReloadListener implements IResourceManagerReloadListener
 			buildRecipeLists(clientRecipeManager);
 	}
 
-	static void buildRecipeLists(RecipeManager recipeManager)
+	public static void buildRecipeLists(RecipeManager recipeManager)
 	{
 		Collection<IRecipe<?>> recipes = recipeManager.getRecipes();
 		// Empty recipe list shouldn't happen, but has been known to be caused by other mods

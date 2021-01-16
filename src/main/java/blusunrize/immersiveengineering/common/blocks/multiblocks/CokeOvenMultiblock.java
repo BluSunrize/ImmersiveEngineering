@@ -22,7 +22,8 @@ public class CokeOvenMultiblock extends StoneMultiblock
 	public CokeOvenMultiblock()
 	{
 		super(new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/coke_oven"),
-				new BlockPos(1, 1, 1), new BlockPos(1, 1, 2), () -> Multiblocks.cokeOven.getDefaultState());
+				new BlockPos(1, 1, 1), new BlockPos(1, 1, 2), new BlockPos(3, 3, 3),
+				() -> Multiblocks.cokeOven.getDefaultState());
 	}
 
 	@Override

@@ -11,9 +11,9 @@ package blusunrize.immersiveengineering.client.models;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
+import blusunrize.immersiveengineering.api.utils.client.CombinedModelData;
+import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.utils.CombinedModelData;
-import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import com.google.common.cache.Cache;
@@ -127,7 +127,6 @@ public class ModelConfigurableSides extends BakedIEModel
 		ModelKey key = new ModelKey(name, config);
 		try
 		{
-			modelCache.invalidateAll();
 			return modelCache.get(key, () -> {
 				Map<Direction, TextureAtlasSprite> tex = new EnumMap<>(Direction.class);
 				for(Direction d : DirectionUtils.VALUES)
@@ -156,7 +155,7 @@ public class ModelConfigurableSides extends BakedIEModel
 				conf.put(d, confTE.getSideConfig(d));
 			data.add(new SinglePropertyModelData<>(conf, Model.SIDECONFIG));
 		}
-		return new CombinedModelData(data.toArray(new IModelData[0]));
+		return CombinedModelData.combine(data.toArray(new IModelData[0]));
 	}
 
 	private static List<BakedQuad> bakeQuads(Map<Direction, TextureAtlasSprite> sprites)

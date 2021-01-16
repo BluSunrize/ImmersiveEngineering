@@ -1,5 +1,5 @@
 {
-  "type": "minecraft:crafting_shapeless",
+  "type": "immersiveengineering:shapeless_fluid",
   "ingredients": [
     {
       "tag": "forge:dusts/wood"

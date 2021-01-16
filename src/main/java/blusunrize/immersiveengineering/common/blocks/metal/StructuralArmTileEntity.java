@@ -30,6 +30,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.*;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.IBooleanFunction;
@@ -228,6 +229,13 @@ public class StructuralArmTileEntity extends IEBaseTileEntity implements IOBJMod
 		bounds = null;
 		if(world!=null)
 			world.notifyNeighborsOfStateChange(pos, getBlockState().getBlock());
+	}
+
+	@Override
+	public void rotate(Rotation rotationIn)
+	{
+		super.rotate(rotationIn);
+		setFacing(rotationIn.rotate(this.facing));
 	}
 
 	@Override

@@ -15,11 +15,13 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.util.math.vector.Vector3i;
 import net.minecraftforge.client.model.IModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,13 +33,14 @@ public class SplitModelLoader implements IModelLoader<UnbakedSplitModel>
 	public static final String DYNAMIC = "dynamic";
 
 	@Override
-	public void onResourceManagerReload(IResourceManager resourceManager)
+	public void onResourceManagerReload(@Nonnull IResourceManager resourceManager)
 	{
 
 	}
 
+	@Nonnull
 	@Override
-	public UnbakedSplitModel read(JsonDeserializationContext deserializationContext, JsonObject modelContents)
+	public UnbakedSplitModel read(@Nonnull JsonDeserializationContext deserializationContext, JsonObject modelContents)
 	{
 		ResourceLocation subloader;
 		if(modelContents.has(BASE_LOADER))
@@ -47,15 +50,26 @@ public class SplitModelLoader implements IModelLoader<UnbakedSplitModel>
 		JsonArray partsJson = modelContents.getAsJsonArray(PARTS);
 		List<Vector3i> parts = new ArrayList<>(partsJson.size());
 		for(JsonElement e : partsJson)
-		{
-			JsonArray a = e.getAsJsonArray();
-			parts.add(new Vector3i(a.get(0).getAsInt(), a.get(1).getAsInt(), a.get(2).getAsInt()));
-		}
+			parts.add(fromJson(e.getAsJsonArray()));
 		IModelGeometry<?> baseModel = ModelLoaderRegistry.getModel(
 				subloader,
 				deserializationContext,
 				modelContents
 		);
-		return new UnbakedSplitModel(baseModel, parts, modelContents.get(DYNAMIC).getAsBoolean());
+		MutableBoundingBox box = pointBB(parts.get(0));
+		for(Vector3i v : parts)
+			box.expandTo(pointBB(v));
+		Vector3i size = new Vector3i(box.getXSize(), box.getYSize(), box.getZSize());
+		return new UnbakedSplitModel(baseModel, parts, modelContents.get(DYNAMIC).getAsBoolean(), size);
+	}
+
+	private Vector3i fromJson(JsonArray a)
+	{
+		return new Vector3i(a.get(0).getAsInt(), a.get(1).getAsInt(), a.get(2).getAsInt());
+	}
+
+	private MutableBoundingBox pointBB(Vector3i point)
+	{
+		return new MutableBoundingBox(point, point);
 	}
 }

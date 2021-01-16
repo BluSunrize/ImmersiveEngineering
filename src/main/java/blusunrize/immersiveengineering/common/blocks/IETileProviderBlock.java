@@ -219,6 +219,9 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 	@Override
 	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit)
 	{
+		ActionResultType superResult = super.onBlockActivated(state, world, pos, player, hand, hit);
+		if(superResult.isSuccessOrConsume())
+			return superResult;
 		final Direction side = hit.getFace();
 		final float hitX = (float)hit.getHitVec().x-pos.getX();
 		final float hitY = (float)hit.getHitVec().y-pos.getY();
@@ -269,7 +272,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 				NetworkHooks.openGui((ServerPlayerEntity)player, interaction, ((TileEntity)interaction).getPos());
 			return ActionResultType.SUCCESS;
 		}
-		return super.onBlockActivated(state, world, pos, player, hand, hit);
+		return superResult;
 	}
 
 	@Nullable

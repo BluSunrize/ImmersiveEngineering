@@ -15,8 +15,6 @@ import net.minecraft.block.Block;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.tags.ITag.INamedTag;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.Tags.Blocks;
 
@@ -71,6 +69,8 @@ public class IETags
 	public static final INamedTag<Item> sawdust = createItemWrapper(getDust("wood"));
 	public static final INamedTag<Item> plates = createItemWrapper(forgeLoc("plates"));
 	public static final INamedTag<Item> sawblades = createItemWrapper(forgeLoc("sawblades"));
+	//Utility tags
+	public static final INamedTag<Item> forbiddenInCrates = createItemWrapper(rl("forbidden_in_crates"));
 
 	public static final INamedTag<Fluid> fluidCreosote = createFluidWrapper(forgeLoc("creosote"));
 	public static final INamedTag<Fluid> fluidPlantoil = createFluidWrapper(forgeLoc("plantoil"));

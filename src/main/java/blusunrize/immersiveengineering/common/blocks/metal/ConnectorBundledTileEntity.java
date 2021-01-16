@@ -23,6 +23,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBas
 import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectorBlock;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import com.google.common.collect.ImmutableList;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.EnumProperty;
@@ -38,6 +39,7 @@ import net.minecraft.util.math.vector.Vector3i;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.Objects;
 
 import static blusunrize.immersiveengineering.api.wires.WireType.REDSTONE_CATEGORY;
 
@@ -54,7 +56,7 @@ public class ConnectorBundledTileEntity extends ImmersiveConnectableTileEntity i
 		super(type);
 	}
 
-	private CapabilityReference<RedstoneBundleConnection> attached = CapabilityReference.forTileEntity(this,
+	private final CapabilityReference<RedstoneBundleConnection> attached = CapabilityReference.forTileEntity(this,
 			() -> new DirectionalBlockPos(pos.offset(getFacing()), getFacing().getOpposite()),
 			CapabilityRedstoneNetwork.REDSTONE_BUNDLE_CONNECTION);
 
@@ -62,25 +64,39 @@ public class ConnectorBundledTileEntity extends ImmersiveConnectableTileEntity i
 	public void tick()
 	{
 		if(hasWorld()&&!world.isRemote&&attached.isPresent()&&attached.get().pollDirty())
-			globalNet.getLocalNet(pos)
-					.getHandler(RedstoneNetworkHandler.ID, RedstoneNetworkHandler.class)
-					.updateValues();
+			getHandler().updateValues();
+	}
+
+	public byte getValue(int redstoneChannel)
+	{
+		return getHandler().getValue(redstoneChannel);
+	}
+
+	private RedstoneNetworkHandler getHandler()
+	{
+		return Objects.requireNonNull(
+				globalNet.getLocalNet(pos).getHandler(RedstoneNetworkHandler.ID, RedstoneNetworkHandler.class)
+		);
 	}
 
 	@Override
 	public void onChange(ConnectionPoint cp, RedstoneNetworkHandler handler)
 	{
-		if(!world.isRemote&&attached.isPresent())
-			attached.get().onChange(cp, handler, getFacing().getOpposite());
+		if(!world.isRemote)
+		{
+			if(attached.isPresent())
+				attached.get().onChange(cp, handler, getFacing().getOpposite());
+			BlockState stateHere = world.getBlockState(pos);
+			markContainingBlockForUpdate(stateHere);
+			markBlockForUpdate(pos.offset(getFacing()), world.getBlockState(pos.offset(getFacing())));
+		}
 	}
 
 	@Override
 	public void updateInput(byte[] signals, ConnectionPoint cp)
 	{
 		if(attached.isPresent())
-		{
 			attached.get().updateInput(signals, cp, getFacing().getOpposite());
-		}
 	}
 
 	@Override

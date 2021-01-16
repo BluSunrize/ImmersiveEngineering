@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
+import blusunrize.immersiveengineering.common.crafting.fluidaware.TurnAndCopyRecipe;
 import blusunrize.immersiveengineering.common.items.RevolverItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.inventory.CraftingInventory;
@@ -29,7 +30,7 @@ public class RevolverAssemblyRecipe extends TurnAndCopyRecipe
 
 	@Nonnull
 	@Override
-	public ItemStack getCraftingResult(CraftingInventory matrix)
+	public ItemStack getCraftingResult(@Nonnull CraftingInventory matrix)
 	{
 		if(nbtCopyTargetSlot!=null)
 		{

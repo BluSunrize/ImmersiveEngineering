@@ -47,7 +47,7 @@ import blusunrize.immersiveengineering.common.blocks.stone.StoneMultiBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.BarrelBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
-import blusunrize.immersiveengineering.common.crafting.IngredientFluidStack;
+import blusunrize.immersiveengineering.common.crafting.fluidaware.IngredientFluidStack;
 import blusunrize.immersiveengineering.common.entities.*;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
@@ -67,7 +67,6 @@ import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import blusunrize.immersiveengineering.common.world.OreRetrogenFeature;
 import blusunrize.immersiveengineering.common.world.Villages;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityType;
@@ -90,7 +89,6 @@ import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.event.RegistryEvent.MissingMappings.Mapping;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.common.Mod;
@@ -690,22 +688,6 @@ public class IEContent
 	}
 
 	@SubscribeEvent
-	public static void missingItems(RegistryEvent.MissingMappings<Item> event)
-	{
-		Set<String> knownMissing = ImmutableSet.of(
-				"fluidethanol",
-				"fluidconcrete",
-				"fluidbiodiesel",
-				"fluidplantoil",
-				"fluidcreosote"
-		);
-		for(Mapping<Item> missing : event.getMappings())
-			if(knownMissing.contains(missing.key.getPath()))
-				missing.ignore();
-	}
-
-
-	@SubscribeEvent
 	public static void registerPotions(RegistryEvent.Register<Effect> event)
 	{
 		/*POTIONS*/
@@ -795,6 +777,7 @@ public class IEContent
 		fluidEthanol.block.setEffect(Effects.NAUSEA, 70, 0);
 		fluidBiodiesel.block.setEffect(IEPotions.flammable, 100, 1);
 		fluidConcrete.block.setEffect(Effects.SLOWNESS, 20, 3);
+		fluidCreosote.setBurnTime(800);
 
 		ChemthrowerEffects.register();
 
@@ -838,15 +821,10 @@ public class IEContent
 		MultiblockHandler.registerMultiblock(IEMultiblocks.EXCAVATOR_DEMO);
 
 		/*BLOCK ITEMS FROM CRATES*/
-		IEApi.forbiddenInCrates.add((stack) -> {
-			if(stack.getItem()==Tools.toolbox)
-				return true;
-			if(stack.getItem()==WoodenDevices.crate.asItem())
-				return true;
-			if(stack.getItem()==WoodenDevices.reinforcedCrate.asItem())
-				return true;
-			return Block.getBlockFromItem(stack.getItem()) instanceof ShulkerBoxBlock;
-		});
+		IEApi.forbiddenInCrates.add(
+				stack -> stack.getItem().isIn(IETags.forbiddenInCrates)||
+						Block.getBlockFromItem(stack.getItem()) instanceof ShulkerBoxBlock
+		);
 
 		FluidPipeTileEntity.initCovers();
 		LocalNetworkHandler.register(EnergyTransferHandler.ID, EnergyTransferHandler::new);

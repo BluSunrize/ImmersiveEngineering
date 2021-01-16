@@ -289,7 +289,7 @@ public class IEServerConfig
 						.defineInRange("initial_depletion", .2, 0, 1);
 				excavator_dimBlacklist = builder
 						.comment("List of dimensions that can't contain minerals. Default: The End.")
-						.defineList("dimBlacklist", ImmutableList.of(DimensionType.THE_END.getRegistryName().toString()),
+						.defineList("dimBlacklist", ImmutableList.of(DimensionType.THE_END.getLocation().toString()),
 								obj -> true);
 				builder.pop();
 			}

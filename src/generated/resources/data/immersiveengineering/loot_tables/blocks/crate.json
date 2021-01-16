@@ -5,12 +5,20 @@
       "rolls": 1.0,
       "entries": [
         {
-          "type": "immersiveengineering:tile_drop"
-        }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
+          "type": "minecraft:alternatives",
+          "children": [
+            {
+              "type": "immersiveengineering:tile_drop",
+              "conditions": [
+                {
+                  "condition": "minecraft:survives_explosion"
+                }
+              ]
+            },
+            {
+              "type": "immersiveengineering:drop_inv"
+            }
+          ]
         }
       ]
     }

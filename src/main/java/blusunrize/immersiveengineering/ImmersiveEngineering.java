@@ -24,6 +24,7 @@ import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.config.IECommonConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.crafting.IngredientSerializers;
+import blusunrize.immersiveengineering.common.crafting.RecipeCachingReloadListener;
 import blusunrize.immersiveengineering.common.crafting.RecipeReloadListener;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
@@ -51,6 +52,7 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -60,6 +62,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
@@ -67,8 +70,14 @@ import org.apache.logging.log4j.LogManager;
 import javax.annotation.Nonnull;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
+
+import static net.minecraftforge.fml.network.NetworkDirection.PLAY_TO_CLIENT;
+import static net.minecraftforge.fml.network.NetworkDirection.PLAY_TO_SERVER;
 
 @Mod(ImmersiveEngineering.MODID)
 public class ImmersiveEngineering
@@ -76,9 +85,7 @@ public class ImmersiveEngineering
 	public static final String MODID = "immersiveengineering";
 	public static final String MODNAME = "Immersive Engineering";
 	public static final String VERSION = "${version}";
-	@SuppressWarnings("Convert2MethodRef")
-	public static CommonProxy proxy = DistExecutor.runForDist(() -> () -> new ClientProxy(),
-			() -> () -> new CommonProxy());
+	public static CommonProxy proxy = DistExecutor.safeRunForDist(() -> ClientProxy::new, () -> CommonProxy::new);
 
 	public static final SimpleChannel packetHandler = NetworkRegistry.ChannelBuilder
 			.named(new ResourceLocation(MODID, "main"))
@@ -95,6 +102,7 @@ public class ImmersiveEngineering
 		MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
 		MinecraftForge.EVENT_BUS.addListener(this::registerCommands);
 		MinecraftForge.EVENT_BUS.addListener(this::addReloadListeners);
+		MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::addReloadListenersLowest);
 		MinecraftForge.EVENT_BUS.addListener(this::serverStarted);
 		RecipeSerializers.RECIPE_SERIALIZERS.register(FMLJavaModLoadingContext.get().getModEventBus());
 		Villages.Registers.POINTS_OF_INTEREST.register(FMLJavaModLoadingContext.get().getModEventBus());
@@ -176,24 +184,22 @@ public class ImmersiveEngineering
 		IECompatModule.doModulesInit();
 		proxy.initEnd();
 		registerMessage(MessageTileSync.class, MessageTileSync::new);
-		registerMessage(MessageTileSync.class, MessageTileSync::new);
-		registerMessage(MessageSpeedloaderSync.class, MessageSpeedloaderSync::new);
-		registerMessage(MessageSkyhookSync.class, MessageSkyhookSync::new);
+		registerMessage(MessageSpeedloaderSync.class, MessageSpeedloaderSync::new, PLAY_TO_CLIENT);
+		registerMessage(MessageSkyhookSync.class, MessageSkyhookSync::new, PLAY_TO_CLIENT);
 		registerMessage(MessageMinecartShaderSync.class, MessageMinecartShaderSync::new);
-		registerMessage(MessageMinecartShaderSync.class, MessageMinecartShaderSync::new);
-		registerMessage(MessageRequestBlockUpdate.class, MessageRequestBlockUpdate::new);
-		registerMessage(MessageNoSpamChatComponents.class, MessageNoSpamChatComponents::new);
+		registerMessage(MessageRequestBlockUpdate.class, MessageRequestBlockUpdate::new, PLAY_TO_SERVER);
+		registerMessage(MessageNoSpamChatComponents.class, MessageNoSpamChatComponents::new, PLAY_TO_CLIENT);
 		registerMessage(MessageShaderManual.class, MessageShaderManual::new);
-		registerMessage(MessageShaderManual.class, MessageShaderManual::new);
-		registerMessage(MessageBirthdayParty.class, MessageBirthdayParty::new);
-		registerMessage(MessageMagnetEquip.class, MessageMagnetEquip::new);
-		registerMessage(MessageScrollwheelItem.class, MessageScrollwheelItem::new);
-		registerMessage(MessageObstructedConnection.class, MessageObstructedConnection::new);
-		registerMessage(MessageSetGhostSlots.class, MessageSetGhostSlots::new);
-		registerMessage(MessageWireSync.class, MessageWireSync::new);
-		registerMessage(MessageMaintenanceKit.class, MessageMaintenanceKit::new);
-		registerMessage(MessageRevolverRotate.class, MessageRevolverRotate::new);
-		registerMessage(MessageMultiblockSync.class, MessageMultiblockSync::new);
+		registerMessage(MessageBirthdayParty.class, MessageBirthdayParty::new, PLAY_TO_CLIENT);
+		registerMessage(MessageMagnetEquip.class, MessageMagnetEquip::new, PLAY_TO_SERVER);
+		registerMessage(MessageScrollwheelItem.class, MessageScrollwheelItem::new, PLAY_TO_SERVER);
+		registerMessage(MessageObstructedConnection.class, MessageObstructedConnection::new, PLAY_TO_CLIENT);
+		registerMessage(MessageSetGhostSlots.class, MessageSetGhostSlots::new, PLAY_TO_SERVER);
+		registerMessage(MessageWireSync.class, MessageWireSync::new, PLAY_TO_CLIENT);
+		registerMessage(MessageMaintenanceKit.class, MessageMaintenanceKit::new, PLAY_TO_SERVER);
+		registerMessage(MessageRevolverRotate.class, MessageRevolverRotate::new, PLAY_TO_SERVER);
+		registerMessage(MessageMultiblockSync.class, MessageMultiblockSync::new, PLAY_TO_CLIENT);
+		registerMessage(MessageClientCommand.class, MessageClientCommand::new, PLAY_TO_CLIENT);
 
 		IEIMCHandler.init();
 		//TODO IEIMCHandler.handleIMCMessages(FMLInterModComms.fetchRuntimeMessages(this));
@@ -210,36 +216,36 @@ public class ImmersiveEngineering
 
 	private <T extends IMessage> void registerMessage(Class<T> packetType, Function<PacketBuffer, T> decoder)
 	{
+		registerMessage(packetType, decoder, Optional.empty());
+	}
+
+	private <T extends IMessage> void registerMessage(
+			Class<T> packetType, Function<PacketBuffer, T> decoder, NetworkDirection direction
+	)
+	{
+		registerMessage(packetType, decoder, Optional.of(direction));
+	}
+
+	private final Set<Class<?>> knownPacketTypes = new HashSet<>();
+
+	private <T extends IMessage> void registerMessage(
+			Class<T> packetType, Function<PacketBuffer, T> decoder, Optional<NetworkDirection> direction
+	)
+	{
+		if(!knownPacketTypes.add(packetType))
+		{
+			throw new IllegalStateException("Duplicate packet type: "+packetType.getName());
+		}
 		packetHandler.registerMessage(messageId++, packetType, IMessage::toBytes, decoder, (t, ctx) -> {
 			t.process(ctx);
 			ctx.get().setPacketHandled(true);
-		});
+		}, direction);
 	}
 
 	public void loadComplete(FMLLoadCompleteEvent event)
 	{
 		IECompatModule.doModulesLoadComplete();
 	}
-
-	private static final String[] alternativeCerts = {
-			"7e11c175d1e24007afec7498a1616bef0000027d",// malte0811
-			"MavenKeyHere"//TODO maven
-	};
-
-	/*
-	//TODO This has been removed in some forge versions. Apparently cpw is making something better soon?
-	public void wrongSignature(FMLFingerprintViolationEvent event)
-	{
-		System.out.println("[Immersive Engineering/Error] THIS IS NOT AN OFFICIAL BUILD OF IMMERSIVE ENGINEERING! Found these fingerprints: "+event.getFingerprints());
-		for(String altCert : alternativeCerts)
-			if(event.getFingerprints().contains(altCert))
-			{
-				System.out.println("[Immersive Engineering/Error] "+altCert+" is considered an alternative certificate (which may be ok to use in some cases). "+
-						"If you thought this was an official build you probably shouldn't use it.");
-				break;
-			}
-	}
-	*/
 
 	public void serverStarting(FMLServerStartingEvent event)
 	{
@@ -256,6 +262,11 @@ public class ImmersiveEngineering
 	{
 		DataPackRegistries dataPackRegistries = event.getDataPackRegistries();
 		event.addListener(new RecipeReloadListener(dataPackRegistries));
+	}
+
+	public void addReloadListenersLowest(AddReloadListenerEvent event)
+	{
+		event.addListener(new RecipeCachingReloadListener(event.getDataPackRegistries()));
 	}
 
 	public void serverStarted(FMLServerStartedEvent event)

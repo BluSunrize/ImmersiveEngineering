@@ -50,6 +50,7 @@ import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -168,22 +169,26 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 				if(!world.isAirBlock(targetBlock))
 				{
 					BlockState state = world.getBlockState(targetBlock);
-					AxisAlignedBB blockBounds = state.getShape(world, targetBlock).getBoundingBox();
-					if(getFacing()==Direction.UP)
-						tL = targetBlock.getY()-getPos().getY()+blockBounds.maxY;
-					else if(getFacing()==Direction.DOWN)
-						tL = targetBlock.getY()-getPos().getY()+blockBounds.minY;
-					else if(getFacing()==Direction.NORTH)
-						tL = targetBlock.getZ()-getPos().getZ()+blockBounds.minZ;
-					else if(getFacing()==Direction.SOUTH)
-						tL = targetBlock.getZ()-getPos().getZ()+blockBounds.maxZ;
-					else if(getFacing()==Direction.WEST)
-						tL = targetBlock.getX()-getPos().getX()+blockBounds.minX;
-					else
-						tL = targetBlock.getX()-getPos().getX()+blockBounds.maxX;
-					targetFound = true;
+					VoxelShape shape = state.getShape(world, targetBlock);
+					if(!shape.isEmpty())
+					{
+						AxisAlignedBB blockBounds = shape.getBoundingBox();
+						if(getFacing()==Direction.UP)
+							tL = targetBlock.getY()-getPos().getY()+blockBounds.maxY;
+						else if(getFacing()==Direction.DOWN)
+							tL = targetBlock.getY()-getPos().getY()+blockBounds.minY;
+						else if(getFacing()==Direction.NORTH)
+							tL = targetBlock.getZ()-getPos().getZ()+blockBounds.minZ;
+						else if(getFacing()==Direction.SOUTH)
+							tL = targetBlock.getZ()-getPos().getZ()+blockBounds.maxZ;
+						else if(getFacing()==Direction.WEST)
+							tL = targetBlock.getX()-getPos().getX()+blockBounds.minX;
+						else
+							tL = targetBlock.getX()-getPos().getX()+blockBounds.maxX;
+						targetFound = true;
+					}
 				}
-				else
+				if(!targetFound)
 				{
 					boolean positiveFirst = Utils.RAND.nextBoolean();
 					for(int i = 0; i < 2; i++)
@@ -609,9 +614,9 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 	}
 
 	@Override
-	public BlockPos getModelOffset(BlockState state)
+	public BlockPos getModelOffset(BlockState state, @Nullable Vector3i size)
 	{
-		if (isDummy())
+		if(isDummy())
 			return new BlockPos(0, 0, -1);
 		else
 			return BlockPos.ZERO;

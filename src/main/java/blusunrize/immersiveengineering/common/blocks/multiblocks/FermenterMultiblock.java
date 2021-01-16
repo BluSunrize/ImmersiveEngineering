@@ -26,8 +26,11 @@ public class FermenterMultiblock extends IETemplateMultiblock
 {
 	public FermenterMultiblock()
 	{
-		super(new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/fermenter"),
-				new BlockPos(1, 1, 1), new BlockPos(1, 1, 1), () -> Multiblocks.fermenter.getDefaultState());
+		super(
+				new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/fermenter"),
+				new BlockPos(1, 1, 1), new BlockPos(1, 1, 1), new BlockPos(3, 3, 3),
+				() -> Multiblocks.fermenter.getDefaultState()
+		);
 	}
 
 	@Override

@@ -121,7 +121,7 @@ public class SurveyToolsItem extends IEBaseItem
 			return stack;
 		BlockPos pos = ((BlockRayTraceResult)rtr).getPos();
 		MineralVein vein = ExcavatorHandler.getRandomMineral(world, pos);
-		if(vein==null)
+		if(vein==null || vein.getMineral()==null)
 		{
 			player.sendStatusMessage(new TranslationTextComponent(Lib.CHAT_INFO+"survey.no_vein"), true);
 			return stack;

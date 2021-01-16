@@ -47,7 +47,7 @@ public class IECommonConfig
 		preferredOres = builder
 				.comment("A list of preferred Mod IDs that results of IE processes should stem from, aka which mod you want the copper to come from.",
 						"This affects the ores dug by the excavator, as well as those crushing recipes that don't have associated IE items. This list is in oreder of priority.")
-				.defineList("preferredOres", ImmutableList.of(ImmersiveEngineering.MODID), obj -> true);
+				.defineList("preferredOres", ImmutableList.of(ImmersiveEngineering.MODID, "minecraft"), obj -> true);
 		builder.push(ImmutableList.of("debug", "wires"));
 		enableWireLogger = builder
 				.comment("Enable detailed logging for the wire network. This can be useful for developers to track"+

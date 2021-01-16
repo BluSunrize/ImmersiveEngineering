@@ -33,6 +33,6 @@ public class TeslaCoilBlock extends GenericTileBlock<TeslaCoilTileEntity>
 	{
 		BlockPos start = context.getPos();
 		World w = context.getWorld();
-		return areAllReplaceable(start, start.up(1), context);
+		return areAllReplaceable(start, start.offset(context.getFace(), 1), context);
 	}
 }

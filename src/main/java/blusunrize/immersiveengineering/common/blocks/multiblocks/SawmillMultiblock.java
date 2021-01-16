@@ -27,7 +27,8 @@ public class SawmillMultiblock extends IETemplateMultiblock
 	public SawmillMultiblock()
 	{
 		super(new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/sawmill"),
-				new BlockPos(2, 1, 1), new BlockPos(2, 0, 2), () -> Multiblocks.sawmill.getDefaultState());
+				new BlockPos(2, 1, 1), new BlockPos(2, 0, 2), new BlockPos(5, 3, 3),
+				() -> Multiblocks.sawmill.getDefaultState());
 	}
 
 	@Override

@@ -58,7 +58,7 @@ processResources {
     //Minify json resources
     doLast {
         fileTree(dir: getOutputs().getFiles().getAsPath(), includes: jsonPatterns).each {
-            File file -> file.setText(JsonOutput.toJson(new JsonSlurper().parse(file)))
+            File file -> file.setText(JsonOutput.toJson(new JsonSlurper().parse(file, 'UTF-8')))
         }
     }
 }
@@ -81,7 +81,6 @@ minecraft {
     mappings channel: 'snapshot', version: '20200916-1.16.2'
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 
-    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
     // Default run configurations.
     // These can be tweaked, removed, or duplicated as needed.
@@ -167,8 +166,8 @@ repositories {
         }
     }
     maven {
-        //gigaherz maven for 1.16.2 mappings
-        url 'https://www.dogforce-games.com/maven/'
+        // CC-Tweaked
+        url 'https://squiddev.cc/maven/'
     }
 }
 
@@ -179,6 +178,7 @@ dependencies {
     //runtimeOnly fg.deobf("nbtedit:NBTEdit:0.9.0")
     compileOnly fg.deobf("mezz.jei:jei-1.16.3:7.6.0.49:api")
     compileOnly fg.deobf('com.feed_the_beast.mods:ftb-gui-library:1.0.0.18')
+    compileOnly fg.deobf("org.squiddev:cc-tweaked-${version_minecraft}:1.94.0")
     compile "malte0811:BlockModelSplitter:1.2.0"
     testImplementation('junit:junit:4.13')
 }
@@ -362,7 +362,6 @@ class GenerateUpdateJSON extends DefaultTask {
         mcFromIEVersion.put("0.16", "1.16.1")
     }
     static def VERSION_PREFIX = "##### Version "
-    static def CURRENT_MC_VERSION = "1.16.1"
     static def CHANGELOG_FOR_MANUAL = "src/main/resources/assets/immersiveengineering/changelog.json"
     static def BUILT_SUFFIX = " - BUILT"
     static def PRE_SUFFIX = "-pre"
@@ -460,7 +459,7 @@ class GenerateUpdateJSON extends DefaultTask {
             outF << updateJson
 
             //JSON for the manual
-            def mapForCurrent = changelogForVersions.getOrDefault(CURRENT_MC_VERSION, new HashMap<>())
+            def mapForCurrent = changelogForVersions.getOrDefault(project.ext.version_minecraft, new HashMap<>())
             def manualJson = JsonOutput.toJson(mapForCurrent)
             manualJson = JsonOutput.prettyPrint(manualJson)
             outF = new File(CHANGELOG_FOR_MANUAL)

@@ -30,6 +30,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3i;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -198,7 +199,7 @@ public class BlastFurnacePreheaterTileEntity extends IEBaseTileEntity implements
 	}
 
 	@Override
-	public BlockPos getModelOffset(BlockState state)
+	public BlockPos getModelOffset(BlockState state, @Nullable Vector3i size)
 	{
 		return new BlockPos(0, dummy, 0);
 	}

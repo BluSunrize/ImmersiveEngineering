@@ -16,7 +16,9 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparat
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
+import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
+import blusunrize.immersiveengineering.common.util.LayeredComparatorOutput;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.entity.player.PlayerEntity;
@@ -37,22 +39,44 @@ import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public class SheetmetalTankTileEntity extends MultiblockPartTileEntity<SheetmetalTankTileEntity>
 		implements IBlockOverlayText, IPlayerInteraction, IComparatorOverride, IBlockBounds
 {
 	public FluidTank tank = new FluidTank(512*FluidAttributes.BUCKET_VOLUME);
-	private int[] oldComps = new int[4];
-	private int masterCompOld;
+	private final LayeredComparatorOutput comparatorHelper = new LayeredComparatorOutput(
+			tank.getCapacity(),
+			4,
+			() -> world.notifyNeighborsOfStateChange(getPos(), getBlockState().getBlock()),
+			layer -> {
+				BlockPos masterPos = pos.subtract(offsetToMaster);
+				for(int x = -1; x <= 1; x++)
+					for(int z = -1; z <= 1; z++)
+					{
+						BlockPos pos = masterPos.add(x, layer+1, z);
+						world.notifyNeighborsOfStateChange(pos, world.getBlockState(pos).getBlock());
+					}
+			}
+	);
+	private final List<CapabilityReference<IFluidHandler>> fluidNeighbors = new ArrayList<>();
 
 	public SheetmetalTankTileEntity()
 	{
 		super(IEMultiblocks.SHEETMETAL_TANK, IETileTypes.SHEETMETAL_TANK.get(), true);
+		for(Direction f : DirectionUtils.VALUES)
+			if(f!=Direction.UP)
+				fluidNeighbors.add(
+						CapabilityReference.forNeighbor(this, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f)
+				);
 	}
 
 	@Override
@@ -77,14 +101,16 @@ public class SheetmetalTankTileEntity extends MultiblockPartTileEntity<Sheetmeta
 	public void tick()
 	{
 		checkForNeedlessTicking();
-		if(!isDummy()&&!world.isRemote&&!isRSDisabled())
-			for(Direction f : DirectionUtils.VALUES)
-				if(f!=Direction.UP&&tank.getFluidAmount() > 0)
+		if(isDummy()||world.isRemote)
+			return;
+		if(!isRSDisabled())
+			for(CapabilityReference<IFluidHandler> outputRef : fluidNeighbors)
+				if(tank.getFluidAmount() > 0)
 				{
 					int outSize = Math.min(144, tank.getFluidAmount());
 					FluidStack out = Utils.copyFluidStackWithAmount(tank.getFluid(), outSize, false);
-					BlockPos outputPos = getPos().offset(f);
-					FluidUtil.getFluidHandler(world, outputPos, f.getOpposite()).ifPresent(output ->
+					IFluidHandler output = outputRef.getNullable();
+					if(output!=null)
 					{
 						int accepted = output.fill(out, FluidAction.SIMULATE);
 						if(accepted > 0)
@@ -92,10 +118,10 @@ public class SheetmetalTankTileEntity extends MultiblockPartTileEntity<Sheetmeta
 							int drained = output.fill(Utils.copyFluidStackWithAmount(out, Math.min(out.getAmount(), accepted), false), FluidAction.EXECUTE);
 							this.tank.drain(drained, FluidAction.EXECUTE);
 							this.markContainingBlockForUpdate(null);
-							updateComparatorValuesPart2();
 						}
-					});
+					}
 				}
+		comparatorHelper.update(tank.getFluidAmount());
 	}
 
 	@Override
@@ -190,49 +216,10 @@ public class SheetmetalTankTileEntity extends MultiblockPartTileEntity<Sheetmeta
 	public int getComparatorInputOverride()
 	{
 		if(ioBottomOffset.equals(posInMultiblock))
-			return (15*tank.getFluidAmount())/tank.getCapacity();
+			return comparatorHelper.getCurrentMasterOutput();
 		SheetmetalTankTileEntity master = master();
 		if(offsetToMaster.getY() >= 1&&master!=null)//4 layers of storage
-		{
-			FluidTank t = master.tank;
-			int layer = offsetToMaster.getY()-1;
-			int vol = t.getCapacity()/4;
-			int filled = t.getFluidAmount()-layer*vol;
-			return Math.min(15, Math.max(0, (15*filled)/vol));
-		}
+			return master.comparatorHelper.getLayerOutput(offsetToMaster.getY()-1);
 		return 0;
-	}
-
-	private void updateComparatorValuesPart1()
-	{
-		int vol = tank.getCapacity()/4;
-		for(int i = 0; i < 4; i++)
-		{
-			int filled = tank.getFluidAmount()-i*vol;
-			oldComps[i] = Math.min(15, Math.max((15*filled)/vol, 0));
-		}
-		masterCompOld = (15*tank.getFluidAmount())/tank.getCapacity();
-	}
-
-	private void updateComparatorValuesPart2()
-	{
-		int vol = tank.getCapacity()/6;
-		if((15*tank.getFluidAmount())/tank.getCapacity()!=masterCompOld)
-			world.notifyNeighborsOfStateChange(getPos(), getBlockState().getBlock());
-		BlockPos masterPos = pos.subtract(offsetToMaster);
-		for(int i = 0; i < 4; i++)
-		{
-			int filled = tank.getFluidAmount()-i*vol;
-			int now = Math.min(15, Math.max((15*filled)/vol, 0));
-			if(now!=oldComps[i])
-			{
-				for(int x = -1; x <= 1; x++)
-					for(int z = -1; z <= 1; z++)
-					{
-						BlockPos pos = masterPos.add(x, i+1, z);
-						world.notifyNeighborsOfStateChange(pos, world.getBlockState(pos).getBlock());
-					}
-			}
-		}
 	}
 }

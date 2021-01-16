@@ -24,7 +24,7 @@ public class SawbladeItem extends IEBaseItem
 		super(name, new Properties().defaultMaxDamage(maxDamage).setNoRepair());
 		this.sawbladeSpeed = sawbladeSpeed;
 		this.sawbladeDamage = sawbladeDamage;
-		BuzzsawItem.sawblades.add(this);
+		BuzzsawItem.SAWBLADES.add(this);
 	}
 
 	@Override
@@ -35,6 +35,12 @@ public class SawbladeItem extends IEBaseItem
 
 	@Override
 	public boolean isEnchantable(ItemStack stack)
+	{
+		return false;
+	}
+
+	@Override
+	public boolean isBookEnchantable(ItemStack stack, ItemStack book)
 	{
 		return false;
 	}

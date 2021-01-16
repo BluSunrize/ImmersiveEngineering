@@ -1,23 +1,23 @@
 /*
  * BluSunrize
- * Copyright (c) 2017
+ * Copyright (c) 2020
  *
  * This code is licensed under "Blu's License of Common Sense"
  * Details can be found in the license file in the root folder of this project
+ *
  */
 
-package blusunrize.immersiveengineering.common.crafting;
+package blusunrize.immersiveengineering.common.data.recipebuilder;
 
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.data.ShapedRecipeBuilder;
-import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 
 public class RevolverAssemblyRecipeBuilder extends ShapedRecipeBuilder
@@ -55,21 +55,20 @@ public class RevolverAssemblyRecipeBuilder extends ShapedRecipeBuilder
 		super.build(dummyConsumer, id);
 	}
 
-	public static class RevolverResult implements IFinishedRecipe
+	public static class RevolverResult extends WrappedFinishedRecipe
 	{
-		final IFinishedRecipe base;
 		final int[] nbtCopyTargetSlot;
 
 		public RevolverResult(IFinishedRecipe base, int[] nbtCopyTargetSlot)
 		{
-			this.base = base;
+			super(base, RecipeSerializers.REVOLVER_ASSEMBLY_SERIALIZER);
 			this.nbtCopyTargetSlot = nbtCopyTargetSlot;
 		}
 
 		@Override
-		public void serialize(JsonObject json)
+		public void serialize(@Nonnull JsonObject json)
 		{
-			base.serialize(json);
+			super.serialize(json);
 
 			if(nbtCopyTargetSlot!=null)
 			{
@@ -83,32 +82,6 @@ public class RevolverAssemblyRecipeBuilder extends ShapedRecipeBuilder
 				else
 					json.addProperty("copy_nbt", nbtCopyTargetSlot[0]);
 			}
-		}
-
-		@Override
-		public ResourceLocation getID()
-		{
-			return base.getID();
-		}
-
-		@Override
-		public IRecipeSerializer<?> getSerializer()
-		{
-			return RecipeSerializers.REVOLVER_ASSEMBLY_SERIALIZER.get();
-		}
-
-		@Nullable
-		@Override
-		public JsonObject getAdvancementJson()
-		{
-			return base.getAdvancementJson();
-		}
-
-		@Nullable
-		@Override
-		public ResourceLocation getAdvancementID()
-		{
-			return base.getAdvancementID();
 		}
 	}
 }

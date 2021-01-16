@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.IPostBlock;
 import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
-import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
+import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IModelDataBlock;
@@ -52,6 +52,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.model.data.IModelData;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -398,10 +399,16 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBloc
 
 	@Nonnull
 	@Override
-	public BlockPos getModelOffset(BlockState state)
+	public BlockPos getModelOffset(BlockState state, @Nullable Vector3i size)
 	{
 		HorizontalOffset d = state.get(HORIZONTAL_OFFSET);
 		return new BlockPos(0, state.get(POST_SLAVE), 0).add(d.getOffset());
+	}
+
+	@Override
+	public int getOpacity(@Nonnull BlockState state, @Nonnull IBlockReader worldIn, @Nonnull BlockPos pos)
+	{
+		return 0;
 	}
 
 	enum HorizontalOffset implements IStringSerializable

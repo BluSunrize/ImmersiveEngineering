@@ -23,7 +23,9 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDecoration;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.WorldMap;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
@@ -75,14 +77,12 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 
-import static java.util.Collections.newSetFromMap;
-
 //TODO use cap references
 public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe, IAdvancedHasObjProperty,
 		IOBJModelCallback<BlockState>, IColouredTile, IPlayerInteraction, IHammerInteraction, IPlacementInteraction,
 		ISelectionBounds, ICollisionBounds, IAdditionalDrops
 {
-	static ConcurrentHashMap<BlockPos, Set<DirectionalFluidOutput>> indirectConnections = new ConcurrentHashMap<>();
+	static WorldMap<BlockPos, Set<DirectionalFluidOutput>> indirectConnections = new WorldMap<>();
 	public static ArrayList<Predicate<Block>> validPipeCovers = new ArrayList<>();
 	public static ArrayList<Predicate<Block>> climbablePipeCovers = new ArrayList<>();
 
@@ -116,8 +116,11 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 
 	public static Set<DirectionalFluidOutput> getConnectedFluidHandlers(BlockPos node, World world)
 	{
-		if(indirectConnections.containsKey(node))
-			return indirectConnections.get(node);
+		if(world.isRemote)
+			return ImmutableSet.of();
+		Set<DirectionalFluidOutput> cachedResult = indirectConnections.get(world, node);
+		if(cachedResult!=null)
+			return cachedResult;
 
 		ArrayList<BlockPos> openList = new ArrayList<>();
 		ArrayList<BlockPos> closedList = new ArrayList<>();
@@ -131,9 +134,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 			{
 				if(pipeTile instanceof FluidPipeTileEntity)
 					closedList.add(next);
-				for(int i = 0; i < 6; i++)
-				{
-					Direction fd = Direction.byIndex(i);
+				for(Direction fd : DirectionUtils.VALUES)
 					if(((IFluidPipe)pipeTile).hasOutputConnection(fd))
 					{
 						BlockPos nextPos = next.offset(fd);
@@ -152,18 +153,10 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 								});
 							}
 					}
-				}
 			}
 			openList.remove(0);
 		}
-		if(!world.isRemote)
-		{
-			if(!indirectConnections.containsKey(node))
-			{
-				indirectConnections.put(node, newSetFromMap(new ConcurrentHashMap<>()));
-				indirectConnections.get(node).addAll(fluidHandlers);
-			}
-		}
+		indirectConnections.put(world, node, fluidHandlers);
 		return fluidHandlers;
 	}
 
@@ -192,7 +185,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 	{
 		super.remove();
 		if(world!=null&&!world.isRemote)
-			indirectConnections.clear();
+			indirectConnections.clearDimension(world);
 	}
 
 	@Override
@@ -372,11 +365,12 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 				otherPos.getY()-pos.getY(), otherPos.getZ()-pos.getZ());
 		if(updateConnectionByte(dir))
 		{
+			World world = getWorldNonnull();
 			world.notifyNeighborsOfStateExcept(pos, getBlockState().getBlock(), dir);
 			markContainingBlockForUpdate(null);
+			if(!world.isRemote)
+				indirectConnections.clearDimension(world);
 		}
-		if(!getWorldNonnull().isRemote)
-			indirectConnections.clear();
 	}
 
 	static class PipeFluidHandler implements IFluidHandler
@@ -423,10 +417,10 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 			int canAccept = resource.getAmount();
 			if(canAccept <= 0)
 				return 0;
-			ArrayList<DirectionalFluidOutput> outputList = new ArrayList<>(getConnectedFluidHandlers(pipe.getPos(), pipe.world));
+			Set<DirectionalFluidOutput> outputList = getConnectedFluidHandlers(pipe.getPos(), pipe.world);
 
 			if(outputList.size() < 1)
-//NO OUTPUTS!
+				//NO OUTPUTS!
 				return 0;
 			BlockPos ccFrom = new BlockPos(pipe.getPos().offset(facing));
 			int sum = 0;
@@ -495,7 +489,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 			if(maxDrain <= 0)
 				return FluidStack.EMPTY;
 
-			ArrayList<DirectionalFluidOutput> outputList = new ArrayList<>(getConnectedFluidHandlers(pipe.getPos(), pipe.world));
+			List<DirectionalFluidOutput> outputList = new ArrayList<>(getConnectedFluidHandlers(pipe.getPos(), pipe.world));
 			BlockPos ccFrom = new BlockPos(pipe.getPos().offset(facing));
 			outputList.removeIf(output -> ccFrom.equals(output.containingTile.getPos()));
 
@@ -1094,7 +1088,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 		{
 			toggleSide(fd);
 			this.markContainingBlockForUpdate(null);
-			FluidPipeTileEntity.indirectConnections.clear();
+			FluidPipeTileEntity.indirectConnections.clearDimension(world);
 			return true;
 		}
 		return false;

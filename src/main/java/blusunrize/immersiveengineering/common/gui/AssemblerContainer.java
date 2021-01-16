@@ -13,6 +13,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.InvWrapper;
 
 import javax.annotation.Nonnull;
 
@@ -25,11 +27,12 @@ public class AssemblerContainer extends IEBaseContainer<AssemblerTileEntity>
 		for(int i = 0; i < tile.patterns.length; i++)
 		{
 			this.tile.patterns[i].recalculateOutput();
+			IItemHandler itemHandler = new InvWrapper(this.tile.patterns[i]);
 			for(int j = 0; j < 9; j++)
 			{
 				int x = 9+i*58+(j%3)*18;
 				int y = 7+(j/3)*18;
-				this.addSlot(new IESlot.Ghost(this, tile.patterns[i], j, x, y));
+				this.addSlot(new IESlot.ItemHandlerGhost(itemHandler, j, x, y));
 			}
 			this.addSlot(new IESlot.Output(this, this.inv, 18+i, 27+i*58, 64));
 		}
@@ -51,7 +54,7 @@ public class AssemblerContainer extends IEBaseContainer<AssemblerTileEntity>
 		ItemStack stack = ItemStack.EMPTY;
 		Slot slotObject = inventorySlots.get(slot);
 
-		if(slotObject!=null&&slotObject.getHasStack()&&!(slotObject instanceof IESlot.Ghost))
+		if(slotObject!=null&&slotObject.getHasStack()&&!(slotObject instanceof IESlot.ItemHandlerGhost))
 		{
 			ItemStack stackInSlot = slotObject.getStack();
 			stack = stackInSlot.copy();

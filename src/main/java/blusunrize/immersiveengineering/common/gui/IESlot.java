@@ -9,7 +9,10 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.crafting.*;
+import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
+import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
+import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
+import blusunrize.immersiveengineering.api.crafting.ClocheFertilizer;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
@@ -39,6 +42,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
 import javax.annotation.Nonnull;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -172,11 +176,19 @@ public abstract class IESlot extends Slot
 	public static class WithPredicate extends SlotItemHandler
 	{
 		final Predicate<ItemStack> predicate;
+		final Consumer<ItemStack> onChange;
 
 		public WithPredicate(IItemHandler inv, int id, int x, int y, Predicate<ItemStack> predicate)
 		{
+			this(inv, id, x, y, predicate, s -> {
+			});
+		}
+
+		public WithPredicate(IItemHandler inv, int id, int x, int y, Predicate<ItemStack> predicate, Consumer<ItemStack> onChange)
+		{
 			super(inv, id, x, y);
 			this.predicate = predicate;
+			this.onChange = onChange;
 		}
 
 		@Override
@@ -189,6 +201,13 @@ public abstract class IESlot extends Slot
 		public int getSlotStackLimit()
 		{
 			return 1;
+		}
+
+		@Override
+		public void onSlotChanged()
+		{
+			super.onSlotChanged();
+			onChange.accept(getStack());
 		}
 	}
 
@@ -407,29 +426,18 @@ public abstract class IESlot extends Slot
 		}
 	}
 
-	public static class Ghost extends IESlot
+	public static class ItemHandlerGhost extends SlotItemHandler
 	{
-		public Ghost(Container container, IInventory inv, int id, int x, int y)
+
+		public ItemHandlerGhost(IItemHandler itemHandler, int index, int xPosition, int yPosition)
 		{
-			super(container, inv, id, x, y);
+			super(itemHandler, index, xPosition, yPosition);
 		}
 
 		@Override
-		public void putStack(ItemStack itemStack)
-		{
-			super.putStack(itemStack);
-		}
-
-		@Override
-		public boolean canTakeStack(PlayerEntity player)
+		public boolean canTakeStack(PlayerEntity playerIn)
 		{
 			return false;
-		}
-
-		@Override
-		public int getSlotStackLimit()
-		{
-			return 1;
 		}
 	}
 

@@ -27,7 +27,8 @@ public class AssemblerMultiblock extends IETemplateMultiblock
 	public AssemblerMultiblock()
 	{
 		super(new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/assembler"),
-				new BlockPos(1, 1, 1), new BlockPos(1, 1, 2), () -> Multiblocks.assembler.getDefaultState());
+				new BlockPos(1, 1, 1), new BlockPos(1, 1, 2), new BlockPos(3, 3, 3),
+				() -> Multiblocks.assembler.getDefaultState());
 	}
 
 	@Override

@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.IETags.MetalTags;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.items.IEItems.Metals;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
@@ -87,5 +88,10 @@ class ItemTags extends ItemTagsProvider
 				.addTag(IETags.ironRod)
 				.addTag(IETags.steelRod);
 		getOrCreateBuilder(IETags.sawblades).addItemEntry(Tools.sawblade);
+		getOrCreateBuilder(IETags.forbiddenInCrates).addItemEntry(Tools.toolbox)
+				.addItemEntry(WoodenDevices.crate.asItem())
+				.addItemEntry(WoodenDevices.reinforcedCrate.asItem())
+				.addItemEntry(Misc.cartWoodenCrate)
+				.addItemEntry(Misc.cartReinforcedCrate);
 	}
 }

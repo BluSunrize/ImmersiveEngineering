@@ -132,7 +132,7 @@ public class SawbladeEntity extends IEProjectileEntity
 	protected void handlePiecing(Entity target)
 	{
 		super.handlePiecing(target);
-		if(this.piercedEntities.size() >= 3)
+		if(this.piercedEntities.size() >= 3 && getShooterUUID() != null)
 		{
 			PlayerEntity shooter = world.getPlayerByUuid(this.getShooterUUID());
 			if(shooter!=null)

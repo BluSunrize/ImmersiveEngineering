@@ -9,8 +9,8 @@
 package blusunrize.immersiveengineering.common.blocks;
 
 import blusunrize.immersiveengineering.api.IEProperties.Model;
-import blusunrize.immersiveengineering.client.utils.CombinedModelData;
-import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
+import blusunrize.immersiveengineering.api.utils.client.CombinedModelData;
+import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
@@ -29,7 +29,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Mirror;
-import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.data.IModelData;
@@ -98,31 +97,6 @@ public abstract class IEBaseTileEntity extends TileEntity implements BlockstateP
 		CompoundNBT nbt = super.getUpdateTag();
 		writeCustomNBT(nbt, true);
 		return nbt;
-	}
-
-	@Override
-	public void rotate(Rotation rot)
-	{
-		if(rot!=Rotation.NONE&&this instanceof IDirectionalTile&&((IDirectionalTile)this).canRotate(Direction.UP))
-		{
-			Direction f = ((IDirectionalTile)this).getFacing();
-			switch(rot)
-			{
-				case CLOCKWISE_90:
-					f = f.rotateY();
-					break;
-				case CLOCKWISE_180:
-					f = f.getOpposite();
-					break;
-				case COUNTERCLOCKWISE_90:
-					f = f.rotateYCCW();
-					break;
-			}
-			((IDirectionalTile)this).setFacing(f);
-			this.markDirty();
-			if(this.pos!=null)
-				this.markBlockForUpdate(this.pos, null);
-		}
 	}
 
 	@Override
@@ -308,7 +282,9 @@ public abstract class IEBaseTileEntity extends TileEntity implements BlockstateP
 	{
 		IModelData base = super.getModelData();
 		if(this instanceof IPropertyPassthrough)
-			return new CombinedModelData(base, new SinglePropertyModelData<>(this, Model.TILEENTITY_PASSTHROUGH));
+			return CombinedModelData.combine(
+					base, new SinglePropertyModelData<>(this, Model.TILEENTITY_PASSTHROUGH)
+			);
 		else
 			return base;
 	}
