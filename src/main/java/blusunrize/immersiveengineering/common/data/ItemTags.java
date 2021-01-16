@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.data;
 
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.IETags.MetalTags;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDevices;
@@ -23,13 +24,14 @@ import net.minecraft.data.ItemTagsProvider;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.data.ExistingFileHelper;
 
 class ItemTags extends ItemTagsProvider
 {
 
-	public ItemTags(DataGenerator gen, BlockTagsProvider blocks)
+	public ItemTags(DataGenerator gen, BlockTagsProvider blocks, ExistingFileHelper existingFileHelper)
 	{
-		super(gen, blocks);
+		super(gen, blocks, Lib.MODID, existingFileHelper);
 	}
 
 	@Override

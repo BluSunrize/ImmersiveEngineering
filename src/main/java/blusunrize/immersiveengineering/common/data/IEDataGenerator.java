@@ -31,19 +31,19 @@ public class IEDataGenerator
 		if(event.includeServer())
 		{
 			gen.addProvider(new Recipes(gen));
-			BlockTagsProvider blockTags = new IEBlockTags(gen);
+			BlockTagsProvider blockTags = new IEBlockTags(gen, EXISTING_HELPER);
 			gen.addProvider(blockTags);
-			gen.addProvider(new ItemTags(gen, blockTags));
-			gen.addProvider(new FluidTags(gen));
+			gen.addProvider(new ItemTags(gen, blockTags, EXISTING_HELPER));
+			gen.addProvider(new FluidTags(gen, EXISTING_HELPER));
 			gen.addProvider(new BlockLoot(gen));
 			gen.addProvider(new GeneralLoot(gen));
-			LoadedModels loadedModels = new LoadedModels(gen, event.getExistingFileHelper());
-			BlockStates blockStates = new BlockStates(gen, event.getExistingFileHelper(), loadedModels);
+			LoadedModels loadedModels = new LoadedModels(gen, EXISTING_HELPER);
+			BlockStates blockStates = new BlockStates(gen, EXISTING_HELPER, loadedModels);
 			gen.addProvider(blockStates);
 			gen.addProvider(loadedModels);
-			gen.addProvider(new ItemModels(gen, event.getExistingFileHelper(), blockStates));
+			gen.addProvider(new ItemModels(gen, EXISTING_HELPER, blockStates));
 			gen.addProvider(new Advancements(gen));
-			gen.addProvider(new TileTags(gen, event.getExistingFileHelper()));
+			gen.addProvider(new TileTags(gen, EXISTING_HELPER));
 		}
 	}
 

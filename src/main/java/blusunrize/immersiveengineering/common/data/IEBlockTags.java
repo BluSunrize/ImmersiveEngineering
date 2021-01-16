@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.data;
 
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.IETags.MetalTags;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDecoration;
@@ -25,13 +26,14 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.item.DyeColor;
 import net.minecraft.tags.BlockTags;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.data.ExistingFileHelper;
 
 class IEBlockTags extends BlockTagsProvider
 {
 
-	public IEBlockTags(DataGenerator gen)
+	public IEBlockTags(DataGenerator gen, ExistingFileHelper existing)
 	{
-		super(gen);
+		super(gen, Lib.MODID, existing);
 	}
 
 	@Override

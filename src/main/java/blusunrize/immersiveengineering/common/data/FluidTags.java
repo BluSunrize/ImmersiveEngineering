@@ -9,15 +9,17 @@
 package blusunrize.immersiveengineering.common.data;
 
 import blusunrize.immersiveengineering.api.IETags;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.IEContent;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.FluidTagsProvider;
+import net.minecraftforge.common.data.ExistingFileHelper;
 
 class FluidTags extends FluidTagsProvider
 {
-	public FluidTags(DataGenerator gen)
+	public FluidTags(DataGenerator gen, ExistingFileHelper existingFileHelper)
 	{
-		super(gen);
+		super(gen, Lib.MODID, existingFileHelper);
 	}
 
 	@Override
