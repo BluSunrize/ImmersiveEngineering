@@ -44,6 +44,8 @@ public class IEDataGenerator
 			gen.addProvider(new ItemModels(gen, EXISTING_HELPER, blockStates));
 			gen.addProvider(new Advancements(gen));
 			gen.addProvider(new TileTags(gen, EXISTING_HELPER));
+			// Always keep this as the last provider!
+			gen.addProvider(new RunCompleteHelper());
 		}
 	}
 
