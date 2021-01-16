@@ -28,6 +28,9 @@ archivesBaseName = 'ImmersiveEngineering'
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
 sourceSets {
+    manual {
+        compileClasspath = main.compileClasspath
+    }
     main {
         resources {
             srcDirs = [
@@ -35,6 +38,8 @@ sourceSets {
                     "$rootDir/src/generated/resources"
             ]
         }
+        runtimeClasspath += manual.output
+        runtimeClasspath += manual.output
     }
 }
 

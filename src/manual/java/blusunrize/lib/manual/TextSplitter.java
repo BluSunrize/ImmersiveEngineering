@@ -36,8 +36,6 @@ import java.util.function.IntSupplier;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static net.minecraft.util.text.TextFormatting.RESET;
-
 @SuppressWarnings("WeakerAccess")
 public class TextSplitter
 {
@@ -452,7 +450,7 @@ public class TextSplitter
 						{
 							if(!textformatting.isFancyStyling())
 								ret.clear();
-							if(textformatting!=RESET)
+							if(textformatting!=TextFormatting.RESET)
 							{
 								ret.remove(textformatting);
 								ret.add(textformatting);
