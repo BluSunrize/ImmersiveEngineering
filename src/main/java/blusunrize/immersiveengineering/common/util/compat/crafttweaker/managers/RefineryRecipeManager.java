@@ -7,7 +7,6 @@
  */
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker.managers;
 
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.RefineryRecipe;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CrTIngredientUtil;
@@ -117,7 +116,7 @@ public class RefineryRecipeManager implements IRecipeManager
 	@ZenCodeType.Method
 	public void addRecipe(String recipePath, MCTag<Fluid> fluidInput1, int amount1, MCTag<Fluid> fluidInput2, int amount2, int energy, IFluidStack output)
 	{
-		final ResourceLocation resourceLocation = new ResourceLocation(Lib.MODID, recipePath);
+		final ResourceLocation resourceLocation = new ResourceLocation("crafttweaker", recipePath);
 		final FluidStack outputStack = output.getInternal();
 
 		final FluidTagInput tagInput1 = CrTIngredientUtil.getFluidTagInput(fluidInput1, amount1);
