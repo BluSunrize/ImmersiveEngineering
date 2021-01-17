@@ -7,7 +7,6 @@
  */
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker.managers;
 
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
 import blusunrize.immersiveengineering.api.crafting.StackWithChance;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CrTIngredientUtil;
@@ -100,7 +99,7 @@ public class CrusherRecipeManager implements IRecipeManager
 	@ZenCodeType.Method
 	public void addRecipe(String recipePath, IIngredient input, int energy, IItemStack mainOutput, MCWeightedItemStack... additionalOutputs)
 	{
-		final ResourceLocation resourceLocation = new ResourceLocation(Lib.MODID, recipePath);
+		final ResourceLocation resourceLocation = new ResourceLocation("crafttweaker", recipePath);
 
 		final ItemStack result = mainOutput.getInternal();
 		final Ingredient ingredient = input.asVanillaIngredient();

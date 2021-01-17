@@ -7,7 +7,6 @@
  */
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker.managers;
 
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CrTIngredientUtil;
@@ -69,7 +68,7 @@ public class ArcFurnaceRecipeManager implements IRecipeManager
 	@ZenCodeType.Method
 	public void addRecipe(String recipePath, IIngredient mainIngredient, IIngredient[] additives, int time, int energy, IItemStack[] outputs, @ZenCodeType.Optional("<item:minecraft:air>") IItemStack slag)
 	{
-		final ResourceLocation resourceLocation = new ResourceLocation(Lib.MODID, recipePath);
+		final ResourceLocation resourceLocation = new ResourceLocation("crafttweaker", recipePath);
 		final NonNullList<ItemStack> outputList = CrTIngredientUtil.getNonNullList(outputs);
 		final IngredientWithSize main = CrTIngredientUtil.getIngredientWithSize(mainIngredient);
 		final IngredientWithSize[] additivesWithSize = CrTIngredientUtil.getIngredientsWithSize(additives);

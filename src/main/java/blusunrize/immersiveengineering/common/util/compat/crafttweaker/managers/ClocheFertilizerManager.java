@@ -7,7 +7,6 @@
  */
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker.managers;
 
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.ClocheFertilizer;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.actions.AbstractActionGenericRemoveRecipe;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.actions.ActionAddRecipeCustomOutput;
@@ -16,7 +15,6 @@ import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.api.item.IIngredient;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.managers.IRecipeManager;
-import com.blamejared.crafttweaker.impl.actions.recipes.ActionAddRecipe;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.ResourceLocation;
@@ -54,7 +52,7 @@ public class ClocheFertilizerManager implements IRecipeManager
 	@ZenCodeType.Method
 	public void addFertilizer(String recipePath, IIngredient fertilizer, float fertilizerValue)
 	{
-		final ResourceLocation resourceLocation = new ResourceLocation(Lib.MODID, recipePath);
+		final ResourceLocation resourceLocation = new ResourceLocation("crafttweaker", recipePath);
 		final ClocheFertilizer recipe = new ClocheFertilizer(resourceLocation, fertilizer.asVanillaIngredient(), fertilizerValue);
 		CraftTweakerAPI.apply(new ActionAddRecipeCustomOutput(this, recipe, fertilizer));
 	}

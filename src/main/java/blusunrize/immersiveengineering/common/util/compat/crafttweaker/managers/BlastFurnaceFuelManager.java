@@ -7,7 +7,6 @@
  */
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker.managers;
 
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.actions.AbstractActionGenericRemoveRecipe;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.actions.ActionAddRecipeCustomOutput;
@@ -54,7 +53,7 @@ public class BlastFurnaceFuelManager implements IRecipeManager
 	@ZenCodeType.Method
 	public void addFuel(String recipePath, IIngredient fuel, int burnTime)
 	{
-		final ResourceLocation resourceLocation = new ResourceLocation(Lib.MODID, recipePath);
+		final ResourceLocation resourceLocation = new ResourceLocation("crafttweaker", recipePath);
 		final BlastFurnaceFuel recipe = new BlastFurnaceFuel(resourceLocation, fuel.asVanillaIngredient(), burnTime);
 		CraftTweakerAPI.apply(new ActionAddRecipeCustomOutput(this, recipe, fuel));
 	}

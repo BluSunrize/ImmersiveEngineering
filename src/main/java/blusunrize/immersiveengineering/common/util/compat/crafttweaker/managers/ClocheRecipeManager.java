@@ -7,7 +7,6 @@
  */
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker.managers;
 
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
 import blusunrize.immersiveengineering.api.crafting.ClocheRenderFunction;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CrTIngredientUtil;
@@ -104,7 +103,7 @@ public class ClocheRecipeManager implements IRecipeManager
 	@ZenCodeType.Method
 	public void addRecipe(String recipePath, IIngredient seed, IIngredient soil, int time, IItemStack[] outputs, Block renderBlock, @ZenCodeType.Optional("\"generic\"") String renderType)
 	{
-		final ResourceLocation resourceLocation = new ResourceLocation(Lib.MODID, recipePath);
+		final ResourceLocation resourceLocation = new ResourceLocation("crafttweaker", recipePath);
 		final List<ItemStack> outputList = CrTIngredientUtil.getNonNullList(outputs);
 		final Ingredient seedIngredient = seed.asVanillaIngredient();
 		final Ingredient soilIngredient = soil.asVanillaIngredient();

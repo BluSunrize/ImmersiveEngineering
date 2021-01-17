@@ -7,7 +7,6 @@
  */
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker.managers;
 
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CrTIngredientUtil;
@@ -64,7 +63,7 @@ public class BlueprintCraftingRecipeManager implements IRecipeManager
 	@ZenCodeType.Method
 	public void addRecipe(String recipePath, String blueprintCategory, IIngredient[] inputs, IItemStack output)
 	{
-		final ResourceLocation resourceLocation = new ResourceLocation(Lib.MODID, recipePath);
+		final ResourceLocation resourceLocation = new ResourceLocation("crafttweaker", recipePath);
 		final IngredientWithSize[] ingredients = CrTIngredientUtil.getIngredientsWithSize(inputs);
 		final ItemStack results = output.getInternal();
 		final BlueprintCraftingRecipe recipe = new BlueprintCraftingRecipe(resourceLocation, blueprintCategory, results, ingredients);
