@@ -8,8 +8,6 @@
 
 package blusunrize.immersiveengineering.api;
 
-
-import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import com.google.common.base.Preconditions;
 import net.minecraft.block.Block;
 import net.minecraft.fluid.Fluid;
@@ -24,6 +22,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.BiConsumer;
 
+import static blusunrize.immersiveengineering.api.utils.TagUtils.*;
 import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
 import static blusunrize.immersiveengineering.api.utils.TagUtils.*;
 
@@ -208,5 +207,9 @@ public class IETags
 	public static ResourceLocation getSheetmetalBlock(String type)
 	{
 		return forgeLoc("sheetmetals/"+type);
+	}
+
+	private static ResourceLocation rl(String path) {
+		return new ResourceLocation(Lib.MODID, path);
 	}
 }

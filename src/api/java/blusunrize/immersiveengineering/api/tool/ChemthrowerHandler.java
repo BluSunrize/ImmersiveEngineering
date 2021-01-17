@@ -8,10 +8,9 @@
 
 package blusunrize.immersiveengineering.api.tool;
 
-import blusunrize.immersiveengineering.common.util.Utils;
-import blusunrize.immersiveengineering.mixin.accessors.ConcretePowderBlockAccess;
+import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import net.minecraft.block.Block;
-import net.minecraft.block.ConcretePowderBlock;
 import net.minecraft.block.FireBlock;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.monster.BlazeEntity;
@@ -36,13 +35,12 @@ import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.BiConsumer;
 
 public class ChemthrowerHandler
 {
+	public static final SetRestrictedField<BiConsumer<World, BlockPos>> SOLIDIFY_CONCRETE_POWDER = new SetRestrictedField<>();
 	public static List<Pair<ITag<Fluid>, ChemthrowerEffect>> effectList = new ArrayList<>();
 	public static HashSet<ITag<Fluid>> flammableList = new HashSet<>();
 
@@ -139,8 +137,7 @@ public class ChemthrowerHandler
 			super(source, damage);
 			this.potionEffects = effects;
 			this.effectChances = new float[potionEffects.length];
-			for(int i = 0; i < this.effectChances.length; i++)
-				this.effectChances[i] = 1;
+			Arrays.fill(this.effectChances, 1);
 		}
 
 		public ChemthrowerEffect_Potion(DamageSource source, float damage, Effect potion, int duration, int amplifier)
@@ -165,7 +162,7 @@ public class ChemthrowerHandler
 					{
 						EffectInstance e = this.potionEffects[iEffect];
 						EffectInstance newEffect = new EffectInstance(e.getPotion(), e.getDuration(), e.getAmplifier());
-						newEffect.setCurativeItems(new ArrayList(e.getCurativeItems()));
+						newEffect.setCurativeItems(new ArrayList<>(e.getCurativeItems()));
 						target.addPotionEffect(newEffect);
 					}
 		}
@@ -199,13 +196,11 @@ public class ChemthrowerHandler
 			BlockRayTraceResult rtr = (BlockRayTraceResult)mop;
 			// Interactions with block at target position
 			BlockPos pos = rtr.getPos();
-			Block b = world.getBlockState(pos).getBlock();
-			if(b instanceof ConcretePowderBlock)
-				world.setBlockState(pos, ((ConcretePowderBlockAccess)b).getSolidifiedState(), 3);
+			SOLIDIFY_CONCRETE_POWDER.getValue().accept(world, pos);
 
 			// Interactions with block at offset position
 			pos = rtr.getPos().offset(rtr.getFace());
-			b = world.getBlockState(pos).getBlock();
+			Block b = world.getBlockState(pos).getBlock();
 			if(b instanceof FireBlock)
 				world.removeBlock(pos, false);
 		}
@@ -225,11 +220,11 @@ public class ChemthrowerHandler
 		public void applyToEntity(LivingEntity target, PlayerEntity shooter, ItemStack thrower, Fluid fluid)
 		{
 			super.applyToEntity(target, shooter, thrower, fluid);
-			if(Utils.RAND.nextFloat() < chance)
+			if(ApiUtils.RANDOM.nextFloat() < chance)
 			{
-				double x = target.getPosX()-8+Utils.RAND.nextInt(17);
-				double y = target.getPosY()+Utils.RAND.nextInt(8);
-				double z = target.getPosZ()-8+Utils.RAND.nextInt(17);
+				double x = target.getPosX()-8+ApiUtils.RANDOM.nextInt(17);
+				double y = target.getPosY()+ApiUtils.RANDOM.nextInt(8);
+				double z = target.getPosZ()-8+ApiUtils.RANDOM.nextInt(17);
 				if(!target.world.getBlockState(new BlockPos(x, y, z)).getMaterial().isSolid())
 				{
 					EnderTeleportEvent event = new EnderTeleportEvent(target, x, y, z, 0);

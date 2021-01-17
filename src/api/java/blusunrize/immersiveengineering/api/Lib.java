@@ -9,8 +9,6 @@
 package blusunrize.immersiveengineering.api;
 
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import net.minecraft.item.IItemTier;
 import net.minecraft.item.Rarity;
 import net.minecraft.item.crafting.Ingredient;
@@ -19,7 +17,7 @@ import net.minecraft.util.text.TextFormatting;
 
 public class Lib
 {
-	public static final String MODID = ImmersiveEngineering.MODID;
+	public static final String MODID = "immersiveengineering";
 
 	public static final String[] METALS_IE = {"Copper", "Aluminum", "Lead", "Silver", "Nickel", "Uranium", "Constantan", "Electrum", "Steel"};
 	public static final String[] METALS_ALL = {"Copper", "Aluminum", "Lead", "Silver", "Nickel", "Uranium", "Constantan", "Electrum", "Steel", "Iron", "Gold"};

@@ -45,8 +45,8 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static blusunrize.immersiveengineering.common.util.SafeChunkUtils.getSafeTE;
-import static blusunrize.immersiveengineering.common.util.SafeChunkUtils.isChunkSafe;
+import static blusunrize.immersiveengineering.api.utils.SafeChunkUtils.getSafeTE;
+import static blusunrize.immersiveengineering.api.utils.SafeChunkUtils.isChunkSafe;
 
 @EventBusSubscriber(modid = Lib.MODID)
 public class GlobalWireNetwork implements IWorldTickable

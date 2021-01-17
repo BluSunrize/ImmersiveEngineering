@@ -9,8 +9,8 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
+import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import blusunrize.immersiveengineering.api.utils.ItemUtils;
-import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -193,7 +193,7 @@ public class FluidTagInput implements Predicate<FluidStack>
 			FluidStack inTank = handler.getFluidInTank(tank);
 			if(testIgnoringAmount(inTank))
 			{
-				FluidStack toExtract = Utils.copyFluidStackWithAmount(inTank, this.amount, false);
+				FluidStack toExtract = FluidUtils.copyFluidStackWithAmount(inTank, this.amount);
 				FluidStack extractedSim = handler.drain(toExtract, FluidAction.SIMULATE);
 				if(extractedSim.getAmount() >= this.amount)
 				{

@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.utils.ItemUtils;
-import blusunrize.immersiveengineering.common.util.ListUtils;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
@@ -44,7 +43,7 @@ public class SawmillRecipe extends MultiblockRecipe
 		setTimeAndEnergy(80, energy);
 
 		setInputList(Lists.newArrayList(this.input));
-		this.outputList = ListUtils.fromItem(this.output);
+		this.outputList = NonNullList.from(ItemStack.EMPTY, this.output);
 	}
 
 	@Override

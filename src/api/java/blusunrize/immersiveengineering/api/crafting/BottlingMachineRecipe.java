@@ -10,11 +10,11 @@ package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.utils.ItemUtils;
-import blusunrize.immersiveengineering.common.util.ListUtils;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.RegistryObject;
@@ -45,7 +45,7 @@ public class BottlingMachineRecipe extends MultiblockRecipe
 
 		setInputList(Lists.newArrayList(this.input));
 		this.fluidInputList = Lists.newArrayList(this.fluidInput);
-		this.outputList = ListUtils.fromItem(this.output);
+		this.outputList = NonNullList.from(ItemStack.EMPTY, this.output);
 	}
 
 	@Override

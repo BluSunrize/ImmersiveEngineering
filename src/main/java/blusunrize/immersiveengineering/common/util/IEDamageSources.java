@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.util;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.IElectricEquipment;
 import blusunrize.immersiveengineering.api.tool.IElectricEquipment.ElectricSource;
+import blusunrize.immersiveengineering.api.wires.utils.IElectricDamageSource;
 import blusunrize.immersiveengineering.common.entities.RailgunShotEntity;
 import blusunrize.immersiveengineering.common.entities.RevolvershotEntity;
 import blusunrize.immersiveengineering.common.entities.SawbladeEntity;
@@ -48,7 +49,7 @@ public class IEDamageSources
 		}
 	}
 
-	public static class ElectricDamageSource extends DamageSource
+	public static class ElectricDamageSource extends DamageSource implements IElectricDamageSource
 	{
 		public IElectricEquipment.ElectricSource source;
 		public float dmg;
@@ -61,6 +62,7 @@ public class IEDamageSources
 			setDamageBypassesArmor();
 		}
 
+		@Override
 		public boolean apply(Entity e)
 		{
 			if(e instanceof LivingEntity)
@@ -68,6 +70,12 @@ public class IEDamageSources
 			if(dmg > 0)
 				e.attackEntityFrom(this, dmg);
 			return dmg > 0;
+		}
+
+		@Override
+		public float getDamage()
+		{
+			return dmg;
 		}
 	}
 

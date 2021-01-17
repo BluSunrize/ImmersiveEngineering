@@ -43,7 +43,6 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -67,10 +66,9 @@ public class IEManual
 {
 	public static void initManual()
 	{
+		IEManualInstance ieMan = new IEManualInstance();
+		ManualHelper.IE_MANUAL_INSTANCE.setValue(ieMan);
 
-		ManualHelper.ieManualInstance = new IEManualInstance();
-
-		IEManualInstance ieMan = ManualHelper.getManual();
 		ieMan.registerSpecialElement(new ResourceLocation(MODID, "blueprint"),
 				s -> {
 					ItemStack[] stacks;
@@ -106,7 +104,7 @@ public class IEManual
 
 	public static void addIEManualEntries()
 	{
-		IEManualInstance ieMan = ManualHelper.getManual();
+		IEManualInstance ieMan = (IEManualInstance)ManualHelper.getManual();
 		InnerNode<ResourceLocation, ManualEntry> generalCat = ieMan.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
 				ManualHelper.CAT_GENERAL), 0);
 		InnerNode<ResourceLocation, ManualEntry> energyCat = ieMan.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,

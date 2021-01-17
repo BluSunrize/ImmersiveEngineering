@@ -9,7 +9,6 @@
 
 package blusunrize.immersiveengineering.api.excavator;
 
-import blusunrize.immersiveengineering.common.IESaveData;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.ResourceLocationException;
@@ -75,7 +74,7 @@ public class MineralVein
 		if(!isDepleted())
 		{
 			depletion++;
-			IESaveData.setDirty();
+			ExcavatorHandler.MARK_SAVE_DATA_DIRTY.getValue().run();
 		}
 	}
 

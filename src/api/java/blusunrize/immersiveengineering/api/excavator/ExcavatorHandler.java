@@ -9,8 +9,8 @@
 
 package blusunrize.immersiveengineering.api.excavator;
 
-import blusunrize.immersiveengineering.common.IESaveData;
-import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.util.RegistryKey;
@@ -35,6 +35,7 @@ public class ExcavatorHandler
 	private static final Multimap<RegistryKey<World>, MineralVein> MINERAL_VEIN_LIST = ArrayListMultimap.create();
 	// Only access when synchronized on MINERAL_VEIN_LIST
 	private static final Map<Pair<RegistryKey<World>, ColumnPos>, MineralWorldInfo> MINERAL_INFO_CACHE = new HashMap<>();
+	static final SetRestrictedField<Runnable> MARK_SAVE_DATA_DIRTY = new SetRestrictedField<>();
 	public static int mineralVeinYield = 0;
 	public static double initialVeinDepletion = 0;
 	public static double mineralNoiseThreshold = 0;
@@ -46,7 +47,7 @@ public class ExcavatorHandler
 		if(world.isRemote)
 			return null;
 		MineralWorldInfo info = getMineralWorldInfo(world, pos);
-		return info.getMineralVein(Utils.RAND);
+		return info.getMineralVein(ApiUtils.RANDOM);
 	}
 
 	// Always call "resetCache" after modifying the map returned here!
@@ -159,7 +160,7 @@ public class ExcavatorHandler
 						if(initialVeinDepletion > 0)
 							vein.setDepletion((int)(mineralVeinYield*(rand.nextDouble()*initialVeinDepletion)));
 						addVein(world.getDimensionKey(), vein);
-						IESaveData.setDirty();
+						MARK_SAVE_DATA_DIRTY.getValue().run();
 					}
 				}
 			}
@@ -180,6 +181,10 @@ public class ExcavatorHandler
 		{
 			MINERAL_INFO_CACHE.clear();
 		}
+	}
+
+	public static void setSetDirtyCallback(Runnable setDirty) {
+		MARK_SAVE_DATA_DIRTY.setValue(setDirty);
 	}
 
 	public static class MineralSelection

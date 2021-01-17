@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.api.wires.localhandlers;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.api.wires.utils.BinaryHeap;
 import blusunrize.immersiveengineering.api.wires.utils.BinaryHeap.HeapEntry;
@@ -30,7 +30,7 @@ import java.util.function.Predicate;
 
 public class EnergyTransferHandler extends LocalNetworkHandler implements IWorldTickable
 {
-	public static final ResourceLocation ID = new ResourceLocation(ImmersiveEngineering.MODID, "energy_transfer");
+	public static final ResourceLocation ID = new ResourceLocation(Lib.MODID, "energy_transfer");
 
 	private final Map<ConnectionPoint, Map<ConnectionPoint, Path>> energyPaths = new HashMap<>();
 	private Object2DoubleOpenHashMap<Connection> transferredNextTick = new Object2DoubleOpenHashMap<>();

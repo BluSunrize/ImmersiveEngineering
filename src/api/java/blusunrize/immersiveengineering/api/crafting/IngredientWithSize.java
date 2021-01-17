@@ -9,7 +9,7 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
-import blusunrize.immersiveengineering.common.crafting.IngredientWithSizeSerializer;
+import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import com.google.gson.JsonElement;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -24,6 +24,7 @@ import java.util.function.Predicate;
 
 public class IngredientWithSize implements Predicate<ItemStack>
 {
+	public static final SetRestrictedField<IIngredientWithSizeSerializer> SERIALIZER = new SetRestrictedField<>();
 	protected final Ingredient basePredicate;
 	protected final int count;
 
@@ -50,12 +51,12 @@ public class IngredientWithSize implements Predicate<ItemStack>
 
 	public static IngredientWithSize deserialize(JsonElement input)
 	{
-		return IngredientWithSizeSerializer.INSTANCE.parse(input);
+		return SERIALIZER.getValue().parse(input);
 	}
 
 	public static IngredientWithSize read(PacketBuffer input)
 	{
-		return IngredientWithSizeSerializer.INSTANCE.parse(input);
+		return SERIALIZER.getValue().parse(input);
 	}
 
 	@Override
@@ -79,7 +80,7 @@ public class IngredientWithSize implements Predicate<ItemStack>
 	@Nonnull
 	public JsonElement serialize()
 	{
-		return IngredientWithSizeSerializer.INSTANCE.write(this);
+		return SERIALIZER.getValue().write(this);
 	}
 
 	public boolean hasNoMatchingItems()
@@ -120,6 +121,6 @@ public class IngredientWithSize implements Predicate<ItemStack>
 
 	public void write(PacketBuffer out)
 	{
-		IngredientWithSizeSerializer.INSTANCE.write(out, this);
+		SERIALIZER.getValue().write(out, this);
 	}
 }

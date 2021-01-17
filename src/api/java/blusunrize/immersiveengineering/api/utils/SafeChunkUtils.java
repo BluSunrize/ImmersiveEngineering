@@ -6,9 +6,9 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.common.util;
+package blusunrize.immersiveengineering.api.utils;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.Lib;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
-@EventBusSubscriber(modid = ImmersiveEngineering.MODID)
+@EventBusSubscriber(modid = Lib.MODID)
 public class SafeChunkUtils
 {
 	private static final Map<IWorld, Set<ChunkPos>> unloadingChunks = new WeakHashMap<>();

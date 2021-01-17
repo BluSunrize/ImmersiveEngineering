@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.api.utils;
 
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
-import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -31,7 +30,7 @@ import java.util.Collection;
 
 public class ItemUtils
 {
-	private static Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
 	public static CompoundNBT parseNbtFromJson(JsonElement jsonElement) throws CommandSyntaxException
 	{
@@ -50,7 +49,7 @@ public class ItemUtils
 	{
 		if(o instanceof ItemStack)
 			return ItemStack.areItemsEqual((ItemStack)o, stack)&&
-					(!checkNBT||Utils.compareItemNBT((ItemStack)o, stack));
+					(!checkNBT||ItemStack.areItemStackTagsEqual((ItemStack)o, stack));
 		else if(o instanceof Collection)
 		{
 			for(Object io : (Collection)o)
@@ -64,7 +63,7 @@ public class ItemUtils
 		else if(o instanceof ItemStack[])
 		{
 			for(ItemStack io : (ItemStack[])o)
-				if(ItemStack.areItemsEqual(io, stack)&&(!checkNBT||Utils.compareItemNBT(io, stack)))
+				if(ItemStack.areItemsEqual(io, stack)&&(!checkNBT||ItemStack.areItemStackTagsEqual(io, stack)))
 					return true;
 		}
 		else if(o instanceof FluidStack)

@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.api.tool;
 
-import blusunrize.immersiveengineering.common.items.IEItems.Weapons;
+import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Supplier;
 import com.google.common.collect.BiMap;
@@ -31,6 +31,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.DoubleSupplier;
+import java.util.function.Function;
 
 /**
  * @author BluSunrize - 12.08.2016
@@ -40,6 +41,7 @@ import java.util.function.DoubleSupplier;
 
 public class BulletHandler
 {
+	public static final SetRestrictedField<Function<IBullet, Item>> GET_BULLET_ITEM = new SetRestrictedField<>();
 	public static ItemStack emptyCasing = ItemStack.EMPTY;
 	public static ItemStack emptyShell = ItemStack.EMPTY;
 
@@ -71,7 +73,7 @@ public class BulletHandler
 
 	public static Item getBulletItem(ResourceLocation key)
 	{
-		return Weapons.bullets.get(getBullet(key));
+		return GET_BULLET_ITEM.getValue().apply(getBullet(key));
 	}
 
 	public static Collection<ResourceLocation> getAllKeys()

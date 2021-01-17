@@ -8,9 +8,8 @@
 
 package blusunrize.immersiveengineering.api.wires;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.common.util.IELogger;
-import blusunrize.immersiveengineering.common.util.SafeChunkUtils;
+import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.utils.SafeChunkUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -21,7 +20,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 import java.util.*;
 
-@EventBusSubscriber(modid = ImmersiveEngineering.MODID)
+@EventBusSubscriber(modid = Lib.MODID)
 public class NetworkSanitizer
 {
 	private static final Map<IWorld, Set<ChunkPos>> toSanitize = new WeakHashMap<>();
@@ -60,7 +59,7 @@ public class NetworkSanitizer
 				for(BlockPos pos : missingConnectors)
 					global.removeConnector(pos);
 				if(!extraCPs.isEmpty()||!missingConnectors.isEmpty())
-					IELogger.logger.info("Removed {} extra connection points and {} missing connectors",
+					WireLogger.logger.info("Removed {} extra connection points and {} missing connectors",
 							extraCPs.size(), missingConnectors.size());
 				iterator.remove();
 			}

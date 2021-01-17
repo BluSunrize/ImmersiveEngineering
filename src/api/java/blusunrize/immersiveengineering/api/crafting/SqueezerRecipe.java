@@ -9,11 +9,11 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.util.ListUtils;
 import com.google.common.collect.Lists;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fluids.FluidStack;
@@ -47,7 +47,7 @@ public class SqueezerRecipe extends MultiblockRecipe
 
 		setInputListWithSizes(Lists.newArrayList(this.input));
 		this.fluidOutputList = Lists.newArrayList(this.fluidOutput);
-		this.outputList = ListUtils.fromItem(this.itemOutput);
+		this.outputList = NonNullList.from(ItemStack.EMPTY, this.itemOutput);
 	}
 
 	@Override

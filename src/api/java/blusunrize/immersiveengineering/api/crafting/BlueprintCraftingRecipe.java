@@ -9,11 +9,10 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.items.IEItems.Misc;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import blusunrize.immersiveengineering.common.util.ListUtils;
+import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.NonNullList;
@@ -42,6 +41,7 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 	// Initialized by reload listener
 	public static Map<ResourceLocation, BlueprintCraftingRecipe> recipeList = Collections.emptyMap();
 	private static Map<String, List<BlueprintCraftingRecipe>> recipesByCategory = Collections.emptyMap();
+	public static SetRestrictedField<Item> blueprintItem = new SetRestrictedField<>();
 
 	public String blueprintCategory;
 	public ItemStack output;
@@ -55,7 +55,7 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 		this.inputs = inputs;
 
 		setInputListWithSizes(Lists.newArrayList(this.inputs));
-		this.outputList = ListUtils.fromItem(this.output);
+		this.outputList = NonNullList.from(ItemStack.EMPTY, this.output);
 
 		//Time and energy values are for the automatic workbench
 		setTimeAndEnergy(180, 23040);
@@ -69,8 +69,8 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 
 	public static ItemStack getTypedBlueprint(String type)
 	{
-		ItemStack stack = new ItemStack(Misc.blueprint);
-		ItemNBTHelper.putString(stack, "blueprint", type);
+		ItemStack stack = new ItemStack(blueprintItem.getValue());
+		stack.getOrCreateTag().putString("blueprint", type);
 		return stack;
 	}
 

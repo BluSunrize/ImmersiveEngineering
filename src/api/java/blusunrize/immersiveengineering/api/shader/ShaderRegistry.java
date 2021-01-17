@@ -8,11 +8,11 @@
 
 package blusunrize.immersiveengineering.api.shader;
 
+import blusunrize.immersiveengineering.api.EnumMetals;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.impl.*;
-import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.item.Item;
@@ -45,7 +45,7 @@ public class ShaderRegistry
 	 * Shader bags will only be added for rarities existing in this map when the item register event
 	 * is fired
 	 */
-	public static Map<Rarity, Integer> rarityWeightMap = new HashMap<>();
+	public static Map<Rarity, Integer> rarityWeightMap = new EnumMap<>(Rarity.class);
 
 	/**
 	 * A list of EnumRarities sorted by their weight
@@ -59,7 +59,7 @@ public class ShaderRegistry
 	/**
 	 * The map of EnumRarities to the total weight of all shaders of that rarity or rarer
 	 */
-	public static Map<Rarity, Integer> totalWeight = new HashMap<>();
+	public static Map<Rarity, Integer> totalWeight = new EnumMap<>(Rarity.class);
 	/**
 	 * The total weight in relation to the player. This takes into account shaders the player has gotten, which then result in less weight
 	 */

@@ -63,7 +63,10 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.*;
-import net.minecraft.util.text.*;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
 import net.minecraftforge.fluids.FluidStack;
@@ -79,6 +82,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 import java.util.function.Function;
+
+import static blusunrize.immersiveengineering.api.client.TextUtils.applyFormat;
 
 public class ClientUtils
 {
@@ -1225,13 +1230,5 @@ public class ClientUtils
 		builder.pos(mat, width, height, 0).color(red, green, blue, 255).endVertex();
 		builder.pos(mat, width, 0, 0).color(red, green, blue, 255).endVertex();
 		transform.pop();
-	}
-
-	public static IFormattableTextComponent applyFormat(ITextComponent component, TextFormatting... color)
-	{
-		Style style = component.getStyle();
-		for(TextFormatting format : color)
-			style = style.applyFormatting(format);
-		return component.deepCopy().setStyle(style);
 	}
 }

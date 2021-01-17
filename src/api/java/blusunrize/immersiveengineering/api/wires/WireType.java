@@ -32,7 +32,7 @@ public abstract class WireType implements ILocalHandlerProvider
 	public static final String HV_CATEGORY = "HV";
 	public static final String STRUCTURE_CATEGORY = "STRUCTURE";
 	public static final String REDSTONE_CATEGORY = "REDSTONE";
-	private static LinkedHashSet<WireType> values = new LinkedHashSet<>();
+	private static final LinkedHashSet<WireType> values = new LinkedHashSet<>();
 
 	public static LinkedHashSet<WireType> getValues()
 	{

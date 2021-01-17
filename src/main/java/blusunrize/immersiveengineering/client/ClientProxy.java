@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.ManualHelper;
+import blusunrize.immersiveengineering.api.multiblocks.ManualElementMultiblock;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderLayer;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
@@ -38,6 +39,7 @@ import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.client.render.entity.*;
 import blusunrize.immersiveengineering.client.render.tile.*;
 import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
+import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.client.utils.VertexBufferHolder;
 import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.IEContent;
@@ -60,6 +62,7 @@ import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import blusunrize.immersiveengineering.common.util.sound.IETickableSound;
 import blusunrize.immersiveengineering.common.util.sound.IETileSound;
 import blusunrize.immersiveengineering.common.util.sound.SkyhookSound;
+import blusunrize.immersiveengineering.mixin.accessors.TileEntityAccess;
 import blusunrize.lib.manual.gui.ManualScreen;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayListMultimap;
@@ -150,7 +153,7 @@ public class ClientProxy extends CommonProxy
 			ModelLoaderRegistry.registerLoader(MultiLayerLoader.LOCATION, new MultiLayerLoader());
 			ModelLoaderRegistry.registerLoader(FeedthroughLoader.LOCATION, new FeedthroughLoader());
 			ModelLoaderRegistry.registerLoader(SplitModelLoader.LOCATION, new SplitModelLoader());
-			VertexBufferHolder.addToAPI();
+			populateAPI();
 
 			requestModelsAndTextures();
 		}
@@ -726,6 +729,14 @@ public class ClientProxy extends CommonProxy
 		SawbladeRenderer.MODEL = DynamicModel.createSimple(
 				new ResourceLocation(ImmersiveEngineering.MODID, "item/buzzsaw_diesel.obj.ie"),
 				"sawblade_entity", ModelType.IE_OBJ
+		);
+	}
+
+	public static void populateAPI()
+	{
+		VertexBufferHolder.addToAPI();
+		ManualElementMultiblock.setCallbacks(
+				IERenderTypes::disableLighting, (te, state) -> ((TileEntityAccess)te).setCachedBlockState(state)
 		);
 	}
 }

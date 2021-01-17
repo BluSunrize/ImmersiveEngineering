@@ -8,17 +8,10 @@
 
 package blusunrize.immersiveengineering.api.tool;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
-import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
-import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBeltTileEntity;
-import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
-import blusunrize.immersiveengineering.common.util.SafeChunkUtils;
-import blusunrize.immersiveengineering.common.util.Utils;
-import blusunrize.immersiveengineering.mixin.accessors.ItemEntityAccess;
+import blusunrize.immersiveengineering.api.utils.SafeChunkUtils;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import net.minecraft.block.Block;
@@ -45,7 +38,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import org.apache.commons.lang3.mutable.MutableLong;
@@ -71,7 +63,7 @@ public class ConveyorHandler
 	public static final Set<BiConsumer<Entity, IConveyorTile>> magnetSupressionFunctions = new HashSet<>();
 	public static final Set<BiConsumer<Entity, IConveyorTile>> magnetSupressionReverse = new HashSet<>();
 
-	public static final Map<ResourceLocation, Block> conveyorBlocks = MetalDevices.CONVEYORS;
+	public static final Map<ResourceLocation, Block> conveyorBlocks = new HashMap<>();
 	public static final ResourceLocation textureConveyorColour = new ResourceLocation("immersiveengineering:block/conveyor/colour");
 
 	// Should work for multiple dimensions since the calls aren't "interleaved" for multiple dimensions
@@ -149,19 +141,6 @@ public class ConveyorHandler
 		return null;
 	}
 
-	public static void registerConveyorTEs(RegistryEvent.Register<TileEntityType<?>> evt)
-	{
-		for(ResourceLocation rl : classRegistry.keySet())
-		{
-			TileEntityType<ConveyorBeltTileEntity> te = new TileEntityType<>(() -> new ConveyorBeltTileEntity(rl),
-					ImmutableSet.of(conveyorBlocks.get(rl)),
-					null);
-			te.setRegistryName(getRegistryNameFor(rl));
-			tileEntities.put(rl, te);
-			evt.getRegistry().register(te);
-		}
-	}
-
 	public static TileEntityType<? extends TileEntity> getTEType(ResourceLocation typeName)
 	{
 		return tileEntities.get(typeName);
@@ -170,11 +149,11 @@ public class ConveyorHandler
 	public static ResourceLocation getRegistryNameFor(ResourceLocation conveyorLoc)
 	{
 		String path;
-		if(ImmersiveEngineering.MODID.equals(conveyorLoc.getNamespace()))
+		if(Lib.MODID.equals(conveyorLoc.getNamespace()))
 			path = conveyorLoc.getPath();
 		else
 			path = conveyorLoc.getNamespace()+"_"+conveyorLoc.getPath();
-		return new ResourceLocation(ImmersiveEngineering.MODID, "conveyor_"+path);
+		return new ResourceLocation(Lib.MODID, "conveyor_"+path);
 	}
 
 	public static void createConveyorBlocks()
@@ -360,7 +339,7 @@ public class ConveyorHandler
 				return true;
 			Direction side = wall==0?facing.rotateYCCW(): facing.rotateY();
 			BlockPos pos = getTile().getPos().offset(side);
-			TileEntity te = Utils.getExistingTileEntity(getTile().getWorld(), pos);
+			TileEntity te = SafeChunkUtils.getSafeTE(getTile().getWorld(), pos);
 			if(te instanceof IConveyorAttachable)
 			{
 				boolean b = false;
@@ -373,7 +352,7 @@ public class ConveyorHandler
 			}
 			else
 			{
-				te = Utils.getExistingTileEntity(getTile().getWorld(), pos.add(0, -1, 0));
+				te = SafeChunkUtils.getSafeTE(getTile().getWorld(), pos.add(0, -1, 0));
 				if(te instanceof IConveyorAttachable)
 				{
 					int b = 0;
@@ -517,7 +496,7 @@ public class ConveyorHandler
 				else
 				{
 					BlockPos nextPos = getTile().getPos().offset(getFacing());
-					if(!(Utils.getExistingTileEntity(getTile().getWorld(), nextPos) instanceof IConveyorTile))
+					if(!(SafeChunkUtils.getSafeTE(getTile().getWorld(), nextPos) instanceof IConveyorTile))
 						ConveyorHandler.revertMagnetSupression(entity, (IConveyorTile)getTile());
 				}
 
@@ -563,7 +542,7 @@ public class ConveyorHandler
 			BlockPos invPos = getOutputInventory();
 			World world = getTile().getWorld();
 			boolean contact = getFacing().getAxis()==Axis.Z?distZ < .7: distX < .7;
-			TileEntity inventoryTile = Utils.getExistingTileEntity(world, invPos);
+			TileEntity inventoryTile = SafeChunkUtils.getSafeTE(world, invPos);
 			if(!contact||inventoryTile instanceof IConveyorTile)
 				return;
 

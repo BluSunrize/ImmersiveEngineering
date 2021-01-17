@@ -9,9 +9,7 @@
 package blusunrize.immersiveengineering.api.multiblocks;
 
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
-import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.utils.IERenderTypes;
-import blusunrize.immersiveengineering.mixin.accessors.TileEntityAccess;
+import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.ManualUtils;
 import blusunrize.lib.manual.SpecialManualElements;
@@ -42,23 +40,31 @@ import net.minecraftforge.client.model.data.IModelData;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.function.BiConsumer;
+import java.util.function.UnaryOperator;
+
+import static blusunrize.immersiveengineering.api.client.TextUtils.applyFormat;
 
 public class ManualElementMultiblock extends SpecialManualElements
 {
-	private IMultiblock multiblock;
+	private static final SetRestrictedField<UnaryOperator<IRenderTypeBuffer>>
+			DISABLE_LIGHTING = new SetRestrictedField<>();
+	private static final SetRestrictedField<BiConsumer<TileEntity, BlockState>>
+			SET_CACHED_STATE = new SetRestrictedField<>();
+
+	private final IMultiblock multiblock;
 
 	private boolean canTick = true;
 	private boolean showCompleted = false;
-	private int tick = 0;
 
 	private float scale = 50f;
 	private float transX = 0;
 	private float transY = 0;
 	private TransformationMatrix additionalTransform;
 	private List<ITextComponent> componentTooltip;
-	private MultiblockRenderInfo renderInfo;
-	private MultiblockBlockAccess blockAccess;
-	private int yOffTotal;
+	private final MultiblockRenderInfo renderInfo;
+	private final MultiblockBlockAccess blockAccess;
+	private final int yOffTotal;
 
 	private long lastStep = -1;
 
@@ -83,11 +89,9 @@ public class ManualElementMultiblock extends SpecialManualElements
 		yOffTotal = (int)(transY+scale*diagLength/2);
 	}
 
-	private static final ITextComponent greenTick = ClientUtils.applyFormat(
-			new StringTextComponent("\u2713"),
-			TextFormatting.GREEN, TextFormatting.BOLD
-	)
-			.appendString(" ");
+	private static final ITextComponent greenTick = applyFormat(
+			new StringTextComponent("\u2713"), TextFormatting.GREEN, TextFormatting.BOLD
+	).appendString(" ");
 
 	@Override
 	public void onOpened(ManualScreen gui, int x, int y, List<Button> pageButtons)
@@ -165,15 +169,11 @@ public class ManualElementMultiblock extends SpecialManualElements
 						s = greenTick.deepCopy();
 					else
 						s = new StringTextComponent(hasAnyItems?"   ": "");
-					s.append(ClientUtils.applyFormat(
-							new StringTextComponent(sIndent.toString()+req.getCount()+"x "),
-							TextFormatting.GRAY
+					s.append(applyFormat(
+							new StringTextComponent(sIndent.toString()+req.getCount()+"x "), TextFormatting.GRAY
 					));
 					if(!req.isEmpty())
-						s.append(ClientUtils.applyFormat(
-								req.getDisplayName().deepCopy(),
-								req.getRarity().color
-						));
+						s.append(applyFormat(req.getDisplayName().deepCopy(), req.getRarity().color));
 					else
 						s.appendString("???");
 					componentTooltip.add(s);
@@ -217,7 +217,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 				if(showCompleted&&multiblock.canRenderFormedStructure())
 				{
 					transform.push();
-					multiblock.renderFormedStructure(transform, IERenderTypes.disableLighting(buffer));
+					multiblock.renderFormedStructure(transform, DISABLE_LIGHTING.getValue().apply(buffer));
 					transform.pop();
 				}
 				else
@@ -245,7 +245,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 											modelData = te.getModelData();
 
 										blockRender.renderBlock(state, transform,
-												IERenderTypes.disableLighting(buffer),
+												DISABLE_LIGHTING.getValue().apply(buffer),
 												0xf000f0, overlay, modelData);
 									}
 									transform.pop();
@@ -312,6 +312,13 @@ public class ManualElementMultiblock extends SpecialManualElements
 		return this.multiblock;
 	}
 
+	public static void setCallbacks(
+			UnaryOperator<IRenderTypeBuffer> disableLighting, BiConsumer<TileEntity, BlockState> setCached
+	) {
+		DISABLE_LIGHTING.setValue(disableLighting);
+		SET_CACHED_STATE.setValue(setCached);
+	}
+
 	static class MultiblockBlockAccess implements IBlockReader
 	{
 		private final MultiblockRenderInfo data;
@@ -327,7 +334,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 					TileEntity te = TileEntity.readTileEntity(p.getValue().state, p.getValue().nbt);
 					if(te!=null)
 					{
-						((TileEntityAccess)te).setCachedBlockState(p.getValue().state);
+						SET_CACHED_STATE.getValue().accept(te, p.getValue().state);
 						tiles.put(p.getKey(), te);
 					}
 				}

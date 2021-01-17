@@ -8,9 +8,8 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.util.ListUtils;
-import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
@@ -48,7 +47,7 @@ public class CrusherRecipe extends MultiblockRecipe
 		setTimeAndEnergy(50, energy);
 
 		setInputList(Lists.newArrayList(this.input));
-		this.outputList = ListUtils.fromItem(this.output);
+		this.outputList = NonNullList.from(ItemStack.EMPTY, this.output);
 	}
 
 	@Override
@@ -63,7 +62,7 @@ public class CrusherRecipe extends MultiblockRecipe
 		NonNullList<ItemStack> list = NonNullList.create();
 		list.add(output);
 		for(StackWithChance output : secondaryOutputs)
-			if(!output.getStack().isEmpty()&&Utils.RAND.nextFloat() < output.getChance())
+			if(!output.getStack().isEmpty()&&ApiUtils.RANDOM.nextFloat() < output.getChance())
 				list.add(output.getStack());
 		return list;
 	}

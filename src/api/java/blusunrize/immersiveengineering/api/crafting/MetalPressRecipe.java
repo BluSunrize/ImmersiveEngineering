@@ -10,11 +10,11 @@ package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.ComparableItemStack;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.util.ListUtils;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.RegistryObject;
@@ -44,7 +44,7 @@ public class MetalPressRecipe extends MultiblockRecipe
 		setTimeAndEnergy(60, energy);
 
 		setInputListWithSizes(Lists.newArrayList(this.input));
-		this.outputList = ListUtils.fromItem(this.output);
+		this.outputList = NonNullList.from(ItemStack.EMPTY, this.output);
 	}
 
 	@Override

@@ -33,6 +33,8 @@ sourceSets {
     }
     api {
         compileClasspath = main.compileClasspath
+        compileClasspath += manual.output
+        runtimeClasspath += manual.output
     }
     main {
         resources {

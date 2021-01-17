@@ -11,11 +11,11 @@ package blusunrize.immersiveengineering.common.util;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.fluid.FluidUtils;
+import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.common.items.HammerItem;
 import blusunrize.immersiveengineering.common.items.ScrewdriverItem;
 import blusunrize.immersiveengineering.common.items.WirecutterItem;
-import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.base.Charsets;
 import com.google.common.collect.BiMap;
@@ -193,17 +193,7 @@ public class Utils
 
 	public static FluidStack copyFluidStackWithAmount(FluidStack stack, int amount, boolean stripPressure)
 	{
-		if(stack==null)
-			return null;
-		FluidStack fs = new FluidStack(stack, amount);
-		if(stripPressure&&fs.hasTag()&&fs.getOrCreateTag().contains("pressurized"))
-		{
-			CompoundNBT tag = fs.getOrCreateTag();
-			tag.remove("pressurized");
-			if(tag.isEmpty())
-				fs.setTag(null);
-		}
-		return fs;
+		return FluidUtils.copyFluidStackWithAmount(stack, amount, stripPressure);
 	}
 
 	private static final long UUID_BASE = 109406000905L;
@@ -1422,34 +1412,6 @@ public class Utils
 				break;
 		}
 		return facing;
-	}
-
-	public static Rotation getRotationBetweenFacings(Direction orig, Direction to)
-	{
-		if(to==orig)
-			return Rotation.NONE;
-		if(orig.getAxis()==Axis.Y||to.getAxis()==Axis.Y)
-			return null;
-		orig = orig.rotateY();
-		if(orig==to)
-			return Rotation.CLOCKWISE_90;
-		orig = orig.rotateY();
-		if(orig==to)
-			return Rotation.CLOCKWISE_180;
-		orig = orig.rotateY();
-		if(orig==to)
-			return Rotation.COUNTERCLOCKWISE_90;
-		return null;//This shouldn't ever happen
-	}
-
-	public static AxisAlignedBB transformAABB(AxisAlignedBB original, Direction facing)
-	{
-		Matrix4 mat = new Matrix4(facing);
-		Vector3d minOld = new Vector3d(original.minX, original.minY, original.minZ);
-		Vector3d maxOld = new Vector3d(original.maxX, original.maxY, original.maxZ);
-		Vector3d firstNew = mat.apply(minOld);
-		Vector3d secondNew = mat.apply(maxOld);
-		return new AxisAlignedBB(firstNew, secondNew);
 	}
 
 	public static List<AxisAlignedBB> flipBoxes(boolean flipFront, boolean flipRight, List<AxisAlignedBB> boxes)

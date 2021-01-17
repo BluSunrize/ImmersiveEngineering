@@ -10,6 +10,8 @@ package blusunrize.immersiveengineering;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEApi;
+import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.ArcRecyclingChecker;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
@@ -84,7 +86,7 @@ import static net.minecraftforge.fml.network.NetworkDirection.PLAY_TO_SERVER;
 @Mod(ImmersiveEngineering.MODID)
 public class ImmersiveEngineering
 {
-	public static final String MODID = "immersiveengineering";
+	public static final String MODID = Lib.MODID;
 	public static final String MODNAME = "Immersive Engineering";
 	public static final String VERSION = "${version}";
 	public static CommonProxy proxy = DistExecutor.safeRunForDist(() -> ClientProxy::new, () -> CommonProxy::new);

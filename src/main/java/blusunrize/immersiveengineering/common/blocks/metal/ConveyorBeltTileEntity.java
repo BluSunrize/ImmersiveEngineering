@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableSet;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
@@ -25,6 +26,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
@@ -36,6 +38,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -222,6 +225,19 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IStateBa
 	public boolean isRSPowered()
 	{
 		return super.isRSPowered();
+	}
+
+	public static void registerConveyorTEs(RegistryEvent.Register<TileEntityType<?>> evt)
+	{
+		for(ResourceLocation rl : ConveyorHandler.classRegistry.keySet())
+		{
+			TileEntityType<ConveyorBeltTileEntity> te = new TileEntityType<>(() -> new ConveyorBeltTileEntity(rl),
+					ImmutableSet.of(ConveyorHandler.conveyorBlocks.get(rl)),
+					null);
+			te.setRegistryName(ConveyorHandler.getRegistryNameFor(rl));
+			ConveyorHandler.tileEntities.put(rl, te);
+			evt.getRegistry().register(te);
+		}
 	}
 
 	public static class ConveyorInventoryHandler implements IItemHandlerModifiable

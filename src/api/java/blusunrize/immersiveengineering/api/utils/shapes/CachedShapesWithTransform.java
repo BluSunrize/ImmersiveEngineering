@@ -8,8 +8,6 @@
 
 package blusunrize.immersiveengineering.api.utils.shapes;
 
-import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
-import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -64,19 +62,14 @@ public class CachedShapesWithTransform<ShapeKey, TransformKey> extends CachedVox
 					in.maxY,
 					in.maxZ
 			);
-		return Utils.transformAABB(mirrored, d);
+		return ShapeUtils.transformAABB(mirrored, d);
 	}
 
 	public static <T> CachedShapesWithTransform<T, Direction> createDirectional(Function<T, List<AxisAlignedBB>> create)
 	{
 		return new CachedShapesWithTransform<>(
 				create,
-				(key, box) -> Utils.transformAABB(box, key)
+				(key, box) -> ShapeUtils.transformAABB(box, key)
 		);
-	}
-
-	public static VoxelShape get(CachedShapesWithTransform<BlockPos, Pair<Direction, Boolean>> cache, MultiblockPartTileEntity<?> tile)
-	{
-		return cache.get(tile.posInMultiblock, Pair.of(tile.getFacing(), tile.getIsMirrored()));
 	}
 }

@@ -8,8 +8,10 @@
 
 package blusunrize.immersiveengineering.api;
 
-import blusunrize.immersiveengineering.client.manual.IEManualInstance;
+import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
+import blusunrize.lib.manual.ManualInstance;
 
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -25,11 +27,12 @@ public class ManualHelper
 	public static String CAT_HEAVYMACHINES = "heavymachines";
 	public static String CAT_UPDATE = "update";
 
-	public static IEManualInstance ieManualInstance;
+	public static final SetRestrictedField<ManualInstance> IE_MANUAL_INSTANCE = new SetRestrictedField<>();
+	public static final SetRestrictedField<Consumer<Function<String, Object>>> ADD_CONFIG_GETTER = new SetRestrictedField<>();
 
-	public static IEManualInstance getManual()
+	public static ManualInstance getManual()
 	{
-		return ieManualInstance;
+		return IE_MANUAL_INSTANCE.getValue();
 	}
 
 	/**
@@ -39,6 +42,6 @@ public class ManualHelper
 	 */
 	public static void addConfigGetter(Function<String, Object> newGetter)
 	{
-		ieManualInstance.configGetters.add(newGetter);
+		ADD_CONFIG_GETTER.getValue().accept(newGetter);
 	}
 }

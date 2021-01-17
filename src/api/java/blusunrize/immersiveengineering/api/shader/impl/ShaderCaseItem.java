@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.api.shader.impl;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderLayer;
 import net.minecraft.util.ResourceLocation;
@@ -30,7 +30,7 @@ public class ShaderCaseItem extends ShaderCase
 	@Override
 	public ResourceLocation getShaderType()
 	{
-		return new ResourceLocation(ImmersiveEngineering.MODID, "item");
+		return new ResourceLocation(Lib.MODID, "item");
 	}
 
 	@Override

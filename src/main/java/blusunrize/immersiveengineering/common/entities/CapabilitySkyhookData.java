@@ -6,10 +6,9 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.api;
+package blusunrize.immersiveengineering.common.entities;
 
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
-import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.IntNBT;
@@ -23,8 +22,8 @@ import net.minecraftforge.common.util.LazyOptional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import static blusunrize.immersiveengineering.api.CapabilitySkyhookData.SkyhookStatus.HOLDING_CONNECTING;
-import static blusunrize.immersiveengineering.api.CapabilitySkyhookData.SkyhookStatus.NONE;
+import static blusunrize.immersiveengineering.common.entities.CapabilitySkyhookData.SkyhookStatus.HOLDING_CONNECTING;
+import static blusunrize.immersiveengineering.common.entities.CapabilitySkyhookData.SkyhookStatus.NONE;
 
 public class CapabilitySkyhookData
 {

@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.api.multiblocks;
 
-import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -39,6 +38,8 @@ import java.util.Map;
  */
 public class MultiblockHandler
 {
+	private static final Direction[] DIRECTIONS = Direction.values();
+
 	static ArrayList<IMultiblock> multiblocks = new ArrayList<>();
 	static Map<ResourceLocation, IMultiblock> byUniqueName = new HashMap<>();
 
@@ -85,7 +86,7 @@ public class MultiblockHandler
 		@Deprecated
 		default boolean isBlockTrigger(BlockState state)
 		{
-			for(Direction d : DirectionUtils.BY_HORIZONTAL_INDEX)
+			for(Direction d : DIRECTIONS)
 				if(isBlockTrigger(state, d, null))
 					return true;
 			return false;
