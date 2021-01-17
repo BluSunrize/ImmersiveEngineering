@@ -31,6 +31,9 @@ sourceSets {
     manual {
         compileClasspath = main.compileClasspath
     }
+    api {
+        compileClasspath = main.compileClasspath
+    }
     main {
         resources {
             srcDirs = [
@@ -38,8 +41,8 @@ sourceSets {
                     "$rootDir/src/generated/resources"
             ]
         }
-        compileClasspath += manual.output
-        runtimeClasspath += manual.output
+        compileClasspath += manual.output + api.output
+        runtimeClasspath += manual.output + api.output
     }
     datagen {
         compileClasspath += main.compileClasspath
@@ -48,8 +51,8 @@ sourceSets {
         runtimeClasspath += main.output
     }
     test {
-        compileClasspath += manual.output
-        runtimeClasspath += manual.output
+        compileClasspath += manual.output + api.output
+        runtimeClasspath += manual.output + api.output
     }
 }
 
@@ -115,6 +118,7 @@ minecraft {
                 immersiveengineering {
                     source sourceSets.main
                     source sourceSets.manual
+                    source sourceSets.api
                 }
             }
         }
@@ -136,6 +140,7 @@ minecraft {
             mods {
                 immersiveengineering {
                     source sourceSets.main
+                    source sourceSets.api
                 }
             }
         }
@@ -160,6 +165,7 @@ minecraft {
                     source sourceSets.main
                     source sourceSets.datagen
                     source sourceSets.manual
+                    source sourceSets.api
                 }
             }
         }
@@ -289,6 +295,7 @@ task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
     from sourceSets.main.allSource
     from sourceSets.manual.allSource
+    from sourceSets.api.allSource
 }
 
 artifacts {
@@ -303,6 +310,7 @@ shadowJar {
         include(dependency('malte0811:BlockModelSplitter:.*'))
     }
     from(sourceSets.manual.output)
+    from(sourceSets.api.output)
 }
 
 reobf {
