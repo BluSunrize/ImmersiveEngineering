@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
-import blusunrize.immersiveengineering.api.wires.NetHandlerCapability;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IEntityProof;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.blocks.IEMultiblockBlock;
@@ -31,6 +30,7 @@ import blusunrize.immersiveengineering.common.items.ManualItem;
 import blusunrize.immersiveengineering.common.network.MessageMinecartShaderSync;
 import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamageSource;
+import blusunrize.immersiveengineering.common.wires.CapabilityInit;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.LecternBlock;
 import net.minecraft.entity.Entity;
@@ -103,7 +103,7 @@ public class EventHandler
 	public void onCapabilitiesAttachWorld(AttachCapabilitiesEvent<World> event)
 	{
 		event.addCapability(new ResourceLocation(ImmersiveEngineering.MODID, "wire_network"),
-				new NetHandlerCapability.Provider(event.getObject()));
+				new CapabilityInit.Provider(event.getObject()));
 	}
 
 	@SubscribeEvent

@@ -248,7 +248,7 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 	@Override
 	public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx)
 	{
-		VoxelShape base = CachedShapesWithTransform.get(SHAPES, this);
+		VoxelShape base = getShape(SHAPES);
 		if(isRedstonePos()&&ctx!=null&&!ctx.func_216378_a(ScaffoldingBlock.CHECK_SHAPE, pos, false))
 		{
 			AxisAlignedBB box = CachedShapesWithTransform.withFacingAndMirror(

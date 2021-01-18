@@ -23,12 +23,14 @@ import blusunrize.immersiveengineering.api.tool.*;
 import blusunrize.immersiveengineering.api.tool.AssemblerHandler.IRecipeAdapter;
 import blusunrize.immersiveengineering.api.tool.AssemblerHandler.RecipeQuery;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
+import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler;
 import blusunrize.immersiveengineering.api.wires.localhandlers.LocalNetworkHandler;
 import blusunrize.immersiveengineering.api.wires.localhandlers.WireDamageHandler;
 import blusunrize.immersiveengineering.api.wires.redstone.CapabilityRedstoneNetwork;
 import blusunrize.immersiveengineering.api.wires.redstone.RedstoneNetworkHandler;
+import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
 import blusunrize.immersiveengineering.client.utils.ClocheRenderFunctions;
 import blusunrize.immersiveengineering.common.blocks.*;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
@@ -47,6 +49,7 @@ import blusunrize.immersiveengineering.common.blocks.stone.PartialConcreteBlock;
 import blusunrize.immersiveengineering.common.blocks.stone.StoneMultiBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.BarrelBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
+import blusunrize.immersiveengineering.common.config.IECommonConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.crafting.IngredientWithSizeSerializer;
 import blusunrize.immersiveengineering.common.crafting.fluidaware.IngredientFluidStack;
@@ -933,5 +936,8 @@ public class IEContent
 				}
 		);
 		WireDamageHandler.GET_WIRE_DAMAGE.setValue(IEDamageSources::causeWireDamage);
+		WireUtils.RAYTRACE.setValue(Utils::rayTrace);
+		GlobalWireNetwork.SANITIZE_CONNECTIONS.setValue(IEServerConfig.WIRES.sanitizeConnections::get);
+		GlobalWireNetwork.VALIDATE_CONNECTIONS.setValue(IECommonConfig.validateNet::get);
 	}
 }

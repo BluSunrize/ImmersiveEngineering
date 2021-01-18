@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.api.utils.shapes.ShapeUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.IETileTypes;
@@ -293,7 +294,7 @@ public class StructuralArmTileEntity extends IEBaseTileEntity implements IOBJMod
 			bounds = VoxelShapes.empty();
 			for(AxisAlignedBB aabb : basic)
 			{
-				AxisAlignedBB transformed = Utils.transformAABB(aabb, facing);
+				AxisAlignedBB transformed = ShapeUtils.transformAABB(aabb, facing);
 				VoxelShape subShape = VoxelShapes.create(transformed);
 				bounds = VoxelShapes.combine(bounds, subShape, IBooleanFunction.OR);
 			}

@@ -10,11 +10,10 @@ package blusunrize.immersiveengineering.api.wires;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import blusunrize.immersiveengineering.api.wires.localhandlers.ILocalHandlerProvider;
 import blusunrize.immersiveengineering.api.wires.localhandlers.IWorldTickable;
 import blusunrize.immersiveengineering.api.wires.proxy.IICProxyProvider;
-import blusunrize.immersiveengineering.common.config.IECommonConfig;
-import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultiset;
@@ -42,6 +41,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -51,6 +51,9 @@ import static blusunrize.immersiveengineering.api.utils.SafeChunkUtils.isChunkSa
 @EventBusSubscriber(modid = Lib.MODID)
 public class GlobalWireNetwork implements IWorldTickable
 {
+	public static final SetRestrictedField<BooleanSupplier> SANITIZE_CONNECTIONS = new SetRestrictedField<>();
+	public static final SetRestrictedField<BooleanSupplier> VALIDATE_CONNECTIONS = new SetRestrictedField<>();
+
 	private static World lastServerWorld = null;
 	private static GlobalWireNetwork lastServerNet = null;
 
@@ -422,7 +425,7 @@ public class GlobalWireNetwork implements IWorldTickable
 		for(LocalWireNetwork net : localNets.values())
 			if(ticked.add(net))
 				net.update(world);
-		if(IEServerConfig.WIRES.sanitizeConnections.get())
+		if(SANITIZE_CONNECTIONS.getValue().getAsBoolean())
 			NetworkSanitizer.tick(world, this);
 	}
 
@@ -430,7 +433,7 @@ public class GlobalWireNetwork implements IWorldTickable
 
 	private void validate(World world)
 	{
-		if(world.isRemote||!IECommonConfig.validateNet.get())
+		if(world.isRemote||!VALIDATE_CONNECTIONS.getValue().getAsBoolean())
 			return;
 		else
 			WireLogger.logger.info("Validating wire network...");

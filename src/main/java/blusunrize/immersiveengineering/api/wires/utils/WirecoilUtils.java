@@ -37,7 +37,6 @@ import static blusunrize.immersiveengineering.api.wires.utils.WireUtils.findObst
 
 public class WirecoilUtils
 {
-
 	public static ActionResultType doCoilUse(IWireCoil coil, PlayerEntity player, World world, BlockPos pos, Hand hand, Direction side, float hitX, float hitY, float hitZ)
 	{
 		TileEntity tileEntity = world.getTileEntity(pos);

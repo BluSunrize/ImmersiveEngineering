@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
@@ -208,7 +209,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		{
 			ItemStack shader = wrapper.getShaderItem();
 			if(!shader.isEmpty())
-				event.getToolTip().add(ClientUtils.applyFormat(
+				event.getToolTip().add(TextUtils.applyFormat(
 						shader.getDisplayName(),
 						TextFormatting.DARK_GRAY
 				));
@@ -217,7 +218,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		{
 			ItemStack earmuffs = ItemNBTHelper.getItemStack(event.getItemStack(), Lib.NBT_Earmuffs);
 			if(!earmuffs.isEmpty())
-				event.getToolTip().add(ClientUtils.applyFormat(
+				event.getToolTip().add(TextUtils.applyFormat(
 						earmuffs.getDisplayName(),
 						TextFormatting.GRAY
 				));
@@ -227,11 +228,11 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			ItemStack powerpack = ItemNBTHelper.getItemStack(event.getItemStack(), Lib.NBT_Powerpack);
 			if(!powerpack.isEmpty())
 			{
-				event.getToolTip().add(ClientUtils.applyFormat(
+				event.getToolTip().add(TextUtils.applyFormat(
 						powerpack.getDisplayName(),
 						TextFormatting.GRAY
 				));
-				event.getToolTip().add(ClientUtils.applyFormat(
+				event.getToolTip().add(TextUtils.applyFormat(
 						new StringTextComponent(EnergyHelper.getEnergyStored(powerpack)+"/"+EnergyHelper.getMaxEnergyStored(powerpack)+" IF"),
 						TextFormatting.GRAY
 				));
@@ -240,7 +241,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		if(ClientUtils.mc().currentScreen!=null
 				&&ClientUtils.mc().currentScreen instanceof BlastFurnaceScreen
 				&&BlastFurnaceFuel.isValidBlastFuel(event.getItemStack()))
-			event.getToolTip().add(ClientUtils.applyFormat(
+			event.getToolTip().add(TextUtils.applyFormat(
 					new TranslationTextComponent("desc.immersiveengineering.info.blastFuelTime", BlastFurnaceFuel.getBlastFuelTime(event.getItemStack())),
 					TextFormatting.GRAY
 			));
@@ -248,7 +249,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		if(IEClientConfig.tagTooltips.get()&&event.getFlags().isAdvanced())
 		{
 			for(ResourceLocation oid : ItemTags.getCollection().getOwningTags(event.getItemStack().getItem()))
-				event.getToolTip().add(ClientUtils.applyFormat(
+				event.getToolTip().add(TextUtils.applyFormat(
 						new StringTextComponent(oid.toString()),
 						TextFormatting.GRAY
 				));

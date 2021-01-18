@@ -8,10 +8,10 @@
 
 package blusunrize.immersiveengineering.api.wires.utils;
 
+import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.api.wires.Connection.CatenaryData;
 import blusunrize.immersiveengineering.api.wires.WireCollisionData.CollisionInfo;
-import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.AtomicDouble;
 import net.minecraft.block.BlockState;
@@ -40,6 +40,8 @@ import java.util.function.Consumer;
 
 public class WireUtils
 {
+	public static final SetRestrictedField<RaytraceCallback> RAYTRACE = new SetRestrictedField<>();
+
 	public static Connection getConnectionMovedThrough(World world, LivingEntity e)
 	{
 		Vector3d start = e.getEyePosition(0);
@@ -53,7 +55,7 @@ public class WireUtils
 		WireCollisionData collisionData = global.getCollisionData();
 		AtomicReference<Connection> ret = new AtomicReference<>();
 		AtomicDouble minDistSq = new AtomicDouble(Double.POSITIVE_INFINITY);
-		Utils.rayTrace(start, end, world, (pos) ->
+		RAYTRACE.getValue().rayTrace(start, end, world, (pos) ->
 		{
 			Collection<CollisionInfo> infoAtPos = collisionData.getCollisionInfo(pos);
 			for(CollisionInfo wireInfo : infoAtPos)
@@ -63,7 +65,7 @@ public class WireUtils
 				{
 					Vector3d startRelative = start.add(-pos.getX(), -pos.getY(), -pos.getZ());
 					Vector3d across = wireInfo.intersectB.subtract(wireInfo.intersectA);
-					double t = Utils.getCoeffForMinDistance(startRelative, wireInfo.intersectA, across);
+					double t = getCoeffForMinDistance(startRelative, wireInfo.intersectA, across);
 					t = MathHelper.clamp(t, 0, 1);
 					Vector3d closest = wireInfo.intersectA.add(t*across.x, t*across.y, t*across.z);
 					double distSq = closest.squareDistanceTo(startRelative);
@@ -250,5 +252,22 @@ public class WireUtils
 		GlobalWireNetwork globalNet = GlobalWireNetwork.getNetwork(world);
 		globalNet.removeConnection(conn);
 		globalNet.addConnection(new Connection(conn.type, fixedPos, newEnd));
+	}
+
+	public interface RaytraceCallback
+	{
+		HashSet<BlockPos> rayTrace(Vector3d start, Vector3d end, World world, Consumer<BlockPos> out);
+	}
+
+	//TODO dedup with Utils#…
+	private static double getCoeffForMinDistance(Vector3d point, Vector3d line, Vector3d across)
+	{
+		if(across.x==0&&across.z==0)
+			return (point.y-line.y)/across.y;
+		else
+		{
+			Vector3d delta = point.subtract(line);
+			return delta.dotProduct(across)/across.lengthSquared();
+		}
 	}
 }

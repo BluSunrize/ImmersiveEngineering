@@ -10,13 +10,13 @@ package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Item;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
 import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
-import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
@@ -82,7 +82,7 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 		{
 			ITextComponent add = IEItemFluidHandler.fluidItemInfoFlavor(ItemNBTHelper.getFluidStack(stack, FluidHandlerItemStack.FLUID_NBT_KEY+(i > 0?i: "")), cap);
 			if(i > 0)
-				ClientUtils.applyFormat(
+				TextUtils.applyFormat(
 						add,
 						TextFormatting.GRAY
 				);
@@ -97,7 +97,7 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 			FluidAttributes attr = fs.getFluid().getAttributes();
 			TextFormatting rarity = attr.getRarity()==Rarity.COMMON?TextFormatting.GRAY:
 					attr.getRarity().color;
-			return ClientUtils.applyFormat(new TranslationTextComponent(Lib.DESC_FLAVOUR+"fluidStack", attr.getDisplayName(fs),
+			return TextUtils.applyFormat(new TranslationTextComponent(Lib.DESC_FLAVOUR+"fluidStack", attr.getDisplayName(fs),
 					fs.getAmount(), capacity), rarity);
 		}
 		else

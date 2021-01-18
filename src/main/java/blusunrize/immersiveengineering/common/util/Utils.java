@@ -917,9 +917,7 @@ public class Utils
 	public static double getCoeffForMinDistance(Vector3d point, Vector3d line, Vector3d across)
 	{
 		if(across.x==0&&across.z==0)
-		{
 			return (point.y-line.y)/across.y;
-		}
 		else
 		{
 			Vector3d delta = point.subtract(line);

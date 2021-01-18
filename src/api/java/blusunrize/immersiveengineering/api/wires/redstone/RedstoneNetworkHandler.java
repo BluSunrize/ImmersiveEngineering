@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.api.wires.redstone;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.api.wires.localhandlers.LocalNetworkHandler;
 import net.minecraft.util.ResourceLocation;
@@ -16,7 +16,7 @@ import net.minecraft.util.math.BlockPos;
 
 public class RedstoneNetworkHandler extends LocalNetworkHandler
 {
-	public static final ResourceLocation ID = new ResourceLocation(ImmersiveEngineering.MODID, "redstone");
+	public static final ResourceLocation ID = new ResourceLocation(Lib.MODID, "redstone");
 	private byte[] values = new byte[16];
 
 	public RedstoneNetworkHandler(LocalWireNetwork local, GlobalWireNetwork global)

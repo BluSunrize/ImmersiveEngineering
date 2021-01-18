@@ -390,9 +390,4 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 		else
 			return processMaxTicks*STANDARD_PRESS_TIME/MIN_CYCLE_TIME;
 	}
-
-	public VoxelShape getShape(CachedShapesWithTransform<BlockPos, Pair<Direction, Boolean>> cache)
-	{
-		return cache.get(posInMultiblock, Pair.of(getFacing(), getIsMirrored()));
-	}
 }

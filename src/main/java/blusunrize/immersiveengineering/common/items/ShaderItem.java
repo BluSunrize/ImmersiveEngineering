@@ -10,12 +10,12 @@ package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderLayer;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.shader.impl.ShaderCaseItem;
-import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Cloth;
 import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerStandingBlock;
 import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerTileEntity;
@@ -142,7 +142,7 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, ITextureOverr
 				List<ShaderCase> array = ShaderRegistry.shaderRegistry.get(rl).getCases();
 				for(ShaderCase sCase : array)
 					if(!(sCase instanceof ShaderCaseItem))
-						list.add(ClientUtils.applyFormat(
+						list.add(TextUtils.applyFormat(
 								new TranslationTextComponent(Lib.DESC_INFO+"shader."+sCase.getShaderType()),
 								TextFormatting.DARK_GRAY
 						));
