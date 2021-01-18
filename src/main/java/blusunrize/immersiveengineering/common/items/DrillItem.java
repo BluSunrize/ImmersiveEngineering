@@ -357,7 +357,17 @@ public class DrillItem extends UpgradeableToolItem implements IAdvancedFluidItem
 
 				Triple<ItemStack, ShaderRegistryEntry, ShaderCase> shader = ShaderRegistry.getStoredShaderAndCase(stack);
 				if(shader!=null)
-					shader.getMiddle().getEffectFunction().execute(world, shader.getLeft(), stack, shader.getRight().getShaderType().toString(), new Vector3d(pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5), null, .375f);
+				{
+					Vector3d particlePos;
+					if(pos!=null)
+						particlePos = Vector3d.copyCentered(pos);
+					else
+						particlePos = living.getPositionVec();
+					shader.getMiddle().getEffectFunction().execute(
+							world, shader.getLeft(), stack, shader.getRight().getShaderType().toString(),
+							particlePos, null, .375f
+					);
+				}
 			}
 		}
 	}
