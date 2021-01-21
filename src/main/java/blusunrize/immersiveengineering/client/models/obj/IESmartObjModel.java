@@ -66,6 +66,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @SuppressWarnings("deprecation")
 public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
@@ -107,6 +108,13 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 		this.state = state;
 		this.isDynamic = dynamic;
 		this.texReplacements = texReplacements;
+		// Default tint index should be -1 (see VertexLighterFlat), OBJ materials set it to 0 by default
+		OBJHelper.getGroups(baseModel).values().stream()
+				.flatMap(g -> Stream.concat(Stream.of(g), OBJHelper.getParts(g).values().stream()))
+				.flatMap(o -> OBJHelper.getMeshes(o).stream())
+				.map(MeshWrapper::getMaterial)
+				.filter(m -> m.diffuseTintIndex==0)
+				.forEach(m -> m.diffuseTintIndex = -1);
 	}
 
 	@Override
