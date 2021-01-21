@@ -44,6 +44,18 @@ public class ComputerCraftCompatModule extends IECompatModule
 					bits |= 1<<color;
 			return bits;
 		});
+
+		ConnectorBundledTileEntity.EXTRA_SOURCES.add((world, emittingBlock, emittingSide) -> {
+			int output = ComputerCraftAPI.getBundledRedstoneOutput(world, emittingBlock, emittingSide);
+			if(output==0||output==-1)
+			{
+				return null;
+			}
+			byte[] channelValues = new byte[16];
+			for(int color = 0; color < 16; ++color)
+				channelValues[color] = (byte)(15*((output >> color)&1));
+			return channelValues;
+		});
 	}
 
 	@Override

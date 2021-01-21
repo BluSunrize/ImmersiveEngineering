@@ -31,14 +31,18 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 import static blusunrize.immersiveengineering.api.wires.WireType.REDSTONE_CATEGORY;
@@ -46,6 +50,8 @@ import static blusunrize.immersiveengineering.api.wires.WireType.REDSTONE_CATEGO
 public class ConnectorBundledTileEntity extends ImmersiveConnectableTileEntity implements ITickableTileEntity, IStateBasedDirectional,
 		IBlockBounds, IRedstoneConnector
 {
+	public static final List<IBundledProvider> EXTRA_SOURCES = new ArrayList<>();
+
 	public ConnectorBundledTileEntity()
 	{
 		this(IETileTypes.CONNECTOR_BUNDLED.get());
@@ -56,15 +62,24 @@ public class ConnectorBundledTileEntity extends ImmersiveConnectableTileEntity i
 		super(type);
 	}
 
-	private final CapabilityReference<RedstoneBundleConnection> attached = CapabilityReference.forTileEntity(this,
-			() -> new DirectionalBlockPos(pos.offset(getFacing()), getFacing().getOpposite()),
-			CapabilityRedstoneNetwork.REDSTONE_BUNDLE_CONNECTION);
+	private final CapabilityReference<RedstoneBundleConnection> attached = CapabilityReference.forTileEntity(
+			this, this::getAttachedFace, CapabilityRedstoneNetwork.REDSTONE_BUNDLE_CONNECTION
+	);
+	private boolean dirtyExtraSource = false;
+
+	private DirectionalBlockPos getAttachedFace()
+	{
+		return new DirectionalBlockPos(pos.offset(getFacing()), getFacing().getOpposite());
+	}
 
 	@Override
 	public void tick()
 	{
-		if(hasWorld()&&!world.isRemote&&attached.isPresent()&&attached.get().pollDirty())
+		if(hasWorld()&&!world.isRemote&&((attached.isPresent()&&attached.get().pollDirty())||dirtyExtraSource))
+		{
 			getHandler().updateValues();
+			dirtyExtraSource = false;
+		}
 	}
 
 	public byte getValue(int redstoneChannel)
@@ -97,6 +112,16 @@ public class ConnectorBundledTileEntity extends ImmersiveConnectableTileEntity i
 	{
 		if(attached.isPresent())
 			attached.get().updateInput(signals, cp, getFacing().getOpposite());
+		DirectionalBlockPos attachedTo = getAttachedFace();
+		for(IBundledProvider source : EXTRA_SOURCES)
+		{
+			byte[] provided = source.getEmittedState(world, attachedTo.toImmutable(), attachedTo.direction);
+			if(provided!=null)
+			{
+				for(int color = 0; color < 16; color++)
+					signals[color] = (byte)Math.max(signals[color], provided[color]);
+			}
+		}
 	}
 
 	@Override
@@ -168,5 +193,36 @@ public class ConnectorBundledTileEntity extends ImmersiveConnectableTileEntity i
 	public Collection<ResourceLocation> getRequestedHandlers()
 	{
 		return ImmutableList.of(RedstoneNetworkHandler.ID);
+	}
+
+	@Override
+	protected void onNeighborBlockChange(BlockPos otherPos)
+	{
+		super.onNeighborBlockChange(otherPos);
+		DirectionalBlockPos attachedTo = getAttachedFace();
+		if(!otherPos.equals(attachedTo.toImmutable()))
+			return;
+		byte[] overrideState = null;
+		for(IBundledProvider source : EXTRA_SOURCES)
+		{
+			overrideState = source.getEmittedState(world, attachedTo.toImmutable(), attachedTo.direction);
+			if(overrideState!=null)
+				break;
+		}
+		RedstoneNetworkHandler handler = getHandler();
+		for(int color = 0; color < 16&&!dirtyExtraSource; ++color)
+		{
+			final byte current = handler.getValue(color);
+			if(overrideState!=null)
+				dirtyExtraSource = current==overrideState[color];
+			else
+				dirtyExtraSource = current!=0;
+		}
+	}
+
+	public interface IBundledProvider
+	{
+		@Nullable
+		byte[] getEmittedState(World w, BlockPos emittingBlock, Direction emittingSide);
 	}
 }
