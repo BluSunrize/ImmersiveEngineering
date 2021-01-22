@@ -20,6 +20,7 @@
  - Fixed crash with invalid multiblock selection tags on the hammer (Malte)
  - Fixed modded ores sometimes being used instead of the vanilla ones (Malte)
  - Fixed crash related to turrets (Malte)
+ - Fixed rotation of the external heater to match description in the manual (BluSunrize)
  - Updated Chinese translation (RMSCA)
 
 ##### Version 1.16.4-4.1.2-129
