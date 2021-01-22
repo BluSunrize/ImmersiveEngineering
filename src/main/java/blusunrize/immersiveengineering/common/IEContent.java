@@ -20,9 +20,9 @@ import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.*;
-import blusunrize.immersiveengineering.api.tool.AssemblerHandler.IRecipeAdapter;
 import blusunrize.immersiveengineering.api.tool.AssemblerHandler.RecipeQuery;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
+import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler;
@@ -31,6 +31,7 @@ import blusunrize.immersiveengineering.api.wires.localhandlers.WireDamageHandler
 import blusunrize.immersiveengineering.api.wires.redstone.CapabilityRedstoneNetwork;
 import blusunrize.immersiveengineering.api.wires.redstone.RedstoneNetworkHandler;
 import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
+import blusunrize.immersiveengineering.api.wires.utils.WirecoilUtils;
 import blusunrize.immersiveengineering.client.utils.ClocheRenderFunctions;
 import blusunrize.immersiveengineering.common.blocks.*;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
@@ -51,6 +52,7 @@ import blusunrize.immersiveengineering.common.blocks.wooden.BarrelBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
 import blusunrize.immersiveengineering.common.config.IECommonConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.crafting.DefaultAssemblerAdapter;
 import blusunrize.immersiveengineering.common.crafting.IngredientWithSizeSerializer;
 import blusunrize.immersiveengineering.common.crafting.fluidaware.IngredientFluidStack;
 import blusunrize.immersiveengineering.common.entities.*;
@@ -60,6 +62,7 @@ import blusunrize.immersiveengineering.common.items.IEItems.Molds;
 import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import blusunrize.immersiveengineering.common.items.IEItems.Weapons;
 import blusunrize.immersiveengineering.common.items.ToolUpgradeItem.ToolUpgrade;
+import blusunrize.immersiveengineering.common.network.MessageObstructedConnection;
 import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.fluids.ConcreteFluid;
 import blusunrize.immersiveengineering.common.util.fluids.IEFluid;
@@ -76,12 +79,10 @@ import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityType;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.EquipmentSlotType.Group;
 import net.minecraft.item.*;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.potion.Effect;
@@ -92,7 +93,6 @@ import net.minecraft.tileentity.FurnaceTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -100,21 +100,19 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
-import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.ToolType;
-import net.minecraftforge.common.util.RecipeMatcher;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
@@ -658,6 +656,7 @@ public class IEContent
 		IEMultiblocks.init();
 		BlueprintCraftingRecipe.registerDefaultCategories();
 		IETileTypes.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
+		populateAPI();
 	}
 
 	@SubscribeEvent
@@ -862,8 +861,10 @@ public class IEContent
 		return patternItem;
 	}
 
-	//TODO call
-	public static void populateAPI() {
+	public static void populateAPI()
+	{
+		SetRestrictedField.startInitializing(false);
+		ApiUtils.disableTicking.setValue(EventHandler.REMOVE_FROM_TICKING::add);
 		IngredientWithSize.SERIALIZER.setValue(IngredientWithSizeSerializer.INSTANCE);
 		BlueprintCraftingRecipe.blueprintItem.setValue(IEItems.Misc.blueprint);
 		ExcavatorHandler.setSetDirtyCallback(IESaveData::setDirty);
@@ -881,51 +882,14 @@ public class IEContent
 						throw new RuntimeException(e);
 					}
 				},
-				template -> ((TemplateAccess) template).getBlocks()
+				template -> ((TemplateAccess)template).getBlocks()
 		);
-		defaultAdapter = new IRecipeAdapter<IRecipe<CraftingInventory>>()
-		{
-			@Override
-			public RecipeQuery[] getQueriedInputs(IRecipe<CraftingInventory> recipe, NonNullList<ItemStack> input, World world)
-			{
-				NonNullList<Ingredient> ingred = recipe.getIngredients();
-				// Check that the ingredients roughly match what the recipe actually requires.
-				// This is necessary to prevent infinite crafting for recipes like FireworkRocketRecipe which don't return
-				// meaningful values in getIngredients.
-				NonNullList<Predicate<ItemStack>> ingredientsForMatching = NonNullList.create();
-				List<ItemStack> inputList = input.subList(0, input.size()-1);
-				for(Ingredient i : ingred)
-					if(!i.hasNoMatchingItems())
-						ingredientsForMatching.add(i);
-				final int numNonEmpty = ingredientsForMatching.size();
-				while(ingredientsForMatching.size() < inputList.size())
-					ingredientsForMatching.add(ItemStack::isEmpty);
-				ForgeHooks.setCraftingPlayer(FakePlayerUtil.getFakePlayer(world));
-				int[] ingredientAssignment = RecipeMatcher.findMatches(inputList, ingredientsForMatching);
-				ForgeHooks.setCraftingPlayer(null);
-
-				// - 1: Input list contains the output slot
-				RecipeQuery[] query = new RecipeQuery[input.size()-1];
-				if(ingredientAssignment!=null)
-					// If the ingredients provided by the recipe are plausible request those
-					// Try to request each ingredient at the index where it is in the input pattern, this is needed for
-					// some CraftTweaker recipes
-					for(int stackIndex = 0; stackIndex < ingredientAssignment.length; stackIndex++)
-					{
-						int ingredIndex = ingredientAssignment[stackIndex];
-						if(ingredIndex < numNonEmpty)
-							query[stackIndex] = AssemblerHandler.createQueryFromIngredient(
-									(Ingredient)ingredientsForMatching.get(ingredIndex)
-							);
-					}
-				else
-					// Otherwise request the exact stacks used in the input
-					for(int i = 0; i < query.length; i++)
-						if(!input.get(i).isEmpty())
-							query[i] = AssemblerHandler.createQueryFromItemStack(input.get(i));
-				return query;
-			}
-		};
+		defaultAdapter = new DefaultAssemblerAdapter();
+		WirecoilUtils.SEND_OBSTRUCTION.setValue(
+				(target, failed, obstructions) -> ImmersiveEngineering.packetHandler.send(
+						PacketDistributor.PLAYER.with(() -> target),
+						new MessageObstructedConnection(failed, obstructions)
+				));
 		AssemblerHandler.registerRecipeAdapter(IRecipe.class, defaultAdapter);
 		BulletHandler.GET_BULLET_ITEM.setValue(Weapons.bullets::get);
 		ChemthrowerHandler.SOLIDIFY_CONCRETE_POWDER.setValue(
@@ -939,5 +903,6 @@ public class IEContent
 		WireUtils.RAYTRACE.setValue(Utils::rayTrace);
 		GlobalWireNetwork.SANITIZE_CONNECTIONS.setValue(IEServerConfig.WIRES.sanitizeConnections::get);
 		GlobalWireNetwork.VALIDATE_CONNECTIONS.setValue(IECommonConfig.validateNet::get);
+		SetRestrictedField.lock(false);
 	}
 }

@@ -41,7 +41,7 @@ import java.util.function.Function;
 
 public class BulletHandler
 {
-	public static final SetRestrictedField<Function<IBullet, Item>> GET_BULLET_ITEM = new SetRestrictedField<>();
+	public static final SetRestrictedField<Function<IBullet, Item>> GET_BULLET_ITEM = SetRestrictedField.common();
 	public static ItemStack emptyCasing = ItemStack.EMPTY;
 	public static ItemStack emptyShell = ItemStack.EMPTY;
 

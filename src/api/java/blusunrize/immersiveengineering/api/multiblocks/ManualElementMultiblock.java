@@ -48,9 +48,9 @@ import static blusunrize.immersiveengineering.api.client.TextUtils.applyFormat;
 public class ManualElementMultiblock extends SpecialManualElements
 {
 	private static final SetRestrictedField<UnaryOperator<IRenderTypeBuffer>>
-			DISABLE_LIGHTING = new SetRestrictedField<>();
+			DISABLE_LIGHTING = SetRestrictedField.client();
 	private static final SetRestrictedField<BiConsumer<TileEntity, BlockState>>
-			SET_CACHED_STATE = new SetRestrictedField<>();
+			SET_CACHED_STATE = SetRestrictedField.client();
 
 	private final IMultiblock multiblock;
 

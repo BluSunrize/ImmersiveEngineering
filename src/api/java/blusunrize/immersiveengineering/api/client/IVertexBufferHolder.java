@@ -27,7 +27,7 @@ import java.util.function.Function;
  */
 public interface IVertexBufferHolder
 {
-	SetRestrictedField<Function<NonNullSupplier<List<BakedQuad>>, IVertexBufferHolder>> CREATE = new SetRestrictedField<>();
+	SetRestrictedField<Function<NonNullSupplier<List<BakedQuad>>, IVertexBufferHolder>> CREATE = SetRestrictedField.client();
 
 	static IVertexBufferHolder create(NonNullSupplier<List<BakedQuad>> getQuads)
 	{

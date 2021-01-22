@@ -35,7 +35,7 @@ public class ExcavatorHandler
 	private static final Multimap<RegistryKey<World>, MineralVein> MINERAL_VEIN_LIST = ArrayListMultimap.create();
 	// Only access when synchronized on MINERAL_VEIN_LIST
 	private static final Map<Pair<RegistryKey<World>, ColumnPos>, MineralWorldInfo> MINERAL_INFO_CACHE = new HashMap<>();
-	static final SetRestrictedField<Runnable> MARK_SAVE_DATA_DIRTY = new SetRestrictedField<>();
+	static final SetRestrictedField<Runnable> MARK_SAVE_DATA_DIRTY = SetRestrictedField.common();
 	public static int mineralVeinYield = 0;
 	public static double initialVeinDepletion = 0;
 	public static double mineralNoiseThreshold = 0;

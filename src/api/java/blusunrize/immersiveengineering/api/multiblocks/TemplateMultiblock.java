@@ -50,11 +50,11 @@ import java.util.function.Function;
 
 public abstract class TemplateMultiblock implements IMultiblock
 {
-	private static final SetRestrictedField<Function<BlockState, ItemStack>> PICK_BLOCK = new SetRestrictedField<Function<BlockState, ItemStack>>();
+	private static final SetRestrictedField<Function<BlockState, ItemStack>> PICK_BLOCK = SetRestrictedField.common();
 	private static final SetRestrictedField<BiFunction<ResourceLocation, MinecraftServer, Template>>
-			LOAD_TEMPLATE = new SetRestrictedField<>();
+			LOAD_TEMPLATE = SetRestrictedField.common();
 	private static final SetRestrictedField<Function<Template, List<Palette>>>
-			GET_PALETTES = new SetRestrictedField<Function<Template, List<Palette>>>();
+			GET_PALETTES = SetRestrictedField.common();
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	private final ResourceLocation loc;

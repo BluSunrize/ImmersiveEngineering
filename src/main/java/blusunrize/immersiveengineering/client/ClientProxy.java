@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.api.shader.ShaderLayer;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
+import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.fx.FluidSplashParticle.Data;
 import blusunrize.immersiveengineering.client.fx.FractalParticle;
@@ -298,7 +299,6 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void postInit()
 	{
-		IEManual.initManual();
 		IEManual.addIEManualEntries();
 
 		//TODO ClientCommandHandler.instance.registerCommand(new CommandHandler(true));
@@ -734,9 +734,12 @@ public class ClientProxy extends CommonProxy
 
 	public static void populateAPI()
 	{
+		SetRestrictedField.startInitializing(true);
 		VertexBufferHolder.addToAPI();
 		ManualElementMultiblock.setCallbacks(
 				IERenderTypes::disableLighting, (te, state) -> ((TileEntityAccess)te).setCachedBlockState(state)
 		);
+		IEManual.initManual();
+		SetRestrictedField.lock(true);
 	}
 }

@@ -68,6 +68,7 @@ public class IEManual
 	{
 		IEManualInstance ieMan = new IEManualInstance();
 		ManualHelper.IE_MANUAL_INSTANCE.setValue(ieMan);
+		ManualHelper.ADD_CONFIG_GETTER.setValue(ieMan.configGetters::add);
 
 		ieMan.registerSpecialElement(new ResourceLocation(MODID, "blueprint"),
 				s -> {

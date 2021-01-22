@@ -51,8 +51,8 @@ import static blusunrize.immersiveengineering.api.utils.SafeChunkUtils.isChunkSa
 @EventBusSubscriber(modid = Lib.MODID)
 public class GlobalWireNetwork implements IWorldTickable
 {
-	public static final SetRestrictedField<BooleanSupplier> SANITIZE_CONNECTIONS = new SetRestrictedField<>();
-	public static final SetRestrictedField<BooleanSupplier> VALIDATE_CONNECTIONS = new SetRestrictedField<>();
+	public static final SetRestrictedField<BooleanSupplier> SANITIZE_CONNECTIONS = SetRestrictedField.common();
+	public static final SetRestrictedField<BooleanSupplier> VALIDATE_CONNECTIONS = SetRestrictedField.common();
 
 	private static World lastServerWorld = null;
 	private static GlobalWireNetwork lastServerNet = null;

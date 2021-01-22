@@ -49,7 +49,7 @@ import static blusunrize.immersiveengineering.api.IETags.getIngot;
 
 public class ApiUtils
 {
-	public static final SetRestrictedField<Consumer<TileEntity>> disableTicking = new SetRestrictedField<>();
+	public static final SetRestrictedField<Consumer<TileEntity>> disableTicking = SetRestrictedField.common();
 	/**
 	 * Random instance for general use. The "usual" per-world random instance can have unexpected behavior with
 	 * ghostloading (in some cases the seed is set directly), this instance does not have this problem.

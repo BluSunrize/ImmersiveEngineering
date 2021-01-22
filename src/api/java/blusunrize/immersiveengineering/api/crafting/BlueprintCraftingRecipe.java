@@ -41,7 +41,7 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 	// Initialized by reload listener
 	public static Map<ResourceLocation, BlueprintCraftingRecipe> recipeList = Collections.emptyMap();
 	private static Map<String, List<BlueprintCraftingRecipe>> recipesByCategory = Collections.emptyMap();
-	public static SetRestrictedField<Item> blueprintItem = new SetRestrictedField<>();
+	public static SetRestrictedField<Item> blueprintItem = SetRestrictedField.common();
 
 	public String blueprintCategory;
 	public ItemStack output;

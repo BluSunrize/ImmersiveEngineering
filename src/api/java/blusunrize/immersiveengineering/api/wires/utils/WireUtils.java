@@ -40,7 +40,7 @@ import java.util.function.Consumer;
 
 public class WireUtils
 {
-	public static final SetRestrictedField<RaytraceCallback> RAYTRACE = new SetRestrictedField<>();
+	public static final SetRestrictedField<RaytraceCallback> RAYTRACE = SetRestrictedField.common();
 
 	public static Connection getConnectionMovedThrough(World world, LivingEntity e)
 	{

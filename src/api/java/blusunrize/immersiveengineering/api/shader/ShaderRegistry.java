@@ -45,7 +45,9 @@ public class ShaderRegistry
 	 * Shader bags will only be added for rarities existing in this map when the item register event
 	 * is fired
 	 */
-	public static Map<Rarity, Integer> rarityWeightMap = new EnumMap<>(Rarity.class);
+	@SuppressWarnings("MapReplaceableByEnumMap")
+	//Using an EnumMap is not safe here since we add entries to the Rarity enum
+	public static Map<Rarity, Integer> rarityWeightMap = new HashMap<>();
 
 	/**
 	 * A list of EnumRarities sorted by their weight
@@ -59,7 +61,9 @@ public class ShaderRegistry
 	/**
 	 * The map of EnumRarities to the total weight of all shaders of that rarity or rarer
 	 */
-	public static Map<Rarity, Integer> totalWeight = new EnumMap<>(Rarity.class);
+	@SuppressWarnings("MapReplaceableByEnumMap")
+	// EnumMap does not work here, we add values to the enum at runtime
+	public static Map<Rarity, Integer> totalWeight = new HashMap<>();
 	/**
 	 * The total weight in relation to the player. This takes into account shaders the player has gotten, which then result in less weight
 	 */

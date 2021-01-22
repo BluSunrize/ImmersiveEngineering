@@ -27,8 +27,8 @@ public class ManualHelper
 	public static String CAT_HEAVYMACHINES = "heavymachines";
 	public static String CAT_UPDATE = "update";
 
-	public static final SetRestrictedField<ManualInstance> IE_MANUAL_INSTANCE = new SetRestrictedField<>();
-	public static final SetRestrictedField<Consumer<Function<String, Object>>> ADD_CONFIG_GETTER = new SetRestrictedField<>();
+	public static final SetRestrictedField<ManualInstance> IE_MANUAL_INSTANCE = SetRestrictedField.client();
+	public static final SetRestrictedField<Consumer<Function<String, Object>>> ADD_CONFIG_GETTER = SetRestrictedField.client();
 
 	public static ManualInstance getManual()
 	{

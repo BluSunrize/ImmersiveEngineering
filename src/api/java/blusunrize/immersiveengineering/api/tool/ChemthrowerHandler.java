@@ -40,7 +40,7 @@ import java.util.function.BiConsumer;
 
 public class ChemthrowerHandler
 {
-	public static final SetRestrictedField<BiConsumer<World, BlockPos>> SOLIDIFY_CONCRETE_POWDER = new SetRestrictedField<>();
+	public static final SetRestrictedField<BiConsumer<World, BlockPos>> SOLIDIFY_CONCRETE_POWDER = SetRestrictedField.common();
 	public static List<Pair<ITag<Fluid>, ChemthrowerEffect>> effectList = new ArrayList<>();
 	public static HashSet<ITag<Fluid>> flammableList = new HashSet<>();
 

@@ -23,6 +23,7 @@ import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.Connection.RenderData;
 import blusunrize.immersiveengineering.api.wires.IWireCoil;
 import blusunrize.immersiveengineering.api.wires.WireType;
+import blusunrize.immersiveengineering.api.wires.utils.WireLink;
 import blusunrize.immersiveengineering.api.wires.utils.WirecoilUtils;
 import blusunrize.immersiveengineering.client.fx.FractalParticle;
 import blusunrize.immersiveengineering.client.gui.BlastFurnaceScreen;
@@ -507,7 +508,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 					{
 						if(WirecoilUtils.hasWireLink(equipped))
 						{
-							WirecoilUtils.WireLink link = WirecoilUtils.WireLink.readFromItem(equipped);
+							WireLink link = WireLink.readFromItem(equipped);
 							BlockPos pos = link.cp.getPosition();
 							String s = I18n.format(Lib.DESC_INFO+"attachedTo", pos.getX(), pos.getY(), pos.getZ());
 							int col = WireType.ELECTRUM.getColour(null);

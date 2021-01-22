@@ -24,7 +24,7 @@ import java.util.function.Predicate;
 
 public class IngredientWithSize implements Predicate<ItemStack>
 {
-	public static final SetRestrictedField<IIngredientWithSizeSerializer> SERIALIZER = new SetRestrictedField<>();
+	public static final SetRestrictedField<IIngredientWithSizeSerializer> SERIALIZER = SetRestrictedField.common();
 	protected final Ingredient basePredicate;
 	protected final int count;
 

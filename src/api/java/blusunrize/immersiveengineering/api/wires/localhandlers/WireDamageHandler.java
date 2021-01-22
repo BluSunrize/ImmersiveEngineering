@@ -40,7 +40,7 @@ public class WireDamageHandler extends LocalNetworkHandler implements ICollision
 {
 	public static final ResourceLocation ID = new ResourceLocation(Lib.MODID, "wire_damage");
 	public static final SetRestrictedField<BiFunction<Float, ElectricSource, IElectricDamageSource>> GET_WIRE_DAMAGE
-			= new SetRestrictedField<>();
+			= SetRestrictedField.common();
 
 	private static final double KNOCKBACK_PER_DAMAGE = 10;
 
