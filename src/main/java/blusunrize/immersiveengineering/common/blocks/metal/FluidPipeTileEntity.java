@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.IETags;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.fluid.IFluidPipe;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedVoxelShapes;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
@@ -65,10 +66,14 @@ import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
@@ -78,6 +83,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 
 //TODO use cap references
+@EventBusSubscriber(modid = Lib.MODID, bus = Bus.FORGE)
 public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe, IAdvancedHasObjProperty,
 		IOBJModelCallback<BlockState>, IColouredTile, IPlayerInteraction, IHammerInteraction, IPlacementInteraction,
 		ISelectionBounds, ICollisionBounds, IAdditionalDrops
@@ -1131,5 +1137,12 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 			return new Vector4f(rgb[0], rgb[1], rgb[2], 1);
 		}
 		return original;
+	}
+
+	@SubscribeEvent
+	public static void onWorldUnload(WorldEvent.Unload ev)
+	{
+		if(!ev.getWorld().isRemote()&&ev.getWorld() instanceof World)
+			indirectConnections.clearDimension((World)ev.getWorld());
 	}
 }
