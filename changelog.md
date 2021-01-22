@@ -1,3 +1,26 @@
+##### Version 1.16.5-4.1.2-pre
+ - First 1.16.5 release
+ - Allowed CC:Tweaked computers to emit bundled redstone signals using interface connectors (Malte)
+ - No longer crash the game if manual loading fails (Malte)
+ - Fixed crash related to the drill (Malte)
+ - Fixed logged exceptions when attacking entities with a drill with a shader (Malte)
+ - Fixed coke oven etc showing progress if the GUI is reopened after the process is done (Malte)
+ - Fixed CME with villager registration code (Malte)
+ - Fixed tesla coil destroying blocks when placed sideways (Malte)
+ - Added tags to determine what items can go into crates (Malte)
+   - These also contain crate minecarts now
+ - Fixed crash when opening the manual when a key is bound to \ or $ (Malte)
+ - Fixed crash when crafting torches from creosote (Malte)
+ - Fixed broken special characters (Malte)
+ - Fixed some performance issues with pipes (Malte)
+ - Fixed water wheel placement (Malte)
+ - Fixed inverting of breaker switches (Malte)
+ - Fixed crash with posts and smooth lighting (Malte)
+ - Fixed crash with invalid multiblock selection tags on the hammer (Malte)
+ - Fixed modded ores sometimes being used instead of the vanilla ones (Malte)
+ - Fixed crash related to turrets (Malte)
+ - Updated Chinese translation (RMSCA)
+
 ##### Version 1.16.4-4.1.2-129
  - Re-added client side commands to clear render caches and reset the manual (Malte)
  - Replaced JS coremods and access transformers with Mixins (Malte)
