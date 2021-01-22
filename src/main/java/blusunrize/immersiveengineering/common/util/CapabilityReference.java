@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.util;
 
-import blusunrize.immersiveengineering.api.DirectionalBlockPos;
+import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -130,9 +130,9 @@ public abstract class CapabilityReference<T>
 							currentCap.orElseThrow(RuntimeException::new),
 							cap.getName());
 				}
-				lastTE = Utils.getExistingTileEntity(currWorld, currPos);
+				lastTE = Utils.getExistingTileEntity(currWorld, currPos.getPosition());
 				if(lastTE!=null)
-					currentCap = lastTE.getCapability(cap, currPos.direction);
+					currentCap = lastTE.getCapability(cap, currPos.getSide());
 				else
 					currentCap = LazyOptional.empty();
 				lastWorld = currWorld;

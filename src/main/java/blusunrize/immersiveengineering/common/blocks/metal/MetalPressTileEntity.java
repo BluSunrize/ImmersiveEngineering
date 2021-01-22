@@ -8,9 +8,9 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttachable;
+import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
@@ -228,7 +228,7 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 		if(!output.isEmpty())
 		{
 			DirectionalBlockPos outPos = getOutputPos();
-			Utils.dropStackAtPos(world, outPos, output, outPos.direction);
+			Utils.dropStackAtPos(world, outPos.getPosition(), output, outPos.getSide());
 		}
 	}
 

@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.DirectionalBlockPos;
+import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.ImmersiveConnectableTileEntity;
@@ -115,7 +115,7 @@ public class ConnectorBundledTileEntity extends ImmersiveConnectableTileEntity i
 		DirectionalBlockPos attachedTo = getAttachedFace();
 		for(IBundledProvider source : EXTRA_SOURCES)
 		{
-			byte[] provided = source.getEmittedState(world, attachedTo.toImmutable(), attachedTo.direction);
+			byte[] provided = source.getEmittedState(world, attachedTo.getPosition(), attachedTo.getSide());
 			if(provided!=null)
 			{
 				for(int color = 0; color < 16; color++)
@@ -200,12 +200,12 @@ public class ConnectorBundledTileEntity extends ImmersiveConnectableTileEntity i
 	{
 		super.onNeighborBlockChange(otherPos);
 		DirectionalBlockPos attachedTo = getAttachedFace();
-		if(!otherPos.equals(attachedTo.toImmutable()))
+		if(!otherPos.equals(attachedTo.getPosition()))
 			return;
 		byte[] overrideState = null;
 		for(IBundledProvider source : EXTRA_SOURCES)
 		{
-			overrideState = source.getEmittedState(world, attachedTo.toImmutable(), attachedTo.direction);
+			overrideState = source.getEmittedState(world, attachedTo.getPosition(), attachedTo.getSide());
 			if(overrideState!=null)
 				break;
 		}

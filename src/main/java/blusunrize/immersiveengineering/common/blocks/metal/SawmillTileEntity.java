@@ -8,11 +8,11 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.crafting.SawmillRecipe;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttachable;
+import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
@@ -474,7 +474,7 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 		if(!output.isEmpty())
 		{
 			DirectionalBlockPos secondaryPos = getSecondaryOutputCapPos();
-			Utils.dropStackAtPos(world, secondaryPos, output, secondaryPos.direction.getOpposite());
+			Utils.dropStackAtPos(world, secondaryPos.getPosition(), output, secondaryPos.getSide().getOpposite());
 		}
 	}
 

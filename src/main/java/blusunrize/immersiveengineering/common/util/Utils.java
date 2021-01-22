@@ -9,8 +9,8 @@
 package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.common.items.HammerItem;
 import blusunrize.immersiveengineering.common.items.ScrewdriverItem;
 import blusunrize.immersiveengineering.common.items.WirecutterItem;
@@ -748,7 +748,7 @@ public class Utils
 
 	public static void dropStackAtPos(World world, DirectionalBlockPos pos, ItemStack stack)
 	{
-		dropStackAtPos(world, pos, stack, pos.direction);
+		dropStackAtPos(world, pos.getPosition(), stack, pos.getSide());
 	}
 
 	public static void dropStackAtPos(World world, BlockPos pos, ItemStack stack, @Nonnull Direction facing)
