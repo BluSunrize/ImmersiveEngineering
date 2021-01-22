@@ -233,7 +233,7 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 		return true;
 	}
 
-	CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntity(this,
+	CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntityAt(this,
 			() -> {
 				Direction outDir = getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY();
 				return new DirectionalBlockPos(pos.offset(outDir, 2), outDir.getOpposite());

@@ -170,7 +170,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 		}
 	}
 
-	private CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntity(this,
+	private CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntityAt(this,
 			() -> new DirectionalBlockPos(pos.offset(getFacing(), 2), getFacing().getOpposite()),
 			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 

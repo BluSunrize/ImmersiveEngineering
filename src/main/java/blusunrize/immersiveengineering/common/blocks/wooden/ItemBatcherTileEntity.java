@@ -74,7 +74,7 @@ public class ItemBatcherTileEntity extends IEBaseTileEntity implements ITickable
 		return placer.isSneaking();
 	}
 
-	private final CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntity(this,
+	private final CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntityAt(this,
 			() -> new DirectionalBlockPos(pos.offset(getFacing()), getFacing().getOpposite()),
 			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 

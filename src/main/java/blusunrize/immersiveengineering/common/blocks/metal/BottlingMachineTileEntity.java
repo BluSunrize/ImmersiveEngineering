@@ -114,7 +114,7 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 		return "glass".equals(group)==(MinecraftForgeClient.getRenderLayer()==RenderType.getTranslucent());
 	}
 
-	private CapabilityReference<IItemHandler> outputCap = CapabilityReference.forTileEntity(this, () -> {
+	private CapabilityReference<IItemHandler> outputCap = CapabilityReference.forTileEntityAt(this, () -> {
 		Direction outDir = getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY();
 		return new DirectionalBlockPos(getBlockPosForPos(new BlockPos(2, 1, 1)).offset(outDir), outDir.getOpposite());
 	}, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);

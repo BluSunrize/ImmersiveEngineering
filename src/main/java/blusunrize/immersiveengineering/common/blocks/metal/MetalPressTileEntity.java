@@ -218,7 +218,7 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 		return new DirectionalBlockPos(pos.offset(getFacing(), 2), getFacing());
 	}
 
-	private CapabilityReference<IItemHandler> outputCap = CapabilityReference.forTileEntity(this,
+	private CapabilityReference<IItemHandler> outputCap = CapabilityReference.forTileEntityAt(this,
 			this::getOutputPos, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 
 	@Override

@@ -110,12 +110,12 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 	{
 	}
 
-	private final CapabilityReference<IItemHandler> outputCap = CapabilityReference.forTileEntity(this, () -> {
+	private final CapabilityReference<IItemHandler> outputCap = CapabilityReference.forTileEntityAt(this, () -> {
 		Direction outDir = getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY();
 		return new DirectionalBlockPos(getBlockPosForPos(new BlockPos(4, 1, 1)).offset(outDir), outDir.getOpposite());
 	}, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 
-	private final CapabilityReference<IItemHandler> secondaryOutputCap = CapabilityReference.forTileEntity(
+	private final CapabilityReference<IItemHandler> secondaryOutputCap = CapabilityReference.forTileEntityAt(
 			this, this::getSecondaryOutputCapPos, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
 	);
 

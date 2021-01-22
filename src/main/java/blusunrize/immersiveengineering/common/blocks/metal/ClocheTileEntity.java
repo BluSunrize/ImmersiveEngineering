@@ -114,7 +114,7 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 		super(IETileTypes.CLOCHE.get());
 	}
 
-	private CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntity(this,
+	private CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntityAt(this,
 			() -> new DirectionalBlockPos(pos.up().offset(getFacing().getOpposite()), getFacing()),
 			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 

@@ -375,7 +375,7 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 		return true;
 	}
 
-	private CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntity(this,
+	private CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntityAt(this,
 			() -> new DirectionalBlockPos(getPos().add(0, -1, 0).offset(getFacing(), -2), getFacing()),
 			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 

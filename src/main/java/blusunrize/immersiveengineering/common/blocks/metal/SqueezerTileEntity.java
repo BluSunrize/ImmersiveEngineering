@@ -60,7 +60,7 @@ public class SqueezerTileEntity extends PoweredMultiblockTileEntity<SqueezerTile
 	public NonNullList<ItemStack> inventory = NonNullList.withSize(11, ItemStack.EMPTY);
 	public float animation_piston = 0;
 	public boolean animation_down = true;
-	private CapabilityReference<IItemHandler> outputCap = CapabilityReference.forTileEntity(this, this::getOutputPos,
+	private CapabilityReference<IItemHandler> outputCap = CapabilityReference.forTileEntityAt(this, this::getOutputPos,
 			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 
 	public SqueezerTileEntity()

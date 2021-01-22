@@ -62,7 +62,7 @@ public class ConnectorBundledTileEntity extends ImmersiveConnectableTileEntity i
 		super(type);
 	}
 
-	private final CapabilityReference<RedstoneBundleConnection> attached = CapabilityReference.forTileEntity(
+	private final CapabilityReference<RedstoneBundleConnection> attached = CapabilityReference.forTileEntityAt(
 			this, this::getAttachedFace, CapabilityRedstoneNetwork.REDSTONE_BUNDLE_CONNECTION
 	);
 	private boolean dirtyExtraSource = false;

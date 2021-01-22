@@ -82,7 +82,7 @@ public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTi
 			nbt.put("inventory", Utils.writeInventory(inventory));
 	}
 
-	private CapabilityReference<IItemHandler> outputCap = CapabilityReference.forTileEntity(this,
+	private CapabilityReference<IItemHandler> outputCap = CapabilityReference.forTileEntityAt(this,
 			() -> {
 				Direction fw = getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY();
 				return new DirectionalBlockPos(this.getPos().offset(fw), fw.getOpposite());

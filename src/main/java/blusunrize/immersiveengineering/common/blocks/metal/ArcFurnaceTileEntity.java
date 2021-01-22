@@ -78,10 +78,10 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 
 	public NonNullList<ItemStack> inventory = NonNullList.withSize(26, ItemStack.EMPTY);
 	public int pouringMetal = 0;
-	private CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntity(this,
+	private CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntityAt(this,
 			() -> new DirectionalBlockPos(this.getBlockPosForPos(MAIN_OUT_POS).offset(getFacing(), -1), getFacing().getOpposite()),
 			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
-	private CapabilityReference<IItemHandler> slagOut = CapabilityReference.forTileEntity(this,
+	private CapabilityReference<IItemHandler> slagOut = CapabilityReference.forTileEntityAt(this,
 			() -> new DirectionalBlockPos(this.getBlockPosForPos(SLAG_OUT_POS).offset(getFacing()), getFacing().getOpposite()),
 			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 

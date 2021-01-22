@@ -91,13 +91,13 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 
 
 	private final List<CapabilityReference<IEnergyStorage>> outputs = Arrays.asList(
-			CapabilityReference.forTileEntity(this,
+			CapabilityReference.forTileEntityAt(this,
 					() -> new DirectionalBlockPos(this.getBlockPosForPos(new BlockPos(0, 1, 4)).add(0, 1, 0), Direction.DOWN),
 					CapabilityEnergy.ENERGY),
-			CapabilityReference.forTileEntity(this,
+			CapabilityReference.forTileEntityAt(this,
 					() -> new DirectionalBlockPos(this.getBlockPosForPos(new BlockPos(1, 1, 4)).add(0, 1, 0), Direction.DOWN),
 					CapabilityEnergy.ENERGY),
-			CapabilityReference.forTileEntity(this,
+			CapabilityReference.forTileEntityAt(this,
 					() -> new DirectionalBlockPos(this.getBlockPosForPos(new BlockPos(2, 1, 4)).add(0, 1, 0), Direction.DOWN),
 					CapabilityEnergy.ENERGY)
 	);

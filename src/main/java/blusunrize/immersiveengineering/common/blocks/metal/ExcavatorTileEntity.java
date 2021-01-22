@@ -410,7 +410,7 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 		return false;
 	}
 
-	private CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntity(this,
+	private CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntityAt(this,
 			() -> new DirectionalBlockPos(getPos().offset(getFacing(), -1), getFacing().getOpposite()), CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 
 	@Override
