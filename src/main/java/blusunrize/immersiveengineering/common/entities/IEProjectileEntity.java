@@ -369,6 +369,12 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 
 	public abstract void onImpact(RayTraceResult mop);
 
+	protected void onHitBlock(BlockRayTraceResult mop)
+	{
+		BlockState blockstate = this.world.getBlockState(mop.getPos());
+		blockstate.onProjectileCollision(this.world, blockstate, mop, this);
+	}
+
 	protected float getMotionDecayFactor()
 	{
 		return 0.99F;

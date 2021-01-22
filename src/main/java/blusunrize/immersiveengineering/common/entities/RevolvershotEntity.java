@@ -15,8 +15,6 @@ import blusunrize.immersiveengineering.common.network.MessageBirthdayParty;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
@@ -31,7 +29,6 @@ import net.minecraft.potion.Effects;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
@@ -140,12 +137,7 @@ public class RevolvershotEntity extends IEProjectileEntity
 		if(!this.world.isRemote)
 			this.secondaryImpact(mop);
 		if(mop instanceof BlockRayTraceResult)
-		{
-			BlockPos hitPos = ((BlockRayTraceResult)mop).getPos();
-			BlockState state = this.world.getBlockState(hitPos);
-			if(state.getMaterial()!=Material.AIR)
-				state.onEntityCollision(this.world, hitPos, this);
-		}
+			this.onHitBlock((BlockRayTraceResult)mop);
 		this.remove();
 	}
 

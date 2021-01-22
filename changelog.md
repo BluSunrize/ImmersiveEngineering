@@ -1,6 +1,7 @@
 ##### Version 1.16.5-4.1.2-pre
  - First 1.16.5 release
  - Allowed CC:Tweaked computers to emit bundled redstone signals using interface connectors (Malte)
+ - Allowed IE projectiles to trigger target blocks (BluSunrize)
  - No longer crash the game if manual loading fails (Malte)
  - Fixed crash related to the drill (Malte)
  - Fixed logged exceptions when attacking entities with a drill with a shader (Malte)

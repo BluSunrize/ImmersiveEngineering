@@ -155,6 +155,8 @@ public class RailgunShotEntity extends IEProjectileEntity
 				}
 				projectileProperties.onHitTarget(this.world, mop, shooterUuid, this);
 			}
+			if(mop instanceof BlockRayTraceResult)
+				this.onHitBlock((BlockRayTraceResult)mop);
 		}
 	}
 

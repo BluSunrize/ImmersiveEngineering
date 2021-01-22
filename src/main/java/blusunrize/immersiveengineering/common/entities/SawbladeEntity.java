@@ -23,6 +23,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
@@ -125,6 +126,8 @@ public class SawbladeEntity extends IEProjectileEntity
 			Entity shooter = func_234616_v_();
 			if(getAmmo().attemptDamageItem(dmg, world.rand, shooter instanceof ServerPlayerEntity?(ServerPlayerEntity)shooter: null))
 				this.remove();
+			if(mop instanceof BlockRayTraceResult)
+				this.onHitBlock((BlockRayTraceResult)mop);
 		}
 	}
 
