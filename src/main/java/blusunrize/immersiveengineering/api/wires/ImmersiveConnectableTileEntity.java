@@ -9,11 +9,11 @@
 package blusunrize.immersiveengineering.api.wires;
 
 
-import blusunrize.immersiveengineering.api.IEProperties.ConnectionModelData;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.utils.client.CombinedModelData;
 import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
+import blusunrize.immersiveengineering.api.wires.tile.ConnectorTileCalls;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
@@ -64,6 +64,7 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 	@Override
 	public void removeCable(Connection connection, ConnectionPoint attachedPoint)
 	{
+		this.markDirty();
 	}
 
 	@Override
@@ -100,7 +101,9 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 	public IModelData getModelData()
 	{
 		return CombinedModelData.combine(
-				new SinglePropertyModelData<>(genConnBlockstate(), Model.CONNECTIONS), super.getModelData()
+				new SinglePropertyModelData<>(
+						ConnectorTileCalls.getModelData(world, this), Model.CONNECTIONS
+				), super.getModelData()
 		);
 	}
 

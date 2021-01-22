@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.util;
 
+import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -37,13 +38,7 @@ public class ItemNBTHelper
 
 	public static void remove(ItemStack stack, String key)
 	{
-		if(hasKey(stack, key))
-		{
-			CompoundNBT tag = stack.getOrCreateTag();
-			tag.remove(key);
-			if(tag.isEmpty())
-				stack.setTag(null);
-		}
+		ItemUtils.removeTag(stack, key);
 	}
 
 

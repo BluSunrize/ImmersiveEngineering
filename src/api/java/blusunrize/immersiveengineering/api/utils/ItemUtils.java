@@ -97,4 +97,20 @@ public class ItemUtils
 			handside = handside==HandSide.LEFT?HandSide.RIGHT: HandSide.LEFT;
 		return handside;
 	}
+
+	public static void removeTag(ItemStack stack, String key)
+	{
+		if(stack.hasTag())
+		{
+			CompoundNBT tag = stack.getOrCreateTag();
+			tag.remove(key);
+			if(tag.isEmpty())
+				stack.setTag(null);
+		}
+	}
+
+	public static boolean hasTag(ItemStack stack, String key, int type)
+	{
+		return stack.hasTag()&&stack.getOrCreateTag().contains(key, type);
+	}
 }

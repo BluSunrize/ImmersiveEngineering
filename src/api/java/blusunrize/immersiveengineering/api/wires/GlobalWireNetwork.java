@@ -386,11 +386,7 @@ public class GlobalWireNetwork implements IWorldTickable
 
 	public void onConnectorUnload(IImmersiveConnectable iic)
 	{
-		onConnectorUnload(iic.getPosition(), iic);
-	}
-
-	public void onConnectorUnload(BlockPos pos, IImmersiveConnectable iic)
-	{
+		BlockPos pos = iic.getPosition();
 		processQueuedLoads();
 		WireLogger.logger.info("Unloading connector {} at {}", iic, iic.getPosition());
 		Map<LocalWireNetwork, Boolean> handledNets = new HashMap<>();

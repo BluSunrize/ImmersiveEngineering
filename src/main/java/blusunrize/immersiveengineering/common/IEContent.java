@@ -62,7 +62,6 @@ import blusunrize.immersiveengineering.common.items.IEItems.Molds;
 import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import blusunrize.immersiveengineering.common.items.IEItems.Weapons;
 import blusunrize.immersiveengineering.common.items.ToolUpgradeItem.ToolUpgrade;
-import blusunrize.immersiveengineering.common.network.MessageObstructedConnection;
 import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.fluids.ConcreteFluid;
 import blusunrize.immersiveengineering.common.util.fluids.IEFluid;
@@ -107,7 +106,6 @@ import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
@@ -885,11 +883,7 @@ public class IEContent
 				template -> ((TemplateAccess)template).getBlocks()
 		);
 		defaultAdapter = new DefaultAssemblerAdapter();
-		WirecoilUtils.SEND_OBSTRUCTION.setValue(
-				(target, failed, obstructions) -> ImmersiveEngineering.packetHandler.send(
-						PacketDistributor.PLAYER.with(() -> target),
-						new MessageObstructedConnection(failed, obstructions)
-				));
+		WirecoilUtils.COIL_USE.setValue(WireCoilItem::doCoilUse);
 		AssemblerHandler.registerRecipeAdapter(IRecipe.class, defaultAdapter);
 		BulletHandler.GET_BULLET_ITEM.setValue(Weapons.bullets::get);
 		ChemthrowerHandler.SOLIDIFY_CONCRETE_POWDER.setValue(
