@@ -32,6 +32,7 @@ import net.minecraft.item.DyeColor;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -133,6 +134,28 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 		if(isRSInput())
 			signals[redstoneChannel.getId()] = (byte)Math.max(getMaxRSInput(), signals[redstoneChannel.getId()]);
 		rsDirty = false;
+	}
+
+	protected boolean acceptSignalFrom(Direction side)
+	{
+		BlockPos offset = pos.offset(side);
+		TileEntity te = SafeChunkUtils.getSafeTE(world, offset);
+		// If it's not a connector, exit early
+		if(!(te instanceof ConnectorRedstoneTileEntity))
+			return true;
+		// If it's not the same net, exit early
+		if(!this.getLocalNet(0).getConnectors().contains(offset))
+			return true;
+		// Allow connection if they are different colors
+		return ((ConnectorRedstoneTileEntity)te).redstoneChannel!=this.redstoneChannel;
+	}
+
+	@Override
+	protected int getRSInput(Direction from)
+	{
+		if(acceptSignalFrom(from))
+			return super.getRSInput(from);
+		return 0;
 	}
 
 	public boolean isRSOutput()
