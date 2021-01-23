@@ -40,16 +40,14 @@ public class CrTIngredientUtil
 		final Ingredient basePredicate = crafttweakerIngredient.getIngredient().asVanillaIngredient();
 		return new IngredientWithSize(basePredicate, crafttweakerIngredient.getAmount());
 	}
-	
-    public static IngredientWithSize[] getIngredientsWithSize(IIngredientWithAmount[] crafttweakerIngredients)
-    {
-        final IngredientWithSize[] result = new IngredientWithSize[crafttweakerIngredients.length];
-        for(int i = 0; i < crafttweakerIngredients.length; i++)
-        {
-            result[i] = new IngredientWithSize(crafttweakerIngredients[i].getIngredient().asVanillaIngredient(), crafttweakerIngredients[i].getAmount());
-        }
-        return result;
-    }
+
+	public static IngredientWithSize[] getIngredientsWithSize(IIngredientWithAmount[] crafttweakerIngredients)
+	{
+		final IngredientWithSize[] result = new IngredientWithSize[crafttweakerIngredients.length];
+		for(int i = 0; i < crafttweakerIngredients.length; i++)
+			result[i] = new IngredientWithSize(crafttweakerIngredients[i].getIngredient().asVanillaIngredient(), crafttweakerIngredients[i].getAmount());
+		return result;
+	}
 
 	/**
 	 * {@link com.blamejared.crafttweaker.impl.helper.CraftTweakerHelper} only allows to get a List, not a NonNullList
@@ -58,9 +56,7 @@ public class CrTIngredientUtil
 	{
 		final NonNullList<ItemStack> result = NonNullList.create();
 		for(IItemStack itemStack : itemStacks)
-		{
 			result.add(itemStack.getInternal());
-		}
 		return result;
 	}
 
@@ -83,14 +79,14 @@ public class CrTIngredientUtil
 		final ITag<Fluid> internal = (ITag<Fluid>)tag.getInternal();
 		return new FluidTagInput(internal, amount, null);
 	}
-    
-    /**
-     * Allows us to be typesafe, since tag.getInternal() has unknown type
-     */
-    public static FluidTagInput getFluidTagInput(MCTagWithAmount<Fluid> tag)
-    {
-        //noinspection unchecked
-        final ITag<Fluid> internal = (ITag<Fluid>)tag.getTag().getInternal();
-        return new FluidTagInput(internal, tag.getAmount(), null);
-    }
+
+	/**
+	 * Allows us to be typesafe, since tag.getInternal() has unknown type
+	 */
+	public static FluidTagInput getFluidTagInput(MCTagWithAmount<Fluid> tag)
+	{
+		//noinspection unchecked
+		final ITag<Fluid> internal = (ITag<Fluid>)tag.getTag().getInternal();
+		return new FluidTagInput(internal, tag.getAmount(), null);
+	}
 }

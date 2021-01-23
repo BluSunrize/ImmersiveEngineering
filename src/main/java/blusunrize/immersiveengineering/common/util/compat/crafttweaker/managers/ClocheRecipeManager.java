@@ -108,9 +108,7 @@ public class ClocheRecipeManager implements IRecipeManager
 		final Ingredient seedIngredient = seed.asVanillaIngredient();
 		final Ingredient soilIngredient = soil.asVanillaIngredient();
 		if(!ClocheRenderFunction.RENDER_FUNCTION_FACTORIES.containsKey(renderType))
-		{
 			throw new IllegalArgumentException("Unknown Render Type: "+renderType);
-		}
 
 		final ClocheRenderFunction.ClocheRenderReference renderReference = new ClocheRenderFunction.ClocheRenderReference(renderType, renderBlock);
 		try

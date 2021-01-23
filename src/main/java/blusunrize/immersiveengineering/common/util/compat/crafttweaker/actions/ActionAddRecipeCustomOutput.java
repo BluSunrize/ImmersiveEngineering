@@ -18,11 +18,13 @@ public class ActionAddRecipeCustomOutput extends ActionAddRecipe
 {
 	private final String output;
 
-	public ActionAddRecipeCustomOutput(IRecipeManager recipeManager, IRecipe<?> recipe, FluidStack output) {
+	public ActionAddRecipeCustomOutput(IRecipeManager recipeManager, IRecipe<?> recipe, FluidStack output)
+	{
 		this(recipeManager, recipe, new MCFluidStackMutable(output).getCommandString());
 	}
 
-	public ActionAddRecipeCustomOutput(IRecipeManager recipeManager, IRecipe<?> recipe, CommandStringDisplayable output) {
+	public ActionAddRecipeCustomOutput(IRecipeManager recipeManager, IRecipe<?> recipe, CommandStringDisplayable output)
+	{
 		this(recipeManager, recipe, output.getCommandString());
 	}
 

@@ -105,9 +105,7 @@ public class ArcFurnaceRecipeManager implements IRecipeManager
 			{
 				final List<ItemStack> itemStacks = new ArrayList<>(recipe.output);
 				if(checkSlag)
-				{
 					itemStacks.add(recipe.slag);
-				}
 				return itemStacks;
 			}
 

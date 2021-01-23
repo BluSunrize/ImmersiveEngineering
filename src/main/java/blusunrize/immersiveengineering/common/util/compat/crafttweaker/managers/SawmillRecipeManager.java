@@ -99,23 +99,17 @@ public class SawmillRecipeManager implements IRecipeManager
 		final ItemStack[] secondaryStripping = CraftTweakerHelper.getItemStacks(strippedOutputSecondaries);
 
 		if(stripped.isEmpty()&&strippedOutputSecondaries.length!=0)
-		{
 			throw new IllegalArgumentException("Cannot have secondary stripped outputs when the main stripped output is empty!");
-		}
 
 		final ItemStack mainOutput = output.getInternal();
 		final ItemStack[] secondaryOutputs = CraftTweakerHelper.getItemStacks(outputSecondaries);
 
 		final SawmillRecipe recipe = new SawmillRecipe(resourceLocation, mainOutput, stripped, ingredient, energy);
 		for(ItemStack stack : secondaryStripping)
-		{
 			recipe.addToSecondaryStripping(stack);
-		}
 
 		for(ItemStack stack : secondaryOutputs)
-		{
 			recipe.addToSecondaryOutput(stack);
-		}
 
 		CraftTweakerAPI.apply(new ActionAddRecipe(this, recipe, null));
 	}
