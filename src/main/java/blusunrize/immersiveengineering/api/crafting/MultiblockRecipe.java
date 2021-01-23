@@ -113,7 +113,7 @@ public abstract class MultiblockRecipe extends IESerializableRecipe implements I
 	{
 		final Lazy<Integer> oldTime = totalProcessTime;
 		final Lazy<Integer> oldEnergy = totalProcessEnergy;
-		this.totalProcessTime = Lazy.of(() -> (int)(oldTime.get()*timeModifier.getAsDouble()));
-		this.totalProcessEnergy = Lazy.of(() -> (int)(oldEnergy.get()*energyModifier.getAsDouble()));
+		this.totalProcessTime = Lazy.of(() -> (int)(Math.max(1, oldTime.get()*timeModifier.getAsDouble())));
+		this.totalProcessEnergy = Lazy.of(() -> (int)(Math.max(1, oldEnergy.get()*energyModifier.getAsDouble())));
 	}
 }
