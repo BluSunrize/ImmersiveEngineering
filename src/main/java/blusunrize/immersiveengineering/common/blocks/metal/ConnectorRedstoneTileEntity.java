@@ -95,7 +95,7 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 	@Override
 	public int getWeakRSOutput(@Nonnull Direction side)
 	{
-		if(!isRSOutput())
+		if(!isRSOutput()||side==this.getFacing())
 			return 0;
 		return output;
 	}
