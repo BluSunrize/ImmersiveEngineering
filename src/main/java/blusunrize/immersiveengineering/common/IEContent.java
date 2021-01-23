@@ -19,10 +19,14 @@ import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
 import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
-import blusunrize.immersiveengineering.api.tool.*;
-import blusunrize.immersiveengineering.api.tool.AssemblerHandler.RecipeQuery;
+import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
+import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
+import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ItemAgeAccessor;
+import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler;
+import blusunrize.immersiveengineering.api.tool.assembler.AssemblerHandler;
+import blusunrize.immersiveengineering.api.tool.assembler.FluidTagRecipeQuery;
 import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.wires.WireType;
@@ -117,7 +121,7 @@ import java.util.*;
 import java.util.function.Supplier;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
-import static blusunrize.immersiveengineering.api.tool.AssemblerHandler.defaultAdapter;
+import static blusunrize.immersiveengineering.api.tool.assembler.AssemblerHandler.defaultAdapter;
 import static blusunrize.immersiveengineering.common.util.fluids.IEFluid.createBuilder;
 
 @Mod.EventBusSubscriber(modid = MODID, bus = Bus.MOD)
@@ -793,8 +797,9 @@ public class IEContent
 		AssemblerHandler.registerSpecialIngredientConverter((o) ->
 		{
 			if(o instanceof IngredientFluidStack)
-				return new RecipeQuery(((IngredientFluidStack)o).getFluidTagInput(), ((IngredientFluidStack)o).getFluidTagInput().getAmount());
-			else return null;
+				return new FluidTagRecipeQuery(((IngredientFluidStack)o).getFluidTagInput());
+			else
+				return null;
 		});
 
 		DieselHandler.registerFuel(IETags.fluidBiodiesel, 250);

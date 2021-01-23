@@ -99,12 +99,6 @@ public abstract class TemplateMultiblock implements IMultiblock
 		));
 	}
 
-	@Deprecated
-	protected Template getTemplate()
-	{
-		return getTemplate((World)null);
-	}
-
 	@Nonnull
 	protected Template getTemplate(@Nullable World world)
 	{

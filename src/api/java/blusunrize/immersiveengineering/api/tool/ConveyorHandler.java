@@ -366,12 +366,6 @@ public class ConveyorHandler
 			return new Direction[]{getFacing()};
 		}
 
-		@Deprecated
-		default Vector3d getDirection(Entity entity)
-		{
-			return getDirection(entity, false);
-		}
-
 		/**
 		 * @return a vector representing the movement applied to the entity
 		 */

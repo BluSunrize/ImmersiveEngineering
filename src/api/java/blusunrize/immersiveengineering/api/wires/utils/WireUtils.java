@@ -188,26 +188,6 @@ public class WireUtils
 		return vex;
 	}
 
-	@Deprecated
-	public static IImmersiveConnectable toIIC(Object object, World world)
-	{
-		return toIIC(object, world, true);
-	}
-
-	@Deprecated
-	public static IImmersiveConnectable toIIC(Object object, World world, boolean allowProxies)
-	{
-		if(object instanceof IImmersiveConnectable)
-			return (IImmersiveConnectable)object;
-		else if(object instanceof BlockPos)
-		{
-			BlockPos pos = (BlockPos)object;
-			if(world!=null&&(allowProxies||world.isBlockLoaded(pos)))
-				return GlobalWireNetwork.getNetwork(world).getLocalNet(pos).getConnector(pos);
-		}
-		return null;
-	}
-
 	public static Vector3d getVecForIICAt(LocalWireNetwork net, ConnectionPoint pos, Connection conn, boolean fromOtherEnd)
 	{
 		//Force loading

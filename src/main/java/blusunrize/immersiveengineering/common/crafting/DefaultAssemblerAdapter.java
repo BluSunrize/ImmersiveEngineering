@@ -1,8 +1,8 @@
 package blusunrize.immersiveengineering.common.crafting;
 
-import blusunrize.immersiveengineering.api.tool.AssemblerHandler;
-import blusunrize.immersiveengineering.api.tool.AssemblerHandler.IRecipeAdapter;
-import blusunrize.immersiveengineering.api.tool.AssemblerHandler.RecipeQuery;
+import blusunrize.immersiveengineering.api.tool.assembler.AssemblerHandler;
+import blusunrize.immersiveengineering.api.tool.assembler.AssemblerHandler.IRecipeAdapter;
+import blusunrize.immersiveengineering.api.tool.assembler.RecipeQuery;
 import blusunrize.immersiveengineering.common.util.FakePlayerUtil;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;

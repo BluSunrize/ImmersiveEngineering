@@ -20,18 +20,9 @@ import javax.annotation.Nullable;
  */
 public interface IModelOffsetProvider
 {
-	@Deprecated
-	default BlockPos getModelOffset(BlockState state)
-	{
-		return getModelOffset(state, null);
-	}
-
 	/**
 	 * @param size Size of the bounding box of the parts of the model registered in the JSON file
 	 * @return (x, y, z) to use the model intersected with [x, x+1)x[y, y+1)x[z, z+1) for this block.
 	 */
-	default BlockPos getModelOffset(BlockState state, @Nullable Vector3i size)
-	{
-		return getModelOffset(state);
-	}
+	BlockPos getModelOffset(BlockState state, @Nullable Vector3i size);
 }

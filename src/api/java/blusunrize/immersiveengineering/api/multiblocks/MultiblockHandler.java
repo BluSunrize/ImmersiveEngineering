@@ -60,7 +60,6 @@ public class MultiblockHandler
 		return byUniqueName.get(name);
 	}
 
-	//TODO remove deprecated methods at the next API break
 	public interface IMultiblock
 	{
 		/**
@@ -72,25 +71,7 @@ public class MultiblockHandler
 		 * Check whether the given block can be used to trigger the structure creation of the multiblock.<br>
 		 * Basically, a less resource-intensive preliminary check to avoid checking every structure.
 		 */
-		default boolean isBlockTrigger(BlockState state, Direction side, @Nullable World world)
-		{
-			return isBlockTrigger(state, side);
-		}
-
-		@Deprecated
-		default boolean isBlockTrigger(BlockState state, Direction side)
-		{
-			return isBlockTrigger(state);
-		}
-
-		@Deprecated
-		default boolean isBlockTrigger(BlockState state)
-		{
-			for(Direction d : DIRECTIONS)
-				if(isBlockTrigger(state, d, null))
-					return true;
-			return false;
-		}
+		boolean isBlockTrigger(BlockState state, Direction side, @Nullable World world);
 
 		/**
 		 * This method checks the structure and sets the new one.
@@ -105,16 +86,7 @@ public class MultiblockHandler
 		 * @param world
 		 * @return
 		 */
-		default List<BlockInfo> getStructure(@Nullable World world)
-		{
-			return getStructure();
-		}
-
-		@Deprecated
-		default List<BlockInfo> getStructure()
-		{
-			return getStructure(null);
-		}
+		List<BlockInfo> getStructure(@Nullable World world);
 
 		/**
 		 * An array of ItemStacks that summarizes the total amount of materials needed for the structure. Will be rendered in the Engineer's Manual
@@ -150,16 +122,7 @@ public class MultiblockHandler
 		@OnlyIn(Dist.CLIENT)
 		void renderFormedStructure(MatrixStack transform, IRenderTypeBuffer buffer);
 
-		default Vector3i getSize(@Nullable World world)
-		{
-			return getSize();
-		}
-
-		@Deprecated
-		default Vector3i getSize()
-		{
-			return getSize(null);
-		}
+		Vector3i getSize(@Nullable World world);
 
 		void disassemble(World world, BlockPos startPos, boolean mirrored, Direction clickDirectionAtCreation);
 

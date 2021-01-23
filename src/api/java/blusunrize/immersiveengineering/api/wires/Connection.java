@@ -277,34 +277,19 @@ public class Connection
 		};
 	}
 
-	/**
-	 * This is no longer needed in 1.14+, since connections are the same object for both directions now
-	 *
-	 * @deprecated
-	 */
-	@Deprecated
-	public boolean hasSameConnectors(Connection other)
-	{
-		return (endA.equals(other.endA)&&endB.equals(other.endB))
-				||endA.equals(other.endB)&&endB.equals(other.endA);
-	}
-
 	public static class RenderData
 	{
 		public static final int POINTS_PER_WIRE = 16;
 		public final CatenaryData data;
 		public final WireType type;
 		public final int pointsToRenderSolid;
-		@Deprecated
-		// Replaced by pointsToRenderSolid
-		public final int pointsToRender;
 		public final int color;
 
 		public RenderData(Connection conn, boolean startAtB, int count)
 		{
 			type = conn.type;
 			assert (conn.hasCatenaryData());
-			pointsToRenderSolid = pointsToRender = count;
+			pointsToRenderSolid = count;
 			color = type.getColour(conn);
 			data = new CatenaryData(conn.getCatenaryData(), startAtB, conn.getPoint(0, conn.getEndB()));
 		}

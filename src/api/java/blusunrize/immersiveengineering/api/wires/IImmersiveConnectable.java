@@ -21,7 +21,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Set;
-import java.util.function.Consumer;
 
 /**
  * @author BluSunrize - 08.03.2015
@@ -54,37 +53,6 @@ public interface IImmersiveConnectable extends ILocalHandlerProvider
 
 	@Nullable
 	ConnectionPoint getTargetedPoint(TargetingInfo info, Vector3i offset);
-
-	/**
-	 * fired for every not-simulated energy packet passing through. Used for energy meter and stuff
-	 */
-	@Deprecated
-	default void onEnergyPassthrough(int amount)
-	{
-
-	}
-
-	/**
-	 * fired for every not-simulated energy packet passing through. Used for energy meter and stuff
-	 */
-	@Deprecated
-	default void onEnergyPassthrough(double amount)
-	{
-		onEnergyPassthrough((int)amount);
-	}
-
-	/**
-	 * Informs the connector/relay that there is a source of energy connected to it, and gives it a way to consume it.
-	 * This is valid for a single tick.
-	 * This can be used to add "pulling" consumers to the net or allow non-energy-outputs to consume energy (e.g. to damage entities)
-	 *
-	 * @param amount  The amount available from this source
-	 * @param consume Call this to consume the amount of energy in the parameter
-	 */
-	@Deprecated
-	default void addAvailableEnergy(float amount, Consumer<Float> consume)
-	{
-	}
 
 	/**
 	 * used to reset the CableType limiter of the tile, provided it matches the given argument

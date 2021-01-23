@@ -97,12 +97,6 @@ public abstract class MultiblockRecipe extends IESerializableRecipe implements I
 		return this.totalProcessEnergy.get();
 	}
 
-	@Deprecated
-	public void modifyTimeAndEnergy(double timeModifier, double energyModifier)
-	{
-		modifyTimeAndEnergy(() -> timeModifier, () -> energyModifier);
-	}
-
 	void setTimeAndEnergy(int time, int energy)
 	{
 		totalProcessEnergy = Lazy.of(() -> energy);

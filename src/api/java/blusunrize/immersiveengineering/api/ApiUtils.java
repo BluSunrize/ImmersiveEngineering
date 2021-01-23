@@ -8,8 +8,6 @@
 
 package blusunrize.immersiveengineering.api;
 
-import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
-import blusunrize.immersiveengineering.api.utils.IngredientUtils;
 import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
@@ -19,11 +17,9 @@ import com.google.gson.JsonObject;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.JSONUtils;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.concurrent.ThreadTaskExecutor;
 import net.minecraft.util.concurrent.TickDelayedTask;
@@ -38,7 +34,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
@@ -55,61 +50,6 @@ public class ApiUtils
 	 * ghostloading (in some cases the seed is set directly), this instance does not have this problem.
 	 */
 	public static final Random RANDOM = new Random();
-
-	@Deprecated
-	public static boolean compareToOreName(ItemStack stack, ResourceLocation oreName)
-	{
-		return TagUtils.isInBlockOrItemTag(stack, oreName);
-	}
-
-	@Deprecated
-	public static boolean stackMatchesObject(ItemStack stack, Object o)
-	{
-		return ItemUtils.stackMatchesObject(stack, o);
-	}
-
-	@Deprecated
-	public static boolean stackMatchesObject(ItemStack stack, Object o, boolean checkNBT)
-	{
-		return ItemUtils.stackMatchesObject(stack, o, checkNBT);
-	}
-
-	@Deprecated
-	public static ItemStack copyStackWithAmount(ItemStack stack, int amount)
-	{
-		return ItemHandlerHelper.copyStackWithSize(stack, amount);
-	}
-
-	@Deprecated
-	public static boolean stacksMatchIngredientList(List<Ingredient> list, NonNullList<ItemStack> stacks)
-	{
-		return IngredientUtils.stacksMatchIngredientList(list, stacks);
-	}
-
-	@Deprecated
-	public static boolean stacksMatchIngredientWithSizeList(List<IngredientWithSize> list, NonNullList<ItemStack> stacks)
-	{
-		return IngredientUtils.stacksMatchIngredientWithSizeList(list, stacks);
-	}
-
-	@Deprecated
-	public static Ingredient createIngredientFromList(List<ItemStack> list)
-	{
-		return IngredientUtils.createIngredientFromList(list);
-	}
-
-	@Deprecated
-	public static ComparableItemStack createComparableItemStack(ItemStack stack, boolean copy)
-	{
-		return ComparableItemStack.create(stack, copy);
-	}
-
-	@Deprecated
-	public static ComparableItemStack createComparableItemStack(ItemStack stack, boolean copy, boolean useNbt)
-	{
-		return ComparableItemStack.create(stack, copy, useNbt);
-	}
-
 
 	public static JsonElement jsonSerializeFluidStack(FluidStack fluidStack)
 	{
@@ -159,7 +99,7 @@ public class ApiUtils
 			if(relation!=null&&relation.length > 1)
 			{
 				double val = relation[0]/(double)relation[1];
-				return copyStackWithAmount(IEApi.getPreferredTagStack(getIngot(type[1])), (int)val);
+				return ItemUtils.copyStackWithAmount(IEApi.getPreferredTagStack(getIngot(type[1])), (int)val);
 			}
 		}
 		return ItemStack.EMPTY;
