@@ -118,7 +118,7 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 	public void onLoad()
 	{
 		super.onLoad();
-		ConnectorTileHelper.onChunkLoad(globalNet, this, world);
+		ConnectorTileHelper.onChunkLoad(this, world);
 	}
 
 	@Override

@@ -3,11 +3,15 @@ package blusunrize.immersiveengineering.api.wires.tile;
 import blusunrize.immersiveengineering.api.IEProperties.ConnectionModelData;
 import blusunrize.immersiveengineering.api.wires.*;
 import com.google.common.collect.ImmutableSet;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Consumer;
 
 public class ConnectorTileCalls
 {
@@ -43,9 +47,9 @@ public class ConnectorTileCalls
 		return new ConnectionModelData(ret, connector.getPosition());
 	}
 
-	public static void onLoad(GlobalWireNetwork globalNet, IImmersiveConnectable iic, World world)
+	public static void onLoad(IImmersiveConnectable iic, World world)
 	{
-		globalNet.onConnectorLoad(iic, world);
+		GlobalWireNetwork.getNetwork(world).onConnectorLoad(iic, world);
 	}
 
 	public static void onChunkUnloaded(GlobalWireNetwork globalNet, IImmersiveConnectable iic)
@@ -53,8 +57,30 @@ public class ConnectorTileCalls
 		globalNet.onConnectorUnload(iic);
 	}
 
-	public static void remove(GlobalWireNetwork globalNet, IImmersiveConnectable iic)
+	public static void remove(IImmersiveConnectable iic, World world)
 	{
+		GlobalWireNetwork globalNet = GlobalWireNetwork.getNetwork(world);
+		if(!world.isRemote)
+		{
+			BlockPos pos = iic.getPosition();
+			Consumer<Connection> dropHandler;
+			if(world.getGameRules().getBoolean(GameRules.DO_TILE_DROPS))
+				dropHandler = (c) -> {
+					if(!c.isInternal())
+					{
+						BlockPos end = c.getOtherEnd(c.getEndFor(pos)).getPosition();
+						double dx = pos.getX()+.5+Math.signum(end.getX()-pos.getX());
+						double dy = pos.getY()+.5+Math.signum(end.getY()-pos.getY());
+						double dz = pos.getZ()+.5+Math.signum(end.getZ()-pos.getZ());
+						world.addEntity(new ItemEntity(world, dx, dy, dz, c.type.getWireCoil(c)));
+					}
+				};
+			else
+				dropHandler = c -> {
+				};
+			for(ConnectionPoint cp : iic.getConnectionPoints())
+				globalNet.removeAllConnectionsAt(cp, dropHandler);
+		}
 		globalNet.removeConnector(iic);
 	}
 }
