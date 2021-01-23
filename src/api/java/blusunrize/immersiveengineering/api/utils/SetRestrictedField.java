@@ -17,6 +17,12 @@ import net.minecraftforge.fml.ModLoadingContext;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a value that depends on non-API IE code and should only be written to by IE.
+ * It also contains a mechanism to make sure that all fields are actually set.
+ *
+ * @param <T> type of the contained value
+ */
 public class SetRestrictedField<T>
 {
 	private static final InitializationTracker CLIENT_FIELDS = new InitializationTracker();

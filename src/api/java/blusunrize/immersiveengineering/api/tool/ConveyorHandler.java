@@ -11,10 +11,7 @@ package blusunrize.immersiveengineering.api.tool;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.api.utils.SafeChunkUtils;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
-import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBeltTileEntity;
-import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
-import blusunrize.immersiveengineering.mixin.accessors.ItemEntityAccess;
+import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
@@ -66,6 +63,7 @@ public class ConveyorHandler
 	public static final Map<Class<? extends IConveyorBelt>, ResourceLocation> reverseClassRegistry = new LinkedHashMap<>();
 	public static final Set<BiConsumer<Entity, IConveyorTile>> magnetSupressionFunctions = new HashSet<>();
 	public static final Set<BiConsumer<Entity, IConveyorTile>> magnetSupressionReverse = new HashSet<>();
+	public static final SetRestrictedField<ItemAgeAccessor> ITEM_AGE_ACCESS = SetRestrictedField.common();
 
 	public static final Map<ResourceLocation, Block> conveyorBlocks = new HashMap<>();
 	public static final ResourceLocation textureConveyorColour = new ResourceLocation("immersiveengineering:block/conveyor/colour");
@@ -133,9 +131,9 @@ public class ConveyorHandler
 	 */
 	public static IConveyorBelt getConveyor(ResourceLocation key, @Nullable TileEntity tile)
 	{
-		if(tile instanceof ConveyorBeltTileEntity)
+		if(tile instanceof IConveyorTile)
 		{
-			IConveyorBelt fromTile = ((ConveyorBeltTileEntity)tile).getConveyorSubtype();
+			IConveyorBelt fromTile = ((IConveyorTile)tile).getConveyorSubtype();
 			if(fromTile!=null)
 				return fromTile;
 		}
@@ -160,19 +158,10 @@ public class ConveyorHandler
 		return new ResourceLocation(Lib.MODID, "conveyor_"+path);
 	}
 
-	public static void createConveyorBlocks()
-	{
-		for(ResourceLocation rl : classRegistry.keySet())
-		{
-			Block b = new ConveyorBlock(rl);
-			conveyorBlocks.put(rl, b);
-		}
-	}
-
 	public static ResourceLocation getType(Block b)
 	{
-		if(b instanceof ConveyorBlock)
-			return ((ConveyorBlock)b).getTypeName();
+		if(b instanceof IConveyorBlock)
+			return ((IConveyorBlock)b).getTypeName();
 		else
 			return null;
 	}
@@ -261,13 +250,7 @@ public class ConveyorHandler
 
 		TileEntity getTile();
 
-		default Direction getFacing()
-		{
-			TileEntity te = getTile();
-			if(te instanceof IDirectionalTile)
-				return ((IDirectionalTile)te).getFacing();
-			return Direction.NORTH;
-		}
+		Direction getFacing();
 
 		/**
 		 * @return the transport direction; HORIZONTAL for flat conveyors, UP and DOWN for diagonals
@@ -510,9 +493,9 @@ public class ConveyorHandler
 					ItemEntity item = (ItemEntity)entity;
 					if(!contact)
 					{
-						ItemEntityAccess access = (ItemEntityAccess)item;
-						if(access.getAgeNonsided() > item.lifespan-60*20&&!outputBlocked)
-							access.setAge(item.lifespan-60*20);
+						ItemAgeAccessor access = ITEM_AGE_ACCESS.getValue();
+						if(access.getAgeNonsided(item) > item.lifespan-60*20&&!outputBlocked)
+							access.setAge(item, item.lifespan-60*20);
 					}
 					else
 						handleInsertion(item, conveyorDirection, distX, distZ);
@@ -685,5 +668,17 @@ public class ConveyorHandler
 				return subtype.sigTransportDirections();
 			return new Direction[0];
 		}
+	}
+
+	public interface IConveyorBlock
+	{
+		ResourceLocation getTypeName();
+	}
+
+	public interface ItemAgeAccessor
+	{
+		int getAgeNonsided(ItemEntity entity);
+
+		void setAge(ItemEntity entity, int newAge);
 	}
 }

@@ -6,13 +6,14 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.api.wires;
+package blusunrize.immersiveengineering.common.blocks.generic;
 
 
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.utils.client.CombinedModelData;
 import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
+import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.api.wires.tile.ConnectorTileCalls;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import com.google.common.collect.ImmutableList;

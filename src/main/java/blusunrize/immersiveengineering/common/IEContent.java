@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.*;
 import blusunrize.immersiveengineering.api.tool.AssemblerHandler.RecipeQuery;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
+import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ItemAgeAccessor;
 import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.wires.WireType;
@@ -72,11 +73,13 @@ import blusunrize.immersiveengineering.common.wires.IEWireTypes;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import blusunrize.immersiveengineering.common.world.OreRetrogenFeature;
 import blusunrize.immersiveengineering.mixin.accessors.ConcretePowderBlockAccess;
+import blusunrize.immersiveengineering.mixin.accessors.ItemEntityAccess;
 import blusunrize.immersiveengineering.mixin.accessors.TemplateAccess;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.EquipmentSlotType.Group;
@@ -641,7 +644,7 @@ public class IEContent
 		IEItems.Misc.iconDrillbreak = new FakeIconItem("drillbreak");
 		IEItems.Misc.iconRavenholm = new FakeIconItem("ravenholm");
 
-		ConveyorHandler.createConveyorBlocks();
+		createConveyorBlocks();
 		BulletHandler.emptyCasing = new ItemStack(Ingredients.emptyCasing);
 		BulletHandler.emptyShell = new ItemStack(Ingredients.emptyShell);
 		IEWireTypes.setup();
@@ -655,6 +658,15 @@ public class IEContent
 		BlueprintCraftingRecipe.registerDefaultCategories();
 		IETileTypes.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
 		populateAPI();
+	}
+
+	public static void createConveyorBlocks()
+	{
+		for(ResourceLocation rl : ConveyorHandler.classRegistry.keySet())
+		{
+			Block b = new ConveyorBlock(rl);
+			ConveyorHandler.conveyorBlocks.put(rl, b);
+		}
 	}
 
 	@SubscribeEvent
@@ -897,6 +909,20 @@ public class IEContent
 		WireUtils.RAYTRACE.setValue(Utils::rayTrace);
 		GlobalWireNetwork.SANITIZE_CONNECTIONS.setValue(IEServerConfig.WIRES.sanitizeConnections::get);
 		GlobalWireNetwork.VALIDATE_CONNECTIONS.setValue(IECommonConfig.validateNet::get);
+		ConveyorHandler.ITEM_AGE_ACCESS.setValue(new ItemAgeAccessor()
+		{
+			@Override
+			public int getAgeNonsided(ItemEntity entity)
+			{
+				return ((ItemEntityAccess)entity).getAgeNonsided();
+			}
+
+			@Override
+			public void setAge(ItemEntity entity, int newAge)
+			{
+				((ItemEntityAccess)entity).setAge(newAge);
+			}
+		});
 		SetRestrictedField.lock(false);
 	}
 }
