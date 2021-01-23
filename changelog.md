@@ -2,6 +2,9 @@
  - First 1.16.5 release
  - Allowed CC:Tweaked computers to emit bundled redstone signals using interface connectors (Malte)
  - Allowed IE projectiles to trigger target blocks (BluSunrize)
+ - Changed redstone connectors to no longer power other connectors of the same color on the same network (BluSunrize)
+ - Changed redstone connectors to not emit weak signals through their "tip" (BluSunrize)
+ - Changed redstone connectors GUI to be closed with the "Inventory" keybind (BluSunrize)
  - No longer crash the game if manual loading fails (Malte)
  - Fixed crash related to the drill (Malte)
  - Fixed logged exceptions when attacking entities with a drill with a shader (Malte)
@@ -21,6 +24,7 @@
  - Fixed modded ores sometimes being used instead of the vanilla ones (Malte)
  - Fixed crash related to turrets (Malte)
  - Fixed rotation of the external heater to match description in the manual (BluSunrize)
+ - Fixed crashes when the time modifier for refinery recipes was changed to <1 (BluSunrize)
  - Updated Chinese translation (RMSCA)
 
 ##### Version 1.16.4-4.1.2-129
