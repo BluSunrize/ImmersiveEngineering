@@ -38,7 +38,9 @@ public class RefineryRecipeSerializer extends IERecipeSerializer<RefineryRecipe>
 		FluidTagInput input0 = FluidTagInput.deserialize(JSONUtils.getJsonObject(json, "input0"));
 		FluidTagInput input1 = FluidTagInput.deserialize(JSONUtils.getJsonObject(json, "input1"));
 		int energy = JSONUtils.getInt(json, "energy");
-		return IEServerConfig.MACHINES.refineryConfig.apply(new RefineryRecipe(recipeId, output, input0, input1, energy));
+		RefineryRecipe recipe = new RefineryRecipe(recipeId, output, input0, input1, energy);
+		recipe.modifyTimeAndEnergy(()->1, IEServerConfig.MACHINES.refineryConfig);
+		return recipe;
 	}
 
 	@Nullable

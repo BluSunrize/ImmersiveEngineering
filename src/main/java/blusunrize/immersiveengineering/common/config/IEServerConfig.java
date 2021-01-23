@@ -253,7 +253,13 @@ public class IEServerConfig
 			crusherConfig = addMachineEnergyTimeModifiers(builder, "crusher");
 			squeezerConfig = addMachineEnergyTimeModifiers(builder, "squeezer");
 			fermenterConfig = addMachineEnergyTimeModifiers(builder, "fermenter");
-			refineryConfig = addMachineEnergyTimeModifiers(builder, "refinery");
+			{
+				builder.push("refinery");
+				refineryConfig = builder
+						.comment("A modifier to apply to the energy costs of every refinery recipe")
+						.defineInRange("energyModifier", 1, 1e-3, 1e3);
+				builder.pop();
+			}
 			autoWorkbenchConfig = addMachineEnergyTimeModifiers(builder, "auto workbench");
 			bottlingMachineConfig = addMachineEnergyTimeModifiers(builder, "bottling machine");
 			mixerConfig = addMachineEnergyTimeModifiers(builder, "mixer");
@@ -401,7 +407,7 @@ public class IEServerConfig
 		public final MachineRecipeConfig<CrusherRecipe> crusherConfig;
 		public final MachineRecipeConfig<SqueezerRecipe> squeezerConfig;
 		public final MachineRecipeConfig<FermenterRecipe> fermenterConfig;
-		public final MachineRecipeConfig<RefineryRecipe> refineryConfig;
+		public final DoubleValue refineryConfig;
 		public final MachineRecipeConfig<ArcFurnaceRecipe> arcFurnaceConfig;
 		public final IntValue arcfurnace_electrodeDamage;
 		public final BooleanValue arcfurnace_recycle;
