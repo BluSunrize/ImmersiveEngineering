@@ -15,7 +15,7 @@ import blusunrize.immersiveengineering.common.util.compat.crafttweaker.actions.A
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
-import com.blamejared.crafttweaker.api.item.IIngredient;
+import com.blamejared.crafttweaker.api.item.IIngredientWithAmount;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.managers.IRecipeManager;
 import com.blamejared.crafttweaker.impl.fluid.MCFluidStackMutable;
@@ -106,7 +106,7 @@ public class SqueezerRecipeManager implements IRecipeManager
 	 * @docParam itemOutput <item:minecraft:diamond>
 	 */
 	@ZenCodeType.Method
-	public void addRecipe(String recipePath, IIngredient input, int energy, IFluidStack fluidOutput, @ZenCodeType.Optional("<item:minecraft:air>") IItemStack itemOutput)
+	public void addRecipe(String recipePath, IIngredientWithAmount input, int energy, IFluidStack fluidOutput, @ZenCodeType.Optional("<item:minecraft:air>") IItemStack itemOutput)
 	{
 		final ResourceLocation resourceLocation = new ResourceLocation("crafttweaker", recipePath);
 		final IngredientWithSize inputWithSize = CrTIngredientUtil.getIngredientWithSize(input);
@@ -134,7 +134,7 @@ public class SqueezerRecipeManager implements IRecipeManager
 	 * @docParam itemOutput <item:minecraft:dirt>
 	 */
 	@ZenCodeType.Method
-	public void addRecipe(String recipePath, IIngredient input, int energy, IItemStack itemOutput)
+	public void addRecipe(String recipePath, IIngredientWithAmount input, int energy, IItemStack itemOutput)
 	{
 		addRecipe(recipePath, input, energy, new MCFluidStackMutable(FluidStack.EMPTY), itemOutput);
 	}

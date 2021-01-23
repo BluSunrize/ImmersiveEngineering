@@ -194,7 +194,7 @@ dependencies {
     testImplementation('junit:junit:4.13')
     annotationProcessor 'org.spongepowered:mixin:0.8.2:processor'
 
-    compileOnly fg.deobf(group: "com.blamejared.crafttweaker", name: "CraftTweaker-1.16.4", version: "7.1.0.84")
+    compileOnly fg.deobf(group: "com.blamejared.crafttweaker", name: "CraftTweaker-1.16.5", version: "7.1.0.103")
 }
 
 def customGradle = rootProject.file('custom.gradle');

@@ -15,7 +15,7 @@ import blusunrize.immersiveengineering.common.util.compat.crafttweaker.actions.A
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
-import com.blamejared.crafttweaker.api.item.IIngredient;
+import com.blamejared.crafttweaker.api.item.IIngredientWithAmount;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.managers.IRecipeManager;
 import com.blamejared.crafttweaker.impl.fluid.MCFluidStackMutable;
@@ -63,7 +63,7 @@ public class FermenterRecipeManager implements IRecipeManager
 	 * @docParam fluidOutput <fluid:minecraft:water> * 100
 	 */
 	@ZenCodeType.Method
-	public void addRecipe(String recipePath, IIngredient input, int energy, IItemStack itemOutput, IFluidStack fluidOutput)
+	public void addRecipe(String recipePath, IIngredientWithAmount input, int energy, IItemStack itemOutput, IFluidStack fluidOutput)
 	{
 		final ResourceLocation resourceLocation = new ResourceLocation("crafttweaker", recipePath);
 		final IngredientWithSize ingredient = CrTIngredientUtil.getIngredientWithSize(input);
@@ -89,7 +89,7 @@ public class FermenterRecipeManager implements IRecipeManager
 	 * @docParam fluidOutput <fluid:minecraft:water> * 100
 	 */
 	@ZenCodeType.Method
-	public void addRecipe(String recipePath, IIngredient input, int energy, IFluidStack fluidOutput)
+	public void addRecipe(String recipePath, IIngredientWithAmount input, int energy, IFluidStack fluidOutput)
 	{
 		addRecipe(recipePath, input, energy, MCItemStack.EMPTY.get(), fluidOutput);
 	}
@@ -108,7 +108,7 @@ public class FermenterRecipeManager implements IRecipeManager
 	 * @docParam itemOutput <item:minecraft:stone_shovel>
 	 */
 	@ZenCodeType.Method
-	public void addRecipe(String recipePath, IIngredient input, int energy, IItemStack itemOutput)
+	public void addRecipe(String recipePath, IIngredientWithAmount input, int energy, IItemStack itemOutput)
 	{
 		addRecipe(recipePath, input, energy, itemOutput, new MCFluidStackMutable(FluidStack.EMPTY));
 	}

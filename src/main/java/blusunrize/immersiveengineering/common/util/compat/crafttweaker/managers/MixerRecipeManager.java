@@ -16,7 +16,7 @@ import blusunrize.immersiveengineering.common.util.compat.crafttweaker.actions.A
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
-import com.blamejared.crafttweaker.api.item.IIngredient;
+import com.blamejared.crafttweaker.api.item.IIngredientWithAmount;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.managers.IRecipeManager;
 import com.blamejared.crafttweaker.impl.tag.MCTag;
@@ -119,7 +119,7 @@ public class MixerRecipeManager implements IRecipeManager
 	 * @docParam amount 8000
 	 */
 	@ZenCodeType.Method
-	public void addRecipe(String recipePath, MCTag<Fluid> fluidInput, IIngredient[] inputItems, int energy, Fluid output, int amount)
+	public void addRecipe(String recipePath, MCTag<Fluid> fluidInput, IIngredientWithAmount[] inputItems, int energy, Fluid output, int amount)
 	{
 		final ResourceLocation resourceLocation = new ResourceLocation("crafttweaker", recipePath);
 

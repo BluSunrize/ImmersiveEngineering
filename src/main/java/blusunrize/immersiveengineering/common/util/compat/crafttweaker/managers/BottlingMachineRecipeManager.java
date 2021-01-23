@@ -16,7 +16,7 @@ import com.blamejared.crafttweaker.api.item.IIngredient;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.managers.IRecipeManager;
 import com.blamejared.crafttweaker.impl.actions.recipes.ActionAddRecipe;
-import com.blamejared.crafttweaker.impl.tag.MCTag;
+import com.blamejared.crafttweaker.impl.tag.MCTagWithAmount;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
@@ -51,7 +51,6 @@ public class BottlingMachineRecipeManager implements IRecipeManager
 	 * @param recipePath The recipe name, without the resource location
 	 * @param itemInput  The item input (the item to be filled)
 	 * @param fluidTag   The fluid tag of the fluid
-	 * @param amount     The amount of the liquid that is required for the recipe (in mB)
 	 * @param output     The resulting "filled" item.
 	 * @docParam recipePath "grow_a_pick"
 	 * @docParam itemInput <item:minecraft:stick>
@@ -60,11 +59,11 @@ public class BottlingMachineRecipeManager implements IRecipeManager
 	 * @docParam output <item:minecraft:wooden_pickaxe>
 	 */
 	@ZenCodeType.Method
-	public void addRecipe(String recipePath, IIngredient itemInput, MCTag<Fluid> fluidTag, int amount, IItemStack output)
+	public void addRecipe(String recipePath, IIngredient itemInput, MCTagWithAmount<Fluid> fluidTag, IItemStack output)
 	{
 		final ResourceLocation resourceLocation = new ResourceLocation("crafttweaker", recipePath);
 
-		final FluidTagInput fluidTagInput = CrTIngredientUtil.getFluidTagInput(fluidTag, amount);
+		final FluidTagInput fluidTagInput = CrTIngredientUtil.getFluidTagInput(fluidTag);
 
 		final ItemStack itemOutput = output.getInternal();
 		final Ingredient input = itemInput.asVanillaIngredient();

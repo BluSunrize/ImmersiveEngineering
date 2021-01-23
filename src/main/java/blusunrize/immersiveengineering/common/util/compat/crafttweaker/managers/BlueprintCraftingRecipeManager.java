@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CrTIngredientUtil;
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
-import com.blamejared.crafttweaker.api.item.IIngredient;
+import com.blamejared.crafttweaker.api.item.IIngredientWithAmount;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.logger.ILogger;
 import com.blamejared.crafttweaker.api.managers.IRecipeManager;
@@ -61,7 +61,7 @@ public class BlueprintCraftingRecipeManager implements IRecipeManager
 	 * @docParam output <item:minecraft:bedrock> * 2
 	 */
 	@ZenCodeType.Method
-	public void addRecipe(String recipePath, String blueprintCategory, IIngredient[] inputs, IItemStack output)
+	public void addRecipe(String recipePath, String blueprintCategory, IIngredientWithAmount[] inputs, IItemStack output)
 	{
 		final ResourceLocation resourceLocation = new ResourceLocation("crafttweaker", recipePath);
 		final IngredientWithSize[] ingredients = CrTIngredientUtil.getIngredientsWithSize(inputs);

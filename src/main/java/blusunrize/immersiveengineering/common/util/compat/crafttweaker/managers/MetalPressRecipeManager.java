@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CrTIngredientUtil;
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
-import com.blamejared.crafttweaker.api.item.IIngredient;
+import com.blamejared.crafttweaker.api.item.IIngredientWithAmount;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.managers.IRecipeManager;
 import com.blamejared.crafttweaker.impl.actions.recipes.ActionAddRecipe;
@@ -57,11 +57,11 @@ public class MetalPressRecipeManager implements IRecipeManager
 	 * @docParam output <item:immersiveengineering:manual>
 	 */
 	@ZenCodeType.Method
-	public void addRecipe(String recipePath, IIngredient input, IItemStack mold, int energy, IItemStack output)
+	public void addRecipe(String recipePath, IIngredientWithAmount input, IItemStack mold, int energy, IItemStack output)
 	{
 		final ResourceLocation resourceLocation = new ResourceLocation("crafttweaker", recipePath);
 		final IngredientWithSize ingredient = CrTIngredientUtil.getIngredientWithSize(input);
-		final ComparableItemStack moldStack = new ComparableItemStack(mold.getInternal(), mold.hasTag());
+        final ComparableItemStack moldStack = new ComparableItemStack(mold.getInternal(), mold.hasTag());
 		final ItemStack outputStack = output.getInternal();
 
 		final MetalPressRecipe recipe = new MetalPressRecipe(resourceLocation, outputStack, ingredient, moldStack, energy);

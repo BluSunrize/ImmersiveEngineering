@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.common.util.compat.crafttweaker.actions.A
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.api.item.IIngredient;
+import com.blamejared.crafttweaker.api.item.IIngredientWithAmount;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.managers.IRecipeManager;
 import com.blamejared.crafttweaker.impl.actions.recipes.ActionAddRecipe;
@@ -66,7 +67,7 @@ public class ArcFurnaceRecipeManager implements IRecipeManager
 	 * @docParam slag <item:minecraft:gold_nugget>
 	 */
 	@ZenCodeType.Method
-	public void addRecipe(String recipePath, IIngredient mainIngredient, IIngredient[] additives, int time, int energy, IItemStack[] outputs, @ZenCodeType.Optional("<item:minecraft:air>") IItemStack slag)
+	public void addRecipe(String recipePath, IIngredientWithAmount mainIngredient, IIngredientWithAmount[] additives, int time, int energy, IItemStack[] outputs, @ZenCodeType.Optional("<item:minecraft:air>") IItemStack slag)
 	{
 		final ResourceLocation resourceLocation = new ResourceLocation("crafttweaker", recipePath);
 		final NonNullList<ItemStack> outputList = CrTIngredientUtil.getNonNullList(outputs);

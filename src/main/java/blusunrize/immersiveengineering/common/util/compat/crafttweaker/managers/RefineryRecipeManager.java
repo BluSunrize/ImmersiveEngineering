@@ -17,7 +17,7 @@ import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.managers.IRecipeManager;
-import com.blamejared.crafttweaker.impl.tag.MCTag;
+import com.blamejared.crafttweaker.impl.tag.MCTagWithAmount;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.crafting.IRecipeType;
@@ -100,9 +100,7 @@ public class RefineryRecipeManager implements IRecipeManager
 	 *
 	 * @param recipePath  The recipe name, without the resource location
 	 * @param fluidInput1 The first fluid input, as Tag
-	 * @param amount1     The amount of fluid that should be consumed
 	 * @param fluidInput2 The second fluid input, as Tag
-	 * @param amount2     The amount of fluid that should be consumed
 	 * @param energy      The total energy required
 	 * @param output      The output fluid
 	 * @docParam recipePath "refine_herbicide"
@@ -114,13 +112,13 @@ public class RefineryRecipeManager implements IRecipeManager
 	 * @docParam output <fluid:immersiveengineering:herbicide> * 10
 	 */
 	@ZenCodeType.Method
-	public void addRecipe(String recipePath, MCTag<Fluid> fluidInput1, int amount1, MCTag<Fluid> fluidInput2, int amount2, int energy, IFluidStack output)
+	public void addRecipe(String recipePath, MCTagWithAmount<Fluid> fluidInput1, MCTagWithAmount<Fluid> fluidInput2, int energy, IFluidStack output)
 	{
 		final ResourceLocation resourceLocation = new ResourceLocation("crafttweaker", recipePath);
 		final FluidStack outputStack = output.getInternal();
 
-		final FluidTagInput tagInput1 = CrTIngredientUtil.getFluidTagInput(fluidInput1, amount1);
-		final FluidTagInput tagInput2 = CrTIngredientUtil.getFluidTagInput(fluidInput2, amount2);
+		final FluidTagInput tagInput1 = CrTIngredientUtil.getFluidTagInput(fluidInput1.getTag(), fluidInput1.getAmount());
+		final FluidTagInput tagInput2 = CrTIngredientUtil.getFluidTagInput(fluidInput2.getTag(), fluidInput2.getAmount());
 
 		final RefineryRecipe recipe = new RefineryRecipe(resourceLocation, outputStack, tagInput1, tagInput2, energy);
 		CraftTweakerAPI.apply(new ActionAddRecipeCustomOutput(this, recipe, output));

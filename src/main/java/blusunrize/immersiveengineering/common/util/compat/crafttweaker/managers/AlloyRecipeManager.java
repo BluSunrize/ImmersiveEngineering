@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CrTIngredientUtil;
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
-import com.blamejared.crafttweaker.api.item.IIngredient;
+import com.blamejared.crafttweaker.api.item.IIngredientWithAmount;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.managers.IRecipeManager;
 import com.blamejared.crafttweaker.impl.actions.recipes.ActionAddRecipe;
@@ -55,7 +55,7 @@ public class AlloyRecipeManager implements IRecipeManager
 	 * @docParam time 200
 	 */
 	@ZenCodeType.Method
-	public void addRecipe(String recipePath, IIngredient inputA, IIngredient inputB, int time, IItemStack output)
+	public void addRecipe(String recipePath, IIngredientWithAmount inputA, IIngredientWithAmount inputB, int time, IItemStack output)
 	{
 		final ResourceLocation id = new ResourceLocation("crafttweaker", recipePath);
 		final IngredientWithSize input0 = CrTIngredientUtil.getIngredientWithSize(inputA);
