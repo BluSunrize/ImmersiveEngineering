@@ -25,7 +25,7 @@
  - Fixed crash related to turrets (Malte)
  - Fixed rotation of the external heater to match description in the manual (BluSunrize)
  - Fixed crashes when the time modifier for refinery recipes was changed to <1 (BluSunrize)
- - Updated Chinese translation (RMSCA)
+ - Translations Added/Updated: zh_cn (RMSCA), ja_jp (karakufire, koh-gh)
 
 ##### Version 1.16.4-4.1.2-129
  - Re-added client side commands to clear render caches and reset the manual (Malte)
