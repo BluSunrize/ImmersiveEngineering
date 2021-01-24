@@ -2,6 +2,7 @@
  - First 1.16.5 release
  - Allowed CC:Tweaked computers to emit bundled redstone signals using interface connectors (Malte)
  - Allowed IE projectiles to trigger target blocks (BluSunrize)
+ - Allowed the Engineer's Manual to be placed on a lectern (BluSunrize)
  - Changed redstone connectors to no longer power other connectors of the same color on the same network (BluSunrize)
  - Changed redstone connectors to not emit weak signals through their "tip" (BluSunrize)
  - Changed redstone connectors GUI to be closed with the "Inventory" keybind (BluSunrize)
@@ -25,6 +26,11 @@
  - Fixed crash related to turrets (Malte)
  - Fixed rotation of the external heater to match description in the manual (BluSunrize)
  - Fixed crashes when the time modifier for refinery recipes was changed to <1 (BluSunrize)
+ - Fixed spamming error in the shield magnet feature (BluSunrize)
+ - Fixed potential infinite loop in workbench renderer (BluSunrize)
+ - Fixed rotation issue with bottling machine renderer (BluSunrize)
+ - Fixed rare crash when breaking some blocks with a drill (BluSunrize)
+ - Fixed crushers not accepting input from hoppers at the top (BluSunrize)
  - Translations Added/Updated: zh_cn (RMSCA), ja_jp (karakufire, koh-gh)
 
 ##### Version 1.16.4-4.1.2-129
