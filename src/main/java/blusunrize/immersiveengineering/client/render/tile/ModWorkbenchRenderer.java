@@ -69,14 +69,15 @@ public class ModWorkbenchRenderer extends TileEntityRenderer<ModWorkbenchTileEnt
 					matrixStack.translate(0.39, l > 4?.72: .78, 0);
 					float scale = l > 4?.009375f: .012f;
 					matrixStack.scale(scale, -scale, scale);
-					for(int i = 0; i < l; )
+					int rendered = 0;
+					for(int i = 0; i < l; i++)
 					{
 						BlueprintCraftingRecipe recipe = recipes[i%recipes.length];
 						BlueprintLines blueprint = recipe==null?null: AutoWorkbenchRenderer.getBlueprintDrawable(recipe, te.getWorldNonnull());
 						if(blueprint!=null)
 						{
-							double dX = i < perRow?(.93725/scale-perRow*16.6)+i*16.6: (.70375/scale-i%perRow*16.6);
-							double dY = i < perRow?0: -.15625;
+							double dX = rendered < perRow?(.93725/scale-perRow*16.6)+rendered*16.6: (.70375/scale-rendered%perRow*16.6);
+							double dY = rendered < perRow?0: -.15625;
 							matrixStack.translate(dX, dY/scale, 0);
 
 							//Width depends on distance
@@ -85,7 +86,7 @@ public class ModWorkbenchRenderer extends TileEntityRenderer<ModWorkbenchTileEnt
 							blueprint.draw(lineWidth, matrixStack, bufferIn);
 							matrixStack.scale(texScale, texScale, texScale);
 							matrixStack.translate(-dX, -dY/scale, 0);
-							i++;
+							rendered++;
 						}
 					}
 				}
