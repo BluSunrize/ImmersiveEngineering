@@ -321,9 +321,12 @@ public class EventHandler
 				event.setCanceled(true);
 				RazorWireTileEntity.applyDamage(event.getEntityLiving());
 			}
-		TileEntity te = event.getPlayer().getEntityWorld().getTileEntity(event.getPos());
-		if(te instanceof IEntityProof&&!((IEntityProof)te).canEntityDestroy(event.getPlayer()))
-			event.setCanceled(true);
+		if(event.getPos()!=null) // Avoid a potential NPE for invalid positions passed
+		{
+			TileEntity te = event.getPlayer().getEntityWorld().getTileEntity(event.getPos());
+			if(te instanceof IEntityProof&&!((IEntityProof)te).canEntityDestroy(event.getPlayer()))
+				event.setCanceled(true);
+		}
 	}
 
 	@SubscribeEvent
