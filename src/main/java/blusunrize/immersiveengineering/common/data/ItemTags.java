@@ -65,6 +65,7 @@ class ItemTags extends ItemTagsProvider
 		getOrCreateBuilder(IETags.clay).addItemEntry(Items.CLAY_BALL);
 		getOrCreateBuilder(IETags.charCoal).addItemEntry(Items.CHARCOAL);
 
+		getOrCreateBuilder(net.minecraft.tags.ItemTags.LECTERN_BOOKS).addItemEntry(Tools.manual);
 		getOrCreateBuilder(Tags.Items.SEEDS).addItemEntry(Misc.hempSeeds);
 		getOrCreateBuilder(Tags.Items.RODS_WOODEN).addItemEntry(Ingredients.stickTreated);
 		getOrCreateBuilder(IETags.treatedStick).addItemEntry(Ingredients.stickTreated);

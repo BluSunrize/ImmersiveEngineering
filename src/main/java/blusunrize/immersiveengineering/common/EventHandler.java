@@ -27,10 +27,12 @@ import blusunrize.immersiveengineering.common.items.DrillItem;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import blusunrize.immersiveengineering.common.items.IEShieldItem;
+import blusunrize.immersiveengineering.common.items.ManualItem;
 import blusunrize.immersiveengineering.common.network.MessageMinecartShaderSync;
 import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamageSource;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.LecternBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.boss.WitherEntity;
@@ -41,11 +43,9 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
+import net.minecraft.tileentity.LecternTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.SectionPos;
 import net.minecraft.util.math.vector.Vector3d;
@@ -65,6 +65,7 @@ import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteractSpecific;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -366,6 +367,37 @@ public class EventHandler
 						event.setCost(event.getCost()+2);
 					event.getOutput().setDisplayName(new StringTextComponent(event.getName()));
 				}
+			}
+		}
+	}
+
+	@SubscribeEvent
+	public void onBlockRightclick(RightClickBlock event)
+	{
+		BlockPos pos = event.getHitVec().getPos();
+		BlockState state = event.getWorld().getBlockState(pos);
+		if(!(state.getBlock() instanceof LecternBlock)||event.getPlayer()==null)
+			return;
+		TileEntity tile = event.getWorld().getTileEntity(pos);
+		if(tile instanceof LecternTileEntity&&((LecternTileEntity)tile).getBook().getItem() instanceof ManualItem)
+		{
+			if(!event.getPlayer().isSneaking())
+			{
+				ImmersiveEngineering.proxy.openManual();
+				event.setCanceled(true);
+			}
+			else if(!event.getWorld().isRemote)
+			{
+				Direction direction = state.get(LecternBlock.FACING);
+				ItemStack itemstack = ((LecternTileEntity)tile).getBook().copy();
+				float f = 0.25F*(float)direction.getXOffset();
+				float f1 = 0.25F*(float)direction.getZOffset();
+				ItemEntity itementity = new ItemEntity(event.getWorld(), pos.getX()+0.5D+f, pos.getY()+1, pos.getZ()+0.5D+f1, itemstack);
+				itementity.setDefaultPickupDelay();
+				event.getWorld().addEntity(itementity);
+				((LecternTileEntity)tile).clear();
+				LecternBlock.setHasBook(event.getWorld(), pos, state, false);
+				event.setCanceled(true);
 			}
 		}
 	}
