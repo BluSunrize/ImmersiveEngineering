@@ -288,7 +288,7 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 
 	private boolean isInInput()
 	{
-		return posInMultiblock.getY()==1&&posInMultiblock.getX() > 0&&posInMultiblock.getX() < 4;
+		return posInMultiblock.getY()==2&&posInMultiblock.getX() > 0&&posInMultiblock.getX() < 4;
 	}
 
 	@Override
