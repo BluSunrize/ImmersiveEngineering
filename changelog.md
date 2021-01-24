@@ -3,6 +3,7 @@
  - Allowed CC:Tweaked computers to emit bundled redstone signals using interface connectors (Malte)
  - Allowed IE projectiles to trigger target blocks (BluSunrize)
  - Allowed the Engineer's Manual to be placed on a lectern (BluSunrize)
+ - Added full Craftweaker compatability (kindlich, Jared, SkySom)
  - Changed redstone connectors to no longer power other connectors of the same color on the same network (BluSunrize)
  - Changed redstone connectors to not emit weak signals through their "tip" (BluSunrize)
  - Changed redstone connectors GUI to be closed with the "Inventory" keybind (BluSunrize)
@@ -31,7 +32,7 @@
  - Fixed rotation issue with bottling machine renderer (BluSunrize)
  - Fixed rare crash when breaking some blocks with a drill (BluSunrize)
  - Fixed crushers not accepting input from hoppers at the top (BluSunrize)
- - Translations Added/Updated: zh_cn (RMSCA), ja_jp (karakufire, koh-gh)
+ - Translations Added/Updated: zh_cn (Fodoth-jinzi89, RMSCA), ja_jp (karakufire, koh-gh)
 
 ##### Version 1.16.4-4.1.2-129
  - Re-added client side commands to clear render caches and reset the manual (Malte)
