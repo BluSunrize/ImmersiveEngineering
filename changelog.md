@@ -7,6 +7,7 @@
  - Changed redstone connectors to no longer power other connectors of the same color on the same network (BluSunrize)
  - Changed redstone connectors to not emit weak signals through their "tip" (BluSunrize)
  - Changed redstone connectors GUI to be closed with the "Inventory" keybind (BluSunrize)
+ - Changed common config to explain that all the options are in world configs now (BluSunrize)
  - No longer crash the game if manual loading fails (Malte)
  - Fixed crash related to the drill (Malte)
  - Fixed logged exceptions when attacking entities with a drill with a shader (Malte)

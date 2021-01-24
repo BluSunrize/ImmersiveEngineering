@@ -38,12 +38,15 @@ public class IECommonConfig
 	static
 	{
 		ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
-		builder.comment("A list of all mods that IE has integrated compatability for", "Setting any of these to false disables the respective compat")
-				.push("compat");
-		for(String mod : IECompatModule.moduleClasses.keySet())
-			compat.put(mod, builder
-					.define(mod, true));
-		builder.pop();
+		builder.comment(
+				"IMPORTANT NOTICE:",
+				"THIS IS ONLY THE COMMON CONFIG. It does not contain all the values adjustable for IE.",
+				"All modifiers for machines, all ore gen, the retrogen features and most other adjustable values have been moved to immersiveengineering-server.toml.",
+				"That file is PER WORLD, meaning you have to go into 'saves/<world name>/serverconfig' to adjust it. Those changes will then only apply for THAT WORLD.",
+				"You can then take that config file and put it in the 'defaultconfigs' folder to make it apply automatically to all NEW worlds you generate FROM THERE ON.",
+				"This may appear confusing to many of you, but it is a new sensible way to handle configuration, because the server configuration is synced when playing multiplayer."
+		).define("importantInfo", true);
+
 		preferredOres = builder
 				.comment("A list of preferred Mod IDs that results of IE processes should stem from, aka which mod you want the copper to come from.",
 						"This affects the ores dug by the excavator, as well as those crushing recipes that don't have associated IE items. This list is in oreder of priority.")
@@ -62,6 +65,12 @@ public class IECommonConfig
 		enableDebug = builder
 				.comment("A config setting to enable debug features. These features may vary between releases, may cause crashes, and are unsupported. Do not enable unless asked to by a developer of IE.")
 				.define("enableDebug", false);
+		builder.pop();
+		builder.comment("A list of all mods that IE has integrated compatability for", "Setting any of these to false disables the respective compat")
+				.push("compat");
+		for(String mod : IECompatModule.moduleClasses.keySet())
+			compat.put(mod, builder
+					.define(mod, true));
 		builder.pop();
 		CONFIG_SPEC = builder.build();
 	}
