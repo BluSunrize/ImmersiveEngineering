@@ -374,7 +374,7 @@ public class EventHandler
 	@SubscribeEvent
 	public void onBlockRightclick(RightClickBlock event)
 	{
-		BlockPos pos = event.getHitVec().getPos();
+		BlockPos pos = event.getPos();
 		BlockState state = event.getWorld().getBlockState(pos);
 		if(!(state.getBlock() instanceof LecternBlock)||event.getPlayer()==null)
 			return;
