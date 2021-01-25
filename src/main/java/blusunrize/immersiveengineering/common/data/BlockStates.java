@@ -494,7 +494,7 @@ public class BlockStates extends BlockStateProvider
 		createMetalMultiblocks();
 		createConnectors();
 
-		simpleBlock(Multiblocks.bucketWheel, EMPTY_MODEL);
+		simpleBlock(Multiblocks.bucketWheel, emptyWithParticles("block/bucket_wheel", "block/multiblocks/bucket_wheel"));
 		simpleBlock(MetalDevices.fluidPipe, ieObj("block/metal_device/fluid_pipe.obj.ie"));
 
 		createMultiblock(
@@ -520,8 +520,12 @@ public class BlockStates extends BlockStateProvider
 
 		simpleBlock(Misc.fakeLight, EMPTY_MODEL);
 
-		createMultistateSingleModel(WoodenDevices.windmill, EMPTY_MODEL);
-		createMultistateSingleModel(WoodenDevices.watermill, EMPTY_MODEL);
+		createMultistateSingleModel(WoodenDevices.windmill, emptyWithParticles(
+				"block/windmill", "block/wooden_device/windmill"
+		));
+		createMultistateSingleModel(WoodenDevices.watermill, emptyWithParticles(
+				"block/watermill", "block/wooden_device/watermill"
+		));
 		createMultistateSingleModel(MetalDecoration.lantern,
 				new ConfiguredModel(ieObj("block/lantern.obj.ie")));
 
@@ -1375,6 +1379,13 @@ public class BlockStates extends BlockStateProvider
 			return base;
 		else
 			return base+"_"+index;
+	}
+
+	private ConfiguredModel emptyWithParticles(String name, String particleTexture)
+	{
+		ModelFile model = models().withExistingParent(name, modLoc("block/ie_empty"))
+				.texture("particle", particleTexture);
+		return new ConfiguredModel(model);
 	}
 
 	private void createConnector(Block b, Function<PartialBlockstate, ResourceLocation> model,
