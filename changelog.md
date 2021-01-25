@@ -1,3 +1,6 @@
+##### Version 1.16.5-4.2.1-pre
+- Added missing mixer recipe for herbicide (BluSunrize)
+
 ##### Version 1.16.5-4.2.0-130
  - First 1.16.5 release
  - Allowed CC:Tweaked computers to emit bundled redstone signals using interface connectors (Malte)
