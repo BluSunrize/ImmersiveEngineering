@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.client.models.connection;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.client.models.UnbakedModelGeometry;
 import blusunrize.immersiveengineering.client.models.connection.ConnectionLoader.ConnectorModel;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonArray;
@@ -24,6 +25,7 @@ import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.IModelLoader;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
 
@@ -46,14 +48,22 @@ public class ConnectionLoader implements IModelLoader<ConnectorModel>
 	@Override
 	public ConnectorModel read(@Nonnull JsonDeserializationContext deserializationContext, JsonObject modelContents)
 	{
-		JsonObject baseModelData = modelContents.getAsJsonObject("base_model");
 		IModelGeometry<?> model;
-		ResourceLocation subloader;
-		if(baseModelData.has("loader"))
-			subloader = new ResourceLocation(baseModelData.get("loader").getAsString());
+		JsonElement baseModel = modelContents.get("base_model");
+		if(baseModel.isJsonObject())
+		{
+			JsonObject baseModelData = modelContents.getAsJsonObject("base_model");
+			ResourceLocation subloader;
+			if(baseModelData.has("loader"))
+				subloader = new ResourceLocation(baseModelData.get("loader").getAsString());
+			else
+				subloader = new ResourceLocation("minecraft", "elements");
+			model = ModelLoaderRegistry.getModel(subloader, deserializationContext, baseModelData);
+		}
 		else
-			subloader = new ResourceLocation("minecraft", "elements");
-		model = ModelLoaderRegistry.getModel(subloader, deserializationContext, baseModelData);
+			model = new UnbakedModelGeometry(ModelLoader.defaultModelGetter().apply(
+					new ResourceLocation(baseModel.getAsString())
+			));
 		List<String> layers = ImmutableList.of(RenderType.getSolid().toString());
 		if(modelContents.has("layers")&&modelContents.get("layers").isJsonArray())
 		{

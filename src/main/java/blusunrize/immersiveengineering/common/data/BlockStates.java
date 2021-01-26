@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.models.ModelConfigurableSides.Type;
 import blusunrize.immersiveengineering.client.models.ModelConveyor.ConveyorLoader;
 import blusunrize.immersiveengineering.client.models.connection.FeedthroughLoader;
-import blusunrize.immersiveengineering.client.models.split.SplitModelLoader;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
@@ -36,8 +35,6 @@ import blusunrize.immersiveengineering.common.util.fluids.IEFluid;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.block.Block;
 import net.minecraft.block.FenceBlock;
@@ -60,7 +57,6 @@ import net.minecraftforge.client.model.generators.ModelFile.ExistingModelFile;
 import net.minecraftforge.client.model.generators.VariantBlockStateBuilder.PartialBlockstate;
 import net.minecraftforge.client.model.generators.loaders.OBJLoaderBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
-import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
@@ -69,7 +65,6 @@ import java.util.Map.Entry;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -250,28 +245,12 @@ public class BlockStates extends BlockStateProvider
 		if(particleTex.charAt(0)=='#')
 			particleTex = textures.get(particleTex.substring(1)).toString();
 		ret.texture("particle", particleTex);
+		generatedParticleTextures.put(ret.getLocation(), particleTex);
 		for(Entry<String, ResourceLocation> e : textures.entrySet())
 			ret.texture(e.getKey(), e.getValue());
 		return ret;
 	}
 
-	private static final Collector<Vector3i, JsonArray, JsonArray> POSITIONS_TO_JSON = Collector.of(
-			JsonArray::new,
-			(arr, vec) -> {
-				JsonArray posJson = new JsonArray();
-				posJson.add(vec.getX());
-				posJson.add(vec.getY());
-				posJson.add(vec.getZ());
-				arr.add(posJson);
-			},
-			(a, b) -> {
-				JsonArray arr = new JsonArray();
-				arr.addAll(a);
-				arr.addAll(b);
-				return arr;
-			}
-	);
-	private static final List<Vector3i> COLUMN_TWO = ImmutableList.of(BlockPos.ZERO, BlockPos.ZERO.up());
 	private static final List<Vector3i> COLUMN_THREE = ImmutableList.of(BlockPos.ZERO, BlockPos.ZERO.up(), BlockPos.ZERO.up(2));
 	private static final List<Vector3i> CUBE_THREE = BlockPos.getAllInBox(-1, -1, -1, 1, 1, 1)
 			.map(BlockPos::toImmutable)
@@ -312,10 +291,7 @@ public class BlockStates extends BlockStateProvider
 	}
 
 	private BlockModelBuilder splitOBJ(
-			String name,
-			ResourceLocation model,
-			TemplateMultiblock multiblock,
-			UnaryOperator<BlockPos> transform
+			String name, ResourceLocation model, TemplateMultiblock multiblock, UnaryOperator<BlockPos> transform
 	)
 	{
 		final Vector3i offset = multiblock.getMasterFromOriginOffset();
@@ -328,19 +304,26 @@ public class BlockStates extends BlockStateProvider
 		return splitModel(name+"_split", obj(name, model), partsStream, false);
 	}
 
-	private BlockModelBuilder splitModel(
-			String name,
-			ModelFile model,
-			Stream<Vector3i> parts,
-			boolean dynamic
-	)
+	private BlockModelBuilder splitModel(String name, ModelFile model, Stream<Vector3i> parts, boolean dynamic)
 	{
-		return models().withExistingParent(name, mcLoc("block"))
+		BlockModelBuilder result = models().withExistingParent(name, mcLoc("block"))
 				.customLoader(SplitModelBuilder::begin)
 				.innerModel(model)
 				.parts(parts.collect(Collectors.toList()))
 				.dynamic(dynamic)
 				.end();
+		addParticleTextureFrom(result, model);
+		return result;
+	}
+
+	private void addParticleTextureFrom(BlockModelBuilder result, ModelFile model)
+	{
+		String particles = generatedParticleTextures.get(model.getLocation());
+		if(particles!=null)
+		{
+			result.texture("particle", particles);
+			generatedParticleTextures.put(result.getLocation(), particles);
+		}
 	}
 
 	private BlockModelBuilder splitIEOBJ(String loc, TemplateMultiblock mb, boolean mirror)
@@ -379,12 +362,14 @@ public class BlockStates extends BlockStateProvider
 
 	private BlockModelBuilder ieObj(String name, ResourceLocation model)
 	{
+		final String particle = DataGenUtils.getTextureFromObj(model, existingFileHelper);
+		generatedParticleTextures.put(modLoc(name), particle);
 		return models().withExistingParent(name, mcLoc("block"))
 				.customLoader(IEOBJBuilder::begin)
 				.modelLocation(addModelsPrefix(model))
 				.flipV(true)
 				.end()
-				.texture("particle", DataGenUtils.getTextureFromObj(model, existingFileHelper));
+				.texture("particle", particle);
 	}
 
 	@Override
@@ -774,111 +759,117 @@ public class BlockStates extends BlockStateProvider
 	{
 		createConnector(
 				MetalDevices.floodlight,
-				rl("block/metal_device/floodlight.obj.ie"),
-				ImmutableMap.of(),
+				ieObj("block/metal_device/floodlight.obj.ie"),
 				RenderType.getTranslucent(), RenderType.getSolid()
 		);
-		createConnector(Connectors.getEnergyConnector(WireType.LV_CATEGORY, false), rl("block/connector/connector_lv.obj"),
-				ImmutableMap.of("texture", modLoc("block/connector/connector_lv")), RenderType.getSolid());
-		createConnector(Connectors.getEnergyConnector(WireType.LV_CATEGORY, true), rl("block/connector/connector_lv.obj"),
-				ImmutableMap.of("texture", modLoc("block/connector/relay_lv")),
+		createConnector(Connectors.getEnergyConnector(WireType.LV_CATEGORY, false), obj(
+				"block/connector/connector_lv",
+				rl("block/connector/connector_lv.obj"),
+				ImmutableMap.of("texture", modLoc("block/connector/connector_lv"))
+		), RenderType.getSolid());
+		createConnector(Connectors.getEnergyConnector(WireType.LV_CATEGORY, true), obj(
+				"block/connector/relay_lv",
+				rl("block/connector/connector_lv.obj"),
+				ImmutableMap.of("texture", modLoc("block/connector/relay_lv"))
+				),
 				RenderType.getSolid());
 
-		createConnector(Connectors.getEnergyConnector(WireType.MV_CATEGORY, false), rl("block/connector/connector_mv.obj"),
-				ImmutableMap.of("texture", modLoc("block/connector/connector_mv")), RenderType.getSolid());
-		createConnector(Connectors.getEnergyConnector(WireType.MV_CATEGORY, true), rl("block/connector/connector_mv.obj"),
-				ImmutableMap.of("texture", modLoc("block/connector/relay_mv")),
+		createConnector(Connectors.getEnergyConnector(WireType.MV_CATEGORY, false), obj(
+				"block/connector/connector_mv",
+				rl("block/connector/connector_mv.obj"),
+				ImmutableMap.of("texture", modLoc("block/connector/connector_mv"))
+				),
+				RenderType.getSolid());
+		createConnector(Connectors.getEnergyConnector(WireType.MV_CATEGORY, true), obj(
+				"block/connector/relay_mv",
+				rl("block/connector/connector_mv.obj"),
+				ImmutableMap.of("texture", modLoc("block/connector/relay_mv"))
+				),
 				RenderType.getSolid());
 
-		createConnector(Connectors.getEnergyConnector(WireType.HV_CATEGORY, false), rl("block/connector/connector_hv.obj"),
-				ImmutableMap.of(), RenderType.getSolid());
-		createConnector(Connectors.getEnergyConnector(WireType.HV_CATEGORY, true), rl("block/connector/relay_hv.obj"),
-				ImmutableMap.of(), RenderType.getTranslucent());
+		createConnector(Connectors.getEnergyConnector(WireType.HV_CATEGORY, false), obj("block/connector/connector_hv.obj"),
+				RenderType.getSolid());
+		createConnector(Connectors.getEnergyConnector(WireType.HV_CATEGORY, true), obj("block/connector/relay_hv.obj"),
+				RenderType.getTranslucent());
 
-		createConnector(Connectors.connectorStructural, rl("block/connector/connector_structural.obj.ie"),
-				ImmutableMap.of(), RenderType.getSolid());
-		createConnector(Connectors.connectorRedstone, rl("block/connector/connector_redstone.obj.ie"),
-				ImmutableMap.of(), RenderType.getSolid());
-		createConnector(Connectors.connectorProbe, rl("block/connector/connector_probe.obj.ie"),
-				ImmutableMap.of(), RenderType.getCutout(), RenderType.getTranslucent());
-		createConnector(Connectors.connectorBundled, rl("block/connector/connector_bundled.obj"),
-				ImmutableMap.of(), RenderType.getCutout());
-		createConnector(Connectors.feedthrough, FeedthroughLoader.LOCATION, ImmutableMap.of(),
+		createConnector(Connectors.connectorStructural, ieObj("block/connector/connector_structural.obj.ie"),
+				RenderType.getSolid());
+		createConnector(Connectors.connectorRedstone, ieObj("block/connector/connector_redstone.obj.ie"),
+				RenderType.getSolid());
+		createConnector(Connectors.connectorProbe, ieObj("block/connector/connector_probe.obj.ie"),
+				RenderType.getCutout(), RenderType.getTranslucent());
+		createConnector(Connectors.connectorBundled, obj("block/connector/connector_bundled.obj"),
+				RenderType.getCutout());
+		ModelFile feedthroughModelFile = models().getBuilder("block/connector/feedthrough")
+				.customLoader(SpecialModelBuilder.forLoader(FeedthroughLoader.LOCATION))
+				.end();
+		createConnector(Connectors.feedthrough, feedthroughModelFile,
 				RenderType.getBlockRenderTypes().toArray(new RenderType[0]));
-		createConnector(MetalDevices.electricLantern, state -> rl("block/metal_device/e_lantern.obj"),
-				state -> {
+		createConnector(MetalDevices.electricLantern, state -> {
 					if(state.getSetStates().get(IEProperties.ACTIVE)==Boolean.FALSE)
-						return ImmutableMap.of("texture", modLoc("block/metal_device/electric_lantern"));
+						return obj(
+								"block/metal_device/e_lantern_off",
+								rl("block/metal_device/e_lantern.obj"),
+								ImmutableMap.of("texture", modLoc("block/metal_device/electric_lantern"))
+						);
 					else
-						return ImmutableMap.of("texture", modLoc("block/metal_device/electric_lantern_on"));
+						return obj(
+								"block/metal_device/e_lantern_on",
+								rl("block/metal_device/e_lantern.obj"),
+								ImmutableMap.of("texture", modLoc("block/metal_device/electric_lantern_on"))
+						);
 				},
 				ImmutableList.of(IEProperties.ACTIVE), RenderType.getSolid());
 
-		createConnector(Connectors.redstoneBreaker, rl("block/connector/redstone_breaker.obj.ie"),
-				ImmutableMap.of(), RenderType.getSolid());
+		createConnector(Connectors.redstoneBreaker, ieObj("block/connector/redstone_breaker.obj.ie"),
+				RenderType.getSolid());
 		createConnector(Connectors.breakerswitch, map -> {
 			if(map.getSetStates().get(IEProperties.ACTIVE)==Boolean.FALSE)
-				return rl("block/connector/breaker_switch_off.obj.ie");
+				return ieObj("block/connector/breaker_switch_off.obj.ie");
 			else
-				return rl("block/connector/breaker_switch_on.obj.ie");
-		}, ImmutableMap.of(), ImmutableList.of(IEProperties.ACTIVE), RenderType.getSolid());
+				return ieObj("block/connector/breaker_switch_on.obj.ie");
+		}, ImmutableList.of(IEProperties.ACTIVE), RenderType.getSolid());
 		transformerModel("block/connector/transformer_mv", Connectors.transformer);
 		transformerModel("block/connector/transformer_hv", Connectors.transformerHV);
-		createConnector(Connectors.postTransformer, rl("block/connector/transformer_post.obj"),
-				ImmutableMap.of(), RenderType.getSolid());
-
-		ResourceLocation ctModel = rl("block/connector/e_meter.obj");
-		createConnectorWithCustomModel(
-				Connectors.currentTransformer,
-				map -> Pair.of(ctModel, split(forGuessedLoader(ctModel), ImmutableList.of(
-						BlockPos.ZERO,
-						new BlockPos(0, -1, 0)
-				))),
-				s -> ImmutableMap.of(
-						"particle", new ResourceLocation(DataGenUtils.getTextureFromObj(ctModel, existingFileHelper))
-				), ImmutableList.of(IEProperties.MULTIBLOCKSLAVE), RenderType.getSolid());
-		createConnector(MetalDevices.razorWire, rl("block/razor_wire.obj.ie"), ImmutableMap.of(),
+		createConnector(Connectors.postTransformer, obj("block/connector/transformer_post.obj"),
 				RenderType.getSolid());
-		createConnector(Cloth.balloon, map -> rl("block/balloon.obj.ie"), ImmutableMap.of(),
+
+		ModelFile ctModel = split(obj("block/connector/e_meter.obj"), ImmutableList.of(BlockPos.ZERO, new BlockPos(0, -1, 0)));
+		createConnector(
+				Connectors.currentTransformer, map -> ctModel,
+				ImmutableList.of(IEProperties.MULTIBLOCKSLAVE), RenderType.getSolid()
+		);
+		createConnector(MetalDevices.razorWire, ieObj("block/razor_wire.obj.ie"),
+				RenderType.getSolid());
+		createConnector(Cloth.balloon, map -> ieObj("block/balloon.obj.ie"),
 				ImmutableList.of(), RenderType.getTranslucent());
 	}
 
 	private void transformerModel(String baseName, Block transformer)
 	{
-		ResourceLocation leftModel = rl(baseName+"_left.obj");
-		ResourceLocation rightModel = rl(baseName+"_right.obj");
-		createConnectorWithCustomModel(
+		ModelFile leftModel = split(obj(baseName+"_left.obj"), COLUMN_THREE);
+		ModelFile rightModel = split(obj(baseName+"_right.obj"), COLUMN_THREE);
+		createConnector(
 				transformer,
 				state -> {
-					ResourceLocation modelLoc;
 					if(state.getSetStates().get(IEProperties.MIRRORED)==Boolean.FALSE)
-						modelLoc = leftModel;
+						return leftModel;
 					else
-						modelLoc = rightModel;
-					JsonObject baseModel = forGuessedLoader(modelLoc);
-					return Pair.of(modelLoc, split(baseModel, COLUMN_THREE));
-				}, s -> ImmutableMap.of(
-						"particle", new ResourceLocation(DataGenUtils.getTextureFromObj(leftModel, existingFileHelper))
-				), ImmutableList.of(
+						return rightModel;
+				}, ImmutableList.of(
 						IEProperties.MULTIBLOCKSLAVE,
 						IEProperties.MIRRORED
 				), RenderType.getSolid());
 	}
 
-	private JsonObject split(JsonObject baseModel, List<Vector3i> parts)
+	private ModelFile split(ModelFile baseModel, List<Vector3i> parts)
 	{
-		JsonObject splitModel = new JsonObject();
-		for(Entry<String, JsonElement> e : baseModel.entrySet())
-		{
-			if("loader".equals(e.getKey()))
-				splitModel.add(SplitModelLoader.BASE_LOADER, e.getValue());
-			else
-				splitModel.add(e.getKey(), e.getValue());
-		}
-		splitModel.addProperty("loader", SplitModelLoader.LOCATION.toString());
-		splitModel.add(SplitModelLoader.PARTS, parts.stream().sorted().collect(POSITIONS_TO_JSON));
-		splitModel.addProperty(SplitModelLoader.DYNAMIC, false);
-		return splitModel;
+		return models().getBuilder(baseModel.getLocation().getPath()+"_split")
+				.customLoader(SplitModelBuilder::begin)
+				.dynamic(false)
+				.innerModel(baseModel)
+				.parts(parts)
+				.end();
 	}
 
 	private void createMetalMultiblocks()
@@ -1149,8 +1140,8 @@ public class BlockStates extends BlockStateProvider
 		}
 	}
 
-	private <T extends Comparable<T>> void forEach(PartialBlockstate base, Property<T> prop,
-												   List<Property<?>> remaining, Consumer<PartialBlockstate> out)
+	public static <T extends Comparable<T>> void forEach(PartialBlockstate base, Property<T> prop,
+														 List<Property<?>> remaining, Consumer<PartialBlockstate> out)
 	{
 		for(T value : prop.getAllowedValues())
 			forEachState(base, remaining, map -> {
@@ -1159,7 +1150,7 @@ public class BlockStates extends BlockStateProvider
 			});
 	}
 
-	private void forEachState(PartialBlockstate base, List<Property<?>> props, Consumer<PartialBlockstate> out)
+	public static void forEachState(PartialBlockstate base, List<Property<?>> props, Consumer<PartialBlockstate> out)
 	{
 		if(props.size() > 0)
 		{
@@ -1171,29 +1162,20 @@ public class BlockStates extends BlockStateProvider
 			out.accept(base);
 	}
 
-	private void createConnectorWithCustomModel(
-			Block b, Function<PartialBlockstate, Pair<ResourceLocation, JsonObject>> model,
-			Function<PartialBlockstate, ImmutableMap<String, ResourceLocation>> textures,
-			List<Property<?>> additional, RenderType... layers)
-	{
-		final List<String> layersList = Arrays.stream(layers)
-				.map(this::getName)
-				.collect(Collectors.toList());
-		createConnector(b, s -> {
-			Pair<ResourceLocation, JsonObject> m = model.apply(s);
-			return forConnectorModel(s, m.getRight(), textures.apply(s), m.getLeft(), layersList);
-		}, additional, layers);
-	}
-
 	private void createConnector(
-			Block b, Function<PartialBlockstate, ResourceLocation> model,
-			Function<PartialBlockstate, ImmutableMap<String, ResourceLocation>> textures,
-			List<Property<?>> additional, RenderType... layers)
+			Block b, Function<PartialBlockstate, ModelFile> model, List<Property<?>> additional, RenderType... layers
+	)
 	{
 		final List<String> layersList = Arrays.stream(layers)
 				.map(this::getName)
 				.collect(Collectors.toList());
-		createConnector(b, s -> forConnectorModel(s, model.apply(s), layersList, textures.apply(s)), additional, layers);
+		ConnectorBlockBuilder builder = ConnectorBlockBuilder.builder(models(), b)
+				.modelFunction(s -> forConnectorModel(model.apply(s), layersList))
+				.layers(layers)
+				.autoRotationData();
+		for(Property<?> prop : additional)
+			builder.addAdditional(prop);
+		builder.writeTo(getVariantBuilder(b));
 	}
 
 	private String getName(RenderState state)
@@ -1212,193 +1194,30 @@ public class BlockStates extends BlockStateProvider
 		}
 	}
 
-	private void createConnector(
-			Block b, Function<PartialBlockstate, ModelFile> toModel, List<Property<?>> additional,
-			RenderType... layers)
-	{
-		Preconditions.checkArgument(layers.length > 0);
-		final Property<Direction> facingProp;
-		final int xForHorizontal;
-		if(b.getDefaultState().hasProperty(IEProperties.FACING_ALL))
-		{
-			facingProp = IEProperties.FACING_ALL;
-			xForHorizontal = 90;
-		}
-		else if(b.getDefaultState().hasProperty(IEProperties.FACING_TOP_DOWN))
-		{
-			facingProp = IEProperties.FACING_TOP_DOWN;
-			xForHorizontal = 90;
-		}
-		else if(b.getDefaultState().hasProperty(IEProperties.FACING_HORIZONTAL))
-		{
-			facingProp = IEProperties.FACING_HORIZONTAL;
-			xForHorizontal = 0;
-		}
-		else
-		{
-			facingProp = null;
-			xForHorizontal = 0;
-		}
-		Preconditions.checkState(facingProp==null||b.getDefaultState().hasProperty(facingProp),
-				b+" does not have "+facingProp);
-		VariantBlockStateBuilder builder = getVariantBuilder(b);
-		forEachState(builder.partialState(), additional, map -> {
-			if(facingProp!=null)
-			{
-				for(Direction d : facingProp.getAllowedValues())
-					if(d==Direction.DOWN)
-					{
-						PartialBlockstate downState = map.with(facingProp, Direction.DOWN);
-						ModelFile downModel = toModel.apply(downState);
-						builder.setModels(downState,
-								new ConfiguredModel(downModel, xForHorizontal-90, 0, true));
-					}
-					else if(d==Direction.UP)
-					{
-						PartialBlockstate upState = map.with(facingProp, Direction.UP);
-						ModelFile upModel = toModel.apply(upState);
-						builder.setModels(upState,
-								new ConfiguredModel(upModel, xForHorizontal+90, 0, true));
-					}
-					else
-					{
-						int rotation = getAngle(d, 0);
-						PartialBlockstate dState = map.with(facingProp, d);
-						ModelFile connFile = toModel.apply(dState);
-						builder.setModels(dState, new ConfiguredModel(connFile, xForHorizontal, rotation, true));
-					}
-			}
-			else
-			{
-				ModelFile connFile = toModel.apply(map);
-				builder.setModels(map,
-						new ConfiguredModel(connFile, 0, 0, true));
-			}
-		});
-	}
+	private final Map<ResourceLocation, String> generatedParticleTextures = new HashMap<>();
 
-	private JsonObject forGuessedLoader(ResourceLocation modelLoc)
+	private ModelFile forConnectorModel(ModelFile model, List<String> layers)
 	{
-		JsonObject baseJson = new JsonObject();
-		Optional<ResourceLocation> loader = guessLoader(modelLoc);
-		if(!loader.isPresent())
-			baseJson.addProperty("parent", EMPTY_MODEL.model.getLocation().toString());
-		else
-		{
-			baseJson.addProperty("loader", loader.get().toString());
-			if(!FeedthroughLoader.LOCATION.equals(loader.get()))
-			{
-				baseJson.addProperty("model", addModelsPrefix(modelLoc).toString());
-				baseJson.addProperty("flip-v", true);
-				baseJson.addProperty("detectCullableFaces", false);
-			}
-		}
-		return baseJson;
-	}
-
-	private ModelFile forConnectorModel(PartialBlockstate state, ResourceLocation modelLoc,
-										List<String> layers,
-										ImmutableMap<String, ResourceLocation> textures)
-	{
-		Optional<ResourceLocation> loader = guessLoader(modelLoc);
-		if(!textures.containsKey("particle")&&loader.isPresent()&&loader.get().getPath().contains("obj"))
-		{
-			String particleTex = DataGenUtils.getTextureFromObj(modelLoc, existingFileHelper);
-			if(particleTex.charAt(0)=='#')
-				particleTex = textures.get(particleTex.substring(1)).toString();
-			textures = ImmutableMap.<String, ResourceLocation>builder()
-					.putAll(textures)
-					.put("particle", new ResourceLocation(particleTex))
-					.build();
-		}
-		JsonObject baseJson = forGuessedLoader(modelLoc);
-		return forConnectorModel(state, baseJson, textures, modelLoc, layers);
-	}
-
-	private ModelFile forConnectorModel(
-			PartialBlockstate state, JsonObject model,
-			ImmutableMap<String, ResourceLocation> texForState,
-			ResourceLocation modelLocName,
-			List<String> layers)
-	{
-		BlockModelBuilder ret = models().getBuilder(
-				nameFor(state.getOwner(), modelLocName, texForState)
-		)
+		BlockModelBuilder ret = models().getBuilder(model.getLocation().getPath()+"_connector")
 				.customLoader(ConnectorBuilder::begin)
 				.baseModel(model)
 				.layers(layers)
 				.end();
-		for(Entry<String, ResourceLocation> e : texForState.entrySet())
-			ret.texture(e.getKey(), e.getValue());
+		addParticleTextureFrom(ret, model);
 		return ret;
-	}
-
-	private Optional<ResourceLocation> guessLoader(ResourceLocation modelLoc)
-	{
-		if(modelLoc.getPath().endsWith(".obj"))
-			return Optional.of(forgeLoc("obj"));
-		else if(modelLoc.getPath().endsWith(".obj.ie"))
-			return Optional.of(modLoc("ie_obj"));
-		else if(modelLoc.equals(EMPTY_MODEL.model.getLocation()))
-			return Optional.empty();
-		else if(modelLoc.equals(FeedthroughLoader.LOCATION))
-			return Optional.of(FeedthroughLoader.LOCATION);
-		else
-			throw new RuntimeException("Failed to guess loader for "+modelLoc);
-	}
-
-	Map<String, Map<Map<String, ResourceLocation>, Integer>> nameCache = new HashMap<>();
-
-	private String nameFor(Block b, ResourceLocation model, ImmutableMap<String, ResourceLocation> texReplacement)
-	{
-		String modelPath = model.getPath();
-		String blockName = b.getRegistryName().getPath();
-		String base;
-		if(modelPath.endsWith(".obj"))
-			base = modelPath.substring(0, modelPath.length()-4);
-		else if(modelPath.endsWith(".obj.ie"))
-			base = modelPath.substring(0, modelPath.length()-7);
-		else if(FeedthroughLoader.LOCATION.equals(model))
-			base = "feedthrough";
-		else if(EMPTY_MODEL.model.getLocation().equals(model))
-			base = blockName+"_empty";
-		else
-			throw new RuntimeException("Unknown model type: "+model);
-		if(!nameCache.containsKey(base))
-			nameCache.put(base, new HashMap<>());
-		Map<Map<String, ResourceLocation>, Integer> namesForModel = nameCache.get(base);
-		int index;
-		if(namesForModel.containsKey(texReplacement))
-			index = namesForModel.get(texReplacement);
-		else
-		{
-			index = namesForModel.size();
-			namesForModel.put(texReplacement, index);
-		}
-		if(index==0)
-			return base;
-		else
-			return base+"_"+index;
 	}
 
 	private ConfiguredModel emptyWithParticles(String name, String particleTexture)
 	{
 		ModelFile model = models().withExistingParent(name, modLoc("block/ie_empty"))
 				.texture("particle", particleTexture);
+		generatedParticleTextures.put(modLoc(name), particleTexture);
 		return new ConfiguredModel(model);
 	}
 
-	private void createConnector(Block b, Function<PartialBlockstate, ResourceLocation> model,
-								 ImmutableMap<String, ResourceLocation> textures,
-								 List<Property<?>> additional, RenderType... layers)
+	private void createConnector(Block b, ModelFile model, RenderType... layers)
 	{
-		createConnector(b, model, state -> textures, additional, layers);
-	}
-
-	private void createConnector(Block b, ResourceLocation model, ImmutableMap<String, ResourceLocation> textures,
-								 RenderType... layers)
-	{
-		createConnector(b, map -> model, textures, ImmutableList.of(), layers);
+		createConnector(b, map -> model, ImmutableList.of(), layers);
 	}
 
 	private ModelFile quarter(String out, ResourceLocation texture)
