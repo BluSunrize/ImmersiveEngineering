@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
-import blusunrize.immersiveengineering.common.data.IEDataGenerator;
 import blusunrize.immersiveengineering.common.network.MessageMultiblockSync;
 import blusunrize.immersiveengineering.common.network.MessageMultiblockSync.SyncedTemplate;
 import blusunrize.immersiveengineering.common.util.IELogger;
@@ -24,6 +23,7 @@ import net.minecraft.resources.ResourcePackType;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.gen.feature.template.Template;
+import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
@@ -43,11 +43,12 @@ import java.util.*;
 @EventBusSubscriber(modid = ImmersiveEngineering.MODID)
 public class StaticTemplateManager
 {
+	public static ExistingFileHelper EXISTING_HELPER;
 	public static Map<ResourceLocation, Template> SYNCED_CLIENT_TEMPLATES = new HashMap<>();
 
 	private static Optional<InputStream> getModResource(ResourcePackType type, ResourceLocation name, @Nullable MinecraftServer server)
 	{
-		if(IEDataGenerator.EXISTING_HELPER!=null)
+		if(EXISTING_HELPER!=null)
 		{
 			try
 			{
@@ -58,7 +59,7 @@ public class StaticTemplateManager
 						name.getPath().substring(slash+1)
 				);
 				return Optional.of(
-						IEDataGenerator.EXISTING_HELPER.getResource(shortLoc, type, "", prefix)
+						EXISTING_HELPER.getResource(shortLoc, type, "", prefix)
 								.getInputStream()
 				);
 			} catch(Exception x)
@@ -104,7 +105,7 @@ public class StaticTemplateManager
 
 	public static Template loadStaticTemplate(ResourceLocation loc, @Nullable MinecraftServer server) throws IOException
 	{
-		if(server==null && IEDataGenerator.EXISTING_HELPER==null)
+		if(server==null&&EXISTING_HELPER==null)
 			return Objects.requireNonNull(SYNCED_CLIENT_TEMPLATES.get(loc));
 		else
 		{

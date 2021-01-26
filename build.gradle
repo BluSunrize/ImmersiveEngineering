@@ -41,6 +41,12 @@ sourceSets {
         compileClasspath += manual.output
         runtimeClasspath += manual.output
     }
+    datagen {
+        compileClasspath += main.compileClasspath
+        runtimeClasspath += main.runtimeClasspath
+        compileClasspath += main.output
+        runtimeClasspath += main.output
+    }
     test {
         compileClasspath += manual.output
         runtimeClasspath += manual.output
@@ -151,6 +157,7 @@ minecraft {
             mods {
                 immersiveengineering {
                     source sourceSets.main
+                    source sourceSets.datagen
                     source sourceSets.manual
                 }
             }

@@ -10,11 +10,11 @@ package blusunrize.immersiveengineering.api.utils;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tags.ITag;
-import net.minecraft.tags.ITagCollection;
-import net.minecraft.tags.TagCollectionManager;
+import net.minecraft.tags.*;
+import net.minecraft.tags.ITag.INamedTag;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -145,4 +145,18 @@ public class TagUtils
 		return isInPrefixedTag(stack, "plates/");
 	}
 
+	public static INamedTag<Item> createItemWrapper(ResourceLocation name)
+	{
+		return ItemTags.makeWrapperTag(name.toString());
+	}
+
+	public static INamedTag<Block> createBlockWrapper(ResourceLocation name)
+	{
+		return BlockTags.makeWrapperTag(name.toString());
+	}
+
+	public static INamedTag<Fluid> createFluidWrapper(ResourceLocation name)
+	{
+		return FluidTags.makeWrapperTag(name.toString());
+	}
 }

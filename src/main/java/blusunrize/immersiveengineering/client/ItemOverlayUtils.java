@@ -24,7 +24,7 @@ import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
 import java.util.function.BiConsumer;
 
-import static blusunrize.immersiveengineering.common.data.IEDataGenerator.rl;
+import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
 
 public class ItemOverlayUtils
 {

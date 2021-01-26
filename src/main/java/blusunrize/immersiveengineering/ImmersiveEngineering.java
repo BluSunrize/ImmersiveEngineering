@@ -283,6 +283,11 @@ public class ImmersiveEngineering
 		}
 	}
 
+	public static ResourceLocation rl(String path)
+	{
+		return new ResourceLocation(MODID, path);
+	}
+
 	public static ItemGroup itemGroup = new ItemGroup(MODID)
 	{
 		@Override

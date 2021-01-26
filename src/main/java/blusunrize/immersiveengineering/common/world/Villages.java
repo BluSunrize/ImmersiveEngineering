@@ -81,7 +81,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
-import static blusunrize.immersiveengineering.common.data.IEDataGenerator.rl;
+import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
 import static blusunrize.immersiveengineering.common.items.IEItems.Misc.toolUpgrades;
 import static blusunrize.immersiveengineering.common.items.IEItems.Misc.wireCoils;
 

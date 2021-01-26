@@ -24,8 +24,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.BiConsumer;
 
-import static blusunrize.immersiveengineering.common.data.DataGenUtils.*;
-import static blusunrize.immersiveengineering.common.data.IEDataGenerator.rl;
+import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
+import static blusunrize.immersiveengineering.api.utils.TagUtils.*;
 
 public class IETags
 {

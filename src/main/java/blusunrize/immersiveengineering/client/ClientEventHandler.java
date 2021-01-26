@@ -114,7 +114,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static blusunrize.immersiveengineering.common.data.IEDataGenerator.rl;
+import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
 
 public class ClientEventHandler implements ISelectiveResourceReloadListener
 {

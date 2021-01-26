@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import static blusunrize.immersiveengineering.common.data.IEDataGenerator.rl;
+import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
 
 public class GeneratedListRecipe extends IESerializableRecipe
 {

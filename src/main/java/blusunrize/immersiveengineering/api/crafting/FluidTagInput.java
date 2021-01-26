@@ -66,6 +66,11 @@ public class FluidTagInput implements Predicate<FluidStack>
 		this(resourceLocation, amount, null);
 	}
 
+	public FluidTagInput(ITag<Fluid> tag, int amount)
+	{
+		this(tag, amount, null);
+	}
+
 	public static FluidTagInput deserialize(JsonElement input)
 	{
 		Preconditions.checkArgument(input instanceof JsonObject, "FluidTagWithSize can only be deserialized from a JsonObject");

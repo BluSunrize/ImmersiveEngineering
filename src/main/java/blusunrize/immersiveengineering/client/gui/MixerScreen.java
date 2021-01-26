@@ -33,7 +33,7 @@ import net.minecraftforge.fml.client.gui.GuiUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import static blusunrize.immersiveengineering.common.data.IEDataGenerator.rl;
+import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
 
 public class MixerScreen extends IEContainerScreen<MixerContainer>
 {

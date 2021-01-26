@@ -37,7 +37,7 @@ import net.minecraftforge.fluids.FluidStack;
 import javax.annotation.Nonnull;
 import java.util.List;
 
-import static blusunrize.immersiveengineering.common.data.IEDataGenerator.rl;
+import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
 
 public class PotionFluid extends Fluid
 {
