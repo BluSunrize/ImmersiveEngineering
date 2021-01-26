@@ -20,7 +20,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 /**
- * @author BluSunrize - 3.1.2020
+ * @author Robustprogram - 26.1.2020
  */
 public class FluidInfoProvider implements IProbeInfoProvider
 {

@@ -17,7 +17,7 @@ import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
 /**
- * @author BluSunrize - 3.1.2020
+ * @author Robustprogram - 26.1.2020
  */
 public class OneProbeCompatModule extends IECompatModule implements Function<ITheOneProbe, Void>
 {

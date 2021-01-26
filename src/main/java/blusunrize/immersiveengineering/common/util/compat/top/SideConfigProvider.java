@@ -1,3 +1,10 @@
+/*
+ * BluSunrize
+ * Copyright (c) 2020
+ *
+ * This code is licensed under "Blu's License of Common Sense"
+ * Details can be found in the license file in the root folder of this project
+ */
 package blusunrize.immersiveengineering.common.util.compat.top;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
@@ -16,6 +23,9 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
+/**
+ * @author Robustprogram - 26.1.2020
+ */
 public class SideConfigProvider implements IProbeInfoProvider
 {
 
