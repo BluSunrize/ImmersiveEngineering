@@ -1,8 +1,6 @@
 {
   "loader": "immersiveengineering:connector",
-  "base_model": {
-    "loader": "immersiveengineering:feedthrough"
-  },
+  "base_model": "immersiveengineering:block/connector/feedthrough",
   "layers": [
     "solid",
     "cutout_mipped",

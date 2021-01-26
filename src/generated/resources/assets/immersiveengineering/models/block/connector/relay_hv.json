@@ -1,15 +1,10 @@
 {
+  "parent": "minecraft:block/block",
   "textures": {
     "particle": "immersiveengineering:block/connector/relay_hv"
   },
-  "loader": "immersiveengineering:connector",
-  "base_model": {
-    "loader": "forge:obj",
-    "model": "immersiveengineering:models/block/connector/relay_hv.obj",
-    "flip-v": true,
-    "detectCullableFaces": false
-  },
-  "layers": [
-    "translucent"
-  ]
+  "loader": "forge:obj",
+  "model": "immersiveengineering:models/block/connector/relay_hv.obj",
+  "detectCullableFaces": false,
+  "flip-v": true
 }

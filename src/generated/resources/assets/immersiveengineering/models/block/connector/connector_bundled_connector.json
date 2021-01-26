@@ -1,0 +1,10 @@
+{
+  "textures": {
+    "particle": "immersiveengineering:block/connector/connector_bundled"
+  },
+  "loader": "immersiveengineering:connector",
+  "base_model": "immersiveengineering:block/connector/connector_bundled",
+  "layers": [
+    "cutout"
+  ]
+}

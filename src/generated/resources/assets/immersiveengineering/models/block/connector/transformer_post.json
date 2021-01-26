@@ -1,15 +1,10 @@
 {
+  "parent": "minecraft:block/block",
   "textures": {
     "particle": "immersiveengineering:block/connector/transformer_post"
   },
-  "loader": "immersiveengineering:connector",
-  "base_model": {
-    "loader": "forge:obj",
-    "model": "immersiveengineering:models/block/connector/transformer_post.obj",
-    "flip-v": true,
-    "detectCullableFaces": false
-  },
-  "layers": [
-    "solid"
-  ]
+  "loader": "forge:obj",
+  "model": "immersiveengineering:models/block/connector/transformer_post.obj",
+  "detectCullableFaces": false,
+  "flip-v": true
 }

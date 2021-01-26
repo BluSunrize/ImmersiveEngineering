@@ -1,29 +1,10 @@
 {
+  "parent": "minecraft:block/block",
   "textures": {
     "particle": "immersiveengineering:block/connector/energy_meter"
   },
-  "loader": "immersiveengineering:connector",
-  "base_model": {
-    "base_loader": "forge:obj",
-    "model": "immersiveengineering:models/block/connector/e_meter.obj",
-    "flip-v": true,
-    "detectCullableFaces": false,
-    "loader": "immersiveengineering:basic_split",
-    "split_parts": [
-      [
-        0,
-        -1,
-        0
-      ],
-      [
-        0,
-        0,
-        0
-      ]
-    ],
-    "dynamic": false
-  },
-  "layers": [
-    "solid"
-  ]
+  "loader": "forge:obj",
+  "model": "immersiveengineering:models/block/connector/e_meter.obj",
+  "detectCullableFaces": false,
+  "flip-v": true
 }

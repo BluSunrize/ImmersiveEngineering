@@ -1,0 +1,10 @@
+{
+  "textures": {
+    "particle": "immersiveengineering:block/metal_decoration/razor_wire"
+  },
+  "loader": "immersiveengineering:connector",
+  "base_model": "immersiveengineering:block/razor_wire",
+  "layers": [
+    "solid"
+  ]
+}

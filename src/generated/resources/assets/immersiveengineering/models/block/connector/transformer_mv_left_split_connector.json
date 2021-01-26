@@ -1,0 +1,10 @@
+{
+  "textures": {
+    "particle": "immersiveengineering:block/connector/transformer"
+  },
+  "loader": "immersiveengineering:connector",
+  "base_model": "immersiveengineering:block/connector/transformer_mv_left_split",
+  "layers": [
+    "solid"
+  ]
+}

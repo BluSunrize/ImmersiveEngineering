@@ -1,16 +1,11 @@
 {
+  "parent": "minecraft:block/block",
   "textures": {
-    "texture": "immersiveengineering:block/connector/connector_mv",
-    "particle": "immersiveengineering:block/connector/connector_mv"
+    "particle": "immersiveengineering:block/connector/connector_mv",
+    "texture": "immersiveengineering:block/connector/connector_mv"
   },
-  "loader": "immersiveengineering:connector",
-  "base_model": {
-    "loader": "forge:obj",
-    "model": "immersiveengineering:models/block/connector/connector_mv.obj",
-    "flip-v": true,
-    "detectCullableFaces": false
-  },
-  "layers": [
-    "solid"
-  ]
+  "loader": "forge:obj",
+  "model": "immersiveengineering:models/block/connector/connector_mv.obj",
+  "detectCullableFaces": false,
+  "flip-v": true
 }

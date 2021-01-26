@@ -1,0 +1,10 @@
+{
+  "textures": {
+    "particle": "immersiveengineering:block/connector/breaker_switch"
+  },
+  "loader": "immersiveengineering:connector",
+  "base_model": "immersiveengineering:block/connector/breaker_switch_on",
+  "layers": [
+    "solid"
+  ]
+}

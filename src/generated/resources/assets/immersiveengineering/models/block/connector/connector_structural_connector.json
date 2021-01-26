@@ -1,0 +1,10 @@
+{
+  "textures": {
+    "particle": "immersiveengineering:block/connector/connector_structural"
+  },
+  "loader": "immersiveengineering:connector",
+  "base_model": "immersiveengineering:block/connector/connector_structural",
+  "layers": [
+    "solid"
+  ]
+}

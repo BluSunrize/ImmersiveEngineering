@@ -1,40 +1,21 @@
 {
   "variants": {
-    "facing=north,multiblockslave=false": {
-      "model": "immersiveengineering:block/connector/e_meter",
+    "facing=north": {
+      "model": "immersiveengineering:block/connector/e_meter_split_connector",
       "y": 180,
       "uvlock": true
     },
-    "facing=south,multiblockslave=false": {
-      "model": "immersiveengineering:block/connector/e_meter",
+    "facing=south": {
+      "model": "immersiveengineering:block/connector/e_meter_split_connector",
       "uvlock": true
     },
-    "facing=west,multiblockslave=false": {
-      "model": "immersiveengineering:block/connector/e_meter",
+    "facing=west": {
+      "model": "immersiveengineering:block/connector/e_meter_split_connector",
       "y": 90,
       "uvlock": true
     },
-    "facing=east,multiblockslave=false": {
-      "model": "immersiveengineering:block/connector/e_meter",
-      "y": 270,
-      "uvlock": true
-    },
-    "facing=north,multiblockslave=true": {
-      "model": "immersiveengineering:block/connector/e_meter",
-      "y": 180,
-      "uvlock": true
-    },
-    "facing=south,multiblockslave=true": {
-      "model": "immersiveengineering:block/connector/e_meter",
-      "uvlock": true
-    },
-    "facing=west,multiblockslave=true": {
-      "model": "immersiveengineering:block/connector/e_meter",
-      "y": 90,
-      "uvlock": true
-    },
-    "facing=east,multiblockslave=true": {
-      "model": "immersiveengineering:block/connector/e_meter",
+    "facing=east": {
+      "model": "immersiveengineering:block/connector/e_meter_split_connector",
       "y": 270,
       "uvlock": true
     }

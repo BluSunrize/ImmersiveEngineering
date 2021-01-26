@@ -1,0 +1,21 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "immersiveengineering:block/connector/energy_meter"
+  },
+  "loader": "immersiveengineering:basic_split",
+  "dynamic": false,
+  "base_model": "immersiveengineering:block/connector/e_meter",
+  "split_parts": [
+    [
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      -1,
+      0
+    ]
+  ]
+}

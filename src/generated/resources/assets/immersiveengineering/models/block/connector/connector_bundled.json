@@ -1,15 +1,10 @@
 {
+  "parent": "minecraft:block/block",
   "textures": {
     "particle": "immersiveengineering:block/connector/connector_bundled"
   },
-  "loader": "immersiveengineering:connector",
-  "base_model": {
-    "loader": "forge:obj",
-    "model": "immersiveengineering:models/block/connector/connector_bundled.obj",
-    "flip-v": true,
-    "detectCullableFaces": false
-  },
-  "layers": [
-    "cutout"
-  ]
+  "loader": "forge:obj",
+  "model": "immersiveengineering:models/block/connector/connector_bundled.obj",
+  "detectCullableFaces": false,
+  "flip-v": true
 }

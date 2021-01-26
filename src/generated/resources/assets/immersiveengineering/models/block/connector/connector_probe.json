@@ -1,16 +1,9 @@
 {
+  "parent": "minecraft:block/block",
   "textures": {
     "particle": "immersiveengineering:block/connector/connector_probe"
   },
-  "loader": "immersiveengineering:connector",
-  "base_model": {
-    "loader": "immersiveengineering:ie_obj",
-    "model": "immersiveengineering:models/block/connector/connector_probe.obj.ie",
-    "flip-v": true,
-    "detectCullableFaces": false
-  },
-  "layers": [
-    "cutout",
-    "translucent"
-  ]
+  "loader": "immersiveengineering:ie_obj",
+  "model": "immersiveengineering:models/block/connector/connector_probe.obj.ie",
+  "flip-v": true
 }

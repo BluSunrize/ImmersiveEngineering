@@ -1,0 +1,26 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "immersiveengineering:block/connector/transformer"
+  },
+  "loader": "immersiveengineering:basic_split",
+  "dynamic": false,
+  "base_model": "immersiveengineering:block/connector/transformer_mv_left",
+  "split_parts": [
+    [
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      0
+    ],
+    [
+      0,
+      2,
+      0
+    ]
+  ]
+}

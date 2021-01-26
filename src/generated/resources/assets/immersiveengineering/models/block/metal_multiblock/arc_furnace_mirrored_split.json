@@ -1,5 +1,8 @@
 {
   "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "immersiveengineering:block/multiblocks/arc_furnace"
+  },
   "loader": "immersiveengineering:basic_split",
   "dynamic": false,
   "base_model": "immersiveengineering:block/metal_multiblock/arc_furnace_mirrored",

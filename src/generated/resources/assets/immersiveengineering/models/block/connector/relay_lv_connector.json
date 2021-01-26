@@ -1,0 +1,10 @@
+{
+  "textures": {
+    "particle": "immersiveengineering:block/connector/relay_lv"
+  },
+  "loader": "immersiveengineering:connector",
+  "base_model": "immersiveengineering:block/connector/relay_lv",
+  "layers": [
+    "solid"
+  ]
+}

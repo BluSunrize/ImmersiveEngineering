@@ -1,0 +1,10 @@
+{
+  "textures": {
+    "particle": "immersiveengineering:block/connector/balloon"
+  },
+  "loader": "immersiveengineering:connector",
+  "base_model": "immersiveengineering:block/balloon",
+  "layers": [
+    "translucent"
+  ]
+}
