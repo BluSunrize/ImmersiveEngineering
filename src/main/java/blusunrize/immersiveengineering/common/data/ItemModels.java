@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.client.models.connection.FeedthroughLoade
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.CoverType;
+import blusunrize.immersiveengineering.common.data.blockstates.MultiblockStates;
 import blusunrize.immersiveengineering.common.data.models.IEOBJBuilder;
 import blusunrize.immersiveengineering.common.data.models.SpecialModelBuilder;
 import blusunrize.immersiveengineering.common.data.models.TRSRItemModelProvider;
@@ -35,7 +36,6 @@ import net.minecraft.item.Item;
 import net.minecraft.resources.ResourcePackType;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.client.model.generators.loaders.DynamicBucketModelBuilder;
 import net.minecraftforge.client.model.generators.loaders.OBJLoaderBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -49,9 +49,9 @@ import static blusunrize.immersiveengineering.common.data.IEDataGenerator.rl;
 
 public class ItemModels extends TRSRItemModelProvider
 {
-	private final BlockStates blockStates;
+	private final MultiblockStates blockStates;
 
-	public ItemModels(DataGenerator generator, ExistingFileHelper existingFileHelper, BlockStates blockStates)
+	public ItemModels(DataGenerator generator, ExistingFileHelper existingFileHelper, MultiblockStates blockStates)
 	{
 		super(generator, existingFileHelper);
 		this.blockStates = blockStates;
@@ -65,10 +65,6 @@ public class ItemModels extends TRSRItemModelProvider
 	@Override
 	protected void registerModels()
 	{
-		for(Entry<Block, ModelFile> model : blockStates.itemModels.entrySet())
-			getBuilder(model.getKey())
-					.parent(model.getValue());
-
 		for(EnumMetals m : EnumMetals.values())
 			createMetalModels(m);
 		createItemModels();

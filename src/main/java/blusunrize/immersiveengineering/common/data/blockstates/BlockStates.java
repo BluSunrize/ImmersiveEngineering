@@ -6,30 +6,27 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.common.data;
+package blusunrize.immersiveengineering.common.data.blockstates;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
-import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.models.ModelConfigurableSides.Type;
 import blusunrize.immersiveengineering.client.models.ModelConveyor.ConveyorLoader;
-import blusunrize.immersiveengineering.client.models.connection.FeedthroughLoader;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
-import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
 import blusunrize.immersiveengineering.common.blocks.cloth.StripCurtainBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.WallmountBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.WallmountBlock.Orientation;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.CoverType;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.plant.EnumHempGrowth;
 import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
-import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchTileEntity;
 import blusunrize.immersiveengineering.common.blocks.wooden.SawdustBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
-import blusunrize.immersiveengineering.common.data.models.*;
+import blusunrize.immersiveengineering.common.data.DataGenUtils;
+import blusunrize.immersiveengineering.common.data.models.MultiLayerBuilder;
+import blusunrize.immersiveengineering.common.data.models.SideConfigBuilder;
+import blusunrize.immersiveengineering.common.data.models.SpecialModelBuilder;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.fluids.IEFluid;
 import com.google.common.base.Preconditions;
@@ -38,146 +35,46 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
 import net.minecraft.block.Block;
 import net.minecraft.block.FenceBlock;
-import net.minecraft.block.SlabBlock;
-import net.minecraft.block.StairsBlock;
-import net.minecraft.client.renderer.RenderState;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.item.DyeColor;
-import net.minecraft.resources.ResourcePackType;
-import net.minecraft.state.EnumProperty;
 import net.minecraft.state.Property;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3i;
-import net.minecraftforge.client.model.generators.*;
+import net.minecraftforge.client.model.generators.BlockModelBuilder;
+import net.minecraftforge.client.model.generators.ConfiguredModel;
+import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.client.model.generators.ModelFile.ExistingModelFile;
+import net.minecraftforge.client.model.generators.VariantBlockStateBuilder;
 import net.minecraftforge.client.model.generators.VariantBlockStateBuilder.PartialBlockstate;
-import net.minecraftforge.client.model.generators.loaders.OBJLoaderBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 import javax.annotation.Nullable;
-import java.lang.reflect.Field;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.UnaryOperator;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 import static blusunrize.immersiveengineering.common.data.IEDataGenerator.rl;
 
-public class BlockStates extends BlockStateProvider
+public class BlockStates extends ExtendedBlockstateProvider
 {
 	private static final ResourceLocation ALU_FENCE_TEXTURE = rl("block/metal/storage_aluminum");
 	private static final ResourceLocation STEEL_FENCE_TEXTURE = rl("block/metal/storage_steel");
 	private static final ResourceLocation TREATED_FENCE_TEXTURE = rl("block/wooden_decoration/treated_wood_horizontal");
 	private final ConfiguredModel EMPTY_MODEL;
-	final Map<Block, ModelFile> itemModels = new HashMap<>();
-	private final ExistingFileHelper existingFileHelper;
-
-	public ModelFile blastFurnaceOff;
-	public ModelFile blastFurnaceOn;
-	public ModelFile cokeOvenOff;
-	public ModelFile cokeOvenOn;
-	public ModelFile alloySmelterOff;
-	public ModelFile alloySmelterOn;
 
 	public BlockStates(DataGenerator gen, ExistingFileHelper exHelper)
 	{
-		super(gen, MODID, exHelper);
-		this.existingFileHelper = exHelper;
+		super(gen, exHelper);
 		EMPTY_MODEL = new ConfiguredModel(
 				new ExistingModelFile(modLoc("block/ie_empty"), existingFileHelper)
 		);
-	}
-
-	private String name(Block b)
-	{
-		return b.getRegistryName().getPath();
-	}
-
-	public void simpleBlockItem(Block b, ModelFile model)
-	{
-		simpleBlockItem(b, new ConfiguredModel(model));
-	}
-
-	private void simpleBlockItem(Block b, ConfiguredModel model)
-	{
-		simpleBlock(b, model);
-		itemModels.put(b, model.model);
-	}
-
-	private void cubeSideVertical(Block b, ResourceLocation side, ResourceLocation vertical)
-	{
-		simpleBlockItem(b, models().cubeBottomTop(name(b), side, vertical, vertical));
-	}
-
-	private void cubeAll(Block b, ResourceLocation texture)
-	{
-		simpleBlockItem(b, models().cubeAll(name(b), texture));
-	}
-
-	private void scaffold(Block b, ResourceLocation others, ResourceLocation top)
-	{
-		simpleBlockItem(
-				b,
-				models().withExistingParent(name(b), modLoc("block/ie_scaffolding"))
-						.texture("side", others)
-						.texture("bottom", others)
-						.texture("top", top)
-		);
-	}
-
-	private void slabFor(Block b, ResourceLocation texture)
-	{
-		slabFor(b, texture, texture, texture);
-	}
-
-	private void slabFor(Block b, ResourceLocation side, ResourceLocation top, ResourceLocation bottom)
-	{
-		slab(IEBlocks.toSlab.get(b), side, top, bottom);
-	}
-
-	private void slab(SlabBlock b, ResourceLocation side, ResourceLocation top, ResourceLocation bottom)
-	{
-		ModelFile mainModel = models().slab(name(b)+"_bottom", side, bottom, top);
-		slabBlock(
-				b,
-				mainModel,
-				models().slabTop(name(b)+"_top", side, bottom, top),
-				models().cubeBottomTop(name(b)+"_double", side, bottom, top)
-		);
-		itemModels.put(b, mainModel);
-	}
-
-	private void stairs(StairsBlock b, ResourceLocation texture)
-	{
-		stairs(b, texture, texture, texture);
-	}
-
-	private void stairs(StairsBlock b, ResourceLocation side, ResourceLocation top, ResourceLocation bottom)
-	{
-		String baseName = name(b);
-		ModelFile stairs = models().stairs(baseName, side, bottom, top);
-		ModelFile stairsInner = models().stairsInner(baseName+"_inner", side, bottom, top);
-		ModelFile stairsOuter = models().stairsOuter(baseName+"_outer", side, bottom, top);
-		stairsBlock(b, stairs, stairsInner, stairsOuter);
-		itemModels.put(b, stairs);
-	}
-
-	private ResourceLocation forgeLoc(String path)
-	{
-		return new ResourceLocation("forge", path);
-	}
-
-	private ResourceLocation addModelsPrefix(ResourceLocation in)
-	{
-		return new ResourceLocation(in.getNamespace(), "models/"+in.getPath());
 	}
 
 	private void postBlock(Block b, ResourceLocation texture)
@@ -198,178 +95,6 @@ public class BlockStates extends BlockStateProvider
 		getVariantBuilder(b)
 				.partialState()
 				.setModels(new ConfiguredModel(builder));
-	}
-
-	private ModelFile cubeTwo(String name, ResourceLocation top, ResourceLocation bottom,
-							  ResourceLocation side, ResourceLocation front)
-	{
-		ModelFile baseModel = obj(name, rl("block/stone_multiblocks/cube_two.obj"),
-				ImmutableMap.<String, ResourceLocation>builder()
-						.put("side", side)
-						.put("top", top)
-						.put("bottom", bottom)
-						.put("front", front)
-						.build()
-		);
-		return splitModel(name+"_split", baseModel, CUBE_TWO.stream(), false);
-	}
-
-	private ModelFile cubeThree(String name, ResourceLocation def, ResourceLocation front)
-	{
-		ModelFile baseModel = obj(name, rl("block/stone_multiblocks/cube_three.obj"),
-				ImmutableMap.of("side", def, "front", front));
-		return splitModel(name+"_split", baseModel, CUBE_THREE.stream(), false);
-	}
-
-	private BlockModelBuilder obj(String loc)
-	{
-		Preconditions.checkArgument(loc.endsWith(".obj"));
-		return obj(loc.substring(0, loc.length()-4), modLoc(loc));
-	}
-
-	private BlockModelBuilder obj(String name, ResourceLocation model)
-	{
-		return obj(name, model, ImmutableMap.of());
-	}
-
-	private BlockModelBuilder obj(String name, ResourceLocation model, Map<String, ResourceLocation> textures)
-	{
-		assertModelExists(model);
-		BlockModelBuilder ret = models().withExistingParent(name, mcLoc("block"))
-				.customLoader(OBJLoaderBuilder::begin)
-				.detectCullableFaces(false)
-				.modelLocation(addModelsPrefix(model))
-				.flipV(true)
-				.end();
-		String particleTex = DataGenUtils.getTextureFromObj(model, existingFileHelper);
-		if(particleTex.charAt(0)=='#')
-			particleTex = textures.get(particleTex.substring(1)).toString();
-		ret.texture("particle", particleTex);
-		generatedParticleTextures.put(ret.getLocation(), particleTex);
-		for(Entry<String, ResourceLocation> e : textures.entrySet())
-			ret.texture(e.getKey(), e.getValue());
-		return ret;
-	}
-
-	private static final List<Vector3i> COLUMN_THREE = ImmutableList.of(BlockPos.ZERO, BlockPos.ZERO.up(), BlockPos.ZERO.up(2));
-	private static final List<Vector3i> CUBE_THREE = BlockPos.getAllInBox(-1, -1, -1, 1, 1, 1)
-			.map(BlockPos::toImmutable)
-			.collect(Collectors.toList());
-	private static final List<Vector3i> CUBE_TWO = BlockPos.getAllInBox(0, 0, -1, 1, 1, 0)
-			.map(BlockPos::toImmutable)
-			.collect(Collectors.toList());
-
-	private BlockModelBuilder splitOBJ(String loc, TemplateMultiblock mb)
-	{
-		return splitOBJ(loc, mb, false);
-	}
-
-	private BlockModelBuilder splitOBJ(String loc, TemplateMultiblock mb, boolean mirror)
-	{
-		UnaryOperator<BlockPos> transform = UnaryOperator.identity();
-		if(mirror)
-		{
-			Vector3i size = mb.getSize(null);
-			transform = p -> new BlockPos(size.getX()-p.getX()-1, p.getY(), p.getZ());
-		}
-		return splitOBJ(loc, mb, transform);
-	}
-
-	private BlockModelBuilder splitOBJ(String loc, TemplateMultiblock mb, UnaryOperator<BlockPos> transform)
-	{
-		Preconditions.checkArgument(loc.endsWith(".obj"));
-		return splitOBJ(loc.substring(0, loc.length()-4), modLoc(loc), mb, transform);
-	}
-
-	private BlockModelBuilder splitOBJ(String loc, List<Vector3i> parts)
-	{
-		Preconditions.checkArgument(loc.endsWith(".obj"));
-		ResourceLocation modelLoc = modLoc(loc);
-		String baseName = loc.substring(0, loc.length()-4);
-		ModelFile baseModel = obj(baseName, modelLoc);
-		return splitModel(baseName+"_split", baseModel, parts.stream(), false);
-	}
-
-	private BlockModelBuilder splitOBJ(
-			String name, ResourceLocation model, TemplateMultiblock multiblock, UnaryOperator<BlockPos> transform
-	)
-	{
-		final Vector3i offset = multiblock.getMasterFromOriginOffset();
-		Stream<Vector3i> partsStream = multiblock.getStructure(null)
-				.stream()
-				.filter(info -> !info.state.isAir())
-				.map(info -> info.pos)
-				.map(transform)
-				.map(p -> p.subtract(offset));
-		return splitModel(name+"_split", obj(name, model), partsStream, false);
-	}
-
-	private BlockModelBuilder splitModel(String name, ModelFile model, Stream<Vector3i> parts, boolean dynamic)
-	{
-		BlockModelBuilder result = models().withExistingParent(name, mcLoc("block"))
-				.customLoader(SplitModelBuilder::begin)
-				.innerModel(model)
-				.parts(parts.collect(Collectors.toList()))
-				.dynamic(dynamic)
-				.end();
-		addParticleTextureFrom(result, model);
-		return result;
-	}
-
-	private void addParticleTextureFrom(BlockModelBuilder result, ModelFile model)
-	{
-		String particles = generatedParticleTextures.get(model.getLocation());
-		if(particles!=null)
-		{
-			result.texture("particle", particles);
-			generatedParticleTextures.put(result.getLocation(), particles);
-		}
-	}
-
-	private BlockModelBuilder splitIEOBJ(String loc, TemplateMultiblock mb, boolean mirror)
-	{
-		UnaryOperator<BlockPos> transform = UnaryOperator.identity();
-		if(mirror)
-		{
-			Vector3i size = mb.getSize(null);
-			transform = p -> new BlockPos(size.getX()-p.getX()-1, p.getY(), p.getZ());
-		}
-		final Vector3i offset = mb.getMasterFromOriginOffset();
-		Stream<Vector3i> partsStream = mb.getStructure(null)
-				.stream()
-				.filter(info -> !info.state.isAir())
-				.map(info -> info.pos)
-				.map(transform)
-				.map(p -> p.subtract(offset));
-		return splitIEOBJ(loc, partsStream.collect(Collectors.toList()));
-	}
-
-	private BlockModelBuilder splitIEOBJ(
-			String model,
-			List<Vector3i> parts
-	)
-	{
-		Preconditions.checkArgument(model.endsWith(".obj.ie"));
-		String name = model.substring(0, model.length()-7);
-		return splitModel(name+"_split", ieObj(model), parts.stream(), true);
-	}
-
-	private BlockModelBuilder ieObj(String loc)
-	{
-		Preconditions.checkArgument(loc.endsWith(".obj.ie"));
-		return ieObj(loc.substring(0, loc.length()-7), modLoc(loc));
-	}
-
-	private BlockModelBuilder ieObj(String name, ResourceLocation model)
-	{
-		final String particle = DataGenUtils.getTextureFromObj(model, existingFileHelper);
-		generatedParticleTextures.put(modLoc(name), particle);
-		return models().withExistingParent(name, mcLoc("block"))
-				.customLoader(IEOBJBuilder::begin)
-				.modelLocation(addModelsPrefix(model))
-				.flipV(true)
-				.end()
-				.texture("particle", particle);
 	}
 
 	@Override
@@ -475,26 +200,12 @@ public class BlockStates extends BlockStateProvider
 		postBlock(WoodenDecoration.treatedPost, rl("block/wooden_decoration/post"));
 		postBlock(MetalDecoration.steelPost, rl("block/metal_decoration/steel_post"));
 		postBlock(MetalDecoration.aluPost, rl("block/metal_decoration/aluminum_post"));
-		createStoneMultiblocks();
-		createMetalMultiblocks();
-		createConnectors();
 
 		simpleBlock(Multiblocks.bucketWheel, emptyWithParticles("block/bucket_wheel", "block/multiblocks/bucket_wheel"));
 		simpleBlock(MetalDevices.fluidPipe, ieObj("block/metal_device/fluid_pipe.obj.ie"));
 
-		createMultiblock(
-				MetalDevices.cloche,
-				splitIEOBJ("block/metal_device/cloche.obj.ie", COLUMN_THREE)
-		);
 		turret(MetalDevices.turretChem, ieObj("block/metal_device/chem_turret.obj.ie"));
 		turret(MetalDevices.turretGun, ieObj("block/metal_device/gun_turret.obj.ie"));
-		createMultiblock(
-				MetalDevices.teslaCoil,
-				splitOBJ("block/metal_device/teslacoil.obj",
-						ImmutableList.of(BlockPos.ZERO, new BlockPos(0, 0, -1))
-				),
-				null, IEProperties.FACING_ALL, null,
-				180);
 		for(Entry<EnumMetals, Block> chute : MetalDevices.chutes.entrySet())
 		{
 			ModelFile model = ieObj("block/metal_device/chute_"+chute.getKey().tagName(), rl("block/metal_device/chute.obj.ie"))
@@ -530,8 +241,8 @@ public class BlockStates extends BlockStateProvider
 			createDirectionalBlock(none, IEProperties.FACING_HORIZONTAL, noneModel);
 			createDirectionalBlock(alu, IEProperties.FACING_HORIZONTAL, aluModel);
 			createDirectionalBlock(steel, IEProperties.FACING_HORIZONTAL, steelModel);
-			itemModels.put(alu, aluModel);
-			itemModels.put(steel, steelModel);
+			itemModel(alu, aluModel);
+			itemModel(steel, steelModel);
 		}
 
 		createWallmount(WoodenDevices.treatedWallmount, rl("block/wooden_device/wallmount"));
@@ -542,7 +253,7 @@ public class BlockStates extends BlockStateProvider
 					modLoc("block/wooden_device/turntable_top")
 			);
 			createRotatedBlock(WoodenDevices.turntable, s -> turntableModel, IEProperties.FACING_ALL, ImmutableList.of(), -90, 0);
-			itemModels.put(WoodenDevices.turntable, turntableModel);
+			itemModel(WoodenDevices.turntable, turntableModel);
 		}
 		createWallmount(MetalDecoration.aluWallmount, rl("block/metal_decoration/aluminum_wallmount"));
 		createWallmount(MetalDecoration.steelWallmount, rl("block/metal_decoration/steel_wallmount"));
@@ -556,13 +267,13 @@ public class BlockStates extends BlockStateProvider
 					.texture("particle", modLoc("block/metal_decoration/aluminum_scaffolding"))
 					.parent(new ExistingModelFile(mcLoc("block/block"), existingFileHelper));
 			createMultistateSingleModel(MetalDecoration.slopeSteel, new ConfiguredModel(steelModel));
-			itemModels.put(MetalDecoration.slopeSteel, steelModel);
+			itemModel(MetalDecoration.slopeSteel, steelModel);
 			createMultistateSingleModel(MetalDecoration.slopeAlu, new ConfiguredModel(aluModel));
-			itemModels.put(MetalDecoration.slopeAlu, aluModel);
+			itemModel(MetalDecoration.slopeAlu, aluModel);
 		}
 
 		createRotatedBlock(StoneDecoration.coresample, map -> obj("block/coresample.obj"),
-				IEProperties.FACING_HORIZONTAL, ImmutableList.of());
+				ImmutableList.of());
 		ResourceLocation concreteTexture = rl("block/stone_decoration/concrete");
 		simpleBlockItem(StoneDecoration.concreteSheet, models().carpet("concrete_sheet", concreteTexture));
 		simpleBlockItem(StoneDecoration.concreteQuarter, quarter("concrete_quarter", concreteTexture));
@@ -570,7 +281,7 @@ public class BlockStates extends BlockStateProvider
 		simpleBlock(StoneDecoration.concreteSprayed, obj("block/sprayed_concrete.obj"));
 
 		createRotatedBlock(WoodenDevices.craftingTable, state -> obj("block/wooden_device/craftingtable.obj"),
-				IEProperties.FACING_HORIZONTAL, ImmutableList.of());
+				ImmutableList.of());
 		cubeAll(WoodenDevices.crate, modLoc("block/wooden_device/crate"));
 		cubeAll(WoodenDevices.reinforcedCrate, modLoc("block/wooden_device/reinforced_crate"));
 		{
@@ -579,7 +290,7 @@ public class BlockStates extends BlockStateProvider
 					rl("block/wooden_device/barrel_up_none"), rl("block/wooden_device/gunpowder_barrel_top")
 			);
 			createMultistateSingleModel(WoodenDevices.gunpowderBarrel, new ConfiguredModel(gunpowderModel));
-			itemModels.put(WoodenDevices.gunpowderBarrel, gunpowderModel);
+			itemModel(WoodenDevices.gunpowderBarrel, gunpowderModel);
 		}
 		simpleBlockItem(WoodenDevices.sorter, createRouterModel(rl("block/wooden_device/sorter"),
 				"router"));
@@ -590,7 +301,7 @@ public class BlockStates extends BlockStateProvider
 					modLoc("block/wooden_device/item_batcher_out")
 			);
 			createRotatedBlock(WoodenDevices.itemBatcher, s -> batcherModel, IEProperties.FACING_ALL, ImmutableList.of(), -90, 0);
-			itemModels.put(WoodenDevices.itemBatcher, batcherModel);
+			itemModel(WoodenDevices.itemBatcher, batcherModel);
 		}
 		simpleBlockItem(WoodenDevices.fluidSorter, createRouterModel(rl("block/wooden_device/fluid_sorter"),
 				"fluid_router"));
@@ -607,7 +318,7 @@ public class BlockStates extends BlockStateProvider
 						state.getSetStates().get(StripCurtainBlock.CEILING_ATTACHED)==Boolean.FALSE?
 								"block/stripcurtain":
 								"block/stripcurtain_middle"
-				), existingFileHelper), IEProperties.FACING_HORIZONTAL,
+				), existingFileHelper),
 				ImmutableList.of(StripCurtainBlock.CEILING_ATTACHED));
 		cubeAll(Cloth.cushion, modLoc("block/cushion"));
 		createMultistateSingleModel(Cloth.shaderBanner, EMPTY_MODEL);
@@ -642,10 +353,6 @@ public class BlockStates extends BlockStateProvider
 					.end();
 			simpleBlockItem(MetalDevices.fluidPlacer, model);
 		}
-		createMultiblock(
-				MetalDevices.blastFurnacePreheater,
-				splitOBJ("block/metal_device/blastfurnace_preheater.obj", COLUMN_THREE)
-		);
 		{
 			ModelFile furnaceHeaterOn = models().withExistingParent("furnace_heater_on", rl("block/ie_six_sides_overlay_all_but_one"))
 					.texture("block_all", rl("block/metal_device/furnace_heater_active"))
@@ -661,7 +368,7 @@ public class BlockStates extends BlockStateProvider
 				else
 					return furnaceHeaterOff;
 			}, IEProperties.FACING_ALL, ImmutableList.of(IEProperties.ACTIVE), 180, 0);
-			itemModels.put(MetalDevices.furnaceHeater, furnaceHeaterOff);
+			itemModel(MetalDevices.furnaceHeater, furnaceHeaterOff);
 		}
 		createPump();
 		{
@@ -672,9 +379,9 @@ public class BlockStates extends BlockStateProvider
 					.texture("north", modLoc("block/metal_device/dynamo_front"))
 					.texture("west", modLoc("block/metal_device/dynamo_side"))
 					.texture("east", modLoc("block/metal_device/dynamo_side"));
-			createRotatedBlock(MetalDevices.dynamo, state -> kineticDynamo, IEProperties.FACING_HORIZONTAL,
+			createRotatedBlock(MetalDevices.dynamo, state -> kineticDynamo,
 					ImmutableList.of());
-			itemModels.put(MetalDevices.dynamo, kineticDynamo);
+			itemModel(MetalDevices.dynamo, kineticDynamo);
 		}
 		simpleBlockItem(MetalDevices.thermoelectricGen, new ConfiguredModel(models().cubeBottomTop(
 				"thermoelectric_generator",
@@ -705,10 +412,9 @@ public class BlockStates extends BlockStateProvider
 					));
 			createRotatedBlock(MetalDevices.chargingStation,
 					state -> full,
-					IEProperties.FACING_HORIZONTAL,
 					ImmutableList.of()
 			);
-			itemModels.put(MetalDevices.chargingStation, full);
+			itemModel(MetalDevices.chargingStation, full);
 		}
 		for(Block b : MetalDevices.CONVEYORS.values())
 			createMultistateSingleModel(b, new ConfiguredModel(
@@ -729,7 +435,7 @@ public class BlockStates extends BlockStateProvider
 			getVariantBuilder(f.block).partialState().setModels(new ConfiguredModel(model));
 		}
 		createRotatedBlock(MetalDevices.toolbox, state -> obj("block/toolbox.obj"),
-				IEProperties.FACING_HORIZONTAL, ImmutableList.of());
+				ImmutableList.of());
 	}
 
 	public void turret(Block b, ModelFile masterModel)
@@ -742,7 +448,6 @@ public class BlockStates extends BlockStateProvider
 					else
 						return masterModel;
 				},
-				IEProperties.FACING_HORIZONTAL,
 				ImmutableList.of(IEProperties.MULTIBLOCKSLAVE)
 		);
 	}
@@ -750,228 +455,9 @@ public class BlockStates extends BlockStateProvider
 	public void fenceBlock(FenceBlock b, ResourceLocation texture)
 	{
 		super.fenceBlock(b, texture);
-		itemModels.put(b,
+		itemModel(b,
 				models().withExistingParent(b.getRegistryName().getPath()+"_inventory", mcLoc("block/fence_inventory"))
 						.texture("texture", texture));
-	}
-
-	private void createConnectors()
-	{
-		createConnector(
-				MetalDevices.floodlight,
-				ieObj("block/metal_device/floodlight.obj.ie"),
-				RenderType.getTranslucent(), RenderType.getSolid()
-		);
-		createConnector(Connectors.getEnergyConnector(WireType.LV_CATEGORY, false), obj(
-				"block/connector/connector_lv",
-				rl("block/connector/connector_lv.obj"),
-				ImmutableMap.of("texture", modLoc("block/connector/connector_lv"))
-		), RenderType.getSolid());
-		createConnector(Connectors.getEnergyConnector(WireType.LV_CATEGORY, true), obj(
-				"block/connector/relay_lv",
-				rl("block/connector/connector_lv.obj"),
-				ImmutableMap.of("texture", modLoc("block/connector/relay_lv"))
-				),
-				RenderType.getSolid());
-
-		createConnector(Connectors.getEnergyConnector(WireType.MV_CATEGORY, false), obj(
-				"block/connector/connector_mv",
-				rl("block/connector/connector_mv.obj"),
-				ImmutableMap.of("texture", modLoc("block/connector/connector_mv"))
-				),
-				RenderType.getSolid());
-		createConnector(Connectors.getEnergyConnector(WireType.MV_CATEGORY, true), obj(
-				"block/connector/relay_mv",
-				rl("block/connector/connector_mv.obj"),
-				ImmutableMap.of("texture", modLoc("block/connector/relay_mv"))
-				),
-				RenderType.getSolid());
-
-		createConnector(Connectors.getEnergyConnector(WireType.HV_CATEGORY, false), obj("block/connector/connector_hv.obj"),
-				RenderType.getSolid());
-		createConnector(Connectors.getEnergyConnector(WireType.HV_CATEGORY, true), obj("block/connector/relay_hv.obj"),
-				RenderType.getTranslucent());
-
-		createConnector(Connectors.connectorStructural, ieObj("block/connector/connector_structural.obj.ie"),
-				RenderType.getSolid());
-		createConnector(Connectors.connectorRedstone, ieObj("block/connector/connector_redstone.obj.ie"),
-				RenderType.getSolid());
-		createConnector(Connectors.connectorProbe, ieObj("block/connector/connector_probe.obj.ie"),
-				RenderType.getCutout(), RenderType.getTranslucent());
-		createConnector(Connectors.connectorBundled, obj("block/connector/connector_bundled.obj"),
-				RenderType.getCutout());
-		ModelFile feedthroughModelFile = models().getBuilder("block/connector/feedthrough")
-				.customLoader(SpecialModelBuilder.forLoader(FeedthroughLoader.LOCATION))
-				.end();
-		createConnector(Connectors.feedthrough, feedthroughModelFile,
-				RenderType.getBlockRenderTypes().toArray(new RenderType[0]));
-		createConnector(MetalDevices.electricLantern, state -> {
-					if(state.getSetStates().get(IEProperties.ACTIVE)==Boolean.FALSE)
-						return obj(
-								"block/metal_device/e_lantern_off",
-								rl("block/metal_device/e_lantern.obj"),
-								ImmutableMap.of("texture", modLoc("block/metal_device/electric_lantern"))
-						);
-					else
-						return obj(
-								"block/metal_device/e_lantern_on",
-								rl("block/metal_device/e_lantern.obj"),
-								ImmutableMap.of("texture", modLoc("block/metal_device/electric_lantern_on"))
-						);
-				},
-				ImmutableList.of(IEProperties.ACTIVE), RenderType.getSolid());
-
-		createConnector(Connectors.redstoneBreaker, ieObj("block/connector/redstone_breaker.obj.ie"),
-				RenderType.getSolid());
-		createConnector(Connectors.breakerswitch, map -> {
-			if(map.getSetStates().get(IEProperties.ACTIVE)==Boolean.FALSE)
-				return ieObj("block/connector/breaker_switch_off.obj.ie");
-			else
-				return ieObj("block/connector/breaker_switch_on.obj.ie");
-		}, ImmutableList.of(IEProperties.ACTIVE), RenderType.getSolid());
-		transformerModel("block/connector/transformer_mv", Connectors.transformer);
-		transformerModel("block/connector/transformer_hv", Connectors.transformerHV);
-		createConnector(Connectors.postTransformer, obj("block/connector/transformer_post.obj"),
-				RenderType.getSolid());
-
-		ModelFile ctModel = split(obj("block/connector/e_meter.obj"), ImmutableList.of(BlockPos.ZERO, new BlockPos(0, -1, 0)));
-		createConnector(
-				Connectors.currentTransformer, map -> ctModel,
-				ImmutableList.of(IEProperties.MULTIBLOCKSLAVE), RenderType.getSolid()
-		);
-		createConnector(MetalDevices.razorWire, ieObj("block/razor_wire.obj.ie"),
-				RenderType.getSolid());
-		createConnector(Cloth.balloon, map -> ieObj("block/balloon.obj.ie"),
-				ImmutableList.of(), RenderType.getTranslucent());
-	}
-
-	private void transformerModel(String baseName, Block transformer)
-	{
-		ModelFile leftModel = split(obj(baseName+"_left.obj"), COLUMN_THREE);
-		ModelFile rightModel = split(obj(baseName+"_right.obj"), COLUMN_THREE);
-		createConnector(
-				transformer,
-				state -> {
-					if(state.getSetStates().get(IEProperties.MIRRORED)==Boolean.FALSE)
-						return leftModel;
-					else
-						return rightModel;
-				}, ImmutableList.of(
-						IEProperties.MULTIBLOCKSLAVE,
-						IEProperties.MIRRORED
-				), RenderType.getSolid());
-	}
-
-	private ModelFile split(ModelFile baseModel, List<Vector3i> parts)
-	{
-		return models().getBuilder(baseModel.getLocation().getPath()+"_split")
-				.customLoader(SplitModelBuilder::begin)
-				.dynamic(false)
-				.innerModel(baseModel)
-				.parts(parts)
-				.end();
-	}
-
-	private void createMetalMultiblocks()
-	{
-		createMultiblock(Multiblocks.sawmill,
-				splitOBJ("block/metal_multiblock/sawmill.obj", IEMultiblocks.SAWMILL),
-				splitOBJ("block/metal_multiblock/sawmill_mirrored.obj", IEMultiblocks.SAWMILL, true));
-		createMultiblock(Multiblocks.excavator,
-				splitOBJ("block/metal_multiblock/excavator.obj", IEMultiblocks.EXCAVATOR),
-				splitOBJ("block/metal_multiblock/excavator_mirrored.obj", IEMultiblocks.EXCAVATOR, true));
-		createMultiblock(Multiblocks.crusher,
-				splitOBJ("block/metal_multiblock/crusher_mirrored.obj", IEMultiblocks.CRUSHER),
-				splitOBJ("block/metal_multiblock/crusher.obj", IEMultiblocks.CRUSHER, true));
-		createMultiblock(Multiblocks.metalPress,
-				splitOBJ("block/metal_multiblock/metal_press.obj", IEMultiblocks.METAL_PRESS,
-						p -> new BlockPos(p.getZ()+1, p.getY(), p.getX()-1)
-				));
-		createMultiblock(Multiblocks.assembler,
-				splitOBJ("block/metal_multiblock/assembler.obj", IEMultiblocks.ASSEMBLER));
-		createMultiblock(Multiblocks.arcFurnace,
-				splitOBJ("block/metal_multiblock/arc_furnace.obj", IEMultiblocks.ARC_FURNACE),
-				splitOBJ("block/metal_multiblock/arc_furnace_mirrored.obj", IEMultiblocks.ARC_FURNACE, true));
-
-		createMultiblock(Multiblocks.blastFurnaceAdv, splitOBJ("block/blastfurnace_advanced.obj", IEMultiblocks.ADVANCED_BLAST_FURNACE));
-		createMultiblock(Multiblocks.silo, splitOBJ("block/metal_multiblock/silo.obj", IEMultiblocks.SILO));
-		createMultiblock(Multiblocks.tank, splitOBJ("block/metal_multiblock/tank.obj", IEMultiblocks.SHEETMETAL_TANK));
-		createMultiblock(Multiblocks.bottlingMachine,
-				splitIEOBJ("block/metal_multiblock/bottling_machine.obj.ie", IEMultiblocks.BOTTLING_MACHINE, false),
-				splitIEOBJ("block/metal_multiblock/bottling_machine_mirrored.obj.ie", IEMultiblocks.BOTTLING_MACHINE, true));
-		createMultiblock(Multiblocks.fermenter,
-				splitOBJ("block/metal_multiblock/fermenter.obj", IEMultiblocks.FERMENTER),
-				splitOBJ("block/metal_multiblock/fermenter_mirrored.obj", IEMultiblocks.FERMENTER, true));
-		createMultiblock(Multiblocks.squeezer,
-				splitOBJ("block/metal_multiblock/squeezer.obj", IEMultiblocks.SQUEEZER),
-				splitOBJ("block/metal_multiblock/squeezer_mirrored.obj", IEMultiblocks.SQUEEZER, true));
-		createMultiblock(Multiblocks.mixer,
-				splitOBJ("block/metal_multiblock/mixer.obj", IEMultiblocks.MIXER),
-				splitOBJ("block/metal_multiblock/mixer_mirrored.obj", IEMultiblocks.MIXER, true));
-		createMultiblock(Multiblocks.refinery,
-				splitOBJ("block/metal_multiblock/refinery.obj", IEMultiblocks.REFINERY),
-				splitOBJ("block/metal_multiblock/refinery_mirrored.obj", IEMultiblocks.REFINERY, true));
-		createMultiblock(Multiblocks.dieselGenerator,
-				splitOBJ("block/metal_multiblock/diesel_generator.obj", IEMultiblocks.DIESEL_GENERATOR),
-				splitOBJ("block/metal_multiblock/diesel_generator_mirrored.obj", IEMultiblocks.DIESEL_GENERATOR, true));
-		createMultiblock(Multiblocks.lightningrod,
-				splitOBJ("block/metal_multiblock/lightningrod.obj", IEMultiblocks.LIGHTNING_ROD));
-		createMultiblock(WoodenDevices.workbench,
-				splitIEOBJ("block/wooden_device/workbench.obj.ie", ImmutableList.of(
-						ModWorkbenchTileEntity.MASTER_POS,
-						ModWorkbenchTileEntity.DUMMY_POS
-				)),
-				null, IEProperties.FACING_HORIZONTAL, null, 180);
-		createMultiblock(MetalDevices.sampleDrill,
-				splitOBJ("block/metal_device/core_drill.obj", ImmutableList.of(
-						BlockPos.ZERO,
-						BlockPos.ZERO.up(),
-						BlockPos.ZERO.up(2)
-				)),
-				null, IEProperties.FACING_HORIZONTAL, null, 180);
-		createMultiblock(Multiblocks.autoWorkbench,
-				splitOBJ("block/metal_multiblock/auto_workbench.obj", IEMultiblocks.AUTO_WORKBENCH),
-				splitOBJ("block/metal_multiblock/auto_workbench_mirrored.obj", IEMultiblocks.AUTO_WORKBENCH, true),
-				IEProperties.FACING_HORIZONTAL,
-				IEProperties.MIRRORED, 180);
-	}
-
-	private void createStoneMultiblocks()
-	{
-		blastFurnaceOff = cubeThree("blast_furnace_off",
-				modLoc("block/multiblocks/blast_furnace"),
-				modLoc("block/multiblocks/blast_furnace_off")
-		);
-		blastFurnaceOn = cubeThree("blast_furnace_on",
-				modLoc("block/multiblocks/blast_furnace"),
-				modLoc("block/multiblocks/blast_furnace_on")
-		);
-		cokeOvenOff = cubeThree("coke_oven_off",
-				modLoc("block/multiblocks/coke_oven"),
-				modLoc("block/multiblocks/coke_oven_off")
-		);
-		cokeOvenOn = cubeThree("coke_oven_on",
-				modLoc("block/multiblocks/coke_oven"),
-				modLoc("block/multiblocks/coke_oven_on")
-		);
-		alloySmelterOff = cubeTwo("alloy_smelter_off",
-				modLoc("block/multiblocks/alloy_smelter_top"),
-				modLoc("block/multiblocks/alloy_smelter_bottom"),
-				modLoc("block/multiblocks/alloy_smelter_side"),
-				modLoc("block/multiblocks/alloy_smelter_off")
-		);
-		alloySmelterOn = cubeTwo("alloy_smelter_on",
-				modLoc("block/multiblocks/alloy_smelter_top"),
-				modLoc("block/multiblocks/alloy_smelter_bottom"),
-				modLoc("block/multiblocks/alloy_smelter_side"),
-				modLoc("block/multiblocks/alloy_smelter_on")
-		);
-		createMultiblock(Multiblocks.cokeOven, cokeOvenOff, cokeOvenOn,
-				IEProperties.FACING_HORIZONTAL, IEProperties.ACTIVE, 180);
-		createMultiblock(Multiblocks.alloySmelter, alloySmelterOff, alloySmelterOn,
-				IEProperties.FACING_HORIZONTAL, IEProperties.ACTIVE, 180);
-		createMultiblock(Multiblocks.blastFurnace, blastFurnaceOff, blastFurnaceOn,
-				IEProperties.FACING_HORIZONTAL, IEProperties.ACTIVE, 180);
 	}
 
 	private void createMultistateSingleModel(Block block, ConfiguredModel model)
@@ -999,10 +485,9 @@ public class BlockStates extends BlockStateProvider
 				));
 	}
 
-	private void createRotatedBlock(Block block, Function<PartialBlockstate, ModelFile> model, Property<Direction> facing,
-									List<Property<?>> additionalProps)
+	private void createRotatedBlock(Block block, Function<PartialBlockstate, ModelFile> model, List<Property<?>> additionalProps)
 	{
-		createRotatedBlock(block, model, facing, additionalProps, 0, 180);
+		createRotatedBlock(block, model, IEProperties.FACING_HORIZONTAL, additionalProps, 0, 180);
 	}
 
 	private void createRotatedBlock(Block block, Function<PartialBlockstate, ModelFile> model, Property<Direction> facing,
@@ -1032,63 +517,6 @@ public class BlockStates extends BlockStateProvider
 				state.with(facing, d).setModels(new ConfiguredModel(modelLoc, x+offsetRotX, y, false));
 			}
 		});
-	}
-
-	private void createMultiblock(Block b, ModelFile masterModel, ModelFile mirroredModel, int rotationOffset)
-	{
-		createMultiblock(b, masterModel, mirroredModel, IEProperties.FACING_HORIZONTAL, IEProperties.MIRRORED, rotationOffset);
-	}
-
-	private void createMultiblock(Block b, ModelFile masterModel, ModelFile mirroredModel)
-	{
-		createMultiblock(b, masterModel, mirroredModel, 180);
-	}
-
-	private void createMultiblock(Block b, ModelFile masterModel)
-	{
-		createMultiblock(b, masterModel, null, IEProperties.FACING_HORIZONTAL, null, 180);
-	}
-
-	private void createMultiblock(Block b, ModelFile masterModel, @Nullable ModelFile mirroredModel,
-								  EnumProperty<Direction> facing, @Nullable Property<Boolean> mirroredState, int rotationOffset)
-	{
-		Preconditions.checkArgument((mirroredModel==null)==(mirroredState==null));
-		VariantBlockStateBuilder builder = getVariantBuilder(b);
-		boolean[] possibleMirrorStates;
-		if(mirroredState!=null)
-			possibleMirrorStates = new boolean[]{false, true};
-		else
-			possibleMirrorStates = new boolean[1];
-		for(boolean mirrored : possibleMirrorStates)
-			for(Direction dir : facing.getAllowedValues())
-			{
-				final int angleY;
-				final int angleX;
-				if(facing.getAllowedValues().contains(Direction.UP))
-				{
-					angleX = -90*dir.getYOffset();
-					if(dir.getAxis()!=Axis.Y)
-						angleY = getAngle(dir, rotationOffset);
-					else
-						angleY = 0;
-				}
-				else
-				{
-					angleY = getAngle(dir, rotationOffset);
-					angleX = 0;
-				}
-				ModelFile model = mirrored?mirroredModel: masterModel;
-				PartialBlockstate partialState = builder.partialState()
-						.with(facing, dir);
-				if(mirroredState!=null)
-					partialState = partialState.with(mirroredState, mirrored);
-				partialState.setModels(new ConfiguredModel(model, angleX, angleY, true));
-			}
-	}
-
-	private int getAngle(Direction dir, int offset)
-	{
-		return (int)((dir.getHorizontalAngle()+offset)%360);
 	}
 
 	public ModelFile createMetalLadder(String name, @Nullable ResourceLocation bottomTop, @Nullable ResourceLocation sides)
@@ -1162,64 +590,6 @@ public class BlockStates extends BlockStateProvider
 			out.accept(base);
 	}
 
-	private void createConnector(
-			Block b, Function<PartialBlockstate, ModelFile> model, List<Property<?>> additional, RenderType... layers
-	)
-	{
-		final List<String> layersList = Arrays.stream(layers)
-				.map(this::getName)
-				.collect(Collectors.toList());
-		ConnectorBlockBuilder builder = ConnectorBlockBuilder.builder(models(), b)
-				.modelFunction(s -> forConnectorModel(model.apply(s), layersList))
-				.layers(layers)
-				.autoRotationData();
-		for(Property<?> prop : additional)
-			builder.addAdditional(prop);
-		builder.writeTo(getVariantBuilder(b));
-	}
-
-	private String getName(RenderState state)
-	{
-		//TODO clean up/speed up
-		try
-		{
-			// Datagen should only ever run in a deobf environment, so no need to use unreadable SRG names here
-			// This is a workaround for the fact that client-side Mixins are not applied in datagen
-			Field f = RenderState.class.getDeclaredField("name");
-			f.setAccessible(true);
-			return (String)f.get(state);
-		} catch(Exception e)
-		{
-			throw new RuntimeException(e);
-		}
-	}
-
-	private final Map<ResourceLocation, String> generatedParticleTextures = new HashMap<>();
-
-	private ModelFile forConnectorModel(ModelFile model, List<String> layers)
-	{
-		BlockModelBuilder ret = models().getBuilder(model.getLocation().getPath()+"_connector")
-				.customLoader(ConnectorBuilder::begin)
-				.baseModel(model)
-				.layers(layers)
-				.end();
-		addParticleTextureFrom(ret, model);
-		return ret;
-	}
-
-	private ConfiguredModel emptyWithParticles(String name, String particleTexture)
-	{
-		ModelFile model = models().withExistingParent(name, modLoc("block/ie_empty"))
-				.texture("particle", particleTexture);
-		generatedParticleTextures.put(modLoc(name), particleTexture);
-		return new ConfiguredModel(model);
-	}
-
-	private void createConnector(Block b, ModelFile model, RenderType... layers)
-	{
-		createConnector(b, map -> model, ImmutableList.of(), layers);
-	}
-
 	private ModelFile quarter(String out, ResourceLocation texture)
 	{
 		return models().withExistingParent(out, modLoc("block/ie_quarter_block"))
@@ -1279,7 +649,7 @@ public class BlockStates extends BlockStateProvider
 					.with(SawdustBlock.LAYERS, layer)
 					.setModels(new ConfiguredModel(model));
 		}
-		itemModels.put(WoodenDecoration.sawdust, singleModel);
+		itemModel(WoodenDecoration.sawdust, singleModel);
 	}
 
 	private ModelFile createRouterModel(ResourceLocation baseTexName, String outName)
@@ -1292,13 +662,4 @@ public class BlockStates extends BlockStateProvider
 				baseTexName.getPath()+"_0"));
 		return builder;
 	}
-
-	public void assertModelExists(ResourceLocation name)
-	{
-		String suffix = name.getPath().contains(".")?"": ".json";
-		Preconditions.checkState(
-				existingFileHelper.exists(name, ResourcePackType.CLIENT_RESOURCES, suffix, "models"),
-				"Model \""+name+"\" does not exist");
-	}
-
 }

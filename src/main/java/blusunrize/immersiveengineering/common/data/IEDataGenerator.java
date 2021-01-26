@@ -9,6 +9,9 @@
 package blusunrize.immersiveengineering.common.data;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.common.data.blockstates.BlockStates;
+import blusunrize.immersiveengineering.common.data.blockstates.ConnectorBlockStates;
+import blusunrize.immersiveengineering.common.data.blockstates.MultiblockStates;
 import net.minecraft.data.BlockTagsProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.util.ResourceLocation;
@@ -37,8 +40,10 @@ public class IEDataGenerator
 			gen.addProvider(new FluidTags(gen, EXISTING_HELPER));
 			gen.addProvider(new BlockLoot(gen));
 			gen.addProvider(new GeneralLoot(gen));
-			BlockStates blockStates = new BlockStates(gen, EXISTING_HELPER);
+			gen.addProvider(new BlockStates(gen, EXISTING_HELPER));
+			MultiblockStates blockStates = new MultiblockStates(gen, EXISTING_HELPER);
 			gen.addProvider(blockStates);
+			gen.addProvider(new ConnectorBlockStates(gen, EXISTING_HELPER));
 			gen.addProvider(new ItemModels(gen, EXISTING_HELPER, blockStates));
 			gen.addProvider(new Advancements(gen));
 			gen.addProvider(new TileTags(gen, EXISTING_HELPER));
