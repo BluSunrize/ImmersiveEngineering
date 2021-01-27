@@ -44,16 +44,16 @@ public class ClocheFertilizerManager implements IRecipeManager
 	 *
 	 * @param recipePath      The recipe name, without the resource location
 	 * @param fertilizer      The fertilizer to be added
-	 * @param fertilizerValue The value this fertilizer gives in the garden cloche
+	 * @param growthModifier The value this fertilizer gives in the garden cloche
 	 * @docParam recipePath "sulfur_grow"
 	 * @docParam fertilizer <tag:forge:dusts/sulfur>
 	 * @docParam fertilizerValue 6.0F
 	 */
 	@ZenCodeType.Method
-	public void addFertilizer(String recipePath, IIngredient fertilizer, float fertilizerValue)
+	public void addFertilizer(String recipePath, IIngredient fertilizer, float growthModifier)
 	{
 		final ResourceLocation resourceLocation = new ResourceLocation("crafttweaker", recipePath);
-		final ClocheFertilizer recipe = new ClocheFertilizer(resourceLocation, fertilizer.asVanillaIngredient(), fertilizerValue);
+		final ClocheFertilizer recipe = new ClocheFertilizer(resourceLocation, fertilizer.asVanillaIngredient(), growthModifier);
 		CraftTweakerAPI.apply(new ActionAddRecipeCustomOutput(this, recipe, fertilizer));
 	}
 

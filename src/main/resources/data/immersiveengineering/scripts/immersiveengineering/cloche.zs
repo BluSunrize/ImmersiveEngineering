@@ -1,7 +1,7 @@
 /*
  * Adds a fertilizer to the garden Cloche
  */
-//<recipetype:immersiveengineering:fertilizer>.addFertilizer(name as string, fertilizer as IIngredient, value as float);
+//<recipetype:immersiveengineering:fertilizer>.addFertilizer(name as string, fertilizer as IIngredient, growthModifier as float);
 <recipetype:immersiveengineering:fertilizer>.addFertilizer("sulfur_grow", <tag:items:forge:dusts/sulfur>, 6.0F);
 
 
