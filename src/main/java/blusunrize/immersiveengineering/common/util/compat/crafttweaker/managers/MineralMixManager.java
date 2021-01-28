@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.excavator.MineralMix;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CrTIngredientUtil;
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
+import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.managers.IRecipeManager;
 import com.blamejared.crafttweaker.impl.actions.recipes.ActionAddRecipe;
 import com.blamejared.crafttweaker.impl.item.MCWeightedItemStack;
@@ -71,5 +72,11 @@ public class MineralMixManager implements IRecipeManager
 		final List<RegistryKey<World>> dimensionKeys = Arrays.stream(dimensions).map(resourceLocation1 -> RegistryKey.getOrCreateKey(Registry.WORLD_KEY, resourceLocation1)).collect(Collectors.toList());
 		final MineralMix mix = new MineralMix(resourceLocation, stacksWithChances, weight, failChance, dimensionKeys, background);
 		CraftTweakerAPI.apply(new ActionAddRecipe(this, mix, null));
+	}
+
+	@Override
+	public void removeRecipe(IItemStack output)
+	{
+		throw new UnsupportedOperationException("Mineral Mixes can only be removed by name, not by output!");
 	}
 }
