@@ -79,8 +79,7 @@ public class RecipeReloadListener implements IResourceManagerReloadListener
 	{
 		if(clientRecipeManager!=null)
 		{
-			TagUtils.ITEM_TAG_COLLECTION = ItemTags.getCollection();
-			TagUtils.BLOCK_TAG_COLLECTION = BlockTags.getCollection();
+			TagUtils.setTagCollectionGetters(ItemTags::getCollection, BlockTags::getCollection);
 			startArcRecyclingRecipeGen(clientRecipeManager);
 		}
 	}
