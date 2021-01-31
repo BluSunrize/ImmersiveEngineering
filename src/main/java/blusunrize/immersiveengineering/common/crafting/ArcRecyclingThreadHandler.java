@@ -38,9 +38,11 @@ public class ArcRecyclingThreadHandler extends Thread
 	private ArrayList<RecyclingCalculation> validated;
 	private ArrayListMultimap<ItemStack, RecyclingCalculation> nonValidated;
 	private final List<IRecipe<?>> recipeList;
+	private final long startTime;
 
 	public ArcRecyclingThreadHandler(Collection<IRecipe<?>> allRecipes)
 	{
+		this.startTime = System.currentTimeMillis();
 		this.recipeList = allRecipes.stream()
 				.filter(ArcFurnaceRecipe.assembleRecyclingFilter())
 				.collect(Collectors.toList());
@@ -53,8 +55,6 @@ public class ArcRecyclingThreadHandler extends Thread
 		//Keep one core free for normal Forge lifecycle events
 		int threadAmount = Math.max(Runtime.getRuntime().availableProcessors()-1, 1);
 		RegistryIterationThread[] threads = new RegistryIterationThread[threadAmount];
-
-		long timestamp = System.currentTimeMillis();
 
 		boolean divisable = recipeList.size()%threadAmount==0;
 		int limit = divisable?(recipeList.size()/threadAmount): (recipeList.size()/(threadAmount-1));
@@ -107,7 +107,7 @@ public class ArcRecyclingThreadHandler extends Thread
 			validated.addAll(newlyValid);
 		}
 		IELogger.info("Finished recipe profiler for Arc Recycling, took "
-				+(System.currentTimeMillis()-timestamp)+" milliseconds");
+				+(System.currentTimeMillis()-startTime)+" milliseconds");
 	}
 
 	private ArcRecyclingRecipe makeRecipe(RecyclingCalculation calculation)
