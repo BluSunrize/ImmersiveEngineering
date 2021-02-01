@@ -2,11 +2,11 @@
  * Adds a recipe to the fermenter.
  * You can provide itemOutput, fluidOutput, or both.
  */
-//<recipetype:immersiveengineering:fermenter>.addRecipe(name as string, input as IIngredient, energy as int, fluidOutput as IFluidStack)
+//<recipetype:immersiveengineering:fermenter>.addRecipe(name as string, input as IIngredientWithAmount, energy as int, fluidOutput as IFluidStack)
 <recipetype:immersiveengineering:fermenter>.addRecipe("fermenter_extract_water", <item:minecraft:wooden_hoe>, 1000, <fluid:minecraft:water> * 100);
-//<recipetype:immersiveengineering:fermenter>.addRecipe(name as string, input as IIngredient, energy as int, itemOutput as IItemStack)
+//<recipetype:immersiveengineering:fermenter>.addRecipe(name as string, input as IIngredientWithAmount, energy as int, itemOutput as IItemStack)
 <recipetype:immersiveengineering:fermenter>.addRecipe("fermenter_upgrade_hoe", <item:minecraft:wooden_shovel>, 1000, <item:minecraft:stone_shovel>);
-//<recipetype:immersiveengineering:fermenter>.addRecipe(name as string, input as IIngredient, energy as int, itemOutput as IItemStack, fluidOutput as IFluidStack)
+//<recipetype:immersiveengineering:fermenter>.addRecipe(name as string, input as IIngredientWithAmount, energy as int, itemOutput as IItemStack, fluidOutput as IFluidStack)
 <recipetype:immersiveengineering:fermenter>.addRecipe("fermenter_upgrade_sword", <item:minecraft:wooden_sword>, 1000, <item:minecraft:stone_sword>, <fluid:minecraft:water> * 100);
 
 /*

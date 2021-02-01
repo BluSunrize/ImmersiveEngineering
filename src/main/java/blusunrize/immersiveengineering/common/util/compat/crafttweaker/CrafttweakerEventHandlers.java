@@ -47,6 +47,7 @@ public class CrafttweakerEventHandlers
 		addExampleFile(event, "crusher");
 		addExampleFile(event, "fermenter");
 		addExampleFile(event, "metal_press");
+		addExampleFile(event, "mineral_mix");
 		addExampleFile(event, "mixer");
 		addExampleFile(event, "refinery");
 		addExampleFile(event, "sawmill");

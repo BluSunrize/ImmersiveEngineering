@@ -4,7 +4,7 @@
  * Mixer recipes will always convert 1mB of the input fluid to 1mB of the output fluid.
  * The `amount` parameter specifies for how many mB the given ingredients last
  */
-//<recipetype:immersiveengineering:mixer>.addRecipe(recipePath as String, fluidInput as MCTag<MCFluid>, IIngredientinputItems as [], energy as int, output as MCFluid, amount as int)
+//<recipetype:immersiveengineering:mixer>.addRecipe(recipePath as string, fluidInput as MCTag<MCFluid>, inputItems as IIngredientWithAmount[], energy as int, output as MCFluid, amount as int)
 <recipetype:immersiveengineering:mixer>.addRecipe("grow_creosote_oil", <tag:fluids:minecraft:water>, [<item:minecraft:oak_sapling>, <item:minecraft:bone_meal> * 4, <item:immersiveengineering:creosote_bucket>], 5000, <fluid:immersiveengineering:creosote>, 8000);
 
 
