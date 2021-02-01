@@ -1,5 +1,10 @@
 ##### Version 1.16.5-4.2.1-pre
-- Added missing mixer recipe for herbicide (BluSunrize)
+ - Added missing mixer recipe for herbicide (BluSunrize)
+ - Added Craftweaker compatability for Mineral Veins, improved documentation (Jared)
+ - Added compatability for TheOneProbe (RobustProgram)
+ - Fixed crash related right-click events (Malte)
+ - Fixed missing particle textures for waterwheel, windmill and excavator (Malte)
+ - Fixed current transformers calculating wrong values (Malte)
 
 ##### Version 1.16.5-4.2.0-130
  - First 1.16.5 release
