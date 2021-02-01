@@ -72,6 +72,8 @@ public class SheetmetalTankTileEntity extends MultiblockPartTileEntity<Sheetmeta
 	public SheetmetalTankTileEntity()
 	{
 		super(IEMultiblocks.SHEETMETAL_TANK, IETileTypes.SHEETMETAL_TANK.get(), true);
+		// Tanks should not output by default
+		this.redstoneControlInverted = true;
 		for(Direction f : DirectionUtils.VALUES)
 			if(f!=Direction.UP)
 				fluidNeighbors.add(

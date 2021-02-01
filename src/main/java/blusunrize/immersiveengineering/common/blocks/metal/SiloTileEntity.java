@@ -71,6 +71,8 @@ public class SiloTileEntity extends MultiblockPartTileEntity<SiloTileEntity> imp
 	public SiloTileEntity()
 	{
 		super(IEMultiblocks.SILO, IETileTypes.SILO.get(), true);
+		// Silos should not output by default
+		this.redstoneControlInverted = true;
 	}
 
 	private final List<CapabilityReference<IItemHandler>> outputCaps = new ArrayList<>();

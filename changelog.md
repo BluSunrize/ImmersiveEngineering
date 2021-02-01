@@ -5,6 +5,7 @@
  - Fixed crash related right-click events (Malte)
  - Fixed missing particle textures for waterwheel, windmill and excavator (Malte)
  - Fixed current transformers calculating wrong values (Malte)
+ - Fixed tanks and silos being set to output by default (BluSunrize)
 
 ##### Version 1.16.5-4.2.0-130
  - First 1.16.5 release
