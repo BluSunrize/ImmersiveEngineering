@@ -15,7 +15,9 @@ import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IScrewdriverInteraction;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
+import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.IWaterLoggable;
@@ -26,11 +28,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -45,7 +51,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
-public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IConfigurableSides, IBlockOverlayText
+public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IConfigurableSides, IBlockOverlayText, IScrewdriverInteraction
 {
 	private final Map<Direction, IOSideConfig> sideConfig = new EnumMap<>(Direction.class);
 
@@ -56,6 +62,7 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickable
 	}
 
 	public FluidTank tank = new FluidTank(4*FluidAttributes.BUCKET_VOLUME);
+	public boolean redstoneControlInverted = false;
 
 	private int tickCount = 0;
 
@@ -71,7 +78,7 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickable
 	@Override
 	public void tick()
 	{
-		if(world.isRemote||isRSPowered())
+		if(world.isRemote||(isRSPowered()^redstoneControlInverted))
 			return;
 
 		if(tickCount%16==0)
@@ -192,6 +199,7 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickable
 		for(Direction d : DirectionUtils.VALUES)
 			sideConfig.put(d, IOSideConfig.VALUES[sideConfigNBT.getInt(d.getString())]);
 		tank.readFromNBT(nbt.getCompound("tank"));
+		redstoneControlInverted = nbt.getBoolean("redstoneInverted");
 		if(descPacket)
 			this.markContainingBlockForUpdate(null);
 	}
@@ -203,6 +211,7 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickable
 		for(Direction d : DirectionUtils.VALUES)
 			sideConfigNBT.putInt(d.getString(), sideConfig.get(d).ordinal());
 		nbt.put("sideConfig", sideConfigNBT);
+		nbt.putBoolean("redstoneInverted", redstoneControlInverted);
 		nbt.put("tank", tank.writeToNBT(new CompoundNBT()));
 	}
 
@@ -221,6 +230,19 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickable
 		this.markContainingBlockForUpdate(null);
 		world.addBlockEvent(getPos(), this.getBlockState().getBlock(), 0, 0);
 		return true;
+	}
+
+	@Override
+	public ActionResultType screwdriverUseSide(Direction side, PlayerEntity player, Hand hand, Vector3d hitVec)
+	{
+		if(!world.isRemote)
+		{
+			redstoneControlInverted = !redstoneControlInverted;
+			ChatUtils.sendServerNoSpamMessages(player, new TranslationTextComponent(Lib.CHAT_INFO+"rsControl."+(redstoneControlInverted?"invertedOn": "invertedOff")));
+			markDirty();
+			this.markContainingBlockForUpdate(null);
+		}
+		return ActionResultType.SUCCESS;
 	}
 
 	private LazyOptional<IFluidHandler> tankCap = registerConstantCap(tank);
