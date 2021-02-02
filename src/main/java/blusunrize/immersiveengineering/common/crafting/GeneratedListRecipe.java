@@ -41,7 +41,7 @@ public class GeneratedListRecipe extends IESerializableRecipe
 				BottlingMachineRecipe.TYPE
 		));
 		LIST_GENERATORS.put(rl("arc_recycling_list"), new RecipeListGenerator<>(
-				ArcRecyclingThreadHandler::getRecipesFromRunningThreads, ArcFurnaceRecipe.SERIALIZER.getId(),
+				ArcRecyclingCalculator::getRecipesFromRunningThreads, ArcFurnaceRecipe.SERIALIZER.getId(),
 				ArcFurnaceRecipe.TYPE
 		));
 	}

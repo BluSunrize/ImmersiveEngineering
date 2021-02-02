@@ -78,10 +78,7 @@ public class RecipeReloadListener implements IResourceManagerReloadListener
 	public void onTagsUpdated(TagsUpdatedEvent event)
 	{
 		if(clientRecipeManager!=null)
-		{
 			TagUtils.setTagCollectionGetters(ItemTags::getCollection, BlockTags::getCollection);
-			startArcRecyclingRecipeGen(clientRecipeManager);
-		}
 	}
 
 	@SubscribeEvent(priority = EventPriority.HIGH)
@@ -133,7 +130,7 @@ public class RecipeReloadListener implements IResourceManagerReloadListener
 	private void startArcRecyclingRecipeGen(RecipeManager recipeManager)
 	{
 		Collection<IRecipe<?>> recipes = recipeManager.getRecipes();
-		new ArcRecyclingThreadHandler(recipes).start();
+		new ArcRecyclingCalculator(recipes).run();
 	}
 
 	static <R extends IRecipe<?>> Map<ResourceLocation, R> filterRecipes(Collection<IRecipe<?>> recipes, Class<R> recipeClass, IRecipeType<R> recipeType)

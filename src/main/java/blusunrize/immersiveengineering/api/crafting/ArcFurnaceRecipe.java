@@ -181,70 +181,58 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 		return false;
 	}
 
-	private static final Set<IRecipeType<?>> RECYCLING_RECIPE_TYPES = new HashSet<>();
-	private static final List<Predicate<ItemStack>> RECYCLING_ALLOWED = new ArrayList<>();
-	private static final List<Predicate<ItemStack>> INVALID_RECYCLING_OUTPUTS = new ArrayList<>();
-
 	/**
 	 * Add a predicate to the list of predicates determining whether an item may be recycled
 	 */
+	@Deprecated
 	public static void allowRecipeTypeForRecycling(IRecipeType<?> recipeType)
 	{
-		RECYCLING_RECIPE_TYPES.add(recipeType);
+		ArcRecyclingChecker.allowRecipeTypeForRecycling(recipeType);
 	}
 
 	/**
 	 * Add a predicate to the list of predicates determining whether an item may be recycled
 	 */
+	@Deprecated
 	public static void allowItemForRecycling(Predicate<ItemStack> predicate)
 	{
-		RECYCLING_ALLOWED.add(predicate);
+		ArcRecyclingChecker.allowItemForRecycling(predicate);
 	}
 
 	/**
 	 * Add a predicate to determine an invalid output for the recycling process.
 	 * Used for magical ingots that should not be reclaimable or similar
 	 */
+	@Deprecated
 	public static void makeItemInvalidRecyclingOutput(Predicate<ItemStack> predicate)
 	{
-		INVALID_RECYCLING_OUTPUTS.add(predicate);
+		ArcRecyclingChecker.makeItemInvalidRecyclingOutput(predicate);
 	}
 
 	/**
 	 * @return true if the given ItemStack can be recycled
 	 */
+	@Deprecated
 	public static boolean canRecycle(ItemStack stack)
 	{
-		if(stack.isEmpty())
-			return false;
-		for(Predicate<ItemStack> predicate : RECYCLING_ALLOWED)
-			if(predicate.test(stack))
-				return true;
-		return false;
+		return new ArcRecyclingChecker().isAllowed(stack);
 	}
 
 	/**
 	 * @return true if the given ItemStack should not be returned from recycling
 	 */
+	@Deprecated
 	public static boolean isValidRecyclingOutput(ItemStack stack)
 	{
-		if(stack.isEmpty())
-			return false;
-		for(Predicate<ItemStack> predicate : INVALID_RECYCLING_OUTPUTS)
-			if(predicate.test(stack))
-				return false;
-		return true;
+		return ArcRecyclingChecker.isValidRecyclingOutput(stack);
 	}
 
 	/**
 	 * @return a predicate for IRecipes which is used to filter the list of crafting recipes for recycling
 	 */
+	@Deprecated
 	public static Predicate<IRecipe<?>> assembleRecyclingFilter()
 	{
-		return iRecipe -> {
-			if(!RECYCLING_RECIPE_TYPES.contains(iRecipe.getType()))
-				return false;
-			return canRecycle(iRecipe.getRecipeOutput());
-		};
+		return ArcRecyclingChecker.assembleRecyclingFilter().getLeft();
 	}
 }

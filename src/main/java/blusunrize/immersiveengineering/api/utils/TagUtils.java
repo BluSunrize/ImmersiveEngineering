@@ -18,6 +18,7 @@ import net.minecraft.tags.ITag.INamedTag;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.Tags.Items;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -160,7 +161,7 @@ public class TagUtils
 
 	public static boolean isIngot(ItemStack stack)
 	{
-		return isInPrefixedTag(stack, "ingots/");
+		return getItemTag(Items.INGOTS.getName()).contains(stack.getItem());
 	}
 
 	public static boolean isPlate(ItemStack stack)

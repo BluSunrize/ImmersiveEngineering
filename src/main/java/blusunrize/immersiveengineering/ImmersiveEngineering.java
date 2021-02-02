@@ -10,7 +10,8 @@ package blusunrize.immersiveengineering;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEApi;
-import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
+import blusunrize.immersiveengineering.api.IETags;
+import blusunrize.immersiveengineering.api.crafting.ArcRecyclingChecker;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
@@ -75,6 +76,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import static net.minecraftforge.fml.network.NetworkDirection.PLAY_TO_CLIENT;
 import static net.minecraftforge.fml.network.NetworkDirection.PLAY_TO_SERVER;
@@ -137,39 +139,34 @@ public class ImmersiveEngineering
 		IEApi.prefixToIngotMap.put("fences", new Integer[]{5, 3});
 		IECompatModule.doModulesPreInit();
 
-		ArcFurnaceRecipe.allowRecipeTypeForRecycling(IRecipeType.CRAFTING);
-		ArcFurnaceRecipe.allowRecipeTypeForRecycling(MetalPressRecipe.TYPE);
+		ArcRecyclingChecker.allowRecipeTypeForRecycling(IRecipeType.CRAFTING);
+		ArcRecyclingChecker.allowRecipeTypeForRecycling(MetalPressRecipe.TYPE);
 		// Vanilla Tools, Swords & Armor
-		ArcFurnaceRecipe.allowItemForRecycling(stack -> stack.getItem() instanceof ToolItem
-				||stack.getItem() instanceof HoeItem||stack.getItem() instanceof ShearsItem
-				||stack.getItem() instanceof SwordItem||stack.getItem() instanceof ArmorItem
-				||stack.getItem() instanceof HorseArmorItem||stack.getItem() instanceof BucketItem);
+		ArcRecyclingChecker.allowSimpleItemForRecycling(stack -> stack instanceof ToolItem
+				||stack instanceof ShearsItem||stack instanceof SwordItem||
+				stack instanceof ArmorItem||stack instanceof HorseArmorItem||
+				stack instanceof BucketItem);
 		// IE Tools
-		ArcFurnaceRecipe.allowItemForRecycling(stack -> stack.getItem() instanceof HammerItem
-				||stack.getItem() instanceof WirecutterItem||stack.getItem() instanceof ScrewdriverItem
-				||stack.getItem() instanceof DrillheadItem);
+		ArcRecyclingChecker.allowSimpleItemForRecycling(stack -> stack instanceof HammerItem
+				||stack instanceof WirecutterItem||stack instanceof ScrewdriverItem
+				||stack instanceof DrillheadItem);
 		// Molds
-		ArcFurnaceRecipe.allowItemForRecycling(stack -> stack.getItem()==Molds.moldPlate
-				||stack.getItem()==Molds.moldGear
-				||stack.getItem()==Molds.moldRod
-				||stack.getItem()==Molds.moldBulletCasing
-				||stack.getItem()==Molds.moldWire
-				||stack.getItem()==Molds.moldPacking4
-				||stack.getItem()==Molds.moldPacking9
-				||stack.getItem()==Molds.moldUnpacking
-		);
+		ArcRecyclingChecker.allowEnumeratedItemsForRecycling(() -> Stream.of(
+				Molds.moldPlate, Molds.moldGear, Molds.moldRod, Molds.moldBulletCasing, Molds.moldWire,
+				Molds.moldPacking4, Molds.moldPacking9, Molds.moldUnpacking
+		));
 		// Blocks, Plates, Rods, Wires, Gears, Scaffoldings, Fences
-		ArcFurnaceRecipe.allowItemForRecycling(stack -> TagUtils.isPlate(stack)
-				||TagUtils.isInPrefixedTag(stack, "rods/")
-				||TagUtils.isInPrefixedTag(stack, "wires/")
-				||TagUtils.isInPrefixedTag(stack, "gears/")
-				||TagUtils.isInPrefixedTag(stack, "scaffoldings/")
-				||TagUtils.isInPrefixedTag(stack, "fences/"));
+		ArcRecyclingChecker.allowItemTagForRecycling(IETags.plates);
+		ArcRecyclingChecker.allowPrefixedTagForRecycling("rods/");
+		ArcRecyclingChecker.allowPrefixedTagForRecycling("wires/");
+		ArcRecyclingChecker.allowPrefixedTagForRecycling("gears/");
+		ArcRecyclingChecker.allowPrefixedTagForRecycling("scaffoldings/");
+		ArcRecyclingChecker.allowPrefixedTagForRecycling("fences/");
 		// Prevent tools used during crafting to be recycled as components
-		ArcFurnaceRecipe.makeItemInvalidRecyclingOutput(stack -> stack.getItem() instanceof HammerItem
+		ArcRecyclingChecker.makeItemInvalidRecyclingOutput(stack -> stack.getItem() instanceof HammerItem
 				||stack.getItem() instanceof WirecutterItem||stack.getItem() instanceof ScrewdriverItem);
 		// Ignore bricks
-		ArcFurnaceRecipe.makeItemInvalidRecyclingOutput(stack -> TagUtils.isIngot(stack)
+		ArcRecyclingChecker.makeItemInvalidRecyclingOutput(stack -> TagUtils.isIngot(stack)
 				&&Objects.requireNonNull(TagUtils.getMatchingPrefixAndRemaining(stack, "ingots"))[1].contains("brick"));
 
 
