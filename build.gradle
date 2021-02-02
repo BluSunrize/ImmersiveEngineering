@@ -153,6 +153,7 @@ minecraft {
             args '--mod', 'immersiveengineering', '--all', '--output', file('src/generated/resources/'), '--validate',
                     '--existing', sourceSets.main.resources.srcDirs[0]
             arg "-mixin.config="+modid+".mixins.json"
+            ideaModule project.name+".datagen"
 
             mods {
                 immersiveengineering {
