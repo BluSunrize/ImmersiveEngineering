@@ -4,7 +4,7 @@
     "particle": "immersiveengineering:block/multiblocks/autoworkbench_blueprint"
   },
   "loader": "immersiveengineering:basic_split",
-  "dynamic": false,
+  "dynamic": true,
   "base_model": "immersiveengineering:block/wooden_device/workbench",
   "split_parts": [
     [

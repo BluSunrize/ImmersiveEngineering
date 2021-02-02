@@ -90,7 +90,7 @@ public class BlockStates extends ExtendedBlockstateProvider
 		ModelFile baseModel = ieObj(name(b), model)
 				.texture("texture", texture);
 		BlockModelBuilder builder = splitModel(
-				name(b)+"_split", baseModel, parts.build().stream(), true
+				name(b)+"_split", baseModel, parts.build(), true
 		);
 		getVariantBuilder(b)
 				.partialState()

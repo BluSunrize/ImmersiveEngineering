@@ -63,7 +63,7 @@ public class MultiblockStates extends ExtendedBlockstateProvider
 
 		createMultiblock(
 				MetalDevices.cloche,
-				split(ieObj("block/metal_device/cloche.obj.ie"), COLUMN_THREE)
+				splitDynamic(ieObj("block/metal_device/cloche.obj.ie"), COLUMN_THREE)
 		);
 		createMultiblock(
 				MetalDevices.teslaCoil,
@@ -127,10 +127,12 @@ public class MultiblockStates extends ExtendedBlockstateProvider
 		createMultiblock(Multiblocks.crusher,
 				split(obj("block/metal_multiblock/crusher_mirrored.obj"), IEMultiblocks.CRUSHER),
 				split(obj("block/metal_multiblock/crusher.obj"), IEMultiblocks.CRUSHER, true));
-		createMultiblock(Multiblocks.metalPress,
-				split(obj("block/metal_multiblock/metal_press.obj"), IEMultiblocks.METAL_PRESS,
-						p -> new BlockPos(p.getZ()+1, p.getY(), p.getX()-1)
-				));
+		createMultiblock(Multiblocks.metalPress, split(
+				obj("block/metal_multiblock/metal_press.obj"),
+				IEMultiblocks.METAL_PRESS,
+				p -> new BlockPos(p.getZ()+1, p.getY(), p.getX()-1),
+				false
+		));
 		createMultiblock(Multiblocks.assembler,
 				split(obj("block/metal_multiblock/assembler.obj"), IEMultiblocks.ASSEMBLER));
 		createMultiblock(Multiblocks.arcFurnace,
@@ -141,8 +143,8 @@ public class MultiblockStates extends ExtendedBlockstateProvider
 		createMultiblock(Multiblocks.silo, split(obj("block/metal_multiblock/silo.obj"), IEMultiblocks.SILO));
 		createMultiblock(Multiblocks.tank, split(obj("block/metal_multiblock/tank.obj"), IEMultiblocks.SHEETMETAL_TANK));
 		createMultiblock(Multiblocks.bottlingMachine,
-				split(ieObj("block/metal_multiblock/bottling_machine.obj.ie"), IEMultiblocks.BOTTLING_MACHINE, false),
-				split(ieObj("block/metal_multiblock/bottling_machine_mirrored.obj.ie"), IEMultiblocks.BOTTLING_MACHINE, true));
+				splitDynamic(ieObj("block/metal_multiblock/bottling_machine.obj.ie"), IEMultiblocks.BOTTLING_MACHINE, false),
+				splitDynamic(ieObj("block/metal_multiblock/bottling_machine_mirrored.obj.ie"), IEMultiblocks.BOTTLING_MACHINE, true));
 		createMultiblock(Multiblocks.fermenter,
 				split(obj("block/metal_multiblock/fermenter.obj"), IEMultiblocks.FERMENTER),
 				split(obj("block/metal_multiblock/fermenter_mirrored.obj"), IEMultiblocks.FERMENTER, true));
@@ -161,7 +163,7 @@ public class MultiblockStates extends ExtendedBlockstateProvider
 		createMultiblock(Multiblocks.lightningrod,
 				split(obj("block/metal_multiblock/lightningrod.obj"), IEMultiblocks.LIGHTNING_ROD));
 		createMultiblock(WoodenDevices.workbench,
-				split(ieObj("block/wooden_device/workbench.obj.ie"), ImmutableList.of(
+				splitDynamic(ieObj("block/wooden_device/workbench.obj.ie"), ImmutableList.of(
 						ModWorkbenchTileEntity.MASTER_POS, ModWorkbenchTileEntity.DUMMY_POS
 				)),
 				null, null);
@@ -195,14 +197,14 @@ public class MultiblockStates extends ExtendedBlockstateProvider
 						.put("front", front)
 						.build()
 		);
-		return splitModel(name+"_split", baseModel, CUBE_TWO.stream(), false);
+		return splitModel(name+"_split", baseModel, CUBE_TWO, false);
 	}
 
 	private ModelFile cubeThree(String name, ResourceLocation def, ResourceLocation front)
 	{
 		ModelFile baseModel = obj(name, rl("block/stone_multiblocks/cube_three.obj"),
 				ImmutableMap.of("side", def, "front", front));
-		return splitModel(name+"_split", baseModel, CUBE_THREE.stream(), false);
+		return splitModel(name+"_split", baseModel, CUBE_THREE, false);
 	}
 
 	private void createMultiblock(Block b, ModelFile masterModel, ModelFile mirroredModel)
@@ -265,17 +267,27 @@ public class MultiblockStates extends ExtendedBlockstateProvider
 
 	private ModelFile split(ModelFile loc, TemplateMultiblock mb, boolean mirror)
 	{
+		return split(loc, mb, mirror, false);
+	}
+
+	private ModelFile splitDynamic(ModelFile loc, TemplateMultiblock mb, boolean mirror)
+	{
+		return split(loc, mb, mirror, true);
+	}
+
+	private ModelFile split(ModelFile loc, TemplateMultiblock mb, boolean mirror, boolean dynamic)
+	{
 		UnaryOperator<BlockPos> transform = UnaryOperator.identity();
 		if(mirror)
 		{
 			Vector3i size = mb.getSize(null);
 			transform = p -> new BlockPos(size.getX()-p.getX()-1, p.getY(), p.getZ());
 		}
-		return split(loc, mb, transform);
+		return split(loc, mb, transform, dynamic);
 	}
 
 	private ModelFile split(
-			ModelFile name, TemplateMultiblock multiblock, UnaryOperator<BlockPos> transform
+			ModelFile name, TemplateMultiblock multiblock, UnaryOperator<BlockPos> transform, boolean dynamic
 	)
 	{
 		final Vector3i offset = multiblock.getMasterFromOriginOffset();
@@ -285,7 +297,7 @@ public class MultiblockStates extends ExtendedBlockstateProvider
 				.map(info -> info.pos)
 				.map(transform)
 				.map(p -> p.subtract(offset));
-		return split(name, partsStream.collect(Collectors.toList()));
+		return split(name, partsStream.collect(Collectors.toList()), dynamic);
 	}
 
 }

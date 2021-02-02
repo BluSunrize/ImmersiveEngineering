@@ -30,8 +30,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 {
@@ -165,22 +163,31 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 		return ret;
 	}
 
-	//TODO list instead of stream?
-	protected BlockModelBuilder splitModel(String name, ModelFile model, Stream<Vector3i> parts, boolean dynamic)
+	protected BlockModelBuilder splitModel(String name, ModelFile model, List<Vector3i> parts, boolean dynamic)
 	{
 		BlockModelBuilder result = models().withExistingParent(name, mcLoc("block"))
 				.customLoader(SplitModelBuilder::begin)
 				.innerModel(model)
-				.parts(parts.collect(Collectors.toList()))
+				.parts(parts)
 				.dynamic(dynamic)
 				.end();
 		addParticleTextureFrom(result, model);
 		return result;
 	}
 
+	protected ModelFile split(ModelFile baseModel, List<Vector3i> parts, boolean dynamic)
+	{
+		return splitModel(baseModel.getLocation().getPath()+"_split", baseModel, parts, dynamic);
+	}
+
 	protected ModelFile split(ModelFile baseModel, List<Vector3i> parts)
 	{
-		return splitModel(baseModel.getLocation().getPath()+"_split", baseModel, parts.stream(), false);
+		return split(baseModel, parts, false);
+	}
+
+	protected ModelFile splitDynamic(ModelFile baseModel, List<Vector3i> parts)
+	{
+		return split(baseModel, parts, true);
 	}
 
 	protected void addParticleTextureFrom(BlockModelBuilder result, ModelFile model)

@@ -4,7 +4,7 @@
     "particle": "immersiveengineering:block/metal_device/cloche"
   },
   "loader": "immersiveengineering:basic_split",
-  "dynamic": false,
+  "dynamic": true,
   "base_model": "immersiveengineering:block/metal_device/cloche",
   "split_parts": [
     [

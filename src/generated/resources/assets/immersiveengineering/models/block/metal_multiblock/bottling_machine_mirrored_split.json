@@ -4,7 +4,7 @@
     "particle": "immersiveengineering:block/multiblocks/bottling_machine"
   },
   "loader": "immersiveengineering:basic_split",
-  "dynamic": false,
+  "dynamic": true,
   "base_model": "immersiveengineering:block/metal_multiblock/bottling_machine_mirrored",
   "split_parts": [
     [
