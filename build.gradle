@@ -277,6 +277,11 @@ String buildVersionString() {
     return "${version_minecraft}-${ie_output_version}"
 }
 
+task datagenJar(type: Jar, dependsOn: datagenClasses) {
+    classifier = 'datagen'
+    from sourceSets.datagen.output
+}
+
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
     from sourceSets.main.allSource
@@ -286,6 +291,7 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 artifacts {
     archives sourcesJar
     archives shadowJar
+    archives datagenJar
 }
 
 shadowJar {
