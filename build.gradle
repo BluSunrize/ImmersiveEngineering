@@ -280,6 +280,9 @@ String buildVersionString() {
 task datagenJar(type: Jar, dependsOn: datagenClasses) {
     classifier = 'datagen'
     from sourceSets.datagen.output
+    manifest {
+        attributes "FMLModType": "LIBRARY"
+    }
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
