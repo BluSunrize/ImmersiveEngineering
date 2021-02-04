@@ -28,6 +28,7 @@ import blusunrize.immersiveengineering.common.util.WorldMap;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
+import it.unimi.dsi.fastutil.HashCommon;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import net.minecraft.block.Block;
@@ -381,6 +382,8 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 
 	static class PipeFluidHandler implements IFluidHandler
 	{
+		private static final Random CURRENT_TICK_RANDOM = new Random();
+
 		FluidPipeTileEntity pipe;
 		Direction facing;
 
@@ -495,14 +498,16 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 			if(maxDrain <= 0)
 				return FluidStack.EMPTY;
 
-			List<DirectionalFluidOutput> outputList = new ArrayList<>(getConnectedFluidHandlers(pipe.getPos(), pipe.world));
+			World world = pipe.getWorldNonnull();
+			List<DirectionalFluidOutput> outputList = new ArrayList<>(getConnectedFluidHandlers(pipe.getPos(), world));
 			BlockPos ccFrom = new BlockPos(pipe.getPos().offset(facing));
 			outputList.removeIf(output -> ccFrom.equals(output.containingTile.getPos()));
 
 			if(outputList.size() < 1)
 				return FluidStack.EMPTY;
 
-			int chosen = outputList.size()==1?0: Utils.RAND.nextInt(outputList.size());
+			CURRENT_TICK_RANDOM.setSeed(HashCommon.mix(world.getGameTime()));
+			int chosen = outputList.size()==1?0: CURRENT_TICK_RANDOM.nextInt(outputList.size());
 			DirectionalFluidOutput output = outputList.get(chosen);
 			FluidStack available = output.output.drain(maxDrain, FluidAction.SIMULATE);
 			int limit = getTranferrableAmount(available, output);
