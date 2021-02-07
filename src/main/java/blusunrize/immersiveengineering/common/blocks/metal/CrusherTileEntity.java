@@ -286,15 +286,18 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 		return getBasicShape(posInMultiblock).toBoundingBoxList();
 	}
 
-	private boolean isInInput()
+	private boolean isInInput(boolean allowMiddleLayer)
 	{
-		return posInMultiblock.getY()==2&&posInMultiblock.getX() > 0&&posInMultiblock.getX() < 4;
+		if(posInMultiblock.getY()==2||(allowMiddleLayer&&posInMultiblock.getY()==1))
+			return posInMultiblock.getX() > 0&&posInMultiblock.getX() < 4;
+		return false;
 	}
 
 	@Override
 	public void onEntityCollision(World world, Entity entity)
 	{
-		boolean bpos = isInInput();
+		// Actual intersection with the input box is checked later
+		boolean bpos = isInInput(true);
 		if(bpos&&!world.isRemote&&entity.isAlive()&&!isRSDisabled())
 		{
 			CrusherTileEntity master = master();
@@ -506,7 +509,7 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
-		if(isInInput()&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY&&isInInput(false))
 		{
 			CrusherTileEntity master = master();
 			if(master!=null)
