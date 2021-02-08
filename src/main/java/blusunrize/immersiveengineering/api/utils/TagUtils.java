@@ -48,8 +48,8 @@ public class TagUtils
 	{
 		GET_ITEM_TAG_COLLECTION = items;
 		GET_BLOCK_TAG_COLLECTION = blocks;
-		ITEM_TAG_COLLECTION = items.get();
-		BLOCK_TAG_COLLECTION = blocks.get();
+		ITEM_TAG_COLLECTION = new LazyMirroringTagCollection<>(items);
+		BLOCK_TAG_COLLECTION = new LazyMirroringTagCollection<>(blocks);
 	}
 
 	public static ITag<Item> getItemTag(ResourceLocation key)
