@@ -791,7 +791,7 @@ public class IEContent
 		ThermoelectricHandler.registerSourceInKelvin(Blocks.BLUE_ICE, 200);
 		ThermoelectricHandler.registerSourceInKelvin('forge:ices/dry', 150);
 		ThermoelectricHandler.registerSourceInKelvin(IETags.getTagsFor(EnumMetals.URANIUM).storage, 2000);
-		ThermoelectricHandler.registerSourceInKelvin('forge:storage_blocks/uraninite'ß, 2000);
+		ThermoelectricHandler.registerSourceInKelvin('forge:storage_blocks/uraninite', 2000);
 		//ThermoelectricHandler.registerSourceInKelvin(new ResourceLocation("forge:storage_blocks/yellorium"), 2000);
 		//ThermoelectricHandler.registerSourceInKelvin(new ResourceLocation("forge:storage_blocks/plutonium"), 4000);
 		//ThermoelectricHandler.registerSourceInKelvin(new ResourceLocation("forge:storage_blocks/blutonium"), 4000);
