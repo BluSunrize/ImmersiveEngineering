@@ -47,6 +47,7 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.MinecraftForgeClient;
@@ -259,7 +260,7 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 			double dist = (vec.x*i*vec.x*i)+(vec.y*i*vec.y*i)+(vec.z*i*vec.z*i);
 			if(dist > maxDistance)
 				break;
-			if(target.getY() > 255||target.getY() < 0)
+			if(World.isOutsideBuildHeight(pos))
 				continue;
 			//&&world.getBlockLightValue(xx,yy,zz)<12 using this makes it not work in daylight .-.
 

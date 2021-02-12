@@ -139,13 +139,7 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickable
 
 	private Queue<BlockPos> getQueueForYLevel(int yLevel)
 	{
-		Queue<BlockPos> queue = layeredPlacementQueue.get(yLevel);
-		if(queue==null)
-		{
-			queue = new LinkedList<>();
-			layeredPlacementQueue.put(yLevel, queue);
-		}
-		return queue;
+		return layeredPlacementQueue.computeIfAbsent(yLevel, k -> new LinkedList<>());
 	}
 
 	private void addConnectedSpaces(BlockPos pos)
@@ -157,7 +151,7 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickable
 
 	private void addToQueue(BlockPos pos)
 	{
-		if(pos.getY() >= 0&&pos.getY() <= 255)//Within world borders
+		if(!World.isOutsideBuildHeight(pos))//Within world borders
 			if(checkedPositions.add(pos))//Don't add checked positions
 				if(pos.distanceSq(getPos()) < 64*64)//Within max range
 					if(canFill(pos, true))
