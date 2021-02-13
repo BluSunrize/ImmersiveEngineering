@@ -6,4 +6,4 @@ Alta durabilidad
 Utilizando el martillo en los lados del bloque más alto, fijará un brazo al poste.
 También puede colocar <link;wiring;Transformadores;transformer_recipes> en el poste, lo que lo hace menos molesto.
 Si se colocan bloques debajo de los brazos del poste de madera, los brazos quedarán al revés.<np>
-<&wallmount>La madera tratada también puede usarse para fabricar §2Wallmounts§r, que puede ser muy útil para montar conectores de forma visualmente atractiva sin utilizar postes.
+<&wallmount>La madera tratada también puede usarse para fabricar §2Soportes de pared§r, que puede ser muy útil para montar conectores de forma visualmente atractiva sin utilizar postes.
