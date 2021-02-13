@@ -1,6 +1,6 @@
 Sombreadores
 Azul, no! Amarillo!
-Los sombreadores son objetos que puedes encontrar en el mundo o adquirir comerciando con los aldeanos. No tienen un propósito por sí mismos, pero pueden ser equipados para  <link;revolver;Revólvers>, <link;mining_drill;Taladros>, <link;chemthrower;Lanzadores químicos>, <link;shield;Escudo chapado> or <link;railgun;Railguns>(y posiblemente otras cosas que aún tienes que descubrir) para cambiar los diseños del artículo. Basta con poner el artículo en una <link;workbench;Mesa de Trabajo del Ingeniero> y equipar el sombreador en la ranura correspondiente.
+Los sombreadores son objetos que puedes encontrar en el mundo o adquirir comerciando con los aldeanos. No tienen un propósito por sí mismos, pero pueden ser equipados para  <link;revolver;Revólvers>, <link;mining_drill;Taladros>, <link;chemthrower;Lanzadores químicos>, <link;shield;Escudo de chapas gruesas> o <link;railgun;Railguns>(y posiblemente otras cosas que aún tienes que descubrir) para cambiar los diseños del artículo. Basta con poner el artículo en una <link;workbench;Mesa de Trabajo del Ingeniero> y equipar el sombreador en la ranura correspondiente.
 También puedes aplicarlos a una Vagoneta, a un Pergamino o a un <link;balloon;Globo> haciendo clic con el botón derecho del ratón!
 
 Para obtener una lista completa de todos los sombreadores disponibles, su aspecto, referencias y más detalles, <link;shader_list;Click Aquí><np>
