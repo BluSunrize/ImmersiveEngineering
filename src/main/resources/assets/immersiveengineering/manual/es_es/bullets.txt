@@ -1,0 +1,14 @@
+Cartuchos de revólver
+
+Los cartuchos se crean en el Banco de Trabajo de Ingeniería, mediante el uso de <link;blueprints;Planos>. Los planos de la munición normal los puedes crear tú mismo, pero algunos tipos más avanzados requerirán que compres los planos adecuados a otra persona.<np>
+<&empty>§lEmpty §lCasings§r y §lShells§r son la base de todo proyectil. Los cartuchos vacíos también se pueden fabricar en la <link;metal_press;Prensa Metálica>, utilizando el molde adecuado, a un coste muy reducido.<np>
+<&casull>§lCasull §lCartridges§r se crean con un plano de "Proyectiles Comunes". Son un simple proyectil de plomo que inflige un daño medio.<np>
+<&ap>§lArmor-Piercing §lCartridges§r se crean con el mismo plano. Hacen la misma cantidad de daño pero penetran la armadura por pura fuerza cinética.<np>
+<&buckshot>§lBuckshot §lCartridges§r, creados con el mencionado plano, están llenos de múltiples proyectiles pequeños que se disparan en forma de cono. Este cartucho es muy eficaz a corta distancia.<np>
+<&he>§lHigh-Explosive §lCartridges§r se crean con un plano de "Proyectiles comunes". Disparan un proyectil que explota al impactar, causando daños a los seres vivos y al terreno.<np>
+<&silver>§lSilver §lCartridges§r, también creados con un plano de "Proyectiles comunes", consisten en un núcleo de plomo envuelto en plata, lo que los hace muy eficaces contra los muertos vivientes.<np>
+<&dragon>§lDragon's §lBreath Cartridges§r se crean con un plano de "Proyectiles especializados". Al igual que los perdigones, son eficaces a corta distancia, pero en lugar de pequeños disparos de metal, están llenos de un polvo metálico inflamable, creando una explosión de llamas.<np>
+<&potion>§lPhial §lCartridges§r también se crean con un plano "Especializado". Se pueden rellenar con cualquier poción, creando una rejilla de fabricación y esta poción se aplicará al impactar. Las pociones normales requieren un impacto directo, las pociones de salpicadura tienen un área de efecto y las pociones persistentes crearán una nube de poción temporal y persistente.<np>
+<&flare>§lFlare §lCartridges§r se crean con un plano "Especializado". Cuando se dispara, la bengala explota después de una cierta distancia y luego se hunde lentamente en el suelo. Puedes combinar el cartucho con tintes en una mesa de artesanía para cambiar su color.<np>
+<&homing>§lHoming §lCartridges§r se crean con un plano de "Proyectiles especializados". Utilizando las intrigantes propiedades de un Ojo de Ender, estos proyectiles adquieren la capacidad de buscar y perseguir al objetivo más cercano.
+<&wolfpack>§lWolfpack §lCartridges§r se crean con el mismo plano y consisten en una colección de múltiples disparos dirigidos en un solo proyectil. El proyectil inicial no está guiado, pero al impactar se divide en seis disparos de búsqueda de objetivos que destrozan a los enemigos circundantes.

@@ -1,0 +1,7 @@
+Claustro de jardín
+Selva localizada
+<&recipe>Claustro de jardín, o Campana de vidrio, es un dispositivo diseñado para acelerar el crecimiento de las plantas. Permite incluso a los ingenieros con problemas agrícolas cultivar plantas y cosechar su rendimiento.<np>
+El dispositivo acepta energía, líquido y artículos a través de sus respectivos puertos.
+El agua y la energía son siempre necesarios, y puedes añadir abono en la ranura de la izquierda para aumentar la velocidad de crecimiento.
+La tierra y las semillas se colocan en el centro; cada semilla necesita la tierra adecuada para crecer, y la tierra se labra automáticamente en el campo.<np>
+Los artículos producidos se almacenan en las ranuras de la derecha, y saldrán automáticamente por la escotilla situada en la parte delantera de la cúpula de cristal.
