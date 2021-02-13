@@ -378,7 +378,8 @@ public class BlockStates extends ExtendedBlockstateProvider
 					.texture("up", modLoc("block/metal_device/dynamo_top"))
 					.texture("north", modLoc("block/metal_device/dynamo_front"))
 					.texture("west", modLoc("block/metal_device/dynamo_side"))
-					.texture("east", modLoc("block/metal_device/dynamo_side"));
+					.texture("east", modLoc("block/metal_device/dynamo_side"))
+					.texture("particle", modLoc("block/metal_device/dynamo_side"));
 			createRotatedBlock(MetalDevices.dynamo, state -> kineticDynamo,
 					ImmutableList.of());
 			itemModel(MetalDevices.dynamo, kineticDynamo);
@@ -440,11 +441,13 @@ public class BlockStates extends ExtendedBlockstateProvider
 
 	public void turret(Block b, ModelFile masterModel)
 	{
+		ModelFile top = models().withExistingParent(name(b)+"_top", EMPTY_MODEL.model.getLocation())
+				.texture("particle", generatedParticleTextures.get(masterModel.getLocation()));
 		createRotatedBlock(
 				b,
 				s -> {
 					if(s.getSetStates().get(IEProperties.MULTIBLOCKSLAVE)==Boolean.TRUE)
-						return EMPTY_MODEL.model;
+						return top;
 					else
 						return masterModel;
 				},
