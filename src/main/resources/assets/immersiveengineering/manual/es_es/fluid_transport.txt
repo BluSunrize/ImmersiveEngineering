@@ -1,9 +1,9 @@
 Transporte de fluidos
 Plomero profesional
-<&pipe_recipe>El transporte de fluidos se ha convertido en algo esencial en el negocio de la ingeniería. Las tuberías de fluidos y las bombas de fluidos hacen exactamente eso. Por sí solas, las tuberías de fluidos son bastante lentas en la transferencia de fluidos, pero si se utiliza una bomba para introducir el fluido, éste se moverá mucho más rápido.<np>
+<&pipe_recipe>El transporte de fluidos se ha convertido en algo esencial en el negocio de la ingeniería. Las Tuberías de fluidos y las Bombas de fluidos hacen exactamente eso. Por sí solas, las Tuberías de fluidos son bastante lentas en la transferencia de fluidos, pero si se utiliza una bomba para introducir el fluido, éste se moverá mucho más rápido.<np>
 Puede hacer clic con el botón derecho del ratón en la pieza de conexión de una tubería con un Martillo del Ingeniero para evitar que se conecte a ese lado.
 Las tuberías de fluidos se pueden cubrir con andamios de madera o de acero. Basta con hacer clic con el botón derecho del ratón en un andamio para cubrirlo. Rompe la tubería para recuperar el andamio.<np>
-<&pump_recipe>Las bombas de fluidos tienen tres funciones esenciales. Pueden utilizarse para introducirse en tuberías a alta presión, para transferir fluidos mucho más rápido o pueden recoger fluidos del mundo.
+<&pump_recipe>Las Bombas de fluidos tienen tres funciones esenciales. Pueden utilizarse para introducirse en tuberías a alta presión, para transferir fluidos mucho más rápido o pueden recoger fluidos del mundo.
 Si se utiliza un Martillo en la base de la bomba, se cambiará de lado entre la entrada y la salida.<np>
 Para que la bomba recoja bloques de fluido, necesitará una entrada de energía en la parte superior y una señal de Redstone. Las bombas también pueden usarse para extraer de tanques y otros contenedores de fluidos que no tengan una salida automática. Esto también requerirá una señal de Redstone, pero no consumirá energía.<np>
 Los bloques de agua servirán como fuente de fluido infinita para la bomba, siempre que se conecten más de 3 bloques.
