@@ -860,7 +860,7 @@
   "block.immersiveengineering.transformer_hv": "Transformador de alta tensión",
   "block.immersiveengineering.breaker_switch": "Interruptor de corte",
   "block.immersiveengineering.redstone_breaker": "Interruptor de corte de Redstone",
-  "block.immersiveengineering.current_transformer": "Transformador de corriente",
+  "block.immersiveengineering.current_transformer": "Contador de corriente",
   "block.immersiveengineering.connector_redstone": "Conector de cables Redstone",
   "block.immersiveengineering.connector_probe": "Conector de sonda Redstone",
   "block.immersiveengineering.connector_bundled": "Conector de interfaz Redstone",
