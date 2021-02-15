@@ -6,5 +6,5 @@ Al igual que otras herramientas, el lanzador de productos químicos puede modifi
 
 <&large>El §2Tanque Grande§r aumenta la capacidad de fluido del lanzador de productos químicos en 2000 mb.
 <&focus>La §2Boquilla enfocada§r disminuye la dispersión de los fluidos rociados y también aumenta ligeramente su alcance, lo que le permite alcanzar objetivos más lejanos con mayor precisión.
-<&multi>El §2Multitanque§r permite al lanzador de productos químicos almacenar hasta tres fluidos diferentes. Puede seleccionar el tanque activo mediante <config;b;tools.chemthrower.scroll; shift + rueda de desplazamiento, o mediante el uso de;using> la combinación de teclas §l<keybind;key.immersiveengineering.chemthrowerSwitch>§r si se ha establecido en las opciones.
+<&multi>El §2Multitanque§r permite al lanzador de productos químicos almacenar hasta tres fluidos diferentes. Puede seleccionar el tanque activo mediante <config;b;tools.chemthrower.scroll;> shift + rueda de desplazamiento, o mediante el uso de la combinación de teclas <;using>§l<keybind;key.immersiveengineering.chemthrowerSwitch>§r si se ha establecido en las opciones.
 Esta actualización es mutuamente excluyente con el §2Tanque Grande§r.
