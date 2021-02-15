@@ -8,7 +8,7 @@ Tenga en cuenta que muchos de los multibloques de IE cuentan con funcionalidad d
 §lTanque: §rComo se detalla en su <link;tank;entrada manual>
 §lSilo: §rComo se detalla en su <link;silo;entrada manual>
 §lEnsamblador: §rEmite una señal relativa al llenado del inventario.
-§lBanco de Trabajo Automático: §rEmite una señal relativa al llenado del inventario.
+§lBanco de Trabajo Automatizado: §rEmite una señal relativa al llenado del inventario.
 §lTrituradora: §rEmite una señal relativa al llenado del inventario.
 §lExprimidora: §rEmite una señal relativa al llenado del inventario.
 §lFermentadora: §rEmite una señal relativa al llenado del inventario.
@@ -18,6 +18,6 @@ Además, si se conecta un comparador a los electrodos de la parte superior, se e
 §lMezcladora: §rEmite una señal relativa al llenado del inventario.
 <np>
 <&bundled>Los §2Conectores de interfaz de Redstone§r están diseñados para ser unidos a otros bloques que pueden hacer uso de las señales de Redstone de color.
-El conector de interfaz es interno y no posee un color, estado de entrada o de salida, pero permite que bloques como el <link;item_batcher;Enrutador de elementos> interactuar directamente con la red de cableado.
+El conector de interfaz es interno y no posee un color, estado de entrada o de salida, pero permite que bloques como el <link;item_batcher;Filtro de elementos> interactuar directamente con la red de cableado.
 
 
