@@ -4,7 +4,7 @@ El Railgun (o más exactamente la Catapulta de Inducción Portátil) es una mara
 El proceso consume mucha energía, pero acelera varios proyectiles a gran velocidad.
 Para lanzar un proyectil desde tu inventario, mantén pulsado el botón de uso hasta que el nivel de carga llegue a 99, y luego suéltalo.
 
-Los proyectiles más comunes son §2hierro§r, §2aluminio§r y §2varillass de acero§r, así como §2electrodos de grafito§r. Sin embargo, también puede disparar proyectiles más exóticos, como <link;buzzsaw; §2hojas de sierra§r> o §2tridentes§r.
+Los proyectiles más comunes son §2hierro§r, §2aluminio§r y §2varillas de acero§r, así como §2electrodos de grafito§r. Sin embargo, también puede disparar proyectiles más exóticos, como <link;buzzsaw;§2hojas de sierra§r> o §2tridentes§r.
 Para cambiar de proyectil, agáchate y desliza la rueda del ratón o utiliza la combinación de teclas §l<keybind;key.immersiveengineering.chemthrowerSwitch>§r si se ha establecido en las opciones.
 
 Debido al bajo almacenamiento de energía interna, se recomienda utilizar el Railgun junto con una <link;powerpack;Mochila de condensador>.
