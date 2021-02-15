@@ -1,7 +1,7 @@
 Cartuchos de revólver
 
 Los cartuchos se crean en el Banco de Trabajo del Ingeniero, mediante el uso de <link;blueprints;Planos>. Los planos de la munición normal los puedes crear tú mismo, pero algunos tipos más avanzados requerirán que compres los planos adecuados a otra persona.<np>
-<&empty>Los §lCartuchos §lVacíos§r y los §lCartuchos§r son la base de todo proyectil. Los cartuchos vacíos también se pueden fabricar en la <link;metal_press;Prensa Metálica>, utilizando el molde adecuado, a un coste muy reducido.<np>
+<&empty>Las §lBalas Vacías§r y los §lCartuchos Vacíos§r son la base de todo proyectil. Los cartuchos vacíos también se pueden fabricar en la <link;metal_press;Prensa Metálica>, utilizando el molde adecuado, a un coste muy reducido.<np>
 <&casull>Los §lCartuchos §lComunes§r se crean con un plano de "Proyectiles Comunes". Son un simple proyectil de plomo que inflige un daño medio.<np>
 <&ap>Los §lCartuchos §lAntiblindaje§r se crean con el mismo plano. Hacen la misma cantidad de daño pero penetran la armadura por pura fuerza cinética.<np>
 <&buckshot>Los §lCartuchos de §lPerdigones§r, creados con el mencionado plano, están llenos de múltiples proyectiles pequeños que se disparan en forma de cono. Este cartucho es muy eficaz a corta distancia.<np>
