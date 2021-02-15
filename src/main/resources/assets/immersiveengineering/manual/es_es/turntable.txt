@@ -1,4 +1,4 @@
-Plato giratorio
+Plataforma giratoria
 No puedo seguir el ritmo
 <&recipe>La plataforma giratoria hará girar los bloques colocados contra ella.
 Al sostener un Martillo del Ingeniero mientras se mira un lado de la máquina, se muestra su lado giratorio y la dirección de giro asociada al lado apuntado.
