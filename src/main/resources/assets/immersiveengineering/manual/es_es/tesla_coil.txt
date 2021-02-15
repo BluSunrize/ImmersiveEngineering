@@ -1,6 +1,6 @@
 Bobina Tesla
 Esta llega hasta el 11
-<&tesla_coil_recipe>La bobina de Tesla comenzó como un concepto de transferencia de energía inalámbrica. Sin embargo, debido a sus potenciales altas tasas de pérdida y a su propiedad bastante interesante de freír a todo ser vivo en un radio de 6 metros, se convirtió rápidamente en el sueño del ingeniero para la defensa del hogar.<np>
+<&tesla_coil_recipe>La Bobina Tesla comenzó como un concepto de transferencia de energía inalámbrica. Sin embargo, debido a sus potenciales altas tasas de pérdida y a su propiedad bastante interesante de freír a todo ser vivo en un radio de 6 metros, se convirtió rápidamente en el sueño del ingeniero para la defensa del hogar.<np>
 El coste de mantenimiento de esta máquina es elevado, con un consumo regular de 256 Flux en un consumo pasivo más 512 adicionales cada vez que aplica daño.
 La bobina se desactiva a menos que reciba una señal de Redstone. Al hacer clic con el botón derecho del ratón con un Destornillador del Ingeniero se invierte este comportamiento.
 Además del daño, las descargas también aplicarán una desventaja persistente, "Aturdido", que impide que la entidad se teletransporte.
