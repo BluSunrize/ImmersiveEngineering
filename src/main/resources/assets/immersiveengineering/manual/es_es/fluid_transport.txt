@@ -9,4 +9,4 @@ Para que la bomba recoja bloques de fluido, necesitará una entrada de energía 
 Los bloques de agua servirán como fuente de fluido infinita para la bomba, siempre que se conecten más de 3 bloques.
 
 Los bloques de fluido recogidos serán sustituidos por adoquines para reducir el retraso de los fluidos que fluyen. Este comportamiento se puede activar y desactivar utilizando un Martillo del Ingeniero en la bomba.<np>
-<&outlet_recipe>La salida de fluido actúa como un punto final para un sistema de tuberías, permitiendo que el fluido sea colocado en el mundo. Los lados pueden ser configurados entre entrada, salida (puerta abierta) o cerrada, una señal de redstone puede ser usada para apagar la salida. El bloque sólo emitirá fluido hasta su propio nivel de altura.
+<&outlet_recipe>El expulsor de fluídos actúa como un punto final para un sistema de tuberías, permitiendo que el fluido sea colocado en el mundo. Los lados pueden ser configurados entre entrada, salida (puerta abierta) o cerrada, una señal de Redstone puede ser usada para apagar la salida. El bloque sólo emitirá fluido hasta su propio nivel de altura.
