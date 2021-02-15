@@ -4,3 +4,4 @@ El Exprimidor es una estructura de varios bloques que exprime el zumo o el aceit
 Los objetos pueden introducirse en el Exprimidor a través de las dos escotillas de la parte trasera que están marcadas con puntos azules. La escotilla con el punto naranja sirve para la salida de objetos y el bloque de abajo para la salida de fluidos.
 Si se aplica una señal de Redstone al panel de control de la parte delantera, se detendrá el proceso de la máquina; este comportamiento puede invertirse utilizando el Martillo del ingeniero.
 <np>La siguiente lista muestra varios elementos que pueden ser exprimidos en aceite vegetal, y la cantidad que producen.<&list>
+
