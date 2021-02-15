@@ -10,5 +10,5 @@ El mineral se fundirá en lingotes de plomo, que se utilizan en la creación de 
 El mineral se fundirá en lingotes de plata, que se alean con el oro para crear electrum, un conductor mucho más eficaz.
 <&nickel>El §lMineral de níquel§r se encuentra en el mundo entre las capas <config;i;ores.nickel.min_y> y <config;i;ores.nickel.max_y>, y requiere un pico de hierro para recojer.
 El mineral se fundirá en lingotes de níquel, que se alean con el cobre para crear el constantan, un conductor resistente al calor utilizado en la creación de <link;thermoelectric;Generadores Termoeléctricos;start>.
-<&uranium>El §lMineral de Uranio§r se encuentra en el mundo entre las capas <config;i;ores.uranium.min_y> y <config;i;ores.uranium.max_y>, y requiere un pico de hierro para recojer.
+<&uranium>El §lMineral de uranio§r se encuentra en el mundo entre las capas <config;i;ores.uranium.min_y> y <config;i;ores.uranium.max_y>, y requiere un pico de hierro para recojer.
 El mineral se funde en lingotes de uranio, pero actualmente no hay muchos usos para el metal. Un bloque de uranio puede servir como fuente de calor para el <link;thermoelectric;Generador Termoeléctrico;start> y el metal se utilizará en futuros emprendimientos.
