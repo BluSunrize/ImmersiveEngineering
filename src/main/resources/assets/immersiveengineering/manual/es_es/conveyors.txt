@@ -17,6 +17,6 @@ Esta cinta puede introducirse en los inventarios situados por encima de ella o s
 <&conveyor_covered_recipe>La cinta transportadora revestida funciona como una cinta transportadora normal, pero está cubierta por un andamio que impide que los jugadores recojan objetos de ella.
 Puedes hacer clic con el botón derecho del ratón con otros tipos de andamios o cristales para cambiar el aspecto de la cubierta.<np>
 <&conveyor_other_covered_recipes>Del mismo modo, los transportadores de caída, de extracción, de división y verticales también pueden cubrirse con un andamio para lograr los mismos beneficios de "prevención de recogida" mientras siguen funcionando como lo hacen normalmente.
-<&chute_recipes>Las canaletas son construcciones sencillas hechas de chapa que permiten que las entidades caigan en línea recta.
+<&chute_recipes>Los conductos son construcciones sencillas hechas de chapa que permiten que las entidades caigan en línea recta.
 Pueden introducirse elementos y caerán en los inventarios que se encuentran debajo de ellos y ser introducidos en cintas transportadoras o dispositivos similares. Los objetos que se encuentren en su interior no serán recogidos por los jugadores y deberían ser inmunes a la mayoría de las formas de atracción, magnéticas o mágicas.
-Agacharse + clic derecho con un Martillo del Ingeniero para convertir el paracaídas en una pieza de esquina que dirija una entidad hacia un lado.
+Agacharse + clic derecho con un Martillo del Ingeniero para convertir conducto en una pieza de esquina que dirija una entidad hacia un lado.
