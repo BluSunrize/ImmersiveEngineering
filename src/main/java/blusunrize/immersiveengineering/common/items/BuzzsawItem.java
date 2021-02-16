@@ -8,22 +8,10 @@
 
 package blusunrize.immersiveengineering.common.items;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.energy.DieselHandler;
-import blusunrize.immersiveengineering.api.shader.CapabilityShader;
-import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
-import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Item;
-import blusunrize.immersiveengineering.api.shader.ShaderCase;
-import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
-import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryEntry;
-import blusunrize.immersiveengineering.api.tool.ITool;
-import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.common.gui.IESlot;
-import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IAdvancedFluidItem;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IScrollwheel;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.items.IEItems.Tools;
@@ -31,11 +19,7 @@ import blusunrize.immersiveengineering.common.items.ToolUpgradeItem.ToolUpgrade;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.fluids.IEItemFluidHandler;
-import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.ImmutableMultimap.Builder;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Multimap;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.LeavesBlock;
@@ -44,18 +28,13 @@ import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.Attribute;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
-import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
-import net.minecraft.item.UseAction;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.play.server.SChangeBlockPacket;
@@ -67,7 +46,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.TransformationMatrix;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -79,34 +57,21 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.ToolType;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fluids.FluidAttributes;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
-import org.apache.commons.lang3.tuple.Triple;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Supplier;
 
-public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidItem, IOBJModelCallback<ItemStack>, ITool, IScrollwheel
+public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 {
-	private static final int CAPACITY = 2*FluidAttributes.BUCKET_VOLUME;
-
 	public static final Collection<SawbladeItem> SAWBLADES = new ArrayList<>(2);
 
 	public BuzzsawItem()
@@ -114,72 +79,7 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 		super("buzzsaw", withIEOBJRender().maxStackSize(1).setISTER(() -> () -> IEOBJItemRenderer.INSTANCE), "BUZZSAW");
 	}
 
-	/* ------------- CORE ITEM METHODS ------------- */
-
-	@Override
-	public boolean isTool(ItemStack item)
-	{
-		return true;
-	}
-
-	@Override
-	public int getItemEnchantability()
-	{
-		return 0;
-	}
-
-	@Nullable
-	@Override
-	public CompoundNBT getShareTag(ItemStack stack)
-	{
-		CompoundNBT ret = super.getShareTag(stack);
-		if(ret==null)
-			ret = new CompoundNBT();
-		else
-			ret = ret.copy();
-		ItemStack sawblade = getSawblade(stack);
-		if(!sawblade.isEmpty())
-			ret.put("sawblade", sawblade.write(new CompoundNBT()));
-		return ret;
-	}
-
-	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt)
-	{
-		if(!stack.isEmpty())
-			return new IEItemStackHandler(stack)
-			{
-				LazyOptional<IEItemFluidHandler> fluids = CapabilityUtils.constantOptional(new IEItemFluidHandler(stack, CAPACITY));
-				LazyOptional<ShaderWrapper_Item> shaders = CapabilityUtils.constantOptional(new ShaderWrapper_Item(new ResourceLocation(ImmersiveEngineering.MODID, "buzzsaw"), stack));
-
-				@Nonnull
-				@Override
-				public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing)
-				{
-					if(capability==CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY)
-						return fluids.cast();
-					if(capability==CapabilityShader.SHADER_CAPABILITY)
-						return shaders.cast();
-					return super.getCapability(capability, facing);
-				}
-			};
-		return null;
-	}
-
-	@Override
-	public double getDurabilityForDisplay(ItemStack stack)
-	{
-		return (double)getBladeDamage(stack)/(double)getMaxBladeDamage(stack);
-	}
-
-	@Override
-	public boolean showDurabilityBar(ItemStack stack)
-	{
-		return getBladeDamage(stack) > 0;
-	}
-
 	/* ------------- WORKBENCH & INVENTORY ------------- */
-
 	@Override
 	public int getSlotCount()
 	{
@@ -195,7 +95,7 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 		final int mainHeadX = hasQuiver?88: 98;
 		List<Slot> slots = new ArrayList<>(5);
 		slots.add(new IESlot.WithPredicate(
-				inv, 0, mainHeadX, 22, BuzzsawItem::isSawblade, newBlade -> setSawblade(stack, newBlade)
+				inv, 0, mainHeadX, 22, BuzzsawItem::isSawblade, newBlade -> setHead(stack, newBlade)
 		));
 		slots.add(new IESlot.Upgrades(container, inv, 1, 88, 52, "BUZZSAW", stack, true, getWorld, getPlayer));
 		slots.add(new IESlot.Upgrades(container, inv, 2, 108, 52, "BUZZSAW", stack, true, getWorld, getPlayer));
@@ -205,12 +105,6 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 			slots.add(new IESlot.WithPredicate(inv, 4, 108, 32, BuzzsawItem::isSawblade));
 		}
 		return slots.toArray(new Slot[0]);
-	}
-
-	@Override
-	public boolean canModify(ItemStack stack)
-	{
-		return true;
 	}
 
 	@Override
@@ -258,26 +152,10 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 						}
 			}
 		});
-		FluidStack fs = getFluid(stack);
-		if(fs!=null&&fs.getAmount() > this.getCapacity(stack, CAPACITY))
-		{
-			fs.setAmount(this.getCapacity(stack, CAPACITY));
-			ItemNBTHelper.setFluidStack(stack, "Fluid", fs);
-		}
 	}
 
 	@Override
-	public void finishUpgradeRecalculation(ItemStack stack)
-	{
-		FluidStack fs = getFluid(stack);
-		if(fs!=null&&fs.getAmount() > getCapacity(stack, CAPACITY))
-		{
-			fs.setAmount(getCapacity(stack, CAPACITY));
-			ItemNBTHelper.setFluidStack(stack, "Fluid", fs);
-		}
-	}
-
-	public ItemStack getSawblade(ItemStack itemStack)
+	public ItemStack getHead(ItemStack itemStack)
 	{
 		return getSawblade(itemStack, 0);
 	}
@@ -286,24 +164,15 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 	{
 		if(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY==null)
 			return ItemStack.EMPTY;
-		ItemStack sawblade;
-		boolean remote = EffectiveSide.get()==LogicalSide.CLIENT;
 		LazyOptional<IItemHandler> cap = itemStack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		// handle spares
 		int slot = spare==0?0: 2+spare;
-		String key = "sawblade"+(spare==0?"": ("_spare"+spare));
-		if(!remote&&cap.map(h -> h.getStackInSlot(slot).isEmpty()).orElse(false))
-			remote = true;
-		else if(remote&&!ItemNBTHelper.hasKey(itemStack, key))
-			remote = false;
-		if(remote)
-			sawblade = ItemStack.read(ItemNBTHelper.getTagCompound(itemStack, key));
-		else
-			sawblade = cap.orElseThrow(RuntimeException::new).getStackInSlot(slot);
+		ItemStack sawblade = cap.orElseThrow(RuntimeException::new).getStackInSlot(slot);
 		return !sawblade.isEmpty()&&isSawblade(sawblade)?sawblade: ItemStack.EMPTY;
 	}
 
-	public void setSawblade(ItemStack buzzsaw, ItemStack sawblade)
+	@Override
+	public void setHead(ItemStack buzzsaw, ItemStack sawblade)
 	{
 		setSawblade(buzzsaw, sawblade, 0);
 	}
@@ -323,21 +192,19 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 			buzzsaw.getOrCreateTag().remove("Enchantments");
 	}
 
-	/* ------------- NAME, TOOLTIP, SUB-ITEMS ------------- */
-
 	@Override
 	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
 	{
 		list.add(IEItemFluidHandler.fluidItemInfoFlavor(getFluid(stack), getCapacity(stack, CAPACITY)));
-		if(getSawblade(stack).isEmpty())
+		if(getHead(stack).isEmpty())
 			list.add(ClientUtils.applyFormat(
 					new TranslationTextComponent(Lib.DESC_FLAVOUR+"buzzsaw.noBlade"),
 					TextFormatting.GRAY
 			));
 		else
 		{
-			int maxDmg = getMaxBladeDamage(stack);
-			int dmg = maxDmg-getBladeDamage(stack);
+			int maxDmg = getMaxHeadDamage(stack);
+			int dmg = maxDmg-getHeadDamage(stack);
 			float quote = dmg/(float)maxDmg;
 			TextFormatting status = (quote < .1?TextFormatting.RED: quote < .3?TextFormatting.GOLD: quote < .6?TextFormatting.YELLOW: TextFormatting.GREEN);
 			list.add(ClientUtils.applyFormat(new TranslationTextComponent(Lib.DESC_FLAVOUR+"buzzsaw.bladeDamage"), TextFormatting.GRAY)
@@ -355,38 +222,10 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 		return Rarity.COMMON;
 	}
 
-	/* ------------- ATTRIBUTES ------------- */
-
 	@Override
-	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlotType slot, ItemStack stack)
+	protected double getAttackDamage(ItemStack stack, ItemStack sawblade)
 	{
-		Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-		if(slot==EquipmentSlotType.MAINHAND)
-		{
-			ItemStack sawblade = getSawblade(stack);
-			if(!sawblade.isEmpty()&&canBuzzsawBeUsed(stack, null))
-			{
-				builder.put(Attributes.ATTACK_DAMAGE,
-						new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier",
-								((SawbladeItem)sawblade.getItem()).getSawbladeDamage(), Operation.ADDITION));
-				builder.put(Attributes.ATTACK_SPEED,
-						new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", -2.5D, Operation.ADDITION));
-			}
-		}
-		return builder.build();
-	}
-
-	@Override
-	public UseAction getUseAction(ItemStack p_77661_1_)
-	{
-		return UseAction.BOW;
-	}
-
-	@Override
-	public boolean hitEntity(ItemStack stack, LivingEntity target, LivingEntity player)
-	{
-		consumeDurability(stack, target.getEntityWorld(), null, null, player);
-		return true;
+		return ((SawbladeItem)sawblade.getItem()).getSawbladeDamage();
 	}
 
 	@Override
@@ -394,18 +233,18 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 	{
 		if(hasQuiverUpgrade(stack))
 		{
-			ItemStack sawblade = getSawblade(stack);
+			ItemStack sawblade = getHead(stack);
 			ItemStack spare1 = getSawblade(stack, 1);
 			ItemStack spare2 = getSawblade(stack, 2);
 			if(forward)
 			{
-				setSawblade(stack, spare2);
+				setHead(stack, spare2);
 				setSawblade(stack, sawblade, 1);
 				setSawblade(stack, spare1, 2);
 			}
 			else
 			{
-				setSawblade(stack, spare1);
+				setHead(stack, spare1);
 				setSawblade(stack, spare2, 1);
 				setSawblade(stack, sawblade, 2);
 			}
@@ -414,22 +253,25 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 
 	/* ------------- DIGGING ------------- */
 
-	public boolean canBuzzsawBeUsed(ItemStack stack, @Nullable LivingEntity player)
+	@Override
+	public boolean canToolBeUsed(ItemStack stack, @Nullable LivingEntity player)
 	{
-		if(getBladeDamage(stack) >= getMaxBladeDamage(stack))
+		if(getHeadDamage(stack) >= getMaxHeadDamage(stack))
 			return false;
 		return !getFluid(stack).isEmpty();
 	}
 
-	public int getMaxBladeDamage(ItemStack stack)
+	@Override
+	public int getMaxHeadDamage(ItemStack stack)
 	{
-		ItemStack sawblade = getSawblade(stack);
+		ItemStack sawblade = getHead(stack);
 		return !sawblade.isEmpty()?sawblade.getMaxDamage(): 0;
 	}
 
-	public int getBladeDamage(ItemStack stack)
+	@Override
+	public int getHeadDamage(ItemStack stack)
 	{
-		ItemStack sawblade = getSawblade(stack);
+		ItemStack sawblade = getHead(stack);
 		return !sawblade.isEmpty()?sawblade.getDamage(): 0;
 	}
 
@@ -438,38 +280,28 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 	{
 		consumeDurability(stack, world, state, pos, living);
 		if(!world.isRemote&&!living.isSneaking()&&living instanceof ServerPlayerEntity)
-			if(canFellTree(stack)&&canBuzzsawBeUsed(stack, living)&&isTree(world, pos))
+			if(canFellTree(stack)&&canToolBeUsed(stack, living)&&isTree(world, pos))
 				fellTree(world, pos, (ServerPlayerEntity)living, stack);
 		return true;
 	}
 
-	private void consumeDurability(ItemStack stack, World world, BlockState state, BlockPos pos, LivingEntity living)
+	@Override
+	protected void damageHead(ItemStack head, int amount, LivingEntity living)
 	{
-		if(state==null||state.getBlockHardness(world, pos)!=0.0f)
-		{
-			int dmg = state==null||ForgeHooks.isToolEffective(world, pos, stack)||isEffective(stack, state.getMaterial())?1: 3;
-			if(state.isIn(BlockTags.LEAVES) && Utils.RAND.nextInt(10)!=0)
-				return;
-			ItemStack sawblade = getSawblade(stack);
-			if(!sawblade.isEmpty())
-			{
-				if(!getUpgrades(stack).getBoolean("oiled")||Utils.RAND.nextInt(4)==0)
-					sawblade.damageItem(dmg, living, (entity) -> entity.sendBreakAnimation(Hand.MAIN_HAND));
-				this.setSawblade(stack, sawblade);
-				IFluidHandler handler = FluidUtil.getFluidHandler(stack).orElseThrow(RuntimeException::new);
-				handler.drain(1, FluidAction.EXECUTE);
+		head.damageItem(amount, living, entity -> entity.sendBreakAnimation(Hand.MAIN_HAND));
+	}
 
-				Triple<ItemStack, ShaderRegistryEntry, ShaderCase> shader = ShaderRegistry.getStoredShaderAndCase(stack);
-				if(shader!=null)
-					shader.getMiddle().getEffectFunction().execute(world, shader.getLeft(), stack, shader.getRight().getShaderType().toString(), new Vector3d(pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5), null, .375f);
-			}
-		}
+	@Override
+	protected void consumeDurability(ItemStack stack, World world, @Nullable BlockState state, @Nullable BlockPos pos, LivingEntity living)
+	{
+		if(state==null||!state.isIn(BlockTags.LEAVES)||Utils.RAND.nextInt(10)==0)
+			super.consumeDurability(stack, world, state, pos, living);
 	}
 
 	@Override
 	public int getHarvestLevel(ItemStack stack, @Nonnull ToolType tool, @Nullable PlayerEntity player, @Nullable BlockState blockState)
 	{
-		ItemStack sawblade = getSawblade(stack);
+		ItemStack sawblade = getHead(stack);
 		if(!sawblade.isEmpty())
 			return 3;
 		return -1;
@@ -478,7 +310,7 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 	@Override
 	public Set<ToolType> getToolTypes(ItemStack stack)
 	{
-		if(!getSawblade(stack).isEmpty()&&canBuzzsawBeUsed(stack, null))
+		if(!getHead(stack).isEmpty()&&canToolBeUsed(stack, null))
 			return ImmutableSet.of(ToolType.AXE);
 		return super.getToolTypes(stack);
 	}
@@ -486,7 +318,7 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 	public boolean isEffective(ItemStack stack, Material mat)
 	{
 		Material[] validMaterials = null;
-		ItemStack sawblade = getSawblade(stack);
+		ItemStack sawblade = getHead(stack);
 		if(sawblade.getItem() instanceof SawbladeItem)
 			validMaterials = ((SawbladeItem)sawblade.getItem()).getSawbladeMaterials();
 
@@ -498,18 +330,12 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 	}
 
 	@Override
-	public boolean canHarvestBlock(ItemStack stack, BlockState state)
-	{
-		return isEffective(stack, state.getMaterial())&&canBuzzsawBeUsed(stack, null);
-	}
-
-	@Override
 	public float getDestroySpeed(ItemStack stack, BlockState state)
 	{
 		if(isEffective(stack, state.getMaterial()))
 		{
-			ItemStack sawblade = getSawblade(stack);
-			if(!sawblade.isEmpty()&&canBuzzsawBeUsed(stack, null))
+			ItemStack sawblade = getHead(stack);
+			if(!sawblade.isEmpty()&&canToolBeUsed(stack, null))
 				return ((SawbladeItem)sawblade.getItem()).getSawbladeSpeed();
 		}
 		return super.getDestroySpeed(stack, state);
@@ -568,7 +394,7 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 
 	private boolean canFellTree(ItemStack stack)
 	{
-		ItemStack sawblade = getSawblade(stack);
+		ItemStack sawblade = getHead(stack);
 		if(sawblade.getItem() instanceof SawbladeItem)
 			return ((SawbladeItem)sawblade.getItem()).canSawbladeFellTree();
 		return false;
@@ -689,53 +515,7 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 			}
 		}
 	}
-
-	/* ------------- FLUID ------------- */
-
-	@Override
-	public int getCapacity(ItemStack container, int baseCapacity)
-	{
-		return baseCapacity+getUpgrades(container).getInt("capacity");
-	}
-
-	@Override
-	public boolean allowFluid(ItemStack container, FluidStack fluid)
-	{
-		return fluid!=null&&DieselHandler.isValidDrillFuel(fluid.getFluid());
-	}
-
 	/* ------------- RENDERING ------------- */
-
-	public static HashMap<UUID, Integer> animationTimer = new HashMap<>();
-
-	@Override
-	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged)
-	{
-		if(slotChanged)
-			return true;
-		LazyOptional<ShaderWrapper> wrapperOld = oldStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
-		Optional<Boolean> sameShader = wrapperOld.map(wOld -> {
-			LazyOptional<ShaderWrapper> wrapperNew = newStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
-			return wrapperNew.map(w -> ItemStack.areItemStacksEqual(wOld.getShaderItem(), w.getShaderItem()))
-					.orElse(true);
-		});
-		if(!sameShader.orElse(true))
-			return true;
-		return super.shouldCauseReequipAnimation(oldStack, newStack, slotChanged);
-	}
-
-	@Override
-	public boolean onEntitySwing(ItemStack stack, LivingEntity entity)
-	{
-		if(canBuzzsawBeUsed(stack, entity))
-		{
-			if(!animationTimer.containsKey(entity.getUniqueID()))
-				animationTimer.put(entity.getUniqueID(), 40);
-			else if(animationTimer.get(entity.getUniqueID()) < 20)
-				animationTimer.put(entity.getUniqueID(), 20);
-		}
-		return true;
-	}
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
@@ -762,7 +542,7 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 		if("body".equals(group))
 			return true;
 		if("blade".equals(group))
-			return !this.getSawblade(stack).isEmpty();
+			return !this.getHead(stack).isEmpty();
 
 		CompoundNBT upgrades = this.getUpgrades(stack);
 		if("upgrade_lube".equals(group))
@@ -795,14 +575,6 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 		return transform;
 	}
 
-
-	private boolean shouldRotate(LivingEntity entity, ItemStack stack, TransformType transform)
-	{
-		return entity!=null&&canBuzzsawBeUsed(stack, entity)&&
-				(entity.getHeldItem(Hand.MAIN_HAND)==stack||entity.getHeldItem(Hand.OFF_HAND)==stack)&&
-				(transform==TransformType.FIRST_PERSON_RIGHT_HAND||transform==TransformType.FIRST_PERSON_LEFT_HAND||
-						transform==TransformType.THIRD_PERSON_RIGHT_HAND||transform==TransformType.THIRD_PERSON_LEFT_HAND);
-	}
 
 	private static final String[][] GROUP_BLADE = {{"blade"}};
 
@@ -840,7 +612,7 @@ public class BuzzsawItem extends UpgradeableToolItem implements IAdvancedFluidIt
 
 	public static boolean isSawblade(ItemStack stack)
 	{
-		return SAWBLADES.contains(stack.getItem());
+		Item item = stack.getItem();
+		return item instanceof SawbladeItem&&SAWBLADES.contains(item);
 	}
-
 }

@@ -848,7 +848,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 
 			transform.pop();
 			if(!stack.isEmpty()&&stack.getItem() instanceof DrillItem&&
-					((DrillItem)stack.getItem()).isEffective(world.getBlockState(rtr.getPos()).getMaterial()))
+					((DrillItem)stack.getItem()).isEffective(stack, world.getBlockState(rtr.getPos()).getMaterial()))
 			{
 				ItemStack head = ((DrillItem)stack.getItem()).getHead(stack);
 				if(!head.isEmpty()&&player instanceof PlayerEntity&&!player.isSneaking())

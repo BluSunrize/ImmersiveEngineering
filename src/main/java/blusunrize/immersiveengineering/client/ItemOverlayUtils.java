@@ -190,7 +190,7 @@ public class ItemOverlayUtils
 	{
 		renderFluidTankOverlay(buffer, transform, scaledWidth, scaledHeight, player, hand, equipped, false, (builder, handler) -> {
 			ClientUtils.drawTexturedRect(builder, transform, -54, -73, 66, 72, 1, 1, 1, 1, 108/256f, 174/256f, 4/256f, 76/256f);
-			ItemStack blade = ((BuzzsawItem)equipped.getItem()).getSawblade(equipped);
+			ItemStack blade = ((BuzzsawItem)equipped.getItem()).getHead(equipped);
 			if(!blade.isEmpty())
 				ClientUtils.renderItemWithOverlayIntoGUI(buffer, transform, blade, -51, -45);
 		});

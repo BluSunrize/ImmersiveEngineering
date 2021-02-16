@@ -231,9 +231,7 @@ public class DrillheadItem extends IEBaseItem implements IDrillHead
 				startPos = startPos.add(0, 0, -diameter/2);
 		}
 		else//odd numbers
-		{
 			startPos = startPos.add(-(side.getAxis()==Axis.X?0: diameter/2), -(side.getAxis()==Axis.Y?0: diameter/2), -(side.getAxis()==Axis.Z?0: diameter/2));
-		}
 		Builder<BlockPos> b = ImmutableList.builder();
 		for(int dd = 0; dd < depth; dd++)
 			for(int dw = 0; dw < diameter; dw++)
@@ -246,7 +244,7 @@ public class DrillheadItem extends IEBaseItem implements IDrillHead
 					block = state.getBlock();
 					float h = state.getPlayerRelativeBlockHardness(player, world, pos);
 					boolean canHarvest = block.canHarvestBlock(world.getBlockState(pos), world, pos, player);
-					boolean drillMat = ((DrillItem)Tools.drill).isEffective(state.getMaterial());
+					boolean drillMat = ((DrillItem)Tools.drill).isEffective(ItemStack.EMPTY, state.getMaterial());
 					boolean hardness = h > maxHardness;
 					if(canHarvest&&drillMat&&hardness)
 						b.add(pos);
