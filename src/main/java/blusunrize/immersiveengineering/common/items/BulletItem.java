@@ -276,19 +276,22 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 		}
 
 		@Override
-		public void onHitTarget(World world, RayTraceResult target, UUID shooter, Entity projectile, boolean headshot)
+		public void onHitTarget(World world, RayTraceResult target, UUID shooterUUID, Entity projectile, boolean headshot)
 		{
-			super.onHitTarget(world, target, shooter, projectile, headshot);
+			super.onHitTarget(world, target, shooterUUID, projectile, headshot);
 			RevolvershotEntity bullet = (RevolvershotEntity)projectile;
 			if(!bullet.bulletPotion.isEmpty()&&bullet.bulletPotion.hasTag())
 			{
 				Potion potionType = PotionUtils.getPotionFromItem(bullet.bulletPotion);
 				List<EffectInstance> effects = PotionUtils.getEffectsFromStack(bullet.bulletPotion);
+				LivingEntity shooter = null;
+				if(shooterUUID!=null)
+					shooter = world.getPlayerByUuid(shooterUUID);
 				if(effects!=null)
 					if(bullet.bulletPotion.getItem() instanceof LingeringPotionItem)
 					{
 						AreaEffectCloudEntity entityareaeffectcloud = new AreaEffectCloudEntity(bullet.world, bullet.getPosX(), bullet.getPosY(), bullet.getPosZ());
-						entityareaeffectcloud.setOwner(world.getPlayerByUuid(shooter));
+						entityareaeffectcloud.setOwner(shooter);
 						entityareaeffectcloud.setRadius(3.0F);
 						entityareaeffectcloud.setRadiusOnUse(-0.5F);
 						entityareaeffectcloud.setWaitTime(10);
@@ -313,7 +316,7 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 											dist2 = 1D;
 										for(EffectInstance p : effects)
 											if(p.getPotion().isInstant())
-												p.getPotion().affectEntity(bullet, world.getPlayerByUuid(shooter), living, p.getAmplifier(), dist2);
+												p.getPotion().affectEntity(bullet, shooter, living, p.getAmplifier(), dist2);
 											else
 											{
 												int j = (int)(dist2*p.getDuration()+.5D);
