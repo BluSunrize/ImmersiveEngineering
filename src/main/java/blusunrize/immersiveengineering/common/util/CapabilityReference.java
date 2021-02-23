@@ -70,7 +70,7 @@ public abstract class CapabilityReference<T>
 
 	protected CapabilityReference(Capability<T> cap)
 	{
-		this.cap = cap;
+		this.cap = Objects.requireNonNull(cap);
 	}
 
 	@Nullable
