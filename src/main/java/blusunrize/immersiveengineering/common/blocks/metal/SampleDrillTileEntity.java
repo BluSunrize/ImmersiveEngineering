@@ -80,10 +80,11 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 		}
 
 		boolean powered = isRSPowered();
+		boolean hasEnergy = energyStorage.getEnergyStored() >= IEServerConfig.MACHINES.coredrill_consumption.get();
 		final boolean prevActive = active;
 		int totalTime = IEServerConfig.MACHINES.coredrill_time.get();
 		int consumption = IEServerConfig.MACHINES.coredrill_consumption.get();
-		if(!active&&powered)
+		if(!active&&powered&&hasEnergy)
 			active = true;
 		else if(active&&!powered&&process >= totalTime)
 			active = false;
