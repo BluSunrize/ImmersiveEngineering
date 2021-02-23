@@ -381,6 +381,11 @@ public class GlobalWireNetwork implements IWorldTickable
 			}
 	}
 
+	public void onConnectorUnload(IImmersiveConnectable iic)
+	{
+		onConnectorUnload(iic.getPosition(), iic);
+	}
+
 	public void onConnectorUnload(BlockPos pos, IImmersiveConnectable iic)
 	{
 		processQueuedLoads();
