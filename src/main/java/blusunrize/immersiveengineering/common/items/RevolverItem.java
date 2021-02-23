@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryE
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
+import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
@@ -405,7 +406,8 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 				Triple<ItemStack, ShaderRegistryEntry, ShaderCase> shader = ShaderRegistry.getStoredShaderAndCase(revolver);
 				if(shader!=null)
 				{
-					Vector3d pos = Utils.getLivingFrontPos(player, .75, player.getHeight()*.75, hand==Hand.MAIN_HAND?player.getPrimaryHand(): player.getPrimaryHand().opposite(), false, 1);
+
+					Vector3d pos = Utils.getLivingFrontPos(player, .75, player.getHeight()*.75, ItemUtils.getLivingHand(player, hand), false, 1);
 					shader.getMiddle().getEffectFunction().execute(world, shader.getLeft(), revolver,
 							shader.getRight().getShaderType().toString(), pos,
 							Vector3d.fromPitchYaw(player.getPitchYaw()), .125f);

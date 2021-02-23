@@ -21,6 +21,7 @@ import blusunrize.immersiveengineering.api.tool.RailgunHandler;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler.IRailgunProjectile;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
+import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
@@ -211,7 +212,7 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 			Triple<ItemStack, ShaderRegistryEntry, ShaderCase> shader = ShaderRegistry.getStoredShaderAndCase(stack);
 			if(shader!=null)
 			{
-				Vector3d pos = Utils.getLivingFrontPos(user, .4375, user.getHeight()*.75, user.getActiveHand()==Hand.MAIN_HAND?user.getPrimaryHand(): user.getPrimaryHand().opposite(), false, 1);
+				Vector3d pos = Utils.getLivingFrontPos(user, .4375, user.getHeight()*.75, ItemUtils.getLivingHand(user, user.getActiveHand()), false, 1);
 				shader.getMiddle().getEffectFunction().execute(user.world, shader.getLeft(), stack, shader.getRight().getShaderType().toString(), pos, null, .0625f);
 			}
 		}
@@ -248,7 +249,10 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 					Triple<ItemStack, ShaderRegistryEntry, ShaderCase> shader = ShaderRegistry.getStoredShaderAndCase(stack);
 					if(shader!=null)
 					{
-						Vector3d pos = Utils.getLivingFrontPos(user, .75, user.getHeight()*.75, user.getActiveHand()==Hand.MAIN_HAND?user.getPrimaryHand(): user.getPrimaryHand().opposite(), false, 1);
+						HandSide handside = user.getPrimaryHand();
+						if(user.getActiveHand()!=Hand.MAIN_HAND)
+							handside = handside==HandSide.LEFT?HandSide.RIGHT: HandSide.LEFT;
+						Vector3d pos = Utils.getLivingFrontPos(user, .75, user.getHeight()*.75, handside, false, 1);
 						shader.getMiddle().getEffectFunction().execute(world, shader.getLeft(), stack,
 								shader.getRight().getShaderType().toString(), pos,
 								Vector3d.fromPitchYaw(user.getPitchYaw()), .125f);

@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.client.gui.RevolverScreen;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
@@ -40,7 +41,7 @@ public class ItemOverlayUtils
 		if(bullets!=null)
 		{
 			int bulletAmount = ((IBulletContainer)equipped.getItem()).getBulletCount(equipped);
-			HandSide side = hand==Hand.MAIN_HAND?player.getPrimaryHand(): player.getPrimaryHand().opposite();
+			HandSide side = ItemUtils.getLivingHand(player, hand);
 			boolean right = side==HandSide.RIGHT;
 			float dx = right?scaledWidth-32-48: 48;
 			float dy = scaledHeight-64;
