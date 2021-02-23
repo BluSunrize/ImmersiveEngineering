@@ -66,9 +66,9 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickable
 
 	private int tickCount = 0;
 
-	private HashSet<BlockPos> checkedPositions = new HashSet<>();
-	private TreeMap<Integer, Queue<BlockPos>> layeredPlacementQueue = new TreeMap<>();
-	private HashSet<BlockPos> tempFluids = new HashSet<>();
+	private final HashSet<BlockPos> checkedPositions = new HashSet<>();
+	private final TreeMap<Integer, Queue<BlockPos>> layeredPlacementQueue = new TreeMap<>();
+	private final Queue<BlockPos> tempFluids = new LinkedList<>();
 
 	public FluidPlacerTileEntity()
 	{
@@ -93,13 +93,12 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickable
 					layeredPlacementQueue.pollFirstEntry();
 				else
 				{
-					BlockPos targetPos = lowestLayer.peek();
-					if(canFill(targetPos, false)&&tank.getFluid().getFluid().getAttributes().canBePlacedInWorld(world, targetPos, tank.getFluid()))
+					BlockPos targetPos = lowestLayer.poll();
+					if(canFill(targetPos)&&tank.getFluid().getFluid().getAttributes().canBePlacedInWorld(world, targetPos, tank.getFluid()))
 						if(place(targetPos, tank, world))
 						{
 							addConnectedSpaces(targetPos);
 							handleTempFluids();
-							lowestLayer.poll();
 						}
 				}
 			}
@@ -119,7 +118,7 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickable
 				return false;
 			bucketitem = (BucketItem)bucket;
 		}
-		if(bucketitem==null||bucketitem==Items.AIR)
+		if(bucketitem==Items.AIR)
 			return false;
 		ItemStack bucketStack = new ItemStack(bucketitem);
 		if(bucketitem.tryPlaceContainedLiquid(null, world, pos, null))
@@ -161,19 +160,31 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickable
 		if(!World.isOutsideBuildHeight(pos))//Within world borders
 			if(checkedPositions.add(pos))//Don't add checked positions
 				if(pos.distanceSq(getPos()) < 64*64)//Within max range
-					if(canFill(pos, true))
+				{
+					if(fluidMatches(pos))
+						tempFluids.add(pos);
+					if(canFill(pos))
 						getQueueForYLevel(pos.getY()).add(pos);
+				}
 	}
 
-	private boolean canFill(BlockPos targetPos, boolean allowMatchingFull)
+	private boolean fluidMatches(BlockPos targetPos)
 	{
 		if(!world.isAreaLoaded(targetPos, 1))
 			return false;
 		BlockState state = world.getBlockState(targetPos);
+		return state.getFluidState().getFluid()==tank.getFluid().getFluid();
+	}
+
+	private boolean canFill(BlockPos targetPos)
+	{
+		if(!world.isAreaLoaded(targetPos, 1))
+			return false;
+		BlockState state = world.getBlockState(targetPos);
+		// Can't fill source blocks
+		if(isFullFluidBlock(targetPos, state))
+			return false;
 		boolean canFill = !state.getMaterial().isSolid();
-		boolean fluidMatches = state.getFluidState().getFluid()==tank.getFluid().getFluid();
-		if(isFullFluidBlock(targetPos, state)&&(!allowMatchingFull||!fluidMatches))
-			canFill = false;
 		if(!canFill&&state.getBlock() instanceof IWaterLoggable)
 			canFill = ((IWaterLoggable)state.getBlock()).canContainFluid(world, targetPos, state, tank.getFluid().getFluid());
 		return canFill;
@@ -181,10 +192,8 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickable
 
 	private void handleTempFluids()
 	{
-		Set<BlockPos> tempFluidsCopy = tempFluids;//preventing CMEs >_>
-		tempFluids = new HashSet<>();
-		for(BlockPos pos : tempFluidsCopy)
-			addConnectedSpaces(pos);
+		while(!tempFluids.isEmpty())
+			addConnectedSpaces(tempFluids.poll());
 	}
 
 	private boolean isFullFluidBlock(BlockPos pos, BlockState state)
@@ -245,7 +254,7 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickable
 		return ActionResultType.SUCCESS;
 	}
 
-	private LazyOptional<IFluidHandler> tankCap = registerConstantCap(tank);
+	private final LazyOptional<IFluidHandler> tankCap = registerConstantCap(tank);
 
 	@Nonnull
 	@Override
