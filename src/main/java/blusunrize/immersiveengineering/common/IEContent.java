@@ -28,6 +28,7 @@ import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler;
 import blusunrize.immersiveengineering.api.wires.localhandlers.LocalNetworkHandler;
 import blusunrize.immersiveengineering.api.wires.localhandlers.WireDamageHandler;
+import blusunrize.immersiveengineering.api.wires.redstone.CapabilityRedstoneNetwork;
 import blusunrize.immersiveengineering.api.wires.redstone.RedstoneNetworkHandler;
 import blusunrize.immersiveengineering.client.utils.ClocheRenderFunctions;
 import blusunrize.immersiveengineering.common.blocks.*;
@@ -751,6 +752,7 @@ public class IEContent
 		CapabilityShader.register();
 		NetHandlerCapability.register();
 		CapabilitySkyhookData.register();
+		CapabilityRedstoneNetwork.register();
 		ShaderRegistry.itemShader = IEItems.Misc.shader;
 		ShaderRegistry.itemShaderBag = IEItems.Misc.shaderBag;
 		ShaderRegistry.itemExamples.add(new ItemStack(Weapons.revolver));
