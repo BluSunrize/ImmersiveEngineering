@@ -9,7 +9,9 @@
 package blusunrize.immersiveengineering.common.world;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.excavator.MineralVein;
@@ -49,6 +51,7 @@ import net.minecraft.entity.merchant.villager.VillagerTrades.ITrade;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tags.Tag;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -236,16 +239,16 @@ public class Villages
 			Int2ObjectMap<List<ITrade>> trades = ev.getTrades();
 			if(ENGINEER.equals(ev.getType().getRegistryName()))
 			{
-				trades.get(1).add(new EmeraldForItems(Ingredients.stickTreated, new PriceInterval(8, 16), 16, 2));
+				trades.get(1).add(new EmeraldForItems(IETags.treatedStick.getName(), new PriceInterval(8, 16), 16, 2));
 				trades.get(1).add(new ItemsForEmerald(WoodenDecoration.treatedWood.get(TreatedWoodStyles.HORIZONTAL), new PriceInterval(-10, -6), 12, 1, 0.2f));
 				trades.get(1).add(new ItemsForEmerald(Cloth.balloon, new PriceInterval(-3, -1), 12, 1, 0.2f));
 
-				trades.get(2).add(new EmeraldForItems(Ingredients.stickIron, new PriceInterval(2, 6), 12, 10));
+				trades.get(2).add(new EmeraldForItems(IETags.ironRod.getName(), new PriceInterval(2, 6), 12, 10));
 				trades.get(2).add(new ItemsForEmerald(MetalDecoration.steelScaffolding.get(MetalScaffoldingType.STANDARD), new PriceInterval(-8, -4), 12, 5, 0.2f));
 				trades.get(2).add(new ItemsForEmerald(MetalDecoration.aluScaffolding.get(MetalScaffoldingType.STANDARD), new PriceInterval(-8, -4), 12, 5, 0.2f));
 
-				trades.get(3).add(new EmeraldForItems(Ingredients.stickSteel, new PriceInterval(2, 6), 12, 20));
-				trades.get(3).add(new EmeraldForItems(Ingredients.slag, new PriceInterval(4, 8), 12, 20));
+				trades.get(3).add(new EmeraldForItems(IETags.steelRod.getName(), new PriceInterval(2, 6), 12, 20));
+				trades.get(3).add(new EmeraldForItems(IETags.slag.getName(), new PriceInterval(4, 8), 12, 20));
 				trades.get(3).add(new ItemsForEmerald(StoneDecoration.concrete, new PriceInterval(-6, -2), 12, 10, 0.2f));
 
 				trades.get(4).add(new OreveinMapForEmeralds());
@@ -255,11 +258,11 @@ public class Villages
 				/* Machinist
 				 * Sells tools, metals, blueprints and drillheads
 				 */
-				trades.get(1).add(new EmeraldForItems(Ingredients.coalCoke, new PriceInterval(8, 16), 16, 2));
+				trades.get(1).add(new EmeraldForItems(IETags.coalCoke.getName(), new PriceInterval(8, 16), 16, 2));
 				trades.get(1).add(new ItemsForEmerald(Tools.hammer, new PriceInterval(4, 7), 12, 1, 0.2f));
 
-				trades.get(2).add(new EmeraldForItems(Metals.ingots.get(EnumMetals.COPPER), new PriceInterval(4, 6), 12, 10));
-				trades.get(2).add(new EmeraldForItems(Metals.ingots.get(EnumMetals.ALUMINUM), new PriceInterval(4, 6), 12, 10));
+				trades.get(2).add(new EmeraldForItems(IETags.getIngot(EnumMetals.COPPER.tagName()), new PriceInterval(4, 6), 12, 10));
+				trades.get(2).add(new EmeraldForItems(IETags.getIngot(EnumMetals.ALUMINUM.tagName()), new PriceInterval(4, 6), 12, 10));
 				trades.get(2).add(new ItemsForEmerald(Ingredients.componentSteel, new PriceInterval(1, 3), 12, 5, 0.2f));
 
 				trades.get(3).add(new ItemsForEmerald(Tools.toolbox, new PriceInterval(6, 8), 12, 10, 0.2f));
@@ -278,17 +281,17 @@ public class Villages
 				/* Electrician
 				 * Sells wires, tools and the faraday suit
 				 */
-				trades.get(1).add(new EmeraldForItems(Ingredients.wireCopper, new PriceInterval(8, 16), 16, 2));
+				trades.get(1).add(new EmeraldForItems(IETags.copperWire.getName(), new PriceInterval(8, 16), 16, 2));
 				trades.get(1).add(new ItemsForEmerald(Tools.wirecutter, new PriceInterval(4, 7), 12, 1, 0.2f));
 				trades.get(1).add(new ItemsForEmerald(wireCoils.get(WireType.COPPER), new PriceInterval(-4, -2), 12, 1, 0.2f));
 
-				trades.get(2).add(new EmeraldForItems(Ingredients.wireElectrum, new PriceInterval(6, 12), 12, 10));
+				trades.get(2).add(new EmeraldForItems(IETags.electrumWire.getName(), new PriceInterval(6, 12), 12, 10));
 				trades.get(2).add(new ItemsForEmerald(Tools.voltmeter, new PriceInterval(4, 7), 12, 5, 0.2f));
 				trades.get(2).add(new ItemsForEmerald(wireCoils.get(WireType.ELECTRUM), new PriceInterval(-4, -1), 12, 5, 0.2f));
 				trades.get(2).add(new ItemsForEmerald(IEItems.Misc.faradaySuit.get(EquipmentSlotType.FEET), new PriceInterval(5, 7), 12, 5, 0.2f));
 				trades.get(2).add(new ItemsForEmerald(IEItems.Misc.faradaySuit.get(EquipmentSlotType.LEGS), new PriceInterval(9, 11), 12, 5, 0.2f));
 
-				trades.get(3).add(new EmeraldForItems(Ingredients.wireAluminum, new PriceInterval(4, 8), 12, 20));
+				trades.get(3).add(new EmeraldForItems(IETags.aluminumWire.getName(), new PriceInterval(4, 8), 12, 20));
 				trades.get(3).add(new ItemsForEmerald(wireCoils.get(WireType.STEEL), new PriceInterval(-2, -1), 12, 10, 0.2f));
 				trades.get(3).add(new ItemsForEmerald(IEItems.Misc.faradaySuit.get(EquipmentSlotType.CHEST), new PriceInterval(11, 15), 12, 10, 0.2f));
 				trades.get(3).add(new ItemsForEmerald(IEItems.Misc.faradaySuit.get(EquipmentSlotType.HEAD), new PriceInterval(5, 7), 12, 10, 0.2f));
@@ -359,6 +362,12 @@ public class Villages
 		{
 			this(new ItemStack(item), buyAmounts, maxUses, xp);
 		}
+
+		public EmeraldForItems(@Nonnull ResourceLocation tag, @Nonnull PriceInterval buyAmounts, int maxUses, int xp)
+		{
+			this(IEApi.getPreferredTagStack(tag), buyAmounts, maxUses, xp);
+		}
+
 
 		@Nullable
 		@Override
