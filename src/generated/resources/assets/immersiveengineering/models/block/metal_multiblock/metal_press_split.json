@@ -1,7 +1,7 @@
 {
   "parent": "minecraft:block/block",
   "textures": {
-    "particle": "immersiveengineering:block/conveyor/conveyor"
+    "particle": "immersiveengineering:block/multiblocks/metal_press"
   },
   "loader": "immersiveengineering:basic_split",
   "dynamic": false,
