@@ -272,7 +272,6 @@ public class FractalParticle extends Particle
 		public Data read(ParticleType<Data> particleTypeIn, PacketBuffer buffer)
 		{
 			Vector3d dir = new Vector3d(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
-			;
 			double scale = buffer.readDouble();
 			int maxAge = buffer.readInt();
 			int points = buffer.readInt();
