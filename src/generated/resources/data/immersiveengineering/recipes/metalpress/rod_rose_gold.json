@@ -1,0 +1,32 @@
+{
+  "type": "immersiveengineering:metal_press",
+  "mold": {
+    "item": "immersiveengineering:mold_rod"
+  },
+  "result": {
+    "count": 2,
+    "base_ingredient": {
+      "tag": "forge:rods/rose_gold"
+    }
+  },
+  "conditions": [
+    {
+      "value": {
+        "tag": "forge:ingots/rose_gold",
+        "type": "forge:tag_empty"
+      },
+      "type": "forge:not"
+    },
+    {
+      "value": {
+        "tag": "forge:rods/rose_gold",
+        "type": "forge:tag_empty"
+      },
+      "type": "forge:not"
+    }
+  ],
+  "input": {
+    "tag": "forge:ingots/rose_gold"
+  },
+  "energy": 2400
+}

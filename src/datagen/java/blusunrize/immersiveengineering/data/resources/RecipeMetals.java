@@ -13,6 +13,8 @@ import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import net.minecraft.item.Item;
+import net.minecraft.item.Items;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.tags.ITag.INamedTag;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 
@@ -71,11 +73,14 @@ public enum RecipeMetals
 			new AlloyProperties(3, new IngredientWithSize(IETags.getTagsFor(EnumMetals.IRON).ingot, 2),
 					new IngredientWithSize(IETags.getTagsFor(EnumMetals.NICKEL).ingot))
 	),
+	ROSE_GOLD("rose_gold", false,
+			new AlloyProperties(4, new IngredientWithSize(IETags.getTagsFor(EnumMetals.COPPER).ingot, 3),
+					new IngredientWithSize(IETags.getTagsFor(EnumMetals.GOLD).ingot))
+	),
 	MANYULLYN("manyullyn", false,
-			new AlloyProperties(1, new IngredientWithSize(createItemWrapper(IETags.getIngot("cobalt"))),
-					new IngredientWithSize(createItemWrapper(IETags.getIngot("ardite"))))
+			new AlloyProperties(4, new IngredientWithSize(createItemWrapper(IETags.getIngot("cobalt")), 3),
+					new IngredientWithSize(Ingredient.fromItems(Items.NETHERITE_SCRAP)))
 					.addConditions(getTagCondition(IETags.getIngot("cobalt")))
-					.addConditions(getTagCondition(IETags.getIngot("ardite")))
 	);
 
 	private final String name;

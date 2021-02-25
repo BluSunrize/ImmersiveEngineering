@@ -4,26 +4,19 @@
     {
       "count": 4,
       "base_ingredient": {
-        "tag": "forge:ingots/manyullyn"
+        "tag": "forge:ingots/rose_gold"
       }
     }
   ],
   "additives": [
     {
-      "item": "minecraft:netherite_scrap"
+      "tag": "forge:ingots/gold"
     }
   ],
   "conditions": [
     {
       "value": {
-        "tag": "forge:ingots/manyullyn",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
-    },
-    {
-      "value": {
-        "tag": "forge:ingots/cobalt",
+        "tag": "forge:ingots/rose_gold",
         "type": "forge:tag_empty"
       },
       "type": "forge:not"
@@ -32,7 +25,7 @@
   "input": {
     "count": 3,
     "base_ingredient": {
-      "tag": "forge:ingots/cobalt"
+      "tag": "forge:ingots/copper"
     }
   },
   "time": 100,

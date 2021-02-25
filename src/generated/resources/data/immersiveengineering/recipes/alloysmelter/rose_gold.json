@@ -4,20 +4,13 @@
   "result": {
     "count": 4,
     "base_ingredient": {
-      "tag": "forge:ingots/manyullyn"
+      "tag": "forge:ingots/rose_gold"
     }
   },
   "conditions": [
     {
       "value": {
-        "tag": "forge:ingots/manyullyn",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
-    },
-    {
-      "value": {
-        "tag": "forge:ingots/cobalt",
+        "tag": "forge:ingots/rose_gold",
         "type": "forge:tag_empty"
       },
       "type": "forge:not"
@@ -26,10 +19,10 @@
   "input0": {
     "count": 3,
     "base_ingredient": {
-      "tag": "forge:ingots/cobalt"
+      "tag": "forge:ingots/copper"
     }
   },
   "input1": {
-    "item": "minecraft:netherite_scrap"
+    "tag": "forge:ingots/gold"
   }
 }
