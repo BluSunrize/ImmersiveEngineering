@@ -60,6 +60,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
+import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -100,6 +101,7 @@ public class ImmersiveEngineering
 	{
 		IELogger.logger = LogManager.getLogger(MODID);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::enqueueIMCs);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::loadComplete);
 		MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
 		MinecraftForge.EVENT_BUS.addListener(this::registerCommands);
@@ -237,6 +239,11 @@ public class ImmersiveEngineering
 			t.process(ctx);
 			ctx.get().setPacketHandled(true);
 		}, direction);
+	}
+
+	public void enqueueIMCs(InterModEnqueueEvent event)
+	{
+		IECompatModule.doModulesIMCs();
 	}
 
 	public void loadComplete(FMLLoadCompleteEvent event)

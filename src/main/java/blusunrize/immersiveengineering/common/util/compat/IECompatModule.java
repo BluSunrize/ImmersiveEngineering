@@ -31,6 +31,7 @@ public abstract class IECompatModule
 		moduleClasses.put("computercraft", ComputerCraftCompatModule.class);
 		moduleClasses.put("crafttweaker", CraftTweakerCompatModule.class);
 		moduleClasses.put("theoneprobe", OneProbeCompatModule.class);
+		moduleClasses.put("curios", CuriosCompatModule.class);
 	}
 
 	public static void doModulesPreInit()
@@ -91,6 +92,18 @@ public abstract class IECompatModule
 			}
 	}
 
+	public static void doModulesIMCs()
+	{
+		for(IECompatModule compat : IECompatModule.modules)
+			try
+			{
+				compat.sendIMCs();
+			} catch(Exception exception)
+			{
+				IELogger.logger.error("Compat module for "+compat+" could not send IMCs. Report this and include the error message below!", exception);
+			}
+	}
+
 	//We don't want this to happen multiple times after all >_>
 	public static boolean serverStartingDone = false;
 
@@ -117,6 +130,10 @@ public abstract class IECompatModule
 	public abstract void init();
 
 	public abstract void postInit();
+
+	public void sendIMCs()
+	{
+	}
 
 	public void loadComplete()
 	{
