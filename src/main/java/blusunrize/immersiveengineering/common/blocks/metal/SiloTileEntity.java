@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
@@ -94,7 +93,7 @@ public class SiloTileEntity extends MultiblockPartTileEntity<SiloTileEntity> imp
 		{
 			for(CapabilityReference<IItemHandler> output : outputCaps)
 			{
-				ItemStack stack = Utils.copyStackWithAmount(identStack, 1);
+				ItemStack stack = ItemHandlerHelper.copyStackWithSize(identStack, 1);
 				stack = Utils.insertStackIntoInventory(output, stack, false);
 				if(stack.isEmpty())
 				{
@@ -247,7 +246,7 @@ public class SiloTileEntity extends MultiblockPartTileEntity<SiloTileEntity> imp
 			if(slot==0)
 				return ItemStack.EMPTY;
 			else
-				return ItemUtils.copyStackWithAmount(silo.identStack, silo.storageAmount);
+				return ItemHandlerHelper.copyStackWithSize(silo.identStack, silo.storageAmount);
 		}
 
 		@Override
@@ -280,7 +279,7 @@ public class SiloTileEntity extends MultiblockPartTileEntity<SiloTileEntity> imp
 			if(slot!=1||silo.storageAmount < 1||amount < 1||silo.identStack.isEmpty())
 				return ItemStack.EMPTY;
 			int returned = Math.min(Math.min(silo.storageAmount, amount), silo.identStack.getMaxStackSize());
-			ItemStack out = Utils.copyStackWithAmount(silo.identStack, returned);
+			ItemStack out = ItemHandlerHelper.copyStackWithSize(silo.identStack, returned);
 			if(!simulate)
 			{
 				silo.storageAmount -= out.getCount();

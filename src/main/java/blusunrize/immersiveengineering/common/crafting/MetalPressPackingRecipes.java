@@ -24,6 +24,7 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.items.ItemHandlerHelper;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.HashMap;
@@ -207,7 +208,7 @@ public class MetalPressPackingRecipes
 			return null;
 		}
 
-		RecipeDelegate delegate = RecipeDelegate.getUnpacking(out, Utils.copyStackWithAmount(input, 1));
+		RecipeDelegate delegate = RecipeDelegate.getUnpacking(out, ItemHandlerHelper.copyStackWithSize(input, 1));
 		UNPACKING_CACHE.put(comp, delegate);
 		return delegate;
 	}
@@ -230,7 +231,7 @@ public class MetalPressPackingRecipes
 			return null;
 		}
 
-		RecipeDelegate delegate = RecipeDelegate.getPacking(out, Utils.copyStackWithAmount(input, totalSize), gridSize==3);
+		RecipeDelegate delegate = RecipeDelegate.getPacking(out, ItemHandlerHelper.copyStackWithSize(input, totalSize), gridSize==3);
 		PACKING_CACHE.put(comp, delegate);
 		return delegate;
 	}

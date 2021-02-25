@@ -45,6 +45,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -102,7 +103,7 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, ITextureOverr
 					tile = world.getTileEntity(pos);
 					if(tile instanceof ShaderBannerTileEntity)
 					{
-						((ShaderBannerTileEntity)tile).shader.setShaderItem(Utils.copyStackWithAmount(ctx.getItem(), 1));
+						((ShaderBannerTileEntity)tile).shader.setShaderItem(ItemHandlerHelper.copyStackWithSize(ctx.getItem(), 1));
 						tile.markDirty();
 						return ActionResultType.SUCCESS;
 					}
@@ -110,7 +111,7 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, ITextureOverr
 			}
 			else if(tile instanceof ShaderBannerTileEntity)
 			{
-				((ShaderBannerTileEntity)tile).shader.setShaderItem(Utils.copyStackWithAmount(ctx.getItem(), 1));
+				((ShaderBannerTileEntity)tile).shader.setShaderItem(ItemHandlerHelper.copyStackWithSize(ctx.getItem(), 1));
 				tile.markDirty();
 				return ActionResultType.SUCCESS;
 			}

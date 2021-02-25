@@ -43,6 +43,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.ItemHandlerHelper;
 import org.apache.commons.lang3.tuple.Triple;
 
 import javax.annotation.Nonnull;
@@ -186,7 +187,7 @@ public class BalloonTileEntity extends ConnectorStructuralTileEntity implements 
 		{
 			if(this.shader==null)
 				this.shader = new ShaderWrapper_Direct(new ResourceLocation(ImmersiveEngineering.MODID, "balloon"));
-			this.shader.setShaderItem(Utils.copyStackWithAmount(heldItem, 1));
+			this.shader.setShaderItem(ItemHandlerHelper.copyStackWithSize(heldItem, 1));
 			markContainingBlockForUpdate(null);
 			return true;
 		}

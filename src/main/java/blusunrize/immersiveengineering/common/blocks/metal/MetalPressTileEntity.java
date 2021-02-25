@@ -41,6 +41,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -116,7 +117,7 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 			else if(MetalPressRecipe.isValidMold(heldItem))
 			{
 				ItemStack tempMold = !master.mold.isEmpty()?master.mold.copy(): ItemStack.EMPTY;
-				master.mold = Utils.copyStackWithAmount(heldItem, 1);
+				master.mold = ItemHandlerHelper.copyStackWithSize(heldItem, 1);
 				heldItem.shrink(1);
 				if(heldItem.getCount() <= 0)
 					heldItem = ItemStack.EMPTY;

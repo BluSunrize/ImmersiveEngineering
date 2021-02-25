@@ -9,12 +9,12 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
-import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 public class BlueprintInventory extends Inventory
 {
@@ -40,7 +40,7 @@ public class BlueprintInventory extends Inventory
 			{
 				ItemStack out = recipes[i].output;
 				craftable = Math.min(out.getCount()*craftable, 64-(64%out.getCount()));
-				this.setInventorySlotContents(i, Utils.copyStackWithAmount(out, craftable));
+				this.setInventorySlotContents(i, ItemHandlerHelper.copyStackWithSize(out, craftable));
 			}
 			else
 				this.setInventorySlotContents(i, ItemStack.EMPTY);

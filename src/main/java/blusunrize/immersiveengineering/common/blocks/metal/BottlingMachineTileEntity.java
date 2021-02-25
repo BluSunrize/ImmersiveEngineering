@@ -52,6 +52,7 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -244,7 +245,7 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 				if(p!=null&&dist < master.getMinProcessDistance(null))
 					return;
 
-				p = new BottlingProcess(Utils.copyStackWithAmount(stack, 1));
+				p = new BottlingProcess(ItemHandlerHelper.copyStackWithSize(stack, 1));
 				master.bottlingProcessQueue.add(p);
 				master.markDirty();
 				master.markContainingBlockForUpdate(null);
@@ -553,7 +554,7 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 					return stack;
 				if(!simulate)
 				{
-					p = new BottlingProcess(Utils.copyStackWithAmount(stack, 1));
+					p = new BottlingProcess(ItemHandlerHelper.copyStackWithSize(stack, 1));
 					multiblock.bottlingProcessQueue.add(p);
 					multiblock.markDirty();
 					multiblock.markContainingBlockForUpdate(null);

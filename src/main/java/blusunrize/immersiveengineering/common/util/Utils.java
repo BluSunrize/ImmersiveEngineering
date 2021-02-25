@@ -103,8 +103,6 @@ import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import static java.lang.Math.min;
-
 public class Utils
 {
 	public static final Random RAND = new Random();
@@ -127,15 +125,6 @@ public class Utils
 		if(hasTag1&&!stack1.getOrCreateTag().equals(stack2.getOrCreateTag()))
 			return false;
 		return stack1.areCapsCompatible(stack2);
-	}
-
-	public static ItemStack copyStackWithAmount(ItemStack stack, int amount)
-	{
-		if(stack.isEmpty())
-			return ItemStack.EMPTY;
-		ItemStack s2 = stack.copy();
-		s2.setCount(amount);
-		return s2;
 	}
 
 	public static final BiMap<ResourceLocation, DyeColor> DYES_BY_TAG =
@@ -766,33 +755,6 @@ public class Utils
 	public static void dropStackAtPos(World world, BlockPos pos, ItemStack stack)
 	{
 		InventoryHelper.spawnItemStack(world, pos.getX(), pos.getY(), pos.getZ(), stack);
-	}
-
-	public static ItemStack addToEmptyInventorySlot(IInventory inventory, int slot, ItemStack stack)
-	{
-		if(!inventory.isItemValidForSlot(slot, stack))
-		{
-			return stack;
-		}
-		int stackLimit = inventory.getInventoryStackLimit();
-		inventory.setInventorySlotContents(slot, copyStackWithAmount(stack, Math.min(stack.getCount(), stackLimit)));
-		return stackLimit >= stack.getCount()?ItemStack.EMPTY: stack.split(stack.getCount()-stackLimit);
-	}
-
-	public static ItemStack addToOccupiedSlot(IInventory inventory, int slot, ItemStack stack, ItemStack existingStack)
-	{
-		int stackLimit = Math.min(inventory.getInventoryStackLimit(), stack.getMaxStackSize());
-		if(stack.getCount()+existingStack.getCount() > stackLimit)
-		{
-			int stackDiff = stackLimit-existingStack.getCount();
-			existingStack.setCount(stackLimit);
-			stack.shrink(stackDiff);
-			inventory.setInventorySlotContents(slot, existingStack);
-			return stack;
-		}
-		existingStack.grow(min(stack.getCount(), stackLimit));
-		inventory.setInventorySlotContents(slot, existingStack);
-		return stackLimit >= stack.getCount()?ItemStack.EMPTY: stack.split(stack.getCount()-stackLimit);
 	}
 
 	public static ItemStack fillFluidContainer(IFluidHandler handler, ItemStack containerIn, ItemStack containerOut, @Nullable PlayerEntity player)

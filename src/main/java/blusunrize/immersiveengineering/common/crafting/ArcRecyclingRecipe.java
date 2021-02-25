@@ -13,11 +13,11 @@ import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
-import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.Lazy;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import java.util.AbstractCollection;
 import java.util.AbstractList;
@@ -74,7 +74,7 @@ public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 	{
 		//Noone likes nuggets anyway >_>
 		if(scaledOut >= 1)
-			outs.add(Utils.copyStackWithAmount(e.getKey(), (int)scaledOut));
+			outs.add(ItemHandlerHelper.copyStackWithSize(e.getKey(), (int)scaledOut));
 		int nuggetOut = (int)((scaledOut-(int)scaledOut)*9);
 		if(nuggetOut > 0)
 		{
@@ -82,7 +82,7 @@ public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 			if(type!=null)
 			{
 				ItemStack nuggets = IEApi.getPreferredTagStack(IETags.getNugget(type[1]));
-				outs.add(Utils.copyStackWithAmount(nuggets, nuggetOut));
+				outs.add(ItemHandlerHelper.copyStackWithSize(nuggets, nuggetOut));
 			}
 		}
 	}

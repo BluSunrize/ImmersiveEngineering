@@ -71,6 +71,7 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.items.ItemHandlerHelper;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
@@ -117,7 +118,7 @@ public class EventHandler
 		{
 			cart.getCapability(CapabilityShader.SHADER_CAPABILITY).ifPresent(wrapper ->
 			{
-				wrapper.setShaderItem(Utils.copyStackWithAmount(stack, 1));
+				wrapper.setShaderItem(ItemHandlerHelper.copyStackWithSize(stack, 1));
 				if(!player.world.isRemote)
 					ImmersiveEngineering.packetHandler.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity)player),
 							new MessageMinecartShaderSync(cart, wrapper));

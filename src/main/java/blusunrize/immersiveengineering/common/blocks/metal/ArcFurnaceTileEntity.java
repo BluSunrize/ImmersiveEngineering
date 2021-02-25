@@ -233,7 +233,7 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 					for(int j : OUTPUT_SLOTS)
 						if(!inventory.get(j).isEmpty())
 						{
-							ItemStack stack = Utils.copyStackWithAmount(inventory.get(j), 1);
+							ItemStack stack = ItemHandlerHelper.copyStackWithSize(inventory.get(j), 1);
 							stack = Utils.insertStackIntoInventory(output, stack, false);
 							if(stack.isEmpty())
 							{
@@ -245,7 +245,7 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 				if(!inventory.get(SLAG_SLOT).isEmpty()&&slagOut.isPresent())
 				{
 					int out = Math.min(inventory.get(SLAG_SLOT).getCount(), 16);
-					ItemStack stack = Utils.copyStackWithAmount(inventory.get(SLAG_SLOT), out);
+					ItemStack stack = ItemHandlerHelper.copyStackWithSize(inventory.get(SLAG_SLOT), out);
 					stack = Utils.insertStackIntoInventory(slagOut, stack, false);
 					if(!stack.isEmpty())
 						out -= stack.getCount();

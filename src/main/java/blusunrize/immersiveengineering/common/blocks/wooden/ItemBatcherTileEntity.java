@@ -35,6 +35,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import java.util.EnumMap;
@@ -101,7 +102,7 @@ public class ItemBatcherTileEntity extends IEBaseTileEntity implements ITickable
 					{
 						ItemStack outStack = buffers.get(slot);
 						int outSize = filterStack.getCount();
-						ItemStack stack = Utils.copyStackWithAmount(outStack, outSize);
+						ItemStack stack = ItemHandlerHelper.copyStackWithSize(outStack, outSize);
 						stack = Utils.insertStackIntoInventory(output, stack, false);
 						if(!stack.isEmpty())
 							outSize -= stack.getCount();

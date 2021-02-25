@@ -16,7 +16,6 @@ import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.excavator.MineralVein;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
-import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
@@ -51,7 +50,6 @@ import net.minecraft.entity.merchant.villager.VillagerTrades.ITrade;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tags.Tag;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -75,6 +73,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
+import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -374,7 +373,7 @@ public class Villages
 		public MerchantOffer getOffer(Entity trader, Random rand)
 		{
 			return new MerchantOffer(
-					ItemUtils.copyStackWithAmount(this.buyingItem, this.buyAmounts.getPrice(rand)),
+					ItemHandlerHelper.copyStackWithSize(this.buyingItem, this.buyAmounts.getPrice(rand)),
 					new ItemStack(Items.EMERALD),
 					//TODO adjust values for individual trades
 					maxUses, xp, 0.05f);
@@ -415,7 +414,7 @@ public class Villages
 			if(i < 0)
 			{
 				buying = new ItemStack(Items.EMERALD);
-				selling = ItemUtils.copyStackWithAmount(sellingItem, -i);
+				selling = ItemHandlerHelper.copyStackWithSize(sellingItem, -i);
 			}
 			else
 			{

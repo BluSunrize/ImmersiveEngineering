@@ -54,6 +54,7 @@ import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
@@ -201,7 +202,7 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 			else if(IETags.sawblades.contains(heldItem.getItem()))
 			{
 				ItemStack tempBlade = !master.sawblade.isEmpty()?master.sawblade.copy(): ItemStack.EMPTY;
-				master.sawblade = Utils.copyStackWithAmount(heldItem, 1);
+				master.sawblade = ItemHandlerHelper.copyStackWithSize(heldItem, 1);
 				heldItem.shrink(1);
 				if(heldItem.getCount() <= 0)
 					heldItem = ItemStack.EMPTY;
@@ -387,7 +388,7 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 				return;
 			if(!simulate)
 			{
-				p = new SawmillProcess(Utils.copyStackWithAmount(stack, 1));
+				p = new SawmillProcess(ItemHandlerHelper.copyStackWithSize(stack, 1));
 				this.sawmillProcessQueue.add(p);
 				this.markDirty();
 				this.markContainingBlockForUpdate(null);

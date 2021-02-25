@@ -19,6 +19,7 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -101,7 +102,7 @@ public class RGBColourationRecipe implements ICraftingRecipe
 		}
 		if(!itemToColour.isEmpty())
 		{
-			ItemStack newItem = Utils.copyStackWithAmount(itemToColour, 1);
+			ItemStack newItem = ItemHandlerHelper.copyStackWithSize(itemToColour, 1);
 			int r = colourArray[0]/totalColourSets;
 			int g = colourArray[1]/totalColourSets;
 			int b = colourArray[2]/totalColourSets;

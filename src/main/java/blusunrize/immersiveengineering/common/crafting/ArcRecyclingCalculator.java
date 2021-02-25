@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.ArcRecyclingChecker;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.common.util.IELogger;
-import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
@@ -25,6 +24,7 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -137,7 +137,7 @@ public class ArcRecyclingCalculator
 			// Check if recipe output is among the items that have fixed returns
 			Pair<ItemStack, Double> brokenDown = ApiUtils.breakStackIntoPreciseIngots(stack);
 			if(brokenDown!=null&&checker.isAllowed(brokenDown.getLeft())&&brokenDown.getRight() > 0)
-				return new RecyclingCalculation(recipe, Utils.copyStackWithAmount(stack, 1),
+				return new RecyclingCalculation(recipe, ItemHandlerHelper.copyStackWithSize(stack, 1),
 						ImmutableMap.of(brokenDown.getLeft(), brokenDown.getRight()));
 
 			// Else check recipe inputs
@@ -169,7 +169,7 @@ public class ArcRecyclingCalculator
 										b = true;
 									}
 								if(!b)
-									missingSub.put(Utils.copyStackWithAmount(inputStack, 1), inputStack.getCount());
+									missingSub.put(ItemHandlerHelper.copyStackWithSize(inputStack, 1), inputStack.getCount());
 							}
 							continue;
 						}
@@ -186,7 +186,7 @@ public class ArcRecyclingCalculator
 										b = true;
 									}
 								if(!b)
-									outputs.put(Utils.copyStackWithAmount(brokenDown.getLeft(), 1), brokenDown.getRight());
+									outputs.put(ItemHandlerHelper.copyStackWithSize(brokenDown.getLeft(), 1), brokenDown.getRight());
 							}
 						}
 					}
@@ -195,7 +195,7 @@ public class ArcRecyclingCalculator
 					outputScaled.put(e.getKey(), e.getValue()/resultCount);
 				if(!outputs.isEmpty()||!missingSub.isEmpty())
 				{
-					ItemStack in = Utils.copyStackWithAmount(stack, 1);
+					ItemStack in = ItemHandlerHelper.copyStackWithSize(stack, 1);
 					RecyclingCalculation calc = new RecyclingCalculation(recipe, in
 							, outputScaled);
 					if(!missingSub.isEmpty())

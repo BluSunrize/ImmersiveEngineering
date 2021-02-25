@@ -16,7 +16,6 @@ import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchTileEnti
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.gui.ModWorkbenchContainer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
-import blusunrize.immersiveengineering.common.util.Utils;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.renderer.ItemRenderer;
@@ -75,7 +74,7 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 						List<ItemStack> inputs = new ArrayList<>();
 						for(IngredientWithSize stack : recipe.inputs)
 						{
-							ItemStack toAdd = Utils.copyStackWithAmount(stack.getRandomizedExampleStack(mc().player.ticksExisted), stack.getCount());
+							ItemStack toAdd = ItemHandlerHelper.copyStackWithSize(stack.getRandomizedExampleStack(mc().player.ticksExisted), stack.getCount());
 							if(toAdd.isEmpty())
 								continue;
 							boolean isNew = true;

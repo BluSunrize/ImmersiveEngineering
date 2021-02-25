@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.gui;
 
-import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -18,6 +17,7 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -68,7 +68,7 @@ public class IEBaseContainer<T extends TileEntity> extends Container
 			if(stackSlot.isEmpty())
 			{
 				if(!stackHeld.isEmpty()&&slot.isItemValid(stackHeld))
-					slot.putStack(Utils.copyStackWithAmount(stackHeld, amount));
+					slot.putStack(ItemHandlerHelper.copyStackWithSize(stackHeld, amount));
 			}
 			else if(stackHeld.isEmpty())
 			{
@@ -79,7 +79,7 @@ public class IEBaseContainer<T extends TileEntity> extends Container
 				if(ItemStack.areItemsEqual(stackSlot, stackHeld))
 					stackSlot.grow(amount);
 				else
-					slot.putStack(Utils.copyStackWithAmount(stackHeld, amount));
+					slot.putStack(ItemHandlerHelper.copyStackWithSize(stackHeld, amount));
 			}
 			if(stackSlot.getCount()>slot.getSlotStackLimit())
 				stackSlot.setCount(slot.getSlotStackLimit());
@@ -91,7 +91,7 @@ public class IEBaseContainer<T extends TileEntity> extends Container
 			int amount = Math.min(slot.getSlotStackLimit(), stackHeld.getCount());
 			if(!slot.getHasStack())
 			{
-				slot.putStack(Utils.copyStackWithAmount(stackHeld, amount));
+				slot.putStack(ItemHandlerHelper.copyStackWithSize(stackHeld, amount));
 			}
 		}
 		return stack;

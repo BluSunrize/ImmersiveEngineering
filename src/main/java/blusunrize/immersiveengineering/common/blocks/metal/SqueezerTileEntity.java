@@ -190,7 +190,7 @@ public class SqueezerTileEntity extends PoweredMultiblockTileEntity<SqueezerTile
 				TileEntity outputTile = Utils.getExistingTileEntity(world, outputPos);
 				if(outputTile!=null)
 				{
-					ItemStack stack = Utils.copyStackWithAmount(inventory.get(8), 1);
+					ItemStack stack = ItemHandlerHelper.copyStackWithSize(inventory.get(8), 1);
 					stack = Utils.insertStackIntoInventory(outputCap, stack, false);
 					if(stack.isEmpty())
 					{

@@ -256,7 +256,7 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 						if(!outStack.isEmpty())
 						{
 							int outCount = Math.min(outStack.getCount(), 16);
-							ItemStack stack = Utils.copyStackWithAmount(outStack, outCount);
+							ItemStack stack = ItemHandlerHelper.copyStackWithSize(outStack, outCount);
 							stack = Utils.insertStackIntoInventory(output, stack, false);
 							if(!stack.isEmpty())
 								outCount -= stack.getCount();

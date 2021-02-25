@@ -33,6 +33,7 @@ import net.minecraftforge.common.util.JsonUtils;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.LogicalSidedProvider;
+import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -70,7 +71,7 @@ public class ApiUtils
 	@Deprecated
 	public static ItemStack copyStackWithAmount(ItemStack stack, int amount)
 	{
-		return ItemUtils.copyStackWithAmount(stack, amount);
+		return ItemHandlerHelper.copyStackWithSize(stack, amount);
 	}
 
 	@Deprecated
