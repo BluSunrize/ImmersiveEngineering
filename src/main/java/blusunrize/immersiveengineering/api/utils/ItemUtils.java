@@ -25,6 +25,7 @@ import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import java.util.Collection;
 
@@ -79,13 +80,10 @@ public class ItemUtils
 		return false;
 	}
 
+	@Deprecated
 	public static ItemStack copyStackWithAmount(ItemStack stack, int amount)
 	{
-		if(stack.isEmpty())
-			return ItemStack.EMPTY;
-		ItemStack s2 = stack.copy();
-		s2.setCount(amount);
-		return s2;
+		return ItemHandlerHelper.copyStackWithSize(stack, amount);
 	}
 
 	/**

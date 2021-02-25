@@ -143,31 +143,22 @@ public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTile
 			}
 		}
 
-		int amount_prev = tanks[0].getFluidAmount();
-		ItemStack emptyContainer = Utils.drainFluidContainer(tanks[0], inventory.get(0), inventory.get(1), null);
-		if(amount_prev!=tanks[0].getFluidAmount())
+		for(int tank = 0; tank < 2; tank++)
 		{
-			if(!inventory.get(1).isEmpty()&&ItemHandlerHelper.canItemStacksStack(inventory.get(1), emptyContainer))
-				inventory.get(1).grow(emptyContainer.getCount());
-			else if(inventory.get(1).isEmpty())
-				inventory.set(1, emptyContainer.copy());
-			inventory.get(0).shrink(1);
-			if(inventory.get(0).getCount() <= 0)
-				inventory.set(0, ItemStack.EMPTY);
-			update = true;
-		}
-		amount_prev = tanks[1].getFluidAmount();
-		emptyContainer = Utils.drainFluidContainer(tanks[1], inventory.get(2), inventory.get(3), null);
-		if(amount_prev!=tanks[1].getFluidAmount())
-		{
-			if(!inventory.get(3).isEmpty()&&ItemHandlerHelper.canItemStacksStack(inventory.get(3), emptyContainer))
-				inventory.get(3).grow(emptyContainer.getCount());
-			else if(inventory.get(3).isEmpty())
-				inventory.set(3, emptyContainer.copy());
-			inventory.get(2).shrink(1);
-			if(inventory.get(2).getCount() <= 0)
-				inventory.set(2, ItemStack.EMPTY);
-			update = true;
+			final int inputSlot = 2*tank;
+			final int outputSlot = inputSlot+1;
+			final int amountPrev = tanks[tank].getFluidAmount();
+			ItemStack outputStack = inventory.get(outputSlot);
+			ItemStack emptyContainer = Utils.drainFluidContainer(tanks[tank], inventory.get(inputSlot), outputStack);
+			if(amountPrev!=tanks[tank].getFluidAmount())
+			{
+				if(ItemHandlerHelper.canItemStacksStack(outputStack, emptyContainer))
+					outputStack.grow(emptyContainer.getCount());
+				else if(outputStack.isEmpty())
+					inventory.set(outputSlot, emptyContainer.copy());
+				inventory.get(inputSlot).shrink(outputSlot);
+				update = true;
+			}
 		}
 
 		if(update)

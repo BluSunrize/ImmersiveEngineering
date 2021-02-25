@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.common.items.HammerItem;
 import blusunrize.immersiveengineering.common.items.ScrewdriverItem;
@@ -817,7 +818,7 @@ public class Utils
 		return ItemStack.EMPTY;
 	}
 
-	public static ItemStack drainFluidContainer(IFluidHandler handler, ItemStack containerIn, ItemStack containerOut, @Nullable PlayerEntity player)
+	public static ItemStack drainFluidContainer(IFluidHandler handler, ItemStack containerIn, ItemStack containerOut)
 	{
 		if(containerIn==null||containerIn.isEmpty())
 			return ItemStack.EMPTY;
@@ -825,7 +826,9 @@ public class Utils
 		if(containerIn.hasTag()&&containerIn.getOrCreateTag().isEmpty())
 			containerIn.setTag(null);
 
-		FluidActionResult result = FluidUtil.tryEmptyContainer(containerIn, handler, Integer.MAX_VALUE, player, false);
+		FluidActionResult result = FluidUtils.tryEmptyContainer(
+				containerIn, handler, Integer.MAX_VALUE, FluidAction.SIMULATE
+		);
 		if(result.isSuccess())
 		{
 			ItemStack empty = result.getResult();
@@ -833,7 +836,7 @@ public class Utils
 			{
 				if(!containerOut.isEmpty()&&containerOut.getCount()+empty.getCount() > containerOut.getMaxStackSize())
 					return ItemStack.EMPTY;
-				result = FluidUtil.tryEmptyContainer(containerIn, handler, Integer.MAX_VALUE, player, true);
+				result = FluidUtils.tryEmptyContainer(containerIn, handler, Integer.MAX_VALUE, FluidAction.EXECUTE);
 				if(result.isSuccess())
 				{
 					return result.getResult();
