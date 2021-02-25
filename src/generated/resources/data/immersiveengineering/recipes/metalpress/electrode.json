@@ -5,7 +5,7 @@
   },
   "result": {
     "item": "immersiveengineering:graphite_electrode",
-    "nbt": "{graphDmg:48000}"
+    "nbt": "{graphDmg:48000,Damage:0}"
   },
   "input": {
     "count": 4,
