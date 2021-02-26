@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.common.EventHandler;
+import blusunrize.immersiveengineering.mixin.accessors.ExplosionAccess;
 import com.google.common.collect.Sets;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -101,13 +102,14 @@ public class IEExplosion extends Explosion
 				{
 					TileEntity tile = state.hasTileEntity()?this.world.getTileEntity(pos): null;
 					LootContext.Builder lootCtx = new LootContext.Builder((ServerWorld)this.world)
-							.withRandom(this.world.rand).withParameter(LootParameters.POSITION, pos)
+							.withRandom(this.world.rand)
+							.withParameter(LootParameters.field_237457_g_, Vector3d.copyCentered(pos))
 							.withParameter(LootParameters.TOOL, ItemStack.EMPTY)
 							.withNullableParameter(LootParameters.BLOCK_ENTITY, tile);
 					if(damagesTerrain==Explosion.Mode.DESTROY)
 						lootCtx.withParameter(LootParameters.EXPLOSION_RADIUS, this.size);
 					state.getDrops(lootCtx).forEach((p_229977_2_) -> {
-						func_229976_a_(objectarraylist, p_229977_2_, pos);
+						ExplosionAccess.callHandleExplosionDrops(objectarraylist, p_229977_2_, pos);
 					});
 					state.onBlockExploded(world, pos, this);
 				}

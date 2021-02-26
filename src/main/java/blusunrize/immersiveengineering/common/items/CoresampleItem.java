@@ -82,41 +82,41 @@ public class CoresampleItem extends IEBaseItem
 					IFormattableTextComponent component = new StringTextComponent(
 							Utils.formatDouble(tag.getDouble("percentage")*100, "0.00")+"% "
 					);
-					component.func_230529_a_(new TranslationTextComponent(mineral.getTranslationKey()));
-					list.add(component.func_240699_a_(baseColor));
+					component.append(new TranslationTextComponent(mineral.getTranslationKey()));
+					list.add(component.mergeStyle(baseColor));
 					if(showYield)
 					{
 						component = new StringTextComponent("  ");
-						component.func_230529_a_(new TranslationTextComponent(Lib.DESC_INFO+"coresample.saturation",
+						component.append(new TranslationTextComponent(Lib.DESC_INFO+"coresample.saturation",
 								Utils.formatDouble(tag.getDouble("saturation")*100, "0.00")
 						));
-						list.add(component.func_240699_a_(TextFormatting.DARK_GRAY));
+						list.add(component.mergeStyle(TextFormatting.DARK_GRAY));
 
 						component = new StringTextComponent("  ");
 						int yield = ExcavatorHandler.mineralVeinYield-tag.getInt("depletion");
 						yield *= (1-mineral.failChance);
 						if(ExcavatorHandler.mineralVeinYield==0)
-							component.func_230529_a_(new TranslationTextComponent(Lib.DESC_INFO+"coresample.infinite"));
+							component.append(new TranslationTextComponent(Lib.DESC_INFO+"coresample.infinite"));
 						else
-							component.func_230529_a_(new TranslationTextComponent(Lib.DESC_INFO+"coresample.yield",
+							component.append(new TranslationTextComponent(Lib.DESC_INFO+"coresample.yield",
 									yield));
-						list.add(component.func_240699_a_(TextFormatting.DARK_GRAY));
+						list.add(component.mergeStyle(TextFormatting.DARK_GRAY));
 					}
 				});
 			else
-				list.add(new TranslationTextComponent(Lib.DESC_INFO+"coresample.noMineral").func_240699_a_(baseColor));
+				list.add(new TranslationTextComponent(Lib.DESC_INFO+"coresample.noMineral").mergeStyle(baseColor));
 
 			RegistryKey<World> dimension = getDimension(coresample);
 			if(dimension!=null)
 			{
-				String s2 = dimension.func_240901_a_().getPath();
+				String s2 = dimension.getLocation().getPath();
 				if(s2.toLowerCase(Locale.ENGLISH).startsWith("the_"))
 					s2 = s2.substring(4);
-				list.add(new StringTextComponent(Utils.toCamelCase(s2)).func_240699_a_(baseColor));
+				list.add(new StringTextComponent(Utils.toCamelCase(s2)).mergeStyle(baseColor));
 			}
 			ColumnPos pos = getCoords(coresample);
 			if(pos!=null)
-				list.add(new TranslationTextComponent(Lib.DESC_INFO+"coresample.pos", pos.x, pos.z).func_240699_a_(baseColor));
+				list.add(new TranslationTextComponent(Lib.DESC_INFO+"coresample.pos", pos.x, pos.z).mergeStyle(baseColor));
 
 			if(showTimestamp)
 			{
@@ -126,14 +126,14 @@ public class CoresampleItem extends IEBaseItem
 					long timestamp = ItemNBTHelper.getLong(coresample, "timestamp");
 					long dist = world.getGameTime()-timestamp;
 					if(dist < 0)
-						list.add(new StringTextComponent("Somehow this sample is dated in the future...are you a time traveller?!").func_240699_a_(TextFormatting.RED));
+						list.add(new StringTextComponent("Somehow this sample is dated in the future...are you a time traveller?!").mergeStyle(TextFormatting.RED));
 					else
-						list.add(new TranslationTextComponent(Lib.DESC_INFO+"coresample.timestamp", ClientUtils.fomatTimestamp(dist, TimestampFormat.DHM)).func_240699_a_(baseColor));
+						list.add(new TranslationTextComponent(Lib.DESC_INFO+"coresample.timestamp", ClientUtils.fomatTimestamp(dist, TimestampFormat.DHM)).mergeStyle(baseColor));
 				}
 				else if(hasStamp)
-					list.add(new TranslationTextComponent(Lib.DESC_INFO+"coresample.timezone").func_240699_a_(baseColor));
+					list.add(new TranslationTextComponent(Lib.DESC_INFO+"coresample.timezone").mergeStyle(baseColor));
 				else
-					list.add(new TranslationTextComponent(Lib.DESC_INFO+"coresample.noTimestamp").func_240699_a_(baseColor));
+					list.add(new TranslationTextComponent(Lib.DESC_INFO+"coresample.noTimestamp").mergeStyle(baseColor));
 			}
 		}
 	}
@@ -232,7 +232,7 @@ public class CoresampleItem extends IEBaseItem
 		if(stack.hasTag()&&stack.getOrCreateTag().contains("dimension"))
 		{
 			ResourceLocation name = new ResourceLocation(stack.getOrCreateTag().getString("dimension"));
-			return RegistryKey.func_240903_a_(Registry.WORLD_KEY, name);
+			return RegistryKey.getOrCreateKey(Registry.WORLD_KEY, name);
 		}
 		return null;
 	}
@@ -240,6 +240,6 @@ public class CoresampleItem extends IEBaseItem
 
 	public static void setDimension(ItemStack stack, RegistryKey<World> dimension)
 	{
-		stack.getOrCreateTag().putString("dimension", dimension.func_240901_a_().toString());
+		stack.getOrCreateTag().putString("dimension", dimension.getLocation().toString());
 	}
 }

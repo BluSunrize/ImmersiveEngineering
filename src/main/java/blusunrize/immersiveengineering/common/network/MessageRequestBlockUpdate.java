@@ -20,7 +20,7 @@ import java.util.function.Supplier;
 
 public class MessageRequestBlockUpdate implements IMessage
 {
-	private BlockPos pos;
+	private final BlockPos pos;
 
 	public MessageRequestBlockUpdate(BlockPos pos)
 	{
@@ -45,7 +45,7 @@ public class MessageRequestBlockUpdate implements IMessage
 		ServerWorld world = Objects.requireNonNull(ctx.getSender()).getServerWorld();
 		ctx.enqueueWork(() -> {
 			if(world.isAreaLoaded(pos, 1))
-				EventHandler.requestedBlockUpdates.offer(new ImmutablePair<>(world.func_234923_W_(), pos));
+				EventHandler.requestedBlockUpdates.offer(new ImmutablePair<>(world.getDimensionKey(), pos));
 		});
 	}
 }

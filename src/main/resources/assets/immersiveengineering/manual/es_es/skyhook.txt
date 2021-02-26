@@ -1,0 +1,9 @@
+Gancho del ingeniero
+Booker, ¡coge!
+El Gancho del ingeniero es un sistema de agarre motorizado diseñado para engancharse a alambres, cuerdas de cáñamo o cables de acero.
+Con él, los ingenieros pueden recorrer rápidamente la longitud de una línea eléctrica para moverse entre subestaciones u otras instalaciones. Basta con mantener pulsado el botón derecho del ratón mientras se está cerca de un cable para que se enganche a él.
+El botón puede soltarse mientras se monta en el cable, pero si se suelta el gancho o se agacha, se desmontará.
+
+
+La gravedad será suficiente para moverse a lo largo de los cables descendentes a una velocidad decente, las teclas de movimiento estándar se pueden utilizar para moverse a lo largo de los cables ascendentes.
+Cuando el Gancho del ingeniero llega a una intersección, continuará en la dirección más cercana a la que el jugador está mirando.

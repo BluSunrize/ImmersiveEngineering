@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.common.blocks.cloth.StripCurtainTileEntit
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.stone.*;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
@@ -133,14 +134,14 @@ public class IETileTypes
 	public static final RegistryObject<TileEntityType<FeedthroughTileEntity>> FEEDTHROUGH = REGISTER.register(
 			"feedthrough", makeType(FeedthroughTileEntity::new, () -> Connectors.feedthrough)
 	);
-	public static final RegistryObject<TileEntityType<CapacitorLVTileEntity>> CAPACITOR_LV = REGISTER.register(
-			"capacitorlv", makeType(CapacitorLVTileEntity::new, () -> MetalDevices.capacitorLV)
+	public static final RegistryObject<TileEntityType<CapacitorTileEntity>> CAPACITOR_LV = REGISTER.register(
+			"capacitorlv", makeType(() -> new CapacitorTileEntity(IEServerConfig.MACHINES.lvCapConfig), () -> MetalDevices.capacitorLV)
 	);
-	public static final RegistryObject<TileEntityType<CapacitorMVTileEntity>> CAPACITOR_MV = REGISTER.register(
-			"capacitormv", makeType(CapacitorMVTileEntity::new, () -> MetalDevices.capacitorMV)
+	public static final RegistryObject<TileEntityType<CapacitorTileEntity>> CAPACITOR_MV = REGISTER.register(
+			"capacitormv", makeType(() -> new CapacitorTileEntity(IEServerConfig.MACHINES.mvCapConfig), () -> MetalDevices.capacitorMV)
 	);
-	public static final RegistryObject<TileEntityType<CapacitorHVTileEntity>> CAPACITOR_HV = REGISTER.register(
-			"capacitorhv", makeType(CapacitorHVTileEntity::new, () -> MetalDevices.capacitorHV)
+	public static final RegistryObject<TileEntityType<CapacitorTileEntity>> CAPACITOR_HV = REGISTER.register(
+			"capacitorhv", makeType(() -> new CapacitorTileEntity(IEServerConfig.MACHINES.hvCapConfig), () -> MetalDevices.capacitorHV)
 	);
 	public static final RegistryObject<TileEntityType<CapacitorCreativeTileEntity>> CAPACITOR_CREATIVE = REGISTER.register(
 			"capacitorcreative", makeType(CapacitorCreativeTileEntity::new, () -> MetalDevices.capacitorCreative)

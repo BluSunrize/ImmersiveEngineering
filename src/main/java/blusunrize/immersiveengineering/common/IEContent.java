@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.api.*;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
-import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
@@ -29,13 +28,15 @@ import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler;
 import blusunrize.immersiveengineering.api.wires.localhandlers.LocalNetworkHandler;
 import blusunrize.immersiveengineering.api.wires.localhandlers.WireDamageHandler;
+import blusunrize.immersiveengineering.api.wires.redstone.CapabilityRedstoneNetwork;
 import blusunrize.immersiveengineering.api.wires.redstone.RedstoneNetworkHandler;
 import blusunrize.immersiveengineering.client.utils.ClocheRenderFunctions;
-import blusunrize.immersiveengineering.common.IEConfig.Ores.OreConfig;
 import blusunrize.immersiveengineering.common.blocks.*;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
 import blusunrize.immersiveengineering.common.blocks.cloth.*;
+import blusunrize.immersiveengineering.common.blocks.generic.ScaffoldingBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.*;
+import blusunrize.immersiveengineering.common.blocks.metal.LanternBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.CoverType;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
@@ -44,8 +45,10 @@ import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
 import blusunrize.immersiveengineering.common.blocks.plant.PottedHempBlock;
 import blusunrize.immersiveengineering.common.blocks.stone.PartialConcreteBlock;
 import blusunrize.immersiveengineering.common.blocks.stone.StoneMultiBlock;
+import blusunrize.immersiveengineering.common.blocks.wooden.BarrelBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
-import blusunrize.immersiveengineering.common.crafting.IngredientFluidStack;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.crafting.fluidaware.IngredientFluidStack;
 import blusunrize.immersiveengineering.common.entities.*;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
@@ -63,13 +66,8 @@ import blusunrize.immersiveengineering.common.util.loot.IELootFunctions;
 import blusunrize.immersiveengineering.common.wires.IEWireTypes;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import blusunrize.immersiveengineering.common.world.OreRetrogenFeature;
-import blusunrize.immersiveengineering.common.world.Villages;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.ShulkerBoxBlock;
-import net.minecraft.block.SoundType;
+import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityType;
 import net.minecraft.fluid.Fluid;
@@ -91,8 +89,8 @@ import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.event.RegistryEvent.MissingMappings.Mapping;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -100,6 +98,7 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import java.util.*;
+import java.util.function.Supplier;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 import static blusunrize.immersiveengineering.common.util.fluids.IEFluid.createBuilder;
@@ -120,7 +119,7 @@ public class IEContent
 	public static IEFluid fluidHerbicide;
 	public static Fluid fluidPotion;
 
-	public static final Feature<OreFeatureConfig> ORE_RETROGEN = new OreRetrogenFeature(OreFeatureConfig.field_236566_a_);
+	public static final Feature<OreFeatureConfig> ORE_RETROGEN = new OreRetrogenFeature(OreFeatureConfig.CODEC);
 
 	public static void modConstruction()
 	{
@@ -214,7 +213,7 @@ public class IEContent
 			if(!m.isVanillaMetal())
 			{
 				storage = new IEBaseBlock("storage_"+name, Block.Properties.create(Material.IRON)
-						.sound(m==EnumMetals.STEEL?SoundType.field_235594_P_:SoundType.METAL)
+						.sound(m==EnumMetals.STEEL?SoundType.NETHERITE:SoundType.METAL)
 						.hardnessAndResistance(5, 10)
 						.setRequiresTool()
 						.harvestTool(ToolType.PICKAXE)
@@ -311,11 +310,13 @@ public class IEContent
 		Block.Properties standardWoodProperties = Block.Properties.create(Material.WOOD)
 				.sound(SoundType.WOOD)
 				.hardnessAndResistance(2, 5);
-		Block.Properties standardWoodPropertiesNotSolid = Block.Properties.create(Material.WOOD)
-				.sound(SoundType.WOOD)
-				.hardnessAndResistance(2, 5)
-				.notSolid()
-				.setBlocksVision((state, blockReader, pos) -> false);
+		Supplier<AbstractBlock.Properties> createNonBlockingWoodProperties =
+				() -> Block.Properties.create(Material.WOOD)
+						.sound(SoundType.WOOD)
+						.hardnessAndResistance(2, 5)
+						.setBlocksVision((state, blockReader, pos) -> false);
+		Block.Properties standardWoodPropertiesNotSolid = createNonBlockingWoodProperties.get().notSolid();
+		Block.Properties standardWoodPropertiesNoOverlay = createNonBlockingWoodProperties.get();
 		for(TreatedWoodStyles style : TreatedWoodStyles.values())
 		{
 			IEBaseBlock baseBlock = new IEBaseBlock("treated_wood_"+style.name().toLowerCase(Locale.US), standardWoodProperties, BlockItemIE::new)
@@ -325,10 +326,10 @@ public class IEContent
 			WoodenDecoration.treatedStairs.put(style,
 					new IEStairsBlock("stairs_treated_wood_"+style.name().toLowerCase(Locale.US), standardWoodPropertiesNotSolid, baseBlock));
 		}
-		WoodenDecoration.treatedFence = new IEFenceBlock("treated_fence", standardWoodPropertiesNotSolid);
+		WoodenDecoration.treatedFence = new IEFenceBlock("treated_fence", standardWoodPropertiesNoOverlay);
 		WoodenDecoration.treatedScaffolding = new ScaffoldingBlock("treated_scaffold", standardWoodPropertiesNotSolid);
 
-		WoodenDevices.craftingTable = new GenericTileBlock("craftingtable", IETileTypes.CRAFTING_TABLE,
+		WoodenDevices.craftingTable = new GenericTileBlock<>("craftingtable", IETileTypes.CRAFTING_TABLE,
 				standardWoodPropertiesNotSolid, IEProperties.FACING_HORIZONTAL);
 		WoodenDevices.workbench = new ModWorkbenchBlock("workbench");
 		WoodenDevices.gunpowderBarrel = new GunpowderBarrelBlock("gunpowder_barrel");
@@ -343,8 +344,8 @@ public class IEContent
 		WoodenDevices.fluidSorter = new SorterBlock("fluid_sorter", true);
 		WoodenDevices.windmill = new WindmillBlock("windmill");
 		WoodenDevices.watermill = new WatermillBlock("watermill");
-		WoodenDecoration.treatedPost = new PostBlock("treated_post", standardWoodPropertiesNotSolid);
-		WoodenDevices.treatedWallmount = new WallmountBlock("treated_wallmount", standardWoodPropertiesNotSolid);
+		WoodenDecoration.treatedPost = new PostBlock("treated_post", standardWoodPropertiesNoOverlay);
+		WoodenDevices.treatedWallmount = new WallmountBlock("treated_wallmount", standardWoodPropertiesNoOverlay);
 		Misc.hempPlant = new HempBlock("hemp");
 		Misc.pottedHemp = new PottedHempBlock("potted_hemp");
 		WoodenDecoration.sawdust = new SawdustBlock();
@@ -363,13 +364,15 @@ public class IEContent
 				.setRequiresTool()
 				.harvestTool(ToolType.PICKAXE)
 				.hardnessAndResistance(3, 15);
-		Block.Properties metalPropertiesNotSolid = Block.Properties.create(Material.IRON)
-				.sound(SoundType.METAL)
-				.hardnessAndResistance(3, 15)
-				.setRequiresTool()
-				.harvestTool(ToolType.PICKAXE)
-				.notSolid()
-				.setBlocksVision((state, blockReader, pos) -> false);
+		Supplier<AbstractBlock.Properties> createMetalPropertiesNoOverlay =
+				() -> Block.Properties.create(Material.IRON)
+						.sound(SoundType.METAL)
+						.hardnessAndResistance(3, 15)
+						.setRequiresTool()
+						.harvestTool(ToolType.PICKAXE)
+						.setBlocksVision((state, blockReader, pos) -> false);
+		Block.Properties metalPropertiesNotSolid = createMetalPropertiesNoOverlay.get().notSolid();
+		Block.Properties metalPropertiesNoOverlay = createMetalPropertiesNoOverlay.get();
 		MetalDecoration.lvCoil = new IEBaseBlock("coil_lv", defaultMetalProperties, BlockItemIE::new);
 		MetalDecoration.mvCoil = new IEBaseBlock("coil_mv", defaultMetalProperties, BlockItemIE::new);
 		MetalDecoration.hvCoil = new IEBaseBlock("coil_hv", defaultMetalProperties, BlockItemIE::new);
@@ -378,12 +381,12 @@ public class IEContent
 		MetalDecoration.engineeringLight = new IEBaseBlock("light_engineering", defaultMetalProperties, BlockItemIE::new);
 		MetalDecoration.generator = new IEBaseBlock("generator", defaultMetalProperties, BlockItemIE::new);
 		MetalDecoration.radiator = new IEBaseBlock("radiator", defaultMetalProperties, BlockItemIE::new);
-		MetalDecoration.steelFence = new IEFenceBlock("steel_fence", metalPropertiesNotSolid);
-		MetalDecoration.aluFence = new IEFenceBlock("alu_fence", metalPropertiesNotSolid);
-		MetalDecoration.steelWallmount = new WallmountBlock("steel_wallmount", metalPropertiesNotSolid);
-		MetalDecoration.aluWallmount = new WallmountBlock("alu_wallmount", metalPropertiesNotSolid);
-		MetalDecoration.steelPost = new PostBlock("steel_post", metalPropertiesNotSolid);
-		MetalDecoration.aluPost = new PostBlock("alu_post", metalPropertiesNotSolid);
+		MetalDecoration.steelFence = new IEFenceBlock("steel_fence", metalPropertiesNoOverlay);
+		MetalDecoration.aluFence = new IEFenceBlock("alu_fence", metalPropertiesNoOverlay);
+		MetalDecoration.steelWallmount = new WallmountBlock("steel_wallmount", metalPropertiesNoOverlay);
+		MetalDecoration.aluWallmount = new WallmountBlock("alu_wallmount", metalPropertiesNoOverlay);
+		MetalDecoration.steelPost = new PostBlock("steel_post", metalPropertiesNoOverlay);
+		MetalDecoration.aluPost = new PostBlock("alu_post", metalPropertiesNoOverlay);
 		MetalDecoration.lantern = new LanternBlock("lantern");
 		MetalDecoration.slopeSteel = new StructuralArmBlock("steel_slope");
 		MetalDecoration.slopeAlu = new StructuralArmBlock("alu_slope");
@@ -434,7 +437,7 @@ public class IEContent
 				metalPropertiesNotSolid);
 		MetalDevices.razorWire = new MiscConnectorBlock<>("razor_wire", IETileTypes.RAZOR_WIRE,
 				IEProperties.FACING_HORIZONTAL, BlockStateProperties.WATERLOGGED);
-		MetalDevices.toolbox = new GenericTileBlock<>("toolbox_block", IETileTypes.TOOLBOX, metalPropertiesNotSolid,
+		MetalDevices.toolbox = new GenericTileBlock<>("toolbox_block", IETileTypes.TOOLBOX, metalPropertiesNoOverlay,
 				(b, p) -> null, IEProperties.FACING_HORIZONTAL);
 		MetalDevices.capacitorLV = new GenericTileBlock<>("capacitor_lv", IETileTypes.CAPACITOR_LV, defaultMetalProperties);
 		MetalDevices.capacitorMV = new GenericTileBlock<>("capacitor_mv", IETileTypes.CAPACITOR_MV, defaultMetalProperties);
@@ -451,8 +454,8 @@ public class IEContent
 		MetalDevices.electricLantern = new ElectricLanternBlock("electric_lantern",
 				IEProperties.FACING_TOP_DOWN, IEProperties.ACTIVE, BlockStateProperties.WATERLOGGED);
 		MetalDevices.chargingStation = new GenericTileBlock<>("charging_station", IETileTypes.CHARGING_STATION,
-				metalPropertiesNotSolid, IEProperties.FACING_HORIZONTAL);
-		MetalDevices.fluidPipe = new GenericTileBlock<>("fluid_pipe", IETileTypes.FLUID_PIPE, metalPropertiesNotSolid, BlockStateProperties.WATERLOGGED);
+				metalPropertiesNoOverlay, IEProperties.FACING_HORIZONTAL);
+		MetalDevices.fluidPipe = new GenericTileBlock<>("fluid_pipe", IETileTypes.FLUID_PIPE, metalPropertiesNoOverlay, BlockStateProperties.WATERLOGGED);
 		MetalDevices.sampleDrill = new SampleDrillBlock();
 		MetalDevices.teslaCoil = new TeslaCoilBlock();
 		MetalDevices.floodlight = new FloodlightBlock("floodlight");
@@ -685,22 +688,6 @@ public class IEContent
 	}
 
 	@SubscribeEvent
-	public static void missingItems(RegistryEvent.MissingMappings<Item> event)
-	{
-		Set<String> knownMissing = ImmutableSet.of(
-				"fluidethanol",
-				"fluidconcrete",
-				"fluidbiodiesel",
-				"fluidplantoil",
-				"fluidcreosote"
-		);
-		for(Mapping<Item> missing : event.getMappings())
-			if(knownMissing.contains(missing.key.getPath()))
-				missing.ignore();
-	}
-
-
-	@SubscribeEvent
 	public static void registerPotions(RegistryEvent.Register<Effect> event)
 	{
 		/*POTIONS*/
@@ -750,17 +737,22 @@ public class IEContent
 	public static void init()
 	{
 		/*WORLDGEN*/
-		addConfiguredWorldgen(Metals.ores.get(EnumMetals.COPPER), "copper", IEConfig.ORES.ore_copper);
-		addConfiguredWorldgen(Metals.ores.get(EnumMetals.ALUMINUM), "bauxite", IEConfig.ORES.ore_bauxite);
-		addConfiguredWorldgen(Metals.ores.get(EnumMetals.LEAD), "lead", IEConfig.ORES.ore_lead);
-		addConfiguredWorldgen(Metals.ores.get(EnumMetals.SILVER), "silver", IEConfig.ORES.ore_silver);
-		addConfiguredWorldgen(Metals.ores.get(EnumMetals.NICKEL), "nickel", IEConfig.ORES.ore_nickel);
-		addConfiguredWorldgen(Metals.ores.get(EnumMetals.URANIUM), "uranium", IEConfig.ORES.ore_uranium);
-		IEWorldGen.registerMineralVeinGen();
+		DeferredWorkQueue.runLater(
+				() -> {
+					IEWorldGen.addOreGen(Metals.ores.get(EnumMetals.COPPER), "copper", IEServerConfig.ORES.ore_copper);
+					IEWorldGen.addOreGen(Metals.ores.get(EnumMetals.ALUMINUM), "bauxite", IEServerConfig.ORES.ore_bauxite);
+					IEWorldGen.addOreGen(Metals.ores.get(EnumMetals.LEAD), "lead", IEServerConfig.ORES.ore_lead);
+					IEWorldGen.addOreGen(Metals.ores.get(EnumMetals.SILVER), "silver", IEServerConfig.ORES.ore_silver);
+					IEWorldGen.addOreGen(Metals.ores.get(EnumMetals.NICKEL), "nickel", IEServerConfig.ORES.ore_nickel);
+					IEWorldGen.addOreGen(Metals.ores.get(EnumMetals.URANIUM), "uranium", IEServerConfig.ORES.ore_uranium);
+					IEWorldGen.registerMineralVeinGen();
+				}
+		);
 
 		CapabilityShader.register();
 		NetHandlerCapability.register();
 		CapabilitySkyhookData.register();
+		CapabilityRedstoneNetwork.register();
 		ShaderRegistry.itemShader = IEItems.Misc.shader;
 		ShaderRegistry.itemShaderBag = IEItems.Misc.shaderBag;
 		ShaderRegistry.itemExamples.add(new ItemStack(Weapons.revolver));
@@ -786,17 +778,12 @@ public class IEContent
 		fluidEthanol.block.setEffect(Effects.NAUSEA, 70, 0);
 		fluidBiodiesel.block.setEffect(IEPotions.flammable, 100, 1);
 		fluidConcrete.block.setEffect(Effects.SLOWNESS, 20, 3);
-
-		ExcavatorHandler.mineralVeinYield = IEConfig.MACHINES.excavator_yield.get();
-		ExcavatorHandler.initialVeinDepletion = IEConfig.MACHINES.excavator_initial_depletion.get();
-		ExcavatorHandler.mineralNoiseThreshold = IEConfig.MACHINES.excavator_theshold.get();
+		fluidCreosote.setBurnTime(800);
 
 		ChemthrowerEffects.register();
 
 		RailgunProjectiles.register();
 
-		ExternalHeaterHandler.defaultFurnaceEnergyCost = IEConfig.MACHINES.heater_consumption.get();
-		ExternalHeaterHandler.defaultFurnaceSpeedupCost = IEConfig.MACHINES.heater_speedupConsumption.get();
 		ExternalHeaterHandler.registerHeatableAdapter(FurnaceTileEntity.class, new DefaultFurnaceAdapter());
 
 		ThermoelectricHandler.registerSourceInKelvin(Blocks.MAGMA_BLOCK, 1300);
@@ -835,34 +822,15 @@ public class IEContent
 		MultiblockHandler.registerMultiblock(IEMultiblocks.EXCAVATOR_DEMO);
 
 		/*BLOCK ITEMS FROM CRATES*/
-		IEApi.forbiddenInCrates.add((stack) -> {
-			if(stack.getItem()==Tools.toolbox)
-				return true;
-			if(stack.getItem()==WoodenDevices.crate.asItem())
-				return true;
-			if(stack.getItem()==WoodenDevices.reinforcedCrate.asItem())
-				return true;
-			return Block.getBlockFromItem(stack.getItem()) instanceof ShulkerBoxBlock;
-		});
+		IEApi.forbiddenInCrates.add(
+				stack -> stack.getItem().isIn(IETags.forbiddenInCrates)||
+						Block.getBlockFromItem(stack.getItem()) instanceof ShulkerBoxBlock
+		);
 
 		FluidPipeTileEntity.initCovers();
 		LocalNetworkHandler.register(EnergyTransferHandler.ID, EnergyTransferHandler::new);
 		LocalNetworkHandler.register(RedstoneNetworkHandler.ID, RedstoneNetworkHandler::new);
 		LocalNetworkHandler.register(WireDamageHandler.ID, WireDamageHandler::new);
-	}
-
-	public static void postInit()
-	{
-		Villages.init();
-	}
-
-	public static void addConfiguredWorldgen(Block state, String name, OreConfig config)
-	{
-		if(config!=null&&config.veinSize.get() > 0)
-			IEWorldGen.addOreGen(name, state.getDefaultState(), config.veinSize.get(),
-					config.minY.get(),
-					config.maxY.get(),
-					config.veinsPerChunk.get());
 	}
 
 	public static Item addBanner(String name, String id)

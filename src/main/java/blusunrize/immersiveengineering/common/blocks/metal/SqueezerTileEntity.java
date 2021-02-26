@@ -8,8 +8,8 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.crafting.SqueezerRecipe;
+import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
@@ -60,7 +60,7 @@ public class SqueezerTileEntity extends PoweredMultiblockTileEntity<SqueezerTile
 	public NonNullList<ItemStack> inventory = NonNullList.withSize(11, ItemStack.EMPTY);
 	public float animation_piston = 0;
 	public boolean animation_down = true;
-	private CapabilityReference<IItemHandler> outputCap = CapabilityReference.forTileEntity(this, this::getOutputPos,
+	private CapabilityReference<IItemHandler> outputCap = CapabilityReference.forTileEntityAt(this, this::getOutputPos,
 			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 
 	public SqueezerTileEntity()
@@ -190,7 +190,7 @@ public class SqueezerTileEntity extends PoweredMultiblockTileEntity<SqueezerTile
 				TileEntity outputTile = Utils.getExistingTileEntity(world, outputPos);
 				if(outputTile!=null)
 				{
-					ItemStack stack = Utils.copyStackWithAmount(inventory.get(8), 1);
+					ItemStack stack = ItemHandlerHelper.copyStackWithSize(inventory.get(8), 1);
 					stack = Utils.insertStackIntoInventory(outputCap, stack, false);
 					if(stack.isEmpty())
 					{

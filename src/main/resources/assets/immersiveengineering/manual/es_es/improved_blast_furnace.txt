@@ -1,0 +1,6 @@
+Alto Horno de crudo mejorado
+Refinamiento industrializado
+<&brick_recipe>El Alto Horno de crudo mejorado es una forma mucho más profesional de <link;crude_blast_furnace;crear acero;>. No sólo permite la automatización de las entradas y salidas, sino que también puede equiparse con precalentadores para acelerar el proceso de refinamiento mediante la adición de aire caliente.
+El horno está hecho de ladrillos reforzados, por lo que se aconseja gastar los primeros lotes de acero en esta mejora.
+<&multiblock>La estructura del horno es similar a la de su tosco predecesor, pero los ladrillos se han reforzado y se ha añadido una tolva en la parte superior para canalizar las entradas. El acero sale por la parte delantera del horno, la escoria por la parte trasera, y el horno los expulsará automáticamente a los inventarios conectados o a las cintas transportadoras. El Hierro y el Carbón de coque se introducen por la parte superior.<np>
+<&preheater>Los precalentadores de Alto Horno de crudo se utilizan para calentar el aire y luego soplarlo en el horno para acelerar el proceso de refinamiento del hierro. Cada horno puede tener hasta dos precalentadores conectados a los puertos de cada lado, y cada precalentador requiere <config;i;machines.preheater_consumption> Flux/t para operar.

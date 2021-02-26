@@ -27,7 +27,8 @@ public class RefineryMultiblock extends IETemplateMultiblock
 	public RefineryMultiblock()
 	{
 		super(new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/refinery"),
-				new BlockPos(2, 1, 2), new BlockPos(2, 1, 2), () -> Multiblocks.refinery.getDefaultState());
+				new BlockPos(2, 1, 2), new BlockPos(2, 1, 2), new BlockPos(5, 3, 3),
+				() -> Multiblocks.refinery.getDefaultState());
 	}
 
 	@Override

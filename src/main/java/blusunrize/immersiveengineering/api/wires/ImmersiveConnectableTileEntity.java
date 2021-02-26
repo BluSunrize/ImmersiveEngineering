@@ -12,14 +12,12 @@ package blusunrize.immersiveengineering.api.wires;
 import blusunrize.immersiveengineering.api.IEProperties.ConnectionModelData;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.TargetingInfo;
-import blusunrize.immersiveengineering.client.utils.CombinedModelData;
-import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
+import blusunrize.immersiveengineering.api.utils.client.CombinedModelData;
+import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.BlockPos;
@@ -30,9 +28,13 @@ import net.minecraftforge.client.model.data.IModelData;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 
+/**
+ * Do not use! This class "leaks" a lot of internal IE code and will be removed in a future build. Use
+ * {@link blusunrize.immersiveengineering.api.wires.impl.ImmersiveConnectableTileEntity} or a custom implementation
+ * similar to it instead
+ */
+@Deprecated
 public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity implements IImmersiveConnectable
 {
 	protected GlobalWireNetwork globalNet;
@@ -62,37 +64,13 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 	@Override
 	public void removeCable(Connection connection, ConnectionPoint attachedPoint)
 	{
-		this.markDirty();
-		if(this.world!=null)
-		{
-			BlockState state = this.world.getBlockState(pos);
-			this.world.notifyBlockUpdate(pos, state, state, 3);
-		}
 	}
 
 	@Override
-	public void setWorldAndPos(World worldIn, BlockPos pos)
+	public void setWorldAndPos(@Nonnull World worldIn, @Nonnull BlockPos pos)
 	{
 		super.setWorldAndPos(worldIn, pos);
 		globalNet = GlobalWireNetwork.getNetwork(worldIn);
-	}
-
-	@Override
-	public boolean receiveClientEvent(int id, int arg)
-	{
-		if(id==-1||id==255)
-		{
-			BlockState state = world.getBlockState(pos);
-			world.notifyBlockUpdate(pos, state, state, 3);
-			return true;
-		}
-		else if(id==254)
-		{
-			BlockState state = world.getBlockState(pos);
-			world.notifyBlockUpdate(pos, state, state, 3);
-			return true;
-		}
-		return super.receiveClientEvent(id, arg);
 	}
 
 	@Nullable
@@ -114,63 +92,39 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 
 	public ConnectionModelData genConnBlockstate()
 	{
-		Set<Connection> ret = new HashSet<>();
-		for(ConnectionPoint cp : getConnectionPoints())
-		{
-			LocalWireNetwork local = globalNet.getLocalNet(cp);
-			Collection<Connection> conns = local.getConnections(cp);
-			if(conns==null)
-			{
-				WireLogger.logger.warn("Aborting and returning empty data: null connections at {}", cp);
-				return new ConnectionModelData(ImmutableSet.of(), pos);
-			}
-			//TODO change model data to only include catenary (a, oX, oY) and number of vertices to render
-			for(Connection c : conns)
-			{
-				ConnectionPoint other = c.getOtherEnd(cp);
-				if(!c.isInternal())
-				{
-					IImmersiveConnectable otherConnector = globalNet.getLocalNet(other).getConnector(other);
-					if(otherConnector!=null&&!otherConnector.isProxy())
-					{
-						// generate subvertices
-						c.generateCatenaryData(world);
-						ret.add(c);
-					}
-				}
-			}
-		}
-		return new ConnectionModelData(ret, pos);
+		return ConnectorTileHelper.genConnBlockState(globalNet, this, world);
 	}
 
 	@Nonnull
 	@Override
 	public IModelData getModelData()
 	{
-		return new CombinedModelData(new SinglePropertyModelData<>(genConnBlockstate(), Model.CONNECTIONS),
-				super.getModelData());
+		return CombinedModelData.combine(
+				new SinglePropertyModelData<>(genConnBlockstate(), Model.CONNECTIONS), super.getModelData()
+		);
 	}
 
 	@Override
 	public void onChunkUnloaded()
 	{
 		super.onChunkUnloaded();
-		globalNet.onConnectorUnload(pos, this);
+		ConnectorTileHelper.onChunkUnload(globalNet, this);
 	}
 
 	@Override
 	public void onLoad()
 	{
 		super.onLoad();
-		globalNet.onConnectorLoad(this, world);
+		ConnectorTileHelper.onChunkLoad(globalNet, this, world);
 	}
 
 	@Override
 	public void remove()
 	{
 		super.remove();
-		globalNet.removeConnector(this);
+		ConnectorTileHelper.remove(world, this);
 	}
+
 	@Override
 	public Collection<ConnectionPoint> getConnectionPoints()
 	{
@@ -181,14 +135,7 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 
 	protected LocalWireNetwork getLocalNet(int cpIndex)
 	{
-		LocalWireNetwork ret = cachedLocalNets.get(cpIndex);
-		ConnectionPoint cp = new ConnectionPoint(getPos(), cpIndex);
-		if(ret==null||!ret.isValid(cp))
-		{
-			ret = globalNet.getLocalNet(cp);
-			cachedLocalNets.put(cpIndex, ret);
-		}
-		return ret;
+		return ConnectorTileHelper.getLocalNetWithCache(globalNet, getPos(), cpIndex, cachedLocalNets);
 	}
 
 	@Override

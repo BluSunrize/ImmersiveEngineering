@@ -1,0 +1,20 @@
+{
+  "type": "immersiveengineering:mixer",
+  "inputs": [
+    {
+      "tag": "forge:dusts/saltpeter"
+    },
+    {
+      "tag": "forge:dusts/copper"
+    }
+  ],
+  "result": {
+    "fluid": "immersiveengineering:herbicide",
+    "amount": 500
+  },
+  "fluid": {
+    "tag": "forge:ethanol",
+    "amount": 500
+  },
+  "energy": 3200
+}

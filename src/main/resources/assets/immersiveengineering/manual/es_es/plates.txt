@@ -1,0 +1,3 @@
+Placas de metal
+Plana como una pluma
+Las placas de metal son un material de artesanía necesario para la creación de algunas máquinas o bloques. Se fabrican martillando un lingote con un Martillo del Ingeniero o en una <link;metal_press;Prensa metálica>.

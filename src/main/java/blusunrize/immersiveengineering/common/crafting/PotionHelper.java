@@ -14,8 +14,7 @@ import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.util.IELogger;
-import com.google.common.collect.ImmutableList;
-import com.mojang.datafixers.util.Either;
+import blusunrize.immersiveengineering.mixin.accessors.PotionBrewingAccess;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -31,7 +30,6 @@ import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.brewing.IBrewingRecipe;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.registries.IRegistryDelegate;
 
 import java.lang.reflect.Field;
@@ -72,7 +70,7 @@ public class PotionHelper
 			f_input.setAccessible(true);
 			f_reagent.setAccessible(true);
 			f_output.setAccessible(true);
-			for(Object mixPredicate : PotionBrewing.POTION_TYPE_CONVERSIONS)
+			for(Object mixPredicate : PotionBrewingAccess.getConversions())
 			{
 				Ingredient reagent = (Ingredient)f_reagent.get(mixPredicate);
 				IRegistryDelegate<Potion> input = (IRegistryDelegate<Potion>)f_input.get(mixPredicate);

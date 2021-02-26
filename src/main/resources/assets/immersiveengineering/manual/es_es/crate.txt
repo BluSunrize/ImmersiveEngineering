@@ -1,0 +1,7 @@
+Caja de madera tratada
+¡Sube esa marcha!
+<&normal>Las cajas de madera tratada son bloques bastante similares a un cofre. Fabricados con madera tratada, ofrecen 27 huecos de almacenamiento, sin embargo, cuando se rompen, conservan ese almacenamiento, permitiéndote moverlos junto con su contenido.
+Al igual que los cofres, emitirán una señal de comparación en función de la cantidad de objetos almacenados.
+
+<&reinforced>La caja de madera tratada reforzada ofrece la misma capacidad que una caja normal, pero a diferencia de ellas, estas son inmunes a las explosiones. Ya no habrá molestas enredaderas o cargas mineras mal colocadas que destruyan tus objetos de valor.
+La receta de mejora mantendrá el contenido de la caja.

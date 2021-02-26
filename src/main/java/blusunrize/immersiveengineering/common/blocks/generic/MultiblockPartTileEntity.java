@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMultiblock;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
+import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.SafeChunkUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockState;
@@ -25,6 +26,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
+import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -51,7 +53,7 @@ import java.util.Optional;
 import java.util.Set;
 
 public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntity<T>> extends IEBaseTileEntity
-		implements ITickableTileEntity, IDirectionalTile, IGeneralMultiblock, IScrewdriverInteraction, IMirrorAble,
+		implements ITickableTileEntity, IStateBasedDirectional, IGeneralMultiblock, IScrewdriverInteraction, IMirrorAble,
 		IModelOffsetProvider
 {
 	public boolean formed = false;
@@ -77,19 +79,18 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 		this.hasRedstoneControl = hasRSControl;
 	}
 
+	// This fixes compile errors with subclasses also extending IConveyorAttachable, as that also defines getFacing
+	@Nonnull
 	@Override
 	public Direction getFacing()
 	{
-		BlockState state = getBlockState();
-		return state.get(IEProperties.FACING_HORIZONTAL);
+		return IStateBasedDirectional.super.getFacing();
 	}
 
 	@Override
-	public void setFacing(Direction facing)
+	public EnumProperty<Direction> getFacingProperty()
 	{
-		BlockState oldState = getWorldNonnull().getBlockState(pos);
-		BlockState newState = oldState.with(IEProperties.FACING_HORIZONTAL, facing);
-		getWorldNonnull().setBlockState(pos, newState);
+		return IEProperties.FACING_HORIZONTAL;
 	}
 
 	@Override
@@ -141,7 +142,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	private EnumMap<Direction, LazyOptional<IFluidHandler>> fluidCaps = new EnumMap<>(Direction.class);
 
 	{
-		for(Direction f : Direction.VALUES)
+		for(Direction f : DirectionUtils.VALUES)
 		{
 			LazyOptional<IFluidHandler> forSide = registerConstantCap(new MultiblockFluidWrapper(this, f));
 			fluidCaps.put(f, forSide);
@@ -434,10 +435,11 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 
 	@Nonnull
 	@Override
-	public BlockPos getModelOffset(BlockState state)
+	public BlockPos getModelOffset(BlockState state, @Nullable Vector3i size)
 	{
 		BlockPos mirroredPosInMB = posInMultiblock;
-		final Vector3i size = multiblockInstance.getSize(world);
+		if(size==null)
+			size = multiblockInstance.getSize(world);
 		if(getIsMirrored())
 			mirroredPosInMB = new BlockPos(
 					size.getX()-mirroredPosInMB.getX()-1,

@@ -9,8 +9,8 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
+import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICollisionBounds;
@@ -78,10 +78,10 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 
 	public NonNullList<ItemStack> inventory = NonNullList.withSize(26, ItemStack.EMPTY);
 	public int pouringMetal = 0;
-	private CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntity(this,
+	private CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntityAt(this,
 			() -> new DirectionalBlockPos(this.getBlockPosForPos(MAIN_OUT_POS).offset(getFacing(), -1), getFacing().getOpposite()),
 			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
-	private CapabilityReference<IItemHandler> slagOut = CapabilityReference.forTileEntity(this,
+	private CapabilityReference<IItemHandler> slagOut = CapabilityReference.forTileEntityAt(this,
 			() -> new DirectionalBlockPos(this.getBlockPosForPos(SLAG_OUT_POS).offset(getFacing()), getFacing().getOpposite()),
 			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 
@@ -233,7 +233,7 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 					for(int j : OUTPUT_SLOTS)
 						if(!inventory.get(j).isEmpty())
 						{
-							ItemStack stack = Utils.copyStackWithAmount(inventory.get(j), 1);
+							ItemStack stack = ItemHandlerHelper.copyStackWithSize(inventory.get(j), 1);
 							stack = Utils.insertStackIntoInventory(output, stack, false);
 							if(stack.isEmpty())
 							{
@@ -245,7 +245,7 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 				if(!inventory.get(SLAG_SLOT).isEmpty()&&slagOut.isPresent())
 				{
 					int out = Math.min(inventory.get(SLAG_SLOT).getCount(), 16);
-					ItemStack stack = Utils.copyStackWithAmount(inventory.get(SLAG_SLOT), out);
+					ItemStack stack = ItemHandlerHelper.copyStackWithSize(inventory.get(SLAG_SLOT), out);
 					stack = Utils.insertStackIntoInventory(slagOut, stack, false);
 					if(!stack.isEmpty())
 						out -= stack.getCount();

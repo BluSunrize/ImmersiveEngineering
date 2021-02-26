@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.api.tool;
 
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.mixin.accessors.ConcretePowderBlockAccess;
 import net.minecraft.block.Block;
 import net.minecraft.block.ConcretePowderBlock;
 import net.minecraft.block.FireBlock;
@@ -116,7 +117,7 @@ public class ChemthrowerHandler
 				if(target.attackEntityFrom(source, damage))
 				{
 					target.hurtResistantTime = (int)(target.hurtResistantTime*.75);
-					if(source.isFireDamage()&&!target.func_230279_az_())
+					if(source.isFireDamage()&&!target.isImmuneToFire())
 						target.setFire(fluid.getAttributes().isGaseous()?2: 5);
 				}
 			}
@@ -200,7 +201,7 @@ public class ChemthrowerHandler
 			BlockPos pos = rtr.getPos();
 			Block b = world.getBlockState(pos).getBlock();
 			if(b instanceof ConcretePowderBlock)
-				world.setBlockState(pos, ((ConcretePowderBlock)b).solidifiedState, 3);
+				world.setBlockState(pos, ((ConcretePowderBlockAccess)b).getSolidifiedState(), 3);
 
 			// Interactions with block at offset position
 			pos = rtr.getPos().offset(rtr.getFace());

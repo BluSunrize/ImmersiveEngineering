@@ -64,7 +64,7 @@ public class ClocheRenderFunctions
 			}
 			else
 			{
-				for(Property<?> prop : cropBlock.getDefaultState().func_235904_r_())
+				for(Property<?> prop : cropBlock.getDefaultState().getProperties())
 					if("age".equals(prop.getName())&&prop instanceof IntegerProperty)
 					{
 						int tmp = -1;

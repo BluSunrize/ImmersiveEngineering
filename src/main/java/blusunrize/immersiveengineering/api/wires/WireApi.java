@@ -110,7 +110,7 @@ public final class WireApi
 			BlockState conn = this.conn.get();
 			if(state.getBlock()!=conn.getBlock())
 				return false;
-			for(Property<?> p : state.func_235904_r_())
+			for(Property<?> p : state.getProperties())
 				if(p!=IEProperties.FACING_ALL&&p!=BlockStateProperties.WATERLOGGED&&!state.get(p).equals(conn.get(p)))
 					return false;
 			return true;

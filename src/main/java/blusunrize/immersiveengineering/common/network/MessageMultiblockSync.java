@@ -14,6 +14,8 @@ import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.StaticTemplateManager;
+import blusunrize.immersiveengineering.mixin.accessors.PaletteAccess;
+import blusunrize.immersiveengineering.mixin.accessors.TemplateAccess;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -56,8 +58,9 @@ public class MessageMultiblockSync implements IMessage
 			for(SyncedTemplate synced : templates)
 			{
 				Template template = new Template();
-				template.size = synced.size;
-				template.blocks.add(synced.parts);
+				TemplateAccess access = (TemplateAccess)template;
+				access.setSize(synced.size);
+				access.getBlocks().add(synced.parts);
 				StaticTemplateManager.SYNCED_CLIENT_TEMPLATES.put(synced.name, template);
 			}
 			for(IMultiblock mb : MultiblockHandler.getMultiblocks())
@@ -76,7 +79,7 @@ public class MessageMultiblockSync implements IMessage
 		public SyncedTemplate(Template template, ResourceLocation name)
 		{
 			this.size = template.getSize();
-			this.parts = template.blocks.get(0);
+			this.parts = ((TemplateAccess)template).getBlocks().get(0);
 			this.name = name;
 		}
 
@@ -84,7 +87,7 @@ public class MessageMultiblockSync implements IMessage
 		{
 			this.size = buffer.readBlockPos();
 			this.name = buffer.readResourceLocation();
-			this.parts = new Template.Palette(PacketUtils.readList(buffer, SyncedTemplate::readPart));
+			this.parts = PaletteAccess.construct(PacketUtils.readList(buffer, SyncedTemplate::readPart));
 		}
 
 		public void writeTo(PacketBuffer buffer)
@@ -106,7 +109,7 @@ public class MessageMultiblockSync implements IMessage
 		private static void writePart(BlockInfo info, PacketBuffer buffer)
 		{
 			ObjectIntIdentityMap<BlockState> stateIds = GameData.getBlockStateIDMap();
-			buffer.writeVarInt(stateIds.get(info.state));
+			buffer.writeVarInt(stateIds.getId(info.state));
 			buffer.writeBlockPos(info.pos);
 			buffer.writeCompoundTag(info.nbt);
 		}

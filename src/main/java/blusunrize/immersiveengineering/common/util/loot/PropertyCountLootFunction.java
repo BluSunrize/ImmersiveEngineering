@@ -52,14 +52,14 @@ public class PropertyCountLootFunction extends LootFunction
 
 	private int getPropertyValue(BlockState blockState)
 	{
-		for(Property<?> prop : blockState.func_235904_r_())
+		for(Property<?> prop : blockState.getProperties())
 			if(prop instanceof IntegerProperty&&prop.getName().equals(this.propertyName))
 				return blockState.get((IntegerProperty)prop);
 		return 1;
 	}
 
 	@Override
-	public LootFunctionType func_230425_b_()
+	public LootFunctionType getFunctionType()
 	{
 		return IELootFunctions.propertyCount;
 	}
@@ -69,9 +69,9 @@ public class PropertyCountLootFunction extends LootFunction
 		private final static String JSON_KEY = "propery_name";
 
 		@Override
-		public void func_230424_a_(JsonObject object, PropertyCountLootFunction function, JsonSerializationContext context)
+		public void serialize(JsonObject object, PropertyCountLootFunction function, JsonSerializationContext context)
 		{
-			super.func_230424_a_(object, function, context);
+			super.serialize(object, function, context);
 			object.addProperty(JSON_KEY, function.propertyName);
 		}
 

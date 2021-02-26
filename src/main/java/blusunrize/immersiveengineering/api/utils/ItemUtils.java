@@ -15,13 +15,17 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.util.Hand;
+import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import java.util.Collection;
 
@@ -76,12 +80,22 @@ public class ItemUtils
 		return false;
 	}
 
+	@Deprecated
 	public static ItemStack copyStackWithAmount(ItemStack stack, int amount)
 	{
-		if(stack.isEmpty())
-			return ItemStack.EMPTY;
-		ItemStack s2 = stack.copy();
-		s2.setCount(amount);
-		return s2;
+		return ItemHandlerHelper.copyStackWithSize(stack, amount);
+	}
+
+	/**
+	 * This takes care of mirroring, because HandSide.opposite is Client Only
+	 *
+	 * @return the side the entity's provided hand
+	 */
+	public static HandSide getLivingHand(LivingEntity living, Hand hand)
+	{
+		HandSide handside = living.getPrimaryHand();
+		if(hand!=Hand.MAIN_HAND)
+			handside = handside==HandSide.LEFT?HandSide.RIGHT: HandSide.LEFT;
+		return handside;
 	}
 }

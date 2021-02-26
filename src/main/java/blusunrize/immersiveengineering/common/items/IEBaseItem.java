@@ -109,4 +109,10 @@ public class IEBaseItem extends Item implements IColouredItem
 	{
 		return super.isRepairable(stack);
 	}
+
+	@Override
+	public boolean isBookEnchantable(ItemStack stack, ItemStack book)
+	{
+		return false;
+	}
 }

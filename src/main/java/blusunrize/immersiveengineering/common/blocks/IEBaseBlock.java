@@ -182,7 +182,7 @@ public class IEBaseBlock extends Block implements IIEBlock, IWaterLoggable
 	protected BlockState getInitDefaultState()
 	{
 		BlockState state = this.stateContainer.getBaseState();
-		if(state.func_235901_b_(BlockStateProperties.WATERLOGGED))
+		if(state.hasProperty(BlockStateProperties.WATERLOGGED))
 			state = state.with(BlockStateProperties.WATERLOGGED, Boolean.FALSE);
 		return state;
 	}
@@ -291,7 +291,7 @@ public class IEBaseBlock extends Block implements IIEBlock, IWaterLoggable
 
 	public static BlockState applyLocationalWaterlogging(BlockState state, World world, BlockPos pos)
 	{
-		if(state.func_235901_b_(BlockStateProperties.WATERLOGGED))
+		if(state.hasProperty(BlockStateProperties.WATERLOGGED))
 			return state.with(BlockStateProperties.WATERLOGGED, world.getFluidState(pos).getFluid()==Fluids.WATER);
 		return state;
 	}
@@ -307,7 +307,7 @@ public class IEBaseBlock extends Block implements IIEBlock, IWaterLoggable
 	@Override
 	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos)
 	{
-		if(stateIn.func_235901_b_(BlockStateProperties.WATERLOGGED)&&stateIn.get(BlockStateProperties.WATERLOGGED))
+		if(stateIn.hasProperty(BlockStateProperties.WATERLOGGED)&&stateIn.get(BlockStateProperties.WATERLOGGED))
 			worldIn.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickRate(worldIn));
 		return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
 	}
@@ -315,7 +315,7 @@ public class IEBaseBlock extends Block implements IIEBlock, IWaterLoggable
 	@Override
 	public FluidState getFluidState(BlockState state)
 	{
-		if(state.func_235901_b_(BlockStateProperties.WATERLOGGED)&&state.get(BlockStateProperties.WATERLOGGED))
+		if(state.hasProperty(BlockStateProperties.WATERLOGGED)&&state.get(BlockStateProperties.WATERLOGGED))
 			return Fluids.WATER.getStillFluidState(false);
 		return super.getFluidState(state);
 	}
@@ -323,19 +323,19 @@ public class IEBaseBlock extends Block implements IIEBlock, IWaterLoggable
 	@Override
 	public boolean canContainFluid(IBlockReader worldIn, BlockPos pos, BlockState state, Fluid fluidIn)
 	{
-		return state.func_235901_b_(BlockStateProperties.WATERLOGGED)&&IWaterLoggable.super.canContainFluid(worldIn, pos, state, fluidIn);
+		return state.hasProperty(BlockStateProperties.WATERLOGGED)&&IWaterLoggable.super.canContainFluid(worldIn, pos, state, fluidIn);
 	}
 
 	@Override
 	public boolean receiveFluid(IWorld worldIn, BlockPos pos, BlockState state, FluidState fluidStateIn)
 	{
-		return state.func_235901_b_(BlockStateProperties.WATERLOGGED)&&IWaterLoggable.super.receiveFluid(worldIn, pos, state, fluidStateIn);
+		return state.hasProperty(BlockStateProperties.WATERLOGGED)&&IWaterLoggable.super.receiveFluid(worldIn, pos, state, fluidStateIn);
 	}
 
 	@Override
 	public Fluid pickupFluid(IWorld worldIn, BlockPos pos, BlockState state)
 	{
-		if(state.func_235901_b_(BlockStateProperties.WATERLOGGED))
+		if(state.hasProperty(BlockStateProperties.WATERLOGGED))
 			return IWaterLoggable.super.pickupFluid(worldIn, pos, state);
 		return Fluids.EMPTY;
 	}

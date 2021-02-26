@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.client.gui.elements.GuiButtonState;
 import blusunrize.immersiveengineering.common.blocks.metal.ConnectorRedstoneTileEntity;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.util.InputMappings;
 import net.minecraft.item.DyeColor;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
@@ -74,13 +75,13 @@ public class RedstoneConnectorScreen extends ClientTileScreen<ConnectorRedstoneT
 	}
 
 	@Override
-	protected void func_230450_a_(MatrixStack transform, int mouseX, int mouseY, float partialTick)
+	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, int mouseX, int mouseY, float partialTick)
 	{
 
 	}
 
 	@Override
-	protected void func_230451_b_(MatrixStack transform, int mouseX, int mouseY, float partialTick)
+	protected void drawGuiContainerForegroundLayer(MatrixStack transform, int mouseX, int mouseY, float partialTick)
 	{
 		ArrayList<ITextComponent> tooltip = new ArrayList<>();
 
@@ -100,11 +101,23 @@ public class RedstoneConnectorScreen extends ClientTileScreen<ConnectorRedstoneT
 				tooltip.add(ClientUtils.applyFormat(
 						new TranslationTextComponent("color.minecraft."+DyeColor.byId(i).getTranslationKey()),
 						TextFormatting.GRAY
-						));
+				));
 			}
 
 		if(!tooltip.isEmpty())
 			GuiUtils.drawHoveringText(transform, tooltip, mouseX, mouseY, width, height, -1, font);
+	}
+
+	@Override
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers)
+	{
+		InputMappings.Input mouseKey = InputMappings.getInputByCode(keyCode, scanCode);
+		if(mc().gameSettings.keyBindInventory.isActiveAndMatches(mouseKey))
+		{
+			this.closeScreen();
+			return true;
+		}
+		return super.keyPressed(keyCode, scanCode, modifiers);
 	}
 
 	public static GuiButtonBoolean buildColorButton(GuiButtonBoolean[] buttons, int posX, int posY, boolean active, DyeColor color, Consumer<GuiButtonBoolean> onClick)
@@ -120,8 +133,9 @@ public class RedstoneConnectorScreen extends ClientTileScreen<ConnectorRedstoneT
 				})
 		{
 			@Override
-			protected boolean isValidClickButton(int button) {
-				return button == 0 && !getState();
+			protected boolean isValidClickButton(int button)
+			{
+				return button==0&&!getState();
 			}
 
 			@Override
@@ -130,7 +144,7 @@ public class RedstoneConnectorScreen extends ClientTileScreen<ConnectorRedstoneT
 				super.render(transform, mouseX, mouseY, partialTicks);
 				if(this.visible)
 				{
-					int col = color.colorValue;
+					int col = color.getColorValue();
 					if(!getState())
 						col = ClientUtils.getDarkenedTextColour(col);
 					col = 0xff000000|col;

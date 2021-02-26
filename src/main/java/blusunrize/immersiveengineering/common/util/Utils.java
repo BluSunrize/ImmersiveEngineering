@@ -9,8 +9,9 @@
 package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.fluid.FluidUtils;
+import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.common.items.HammerItem;
 import blusunrize.immersiveengineering.common.items.ScrewdriverItem;
 import blusunrize.immersiveengineering.common.items.WirecutterItem;
@@ -102,8 +103,6 @@ import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import static java.lang.Math.min;
-
 public class Utils
 {
 	public static final Random RAND = new Random();
@@ -126,15 +125,6 @@ public class Utils
 		if(hasTag1&&!stack1.getOrCreateTag().equals(stack2.getOrCreateTag()))
 			return false;
 		return stack1.areCapsCompatible(stack2);
-	}
-
-	public static ItemStack copyStackWithAmount(ItemStack stack, int amount)
-	{
-		if(stack.isEmpty())
-			return ItemStack.EMPTY;
-		ItemStack s2 = stack.copy();
-		s2.setCount(amount);
-		return s2;
 	}
 
 	public static final BiMap<ResourceLocation, DyeColor> DYES_BY_TAG =
@@ -693,7 +683,7 @@ public class Utils
 			boolean flag1 = material.isReplaceable();
 			if(worldIn.isAirBlock(posIn)||flag||flag1||blockstate.getBlock() instanceof ILiquidContainer&&((ILiquidContainer)blockstate.getBlock()).canContainFluid(worldIn, posIn, blockstate, fluid))
 			{
-				if(worldIn.func_230315_m_().func_236040_e_()&&fluid.isIn(FluidTags.WATER))
+				if(worldIn.getDimensionType().isUltrawarm()&&fluid.isIn(FluidTags.WATER))
 				{
 					int i = posIn.getX();
 					int j = posIn.getY();
@@ -748,7 +738,7 @@ public class Utils
 
 	public static void dropStackAtPos(World world, DirectionalBlockPos pos, ItemStack stack)
 	{
-		dropStackAtPos(world, pos, stack, pos.direction);
+		dropStackAtPos(world, pos.getPosition(), stack, pos.getSide());
 	}
 
 	public static void dropStackAtPos(World world, BlockPos pos, ItemStack stack, @Nonnull Direction facing)
@@ -765,33 +755,6 @@ public class Utils
 	public static void dropStackAtPos(World world, BlockPos pos, ItemStack stack)
 	{
 		InventoryHelper.spawnItemStack(world, pos.getX(), pos.getY(), pos.getZ(), stack);
-	}
-
-	public static ItemStack addToEmptyInventorySlot(IInventory inventory, int slot, ItemStack stack)
-	{
-		if(!inventory.isItemValidForSlot(slot, stack))
-		{
-			return stack;
-		}
-		int stackLimit = inventory.getInventoryStackLimit();
-		inventory.setInventorySlotContents(slot, copyStackWithAmount(stack, Math.min(stack.getCount(), stackLimit)));
-		return stackLimit >= stack.getCount()?ItemStack.EMPTY: stack.split(stack.getCount()-stackLimit);
-	}
-
-	public static ItemStack addToOccupiedSlot(IInventory inventory, int slot, ItemStack stack, ItemStack existingStack)
-	{
-		int stackLimit = Math.min(inventory.getInventoryStackLimit(), stack.getMaxStackSize());
-		if(stack.getCount()+existingStack.getCount() > stackLimit)
-		{
-			int stackDiff = stackLimit-existingStack.getCount();
-			existingStack.setCount(stackLimit);
-			stack.shrink(stackDiff);
-			inventory.setInventorySlotContents(slot, existingStack);
-			return stack;
-		}
-		existingStack.grow(min(stack.getCount(), stackLimit));
-		inventory.setInventorySlotContents(slot, existingStack);
-		return stackLimit >= stack.getCount()?ItemStack.EMPTY: stack.split(stack.getCount()-stackLimit);
 	}
 
 	public static ItemStack fillFluidContainer(IFluidHandler handler, ItemStack containerIn, ItemStack containerOut, @Nullable PlayerEntity player)
@@ -817,7 +780,7 @@ public class Utils
 		return ItemStack.EMPTY;
 	}
 
-	public static ItemStack drainFluidContainer(IFluidHandler handler, ItemStack containerIn, ItemStack containerOut, @Nullable PlayerEntity player)
+	public static ItemStack drainFluidContainer(IFluidHandler handler, ItemStack containerIn, ItemStack containerOut)
 	{
 		if(containerIn==null||containerIn.isEmpty())
 			return ItemStack.EMPTY;
@@ -825,7 +788,9 @@ public class Utils
 		if(containerIn.hasTag()&&containerIn.getOrCreateTag().isEmpty())
 			containerIn.setTag(null);
 
-		FluidActionResult result = FluidUtil.tryEmptyContainer(containerIn, handler, Integer.MAX_VALUE, player, false);
+		FluidActionResult result = FluidUtils.tryEmptyContainer(
+				containerIn, handler, Integer.MAX_VALUE, FluidAction.SIMULATE
+		);
 		if(result.isSuccess())
 		{
 			ItemStack empty = result.getResult();
@@ -833,7 +798,7 @@ public class Utils
 			{
 				if(!containerOut.isEmpty()&&containerOut.getCount()+empty.getCount() > containerOut.getMaxStackSize())
 					return ItemStack.EMPTY;
-				result = FluidUtil.tryEmptyContainer(containerIn, handler, Integer.MAX_VALUE, player, true);
+				result = FluidUtils.tryEmptyContainer(containerIn, handler, Integer.MAX_VALUE, FluidAction.EXECUTE);
 				if(result.isSuccess())
 				{
 					return result.getResult();
@@ -915,7 +880,7 @@ public class Utils
 	{
 		int val = 0;
 		final int prime = 31;
-		for(Property<?> n : state.func_235904_r_())
+		for(Property<?> n : state.getProperties())
 		{
 			Object o = state.get(n);
 			val = prime*val+Objects.hash(o);

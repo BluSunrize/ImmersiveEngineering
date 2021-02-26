@@ -1,0 +1,7 @@
+Protectores Auditivos
+¡RUIDOS FUERTES!
+<&recipe>Los protectores auditivos son dispositivos para proteger el oído. Son muy importantes para los ingenieros que trabajan cerca del <link;diesel_generator;Generador diesel;> u otra maquinaria ruidosa.
+Mientras se llevan puestos los protectores auditivos, todos los ruidos se reducen en un 90%.
+<&color_and_armor>Colocando los Protectores Auditivos en el <link;workbench;Banco de Trabajo del Ingeniero;> le permite especificar qué tipos de ruidos quiere que se cancelen y en qué medida debe reducirse su volumen.
+Puedes teñirlos como lo harías con una armadura de cuero.
+Si los creas con cualquier otro casco, los defensores se unirán a esa pieza de equipo; si creas el casco solo, se eliminarán los defensores de nuevo, para permitir una mayor personalización.

@@ -1,0 +1,10 @@
+Ensamblador
+Se requiere algo de montaje
+<&multiblock>El Ensamblador es una máquina compleja capaz de fabricar objetos, de forma similar a como lo haría un jugador.
+Para formar la estructura, constrúyela como se ha demostrado anteriormente y utiliza el Martillo en uno de los transportadores.<np>
+El transportador sobre el que ha hecho clic será el lado de entrada, indicado por el marcador azul sobre él y la flecha en el lado de la máquina.
+El Ensamblador permite almacenar hasta 3 recetas en su interior que se ejecutarán en orden. Los resultados de las recetas anteriores pueden utilizarse como entradas para las siguientes recetas.
+Las 3 rejillas de fabricación almacenan las recetas, y las 18 ranuras debajo de ellas son el inventario de materiales.<np>
+El lado de entrada, además de una entrada de artículos, también cuenta con una entrada de fluido para llenar los tres tanques internos de la máquina.
+El fluido de estos tanques puede usarse para reemplazar los contenedores de fluido como los cubos de agua en las recetas.
+La alimentación de la máquina se realiza a través del bloque central superior.

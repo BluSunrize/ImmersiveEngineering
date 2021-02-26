@@ -1,0 +1,51 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "immersiveengineering:block/multiblocks/alloy_smelter_on"
+  },
+  "loader": "immersiveengineering:basic_split",
+  "dynamic": false,
+  "base_model": "immersiveengineering:block/alloy_smelter_on",
+  "split_parts": [
+    [
+      0,
+      0,
+      -1
+    ],
+    [
+      1,
+      0,
+      -1
+    ],
+    [
+      0,
+      1,
+      -1
+    ],
+    [
+      1,
+      1,
+      -1
+    ],
+    [
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      0
+    ],
+    [
+      1,
+      1,
+      0
+    ]
+  ]
+}

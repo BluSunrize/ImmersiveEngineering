@@ -59,8 +59,8 @@ public class SkylineHelper
 			ConnectionPoint cpB = connection.getEndB();
 			IImmersiveConnectable iicB = global.getExistingConnector(cpB);
 			IImmersiveConnectable iicA = global.getExistingConnector(cpA);
-			Vector3d vStart = Vector3d.func_237491_b_(cpA.getPosition());
-			Vector3d vEnd = Vector3d.func_237491_b_(cpB.getPosition());
+			Vector3d vStart = Vector3d.copy(cpA.getPosition());
+			Vector3d vEnd = Vector3d.copy(cpB.getPosition());
 
 			if(iicB!=null)
 				vStart = Utils.addVectors(vStart, iicB.getConnectionOffset(connection, cpB));

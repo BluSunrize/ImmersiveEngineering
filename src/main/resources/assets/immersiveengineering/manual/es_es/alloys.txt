@@ -1,0 +1,3 @@
+Aleaciones
+Artes de mezclar el metal
+Al mezclar los polvos se crea una mezcla de aleación que luego puede fundirse en lingotes aleados. El constantan tiene propiedades termoeléctricas y se utiliza en la creación del <link;generator;Generador Termoeléctrico> y el electrum es un excelente conductor eléctrico utilizado en la <link;wiring;arquitectura de media tensión>.

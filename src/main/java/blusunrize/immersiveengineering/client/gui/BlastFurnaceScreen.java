@@ -29,10 +29,11 @@ public class BlastFurnaceScreen extends IEContainerScreen<BlastFurnaceContainer>
 		super(container, inventoryPlayer, title);
 		if(container.tile instanceof BlastFurnaceAdvancedTileEntity)
 			this.xSize = 210;
+		clearIntArray(container.tile.getGuiInts());
 	}
 
 	@Override
-	protected void func_230451_b_(MatrixStack transform, int mouseX, int mouseY)
+	protected void drawGuiContainerForegroundLayer(MatrixStack transform, int x, int y)
 	{
 		if(container.tile instanceof BlastFurnaceAdvancedTileEntity)
 		{
@@ -45,7 +46,7 @@ public class BlastFurnaceScreen extends IEContainerScreen<BlastFurnaceContainer>
 	}
 
 	@Override
-	protected void func_230450_a_(MatrixStack transform, float f, int mx, int my)
+	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float f, int mx, int my)
 	{
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/blast_furnace.png");
 		this.blit(transform, guiLeft, guiTop, 0, 0, 176, ySize);

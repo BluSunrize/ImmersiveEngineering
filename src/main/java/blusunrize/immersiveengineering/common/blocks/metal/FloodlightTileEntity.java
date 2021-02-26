@@ -17,11 +17,11 @@ import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler.EnergyConnector;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.FakeLightBlock.FakeLightTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Misc;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.SpawnInterdictionHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -47,6 +47,7 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.MinecraftForgeClient;
@@ -63,8 +64,8 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 		IOBJModelCallback<BlockState>, EnergyConnector, IStateBasedDirectional
 {
 	public int energyStorage = 0;
-	private int energyDraw = IEConfig.MACHINES.floodlight_energyDraw.get();
-	private int maximumStorage = IEConfig.MACHINES.floodlight_maximumStorage.get();
+	private int energyDraw = IEServerConfig.MACHINES.floodlight_energyDraw.get();
+	private int maximumStorage = IEServerConfig.MACHINES.floodlight_maximumStorage.get();
 	public boolean redstoneControlInverted = false;
 	public Direction facing = Direction.NORTH;
 	public float rotY = 0;
@@ -247,19 +248,19 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 
 	public void placeLightAlongVector(Vector3d vec, int offset, ArrayList<BlockPos> checklist)
 	{
-		Vector3d light = Vector3d.func_237489_a_(getPos()).add(0, 0.25, 0);
+		Vector3d light = Vector3d.copyCentered(getPos()).add(0, 0.25, 0);
 		int range = 32;
 		HashSet<BlockPos> ignore = new HashSet<BlockPos>();
 		ignore.add(getPos());
 		BlockPos hit = Utils.rayTraceForFirst(Utils.addVectors(vec, light), light.add(vec.x*range, vec.y*range, vec.z*range), world, ignore);
-		double maxDistance = hit!=null?Vector3d.func_237489_a_(hit).add(0, 0.25, 0).squareDistanceTo(light): range*range;
+		double maxDistance = hit!=null?Vector3d.copyCentered(hit).add(0, 0.25, 0).squareDistanceTo(light): range*range;
 		for(int i = 1+offset; i <= range; i++)
 		{
 			BlockPos target = getPos().add(Math.round(vec.x*i), Math.round(vec.y*i), Math.round(vec.z*i));
 			double dist = (vec.x*i*vec.x*i)+(vec.y*i*vec.y*i)+(vec.z*i*vec.z*i);
 			if(dist > maxDistance)
 				break;
-			if(target.getY() > 255||target.getY() < 0)
+			if(World.isOutsideBuildHeight(pos))
 				continue;
 			//&&world.getBlockLightValue(xx,yy,zz)<12 using this makes it not work in daylight .-.
 
@@ -301,7 +302,7 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 	}
 
 	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(@Nonnull CompoundNBT nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 		energyStorage = nbt.getInt("energy");

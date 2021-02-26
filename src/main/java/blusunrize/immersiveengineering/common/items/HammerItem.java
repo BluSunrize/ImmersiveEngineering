@@ -13,16 +13,18 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
 import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.RotationUtil;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.advancements.IEAdvancements;
 import com.google.common.collect.ImmutableSet;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resources.I18n;
@@ -35,6 +37,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.NBTDynamicOps;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -50,10 +53,12 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
+import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class HammerItem extends IEBaseItem implements ITool
@@ -62,7 +67,13 @@ public class HammerItem extends IEBaseItem implements ITool
 
 	public HammerItem()
 	{
-		super("hammer", new Properties().defaultMaxDamage(IEConfig.TOOLS.hammerDurabiliy.get()));
+		super("hammer", new Properties().defaultMaxDamage(100));// Value is overridden in getMaxDamage
+	}
+
+	@Override
+	public int getMaxDamage(ItemStack stack)
+	{
+		return IEServerConfig.TOOLS.hammerDurabiliy.getOrDefault();
 	}
 
 	@Override
@@ -109,21 +120,25 @@ public class HammerItem extends IEBaseItem implements ITool
 		/*
 			Multiblock Handling
 		 */
-		ResourceLocation[] permittedMultiblocks = null;
-		ResourceLocation[] interdictedMultiblocks = null;
+		List<ResourceLocation> permittedMultiblocks = null;
+		List<ResourceLocation> interdictedMultiblocks = null;
 		if(ItemNBTHelper.hasKey(stack, "multiblockPermission"))
 		{
-			ListNBT list = stack.getOrCreateTag().getList("multiblockPermission", 8);
-			permittedMultiblocks = new ResourceLocation[list.size()];
-			for(int i = 0; i < permittedMultiblocks.length; i++)
-				permittedMultiblocks[i] = new ResourceLocation(list.getString(i));
+			ListNBT list = stack.getOrCreateTag().getList("multiblockPermission", NBT.TAG_STRING);
+			Optional<List<ResourceLocation>> permittedMultiblocksResult = parseUserDefinedRLs(list, player, "permission");
+			if(!permittedMultiblocksResult.isPresent())
+				return ActionResultType.FAIL;
+			else
+				permittedMultiblocks = permittedMultiblocksResult.get();
 		}
 		if(ItemNBTHelper.hasKey(stack, "multiblockInterdiction"))
 		{
-			ListNBT list = stack.getOrCreateTag().getList("multiblockInterdiction", 8);
-			interdictedMultiblocks = new ResourceLocation[list.size()];
-			for(int i = 0; i < interdictedMultiblocks.length; i++)
-				interdictedMultiblocks[i] = new ResourceLocation(list.getString(i));
+			ListNBT list = stack.getOrCreateTag().getList("multiblockInterdiction", NBT.TAG_STRING);
+			Optional<List<ResourceLocation>> interdictedMultiblocksResult = parseUserDefinedRLs(list, player, "interdiction");
+			if(!interdictedMultiblocksResult.isPresent())
+				return ActionResultType.FAIL;
+			else
+				interdictedMultiblocks = interdictedMultiblocksResult.get();
 		}
 		final Direction multiblockSide;
 		if(side.getAxis()==Axis.Y&&player!=null)
@@ -133,25 +148,15 @@ public class HammerItem extends IEBaseItem implements ITool
 		for(MultiblockHandler.IMultiblock mb : MultiblockHandler.getMultiblocks())
 			if(mb.isBlockTrigger(world.getBlockState(pos), multiblockSide, world))
 			{
-				boolean b = permittedMultiblocks==null;
+				boolean isAllowed;
 				if(permittedMultiblocks!=null)
-					for(ResourceLocation s : permittedMultiblocks)
-						if(mb.getUniqueName().equals(s))
-						{
-							b = true;
-							break;
-						}
-				if(!b)
-					break;
-				if(interdictedMultiblocks!=null)
-					for(ResourceLocation s : interdictedMultiblocks)
-						if(mb.getUniqueName().equals(s))
-						{
-							b = false;
-							break;
-						}
-				if(!b)
-					break;
+					isAllowed = permittedMultiblocks.contains(mb.getUniqueName());
+				else if(interdictedMultiblocks!=null)
+					isAllowed = !interdictedMultiblocks.contains(mb.getUniqueName());
+				else
+					isAllowed = true;
+				if(!isAllowed)
+					continue;
 				if(MultiblockHandler.postMultiblockFormationEvent(player, mb, pos, stack).isCanceled())
 					continue;
 				if(mb.createStructure(world, pos, multiblockSide, player))
@@ -178,7 +183,7 @@ public class HammerItem extends IEBaseItem implements ITool
 		{
 			boolean rotate = !(tile instanceof IDirectionalTile)&&!(tile instanceof IHammerInteraction);
 			if(!rotate&&tile instanceof IDirectionalTile)
-				rotate = ((IDirectionalTile)tile).canHammerRotate(side, context.getHitVec().subtract(Vector3d.func_237491_b_(pos)), player);
+				rotate = ((IDirectionalTile)tile).canHammerRotate(side, context.getHitVec().subtract(Vector3d.copy(pos)), player);
 			if(rotate&&RotationUtil.rotateBlock(world, pos, player!=null&&(player.isSneaking()!=side.equals(Direction.DOWN))))
 				return ActionResultType.SUCCESS;
 			else if(!rotate&&tile instanceof IHammerInteraction)
@@ -188,6 +193,22 @@ public class HammerItem extends IEBaseItem implements ITool
 			}
 		}
 		return ActionResultType.PASS;
+	}
+
+	private static Optional<List<ResourceLocation>> parseUserDefinedRLs(ListNBT data, PlayerEntity player, String prefix)
+	{
+		DataResult<List<ResourceLocation>> result = parseUserDefinedRLs(data);
+		return result.resultOrPartial(err -> {
+			if(player!=null&&!player.getEntityWorld().isRemote)
+				player.sendStatusMessage(
+						new StringTextComponent("Invalid "+prefix+" entry: "+err), false
+				);
+		});
+	}
+
+	private static DataResult<List<ResourceLocation>> parseUserDefinedRLs(ListNBT data)
+	{
+		return Codec.list(ResourceLocation.CODEC).parse(NBTDynamicOps.INSTANCE, data);
 	}
 
 	@Override

@@ -14,9 +14,10 @@ import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
+import blusunrize.immersiveengineering.api.utils.client.CombinedModelData;
+import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.utils.CombinedModelData;
-import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.collect.ImmutableList;
@@ -98,7 +99,11 @@ public class ModelConveyor extends BakedIEModel
 			if(extraData.hasProperty(Model.CONVEYOR))
 				conveyor = extraData.getData(Model.CONVEYOR);
 			if(extraData.hasProperty(Model.TILEENTITY_PASSTHROUGH))
+			{
 				tile = extraData.getData(Model.TILEENTITY_PASSTHROUGH);
+				if(tile instanceof IDirectionalTile)
+					facing = ((IDirectionalTile)tile).getFacing();
+			}
 			if(conveyor==null)
 				conveyor = ConveyorHandler.getConveyor(new ResourceLocation(key), tile);
 			if(conveyor!=null&&tile!=null)
@@ -429,7 +434,7 @@ public class ModelConveyor extends BakedIEModel
 	{
 		@Nullable
 		@Override
-		public IBakedModel func_239290_a_(@Nonnull IBakedModel originalModel, @Nonnull ItemStack stack, @Nullable ClientWorld world, @Nullable LivingEntity entity)
+		public IBakedModel getOverrideModel(@Nonnull IBakedModel originalModel, @Nonnull ItemStack stack, @Nullable ClientWorld world, @Nullable LivingEntity entity)
 		{
 			String key = "default";
 			if(stack.getItem() instanceof BlockItem)
@@ -479,7 +484,7 @@ public class ModelConveyor extends BakedIEModel
 		if(conveyorName!=null)
 		{
 			IConveyorBelt belt = ConveyorHandler.getConveyor(conveyorName, world.getTileEntity(pos));
-			return new CombinedModelData(tileData, new SinglePropertyModelData<>(belt, Model.CONVEYOR));
+			return CombinedModelData.combine(tileData, new SinglePropertyModelData<>(belt, Model.CONVEYOR));
 		}
 		else
 			return tileData;

@@ -5,13 +5,14 @@ import blusunrize.immersiveengineering.api.excavator.MineralMix;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import blusunrize.immersiveengineering.mixin.accessors.client.WorldRendererAccess;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.multiplayer.PlayerController;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.item.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -31,6 +32,7 @@ import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.LanguageMap;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.MapData;
 import net.minecraftforge.client.event.DrawHighlightEvent;
@@ -51,7 +53,8 @@ public class BlockOverlayUtils
 			for(ITextComponent s : text)
 				if(s!=null)
 					ClientUtils.font().func_238416_a_(
-							s, scaledWidth/2+8, scaledHeight/2+8+(i++)*ClientUtils.font().FONT_HEIGHT, 0xffffffff, true,
+							LanguageMap.getInstance().func_241870_a(s),
+							scaledWidth/2+8, scaledHeight/2+8+(i++)*ClientUtils.font().FONT_HEIGHT, 0xffffffff, true,
 							transform.getLast().getMatrix(), buffer, false, 0, 0xf000f0
 					);
 			buffer.finish();
@@ -246,7 +249,7 @@ public class BlockOverlayUtils
 	{
 		Vector3d renderView = ev.getInfo().getProjectedView();
 		for(BlockPos pos : blocks)
-			ev.getContext().drawSelectionBox(
+			((WorldRendererAccess)ev.getContext()).callDrawSelectionBox(
 					ev.getMatrix(),
 					ev.getBuffers().getBuffer(RenderType.getLines()),
 					player,
@@ -259,7 +262,7 @@ public class BlockOverlayUtils
 		transform.push();
 		transform.translate(-renderView.x, -renderView.y, -renderView.z);
 		PlayerController controllerMP = ClientUtils.mc().playerController;
-		if(controllerMP.isHittingBlock)
+		if(controllerMP.getIsHittingBlock())
 			ClientUtils.drawBlockDamageTexture(transform, ev.getBuffers(), player, partialTicks, player.world, blocks);
 		transform.pop();
 	}
@@ -287,7 +290,7 @@ public class BlockOverlayUtils
 					float mapRotation = (frameEntity.getRotation()%4)*1.5708f;
 
 					// Player hit vector, relative to frame block pos
-					Vector3d hitVec = rayTraceResult.getHitVec().subtract(Vector3d.func_237491_b_(frameEntity.getHangingPosition()));
+					Vector3d hitVec = rayTraceResult.getHitVec().subtract(Vector3d.copy(frameEntity.getHangingPosition()));
 					Direction frameDir = frameEntity.getHorizontalFacing();
 					double cursorH = 0;
 					double cursorV = 0;

@@ -88,7 +88,7 @@ public class BlockItemBalloon extends BlockItemIE
 		IFormattableTextComponent ret = super.getDisplayName(stack).deepCopy();
 		CompoundNBT nbt = stack.getOrCreateTag();
 		if(nbt.getByte("offset")!=0)
-			ret.func_240702_b_(" (+"+nbt.getByte("offset")+")");
+			ret.appendString(" (+"+nbt.getByte("offset")+")");
 		return ret;
 	}
 

@@ -1,5 +1,5 @@
 {
-  "parent": "immersiveengineering:block/coke_oven_on",
+  "parent": "immersiveengineering:block/coke_oven_on_split",
   "transform": {
     "thirdperson_righthand": {
       "translation": [

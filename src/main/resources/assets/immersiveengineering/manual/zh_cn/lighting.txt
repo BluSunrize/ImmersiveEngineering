@@ -1,7 +1,7 @@
-Engineered Lighting
-Lighting up the Wasteland
-<&lantern>Deep in the halls of the factories, it can be quite dark. In order to still find your way around the machines, you should probably light up the place with some Lanterns. These Lanterns provide almost as much light as a glowstone block would.
-<&electric_lantern>Powered Lanterns are one of the first ever invented uses for electric power. To run these, you need to connect them directly to your power grid using wires. They will allow power to be transferred through them, so you can link them in a row.
-Using the Engineer's Hammer on them will flip them upside down. As long as they are supplied with a little bit of power, they will light up the surrounding area like a normal Lantern, but additionally, they will also prevent hostile mobs to spawn in a 32 block radius!<np>
-<&floodlight>Floodlights are strong lightsources. While they require more power than a simple Powered Lantern, they will create a cone of light up to 32 blocks long. Use an Engineer's Hammer on the top or bottom faces of the block to rotate the light or click its sides to change its pitch.
-Generally, Floodlights require a redstone signal to run, however their control-behavior can be inverted by right-clicking them base with an Engineer's Screwdriver.
+工程照明
+照亮荒芜之地
+<&lantern>工厂长廊的深处可能会十分昏暗。为了能够找到通往机器的路，你可能需要用一些灯来照亮这些区域。这些灯能够提供最多等同于萤石块的亮度。
+<&electric_lantern>电灯是最早使用电能的发明之一。你需要用线缆将它们直接连至你的电网当中来使其工作。电能可以通过它们，因此你可以将它们连成一排。
+使用工程师锤右键可以使它们上下颠倒。只需为它们提供一点点能量，它们就可以像正常灯一样照亮周围区域，不仅如此，它们还能防止敌对生物在半径32格范围内生成！<np>
+<&floodlight>泛光灯是一种强光源。尽管它们对电能的需求比普通电灯高一些，它们能够产生一个32格远的光锥。对其顶部或底部使用工程师锤来旋转灯光或对其侧面使用来改变倾角。
+一般地，泛光灯需要红石信号来工作，但是可以使用工程师锤反转。

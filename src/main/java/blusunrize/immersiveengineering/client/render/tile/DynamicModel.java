@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.client.render.tile;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.DynamicModelLoader;
 import blusunrize.immersiveengineering.client.DynamicModelLoader.ModelRequest;
+import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
@@ -60,7 +61,7 @@ public abstract class DynamicModel<T>
 		private SidedDynamicModel(ResourceLocation name, String desc, ModelType type)
 		{
 			ResourceLocation baseLoc = new ResourceLocation(ImmersiveEngineering.MODID, "dynamic/"+desc);
-			for(Direction d : Direction.BY_HORIZONTAL_INDEX)
+			for(Direction d : DirectionUtils.BY_HORIZONTAL_INDEX)
 			{
 				names.put(d, new ModelResourceLocation(baseLoc, d.getString()));
 				DynamicModelLoader.requestModel(

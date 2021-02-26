@@ -8,18 +8,18 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.crafting.SawmillRecipe;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttachable;
+import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -42,6 +42,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
@@ -53,6 +54,7 @@ import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
@@ -109,12 +111,12 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 	{
 	}
 
-	private final CapabilityReference<IItemHandler> outputCap = CapabilityReference.forTileEntity(this, () -> {
+	private final CapabilityReference<IItemHandler> outputCap = CapabilityReference.forTileEntityAt(this, () -> {
 		Direction outDir = getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY();
 		return new DirectionalBlockPos(getBlockPosForPos(new BlockPos(4, 1, 1)).offset(outDir), outDir.getOpposite());
 	}, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 
-	private final CapabilityReference<IItemHandler> secondaryOutputCap = CapabilityReference.forTileEntity(
+	private final CapabilityReference<IItemHandler> secondaryOutputCap = CapabilityReference.forTileEntityAt(
 			this, this::getSecondaryOutputCapPos, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
 	);
 
@@ -168,11 +170,12 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 			{
 				doProcessOutput(process.getCurrentStack(!this.sawblade.isEmpty()).copy());
 				processIterator.remove();
-				if(this.sawblade.attemptDamageItem(IEConfig.MACHINES.sawmill_bladeDamage.get(), Utils.RAND, null))
+				if(this.sawblade.attemptDamageItem(IEServerConfig.MACHINES.sawmill_bladeDamage.get(), Utils.RAND, null))
 				{
 					this.sawblade = ItemStack.EMPTY;
 					this.updateMasterBlock(null, true);
 				}
+				this.updateComparatorLevel(false);
 			}
 		}
 		for(ItemStack output : secondaries)
@@ -192,13 +195,14 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 				else if(!world.isRemote)
 					player.entityDropItem(master.sawblade.copy(), 0);
 				master.sawblade = ItemStack.EMPTY;
+				master.updateComparatorLevel(false);
 				this.updateMasterBlock(null, true);
 				return true;
 			}
 			else if(IETags.sawblades.contains(heldItem.getItem()))
 			{
 				ItemStack tempBlade = !master.sawblade.isEmpty()?master.sawblade.copy(): ItemStack.EMPTY;
-				master.sawblade = Utils.copyStackWithAmount(heldItem, 1);
+				master.sawblade = ItemHandlerHelper.copyStackWithSize(heldItem, 1);
 				heldItem.shrink(1);
 				if(heldItem.getCount() <= 0)
 					heldItem = ItemStack.EMPTY;
@@ -211,6 +215,7 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 					else if(!world.isRemote)
 						player.entityDropItem(tempBlade, 0);
 				}
+				master.updateComparatorLevel(false);
 				this.updateMasterBlock(null, true);
 				return true;
 			}
@@ -295,6 +300,47 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 		);
 	}
 
+	private int cachedComparatorLevel = -1;
+
+	private void updateComparatorLevel(boolean force)
+	{
+		float damage = 1-(this.sawblade.getDamage()/(float)this.sawblade.getMaxDamage());
+		int level = MathHelper.floor(damage*15);
+
+		if(level!=cachedComparatorLevel||force)
+		{
+			this.cachedComparatorLevel = level;
+			this.markDirty();
+
+			Set<BlockPos> rsPositions = getRedstonePos();
+			for(BlockPos rsPos : rsPositions)
+			{
+				SawmillTileEntity tile = this.getTileForPos(rsPos);
+				if(tile!=null)
+				{
+					tile.cachedComparatorLevel = level;
+					tile.markDirty();
+					tile.markContainingBlockForUpdate(null);
+				}
+			}
+		}
+	}
+
+
+	@Override
+	public int getComparatorInputOverride()
+	{
+		if(!this.isRedstonePos())
+			return 0;
+		if(this.cachedComparatorLevel < 0)
+		{
+			SawmillTileEntity master = master();
+			if(master!=null)
+				master.updateComparatorLevel(true);
+		}
+		return this.cachedComparatorLevel;
+	}
+
 	@Override
 	public boolean shouldRenderAsActive()
 	{
@@ -342,7 +388,7 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 				return;
 			if(!simulate)
 			{
-				p = new SawmillProcess(Utils.copyStackWithAmount(stack, 1));
+				p = new SawmillProcess(ItemHandlerHelper.copyStackWithSize(stack, 1));
 				this.sawmillProcessQueue.add(p);
 				this.markDirty();
 				this.markContainingBlockForUpdate(null);
@@ -429,7 +475,7 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 		if(!output.isEmpty())
 		{
 			DirectionalBlockPos secondaryPos = getSecondaryOutputCapPos();
-			Utils.dropStackAtPos(world, secondaryPos, output, secondaryPos.direction.getOpposite());
+			Utils.dropStackAtPos(world, secondaryPos.getPosition(), output, secondaryPos.getSide().getOpposite());
 		}
 	}
 

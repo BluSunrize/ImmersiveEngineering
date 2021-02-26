@@ -10,33 +10,39 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
-import blusunrize.immersiveengineering.common.util.EnergyHelper;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.util.DirectionUtils;
+import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxConnector;
-import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockState;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.EnumMap;
+import java.util.Map;
 
 public class ThermoelectricGenTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInternalFluxConnector
 {
 	private int energyOutput = -1;
+	private Map<Direction, CapabilityReference<IEnergyStorage>> energyWrappers = new EnumMap<>(Direction.class);
 
 	public ThermoelectricGenTileEntity()
 	{
 		super(IETileTypes.THERMOELECTRIC_GEN.get());
+		for(Direction d : DirectionUtils.VALUES)
+			energyWrappers.put(d, CapabilityReference.forNeighbor(this, CapabilityEnergy.ENERGY, d));
 	}
 
 	@Override
@@ -53,10 +59,11 @@ public class ThermoelectricGenTileEntity extends IEBaseTileEntity implements ITi
 
 	public void outputEnergy(int amount)
 	{
-		for(Direction fd : Direction.VALUES)
+		for(Direction fd : DirectionUtils.VALUES)
 		{
-			TileEntity te = Utils.getExistingTileEntity(world, getPos().offset(fd));
-			amount -= EnergyHelper.insertFlux(te, fd.getOpposite(), amount, false);
+			IEnergyStorage forSide = energyWrappers.get(fd).getNullable();
+			if(forSide!=null)
+				amount -= forSide.receiveEnergy(amount, false);
 		}
 	}
 
@@ -78,7 +85,7 @@ public class ThermoelectricGenTileEntity extends IEBaseTileEntity implements ITi
 				if(temp0 > -1&&temp1 > -1)
 				{
 					int diff = Math.abs(temp0-temp1);
-					energy += (int)(Math.sqrt(diff)/2*IEConfig.MACHINES.thermoelectric_output.get());
+					energy += (int)(Math.sqrt(diff)/2*IEServerConfig.MACHINES.thermoelectric_output.get());
 				}
 			}
 		this.energyOutput = energy==0?-1: energy;

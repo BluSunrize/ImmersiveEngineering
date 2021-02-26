@@ -9,8 +9,8 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
+import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.IETileTypes;
@@ -35,7 +35,10 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
@@ -283,21 +286,24 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 		return getBasicShape(posInMultiblock).toBoundingBoxList();
 	}
 
-	private boolean isInInput()
+	private boolean isInInput(boolean allowMiddleLayer)
 	{
-		return posInMultiblock.getY()==1&&posInMultiblock.getX() > 0&&posInMultiblock.getX() < 4;
+		if(posInMultiblock.getY()==2||(allowMiddleLayer&&posInMultiblock.getY()==1))
+			return posInMultiblock.getX() > 0&&posInMultiblock.getX() < 4;
+		return false;
 	}
 
 	@Override
 	public void onEntityCollision(World world, Entity entity)
 	{
-		boolean bpos = isInInput();
+		// Actual intersection with the input box is checked later
+		boolean bpos = isInInput(true);
 		if(bpos&&!world.isRemote&&entity.isAlive()&&!isRSDisabled())
 		{
 			CrusherTileEntity master = master();
 			if(master==null)
 				return;
-			Vector3d center = Vector3d.func_237489_a_(master.getPos()).add(0, 0.25, 0);
+			Vector3d center = Vector3d.copyCentered(master.getPos()).add(0, 0.25, 0);
 			AxisAlignedBB crusherInternal = new AxisAlignedBB(center.x-1.0625, center.y, center.z-1.0625, center.x+1.0625, center.y+1.25, center.z+1.0625);
 			if(!entity.getBoundingBox().intersects(crusherInternal))
 				return;
@@ -372,7 +378,7 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 		return true;
 	}
 
-	private CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntity(this,
+	private CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntityAt(this,
 			() -> new DirectionalBlockPos(getPos().add(0, -1, 0).offset(getFacing(), -2), getFacing()),
 			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 
@@ -503,7 +509,7 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
-		if(isInInput()&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY&&isInInput(false))
 		{
 			CrusherTileEntity master = master();
 			if(master!=null)

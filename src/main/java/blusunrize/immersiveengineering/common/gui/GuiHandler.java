@@ -93,8 +93,7 @@ public class GuiHandler
 	}
 
 	public static <T extends TileEntity, C extends IEBaseContainer<? super T>>
-	void register(Class<T> tileClass, ResourceLocation name,
-				  TileContainerConstructor<T, C> container)
+	void register(Class<T> tileClass, ResourceLocation name, TileContainerConstructor<T, C> container)
 	{
 		ContainerType<C> type = new ContainerType<>((IContainerFactory<C>)(windowId, inv, data) -> {
 			World world = ImmersiveEngineering.proxy.getClientWorld();

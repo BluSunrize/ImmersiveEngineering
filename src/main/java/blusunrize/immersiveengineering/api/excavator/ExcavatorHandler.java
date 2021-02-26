@@ -17,7 +17,6 @@ import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.ColumnPos;
-import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.INoiseGenerator;
 import org.apache.commons.lang3.tuple.Pair;
@@ -65,7 +64,7 @@ public class ExcavatorHandler
 	{
 		if(world.isRemote)
 			return null;
-		RegistryKey<World> dimension = world.func_234923_W_();
+		RegistryKey<World> dimension = world.getDimensionKey();
 		Pair<RegistryKey<World>, ColumnPos> cacheKey = Pair.of(dimension, columnPos);
 		synchronized(MINERAL_VEIN_LIST)
 		{
@@ -77,9 +76,12 @@ public class ExcavatorHandler
 				// Iterate all known veins
 				for(MineralVein vein : MINERAL_VEIN_LIST.get(dimension))
 				{
-					int dX = vein.getPos().x-columnPos.x;
-					int dZ = vein.getPos().z-columnPos.z;
-					int d = dX*dX+dZ*dZ;
+					// Use longs here to avoid overflow issues (#4468)
+					// With longs we can handle distances up to roughly 2**31 * sqrt(2), much larger than the maximum
+					// distance in an MC world (6*10**6*sqrt(2))
+					long dX = vein.getPos().x-columnPos.x;
+					long dZ = vein.getPos().z-columnPos.z;
+					long d = dX*dX+dZ*dZ;
 					double rSq = vein.getRadius()*vein.getRadius();
 					if(d < rSq)
 					{
@@ -127,7 +129,7 @@ public class ExcavatorHandler
 				ColumnPos finalPos = pos;
 				int radius = 12+rand.nextInt(32);
 				int radiusSq = radius*radius;
-				boolean crossover = MINERAL_VEIN_LIST.get(world.func_234923_W_()).stream().anyMatch(vein -> {
+				boolean crossover = MINERAL_VEIN_LIST.get(world.getDimensionKey()).stream().anyMatch(vein -> {
 					int dX = vein.getPos().x-finalPos.x;
 					int dZ = vein.getPos().z-finalPos.z;
 					int dSq = dX*dX+dZ*dZ;
@@ -136,7 +138,7 @@ public class ExcavatorHandler
 				if(!crossover)
 				{
 					MineralMix mineralMix = null;
-					MineralSelection selection = new MineralSelection(world.func_234922_V_());
+					MineralSelection selection = new MineralSelection(world.getDimensionKey());
 					if(selection.getTotalWeight() > 0)
 					{
 						int weight = selection.getRandomWeight(rand);
@@ -156,7 +158,7 @@ public class ExcavatorHandler
 						// generate initial depletion
 						if(initialVeinDepletion > 0)
 							vein.setDepletion((int)(mineralVeinYield*(rand.nextDouble()*initialVeinDepletion)));
-						addVein(world.func_234923_W_(), vein);
+						addVein(world.getDimensionKey(), vein);
 						IESaveData.setDirty();
 					}
 				}
@@ -185,7 +187,7 @@ public class ExcavatorHandler
 		private final int totalWeight;
 		private final Set<MineralMix> validMinerals;
 
-		public MineralSelection(RegistryKey<DimensionType> dimension)
+		public MineralSelection(RegistryKey<World> dimension)
 		{
 			int weight = 0;
 			this.validMinerals = new HashSet<>();

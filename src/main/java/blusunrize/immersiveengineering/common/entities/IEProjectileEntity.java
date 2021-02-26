@@ -38,6 +38,7 @@ import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -53,6 +54,8 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 	public int ticksInGround;
 	public int ticksInAir;
 	protected IntSet piercedEntities;
+	@Nullable
+	protected UUID shooterUUID;
 
 	private int tickLimit = 40;
 
@@ -109,7 +112,7 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 
 	public void setShooterSynced()
 	{
-		this.dataManager.set(SHOOTER_PARAMETER, Optional.ofNullable(this.field_234609_b_));
+		this.dataManager.set(SHOOTER_PARAMETER, Optional.ofNullable(this.shooterUUID));
 	}
 
 	public UUID getShooterSynced()
@@ -118,9 +121,10 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 		return s.orElse(null);
 	}
 
+	@Nullable
 	public UUID getShooterUUID()
 	{
-		return field_234609_b_;
+		return shooterUUID;
 	}
 
 	@Nonnull
@@ -134,7 +138,7 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 	public void tick()
 	{
 		if(this.func_234616_v_()==null&&this.world.isRemote)
-			this.field_234609_b_ = getShooterSynced();
+			this.shooterUUID = getShooterSynced();
 
 		this.baseTick();
 		BlockState localState;
@@ -192,12 +196,11 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 			if(mop.getType()!=Type.ENTITY)
 			{
 				Entity entity = null;
-				List list = this.world.getEntitiesInAABBexcluding(this, this.getBoundingBox().expand(getMotion()).grow(1), Entity::canBeCollidedWith);
+				List<Entity> list = this.world.getEntitiesInAABBexcluding(this, this.getBoundingBox().expand(getMotion()).grow(1), Entity::canBeCollidedWith);
 				double d0 = 0.0D;
-				for(int i = 0; i < list.size(); ++i)
+				for(Entity entity1 : list)
 				{
-					Entity entity1 = (Entity)list.get(i);
-					if(entity1.canBeCollidedWith()&&(!entity1.getUniqueID().equals(this.field_234609_b_)||this.ticksInAir > 5))
+					if(entity1.canBeCollidedWith()&&(!entity1.getUniqueID().equals(this.shooterUUID)||this.ticksInAir > 5))
 					{
 						float f = 0.3F;
 						AxisAlignedBB axisalignedbb = entity1.getBoundingBox().grow((double)f, (double)f, (double)f);
@@ -226,9 +229,9 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 					if(!this.isBurning()&&this.canIgnite()&&entityHit.getEntity().isBurning())
 						this.setFire(3);
 					boolean allowHit = true;
-					if(field_234609_b_!=null)
+					if(shooterUUID!=null)
 					{
-						PlayerEntity shooter = world.getPlayerByUuid(field_234609_b_);
+						PlayerEntity shooter = world.getPlayerByUuid(shooterUUID);
 						if(shooter!=null&&entityHit.getEntity() instanceof PlayerEntity)
 							allowHit = shooter.canAttackPlayer((PlayerEntity)entityHit.getEntity());
 					}
@@ -366,6 +369,12 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 
 	public abstract void onImpact(RayTraceResult mop);
 
+	protected void onHitBlock(BlockRayTraceResult mop)
+	{
+		BlockState blockstate = this.world.getBlockState(mop.getPos());
+		blockstate.onProjectileCollision(this.world, blockstate, mop, this);
+	}
+
 	protected float getMotionDecayFactor()
 	{
 		return 0.99F;
@@ -381,8 +390,8 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 			nbt.put("inTile", NBTUtil.writeBlockState(inBlockState));
 		}
 		nbt.putByte("inGround", (byte)(this.inGround?1: 0));
-		if(this.field_234609_b_!=null)
-			nbt.putUniqueId("field_234609_b_", this.field_234609_b_);
+		if(this.shooterUUID!=null)
+			nbt.putUniqueId("Owner", this.shooterUUID);
 
 	}
 
@@ -401,7 +410,10 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 			stuckIn = null;
 		}
 		this.inGround = nbt.getByte("inGround")==1;
-		this.field_234609_b_ = nbt.getUniqueId("field_234609_b_");
+		if(nbt.contains("Owner"))
+			this.shooterUUID = nbt.getUniqueId("Owner");
+		else
+			this.shooterUUID = null;
 	}
 
 	@Override
@@ -414,5 +426,12 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 	public IPacket<?> createSpawnPacket()
 	{
 		return NetworkHooks.getEntitySpawningPacket(this);
+	}
+
+	public void setShooter(@Nullable Entity entityIn)
+	{
+		super.setShooter(entityIn);
+		if(entityIn!=null)
+			this.shooterUUID = entityIn.getUniqueID();
 	}
 }

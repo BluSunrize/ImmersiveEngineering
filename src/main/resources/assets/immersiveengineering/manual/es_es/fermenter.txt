@@ -1,0 +1,6 @@
+Fermentador Industrial
+¡Skál!
+El Fermentador Industrial es una estructura de varios bloques que extrae el Etanol de ciertas frutas, granos y verduras mediante un proceso de fermentación. La estructura se construye como se muestra arriba y se forma usando el Martillo del Ingeniero en el caldero central, desde el lado que tiene los Bloques de Ingeniería.
+Los objetos pueden introducirse en el fermentador a través de las dos trampillas de la parte trasera que están marcadas con puntos azules. La escotilla con el punto naranja sirve para la salida de artículos y el bloque de abajo para la salida de fluidos.
+La aplicación de una señal de Redstone al panel de control en la parte delantera detendrá el proceso de la máquina, este comportamiento puede ser invertido mediante el uso del Martillo del Ingeniero.
+<np>La siguiente lista muestra varios artículos que pueden ser fermentados en Etanol, y la cantidad que producen.<&list>

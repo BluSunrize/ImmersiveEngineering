@@ -13,10 +13,12 @@ import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.DoubleSupplier;
 import java.util.stream.Collectors;
 
 public abstract class MultiblockRecipe extends IESerializableRecipe implements IMultiblockRecipe, IJEIRecipe
@@ -79,25 +81,39 @@ public abstract class MultiblockRecipe extends IESerializableRecipe implements I
 		return fluidOutputList;
 	}
 
-	int totalProcessTime;
+	Lazy<Integer> totalProcessTime;
 
 	@Override
 	public int getTotalProcessTime()
 	{
-		return this.totalProcessTime;
+		return this.totalProcessTime.get();
 	}
 
-	int totalProcessEnergy;
+	Lazy<Integer> totalProcessEnergy;
 
 	@Override
 	public int getTotalProcessEnergy()
 	{
-		return this.totalProcessEnergy;
+		return this.totalProcessEnergy.get();
 	}
 
+	@Deprecated
 	public void modifyTimeAndEnergy(double timeModifier, double energyModifier)
 	{
-		this.totalProcessTime *= timeModifier;
-		this.totalProcessEnergy *= energyModifier;
+		modifyTimeAndEnergy(() -> timeModifier, () -> energyModifier);
+	}
+
+	void setTimeAndEnergy(int time, int energy)
+	{
+		totalProcessEnergy = Lazy.of(() -> energy);
+		totalProcessTime = Lazy.of(() -> time);
+	}
+
+	public void modifyTimeAndEnergy(DoubleSupplier timeModifier, DoubleSupplier energyModifier)
+	{
+		final Lazy<Integer> oldTime = totalProcessTime;
+		final Lazy<Integer> oldEnergy = totalProcessEnergy;
+		this.totalProcessTime = Lazy.of(() -> (int)(Math.max(1, oldTime.get()*timeModifier.getAsDouble())));
+		this.totalProcessEnergy = Lazy.of(() -> (int)(Math.max(1, oldEnergy.get()*energyModifier.getAsDouble())));
 	}
 }

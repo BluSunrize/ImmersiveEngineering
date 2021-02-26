@@ -1,0 +1,6 @@
+Alto Horno de crudo
+Acero simple
+<&block>El Alto Horno de crudo se utiliza para aumentar el contenido de carbono del hierro, convirtiéndolo en acero. Para conseguirlo, sólo se pueden utilizar combustibles puros con alto contenido en carbono, concretamente Carbón de coque y Carbón vegetal.
+Junto con el acero, el horno también creará escoria, que debe eliminar o el horno dejará de funcionar. Aunque técnicamente es un producto de desecho, se puede utilizar la escoria para crear hormigón.
+<&multiblock>Para formar un Alto Horno de crudo, organiza 27 de estos bloques en un cubo de 3x3x3, y haz clic con el botón derecho del ratón en uno de los bloques centrales de los lados con un Martillo de Ingeniero.
+El Alto Horno de crudo no es automatizable. Todas las entradas y salidas deben ser arregladas manualmente a través de su GUI. Si quieres automatizar la creación de acero, probablemente deberías mirar de crear un <link;improved_blast_furnace;Alto Horno de crudo mejorado;>.

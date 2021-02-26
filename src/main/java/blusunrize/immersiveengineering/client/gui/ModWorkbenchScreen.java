@@ -16,7 +16,6 @@ import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchTileEnti
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.gui.ModWorkbenchContainer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
-import blusunrize.immersiveengineering.common.util.Utils;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.renderer.ItemRenderer;
@@ -75,7 +74,7 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 						List<ItemStack> inputs = new ArrayList<>();
 						for(IngredientWithSize stack : recipe.inputs)
 						{
-							ItemStack toAdd = Utils.copyStackWithAmount(stack.getRandomizedExampleStack(mc().player.ticksExisted), stack.getCount());
+							ItemStack toAdd = ItemHandlerHelper.copyStackWithSize(stack.getRandomizedExampleStack(mc().player.ticksExisted), stack.getCount());
 							if(toAdd.isEmpty())
 								continue;
 							boolean isNew = true;
@@ -91,7 +90,7 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 						}
 						for(ItemStack ss : inputs)
 							tooltip.add(ClientUtils.applyFormat(
-									new StringTextComponent(ss.getCount()+"x ").func_230529_a_(ss.getDisplayName()),
+									new StringTextComponent(ss.getCount()+"x ").append(ss.getDisplayName()),
 									TextFormatting.GRAY
 							));
 
@@ -104,7 +103,7 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 
 
 	@Override
-	protected void func_230450_a_(MatrixStack transform, float f, int mx, int my)
+	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float f, int mx, int my)
 	{
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/workbench.png");
 		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);

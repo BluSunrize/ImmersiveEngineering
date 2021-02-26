@@ -84,7 +84,7 @@ public class CommandMineral
 		LiteralArgumentBuilder<CommandSource> get = Commands.literal("get");
 		get.requires(source -> source.hasPermissionLevel(2)).executes(command -> {
 			ServerPlayerEntity player = command.getSource().asPlayer();
-			getMineral(command, new ColumnPos(player.func_233580_cy_()));
+			getMineral(command, new ColumnPos(player.getPosition()));
 			return Command.SINGLE_SUCCESS;
 		}).then(
 				Commands.argument("location", ColumnPosArgument.columnPos())
@@ -103,27 +103,27 @@ public class CommandMineral
 		MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(sender.getWorld(), pos);
 		StringTextComponent ret = new StringTextComponent("");
 		if(info==null||info.getTotalWeight()==0)
-			ret.func_230529_a_(new TranslationTextComponent(Lib.CHAT_COMMAND+"mineral.get.none", pos.x, pos.z));
+			ret.append(new TranslationTextComponent(Lib.CHAT_COMMAND+"mineral.get.none", pos.x, pos.z));
 		else
 		{
-			ret.func_230529_a_(new TranslationTextComponent(Lib.CHAT_COMMAND+"mineral.get", pos.x, pos.z));
+			ret.append(new TranslationTextComponent(Lib.CHAT_COMMAND+"mineral.get", pos.x, pos.z));
 			for(Pair<MineralVein, Integer> pair : info.getAllVeins())
 			{
 				MineralVein vein = pair.getLeft();
 				double percentage = pair.getRight()/(double)info.getTotalWeight();
 				IFormattableTextComponent component = new StringTextComponent("\n "+Utils.formatDouble(percentage*100, "0.00")+"% ");
-				component.func_230529_a_(new TranslationTextComponent(vein.getMineral().getTranslationKey()));
-				ret.func_230529_a_(component.func_240699_a_(TextFormatting.GRAY));
+				component.append(new TranslationTextComponent(vein.getMineral().getTranslationKey()));
+				ret.append(component.mergeStyle(TextFormatting.GRAY));
 				component = new StringTextComponent("\n  ");
-				component.func_230529_a_(new TranslationTextComponent(Lib.CHAT_COMMAND+"mineral.get.pos",
+				component.append(new TranslationTextComponent(Lib.CHAT_COMMAND+"mineral.get.pos",
 						vein.getPos().x, vein.getPos().z, vein.getRadius()));
-				component.func_240702_b_("\n  ");
+				component.appendString("\n  ");
 				if(ExcavatorHandler.mineralVeinYield==0)
-					component.func_230529_a_(new TranslationTextComponent(Lib.DESC_INFO+"coresample.infinite"));
+					component.append(new TranslationTextComponent(Lib.DESC_INFO+"coresample.infinite"));
 				else
-					component.func_230529_a_(new TranslationTextComponent(Lib.DESC_INFO+"coresample.yield",
+					component.append(new TranslationTextComponent(Lib.DESC_INFO+"coresample.yield",
 							ExcavatorHandler.mineralVeinYield-vein.getDepletion()));
-				ret.func_230529_a_(component.func_240699_a_(TextFormatting.GRAY));
+				ret.append(component.mergeStyle(TextFormatting.GRAY));
 			}
 		}
 		sender.sendFeedback(ret, true);
@@ -157,7 +157,7 @@ public class CommandMineral
 		if(mineral!=null)
 		{
 			MineralVein vein = new MineralVein(pos, mineral.getId(), radius);
-			ExcavatorHandler.addVein(sender.getWorld().func_234923_W_(), vein);
+			ExcavatorHandler.addVein(sender.getWorld().getDimensionKey(), vein);
 			IESaveData.setDirty();
 			sender.sendFeedback(new TranslationTextComponent(Lib.CHAT_COMMAND+
 					"mineral.put.success", mineral.getId(), radius, pos.x, pos.z), true);

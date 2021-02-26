@@ -26,6 +26,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import java.util.List;
+import java.util.Objects;
 
 public class CapabilityUtils
 {
@@ -107,6 +108,11 @@ public class CapabilityUtils
 
 	public static <T> LazyOptional<T> constantOptional(T val)
 	{
-		return LazyOptional.of(() -> val);
+		LazyOptional<T> result = LazyOptional.of(() -> Objects.requireNonNull(val));
+		// Resolve directly: There is currently a bug in the LO resolve code that can cause problems in multithreaded
+		// contexts ("resolved" is set to a reference to null during the resolution on one thread, any other thread
+		// trying to access the value will get null)
+		result.resolve();
+		return result;
 	}
 }

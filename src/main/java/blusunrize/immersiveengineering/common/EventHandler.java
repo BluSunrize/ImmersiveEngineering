@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.CapabilitySkyhookData.SimpleSkyhookProvider;
-import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Direct;
@@ -28,10 +27,12 @@ import blusunrize.immersiveengineering.common.items.DrillItem;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import blusunrize.immersiveengineering.common.items.IEShieldItem;
+import blusunrize.immersiveengineering.common.items.ManualItem;
 import blusunrize.immersiveengineering.common.network.MessageMinecartShaderSync;
 import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamageSource;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.LecternBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.boss.WitherEntity;
@@ -42,15 +43,16 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
+import net.minecraft.tileentity.LecternTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.SectionPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.ChunkSection;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
@@ -63,13 +65,13 @@ import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteractSpecific;
-import net.minecraftforge.event.furnace.FurnaceFuelBurnTimeEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.items.ItemHandlerHelper;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
@@ -116,7 +118,7 @@ public class EventHandler
 		{
 			cart.getCapability(CapabilityShader.SHADER_CAPABILITY).ifPresent(wrapper ->
 			{
-				wrapper.setShaderItem(Utils.copyStackWithAmount(stack, 1));
+				wrapper.setShaderItem(ItemHandlerHelper.copyStackWithSize(stack, 1));
 				if(!player.world.isRemote)
 					ImmersiveEngineering.packetHandler.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity)player),
 							new MessageMinecartShaderSync(cart, wrapper));
@@ -192,10 +194,16 @@ public class EventHandler
 			while(it.hasNext())
 			{
 				Pair<RegistryKey<World>, BlockPos> curr = it.next();
-				if(curr.getLeft().equals(event.world.func_234923_W_()))
+				if(curr.getLeft().equals(event.world.getDimensionKey()))
 				{
-					BlockState state = event.world.getBlockState(curr.getRight());
-					event.world.notifyBlockUpdate(curr.getRight(), state, state, 3);
+					Chunk chunk = event.world.getChunkAt(curr.getRight());
+					int sectionId = SectionPos.from(curr.getRight()).getSectionY();
+					ChunkSection[] sections = chunk.getSections();
+					if(sectionId >= 0&&sectionId < sections.length&&sections[sectionId]!=null)
+					{
+						BlockState state = event.world.getBlockState(curr.getRight());
+						event.world.notifyBlockUpdate(curr.getRight(), state, state, 3);
+					}
 					it.remove();
 				}
 			}
@@ -315,9 +323,12 @@ public class EventHandler
 				event.setCanceled(true);
 				RazorWireTileEntity.applyDamage(event.getEntityLiving());
 			}
-		TileEntity te = event.getPlayer().getEntityWorld().getTileEntity(event.getPos());
-		if(te instanceof IEntityProof&&!((IEntityProof)te).canEntityDestroy(event.getPlayer()))
-			event.setCanceled(true);
+		if(event.getPos()!=null) // Avoid a potential NPE for invalid positions passed
+		{
+			TileEntity te = event.getPlayer().getEntityWorld().getTileEntity(event.getPos());
+			if(te instanceof IEntityProof&&!((IEntityProof)te).canEntityDestroy(event.getPlayer()))
+				event.setCanceled(true);
+		}
 	}
 
 	@SubscribeEvent
@@ -361,6 +372,37 @@ public class EventHandler
 		}
 	}
 
+	@SubscribeEvent
+	public void onBlockRightclick(RightClickBlock event)
+	{
+		BlockPos pos = event.getPos();
+		BlockState state = event.getWorld().getBlockState(pos);
+		if(!(state.getBlock() instanceof LecternBlock)||event.getPlayer()==null)
+			return;
+		TileEntity tile = event.getWorld().getTileEntity(pos);
+		if(tile instanceof LecternTileEntity&&((LecternTileEntity)tile).getBook().getItem() instanceof ManualItem)
+		{
+			if(!event.getPlayer().isSneaking())
+			{
+				ImmersiveEngineering.proxy.openManual();
+				event.setCanceled(true);
+			}
+			else if(!event.getWorld().isRemote)
+			{
+				Direction direction = state.get(LecternBlock.FACING);
+				ItemStack itemstack = ((LecternTileEntity)tile).getBook().copy();
+				float f = 0.25F*(float)direction.getXOffset();
+				float f1 = 0.25F*(float)direction.getZOffset();
+				ItemEntity itementity = new ItemEntity(event.getWorld(), pos.getX()+0.5D+f, pos.getY()+1, pos.getZ()+0.5D+f1, itemstack);
+				itementity.setDefaultPickupDelay();
+				event.getWorld().addEntity(itementity);
+				((LecternTileEntity)tile).clear();
+				LecternBlock.setHasBook(event.getWorld(), pos, state, false);
+				event.setCanceled(true);
+			}
+		}
+	}
+
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public void breakLast(BlockEvent.BreakEvent event)
 	{
@@ -370,15 +412,5 @@ public class EventHandler
 			if(te instanceof MultiblockPartTileEntity)
 				((MultiblockPartTileEntity)te).onlyLocalDissassembly = event.getWorld().getWorldInfo().getGameTime();
 		}
-	}
-
-	@SubscribeEvent
-	public void onFurnaceBurnTime(FurnaceFuelBurnTimeEvent event)
-	{
-		if(Utils.isFluidRelatedItemStack(event.getItemStack()))
-			FluidUtil.getFluidContained(event.getItemStack()).ifPresent(fs -> {
-				if(!fs.isEmpty()&&IETags.fluidCreosote.contains(fs.getFluid()))
-					event.setBurnTime((int)(0.8*fs.getAmount()));
-			});
 	}
 }

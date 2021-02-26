@@ -31,10 +31,11 @@ import blusunrize.immersiveengineering.client.render.tile.AutoWorkbenchRenderer.
 import blusunrize.immersiveengineering.client.utils.FontUtils;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
 import blusunrize.immersiveengineering.common.blocks.wooden.TurntableTileEntity;
+import blusunrize.immersiveengineering.common.config.IEClientConfig;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.entities.IEMinecartEntity;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
@@ -51,6 +52,7 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.sound.IEMuffledSound;
 import blusunrize.immersiveengineering.common.util.sound.IEMuffledTickableSound;
+import blusunrize.immersiveengineering.mixin.accessors.client.GPUWarningAccess;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -61,7 +63,6 @@ import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ITickableSound;
 import net.minecraft.client.gui.screen.VideoSettingsScreen;
-import net.minecraft.client.renderer.GPUWarning;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Tessellator;
@@ -113,7 +114,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static blusunrize.immersiveengineering.common.data.IEDataGenerator.rl;
+import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
 
 public class ClientEventHandler implements ISelectiveResourceReloadListener
 {
@@ -201,7 +202,6 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	@SubscribeEvent
 	public void onItemTooltip(ItemTooltipEvent event)
 	{
-		event.getItemStack();
 		if(event.getItemStack().isEmpty())
 			return;
 		event.getItemStack().getCapability(CapabilityShader.SHADER_CAPABILITY).ifPresent(wrapper ->
@@ -245,7 +245,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 					TextFormatting.GRAY
 			));
 
-		if(IEConfig.GENERAL.tagTooltips.get()&&event.getFlags().isAdvanced())
+		if(IEClientConfig.tagTooltips.get()&&event.getFlags().isAdvanced())
 		{
 			for(ResourceLocation oid : ItemTags.getCollection().getOwningTags(event.getItemStack().getItem()))
 				event.getToolTip().add(ClientUtils.applyFormat(
@@ -309,20 +309,13 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 					Misc.earmuffs==earmuffs.getItem()&&
 					!ItemNBTHelper.getBoolean(earmuffs, "IE:Earmuffs:Cat_"+event.getSound().getCategory().getName()))
 			{
-				for(String blacklist : IEConfig.TOOLS.earDefenders_SoundBlacklist.get())
+				for(String blacklist : IEClientConfig.earDefenders_SoundBlacklist.get())
 					if(blacklist!=null&&blacklist.equalsIgnoreCase(event.getSound().getSoundLocation().toString()))
 						return;
 				if(event.getSound() instanceof ITickableSound)
 					event.setResultSound(new IEMuffledTickableSound((ITickableSound)event.getSound(), EarmuffsItem.getVolumeMod(earmuffs)));
 				else
 					event.setResultSound(new IEMuffledSound(event.getSound(), EarmuffsItem.getVolumeMod(earmuffs)));
-
-				if(event.getSound().getCategory()==SoundCategory.RECORDS)
-				{
-					BlockPos pos = new BlockPos(event.getSound().getX(), event.getSound().getY(), event.getSound().getZ());
-					if(ClientUtils.mc().worldRenderer.mapSoundPositions.containsKey(pos))
-						ClientUtils.mc().worldRenderer.mapSoundPositions.put(pos, event.getResultSound());
-				}
 			}
 		}
 	}
@@ -736,7 +729,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			// Handle sneak + scrolling
 			if(player.isSneaking())
 			{
-				if(IEConfig.TOOLS.chemthrower_scroll.get()&&equipped.getItem() instanceof IScrollwheel)
+				if(IEServerConfig.TOOLS.chemthrower_scroll.get()&&equipped.getItem() instanceof IScrollwheel)
 				{
 					ImmersiveEngineering.packetHandler.sendToServer(new MessageScrollwheelItem(event.getScrollDelta() < 0));
 					event.setCanceled(true);
@@ -855,7 +848,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 
 			transform.pop();
 			if(!stack.isEmpty()&&stack.getItem() instanceof DrillItem&&
-					((DrillItem)stack.getItem()).isEffective(world.getBlockState(rtr.getPos()).getMaterial()))
+					((DrillItem)stack.getItem()).isEffective(stack, world.getBlockState(rtr.getPos()).getMaterial()))
 			{
 				ItemStack head = ((DrillItem)stack.getItem()).getHead(stack);
 				if(!head.isEmpty()&&player instanceof PlayerEntity&&!player.isSneaking())
@@ -903,42 +896,52 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			FractalParticle.PARTICLE_FRACTAL_DEQUE.clear();
 		}
 
-		/* Debug for Mineral Veins. Causes concurrent modification errors, so only use for testing
+		/* Debug for Mineral Veins
 
-		if(Screen.hasShiftDown())
+		boolean show;
+		// Default <=> shift is sneak, use ctrl instead
+		if (Minecraft.getInstance().gameSettings.keyBindSneak.isDefault())
+			show = Screen.hasControlDown();
+		else
+			show = Screen.hasShiftDown();
+		if(show)
 		{
-			RegistryKey<World> dimension = ClientUtils.mc().player.getEntityWorld().func_234923_W_();
+			RegistryKey<World> dimension = ClientUtils.mc().player.getEntityWorld().getDimensionKey();
 			List<ResourceLocation> keyList = new ArrayList<>(MineralMix.mineralList.keySet());
 			keyList.sort(Comparator.comparing(ResourceLocation::toString));
-			for(MineralVein vein : ExcavatorHandler.getMineralVeinList().get(dimension))
+			Multimap<RegistryKey<World>, MineralVein> minerals;
+			synchronized(minerals = ExcavatorHandler.getMineralVeinList())
 			{
-				transform.push();
-				ColumnPos pos = vein.getPos();
-				int iC = keyList.indexOf(vein.getMineral().getId());
-				DyeColor color = DyeColor.values()[iC%16];
-				float[] rgb = color.getColorComponentValues();
-				float r = rgb[0];
-				float g = rgb[1];
-				float b = rgb[2];
-				transform.translate(pos.x, 0, pos.z);
-				IVertexBuilder bufferBuilder = buffers.getBuffer(IERenderTypes.CHUNK_MARKER);
-				Matrix4f mat = transform.getLast().getMatrix();
-				bufferBuilder.pos(mat, 0, 0, 0).color(r, g, b, .75f).endVertex();
-				bufferBuilder.pos(mat, 0, 128, 0).color(r, g, b, .75f).endVertex();
-
-				bufferBuilder = buffers.getBuffer(IERenderTypes.VEIN_MARKER);
-				int radius = vein.getRadius();
-				float angle;
-				double x1;
-				double z1;
-				for(int p = 0; p < 12; p++)
+				for(MineralVein vein : minerals.get(dimension))
 				{
-					angle = 360.0f/12*p;
-					x1 = radius*Math.cos(angle*Math.PI/180);
-					z1 = radius*Math.sin(angle*Math.PI/180);
-					bufferBuilder.pos(mat, (float)x1, 70, (float)z1).color(r, g, b, .75f).endVertex();
+					transform.push();
+					ColumnPos pos = vein.getPos();
+					int iC = keyList.indexOf(vein.getMineral().getId());
+					DyeColor color = DyeColor.values()[iC%16];
+					float[] rgb = color.getColorComponentValues();
+					float r = rgb[0];
+					float g = rgb[1];
+					float b = rgb[2];
+					transform.translate(pos.x, 0, pos.z);
+					IVertexBuilder bufferBuilder = buffers.getBuffer(IERenderTypes.CHUNK_MARKER);
+					Matrix4f mat = transform.getLast().getMatrix();
+					bufferBuilder.pos(mat, 0, 0, 0).color(r, g, b, .75f).endVertex();
+					bufferBuilder.pos(mat, 0, 128, 0).color(r, g, b, .75f).endVertex();
+
+					bufferBuilder = buffers.getBuffer(IERenderTypes.VEIN_MARKER);
+					int radius = vein.getRadius();
+					float angle;
+					double x1;
+					double z1;
+					for(int p = 0; p < 12; p++)
+					{
+						angle = 360.0f/12*p;
+						x1 = radius*Math.cos(angle*Math.PI/180);
+						z1 = radius*Math.sin(angle*Math.PI/180);
+						bufferBuilder.pos(mat, (float)x1, 70, (float)z1).color(r, g, b, .75f).endVertex();
+					}
+					transform.pop();
 				}
-				transform.pop();
 			}
 		}
 		*/
@@ -997,20 +1000,22 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	{
 		if(event.getGui() instanceof VideoSettingsScreen&&ClientProxy.stencilEnabled)
 		{
-			GPUWarning gpuWarning = Minecraft.getInstance().func_241558_U_();
+			GPUWarningAccess gpuWarning = (GPUWarningAccess)Minecraft.getInstance().getGPUWarning();
 			final String key = "renderer";
 			final String suffix = "tencil enabled in Immersive Engineering config";
-			if(!gpuWarning.field_241688_c_.containsKey(key)||!gpuWarning.field_241688_c_.get(key).endsWith(suffix))
+			Map<String, String> oldWarnings = gpuWarning.getWarningStrings();
+			;
+			if(!oldWarnings.containsKey(key)||!oldWarnings.get(key).endsWith(suffix))
 			{
 				ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
-				for(Entry<String, String> e : gpuWarning.field_241688_c_.entrySet())
+				for(Entry<String, String> e : oldWarnings.entrySet())
 					if(key.equals(e.getKey()))
 						builder.put(key, e.getValue()+", s"+suffix);
 					else
 						builder.put(e.getKey(), e.getValue());
-				if(!gpuWarning.field_241688_c_.containsKey(key))
+				if(!oldWarnings.containsKey(key))
 					builder.put(key, "S"+suffix);
-				gpuWarning.field_241688_c_ = builder.build();
+				gpuWarning.setWarningStrings(builder.build());
 			}
 		}
 	}

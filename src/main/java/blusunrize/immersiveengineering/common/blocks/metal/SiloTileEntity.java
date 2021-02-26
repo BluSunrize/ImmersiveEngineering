@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
@@ -16,6 +15,8 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparat
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
+import blusunrize.immersiveengineering.common.util.DirectionUtils;
+import blusunrize.immersiveengineering.common.util.LayeredComparatorOutput;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -40,7 +41,8 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.EnumMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public class SiloTileEntity extends MultiblockPartTileEntity<SiloTileEntity> implements IComparatorOverride, IBlockBounds
@@ -50,48 +52,62 @@ public class SiloTileEntity extends MultiblockPartTileEntity<SiloTileEntity> imp
 	private static final int MAX_STORAGE = 41472;
 	//TODO actually implement this, it looks like a nice feature
 	boolean lockItem = false;
-	private int[] oldComps = new int[6];
-	private int masterCompOld;
+	private final LayeredComparatorOutput comparatorHelper = new LayeredComparatorOutput(
+			MAX_STORAGE,
+			6,
+			() -> world.notifyNeighborsOfStateChange(getPos(), getBlockState().getBlock()),
+			layer -> {
+				BlockPos masterPos = pos.subtract(offsetToMaster);
+				for(int x = -1; x <= 1; x++)
+					for(int z = -1; z <= 1; z++)
+					{
+						BlockPos pos = masterPos.add(x, layer+1, z);
+						world.notifyNeighborsOfStateChange(pos, world.getBlockState(pos).getBlock());
+					}
+			}
+	);
 
 	public SiloTileEntity()
 	{
 		super(IEMultiblocks.SILO, IETileTypes.SILO.get(), true);
+		// Silos should not output by default
+		this.redstoneControlInverted = true;
 	}
 
-	private EnumMap<Direction, CapabilityReference<IItemHandler>> outputCaps = new EnumMap<>(Direction.class);
+	private final List<CapabilityReference<IItemHandler>> outputCaps = new ArrayList<>();
 
 	{
-		for(Direction f : Direction.VALUES)
+		for(Direction f : DirectionUtils.VALUES)
 			if(f!=Direction.UP)
-				outputCaps.put(f, CapabilityReference.forNeighbor(this, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, f));
+				outputCaps.add(CapabilityReference.forNeighbor(this, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, f));
 	}
 
 	@Override
 	public void tick()
 	{
 		checkForNeedlessTicking();
+		if(isDummy()||world.isRemote)
+			return;
 
-		if(!isDummy()&&!world.isRemote&&!this.identStack.isEmpty()&&storageAmount > 0&&world.getGameTime()%8==0&&!isRSDisabled())
+		if(!this.identStack.isEmpty()&&storageAmount > 0&&world.getGameTime()%8==0&&!isRSDisabled())
 		{
-			updateComparatorValuesPart1();
-			for(Direction f : Direction.values())
-				if(f!=Direction.UP)
+			for(CapabilityReference<IItemHandler> output : outputCaps)
+			{
+				ItemStack stack = ItemHandlerHelper.copyStackWithSize(identStack, 1);
+				stack = Utils.insertStackIntoInventory(output, stack, false);
+				if(stack.isEmpty())
 				{
-					ItemStack stack = Utils.copyStackWithAmount(identStack, 1);
-					stack = Utils.insertStackIntoInventory(outputCaps.get(f), stack, false);
-					if(stack.isEmpty())
-					{
-						storageAmount--;
-						if(storageAmount <= 0)
-							identStack = ItemStack.EMPTY;
-						this.markDirty();
-						markContainingBlockForUpdate(null);
-						if(storageAmount <= 0)
-							break;
-					}
+					storageAmount--;
+					if(storageAmount <= 0)
+						identStack = ItemStack.EMPTY;
+					this.markDirty();
+					markContainingBlockForUpdate(null);
+					if(storageAmount <= 0)
+						break;
 				}
-			updateComparatorValuesPart2();
+			}
 		}
+		comparatorHelper.update(storageAmount);
 	}
 
 	@Override
@@ -183,7 +199,7 @@ public class SiloTileEntity extends MultiblockPartTileEntity<SiloTileEntity> imp
 		return renderAABB;
 	}
 
-	private LazyOptional<IItemHandler> insertionHandler = registerConstantCap(new SiloInventoryHandler(this));
+	private final LazyOptional<IItemHandler> insertionHandler = registerConstantCap(new SiloInventoryHandler(this));
 
 	private static final BlockPos bottomIoOffset = new BlockPos(1, 0, 1);
 	private static final BlockPos topIoOffset = new BlockPos(1, 6, 1);
@@ -196,6 +212,17 @@ public class SiloTileEntity extends MultiblockPartTileEntity<SiloTileEntity> imp
 		if(ioOffsets.contains(posInMultiblock)&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 			return insertionHandler.cast();
 		return super.getCapability(capability, facing);
+	}
+
+	@Override
+	public int getComparatorInputOverride()
+	{
+		if(bottomIoOffset.equals(posInMultiblock))
+			return comparatorHelper.getCurrentMasterOutput();
+		SiloTileEntity master = master();
+		if(offsetToMaster.getY() >= 1&&master!=null)
+			return comparatorHelper.getLayerOutput(offsetToMaster.getY()-1);
+		return 0;
 	}
 
 	public static class SiloInventoryHandler implements IItemHandler
@@ -219,7 +246,7 @@ public class SiloTileEntity extends MultiblockPartTileEntity<SiloTileEntity> imp
 			if(slot==0)
 				return ItemStack.EMPTY;
 			else
-				return ItemUtils.copyStackWithAmount(silo.identStack, silo.storageAmount);
+				return ItemHandlerHelper.copyStackWithSize(silo.identStack, silo.storageAmount);
 		}
 
 		@Override
@@ -233,13 +260,11 @@ public class SiloTileEntity extends MultiblockPartTileEntity<SiloTileEntity> imp
 			int accepted = Math.min(space, stack.getCount());
 			if(!simulate)
 			{
-				silo.updateComparatorValuesPart1();
 				silo.storageAmount += accepted;
 				if(silo.identStack.isEmpty())
 					silo.identStack = stack.copy();
 				silo.markDirty();
 				silo.markContainingBlockForUpdate(null);
-				silo.updateComparatorValuesPart2();
 			}
 			stack.shrink(accepted);
 			if(stack.getCount() < 1)
@@ -254,17 +279,15 @@ public class SiloTileEntity extends MultiblockPartTileEntity<SiloTileEntity> imp
 			if(slot!=1||silo.storageAmount < 1||amount < 1||silo.identStack.isEmpty())
 				return ItemStack.EMPTY;
 			int returned = Math.min(Math.min(silo.storageAmount, amount), silo.identStack.getMaxStackSize());
-			ItemStack out = Utils.copyStackWithAmount(silo.identStack, returned);
+			ItemStack out = ItemHandlerHelper.copyStackWithSize(silo.identStack, returned);
 			if(!simulate)
 			{
-				silo.updateComparatorValuesPart1();
 				silo.storageAmount -= out.getCount();
 				if(silo.storageAmount <= 0&&!silo.lockItem)
 					silo.identStack = ItemStack.EMPTY;
 				silo.markDirty();
 				silo.updateContainingBlockInfo();
 				silo.markContainingBlockForUpdate(null);
-				silo.updateComparatorValuesPart2();
 			}
 			return out;
 		}
@@ -279,56 +302,6 @@ public class SiloTileEntity extends MultiblockPartTileEntity<SiloTileEntity> imp
 		public boolean isItemValid(int slot, @Nonnull ItemStack stack)
 		{
 			return slot==0&&ItemStack.areItemsEqual(stack, silo.identStack);
-		}
-	}
-
-	@Override
-	public int getComparatorInputOverride()
-	{
-		if(bottomIoOffset.equals(posInMultiblock))
-			return (15*storageAmount)/MAX_STORAGE;
-		SiloTileEntity master = master();
-		if(offsetToMaster.getY() >= 1&&master!=null) //6 layers of storage
-		{
-			int layer = offsetToMaster.getY()-1;
-			int vol = MAX_STORAGE/6;
-			int filled = master.storageAmount-layer*vol;
-			int ret = Math.min(15, Math.max(0, (15*filled)/vol));
-			return ret;
-		}
-		return 0;
-	}
-
-	private void updateComparatorValuesPart1()
-	{
-		int vol = MAX_STORAGE/6;
-		for(int i = 0; i < 6; i++)
-		{
-			int filled = storageAmount-i*vol;
-			oldComps[i] = Math.min(15, Math.max((15*filled)/vol, 0));
-		}
-		masterCompOld = (15*storageAmount)/MAX_STORAGE;
-	}
-
-	private void updateComparatorValuesPart2()
-	{
-		int vol = MAX_STORAGE/6;
-		if((15*storageAmount)/MAX_STORAGE!=masterCompOld)
-			world.notifyNeighborsOfStateChange(getPos(), getBlockState().getBlock());
-		BlockPos masterPos = pos.subtract(offsetToMaster);
-		for(int i = 0; i < 6; i++)
-		{
-			int filled = storageAmount-i*vol;
-			int now = Math.min(15, Math.max((15*filled)/vol, 0));
-			if(now!=oldComps[i])
-			{
-				for(int x = -1; x <= 1; x++)
-					for(int z = -1; z <= 1; z++)
-					{
-						BlockPos pos = masterPos.add(x, i+1, z);
-						world.notifyNeighborsOfStateChange(pos, world.getBlockState(pos).getBlock());
-					}
-			}
 		}
 	}
 }

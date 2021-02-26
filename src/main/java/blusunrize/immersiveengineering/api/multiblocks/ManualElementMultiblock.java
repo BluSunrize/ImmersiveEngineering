@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.api.multiblocks;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
+import blusunrize.immersiveengineering.mixin.accessors.TileEntityAccess;
 import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.ManualUtils;
 import blusunrize.lib.manual.SpecialManualElements;
@@ -86,7 +87,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 			new StringTextComponent("\u2713"),
 			TextFormatting.GREEN, TextFormatting.BOLD
 	)
-			.func_240702_b_(" ");
+			.appendString(" ");
 
 	@Override
 	public void onOpened(ManualScreen gui, int x, int y, List<Button> pageButtons)
@@ -164,17 +165,17 @@ public class ManualElementMultiblock extends SpecialManualElements
 						s = greenTick.deepCopy();
 					else
 						s = new StringTextComponent(hasAnyItems?"   ": "");
-					s.func_230529_a_(ClientUtils.applyFormat(
+					s.append(ClientUtils.applyFormat(
 							new StringTextComponent(sIndent.toString()+req.getCount()+"x "),
 									TextFormatting.GRAY
 					));
 					if(!req.isEmpty())
-						s.func_230529_a_(ClientUtils.applyFormat(
+						s.append(ClientUtils.applyFormat(
 								req.getDisplayName().deepCopy(),
 								req.getRarity().color
 						));
 					else
-						s.func_240702_b_("???");
+						s.appendString("???");
 					componentTooltip.add(s);
 				}
 		}
@@ -262,7 +263,9 @@ public class ManualElementMultiblock extends SpecialManualElements
 			{
 				manual.fontRenderer().drawString(transform, "?", 116, yOffTotal/2-4, manual.getTextColour());
 				if(mouseX >= 116&&mouseX < 122&&mouseY >= yOffTotal/2-4&&mouseY < yOffTotal/2+4)
-					gui.renderToolTip(transform, componentTooltip, mouseX, mouseY, manual.fontRenderer());
+					gui.renderToolTip(transform, LanguageMap.getInstance().func_244260_a(
+							Collections.unmodifiableList(componentTooltip)
+					), mouseX, mouseY, manual.fontRenderer());
 			}
 		}
 	}
@@ -323,7 +326,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 					TileEntity te = TileEntity.readTileEntity(p.getValue().state, p.getValue().nbt);
 					if(te!=null)
 					{
-						te.cachedBlockState = p.getValue().state;
+						((TileEntityAccess)te).setCachedBlockState(p.getValue().state);
 						tiles.put(p.getKey(), te);
 					}
 				}

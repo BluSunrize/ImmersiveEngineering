@@ -77,9 +77,9 @@ public class MultiblockTrigger implements ICriterionTrigger<MultiblockTrigger.In
 	}
 
 	@Override
-	public MultiblockTrigger.Instance func_230307_a_(JsonObject json, ConditionArrayParser context)
+	public Instance deserialize(JsonObject json, ConditionArrayParser context)
 	{
-		EntityPredicate.AndPredicate and = EntityPredicate.AndPredicate.func_234587_a_(json, "player", context);
+		EntityPredicate.AndPredicate and = EntityPredicate.AndPredicate.deserializeJSONObject(json, "player", context);
 		return new MultiblockTrigger.Instance(
 				new ResourceLocation(JSONUtils.getString(json, "multiblock")),
 				ItemPredicate.deserialize(json.get("item")),
@@ -96,7 +96,7 @@ public class MultiblockTrigger implements ICriterionTrigger<MultiblockTrigger.In
 
 	public static Instance create(ResourceLocation multiblock, ItemPredicate hammer)
 	{
-		return new Instance(multiblock, hammer, EntityPredicate.AndPredicate.field_234582_a_);
+		return new Instance(multiblock, hammer, AndPredicate.ANY_AND);
 	}
 
 	public static class Instance extends CriterionInstance
@@ -117,9 +117,9 @@ public class MultiblockTrigger implements ICriterionTrigger<MultiblockTrigger.In
 		}
 
 		@Override
-		public JsonObject func_230240_a_(ConditionArraySerializer p_230240_1_)
+		public JsonObject serialize(ConditionArraySerializer p_230240_1_)
 		{
-			JsonObject jsonobject = super.func_230240_a_(p_230240_1_);
+			JsonObject jsonobject = super.serialize(p_230240_1_);
 			jsonobject.addProperty("multiblock", this.multiblock.toString());
 			jsonobject.add("item", this.hammer.serialize());
 			return jsonobject;

@@ -13,10 +13,9 @@ import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
+import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
-import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
@@ -289,7 +288,7 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 			}
 
 		//Blueprint
-		double playerDistanceSq = ClientUtils.mc().player.getDistanceSq(Vector3d.func_237489_a_(blockPos));
+		double playerDistanceSq = ClientUtils.mc().player.getDistanceSq(Vector3d.copyCentered(blockPos));
 
 		if(!blueprintStack.isEmpty()&&playerDistanceSq < 1000)
 		{
@@ -360,8 +359,8 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 			HashSet<String> textures = new HashSet<>();
 			Collection<BakedQuad> quads = ibakedmodel.getQuads(null, null, world.rand, EmptyModelData.INSTANCE);
 			for(BakedQuad quad : quads)
-				if(quad!=null&&quad.func_187508_a()!=null)
-					textures.add(quad.func_187508_a().getName().toString());
+				if(quad!=null&&quad.getSprite()!=null)
+					textures.add(quad.getSprite().getName().toString());
 			for(String s : textures)
 			{
 				ResourceLocation rl = new ResourceLocation(s);

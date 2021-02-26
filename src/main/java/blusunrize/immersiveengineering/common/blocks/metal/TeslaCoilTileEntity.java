@@ -17,15 +17,16 @@ import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.tool.IElectricEquipment;
 import blusunrize.immersiveengineering.api.tool.IElectricEquipment.ElectricSource;
 import blusunrize.immersiveengineering.api.tool.ITeslaEntity;
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamageSource;
+import blusunrize.immersiveengineering.mixin.accessors.EntityAccess;
 import com.google.common.collect.ArrayListMultimap;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
@@ -49,6 +50,7 @@ import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -96,7 +98,7 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 			effectMap.get(pos).removeIf(LightningAnimation::tick);
 
 		int timeKey = getPos().getX()^getPos().getZ();
-		int energyDrain = IEConfig.MACHINES.teslacoil_consumption.get();
+		int energyDrain = IEServerConfig.MACHINES.teslacoil_consumption.get();
 		if(lowPower)
 			energyDrain /= 2;
 		if(!world.isRemote&&world.getGameTime()%32==(timeKey&31)&&canRun(energyDrain))
@@ -113,14 +115,14 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 			LivingEntity target = null;
 			if(!targets.isEmpty())
 			{
-				ElectricDamageSource dmgsrc = IEDamageSources.causeTeslaDamage(IEConfig.MACHINES.teslacoil_damage.get().floatValue(), lowPower);
+				ElectricDamageSource dmgsrc = IEDamageSources.causeTeslaDamage(IEServerConfig.MACHINES.teslacoil_damage.get().floatValue(), lowPower);
 				int randomTarget = Utils.RAND.nextInt(targets.size());
 				target = (LivingEntity)targets.get(randomTarget);
 				if(target!=null)
 				{
 					if(!world.isRemote)
 					{
-						energyDrain = IEConfig.MACHINES.teslacoil_consumption_active.get();
+						energyDrain = IEServerConfig.MACHINES.teslacoil_consumption_active.get();
 						if(lowPower)
 							energyDrain /= 2;
 						if(energyStorage.extractEnergy(energyDrain, true)==energyDrain)
@@ -128,10 +130,11 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 							energyStorage.extractEnergy(energyDrain, false);
 							if(dmgsrc.apply(target))
 							{
-								int prevFire = target.fire;
-								target.fire = 1;
+								EntityAccess targetAccessor = (EntityAccess)target;
+								int prevFire = targetAccessor.getFire();
+								targetAccessor.setFire(1);
 								target.addPotionEffect(new EffectInstance(IEPotions.stunned, 128));
-								target.fire = prevFire;
+								targetAccessor.setFire(prevFire);
 							}
 							this.sendRenderPacket(target);
 						}
@@ -166,22 +169,26 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 				if(!world.isAirBlock(targetBlock))
 				{
 					BlockState state = world.getBlockState(targetBlock);
-					AxisAlignedBB blockBounds = state.getShape(world, targetBlock).getBoundingBox();
-					if(getFacing()==Direction.UP)
-						tL = targetBlock.getY()-getPos().getY()+blockBounds.maxY;
-					else if(getFacing()==Direction.DOWN)
-						tL = targetBlock.getY()-getPos().getY()+blockBounds.minY;
-					else if(getFacing()==Direction.NORTH)
-						tL = targetBlock.getZ()-getPos().getZ()+blockBounds.minZ;
-					else if(getFacing()==Direction.SOUTH)
-						tL = targetBlock.getZ()-getPos().getZ()+blockBounds.maxZ;
-					else if(getFacing()==Direction.WEST)
-						tL = targetBlock.getX()-getPos().getX()+blockBounds.minX;
-					else
-						tL = targetBlock.getX()-getPos().getX()+blockBounds.maxX;
-					targetFound = true;
+					VoxelShape shape = state.getShape(world, targetBlock);
+					if(!shape.isEmpty())
+					{
+						AxisAlignedBB blockBounds = shape.getBoundingBox();
+						if(getFacing()==Direction.UP)
+							tL = targetBlock.getY()-getPos().getY()+blockBounds.maxY;
+						else if(getFacing()==Direction.DOWN)
+							tL = targetBlock.getY()-getPos().getY()+blockBounds.minY;
+						else if(getFacing()==Direction.NORTH)
+							tL = targetBlock.getZ()-getPos().getZ()+blockBounds.minZ;
+						else if(getFacing()==Direction.SOUTH)
+							tL = targetBlock.getZ()-getPos().getZ()+blockBounds.maxZ;
+						else if(getFacing()==Direction.WEST)
+							tL = targetBlock.getX()-getPos().getX()+blockBounds.minX;
+						else
+							tL = targetBlock.getX()-getPos().getX()+blockBounds.maxX;
+						targetFound = true;
+					}
 				}
-				else
+				if(!targetFound)
 				{
 					boolean positiveFirst = Utils.RAND.nextBoolean();
 					for(int i = 0; i < 2; i++)
@@ -277,7 +284,7 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 						f = dz < 0?Direction.NORTH: Direction.SOUTH;
 				}
 				double verticalOffset = 1+Utils.RAND.nextDouble()*.25;
-				Vector3d coilPos = Vector3d.func_237489_a_(getPos());
+				Vector3d coilPos = Vector3d.copyCentered(getPos());
 				//Vertical offset
 				coilPos = coilPos.add(getFacing().getXOffset()*verticalOffset, getFacing().getYOffset()*verticalOffset, getFacing().getZOffset()*verticalOffset);
 				//offset to direction
@@ -331,7 +338,7 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 		}
 
 		double verticalOffset = 1+Utils.RAND.nextDouble()*.25;
-		Vector3d coilPos = Vector3d.func_237489_a_(getPos());
+		Vector3d coilPos = Vector3d.copyCentered(getPos());
 		//Vertical offset
 		coilPos = coilPos.add(getFacing().getXOffset()*verticalOffset, getFacing().getYOffset()*verticalOffset, getFacing().getZOffset()*verticalOffset);
 		//offset to direction
@@ -340,7 +347,7 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 		f = DirectionUtils.rotateAround(f, getFacing().getAxis());
 		double dShift = (Utils.RAND.nextDouble()-.5)*.75;
 		coilPos = coilPos.add(f.getXOffset()*dShift, f.getYOffset()*dShift, f.getZOffset()*dShift);
-		addAnimation(new LightningAnimation(coilPos, Vector3d.func_237491_b_(getPos()).add(tx, ty, tz)));
+		addAnimation(new LightningAnimation(coilPos, Vector3d.copy(getPos()).add(tx, ty, tz)));
 //		world.playSound(null, getPos(), IESounds.tesla, SoundCategory.BLOCKS,2.5f, .5f + Utils.RAND.nextFloat());
 		world.playSound(getPos().getX(), getPos().getY(), getPos().getZ(), IESounds.tesla, SoundCategory.BLOCKS, 2.5F, 0.5F+Utils.RAND.nextFloat(), true);
 	}
@@ -414,7 +421,7 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 		{
 			if(player.isSneaking())
 			{
-				int energyDrain = IEConfig.MACHINES.teslacoil_consumption.get();
+				int energyDrain = IEServerConfig.MACHINES.teslacoil_consumption.get();
 				if(lowPower)
 					energyDrain /= 2;
 				if(canRun(energyDrain))
@@ -607,9 +614,9 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 	}
 
 	@Override
-	public BlockPos getModelOffset(BlockState state)
+	public BlockPos getModelOffset(BlockState state, @Nullable Vector3i size)
 	{
-		if (isDummy())
+		if(isDummy())
 			return new BlockPos(0, 0, -1);
 		else
 			return BlockPos.ZERO;

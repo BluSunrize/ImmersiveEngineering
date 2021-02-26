@@ -83,7 +83,7 @@ public class ChemthrowerEffects
 			@Override
 			public void applyToEntity(LivingEntity target, @Nullable PlayerEntity shooter, ItemStack thrower, FluidStack fluid)
 			{
-				hit(target.world, target.func_233580_cy_(), Direction.UP);
+				hit(target.world, target.getPosition(), Direction.UP);
 			}
 
 			@Override

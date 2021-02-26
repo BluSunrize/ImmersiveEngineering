@@ -1,0 +1,6 @@
+Banco de Trabajo y Planos
+Siempre desordenado
+El Banco de Trabajo del Ingeniero es un banco de trabajo profesional para el ingeniero culto. Se utiliza ampliamente para construir los elementos descritos en <link;blueprints;Planos>.
+Se puede fabricar una gran variedad de planos, tal y como se detalla en la entrada del manual correspondiente, mientras que algunos selectos sólo pueden descubrirse en el mundo o comprarse a los aldeanos.
+Para utilizar un Plano en el Banco de Trabajo del Ingeniero, colóquelo en la ranura de la izquierda de la interfaz gráfica y los ingredientes necesarios en las seis ranuras del centro. Los artículos resultantes pueden recuperarse en la parte derecha. Al pasar el ratón por encima de estas ranuras de salida se le informará exactamente de los materiales necesarios para cada artículo.<np>
+Una función secundaria del Banco de Trabajo es la modificación y configuración de herramientas y gadgets más complejos. El <link;mining_drill;Taladro de Minería>, el <link;shield;Escudo de chapas gruesas> o el <link;revolver;Revólver> son ejemplos de este tipo de objetos. Cuando se colocan en la ranura principal del Banco de Trabajo, su uso se convierte en el de modificar estas herramientas insertando las mejoras aplicables en las nuevas ranuras que aparecen.

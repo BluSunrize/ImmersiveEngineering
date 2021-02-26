@@ -13,30 +13,34 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler;
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler.IExternalHeatable;
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IActiveState;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.vector.Vector3d;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class FurnaceHeaterTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInternalFluxHandler, IActiveState,
-		IStateBasedDirectional
+		IStateBasedDirectional, IHammerInteraction
 {
 	public FluxStorage energyStorage = new FluxStorage(32000, Math.max(256,
-			Math.max(IEConfig.MACHINES.heater_consumption.get(), IEConfig.MACHINES.heater_speedupConsumption.get())));
+			Math.max(IEServerConfig.MACHINES.heater_consumption.get(), IEServerConfig.MACHINES.heater_speedupConsumption.get())));
 
 	public FurnaceHeaterTileEntity()
 	{
@@ -54,7 +58,7 @@ public class FurnaceHeaterTileEntity extends IEBaseTileEntity implements ITickab
 			if(activeBeforeTick&&!redstonePower)
 				newActive = false;
 			if(energyStorage.getEnergyStored() > 3200||activeBeforeTick)
-				for(Direction fd : Direction.VALUES)
+				for(Direction fd : DirectionUtils.VALUES)
 				{
 					TileEntity tileEntity = Utils.getExistingTileEntity(world, getPos().offset(fd));
 					int consumed = 0;
@@ -150,12 +154,19 @@ public class FurnaceHeaterTileEntity extends IEBaseTileEntity implements ITickab
 	@Override
 	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
 	{
-		return true;
+		return false;
 	}
 
 	@Override
 	public boolean canRotate(Direction axis)
 	{
+		return true;
+	}
+
+	@Override
+	public boolean hammerUseSide(Direction side, PlayerEntity player, Hand hand, Vector3d hitVec)
+	{
+		this.setFacing(side);
 		return true;
 	}
 }

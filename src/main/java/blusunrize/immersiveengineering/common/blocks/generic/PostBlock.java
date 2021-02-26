@@ -13,10 +13,11 @@ import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.IPostBlock;
 import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
-import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
+import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IModelDataBlock;
+import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -25,8 +26,8 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootContext.Builder;
 import net.minecraft.item.ItemUseContext;
+import net.minecraft.loot.LootContext.Builder;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.properties.BlockStateProperties;
@@ -51,6 +52,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.model.data.IModelData;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -89,7 +91,7 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBloc
 				spawnAsEntity(world, pos, new ItemStack(this));
 				final int highestBlock = 3;
 				BlockPos armStart = pos.up(highestBlock);
-				for(Direction d : Direction.BY_HORIZONTAL_INDEX)
+				for(Direction d : DirectionUtils.BY_HORIZONTAL_INDEX)
 				{
 					BlockPos armPos = armStart.offset(d);
 					BlockState armState = world.getBlockState(armPos);
@@ -235,7 +237,7 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBloc
 				return VoxelShapes.empty();
 			final double baseWidth = dummy==3?6./16: 4./16;
 			VoxelShape ret = VoxelShapes.empty();
-			for(Direction neighbor : Direction.BY_HORIZONTAL_INDEX)
+			for(Direction neighbor : DirectionUtils.BY_HORIZONTAL_INDEX)
 			{
 				if(hasConnection(state, neighbor, world, pos))
 				{
@@ -366,7 +368,7 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBloc
 			BlockState upperState = world.getBlockState(upperPos);
 			if(upperState.getBlock()==this)
 			{
-				for(Direction f : Direction.BY_HORIZONTAL_INDEX)
+				for(Direction f : DirectionUtils.BY_HORIZONTAL_INDEX)
 					if(hasConnection(upperState, f, world, upperPos))
 					{
 						String name = f.getOpposite().getString();
@@ -397,10 +399,16 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBloc
 
 	@Nonnull
 	@Override
-	public BlockPos getModelOffset(BlockState state)
+	public BlockPos getModelOffset(BlockState state, @Nullable Vector3i size)
 	{
 		HorizontalOffset d = state.get(HORIZONTAL_OFFSET);
 		return new BlockPos(0, state.get(POST_SLAVE), 0).add(d.getOffset());
+	}
+
+	@Override
+	public int getOpacity(@Nonnull BlockState state, @Nonnull IBlockReader worldIn, @Nonnull BlockPos pos)
+	{
+		return 0;
 	}
 
 	enum HorizontalOffset implements IStringSerializable

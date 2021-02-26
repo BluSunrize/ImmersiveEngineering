@@ -9,7 +9,6 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
-import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.common.crafting.IngredientWithSizeSerializer;
 import com.google.gson.JsonElement;
 import net.minecraft.item.Item;
@@ -17,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tags.ITag;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -72,7 +72,7 @@ public class IngredientWithSize implements Predicate<ItemStack>
 		ItemStack[] baseStacks = basePredicate.getMatchingStacks();
 		ItemStack[] ret = new ItemStack[baseStacks.length];
 		for(int i = 0; i < baseStacks.length; ++i)
-			ret[i] = ItemUtils.copyStackWithAmount(baseStacks[i], this.count);
+			ret[i] = ItemHandlerHelper.copyStackWithSize(baseStacks[i], this.count);
 		return ret;
 	}
 

@@ -10,11 +10,11 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -56,7 +56,7 @@ public class BucketWheelTileEntity extends MultiblockPartTileEntity<BucketWheelT
 	{
 		super.readCustomNBT(nbt, descPacket);
 		float nbtRot = nbt.getFloat("rotation");
-		rotation = (Math.abs(nbtRot-rotation) > 5*IEConfig.MACHINES.excavator_speed.get())?nbtRot: rotation; // avoid stuttering due to packet delays
+		rotation = (Math.abs(nbtRot-rotation) > 5*IEServerConfig.MACHINES.excavator_speed.get())?nbtRot: rotation; // avoid stuttering due to packet delays
 		ItemStackHelper.loadAllItems(nbt, digStacks);
 		active = nbt.getBoolean("active");
 		particleStack = nbt.contains("particleStack", NBT.TAG_COMPOUND)?ItemStack.read(nbt.getCompound("particleStack")): ItemStack.EMPTY;
@@ -100,7 +100,7 @@ public class BucketWheelTileEntity extends MultiblockPartTileEntity<BucketWheelT
 
 		if(active)
 		{
-			rotation += IEConfig.MACHINES.excavator_speed.get();
+			rotation += IEServerConfig.MACHINES.excavator_speed.get();
 			rotation %= 360;
 		}
 
@@ -138,7 +138,7 @@ public class BucketWheelTileEntity extends MultiblockPartTileEntity<BucketWheelT
 			if(message.contains("rotation", NBT.TAG_INT))
 			{
 				int packetRotation = message.getInt("rotation");
-				if(Math.abs(packetRotation-rotation) > 5*IEConfig.MACHINES.excavator_speed.get())
+				if(Math.abs(packetRotation-rotation) > 5*IEServerConfig.MACHINES.excavator_speed.get())
 					rotation = packetRotation;
 			}
 		}

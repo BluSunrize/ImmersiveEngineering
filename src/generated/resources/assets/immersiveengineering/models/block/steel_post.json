@@ -1,55 +1,10 @@
 {
   "parent": "minecraft:block/block",
   "textures": {
-    "particle": "immersiveengineering:block/metal_decoration/steel_post",
+    "particle": "#texture",
     "texture": "immersiveengineering:block/metal_decoration/steel_post"
   },
-  "loader": "immersiveengineering:basic_split",
-  "base_loader": "immersiveengineering:ie_obj",
-  "dynamic": true,
-  "detectCullableFaces": false,
+  "loader": "immersiveengineering:ie_obj",
   "model": "immersiveengineering:models/block/wooden_device/wooden_post.obj.ie",
-  "flip-v": true,
-  "split_parts": [
-    [
-      0,
-      0,
-      0
-    ],
-    [
-      0,
-      1,
-      0
-    ],
-    [
-      0,
-      2,
-      0
-    ],
-    [
-      0,
-      3,
-      -1
-    ],
-    [
-      -1,
-      3,
-      0
-    ],
-    [
-      0,
-      3,
-      0
-    ],
-    [
-      1,
-      3,
-      0
-    ],
-    [
-      0,
-      3,
-      1
-    ]
-  ]
+  "flip-v": true
 }

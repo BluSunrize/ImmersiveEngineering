@@ -11,12 +11,12 @@ package blusunrize.immersiveengineering.client.models.connection;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.utils.QuadTransformer;
+import blusunrize.immersiveengineering.api.utils.client.CombinedModelData;
+import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
 import blusunrize.immersiveengineering.api.wires.WireApi;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.BakedIEModel;
-import blusunrize.immersiveengineering.client.utils.CombinedModelData;
-import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Connectors;
 import blusunrize.immersiveengineering.common.blocks.metal.FeedthroughTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.FeedthroughTileEntity.FeedthroughData;
@@ -133,7 +133,7 @@ public class FeedthroughModel extends BakedIEModel
 			);
 			ret.add(new SinglePropertyModelData<>(d, Model.FEEDTHROUGH));
 		}
-		return new CombinedModelData(ret.toArray(new IModelData[0]));
+		return CombinedModelData.combine(ret.toArray(new IModelData[0]));
 	}
 
 	@Override
@@ -197,7 +197,7 @@ public class FeedthroughModel extends BakedIEModel
 
 		@Nonnull
 		@Override
-		public IBakedModel func_239290_a_(@Nonnull IBakedModel originalModel, ItemStack stack,
+		public IBakedModel getOverrideModel(@Nonnull IBakedModel originalModel, ItemStack stack,
 												 @Nullable ClientWorld world, @Nullable LivingEntity entity)
 		{
 			Item connItem = Item.getItemFromBlock(Connectors.feedthrough);
@@ -335,7 +335,7 @@ public class FeedthroughModel extends BakedIEModel
 			};
 			for(int j = 0; j < 7; j++)
 			{
-				Direction side = j < 6?Direction.VALUES[j]: null;
+				Direction side = j < 6?DirectionUtils.VALUES[j]: null;
 				Direction facing = k.facing;
 				switch(k.offset)
 				{

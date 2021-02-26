@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.network.MessageNoSpamChatComponents;
+import blusunrize.immersiveengineering.mixin.accessors.client.NewChatGuiAccess;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.NewChatGui;
 import net.minecraft.entity.player.PlayerEntity;
@@ -28,10 +29,11 @@ public class ChatUtils
 	public static void sendClientNoSpamMessages(ITextComponent[] messages)
 	{
 		NewChatGui chat = Minecraft.getInstance().ingameGUI.getChatGUI();
+		NewChatGuiAccess chatAccess = (NewChatGuiAccess)chat;
 		for(int i = DELETION_ID+messages.length-1; i <= lastAdded; i++)
-			chat.deleteChatLine(i);
+			chatAccess.callDeleteChatLine(i);
 		for(int i = 0; i < messages.length; i++)
-			chat.printChatMessageWithOptionalDeletion(messages[i], DELETION_ID+i);
+			chatAccess.callPrintChatMessageWithOptionalDeletion(messages[i], DELETION_ID+i);
 		lastAdded = DELETION_ID+messages.length-1;
 	}
 

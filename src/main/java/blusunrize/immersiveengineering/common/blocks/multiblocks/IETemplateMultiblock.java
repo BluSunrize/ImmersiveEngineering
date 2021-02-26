@@ -12,34 +12,36 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.util.IELogger;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.tags.ITag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.World;
+import net.minecraft.world.gen.feature.template.Template;
 import net.minecraft.world.gen.feature.template.Template.BlockInfo;
 
-import java.util.Map;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
 public abstract class IETemplateMultiblock extends TemplateMultiblock
 {
 	private final Supplier<BlockState> baseState;
+	//TODO move to TemplateMultiblock in the next API break
+	private final BlockPos size;
 
-	public IETemplateMultiblock(ResourceLocation loc, BlockPos masterFromOrigin, BlockPos triggerFromOrigin, Map<Block, ITag<Block>> tags, Supplier<BlockState> baseState)
+	public IETemplateMultiblock(
+			ResourceLocation loc, BlockPos masterFromOrigin, BlockPos triggerFromOrigin, BlockPos size,
+			Supplier<BlockState> baseState
+	)
 	{
-		super(loc, masterFromOrigin, triggerFromOrigin, tags);
+		super(loc, masterFromOrigin, triggerFromOrigin, ImmutableMap.of());
+		this.size = size;
 		this.baseState = baseState;
-	}
-
-	public IETemplateMultiblock(ResourceLocation loc, BlockPos masterFromOrigin, BlockPos triggerFromOrigin, Supplier<BlockState> baseState)
-	{
-		this(loc, masterFromOrigin, triggerFromOrigin, ImmutableMap.of(), baseState);
 	}
 
 	@Override
@@ -56,7 +58,7 @@ public abstract class IETemplateMultiblock extends TemplateMultiblock
 			tile.formed = true;
 			tile.offsetToMaster = new BlockPos(offsetFromMaster);
 			tile.posInMultiblock = info.pos;
-			if(state.func_235901_b_(IEProperties.MIRRORED))
+			if(state.hasProperty(IEProperties.MIRRORED))
 				tile.setMirrored(mirrored);
 			tile.setFacing(transformDirection(clickDirection.getOpposite()));
 			tile.markDirty();
@@ -85,6 +87,24 @@ public abstract class IETemplateMultiblock extends TemplateMultiblock
 	public BlockPos multiblockToModelPos(BlockPos posInMultiblock)
 	{
 		return posInMultiblock.subtract(masterFromOrigin);
+	}
+
+	@Override
+	public Vector3i getSize(@Nullable World world)
+	{
+		return size;
+	}
+
+	@Nonnull
+	@Override
+	protected Template getTemplate(@Nullable World world)
+	{
+		Template result = super.getTemplate(world);
+		Preconditions.checkState(
+				result.getSize().equals(size),
+				"Wrong template size for multiblock "+getTemplateLocation()+", template size: "+result.getSize()
+		);
+		return result;
 	}
 
 	@Override

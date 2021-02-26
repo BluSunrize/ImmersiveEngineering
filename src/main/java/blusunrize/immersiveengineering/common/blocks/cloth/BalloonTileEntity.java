@@ -43,6 +43,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.ItemHandlerHelper;
 import org.apache.commons.lang3.tuple.Triple;
 
 import javax.annotation.Nonnull;
@@ -62,7 +63,7 @@ public class BalloonTileEntity extends ConnectorStructuralTileEntity implements 
 	}
 
 	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(@Nonnull CompoundNBT nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 		final int oldStyle = style;
@@ -186,7 +187,7 @@ public class BalloonTileEntity extends ConnectorStructuralTileEntity implements 
 		{
 			if(this.shader==null)
 				this.shader = new ShaderWrapper_Direct(new ResourceLocation(ImmersiveEngineering.MODID, "balloon"));
-			this.shader.setShaderItem(Utils.copyStackWithAmount(heldItem, 1));
+			this.shader.setShaderItem(ItemHandlerHelper.copyStackWithSize(heldItem, 1));
 			markContainingBlockForUpdate(null);
 			return true;
 		}
@@ -242,7 +243,7 @@ public class BalloonTileEntity extends ConnectorStructuralTileEntity implements 
 	{
 		if(entity instanceof AbstractArrowEntity)
 		{
-			Vector3d pos = Vector3d.func_237489_a_(getPos());
+			Vector3d pos = Vector3d.copyCentered(getPos());
 			world.playSound(null, pos.x, pos.y, pos.z, SoundEvents.ENTITY_FIREWORK_ROCKET_BLAST,
 					SoundCategory.BLOCKS, 1.5f, 0.7f);
 			world.removeBlock(getPos(), false);

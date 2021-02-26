@@ -30,6 +30,7 @@ import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.DoubleSupplier;
 
 /**
  * @author BluSunrize - 12.08.2016
@@ -160,7 +161,7 @@ public class BulletHandler
 	public static class DamagingBullet implements IBullet
 	{
 		final DamageSourceProvider damageSourceGetter;
-		final float damage;
+		final DoubleSupplier damage;
 		boolean resetHurt = false;
 		boolean setFire = false;
 		Supplier<ItemStack> casing;
@@ -171,7 +172,17 @@ public class BulletHandler
 			this(damageSourceGetter, damage, false, false, casing, textures);
 		}
 
+		public DamagingBullet(DamageSourceProvider damageSourceGetter, DoubleSupplier damage, Supplier<ItemStack> casing, ResourceLocation... textures)
+		{
+			this(damageSourceGetter, damage, false, false, casing, textures);
+		}
+
 		public DamagingBullet(DamageSourceProvider damageSourceGetter, float damage, boolean resetHurt, boolean setFire, Supplier<ItemStack> casing, ResourceLocation... textures)
+		{
+			this(damageSourceGetter, () -> damage, resetHurt, setFire, casing, textures);
+		}
+
+		public DamagingBullet(DamageSourceProvider damageSourceGetter, DoubleSupplier damage, boolean resetHurt, boolean setFire, Supplier<ItemStack> casing, ResourceLocation... textures)
 		{
 			this.damageSourceGetter = damageSourceGetter;
 			this.damage = damage;
@@ -183,7 +194,7 @@ public class BulletHandler
 
 		protected float getDamage(Entity hitEntity, boolean headshot)
 		{
-			return this.damage*(headshot?1.5f: 1f);
+			return (float)(this.damage.getAsDouble()*(headshot?1.5f: 1f));
 		}
 
 		@Override

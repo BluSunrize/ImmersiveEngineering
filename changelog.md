@@ -1,3 +1,87 @@
+##### Version 1.16.5-4.2.1-131
+ - Added missing mixer recipe for herbicide (BluSunrize)
+ - Added Craftweaker compatability for Mineral Veins, improved documentation (Jared)
+ - Added compatability for TheOneProbe (RobustProgram)
+ - Fixed crash related right-click events (Malte)
+ - Fixed missing particle textures for waterwheel, windmill and excavator (Malte)
+ - Fixed current transformers calculating wrong values (Malte)
+ - Fixed tanks and silos being set to output by default (BluSunrize)
+
+##### Version 1.16.5-4.2.0-130
+ - First 1.16.5 release
+ - Allowed CC:Tweaked computers to emit bundled redstone signals using interface connectors (Malte)
+ - Allowed IE projectiles to trigger target blocks (BluSunrize)
+ - Allowed the Engineer's Manual to be placed on a lectern (BluSunrize)
+ - Added full Craftweaker compatability (kindlich, Jared, SkySom)
+ - Changed redstone connectors to no longer power other connectors of the same color on the same network (BluSunrize)
+ - Changed redstone connectors to not emit weak signals through their "tip" (BluSunrize)
+ - Changed redstone connectors GUI to be closed with the "Inventory" keybind (BluSunrize)
+ - Changed common config to explain that all the options are in world configs now (BluSunrize)
+ - No longer crash the game if manual loading fails (Malte)
+ - Fixed crash related to the drill (Malte)
+ - Fixed logged exceptions when attacking entities with a drill with a shader (Malte)
+ - Fixed coke oven etc showing progress if the GUI is reopened after the process is done (Malte)
+ - Fixed CME with villager registration code (Malte)
+ - Fixed tesla coil destroying blocks when placed sideways (Malte)
+ - Added tags to determine what items can go into crates (Malte)
+   - These also contain crate minecarts now
+ - Fixed crash when opening the manual when a key is bound to \ or $ (Malte)
+ - Fixed crash when crafting torches from creosote (Malte)
+ - Fixed broken special characters (Malte)
+ - Fixed some performance issues with pipes (Malte)
+ - Fixed water wheel placement (Malte)
+ - Fixed inverting of breaker switches (Malte)
+ - Fixed crash with posts and smooth lighting (Malte)
+ - Fixed crash with invalid multiblock selection tags on the hammer (Malte)
+ - Fixed modded ores sometimes being used instead of the vanilla ones (Malte)
+ - Fixed crash related to turrets (Malte)
+ - Fixed rotation of the external heater to match description in the manual (BluSunrize)
+ - Fixed crashes when the time modifier for refinery recipes was changed to <1 (BluSunrize)
+ - Fixed spamming error in the shield magnet feature (BluSunrize)
+ - Fixed potential infinite loop in workbench renderer (BluSunrize)
+ - Fixed rotation issue with bottling machine renderer (BluSunrize)
+ - Fixed rare crash when breaking some blocks with a drill (BluSunrize)
+ - Fixed crushers not accepting input from hoppers at the top (BluSunrize)
+ - Translations Added/Updated: zh_cn (Fodoth-jinzi89, RMSCA), ja_jp (karakufire, koh-gh)
+
+##### Version 1.16.4-4.1.2-129
+ - Re-added client side commands to clear render caches and reset the manual (Malte)
+ - Replaced JS coremods and access transformers with Mixins (Malte)
+ - Changed Dropping Conveyors to be able to drop *into* other blocks, if collision allows (TeamSpen)
+ - Changed Sawblades and Drillheads to not allow enchantments (ConductiveFoam)
+ - Changed Sawmill to output a comparator signal based on the integrity of the saw (BluSunrize)
+ - Limit creosote-burning in furnaces to buckets to avoid issues with other containers (Malte)
+ - Fixed issues with crafting recipes involving fluid and tanks from other mods (Malte)
+ - Fixed crashes on login related to multiblock rendering (Malte)
+ - Fixed obscure crash when holding the voltmeter in empty chunk sections (Malte)
+ - Fixed the front part of the floodlight not rendering (Malte)
+ - Fixed missing page in excavator manual entry (Malte)
+ - Fixed some pathfinding issues with MineColonies NPCs (Malte)
+ - Fixed concurrency issues with the manual (Malte)
+ - Fixed connectors and multiblock parts being picked up by Mekanism cardboard boxes (Malte)
+ - Fixed overflow issue with mineral veins far away from the player (Malte)
+ - Fixed item batchers not dropping their contents when broken (Malte)
+ - Fixed a crash with the tesla coil (Malte)
+ - Fixed a bug with conveyor belts and structure blocks (Malte)
+ - Fixed scrolling in the turret GUI (Malte)
+ - Fixed default mineral dimension blacklist in the config (Malte)
+ - Fixed crash related to projectiles fired by turrets (Malte)
+ - Fixed CraftTweaker's `addJSONRecipe` for IE recipes (SkySom)
+ - Fixed buzzsaw not updating its enchantments until a block is broken (Malte)
+ - Fixed mineral veins crashing on world load (SkySom)
+ - Many minor performance improvements (Malte)
+
+##### Version 1.16.4-4.1.1-128
+- First 1.16.4 release
+- Includes the changes from 1.16.3-4.1.1-127
+
+##### Version 1.16.3-4.1.1-127
+- Fixed Arc Recycling accessing Tags too early (Malte)
+- Fixed null calls in IE's config for item max damage (BluSunrize)
+- Fixed electrodes not taking and displaying damage properly (BluSunrize)
+- Fixed retrogen crashing (BluSunrize)
+- Also includes the changes from 1.16.1-4.1.1-126
+
 ##### Version 1.16.1-4.1.1-126
 - Added Basalt and Blackstone to the blocks that the survey tool works on (BluSunrize)
 - Changed Ancient Debris to produce twice the netherite scrap in the Arc Furnace (BluSunrize)
@@ -34,15 +118,17 @@
 - Fixed a crash in turret GUIs (TwistedGate)
 - Translations Added/Updated: pt_br (felipeboff), zh_cn (AethLi)
 
+##### Version 1.16.3-4.1.0-124
+- Fixed crash with gunpowder barrels (BluSunrize)
+- Also includes the changes from 1.16.1-4.1.0-123
+
 ##### Version 1.16.1-4.1.0-123
 - Fixed further issues with wires loading (Malte)
 - Fixed issues with ItemStack NBTs, caused problems with Mekanism (Malte)
 - Also includes the changes from 1.15.2-4.1.0-122
 
-##### Version 1.15.2-4.1.0-122
+##### Version 1.15.2-4.1.0-pre
 - Added the sawmill! It strips logs and cuts them into planks! (BluSunrize)
-    - It also produces sawdust, which can be burnt in a furnace or crafted into paper!
-    - It'll get more uses in the future :D
 - Added blue ice to be used by the Thermoelectric Generator, nerfed packed ice in response (BluSunrize)
 - Experimental recipe changes: (BluSunrize)
     - Doubled the burntime of Diesel in the generator
@@ -51,13 +137,7 @@
     - Increase gunpowder output from sulfur & saltpeter recipe
     - Reduced ethanol output from melon slices
 - Allowed multiblock structures to be changed by data packs (Malte)
-- Added potted hemp: You can now put hemp seeds in a flower pot! (BluSunrize)
 - Changed the renders for waterwheels, windmills and bucket wheel to use VBOs (Malte)
-- Changed various multiblocks to have smaller textures and draw their elements from central sheets (BluSunrize)
-    - This will break existing resource packs that change multiblocks, but it makes them easier to create in the future!
-- Changed chutes to act as inventories for hoppers, conveyors, etc (MalkContent)
-- Changed chutes to insert properly into covered conveyors (MalkContent)
-- Changed metal press and bottling machine to process items faster and improved their animations (MalkContent)
 - Fixed GUI model for the alloy smelter (BluSunrize)
 - Fixed crash with mineral veins being saved (BluSunrize)
 - Fixed infinite crafting of firework rockets in the assembler (Malte)
@@ -65,12 +145,9 @@
 - Fixed connectors being pushed by pistons if quark is installed (Malte)
 - Fixed connectors accepting too much energy sometimes (Malte)
 - Fixed recipes for steel, electrum and constantan dust (Malte)
-- Fixed crash with potion bullets (BluSunrize)
-- Fixed crash with the voting handler on MacOS (BluSunrize)
-- Fixed rendering of fluids in world (Malte)
-- Fixed issues with the mineral commands (Malte)
-- Fixed crash related to non-bullet items in the gun turret (Malte)
-- Fixed fluid pipes having janky behavior and rendering (MalkContent)
+
+##### Version 1.16.3-4.0.1-121
+- Initial release for 1.16.3
 
 ##### Version 1.16.1-4.0.1-120
 - Fixed crashes with wires under certain conditions (Malte)

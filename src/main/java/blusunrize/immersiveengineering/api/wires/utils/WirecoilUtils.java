@@ -76,7 +76,7 @@ public class WirecoilUtils
 					int distanceSq = (int)Math.ceil(otherLink.cp.getPosition().distanceSq(masterPos));
 					int maxLengthSq = coil.getMaxLength(stack); //not squared yet
 					maxLengthSq *= maxLengthSq;
-					if(!otherLink.dimension.equals(world.func_234923_W_()))
+					if(!otherLink.dimension.equals(world.getDimensionKey()))
 						player.sendStatusMessage(new TranslationTextComponent(Lib.CHAT_WARN+"wrongDimension"), true);
 					else if(otherLink.cp.getPosition().equals(masterPos))
 						player.sendStatusMessage(new TranslationTextComponent(Lib.CHAT_WARN+"sameConnection"), true);
@@ -177,7 +177,7 @@ public class WirecoilUtils
 		{
 			return new WireLink(
 					cp,
-					world.func_234923_W_(),
+					world.getDimensionKey(),
 					offset,
 					info
 			);
@@ -186,7 +186,7 @@ public class WirecoilUtils
 		public void writeToItem(ItemStack stack)
 		{
 			CompoundNBT nbt = stack.getOrCreateTag();
-			nbt.putString("linkingDim", dimension.func_240901_a_().toString());
+			nbt.putString("linkingDim", dimension.getLocation().toString());
 			nbt.put("linkingPos", cp.createTag());
 			nbt.put("linkingOffset", NBTUtil.writeBlockPos(offset));
 			CompoundNBT targetNBT = new CompoundNBT();
@@ -201,7 +201,7 @@ public class WirecoilUtils
 			ResourceLocation dim = new ResourceLocation(nbt.getString("linkingDim"));
 			BlockPos offset = NBTUtil.readBlockPos(nbt.getCompound("linkingOffset"));
 			TargetingInfo info = TargetingInfo.readFromNBT(nbt.getCompound("linkingTarget"));
-			return new WireLink(cp, RegistryKey.func_240903_a_(Registry.WORLD_KEY, dim), offset, info);
+			return new WireLink(cp, RegistryKey.getOrCreateKey(Registry.WORLD_KEY, dim), offset, info);
 		}
 	}
 

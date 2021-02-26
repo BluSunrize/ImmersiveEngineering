@@ -1,0 +1,3 @@
+Contador de corriente
+¡88 Fluxs por hora!
+El Contador de corriente es un dispositivo de medición de la energía eléctrica. Se puede conectar en cualquier línea eléctrica y llevará la cuenta de la energía transferida a través de ella, devolviendo una media de Flux/t al hacer clic con el botón derecho.

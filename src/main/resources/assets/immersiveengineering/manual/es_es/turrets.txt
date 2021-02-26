@@ -1,0 +1,14 @@
+Torretas
+¿Sigues ahí?
+Las Torretas son el siguiente paso en la defensa automatizada de tu fábrica. Disponen de un complejo sistema óptico combinado con un "cerebro" mecánico para distinguir y adquirir eficazmente los objetivos y utilizar el armamento incorporado para neutralizarlos.
+Todas las torretas cuentan con puertos de energía en su base, y requieren una señal de Redstone para estar activas, aunque este comportamiento se puede invertir agachándose y haciendo clic con el botón derecho del ratón con un Destornillador del Ingeniero.<np>
+Una vez colocadas, las torretas recordarán a su propietario y no permitirán que otros usuarios las rompan o modifiquen. Al hacer clic con el botón derecho del ratón en la torreta, aparece la interfaz gráfica de usuario, que presenta una lista de nombres con un campo de entrada, así como múltiples opciones de objetivos.
+Por defecto, la lista es una lista negra de objetivos que no pueden ser atacados. Esta lista utiliza nombres de criaturas, por lo que es posible hacer una lista blanca de animales.<np>
+<&turret_chemthrower_recipe>La Torreta del Lanzador de productos químicos utiliza la capacidad de propulsión de fluidos del <link;chemthrower;Lanzador de productos químicos;start> para cubrir los objetivos con cualquier cosa, desde agua para apagar las llamas, hasta gasoil para encenderlas.<np>
+Esta torreta cuenta con un puerto de fluido en la parte inferior y posterior de la base para permitir que las tuberías se conecten a ella. Además, la interfaz gráfica de usuario tiene un botón a la izquierda que desactiva o activa la llama piloto, encendiendo el fluido dispensado, siempre que sea inflamable.
+
+§oLos proveedores de este plano no se hacen responsables de los daños que puedan sufrir el usuario, los vecinos o los distintos animales de la granja.§r<np>
+<&turret_gun_recipe>La Torreta del cañón presenta una versión muy modificada del <link;revolver;Revólver;start> internamente en una carcasa mucho más grande e imponente. La construcción también incluye un cargador ampliado para permitir un mayor almacenamiento interno de munición.<np>
+En la parte posterior e inferior de la base se encuentra un puerto para la inserción automática de la munición y la extracción de los casquillos gastados. Esta torreta puede almacenar hasta una pila completa de cartuchos y la interfaz gráfica de usuario cuenta con un botón para activar la expulsión automática de los casquillos usados.
+
+§oTenga en cuenta que ciertas municiones pueden causar daños colaterales al usuario o a sus bienes.§r

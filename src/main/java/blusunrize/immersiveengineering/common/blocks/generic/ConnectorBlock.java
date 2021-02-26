@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
-import blusunrize.immersiveengineering.api.wires.ImmersiveConnectableTileEntity;
+import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.EnergyConnectorTileEntity;
@@ -74,16 +74,16 @@ public abstract class ConnectorBlock extends IETileProviderBlock
 		{
 			BlockRayTraceResult target = (BlockRayTraceResult)targetIn;
 			TileEntity te = world.getTileEntity(pos);
-			if(te instanceof ImmersiveConnectableTileEntity)
+			if(te instanceof IImmersiveConnectable)
 			{
 				TargetingInfo subTarget = new TargetingInfo(target.getFace(), (float)target.getHitVec().x-pos.getX(),
 						(float)target.getHitVec().y-pos.getY(), (float)target.getHitVec().z-pos.getZ());
-				BlockPos masterPos = ((ImmersiveConnectableTileEntity)te).getConnectionMaster(null, subTarget);
+				BlockPos masterPos = ((IImmersiveConnectable)te).getConnectionMaster(null, subTarget);
 				if(masterPos!=pos)
 					te = world.getTileEntity(masterPos);
-				if(te instanceof ImmersiveConnectableTileEntity)
+				if(te instanceof IImmersiveConnectable)
 				{
-					ConnectionPoint cp = ((ImmersiveConnectableTileEntity)te).getTargetedPoint(subTarget, masterPos.subtract(pos));
+					ConnectionPoint cp = ((IImmersiveConnectable)te).getTargetedPoint(subTarget, masterPos.subtract(pos));
 					if(cp!=null)
 						for(Connection c : GlobalWireNetwork.getNetwork((World)world).getLocalNet(cp).getConnections(cp))
 							if(!c.isInternal())

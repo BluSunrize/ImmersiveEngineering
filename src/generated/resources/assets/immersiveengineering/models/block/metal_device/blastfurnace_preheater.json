@@ -3,27 +3,8 @@
   "textures": {
     "particle": "immersiveengineering:block/metal_device/blast_furnace_preheater"
   },
-  "loader": "immersiveengineering:basic_split",
-  "base_loader": "forge:obj",
-  "dynamic": false,
-  "detectCullableFaces": false,
+  "loader": "forge:obj",
   "model": "immersiveengineering:models/block/metal_device/blastfurnace_preheater.obj",
-  "flip-v": true,
-  "split_parts": [
-    [
-      0,
-      0,
-      0
-    ],
-    [
-      0,
-      1,
-      0
-    ],
-    [
-      0,
-      2,
-      0
-    ]
-  ]
+  "detectCullableFaces": false,
+  "flip-v": true
 }

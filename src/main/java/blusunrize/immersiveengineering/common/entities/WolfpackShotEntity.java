@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.entities;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
-import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
@@ -62,9 +62,9 @@ public class WolfpackShotEntity extends RevolvershotHomingEntity
 			Entity hit = ((EntityRayTraceResult)mop).getEntity();
 			if(hit.hurtResistantTime > 0)
 				hit.hurtResistantTime = 0;
-			Entity shooter = field_234609_b_!=null?world.getPlayerByUuid(field_234609_b_): null;
+			Entity shooter = shooterUUID!=null?world.getPlayerByUuid(shooterUUID): null;
 			hit.attackEntityFrom(IEDamageSources.causeWolfpackDamage(this, shooter),
-					IEConfig.TOOLS.bulletDamage_WolfpackPart.get().floatValue());
+					IEServerConfig.TOOLS.bulletDamage_WolfpackPart.get().floatValue());
 		}
 		this.remove();
 	}

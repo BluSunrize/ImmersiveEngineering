@@ -10,8 +10,8 @@
 package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISpawnInterdiction;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.tileentity.TileEntity;
@@ -39,7 +39,7 @@ public class SpawnInterdictionHandler
 		{
 			synchronized(interdictionTiles)
 			{
-				Set<ISpawnInterdiction> dimSet = interdictionTiles.get(event.getEntity().world.func_234923_W_());
+				Set<ISpawnInterdiction> dimSet = interdictionTiles.get(event.getEntity().world.getDimensionKey());
 				if(dimSet!=null)
 				{
 					Iterator<ISpawnInterdiction> it = dimSet.iterator();
@@ -50,7 +50,7 @@ public class SpawnInterdictionHandler
 						{
 							if(((TileEntity)interdictor).isRemoved()||((TileEntity)interdictor).getWorld()==null)
 								it.remove();
-							else if(Vector3d.func_237489_a_(((TileEntity)interdictor).getPos()).squareDistanceTo(event.getEntity().getPositionVec()) <= interdictor.getInterdictionRangeSquared())
+							else if(Vector3d.copy(((TileEntity)interdictor).getPos()).squareDistanceTo(event.getEntity().getPositionVec()) <= interdictor.getInterdictionRangeSquared())
 								event.setCanceled(true);
 						}
 						else if(interdictor instanceof Entity)
@@ -78,7 +78,7 @@ public class SpawnInterdictionHandler
 		{
 			synchronized(interdictionTiles)
 			{
-				RegistryKey<World> dimension = event.getEntity().world.func_234923_W_();
+				RegistryKey<World> dimension = event.getEntity().world.getDimensionKey();
 				if(interdictionTiles.containsKey(dimension))
 				{
 					Iterator<ISpawnInterdiction> it = interdictionTiles.get(dimension).iterator();
@@ -89,7 +89,7 @@ public class SpawnInterdictionHandler
 						{
 							if(((TileEntity)interdictor).isRemoved()||((TileEntity)interdictor).getWorld()==null)
 								it.remove();
-							else if(Vector3d.func_237489_a_(((TileEntity)interdictor).getPos()).squareDistanceTo(event.getEntity().getPositionVec()) <= interdictor.getInterdictionRangeSquared())
+							else if(Vector3d.copy(((TileEntity)interdictor).getPos()).squareDistanceTo(event.getEntity().getPositionVec()) <= interdictor.getInterdictionRangeSquared())
 							{
 								event.setResult(Event.Result.DENY);
 								break;
@@ -106,7 +106,7 @@ public class SpawnInterdictionHandler
 	{
 		synchronized(interdictionTiles)
 		{
-			Set<ISpawnInterdiction> inDimension = interdictionTiles.get(tile.getWorld().func_234923_W_());
+			Set<ISpawnInterdiction> inDimension = interdictionTiles.get(tile.getWorld().getDimensionKey());
 			if(inDimension!=null)
 				inDimension.remove(tile);
 		}
@@ -116,11 +116,11 @@ public class SpawnInterdictionHandler
 	void addInterdictionTile(T tile)
 	{
 		World world = tile.getWorld();
-		if(world!=null&&IEConfig.MACHINES.floodlight_spawnPrevent.get())
+		if(world!=null&&IEServerConfig.MACHINES.floodlight_spawnPrevent.get())
 			synchronized(interdictionTiles)
 			{
 				Set<ISpawnInterdiction> forDim = interdictionTiles.computeIfAbsent(
-						world.func_234923_W_(), x -> new HashSet<>()
+						world.getDimensionKey(), x -> new HashSet<>()
 				);
 				forDim.add(tile);
 			}

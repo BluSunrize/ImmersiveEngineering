@@ -9,7 +9,7 @@
 
 package blusunrize.immersiveengineering.common.crafting.serializers;
 
-import blusunrize.immersiveengineering.common.crafting.TurnAndCopyRecipe;
+import blusunrize.immersiveengineering.common.crafting.fluidaware.TurnAndCopyRecipe;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.item.crafting.IRecipeSerializer;
@@ -77,7 +77,7 @@ public class TurnAndCopyRecipeSerializer extends ForgeRegistryEntry<IRecipeSeria
 	@Override
 	public void write(@Nonnull PacketBuffer buffer, @Nonnull TurnAndCopyRecipe recipe)
 	{
-		IRecipeSerializer.CRAFTING_SHAPED.write(buffer, recipe);
+		IRecipeSerializer.CRAFTING_SHAPED.write(buffer, recipe.toVanilla());
 		buffer.writeBoolean(recipe.isQuarterTurn());
 		buffer.writeBoolean(recipe.isEightTurn());
 		int[] copying = recipe.getCopyTargets();

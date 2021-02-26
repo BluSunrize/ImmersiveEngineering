@@ -4,7 +4,7 @@
     "particle": "immersiveengineering:block/metal_decoration/toolbox"
   },
   "loader": "forge:obj",
-  "detectCullableFaces": false,
   "model": "immersiveengineering:models/block/toolbox.obj",
+  "detectCullableFaces": false,
   "flip-v": true
 }

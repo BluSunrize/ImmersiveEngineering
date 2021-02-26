@@ -13,12 +13,13 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.api.excavator.MineralMix;
 import blusunrize.immersiveengineering.common.crafting.*;
+import blusunrize.immersiveengineering.common.crafting.fluidaware.BasicShapedRecipe;
+import blusunrize.immersiveengineering.common.crafting.fluidaware.ShapelessFluidAwareRecipe;
 import blusunrize.immersiveengineering.common.crafting.serializers.*;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.SpecialRecipeSerializer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -73,6 +74,16 @@ public class RecipeSerializers
 	);
 	public static final RegistryObject<DamageToolRecipeSerializer> DAMAGE_TOOL_SERIALIZER = RECIPE_SERIALIZERS.register(
 			"damage_tool", DamageToolRecipeSerializer::new
+	);
+	public static final RegistryObject<WrappingRecipeSerializer<BasicShapedRecipe, ?>> IE_SHAPED_SERIALIZER = RECIPE_SERIALIZERS.register(
+			"shaped_fluid", () -> new WrappingRecipeSerializer<>(
+					IRecipeSerializer.CRAFTING_SHAPED, BasicShapedRecipe::toVanilla, BasicShapedRecipe::new
+			)
+	);
+	public static final RegistryObject<WrappingRecipeSerializer<ShapelessFluidAwareRecipe, ?>> IE_SHAPELESS_SERIALIZER = RECIPE_SERIALIZERS.register(
+			"shapeless_fluid", () -> new WrappingRecipeSerializer<>(
+					IRecipeSerializer.CRAFTING_SHAPELESS, ShapelessFluidAwareRecipe::toVanilla, ShapelessFluidAwareRecipe::new
+			)
 	);
 
 	static
@@ -131,8 +142,6 @@ public class RecipeSerializers
 		GeneratedListRecipe.SERIALIZER = RECIPE_SERIALIZERS.register(
 				"generated_list", GeneratedListSerializer::new
 		);
-
-		CraftingHelper.register(new IEConfigConditionSerializer());
 	}
 
 	private static <T extends IRecipe<?>> Supplier<SpecialRecipeSerializer<T>> special(Function<ResourceLocation, T> create)

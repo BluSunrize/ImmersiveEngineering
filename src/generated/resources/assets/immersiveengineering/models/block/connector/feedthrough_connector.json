@@ -1,0 +1,11 @@
+{
+  "loader": "immersiveengineering:connector",
+  "base_model": "immersiveengineering:block/connector/feedthrough",
+  "layers": [
+    "solid",
+    "cutout_mipped",
+    "cutout",
+    "translucent",
+    "tripwire"
+  ]
+}

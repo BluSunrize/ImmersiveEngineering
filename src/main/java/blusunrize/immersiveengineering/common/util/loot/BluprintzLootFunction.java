@@ -44,7 +44,7 @@ public class BluprintzLootFunction extends LootFunction
 
 	@Nonnull
 	@Override
-	public LootFunctionType func_230425_b_()
+	public LootFunctionType getFunctionType()
 	{
 		return IELootFunctions.bluprintz;
 	}

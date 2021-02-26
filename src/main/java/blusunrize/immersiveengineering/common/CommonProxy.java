@@ -129,11 +129,6 @@ public class CommonProxy
 	{
 	}
 
-	public String[] splitStringOnWidth(String s, int w)
-	{
-		return new String[]{s};
-	}
-
 	public World getClientWorld()
 	{
 		return null;

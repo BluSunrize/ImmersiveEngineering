@@ -1,49 +1,10 @@
 {
   "parent": "minecraft:block/block",
   "textures": {
-    "particle": "immersiveengineering:block/conveyor/conveyor"
+    "particle": "immersiveengineering:block/multiblocks/metal_press"
   },
-  "loader": "immersiveengineering:basic_split",
-  "base_loader": "forge:obj",
-  "dynamic": false,
-  "detectCullableFaces": false,
+  "loader": "forge:obj",
   "model": "immersiveengineering:models/block/metal_multiblock/metal_press.obj",
-  "flip-v": true,
-  "split_parts": [
-    [
-      0,
-      -1,
-      -1
-    ],
-    [
-      0,
-      -1,
-      0
-    ],
-    [
-      0,
-      -1,
-      1
-    ],
-    [
-      0,
-      0,
-      -1
-    ],
-    [
-      0,
-      0,
-      0
-    ],
-    [
-      0,
-      0,
-      1
-    ],
-    [
-      0,
-      1,
-      0
-    ]
-  ]
+  "detectCullableFaces": false,
+  "flip-v": true
 }

@@ -1,40 +1,40 @@
 {
   "variants": {
     "active=false,facing=north": {
-      "model": "immersiveengineering:block/coke_oven_off",
+      "model": "immersiveengineering:block/coke_oven_off_split",
       "uvlock": true
     },
     "active=true,facing=north": {
-      "model": "immersiveengineering:block/coke_oven_on",
+      "model": "immersiveengineering:block/coke_oven_on_split",
       "uvlock": true
     },
     "active=false,facing=south": {
-      "model": "immersiveengineering:block/coke_oven_off",
+      "model": "immersiveengineering:block/coke_oven_off_split",
       "y": 180,
       "uvlock": true
     },
     "active=true,facing=south": {
-      "model": "immersiveengineering:block/coke_oven_on",
+      "model": "immersiveengineering:block/coke_oven_on_split",
       "y": 180,
       "uvlock": true
     },
     "active=false,facing=west": {
-      "model": "immersiveengineering:block/coke_oven_off",
+      "model": "immersiveengineering:block/coke_oven_off_split",
       "y": 270,
       "uvlock": true
     },
     "active=true,facing=west": {
-      "model": "immersiveengineering:block/coke_oven_on",
+      "model": "immersiveengineering:block/coke_oven_on_split",
       "y": 270,
       "uvlock": true
     },
     "active=false,facing=east": {
-      "model": "immersiveengineering:block/coke_oven_off",
+      "model": "immersiveengineering:block/coke_oven_off_split",
       "y": 90,
       "uvlock": true
     },
     "active=true,facing=east": {
-      "model": "immersiveengineering:block/coke_oven_on",
+      "model": "immersiveengineering:block/coke_oven_on_split",
       "y": 90,
       "uvlock": true
     }

@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import static blusunrize.immersiveengineering.common.data.IEDataGenerator.rl;
+import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
 
 public class GeneratedListRecipe extends IESerializableRecipe
 {
@@ -41,7 +41,7 @@ public class GeneratedListRecipe extends IESerializableRecipe
 				BottlingMachineRecipe.TYPE
 		));
 		LIST_GENERATORS.put(rl("arc_recycling_list"), new RecipeListGenerator<>(
-				ArcRecyclingThreadHandler::getRecipesFromRunningThreads, ArcFurnaceRecipe.SERIALIZER.getId(),
+				ArcRecyclingCalculator::getRecipesFromRunningThreads, ArcFurnaceRecipe.SERIALIZER.getId(),
 				ArcFurnaceRecipe.TYPE
 		));
 	}

@@ -12,8 +12,8 @@ import blusunrize.immersiveengineering.api.ComparableItemStack;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -37,7 +37,7 @@ public class MetalPressRecipeSerializer extends IERecipeSerializer<MetalPressRec
 		IngredientWithSize input = IngredientWithSize.deserialize(json.get("input"));
 		ItemStack mold = readOutput(json.get("mold"));
 		int energy = JSONUtils.getInt(json, "energy");
-		return IEConfig.MACHINES.metalPressConfig.apply(
+		return IEServerConfig.MACHINES.metalPressConfig.apply(
 				new MetalPressRecipe(recipeId, output, input, new ComparableItemStack(mold), energy)
 		);
 	}

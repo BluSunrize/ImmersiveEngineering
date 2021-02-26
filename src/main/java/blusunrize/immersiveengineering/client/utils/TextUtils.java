@@ -18,11 +18,11 @@ public class TextUtils
 	{
 		return new ITextComponent[]{
 				new TranslationTextComponent(Lib.DESC_INFO+"blockSide.facing")
-						.func_240702_b_(": ")
-						.func_230529_a_(new TranslationTextComponent(descBase+thisConfig.getString())),
+						.appendString(": ")
+						.append(new TranslationTextComponent(descBase+thisConfig.getString())),
 				new TranslationTextComponent(Lib.DESC_INFO+"blockSide.opposite")
-						.func_240702_b_(": ")
-						.func_230529_a_(new TranslationTextComponent(descBase+otherConfig.getString()))
+						.appendString(": ")
+						.append(new TranslationTextComponent(descBase+otherConfig.getString()))
 		};
 	}
 

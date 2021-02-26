@@ -35,7 +35,7 @@ public class DimensionChunkCoords extends ChunkPos
 
 	public DimensionChunkCoords(World world, int chunkX, int chunkZ)
 	{
-		this(world.func_234923_W_(), chunkX, chunkZ);
+		this(world.getDimensionKey(), chunkX, chunkZ);
 	}
 
 	@Override
@@ -66,7 +66,7 @@ public class DimensionChunkCoords extends ChunkPos
 	public CompoundNBT writeToNBT()
 	{
 		CompoundNBT tag = new CompoundNBT();
-		tag.putString("dim", dimension.func_240901_a_().toString());
+		tag.putString("dim", dimension.getLocation().toString());
 		tag.putInt("x", this.x);
 		tag.putInt("z", this.z);
 		return tag;
@@ -79,7 +79,7 @@ public class DimensionChunkCoords extends ChunkPos
 		{
 			String dimNameStr = tag.getString("dim");
 			ResourceLocation dimName = new ResourceLocation(dimNameStr);
-			RegistryKey<World> dimType = RegistryKey.func_240903_a_(Registry.WORLD_KEY, dimName);
+			RegistryKey<World> dimType = RegistryKey.getOrCreateKey(Registry.WORLD_KEY, dimName);
 			return new DimensionChunkCoords(dimType, tag.getInt("x"), tag.getInt("z"));
 		}
 		return null;

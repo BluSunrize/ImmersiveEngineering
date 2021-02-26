@@ -21,11 +21,17 @@ There is one case where no crash log will be generated: If it wasn't MC that cra
 #### Other mods
 Some mods are not officially supported by IE. They will probably work pretty well, but some thing might not work/look weird. If your modpack contains one or more of these mods and you encounter a bug, try removing the unsupported mods. If the bug/crash does not happen without those mods, don't report it since fixing interactions with those mods is usually impossible or extremely hard. The following mods are not officially supported:
 
-- **Optifine**: Optifine changes a lot of Minecraft's rendering code and it is not legally possible to check what those changes are. Another problem is that there is no `dev`/`deobf` version of Optifine which makes running Optifine in a development environment pretty much impossible.
+- **Optifine**: Optifine changes a lot of Minecraft's rendering code and it is not legally possible to check what those
+  changes are. Another problem is that Optifine uses a very unusual way of modifying the vanilla code, which makes
+  running it in a development environment relatively complex.
 
-- **Fastcraft**: same as Optifine.
+- **Performant**: Similar to Optifine, just on the server. It uses the "standard" approach to modifying vanilla code, so
+  running it in a dev environment is easier than with Optifine. On the other hand Performant *intentionally* violates
+  very reasonable assumptions (e.g. certain events running at a certain rate) to improve performance, which makes it
+  very hard to work with.
 
-- **SpongeForge** and similar server software: While the source code of some of these is available on GitHub or similar platforms, it would require a lot of extra work to test everything with every server software.
+- **SpongeForge** and similar server software: While the source code of some of these is available on GitHub or similar
+  platforms, it would require a lot of extra work to test everything with every server software.
 
 - **Torcherino** and other mods to speed up machines (not crops): If they cause a crash, report it. If they don't work on IE machines or cause rendering glitches, don't report it.
 

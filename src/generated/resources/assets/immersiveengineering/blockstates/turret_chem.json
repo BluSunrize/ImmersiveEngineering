@@ -16,18 +16,18 @@
       "y": 90
     },
     "facing=north,multiblockslave=true": {
-      "model": "immersiveengineering:block/ie_empty"
+      "model": "immersiveengineering:block/turret_chem_top"
     },
     "facing=south,multiblockslave=true": {
-      "model": "immersiveengineering:block/ie_empty",
+      "model": "immersiveengineering:block/turret_chem_top",
       "y": 180
     },
     "facing=west,multiblockslave=true": {
-      "model": "immersiveengineering:block/ie_empty",
+      "model": "immersiveengineering:block/turret_chem_top",
       "y": 270
     },
     "facing=east,multiblockslave=true": {
-      "model": "immersiveengineering:block/ie_empty",
+      "model": "immersiveengineering:block/turret_chem_top",
       "y": 90
     }
   }

@@ -15,8 +15,6 @@ import blusunrize.immersiveengineering.common.network.MessageBirthdayParty;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
@@ -31,7 +29,6 @@ import net.minecraft.potion.Effects;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
@@ -123,13 +120,13 @@ public class RevolvershotEntity extends IEProjectileEntity
 
 		if(this.bulletType!=null)
 		{
-			bulletType.onHitTarget(world, mop, this.field_234609_b_, this, headshot);
+			bulletType.onHitTarget(world, mop, this.shooterUUID, this, headshot);
 			if(mop instanceof EntityRayTraceResult)
 			{
 				Entity hitEntity = ((EntityRayTraceResult)mop).getEntity();
-				if(headshot&&hitEntity instanceof LivingEntity&&((LivingEntity)hitEntity).isChild()&&((LivingEntity)hitEntity).getHealth() <= 0)
+				if(shooterUUID!=null&&headshot&&hitEntity instanceof LivingEntity&&((LivingEntity)hitEntity).isChild()&&((LivingEntity)hitEntity).getHealth() <= 0)
 				{
-					PlayerEntity shooter = world.getPlayerByUuid(field_234609_b_);
+					PlayerEntity shooter = world.getPlayerByUuid(shooterUUID);
 					if(shooter!=null)
 						Utils.unlockIEAdvancement(shooter, "main/secret_birthdayparty");
 					world.playSound(null, getPosX(), getPosY(), getPosZ(), IESounds.birthdayParty, SoundCategory.PLAYERS, 1.0F, 1.2F/(this.rand.nextFloat()*0.2F+0.9F));
@@ -140,12 +137,7 @@ public class RevolvershotEntity extends IEProjectileEntity
 		if(!this.world.isRemote)
 			this.secondaryImpact(mop);
 		if(mop instanceof BlockRayTraceResult)
-		{
-			BlockPos hitPos = ((BlockRayTraceResult)mop).getPos();
-			BlockState state = this.world.getBlockState(hitPos);
-			if(state.getMaterial()!=Material.AIR)
-				state.onEntityCollision(this.world, hitPos, this);
-		}
+			this.onHitBlock((BlockRayTraceResult)mop);
 		this.remove();
 	}
 
@@ -155,9 +147,9 @@ public class RevolvershotEntity extends IEProjectileEntity
 		if(!(mop instanceof EntityRayTraceResult))
 			return;
 		Entity hitEntity = ((EntityRayTraceResult)mop).getEntity();
-		if(bulletElectro&&hitEntity instanceof LivingEntity)
+		if(bulletElectro&&hitEntity instanceof LivingEntity&&shooterUUID!=null)
 		{
-			PlayerEntity shooter = world.getPlayerByUuid(field_234609_b_);
+			PlayerEntity shooter = world.getPlayerByUuid(shooterUUID);
 			float percentualDrain = .15f/(bulletType==null?1: bulletType.getProjectileCount(shooter));
 			((LivingEntity)hitEntity).addPotionEffect(new EffectInstance(Effects.SLOWNESS, 15, 4));
 			for(EquipmentSlotType slot : EquipmentSlotType.values())

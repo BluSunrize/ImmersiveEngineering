@@ -1,40 +1,40 @@
 {
   "variants": {
     "active=false,facing=north": {
-      "model": "immersiveengineering:block/blast_furnace_off",
+      "model": "immersiveengineering:block/blast_furnace_off_split",
       "uvlock": true
     },
     "active=true,facing=north": {
-      "model": "immersiveengineering:block/blast_furnace_on",
+      "model": "immersiveengineering:block/blast_furnace_on_split",
       "uvlock": true
     },
     "active=false,facing=south": {
-      "model": "immersiveengineering:block/blast_furnace_off",
+      "model": "immersiveengineering:block/blast_furnace_off_split",
       "y": 180,
       "uvlock": true
     },
     "active=true,facing=south": {
-      "model": "immersiveengineering:block/blast_furnace_on",
+      "model": "immersiveengineering:block/blast_furnace_on_split",
       "y": 180,
       "uvlock": true
     },
     "active=false,facing=west": {
-      "model": "immersiveengineering:block/blast_furnace_off",
+      "model": "immersiveengineering:block/blast_furnace_off_split",
       "y": 270,
       "uvlock": true
     },
     "active=true,facing=west": {
-      "model": "immersiveengineering:block/blast_furnace_on",
+      "model": "immersiveengineering:block/blast_furnace_on_split",
       "y": 270,
       "uvlock": true
     },
     "active=false,facing=east": {
-      "model": "immersiveengineering:block/blast_furnace_off",
+      "model": "immersiveengineering:block/blast_furnace_off_split",
       "y": 90,
       "uvlock": true
     },
     "active=true,facing=east": {
-      "model": "immersiveengineering:block/blast_furnace_on",
+      "model": "immersiveengineering:block/blast_furnace_on_split",
       "y": 90,
       "uvlock": true
     }

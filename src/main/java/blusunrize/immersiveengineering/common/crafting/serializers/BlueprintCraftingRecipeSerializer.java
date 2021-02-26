@@ -11,8 +11,8 @@ package blusunrize.immersiveengineering.common.crafting.serializers;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDevices;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
@@ -39,7 +39,7 @@ public class BlueprintCraftingRecipeSerializer extends IERecipeSerializer<Bluepr
 		IngredientWithSize[] ingredients = new IngredientWithSize[inputs.size()];
 		for(int i = 0; i < ingredients.length; i++)
 			ingredients[i] = IngredientWithSize.deserialize(inputs.get(i));
-		return IEConfig.MACHINES.autoWorkbenchConfig.apply(
+		return IEServerConfig.MACHINES.autoWorkbenchConfig.apply(
 				new BlueprintCraftingRecipe(recipeId, category, output, ingredients)
 		);
 	}

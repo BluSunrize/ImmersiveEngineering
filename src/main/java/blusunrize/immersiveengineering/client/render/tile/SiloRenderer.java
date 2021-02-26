@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.client.render.tile;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.blocks.metal.SiloTileEntity;
-import blusunrize.immersiveengineering.common.util.Utils;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
@@ -20,6 +19,7 @@ import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3f;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 public class SiloRenderer extends TileEntityRenderer<SiloTileEntity>
 {
@@ -45,7 +45,7 @@ public class SiloRenderer extends TileEntityRenderer<SiloTileEntity>
 			float flatScale = .001f;
 			float textScale = .375f*0.75f;
 			matrixStack.scale(baseScale, baseScale, baseScale);
-			ItemStack stack = Utils.copyStackWithAmount(tile.identStack, tile.storageAmount);
+			ItemStack stack = ItemHandlerHelper.copyStackWithSize(tile.identStack, tile.storageAmount);
 			String s = ""+stack.getCount();
 			float w = ClientUtils.mc().fontRenderer.getStringWidth(s);
 

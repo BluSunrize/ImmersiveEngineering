@@ -9,16 +9,15 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
 import blusunrize.immersiveengineering.api.crafting.ClocheFertilizer;
 import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
+import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
@@ -26,6 +25,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummy
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
@@ -55,6 +55,7 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.math.vector.TransformationMatrix;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.MinecraftForgeClient;
@@ -100,7 +101,7 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 			return FluidTags.WATER.contains(fluid.getFluid());
 		}
 	};
-	public FluxStorage energyStorage = new FluxStorage(16000, Math.max(256, IEConfig.MACHINES.cloche_consumption.get()));
+	public FluxStorage energyStorage = new FluxStorage(16000, Math.max(256, IEServerConfig.MACHINES.cloche_consumption.get()));
 
 	public int fertilizerAmount = 0;
 	public float fertilizerMod = 1;
@@ -113,7 +114,7 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 		super(IETileTypes.CLOCHE.get());
 	}
 
-	private CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntity(this,
+	private CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntityAt(this,
 			() -> new DirectionalBlockPos(pos.up().offset(getFacing().getOpposite()), getFacing()),
 			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 
@@ -126,14 +127,14 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 		ItemStack seed = inventory.get(SLOT_SEED);
 		if(world.isRemote)
 		{
-			if(energyStorage.getEnergyStored() > IEConfig.MACHINES.cloche_consumption.get()&&fertilizerAmount > 0&&renderActive)
+			if(energyStorage.getEnergyStored() > IEServerConfig.MACHINES.cloche_consumption.get()&&fertilizerAmount > 0&&renderActive)
 			{
 				ClocheRecipe recipe = getRecipe();
 				if(recipe!=null&&fertilizerAmount > 0)
 				{
-					if(renderGrowth < recipe.time+IEConfig.MACHINES.cloche_growth_mod.get()*fertilizerMod)
+					if(renderGrowth < recipe.time+IEServerConfig.MACHINES.cloche_growth_mod.get()*fertilizerMod)
 					{
-						renderGrowth += IEConfig.MACHINES.cloche_growth_mod.get()*fertilizerMod;
+						renderGrowth += IEServerConfig.MACHINES.cloche_growth_mod.get()*fertilizerMod;
 						fertilizerAmount--;
 					}
 					else
@@ -153,7 +154,7 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 			if(!seed.isEmpty())
 			{
 				ClocheRecipe recipe = getRecipe();
-				int consumption = IEConfig.MACHINES.cloche_consumption.get();
+				int consumption = IEServerConfig.MACHINES.cloche_consumption.get();
 				if(recipe!=null&&fertilizerAmount > 0&&energyStorage.extractEnergy(consumption, true)==consumption)
 				{
 					boolean consume = false;
@@ -198,7 +199,7 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 					}
 					else
 					{
-						growth += IEConfig.MACHINES.cloche_growth_mod.get()*fertilizerMod;
+						growth += IEServerConfig.MACHINES.cloche_growth_mod.get()*fertilizerMod;
 						consume = true;
 						if(world.getGameTime()%32==((getPos().getX()^getPos().getZ())&31))
 							sendSyncPacket(0);
@@ -222,7 +223,7 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 				else
 					growth = 0;
 
-				int fluidConsumption = IEConfig.MACHINES.cloche_fluid.get();
+				int fluidConsumption = IEServerConfig.MACHINES.cloche_fluid.get();
 				if(fertilizerAmount <= 0&&tank.getFluidAmount() >= fluidConsumption)
 				{
 					fertilizerMod = 1;
@@ -239,7 +240,7 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 								inventory.set(2, ItemStack.EMPTY);
 						}
 					}
-					fertilizerAmount = IEConfig.MACHINES.cloche_fertilizer.get();
+					fertilizerAmount = IEServerConfig.MACHINES.cloche_fertilizer.get();
 					sendSyncPacket(1);
 				}
 			}
@@ -255,7 +256,7 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 						if(!outStack.isEmpty())
 						{
 							int outCount = Math.min(outStack.getCount(), 16);
-							ItemStack stack = Utils.copyStackWithAmount(outStack, outCount);
+							ItemStack stack = ItemHandlerHelper.copyStackWithSize(outStack, outCount);
 							stack = Utils.insertStackIntoInventory(output, stack, false);
 							if(!stack.isEmpty())
 								outCount -= stack.getCount();
@@ -629,7 +630,7 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 	}
 
 	@Override
-	public BlockPos getModelOffset(BlockState state)
+	public BlockPos getModelOffset(BlockState state, @Nullable Vector3i size)
 	{
 		return new BlockPos(0, dummy, 0);
 	}

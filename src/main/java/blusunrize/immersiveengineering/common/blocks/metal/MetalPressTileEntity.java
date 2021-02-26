@@ -8,9 +8,9 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttachable;
+import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
@@ -41,6 +41,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -116,7 +117,7 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 			else if(MetalPressRecipe.isValidMold(heldItem))
 			{
 				ItemStack tempMold = !master.mold.isEmpty()?master.mold.copy(): ItemStack.EMPTY;
-				master.mold = Utils.copyStackWithAmount(heldItem, 1);
+				master.mold = ItemHandlerHelper.copyStackWithSize(heldItem, 1);
 				heldItem.shrink(1);
 				if(heldItem.getCount() <= 0)
 					heldItem = ItemStack.EMPTY;
@@ -218,7 +219,7 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 		return new DirectionalBlockPos(pos.offset(getFacing(), 2), getFacing());
 	}
 
-	private CapabilityReference<IItemHandler> outputCap = CapabilityReference.forTileEntity(this,
+	private CapabilityReference<IItemHandler> outputCap = CapabilityReference.forTileEntityAt(this,
 			this::getOutputPos, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 
 	@Override
@@ -228,7 +229,7 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 		if(!output.isEmpty())
 		{
 			DirectionalBlockPos outPos = getOutputPos();
-			Utils.dropStackAtPos(world, outPos, output, outPos.direction);
+			Utils.dropStackAtPos(world, outPos.getPosition(), output, outPos.getSide());
 		}
 	}
 

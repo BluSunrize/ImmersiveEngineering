@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.crafting;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
-import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -25,6 +24,7 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 
@@ -61,7 +61,7 @@ public class JerrycanRefillRecipe extends SpecialRecipe
 	public ItemStack getCraftingResult(@Nonnull CraftingInventory inv)
 	{
 		ItemStack[] components = getComponents(inv);
-		ItemStack newContainer = Utils.copyStackWithAmount(components[containerIndex], 1);
+		ItemStack newContainer = ItemHandlerHelper.copyStackWithSize(components[containerIndex], 1);
 		IFluidHandlerItem handler = FluidUtil.getFluidHandler(newContainer).orElseThrow(RuntimeException::new);
 		ItemNBTHelper.putInt(components[jerrycanIndex], "jerrycanDrain", handler.fill(FluidUtil.getFluidContained(components[jerrycanIndex]).orElseThrow(RuntimeException::new), FluidAction.EXECUTE));
 		newContainer = handler.getContainer();// Because buckets are silly

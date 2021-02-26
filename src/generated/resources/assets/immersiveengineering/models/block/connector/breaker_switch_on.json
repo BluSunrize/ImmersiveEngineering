@@ -1,15 +1,9 @@
 {
+  "parent": "minecraft:block/block",
   "textures": {
     "particle": "immersiveengineering:block/connector/breaker_switch"
   },
-  "loader": "immersiveengineering:connector",
-  "base_model": {
-    "loader": "immersiveengineering:ie_obj",
-    "model": "immersiveengineering:models/block/connector/breaker_switch_on.obj.ie",
-    "flip-v": true,
-    "detectCullableFaces": false
-  },
-  "layers": [
-    "solid"
-  ]
+  "loader": "immersiveengineering:ie_obj",
+  "model": "immersiveengineering:models/block/connector/breaker_switch_on.obj.ie",
+  "flip-v": true
 }

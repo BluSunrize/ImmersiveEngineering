@@ -1,15 +1,9 @@
 {
+  "parent": "minecraft:block/block",
   "textures": {
     "particle": "immersiveengineering:block/connector/connector_redstone"
   },
-  "loader": "immersiveengineering:connector",
-  "base_model": {
-    "loader": "immersiveengineering:ie_obj",
-    "model": "immersiveengineering:models/block/connector/connector_redstone.obj.ie",
-    "flip-v": true,
-    "detectCullableFaces": false
-  },
-  "layers": [
-    "solid"
-  ]
+  "loader": "immersiveengineering:ie_obj",
+  "model": "immersiveengineering:models/block/connector/connector_redstone.obj.ie",
+  "flip-v": true
 }

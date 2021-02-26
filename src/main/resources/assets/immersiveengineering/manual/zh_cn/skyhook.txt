@@ -1,8 +1,8 @@
-Engineer's Skyhook
-Booker, catch!
-The Engineer's Skyhook is a motorized grabber system designed to hook onto wires, hemp ropes or steel cables.
-With it, engineers can quickly traverse the length of a powerline to move between substations or other installations. Simply hold the right mouse button while close to a wire and you will be attached to it.
-The button can be released while riding the wire, but letting go of the skyhook or sneaking will cause you to dismount.
+工程师天钩
+Booker，抓住！
+工程师天钩是一个机动化的锁扣系统，可以用于钩挂线缆，麻绳或钢线。
+有了它，工程师们就可以通过电网快速穿梭于各种分站或设备中心。只需在接近接线器时按住右键，你就会勾住线缆。
+在任何时候松开按键或潜行都会松开索扣并掉落。
 
-Gravity will be sufficient to move along decending wires at a decent speed, the standard movement keys can be used to move along ascending wires.
-When the skyhook reaches an intersection it will continue in as close to the direction the player is looking as possible.
+重力足够以合适的速度沿着下降的电线移动，标准的移动键可以用来沿着上升的电线移动。
+当天钩到达一个交叉路口时，它将尽可能接近玩家所看到的方向继续移动。

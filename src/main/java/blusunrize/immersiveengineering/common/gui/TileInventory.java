@@ -102,7 +102,7 @@ public class TileInventory implements IInventory
 	{
 		if(tile instanceof IInteractionObjectIE&&!((IInteractionObjectIE)tile).canUseGui(player))
 			return false;
-		return !tile.isRemoved()&&Vector3d.func_237491_b_(tile.getPos()).squareDistanceTo(player.getPositionVec()) < 64;
+		return !tile.isRemoved()&&Vector3d.copy(tile.getPos()).squareDistanceTo(player.getPositionVec()) < 64;
 	}
 
 	@Override

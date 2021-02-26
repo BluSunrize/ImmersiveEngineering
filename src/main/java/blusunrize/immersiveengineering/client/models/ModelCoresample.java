@@ -282,7 +282,7 @@ public class ModelCoresample extends BakedIEModel
 	{
 		@Nullable
 		@Override
-		public IBakedModel func_239290_a_(IBakedModel originalModel, ItemStack stack, @Nullable ClientWorld worldIn, @Nullable LivingEntity entityIn)
+		public IBakedModel getOverrideModel(IBakedModel originalModel, ItemStack stack, @Nullable ClientWorld worldIn, @Nullable LivingEntity entityIn)
 		{
 			MineralMix[] minerals = CoresampleItem.getMineralMixes(stack);
 			if(minerals.length > 0)
@@ -329,7 +329,7 @@ public class ModelCoresample extends BakedIEModel
 	}
 
 	@Override
-	public boolean func_230044_c_()
+	public boolean isSideLit()
 	{
 		return false;
 	}

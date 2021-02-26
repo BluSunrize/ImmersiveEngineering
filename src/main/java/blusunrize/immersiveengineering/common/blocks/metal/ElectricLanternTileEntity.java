@@ -14,9 +14,9 @@ import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.ImmersiveConnectableTileEntity;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler.EnergyConnector;
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.SpawnInterdictionHandler;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -39,8 +39,8 @@ public class ElectricLanternTileEntity extends ImmersiveConnectableTileEntity im
 		IStateBasedDirectional, IHammerInteraction, IBlockBounds, IActiveState, EnergyConnector
 {
 	public int energyStorage = 0;
-	private int energyDraw = IEConfig.MACHINES.lantern_energyDraw.get();
-	private int maximumStorage = IEConfig.MACHINES.lantern_maximumStorage.get();
+	private int energyDraw = IEServerConfig.MACHINES.lantern_energyDraw.get();
+	private int maximumStorage = IEServerConfig.MACHINES.lantern_maximumStorage.get();
 
 	public ElectricLanternTileEntity()
 	{
@@ -96,7 +96,7 @@ public class ElectricLanternTileEntity extends ImmersiveConnectableTileEntity im
 	}
 
 	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(@Nonnull CompoundNBT nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 		energyStorage = nbt.getInt("energyStorage");

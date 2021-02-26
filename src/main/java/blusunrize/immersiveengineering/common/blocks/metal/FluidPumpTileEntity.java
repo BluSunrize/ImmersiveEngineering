@@ -14,15 +14,17 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.fluid.IFluidPipe;
 import blusunrize.immersiveengineering.client.utils.TextUtils;
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.FluidPipeTileEntity.DirectionalFluidOutput;
+import blusunrize.immersiveengineering.common.config.IEClientConfig;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
+import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -69,7 +71,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 	public Map<Direction, IOSideConfig> sideConfig = new EnumMap<>(Direction.class);
 
 	{
-		for(Direction d : Direction.VALUES)
+		for(Direction d : DirectionUtils.VALUES)
 		{
 			if(d==Direction.DOWN)
 				sideConfig.put(d, IOSideConfig.INPUT);
@@ -96,7 +98,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 	private Map<Direction, CapabilityReference<IFluidHandler>> neighborFluids = new EnumMap<>(Direction.class);
 
 	{
-		for(Direction neighbor : Direction.VALUES)
+		for(Direction neighbor : DirectionUtils.VALUES)
 			neighborFluids.put(neighbor,
 					CapabilityReference.forNeighbor(this, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, neighbor));
 	}
@@ -113,7 +115,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 			tank.drain(i, FluidAction.EXECUTE);
 		}
 
-		int consumption = IEConfig.MACHINES.pump_consumption.get();
+		int consumption = IEServerConfig.MACHINES.pump_consumption.get();
 		boolean hasRSSignal = isRSPowered();
 		if(!hasRSSignal)
 		{
@@ -138,12 +140,12 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 					}
 					else if(world.getGameTime()%20==((getPos().getX()^getPos().getZ())&19)
 							&&world.getFluidState(getPos().offset(f)).getFluid().isIn(FluidTags.WATER)
-							&&IEConfig.MACHINES.pump_infiniteWater.get()
+							&&IEServerConfig.MACHINES.pump_infiniteWater.get()
 							&&tank.fill(new FluidStack(Fluids.WATER, FluidAttributes.BUCKET_VOLUME), FluidAction.SIMULATE)==FluidAttributes.BUCKET_VOLUME
 							&&this.energyStorage.extractEnergy(consumption, true) >= consumption)
 					{
 						int connectedSources = 0;
-						for(Direction f2 : Direction.BY_HORIZONTAL_INDEX)
+						for(Direction f2 : DirectionUtils.BY_HORIZONTAL_INDEX)
 						{
 							FluidState waterState = world.getFluidState(getPos().offset(f).offset(f2));
 							if(waterState.getFluid().isIn(FluidTags.WATER)&&waterState.isSource())
@@ -172,7 +174,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 					{
 						this.energyStorage.extractEnergy(consumption, false);
 						fs = Utils.drainFluidBlock(world, pos, FluidAction.EXECUTE);
-						if(IEConfig.MACHINES.pump_placeCobble.get()&&placeCobble)
+						if(IEServerConfig.MACHINES.pump_placeCobble.get()&&placeCobble)
 							world.setBlockState(pos, Blocks.COBBLESTONE.getDefaultState());
 						this.tank.fill(fs, FluidAction.EXECUTE);
 						closedList.remove(target);
@@ -200,7 +202,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 
 	public void checkAreaTick()
 	{
-		boolean infiniteWater = IEConfig.MACHINES.pump_infiniteWater.get();
+		boolean infiniteWater = IEServerConfig.MACHINES.pump_infiniteWater.get();
 		BlockPos next = null;
 		final int closedListMax = 2048;
 		int timeout = 0;
@@ -244,7 +246,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 		if(canAccept <= 0)
 			return 0;
 
-		int accelPower = IEConfig.MACHINES.pump_consumption_accelerate.get();
+		int accelPower = IEServerConfig.MACHINES.pump_consumption_accelerate.get();
 		final int fluidForSort = canAccept;
 		int sum = 0;
 		HashMap<DirectionalFluidOutput, Integer> sorting = new HashMap<>();
@@ -299,7 +301,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		int[] sideConfigArray = nbt.getIntArray("sideConfig");
-		for(Direction d : Direction.VALUES)
+		for(Direction d : DirectionUtils.VALUES)
 			sideConfig.put(d, IOSideConfig.VALUES[sideConfigArray[d.ordinal()]]);
 		if(nbt.contains("placeCobble", NBT.TAG_BYTE))
 			placeCobble = nbt.getBoolean("placeCobble");
@@ -313,7 +315,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		int[] sideConfigArray = new int[6];
-		for(Direction d : Direction.VALUES)
+		for(Direction d : DirectionUtils.VALUES)
 			sideConfigArray[d.ordinal()] = sideConfig.get(d).ordinal();
 		nbt.putIntArray("sideConfig", sideConfigArray);
 		nbt.putBoolean("placeCobble", placeCobble);
@@ -372,7 +374,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 	@Override
 	public ITextComponent[] getOverlayText(PlayerEntity player, RayTraceResult mop, boolean hammer)
 	{
-		if(hammer&&IEConfig.GENERAL.showTextOverlay.get()&&!isDummy()&&mop instanceof BlockRayTraceResult)
+		if(hammer&&IEClientConfig.showTextOverlay.get()&&!isDummy()&&mop instanceof BlockRayTraceResult)
 		{
 			BlockRayTraceResult brtr = (BlockRayTraceResult)mop;
 			IOSideConfig i = sideConfig.get(brtr.getFace());
@@ -535,7 +537,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 	@Override
 	public boolean canOutputPressurized(boolean consumePower)
 	{
-		int accelPower = IEConfig.MACHINES.pump_consumption_accelerate.get();
+		int accelPower = IEServerConfig.MACHINES.pump_consumption_accelerate.get();
 		if(energyStorage.extractEnergy(accelPower, true) >= accelPower)
 		{
 			if(consumePower)

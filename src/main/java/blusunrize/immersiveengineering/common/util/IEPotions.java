@@ -125,7 +125,7 @@ public class IEPotions
 		{
 			if(this==IEPotions.slippery)
 			{
-				if(living.func_233570_aj_())
+				if(living.isOnGround())
 					living.moveRelative(0, new Vector3d(0, 1, 0.005));
 				EquipmentSlotType hand = living.getRNG().nextBoolean()?EquipmentSlotType.MAINHAND: EquipmentSlotType.OFFHAND;
 				if(!living.world.isRemote&&living.getRNG().nextInt(300)==0&&!living.getItemStackFromSlot(hand).isEmpty())
@@ -137,7 +137,7 @@ public class IEPotions
 			}
 			else if(this==IEPotions.concreteFeet&&!living.world.isRemote)
 			{
-				BlockState state = living.world.getBlockState(living.func_233580_cy_());
+				BlockState state = living.world.getBlockState(living.getPosition());
 				if(!concrete.contains(state.getBlock())&&
 						concrete.stream()
 								.map(IEBlocks.toSlab::get)

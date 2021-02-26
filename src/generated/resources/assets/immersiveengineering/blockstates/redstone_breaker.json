@@ -1,33 +1,33 @@
 {
   "variants": {
     "facing=down": {
-      "model": "immersiveengineering:block/connector/redstone_breaker",
+      "model": "immersiveengineering:block/connector/redstone_breaker_connector",
       "uvlock": true
     },
     "facing=up": {
-      "model": "immersiveengineering:block/connector/redstone_breaker",
+      "model": "immersiveengineering:block/connector/redstone_breaker_connector",
       "x": 180,
       "uvlock": true
     },
     "facing=north": {
-      "model": "immersiveengineering:block/connector/redstone_breaker",
+      "model": "immersiveengineering:block/connector/redstone_breaker_connector",
       "x": 90,
       "y": 180,
       "uvlock": true
     },
     "facing=south": {
-      "model": "immersiveengineering:block/connector/redstone_breaker",
+      "model": "immersiveengineering:block/connector/redstone_breaker_connector",
       "x": 90,
       "uvlock": true
     },
     "facing=west": {
-      "model": "immersiveengineering:block/connector/redstone_breaker",
+      "model": "immersiveengineering:block/connector/redstone_breaker_connector",
       "x": 90,
       "y": 90,
       "uvlock": true
     },
     "facing=east": {
-      "model": "immersiveengineering:block/connector/redstone_breaker",
+      "model": "immersiveengineering:block/connector/redstone_breaker_connector",
       "x": 90,
       "y": 270,
       "uvlock": true

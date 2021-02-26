@@ -11,10 +11,11 @@ package blusunrize.immersiveengineering.client.models;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
+import blusunrize.immersiveengineering.api.utils.client.CombinedModelData;
+import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.utils.CombinedModelData;
-import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
+import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableMap;
@@ -56,25 +57,25 @@ public class ModelConfigurableSides extends BakedIEModel
 {
 	private static HashMap<String, ITextureNamer> TYPES = new HashMap<>();
 
-	static
+	public enum Type
 	{
-		TYPES.put("side_top_bottom", new ITextureNamer()
+		SIDE_TOP_BOTTOM(new ITextureNamer()
 		{//horizontal, up, down
 			@Override
 			public String nameFromSide(Direction side, IOSideConfig cfg)
 			{
 				return side.getAxis()==Axis.Y?side.getString(): "side";
 			}
-		});
-		TYPES.put("side_vertical", new ITextureNamer()
+		}),
+		SIDE_VERTICAL(new ITextureNamer()
 		{//horizontal, vertical
 			@Override
 			public String nameFromSide(Direction side, IOSideConfig cfg)
 			{
 				return side.getAxis()==Axis.Y?"up": "side";
 			}
-		});
-		TYPES.put("vertical", new ITextureNamer()
+		}),
+		VERTICAL(new ITextureNamer()
 		{//vertical, sides not configureable
 			@Override
 			public String nameFromSide(Direction side, IOSideConfig cfg)
@@ -87,8 +88,8 @@ public class ModelConfigurableSides extends BakedIEModel
 			{
 				return side.getAxis()==Axis.Y?cfg.getTextureName(): null;
 			}
-		});
-		TYPES.put("all_same_texture", new ITextureNamer()
+		}),
+		ALL_SAME_TEXTURE(new ITextureNamer()
 		{//all sides, same texture
 			@Override
 			public String nameFromSide(Direction side, IOSideConfig cfg)
@@ -96,6 +97,23 @@ public class ModelConfigurableSides extends BakedIEModel
 				return "side";
 			}
 		});
+		private final ITextureNamer nameMapper;
+
+		Type(ITextureNamer nameMapper)
+		{
+			this.nameMapper = nameMapper;
+		}
+
+		public String getName()
+		{
+			return name().toLowerCase(Locale.US);
+		}
+	}
+
+	static
+	{
+		for(Type type : Type.values())
+			TYPES.put(type.getName(), type.nameMapper);
 	}
 
 	public static Cache<ModelKey, List<BakedQuad>> modelCache = CacheBuilder.newBuilder().expireAfterAccess(60, TimeUnit.SECONDS).build();
@@ -119,17 +137,16 @@ public class ModelConfigurableSides extends BakedIEModel
 		else
 		{
 			config = new EnumMap<>(Direction.class);
-			for(Direction d : Direction.VALUES)
+			for(Direction d : DirectionUtils.VALUES)
 				config.put(d, IOSideConfig.NONE);
 		}
 		assert (config!=null);
 		ModelKey key = new ModelKey(name, config);
 		try
 		{
-			modelCache.invalidateAll();
 			return modelCache.get(key, () -> {
 				Map<Direction, TextureAtlasSprite> tex = new EnumMap<>(Direction.class);
-				for(Direction d : Direction.VALUES)
+				for(Direction d : DirectionUtils.VALUES)
 					tex.put(d, this.textures.get(d).get(config.get(d)));
 				return bakeQuads(tex);
 			});
@@ -151,11 +168,11 @@ public class ModelConfigurableSides extends BakedIEModel
 		{
 			IConfigurableSides confTE = (IConfigurableSides)te;
 			Map<Direction, IOSideConfig> conf = new HashMap<>();
-			for(Direction d : VALUES)
+			for(Direction d : DirectionUtils.VALUES)
 				conf.put(d, confTE.getSideConfig(d));
 			data.add(new SinglePropertyModelData<>(conf, Model.SIDECONFIG));
 		}
-		return new CombinedModelData(data.toArray(new IModelData[0]));
+		return CombinedModelData.combine(data.toArray(new IModelData[0]));
 	}
 
 	private static List<BakedQuad> bakeQuads(Map<Direction, TextureAtlasSprite> sprites)
@@ -255,7 +272,7 @@ public class ModelConfigurableSides extends BakedIEModel
 			final String type = modelContents.get("type").getAsString();
 			ImmutableMap.Builder<String, RenderMaterial> builder = ImmutableMap.builder();
 			ITextureNamer namer = TYPES.get(type);
-			for(Direction f : Direction.VALUES)
+			for(Direction f : DirectionUtils.VALUES)
 				for(IOSideConfig cfg : IOSideConfig.values())
 				{
 					String key = f.getString()+"_"+cfg.getTextureName();
@@ -283,7 +300,7 @@ public class ModelConfigurableSides extends BakedIEModel
 		public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<RenderMaterial, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation)
 		{
 			Map<Direction, Map<IOSideConfig, TextureAtlasSprite>> tex = new EnumMap<>(Direction.class);
-			for(Direction f : Direction.VALUES)
+			for(Direction f : DirectionUtils.VALUES)
 			{
 				Map<IOSideConfig, TextureAtlasSprite> forSide = new EnumMap<>(IOSideConfig.class);
 				for(IOSideConfig cfg : IOSideConfig.values())

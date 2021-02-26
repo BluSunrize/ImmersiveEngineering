@@ -1,7 +1,7 @@
-Crusher
-Keep your hands out!
-Crushing an ore is an effective way of increasing their yield, for each ore creates two dusts which you can then smelt. This industrial-size crusher is a quick way of doing so. The machine's processing speed depends on the power supplied to it.
-Applying a redstone signal to the control panel at the front will halt the crushers process, this behavior can be inverted by use of the Engineer's Hammer.
-The structure is formed by right clicking the central block of the front. The front is the wide side of the structure which has a light engineering block at the bottom.
-However, it is not only used for crushing ores. Every living being to fall into the machine will take grave damage and the crusher will output the relevant drops. Likewise, all items that cannot be processed will be destroyed.
+粉碎机
+管好你的手!
+粉碎矿物是提高产量的有效途径，因为每个矿物都可以加工得到两份可以烧制的矿粉。这台工业级粉碎机让这个过程变得更加方便。机器的加工速度取决于能源供应量。
+向前方的控制板输入一个红石信号会暂停机器工作，可以用工程师锤反转。
+右击正前面中心方块以完成建造过程。它的前面是底部有一个轻型工程块的宽面。
+然而粉碎机不仅仅是用于粉碎矿物。生物落入粉碎机将会受到持续的伤害而最终的掉落物会从粉碎机的输出端输出。同样的，所有无法被处理的物品将会被销毁。
 

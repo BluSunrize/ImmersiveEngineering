@@ -8,18 +8,16 @@
 
 package blusunrize.immersiveengineering.common.items;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.IUpgrade;
 import blusunrize.immersiveengineering.api.tool.IUpgradeableTool;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidAttributes;
 
@@ -43,10 +41,7 @@ public class ToolUpgradeItem extends IEBaseItem implements IUpgrade
 	@Override
 	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
 	{
-			String[] flavour = ImmersiveEngineering.proxy.splitStringOnWidth(
-					I18n.format(Lib.DESC_FLAVOUR+getRegistryName().getPath()), 200);
-			for(String s : flavour)
-				list.add(new StringTextComponent(s));
+		list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+getRegistryName().getPath()));
 	}
 
 	@Override

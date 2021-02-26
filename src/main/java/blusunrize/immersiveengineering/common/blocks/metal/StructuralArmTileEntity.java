@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBou
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICollisionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISelectionBounds;
+import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.collect.ImmutableList;
@@ -29,6 +30,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.*;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.IBooleanFunction;
@@ -75,7 +77,7 @@ public class StructuralArmTileEntity extends IEBaseTileEntity implements IOBJMod
 			world.notifyBlockUpdate(pos, state, state, 3);
 			bounds = null;
 		}
-		facing = Direction.VALUES[nbt.getInt("facing")];
+		facing = DirectionUtils.VALUES[nbt.getInt("facing")];
 	}
 
 	@Override
@@ -230,6 +232,13 @@ public class StructuralArmTileEntity extends IEBaseTileEntity implements IOBJMod
 	}
 
 	@Override
+	public void rotate(Rotation rotationIn)
+	{
+		super.rotate(rotationIn);
+		setFacing(rotationIn.rotate(this.facing));
+	}
+
+	@Override
 	public Direction getFacingForPlacement(LivingEntity placer, BlockPos pos, Direction side, float hitX, float hitY,
 										   float hitZ)
 	{
@@ -301,7 +310,7 @@ public class StructuralArmTileEntity extends IEBaseTileEntity implements IOBJMod
 		float upperHeight = (slopePosition+1F)/totalLength;
 		double lowerV = 16*lowerHeight;
 		double upperV = 16*upperHeight;
-		TextureAtlasSprite tas = quads.get(0).func_187508_a();
+		TextureAtlasSprite tas = quads.get(0).getSprite();
 		VertexFormat format = DefaultVertexFormats.BLOCK;
 		quads = new ArrayList<>();
 		Matrix4 mat = new Matrix4(facing);
@@ -391,7 +400,7 @@ public class StructuralArmTileEntity extends IEBaseTileEntity implements IOBJMod
 		float[] colour = {1, 1, 1, 1};
 		BakedQuadBuilder builder = new BakedQuadBuilder(sprite);
 		builder.setQuadOrientation(facing);
-		Vector3d faceNormal = Vector3d.func_237491_b_(facing.getDirectionVec());
+		Vector3d faceNormal = Vector3d.copy(facing.getDirectionVec());
 		int vertexId = invert?3: 0;
 		double v = onCeiling?16-leftV: 0;
 		putVertexData(format, builder, vertices[vertexId], faceNormal, vertexId > 1?16: 0, v, sprite, colour, 1);

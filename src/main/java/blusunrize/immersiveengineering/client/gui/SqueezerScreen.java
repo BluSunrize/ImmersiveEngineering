@@ -44,7 +44,7 @@ public class SqueezerScreen extends IEContainerScreen<SqueezerContainer>
 
 
 	@Override
-	protected void func_230450_a_(MatrixStack transform, float f, int mx, int my)
+	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float f, int mx, int my)
 	{
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/squeezer.png");
 		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);

@@ -27,7 +27,8 @@ public class CrusherMultiblock extends IETemplateMultiblock
 	public CrusherMultiblock()
 	{
 		super(new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/crusher"),
-				new BlockPos(2, 1, 1), new BlockPos(2, 1, 2), () -> Multiblocks.crusher.getDefaultState());
+				new BlockPos(2, 1, 1), new BlockPos(2, 1, 2), new BlockPos(5, 3, 3),
+				() -> Multiblocks.crusher.getDefaultState());
 	}
 
 	@Override

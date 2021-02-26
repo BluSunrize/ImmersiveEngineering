@@ -1,0 +1,23 @@
+Cables de Redstone
+Toma de posesión de la integración
+<&coil>Los §2Cables de Redstone§r son de aluminio recubierto de polvo de Redstone. Los cables resultantes proporcionan una manera fácil de transferir las señales de Redstone a larga distancia sin perder la fuerza de la señal.<&connector>Los §2conectores§r funcionan como cualquier otro conector de cable en términos de conexión, sin embargo, el cableado de Redstone no requiere relés; los conectores y los relés son el mismo bloque.
+Con el Destornillador del Ingeniero, los conectores pueden configurarse entre el modo de entrada y el de salida y ajustarse a una de las 16 frecuencias de colores.
+<&probe>Los §2Conectores de sonda de Redstone§r tienen una funcionalidad parcialmente comparable a los comparadores de Redstone. Aunque no son capaces de comparar activamente las señales, son capaces de leer los inventarios para saber cómo están de llenos. Además, estas sondas pueden operar en dos canales, enviando su señal de lectura en uno, y aún recibiendo señales en otro. Estos canales también pueden ser configurados utilizando el Destornillador del Ingeniero.
+
+Tenga en cuenta que muchos de los multibloques de IE cuentan con funcionalidad de comparador, como se describe en las páginas siguientes. Cuando está disponible, la superficie del multibloque de control de Redstone es el lugar designado para conectar un comparador.<np>
+§lTanque: §rComo se detalla en su <link;tank;entrada manual>
+§lSilo: §rComo se detalla en su <link;silo;entrada manual>
+§lEnsamblador: §rEmite una señal relativa al llenado del inventario.
+§lBanco de Trabajo Automatizado: §rEmite una señal relativa al llenado del inventario.
+§lTrituradora: §rEmite una señal relativa al llenado del inventario.
+§lExprimidora: §rEmite una señal relativa al llenado del inventario.
+§lFermentadora: §rEmite una señal relativa al llenado del inventario.
+§lExcavadora: §rEmite una señal relativa al mineral restante en la veta.
+§lHorno de arco: §rEmite una señal relativa al llenado del inventario.
+Además, si se conecta un comparador a los electrodos de la parte superior, se enviará una señal basada en su integridad.
+§lMezcladora: §rEmite una señal relativa al llenado del inventario.
+<np>
+<&bundled>Los §2Conectores de interfaz de Redstone§r están diseñados para ser unidos a otros bloques que pueden hacer uso de las señales de Redstone de color.
+El conector de interfaz es interno y no posee un color, estado de entrada o de salida, pero permite que bloques como el <link;item_batcher;Filtro de elementos> interactuar directamente con la red de cableado.
+
+

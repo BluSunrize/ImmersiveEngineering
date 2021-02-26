@@ -37,7 +37,7 @@ import net.minecraftforge.fluids.FluidStack;
 import javax.annotation.Nonnull;
 import java.util.List;
 
-import static blusunrize.immersiveengineering.common.data.IEDataGenerator.rl;
+import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
 
 public class PotionFluid extends Fluid
 {
@@ -131,7 +131,7 @@ public class PotionFluid extends Fluid
 		{
 			List<EffectInstance> effects = PotionUtils.getEffectsFromTag(fluidStack.getTag());
 			if(effects.isEmpty())
-				tooltip.add(new TranslationTextComponent("effect.none").func_240699_a_(TextFormatting.GRAY));
+				tooltip.add(new TranslationTextComponent("effect.none").mergeStyle(TextFormatting.GRAY));
 			else
 			{
 				for(EffectInstance instance : effects)
@@ -139,18 +139,18 @@ public class PotionFluid extends Fluid
 					IFormattableTextComponent itextcomponent = new TranslationTextComponent(instance.getEffectName());
 					Effect effect = instance.getPotion();
 					if(instance.getAmplifier() > 0)
-						itextcomponent.func_240702_b_(" ").func_230529_a_(new TranslationTextComponent("potion.potency."+instance.getAmplifier()));
+						itextcomponent.appendString(" ").append(new TranslationTextComponent("potion.potency."+instance.getAmplifier()));
 					if(instance.getDuration() > 20)
-						itextcomponent.func_240702_b_(" (").func_240702_b_(EffectUtils.getPotionDurationString(instance, 1)).func_240702_b_(")");
+						itextcomponent.appendString(" (").appendString(EffectUtils.getPotionDurationString(instance, 1)).appendString(")");
 
-					tooltip.add(itextcomponent.func_240699_a_(effect.getEffectType().getColor()));
+					tooltip.add(itextcomponent.mergeStyle(effect.getEffectType().getColor()));
 				}
 			}
 			Potion potionType = PotionUtils.getPotionTypeFromNBT(fluidStack.getTag());
 			if(potionType!=Potions.EMPTY)
 			{
 				String modID = potionType.getRegistryName().getNamespace();
-				tooltip.add(new TranslationTextComponent(Lib.DESC_INFO+"potionMod", Utils.getModName(modID)).func_240699_a_(TextFormatting.DARK_GRAY));
+				tooltip.add(new TranslationTextComponent(Lib.DESC_INFO+"potionMod", Utils.getModName(modID)).mergeStyle(TextFormatting.DARK_GRAY));
 			}
 		}
 	}

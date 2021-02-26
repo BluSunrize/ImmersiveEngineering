@@ -8,20 +8,22 @@
 
 package blusunrize.immersiveengineering.client;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.client.models.SmartLightingQuad;
 import blusunrize.immersiveengineering.client.utils.BatchingRenderTypeBuffer;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
-import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.items.*;
+import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.fluids.IEFluid;
 import blusunrize.immersiveengineering.common.util.sound.IETileSound;
+import blusunrize.immersiveengineering.mixin.accessors.client.FontResourceManagerAccess;
+import blusunrize.immersiveengineering.mixin.accessors.client.MinecraftAccess;
+import blusunrize.immersiveengineering.mixin.accessors.client.PlayerControllerAccess;
 import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -32,8 +34,10 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound.AttenuationType;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.fonts.Font;
 import net.minecraft.client.gui.fonts.FontResourceManager;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.multiplayer.PlayerController;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.model.*;
@@ -145,8 +149,9 @@ public class ClientUtils
 	{
 		if(unicodeRenderer==null)
 			unicodeRenderer = new FontRenderer(rl -> {
-				FontResourceManager resourceManager = Minecraft.getInstance().fontResourceMananger;
-				return resourceManager.field_238546_d_.get(Minecraft.field_238177_c_);
+				FontResourceManager resourceManager = ((MinecraftAccess)Minecraft.getInstance()).getFontResourceMananger();
+				Map<ResourceLocation, Font> fonts = ((FontResourceManagerAccess)resourceManager).getFonts();
+				return fonts.get(Minecraft.UNIFORM_FONT_RENDERER_NAME);
 			});
 		return unicodeRenderer;
 	}
@@ -251,7 +256,7 @@ public class ClientUtils
 	//TODO move somewhere else?
 	public static void handleBipedRotations(BipedModel model, Entity entity)
 	{
-		if(!IEConfig.GENERAL.fancyItemHolding.get())
+		if(!IEClientConfig.fancyItemHolding.get())
 			return;
 
 		if(entity instanceof PlayerEntity)
@@ -318,7 +323,8 @@ public class ClientUtils
 	//Cheers boni =P
 	public static void drawBlockDamageTexture(MatrixStack matrix, IRenderTypeBuffer buffers, Entity entityIn, float partialTicks, World world, Collection<BlockPos> blocks)
 	{
-		int progress = (int)(Minecraft.getInstance().playerController.curBlockDamageMP*10f)-1; // 0-10
+		PlayerController controller = Minecraft.getInstance().playerController;
+		int progress = (int)(((PlayerControllerAccess)controller).getCurBlockDamageMP()*10f)-1; // 0-10
 		if(progress < 0||progress >= ModelBakery.DESTROY_RENDER_TYPES.size())
 			return;
 		BlockRendererDispatcher blockrendererdispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
@@ -590,62 +596,6 @@ public class ClientUtils
 	private static float[] alphaFirst2Fading = {0, 0, 1, 1};
 	private static float[] alphaNoFading = {1, 1, 1, 1};
 
-	public static List<BakedQuad> convertConnectionFromBlockstate(BlockPos here, Set<Connection.RenderData> data, TextureAtlasSprite t)
-	{
-		List<BakedQuad> ret = new ArrayList<>();
-		if(data==null)
-			return ret;
-		Vector3d dir = Vector3d.ZERO;
-
-		Vector3d up = new Vector3d(0, 1, 0);
-		for(Connection.RenderData connData : data)
-		{
-			int color = connData.color;
-			float[] rgb = {(color >> 16&255)/255f, (color >> 8&255)/255f, (color&255)/255f, (color >> 24&255)/255f};
-			if(rgb[3]==0)
-				rgb[3] = 1;
-			float radius = (float)(connData.type.getRenderDiameter()/2);
-
-			for(int segmentEndId = 1; segmentEndId <= connData.pointsToRenderSolid; segmentEndId++)
-			{
-				int segmentStartId = segmentEndId-1;
-				Vector3d segmentEnd = connData.getPoint(segmentEndId);
-				Vector3d segmentStart = connData.getPoint(segmentStartId);
-				boolean vertical = segmentEnd.x==segmentStart.x&&segmentEnd.z==segmentStart.z;
-				Vector3d cross;
-				if(!vertical)
-				{
-					dir = segmentEnd.subtract(segmentStart);
-					cross = up.crossProduct(dir);
-					cross = cross.scale(radius/cross.length());
-				}
-				else
-					cross = new Vector3d(radius, 0, 0);
-				Vector3d[] vertices = {segmentEnd.add(cross),
-						segmentEnd.subtract(cross),
-						segmentStart.subtract(cross),
-						segmentStart.add(cross)};
-				ret.add(createSmartLightingBakedQuad(DefaultVertexFormats.BLOCK, vertices, Direction.DOWN, t, rgb, false, alphaNoFading, here));
-				ret.add(createSmartLightingBakedQuad(DefaultVertexFormats.BLOCK, vertices, Direction.UP, t, rgb, true, alphaNoFading, here));
-
-				if(!vertical)
-				{
-					cross = dir.crossProduct(cross);
-					cross = cross.scale(radius/cross.length());
-				}
-				else
-					cross = new Vector3d(0, 0, radius);
-				vertices = new Vector3d[]{segmentEnd.add(cross),
-						segmentEnd.subtract(cross),
-						segmentStart.subtract(cross),
-						segmentStart.add(cross)};
-				ret.add(createSmartLightingBakedQuad(DefaultVertexFormats.BLOCK, vertices, Direction.WEST, t, rgb, false, alphaNoFading, here));
-				ret.add(createSmartLightingBakedQuad(DefaultVertexFormats.BLOCK, vertices, Direction.EAST, t, rgb, true, alphaNoFading, here));
-			}
-		}
-		return ret;
-	}
-
 	public static int getSolidVertexCountForSide(ConnectionPoint start, Connection conn, int totalPoints)
 	{
 		List<Integer> crossings = new ArrayList<>();
@@ -767,9 +717,9 @@ public class ClientUtils
 		return createBakedQuad(format, vertices, facing, sprite, new double[]{0, 0, 16, 16}, colour, invert, alpha);
 	}
 
-	public static BakedQuad createSmartLightingBakedQuad(VertexFormat format, Vector3d[] vertices, Direction facing, TextureAtlasSprite sprite, float[] colour, boolean invert, float[] alpha, BlockPos base)
+	public static BakedQuad createSmartLightingBakedQuad(VertexFormat format, Vector3d[] vertices, Direction facing, TextureAtlasSprite sprite, float[] colour, boolean invert, BlockPos base)
 	{
-		return createBakedQuad(format, vertices, facing, sprite, new double[]{0, 0, 16, 16}, colour, invert, alpha, true, base);
+		return createBakedQuad(format, vertices, facing, sprite, new double[]{0, 0, 16, 16}, colour, invert, alphaNoFading, true, base);
 	}
 
 	public static BakedQuad createBakedQuad(VertexFormat format, Vector3d[] vertices, Direction facing, TextureAtlasSprite sprite, double[] uvs, float[] colour, boolean invert)
@@ -877,7 +827,7 @@ public class ClientUtils
 			quads = model.getQuads(state, null, Utils.RAND);
 		if(quads==null||quads.isEmpty())//no quads at all D:
 			return null;
-		return quads.get(0).func_187508_a().getName();
+		return quads.get(0).getSprite().getName();
 	}
 
 	public static Vector4f pulseRGBAlpha(Vector4f rgba, int tickrate, float min, float max)
@@ -1055,14 +1005,14 @@ public class ClientUtils
 	public static void renderModelTESRFancy(List<BakedQuad> quads, IVertexBuilder renderer, World world, BlockPos pos,
 											boolean useCached, int color, int light)
 	{//TODO include matrix transformations?, cache normals?
-		if(IEConfig.GENERAL.disableFancyTESR.get())
+		if(IEClientConfig.disableFancyTESR.get())
 			renderModelTESRFast(quads, renderer, new MatrixStack(), world.getLightSubtracted(pos, 0), color);
 		else
 		{
 			if(!useCached)
 			{
 				// Calculate surrounding brighness and split into block and sky light
-				for(Direction f : Direction.VALUES)
+				for(Direction f : DirectionUtils.VALUES)
 				{
 					int val = WorldRenderer.getCombinedLight(world, pos.offset(f));
 					neighbourBrightness[0][f.getIndex()] = (val >> 16)&255;
@@ -1282,6 +1232,6 @@ public class ClientUtils
 		Style style = component.getStyle();
 		for(TextFormatting format : color)
 			style = style.applyFormatting(format);
-		return component.deepCopy().func_230530_a_(style);
+		return component.deepCopy().setStyle(style);
 	}
 }

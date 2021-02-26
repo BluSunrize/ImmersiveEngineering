@@ -9,16 +9,16 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
+import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTile;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.blocks.generic.ScaffoldingBlock;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.IESounds;
@@ -91,13 +91,13 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 
 
 	private final List<CapabilityReference<IEnergyStorage>> outputs = Arrays.asList(
-			CapabilityReference.forTileEntity(this,
+			CapabilityReference.forTileEntityAt(this,
 					() -> new DirectionalBlockPos(this.getBlockPosForPos(new BlockPos(0, 1, 4)).add(0, 1, 0), Direction.DOWN),
 					CapabilityEnergy.ENERGY),
-			CapabilityReference.forTileEntity(this,
+			CapabilityReference.forTileEntityAt(this,
 					() -> new DirectionalBlockPos(this.getBlockPosForPos(new BlockPos(1, 1, 4)).add(0, 1, 0), Direction.DOWN),
 					CapabilityEnergy.ENERGY),
-			CapabilityReference.forTileEntity(this,
+			CapabilityReference.forTileEntityAt(this,
 					() -> new DirectionalBlockPos(this.getBlockPosForPos(new BlockPos(2, 1, 4)).add(0, 1, 0), Direction.DOWN),
 					CapabilityEnergy.ENERGY)
 	);
@@ -152,12 +152,15 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 				if(burnTime > 0)
 				{
 					int fluidConsumed = FluidAttributes.BUCKET_VOLUME/burnTime;
-					int output = IEConfig.MACHINES.dieselGen_output.get();
+					int output = IEServerConfig.MACHINES.dieselGen_output.get();
 					List<IEnergyStorage> presentOutputs = outputs.stream()
 							.map(CapabilityReference::getNullable)
 							.filter(Objects::nonNull)
 							.collect(Collectors.toList());
-					if(!presentOutputs.isEmpty()&&tanks[0].getFluidAmount() >= fluidConsumed)
+					if(!presentOutputs.isEmpty()&&
+							tanks[0].getFluidAmount() >= fluidConsumed&&
+							// Sort receivers by lowest input
+							EnergyHelper.distributeFlux(presentOutputs, output, false) < output)
 					{
 						if(!active)
 						{
@@ -165,8 +168,6 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 							animation_fanFadeIn = 80;
 						}
 						tanks[0].drain(fluidConsumed, FluidAction.EXECUTE);
-						// Sort receivers by lowest input
-						EnergyHelper.distributeFlux(presentOutputs, output, false);
 					}
 					else if(active)
 					{

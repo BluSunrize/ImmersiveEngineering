@@ -297,18 +297,22 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 
 	private void updateComparatorValues()
 	{
-		int oldVal = compVal;
-		int maxTrans = 0;
-		Collection<Connection> conns = globalNet.getLocalNet(pos).getConnections(pos);
-		if(conns==null)
+		final int oldVal = compVal;
+		int maxTrans = Integer.MAX_VALUE;
+		for(ConnectionPoint cp : getConnectionPoints())
+		{
+			int maxTransForPoint = 0;
+			Collection<Connection> conns = globalNet.getLocalNet(cp).getConnections(pos);
+			for(Connection c : conns)
+				if(!c.isInternal()&&c.type instanceof IEnergyWire)
+					maxTransForPoint += ((IEnergyWire)c.type).getTransferRate();
+			maxTrans = Math.min(maxTrans, maxTransForPoint);
+		}
+		if(maxTrans==0)
 			compVal = 0;
 		else
 		{
-			for(Connection c : conns)
-				if(c.type instanceof IEnergyWire)
-					maxTrans += ((IEnergyWire)c.type).getTransferRate();
-			maxTrans /= 2;
-			double val = getAveragePower()/(double)maxTrans;
+			final double val = getAveragePower()/(double)maxTrans;
 			compVal = (int)Math.ceil(15*val);
 			TileEntity te = world.getTileEntity(pos.down());
 			if(te instanceof EnergyMeterTileEntity)
@@ -362,7 +366,7 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 	}
 
 	@Override
-	public BlockPos getModelOffset(BlockState state)
+	public BlockPos getModelOffset(BlockState state, @Nullable Vector3i size)
 	{
 		if(isDummy())
 			return BlockPos.ZERO;

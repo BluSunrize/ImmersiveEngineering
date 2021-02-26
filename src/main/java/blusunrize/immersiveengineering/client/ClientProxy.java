@@ -40,13 +40,14 @@ import blusunrize.immersiveengineering.client.render.tile.*;
 import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
 import blusunrize.immersiveengineering.client.utils.VertexBufferHolder;
 import blusunrize.immersiveengineering.common.CommonProxy;
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IColouredBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTile;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
+import blusunrize.immersiveengineering.common.config.IEClientConfig;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.crafting.RecipeReloadListener;
 import blusunrize.immersiveengineering.common.entities.*;
 import blusunrize.immersiveengineering.common.gui.GuiHandler;
@@ -101,7 +102,6 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextProperties;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -161,8 +161,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void preInit()
 	{
-		//TODO auto-detect old cards that don't support this?
-		if(IEConfig.GENERAL.stencilBufferEnabled.get())
+		if(IEClientConfig.stencilBufferEnabled.get())
 			DeferredWorkQueue.runLater(() -> {
 				Minecraft.getInstance().getFramebuffer().enableStencil();
 				stencilEnabled = true;
@@ -452,7 +451,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void spawnBucketWheelFX(BucketWheelTileEntity tile, ItemStack stack)
 	{
-		if(stack!=null&&IEConfig.MACHINES.excavator_particles.get())
+		if(stack!=null&&IEServerConfig.MACHINES.excavator_particles.get())
 		{
 			Direction facing = tile.getFacing();
 			int sign = (tile.getIsMirrored()^facing.getAxisDirection()==AxisDirection.NEGATIVE)?1: -1;
@@ -508,15 +507,6 @@ public class ClientProxy extends CommonProxy
 			colour = prefixColour==1?FractalParticle.COLOUR_ORANGE: prefixColour==2?FractalParticle.COLOUR_RED: FractalParticle.COLOUR_LIGHTNING;
 		FractalParticle.Data particle = new FractalParticle.Data(direction, scale, 10, 16, colour[0], colour[1]);
 		world.addParticle(particle, x, y, z, 0, 0, 0);
-	}
-
-	@Override
-	public String[] splitStringOnWidth(String s, int w)
-	{
-		return ClientUtils.font().func_238425_b_(ITextProperties.func_240652_a_(s), w)
-				.stream()
-				.map(ITextProperties::getString)
-				.toArray(String[]::new);
 	}
 
 	@Override

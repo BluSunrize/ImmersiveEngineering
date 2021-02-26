@@ -1,6 +1,6 @@
-External Heater
-Now you're cooking with flux!
-<&recipe>The External Heater does exactly what its name implies, it generates thermal energy from Flux. When placed next to a normal furnace, this thermal energy will power the furnace, allowing it to smelt without any fuel inside it.<np>
-Click a side of the heater with a hammer to make ir an energy acceptor, sneak to target the opposing side.
-The heater will consume §o8 Flux/t§r for each heat unit added. During the initial phase of the furnace, the heater will produce up to §o4§r units of heat per tick, but as soon as the furnace reaches maximum temperature, it will only require §o1§r unit of heat to keep it going.<np>
-Even better, while the furnace is at maximum temperature, the heater will consume an additional §o24 Flux/t§r to increase the furnaces's processing speed. The heater will only affect a furnace with a valid input and space in the output slot, in order to conserve energy. However, you can apply a redstone signal to the heater to diable that functionality and have it keep the furnace at full heat.
+外置加热器
+你现在可以用能量烹饪食物啦！
+<&recipe>外置加热器正如它名字所示，能从Flux中产生热量，当旁边有一个普通的熔炉时，它能为熔炉的烧制提供热量，而无需添加任何燃料。<np>
+使用锤子单击一个面可以将其调整为能量的输入面，Shift以选择相反的面。
+加热器的能量消耗会随着每单位的热量增加而增加§o8Flux/t§r。最初为熔炉升温时，加热器会产生高达§o4§r热量每tick，但熔炉一旦达到最高温时，它就会以§o1§r的热量来让温度保持下去。<np>
+还有更好的，当熔炉达到最高温时，加热器将会消耗额外的§o24Flux/t§r来提高熔炉的加工速度。加热器只会影响一个有有效工作空间的熔炉以节能。然而，你可以提供一个红石信号来禁止这一功能并让熔炉保持温度。

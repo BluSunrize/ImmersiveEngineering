@@ -16,7 +16,11 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 
-//TODO do not extend BlockPos, can cause strange bugs when used in world access
+/**
+ * @deprecated Use {@link blusunrize.immersiveengineering.api.utils.DirectionalBlockPos} instead. Subclasses of BlockPos
+ * can cause strange behavior in some cases.
+ */
+@Deprecated
 public class DirectionalBlockPos extends BlockPos
 {
 	public Direction direction;

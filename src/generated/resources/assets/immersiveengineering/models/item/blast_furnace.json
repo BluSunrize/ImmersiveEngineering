@@ -1,5 +1,5 @@
 {
-  "parent": "immersiveengineering:block/blast_furnace_on",
+  "parent": "immersiveengineering:block/blast_furnace_on_split",
   "transform": {
     "thirdperson_righthand": {
       "translation": [

@@ -8,8 +8,8 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.crafting.FermenterRecipe;
+import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
@@ -82,7 +82,7 @@ public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTi
 			nbt.put("inventory", Utils.writeInventory(inventory));
 	}
 
-	private CapabilityReference<IItemHandler> outputCap = CapabilityReference.forTileEntity(this,
+	private CapabilityReference<IItemHandler> outputCap = CapabilityReference.forTileEntityAt(this,
 			() -> {
 				Direction fw = getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY();
 				return new DirectionalBlockPos(this.getPos().offset(fw), fw.getOpposite());
@@ -174,7 +174,7 @@ public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTi
 			{
 				if(outputCap.isPresent())
 				{
-					ItemStack stack = Utils.copyStackWithAmount(inventory.get(8), 1);
+					ItemStack stack = ItemHandlerHelper.copyStackWithSize(inventory.get(8), 1);
 					stack = Utils.insertStackIntoInventory(outputCap, stack, false);
 					if(stack.isEmpty())
 					{

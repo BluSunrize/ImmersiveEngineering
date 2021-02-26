@@ -41,8 +41,7 @@ public class MixerRecipe extends MultiblockRecipe
 		this.fluidAmount = fluidOutput.getAmount();
 		this.fluidInput = fluidInput;
 		this.itemInputs = itemInputs;
-		this.totalProcessEnergy = energy;
-		this.totalProcessTime = fluidOutput.getAmount();
+		setTimeAndEnergy(fluidOutput.getAmount(), energy);
 
 		this.fluidInputList = Lists.newArrayList(this.fluidInput);
 		setInputListWithSizes(Lists.newArrayList(this.itemInputs));

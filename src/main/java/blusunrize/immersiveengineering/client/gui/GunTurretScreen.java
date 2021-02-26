@@ -36,9 +36,9 @@ public class GunTurretScreen extends TurretScreen
 	}
 
 	@Override
-	protected void func_230450_a_(MatrixStack transform, float f, int mx, int my)
+	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float f, int mx, int my)
 	{
-		super.func_230450_a_(transform, f, mx, my);
+		super.drawGuiContainerBackgroundLayer(transform, f, mx, my);
 		ClientUtils.drawDarkSlot(guiLeft+134, guiTop+13, 16, 16);
 		ClientUtils.drawDarkSlot(guiLeft+134, guiTop+49, 16, 16);
 	}

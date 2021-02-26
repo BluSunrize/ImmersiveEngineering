@@ -1,0 +1,7 @@
+Filtro de elementos
+Juntos, ahora mismo
+<&recipe>El Filtro de elementos está diseñado para recoger un conjunto de artículos de un transportador antes de enviarlos hacia adelante, con el fin de transferir tamaños de lote optimizados a la maquinaria.<np>
+Coloque el bloque y abra su interfaz para establecer una serie de filtros. Todos los elementos entrantes serán aceptados en las ranuras situadas justo debajo de los filtros, y el lote recogido sólo saldrá cuando se cumplan todos los filtros.
+Este comportamiento puede ajustarse con el botón denominado "Modo de salida". El comportamiento por defecto indicado anteriormente se conoce como §2modo por lotes§r. En §2modo simple§r, cualquier artículo que satisfaga su cantidad filtrada será emitido en su lugar.<np>
+Mediante los 9 botones situados debajo de la memoria intermedia, se puede alternar entre los colores de <link;redstone_wire;Cables de Redstone>. Al adjuntar un <link;redstone_wire;Conector de interfaz de Redstone;bundled>, el Filtro de elementos enviará señales a lo largo de los cables de Redstone cuando se satisfaga un filtro.
+Esto le permite desactivar cualquier transportador de extracción o maquinaria de producción cuando se alcanza la cantidad requerida de artículos. Tenga en cuenta que si varios filtros utilizan el mismo color, es necesario que todos estén satisfechos para que se envíe una señal.

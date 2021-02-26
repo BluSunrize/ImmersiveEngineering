@@ -11,11 +11,14 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.utils.TextUtils;
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IScrewdriverInteraction;
+import blusunrize.immersiveengineering.common.config.IEClientConfig;
+import blusunrize.immersiveengineering.common.util.ChatUtils;
+import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.IWaterLoggable;
 import net.minecraft.entity.player.PlayerEntity;
@@ -25,11 +28,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -44,23 +51,24 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
-public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IConfigurableSides, IBlockOverlayText
+public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IConfigurableSides, IBlockOverlayText, IScrewdriverInteraction
 {
 	private final Map<Direction, IOSideConfig> sideConfig = new EnumMap<>(Direction.class);
 
 	{
-		for(Direction d : Direction.VALUES)
+		for(Direction d : DirectionUtils.VALUES)
 			sideConfig.put(d, IOSideConfig.OUTPUT);
 		sideConfig.put(Direction.UP, IOSideConfig.INPUT);
 	}
 
 	public FluidTank tank = new FluidTank(4*FluidAttributes.BUCKET_VOLUME);
+	public boolean redstoneControlInverted = false;
 
 	private int tickCount = 0;
 
-	private HashSet<BlockPos> checkedPositions = new HashSet<>();
-	private TreeMap<Integer, Queue<BlockPos>> layeredPlacementQueue = new TreeMap<>();
-	private HashSet<BlockPos> tempFluids = new HashSet<>();
+	private final HashSet<BlockPos> checkedPositions = new HashSet<>();
+	private final TreeMap<Integer, Queue<BlockPos>> layeredPlacementQueue = new TreeMap<>();
+	private final Queue<BlockPos> tempFluids = new LinkedList<>();
 
 	public FluidPlacerTileEntity()
 	{
@@ -70,7 +78,7 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickable
 	@Override
 	public void tick()
 	{
-		if(world.isRemote||isRSPowered())
+		if(world.isRemote||(isRSPowered()^redstoneControlInverted))
 			return;
 
 		if(tickCount%16==0)
@@ -85,13 +93,12 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickable
 					layeredPlacementQueue.pollFirstEntry();
 				else
 				{
-					BlockPos targetPos = lowestLayer.peek();
-					if(canFill(targetPos, false)&&tank.getFluid().getFluid().getAttributes().canBePlacedInWorld(world, targetPos, tank.getFluid()))
+					BlockPos targetPos = lowestLayer.poll();
+					if(canFill(targetPos)&&tank.getFluid().getFluid().getAttributes().canBePlacedInWorld(world, targetPos, tank.getFluid()))
 						if(place(targetPos, tank, world))
 						{
 							addConnectedSpaces(targetPos);
 							handleTempFluids();
-							lowestLayer.poll();
 						}
 				}
 			}
@@ -111,7 +118,7 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickable
 				return false;
 			bucketitem = (BucketItem)bucket;
 		}
-		if(bucketitem==null||bucketitem==Items.AIR)
+		if(bucketitem==Items.AIR)
 			return false;
 		ItemStack bucketStack = new ItemStack(bucketitem);
 		if(bucketitem.tryPlaceContainedLiquid(null, world, pos, null))
@@ -138,13 +145,7 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickable
 
 	private Queue<BlockPos> getQueueForYLevel(int yLevel)
 	{
-		Queue<BlockPos> queue = layeredPlacementQueue.get(yLevel);
-		if(queue==null)
-		{
-			queue = new LinkedList<>();
-			layeredPlacementQueue.put(yLevel, queue);
-		}
-		return queue;
+		return layeredPlacementQueue.computeIfAbsent(yLevel, k -> new LinkedList<>());
 	}
 
 	private void addConnectedSpaces(BlockPos pos)
@@ -156,22 +157,34 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickable
 
 	private void addToQueue(BlockPos pos)
 	{
-		if(pos.getY() >= 0&&pos.getY() <= 255)//Within world borders
+		if(!World.isOutsideBuildHeight(pos))//Within world borders
 			if(checkedPositions.add(pos))//Don't add checked positions
 				if(pos.distanceSq(getPos()) < 64*64)//Within max range
-					if(canFill(pos, true))
+				{
+					if(fluidMatches(pos))
+						tempFluids.add(pos);
+					if(canFill(pos))
 						getQueueForYLevel(pos.getY()).add(pos);
+				}
 	}
 
-	private boolean canFill(BlockPos targetPos, boolean allowMatchingFull)
+	private boolean fluidMatches(BlockPos targetPos)
 	{
 		if(!world.isAreaLoaded(targetPos, 1))
 			return false;
 		BlockState state = world.getBlockState(targetPos);
+		return state.getFluidState().getFluid()==tank.getFluid().getFluid();
+	}
+
+	private boolean canFill(BlockPos targetPos)
+	{
+		if(!world.isAreaLoaded(targetPos, 1))
+			return false;
+		BlockState state = world.getBlockState(targetPos);
+		// Can't fill source blocks
+		if(isFullFluidBlock(targetPos, state))
+			return false;
 		boolean canFill = !state.getMaterial().isSolid();
-		boolean fluidMatches = state.getFluidState().getFluid()==tank.getFluid().getFluid();
-		if(isFullFluidBlock(targetPos, state)&&(!allowMatchingFull||!fluidMatches))
-			canFill = false;
 		if(!canFill&&state.getBlock() instanceof IWaterLoggable)
 			canFill = ((IWaterLoggable)state.getBlock()).canContainFluid(world, targetPos, state, tank.getFluid().getFluid());
 		return canFill;
@@ -179,10 +192,8 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickable
 
 	private void handleTempFluids()
 	{
-		Set<BlockPos> tempFluidsCopy = tempFluids;//preventing CMEs >_>
-		tempFluids = new HashSet<>();
-		for(BlockPos pos : tempFluidsCopy)
-			addConnectedSpaces(pos);
+		while(!tempFluids.isEmpty())
+			addConnectedSpaces(tempFluids.poll());
 	}
 
 	private boolean isFullFluidBlock(BlockPos pos, BlockState state)
@@ -194,9 +205,10 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickable
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		CompoundNBT sideConfigNBT = nbt.getCompound("sideConfig");
-		for(Direction d : Direction.VALUES)
+		for(Direction d : DirectionUtils.VALUES)
 			sideConfig.put(d, IOSideConfig.VALUES[sideConfigNBT.getInt(d.getString())]);
 		tank.readFromNBT(nbt.getCompound("tank"));
+		redstoneControlInverted = nbt.getBoolean("redstoneInverted");
 		if(descPacket)
 			this.markContainingBlockForUpdate(null);
 	}
@@ -205,9 +217,10 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickable
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		CompoundNBT sideConfigNBT = new CompoundNBT();
-		for(Direction d : Direction.VALUES)
+		for(Direction d : DirectionUtils.VALUES)
 			sideConfigNBT.putInt(d.getString(), sideConfig.get(d).ordinal());
 		nbt.put("sideConfig", sideConfigNBT);
+		nbt.putBoolean("redstoneInverted", redstoneControlInverted);
 		nbt.put("tank", tank.writeToNBT(new CompoundNBT()));
 	}
 
@@ -228,7 +241,20 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickable
 		return true;
 	}
 
-	private LazyOptional<IFluidHandler> tankCap = registerConstantCap(tank);
+	@Override
+	public ActionResultType screwdriverUseSide(Direction side, PlayerEntity player, Hand hand, Vector3d hitVec)
+	{
+		if(!world.isRemote)
+		{
+			redstoneControlInverted = !redstoneControlInverted;
+			ChatUtils.sendServerNoSpamMessages(player, new TranslationTextComponent(Lib.CHAT_INFO+"rsControl."+(redstoneControlInverted?"invertedOn": "invertedOff")));
+			markDirty();
+			this.markContainingBlockForUpdate(null);
+		}
+		return ActionResultType.SUCCESS;
+	}
+
+	private final LazyOptional<IFluidHandler> tankCap = registerConstantCap(tank);
 
 	@Nonnull
 	@Override
@@ -243,7 +269,7 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickable
 	@Override
 	public ITextComponent[] getOverlayText(PlayerEntity player, RayTraceResult rtr, boolean hammer)
 	{
-		if(hammer&&IEConfig.GENERAL.showTextOverlay.get()&&rtr instanceof BlockRayTraceResult)
+		if(hammer&&IEClientConfig.showTextOverlay.get()&&rtr instanceof BlockRayTraceResult)
 		{
 			BlockRayTraceResult brtr = (BlockRayTraceResult)rtr;
 			IOSideConfig here = sideConfig.get(brtr.getFace());

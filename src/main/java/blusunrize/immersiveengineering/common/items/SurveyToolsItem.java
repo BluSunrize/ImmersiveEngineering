@@ -121,13 +121,13 @@ public class SurveyToolsItem extends IEBaseItem
 			return stack;
 		BlockPos pos = ((BlockRayTraceResult)rtr).getPos();
 		MineralVein vein = ExcavatorHandler.getRandomMineral(world, pos);
-		if(vein==null)
+		if(vein==null || vein.getMineral()==null)
 		{
 			player.sendStatusMessage(new TranslationTextComponent(Lib.CHAT_INFO+"survey.no_vein"), true);
 			return stack;
 		}
 
-		ListNBT data = getVeinData(stack, world.func_234923_W_(), vein.getPos());
+		ListNBT data = getVeinData(stack, world.getDimensionKey(), vein.getPos());
 		int dataCount = data.size();
 		/* I considered not giving any information after 3 surveys, but because the text is displayed above the action
 		 * bar and can't be brought back after it fades, that could lead to frustration
@@ -207,7 +207,7 @@ public class SurveyToolsItem extends IEBaseItem
 	{
 		ListNBT list = surveyTools.getOrCreateTag().getList(DATA_KEY, NBT.TAG_COMPOUND);
 		CompoundNBT tag = null;
-		String dimString = dimension.func_240901_a_().toString();
+		String dimString = dimension.getLocation().toString();
 		for(INBT nbt : list)
 		{
 			CompoundNBT tmp = (CompoundNBT)nbt;

@@ -8,16 +8,16 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttachable;
+import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableSet;
@@ -52,6 +52,7 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -114,7 +115,7 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 		return "glass".equals(group)==(MinecraftForgeClient.getRenderLayer()==RenderType.getTranslucent());
 	}
 
-	private CapabilityReference<IItemHandler> outputCap = CapabilityReference.forTileEntity(this, () -> {
+	private CapabilityReference<IItemHandler> outputCap = CapabilityReference.forTileEntityAt(this, () -> {
 		Direction outDir = getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY();
 		return new DirectionalBlockPos(getBlockPosForPos(new BlockPos(2, 1, 1)).offset(outDir), outDir.getOpposite());
 	}, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
@@ -244,7 +245,7 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 				if(p!=null&&dist < master.getMinProcessDistance(null))
 					return;
 
-				p = new BottlingProcess(Utils.copyStackWithAmount(stack, 1));
+				p = new BottlingProcess(ItemHandlerHelper.copyStackWithSize(stack, 1));
 				master.bottlingProcessQueue.add(p);
 				master.markDirty();
 				master.markContainingBlockForUpdate(null);
@@ -450,7 +451,7 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 
 		public boolean processStep(BottlingMachineTileEntity tile)
 		{
-			int energyExtracted = (int)(8*IEConfig.MACHINES.bottlingMachineConfig.energyModifier.get());
+			int energyExtracted = (int)(8*IEServerConfig.MACHINES.bottlingMachineConfig.energyModifier.get());
 			if(tile.energyStorage.extractEnergy(energyExtracted, true) >= energyExtracted)
 			{
 				tile.energyStorage.extractEnergy(energyExtracted, false);
@@ -489,7 +490,7 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 
 		public static int getMaxProcessTick()
 		{
-			return (int)(60*IEConfig.MACHINES.bottlingMachineConfig.timeModifier.get());
+			return (int)(60*IEServerConfig.MACHINES.bottlingMachineConfig.timeModifier.get());
 		}
 
 		public CompoundNBT writeToNBT()
@@ -553,7 +554,7 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 					return stack;
 				if(!simulate)
 				{
-					p = new BottlingProcess(Utils.copyStackWithAmount(stack, 1));
+					p = new BottlingProcess(ItemHandlerHelper.copyStackWithSize(stack, 1));
 					multiblock.bottlingProcessQueue.add(p);
 					multiblock.markDirty();
 					multiblock.markContainingBlockForUpdate(null);

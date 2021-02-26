@@ -1,0 +1,11 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "immersiveengineering:block/connector/relay_mv",
+    "texture": "immersiveengineering:block/connector/relay_mv"
+  },
+  "loader": "forge:obj",
+  "model": "immersiveengineering:models/block/connector/connector_mv.obj",
+  "detectCullableFaces": false,
+  "flip-v": true
+}

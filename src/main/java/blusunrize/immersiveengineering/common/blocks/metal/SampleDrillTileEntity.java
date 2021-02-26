@@ -15,12 +15,12 @@ import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.excavator.MineralMix;
 import blusunrize.immersiveengineering.api.excavator.MineralWorldInfo;
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.items.CoresampleItem;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
@@ -39,6 +39,7 @@ import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -79,10 +80,11 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 		}
 
 		boolean powered = isRSPowered();
+		boolean hasEnergy = energyStorage.getEnergyStored() >= IEServerConfig.MACHINES.coredrill_consumption.get();
 		final boolean prevActive = active;
-		int totalTime = IEConfig.MACHINES.coredrill_time.get();
-		int consumption = IEConfig.MACHINES.coredrill_consumption.get();
-		if(!active&&powered)
+		int totalTime = IEServerConfig.MACHINES.coredrill_time.get();
+		int consumption = IEServerConfig.MACHINES.coredrill_consumption.get();
+		if(!active&&powered&&hasEnergy)
 			active = true;
 		else if(active&&!powered&&process >= totalTime)
 			active = false;
@@ -109,12 +111,12 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 
 	public float getSampleProgress()
 	{
-		return process/(float)IEConfig.MACHINES.coredrill_time.get();
+		return process/(float)IEServerConfig.MACHINES.coredrill_time.get();
 	}
 
 	public boolean isSamplingFinished()
 	{
-		return process >= IEConfig.MACHINES.coredrill_time.get();
+		return process >= IEServerConfig.MACHINES.coredrill_time.get();
 	}
 
 	@Nullable
@@ -138,7 +140,7 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 	{
 		ItemStack stack = new ItemStack(Misc.coresample);
 		ItemNBTHelper.putLong(stack, "timestamp", world.getGameTime());
-		CoresampleItem.setDimension(stack, world.func_234923_W_());
+		CoresampleItem.setDimension(stack, world.getDimensionKey());
 		CoresampleItem.setCoords(stack, getPos());
 		CoresampleItem.setMineralInfo(stack, info, getPos());
 		return stack;
@@ -276,7 +278,7 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 		}
 		else if(!this.active)
 		{
-			if(energyStorage.getEnergyStored() >= IEConfig.MACHINES.coredrill_consumption.get())
+			if(energyStorage.getEnergyStored() >= IEServerConfig.MACHINES.coredrill_consumption.get())
 			{
 				this.active = true;
 				markDirty();
@@ -288,7 +290,7 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 	}
 
 	@Override
-	public BlockPos getModelOffset(BlockState state)
+	public BlockPos getModelOffset(BlockState state, @Nullable Vector3i size)
 	{
 		return new BlockPos(0, dummy, 0);
 	}

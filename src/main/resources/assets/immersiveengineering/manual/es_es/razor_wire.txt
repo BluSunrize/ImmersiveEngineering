@@ -1,0 +1,4 @@
+Alambre de púas
+Cortadora de huevos de gran tamaño
+<&recipe>El Alambre de púas es un alambre con piezas de metal afiladas. Ralentiza y corta a cualquier entidad que intente atravesarlo..
+El Alambre de púas sólo puede ser eliminado con un Alicate del Ingeniero, cualquier otro intento dañará al jugador. Además, se puede conectar un cable de baja tensión para electrificar el alambre de púas y causar más daño..

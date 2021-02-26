@@ -16,7 +16,7 @@ import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectorBlock;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
-import blusunrize.immersiveengineering.common.util.IELogger;
+import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
@@ -79,8 +79,6 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 				.translate(-.5, -.5, 0)
 				.multiply(Matrix4.inverseFacing(getFacing()));
 		Vector3d transformedHit = mat.apply(new Vector3d(info.hitX, info.hitY, info.hitZ));
-		IELogger.logger.info("Transformed hit: {}, original: {}", transformedHit,
-				new Vector3d(info.hitX, info.hitY, info.hitZ));
 		return new ConnectionPoint(pos, transformedHit.x > 0.5?RIGHT_INDEX: LEFT_INDEX);
 	}
 
@@ -127,7 +125,7 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 	}
 
 	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(@Nonnull CompoundNBT nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 		rotation = nbt.getInt("rotation");
@@ -201,7 +199,7 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 	{
 		markDirty();
 		world.notifyNeighborsOfStateChange(getPos(), getBlockState().getBlock());
-		for(Direction f : Direction.VALUES)
+		for(Direction f : DirectionUtils.VALUES)
 			world.notifyNeighborsOfStateChange(getPos().offset(f), getBlockState().getBlock());
 	}
 

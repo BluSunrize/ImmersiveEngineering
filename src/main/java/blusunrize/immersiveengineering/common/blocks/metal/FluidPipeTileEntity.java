@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.IETags;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.fluid.IFluidPipe;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedVoxelShapes;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
@@ -21,9 +22,13 @@ import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDecoration;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
+import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.WorldMap;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
+import it.unimi.dsi.fastutil.HashCommon;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import net.minecraft.block.Block;
@@ -62,10 +67,14 @@ import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
@@ -74,14 +83,13 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 
-import static java.util.Collections.newSetFromMap;
-
 //TODO use cap references
+@EventBusSubscriber(modid = Lib.MODID, bus = Bus.FORGE)
 public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe, IAdvancedHasObjProperty,
 		IOBJModelCallback<BlockState>, IColouredTile, IPlayerInteraction, IHammerInteraction, IPlacementInteraction,
 		ISelectionBounds, ICollisionBounds, IAdditionalDrops
 {
-	static ConcurrentHashMap<BlockPos, Set<DirectionalFluidOutput>> indirectConnections = new ConcurrentHashMap<>();
+	static WorldMap<BlockPos, Set<DirectionalFluidOutput>> indirectConnections = new WorldMap<>();
 	public static ArrayList<Predicate<Block>> validPipeCovers = new ArrayList<>();
 	public static ArrayList<Predicate<Block>> climbablePipeCovers = new ArrayList<>();
 
@@ -104,7 +112,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 	public Object2BooleanMap<Direction> sideConfig = new Object2BooleanOpenHashMap<>();
 
 	{
-		for(Direction d : Direction.VALUES)
+		for(Direction d : DirectionUtils.VALUES)
 			sideConfig.put(d, true);
 	}
 
@@ -115,8 +123,11 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 
 	public static Set<DirectionalFluidOutput> getConnectedFluidHandlers(BlockPos node, World world)
 	{
-		if(indirectConnections.containsKey(node))
-			return indirectConnections.get(node);
+		if(world.isRemote)
+			return ImmutableSet.of();
+		Set<DirectionalFluidOutput> cachedResult = indirectConnections.get(world, node);
+		if(cachedResult!=null)
+			return cachedResult;
 
 		ArrayList<BlockPos> openList = new ArrayList<>();
 		ArrayList<BlockPos> closedList = new ArrayList<>();
@@ -130,9 +141,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 			{
 				if(pipeTile instanceof FluidPipeTileEntity)
 					closedList.add(next);
-				for(int i = 0; i < 6; i++)
-				{
-					Direction fd = Direction.byIndex(i);
+				for(Direction fd : DirectionUtils.VALUES)
 					if(((IFluidPipe)pipeTile).hasOutputConnection(fd))
 					{
 						BlockPos nextPos = next.offset(fd);
@@ -151,18 +160,10 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 								});
 							}
 					}
-				}
 			}
 			openList.remove(0);
 		}
-		if(!world.isRemote)
-		{
-			if(!indirectConnections.containsKey(node))
-			{
-				indirectConnections.put(node, newSetFromMap(new ConcurrentHashMap<>()));
-				indirectConnections.get(node).addAll(fluidHandlers);
-			}
-		}
+		indirectConnections.put(world, node, fluidHandlers);
 		return fluidHandlers;
 	}
 
@@ -175,7 +176,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 			//TODO this really shouldn't be necessary IMO...
 			ApiUtils.addFutureServerTask(world, () -> {
 				boolean changed = false;
-				for(Direction f : Direction.VALUES)
+				for(Direction f : DirectionUtils.VALUES)
 					changed |= updateConnectionByte(f);
 				if(changed)
 				{
@@ -191,7 +192,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 	{
 		super.remove();
 		if(world!=null&&!world.isRemote)
-			indirectConnections.clear();
+			indirectConnections.clearDimension(world);
 	}
 
 	@Override
@@ -276,7 +277,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 	private EnumMap<Direction, CapabilityReference<IFluidHandler>> neighbors = new EnumMap<>(Direction.class);
 
 	{
-		for(Direction f : Direction.VALUES)
+		for(Direction f : DirectionUtils.VALUES)
 		{
 			sidedHandlers.put(f, registerConstantCap(new PipeFluidHandler(this, f)));
 			neighbors.put(f, CapabilityReference.forNeighbor(this, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f));
@@ -371,15 +372,18 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 				otherPos.getY()-pos.getY(), otherPos.getZ()-pos.getZ());
 		if(updateConnectionByte(dir))
 		{
+			World world = getWorldNonnull();
 			world.notifyNeighborsOfStateExcept(pos, getBlockState().getBlock(), dir);
 			markContainingBlockForUpdate(null);
+			if(!world.isRemote)
+				indirectConnections.clearDimension(world);
 		}
-		if(!getWorldNonnull().isRemote)
-			indirectConnections.clear();
 	}
 
 	static class PipeFluidHandler implements IFluidHandler
 	{
+		private static final Random CURRENT_TICK_RANDOM = new Random();
+
 		FluidPipeTileEntity pipe;
 		Direction facing;
 
@@ -422,10 +426,10 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 			int canAccept = resource.getAmount();
 			if(canAccept <= 0)
 				return 0;
-			ArrayList<DirectionalFluidOutput> outputList = new ArrayList<>(getConnectedFluidHandlers(pipe.getPos(), pipe.world));
+			Set<DirectionalFluidOutput> outputList = getConnectedFluidHandlers(pipe.getPos(), pipe.world);
 
 			if(outputList.size() < 1)
-//NO OUTPUTS!
+				//NO OUTPUTS!
 				return 0;
 			BlockPos ccFrom = new BlockPos(pipe.getPos().offset(facing));
 			int sum = 0;
@@ -494,14 +498,16 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 			if(maxDrain <= 0)
 				return FluidStack.EMPTY;
 
-			ArrayList<DirectionalFluidOutput> outputList = new ArrayList<>(getConnectedFluidHandlers(pipe.getPos(), pipe.world));
+			World world = pipe.getWorldNonnull();
+			List<DirectionalFluidOutput> outputList = new ArrayList<>(getConnectedFluidHandlers(pipe.getPos(), world));
 			BlockPos ccFrom = new BlockPos(pipe.getPos().offset(facing));
 			outputList.removeIf(output -> ccFrom.equals(output.containingTile.getPos()));
 
 			if(outputList.size() < 1)
 				return FluidStack.EMPTY;
 
-			int chosen = outputList.size()==1?0: Utils.RAND.nextInt(outputList.size());
+			CURRENT_TICK_RANDOM.setSeed(HashCommon.mix(world.getGameTime()));
+			int chosen = outputList.size()==1?0: CURRENT_TICK_RANDOM.nextInt(outputList.size());
 			DirectionalFluidOutput output = outputList.get(chosen);
 			FluidStack available = output.output.drain(maxDrain, FluidAction.SIMULATE);
 			int limit = getTranferrableAmount(available, output);
@@ -544,7 +550,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 	{
 		byte availableConnections = connections;
 		int mask = 1;
-		for(Direction dir : Direction.VALUES)
+		for(Direction dir : DirectionUtils.VALUES)
 		{
 			if((availableConnections&mask)==0)
 			{
@@ -644,7 +650,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 		byte availableConnections = key.availableConnections;
 		byte activeConnections = key.connections;
 		double[] baseAABB = key.hasCover?new double[]{.002, .998, .002, .998, .002, .998}: new double[]{.25, .75, .25, .75, .25, .75};
-		for(Direction d : Direction.VALUES)
+		for(Direction d : DirectionUtils.VALUES)
 		{
 			int i = d.getIndex();
 			if((availableConnections&1)==1)
@@ -683,7 +689,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 			this.connections = te.connections;
 			this.availableConnections = te.getAvailableConnectionByte();
 			this.hasCover = te.hasCover();
-			for(Direction d : Direction.VALUES)
+			for(Direction d : DirectionUtils.VALUES)
 				connectionStyles.put(d, te.getConnectionStyle(d));
 		}
 
@@ -1072,13 +1078,13 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 	{
 		if(world.isRemote)
 			return true;
-		hitVec = hitVec.subtract(Vector3d.func_237491_b_(pos));
+		hitVec = hitVec.subtract(Vector3d.copy(pos));
 		Direction fd = side;
 		List<AxisAlignedBB> boxes = getBoxes(new BoundingBoxKey(true, this));
 		for(AxisAlignedBB box : boxes)
 			if(box.grow(.002).contains(hitVec))
 			{
-				for(Direction d : Direction.VALUES)
+				for(Direction d : DirectionUtils.VALUES)
 				{
 					Vector3d testVec = new Vector3d(0.5+0.5*d.getXOffset(), 0.5+0.5*d.getYOffset(), 0.5+0.5*d.getZOffset());
 					if(box.grow(0.002).contains(testVec))
@@ -1093,7 +1099,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 		{
 			toggleSide(fd);
 			this.markContainingBlockForUpdate(null);
-			FluidPipeTileEntity.indirectConnections.clear();
+			FluidPipeTileEntity.indirectConnections.clearDimension(world);
 			return true;
 		}
 		return false;
@@ -1136,5 +1142,12 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 			return new Vector4f(rgb[0], rgb[1], rgb[2], 1);
 		}
 		return original;
+	}
+
+	@SubscribeEvent
+	public static void onWorldUnload(WorldEvent.Unload ev)
+	{
+		if(!ev.getWorld().isRemote()&&ev.getWorld() instanceof World)
+			indirectConnections.clearDimension((World)ev.getWorld());
 	}
 }

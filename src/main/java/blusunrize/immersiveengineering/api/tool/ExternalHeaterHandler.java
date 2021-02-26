@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.api.tool;
 
+import blusunrize.immersiveengineering.mixin.accessors.FurnaceTEAccess;
 import net.minecraft.block.AbstractFurnaceBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
@@ -15,6 +16,7 @@ import net.minecraft.item.crafting.AbstractCookingRecipe;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.tileentity.FurnaceTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIntArray;
 
 import java.util.HashMap;
 import java.util.Optional;
@@ -92,7 +94,7 @@ public class ExternalHeaterHandler
 			ItemStack input = tileEntity.getStackInSlot(0);
 			if(input.isEmpty())
 				return false;
-			IRecipeType<? extends AbstractCookingRecipe> type = tileEntity.recipeType;
+			IRecipeType<? extends AbstractCookingRecipe> type = ((FurnaceTEAccess)tileEntity).getRecipeType();
 			Optional<? extends AbstractCookingRecipe> output = tileEntity.getWorld().getRecipeManager().getRecipe(type, tileEntity, tileEntity.getWorld());
 			if(!output.isPresent())
 				return false;
@@ -115,7 +117,8 @@ public class ExternalHeaterHandler
 			{
 				BlockState tileState = tileEntity.getWorld().getBlockState(tileEntity.getPos());
 				boolean burning = tileState.get(AbstractFurnaceBlock.LIT);
-				int burnTime = tileEntity.furnaceData.get(0);
+				IIntArray furnaceData = ((FurnaceTEAccess)tileEntity).getFurnaceData();
+				int burnTime = furnaceData.get(0);
 				if(burnTime < 200)
 				{
 					int heatAttempt = 4;
@@ -125,19 +128,19 @@ public class ExternalHeaterHandler
 					int heat = energyToUse/heatEnergyRatio;
 					if(heat > 0)
 					{
-						tileEntity.furnaceData.set(0, burnTime+heat);
+						furnaceData.set(0, burnTime+heat);
 						energyConsumed += heat*heatEnergyRatio;
 						if(!burning)
-							updateFurnace(tileEntity, tileEntity.furnaceData.get(0) > 0);
+							updateFurnace(tileEntity, furnaceData.get(0) > 0);
 					}
 				}
-				if(canCook&&tileEntity.furnaceData.get(0) >= 200&&tileEntity.furnaceData.get(2) < 199)
+				if(canCook&&furnaceData.get(0) >= 200&&furnaceData.get(2) < 199)
 				{
 					int energyToUse = defaultFurnaceSpeedupCost;
 					if(energyAvailable-energyConsumed > energyToUse)
 					{
 						energyConsumed += energyToUse;
-						tileEntity.furnaceData.set(2, tileEntity.furnaceData.get(2)+1);
+						furnaceData.set(2, furnaceData.get(2)+1);
 					}
 				}
 			}

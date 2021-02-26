@@ -29,5 +29,4 @@ public class FloodlightBlock extends MiscConnectorBlock<FloodlightTileEntity>
 	{
 		return state.get(IEProperties.ACTIVE)?15: 0;
 	}
-
 }

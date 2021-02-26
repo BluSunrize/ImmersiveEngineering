@@ -10,14 +10,22 @@ package blusunrize.immersiveengineering;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEApi;
-import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
+import blusunrize.immersiveengineering.api.IETags;
+import blusunrize.immersiveengineering.api.crafting.ArcRecyclingChecker;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.ClientProxy;
-import blusunrize.immersiveengineering.common.*;
+import blusunrize.immersiveengineering.common.CommonProxy;
+import blusunrize.immersiveengineering.common.EventHandler;
+import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.IESaveData;
+import blusunrize.immersiveengineering.common.config.IEClientConfig;
+import blusunrize.immersiveengineering.common.config.IECommonConfig;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.crafting.IngredientSerializers;
+import blusunrize.immersiveengineering.common.crafting.RecipeCachingReloadListener;
 import blusunrize.immersiveengineering.common.crafting.RecipeReloadListener;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
@@ -39,25 +47,24 @@ import net.minecraft.item.*;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.resources.DataPackRegistries;
-import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.placement.Placement;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
+import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
@@ -65,8 +72,15 @@ import org.apache.logging.log4j.LogManager;
 import javax.annotation.Nonnull;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Stream;
+
+import static net.minecraftforge.fml.network.NetworkDirection.PLAY_TO_CLIENT;
+import static net.minecraftforge.fml.network.NetworkDirection.PLAY_TO_SERVER;
 
 @Mod(ImmersiveEngineering.MODID)
 public class ImmersiveEngineering
@@ -74,9 +88,7 @@ public class ImmersiveEngineering
 	public static final String MODID = "immersiveengineering";
 	public static final String MODNAME = "Immersive Engineering";
 	public static final String VERSION = "${version}";
-	@SuppressWarnings("Convert2MethodRef")
-	public static CommonProxy proxy = DistExecutor.runForDist(() -> () -> new ClientProxy(),
-			() -> () -> new CommonProxy());
+	public static CommonProxy proxy = DistExecutor.safeRunForDist(() -> ClientProxy::new, () -> CommonProxy::new);
 
 	public static final SimpleChannel packetHandler = NetworkRegistry.ChannelBuilder
 			.named(new ResourceLocation(MODID, "main"))
@@ -89,25 +101,26 @@ public class ImmersiveEngineering
 	{
 		IELogger.logger = LogManager.getLogger(MODID);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::enqueueIMCs);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::loadComplete);
 		MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
 		MinecraftForge.EVENT_BUS.addListener(this::registerCommands);
 		MinecraftForge.EVENT_BUS.addListener(this::addReloadListeners);
+		MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::addReloadListenersLowest);
 		MinecraftForge.EVENT_BUS.addListener(this::serverStarted);
 		RecipeSerializers.RECIPE_SERIALIZERS.register(FMLJavaModLoadingContext.get().getModEventBus());
 		Villages.Registers.POINTS_OF_INTEREST.register(FMLJavaModLoadingContext.get().getModEventBus());
 		Villages.Registers.PROFESSIONS.register(FMLJavaModLoadingContext.get().getModEventBus());
-		//TODO separate client/server config?
-		ModLoadingContext.get().registerConfig(Type.COMMON, IEConfig.ALL);
+		ModLoadingContext.get().registerConfig(Type.COMMON, IECommonConfig.CONFIG_SPEC);
+		ModLoadingContext.get().registerConfig(Type.CLIENT, IEClientConfig.CONFIG_SPEC);
+		ModLoadingContext.get().registerConfig(Type.SERVER, IEServerConfig.CONFIG_SPEC.getBaseSpec());
 		IEContent.modConstruction();
 		proxy.modConstruction();
-		//TODO FluidRegistry.enableUniversalBucket();
 		IngredientSerializers.init();
 
 		IEWorldGen ieWorldGen = new IEWorldGen();
 		MinecraftForge.EVENT_BUS.register(ieWorldGen);
-		FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(Feature.class, ieWorldGen::registerFeatures);
-		FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(Placement.class, ieWorldGen::registerPlacements);
+		IEWorldGen.init();
 	}
 
 	public void setup(FMLCommonSetupEvent event)
@@ -117,13 +130,7 @@ public class ImmersiveEngineering
 
 		IEAdvancements.preInit();
 
-
-		for(String b : IEConfig.ORES.oreDimBlacklist.get())
-			IEWorldGen.oreDimBlacklist.add(RegistryKey.func_240903_a_(
-					Registry.DIMENSION_TYPE_KEY,
-					new ResourceLocation(b)
-			));
-		IEApi.modPreference = IEConfig.GENERAL.preferredOres.get();
+		IEApi.modPreference = IECommonConfig.preferredOres.get();
 		IEApi.prefixToIngotMap.put("ingots", new Integer[]{1, 1});
 		IEApi.prefixToIngotMap.put("nuggets", new Integer[]{1, 9});
 		IEApi.prefixToIngotMap.put("storage_blocks", new Integer[]{9, 1});
@@ -134,39 +141,34 @@ public class ImmersiveEngineering
 		IEApi.prefixToIngotMap.put("fences", new Integer[]{5, 3});
 		IECompatModule.doModulesPreInit();
 
-		ArcFurnaceRecipe.allowRecipeTypeForRecycling(IRecipeType.CRAFTING);
-		ArcFurnaceRecipe.allowRecipeTypeForRecycling(MetalPressRecipe.TYPE);
+		ArcRecyclingChecker.allowRecipeTypeForRecycling(IRecipeType.CRAFTING);
+		ArcRecyclingChecker.allowRecipeTypeForRecycling(MetalPressRecipe.TYPE);
 		// Vanilla Tools, Swords & Armor
-		ArcFurnaceRecipe.allowItemForRecycling(stack -> stack.getItem() instanceof ToolItem
-				||stack.getItem() instanceof HoeItem||stack.getItem() instanceof ShearsItem
-				||stack.getItem() instanceof SwordItem||stack.getItem() instanceof ArmorItem
-				||stack.getItem() instanceof HorseArmorItem||stack.getItem() instanceof BucketItem);
+		ArcRecyclingChecker.allowSimpleItemForRecycling(stack -> stack instanceof ToolItem
+				||stack instanceof ShearsItem||stack instanceof SwordItem||
+				stack instanceof ArmorItem||stack instanceof HorseArmorItem||
+				stack instanceof BucketItem);
 		// IE Tools
-		ArcFurnaceRecipe.allowItemForRecycling(stack -> stack.getItem() instanceof HammerItem
-				||stack.getItem() instanceof WirecutterItem||stack.getItem() instanceof ScrewdriverItem
-				||stack.getItem() instanceof DrillheadItem);
+		ArcRecyclingChecker.allowSimpleItemForRecycling(stack -> stack instanceof HammerItem
+				||stack instanceof WirecutterItem||stack instanceof ScrewdriverItem
+				||stack instanceof DrillheadItem);
 		// Molds
-		ArcFurnaceRecipe.allowItemForRecycling(stack -> stack.getItem()==Molds.moldPlate
-				||stack.getItem()==Molds.moldGear
-				||stack.getItem()==Molds.moldRod
-				||stack.getItem()==Molds.moldBulletCasing
-				||stack.getItem()==Molds.moldWire
-				||stack.getItem()==Molds.moldPacking4
-				||stack.getItem()==Molds.moldPacking9
-				||stack.getItem()==Molds.moldUnpacking
-		);
+		ArcRecyclingChecker.allowEnumeratedItemsForRecycling(() -> Stream.of(
+				Molds.moldPlate, Molds.moldGear, Molds.moldRod, Molds.moldBulletCasing, Molds.moldWire,
+				Molds.moldPacking4, Molds.moldPacking9, Molds.moldUnpacking
+		));
 		// Blocks, Plates, Rods, Wires, Gears, Scaffoldings, Fences
-		ArcFurnaceRecipe.allowItemForRecycling(stack -> TagUtils.isPlate(stack)
-				||TagUtils.isInPrefixedTag(stack, "rods/")
-				||TagUtils.isInPrefixedTag(stack, "wires/")
-				||TagUtils.isInPrefixedTag(stack, "gears/")
-				||TagUtils.isInPrefixedTag(stack, "scaffoldings/")
-				||TagUtils.isInPrefixedTag(stack, "fences/"));
+		ArcRecyclingChecker.allowItemTagForRecycling(IETags.plates);
+		ArcRecyclingChecker.allowPrefixedTagForRecycling("rods/");
+		ArcRecyclingChecker.allowPrefixedTagForRecycling("wires/");
+		ArcRecyclingChecker.allowPrefixedTagForRecycling("gears/");
+		ArcRecyclingChecker.allowPrefixedTagForRecycling("scaffoldings/");
+		ArcRecyclingChecker.allowPrefixedTagForRecycling("fences/");
 		// Prevent tools used during crafting to be recycled as components
-		ArcFurnaceRecipe.makeItemInvalidRecyclingOutput(stack -> stack.getItem() instanceof HammerItem
+		ArcRecyclingChecker.makeItemInvalidRecyclingOutput(stack -> stack.getItem() instanceof HammerItem
 				||stack.getItem() instanceof WirecutterItem||stack.getItem() instanceof ScrewdriverItem);
 		// Ignore bricks
-		ArcFurnaceRecipe.makeItemInvalidRecyclingOutput(stack -> TagUtils.isIngot(stack)
+		ArcRecyclingChecker.makeItemInvalidRecyclingOutput(stack -> TagUtils.isIngot(stack)
 				&&Objects.requireNonNull(TagUtils.getMatchingPrefixAndRemaining(stack, "ingots"))[1].contains("brick"));
 
 
@@ -175,48 +177,33 @@ public class ImmersiveEngineering
 		proxy.preInitEnd();
 		IEContent.init();
 
-		if(IEConfig.ORES.ore_bauxite.retrogenEnabled.get())
-			IEWorldGen.retrogenOres.add("retrogen_bauxite");
-		if(IEConfig.ORES.ore_lead.retrogenEnabled.get())
-			IEWorldGen.retrogenOres.add("retrogen_lead");
-		if(IEConfig.ORES.ore_silver.retrogenEnabled.get())
-			IEWorldGen.retrogenOres.add("retrogen_silver");
-		if(IEConfig.ORES.ore_nickel.retrogenEnabled.get())
-			IEWorldGen.retrogenOres.add("retrogen_nickel");
-		if(IEConfig.ORES.ore_uranium.retrogenEnabled.get())
-			IEWorldGen.retrogenOres.add("retrogen_uranium");
-		if(IEConfig.ORES.ore_copper.retrogenEnabled.get())
-			IEWorldGen.retrogenOres.add("retrogen_copper");
-
 		MinecraftForge.EVENT_BUS.register(new EventHandler());
 		proxy.init();
 
 		IECompatModule.doModulesInit();
 		proxy.initEnd();
 		registerMessage(MessageTileSync.class, MessageTileSync::new);
-		registerMessage(MessageTileSync.class, MessageTileSync::new);
-		registerMessage(MessageSpeedloaderSync.class, MessageSpeedloaderSync::new);
-		registerMessage(MessageSkyhookSync.class, MessageSkyhookSync::new);
+		registerMessage(MessageSpeedloaderSync.class, MessageSpeedloaderSync::new, PLAY_TO_CLIENT);
+		registerMessage(MessageSkyhookSync.class, MessageSkyhookSync::new, PLAY_TO_CLIENT);
 		registerMessage(MessageMinecartShaderSync.class, MessageMinecartShaderSync::new);
-		registerMessage(MessageMinecartShaderSync.class, MessageMinecartShaderSync::new);
-		registerMessage(MessageRequestBlockUpdate.class, MessageRequestBlockUpdate::new);
-		registerMessage(MessageNoSpamChatComponents.class, MessageNoSpamChatComponents::new);
+		registerMessage(MessageRequestBlockUpdate.class, MessageRequestBlockUpdate::new, PLAY_TO_SERVER);
+		registerMessage(MessageNoSpamChatComponents.class, MessageNoSpamChatComponents::new, PLAY_TO_CLIENT);
 		registerMessage(MessageShaderManual.class, MessageShaderManual::new);
-		registerMessage(MessageShaderManual.class, MessageShaderManual::new);
-		registerMessage(MessageBirthdayParty.class, MessageBirthdayParty::new);
-		registerMessage(MessageMagnetEquip.class, MessageMagnetEquip::new);
-		registerMessage(MessageScrollwheelItem.class, MessageScrollwheelItem::new);
-		registerMessage(MessageObstructedConnection.class, MessageObstructedConnection::new);
-		registerMessage(MessageSetGhostSlots.class, MessageSetGhostSlots::new);
-		registerMessage(MessageWireSync.class, MessageWireSync::new);
-		registerMessage(MessageMaintenanceKit.class, MessageMaintenanceKit::new);
-		registerMessage(MessageRevolverRotate.class, MessageRevolverRotate::new);
-		registerMessage(MessageMultiblockSync.class, MessageMultiblockSync::new);
+		registerMessage(MessageBirthdayParty.class, MessageBirthdayParty::new, PLAY_TO_CLIENT);
+		registerMessage(MessageMagnetEquip.class, MessageMagnetEquip::new, PLAY_TO_SERVER);
+		registerMessage(MessageScrollwheelItem.class, MessageScrollwheelItem::new, PLAY_TO_SERVER);
+		registerMessage(MessageObstructedConnection.class, MessageObstructedConnection::new, PLAY_TO_CLIENT);
+		registerMessage(MessageSetGhostSlots.class, MessageSetGhostSlots::new, PLAY_TO_SERVER);
+		registerMessage(MessageWireSync.class, MessageWireSync::new, PLAY_TO_CLIENT);
+		registerMessage(MessageMaintenanceKit.class, MessageMaintenanceKit::new, PLAY_TO_SERVER);
+		registerMessage(MessageRevolverRotate.class, MessageRevolverRotate::new, PLAY_TO_SERVER);
+		registerMessage(MessageMultiblockSync.class, MessageMultiblockSync::new, PLAY_TO_CLIENT);
+		registerMessage(MessageClientCommand.class, MessageClientCommand::new, PLAY_TO_CLIENT);
 
 		IEIMCHandler.init();
 		//TODO IEIMCHandler.handleIMCMessages(FMLInterModComms.fetchRuntimeMessages(this));
 
-		IEContent.postInit();
+		event.enqueueWork(Villages::init);
 		proxy.postInit();
 		IECompatModule.doModulesPostInit();
 		proxy.postInitEnd();
@@ -228,36 +215,41 @@ public class ImmersiveEngineering
 
 	private <T extends IMessage> void registerMessage(Class<T> packetType, Function<PacketBuffer, T> decoder)
 	{
+		registerMessage(packetType, decoder, Optional.empty());
+	}
+
+	private <T extends IMessage> void registerMessage(
+			Class<T> packetType, Function<PacketBuffer, T> decoder, NetworkDirection direction
+	)
+	{
+		registerMessage(packetType, decoder, Optional.of(direction));
+	}
+
+	private final Set<Class<?>> knownPacketTypes = new HashSet<>();
+
+	private <T extends IMessage> void registerMessage(
+			Class<T> packetType, Function<PacketBuffer, T> decoder, Optional<NetworkDirection> direction
+	)
+	{
+		if(!knownPacketTypes.add(packetType))
+		{
+			throw new IllegalStateException("Duplicate packet type: "+packetType.getName());
+		}
 		packetHandler.registerMessage(messageId++, packetType, IMessage::toBytes, decoder, (t, ctx) -> {
 			t.process(ctx);
 			ctx.get().setPacketHandled(true);
-		});
+		}, direction);
+	}
+
+	public void enqueueIMCs(InterModEnqueueEvent event)
+	{
+		IECompatModule.doModulesIMCs();
 	}
 
 	public void loadComplete(FMLLoadCompleteEvent event)
 	{
 		IECompatModule.doModulesLoadComplete();
 	}
-
-	private static final String[] alternativeCerts = {
-			"7e11c175d1e24007afec7498a1616bef0000027d",// malte0811
-			"MavenKeyHere"//TODO maven
-	};
-
-	/*
-	//TODO This has been removed in some forge versions. Apparently cpw is making something better soon?
-	public void wrongSignature(FMLFingerprintViolationEvent event)
-	{
-		System.out.println("[Immersive Engineering/Error] THIS IS NOT AN OFFICIAL BUILD OF IMMERSIVE ENGINEERING! Found these fingerprints: "+event.getFingerprints());
-		for(String altCert : alternativeCerts)
-			if(event.getFingerprints().contains(altCert))
-			{
-				System.out.println("[Immersive Engineering/Error] "+altCert+" is considered an alternative certificate (which may be ok to use in some cases). "+
-						"If you thought this was an official build you probably shouldn't use it.");
-				break;
-			}
-	}
-	*/
 
 	public void serverStarting(FMLServerStartingEvent event)
 	{
@@ -276,18 +268,28 @@ public class ImmersiveEngineering
 		event.addListener(new RecipeReloadListener(dataPackRegistries));
 	}
 
+	public void addReloadListenersLowest(AddReloadListenerEvent event)
+	{
+		event.addListener(new RecipeCachingReloadListener(event.getDataPackRegistries()));
+	}
+
 	public void serverStarted(FMLServerStartedEvent event)
 	{
 		//TODO isn't this always true? if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
 		{
 			//TODO hardcoding DimensionType.OVERWORLD seems hacky/broken
-			ServerWorld world = event.getServer().getWorld(World.field_234918_g_);
+			ServerWorld world = event.getServer().getWorld(World.OVERWORLD);
 			if(!world.isRemote)
 			{
 				IESaveData worldData = world.getSavedData().getOrCreate(IESaveData::new, IESaveData.dataName);
 				IESaveData.setInstance(worldData);
 			}
 		}
+	}
+
+	public static ResourceLocation rl(String path)
+	{
+		return new ResourceLocation(MODID, path);
 	}
 
 	public static ItemGroup itemGroup = new ItemGroup(MODID)

@@ -137,7 +137,7 @@ public class FeedthroughMultiblock implements IMultiblock
 		if(connsHere.size() > 1||connHere.getConnectionPoints().size()!=1)
 			return null;
 		BlockState state = w.getBlockState(pos);
-		if(!state.func_235901_b_(FACING_ALL)||state.get(FACING_ALL)!=expectedDirection)
+		if(!state.hasProperty(FACING_ALL)||state.get(FACING_ALL)!=expectedDirection)
 			return null;
 		return WireApi.getWireType(state);
 	}
@@ -148,7 +148,7 @@ public class FeedthroughMultiblock implements IMultiblock
 		GlobalWireNetwork globalNet = GlobalWireNetwork.getNetwork(world);
 		//Check
 		BlockState stateHere = world.getBlockState(pos);
-		if(stateHere.func_235901_b_(FACING_ALL))
+		if(stateHere.hasProperty(FACING_ALL))
 			side = stateHere.get(FACING_ALL);
 		WireType wire = checkValidConnector(world, pos, globalNet, side);
 		if(wire==null)

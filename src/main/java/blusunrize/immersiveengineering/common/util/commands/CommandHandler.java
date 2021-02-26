@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.util.commands;
 
+import blusunrize.immersiveengineering.common.network.MessageClientCommand.Type;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.command.CommandSource;
@@ -20,15 +21,9 @@ public class CommandHandler
 		//TODO do all subcommands have proper permission requirements?
 		LiteralArgumentBuilder<CommandSource> main = Commands.literal("ie");
 		main.then(CommandMineral.create())
-				.then(CommandShaders.create());
-		dispatcher.register(main);
-	}
-
-	public static void registerClient(CommandDispatcher<CommandSource> dispatcher)
-	{
-		LiteralArgumentBuilder<CommandSource> main = Commands.literal("cie");
-		main.then(CommandResetRenders.create())
-				.then(CommandManual.create());
+				.then(CommandShaders.create())
+				.then(RemoteClientCommand.clientComamnd("resetrender", Type.RESET_SHADER_CACHES))
+				.then(RemoteClientCommand.clientComamnd("resetmanual", Type.RESET_MANUAL));
 		dispatcher.register(main);
 	}
 }

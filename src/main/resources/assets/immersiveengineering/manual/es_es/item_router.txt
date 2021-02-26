@@ -1,0 +1,5 @@
+Enrutador de elementos
+Pie izquierdo amarillo, mano derecha verde
+<&recipe>El enrutador de elementos es un bloque que aceptará y redistribuirá los elementos por rutas filtradas. Colócalo en el suelo y haz clic con el botón derecho del ratón para abrir la interfaz, que muestra seis filtros diferentes coordinados por colores y direcciones.<np>
+Cuando un elemento entra en el enrutador, se encamina a una salida cuyo filtro coincida con el elemento o, si no se encuentra ningún filtro que coincida, se encamina a una salida sin filtrar. Si el enrutador no puede enrutar el elemento en primer lugar, no permitirá que el elemento entre en el enrutador.
+Los elementos tampoco pueden salir hacia el lado desde el que se insertaron. Los botones encima de cada filtro se pueden utilizar para que el enrutador respete o ignore el Diccionario de Minerales, NBT y Metadata.

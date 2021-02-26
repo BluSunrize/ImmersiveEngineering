@@ -5,12 +5,14 @@ import net.minecraftforge.gradle.common.task.SignJar
 buildscript {
     repositories {
         maven { url = 'https://files.minecraftforge.net/maven' }
-        jcenter()
+        maven {url "https://plugins.gradle.org/m2/"}
         mavenCentral()
+        maven {url='https://dist.creeper.host/Sponge/maven'}
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
         classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.0'
+        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
@@ -26,6 +28,9 @@ archivesBaseName = 'ImmersiveEngineering'
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
 sourceSets {
+    manual {
+        compileClasspath = main.compileClasspath
+    }
     main {
         resources {
             srcDirs = [
@@ -33,6 +38,18 @@ sourceSets {
                     "$rootDir/src/generated/resources"
             ]
         }
+        compileClasspath += manual.output
+        runtimeClasspath += manual.output
+    }
+    datagen {
+        compileClasspath += main.compileClasspath
+        runtimeClasspath += main.runtimeClasspath
+        compileClasspath += main.output
+        runtimeClasspath += main.output
+    }
+    test {
+        compileClasspath += manual.output
+        runtimeClasspath += manual.output
     }
 }
 
@@ -56,7 +73,7 @@ processResources {
     //Minify json resources
     doLast {
         fileTree(dir: getOutputs().getFiles().getAsPath(), includes: jsonPatterns).each {
-            File file -> file.setText(JsonOutput.toJson(new JsonSlurper().parse(file)))
+            File file -> file.setText(JsonOutput.toJson(new JsonSlurper().parse(file, 'UTF-8')))
         }
     }
 }
@@ -76,10 +93,9 @@ minecraft {
     // stable_#            Stables are built at the discretion of the MCP team.
     // Use non-default mappings at your own risk. they may not always work.
     // Simply re-run your setup task after changing the mappings to update your workspace.
-    mappings channel: 'snapshot', version: '20200707-1.16.1'
+    mappings channel: 'snapshot', version: '20201028-1.16.3'
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 
-    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
     // Default run configurations.
     // These can be tweaked, removed, or duplicated as needed.
@@ -90,12 +106,15 @@ minecraft {
             // Recommended logging data for a userdev environment
             property 'forge.logging.markers', ''
             property 'fml.earlyprogresswindow', 'false'
+            property 'mixin.env.disableRefMap', 'true'
 
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
+            arg "-mixin.config="+modid+".mixins.json"
             mods {
                 immersiveengineering {
                     source sourceSets.main
+                    source sourceSets.manual
                 }
             }
         }
@@ -108,9 +127,11 @@ minecraft {
 
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
+            property 'mixin.env.disableRefMap', 'true'
 
             // Disable GUI by default, the IDE console can be used to enter commands
-            args '-nogui'
+            arg '-nogui'
+            arg "-mixin.config="+modid+".mixins.json"
 
             mods {
                 immersiveengineering {
@@ -127,13 +148,18 @@ minecraft {
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
             property 'fml.earlyprogresswindow', 'false'
+            property 'mixin.env.disableRefMap', 'true'
 
             args '--mod', 'immersiveengineering', '--all', '--output', file('src/generated/resources/'), '--validate',
                     '--existing', sourceSets.main.resources.srcDirs[0]
+            arg "-mixin.config="+modid+".mixins.json"
+            ideaModule project.name+".datagen"
 
             mods {
                 immersiveengineering {
                     source sourceSets.main
+                    source sourceSets.datagen
+                    source sourceSets.manual
                 }
             }
         }
@@ -141,9 +167,16 @@ minecraft {
 }
 
 repositories {
+	maven { // TOP (The one probe)
+        name 'tterrag maven'
+        url "https://maven.tterrag.com/"
+    }
     maven { // JEI & Tinkers
         name 'DVS1 Maven FS'
         url 'https://dvs1.progwml6.com/files/maven'
+    }
+    maven { // Because JEI has a ridiculous FTB dependency now
+        url 'https://maven.latmod.com/'
     }
     maven { // BlockModelSplitter
         name 'Jared maven'
@@ -155,15 +188,29 @@ repositories {
             url = "https://minecraft.curseforge.com/api/maven/"
         }
     }
+    maven { // CC-Tweaked
+        url 'https://squiddev.cc/maven/'
+    }
+    maven { //Curious
+        url "https://maven.theillusivec4.top/"
+    }
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:1.16.1-${version_forge}"
-    runtimeOnly fg.deobf("mezz.jei:jei-1.16.1:7.0.0.6")
+    minecraft "net.minecraftforge:forge:${version_minecraft}-${version_forge}"
+
+//    runtimeOnly fg.deobf("mezz.jei:jei-1.16.3:7.6.0.49")
     //runtimeOnly fg.deobf("nbtedit:NBTEdit:0.9.0")
-    compileOnly fg.deobf("mezz.jei:jei-1.16.1:7.0.0.6:api")
+    compileOnly fg.deobf("mezz.jei:jei-1.16.3:7.6.0.49:api")
+    compileOnly fg.deobf('com.feed_the_beast.mods:ftb-gui-library:1.0.0.18')
+    compileOnly fg.deobf("org.squiddev:cc-tweaked-1.16.4:1.94.0")
+    compileOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:1.16-3.+")
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.4.0:api")
     compile "malte0811:BlockModelSplitter:1.2.0"
     testImplementation('junit:junit:4.13')
+    annotationProcessor 'org.spongepowered:mixin:0.8.2:processor'
+
+    compileOnly fg.deobf(group: "com.blamejared.crafttweaker", name: "CraftTweaker-1.16.5", version: "7.1.0.103")
 }
 
 def customGradle = rootProject.file('custom.gradle');
@@ -233,14 +280,24 @@ String buildVersionString() {
     return "${version_minecraft}-${ie_output_version}"
 }
 
+task datagenJar(type: Jar, dependsOn: datagenClasses) {
+    classifier = 'datagen'
+    from sourceSets.datagen.output
+    manifest {
+        attributes "FMLModType": "LIBRARY"
+    }
+}
+
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
     from sourceSets.main.allSource
+    from sourceSets.manual.allSource
 }
 
 artifacts {
     archives sourcesJar
     archives shadowJar
+    archives datagenJar
 }
 
 shadowJar {
@@ -248,6 +305,7 @@ shadowJar {
     dependencies {
         include(dependency('malte0811:BlockModelSplitter:.*'))
     }
+    from(sourceSets.manual.output)
 }
 
 reobf {
@@ -277,6 +335,14 @@ task optimizePng {
         for (dir in sourceSets.main.resources.srcDirs) {
             fileTree(dir: dir, includes: pngPatterns).each { minimizePNGFile(it) }
         }
+    }
+}
+
+jar {
+    manifest {
+        attributes([
+                "MixinConfigs": "${modid}.mixins.json"
+        ])
     }
 }
 
@@ -331,7 +397,6 @@ class GenerateUpdateJSON extends DefaultTask {
         mcFromIEVersion.put("0.16", "1.16.1")
     }
     static def VERSION_PREFIX = "##### Version "
-    static def CURRENT_MC_VERSION = "1.16.1"
     static def CHANGELOG_FOR_MANUAL = "src/main/resources/assets/immersiveengineering/changelog.json"
     static def BUILT_SUFFIX = " - BUILT"
     static def PRE_SUFFIX = "-pre"
@@ -429,7 +494,7 @@ class GenerateUpdateJSON extends DefaultTask {
             outF << updateJson
 
             //JSON for the manual
-            def mapForCurrent = changelogForVersions.getOrDefault(CURRENT_MC_VERSION, new HashMap<>())
+            def mapForCurrent = changelogForVersions.getOrDefault(project.ext.version_minecraft, new HashMap<>())
             def manualJson = JsonOutput.toJson(mapForCurrent)
             manualJson = JsonOutput.prettyPrint(manualJson)
             outF = new File(CHANGELOG_FOR_MANUAL)
@@ -442,3 +507,19 @@ class GenerateUpdateJSON extends DefaultTask {
 task updateJson(type: GenerateUpdateJSON)
 
 processResources.dependsOn updateJson
+
+apply plugin: 'org.spongepowered.mixin'
+
+mixin {
+    add sourceSets.main, "${modid}.refmap.json"
+}
+
+// Prevent Mixin annotation processor from getting into IDEA's annotation processor settings
+// Copied from Botania
+if (System.getProperty("idea.sync.active") == "true") {
+    afterEvaluate {
+        tasks.withType(JavaCompile).all {
+            it.options.annotationProcessorPath = files()
+        }
+    }
+}

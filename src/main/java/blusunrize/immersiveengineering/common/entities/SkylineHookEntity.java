@@ -111,7 +111,7 @@ public class SkylineHookEntity extends Entity
 		this.horizontalSpeed = speed;
 		this.connection = c;
 		this.start = start;
-		Vector3d pos = connection.getPoint(this.linePos, start).add(Vector3d.func_237491_b_(start.getPosition()));
+		Vector3d pos = connection.getPoint(this.linePos, start).add(Vector3d.copy(start.getPosition()));
 		this.setLocationAndAngles(pos.x, pos.y, pos.z, this.rotationYaw, this.rotationPitch);
 		this.setPosition(pos.x, pos.y, pos.z);
 		if(!connection.getCatenaryData().isVertical())
@@ -246,7 +246,7 @@ public class SkylineHookEntity extends Entity
 		}
 		horizontalSpeed *= friction;
 		linePos += horSpeedToUse/getHorizontalLength();
-		Vector3d pos = connection.getPoint(linePos, start).add(Vector3d.func_237491_b_(start.getPosition()));
+		Vector3d pos = connection.getPoint(linePos, start).add(Vector3d.copy(start.getPosition()));
 		setMotion(pos.x-getPosX(), pos.z-getPosZ(), pos.y-getPosY());
 		if(!isValidPosition(pos.x, pos.y, pos.z, player))
 		{
@@ -495,7 +495,7 @@ public class SkylineHookEntity extends Entity
 		if(getMotion().y < 0)
 		{
 			passenger.fallDistance = SkylineHelper.fallDistanceFromSpeed(getMotion().y);
-			passenger.func_230245_c_(false);
+			passenger.setOnGround(false);
 		}
 		passenger.getCapability(SKYHOOK_USER_DATA, Direction.UP).ifPresent(SkyhookUserData::release);
 		if(hand!=null&&passenger instanceof PlayerEntity)

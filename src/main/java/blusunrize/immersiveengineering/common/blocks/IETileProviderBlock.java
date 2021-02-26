@@ -9,9 +9,6 @@
 package blusunrize.immersiveengineering.common.blocks;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.api.wires.Connection;
-import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
-import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile.PlacementLimitation;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
@@ -19,7 +16,6 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
@@ -36,7 +32,6 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.GameRules;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
@@ -44,9 +39,6 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.function.BiFunction;
-import java.util.function.Consumer;
-
-import static blusunrize.immersiveengineering.api.wires.GlobalWireNetwork.getNetwork;
 
 public abstract class IETileProviderBlock extends IEBaseBlock implements IColouredBlock
 {
@@ -68,9 +60,9 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 	protected BlockState getInitDefaultState()
 	{
 		BlockState ret = super.getInitDefaultState();
-		if(ret.func_235901_b_(IEProperties.FACING_ALL))
+		if(ret.hasProperty(IEProperties.FACING_ALL))
 			ret = ret.with(IEProperties.FACING_ALL, getDefaultFacing());
-		else if(ret.func_235901_b_(IEProperties.FACING_HORIZONTAL))
+		else if(ret.hasProperty(IEProperties.FACING_HORIZONTAL))
 			ret = ret.with(IEProperties.FACING_HORIZONTAL, getDefaultFacing());
 		return ret;
 	}
@@ -86,24 +78,6 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 				((IEBaseTileEntity)tile).setOverrideState(state);
 			if(tile instanceof IHasDummyBlocks)
 				((IHasDummyBlocks)tile).breakDummies(pos, state);
-			Consumer<Connection> dropHandler;
-			if(world.getGameRules().getBoolean(GameRules.DO_TILE_DROPS))
-				dropHandler = (c) -> {
-					if(!c.isInternal())
-					{
-						BlockPos end = c.getOtherEnd(c.getEndFor(pos)).getPosition();
-						double dx = pos.getX()+.5+Math.signum(end.getX()-pos.getX());
-						double dy = pos.getY()+.5+Math.signum(end.getY()-pos.getY());
-						double dz = pos.getZ()+.5+Math.signum(end.getZ()-pos.getZ());
-						world.addEntity(new ItemEntity(world, dx, dy, dz, c.type.getWireCoil(c)));
-					}
-				};
-			else
-				dropHandler = c -> {
-				};
-			if(tile instanceof IImmersiveConnectable&&!world.isRemote)
-				for(ConnectionPoint cp : ((IImmersiveConnectable)tile).getConnectionPoints())
-					getNetwork(world).removeAllConnectionsAt(cp, dropHandler);
 		}
 		super.onReplaced(state, world, pos, newState, isMoving);
 	}
@@ -219,6 +193,9 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 	@Override
 	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit)
 	{
+		ActionResultType superResult = super.onBlockActivated(state, world, pos, player, hand, hit);
+		if(superResult.isSuccessOrConsume())
+			return superResult;
 		final Direction side = hit.getFace();
 		final float hitX = (float)hit.getHitVec().x-pos.getX();
 		final float hitY = (float)hit.getHitVec().y-pos.getY();
@@ -227,7 +204,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 		TileEntity tile = world.getTileEntity(pos);
 		if(tile instanceof IDirectionalTile&&Utils.isHammer(heldItem)&&((IDirectionalTile)tile).canHammerRotate(
 				side,
-				hit.getHitVec().subtract(Vector3d.func_237491_b_(pos)),
+				hit.getHitVec().subtract(Vector3d.copy(pos)),
 				player)&&!world.isRemote)
 		{
 			Direction f = ((IDirectionalTile)tile).getFacing();
@@ -236,7 +213,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 			switch(limit)
 			{
 				case SIDE_CLICKED:
-					f = Direction.VALUES[Math.floorMod(f.ordinal()+(player.isSneaking()?-1: 1), Direction.VALUES.length)];
+					f = DirectionUtils.VALUES[Math.floorMod(f.ordinal()+(player.isSneaking()?-1: 1), DirectionUtils.VALUES.length)];
 					break;
 				case PISTON_LIKE:
 					f = player.isSneaking()!=(side.getAxisDirection()==AxisDirection.NEGATIVE)?DirectionUtils.rotateAround(f, side.getAxis()).getOpposite(): DirectionUtils.rotateAround(f, side.getAxis());
@@ -269,15 +246,15 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 				NetworkHooks.openGui((ServerPlayerEntity)player, interaction, ((TileEntity)interaction).getPos());
 			return ActionResultType.SUCCESS;
 		}
-		return super.onBlockActivated(state, world, pos, player, hand, hit);
+		return superResult;
 	}
 
 	@Nullable
 	private Property<Direction> findFacingProperty(BlockState state)
 	{
-		if(state.func_235901_b_(IEProperties.FACING_ALL))
+		if(state.hasProperty(IEProperties.FACING_ALL))
 			return IEProperties.FACING_ALL;
-		else if(state.func_235901_b_(IEProperties.FACING_HORIZONTAL))
+		else if(state.hasProperty(IEProperties.FACING_HORIZONTAL))
 			return IEProperties.FACING_HORIZONTAL;
 		else
 			return null;
@@ -299,7 +276,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 	@Override
 	public BlockState mirror(BlockState state, Mirror mirrorIn)
 	{
-		if(state.func_235901_b_(IEProperties.MIRRORED)&&canRotate()&&mirrorIn==Mirror.LEFT_RIGHT)
+		if(state.hasProperty(IEProperties.MIRRORED)&&canRotate()&&mirrorIn==Mirror.LEFT_RIGHT)
 			return state.with(IEProperties.MIRRORED, !state.get(IEProperties.MIRRORED));
 		else
 		{

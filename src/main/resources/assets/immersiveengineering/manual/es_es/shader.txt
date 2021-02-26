@@ -1,0 +1,8 @@
+Sombreadores
+Azul, no! Amarillo!
+Los sombreadores son objetos que puedes encontrar en el mundo o adquirir comerciando con los aldeanos. No tienen un propósito por sí mismos, pero pueden ser equipados en  <link;revolver;Revólvers>, <link;mining_drill;Taladros de minería>, <link;chemthrower;Lanzadores de productos químicos>, <link;shield;Escudo de chapas gruesas> y <link;railgun;Railguns> (y posiblemente otras cosas que aún tienes que descubrir). Para cambiar los diseños del elemento, basta con ponerlo en un <link;workbench;Banco de Trabajo del Ingeniero> y equipar el sombreador en la ranura correspondiente.
+También puedes aplicarlos a una Vagoneta, a un Pergamino o a un <link;balloon;Globo> haciendo clic con el botón derecho del ratón!
+
+Para obtener una lista completa de todos los sombreadores disponibles, su aspecto, referencias y más detalles, <link;shader_list;Click Aquí><np>
+<&grab_bag>Las bolsas de sombreado son objetos que contienen un sombreado aleatorio. Se pueden encontrar en cajas, se pueden intercambiar con los aldeanos o los jefes los dejan caer. La rareza del sombreador contenido es igual o mejor que la rareza de la bolsa. Cuando usas una bolsa, es más probable que consigas un sombreador que aún no tienes, que uno que ya posees.
+Las bolsas de sombreadores se pueden craftear en dos bolsas de un nivel inferior. Esto reducirá tus posibilidades de conseguir sombreadores más raros pero te proporcionará más intentos.

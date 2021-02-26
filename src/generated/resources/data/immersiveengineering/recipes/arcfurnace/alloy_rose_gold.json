@@ -1,0 +1,33 @@
+{
+  "type": "immersiveengineering:arc_furnace",
+  "results": [
+    {
+      "count": 4,
+      "base_ingredient": {
+        "tag": "forge:ingots/rose_gold"
+      }
+    }
+  ],
+  "additives": [
+    {
+      "tag": "forge:ingots/gold"
+    }
+  ],
+  "conditions": [
+    {
+      "value": {
+        "tag": "forge:ingots/rose_gold",
+        "type": "forge:tag_empty"
+      },
+      "type": "forge:not"
+    }
+  ],
+  "input": {
+    "count": 3,
+    "base_ingredient": {
+      "tag": "forge:ingots/copper"
+    }
+  },
+  "time": 100,
+  "energy": 51200
+}

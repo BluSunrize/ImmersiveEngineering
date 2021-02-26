@@ -89,7 +89,7 @@ public class ItemBatcherScreen extends IEContainerScreen<ItemBatcherContainer>
 	}
 
 	@Override
-	protected void func_230451_b_(MatrixStack transform, int mouseX, int mouseY)
+	protected void drawGuiContainerForegroundLayer(MatrixStack transform, int mouseX, int mouseY)
 	{
 		TileEntity te = container.tile;
 		this.font.drawString(transform, I18n.format("block.immersiveengineering.item_batcher"), 8, 6, 0x190b06);
@@ -128,7 +128,7 @@ public class ItemBatcherScreen extends IEContainerScreen<ItemBatcherContainer>
 	}
 
 	@Override
-	protected void func_230450_a_(MatrixStack transform, float f, int mx, int my)
+	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float f, int mx, int my)
 	{
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/item_batcher.png");
 		// Background

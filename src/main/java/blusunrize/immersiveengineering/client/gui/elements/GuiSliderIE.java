@@ -20,7 +20,7 @@ public class GuiSliderIE extends Slider
 {
 	public GuiSliderIE(int x, int y, int width, String name, float value, IPressable handler)
 	{
-		super(x, y, width, 8, ITextComponent.func_241827_a_(name+" "), ITextComponent.func_241827_a_("%"), 0, 100, 100*value, false, true, handler);
+		super(x, y, width, 8, ITextComponent.getTextComponentOrEmpty(name+" "), ITextComponent.getTextComponentOrEmpty("%"), 0, 100, 100*value, false, true, handler);
 	}
 
 	@Override

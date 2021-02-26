@@ -12,6 +12,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
+import net.minecraft.util.IIntArray;
 import net.minecraft.util.text.ITextComponent;
 
 /**
@@ -27,10 +28,17 @@ public abstract class IEContainerScreen<C extends Container> extends ContainerSc
 	@Override
 	public void render(MatrixStack transform, int mouseX, int mouseY, float partialTicks)
 	{
-		this.field_238745_s_ = this.ySize-94;
+		this.playerInventoryTitleY = this.ySize-94;
 		this.renderBackground(transform);
 		super.render(transform, mouseX, mouseY, partialTicks);
-		this.func_230459_a_(transform, mouseX, mouseY);
+		this.renderHoveredTooltip(transform, mouseX, mouseY);
+	}
+
+	protected void clearIntArray(IIntArray ints)
+	{
+		// Clear GUI ints, the sync code assumes that 0 is the initial state
+		for(int i = 0; i < ints.size(); ++i)
+			ints.set(i, 0);
 	}
 
 	public void fullInit()

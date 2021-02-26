@@ -33,6 +33,7 @@ import net.minecraftforge.common.util.JsonUtils;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.LogicalSidedProvider;
+import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -70,7 +71,7 @@ public class ApiUtils
 	@Deprecated
 	public static ItemStack copyStackWithAmount(ItemStack stack, int amount)
 	{
-		return ItemUtils.copyStackWithAmount(stack, amount);
+		return ItemHandlerHelper.copyStackWithSize(stack, amount);
 	}
 
 	@Deprecated
@@ -102,6 +103,7 @@ public class ApiUtils
 	{
 		return ComparableItemStack.create(stack, copy, useNbt);
 	}
+
 
 	public static JsonElement jsonSerializeFluidStack(FluidStack fluidStack)
 	{
@@ -199,7 +201,7 @@ public class ApiUtils
 		Vector3d toAdd = (new Vector3d(xRatio, 0.0D, zRatio)).normalize().scale(strength);
 		entity.setMotion(
 				motionOld.x/2.0D-toAdd.x,
-				entity.func_233570_aj_()?Math.min(0.4D, motionOld.y/2.0D+strength): motionOld.y,
+				entity.isOnGround()?Math.min(0.4D, motionOld.y/2.0D+strength): motionOld.y,
 				motionOld.z/2.0D-toAdd.z);
 	}
 

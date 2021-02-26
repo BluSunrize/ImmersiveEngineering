@@ -17,11 +17,11 @@ import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderLayer;
+import blusunrize.immersiveengineering.api.utils.client.CombinedModelData;
+import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.client.models.connection.RenderCacheKey;
 import blusunrize.immersiveengineering.client.models.obj.OBJHelper.MeshWrapper;
-import blusunrize.immersiveengineering.client.utils.CombinedModelData;
-import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedHasObjProperty;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IModelDataBlock;
 import com.google.common.cache.Cache;
@@ -66,6 +66,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @SuppressWarnings("deprecation")
 public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
@@ -107,6 +108,13 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 		this.state = state;
 		this.isDynamic = dynamic;
 		this.texReplacements = texReplacements;
+		// Default tint index should be -1 (see VertexLighterFlat), OBJ materials set it to 0 by default
+		OBJHelper.getGroups(baseModel).values().stream()
+				.flatMap(g -> Stream.concat(Stream.of(g), OBJHelper.getParts(g).values().stream()))
+				.flatMap(o -> OBJHelper.getMeshes(o).stream())
+				.map(MeshWrapper::getMaterial)
+				.filter(m -> m.diffuseTintIndex==0)
+				.forEach(m -> m.diffuseTintIndex = -1);
 	}
 
 	@Override
@@ -165,7 +173,7 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 	}
 
 	@Override
-	public boolean func_230044_c_()
+	public boolean isSideLit()
 	{
 		return true;
 	}
@@ -193,7 +201,7 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 	ItemOverrideList overrideList = new ItemOverrideList()
 	{
 		@Override
-		public IBakedModel func_239290_a_(@Nonnull IBakedModel originalModel, @Nonnull ItemStack stack,
+		public IBakedModel getOverrideModel(@Nonnull IBakedModel originalModel, @Nonnull ItemStack stack,
 												 @Nullable ClientWorld world, @Nullable LivingEntity entity)
 		{
 			tempEntityStatic = entity;
@@ -321,7 +329,7 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 			}
 		}
 		customData.add(tileData);
-		return new CombinedModelData(customData.toArray(new IModelData[0]));
+		return CombinedModelData.combine(customData.toArray(new IModelData[0]));
 	}
 
 	@Override

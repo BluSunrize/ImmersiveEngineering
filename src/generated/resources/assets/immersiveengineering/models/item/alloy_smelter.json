@@ -1,5 +1,5 @@
 {
-  "parent": "immersiveengineering:block/alloy_smelter_on",
+  "parent": "immersiveengineering:block/alloy_smelter_on_split",
   "transform": {
     "thirdperson_righthand": {
       "translation": [

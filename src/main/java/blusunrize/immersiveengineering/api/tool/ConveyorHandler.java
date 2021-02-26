@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBeltTileEntit
 import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
 import blusunrize.immersiveengineering.common.util.SafeChunkUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.mixin.accessors.ItemEntityAccess;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
@@ -455,7 +456,7 @@ public class ConveyorHandler
 				}
 				else
 					vY = Math.signum(maxCenterHeightUnderEntity-centerRelative.y)*0.07*vBase;
-				entity.func_230245_c_(false);
+				entity.setOnGround(false);
 			}
 
 			return new Vector3d(vX, vY, vZ);
@@ -526,8 +527,9 @@ public class ConveyorHandler
 					ItemEntity item = (ItemEntity)entity;
 					if(!contact)
 					{
-						if(item.age > item.lifespan-60*20&&!outputBlocked)
-							item.age = item.lifespan-60*20;
+						ItemEntityAccess access = (ItemEntityAccess)item;
+						if(access.getAgeNonsided() > item.lifespan-60*20&&!outputBlocked)
+							access.setAge(item.lifespan-60*20);
 					}
 					else
 						handleInsertion(item, conveyorDirection, distX, distZ);

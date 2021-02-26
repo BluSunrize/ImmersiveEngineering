@@ -12,9 +12,9 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
+import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.render.tile.DynamicModel;
-import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.entities.SawbladeEntity;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
@@ -52,7 +52,7 @@ public class SawbladeRenderer extends EntityRenderer<SawbladeEntity>
 		IVertexBuilder builder = bufferIn.getBuffer(RenderType.getTranslucent());
 
 		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
-		BlockPos blockPos = entity.func_233580_cy_();
+		BlockPos blockPos = entity.getPosition();
 		BlockState state = entity.getEntityWorld().getBlockState(blockPos);
 		IBakedModel model = this.MODEL.get(null);
 		IEObjState objState = new IEObjState(VisibilityList.show("blade"));

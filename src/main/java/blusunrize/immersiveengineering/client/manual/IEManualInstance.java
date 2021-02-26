@@ -11,15 +11,18 @@ package blusunrize.immersiveengineering.client.manual;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ManualHelper;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.config.IEClientConfig;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.network.MessageShaderManual;
 import blusunrize.immersiveengineering.common.network.MessageShaderManual.MessageType;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.wires.IEWireTypes.IEWireType;
 import blusunrize.lib.manual.ManualEntry;
 import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.Tree;
 import com.electronwill.nightconfig.core.Config;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.KeyBinding;
@@ -31,6 +34,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.regex.Matcher;
 
 public class IEManualInstance extends ManualInstance
 {
@@ -42,8 +46,21 @@ public class IEManualInstance extends ManualInstance
 		super(new ResourceLocation(ImmersiveEngineering.MODID, "textures/gui/manual.png"),
 				120, 148, new ResourceLocation(ImmersiveEngineering.MODID, "manual"));
 		configGetters.add(s -> {
+			//TODO change in manual?
+			if("wires.wireTransferRate".equals(s))
+				return ImmutableList.of(
+						IEServerConfig.WIRES.energyWireConfigs.get(IEWireType.COPPER).transferRate.get(),
+						IEServerConfig.WIRES.energyWireConfigs.get(IEWireType.ELECTRUM).transferRate.get(),
+						IEServerConfig.WIRES.energyWireConfigs.get(IEWireType.STEEL).transferRate.get()
+				);
+			else if("machines.wireConnectorInput".equals(s))
+				return ImmutableList.of(
+						IEServerConfig.WIRES.energyWireConfigs.get(IEWireType.COPPER).connectorRate.get(),
+						IEServerConfig.WIRES.energyWireConfigs.get(IEWireType.ELECTRUM).connectorRate.get(),
+						IEServerConfig.WIRES.energyWireConfigs.get(IEWireType.STEEL).connectorRate.get()
+				);
 			//TODO forge PR or wait for Lex to fix this
-			Config actualCfg = IEConfig.getRawConfig();
+			Config actualCfg = IEServerConfig.getRawConfig();
 			if(!actualCfg.contains(s))
 				return null;
 			else
@@ -115,7 +132,7 @@ public class IEManualInstance extends ManualInstance
 						result = Utils.toCamelCase(result);
 					break;
 				}
-			s = s.replaceFirst(rep, result);
+			s = s.replaceFirst(rep, Matcher.quoteReplacement(result));
 		}
 
 		return s;
@@ -233,7 +250,7 @@ public class IEManualInstance extends ManualInstance
 		ResourceLocation nodeLoc = node.isLeaf()?node.getLeafData().getLocation(): node.getNodeData();
 		if(ImmersiveEngineering.MODID.equals(nodeLoc.getNamespace())&&
 				nodeLoc.getPath().startsWith(ManualHelper.CAT_UPDATE))
-			return IEConfig.GENERAL.showUpdateNews.get();
+			return IEClientConfig.showUpdateNews.get();
 		return !nodeLoc.equals(SHADER_ENTRY)&&!hiddenEntries.contains(nodeLoc);
 	}
 
@@ -290,13 +307,13 @@ public class IEManualInstance extends ManualInstance
 	@Override
 	public boolean allowGuiRescale()
 	{
-		return IEConfig.GENERAL.adjustManualScale.get();
+		return !IEClientConfig.adjustManualScale.get();
 	}
 
 	@Override
 	public boolean improveReadability()
 	{
-		return IEConfig.GENERAL.badEyesight.get();
+		return IEClientConfig.badEyesight.get();
 	}
 
 	public String formatConfigEntry(String rep, String splitKey)

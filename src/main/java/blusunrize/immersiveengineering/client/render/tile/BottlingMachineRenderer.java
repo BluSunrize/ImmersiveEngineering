@@ -11,10 +11,10 @@ package blusunrize.immersiveengineering.client.render.tile;
 import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
+import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.utils.BatchingRenderTypeBuffer;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
-import blusunrize.immersiveengineering.client.utils.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.BottlingMachineTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.BottlingMachineTileEntity.BottlingProcess;
@@ -120,7 +120,7 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 		matrixStack.push();
 
 		matrixStack.translate(0, lift, 0);
-		renderModelPart(matrixStack, solidBuilder, facing, combinedLightIn, combinedOverlayIn, "lift");
+		renderModelPart(matrixStack, solidBuilder, state, facing, combinedLightIn, combinedOverlayIn, "lift");
 		matrixStack.translate(0, -lift, 0);
 
 		matrixStack.pop();
@@ -193,13 +193,13 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 		matrixStack.pop();
 	}
 
-	public static void renderModelPart(MatrixStack matrixStack, IVertexBuilder builder, Direction facing,
+	public static void renderModelPart(MatrixStack matrixStack, IVertexBuilder builder, BlockState state, Direction facing,
 									   int combinedLightIn, int combinedOverlayIn, String... parts)
 	{
 		IModelData data = new SinglePropertyModelData<>(new IEObjState(VisibilityList.show(parts)), Model.IE_OBJ_STATE);
 		matrixStack.push();
 		matrixStack.translate(-.5, -.5, -.5);
-		List<BakedQuad> quads = DYNAMIC.getNullQuads(facing, Multiblocks.bottlingMachine.getDefaultState(), data);
+		List<BakedQuad> quads = DYNAMIC.getNullQuads(facing, state, data);
 		ClientUtils.renderModelTESRFast(quads, builder, matrixStack, combinedLightIn, combinedOverlayIn);
 		matrixStack.pop();
 	}

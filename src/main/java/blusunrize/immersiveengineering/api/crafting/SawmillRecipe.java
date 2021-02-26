@@ -42,8 +42,7 @@ public class SawmillRecipe extends MultiblockRecipe
 		this.output = output;
 		this.stripped = stripped;
 		this.input = input;
-		this.totalProcessEnergy = energy;
-		this.totalProcessTime = 80;
+		setTimeAndEnergy(80, energy);
 
 		setInputList(Lists.newArrayList(this.input));
 		this.outputList = ListUtils.fromItem(this.output);

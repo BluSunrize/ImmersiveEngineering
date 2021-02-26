@@ -34,6 +34,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
+import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -52,13 +53,12 @@ public class RecipeReloadListener implements IResourceManagerReloadListener
 	}
 
 	@Override
-	public void onResourceManagerReload(IResourceManager resourceManager)
+	public void onResourceManagerReload(@Nonnull IResourceManager resourceManager)
 	{
 		if(dataPackRegistries!=null)
 		{
-			RecipeManager recipeManager = dataPackRegistries.func_240967_e_();
+			RecipeManager recipeManager = dataPackRegistries.getRecipeManager();
 			startArcRecyclingRecipeGen(recipeManager);
-			buildRecipeLists(recipeManager);
 			MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
 			if(server!=null)
 			{
@@ -78,11 +78,7 @@ public class RecipeReloadListener implements IResourceManagerReloadListener
 	public void onTagsUpdated(TagsUpdatedEvent event)
 	{
 		if(clientRecipeManager!=null)
-		{
-			TagUtils.ITEM_TAG_COLLECTION = ItemTags.getCollection();
-			TagUtils.BLOCK_TAG_COLLECTION = BlockTags.getCollection();
-			startArcRecyclingRecipeGen(clientRecipeManager);
-		}
+			TagUtils.setTagCollectionGetters(ItemTags::getCollection, BlockTags::getCollection);
 	}
 
 	@SubscribeEvent(priority = EventPriority.HIGH)
@@ -93,7 +89,7 @@ public class RecipeReloadListener implements IResourceManagerReloadListener
 			buildRecipeLists(clientRecipeManager);
 	}
 
-	static void buildRecipeLists(RecipeManager recipeManager)
+	public static void buildRecipeLists(RecipeManager recipeManager)
 	{
 		Collection<IRecipe<?>> recipes = recipeManager.getRecipes();
 		// Empty recipe list shouldn't happen, but has been known to be caused by other mods
@@ -134,7 +130,7 @@ public class RecipeReloadListener implements IResourceManagerReloadListener
 	private void startArcRecyclingRecipeGen(RecipeManager recipeManager)
 	{
 		Collection<IRecipe<?>> recipes = recipeManager.getRecipes();
-		new ArcRecyclingThreadHandler(recipes).start();
+		new ArcRecyclingCalculator(recipes).run();
 	}
 
 	static <R extends IRecipe<?>> Map<ResourceLocation, R> filterRecipes(Collection<IRecipe<?>> recipes, Class<R> recipeClass, IRecipeType<R> recipeType)

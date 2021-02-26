@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.util;
 
-import blusunrize.immersiveengineering.api.DirectionalBlockPos;
+import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -25,20 +25,33 @@ import java.util.function.Supplier;
 
 public abstract class CapabilityReference<T>
 {
-	public static <T> CapabilityReference<T> forTileEntity(TileEntity local, Supplier<DirectionalBlockPos> pos,
-														   Capability<T> cap)
+	public static <T> CapabilityReference<T> forTileEntityAt(
+			TileEntity local, Supplier<DirectionalBlockPos> pos, Capability<T> cap
+	)
 	{
 		return new TECapReference<>(local::getWorld, pos, cap);
 	}
 
+	@Deprecated
+	// Only exists since some addons (IP) use CapRef despite it not being API…
+	public static <T> CapabilityReference<T> forTileEntity(
+			TileEntity local, Supplier<blusunrize.immersiveengineering.api.DirectionalBlockPos> pos, Capability<T> cap
+	)
+	{
+		return forTileEntityAt(local, () -> {
+			blusunrize.immersiveengineering.api.DirectionalBlockPos posOld = pos.get();
+			return new DirectionalBlockPos(posOld.toImmutable(), posOld.direction);
+		}, cap);
+	}
+
 	public static <T> CapabilityReference<T> forRelative(TileEntity local, Capability<T> cap, Vector3i offset, Direction side)
 	{
-		return forTileEntity(local, () -> new DirectionalBlockPos(local.getPos().add(offset), side.getOpposite()), cap);
+		return forTileEntityAt(local, () -> new DirectionalBlockPos(local.getPos().add(offset), side.getOpposite()), cap);
 	}
 
 	public static <T> CapabilityReference<T> forNeighbor(TileEntity local, Capability<T> cap, NonNullSupplier<Direction> side)
 	{
-		return forTileEntity(
+		return forTileEntityAt(
 				local,
 				() -> {
 					Direction d = side.get();
@@ -57,7 +70,7 @@ public abstract class CapabilityReference<T>
 
 	protected CapabilityReference(Capability<T> cap)
 	{
-		this.cap = cap;
+		this.cap = Objects.requireNonNull(cap);
 	}
 
 	@Nullable
@@ -130,9 +143,9 @@ public abstract class CapabilityReference<T>
 							currentCap.orElseThrow(RuntimeException::new),
 							cap.getName());
 				}
-				lastTE = Utils.getExistingTileEntity(currWorld, currPos);
+				lastTE = Utils.getExistingTileEntity(currWorld, currPos.getPosition());
 				if(lastTE!=null)
-					currentCap = lastTE.getCapability(cap, currPos.direction);
+					currentCap = lastTE.getCapability(cap, currPos.getSide());
 				else
 					currentCap = LazyOptional.empty();
 				lastWorld = currWorld;

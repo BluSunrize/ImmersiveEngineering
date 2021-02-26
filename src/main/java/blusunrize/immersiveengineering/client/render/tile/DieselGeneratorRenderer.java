@@ -50,7 +50,7 @@ public class DieselGeneratorRenderer extends TileEntityRenderer<DieselGeneratorT
 		matrixStack.translate(0, .6875, 0);
 		matrixStack.translate(0.5, 0, 0.5);
 
-		matrixStack.rotate(new Quaternion(new Vector3f(Vector3d.func_237491_b_(te.getFacing().getDirectionVec())),
+		matrixStack.rotate(new Quaternion(new Vector3f(Vector3d.copy(te.getFacing().getDirectionVec())),
 				te.animation_fanRotation+(te.animation_fanRotationStep*partialTicks), true));
 		matrixStack.translate(-0.5, 0, -0.5);
 

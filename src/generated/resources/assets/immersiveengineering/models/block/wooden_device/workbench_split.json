@@ -1,0 +1,21 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "immersiveengineering:block/multiblocks/autoworkbench_blueprint"
+  },
+  "loader": "immersiveengineering:basic_split",
+  "dynamic": true,
+  "base_model": "immersiveengineering:block/wooden_device/workbench",
+  "split_parts": [
+    [
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      0
+    ]
+  ]
+}

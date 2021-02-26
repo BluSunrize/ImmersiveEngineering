@@ -1,0 +1,4 @@
+Excavadora
+Mejor que los enanos
+<&excavator>La Excavadora es una de las cimas de la ingeniería moderna. Es capaz de excavar <link;minerals;Minerales> de vetas inaccesibles por la minería normal. A cambio, sin embargo, la excavadora es una estructura compleja que requiere <config;i;machines.excavator.consumption> Flux/t para poder operar.
+<&wheel><&full>La estructura se compone de dos piezas: El motor que se muestra en la primera página y la rueda de cangilones que se muestra en la segunda, que encaja en los "tirantes" del motor como se muestra en la página anterior. La entrada de energía para el motor está en su lado, la parte posterior cuenta con un panel de control de redstone y la salida de artículos.<br>A medida que la excavadora extrae minerales, el rendimiento de la veta disminuye lentamente, pero una veta de minerales puede proporcionar hasta <config;i;machines.excavator.yield> bloques de mineral.

@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirectio
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.ModelConveyor;
+import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.block.Block;
@@ -127,13 +128,13 @@ public class VerticalCoveredConveyor extends VerticalConveyor
 			TextureAtlasSprite sprite = model.getParticleTexture(EmptyModelData.INSTANCE);
 			HashMap<Direction, TextureAtlasSprite> sprites = new HashMap<>();
 
-			for(Direction f : Direction.VALUES)
+			for(Direction f : DirectionUtils.VALUES)
 				for(BakedQuad q : model.getQuads(state, f, Utils.RAND))
-					if(q!=null&&q.func_187508_a()!=null)
-						sprites.put(f, q.func_187508_a());
+					if(q!=null&&q.getSprite()!=null)
+						sprites.put(f, q.getSprite());
 			for(BakedQuad q : model.getQuads(state, null, Utils.RAND))
-				if(q!=null&&q.func_187508_a()!=null&&q.getFace()!=null)
-					sprites.put(q.getFace(), q.func_187508_a());
+				if(q!=null&&q.getSprite()!=null&&q.getFace()!=null)
+					sprites.put(q.getFace(), q.getSprite());
 
 			Function<Direction, TextureAtlasSprite> getSprite = f -> sprites.getOrDefault(f, sprite);
 

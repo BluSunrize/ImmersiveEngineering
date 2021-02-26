@@ -47,8 +47,8 @@ public class MBOriginalBlockLootEntry extends StandaloneLootEntry
 				MultiblockPartTileEntity<?> multiblockTile = (MultiblockPartTileEntity<?>)te;
 				Utils.getDrops(multiblockTile.getOriginalBlock(),
 						new LootContext.Builder(context.getWorld())
-								.withParameter(LootParameters.TOOL, context.get(LootParameters.TOOL))
-								.withParameter(LootParameters.POSITION, context.get(LootParameters.POSITION))
+								.withNullableParameter(LootParameters.TOOL, context.get(LootParameters.TOOL))
+								.withNullableParameter(LootParameters.field_237457_g_, context.get(LootParameters.field_237457_g_))
 				).forEach(output);
 			}
 		}
@@ -69,7 +69,7 @@ public class MBOriginalBlockLootEntry extends StandaloneLootEntry
 	{
 		@Nonnull
 		@Override
-		protected MBOriginalBlockLootEntry func_212829_b_(
+		protected MBOriginalBlockLootEntry deserialize(
 				@Nonnull JsonObject json,
 				@Nonnull JsonDeserializationContext context,
 				int weight,

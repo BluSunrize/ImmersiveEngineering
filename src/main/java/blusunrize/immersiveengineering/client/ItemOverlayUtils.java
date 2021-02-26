@@ -1,9 +1,10 @@
 package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.client.gui.RevolverScreen;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
-import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -24,7 +25,7 @@ import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
 import java.util.function.BiConsumer;
 
-import static blusunrize.immersiveengineering.common.data.IEDataGenerator.rl;
+import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
 
 public class ItemOverlayUtils
 {
@@ -40,7 +41,7 @@ public class ItemOverlayUtils
 		if(bullets!=null)
 		{
 			int bulletAmount = ((IBulletContainer)equipped.getItem()).getBulletCount(equipped);
-			HandSide side = hand==Hand.MAIN_HAND?player.getPrimaryHand(): player.getPrimaryHand().opposite();
+			HandSide side = ItemUtils.getLivingHand(player, hand);
 			boolean right = side==HandSide.RIGHT;
 			float dx = right?scaledWidth-32-48: 48;
 			float dy = scaledHeight-64;
@@ -157,7 +158,7 @@ public class ItemOverlayUtils
 				if(renderFluidUse&&player.isHandActive()&&player.getActiveHand()==hand)
 				{
 					int use = player.getItemInUseMaxCount();
-					amount -= use*IEConfig.TOOLS.chemthrower_consumption.get();
+					amount -= use*IEServerConfig.TOOLS.chemthrower_consumption.get();
 				}
 				float cap = (float)capacity;
 				float angle = 83-(166*amount/cap);
@@ -190,7 +191,7 @@ public class ItemOverlayUtils
 	{
 		renderFluidTankOverlay(buffer, transform, scaledWidth, scaledHeight, player, hand, equipped, false, (builder, handler) -> {
 			ClientUtils.drawTexturedRect(builder, transform, -54, -73, 66, 72, 1, 1, 1, 1, 108/256f, 174/256f, 4/256f, 76/256f);
-			ItemStack blade = ((BuzzsawItem)equipped.getItem()).getSawblade(equipped);
+			ItemStack blade = ((BuzzsawItem)equipped.getItem()).getHead(equipped);
 			if(!blade.isEmpty())
 				ClientUtils.renderItemWithOverlayIntoGUI(buffer, transform, blade, -51, -45);
 		});

@@ -1,34 +1,10 @@
 {
+  "parent": "minecraft:block/block",
   "textures": {
     "particle": "immersiveengineering:block/connector/transformer_hv"
   },
-  "loader": "immersiveengineering:connector",
-  "base_model": {
-    "base_loader": "forge:obj",
-    "model": "immersiveengineering:models/block/connector/transformer_hv_right.obj",
-    "flip-v": true,
-    "detectCullableFaces": false,
-    "loader": "immersiveengineering:basic_split",
-    "split_parts": [
-      [
-        0,
-        0,
-        0
-      ],
-      [
-        0,
-        1,
-        0
-      ],
-      [
-        0,
-        2,
-        0
-      ]
-    ],
-    "dynamic": false
-  },
-  "layers": [
-    "solid"
-  ]
+  "loader": "forge:obj",
+  "model": "immersiveengineering:models/block/connector/transformer_hv_right.obj",
+  "detectCullableFaces": false,
+  "flip-v": true
 }

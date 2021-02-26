@@ -13,7 +13,8 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.wires.localhandlers.ILocalHandlerProvider;
 import blusunrize.immersiveengineering.api.wires.localhandlers.IWorldTickable;
 import blusunrize.immersiveengineering.api.wires.proxy.IICProxyProvider;
-import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.config.IECommonConfig;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultiset;
@@ -74,7 +75,7 @@ public class GlobalWireNetwork implements IWorldTickable
 			return lastClientNet;
 		LazyOptional<GlobalWireNetwork> netOptional = w.getCapability(NetHandlerCapability.NET_CAPABILITY);
 		if(!netOptional.isPresent())
-			throw new RuntimeException("No net handler found for dimension "+w.func_234922_V_().func_240901_a_()+", remote: "+w.isRemote);
+			throw new RuntimeException("No net handler found for dimension "+w.getDimensionKey().getLocation()+", remote: "+w.isRemote);
 		GlobalWireNetwork ret = netOptional.orElseThrow(RuntimeException::new);
 		if(!w.isRemote)
 		{
@@ -380,6 +381,11 @@ public class GlobalWireNetwork implements IWorldTickable
 			}
 	}
 
+	public void onConnectorUnload(IImmersiveConnectable iic)
+	{
+		onConnectorUnload(iic.getPosition(), iic);
+	}
+
 	public void onConnectorUnload(BlockPos pos, IImmersiveConnectable iic)
 	{
 		processQueuedLoads();
@@ -416,7 +422,7 @@ public class GlobalWireNetwork implements IWorldTickable
 		for(LocalWireNetwork net : localNets.values())
 			if(ticked.add(net))
 				net.update(world);
-		if(IEConfig.WIRES.sanitizeConnections.get())
+		if(IEServerConfig.WIRES.sanitizeConnections.get())
 			NetworkSanitizer.tick(world, this);
 	}
 
@@ -424,7 +430,7 @@ public class GlobalWireNetwork implements IWorldTickable
 
 	private void validate(World world)
 	{
-		if(world.isRemote||!IEConfig.WIRES.validateNet.get())
+		if(world.isRemote||!IECommonConfig.validateNet.get())
 			return;
 		else
 			WireLogger.logger.info("Validating wire network...");

@@ -63,7 +63,7 @@ public class MineralMixBuilder extends IEFinishedRecipe<MineralMixBuilder>
 
 	public MineralMixBuilder addDimension(RegistryKey<DimensionType> dimension)
 	{
-		return addDimension(dimension.func_240901_a_());
+		return addDimension(dimension.getLocation());
 	}
 
 	public MineralMixBuilder addDimension(ResourceLocation dimension)

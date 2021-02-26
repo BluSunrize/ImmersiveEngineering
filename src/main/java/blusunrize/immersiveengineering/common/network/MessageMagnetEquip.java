@@ -57,11 +57,14 @@ public class MessageMagnetEquip implements IMessage
 			}
 			else
 			{
-				int prevSlot = ((IEShieldItem)held.getItem()).getUpgrades(held).getInt("prevSlot");
-				ItemStack s = player.inventory.mainInventory.get(prevSlot);
-				player.inventory.mainInventory.set(prevSlot, held);
-				player.setHeldItem(Hand.OFF_HAND, s);
-				((IEShieldItem)held.getItem()).getUpgrades(held).remove("prevSlot");
+				if(held.getItem() instanceof IEShieldItem&&((IEShieldItem)held.getItem()).getUpgrades(held).getBoolean("magnet"))
+				{
+					int prevSlot = ((IEShieldItem)held.getItem()).getUpgrades(held).getInt("prevSlot");
+					ItemStack s = player.inventory.mainInventory.get(prevSlot);
+					player.inventory.mainInventory.set(prevSlot, held);
+					player.setHeldItem(Hand.OFF_HAND, s);
+					((IEShieldItem)held.getItem()).getUpgrades(held).remove("prevSlot");
+				}
 			}
 		});
 	}

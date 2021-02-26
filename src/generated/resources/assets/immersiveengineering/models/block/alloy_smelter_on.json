@@ -1,58 +1,14 @@
 {
   "parent": "minecraft:block/block",
   "textures": {
-    "particle": "immersiveengineering:block/multiblocks/alloy_smelter_side",
+    "particle": "immersiveengineering:block/multiblocks/alloy_smelter_on",
     "side": "immersiveengineering:block/multiblocks/alloy_smelter_side",
     "top": "immersiveengineering:block/multiblocks/alloy_smelter_top",
     "bottom": "immersiveengineering:block/multiblocks/alloy_smelter_bottom",
     "front": "immersiveengineering:block/multiblocks/alloy_smelter_on"
   },
-  "loader": "immersiveengineering:basic_split",
-  "base_loader": "forge:obj",
-  "dynamic": false,
-  "detectCullableFaces": false,
+  "loader": "forge:obj",
   "model": "immersiveengineering:models/block/stone_multiblocks/cube_two.obj",
-  "flip-v": true,
-  "split_parts": [
-    [
-      0,
-      0,
-      -1
-    ],
-    [
-      1,
-      0,
-      -1
-    ],
-    [
-      0,
-      0,
-      0
-    ],
-    [
-      1,
-      0,
-      0
-    ],
-    [
-      0,
-      1,
-      -1
-    ],
-    [
-      1,
-      1,
-      -1
-    ],
-    [
-      0,
-      1,
-      0
-    ],
-    [
-      1,
-      1,
-      0
-    ]
-  ]
+  "detectCullableFaces": false,
+  "flip-v": true
 }

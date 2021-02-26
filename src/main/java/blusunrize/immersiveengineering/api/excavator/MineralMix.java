@@ -20,6 +20,7 @@ import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.DimensionType;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.RegistryObject;
 
 import java.util.HashMap;
@@ -37,11 +38,11 @@ public class MineralMix extends IESerializableRecipe
 	public final StackWithChance[] outputs;
 	public final int weight;
 	public final float failChance;
-	public final ImmutableSet<RegistryKey<DimensionType>> dimensions;
+	public final ImmutableSet<RegistryKey<World>> dimensions;
 	public final Block background;
 
 	public MineralMix(ResourceLocation id, StackWithChance[] outputs, int weight, float failChance,
-					  List<RegistryKey<DimensionType>> dimensions, Block background)
+					  List<RegistryKey<World>> dimensions, Block background)
 	{
 		super(ItemStack.EMPTY, TYPE, id);
 		this.weight = weight;
@@ -87,7 +88,7 @@ public class MineralMix extends IESerializableRecipe
 		return ItemStack.EMPTY;
 	}
 
-	public boolean validDimension(RegistryKey<DimensionType> dim)
+	public boolean validDimension(RegistryKey<World> dim)
 	{
 		if(dimensions!=null&&!dimensions.isEmpty())
 			return dimensions.contains(dim);

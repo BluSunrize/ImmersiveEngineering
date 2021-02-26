@@ -9,12 +9,13 @@
 package blusunrize.immersiveengineering.common.world;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.excavator.MineralVein;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
-import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
@@ -29,8 +30,12 @@ import blusunrize.immersiveengineering.common.items.RevolverItem;
 import blusunrize.immersiveengineering.common.items.ToolUpgradeItem.ToolUpgrade;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.mixin.accessors.HeroGiftsTaskAccess;
+import blusunrize.immersiveengineering.mixin.accessors.PoITypeAccess;
+import blusunrize.immersiveengineering.mixin.accessors.SingleJigsawAccess;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
@@ -39,7 +44,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.ai.brain.task.GiveHeroGiftsTask;
 import net.minecraft.entity.merchant.villager.AbstractVillagerEntity;
 import net.minecraft.entity.merchant.villager.VillagerProfession;
 import net.minecraft.entity.merchant.villager.VillagerTrades.ITrade;
@@ -51,15 +55,17 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.village.PointOfInterestType;
 import net.minecraft.world.World;
-import net.minecraft.world.gen.feature.jigsaw.JigsawManager;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPattern;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPattern.PlacementBehaviour;
+import net.minecraft.world.gen.feature.jigsaw.JigsawPatternRegistry;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
-import net.minecraft.world.gen.feature.jigsaw.SingleJigsawPiece;
 import net.minecraft.world.gen.feature.structure.*;
+import net.minecraft.world.gen.feature.template.ProcessorLists;
 import net.minecraft.world.storage.MapData;
 import net.minecraft.world.storage.MapDecoration.Type;
 import net.minecraftforge.event.village.VillagerTradesEvent;
@@ -67,6 +73,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
+import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -76,7 +83,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
-import static blusunrize.immersiveengineering.common.data.IEDataGenerator.rl;
+import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
 import static blusunrize.immersiveengineering.common.items.IEItems.Misc.toolUpgrades;
 import static blusunrize.immersiveengineering.common.items.IEItems.Misc.wireCoils;
 
@@ -102,42 +109,57 @@ public class Villages
 					rl("village/houses/"+biome+"_engineer"), 4);
 
 		// Register workstations
-		JigsawManager.REGISTRY.register(new JigsawPattern(
+		JigsawPatternRegistry.func_244094_a(new JigsawPattern(
 				new ResourceLocation(MODID, "village/workstations"),
 				new ResourceLocation("empty"),
 				ImmutableList.of(
-						new Pair<>(new SingleJigsawPiece(MODID+":village/workstations/electrician"), 1),
-						new Pair<>(new SingleJigsawPiece(MODID+":village/workstations/engineer"), 1),
-						new Pair<>(new SingleJigsawPiece(MODID+":village/workstations/gunsmith"), 1),
-						new Pair<>(new SingleJigsawPiece(MODID+":village/workstations/machinist"), 1),
-						new Pair<>(new SingleJigsawPiece(MODID+":village/workstations/outfitter"), 1)
-				),
-				JigsawPattern.PlacementBehaviour.RIGID
+						new Pair<>(createWorkstation("village/workstations/electrician"), 1),
+						new Pair<>(createWorkstation("village/workstations/engineer"), 1),
+						new Pair<>(createWorkstation("village/workstations/gunsmith"), 1),
+						new Pair<>(createWorkstation("village/workstations/machinist"), 1),
+						new Pair<>(createWorkstation("village/workstations/outfitter"), 1)
+				)
 		));
 
 		// Register gifts
-		GiveHeroGiftsTask.GIFTS.put(Registers.PROF_ENGINEER.get(), rl("gameplay/hero_of_the_village/engineer"));
-		GiveHeroGiftsTask.GIFTS.put(Registers.PROF_MACHINIST.get(), rl("gameplay/hero_of_the_village/machinist"));
-		GiveHeroGiftsTask.GIFTS.put(Registers.PROF_ELECTRICIAN.get(), rl("gameplay/hero_of_the_village/electrician"));
-		GiveHeroGiftsTask.GIFTS.put(Registers.PROF_OUTFITTER.get(), rl("gameplay/hero_of_the_village/outfitter"));
-		GiveHeroGiftsTask.GIFTS.put(Registers.PROF_GUNSMITH.get(), rl("gameplay/hero_of_the_village/gunsmith"));
+		HeroGiftsTaskAccess.getGifts().put(Registers.PROF_ENGINEER.get(), rl("gameplay/hero_of_the_village/engineer"));
+		HeroGiftsTaskAccess.getGifts().put(Registers.PROF_MACHINIST.get(), rl("gameplay/hero_of_the_village/machinist"));
+		HeroGiftsTaskAccess.getGifts().put(Registers.PROF_ELECTRICIAN.get(), rl("gameplay/hero_of_the_village/electrician"));
+		HeroGiftsTaskAccess.getGifts().put(Registers.PROF_OUTFITTER.get(), rl("gameplay/hero_of_the_village/outfitter"));
+		HeroGiftsTaskAccess.getGifts().put(Registers.PROF_GUNSMITH.get(), rl("gameplay/hero_of_the_village/gunsmith"));
+	}
+
+	private static JigsawPiece createWorkstation(String name)
+	{
+		return SingleJigsawAccess.construct(
+				Either.left(rl(name)),
+				() -> ProcessorLists.field_244101_a,
+				PlacementBehaviour.RIGID
+		);
 	}
 
 	private static void addToPool(ResourceLocation pool, ResourceLocation toAdd, int weight)
 	{
-		JigsawPattern old = JigsawManager.REGISTRY.get(pool);
+		JigsawPattern old = WorldGenRegistries.JIGSAW_POOL.getOrDefault(pool);
 
 		// Fixed seed to prevent inconsistencies between different worlds
-		List<JigsawPiece> shuffled = old.getShuffledPieces(new Random(0));
+		List<JigsawPiece> shuffled;
+		if(old!=null)
+			shuffled = old.getShuffledPieces(new Random(0));
+		else
+			shuffled = ImmutableList.of();
 		Object2IntMap<JigsawPiece> newPieces = new Object2IntLinkedOpenHashMap<>();
 		for(JigsawPiece p : shuffled)
 			newPieces.computeInt(p, (JigsawPiece pTemp, Integer i) -> (i==null?0: i)+1);
-		newPieces.put(new SingleJigsawPiece(toAdd.toString()), weight);
+		newPieces.put(SingleJigsawAccess.construct(
+				Either.left(toAdd), () -> ProcessorLists.field_244101_a, PlacementBehaviour.RIGID
+		), weight);
 		List<Pair<JigsawPiece, Integer>> newPieceList = newPieces.object2IntEntrySet().stream()
 				.map(e -> Pair.of(e.getKey(), e.getIntValue()))
 				.collect(Collectors.toList());
 
-		JigsawManager.REGISTRY.register(new JigsawPattern(pool, old.getFallback(), newPieceList, PlacementBehaviour.RIGID));
+		ResourceLocation name = old.getName();
+		Registry.register(WorldGenRegistries.JIGSAW_POOL, pool, new JigsawPattern(pool, name, newPieceList));
 	}
 
 	@Mod.EventBusSubscriber(modid = MODID, bus = Bus.MOD)
@@ -182,7 +204,7 @@ public class Villages
 		private static PointOfInterestType createPOI(String name, Collection<BlockState> block)
 		{
 			PointOfInterestType type = new PointOfInterestType(MODID+":"+name, ImmutableSet.copyOf(block), 1, 1);
-			PointOfInterestType.registerBlockStates(type);
+			PoITypeAccess.callRegisterBlockStates(type);
 			return type;
 		}
 
@@ -200,7 +222,7 @@ public class Villages
 		private static Collection<BlockState> assembleStates(Block block)
 		{
 			return block.getStateContainer().getValidStates().stream().filter(blockState -> {
-				if(blockState.func_235901_b_(IEProperties.MULTIBLOCKSLAVE))
+				if(blockState.hasProperty(IEProperties.MULTIBLOCKSLAVE))
 					return !blockState.get(IEProperties.MULTIBLOCKSLAVE);
 				return true;
 			}).collect(Collectors.toList());
@@ -216,16 +238,16 @@ public class Villages
 			Int2ObjectMap<List<ITrade>> trades = ev.getTrades();
 			if(ENGINEER.equals(ev.getType().getRegistryName()))
 			{
-				trades.get(1).add(new EmeraldForItems(Ingredients.stickTreated, new PriceInterval(8, 16), 16, 2));
+				trades.get(1).add(new EmeraldForItems(IETags.treatedStick.getName(), new PriceInterval(8, 16), 16, 2));
 				trades.get(1).add(new ItemsForEmerald(WoodenDecoration.treatedWood.get(TreatedWoodStyles.HORIZONTAL), new PriceInterval(-10, -6), 12, 1, 0.2f));
 				trades.get(1).add(new ItemsForEmerald(Cloth.balloon, new PriceInterval(-3, -1), 12, 1, 0.2f));
 
-				trades.get(2).add(new EmeraldForItems(Ingredients.stickIron, new PriceInterval(2, 6), 12, 10));
+				trades.get(2).add(new EmeraldForItems(IETags.ironRod.getName(), new PriceInterval(2, 6), 12, 10));
 				trades.get(2).add(new ItemsForEmerald(MetalDecoration.steelScaffolding.get(MetalScaffoldingType.STANDARD), new PriceInterval(-8, -4), 12, 5, 0.2f));
 				trades.get(2).add(new ItemsForEmerald(MetalDecoration.aluScaffolding.get(MetalScaffoldingType.STANDARD), new PriceInterval(-8, -4), 12, 5, 0.2f));
 
-				trades.get(3).add(new EmeraldForItems(Ingredients.stickSteel, new PriceInterval(2, 6), 12, 20));
-				trades.get(3).add(new EmeraldForItems(Ingredients.slag, new PriceInterval(4, 8), 12, 20));
+				trades.get(3).add(new EmeraldForItems(IETags.steelRod.getName(), new PriceInterval(2, 6), 12, 20));
+				trades.get(3).add(new EmeraldForItems(IETags.slag.getName(), new PriceInterval(4, 8), 12, 20));
 				trades.get(3).add(new ItemsForEmerald(StoneDecoration.concrete, new PriceInterval(-6, -2), 12, 10, 0.2f));
 
 				trades.get(4).add(new OreveinMapForEmeralds());
@@ -235,11 +257,11 @@ public class Villages
 				/* Machinist
 				 * Sells tools, metals, blueprints and drillheads
 				 */
-				trades.get(1).add(new EmeraldForItems(Ingredients.coalCoke, new PriceInterval(8, 16), 16, 2));
+				trades.get(1).add(new EmeraldForItems(IETags.coalCoke.getName(), new PriceInterval(8, 16), 16, 2));
 				trades.get(1).add(new ItemsForEmerald(Tools.hammer, new PriceInterval(4, 7), 12, 1, 0.2f));
 
-				trades.get(2).add(new EmeraldForItems(Metals.ingots.get(EnumMetals.COPPER), new PriceInterval(4, 6), 12, 10));
-				trades.get(2).add(new EmeraldForItems(Metals.ingots.get(EnumMetals.ALUMINUM), new PriceInterval(4, 6), 12, 10));
+				trades.get(2).add(new EmeraldForItems(IETags.getIngot(EnumMetals.COPPER.tagName()), new PriceInterval(4, 6), 12, 10));
+				trades.get(2).add(new EmeraldForItems(IETags.getIngot(EnumMetals.ALUMINUM.tagName()), new PriceInterval(4, 6), 12, 10));
 				trades.get(2).add(new ItemsForEmerald(Ingredients.componentSteel, new PriceInterval(1, 3), 12, 5, 0.2f));
 
 				trades.get(3).add(new ItemsForEmerald(Tools.toolbox, new PriceInterval(6, 8), 12, 10, 0.2f));
@@ -258,17 +280,17 @@ public class Villages
 				/* Electrician
 				 * Sells wires, tools and the faraday suit
 				 */
-				trades.get(1).add(new EmeraldForItems(Ingredients.wireCopper, new PriceInterval(8, 16), 16, 2));
+				trades.get(1).add(new EmeraldForItems(IETags.copperWire.getName(), new PriceInterval(8, 16), 16, 2));
 				trades.get(1).add(new ItemsForEmerald(Tools.wirecutter, new PriceInterval(4, 7), 12, 1, 0.2f));
 				trades.get(1).add(new ItemsForEmerald(wireCoils.get(WireType.COPPER), new PriceInterval(-4, -2), 12, 1, 0.2f));
 
-				trades.get(2).add(new EmeraldForItems(Ingredients.wireElectrum, new PriceInterval(6, 12), 12, 10));
+				trades.get(2).add(new EmeraldForItems(IETags.electrumWire.getName(), new PriceInterval(6, 12), 12, 10));
 				trades.get(2).add(new ItemsForEmerald(Tools.voltmeter, new PriceInterval(4, 7), 12, 5, 0.2f));
 				trades.get(2).add(new ItemsForEmerald(wireCoils.get(WireType.ELECTRUM), new PriceInterval(-4, -1), 12, 5, 0.2f));
 				trades.get(2).add(new ItemsForEmerald(IEItems.Misc.faradaySuit.get(EquipmentSlotType.FEET), new PriceInterval(5, 7), 12, 5, 0.2f));
 				trades.get(2).add(new ItemsForEmerald(IEItems.Misc.faradaySuit.get(EquipmentSlotType.LEGS), new PriceInterval(9, 11), 12, 5, 0.2f));
 
-				trades.get(3).add(new EmeraldForItems(Ingredients.wireAluminum, new PriceInterval(4, 8), 12, 20));
+				trades.get(3).add(new EmeraldForItems(IETags.aluminumWire.getName(), new PriceInterval(4, 8), 12, 20));
 				trades.get(3).add(new ItemsForEmerald(wireCoils.get(WireType.STEEL), new PriceInterval(-2, -1), 12, 10, 0.2f));
 				trades.get(3).add(new ItemsForEmerald(IEItems.Misc.faradaySuit.get(EquipmentSlotType.CHEST), new PriceInterval(11, 15), 12, 10, 0.2f));
 				trades.get(3).add(new ItemsForEmerald(IEItems.Misc.faradaySuit.get(EquipmentSlotType.HEAD), new PriceInterval(5, 7), 12, 10, 0.2f));
@@ -340,12 +362,18 @@ public class Villages
 			this(new ItemStack(item), buyAmounts, maxUses, xp);
 		}
 
+		public EmeraldForItems(@Nonnull ResourceLocation tag, @Nonnull PriceInterval buyAmounts, int maxUses, int xp)
+		{
+			this(IEApi.getPreferredTagStack(tag), buyAmounts, maxUses, xp);
+		}
+
+
 		@Nullable
 		@Override
 		public MerchantOffer getOffer(Entity trader, Random rand)
 		{
 			return new MerchantOffer(
-					ItemUtils.copyStackWithAmount(this.buyingItem, this.buyAmounts.getPrice(rand)),
+					ItemHandlerHelper.copyStackWithSize(this.buyingItem, this.buyAmounts.getPrice(rand)),
 					new ItemStack(Items.EMERALD),
 					//TODO adjust values for individual trades
 					maxUses, xp, 0.05f);
@@ -386,7 +414,7 @@ public class Villages
 			if(i < 0)
 			{
 				buying = new ItemStack(Items.EMERALD);
-				selling = ItemUtils.copyStackWithAmount(sellingItem, -i);
+				selling = ItemHandlerHelper.copyStackWithSize(sellingItem, -i);
 			}
 			else
 			{
@@ -412,14 +440,14 @@ public class Villages
 		public MerchantOffer getOffer(Entity trader, @Nonnull Random random)
 		{
 			World world = trader.getEntityWorld();
-			BlockPos merchantPos = trader.func_233580_cy_();
+			BlockPos merchantPos = trader.getPosition();
 			List<MineralVein> veins = new ArrayList<>();
 			for(int i = 0; i < 8; i++) //Let's just try this a maximum of 8 times before I give up
 			{
 				int offX = random.nextInt(SEARCH_RADIUS*2)-SEARCH_RADIUS;
 				int offZ = random.nextInt(SEARCH_RADIUS*2)-SEARCH_RADIUS;
 				MineralVein vein = ExcavatorHandler.getRandomMineral(world, merchantPos.add(offX, 0, offZ));
-				if(vein!=null&&!veins.contains(vein))
+				if(vein!=null&&vein.getMineral()!=null&&!veins.contains(vein))
 					veins.add(vein);
 			}
 			if(veins.size() > 0)

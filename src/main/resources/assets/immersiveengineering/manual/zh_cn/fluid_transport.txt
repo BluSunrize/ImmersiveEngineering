@@ -1,12 +1,12 @@
-Fluid Transport
-Professional Plumber
-<&pipe_recipe>Transporting fluids has become quite essential in the engineering business. Fluid Pipes and Fluid Pumps do exactly that. On their own, Fluid Pipes are quite slow at transferring fluids, but if a pump is used to insert the fluid, it'll move much faster.<np>
-You can rightclick the connection piece of a pipe with an Engineer's Hammer to prevent it from connecting to that side.
-Fluid Pipes can be covered with wooden or steel scaffolding. Simply rightclick a piece of scaffolding onto a pipe to cover it. Break the pipe to retrieve the scaffolding.<np>
-<&pump_recipe>Fluid Pumps have three essential functions. They can be used to insert into pipes at high pressure, to transfer fluids much faster, or they can pick up fluids from the world.
-Using you hammer on the base of the pump will switch the sides between in- and output.<np>
-In order for the pump to pick up fluid blocks, it will need a power input at the top and a redstone signal. Pumps can also be used to extract from tanks and other fluid containers that do not have an automatic output. This will also require a redstone signal, but won't consume power.<np>
-Water blocks will serve as an infinite fluid source for the pump, as long as more than 3 blocks are connected.
+流体传输
+专业水管工
+<&pipe_recipe>流体传输在工程中已经变得相当重要。流体管道和流体泵正是做这个的。就其本身而言，流体管道的传输速度很慢，但如果用泵来提取流体，它会传输得快得多。<np>
+你可以用工程师锤右键管道的连接部分，以防止它连接到另一边。
+流体管道可以用木制或钢制脚手架覆盖。用脚手架右键单击管道以覆盖它。打破管道来收回脚手架。<np>
+<&pump_recipe>流体泵有三个基本功能。它们可以在向管道输入高压流体，更快地输送流体，或者从世界各地采集流体。
+用你的锤子在泵的基座上右键将会在输入和输出之间切换。<np>
+为了让泵收集流体，它需要顶部的电量输入和红石信号。泵也可用于从没有自动输出的储罐和其他液体容器中提取液体。这也将需要红石信号，但不会消耗电力。<np>
+只要连接3块以上的水块，就可以形成泵的无限水源。
 
-Fluid blocks that were picked up will be replaced with cobblestone to reduce lag of flowing fluids. This behavior can be toggled off and on by using an Engineer's Hammer on the pump.<np>
-<&outlet_recipe>The Fluid Outlet acts as an endpoint for a pipe system, allowing Fluid to be placed in the world. The sides can be configured between input, output (open gate) or closed, a redstone signal can be used to turn the outlet off. The block will only ever output fluid up to its own heightlevel.
+收集的流体块将用圆石代替，以减少流体流动的延迟。该功能可以通过在泵上使用锤子来开关。<np>
+<&outlet_recipe>流体出口作为管道系统的一个端点，允许在世界上放置流体。侧面可以配置输入，输出(打开出口)或关闭，红石信号可以用来关闭出口。它只能输出流体到自己的高度水平。

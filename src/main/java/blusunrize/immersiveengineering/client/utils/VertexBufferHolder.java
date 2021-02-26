@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.client.utils;
 
 import blusunrize.immersiveengineering.api.client.IVertexBufferHolder;
 import blusunrize.immersiveengineering.api.utils.ResettableLazy;
-import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -84,7 +84,7 @@ public class VertexBufferHolder implements IVertexBufferHolder
 	@Override
 	public void render(RenderType type, int light, int overlay, IRenderTypeBuffer directOut, MatrixStack transform, boolean inverted)
 	{
-		if(IEConfig.GENERAL.enableVBOs.get()&&!HAS_OPTIFINE.get())
+		if(IEClientConfig.enableVBOs.get()&&!HAS_OPTIFINE.get())
 			JOBS.computeIfAbsent(type, t -> new ArrayList<>())
 					.add(new BufferedJob(this, light, overlay, transform, inverted));
 		else

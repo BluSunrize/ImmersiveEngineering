@@ -19,7 +19,7 @@ import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
-import blusunrize.immersiveengineering.common.IEConfig;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.entities.ChemthrowerShotEntity;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IAdvancedFluidItem;
@@ -59,6 +59,7 @@ import net.minecraftforge.items.IItemHandler;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFluidItem, IOBJModelCallback<ItemStack>, ITool, IScrollwheel
@@ -140,7 +141,7 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 		if(!fs.isEmpty())
 		{
 			int duration = getUseDuration(stack)-count;
-			int consumed = IEConfig.TOOLS.chemthrower_consumption.get();
+			int consumed = IEServerConfig.TOOLS.chemthrower_consumption.get();
 			if(consumed*duration <= fs.getAmount())
 			{
 				Vector3d v = player.getLookVec();
@@ -165,7 +166,7 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 					chem.setMotion(player.getMotion().add(vecDir.scale(range)));
 
 					// Apply a small amount of backforce.
-					if(!player.func_233570_aj_())
+					if(!player.isOnGround())
 						player.setMotion(player.getMotion().subtract(vecDir.scale(0.0025*range)));
 					if(ignite)
 						chem.setFire(10);
@@ -194,7 +195,7 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 		if(!fs.isEmpty())
 		{
 			int duration = getUseDuration(stack)-timeLeft;
-			fs.shrink(IEConfig.TOOLS.chemthrower_consumption.get()*duration);
+			fs.shrink(IEServerConfig.TOOLS.chemthrower_consumption.get()*duration);
 			if(fs.getAmount() <= 0)
 				ItemNBTHelper.remove(stack, FluidHandlerItemStack.FLUID_NBT_KEY);
 			else
@@ -264,7 +265,7 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 		if(slotChanged)
 			return true;
 		LazyOptional<ShaderWrapper> wrapperOld = oldStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
-		LazyOptional<Boolean> sameShader = wrapperOld.map(wOld -> {
+		Optional<Boolean> sameShader = wrapperOld.map(wOld -> {
 			LazyOptional<ShaderWrapper> wrapperNew = newStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
 			return wrapperNew.map(w -> ItemStack.areItemStacksEqual(wOld.getShaderItem(), w.getShaderItem()))
 					.orElse(true);

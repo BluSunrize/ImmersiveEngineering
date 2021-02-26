@@ -12,14 +12,17 @@ import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
+import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.collect.Iterators;
+import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Direction;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
@@ -27,6 +30,7 @@ import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -53,8 +57,8 @@ public class SorterTileEntity extends IEBaseTileEntity implements IInteractionOb
 	public SorterTileEntity()
 	{
 		super(IETileTypes.SORTER.get());
-		filter = new SorterInventory(this);
-		for(Direction f : Direction.VALUES)
+		filter = new SorterInventory();
+		for(Direction f : DirectionUtils.VALUES)
 			neighborCaps.put(f, CapabilityReference.forNeighbor(this, ITEM_HANDLER_CAPABILITY, f));
 	}
 
@@ -227,7 +231,7 @@ public class SorterTileEntity extends IEBaseTileEntity implements IInteractionOb
 	private EnumFilterResult checkStackAgainstFilter(ItemStack stack, Direction side)
 	{
 		boolean unmapped = true;
-		for(ItemStack filterStack : filter.filters[side.ordinal()])
+		for(ItemStack filterStack : filter.getFilterStacksOnSide(side))
 			if(!filterStack.isEmpty())
 			{
 				unmapped = false;
@@ -246,7 +250,7 @@ public class SorterTileEntity extends IEBaseTileEntity implements IInteractionOb
 	private Predicate<ItemStack> concatFilters(Direction side0, Direction side1)
 	{
 		final List<ItemStack> concat = new ArrayList<>();
-		for(ItemStack filterStack : filter.filters[side0.ordinal()])
+		for(ItemStack filterStack : filter.getFilterStacksOnSide(side0))
 			if(!filterStack.isEmpty())
 				concat.add(filterStack);
 
@@ -264,7 +268,7 @@ public class SorterTileEntity extends IEBaseTileEntity implements IInteractionOb
 			}
 		};
 
-		for(ItemStack filterStack : filter.filters[side1.ordinal()])
+		for(ItemStack filterStack : filter.getFilterStacksOnSide(side1))
 			if(!filterStack.isEmpty()&&matchFilter.test(filterStack))
 				concat.add(filterStack);
 
@@ -292,10 +296,8 @@ public class SorterTileEntity extends IEBaseTileEntity implements IInteractionOb
 		if(!descPacket)
 		{
 			ListNBT filterList = nbt.getList("filter", 10);
-			filter = new SorterInventory(this);
+			filter = new SorterInventory();
 			filter.readFromNBT(filterList);
-
-
 		}
 	}
 
@@ -314,7 +316,7 @@ public class SorterTileEntity extends IEBaseTileEntity implements IInteractionOb
 	private EnumMap<Direction, LazyOptional<IItemHandler>> insertionHandlers = new EnumMap<>(Direction.class);
 
 	{
-		for(Direction f : Direction.VALUES)
+		for(Direction f : DirectionUtils.VALUES)
 		{
 			LazyOptional<IItemHandler> forSide = registerConstantCap(new SorterInventoryHandler(this, f));
 			insertionHandlers.put(f, forSide);
@@ -389,132 +391,43 @@ public class SorterTileEntity extends IEBaseTileEntity implements IInteractionOb
 		}
 	}
 
-
-	public static class SorterInventory implements IInventory
+	public static class SorterInventory extends ItemStackHandler
 	{
-		public ItemStack[][] filters = new ItemStack[6][filterSlotsPerSide];
-		final SorterTileEntity tile;
-
-		public SorterInventory(SorterTileEntity tile)
+		public SorterInventory()
 		{
-			this.tile = tile;
-			clear();
+			super(NonNullList.withSize(6*filterSlotsPerSide, ItemStack.EMPTY));
 		}
 
-		@Override
-		public int getSizeInventory()
+		public ItemStack getStackBySideAndSlot(Direction side, int slotOnSide)
 		{
-			return 6*filterSlotsPerSide;
+			return getStackInSlot(getSlotId(side, slotOnSide));
 		}
 
-		@Override
-		public boolean isEmpty()
+		public int getSlotId(Direction side, int slotOnSide)
 		{
-			for(int i = 0; i < 6; ++i)
-			{
-				for(int j = 0; j < filterSlotsPerSide; ++j)
-				{
-					if(!filters[i][j].isEmpty())
-					{
-						return false;
-					}
-				}
-			}
-			return true;
+			return side.ordinal()*filterSlotsPerSide+slotOnSide;
 		}
 
-		@Override
-		public ItemStack getStackInSlot(int slot)
+		public Iterable<ItemStack> getFilterStacksOnSide(Direction side)
 		{
-			return filters[slot/filterSlotsPerSide][slot%filterSlotsPerSide];
-		}
-
-		@Override
-		public ItemStack decrStackSize(int slot, int amount)
-		{
-			ItemStack stack = getStackInSlot(slot);
-			if(!stack.isEmpty())
-				if(stack.getCount() <= amount)
-					setInventorySlotContents(slot, null);
-				else
-				{
-					stack = stack.split(amount);
-					if(stack.getCount()==0)
-						setInventorySlotContents(slot, null);
-				}
-			return stack;
-		}
-
-		@Override
-		public ItemStack removeStackFromSlot(int slot)
-		{
-			ItemStack stack = getStackInSlot(slot);
-			if(!stack.isEmpty())
-				setInventorySlotContents(slot, null);
-			return stack;
-		}
-
-		@Override
-		public void setInventorySlotContents(int slot, ItemStack stack)
-		{
-			filters[slot/filterSlotsPerSide][slot%filterSlotsPerSide] = stack;
-			if(!stack.isEmpty()&&stack.getCount() > getInventoryStackLimit())
-				stack.setCount(getInventoryStackLimit());
-		}
-
-		@Override
-		public void clear()
-		{
-			for(ItemStack[] itemStacks : filters)
-				Arrays.fill(itemStacks, ItemStack.EMPTY);
-		}
-
-		@Override
-		public int getInventoryStackLimit()
-		{
-			return 1;
-		}
-
-		@Override
-		public boolean isUsableByPlayer(PlayerEntity player)
-		{
-			return true;
-		}
-
-		@Override
-		public void openInventory(PlayerEntity player)
-		{
-		}
-
-		@Override
-		public void closeInventory(PlayerEntity player)
-		{
-		}
-
-		@Override
-		public boolean isItemValidForSlot(int slot, ItemStack stack)
-		{
-			return true;
-		}
-
-		@Override
-		public void markDirty()
-		{
-			this.tile.markDirty();
+			return () -> Iterators.transform(
+					IntIterators.fromTo(0, filterSlotsPerSide), i -> getStackBySideAndSlot(side, i)
+			);
 		}
 
 		public void writeToNBT(ListNBT list)
 		{
-			for(int i = 0; i < this.filters.length; i++)
-				for(int j = 0; j < this.filters[i].length; j++)
-					if(!this.filters[i][j].isEmpty())
-					{
-						CompoundNBT itemTag = new CompoundNBT();
-						itemTag.putByte("Slot", (byte)(i*filterSlotsPerSide+j));
-						this.filters[i][j].write(itemTag);
-						list.add(itemTag);
-					}
-
+			for(int i = 0; i < getSlots(); ++i)
+			{
+				ItemStack slot = getStackInSlot(i);
+				if(!slot.isEmpty())
+				{
+					CompoundNBT itemTag = new CompoundNBT();
+					itemTag.putByte("Slot", (byte)i);
+					slot.write(itemTag);
+					list.add(itemTag);
+				}
+			}
 		}
 
 		public void readFromNBT(ListNBT list)
@@ -523,8 +436,8 @@ public class SorterTileEntity extends IEBaseTileEntity implements IInteractionOb
 			{
 				CompoundNBT itemTag = list.getCompound(i);
 				int slot = itemTag.getByte("Slot")&255;
-				if(slot < getSizeInventory())
-					this.filters[slot/filterSlotsPerSide][slot%filterSlotsPerSide] = ItemStack.read(itemTag);
+				if(slot < getSlots())
+					setStackInSlot(slot, ItemStack.read(itemTag));
 			}
 		}
 	}

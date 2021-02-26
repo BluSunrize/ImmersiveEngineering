@@ -1,0 +1,6 @@
+Calentador externo
+¡Ahora se cocina con Flux!
+<&recipe>El Calentador externo hace exactamente lo que su nombre indica, genera energía térmica a partir del Flux. Cuando se coloca junto a un horno normal, esta energía térmica alimentará el horno, permitiéndole fundir sin ningún combustible en su interior.<np>
+Haz clic en un lado del calentador con un Martillo para convertirlo en un aceptador de energía, y agáchate para apuntar al lado opuesto.
+El calentador consumirá §o8 Flux/t§r por cada unidad de calor añadida. Durante la fase inicial del horno, el calentador producirá hasta §o4§r unidades de calor por tick, pero en cuanto el horno alcance la temperatura máxima, sólo requerirá §o1§r unidad de calor para mantenerlo en funcionamiento.<np>
+Y lo que es mejor, mientras el horno esté a la máxima temperatura, el calentador consumirá un adicional de §o24 Flux/t§r para aumentar la velocidad de procesamiento de los hornos. El calentador sólo afectará a un horno con una entrada válida y espacio en la ranura de salida, para conservar la energía. Sin embargo, puedes aplicar una señal de Redstone al calentador para desactivar esa funcionalidad y hacer que mantenga el horno a pleno rendimiento.

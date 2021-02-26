@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.UnionMultiblock.TransformedMultiblock;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.FourWayBlock;
 import net.minecraft.state.Property;
 import net.minecraft.tags.ITag;
@@ -93,6 +94,12 @@ public class IEMultiblocks
 				for(ITag<Block> t : genericTags)
 					if(expected.isIn(t)&&found.isIn(t))
 						return Result.allow(3);
+			return Result.DEFAULT;
+		});
+		//Ignore hopper facing
+		BlockMatcher.addPredicate((expected, found, world, pos) -> {
+			if(expected.getBlock()==Blocks.HOPPER&&found.getBlock()==Blocks.HOPPER)
+				return Result.allow(4);
 			return Result.DEFAULT;
 		});
 

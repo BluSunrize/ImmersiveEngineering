@@ -14,9 +14,9 @@ import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
-import blusunrize.immersiveengineering.common.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
@@ -52,6 +52,7 @@ import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -143,7 +144,7 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 		if(world.getGameTime()%64==((getPos().getX()^getPos().getZ())&63))
 			markContainingBlockForUpdate(null);
 
-		int energy = IEConfig.MACHINES.turret_consumption.get();
+		int energy = IEServerConfig.MACHINES.turret_consumption.get();
 		if(isRSPowered()^redstoneControlInverted)
 		{
 			if(energyStorage.extractEnergy(energy, true)==energy)
@@ -646,9 +647,9 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 	}
 
 	@Override
-	public BlockPos getModelOffset(BlockState state)
+	public BlockPos getModelOffset(BlockState state, @Nullable Vector3i size)
 	{
-		if (isDummy())
+		if(isDummy())
 			return new BlockPos(0, 1, 0);
 		else
 			return BlockPos.ZERO;
