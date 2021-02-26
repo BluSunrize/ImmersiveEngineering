@@ -1,0 +1,3 @@
+Hormigón
+Material de la fortaleza
+<&recipe>El hormigón es un material compuesto muy duro y resistente. Es barato de fabricar y constituye un excelente uso para el exceso de escoria producida por el <link;crude_blast_furnace;Alto Horno de crudo>.

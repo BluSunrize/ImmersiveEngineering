@@ -1,0 +1,16 @@
+Yacimientos minerales
+Algunos minerales
+Los depósitos de mineral que se encuentran alrededor de tu mundo no son nada nuevo para ti. Sin embargo, lo que hasta ahora no has tenido en cuenta son las vetas minerales, que contienen una mezcla de diferentes minerales. Debido a su amplia y fina extensión, el minero medio no puede encontrarlas, pero una <link;excavator;Excavadora> podría ser capaz de ayudar con eso.
+<&survey_tools>Para empezar a buscar vetas de minerales, querrás elaborar algunas §2Herramientas de prospección minera§r. Al aventurarse y utilizar estas herramientas en varios bloques de suelo natural, se pueden identificar las vetas y encontrar sus posiciones aproximadas.
+
+Cada muestra que tome de la misma veta le permitirá obtener una lectura más precisa de lo que contiene y de su origen. Tenga en cuenta que las vetas pueden superponerse, por lo que puede encontrar restos de diferentes vetas muy cerca unas de otras.
+<np>
+<&sample_drill>Después de deducir el tipo y la posición de la veta, utilice una §2Muestra de núcleo de perforación§r para obtener una lectura precisa de las vetas que se encuentran en una posición exacta.
+Suministra energía a la máquina y haz clic con el botón derecho del ratón o utiliza Redstone para activarla. El taladro consume <config;i;machines.coredrill.consumption> Flux/t para luego extraer una muestra del núcleo en su ubicación que proporciona información detallada sobre la veta mineral.
+<np>
+<&core_sample>La muestra no sólo le dirá exactamente qué minerales se encuentran allí, incluyendo su presencia relativa, sino también su §2saturación§r. Una mayor saturación significa una mayor posibilidad de que una excavadora llene su rueda de cangilones.
+
+Agáchate y haz clic con el botón derecho en una Muestra de núcleo para colocarla en el mundo, lo que te permitirá leer su posición e información. Además, una vez colocada, puedes hacer clic con el botón derecho del ratón en un mapa para marcar su posición original en él.
+
+En las siguientes páginas se enumeran todos los tipos de vetas y los minerales que pueden extraerse de ellas.
+<np>

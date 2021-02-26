@@ -1,0 +1,7 @@
+Ingeniería de iluminación
+Iluminar el páramo
+<&lantern>En las profundidades de los pasillos de las fábricas, puede estar bastante oscuro. Para poder seguir encontrando el camino entre las máquinas, probablemente debas iluminar el lugar con algunas lámparas. Estas lámparas proporcionan casi tanta luz como un bloque de piedra luminosa.
+<&electric_lantern>Los faroles eléctricos son uno de los primeros inventos usados en la energía eléctrica. Para que funcionen, tienes que conectarlas directamente a la red eléctrica mediante cables. Permiten la transferencia de energía a través de ellas, por lo que puedes enlazarlas en fila.
+Si utilizas el Martillo del Ingeniero sobre ellos, los pondrás patas arriba. Mientras tengan un poco de energía, iluminarán el área circundante como una linterna normal, pero además, ¡impedirán que aparezcan mafias hostiles en un radio de 32 bloques!<np>
+<&floodlight>Los Reflectores son fuentes de luz potentes. Aunque requieren más energía que un simple farol eléctrico, crearán un cono de luz de hasta 32 bloques de longitud. Utiliza un Martillo del Ingeniero en las caras superior o inferior del bloque para girar la luz o haz clic en sus lados para cambiar su inclinación.
+Por lo general, los reflectores requieren una señal de Redstone para funcionar, sin embargo, su comportamiento puede invertirse haciendo clic en su base con un Destornillador del Ingeniero.

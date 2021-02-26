@@ -1,0 +1,8 @@
+Taladro de minería
+¡Mi taladro perforará el lecho de roca!
+<&drill_base_recipes>El Taladro de minería con motor diésel es un gran avance en la minería. Con cabezales de perforación intercambiables y mejoras, sus propiedades son casi totalmente modificables. Para modificarlo, colócalo en un <link;workbench;Banco de Trabajo del Ingeniero;start>. El taladro funciona con Biodiesel y puede llenarse directamente en la <link;refinery;Refinería;start>.<np>
+<&drill_head_recipes>El §2Cabezal de broca§r determina la base de §2nivel minero§r, §2velocidad§r, y §2tamaño§r, así como el §2daño de ataque§r. Al excavar bloques, el cabezal del taladro sufre daños, pero se puede reparar en un yunque.<np>
+<&drill_waterproof_recipe>Como el taladro está impulsado por un motor de combustión, no funcionará bajo el agua a menos que lo equipe con el §2Depósito de aire presurizado§r. Sin embargo, con esta mejora equipada, no sólo funcionará mientras esté sumergido, sino que también ignorará la ralentización que suele producirse al excavar en el agua.<np>
+<&drill_lube_recipe>El §2Sistema de lubricación avanzado§r aplica lubricante adicional a la broca de forma regular, disminuyendo el desgaste del cabezal de la broca.<np>
+<&drill_damage_recipe>Añadiendo §2Sinfines adicionales§r al taladro, se incrementa su potencial destructivo, aumentando su daño contra las criaturas vivas y permitiéndole correr y cavar más rápido. La mejora se acumula hasta tres veces.<np>
+<&drill_capacity_recipe>El §2Tanque Grande§r permite que el taladro almacene más combustible internamente, ampliando el tiempo de uso antes de rellenar.

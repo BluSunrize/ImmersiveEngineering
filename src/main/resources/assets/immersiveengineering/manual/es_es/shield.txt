@@ -1,0 +1,6 @@
+Escudo de chapas gruesas
+Falange de un solo hombre
+<&recipe>El Escudo de chapas gruesas es una mejora directa de los escudos de madera normales que conoces. De forma similar, este escudo bloqueará la mayor parte del daño recibido, pero su durabilidad también se ha incrementado considerablemente, y se puede mejorar.<np>
+<&flashbulb>La mejora de §2Foco§r añade una foco y una pantalla reflectora al escudo. Al ser atacado, el dispositivo producirá un destello brillante y cegador, desorientando a todos los que estén delante del usuario.<np>
+<&electric>Agregando §2Emisores de choque§r al escudo te permite tomar represalias contra los enemigos que te atacan. Cuando el escudo es golpeado, emite una descarga que inflige un daño menor al agresor. Además, vaporiza los proyectiles en lugar de detenerlos..<np>
+<&magnetic>Los §2Guantes Magnéticos§r sirven para acceder fácilmente al escudo cuando se ve amenazado. Con esta mejora equipada, basta con tocar dos veces §l<keybind;key.immersiveengineering.magnetEquip>§r hará que recuperes el escudo de tu inventario y lo coloques en la ranura de tu mano libre.

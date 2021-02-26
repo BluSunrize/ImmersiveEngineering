@@ -7,3 +7,4 @@ LOCALIZATION
 	- zh_CN: 3TUSK, Amamiya-Nagisa, bakaxyf, CannonFotter, crafteverywhere, IamAchang, Joccob, LYDfalse, UUUii, Fodoth_jinzi89
 	- ru_RU: lex1975
 	- zh_TW: xaxa123, vongola12324
+	- es_ES: FrannDzs, 

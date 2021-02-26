@@ -1,0 +1,7 @@
+Banco de Trabajo Automatizado
+Para los que no saben conducir con palanca
+<&multiblock>El Banco de Trabajo Automatizado es uno de los primeros grandes éxitos de la ingeniería a pequeña escala.
+La máquina es capaz de seguir un conjunto de instrucciones descritas por un <link;blueprints;Plano;start> para ensamblar los elementos que detalla.<np>
+Al ensamblar el multibloque, se puede colocar un Plano en su mesa de dibujo. Después de seleccionar el elemento que debe crearse, comenzará el proceso de montaje. Para que la máquina funcione, será necesario suministrarle materiales y energía.
+Las entradas de artículos son las dos trampillas marcadas con puntos azules, la entrada de energía se encuentra por encima de ellas. Los artículos terminados se dejan caer al final de la cinta transportadora.
+Una señal de Redstone debajo de la mesa de dibujo se puede utilizar para el control.

@@ -1,0 +1,9 @@
+Construcciones metálicas
+Remachado
+<&storage_and_sheetmetal_recipes>Aparte de la madera tratada, los metales procesados son bloques de construcción habituales. Puedes convertir casi cualquier metal en bloques y planchas, o martillar lingotes de hierro para obtener un bloque de chapa.<np>
+<&architecture_recipes>El acero no sólo es una parte integral de las arquitecturas de alta tensión, sino que también es bastante útil en, bueno, la arquitectura. Los andamios de acero pueden utilizarse para crear rápidamente estructuras escalables, las vallas de acero mantienen a raya a los malos y los brazos estructurales son excelentes puntos de fijación para los relés de alta tensión.<np>
+<&connector_recipes>Los conectores de cable estructurales funcionan de forma similar a los conectores normales, pero en lugar de transferir energía, son puramente decorativos.
+No aceptan cables normales, sino cuerda de cáñamo y cable de acero.
+También puedes girarlos haciendo clic con el botón derecho del ratón con un Martillo del Ingeniero.<np>
+<&ladder_recipes>Las escaleras de metal son... bueno, escaleras hechas de metal. Puedes subirlas y tienen un aspecto genial.
+También puedes combinarlas con andamios para convertirlas en escaleras cubiertas.
