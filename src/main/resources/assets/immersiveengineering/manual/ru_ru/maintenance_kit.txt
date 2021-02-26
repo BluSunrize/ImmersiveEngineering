@@ -1,5 +1,5 @@
-Maintenance Kit
-On the go repairs
-<&recipe>Among those Engineers that travel the world or spend much of their time in mines, one problem crystalizes itself. Their tools require constant maintenance, and carrying around an entire workbench just isn't viable. Fortunately, the majority of minor repairs and re-configurations can be performed with a maintenance kit.
+Комплект для обслуживания
+Ремонт на ходу
+<&recipe>Среди тех инженеров, которые путешествуют по миру или проводят большую часть времени в шахтах, одна проблема образуется сама собой. Их инструменты требуют постоянного обслуживания, а носить с собой верстак просто нецелесообразно. К счастью, большинство мелких ремонтов и изменений конфигурации можно выполнить с помощью комплекта для обслуживания.
 
-A set of tools, wrapped in sturdy hemp cloth, the maintenance kit allows you to customize your tools much in the way the <link;workbench;Engineer's Workbench> does. No longer will you have to deal with resurfacing to change the head on your Mining Drill or head back to your workshop to configure your Ear Defenders. All of this can now be performed on the go with the Maintenance Kit!
+Набор инструментов, завернутый в прочную ткань из конопли, для обслуживания позволяет вам настраивать ваши инструменты так же, как это делает <link;workbench;Верстак инженера>. Вам больше не придется заниматься шлифовкой поверхности, чтобы сменить головку горного сверла, или возвращаться в мастерскую, чтобы настроить защитные наушники. Все это теперь можно выполнять на ходу с помощью набора для обслуживания!

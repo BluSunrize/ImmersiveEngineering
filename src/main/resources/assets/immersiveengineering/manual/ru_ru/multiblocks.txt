@@ -1,4 +1,4 @@
-Multiblock Constructions
-Where's my Allen Wrench?
-Fitting complex machinery into a single 1x1x1 cube seems to be a task unmanageable without the use of magic or possibly shrink rays. So in order to create more complex machines, you will need component blocks. The most common ones have been listed on the following pages.
+Многоблочные конструкции
+Где мой гаечный ключ?
+Помещение сложной техники в один куб размером 1x1x1 кажется задачей, которую невозможно решить без использования магии или, возможно, уменьшающих лучей. Итак, чтобы создавать более сложные машины, вам понадобятся блоки компонентов. Наиболее распространенные из них перечислены на следующих страницах.
 <&recipes>

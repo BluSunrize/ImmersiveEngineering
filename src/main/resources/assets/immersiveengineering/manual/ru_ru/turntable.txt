@@ -1,7 +1,7 @@
-Turntable
-I can't keep up
-<&recipe>The Turntable will rotate blocks placed against it.
-Holding an Engineer's Hammer while looking at a side of the machine displays its rotating side and the turn direction associated with the targeted side.
-The turn direction is set individually for each of the 4 sides around the turning axis, allowing for ±90° or 180° turns, depending on which side receives the redstone signal.
+Поворотный стол
+Я не могу успеть
+<&recipe>Поворотный стол будет вращать блоки, размещенные напротив него.
+Удерживая Молот инженера, глядя на одну из сторон машины, вы видите ее вращающуюся сторону и направление поворота, связанное с целевой стороной.
+Направление поворота устанавливается индивидуально для каждой из 4 сторон вокруг оси поворота, что позволяет поворачивать на ± 90 ° или 180 °, в зависимости от того, на какую сторону поступает сигнал красного камня.
 
-Rightclicking with the Hammer will reorient it, sneaking while doing so will cycle through the Turntable's turn directions.
+Щелчок правой кнопкой мыши с помощью молотка переориентирует его, а приседание + ПКМ при этом будет циклически перемещаться по направлениям поворота Поворотного стола.

@@ -1,4 +1,4 @@
-Engineer's Toolbox
-The Engineer's Handbag
-The toolbox is a simple, carried container, used to store all the essentials of an engineer! Hovering over the relevant slots tells you what they will accept.
-'Food' and 'Anything' are quite self-explanatory, 'Wiring' slots are for coils, connectors and similar items, and 'Tools' will store any IE tool as well as picks, shovels and axes! Sneaking and right-clicking allows the toolbox to be placed as a block. While placed, it's inventory can still be accessed with a rightclick. Sneaking and right-clicking again will pick the toolbox up.
+Набор инструментов инженера
+Сумочка инженера
+Набор инструментов инженера - это простой переносной контейнер, в котором хранятся всё необходимое для инженера! Если навести указатель мыши на соответствующие слоты, вы узнаете, что они примут.
+«Еда» и «Что угодно» говорят сами за себя, слоты «Электропроводка» предназначены для катушек, соединителей и подобных предметов, а «Инструменты» будут хранить любой инструмент IE, а также кирки, лопаты и топоры! Приседание и щелчок ПКМ позволяют разместить набор инструментов как блок. Когда он размещен, его инвентарь по-прежнему можно получить, щелкнув правой кнопкой мыши. Если подкрасться и снова щелкнуть правой кнопкой мыши, набор инструментов поднимется.

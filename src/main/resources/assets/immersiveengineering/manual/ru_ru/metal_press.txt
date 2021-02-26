@@ -1,7 +1,7 @@
-Metal Press
-Under Pressure!
-<&multiblock>The Metal Press is an automated way of shaping metal. It uses a high pressure piston to press a mold onto an ingot, forming it into a plate, rod or other metal components.
-The structure is created as shown above, to form the multiblock, click the piston with an Engineer's Hammer. Power is input through the top, and items through the conveyors, obviously in the direction of movement. The lower middle block is the redstone control port, rightclicking it with an Engineer's Hammer allows you to invert the redstone control.<np>
-<&mold_blueprint>To actually work, the metal press requires a mold to be attached to the piston. These molds are created in the <link;workbench;§o§nEngineer's §o§nWorkbench§r> using the blueprint displayed above.<np>
-<&mold_recipes>Molds are crafted as shown above, with the wirecutter taking some damage for every crafting operation. They are then inserted into the metal press by right-clicking the multiblock with a mold in hand.<np>
-<&packing>The packing and unpacking molds can be used to compress 4 or 9 of the same item into their relevant storage form, as well as unpack them again. This can be utilized to store ingots as blocks, or automatically create simple blocks like Sandstone.
+Металлический пресс
+Под давлением!
+<&multiblock>Металлический пресс - это автоматизированный способ формования металла. Он использует поршень высокого давления для придания формы к слитку, превращая его в пластину, стержень или другие металлические детали.
+Структура создается, как показано выше, чтобы сформировать мультиблок, щелкните на поршень молотком инженера. Энергия подается через верх, а предметы - через конвейеры, очевидно, в направлении движения. Нижний средний блок - это порт управления красным камнем, щелчок правой кнопкой мыши по нему молотком инженера позволяет вам инвертировать управление.<np>
+<&mold_blueprint>Для работы Металлического пресса требуется, чтобы к поршню была прикреплена форма. Эти формы создаются в <link;workbench;§o§nВерстаке §o§nинженера§r> с использованием схемы, показанной выше.<np>
+<&mold_recipes>Формы изготавливаются, как показано выше, при этом Кусачки изнашиваются при каждой операции изготовления. Затем они вставляются в пресс для металла, щелкнув ПКМ по мультиблоку с формой в руке.<np>
+<&packing>Формы для упаковки и распаковки можно использовать для сжатия 4 или 9 одинаковых предметов в соответствующие формы для хранения, а также для их повторной распаковки. Это можно использовать для хранения слитков в виде блоков или автоматического создания простых блоков, таких как песчаник.

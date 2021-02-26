@@ -1,7 +1,7 @@
-Power Generation
+Выработка энергии
 
-<&dynamo_recipe>Transferring power is quite helpful provided you have power. To actually generate Flux, you can use the kinetic forces of windmills and waterwheels. Connecting these to a dynamo will generate power based on how fast they turn.<np>
-<&waterwheel_recipes>The Water Wheel is a fairly easy way of powering a dynamo. It's turning speed is based on the water flowing around it, so for optimal results, you'll want to direct the water in a semi-circle from the top down one side and along the bottom. Up to three water wheels can be placed against each other.<np>
-<&windmill_recipes>The Windmill is a free and easy way of generating power, albeit not a very powerful one. Its speed depends the space in front of it, with its kinetic output reducing greatly if the airflow is obscured. Additionally, weather conditions like rain or thunderstorms result in stronger winds and increased rotation speeds.<np>
-<&sail_recipe>Your wind-based power generation can be improved by covering the blades of your windmill in cloth. Doing so increases the surface area and with it the rotation speed and energy output.
-The required sails are crafted from <link;hemp;tough hemp fabric;start> and applied to the windmill by rightclicking it in world.
+<&dynamo_recipe>Передача энергии весьма полезна, если она у вас имеется. Чтобы создать Flux энергию, вы можете использовать кинетическую силу ветряных мельниц и водяных колес. Их подключение к Кинетической генератору будет генерировать энегрию в зависимости от скорости их вращения.<np>
+<&waterwheel_recipes>Водяное колесо - довольно простой способ привести в действие Кинетический генератор. Скорость его вращения зависит от воды, обтекающей его, поэтому для получения оптимальных результатов вам нужно направить воду полукругом сверху вниз в доль одной стороны и до дна. Можно поставить друг с другом до трех водяных колес.<np>
+<&windmill_recipes>Ветряная мельница - это бесплатный и простой способ получения энергии, хотя и не очень эффективный. Его скорость зависит от пространства перед ним, а его кинетическая мощность значительно снижается, если поток воздуха закрыт. Кроме того, погодные условия, такие как дождь или гроза, приводят к сильному ветру и увеличению скорости вращения.<np>
+<&sail_recipe>Выработку ветровой энергии можно улучшить, покрыв лопасти ветряной мельницы тканью. Это увеличивает площадь поверхности, а вместе с ней и скорость вращения и соответственно выход энергии.
+Необходимые паруса изготавливаются из <link;hemp;tough hemp fabric;start> и путем покрытия ветряной мельницы, щелкнув на ее ПКМ.

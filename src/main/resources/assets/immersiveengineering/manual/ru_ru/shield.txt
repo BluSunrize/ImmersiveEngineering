@@ -1,6 +1,6 @@
-Heavy Plated Shield
-One Man Phalanx
-<&recipe>The Heavy Plated Shield is a direct upgrade to the normal wooden shields you might be acquainted with. In similar fashion, this shield will block most incoming damage from the front, but its durability has been increased considerably, and it can be upgraded.<np>
-<&flashbulb>The §2Flashbulb§r upgrade adds a bright lightbulb and reflector screen to the shield. Upon being attacked, the device will produce a bright, blinding flash, disorienting everyone in front of the user.<np>
-<&electric>Adding §2Shock Emitters§r to the shield allows you to retaliate against attacking enemies. When the shield is struck, it will emit a shock, inflicting minor damage to the aggressor. Additionally, it will vapourize projectiles rather than just stopping them.<np>
-<&magnetic>The §2Magnetic Glove§r serves as an easy way to access the shield when threatened. With this upgrade equipped, simply double-tapping the §l<keybind;key.immersiveengineering.magnetEquip>§r Key will have you retrieve the shield from your inventory and place it in your offhand slot.
+Тяжелый покрытый металлом щит
+Фаланга одного человека
+<&recipe>Тяжелый покрытый металлом щит - это прямая модернизация обычных деревянных щитов, с которыми вы, возможно, уже знакомы. Подобным образом этот щит будет блокировать большую часть входящего урона спереди, но его прочность значительно увеличена, и его можно улучшить.<np>
+<&flashbulb>Улучшение §2Лампа-вспышка§r добавляет яркую лампочку и экран-отражатель на щит. При атаке устройство излучает яркую, ослепляющую вспышку, дезориентирующую всех, кто находится перед пользователем.<np>
+<&electric>Улучшение §2Шокоизлучатели§r к щиту позволяет вам нанести ответный удар атакующим врагам. При ударе по щиту он излучает электрический ток, нанося агрессору небольшой урон. Кроме того, он испаряет снаряды, а не просто останавливает их.<np>
+<&magnetic>§2Магнитная перчатка§r служит простым способом получить доступ к щиту в случае угрозы. С этим улучшением, просто дважды нажав кнопку §l<keybind;key.immersiveengineering.magnetEquip>§r, вы получите щит из своего инвентаря и поместите его в свой слот для левой руки.
