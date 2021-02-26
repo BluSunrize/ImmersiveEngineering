@@ -1,3 +1,23 @@
+##### Version 1.16.5-4.2.2-pre
+ - Added/updated compatability for Tinkers Construct (BluSunrize)
+ - Added Curios compatability for the capacitor backpack (BluSunrize)
+ - Changed villagers to respect the ore preference config for trades (BluSunrize)
+ - Changed fluid outlet to allow inverting the redstone signal (BluSunrize)
+     - Also fixed buggy area detection
+ - Fixed crash related to fluid pipe extraction (Malte)
+ - Fixed crusher not accepting items in top layer (Malte)
+ - Fixed crashes related to tag loading (Malte)
+ - Fixed missing particles on some blocks (Malte)
+ - Fixed errors when using the buzzsaw as a weapon (Malte)
+ - Fixed potion bullets crashing when fired from turrets (BluSunrize)
+ - Fixed crash related to using a railgun offhanded (BluSunrize)
+ - Fixed coresample drill incorrectly starting its animation (BluSunrize)
+ - Fixed flipped faces on metal press model (BluSunrize)
+ - Fixed arc furnace particle crash (Malte)
+ - Fixed refinery wasting fluid (Malte)
+ - Fixed localization of Minecart entities (SkySom)
+ - Translations Added/Updated: es_es (FrannDzs), zh_cn (frank89722), ru_ru (DonorTrap, Alepod)
+
 ##### Version 1.16.5-4.2.1-131
  - Added missing mixer recipe for herbicide (BluSunrize)
  - Added Craftweaker compatability for Mineral Veins, improved documentation (Jared)
