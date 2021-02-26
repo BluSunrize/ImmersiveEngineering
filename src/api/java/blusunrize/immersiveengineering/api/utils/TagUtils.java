@@ -27,10 +27,6 @@ import java.util.function.Supplier;
 public class TagUtils
 {
 	// These will be overriden on the client side, because TagCollectionManager doesn't work there
-	@Deprecated
-	public static ITagCollection<Item> ITEM_TAG_COLLECTION;
-	@Deprecated
-	public static ITagCollection<Block> BLOCK_TAG_COLLECTION;
 	public static Supplier<ITagCollection<Item>> GET_ITEM_TAG_COLLECTION;
 	public static Supplier<ITagCollection<Block>> GET_BLOCK_TAG_COLLECTION;
 
@@ -48,8 +44,6 @@ public class TagUtils
 	{
 		GET_ITEM_TAG_COLLECTION = items;
 		GET_BLOCK_TAG_COLLECTION = blocks;
-		ITEM_TAG_COLLECTION = new LazyMirroringTagCollection<>(items);
-		BLOCK_TAG_COLLECTION = new LazyMirroringTagCollection<>(blocks);
 	}
 
 	public static ITag<Item> getItemTag(ResourceLocation key)

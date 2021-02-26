@@ -9,10 +9,10 @@
 package blusunrize.immersiveengineering.data.blockstates;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.EnumMetals;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.client.models.ModelConfigurableSides.Type;
 import blusunrize.immersiveengineering.client.models.ModelConveyor.ConveyorLoader;
-import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
 import blusunrize.immersiveengineering.common.blocks.cloth.StripCurtainBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.WallmountBlock;

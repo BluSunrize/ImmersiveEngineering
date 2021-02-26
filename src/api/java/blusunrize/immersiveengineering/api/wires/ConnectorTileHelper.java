@@ -1,8 +1,17 @@
-package blusunrize.immersiveengineering.api.wires.tile;
+/*
+ * BluSunrize
+ * Copyright (c) 2020
+ *
+ * This code is licensed under "Blu's License of Common Sense"
+ * Details can be found in the license file in the root folder of this project
+ *
+ */
+
+package blusunrize.immersiveengineering.api.wires;
 
 import blusunrize.immersiveengineering.api.IEProperties.ConnectionModelData;
-import blusunrize.immersiveengineering.api.wires.*;
 import com.google.common.collect.ImmutableSet;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.GameRules;
@@ -13,20 +22,21 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
 
-public class ConnectorTileCalls
+public class ConnectorTileHelper
 {
-	public static ConnectionModelData getModelData(World world, IImmersiveConnectable connector)
+	public static ConnectionModelData genConnBlockState(World world, IImmersiveConnectable iic)
 	{
 		GlobalWireNetwork globalNet = GlobalWireNetwork.getNetwork(world);
+		final BlockPos pos = iic.getPosition();
 		Set<Connection> ret = new HashSet<>();
-		for(ConnectionPoint cp : connector.getConnectionPoints())
+		for(ConnectionPoint cp : iic.getConnectionPoints())
 		{
 			LocalWireNetwork local = globalNet.getLocalNet(cp);
 			Collection<Connection> conns = local.getConnections(cp);
 			if(conns==null)
 			{
 				WireLogger.logger.warn("Aborting and returning empty data: null connections at {}", cp);
-				return new ConnectionModelData(ImmutableSet.of(), connector.getPosition());
+				return new ConnectionModelData(ImmutableSet.of(), pos);
 			}
 			//TODO change model data to only include catenary (a, oX, oY) and number of vertices to render
 			for(Connection c : conns)
@@ -44,20 +54,20 @@ public class ConnectorTileCalls
 				}
 			}
 		}
-		return new ConnectionModelData(ret, connector.getPosition());
+		return new ConnectionModelData(ret, pos);
 	}
 
-	public static void onLoad(IImmersiveConnectable iic, World world)
-	{
-		GlobalWireNetwork.getNetwork(world).onConnectorLoad(iic, world);
-	}
-
-	public static void onChunkUnloaded(GlobalWireNetwork globalNet, IImmersiveConnectable iic)
+	public static void onChunkUnload(GlobalWireNetwork globalNet, IImmersiveConnectable iic)
 	{
 		globalNet.onConnectorUnload(iic);
 	}
 
-	public static void remove(IImmersiveConnectable iic, World world)
+	public static void onChunkLoad(IImmersiveConnectable iic, World world)
+	{
+		GlobalWireNetwork.getNetwork(world).onConnectorLoad(iic, world);
+	}
+
+	public static void remove(World world, IImmersiveConnectable iic)
 	{
 		GlobalWireNetwork globalNet = GlobalWireNetwork.getNetwork(world);
 		if(!world.isRemote)
@@ -82,5 +92,19 @@ public class ConnectorTileCalls
 				globalNet.removeAllConnectionsAt(cp, dropHandler);
 		}
 		globalNet.removeConnector(iic);
+	}
+
+	public static LocalWireNetwork getLocalNetWithCache(
+			GlobalWireNetwork globalNet, BlockPos pos, int cpIndex, Int2ObjectMap<LocalWireNetwork> cachedLocalNets
+	)
+	{
+		LocalWireNetwork ret = cachedLocalNets.get(cpIndex);
+		ConnectionPoint cp = new ConnectionPoint(pos, cpIndex);
+		if(ret==null||!ret.isValid(cp))
+		{
+			ret = globalNet.getLocalNet(cp);
+			cachedLocalNets.put(cpIndex, ret);
+		}
+		return ret;
 	}
 }

@@ -47,7 +47,7 @@ public abstract class ImmersiveConnectableTileEntity extends TileEntity implemen
 	@Override
 	public IModelData getModelData()
 	{
-		ConnectionModelData state = ConnectorTileHelper.genConnBlockState(globalNet, this, getWorld());
+		ConnectionModelData state = ConnectorTileHelper.genConnBlockState(world, this);
 		return CombinedModelData.combine(
 				new SinglePropertyModelData<>(state, Model.CONNECTIONS), super.getModelData()
 		);
@@ -64,7 +64,7 @@ public abstract class ImmersiveConnectableTileEntity extends TileEntity implemen
 	public void onLoad()
 	{
 		super.onLoad();
-		ConnectorTileHelper.onChunkLoad(globalNet, this, world);
+		ConnectorTileHelper.onChunkLoad(this, world);
 	}
 
 	private final Int2ObjectMap<LocalWireNetwork> cachedLocalNets = new Int2ObjectArrayMap<>();

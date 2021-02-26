@@ -16,7 +16,6 @@ import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.builders.*;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
-import blusunrize.immersiveengineering.api.utils.TagUtils;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
@@ -85,7 +84,6 @@ import java.util.function.Consumer;
 import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
 import static blusunrize.immersiveengineering.api.IETags.getStorageBlock;
 import static blusunrize.immersiveengineering.api.utils.TagUtils.createItemWrapper;
-import static blusunrize.immersiveengineering.common.blocks.EnumMetals.COPPER;
 
 public class Recipes extends RecipeProvider
 {
@@ -899,7 +897,7 @@ public class Recipes extends RecipeProvider
 		MixerRecipeBuilder.builder(IEContent.fluidHerbicide, half_bucket)
 				.addFluidTag(IETags.fluidEthanol, half_bucket)
 				.addInput(IETags.saltpeterDust)
-				.addInput(IETags.getTagsFor(COPPER).dust)
+				.addInput(IETags.getTagsFor(EnumMetals.COPPER).dust)
 				.setEnergy(3200)
 				.build(out, toRL("mixer/herbicide"));
 	}

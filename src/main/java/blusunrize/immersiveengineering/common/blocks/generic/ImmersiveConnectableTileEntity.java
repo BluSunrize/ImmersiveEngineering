@@ -14,7 +14,6 @@ import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.utils.client.CombinedModelData;
 import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
 import blusunrize.immersiveengineering.api.wires.*;
-import blusunrize.immersiveengineering.api.wires.tile.ConnectorTileCalls;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
@@ -30,12 +29,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
 
-/**
- * Do not use! This class "leaks" a lot of internal IE code and will be removed in a future build. Use
- * {@link blusunrize.immersiveengineering.api.wires.impl.ImmersiveConnectableTileEntity} or a custom implementation
- * similar to it instead
- */
-@Deprecated
 public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity implements IImmersiveConnectable
 {
 	protected GlobalWireNetwork globalNet;
@@ -92,18 +85,13 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 	{
 	}
 
-	public ConnectionModelData genConnBlockstate()
-	{
-		return ConnectorTileHelper.genConnBlockState(globalNet, this, world);
-	}
-
 	@Nonnull
 	@Override
 	public IModelData getModelData()
 	{
 		return CombinedModelData.combine(
 				new SinglePropertyModelData<>(
-						ConnectorTileCalls.getModelData(world, this), Model.CONNECTIONS
+						ConnectorTileHelper.genConnBlockState(world, this), Model.CONNECTIONS
 				), super.getModelData()
 		);
 	}
