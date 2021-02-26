@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.data;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.IETags.MetalTags;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.utils.TagUtils;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDevices;
@@ -23,6 +24,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.ItemTagsProvider;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
@@ -96,5 +98,8 @@ class ItemTags extends ItemTagsProvider
 				.addItemEntry(WoodenDevices.reinforcedCrate.asItem())
 				.addItemEntry(Misc.cartWoodenCrate)
 				.addItemEntry(Misc.cartReinforcedCrate);
+
+		getOrCreateBuilder(TagUtils.createItemWrapper(new ResourceLocation("curios:back")))
+				.addItemEntry(Misc.powerpack);
 	}
 }
