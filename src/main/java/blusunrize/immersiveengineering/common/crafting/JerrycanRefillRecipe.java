@@ -42,7 +42,7 @@ public class JerrycanRefillRecipe extends SpecialRecipe
 	public boolean matches(@Nonnull CraftingInventory inv, World world)
 	{
 		ItemStack[] components = getComponents(inv);
-		if(!components[jerrycanIndex].isEmpty()&&!components[containerIndex].isEmpty())
+		if(!components[jerrycanIndex].isEmpty()&&!components[containerIndex].isEmpty()&&countOccupiedSlots(inv)==2)
 		{
 			FluidStack jerrycanFluid = FluidUtil.getFluidContained(components[jerrycanIndex]).orElseThrow(RuntimeException::new);
 			if(!jerrycanFluid.isEmpty())
@@ -87,6 +87,15 @@ public class JerrycanRefillRecipe extends SpecialRecipe
 		return ret;
 	}
 
+	private int countOccupiedSlots(IInventory inv)
+	{
+		int c = 0;
+		for(int i = 0; i < inv.getSizeInventory(); i++)
+			if(!inv.getStackInSlot(i).isEmpty())
+				c++;
+		return c;
+	}
+
 	@Override
 	public boolean canFit(int width, int height)
 	{
@@ -98,12 +107,16 @@ public class JerrycanRefillRecipe extends SpecialRecipe
 	public NonNullList<ItemStack> getRemainingItems(CraftingInventory inv)
 	{
 		NonNullList<ItemStack> remaining = super.getRemainingItems(inv);
+		boolean foundJerrycan = false;
 		for(int i = 0; i < inv.getSizeInventory(); i++)
 		{
-			if(FluidUtil.getFluidHandler(inv.getStackInSlot(i))!=null)
+			ItemStack stackInSlot = inv.getStackInSlot(i);
+			if(!stackInSlot.isEmpty())
 			{
-				remaining.set(i, ItemStack.EMPTY);
-				break;
+				if(Misc.jerrycan.equals(stackInSlot.getItem())&&!foundJerrycan)
+					foundJerrycan = true;
+				else
+					remaining.set(i, ItemStack.EMPTY);
 			}
 		}
 		return remaining;
