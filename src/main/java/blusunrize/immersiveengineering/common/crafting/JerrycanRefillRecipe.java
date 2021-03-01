@@ -44,14 +44,12 @@ public class JerrycanRefillRecipe extends SpecialRecipe
 		ItemStack[] components = getComponents(inv);
 		if(!components[jerrycanIndex].isEmpty()&&!components[containerIndex].isEmpty()&&countOccupiedSlots(inv)==2)
 		{
-			FluidStack jerrycanFluid = FluidUtil.getFluidContained(components[jerrycanIndex]).orElseThrow(RuntimeException::new);
-			if(!jerrycanFluid.isEmpty())
-			{
+			return FluidUtil.getFluidContained(components[jerrycanIndex]).map(fs -> {
 				IFluidHandler handler = FluidUtil.getFluidHandler(components[containerIndex])
 						.orElseThrow(RuntimeException::new);
 				FluidStack containerFluid = handler.drain(Integer.MAX_VALUE, FluidAction.SIMULATE);
-				return (containerFluid.getAmount() < handler.getTankCapacity(0)&&handler.isFluidValid(0, jerrycanFluid));
-			}
+				return (containerFluid.getAmount() < handler.getTankCapacity(0)&&handler.isFluidValid(0, fs));
+			}).orElse(false);
 		}
 		return false;
 	}
@@ -63,7 +61,9 @@ public class JerrycanRefillRecipe extends SpecialRecipe
 		ItemStack[] components = getComponents(inv);
 		ItemStack newContainer = ItemHandlerHelper.copyStackWithSize(components[containerIndex], 1);
 		IFluidHandlerItem handler = FluidUtil.getFluidHandler(newContainer).orElseThrow(RuntimeException::new);
-		ItemNBTHelper.putInt(components[jerrycanIndex], "jerrycanDrain", handler.fill(FluidUtil.getFluidContained(components[jerrycanIndex]).orElseThrow(RuntimeException::new), FluidAction.EXECUTE));
+		FluidUtil.getFluidContained(components[jerrycanIndex]).ifPresent(fs -> {
+			ItemNBTHelper.putInt(components[jerrycanIndex], "jerrycanDrain", handler.fill(fs, FluidAction.EXECUTE));
+		});
 		newContainer = handler.getContainer();// Because buckets are silly
 		return newContainer;
 	}
@@ -76,7 +76,8 @@ public class JerrycanRefillRecipe extends SpecialRecipe
 			ItemStack stackInSlot = inv.getStackInSlot(i);
 			if(!stackInSlot.isEmpty())
 			{
-				if(ret[0].isEmpty()&&Misc.jerrycan.equals(stackInSlot.getItem())&&FluidUtil.getFluidContained(stackInSlot)!=null)
+				if(ret[0].isEmpty()&&Misc.jerrycan.equals(stackInSlot.getItem())
+						&&FluidUtil.getFluidContained(stackInSlot).map(fs -> !fs.isEmpty()).orElse(false))
 					ret[0] = stackInSlot;
 				else if(ret[1].isEmpty()&&FluidUtil.getFluidHandler(stackInSlot).isPresent())
 					ret[1] = stackInSlot;
