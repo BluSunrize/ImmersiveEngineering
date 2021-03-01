@@ -451,8 +451,7 @@ public class IEContent
 		MetalDevices.dynamo = new GenericTileBlock<>("dynamo", IETileTypes.DYNAMO, defaultMetalProperties, IEProperties.FACING_HORIZONTAL);
 		MetalDevices.thermoelectricGen = new GenericTileBlock<>("thermoelectric_generator", IETileTypes.THERMOELECTRIC_GEN,
 				defaultMetalProperties);
-		MetalDevices.electricLantern = new ElectricLanternBlock("electric_lantern",
-				IEProperties.FACING_TOP_DOWN, IEProperties.ACTIVE, BlockStateProperties.WATERLOGGED);
+		MetalDevices.electricLantern = new ElectricLanternBlock("electric_lantern");
 		MetalDevices.chargingStation = new GenericTileBlock<>("charging_station", IETileTypes.CHARGING_STATION,
 				metalPropertiesNoOverlay, IEProperties.FACING_HORIZONTAL);
 		MetalDevices.fluidPipe = new GenericTileBlock<>("fluid_pipe", IETileTypes.FLUID_PIPE, metalPropertiesNoOverlay, BlockStateProperties.WATERLOGGED);

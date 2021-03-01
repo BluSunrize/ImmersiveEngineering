@@ -28,6 +28,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 
 //TODO the constructors are a mess, maybe add a builder or something?
 public class MiscConnectorBlock<T extends TileEntity & IImmersiveConnectable> extends ConnectorBlock
@@ -43,6 +44,13 @@ public class MiscConnectorBlock<T extends TileEntity & IImmersiveConnectable> ex
 	public MiscConnectorBlock(String name, RegistryObject<TileEntityType<T>> tileType, Property<?>... extraProperties)
 	{
 		this(name, tileType, ImmutableList.copyOf(extraProperties), BlockItemIE::new);
+	}
+
+	public MiscConnectorBlock(String name, RegistryObject<TileEntityType<T>> tileType, Consumer<Properties> extraSetup,
+							  Property<?>... extraProperties)
+	{
+		super(name, BlockItemIE::new, extraSetup, extraProperties);
+		this.tileType = tileType;
 	}
 
 	public MiscConnectorBlock(String name, RegistryObject<TileEntityType<T>> tileType, List<Property<?>> extraProps,
