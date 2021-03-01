@@ -19,8 +19,6 @@ import top.theillusivec4.curios.api.SlotTypePreset;
 import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
 import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
 
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 
 public class CuriosCompatModule extends IECompatModule
@@ -59,24 +57,20 @@ public class CuriosCompatModule extends IECompatModule
 
 	public static ItemStack getCuriosIfVisible(LivingEntity living, SlotTypePreset slot, Predicate<ItemStack> predicate)
 	{
-		AtomicReference<ItemStack> ret = new AtomicReference<>(ItemStack.EMPTY);
 		LazyOptional<ICuriosItemHandler> optional = CuriosApi.getCuriosHelper().getCuriosHandler(living);
-		optional.ifPresent(itemHandler -> {
-			Optional<ICurioStacksHandler> stacksOptional = itemHandler.getStacksHandler(slot.getIdentifier());
-			stacksOptional.ifPresent(stacksHandler -> {
-				if(stacksHandler.isVisible())
-				{
+		return optional.resolve()
+				.flatMap(handler -> handler.getStacksHandler(slot.getIdentifier()))
+				.filter(ICurioStacksHandler::isVisible)
+				.map(stacksHandler -> {
 					for(int i = 0; i < stacksHandler.getSlots(); i++)
 						if(stacksHandler.getRenders().get(i))
 						{
 							ItemStack stack = stacksHandler.getStacks().getStackInSlot(i);
 							if(predicate.test(stack))
-								ret.set(stack);
+								return stack;
 						}
-				}
-			});
-		});
-		return ret.get();
+					return ItemStack.EMPTY;
+				}).orElse(ItemStack.EMPTY);
 	}
 
 }
