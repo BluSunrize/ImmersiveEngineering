@@ -15,6 +15,7 @@ import blusunrize.lib.manual.ManualUtils;
 import blusunrize.lib.manual.Tree.AbstractNode;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.Screen;
@@ -34,6 +35,7 @@ import java.util.function.Consumer;
 public class ManualScreen extends Screen
 {
 	private Minecraft mc = Minecraft.getInstance();
+	private float scaleFactor = 1;
 	private int xSize = 186;
 	private int ySize = 198;
 	private int guiLeft;
@@ -91,6 +93,23 @@ public class ManualScreen extends Screen
 	@Override
 	public void init()
 	{
+		MainWindow res = mc.getMainWindow();
+		double oldGuiScale = res.calcGuiScale(mc.gameSettings.guiScale, mc.getForceUnicodeFont());
+
+		int guiScaleInt = Math.min(manual.getGuiRescale(), getMinecraft().getMainWindow().calcGuiScale(0, true));
+		double newGuiScale = res.calcGuiScale(guiScaleInt, true);
+
+		if(guiScaleInt > 0&&newGuiScale!=oldGuiScale)
+		{
+			scaleFactor = (float)newGuiScale/(float)res.getGuiScaleFactor();
+			res.setGuiScale(newGuiScale);
+			width = res.getScaledWidth();
+			height = res.getScaledHeight();
+			res.setGuiScale(oldGuiScale);
+		}
+		else
+			scaleFactor = 1;
+
 		this.manual.openManual();
 
 		guiLeft = (this.width-this.xSize)/2;
@@ -164,6 +183,14 @@ public class ManualScreen extends Screen
 	@Override
 	public void render(MatrixStack transform, int mouseX, int mouseY, float f)
 	{
+		transform.push();
+		if(scaleFactor!=1)
+		{
+			transform.scale(scaleFactor, scaleFactor, scaleFactor);
+			mouseX /= scaleFactor;
+			mouseY /= scaleFactor;
+		}
+
 		manual.entryRenderPre();
 
 		ManualUtils.bindTexture(texture);
@@ -245,6 +272,7 @@ public class ManualScreen extends Screen
 		super.render(transform, mouseX, mouseY, f);
 		RenderSystem.enableBlend();
 		manual.entryRenderPost();
+		transform.pop();
 	}
 
 	@Override
@@ -290,9 +318,13 @@ public class ManualScreen extends Screen
 	@Override
 	public void renderToolTip(MatrixStack transform, List<? extends IReorderingProcessor> text, int x, int y, FontRenderer font)
 	{
+		// Unscale the Z axis here, because otherwise the tooltip is out of view
+		transform.push();
+		transform.scale(1, 1, 1/scaleFactor);
 		manual.tooltipRenderPre();
 		super.renderToolTip(transform, text, x, y, font);
 		manual.tooltipRenderPost();
+		transform.pop();
 	}
 
 	@Override
@@ -320,6 +352,8 @@ public class ManualScreen extends Screen
 	@Override
 	public boolean mouseClicked(double mx, double my, int button)
 	{
+		mx /= scaleFactor;
+		my /= scaleFactor;
 		if(button==0&&currentNode.isLeaf())
 		{
 			ManualEntry selectedEntry = currentNode.getLeafData();
@@ -382,6 +416,8 @@ public class ManualScreen extends Screen
 	@Override
 	public boolean mouseDragged(double mx, double my, int button, double deltaX, double deltaY)
 	{
+		mx /= scaleFactor;
+		my /= scaleFactor;
 		if(lastClick!=null&&currentNode.isLeaf())
 		{
 			if(lastDrag==null)
