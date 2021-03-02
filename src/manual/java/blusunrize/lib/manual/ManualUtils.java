@@ -19,6 +19,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -399,5 +400,30 @@ public class ManualUtils
 	public static boolean listStack(String search, ItemStack stack)
 	{
 		return stack.getDisplayName().getString().toLowerCase(Locale.ENGLISH).contains(search);
+	}
+
+	public static void renderItemStack(MatrixStack transform, ItemStack stack, int x, int y, boolean overlay)
+	{
+		if(!stack.isEmpty())
+		{
+			// Include the matrix transformation
+			RenderSystem.pushMatrix();
+			RenderSystem.multMatrix(transform.getLast().getMatrix());
+
+			// Counteract the zlevel increase, because multiplied with the matrix, it goes out of view
+			ItemRenderer itemRenderer = renderItem();
+			itemRenderer.zLevel -= 50;
+			itemRenderer.renderItemAndEffectIntoGUI(stack, x, y);
+			itemRenderer.zLevel += 50;
+
+			if(overlay)
+			{
+				// Use the Item's font renderer, if available
+				FontRenderer font = stack.getItem().getFontRenderer(stack);
+				font = font!=null?font: Minecraft.getInstance().fontRenderer;
+				itemRenderer.renderItemOverlayIntoGUI(font, stack, x, y, null);
+			}
+			RenderSystem.popMatrix();
+		}
 	}
 }
