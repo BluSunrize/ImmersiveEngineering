@@ -51,7 +51,6 @@ public class ManualScreen extends Screen
 	private double[] lastClick;
 	private double[] lastDrag;
 	private TextFieldWidget searchField;
-	private int prevGuiScale = -1;
 	private ClickableList entryList;
 	private ClickableList suggestionList;
 
@@ -68,10 +67,6 @@ public class ManualScreen extends Screen
 		this.manual = manual;
 		this.currentNode = manual.getRoot();
 		this.texture = texture;
-
-		prevGuiScale = mc.gameSettings.guiScale;
-		if(prevGuiScale!=0&&prevGuiScale!=2&&manual.allowGuiRescale())
-			mc.gameSettings.guiScale = 2;
 
 		this.setLastActive = setLastActive;
 	}
@@ -96,13 +91,6 @@ public class ManualScreen extends Screen
 	@Override
 	public void init()
 	{
-		if(mc.gameSettings.guiScale==1)
-		{
-			mc.gameSettings.guiScale = 2;
-			this.width = mc.getMainWindow().getScaledWidth();
-			this.height = mc.getMainWindow().getScaledHeight();
-			mc.gameSettings.guiScale = 1;
-		}
 		this.manual.openManual();
 
 		guiLeft = (this.width-this.xSize)/2;
@@ -164,7 +152,7 @@ public class ManualScreen extends Screen
 		else if(searchField!=null)
 			searchField = null;
 
-		if (setLastActive)
+		if(setLastActive)
 			lastActiveManual = this;
 	}
 
@@ -264,8 +252,6 @@ public class ManualScreen extends Screen
 	{
 		this.manual.closeManual();
 		super.onClose();
-		if(prevGuiScale!=-1&&manual.allowGuiRescale())
-			mc.gameSettings.guiScale = prevGuiScale;
 	}
 
 	private void drawCenteredStringScaled(MatrixStack transform, FontRenderer fr, String s, int x, int y, int colour, float scale, boolean shadow)
