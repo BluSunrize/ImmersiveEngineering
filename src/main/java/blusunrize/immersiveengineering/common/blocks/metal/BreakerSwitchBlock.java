@@ -1,26 +1,19 @@
-/*
- * BluSunrize
- * Copyright (c) 2019
- *
- * This code is licensed under "Blu's License of Common Sense"
- * Details can be found in the license file in the root folder of this project
- */
-
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectableBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraftforge.fml.RegistryObject;
 
-public class FloodlightBlock extends MiscConnectableBlock<FloodlightTileEntity>
+public class BreakerSwitchBlock<T extends BreakerSwitchTileEntity> extends MiscConnectableBlock<T>
 {
-	public FloodlightBlock(String name)
+	public BreakerSwitchBlock(String name, RegistryObject<TileEntityType<T>> tileType)
 	{
-		super(name, props -> props.setLightLevel(state -> state.get(IEProperties.ACTIVE)?15: 0), IETileTypes.FLOODLIGHT);
+		super(name, tileType);
 	}
 
 	@Override

@@ -9,10 +9,12 @@
 package blusunrize.immersiveengineering.common.blocks.cloth;
 
 import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
+import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -30,9 +32,16 @@ public class BalloonBlock extends IETileProviderBlock
 				.sound(SoundType.CLOTH)
 				.hardnessAndResistance(0.8F)
 				.setLightLevel(s -> 13)
-				.notSolid(), BlockItemBalloon::new, BlockStateProperties.WATERLOGGED);
+				.notSolid(), BlockItemBalloon::new);
 		setHasColours();
 		setLightOpacity(0);
+	}
+
+	@Override
+	protected void fillStateContainer(Builder<Block, BlockState> builder)
+	{
+		super.fillStateContainer(builder);
+		builder.add(BlockStateProperties.WATERLOGGED);
 	}
 
 	@Nullable

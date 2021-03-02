@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IModelDataBlock;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import com.google.common.collect.ImmutableList;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.material.PushReaction;
@@ -30,6 +31,7 @@ import net.minecraft.item.ItemUseContext;
 import net.minecraft.loot.LootContext.Builder;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.IntegerProperty;
+import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -60,15 +62,22 @@ import java.util.Locale;
 public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBlock, IModelOffsetProvider
 {
 	public static final IntegerProperty POST_SLAVE = IntegerProperty.create("post_slave", 0, 3);
-	public static final EnumProperty<HorizontalOffset> HORIZONTAL_OFFSET = EnumProperty.create("horizontal_offset",
-			HorizontalOffset.class);
+	public static final EnumProperty<HorizontalOffset> HORIZONTAL_OFFSET = EnumProperty.create(
+			"horizontal_offset", HorizontalOffset.class
+	);
 
 	public PostBlock(String name, Properties blockProps)
 	{
-		//TODO
-		super(name, blockProps, BlockItemIE::new, POST_SLAVE, HORIZONTAL_OFFSET, BlockStateProperties.WATERLOGGED);
+		super(name, blockProps, BlockItemIE::new);
 		setMobility(PushReaction.BLOCK);
 		lightOpacity = 0;
+	}
+
+	@Override
+	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
+	{
+		super.fillStateContainer(builder);
+		builder.add(POST_SLAVE, HORIZONTAL_OFFSET, BlockStateProperties.WATERLOGGED);
 	}
 
 	@Override

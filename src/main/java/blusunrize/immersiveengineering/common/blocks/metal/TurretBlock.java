@@ -16,6 +16,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.fml.RegistryObject;
 
@@ -23,8 +24,14 @@ public class TurretBlock<T extends TurretTileEntity> extends GenericTileBlock<T>
 {
 	public TurretBlock(String name, RegistryObject<TileEntityType<T>> tileType)
 	{
-		super(name, tileType, Block.Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(3, 15).notSolid(),
-				IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE);
+		super(name, tileType, Block.Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(3, 15).notSolid());
+	}
+
+	@Override
+	protected void fillStateContainer(Builder<Block, BlockState> builder)
+	{
+		super.fillStateContainer(builder);
+		builder.add(IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE);
 	}
 
 	@Override

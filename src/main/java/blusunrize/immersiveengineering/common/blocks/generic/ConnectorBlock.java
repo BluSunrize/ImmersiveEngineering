@@ -25,7 +25,6 @@ import net.minecraft.block.material.PushReaction;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.state.Property;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
@@ -39,15 +38,14 @@ import java.util.function.Consumer;
 
 public abstract class ConnectorBlock extends IETileProviderBlock
 {
-	public ConnectorBlock(String name, BiFunction<Block, Item.Properties, Item> item, Property... additional)
+	public ConnectorBlock(String name, BiFunction<Block, Item.Properties, Item> item)
 	{
 		this(name, item, $ -> {
-		}, additional);
+		});
 	}
 
 	public ConnectorBlock(
-			String name, BiFunction<Block, Item.Properties, Item> item, Consumer<AbstractBlock.Properties> extraSetup,
-			Property... additional
+			String name, BiFunction<Block, Item.Properties, Item> item, Consumer<AbstractBlock.Properties> extraSetup
 	)
 	{
 		super(name, Util.make(
@@ -55,14 +53,14 @@ public abstract class ConnectorBlock extends IETileProviderBlock
 						.sound(SoundType.METAL)
 						.hardnessAndResistance(3.0F, 15.0F)
 						.notSolid(),
-				extraSetup), item, additional);
+				extraSetup), item);
 		lightOpacity = 0;
 		setMobility(PushReaction.BLOCK);
 	}
 
-	public ConnectorBlock(String name, Property... additional)
+	public ConnectorBlock(String name)
 	{
-		this(name, BlockItemIE::new, additional);
+		this(name, BlockItemIE::new);
 	}
 
 	@Override

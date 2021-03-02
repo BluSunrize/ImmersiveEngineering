@@ -22,6 +22,7 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.EnumProperty;
+import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
@@ -40,9 +41,16 @@ public class StripCurtainBlock extends IETileProviderBlock
 	public StripCurtainBlock()
 	{
 		super("strip_curtain", Block.Properties.create(Material.WOOL).sound(SoundType.CLOTH).hardnessAndResistance(0.8F).notSolid(),
-				BlockItemIE::new, CEILING_ATTACHED, FACING);
+				BlockItemIE::new);
 		setLightOpacity(0);
 		setHasColours();
+	}
+
+	@Override
+	protected void fillStateContainer(Builder<Block, BlockState> builder)
+	{
+		super.fillStateContainer(builder);
+		builder.add(CEILING_ATTACHED, FACING);
 	}
 
 	@Nullable

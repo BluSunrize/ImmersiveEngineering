@@ -44,10 +44,9 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 {
 	private boolean hasColours = false;
 
-	public IETileProviderBlock(String name, Block.Properties blockProps, BiFunction<Block, Item.Properties, Item> itemBlock,
-							   Property... stateProps)
+	public IETileProviderBlock(String name, Block.Properties blockProps, BiFunction<Block, Item.Properties, Item> itemBlock)
 	{
-		super(name, blockProps, itemBlock, stateProps);
+		super(name, blockProps, itemBlock);
 	}
 
 	@Override

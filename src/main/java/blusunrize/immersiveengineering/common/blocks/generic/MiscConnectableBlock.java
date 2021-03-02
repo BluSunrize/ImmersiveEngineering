@@ -11,13 +11,10 @@ package blusunrize.immersiveengineering.common.blocks.generic;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
-import com.google.common.collect.ImmutableList;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.Item;
 import net.minecraft.state.EnumProperty;
-import net.minecraft.state.Property;
-import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
@@ -26,37 +23,30 @@ import net.minecraftforge.fml.RegistryObject;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
 //TODO the constructors are a mess, maybe add a builder or something?
-public class MiscConnectorBlock<T extends TileEntity & IImmersiveConnectable> extends ConnectorBlock
+public class MiscConnectableBlock<T extends TileEntity & IImmersiveConnectable> extends ConnectorBlock
 {
 	public static final EnumProperty<Direction> DEFAULT_FACING_PROP = IEProperties.FACING_ALL;
 	private final RegistryObject<TileEntityType<T>> tileType;
 
-	public MiscConnectorBlock(String name, RegistryObject<TileEntityType<T>> tileType)
+	public MiscConnectableBlock(String name, RegistryObject<TileEntityType<T>> tileType)
 	{
-		this(name, tileType, ImmutableList.of(IEProperties.FACING_ALL, BlockStateProperties.WATERLOGGED), BlockItemIE::new);
+		this(name, tileType, BlockItemIE::new);
 	}
 
-	public MiscConnectorBlock(String name, RegistryObject<TileEntityType<T>> tileType, Property<?>... extraProperties)
+	public MiscConnectableBlock(String name, Consumer<Properties> extraSetup, RegistryObject<TileEntityType<T>> tileType)
 	{
-		this(name, tileType, ImmutableList.copyOf(extraProperties), BlockItemIE::new);
-	}
-
-	public MiscConnectorBlock(String name, RegistryObject<TileEntityType<T>> tileType, Consumer<Properties> extraSetup,
-							  Property<?>... extraProperties)
-	{
-		super(name, BlockItemIE::new, extraSetup, extraProperties);
+		super(name, BlockItemIE::new, extraSetup);
 		this.tileType = tileType;
 	}
 
-	public MiscConnectorBlock(String name, RegistryObject<TileEntityType<T>> tileType, List<Property<?>> extraProps,
-							  BiFunction<Block, Item.Properties, Item> itemClass)
+	public MiscConnectableBlock(String name, RegistryObject<TileEntityType<T>> tileType,
+								BiFunction<Block, Item.Properties, Item> itemClass)
 	{
-		super(name, itemClass, extraProps.toArray(new Property[0]));
+		super(name, itemClass);
 		this.tileType = tileType;
 	}
 
