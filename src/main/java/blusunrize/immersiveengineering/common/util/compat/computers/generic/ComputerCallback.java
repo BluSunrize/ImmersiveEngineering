@@ -1,7 +1,9 @@
 package blusunrize.immersiveengineering.common.util.compat.computers.generic;
 
+import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import com.google.common.primitives.Primitives;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -12,20 +14,26 @@ import java.util.List;
 public class ComputerCallback<T>
 {
 	private final List<Class<?>> userArguments;
-	private final boolean wrapReturnValue;
+	private final Function<Object, Object[]> wrapReturnValue;
 	private final MethodHandle caller;
 	private final String name;
-	private final CallbackOwner<T> owner;
 
 	private ComputerCallback(CallbackOwner<T> owner, Method method) throws IllegalAccessException
 	{
 		this.caller = MethodHandles.lookup().unreflect(method).bindTo(owner);
-		this.wrapReturnValue = !Object[].class.equals(method.getReturnType());
-		this.owner = owner;
+		if(Object[].class.equals(method.getReturnType()))
+			this.wrapReturnValue = o -> (Object[])o;
+		else if(void.class.equals(method.getReturnType()))
+			this.wrapReturnValue = $ -> new Object[0];
+		else
+			this.wrapReturnValue = o -> new Object[]{o};
 		this.name = method.getName();
 		this.userArguments = Lists.newArrayList(method.getParameterTypes());
+		for(int i = 0; i < this.userArguments.size(); i++)
+			if(this.userArguments.get(i).isPrimitive())
+				this.userArguments.set(i, Primitives.wrap(this.userArguments.get(i)));
 		Preconditions.checkState(!this.userArguments.isEmpty());
-		Preconditions.checkState(this.userArguments.get(0).equals(owner.getCallbackType()));
+		Preconditions.checkState(this.userArguments.get(0).equals(CallbackEnvironment.class));
 		userArguments.remove(0);
 	}
 
@@ -44,7 +52,7 @@ public class ComputerCallback<T>
 		return callbacks;
 	}
 
-	public Object[] invoke(Object[] arguments, T callbackObject)
+	public Object[] invoke(Object[] arguments, CallbackEnvironment<T> env)
 	{
 		if(arguments.length!=this.userArguments.size())
 			throw new RuntimeException(
@@ -60,12 +68,8 @@ public class ComputerCallback<T>
 		{
 			Object[] realArguments = new Object[arguments.length+1];
 			System.arraycopy(arguments, 0, realArguments, 1, arguments.length);
-			realArguments[0] = owner.preprocess(callbackObject);
-			Object result = caller.invokeWithArguments(realArguments);
-			if(wrapReturnValue)
-				return new Object[]{result};
-			else
-				return (Object[])result;
+			realArguments[0] = env;
+			return wrapReturnValue.apply(caller.invokeWithArguments(realArguments));
 		} catch(Throwable throwable)
 		{
 			throwable.printStackTrace();

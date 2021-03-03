@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.util.compat.computers.cctweaked;
 
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackEnvironment;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackOwner;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerCallback;
 import com.google.common.base.Preconditions;
@@ -10,6 +11,7 @@ import dan200.computercraft.api.lua.MethodResult;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 
 public class PeripheralCreator<T>
 {
@@ -42,16 +44,20 @@ public class PeripheralCreator<T>
 		return methodNames;
 	}
 
-	public MethodResult call(ILuaContext ctx, int index, IArguments otherArgs, T mainArgument) throws LuaException
+	public MethodResult call(
+			ILuaContext ctx, int index, IArguments otherArgs, T mainArgument, BooleanSupplier isAttached
+	) throws LuaException
 	{
 		// For now none of our callbacks are thread-safe. If some end up being safe in the future this should be changed
 		// to handle those on the CC:Tweaked thread
 		ComputerCallback<T> callback = methods.get(index);
 		return TaskCallback.make(ctx, () -> {
-					try
-					{
-						return callback.invoke(otherArgs.getAll(), mainArgument);
-					} catch(RuntimeException x)
+			try
+			{
+				return callback.invoke(
+						otherArgs.getAll(), new CallbackEnvironment<>(isAttached, owner.preprocess(mainArgument))
+				);
+			} catch(RuntimeException x)
 					{
 						throw new LuaException(x.getMessage());
 					}

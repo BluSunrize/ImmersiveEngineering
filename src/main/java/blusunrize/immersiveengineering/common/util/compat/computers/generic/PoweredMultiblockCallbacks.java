@@ -1,7 +1,6 @@
 package blusunrize.immersiveengineering.common.util.compat.computers.generic;
 
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
-import blusunrize.immersiveengineering.common.blocks.metal.CrusherTileEntity;
 
 public class PoweredMultiblockCallbacks<T extends PoweredMultiblockTileEntity<?, ?>>
 		implements CallbackOwner<T>
@@ -44,8 +43,14 @@ public class PoweredMultiblockCallbacks<T extends PoweredMultiblockTileEntity<?,
 	}
 
 	@ComputerCallable
-	public boolean isRunning(CrusherTileEntity tile)
+	public boolean isRunning(CallbackEnvironment<PoweredMultiblockTileEntity<?, ?>> env)
 	{
-		return tile.shouldRenderAsActive();
+		return env.getObject().shouldRenderAsActive();
+	}
+
+	@ComputerCallable
+	public void setEnabled(CallbackEnvironment<PoweredMultiblockTileEntity<?, ?>> env, boolean enable)
+	{
+		env.getObject().computerControl = new ComputerControlState(env.getIsAttached(), enable);
 	}
 }

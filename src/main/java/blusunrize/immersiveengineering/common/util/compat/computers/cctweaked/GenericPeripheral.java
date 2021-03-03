@@ -10,11 +10,13 @@ import dan200.computercraft.api.peripheral.IPeripheral;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class GenericPeripheral<T> implements IDynamicPeripheral
 {
 	private final PeripheralCreator<T> creator;
 	private final T object;
+	private final AtomicInteger numAttached = new AtomicInteger(0);
 
 	public GenericPeripheral(PeripheralCreator<T> creator, T object)
 	{
@@ -35,7 +37,7 @@ public class GenericPeripheral<T> implements IDynamicPeripheral
 			@Nonnull IComputerAccess computerAccess, @Nonnull ILuaContext ctx, int index, @Nonnull IArguments luaArgs
 	) throws LuaException
 	{
-		return creator.call(ctx, index, luaArgs, object);
+		return creator.call(ctx, index, luaArgs, object, () -> numAttached.get() > 0);
 	}
 
 	@Nonnull
@@ -53,5 +55,17 @@ public class GenericPeripheral<T> implements IDynamicPeripheral
 		if(other.getClass()!=this.getClass()) return false;
 		GenericPeripheral<?> otherGeneric = (GenericPeripheral<?>)other;
 		return this.creator==otherGeneric.creator&&this.object==otherGeneric.object;
+	}
+
+	@Override
+	public void attach(@Nonnull IComputerAccess computer)
+	{
+		numAttached.incrementAndGet();
+	}
+
+	@Override
+	public void detach(@Nonnull IComputerAccess computer)
+	{
+		numAttached.decrementAndGet();
 	}
 }
