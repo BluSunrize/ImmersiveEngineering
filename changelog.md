@@ -1,4 +1,4 @@
-##### Version 1.16.5-4.2.2-pre
+##### Version 1.16.5-4.2.2-132
  - Added/updated compatability for Tinkers Construct (BluSunrize)
  - Added Curios compatability for the capacitor backpack (BluSunrize)
  - Added a manual entry for Herbicide, describing what it does and how to get it (BluSunrize)
