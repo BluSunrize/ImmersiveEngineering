@@ -22,9 +22,10 @@
  - Fixed crash with Mekanism in fluid recipes (Malte)
  - Fixed jerrycan (and other things) crashing on Forge minor version 40+ (BluSunrize)
  - Fixed jerrycan disappearing when used in crafting (ConductiveFoam)
- - Fixed manual not scaling its GUI up, making it hard to read (BluSunrize)
-    -  Also adds a client config option for manual scale
- - Translations Added/Updated: es_es (FrannDzs), zh_cn (frank89722), ru_ru (DonorTrap, Alepod)
+- Fixed manual not scaling its GUI up, making it hard to read (BluSunrize)
+    - Also adds a client config option for manual scale
+- Made post connections more reliable to floating-point errors in voxel shapes (Malte)
+- Translations Added/Updated: es_es (FrannDzs), zh_cn (frank89722), ru_ru (DonorTrap, Alepod)
 
 ##### Version 1.16.5-4.2.1-131
  - Added missing mixer recipe for herbicide (BluSunrize)
