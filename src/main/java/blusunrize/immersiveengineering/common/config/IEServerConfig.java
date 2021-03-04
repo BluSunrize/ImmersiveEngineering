@@ -268,9 +268,16 @@ public class IEServerConfig
 			{
 				arcFurnaceConfig = addMachineEnergyTimeModifiers(builder, "arc furnace", false);
 				arcfurnace_electrodeDamage = addPositive(builder, "electrodeDamage", 96000, "The maximum amount of damage Graphite Electrodes can take. While the furnace is working, electrodes sustain 1 damage per tick, so this is effectively the lifetime in ticks. The default value of 96000 makes them last for 8 consecutive ingame days");
-				arcfurnace_recycle = builder
-						.comment("Set this to false to disable the Arc Furnace's recycling of armors and tools")
-						.define("recycle", true);
+				builder.comment(
+						"The recycling functionality of the arc furnace is no longer controlled by a config option.",
+						"Like all IE recipes, this is now controlled via a datapack, using the recipe file:",
+						"immersiveengineering/recipes/arc_recycling_list.json",
+						"To disable recycling, add that file to your datapack and fill it with the following content:",
+						"{",
+						"  \"type\": \"immersiveengineering:generated_list\",",
+						"  \"conditions\": [ { \"type\": \"forge:false\" } ]",
+						"}"
+				).define("recycle", "");
 				builder.pop();
 			}
 
@@ -410,7 +417,6 @@ public class IEServerConfig
 		public final DoubleValue refineryConfig;
 		public final MachineRecipeConfig<ArcFurnaceRecipe> arcFurnaceConfig;
 		public final IntValue arcfurnace_electrodeDamage;
-		public final BooleanValue arcfurnace_recycle;
 		public final MachineRecipeConfig<BlueprintCraftingRecipe> autoWorkbenchConfig;
 		public final MachineRecipeConfig<BottlingMachineRecipe> bottlingMachineConfig;
 		public final MachineRecipeConfig<MixerRecipe> mixerConfig;
