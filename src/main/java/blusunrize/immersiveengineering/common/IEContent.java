@@ -23,6 +23,7 @@ import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler;
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler.DefaultFurnaceAdapter;
+import blusunrize.immersiveengineering.api.utils.TagUtils;
 import blusunrize.immersiveengineering.api.wires.NetHandlerCapability;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler;
@@ -90,6 +91,7 @@ import net.minecraftforge.common.ToolType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DeferredWorkQueue;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -791,8 +793,11 @@ public class IEContent
 		ThermoelectricHandler.registerSourceInKelvin(Blocks.PACKED_ICE, 240);
 		ThermoelectricHandler.registerSourceInKelvin(Blocks.BLUE_ICE, 200);
 		ThermoelectricHandler.registerSourceInKelvin(IETags.getTagsFor(EnumMetals.URANIUM).storage, 2000);
-		ThermoelectricHandler.registerSourceInKelvin(BlockTags.getCollection().getTagByID(new ResourceLocation("forge:ices/dry")), 150);
-		ThermoelectricHandler.registerSourceInKelvin(BlockTags.getCollection().getTagByID(new ResourceLocation("forge:storage_blocks/uraninite")), 2000);
+
+		if (ModList.get().isLoaded("powah")){
+			ThermoelectricHandler.registerSourceInKelvin(TagUtils.createBlockWrapper(new ResourceLocation("forge:ices/dry")), 150);
+			ThermoelectricHandler.registerSourceInKelvin(TagUtils.createBlockWrapper(new ResourceLocation("forge:storage_blocks/uraninite")), 2000);
+		}
 		//ThermoelectricHandler.registerSourceInKelvin(new ResourceLocation("forge:storage_blocks/yellorium"), 2000);
 		//ThermoelectricHandler.registerSourceInKelvin(new ResourceLocation("forge:storage_blocks/plutonium"), 4000);
 		//ThermoelectricHandler.registerSourceInKelvin(new ResourceLocation("forge:storage_blocks/blutonium"), 4000);
