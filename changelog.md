@@ -1,3 +1,6 @@
+##### Version 1.16.5-4.2.3-pre
+ - Fix a crash in recycling, occured with Silent Gear (BluSunrize)
+
 ##### Version 1.16.5-4.2.2-132
  - Added/updated compatability for Tinkers Construct (BluSunrize)
  - Added Curios compatability for the capacitor backpack (BluSunrize)
