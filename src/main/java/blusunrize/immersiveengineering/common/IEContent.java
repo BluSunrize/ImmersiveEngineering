@@ -794,19 +794,7 @@ public class IEContent
 		ThermoelectricHandler.registerSourceInKelvin(Blocks.PACKED_ICE, 240);
 		ThermoelectricHandler.registerSourceInKelvin(Blocks.BLUE_ICE, 200);
 		ThermoelectricHandler.registerSourceInKelvin(IETags.getTagsFor(EnumMetals.URANIUM).storage, 2000);
-
-		if (ModList.get().isLoaded("biggerreactors")){
-			ThermoelectricHandler.registerSourceInKelvin(TagUtils.createBlockWrapper(new ResourceLocation("forge:storage_blocks/cyanite")), 1500);
-			ThermoelectricHandler.registerSourceInKelvin(TagUtils.createBlockWrapper(new ResourceLocation("forge:storage_blocks/yellorium")), 2000);
-			ThermoelectricHandler.registerSourceInKelvin(TagUtils.createBlockWrapper(new ResourceLocation("forge:storage_blocks/blutonium")), 3000);
-			ThermoelectricHandler.registerSourceInKelvin(TagUtils.createBlockWrapper(new ResourceLocation("forge:storage_blocks/ludicrite")), 6000);
-		}
-		if (ModList.get().isLoaded("bigreactors")){
-			ThermoelectricHandler.registerSourceInKelvin(TagUtils.createBlockWrapper(new ResourceLocation("forge:storage_blocks/cyanite")), 1500);
-			ThermoelectricHandler.registerSourceInKelvin(TagUtils.createBlockWrapper(new ResourceLocation("forge:storage_blocks/yellorium")), 2000);
-		}
-
-
+		
 		//ThermoelectricHandler.registerSourceInKelvin(new ResourceLocation("forge:storage_blocks/yellorium"), 2000);
 		//ThermoelectricHandler.registerSourceInKelvin(new ResourceLocation("forge:storage_blocks/plutonium"), 4000);
 		//ThermoelectricHandler.registerSourceInKelvin(new ResourceLocation("forge:storage_blocks/blutonium"), 4000);
