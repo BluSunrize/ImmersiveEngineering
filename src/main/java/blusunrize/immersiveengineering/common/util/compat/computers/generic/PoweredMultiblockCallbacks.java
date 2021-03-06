@@ -2,8 +2,7 @@ package blusunrize.immersiveengineering.common.util.compat.computers.generic;
 
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 
-public class PoweredMultiblockCallbacks<T extends PoweredMultiblockTileEntity<?, ?>>
-		implements CallbackOwner<T>
+public class PoweredMultiblockCallbacks<T extends PoweredMultiblockTileEntity<?, ?>> implements CallbackOwner<T>
 {
 	private final Class<T> callbackType;
 	private final String name;
@@ -43,14 +42,26 @@ public class PoweredMultiblockCallbacks<T extends PoweredMultiblockTileEntity<?,
 	}
 
 	@ComputerCallable
-	public boolean isRunning(CallbackEnvironment<PoweredMultiblockTileEntity<?, ?>> env)
+	public boolean isRunning(CallbackEnvironment<T> env)
 	{
 		return env.getObject().shouldRenderAsActive();
 	}
 
 	@ComputerCallable
-	public void setEnabled(CallbackEnvironment<PoweredMultiblockTileEntity<?, ?>> env, boolean enable)
+	public void setEnabled(CallbackEnvironment<T> env, boolean enable)
 	{
 		env.getObject().computerControl = new ComputerControlState(env.getIsAttached(), enable);
+	}
+
+	@ComputerCallable
+	public int getMaxEnergyStored(CallbackEnvironment<T> env)
+	{
+		return env.getObject().energyStorage.getMaxEnergyStored();
+	}
+
+	@ComputerCallable
+	public int getEnergyStored(CallbackEnvironment<T> env)
+	{
+		return env.getObject().energyStorage.getEnergyStored();
 	}
 }

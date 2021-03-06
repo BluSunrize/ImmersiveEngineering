@@ -1,6 +1,5 @@
 package blusunrize.immersiveengineering.common.util.compat.computers.generic;
 
-import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.primitives.Primitives;
@@ -10,6 +9,7 @@ import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 public class ComputerCallback<T>
 {
@@ -18,15 +18,19 @@ public class ComputerCallback<T>
 	private final MethodHandle caller;
 	private final String name;
 
-	private ComputerCallback(CallbackOwner<T> owner, Method method) throws IllegalAccessException
+	private ComputerCallback(
+			CallbackOwner<T> owner, Method method, LuaTypeConverter converters
+	) throws IllegalAccessException
 	{
 		this.caller = MethodHandles.lookup().unreflect(method).bindTo(owner);
+		Function<Object, Object[]> wrapResult;
 		if(Object[].class.equals(method.getReturnType()))
-			this.wrapReturnValue = o -> (Object[])o;
+			wrapResult = o -> (Object[])o;
 		else if(void.class.equals(method.getReturnType()))
-			this.wrapReturnValue = $ -> new Object[0];
+			wrapResult = $ -> new Object[0];
 		else
-			this.wrapReturnValue = o -> new Object[]{o};
+			wrapResult = o -> new Object[]{o};
+		this.wrapReturnValue = wrapResult.compose(converters.getSerializer(method.getReturnType()));
 		this.name = method.getName();
 		this.userArguments = Lists.newArrayList(method.getParameterTypes());
 		for(int i = 0; i < this.userArguments.size(); i++)
@@ -43,37 +47,72 @@ public class ComputerCallback<T>
 	}
 
 	public static <T> List<ComputerCallback<T>>
-	getInClass(CallbackOwner<T> provider) throws IllegalAccessException
+	getInClass(CallbackOwner<T> provider, LuaTypeConverter converters) throws IllegalAccessException
 	{
 		List<ComputerCallback<T>> callbacks = new ArrayList<>();
 		for(Method m : provider.getClass().getMethods())
 			if(m.isAnnotationPresent(ComputerCallable.class))
-				callbacks.add(new ComputerCallback<>(provider, m));
+				callbacks.add(new ComputerCallback<>(provider, m, converters));
 		return callbacks;
 	}
 
-	public Object[] invoke(Object[] arguments, CallbackEnvironment<T> env)
+	public Object[] invoke(Object[] arguments, CallbackEnvironment<T> env) throws Throwable
 	{
 		if(arguments.length!=this.userArguments.size())
 			throw new RuntimeException(
 					"Unexpected number of arguments: Expected "+this.userArguments.size()+", got "+arguments.length
 			);
+		Object[] realArguments = new Object[arguments.length+1];
+		System.arraycopy(arguments, 0, realArguments, 1, arguments.length);
+		realArguments[0] = env;
 		for(int i = 0; i < arguments.length; ++i)
-			if(!arguments[i].getClass().equals(this.userArguments.get(i)))
-				throw new RuntimeException(
-						"Unexpected argument type at argument "+i+": Expected "+
-								this.userArguments.get(i).getSimpleName()+", got "+arguments[i].getClass().getSimpleName()
-				);
-		try
 		{
-			Object[] realArguments = new Object[arguments.length+1];
-			System.arraycopy(arguments, 0, realArguments, 1, arguments.length);
-			realArguments[0] = env;
-			return wrapReturnValue.apply(caller.invokeWithArguments(realArguments));
-		} catch(Throwable throwable)
+			int realIndex = i+1;
+			Class<?> expectedType = this.userArguments.get(i);
+			Object actual = realArguments[realIndex];
+			if(!actual.getClass().equals(expectedType))
+			{
+				if(Number.class.isAssignableFrom(expectedType)&&actual instanceof Double)
+					realArguments[realIndex] = fixNumber((Double)actual, expectedType);
+				else
+					throw new RuntimeException(
+							"Unexpected argument type at argument "+i+": Expected "+
+									this.userArguments.get(i).getSimpleName()+", got "+arguments[i].getClass().getSimpleName()
+					);
+			}
+		}
+		return wrapReturnValue.apply(caller.invokeWithArguments(realArguments));
+	}
+
+	private static Number fixNumber(Double fromLua, Class<?> correctType)
+	{
+		if(correctType==Double.class)
 		{
-			throwable.printStackTrace();
-			throw new RuntimeException("Unexpected error, check server log!");
+			return fromLua;
+		}
+		else if(correctType==Float.class)
+		{
+			return fromLua.floatValue();
+		}
+		else if(correctType==Byte.class)
+		{
+			return fromLua.byteValue();
+		}
+		else if(correctType==Short.class)
+		{
+			return fromLua.shortValue();
+		}
+		else if(correctType==Integer.class)
+		{
+			return fromLua.intValue();
+		}
+		else if(correctType==Long.class)
+		{
+			return fromLua.longValue();
+		}
+		else
+		{
+			return fromLua;
 		}
 	}
 }

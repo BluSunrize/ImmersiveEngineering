@@ -21,7 +21,7 @@ public class PeripheralCreator<T>
 
 	public PeripheralCreator(CallbackOwner<T> owner) throws IllegalAccessException
 	{
-		this.methods = ComputerCallback.getInClass(owner);
+		this.methods = ComputerCallback.getInClass(owner, CCLuaTypeConverter.INSTANCE);
 		this.methodNames = this.methods.stream()
 				.map(ComputerCallback::getName)
 				.toArray(String[]::new);
@@ -52,14 +52,18 @@ public class PeripheralCreator<T>
 		// to handle those on the CC:Tweaked thread
 		ComputerCallback<T> callback = methods.get(index);
 		return TaskCallback.make(ctx, () -> {
-			try
-			{
-				return callback.invoke(
-						otherArgs.getAll(), new CallbackEnvironment<>(isAttached, owner.preprocess(mainArgument))
-				);
-			} catch(RuntimeException x)
+					try
+					{
+						return callback.invoke(
+								otherArgs.getAll(), new CallbackEnvironment<>(isAttached, owner.preprocess(mainArgument))
+						);
+					} catch(RuntimeException x)
 					{
 						throw new LuaException(x.getMessage());
+					} catch(Throwable throwable)
+					{
+						throwable.printStackTrace();
+						throw new RuntimeException("Unexpected error, check server log!");
 					}
 				}
 		);
