@@ -1,4 +1,4 @@
-##### Version 1.16.5-4.2.3-pre
+##### Version 1.16.5-4.2.3-133
  - Add Curios compat for the ear defenders (BluSunrize)
  - Remove unused option for crushing (BluSunrize)
  - Change teslacoil to apply anti-teleport debuff before applying damage (BluSunrize) 
