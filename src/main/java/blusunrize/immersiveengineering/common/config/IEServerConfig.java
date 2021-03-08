@@ -526,9 +526,6 @@ public class IEServerConfig
 		{
 			builder.push("tools");
 			//Server
-			disableHammerCrushing = builder
-					.comment("Set this to true to completely disable the ore-crushing recipes with the Engineers Hammer")
-					.define("disable_hammer_crushing", false);
 			// TODO read too early. Can that be worked around?
 			hammerDurabiliy = addPositive(builder, "hammer_durability", 100, "The maximum durability of the Engineer's Hammer. Used up when hammering ingots into plates.");
 			cutterDurabiliy = addPositive(builder, "cutter_durability", 250, "The maximum durability of the Wirecutter. Used up when cutting plates into wire.");
@@ -596,7 +593,6 @@ public class IEServerConfig
 					.defineInRange(name, defaultVal, 0, Double.MAX_VALUE);
 		}
 
-		public final BooleanValue disableHammerCrushing;
 		public final IntValue hammerDurabiliy;
 		public final IntValue cutterDurabiliy;
 		public final DoubleValue bulletDamage_Casull;
