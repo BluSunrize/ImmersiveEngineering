@@ -15,7 +15,8 @@ import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Connectors;
 import blusunrize.immersiveengineering.common.blocks.metal.ConnectorBundledTileEntity;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
-import blusunrize.immersiveengineering.common.util.compat.computers.generic.CrusherCallbacks;
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.ArcFurnaceCallbacks;
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.CrusherCallbacks;
 import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.block.BlockState;
@@ -88,6 +89,7 @@ public class ComputerCraftCompatModule extends IECompatModule
 		{
 			//TODO move to generic code!
 			knownPeripherals.put(IETileTypes.CRUSHER.get(), new PeripheralCreator<>(new CrusherCallbacks()));
+			knownPeripherals.put(IETileTypes.ARC_FURNACE.get(), new PeripheralCreator<>(new ArcFurnaceCallbacks()));
 		} catch(IllegalAccessException e)
 		{
 			throw new RuntimeException(e);

@@ -19,7 +19,7 @@ public class ComputerCallback<T>
 	private final String name;
 
 	private ComputerCallback(
-			CallbackOwner<T> owner, Method method, LuaTypeConverter converters
+			Callback<T> owner, Method method, LuaTypeConverter converters
 	) throws IllegalAccessException
 	{
 		this.caller = MethodHandles.lookup().unreflect(method).bindTo(owner);
@@ -31,7 +31,7 @@ public class ComputerCallback<T>
 		else
 			wrapResult = o -> new Object[]{o};
 		this.wrapReturnValue = wrapResult.compose(converters.getSerializer(method.getReturnType()));
-		this.name = method.getName();
+		this.name = owner.renameMethod(method.getName());
 		this.userArguments = Lists.newArrayList(method.getParameterTypes());
 		for(int i = 0; i < this.userArguments.size(); i++)
 			if(this.userArguments.get(i).isPrimitive())
@@ -46,13 +46,15 @@ public class ComputerCallback<T>
 		return name;
 	}
 
-	public static <T> List<ComputerCallback<T>>
-	getInClass(CallbackOwner<T> provider, LuaTypeConverter converters) throws IllegalAccessException
+	public static <T> List<ComputerCallback<? super T>>
+	getInClass(Callback<T> provider, LuaTypeConverter converters) throws IllegalAccessException
 	{
-		List<ComputerCallback<T>> callbacks = new ArrayList<>();
+		List<ComputerCallback<? super T>> callbacks = new ArrayList<>();
 		for(Method m : provider.getClass().getMethods())
 			if(m.isAnnotationPresent(ComputerCallable.class))
 				callbacks.add(new ComputerCallback<>(provider, m, converters));
+		for(Callback<? super T> extra : provider.getAdditionalCallbacks())
+			callbacks.addAll(getInClass(extra, converters));
 		return callbacks;
 	}
 
@@ -87,32 +89,18 @@ public class ComputerCallback<T>
 	private static Number fixNumber(Double fromLua, Class<?> correctType)
 	{
 		if(correctType==Double.class)
-		{
 			return fromLua;
-		}
 		else if(correctType==Float.class)
-		{
 			return fromLua.floatValue();
-		}
 		else if(correctType==Byte.class)
-		{
 			return fromLua.byteValue();
-		}
 		else if(correctType==Short.class)
-		{
 			return fromLua.shortValue();
-		}
 		else if(correctType==Integer.class)
-		{
 			return fromLua.intValue();
-		}
 		else if(correctType==Long.class)
-		{
 			return fromLua.longValue();
-		}
 		else
-		{
 			return fromLua;
-		}
 	}
 }

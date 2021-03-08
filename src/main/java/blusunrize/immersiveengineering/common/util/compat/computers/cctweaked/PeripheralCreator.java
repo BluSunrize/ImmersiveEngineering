@@ -15,7 +15,7 @@ import java.util.function.BooleanSupplier;
 
 public class PeripheralCreator<T>
 {
-	private final List<ComputerCallback<T>> methods;
+	private final List<ComputerCallback<? super T>> methods;
 	private final String[] methodNames;
 	private final CallbackOwner<T> owner;
 
@@ -50,17 +50,17 @@ public class PeripheralCreator<T>
 	{
 		// For now none of our callbacks are thread-safe. If some end up being safe in the future this should be changed
 		// to handle those on the CC:Tweaked thread
-		ComputerCallback<T> callback = methods.get(index);
+		ComputerCallback<? super T> callback = methods.get(index);
 		return TaskCallback.make(ctx, () -> {
-					try
-					{
-						return callback.invoke(
-								otherArgs.getAll(), new CallbackEnvironment<>(isAttached, owner.preprocess(mainArgument))
-						);
-					} catch(RuntimeException x)
-					{
-						throw new LuaException(x.getMessage());
-					} catch(Throwable throwable)
+			try
+			{
+				return callback.invoke(
+						otherArgs.getAll(), new CallbackEnvironment<>(isAttached, owner.preprocess(mainArgument))
+				);
+			} catch(RuntimeException x)
+			{
+				throw new LuaException(x.getMessage());
+			} catch(Throwable throwable)
 					{
 						throwable.printStackTrace();
 						throw new RuntimeException("Unexpected error, check server log!");

@@ -1,14 +1,32 @@
 package blusunrize.immersiveengineering.common.util.compat.computers.generic;
 
-public interface CallbackOwner<T>
+public abstract class CallbackOwner<T> extends Callback<T>
 {
-	Class<T> getCallbackType();
+	private final Class<T> type;
+	private final String name;
 
-	String getName();
+	protected CallbackOwner(Class<T> type, String name)
+	{
+		this.type = type;
+		this.name = name;
+	}
 
-	boolean canAttachTo(T candidate);
+	public final Class<T> getCallbackType()
+	{
+		return type;
+	}
 
-	default T preprocess(T arg)
+	public final String getName()
+	{
+		return name;
+	}
+
+	public boolean canAttachTo(T candidate)
+	{
+		return true;
+	}
+
+	public T preprocess(T arg)
 	{
 		return arg;
 	}

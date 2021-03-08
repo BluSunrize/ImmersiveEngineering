@@ -1,20 +1,22 @@
-package blusunrize.immersiveengineering.common.util.compat.computers.generic;
+package blusunrize.immersiveengineering.common.util.compat.computers.generic.impl;
 
 import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity.MultiblockProcessInWorld;
 import blusunrize.immersiveengineering.common.blocks.metal.CrusherTileEntity;
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackEnvironment;
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerCallable;
 import net.minecraft.item.ItemStack;
 
 import java.util.List;
 
-
-public class CrusherCallbacks extends PoweredMultiblockCallbacks<CrusherTileEntity>
+public class CrusherCallbacks extends MultiblockCallbackOwner<CrusherTileEntity>
 {
 	public CrusherCallbacks()
 	{
 		super(CrusherTileEntity.class, "crusher");
+		addAdditional(PoweredMBCallbacks.INSTANCE);
 	}
 
 	@ComputerCallable

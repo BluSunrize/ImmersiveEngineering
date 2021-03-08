@@ -58,11 +58,15 @@ import java.util.*;
 public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnaceTileEntity, ArcFurnaceRecipe>
 		implements ISoundTile, IInteractionObjectIE, ISelectionBounds, ICollisionBounds
 {
+	public static final int FIRST_IN_SLOT = 0;
+	public static final int IN_SLOT_COUNT = 12;
+	public static final int FIRST_ADDITIVE_SLOT = 12;
+	public static final int ADDITIVE_SLOT_COUNT = 4;
+	public static final int FIRST_OUT_SLOT = 16;
+	public static final int OUT_SLOT_COUNT = 6;
+	public static final int SLAG_SLOT = 22;
 	public static final int FIRST_ELECTRODE_SLOT = 23;
 	public static final int ELECTRODE_COUNT = 3;
-	private static final int SLAG_SLOT = 22;
-	private static final int FIRST_OUT_SLOT = 16;
-	private static final int OUT_SLOT_COUNT = 6;
 	private static final BlockPos SLAG_OUT_POS = new BlockPos(2, 0, 0);
 	private static final BlockPos MAIN_OUT_POS = new BlockPos(2, 0, 4);
 	private static final int[] OUTPUT_SLOTS;
@@ -71,9 +75,7 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 	{
 		OUTPUT_SLOTS = new int[OUT_SLOT_COUNT];
 		for(int i = 0; i < OUT_SLOT_COUNT; ++i)
-		{
 			OUTPUT_SLOTS[i] = FIRST_OUT_SLOT+i;
-		}
 	}
 
 	public NonNullList<ItemStack> inventory = NonNullList.withSize(26, ItemStack.EMPTY);
@@ -190,16 +192,16 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 								}
 					}
 
-				NonNullList<ItemStack> additives = NonNullList.withSize(4, ItemStack.EMPTY);
-				for(int i = 0; i < 4; i++)
-					if(!inventory.get(12+i).isEmpty())
+				NonNullList<ItemStack> additives = NonNullList.withSize(ADDITIVE_SLOT_COUNT, ItemStack.EMPTY);
+				for(int i = 0; i < ADDITIVE_SLOT_COUNT; i++)
+					if(!inventory.get(FIRST_ADDITIVE_SLOT+i).isEmpty())
 					{
-						additives.set(i, inventory.get(12+i).copy());
-						if(usedInvSlots.containsKey(12+i))
-							additives.get(i).shrink(usedInvSlots.get(12+i));
+						additives.set(i, inventory.get(FIRST_ADDITIVE_SLOT+i).copy());
+						if(usedInvSlots.containsKey(FIRST_ADDITIVE_SLOT+i))
+							additives.get(i).shrink(usedInvSlots.get(FIRST_ADDITIVE_SLOT+i));
 					}
 
-				for(int slot = 0; slot < 12; slot++)
+				for(int slot = FIRST_IN_SLOT; slot < IN_SLOT_COUNT; slot++)
 					if(!usedInvSlots.containsKey(slot))
 					{
 						ItemStack stack = this.getInventory().get(slot);
@@ -615,27 +617,27 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 
 
 	private LazyOptional<IItemHandler> inputHandler = registerConstantCap(
-			new IEInventoryHandler(12, this, 0, true, false)
-	{
-		//ignore the given slot and spread it out
-		@Override
-		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
-		{
-			if(stack.isEmpty())
-				return stack;
-			stack = stack.copy();
-			List<Integer> possibleSlots = new ArrayList<>(12);
-			for(int i = 0; i < 12; i++)
+			new IEInventoryHandler(IN_SLOT_COUNT, this, FIRST_IN_SLOT, true, false)
 			{
-				ItemStack here = inventory.get(i);
-				if(here.isEmpty())
+				//ignore the given slot and spread it out
+				@Override
+				public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
 				{
-					if(!simulate)
-						inventory.set(i, stack);
-					return ItemStack.EMPTY;
-				}
-				else if(ItemHandlerHelper.canItemStacksStack(stack, here)&&here.getCount() < here.getMaxStackSize())
-				{
+					if(stack.isEmpty())
+						return stack;
+					stack = stack.copy();
+					List<Integer> possibleSlots = new ArrayList<>(IN_SLOT_COUNT);
+					for(int i = FIRST_IN_SLOT; i < IN_SLOT_COUNT; i++)
+					{
+						ItemStack here = inventory.get(i);
+						if(here.isEmpty())
+						{
+							if(!simulate)
+								inventory.set(i, stack);
+							return ItemStack.EMPTY;
+						}
+						else if(ItemHandlerHelper.canItemStacksStack(stack, here)&&here.getCount() < here.getMaxStackSize())
+						{
 					possibleSlots.add(i);
 				}
 			}
@@ -650,11 +652,11 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 				if(stack.isEmpty())
 					return ItemStack.EMPTY;
 			}
-			return stack;
-		}
-	});
+					return stack;
+				}
+			});
 	private LazyOptional<IItemHandler> additiveHandler = registerConstantCap(
-			new IEInventoryHandler(4, this, 12, true, false));
+			new IEInventoryHandler(ADDITIVE_SLOT_COUNT, this, FIRST_ADDITIVE_SLOT, true, false));
 	private LazyOptional<IItemHandler> outputHandler = registerConstantCap(
 			new IEInventoryHandler(OUT_SLOT_COUNT, this, FIRST_OUT_SLOT, false, true));
 	private LazyOptional<IItemHandler> slagHandler = registerConstantCap(
@@ -745,9 +747,9 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 		protected NonNullList<ItemStack> getRecipeItemOutputs(PoweredMultiblockTileEntity<?, ArcFurnaceRecipe> multiblock)
 		{
 			ItemStack input = multiblock.getInventory().get(this.inputSlots[0]);
-			NonNullList<ItemStack> additives = NonNullList.withSize(4, ItemStack.EMPTY);
-			for(int i = 0; i < 4; i++)
-				additives.set(i, !multiblock.getInventory().get(12+i).isEmpty()?multiblock.getInventory().get(12+i).copy(): ItemStack.EMPTY);
+			NonNullList<ItemStack> additives = NonNullList.withSize(ADDITIVE_SLOT_COUNT, ItemStack.EMPTY);
+			for(int i = 0; i < ADDITIVE_SLOT_COUNT; i++)
+				additives.set(i, !multiblock.getInventory().get(FIRST_ADDITIVE_SLOT+i).isEmpty()?multiblock.getInventory().get(FIRST_ADDITIVE_SLOT+i).copy(): ItemStack.EMPTY);
 			return recipe.getOutputs(input, additives);
 		}
 
