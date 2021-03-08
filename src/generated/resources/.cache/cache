@@ -1185,6 +1185,7 @@ c2e2cf40c8fc836b37e8abf4076f1b7b71c76076 assets/immersiveengineering/models/item
 78d827cb8485ccee84e6fd3163be6448d41e7fce assets/immersiveengineering/models/metal_devices/barrel.json
 650780ae213cc68aa5d959f91fa047d8dc82f97b assets/immersiveengineering/models/wooden_devices/barrel.json
 46fb165ebf90bd427ff10c20143bb4efcb9c91b9 data/curios/tags/items/back.json
+8aade5dc51fb55cc77252795990e0910ee325db8 data/curios/tags/items/head.json
 3d8c4067254e03973c1149f119f91ce211118ab7 data/forge/tags/blocks/ores.json
 dc0c86f2fe7ef970412fdc8e5e817f0ae9c6d9e8 data/forge/tags/blocks/ores/aluminum.json
 df4505853f2f4050e5bfeb5497d0030fa02b030e data/forge/tags/blocks/ores/copper.json
