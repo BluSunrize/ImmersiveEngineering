@@ -17,6 +17,7 @@ public class ComputerCallback<T>
 	private final Function<Object, Object[]> wrapReturnValue;
 	private final MethodHandle caller;
 	private final String name;
+	private final boolean isAsync;
 
 	private ComputerCallback(
 			Callback<T> owner, Method method, LuaTypeConverter converters
@@ -24,20 +25,23 @@ public class ComputerCallback<T>
 	{
 		this.caller = MethodHandles.lookup().unreflect(method).bindTo(owner);
 		Function<Object, Object[]> wrapResult;
-		if(Object[].class.equals(method.getReturnType()))
+		Class<?> resultType = method.getReturnType();
+		if(Object[].class.equals(resultType))
 			wrapResult = o -> (Object[])o;
-		else if(void.class.equals(method.getReturnType()))
+		else if(void.class.equals(resultType))
 			wrapResult = $ -> new Object[0];
 		else
 			wrapResult = o -> new Object[]{o};
-		this.wrapReturnValue = wrapResult.compose(converters.getSerializer(method.getReturnType()));
+		this.wrapReturnValue = wrapResult.compose(converters.getSerializer(resultType));
 		this.name = owner.renameMethod(method.getName());
 		this.userArguments = Lists.newArrayList(method.getParameterTypes());
 		for(int i = 0; i < this.userArguments.size(); i++)
 			if(this.userArguments.get(i).isPrimitive())
 				this.userArguments.set(i, Primitives.wrap(this.userArguments.get(i)));
+		isAsync = method.getAnnotation(ComputerCallable.class).isAsync();
 		Preconditions.checkState(!this.userArguments.isEmpty());
 		Preconditions.checkState(this.userArguments.get(0).equals(CallbackEnvironment.class));
+		Preconditions.checkState(isAsync||!resultType.equals(EventWaiterResult.class));
 		userArguments.remove(0);
 	}
 
@@ -84,6 +88,11 @@ public class ComputerCallback<T>
 			}
 		}
 		return wrapReturnValue.apply(caller.invokeWithArguments(realArguments));
+	}
+
+	public boolean isAsync()
+	{
+		return isAsync;
 	}
 
 	private static Number fixNumber(Double fromLua, Class<?> correctType)

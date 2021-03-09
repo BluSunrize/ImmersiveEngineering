@@ -39,16 +39,6 @@ public final class TaskCallback implements ILuaCallback
 			throw new LuaException("error");
 	}
 
-	static Object[] checkUnwrap(MethodResult result)
-	{
-		if(result.getCallback()!=null)
-			// Due to how tasks are implemented, we can't currently return a MethodResult. This is an
-			// entirely artificial limitation - we can remove it if it ever becomes an issue.
-			throw new IllegalStateException("Cannot return MethodResult for mainThread task.");
-
-		return result.getResult();
-	}
-
 	public static MethodResult make(ILuaContext context, ILuaTask func) throws LuaException
 	{
 		long task = context.issueMainThreadTask(func);

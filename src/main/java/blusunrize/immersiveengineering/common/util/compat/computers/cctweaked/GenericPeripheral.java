@@ -37,7 +37,7 @@ public class GenericPeripheral<T> implements IDynamicPeripheral
 			@Nonnull IComputerAccess computerAccess, @Nonnull ILuaContext ctx, int index, @Nonnull IArguments luaArgs
 	) throws LuaException
 	{
-		return creator.call(ctx, index, luaArgs, object, () -> numAttached.get() > 0);
+		return creator.call(computerAccess, ctx, index, luaArgs, object, () -> numAttached.get() > 0);
 	}
 
 	@Nonnull

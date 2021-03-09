@@ -102,6 +102,7 @@ public class ComputerCraftCompatModule extends IECompatModule
 			knownPeripherals.put(IETileTypes.SQUEEZER.get(), new PeripheralCreator<>(new SqueezerCallbacks()));
 			knownPeripherals.put(IETileTypes.MIXER.get(), new PeripheralCreator<>(new MixerCallbacks()));
 			knownPeripherals.put(IETileTypes.REFINERY.get(), new PeripheralCreator<>(new RefineryCallbacks()));
+			knownPeripherals.put(IETileTypes.FLOODLIGHT.get(), new PeripheralCreator<>(new FloodlightCallbacks()));
 		} catch(IllegalAccessException e)
 		{
 			throw new RuntimeException(e);

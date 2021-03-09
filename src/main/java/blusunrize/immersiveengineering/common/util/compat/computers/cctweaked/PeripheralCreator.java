@@ -3,11 +3,13 @@ package blusunrize.immersiveengineering.common.util.compat.computers.cctweaked;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackEnvironment;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackOwner;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerCallback;
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.EventWaiterResult;
 import com.google.common.base.Preconditions;
 import dan200.computercraft.api.lua.IArguments;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.MethodResult;
+import dan200.computercraft.api.peripheral.IComputerAccess;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -45,28 +47,44 @@ public class PeripheralCreator<T>
 	}
 
 	public MethodResult call(
-			ILuaContext ctx, int index, IArguments otherArgs, T mainArgument, BooleanSupplier isAttached
+			IComputerAccess computerAccess, ILuaContext ctx, int index, IArguments otherArgs, T mainArgument, BooleanSupplier isAttached
 	) throws LuaException
 	{
-		// For now none of our callbacks are thread-safe. If some end up being safe in the future this should be changed
-		// to handle those on the CC:Tweaked thread
 		ComputerCallback<? super T> callback = methods.get(index);
-		return TaskCallback.make(ctx, () -> {
-			try
+
+		if(callback.isAsync())
+		{
+			Object[] result = callInner(callback, otherArgs, mainArgument, isAttached);
+			if(result[0] instanceof EventWaiterResult)
 			{
-				return callback.invoke(
-						otherArgs.getAll(), new CallbackEnvironment<>(isAttached, owner.preprocess(mainArgument))
-				);
-			} catch(RuntimeException x)
-			{
-				throw new LuaException(x.getMessage());
-			} catch(Throwable throwable)
-					{
-						throwable.printStackTrace();
-						throw new RuntimeException("Unexpected error, check server log!");
-					}
-				}
-		);
+				EventWaiterResult eventResult = (EventWaiterResult)result[0];
+				eventResult.start(() -> computerAccess.queueEvent(eventResult.getName()));
+				return MethodResult.pullEvent(eventResult.getName(), args -> MethodResult.of());
+			}
+			else
+				return MethodResult.of(result);
+		}
+		else
+			return TaskCallback.make(ctx, () -> callInner(callback, otherArgs, mainArgument, isAttached));
+	}
+
+	private Object[] callInner(
+			ComputerCallback<? super T> callback, IArguments otherArgs, T mainArgument, BooleanSupplier isAttached
+	) throws LuaException
+	{
+		try
+		{
+			return callback.invoke(
+					otherArgs.getAll(), new CallbackEnvironment<>(isAttached, owner.preprocess(mainArgument))
+			);
+		} catch(RuntimeException x)
+		{
+			throw new LuaException(x.getMessage());
+		} catch(Throwable throwable)
+		{
+			throwable.printStackTrace();
+			throw new RuntimeException("Unexpected error, check server log!");
+		}
 	}
 
 	public String getName()
