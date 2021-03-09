@@ -1,4 +1,4 @@
-##### Version 1.16.5-4.2.4-pre
+##### Version 1.16.5-4.2.4-134
  - Fix issues with the manual (BluSunrize)
 
 ##### Version 1.16.5-4.2.3-133
