@@ -20,13 +20,14 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author BluSunrize - 20.02.2017
  */
 public class MultiFluidTank implements IFluidTank, IFluidHandler
 {
-	public ArrayList<FluidStack> fluids = new ArrayList<>();
+	public List<FluidStack> fluids = new ArrayList<>();
 	private final int capacity;
 
 	public MultiFluidTank(int capacity)

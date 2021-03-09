@@ -29,8 +29,7 @@ public class InventoryCallbacks<T> extends Callback<T>
 	@Override
 	public String renameMethod(String javaName)
 	{
-		String uppercaseDesc = Character.toUpperCase(desc.charAt(0))+desc.substring(1);
-		return javaName.replace("Desc", uppercaseDesc);
+		return javaName.replace("Desc", capitalize(desc));
 	}
 
 	@ComputerCallable

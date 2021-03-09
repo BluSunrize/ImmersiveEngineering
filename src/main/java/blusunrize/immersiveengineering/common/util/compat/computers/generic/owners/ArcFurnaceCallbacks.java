@@ -1,8 +1,10 @@
-package blusunrize.immersiveengineering.common.util.compat.computers.generic.impl;
+package blusunrize.immersiveengineering.common.util.compat.computers.generic.owners;
 
 import blusunrize.immersiveengineering.common.blocks.metal.ArcFurnaceTileEntity;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackEnvironment;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerCallable;
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.InventoryCallbacks;
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.PoweredMBCallbacks;
 import net.minecraft.item.ItemStack;
 
 public class ArcFurnaceCallbacks extends MultiblockCallbackOwner<ArcFurnaceTileEntity>

@@ -1,4 +1,4 @@
-package blusunrize.immersiveengineering.common.util.compat.computers.generic.impl;
+package blusunrize.immersiveengineering.common.util.compat.computers.generic.owners;
 
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackOwner;

@@ -15,8 +15,7 @@ import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Connectors;
 import blusunrize.immersiveengineering.common.blocks.metal.ConnectorBundledTileEntity;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
-import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.ArcFurnaceCallbacks;
-import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.CrusherCallbacks;
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.owners.*;
 import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.block.BlockState;
@@ -90,6 +89,19 @@ public class ComputerCraftCompatModule extends IECompatModule
 			//TODO move to generic code!
 			knownPeripherals.put(IETileTypes.CRUSHER.get(), new PeripheralCreator<>(new CrusherCallbacks()));
 			knownPeripherals.put(IETileTypes.ARC_FURNACE.get(), new PeripheralCreator<>(new ArcFurnaceCallbacks()));
+			knownPeripherals.put(
+					IETileTypes.BOTTLING_MACHINE.get(), new PeripheralCreator<>(new BottlingMachineCallbacks())
+			);
+			knownPeripherals.put(IETileTypes.CAPACITOR_LV.get(), new PeripheralCreator<>(new CapacitorCallbacks("lv")));
+			knownPeripherals.put(IETileTypes.CAPACITOR_MV.get(), new PeripheralCreator<>(new CapacitorCallbacks("mv")));
+			knownPeripherals.put(IETileTypes.CAPACITOR_HV.get(), new PeripheralCreator<>(new CapacitorCallbacks("hv")));
+			knownPeripherals.put(IETileTypes.DIESEL_GENERATOR.get(), new PeripheralCreator<>(new DieselGenCallbacks()));
+			knownPeripherals.put(IETileTypes.ENERGY_METER.get(), new PeripheralCreator<>(new EnergyMeterCallbacks()));
+			knownPeripherals.put(IETileTypes.EXCAVATOR.get(), new PeripheralCreator<>(new ExcavatorCallbacks()));
+			knownPeripherals.put(IETileTypes.FERMENTER.get(), new PeripheralCreator<>(new FermenterCallbacks()));
+			knownPeripherals.put(IETileTypes.SQUEEZER.get(), new PeripheralCreator<>(new SqueezerCallbacks()));
+			knownPeripherals.put(IETileTypes.MIXER.get(), new PeripheralCreator<>(new MixerCallbacks()));
+			knownPeripherals.put(IETileTypes.REFINERY.get(), new PeripheralCreator<>(new RefineryCallbacks()));
 		} catch(IllegalAccessException e)
 		{
 			throw new RuntimeException(e);
