@@ -1,3 +1,6 @@
+##### Version 1.16.5-4.2.4-pre
+ - Fix issues with the manual (BluSunrize)
+
 ##### Version 1.16.5-4.2.3-133
  - Add Curios compat for the ear defenders (BluSunrize)
  - Remove unused option for crushing (BluSunrize)
