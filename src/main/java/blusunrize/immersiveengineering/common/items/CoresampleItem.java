@@ -20,6 +20,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.StoneDecoration;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.client.util.ITooltipFlag;
@@ -28,6 +29,7 @@ import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
 import net.minecraft.util.*;
@@ -42,9 +44,9 @@ import net.minecraftforge.common.util.Constants.NBT;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
 public class CoresampleItem extends IEBaseItem
 {
@@ -68,32 +70,25 @@ public class CoresampleItem extends IEBaseItem
 		ColumnPos coords = getCoords(coresample);
 		if(coords!=null)
 		{
-			ListNBT nbtList = coresample.getOrCreateTag().getList("mineralInfo", NBT.TAG_COMPOUND);
-			if(nbtList.size() > 0)
-				nbtList.forEach(inbt -> {
-					CompoundNBT tag = (CompoundNBT)inbt;
-					MineralMix mineral = MineralMix.mineralList.get(new ResourceLocation(tag.getString("mineral")));
-					if(mineral == null)
-					{
-						list.add(new StringTextComponent("INVALID MINERAL ID. NO MINERAL FOUND."));
-						return;
-					}
-
+			List<VeinSampleData> veins = getVeins(coresample);
+			if(!veins.isEmpty())
+				veins.forEach(data -> {
 					IFormattableTextComponent component = new StringTextComponent(
-							Utils.formatDouble(tag.getDouble("percentage")*100, "0.00")+"% "
+							Utils.formatDouble(data.getPercentageInTotalSample()*100, "0.00")+"% "
 					);
+					MineralMix mineral = data.getType();
 					component.append(new TranslationTextComponent(mineral.getTranslationKey()));
 					list.add(component.mergeStyle(baseColor));
 					if(showYield)
 					{
 						component = new StringTextComponent("  ");
 						component.append(new TranslationTextComponent(Lib.DESC_INFO+"coresample.saturation",
-								Utils.formatDouble(tag.getDouble("saturation")*100, "0.00")
+								Utils.formatDouble(data.getSaturation()*100, "0.00")
 						));
 						list.add(component.mergeStyle(TextFormatting.DARK_GRAY));
 
 						component = new StringTextComponent("  ");
-						int yield = ExcavatorHandler.mineralVeinYield-tag.getInt("depletion");
+						int yield = ExcavatorHandler.mineralVeinYield-data.getDepletion();
 						yield *= (1-mineral.failChance);
 						if(ExcavatorHandler.mineralVeinYield==0)
 							component.append(new TranslationTextComponent(Lib.DESC_INFO+"coresample.infinite"));
@@ -174,23 +169,21 @@ public class CoresampleItem extends IEBaseItem
 
 	public static MineralMix[] getMineralMixes(ItemStack coresample)
 	{
-		if(ItemNBTHelper.hasKey(coresample, "mineralInfo", NBT.TAG_LIST))
-		{
-			ListNBT nbtList = coresample.getOrCreateTag().getList("mineralInfo", NBT.TAG_COMPOUND);
-			return nbtList.stream().map(inbt -> {
-				CompoundNBT tag = (CompoundNBT)inbt;
-				return MineralMix.mineralList.get(new ResourceLocation(tag.getString("mineral")));
-			}).filter(Objects::nonNull).toArray(MineralMix[]::new);
-		}
-		return new MineralMix[0];
+		return getVeins(coresample)
+				.stream()
+				.map(VeinSampleData::getType)
+				.toArray(MineralMix[]::new);
 	}
 
 	public static ListNBT getSimplifiedMineralList(ItemStack coresample)
 	{
 		ListNBT outList = new ListNBT();
-		if(ItemNBTHelper.hasKey(coresample, "mineralInfo", NBT.TAG_LIST))
-			coresample.getOrCreateTag().getList("mineralInfo", NBT.TAG_COMPOUND).
-					forEach(inbt -> outList.add(StringNBT.valueOf(((CompoundNBT)inbt).getString("mineral"))));
+		getVeins(coresample).stream()
+				.map(VeinSampleData::getType)
+				.map(MineralMix::getId)
+				.map(ResourceLocation::toString)
+				.map(StringNBT::valueOf)
+				.forEach(outList::add);
 		return outList;
 	}
 
@@ -201,14 +194,30 @@ public class CoresampleItem extends IEBaseItem
 		List<Pair<MineralVein, Integer>> veins = info.getAllVeins();
 		ListNBT nbtList = new ListNBT();
 		veins.forEach(pair -> {
-			CompoundNBT tag = new CompoundNBT();
-			tag.putDouble("percentage", pair.getRight()/(double)info.getTotalWeight());
-			tag.putString("mineral", pair.getLeft().getMineral().getId().toString());
-			tag.putInt("depletion", pair.getLeft().getDepletion());
-			tag.putDouble("saturation", 1-pair.getLeft().getFailChance(pos));
-			nbtList.add(tag);
+			VeinSampleData sampleData = new VeinSampleData(
+					pair.getLeft().getMineral(),
+					pair.getRight()/(double)info.getTotalWeight(),
+					1-pair.getLeft().getFailChance(pos),
+					pair.getLeft().getDepletion()
+			);
+			nbtList.add(sampleData.toNBT());
 		});
 		stack.getOrCreateTag().put("mineralInfo", nbtList);
+	}
+
+	public static List<VeinSampleData> getVeins(ItemStack stack)
+	{
+		if(!ItemNBTHelper.hasKey(stack, "mineralInfo", NBT.TAG_LIST))
+			return ImmutableList.of();
+		List<VeinSampleData> veins = new ArrayList<>();
+		ListNBT mineralInfoNBT = stack.getOrCreateTag().getList("mineralInfo", NBT.TAG_COMPOUND);
+		for(INBT vein : mineralInfoNBT)
+		{
+			VeinSampleData data = VeinSampleData.fromNBT((CompoundNBT)vein);
+			if(data!=null)
+				veins.add(data);
+		}
+		return veins;
 	}
 
 	@Nullable
@@ -241,5 +250,62 @@ public class CoresampleItem extends IEBaseItem
 	public static void setDimension(ItemStack stack, RegistryKey<World> dimension)
 	{
 		stack.getOrCreateTag().putString("dimension", dimension.getLocation().toString());
+	}
+
+	public static class VeinSampleData
+	{
+		private final MineralMix type;
+		private final double percentageInTotalSample;
+		private final double saturation;
+		private final int depletion;
+
+		public VeinSampleData(MineralMix type, double percentageInTotalSample, double saturation, int depletion)
+		{
+			this.type = type;
+			this.percentageInTotalSample = percentageInTotalSample;
+			this.saturation = saturation;
+			this.depletion = depletion;
+		}
+
+		@Nullable
+		public static VeinSampleData fromNBT(CompoundNBT nbt)
+		{
+			MineralMix mineral = MineralMix.mineralList.get(new ResourceLocation(nbt.getString("mineral")));
+			if(mineral==null)
+				return null;
+			return new VeinSampleData(
+					mineral, nbt.getDouble("percentage"), nbt.getDouble("saturation"), nbt.getInt("depletion")
+			);
+		}
+
+		public CompoundNBT toNBT()
+		{
+			CompoundNBT tag = new CompoundNBT();
+			tag.putDouble("percentage", percentageInTotalSample);
+			tag.putString("mineral", type.getId().toString());
+			tag.putInt("depletion", depletion);
+			tag.putDouble("saturation", saturation);
+			return tag;
+		}
+
+		public MineralMix getType()
+		{
+			return type;
+		}
+
+		public double getPercentageInTotalSample()
+		{
+			return percentageInTotalSample;
+		}
+
+		public double getSaturation()
+		{
+			return saturation;
+		}
+
+		public int getDepletion()
+		{
+			return depletion;
+		}
 	}
 }

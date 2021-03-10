@@ -13,6 +13,9 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
+import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
+import blusunrize.immersiveengineering.api.excavator.MineralMix;
+import blusunrize.immersiveengineering.api.excavator.MineralVein;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
@@ -55,6 +58,7 @@ import blusunrize.immersiveengineering.common.util.sound.IEMuffledTickableSound;
 import blusunrize.immersiveengineering.mixin.accessors.client.GPUWarningAccess;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Multimap;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -62,6 +66,7 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ITickableSound;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.VideoSettingsScreen;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
@@ -75,6 +80,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.EffectInstance;
@@ -896,11 +902,11 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			FractalParticle.PARTICLE_FRACTAL_DEQUE.clear();
 		}
 
-		/* Debug for Mineral Veins
+		/* Debug for Mineral Veins */
 
 		boolean show;
 		// Default <=> shift is sneak, use ctrl instead
-		if (Minecraft.getInstance().gameSettings.keyBindSneak.isDefault())
+		if(Minecraft.getInstance().gameSettings.keyBindSneak.isDefault())
 			show = Screen.hasControlDown();
 		else
 			show = Screen.hasShiftDown();
@@ -944,7 +950,6 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				}
 			}
 		}
-		*/
 
 		if(!FAILED_CONNECTIONS.isEmpty())
 		{
