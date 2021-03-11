@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.EnumMetals;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.IETags.MetalTags;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.utils.TagUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;

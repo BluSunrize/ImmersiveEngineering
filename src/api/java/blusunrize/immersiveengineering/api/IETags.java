@@ -207,7 +207,8 @@ public class IETags
 		return forgeLoc("sheetmetals/"+type);
 	}
 
-	private static ResourceLocation rl(String path) {
+	private static ResourceLocation rl(String path)
+	{
 		return new ResourceLocation(Lib.MODID, path);
 	}
 }
