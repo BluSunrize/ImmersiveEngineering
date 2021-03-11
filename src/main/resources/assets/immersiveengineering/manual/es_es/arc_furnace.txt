@@ -1,0 +1,15 @@
+Horno de arco
+No es un reactor
+El Horno de arco es una estructura masiva utilizada para fundir rápidamente los metales. Consiste en una cuba de acero coronada por electrodos que calientan el metal.
+El horno destaca en la fundición de minerales y en la creación de acero debido a su alta velocidad y a su capacidad para procesar varios elementos al mismo tiempo, pero también es complejo en su funcionamiento y requerirá mantenimiento para seguir funcionando.
+Hay que eliminar la escoria de la máquina o dejará de funcionar, y los electrodos que se degradan deben ser sustituidos con el tiempo.
+Para formar la estructura, hay que ensamblarla como se muestra en la primera página, y luego pulsar el caldero con un Martillo del Ingeniero.
+La energía se introduce a través de los tres conectores de la parte trasera, y si se suministra al panel de control de la parte delantera una señal de Redstone se apagará la máquina. Si haces clic con el botón derecho del ratón en el panel, el "cubo" o la cuba, se abrirá la interfaz.<np>
+§lInterfaz:§r
+La interfaz puede parecer confusa al verla por primera vez, pero es bastante sencilla.
+
+Las tres ranuras de la parte superior son para los <link;graphite;Electrodos de grafito;electrode>.
+Las doce ranuras de la izquierda son las ranuras de entrada de metales y minerales. Cada ranura tiene una barra de temperatura al lado, que representa el progreso de la fundición.
+Las cuatro ranuras de la derecha son para los "aditivos", diferentes materiales que se añaden al metal fundido durante el proceso de elaboración. Un ejemplo sería añadir polvo de coque a la fundición de hierro para crear acero.
+Los insumos y aditivos se introducen a través de las dos trampillas de la parte superior de la estructura, los insumos a la izquierda y los aditivos a la derecha de los electrodos.
+Las siete ranuras de la parte inferior son seis ranuras de salida y una ranura para la escoria. Las salidas se extraen del "cubo" situado en la parte delantera de la estructura, y la escoria a través del puerto situado en la parte trasera de la máquina. El Horno de Arco empujará automáticamente la salida y la escoria a los inventarios conectados (esto incluye las cintas transportadoras).

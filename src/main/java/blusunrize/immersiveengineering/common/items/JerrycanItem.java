@@ -66,10 +66,10 @@ public class JerrycanItem extends IEBaseItem
 		TileEntity tileEntity = world.getTileEntity(pos);
 		if(tileEntity==null||!tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY).isPresent())
 		{
-			FluidStack fs = FluidUtil.getFluidContained(stack).orElseThrow(RuntimeException::new);
-			if(Utils.placeFluidBlock(world, pos.offset(ctx.getFace()), fs))
+			Optional<FluidStack> fs = FluidUtil.getFluidContained(stack);
+			if(fs.isPresent()&&Utils.placeFluidBlock(world, pos.offset(ctx.getFace()), fs.get()))
 			{
-				ItemNBTHelper.setFluidStack(stack, "Fluid", fs);
+				ItemNBTHelper.setFluidStack(stack, "Fluid", fs.get());
 				return ActionResultType.SUCCESS;
 			}
 		}
@@ -79,7 +79,7 @@ public class JerrycanItem extends IEBaseItem
 	@Override
 	public boolean hasContainerItem(ItemStack stack)
 	{
-		return ItemNBTHelper.hasKey(stack, "jerrycanDrain")||FluidUtil.getFluidContained(stack)!=null;
+		return ItemNBTHelper.hasKey(stack, "jerrycanDrain")||FluidUtil.getFluidContained(stack).isPresent();
 	}
 
 	@Override

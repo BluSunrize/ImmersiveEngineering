@@ -10,7 +10,7 @@
 package blusunrize.immersiveengineering.common.crafting.fluidaware;
 
 import blusunrize.immersiveengineering.common.crafting.fluidaware.AbstractFluidAwareRecipe.IMatchLocation;
-import com.google.common.base.Preconditions;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.ICraftingRecipe;
@@ -91,7 +91,13 @@ public abstract class AbstractFluidAwareRecipe<MatchLocation extends IMatchLocat
 	{
 		NonNullList<ItemStack> remaining = NonNullList.withSize(inv.getSizeInventory(), ItemStack.EMPTY);
 		final MatchLocation offset = findMatch(inv);
-		Preconditions.checkNotNull(offset);
+		if(offset==null)
+		{
+			IELogger.logger.error("IRecipe#getRemainingItems was called with an inventory that does not match the recipe");
+			IELogger.logger.error("according to IRecipe#matches. This is probably a bug in some mod in the following stacktrace,");
+			IELogger.logger.error("if in doubt report it to Immersive Engineering", new IllegalArgumentException());
+			return ICraftingRecipe.super.getRemainingItems(inv);
+		}
 
 		for(int x = 0; x < inv.getWidth(); ++x)
 			for(int y = 0; y < inv.getHeight(); ++y)

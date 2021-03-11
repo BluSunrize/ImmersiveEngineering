@@ -1,0 +1,9 @@
+Aserradero
+Cuidado los dedos!
+El Aserradero es un conjunto de máquinas que cortan los troncos de madera en tablas bien apiladas. La máquina funciona en dos fases: primero descorteza el tronco y luego utiliza una <link;buzzsaw;Hoja de sierra> para cortar el tronco despojado.<np>
+<&sawdust>Ambos pasos del proceso crean §2aserrín§r, que se recoge y sale por el puerto de la parte delantera de la máquina. Ese aserrín puede transformarse posteriormente en placas.<np>
+La máquina se construye como se muestra en la primera página y se forma utilizando un §2Martillo del Ingeniero§r en el bloque central de chapa.
+La aplicación de una señal de Redstone al panel de control en la parte delantera detendrá la máquina, este comportamiento se puede invertir mediante el uso del §2Destornillador del Ingeniero§r.<np>
+Para estar totalmente preparado para el tratamiento, tendrá que elaborar una <link;buzzsaw;Hoja de Sierra> e introdúzcala en la ranura de la parte trasera haciendo clic con el botón derecho. Agáchate y haz clic con el botón derecho para sacar la hoja de sierra de nuevo.
+Pasar los troncos por la máquina sin una hoja de sierra creará §2troncos sin corteza§r que no se van a cortar. Este proceso es mucho más rápido que desmontarlos manualmente.
+La hoja de sierra se dañará durante su uso y puede ser necesario sustituirla después de un tiempo.

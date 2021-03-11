@@ -207,7 +207,7 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 
 	public abstract int getPagenumberColour();
 
-	public abstract boolean allowGuiRescale();
+	public abstract int getGuiRescale();
 
 	public abstract boolean improveReadability();
 

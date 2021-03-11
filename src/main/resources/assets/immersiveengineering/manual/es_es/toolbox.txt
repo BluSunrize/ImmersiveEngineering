@@ -1,0 +1,4 @@
+Caja de Herramientas del Ingeniero
+La Caja del Ingeniero
+La Caja de Herramientas del Ingenierno es un simple contenedor que se lleva encima y que sirve para guardar todo lo esencial de un ingeniero. Al pasar el ratón por encima de las ranuras correspondientes, se indica lo que aceptan.
+Las ranuras de "Comida" y "Cualquier cosa" se explican por sí solas, las de "Cableado" son para rollos, conectores y artículos similares, y las de "Herramientas" almacenan cualquier herramienta de IE, así como picos, palas y hachas. Al hacer shift + clic con el botón derecho, la caja de herramientas puede colocarse como un bloque. Mientras está colocada, se puede acceder al inventario con un clic derecho. Si vuelves a hacer shift + clic con el botón derecho, podrás recoger la caja de herramientas.

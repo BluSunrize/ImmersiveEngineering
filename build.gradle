@@ -7,7 +7,7 @@ buildscript {
         maven { url = 'https://files.minecraftforge.net/maven' }
         maven {url "https://plugins.gradle.org/m2/"}
         mavenCentral()
-        maven {url='https://dist.creeper.host/Sponge/maven'}
+        maven {url='https://repo.spongepowered.org/repository/maven-public/'}
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
@@ -196,9 +196,11 @@ repositories {
             url = "https://minecraft.curseforge.com/api/maven/"
         }
     }
-    maven {
-        // CC-Tweaked
+    maven { // CC-Tweaked
         url 'https://squiddev.cc/maven/'
+    }
+    maven { //Curious
+        url "https://maven.theillusivec4.top/"
     }
 }
 
@@ -211,6 +213,7 @@ dependencies {
     compileOnly fg.deobf('com.feed_the_beast.mods:ftb-gui-library:1.0.0.18')
     compileOnly fg.deobf("org.squiddev:cc-tweaked-1.16.4:1.94.0")
     compileOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:1.16-3.+")
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.4.0:api")
     compile "malte0811:BlockModelSplitter:1.2.0"
     testImplementation('junit:junit:4.13')
     annotationProcessor 'org.spongepowered:mixin:0.8.2:processor'

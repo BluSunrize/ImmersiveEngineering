@@ -23,6 +23,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.ItemTagsProvider;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
@@ -96,5 +97,10 @@ class ItemTags extends ItemTagsProvider
 				.addItemEntry(WoodenDevices.reinforcedCrate.asItem())
 				.addItemEntry(Misc.cartWoodenCrate)
 				.addItemEntry(Misc.cartReinforcedCrate);
+
+		getOrCreateBuilder(TagUtils.createItemWrapper(new ResourceLocation("curios:back")))
+				.addItemEntry(Misc.powerpack);
+		getOrCreateBuilder(TagUtils.createItemWrapper(new ResourceLocation("curios:head")))
+				.addItemEntry(Misc.earmuffs);
 	}
 }

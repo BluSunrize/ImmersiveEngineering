@@ -1,6 +1,6 @@
-Capacitor Backpack
-Do....Ray....Egon!
-Energy storage takes space and some heavy weight components. As such, storing large amounts of energy in each tool individually is inefficient and makes them akward to wield.
-The Capacitor Backpack acts as a compromise, offering a centralized storage of energy for any powered tools to tap into.
-The backpack charges any tools held in main- or offhand as well as any armorpieces you are wearing.
-The capacitor can be worn on your back like a piece of chest armor, or you may attach it to most common sets of armor in order to gain the benefit of a power-supply as well as protection.
+Конденсаторный рюкзак
+Сделай .... Рэй .... Эгон!
+Для хранения энергии требуется место и некоторые тяжелые компоненты. Таким образом, хранение большого количества энергии в каждом инструменте по отдельности неэффективно и затрудняет их использование.
+Конденсаторный рюкзак выступает в качестве компромисса, предлагая централизованное хранилище энергии для любых приводных инструментов.
+Рюкзак заряжает любые инструменты, находящиеся в основной или левой руке, а также любые типы брони, которые вы носите.
+Конденсатор можно носить на спине, как часть нагрудного доспеха, или вы можете прикрепить его к наиболее распространенным наборам доспехов, чтобы получить преимущества как от источника питания, так и от защиты.

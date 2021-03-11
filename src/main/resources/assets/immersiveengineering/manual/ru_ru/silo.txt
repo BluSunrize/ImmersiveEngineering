@@ -1,5 +1,5 @@
-Silo
-Full to the brim!
-Silos offer space for a lot of items of the same type, making them excellent for mass storage of seeds, slag or cobblestone. They have space for 41472 items, equaling the capacity of 24 chests.
-Items must be input through the top and extracted from the bottom. Applying a redstone signal to the bottom block will make it output automatically.
-A comparator attached to the bottom center block will it emit a redstone signal proportional to how full the silo is. Attaching the comparator to one of the top 6 layers results in a signal proportional to the height of the comparator. For example, a comparator attached to the third layer of a silo would not emit any signal until the tank is 2/6 full and have a signal strength of 15 if the silo is half full or more.
+Бункер
+Полный до краев!
+В Бенкере есть место для множества однотипных предметов, что делает их идеальными для массового хранения семян, шлака или булыжника. В них есть место для 41472 предметов, что соответствует вместимости 24 сундуков.
+Элементы необходимо вводить сверху и извлекать снизу. Применение сигнала красного камня к нижнему блоку сделает вывод предметов автоматическим.
+Компаратор, прикрепленный к нижнему центральному блоку, будет излучать сигнал красного камня, пропорциональный степени заполнения бункера. Присоединение компаратора к одному из верхних 6 слоев приводит к сигналу, пропорциональному высоте компаратора. Например, компаратор, прикрепленный к третьему слою бункера, не будет излучать никакого сигнала, пока резервуар не будет заполнен на 2/6, и будет иметь уровень сигнала 15, если бункер заполнен наполовину или более.

@@ -12,7 +12,6 @@ import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.ManualScreen;
 import blusunrize.lib.manual.utils.PrivateAccess;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.widget.button.Button;
@@ -226,8 +225,6 @@ public class ManualElementCrafting extends SpecialManualElements
 		}
 
 		totalYOff = 0;
-		RenderSystem.pushMatrix();
-		RenderSystem.multMatrix(transform.getLast().getMatrix());
 		for(int i = 0; i < recipeLayout.length; i++)
 		{
 			List<PositionedItemStack[]> rList = this.recipeLayout[i];
@@ -237,15 +234,13 @@ public class ManualElementCrafting extends SpecialManualElements
 					if(pstack!=null)
 						if(!pstack.getStack().isEmpty())
 						{
-							ManualUtils.renderItem().renderItemAndEffectIntoGUI(pstack.getStack(), x+pstack.x, y+totalYOff+pstack.y);
-							ManualUtils.renderItem().renderItemOverlayIntoGUI(manual.fontRenderer(), pstack.getStack(), x+pstack.x, y+totalYOff+pstack.y, null);
+							ManualUtils.renderItemStack(transform, pstack.getStack(), x+pstack.x, y+totalYOff+pstack.y, true);
 							if(mx >= x+pstack.x&&mx < x+pstack.x+16&&my >= y+totalYOff+pstack.y&&my < y+totalYOff+pstack.y+16)
 								highlighted = pstack.getStack();
 						}
 				totalYOff += heightPixels[i]+8;
 			}
 		}
-		RenderSystem.popMatrix();
 
 		this.renderHighlightedTooltip(transform, gui, mx, my);
 	}

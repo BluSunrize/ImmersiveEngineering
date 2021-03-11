@@ -1,0 +1,5 @@
+Grafito
+Material de carbón
+El grafito pirolítico altamente ordenado es un material de carbono complejo, altamente comprimido, que se utiliza en construcciones especiales de ingeniería.
+El polvo de grafito pirolítico altamente ordenado se crea comprimiendo ocho piezas de polvo de coque en el <link;squeezer;Exprimidor industrial>. Ese polvo puede ser fundido en un lingote.
+<&electrode>El uso más común del grafito pirolítico altamente ordenado es la creación de electrodos para ser utilizados en el <link;arc_furnace;Horno de arco>. Estos electrodos se crean con un <link;blueprints;Plano>, que puedes encontrar en ciertos cofres o comerciar con un aldeano. También puedes crear electrodos en la prensa metálica, usando el molde de varilla en 4 lingotes, pero los electrodos fabricados de esta manera tienen menos durabilidad.

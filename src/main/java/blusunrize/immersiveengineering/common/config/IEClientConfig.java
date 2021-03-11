@@ -35,7 +35,7 @@ public class IEClientConfig
 	public final static BooleanValue disableFancyTESR;
 	public final static BooleanValue showTextOverlay;
 	public final static BooleanValue nixietubeFont;
-	public final static BooleanValue adjustManualScale;
+	public final static IntValue manualGuiScale;
 	public final static BooleanValue badEyesight;
 	public static boolean lastBadEyesight;
 	public final static BooleanValue tagTooltips;
@@ -63,9 +63,9 @@ public class IEClientConfig
 		nixietubeFont = builder
 				.comment("Set this to false to disable the super awesome looking nixie tube front for the voltmeter and other things")
 				.define("nixietubeFont", true);
-		adjustManualScale = builder
-				.comment("Set this to false to disable the manual's forced change of GUI scale")
-				.define("adjustManualScale", true);
+		manualGuiScale = builder
+				.comment("Set the GUI scale of the Engineer's Manual. This uses the same numbers as Vanilla's GUI Scale and is therefor limited to the maximum value available ingame.")
+				.defineInRange("manualGuiScale", 4, 1, 32);
 		badEyesight = builder
 				.comment("Set this to true if you suffer from bad eyesight. The Engineer's manual will be switched to a bold and darker text to improve readability.")
 				.define("badEyesight", false);

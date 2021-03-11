@@ -59,6 +59,8 @@ class IEBlockTags extends BlockTagsProvider
 				.addItemEntry(Blocks.CUT_RED_SANDSTONE)
 				.addItemEntry(Blocks.CHISELED_RED_SANDSTONE)
 				.addItemEntry(Blocks.SMOOTH_RED_SANDSTONE);
+		for(Block b : MetalDecoration.metalLadder.values())
+			getOrCreateBuilder(BlockTags.CLIMBABLE).addItemEntry(b);
 		for(EnumMetals metal : EnumMetals.values())
 		{
 			MetalTags tags = IETags.getTagsFor(metal);

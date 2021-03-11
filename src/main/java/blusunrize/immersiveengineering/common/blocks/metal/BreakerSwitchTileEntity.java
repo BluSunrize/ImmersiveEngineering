@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.TargetingInfo;
+import blusunrize.immersiveengineering.api.utils.shapes.CachedVoxelShapes;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
@@ -40,12 +41,12 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.TransformationMatrix;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.util.text.TranslationTextComponent;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -247,16 +248,20 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 		return false;
 	}
 
+	private static final CachedVoxelShapes<Pair<Direction, Integer>> SHAPES = new CachedVoxelShapes<>(pair -> {
+		Vector3d start = new Vector3d(.25, .1875, 0);
+		Vector3d end = new Vector3d(.75, .8125, .5);
+		Matrix4 mat = new Matrix4(pair.getLeft());
+		mat.translate(.5, .5, 0).rotate(Math.PI/2*pair.getRight(), 0, 0, 1).translate(-.5, -.5, 0);
+		start = mat.apply(start);
+		end = mat.apply(end);
+		return ImmutableList.of(new AxisAlignedBB(start, end));
+	});
+
 	@Override
 	public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx)
 	{
-		Vector3d start = new Vector3d(.25, .1875, 0);
-		Vector3d end = new Vector3d(.75, .8125, .5);
-		Matrix4 mat = new Matrix4(getFacing());
-		mat.translate(.5, .5, 0).rotate(Math.PI/2*rotation, 0, 0, 1).translate(-.5, -.5, 0);
-		start = mat.apply(start);
-		end = mat.apply(end);
-		return VoxelShapes.create(new AxisAlignedBB(start, end));
+		return SHAPES.get(Pair.of(getFacing(), rotation));
 	}
 
 	@Override

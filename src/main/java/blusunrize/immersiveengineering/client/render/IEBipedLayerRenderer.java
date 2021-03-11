@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.compat.CuriosCompatModule;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
@@ -23,6 +24,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.ModList;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -45,20 +47,22 @@ public class IEBipedLayerRenderer<E extends LivingEntity, M extends BipedModel<E
 	public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, E living, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch)
 	{
 		ItemStack head = living.getItemStackFromSlot(EquipmentSlotType.HEAD);
+		ItemStack earmuffs = ItemStack.EMPTY;
 		if(!head.isEmpty()&&(head.getItem()==Misc.earmuffs||ItemNBTHelper.hasKey(head, Lib.NBT_Earmuffs)))
+			earmuffs = head.getItem()==Misc.earmuffs?head: ItemNBTHelper.getItemStack(head, Lib.NBT_Earmuffs);
+		else if(ModList.get().isLoaded("curios"))
+			earmuffs = CuriosCompatModule.getEarmuffs(living);
+
+		if(!earmuffs.isEmpty())
 		{
-			ItemStack earmuffs = head.getItem()==Misc.earmuffs?head: ItemNBTHelper.getItemStack(head, Lib.NBT_Earmuffs);
-			if(!earmuffs.isEmpty())
-			{
-				BipedModel<E> model = Misc.earmuffs.getArmorModel(living, earmuffs, EquipmentSlotType.HEAD, null);
-				model.setRotationAngles(living, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-				RenderType type = model.getRenderType(new ResourceLocation(Misc.earmuffs.getArmorTexture(earmuffs, living, EquipmentSlotType.HEAD, "overlay")));
-				model.render(matrixStackIn, bufferIn.getBuffer(type), packedLightIn, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
-				int colour = ((IColouredItem)earmuffs.getItem()).getColourForIEItem(earmuffs, 0);
-				type = model.getRenderType(new ResourceLocation(Misc.earmuffs.getArmorTexture(earmuffs, living, EquipmentSlotType.HEAD, null)));
-				model.render(matrixStackIn, bufferIn.getBuffer(type), packedLightIn, OverlayTexture.NO_OVERLAY,
-						(colour >> 16&255)/255f, (colour >> 8&255)/255f, (colour&255)/255f, 1F);
-			}
+			BipedModel<E> model = Misc.earmuffs.getArmorModel(living, earmuffs, EquipmentSlotType.HEAD, null);
+			model.setRotationAngles(living, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+			RenderType type = model.getRenderType(new ResourceLocation(Misc.earmuffs.getArmorTexture(earmuffs, living, EquipmentSlotType.HEAD, "overlay")));
+			model.render(matrixStackIn, bufferIn.getBuffer(type), packedLightIn, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
+			int colour = ((IColouredItem)earmuffs.getItem()).getColourForIEItem(earmuffs, 0);
+			type = model.getRenderType(new ResourceLocation(Misc.earmuffs.getArmorTexture(earmuffs, living, EquipmentSlotType.HEAD, null)));
+			model.render(matrixStackIn, bufferIn.getBuffer(type), packedLightIn, OverlayTexture.NO_OVERLAY,
+					(colour >> 16&255)/255f, (colour >> 8&255)/255f, (colour&255)/255f, 1F);
 		}
 
 		ItemStack chest = living.getItemStackFromSlot(EquipmentSlotType.CHEST);
@@ -67,11 +71,17 @@ public class IEBipedLayerRenderer<E extends LivingEntity, M extends BipedModel<E
 			ItemStack powerpack = chest.getItem()==Misc.powerpack?chest: ItemNBTHelper.getItemStack(chest, Lib.NBT_Powerpack);
 			addWornPowerpack(living, powerpack);
 		}
+		else if(ModList.get().isLoaded("curios"))
+		{
+			ItemStack powerpack = CuriosCompatModule.getPowerpack(living);
+			if(!powerpack.isEmpty())
+				addWornPowerpack(living, powerpack);
+		}
 
 		if(POWERPACK_PLAYERS.containsKey(living.getUniqueID()))
 		{
 			Pair<ItemStack, Integer> entry = POWERPACK_PLAYERS.get(living.getUniqueID());
-			renderPowerpack(entry.getLeft(), matrixStackIn, bufferIn, packedLightIn, living, limbSwing,limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+			renderPowerpack(entry.getLeft(), matrixStackIn, bufferIn, packedLightIn, living, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 			int time = entry.getValue()-1;
 			if(time <= 0)
 				POWERPACK_PLAYERS.remove(living.getUniqueID());

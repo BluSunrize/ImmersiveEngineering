@@ -1,0 +1,13 @@
+Railgun
+Velocitas Eradico
+El Railgun (o más exactamente la Catapulta de Inducción Portátil) es una maravilla de la ingeniería. Consta de dos raíles por los que circula una corriente eléctrica que acelera un trineo y, por tanto, un proyectil.
+El proceso consume mucha energía, pero acelera varios proyectiles a gran velocidad.
+Para lanzar un proyectil desde tu inventario, mantén pulsado el botón de uso hasta que el nivel de carga llegue a 99, y luego suéltalo.
+
+Los proyectiles más comunes son §2hierro§r, §2aluminio§r y §2varillas de acero§r, así como §2electrodos de grafito§r. Sin embargo, también puede disparar proyectiles más exóticos, como <link;buzzsaw;§2hojas de sierra§r> o §2tridentes§r.
+Para cambiar de proyectil, agáchate y desliza la rueda del ratón o utiliza la combinación de teclas §l<keybind;key.immersiveengineering.chemthrowerSwitch>§r si se ha establecido en las opciones.
+
+Debido al bajo almacenamiento de energía interna, se recomienda utilizar el Railgun junto con una <link;powerpack;Mochila de condensador>.
+Al igual que con otras herramientas de IE, el Railgun puede ser modificado en EL <link;workbench;Banco de Trabajo del Ingeniero> y personalizarse con <link;shader;Sombreadores>.<np>
+<&speed>Los §2Disipadores térmicos avanzados§r ayudan a mitigar la acumulación de calor durante el proceso de carga, reduciendo en gran medida el tiempo de carga del Railgun.<np>
+<&scope>La §2Mira Telescópica§r le permite hacer zoom con el Railgun. Usa §l<keybind;key.immersiveengineering.railgunZoom>§r para utilizar el visor y desplaza la rueda del ratón para cambiar los niveles de aumento.

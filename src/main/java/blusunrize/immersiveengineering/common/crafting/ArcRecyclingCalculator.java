@@ -150,7 +150,10 @@ public class ArcRecyclingCalculator
 				for(Ingredient in : inputs)
 					if(in!=null&&in!=Ingredient.EMPTY)
 					{
-						ItemStack inputStack = IEApi.getPreferredStackbyMod(in.getMatchingStacks());
+						ItemStack[] matchingStacks = in.getMatchingStacks();
+						ItemStack inputStack = ItemStack.EMPTY;
+						if(matchingStacks.length>0)
+							inputStack = IEApi.getPreferredStackbyMod(in.getMatchingStacks());
 						if(inputStack.isEmpty())
 						{
 							IELogger.warn("Recipe has invalid inputs and will be ignored: "+recipe+" ("+recipe.getId()+")");

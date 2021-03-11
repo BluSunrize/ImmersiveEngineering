@@ -1,0 +1,5 @@
+Estación de carga de energía
+¡Cargue sus gafas!
+<&recipe>La Estación de carga de energía es un dispositivo que permite cargar herramientas y otros artículos.
+La energía puede introducirse por la parte inferior o por la trasera y los artículos pueden colocarse manualmente o introducirse automáticamente.<np>
+Los tubos de electrones de la parte delantera proporcionan información sobre la carga actual del artículo, pero el bloque también emitirá una señal de comparador para los mismos fines.

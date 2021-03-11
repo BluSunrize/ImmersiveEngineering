@@ -90,6 +90,14 @@ public class PowerpackItem extends IEBaseItem implements IIEEnergyItem
 	}
 
 	@Override
+	public void inventoryTick(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected)
+	{
+		// We'll just have to assume that's Curios which sets the slot of -1
+		if(itemSlot==-1&&entity instanceof PlayerEntity)
+			onArmorTick(stack, world, (PlayerEntity)entity);
+	}
+
+	@Override
 	public int getMaxEnergyStored(ItemStack container)
 	{
 		return 100000;

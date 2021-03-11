@@ -1,0 +1,9 @@
+Componentes modificados
+Piezas integrales
+<&mech_components>Muchas máquinas y herramientas se construyen a partir de varios subcomponentes. Algunos de ellos los tendrá que utilizar de forma habitual, por lo que tienen su propia entrada en este manual. El §2Componente mecánico de hierro§r y el §2Componente mecánico de acero§r son parte integrante de la mayoría de los Multibloques y de la maquinaria.<np>
+<&create_bp>Como se encontrará creando estos componentes con más frecuencia, puede ser aconsejable redactar un <link;blueprints;Plano> para ellos. El uso de este plano en un <link;workbench;Banco de Trabajo del Ingeniero> le permitirá construir los componentes a un coste reducido.
+Las recetas del Banco de Trabajo se encuentran en la siguiente página.<np>
+<&tubes>Otro componente, aunque menos utilizado, son los §2Tubos de vacío§r. Estos tubos de vidrio se utilizan como elementos en la maquinaria electrónica y se emplean en <link;lighting;dispositivos emisores de luz>.<np>
+<&pcb>Un componente poco utilizado, pero crucial en la maquinaria avanzada que requiere un cálculo preciso es la §2Placa de circuito integrado§r. Son poco prácticas y grandes, pero pueden realizar operaciones matemáticas básicas en menos de un segundo.
+
+

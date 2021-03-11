@@ -1,0 +1,6 @@
+Interruptor de corte
+Clap on - Clap off
+<&manual_breaker>Los interruptores de corte son simplemente interruptores que pueden detener el flujo de energía a través de los cables. Pueden conectar dos cables del mismo tipo y sólo permitirán el paso de energía cuando se activen. Pueden utilizarse para separar de la red la maquinaria que consume energía o para conectar un grupo electrógeno adicional cuando sea necesario. Debido al alto riesgo, estos interruptores no aceptan cables de alta tensión.
+También emiten una señal de Redstone cuando están encendidos; este comportamiento puede invertirse pulsando el interruptor con un Destornillador del Ingeniero.
+Además, son una forma excelente de controlar los <link;lighting;Faroles eléctricos;electric_lantern>!<np>
+<&rs_breaker>El interruptor de corte de Redstone es similar a un interruptor normal, pero no puede ser operado manualmente. En su lugar, requerirá una señal de Redstone para romper la conexión. A cambio, este dispositivo está lo suficientemente bien aislado como para permitir la conexión de cables de alta tensión.

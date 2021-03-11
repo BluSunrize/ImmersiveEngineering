@@ -1,3 +1,47 @@
+##### Version 1.16.5-4.2.4-134
+ - Fix issues with the manual (BluSunrize)
+
+##### Version 1.16.5-4.2.3-133
+ - Add Curios compat for the ear defenders (BluSunrize)
+ - Remove unused option for crushing (BluSunrize)
+ - Change teslacoil to apply anti-teleport debuff before applying damage (BluSunrize) 
+ - Fix a crash in recycling, occured with Silent Gear (BluSunrize)
+ - Fix drill and buzzsaw not working (Malte)
+ - Fix issues with Russian and Chinese translations (BluSunrize)
+ - Fix capacitor backpack not working when equipped as a Curios (BluSunrize)
+ - Fix metal ladders not being climable on newer Forge versions (BluSunrize)
+
+##### Version 1.16.5-4.2.2-132
+ - Added/updated compatability for Tinkers Construct (BluSunrize)
+ - Added Curios compatability for the capacitor backpack (BluSunrize)
+ - Added a manual entry for Herbicide, describing what it does and how to get it (BluSunrize)
+ - Changed villagers to respect the ore preference config for trades (BluSunrize)
+ - Changed fluid outlet to allow inverting the redstone signal (BluSunrize)
+   - Also fixed buggy area detection
+ - Replaced config option for arc furnace recycling with documentation on how to use a datapack instead (BluSunrize)
+   - It was broken anyway, the option didn't work. Using configs for recipes is an outdated practice.
+   - Datapacks are the future (right now anyway), so deal with it.
+ - Fixed crash related to fluid pipe extraction (Malte)
+ - Fixed crusher not accepting items in top layer (Malte)
+ - Fixed crashes related to tag loading (Malte)
+ - Fixed missing particles on some blocks (Malte)
+ - Fixed errors when using the buzzsaw as a weapon (Malte)
+ - Fixed potion bullets crashing when fired from turrets (BluSunrize)
+ - Fixed crash related to using a railgun offhanded (BluSunrize)
+ - Fixed coresample drill incorrectly starting its animation (BluSunrize)
+ - Fixed flipped faces on metal press model (BluSunrize)
+ - Fixed arc furnace particle crash (Malte)
+ - Fixed refinery wasting fluid (Malte)
+ - Fixed localization of Minecart entities (SkySom)
+ - Fixed crash with Mekanism in fluid recipes (Malte)
+ - Fixed jerrycan (and other things) crashing on Forge minor version 40+ (BluSunrize)
+ - Fixed jerrycan disappearing when used in crafting (ConductiveFoam)
+ - Fixed manual not scaling its GUI up, making it hard to read (BluSunrize)
+   - Also adds a client config option for manual scale
+ - Made post connections more reliable to floating-point errors in voxel shapes (Malte)
+ - Fixed formatting on links in the manual (BluSunrize)
+ - Translations Added/Updated: es_es (FrannDzs), zh_cn (frank89722), ru_ru (DonorTrap, Alepod)
+
 ##### Version 1.16.5-4.2.1-131
  - Added missing mixer recipe for herbicide (BluSunrize)
  - Added Craftweaker compatability for Mineral Veins, improved documentation (Jared)

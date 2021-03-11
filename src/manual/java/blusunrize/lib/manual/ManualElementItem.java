@@ -77,8 +77,6 @@ public class ManualElementItem extends SpecialManualElements
 		{
 			transform.push();
 			transform.scale(scale, scale, scale);
-			RenderSystem.pushMatrix();
-			RenderSystem.multMatrix(transform.getLast().getMatrix());
 			for(int line = 0; line < lines; line++)
 			{
 				int perLine = line==lines-1?itemsLastLine: line%2==0?longLineLen: shortLineLen;
@@ -92,12 +90,12 @@ public class ManualElementItem extends SpecialManualElements
 						break;
 					int xx = x+60-w2+(int)(i*18*scale);
 					int yy = y+(lines < 2?4: 0)+line*(int)(18*scale);
-					ManualUtils.renderItem().renderItemAndEffectIntoGUI(stacks.get(item), (int)(xx/scale), (int)(yy/scale));
+
+					ManualUtils.renderItemStack(transform, stacks.get(item), (int)(xx/scale), (int)(yy/scale), false);
 					if(mx >= xx&&mx < xx+(16*scale)&&my >= yy&&my < yy+(16*scale))
 						highlighted = stacks.get(item);
 				}
 			}
-			RenderSystem.popMatrix();
 			transform.pop();
 		}
 		RenderHelper.disableStandardItemLighting();

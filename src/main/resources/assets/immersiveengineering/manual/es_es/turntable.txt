@@ -1,0 +1,7 @@
+Plataforma giratoria
+No puedo seguir el ritmo
+<&recipe>La Plataforma giratoria hará girar los bloques colocados contra ella.
+Al sostener un Martillo del Ingeniero mientras se mira un lado de la máquina, se muestra su lado giratorio y la dirección de giro asociada al lado apuntado.
+El sentido de giro se ajusta individualmente para cada uno de los 4 lados alrededor del eje de giro, lo que permite realizar giros de ±90° o 180°, según el lado que reciba la señal de Redstone.
+
+Si se hace clic con el botón derecho del Martillo, se reorientará, y si se hace con shift + click derecho, se recorrerán los sentidos de giro de la plataforma giratoria.

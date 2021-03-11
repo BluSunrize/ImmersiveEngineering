@@ -315,8 +315,17 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBloc
 			if(!shape.isEmpty())
 			{
 				AxisAlignedBB aabb = shape.getBoundingBox();
-				boolean connect = dir==Direction.NORTH?aabb.maxZ==1: dir==Direction.SOUTH?aabb.minZ==0: dir==Direction.WEST?aabb.maxX==1: aabb.minX==0;
-				ret = connect&&((dir.getAxis()==Axis.Z&&aabb.minX > 0&&aabb.maxX < 1)||(dir.getAxis()==Axis.X&&aabb.minZ > 0&&aabb.maxZ < 1));
+				final double distance = dir==Direction.NORTH?aabb.maxZ-1: dir==Direction.SOUTH?aabb.minZ:
+						dir==Direction.WEST?aabb.maxX-1: aabb.minX;
+				final double eps = 1e-7;
+				boolean connect = distance < eps&&distance > -eps;
+				if(connect)
+				{
+					if(dir.getAxis()==Axis.Z)
+						ret = aabb.minX > eps&&aabb.maxX < 1-eps;
+					else
+						ret = aabb.minZ > eps&&aabb.maxZ < 1-eps;
+				}
 			}
 		}
 		else if(dummy==3)

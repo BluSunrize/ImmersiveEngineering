@@ -1,13 +1,13 @@
-Revolver
-Wanted: Dead or Alive
-<&recipe>The Revolver, a more elegant weapon from a more civilized age, is an achievement of small mechanics. Small being relative here, since this weapon is chambered for 12-gauge.
-Similar to the Mining Drill, the Revolver will allow for modification in the <link;workbench;Engineer's Workbench>, as detailed on the last pages.
+Револьвер
+Разыскивается живым или мертвым
+<&recipe>Револьвер, более элегантное оружие более цивилизованной эпохи, является достижением малой механики. Небольшие размеры здесь относительны, поскольку это оружие рассчитано на 12-й калибр.
+Подобно Шахтёрскому буду, Револьвер можно изменять в <link;workbench;Верстаке инженера>, как подробно описано на последних страницах.
 
-Note that firing the revolver is quite noisy, and will attract the attention of hostile mobs in the area!
+Обратите внимание, что стрельба из револьвера довольно шумная и привлечет внимание враждебных мобов в этом районе!
 
-There are different <link;bullets;types of ammunition;> the Revolver will accept. To load it, sneak + rightclick the weapon, then place cartridges into the slots.<np>
-<&speedloader>A loaded Speedloader in your inventory will be used to refill the revolver after you've fired your last shot.
+Существуют разные <link;bullets;типы амуниции;>, которые принимает Револьвер. Чтобы зарядить его, присядьте + щелкните ПКМ, затем поместите патроны в гнезда.<np>
+<&speedloader>Заряженный Спидлоадер в вашем инвентаре будет использоваться для пополнения патрон револьвера после того, как вы сделаете последний выстрел.
 <np>
-<&bayonet>By attaching a §2bayonet§r to the revolver, you outfit it with close-quarter-combat capabilities, allowing for melee damage as powerful as an Iron Sword.<np>
-<&extmag>The §2Extended Magazine§r allows loading 6 more cartridges into the revolver. This magazine does not get refilled by a speedloader.<np>
-<&tubes>The §2Amplifying Electron Tubes§r apply an electric shock to fired projectiles. This shock persists till it hits the target (don't ask how it works) and is passed on. The target will be stunned for a fraction of a second and all powered equipment they may be using will suffer a slight discharge.
+<&bayonet>Прикрепив к револьверу §2Штык§r, вы оборудуете его возможностями ближнего боя, что позволяет наносить урон в ближнем бою столь же мощный, как железный меч.<np>
+<&extmag>§2Дополнительная обойма§r позволяет заряжать в револьвер еще 6 патронов. Эта обойма не пополняется с помощью Спидлоадера.<np>
+<&tubes>§2Электронный усилитель§r заряжает выпущенные снаряды электрическим током. Эффект шока сохраняется до тех пор, пока снаряд не поразит цель (не спрашивайте, как это работает) и не будет передан дальше. Цель будет оглушена на долю секунды, а всё включенное оборудование, которое она поразит, получит небольшой разряд.
