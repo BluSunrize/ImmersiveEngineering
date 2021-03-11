@@ -97,7 +97,11 @@ public abstract class DieselToolItem extends UpgradeableToolItem
 	public void readShareTag(ItemStack stack, @Nullable CompoundNBT nbt)
 	{
 		if(nbt!=null)
+		{
 			setHead(stack, ItemStack.read(nbt.getCompound("head")));
+			nbt.remove("head");
+		}
+		super.readShareTag(stack, nbt);
 	}
 
 	@Override
@@ -237,7 +241,6 @@ public abstract class DieselToolItem extends UpgradeableToolItem
 		return true;
 	}
 
-	//TODO merge up
 	protected void consumeDurability(
 			ItemStack stack, World world, @Nullable BlockState state, @Nullable BlockPos pos, LivingEntity living
 	)

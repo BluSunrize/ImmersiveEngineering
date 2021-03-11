@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.util.compat;
 
+import blusunrize.immersiveengineering.common.items.EarmuffsItem;
 import blusunrize.immersiveengineering.common.items.PowerpackItem;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
@@ -48,11 +49,18 @@ public class CuriosCompatModule extends IECompatModule
 	{
 		InterModComms.sendTo(CuriosApi.MODID, SlotTypeMessage.REGISTER_TYPE,
 				() -> SlotTypePreset.BACK.getMessageBuilder().build());
+		InterModComms.sendTo(CuriosApi.MODID, SlotTypeMessage.REGISTER_TYPE,
+				() -> SlotTypePreset.HEAD.getMessageBuilder().build());
 	}
 
 	public static ItemStack getPowerpack(LivingEntity living)
 	{
 		return getCuriosIfVisible(living, SlotTypePreset.BACK, stack -> stack.getItem() instanceof PowerpackItem);
+	}
+
+	public static ItemStack getEarmuffs(LivingEntity living)
+	{
+		return getCuriosIfVisible(living, SlotTypePreset.HEAD, stack -> stack.getItem() instanceof EarmuffsItem);
 	}
 
 	public static ItemStack getCuriosIfVisible(LivingEntity living, SlotTypePreset slot, Predicate<ItemStack> predicate)

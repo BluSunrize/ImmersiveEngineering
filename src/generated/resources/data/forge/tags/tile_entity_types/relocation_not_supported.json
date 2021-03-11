@@ -45,6 +45,12 @@
     "immersiveengineering:excavator",
     "immersiveengineering:arcfurnace",
     "immersiveengineering:lightningrod",
-    "immersiveengineering:mixer"
+    "immersiveengineering:mixer",
+    "immersiveengineering:lv_conn",
+    "immersiveengineering:lv_relay",
+    "immersiveengineering:mv_conn",
+    "immersiveengineering:mv_relay",
+    "immersiveengineering:hv_conn",
+    "immersiveengineering:hv_relay"
   ]
 }

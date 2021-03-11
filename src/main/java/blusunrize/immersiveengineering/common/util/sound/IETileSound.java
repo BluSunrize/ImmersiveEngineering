@@ -8,11 +8,13 @@
 
 package blusunrize.immersiveengineering.common.util.sound;
 
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTile;
 import blusunrize.immersiveengineering.common.items.EarmuffsItem;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.compat.CuriosCompatModule;
 import net.minecraft.client.audio.ITickableSound;
 import net.minecraft.client.audio.Sound;
 import net.minecraft.client.audio.SoundEventAccessor;
@@ -24,6 +26,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.ModList;
 
 import javax.annotation.Nullable;
 
@@ -166,11 +169,15 @@ public class IETileSound implements ITickableSound
 		volumeAjustment = 1f;
 		if(ClientUtils.mc().player!=null&&!ClientUtils.mc().player.getItemStackFromSlot(EquipmentSlotType.HEAD).isEmpty())
 		{
-			ItemStack stack = ClientUtils.mc().player.getItemStackFromSlot(EquipmentSlotType.HEAD);
-			if(ItemNBTHelper.hasKey(stack, "IE:Earmuffs"))
-				stack = ItemNBTHelper.getItemStack(stack, "IE:Earmuffs");
-			if(!stack.isEmpty()&&Misc.earmuffs.equals(stack.getItem()))
-				volumeAjustment = EarmuffsItem.getVolumeMod(stack);
+			ItemStack head = ClientUtils.mc().player.getItemStackFromSlot(EquipmentSlotType.HEAD);
+			ItemStack earmuffs = ItemStack.EMPTY;
+			if(!head.isEmpty()&&(head.getItem()==Misc.earmuffs||ItemNBTHelper.hasKey(head, Lib.NBT_Earmuffs)))
+				earmuffs = head.getItem()==Misc.earmuffs?head: ItemNBTHelper.getItemStack(head, Lib.NBT_Earmuffs);
+			else if(ModList.get().isLoaded("curios"))
+				earmuffs = CuriosCompatModule.getEarmuffs(ClientUtils.mc().player);
+
+			if(!earmuffs.isEmpty())
+				volumeAjustment = EarmuffsItem.getVolumeMod(earmuffs);
 		}
 		//TODO uncomment when XU updates and maybe look for a better solution (API)
 		//if(volumeAjustment > .1f)

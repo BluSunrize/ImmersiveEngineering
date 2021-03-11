@@ -101,5 +101,7 @@ class ItemTags extends ItemTagsProvider
 
 		getOrCreateBuilder(TagUtils.createItemWrapper(new ResourceLocation("curios:back")))
 				.addItemEntry(Misc.powerpack);
+		getOrCreateBuilder(TagUtils.createItemWrapper(new ResourceLocation("curios:head")))
+				.addItemEntry(Misc.earmuffs);
 	}
 }

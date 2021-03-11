@@ -1,0 +1,10 @@
+{
+  "items": {
+    "type": "item_display",
+    "items": [
+      {
+        "item": "immersiveengineering:herbicide_bucket"
+      }
+    ]
+  }
+}

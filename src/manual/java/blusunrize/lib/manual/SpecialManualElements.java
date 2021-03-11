@@ -71,7 +71,10 @@ public abstract class SpecialManualElements extends SpecialManualElement
 			List<IReorderingProcessor> tooltip = LanguageMap.getInstance().func_244260_a(
 					Collections.unmodifiableList(gui.getTooltipFromItem(highlighted))
 			);
+			transform.push();
+			transform.translate(0,0,100);
 			gui.renderToolTip(transform, tooltip, mx, my, font!=null?font: Minecraft.getInstance().fontRenderer);
+			transform.pop();
 			GuiUtils.postItemToolTip();
 		}
 	}

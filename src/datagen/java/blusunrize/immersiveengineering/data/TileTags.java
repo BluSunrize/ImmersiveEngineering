@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
+import blusunrize.immersiveengineering.common.blocks.metal.EnergyConnectorTileEntity;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.data.DataGenerator;
@@ -59,12 +60,21 @@ public class TileTags extends ForgeRegistryTagsProvider<TileEntityType<?>>
 			if(instance instanceof IImmersiveConnectable||instance instanceof IGeneralMultiblock)
 				notMovable(type);
 		}
+		// This is temporary, I have commits to get rid of this that refactor more than I want to to this close to a
+		// release
+		for(TileEntityType<?> type : EnergyConnectorTileEntity.DATA_TYPE_MAP.values())
+			notMovable(type);
 	}
 
 	private void notMovable(RegistryObject<TileEntityType<?>> type)
 	{
+		notMovable(type.get());
+	}
+
+	private void notMovable(TileEntityType<?> type)
+	{
 		for(INamedTag<TileEntityType<?>> tag : IMMOVABLE_TAGS)
-			getOrCreateBuilder(tag).add(type.get());
+			getOrCreateBuilder(tag).add(type);
 	}
 
 	@Nonnull

@@ -113,22 +113,17 @@ public class ManualElementBlueprint extends SpecialManualElements
 			ManualUtils.drawTexturedRect(manual.texture, x+maxX-17, y+yOff/2-5, 16, 10, 0/256f, 16/256f, 226/256f, 236/256f);
 		}
 
-		RenderSystem.pushMatrix();
-		RenderSystem.multMatrix(transform.getLast().getMatrix());
 		if(!recipes.isEmpty()&&recipePage >= 0&&recipePage < this.recipes.size())
 		{
 			for(PositionedItemStack pstack : recipes.get(recipePage))
 				if(pstack!=null)
 					if(!pstack.getStack().isEmpty())
 					{
-						ManualUtils.renderItem().renderItemAndEffectIntoGUI(pstack.getStack(), x+pstack.x, y+pstack.y);
-						ManualUtils.renderItem().renderItemOverlayIntoGUI(manual.fontRenderer(), pstack.getStack(), x+pstack.x, y+pstack.y, null);
-
+						ManualUtils.renderItemStack(transform, pstack.getStack(), x+pstack.x, y+pstack.y, true);
 						if(mouseX >= x+pstack.x&&mouseX < x+pstack.x+16&&mouseY >= y+pstack.y&&mouseY < y+pstack.y+16)
 							highlighted = pstack.getStack();
 					}
 		}
-		RenderSystem.popMatrix();
 
 		this.renderHighlightedTooltip(transform, gui, mouseX, mouseY);
 	}

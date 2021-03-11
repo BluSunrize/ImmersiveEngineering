@@ -160,7 +160,8 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 				}
 			}
 
-			if(this.tank.getFluidTypes() > 1||!foundRecipe||outputAll)
+			int fluidTypes = this.tank.getFluidTypes();
+			if(fluidTypes>0 &&(fluidTypes> 1||!foundRecipe||outputAll))
 			{
 				BlockPos outputPos = this.getPos().down().offset(getFacing().getOpposite(), 2);
 				update |= FluidUtil.getFluidHandler(world, outputPos, getFacing()).map(output ->

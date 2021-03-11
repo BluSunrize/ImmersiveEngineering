@@ -169,20 +169,15 @@ public class ShaderManualElement extends SpecialManualElements
 		float scale = 2;
 		transform.push();
 		transform.scale(scale, scale, scale);
-		RenderSystem.pushMatrix();
-		RenderSystem.multMatrix(transform.getLast().getMatrix());
 		boolean examples = exampleItems!=null&&exampleItems.length > 0;
 
-		ManualUtils.renderItem().renderItemAndEffectIntoGUI(shaderItem, (int)((x+10+(examples?0: 34))/scale), (int)((y-8)/scale));
+		ManualUtils.renderItemStack(transform, shaderItem, (int)((x+10+(examples?0: 34))/scale), (int)((y-8)/scale), false);
 		if(examples&&example >= 0&&example < exampleItems.length)
-			ManualUtils.renderItem().renderItemAndEffectIntoGUI(exampleItems[example], (int)((x+63)/scale), (int)((y-8)/scale));
+			ManualUtils.renderItemStack(transform, exampleItems[example], (int)((x+63)/scale), (int)((y-8)/scale), false);
 
-		RenderSystem.popMatrix();
 		transform.scale(1/scale, 1/scale, 1/scale);
-		RenderSystem.pushMatrix();
-		RenderSystem.multMatrix(transform.getLast().getMatrix());
 		if(unlocked)
-			ManualUtils.renderItem().renderItemAndEffectIntoGUI(replicationCost.getRandomizedExampleStack(mc().player.ticksExisted), x+102, y+118);
+			ManualUtils.renderItemStack(transform, replicationCost.getRandomizedExampleStack(mc().player.ticksExisted), x+102, y+118, false);
 
 		RenderHelper.disableStandardItemLighting();
 
@@ -191,7 +186,6 @@ public class ShaderManualElement extends SpecialManualElements
 		if(this.text!=null&&!this.text.getString().isEmpty())
 			manual.fontRenderer().func_238418_a_(this.text, x, y+38, 120, manual.getTextColour());
 
-		RenderSystem.popMatrix();
 		transform.pop();
 
 	}
