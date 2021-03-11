@@ -8,8 +8,11 @@
 
 package blusunrize.immersiveengineering.api;
 
+import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import blusunrize.lib.manual.ManualInstance;
+import blusunrize.lib.manual.SpecialManualElement;
+import net.minecraft.item.ItemStack;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -29,6 +32,8 @@ public class ManualHelper
 
 	public static final SetRestrictedField<ManualInstance> IE_MANUAL_INSTANCE = SetRestrictedField.client();
 	public static final SetRestrictedField<Consumer<Function<String, Object>>> ADD_CONFIG_GETTER = SetRestrictedField.client();
+	public static final SetRestrictedField<MultiblockElementConstructor> MAKE_MULTIBLOCK_ELEMENT = SetRestrictedField.client();
+	public static final SetRestrictedField<BlueprintElementConstructor> MAKE_BLUEPRINT_ELEMENT = SetRestrictedField.client();
 
 	public static ManualInstance getManual()
 	{
@@ -43,5 +48,15 @@ public class ManualHelper
 	public static void addConfigGetter(Function<String, Object> newGetter)
 	{
 		ADD_CONFIG_GETTER.getValue().accept(newGetter);
+	}
+
+	public interface MultiblockElementConstructor
+	{
+		SpecialManualElement create(IMultiblock multiblock);
+	}
+
+	public interface BlueprintElementConstructor
+	{
+		SpecialManualElement create(ItemStack... stacks);
 	}
 }

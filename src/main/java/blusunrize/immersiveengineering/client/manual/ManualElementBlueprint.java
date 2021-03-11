@@ -6,7 +6,7 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.api;
+package blusunrize.immersiveengineering.client.manual;
 
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.lib.manual.ManualInstance;
@@ -27,8 +27,8 @@ import java.util.List;
 
 public class ManualElementBlueprint extends SpecialManualElements
 {
-	private ItemStack[] stacks;
-	private List<PositionedItemStack[]> recipes = new ArrayList<>();
+	private final ItemStack[] stacks;
+	private final List<PositionedItemStack[]> recipes = new ArrayList<>();
 	private int recipePage;
 	private int yOff;
 

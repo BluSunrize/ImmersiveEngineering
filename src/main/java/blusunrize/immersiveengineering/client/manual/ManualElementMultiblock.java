@@ -6,10 +6,11 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.api.multiblocks;
+package blusunrize.immersiveengineering.client.manual;
 
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
-import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
+import blusunrize.immersiveengineering.client.utils.IERenderTypes;
+import blusunrize.immersiveengineering.mixin.accessors.TileEntityAccess;
 import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.ManualUtils;
 import blusunrize.lib.manual.SpecialManualElements;
@@ -40,18 +41,11 @@ import net.minecraftforge.client.model.data.IModelData;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.function.BiConsumer;
-import java.util.function.UnaryOperator;
 
 import static blusunrize.immersiveengineering.api.client.TextUtils.applyFormat;
 
 public class ManualElementMultiblock extends SpecialManualElements
 {
-	private static final SetRestrictedField<UnaryOperator<IRenderTypeBuffer>>
-			DISABLE_LIGHTING = SetRestrictedField.client();
-	private static final SetRestrictedField<BiConsumer<TileEntity, BlockState>>
-			SET_CACHED_STATE = SetRestrictedField.client();
-
 	private final IMultiblock multiblock;
 
 	private boolean canTick = true;
@@ -217,7 +211,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 				if(showCompleted&&multiblock.canRenderFormedStructure())
 				{
 					transform.push();
-					multiblock.renderFormedStructure(transform, DISABLE_LIGHTING.getValue().apply(buffer));
+					multiblock.renderFormedStructure(transform, IERenderTypes.disableLighting(buffer));
 					transform.pop();
 				}
 				else
@@ -245,7 +239,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 											modelData = te.getModelData();
 
 										blockRender.renderBlock(state, transform,
-												DISABLE_LIGHTING.getValue().apply(buffer),
+												IERenderTypes.disableLighting(buffer),
 												0xf000f0, overlay, modelData);
 									}
 									transform.pop();
@@ -312,13 +306,6 @@ public class ManualElementMultiblock extends SpecialManualElements
 		return this.multiblock;
 	}
 
-	public static void setCallbacks(
-			UnaryOperator<IRenderTypeBuffer> disableLighting, BiConsumer<TileEntity, BlockState> setCached
-	) {
-		DISABLE_LIGHTING.setValue(disableLighting);
-		SET_CACHED_STATE.setValue(setCached);
-	}
-
 	static class MultiblockBlockAccess implements IBlockReader
 	{
 		private final MultiblockRenderInfo data;
@@ -334,7 +321,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 					TileEntity te = TileEntity.readTileEntity(p.getValue().state, p.getValue().nbt);
 					if(te!=null)
 					{
-						SET_CACHED_STATE.getValue().accept(te, p.getValue().state);
+						((TileEntityAccess)te).setCachedBlockState(p.getValue().state);
 						tiles.put(p.getKey(), te);
 					}
 				}
