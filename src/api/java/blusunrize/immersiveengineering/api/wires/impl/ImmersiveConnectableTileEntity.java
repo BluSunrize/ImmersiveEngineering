@@ -67,6 +67,13 @@ public abstract class ImmersiveConnectableTileEntity extends TileEntity implemen
 		ConnectorTileHelper.onChunkLoad(this, world);
 	}
 
+	@Override
+	public void remove()
+	{
+		super.remove();
+		ConnectorTileHelper.remove(world, this);
+	}
+
 	private final Int2ObjectMap<LocalWireNetwork> cachedLocalNets = new Int2ObjectArrayMap<>();
 
 	protected LocalWireNetwork getLocalNet(int cpIndex)
