@@ -140,11 +140,6 @@ public final class IEItems
 		public static Item powerpack;
 		public static Item shield;
 		public static Item maintenanceKit;
-		public static Item bucketCreosote;
-		public static Item bucketPlantoil;
-		public static Item bucketEthanol;
-		public static Item bucketBiodiesel;
-		public static Item bucketConcrete;
 		public static Item cartWoodenCrate;
 		public static Item cartReinforcedCrate;
 		public static Item cartWoodenBarrel;

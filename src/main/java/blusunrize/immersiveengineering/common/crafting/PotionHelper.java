@@ -12,10 +12,8 @@ package blusunrize.immersiveengineering.common.crafting;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
-import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.mixin.accessors.PotionBrewingAccess;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
@@ -28,7 +26,6 @@ import net.minecraft.tags.FluidTags;
 import net.minecraftforge.common.brewing.BrewingRecipe;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.brewing.IBrewingRecipe;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.registries.IRegistryDelegate;
 
@@ -36,15 +33,6 @@ import java.lang.reflect.Field;
 
 public class PotionHelper
 {
-	public static FluidStack getFluidStackForType(Potion type, int amount)
-	{
-		if(type==Potions.WATER||type==null)
-			return new FluidStack(Fluids.WATER, amount);
-		FluidStack stack = new FluidStack(IEContent.fluidPotion, amount);
-		stack.getOrCreateTag().putString("Potion", type.getRegistryName().toString());
-		return stack;
-	}
-
 	public static FluidTagInput getFluidTagForType(Potion type, int amount)
 	{
 		if(type==Potions.WATER||type==null)
