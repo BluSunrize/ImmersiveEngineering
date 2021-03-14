@@ -1,19 +1,19 @@
 package blusunrize.immersiveengineering.common.util.compat.computers.generic;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
+import com.google.common.collect.ImmutableList;
 import com.google.common.primitives.Primitives;
 
+import java.lang.annotation.Annotation;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 
 public class ComputerCallback<T>
 {
-	private final List<Class<?>> userArguments;
+	private final List<ArgumentType> userArguments;
 	private final Function<Object, Object[]> wrapReturnValue;
 	private final MethodHandle caller;
 	private final String name;
@@ -26,6 +26,8 @@ public class ComputerCallback<T>
 		this.caller = MethodHandles.lookup().unreflect(method).bindTo(owner);
 		Function<Object, Object[]> wrapResult;
 		Class<?> resultType = method.getReturnType();
+		isAsync = method.getAnnotation(ComputerCallable.class).isAsync();
+		Preconditions.checkState(isAsync||!resultType.equals(EventWaiterResult.class));
 		if(Object[].class.equals(resultType))
 			wrapResult = o -> (Object[])o;
 		else if(void.class.equals(resultType))
@@ -34,15 +36,13 @@ public class ComputerCallback<T>
 			wrapResult = o -> new Object[]{o};
 		this.wrapReturnValue = wrapResult.compose(converters.getSerializer(resultType));
 		this.name = owner.renameMethod(method.getName());
-		this.userArguments = Lists.newArrayList(method.getParameterTypes());
-		for(int i = 0; i < this.userArguments.size(); i++)
-			if(this.userArguments.get(i).isPrimitive())
-				this.userArguments.set(i, Primitives.wrap(this.userArguments.get(i)));
-		isAsync = method.getAnnotation(ComputerCallable.class).isAsync();
-		Preconditions.checkState(!this.userArguments.isEmpty());
-		Preconditions.checkState(this.userArguments.get(0).equals(CallbackEnvironment.class));
-		Preconditions.checkState(isAsync||!resultType.equals(EventWaiterResult.class));
-		userArguments.remove(0);
+		Class<?>[] allArguments = method.getParameterTypes();
+		Preconditions.checkState(allArguments.length > 0);
+		Preconditions.checkState(allArguments[0].equals(CallbackEnvironment.class));
+		List<ArgumentType> userArguments = new ArrayList<>(allArguments.length-1);
+		for(int i = 1; i < allArguments.length; ++i)
+			userArguments.add(new ArgumentType(method, i));
+		this.userArguments = ImmutableList.copyOf(userArguments);
 	}
 
 	public String getName()
@@ -59,6 +59,10 @@ public class ComputerCallback<T>
 				callbacks.add(new ComputerCallback<>(provider, m, converters));
 		for(Callback<? super T> extra : provider.getAdditionalCallbacks())
 			callbacks.addAll(getInClass(extra, converters));
+		Set<String> names = new HashSet<>();
+		for(ComputerCallback<?> cb : callbacks)
+			if(!names.add(cb.getName()))
+				throw new RuntimeException("Duplicate method name "+cb.getName());
 		return callbacks;
 	}
 
@@ -74,18 +78,8 @@ public class ComputerCallback<T>
 		for(int i = 0; i < arguments.length; ++i)
 		{
 			int realIndex = i+1;
-			Class<?> expectedType = this.userArguments.get(i);
-			Object actual = realArguments[realIndex];
-			if(!actual.getClass().equals(expectedType))
-			{
-				if(Number.class.isAssignableFrom(expectedType)&&actual instanceof Double)
-					realArguments[realIndex] = fixNumber((Double)actual, expectedType);
-				else
-					throw new RuntimeException(
-							"Unexpected argument type at argument "+i+": Expected "+
-									this.userArguments.get(i).getSimpleName()+", got "+arguments[i].getClass().getSimpleName()
-					);
-			}
+			ArgumentType expectedType = this.userArguments.get(i);
+			realArguments[realIndex] = expectedType.transform(arguments[i]);
 		}
 		return wrapReturnValue.apply(caller.invokeWithArguments(realArguments));
 	}
@@ -111,5 +105,46 @@ public class ComputerCallback<T>
 			return fromLua.longValue();
 		else
 			return fromLua;
+	}
+
+	private static class ArgumentType
+	{
+		private final Class<?> type;
+		private final boolean isIndex;
+		private final int indexForError;
+
+		private ArgumentType(Method method, int argIndex)
+		{
+			Class<?> actualType = method.getParameterTypes()[argIndex];
+			if(actualType.isPrimitive())
+				this.type = Primitives.wrap(actualType);
+			else
+				this.type = actualType;
+			Annotation[] annotations = method.getParameterAnnotations()[argIndex];
+			this.isIndex = Arrays.stream(annotations)
+					.map(Annotation::annotationType)
+					.anyMatch(c -> c==IndexArgument.class);
+			if(this.isIndex)
+				Preconditions.checkState(this.type==Integer.class);
+			this.indexForError = argIndex;
+		}
+
+		public Object transform(Object userInput)
+		{
+			if(!userInput.getClass().equals(type))
+			{
+				if(Number.class.isAssignableFrom(type)&&userInput instanceof Double)
+					userInput = fixNumber((Double)userInput, type);
+				else
+					throw new RuntimeException(
+							"Unexpected argument type at argument "+indexForError+": Expected "+
+									type.getSimpleName()+", got "+userInput.getClass().getSimpleName()
+					);
+			}
+			if(isIndex)
+				return ((Integer)userInput)-1;
+			else
+				return userInput;
+		}
 	}
 }

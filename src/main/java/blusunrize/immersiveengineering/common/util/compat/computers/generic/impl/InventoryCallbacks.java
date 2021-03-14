@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.common.util.compat.computers.generic.imp
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.Callback;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackEnvironment;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerCallable;
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.IndexArgument;
 import net.minecraft.item.ItemStack;
 
 import java.util.List;
@@ -39,9 +40,8 @@ public class InventoryCallbacks<T> extends Callback<T>
 	}
 
 	@ComputerCallable
-	public ItemStack getDescStack(CallbackEnvironment<T> env, int index)
+	public ItemStack getDescStack(CallbackEnvironment<T> env, @IndexArgument int index)
 	{
-		--index; // 1-based indexing
 		List<ItemStack> stacks = getStacks.apply(env.getObject());
 		if(index < 0||index >= stacks.size())
 			throw new RuntimeException("Index is out of bounds, only "+stacks.size()+" "+desc+" slots are available");

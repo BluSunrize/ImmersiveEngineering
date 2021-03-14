@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.common.util.compat.computers.generic.own
 import blusunrize.immersiveengineering.common.blocks.metal.MixerTileEntity;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackEnvironment;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerCallable;
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.IndexArgument;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.InventoryCallbacks;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.PoweredMBCallbacks;
 import net.minecraftforge.fluids.FluidStack;
@@ -19,9 +20,8 @@ public class MixerCallbacks extends MultiblockCallbackOwner<MixerTileEntity>
 	}
 
 	@ComputerCallable
-	public FluidStack getFluid(CallbackEnvironment<MixerTileEntity> env, int index)
+	public FluidStack getFluid(CallbackEnvironment<MixerTileEntity> env, @IndexArgument int index)
 	{
-		--index;
 		List<FluidStack> fluids = env.getObject().tank.fluids;
 		if(index >= 0&&index < fluids.size())
 			return fluids.get(index);

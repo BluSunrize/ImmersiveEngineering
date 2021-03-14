@@ -7,6 +7,7 @@ import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTi
 import blusunrize.immersiveengineering.common.blocks.metal.CrusherTileEntity;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackEnvironment;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerCallable;
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.IndexArgument;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.PoweredMBCallbacks;
 import net.minecraft.item.ItemStack;
 
@@ -21,10 +22,8 @@ public class CrusherCallbacks extends MultiblockCallbackOwner<CrusherTileEntity>
 	}
 
 	@ComputerCallable
-	public ItemStack getInputQueueElement(CallbackEnvironment<CrusherTileEntity> env, int index)
+	public ItemStack getInputQueueElement(CallbackEnvironment<CrusherTileEntity> env, @IndexArgument int index)
 	{
-		//Lua has 1-based indexing
-		--index;
 		List<MultiblockProcess<CrusherRecipe>> queue = env.getObject().processQueue;
 		if(index < 0||index >= queue.size())
 			throw new RuntimeException("Invalid index, queue contains "+queue.size()+" elements");
