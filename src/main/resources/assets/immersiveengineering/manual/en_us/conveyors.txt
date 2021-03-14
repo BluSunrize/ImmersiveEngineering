@@ -9,7 +9,7 @@ The panel on its side allows attaching a lever, but a redstone signal may be inp
 <&conveyor_dropper_recipe>The Dropping Conveyor Belt is quite simply a conveyor with a hatch in the middle, allowing it to drop items that pass over it downwards.
 Items will be inserted into inventories below or simply dropped if there is an empty space below the conveyor.
 The hatch can be shut with a redstone signal, when desired.<np>
-<&conveyor_extract_recipe>The Extracting Conveyor Belt possesses the ability to extract items from an inventory in a similar fashion to a Hopper. Unlike the latter however, it possesses no internal inventory and will place extracted items onto the belt.
+<&conveyor_extract_recipe>The Extracting Conveyor Belt possesses the ability to extract items from an inventory in a similar fashion to a Hopper. Unlike the latter however, it possesses no internal inventory and will place extracted items onto the belt. Can be stopped from pulling with a redstone signal.
 Sneak + rightclick with an Engineer's Hammer to change its input side. Use the Engineer's Screwdriver to adjust the speed at which it extracts.<np>
 <&conveyor_vertical_recipe>The Vertical Conveyor Belt is a belt meant to be mounted on walls. Using the buckets attached to is, it will lift entities straight up. Despite the use of the term "bucket", it will not lift fluids.
 This belt can insert into inventories above it or simply expel items over the edge at the top onto more conveyors.<np>
