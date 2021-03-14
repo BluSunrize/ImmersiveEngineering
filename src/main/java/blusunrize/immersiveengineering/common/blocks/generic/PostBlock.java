@@ -374,6 +374,8 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBloc
 		BlockState centerState = world.getBlockState(centerPos);
 		if(centerState.getBlock()==this)
 		{
+			// With model splitting it's enough to check the model state for the current layer, since none of the arm
+			// models extend into other layers
 			for(Direction f : DirectionUtils.BY_HORIZONTAL_INDEX)
 				if(hasConnection(centerState, f, world, centerPos))
 				{
