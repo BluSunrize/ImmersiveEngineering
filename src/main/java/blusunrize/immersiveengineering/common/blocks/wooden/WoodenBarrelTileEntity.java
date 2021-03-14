@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import blusunrize.immersiveengineering.client.utils.TextUtils;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
@@ -33,8 +34,8 @@ import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.math.RayTraceResult.Type;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -323,7 +324,7 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 				return true;
 		}
 
-		if(FluidUtil.interactWithFluidHandler(player, hand, tank))
+		if(FluidUtils.interactWithFluidHandler(player, hand, tank))
 		{
 			this.markDirty();
 			this.markContainingBlockForUpdate(null);

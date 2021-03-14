@@ -378,31 +378,29 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBloc
 	{
 		ArrayList<String> visible = new ArrayList<>();
 		visible.add("base");
-		final int offset = 1-state.get(POST_SLAVE);
-		pos = pos.subtract(state.get(HORIZONTAL_OFFSET).getOffset());
-		for(int i = 0; i <= 2; i++)
+		final int height = state.get(POST_SLAVE);
+		BlockPos centerPos = pos.subtract(state.get(HORIZONTAL_OFFSET).getOffset());
+		BlockState centerState = world.getBlockState(centerPos);
+		if(centerState.getBlock()==this)
 		{
-			BlockPos upperPos = pos.up(offset+i);
-			BlockState upperState = world.getBlockState(upperPos);
-			if(upperState.getBlock()==this)
-			{
-				for(Direction f : DirectionUtils.BY_HORIZONTAL_INDEX)
-					if(hasConnection(upperState, f, world, upperPos))
+			// With model splitting it's enough to check the model state for the current layer, since none of the arm
+			// models extend into other layers
+			for(Direction f : DirectionUtils.BY_HORIZONTAL_INDEX)
+				if(hasConnection(centerState, f, world, centerPos))
+				{
+					String name = f.getOpposite().getString();
+					if(height==3)//Arms
 					{
-						String name = f.getOpposite().getString();
-						if(i==2)//Arms
-						{
-							BlockPos armPos = upperPos.offset(f);
-							boolean down = hasConnection(world.getBlockState(armPos), Direction.DOWN, world, armPos);
-							if(down)
-								visible.add("arm_"+name+"_down");
-							else
-								visible.add("arm_"+name+"_up");
-						}
-						else//Simple Connectors
-							visible.add("con_"+i+"_"+name);
+						BlockPos armPos = centerPos.offset(f);
+						boolean down = hasConnection(world.getBlockState(armPos), Direction.DOWN, world, armPos);
+						if(down)
+							visible.add("arm_"+name+"_down");
+						else
+							visible.add("arm_"+name+"_up");
 					}
-			}
+					else//Simple Connectors
+						visible.add("con_"+(height-1)+"_"+name);
+				}
 		}
 		IEObjState modelState = new IEObjState(VisibilityList.show(visible));
 		return new SinglePropertyModelData<>(modelState, Model.IE_OBJ_STATE);

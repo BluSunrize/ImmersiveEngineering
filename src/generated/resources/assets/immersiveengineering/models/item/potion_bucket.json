@@ -1,0 +1,4 @@
+{
+  "parent": "forge:item/bucket",
+  "loader": "immersiveengineering:potion_bucket"
+}

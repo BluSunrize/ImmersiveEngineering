@@ -1,5 +1,15 @@
-##### Version 1.16.5-4.2.3-pre
+##### Version 1.16.5-4.2.4-134
+ - Fix issues with the manual (BluSunrize)
+
+##### Version 1.16.5-4.2.3-133
+ - Add Curios compat for the ear defenders (BluSunrize)
+ - Remove unused option for crushing (BluSunrize)
+ - Change teslacoil to apply anti-teleport debuff before applying damage (BluSunrize) 
  - Fix a crash in recycling, occured with Silent Gear (BluSunrize)
+ - Fix drill and buzzsaw not working (Malte)
+ - Fix issues with Russian and Chinese translations (BluSunrize)
+ - Fix capacitor backpack not working when equipped as a Curios (BluSunrize)
+ - Fix metal ladders not being climable on newer Forge versions (BluSunrize)
 
 ##### Version 1.16.5-4.2.2-132
  - Added/updated compatability for Tinkers Construct (BluSunrize)

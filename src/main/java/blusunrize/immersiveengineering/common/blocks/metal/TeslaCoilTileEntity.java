@@ -128,12 +128,12 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 						if(energyStorage.extractEnergy(energyDrain, true)==energyDrain)
 						{
 							energyStorage.extractEnergy(energyDrain, false);
+							target.addPotionEffect(new EffectInstance(IEPotions.stunned, 128));
 							if(dmgsrc.apply(target))
 							{
 								EntityAccess targetAccessor = (EntityAccess)target;
 								int prevFire = targetAccessor.getFire();
 								targetAccessor.setFire(1);
-								target.addPotionEffect(new EffectInstance(IEPotions.stunned, 128));
 								targetAccessor.setFire(prevFire);
 							}
 							this.sendRenderPacket(target);

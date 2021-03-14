@@ -53,6 +53,7 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.IEPotions;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.compat.CuriosCompatModule;
 import blusunrize.immersiveengineering.common.util.sound.IEMuffledSound;
 import blusunrize.immersiveengineering.common.util.sound.IEMuffledTickableSound;
 import blusunrize.immersiveengineering.mixin.accessors.client.GPUWarningAccess;
@@ -107,6 +108,7 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.resource.IResourceType;
 import net.minecraftforge.resource.ISelectiveResourceReloadListener;
 import net.minecraftforge.resource.VanillaResourceType;
@@ -306,13 +308,16 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		}
 		if(!EarmuffsItem.affectedSoundCategories.contains(event.getSound().getCategory().getName()))
 			return;
-		if(ClientUtils.mc().player!=null&&!ClientUtils.mc().player.getItemStackFromSlot(EquipmentSlotType.HEAD).isEmpty())
+		if(ClientUtils.mc().player!=null)
 		{
-			ItemStack earmuffs = ClientUtils.mc().player.getItemStackFromSlot(EquipmentSlotType.HEAD);
-			if(ItemNBTHelper.hasKey(earmuffs, Lib.NBT_Earmuffs))
-				earmuffs = ItemNBTHelper.getItemStack(earmuffs, Lib.NBT_Earmuffs);
+			ItemStack head = ClientUtils.mc().player.getItemStackFromSlot(EquipmentSlotType.HEAD);
+			ItemStack earmuffs = ItemStack.EMPTY;
+			if(!head.isEmpty()&&(head.getItem()==Misc.earmuffs||ItemNBTHelper.hasKey(head, Lib.NBT_Earmuffs)))
+				earmuffs = head.getItem()==Misc.earmuffs?head: ItemNBTHelper.getItemStack(head, Lib.NBT_Earmuffs);
+			else if(ModList.get().isLoaded("curios"))
+				earmuffs = CuriosCompatModule.getEarmuffs(ClientUtils.mc().player);
+
 			if(!earmuffs.isEmpty()&&
-					Misc.earmuffs==earmuffs.getItem()&&
 					!ItemNBTHelper.getBoolean(earmuffs, "IE:Earmuffs:Cat_"+event.getSound().getCategory().getName()))
 			{
 				for(String blacklist : IEClientConfig.earDefenders_SoundBlacklist.get())

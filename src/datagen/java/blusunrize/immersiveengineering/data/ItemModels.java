@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.models.ModelConveyor.ConveyorLoader;
 import blusunrize.immersiveengineering.client.models.ModelCoresample.CoresampleLoader;
+import blusunrize.immersiveengineering.client.models.PotionBucketModel.Loader;
 import blusunrize.immersiveengineering.client.models.connection.FeedthroughLoader;
 import blusunrize.immersiveengineering.common.blocks.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
@@ -23,6 +24,7 @@ import blusunrize.immersiveengineering.common.items.IEItems.Molds;
 import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import blusunrize.immersiveengineering.common.items.IEItems.Weapons;
 import blusunrize.immersiveengineering.common.util.fluids.IEFluid;
+import blusunrize.immersiveengineering.common.util.fluids.PotionFluid;
 import blusunrize.immersiveengineering.data.blockstates.MultiblockStates;
 import blusunrize.immersiveengineering.data.models.IEOBJBuilder;
 import blusunrize.immersiveengineering.data.models.SpecialModelBuilder;
@@ -273,6 +275,9 @@ public class ItemModels extends TRSRItemModelProvider
 
 		for(IEFluid f : IEFluid.IE_FLUIDS)
 			createBucket(f);
+		withExistingParent(name(PotionFluid.bucket), forgeLoc("item/bucket"))
+				.customLoader(SpecialModelBuilder.forLoader(Loader.LOADER_NAME))
+				.end();
 
 		ieObj(IEItems.Misc.fluorescentTube, rl("item/fluorescent_tube.obj.ie"))
 				.transforms(modLoc("item/fluorescent_tube"));
