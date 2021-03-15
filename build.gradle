@@ -62,13 +62,12 @@ def version_replaces = [
 def jsonPatterns = ["**/*.json", "**/*.mcmeta"]
 
 processResources {
+    duplicatesStrategy = DuplicatesStrategy.FAIL
+    exclude 'META-INF/mods.toml'
     from(sourceSets.main.resources.srcDirs) {
         include 'META-INF/mods.toml'
 
         expand version_replaces
-    }
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'META-INF/mods.toml'
     }
     //Minify json resources
     doLast {
@@ -78,6 +77,15 @@ processResources {
     }
 }
 
+task replaceInModsToml(type: Copy) {
+    outputs.upToDateWhen { false }
+    from(sourceSets.main.resources) {
+        include "META-INF/mods.toml"
+        expand version_replaces
+    }
+    into "$buildDir/resources/main/"
+}
+
 // When using "Run using IntelliJ" (the only option with well-working hotswapping) the used "resources" directory is
 // different from the one used by gradle/the processResources task
 task copyResourcesForIntelliJ(type: Copy) {
@@ -85,7 +93,7 @@ task copyResourcesForIntelliJ(type: Copy) {
     into "$projectDir/out/production/resources"
 }
 
-processResources.finalizedBy copyResourcesForIntelliJ
+processResources.finalizedBy replaceInModsToml, copyResourcesForIntelliJ
 
 minecraft {
     // The mappings can be changed at any time, and must be in the following format.
