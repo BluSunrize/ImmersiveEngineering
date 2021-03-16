@@ -106,7 +106,7 @@ public class SawdustBlock extends IEBaseBlock
 	{
 		BlockState blockstate = worldIn.getBlockState(pos.down());
 		Block block = blockstate.getBlock();
-		return Block.doesSideFillSquare(blockstate.getCollisionShape(worldIn, pos.down()), Direction.UP)
+		return Block.doesSideFillSquare(blockstate.getCollisionShapeUncached(worldIn, pos.down()), Direction.UP)
 				||block==this&&blockstate.get(LAYERS)==MAX_LAYER;
 	}
 

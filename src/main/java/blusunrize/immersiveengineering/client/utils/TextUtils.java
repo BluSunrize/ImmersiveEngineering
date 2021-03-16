@@ -19,10 +19,10 @@ public class TextUtils
 		return new ITextComponent[]{
 				new TranslationTextComponent(Lib.DESC_INFO+"blockSide.facing")
 						.appendString(": ")
-						.append(new TranslationTextComponent(descBase+thisConfig.getString())),
+						.appendSibling(new TranslationTextComponent(descBase+thisConfig.getString())),
 				new TranslationTextComponent(Lib.DESC_INFO+"blockSide.opposite")
 						.appendString(": ")
-						.append(new TranslationTextComponent(descBase+otherConfig.getString()))
+						.appendSibling(new TranslationTextComponent(descBase+otherConfig.getString()))
 		};
 	}
 

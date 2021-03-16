@@ -143,7 +143,7 @@ public class FeedthroughTileEntity extends ImmersiveConnectableTileEntity implem
 			LootContext.Builder builder = new LootContext.Builder(context.getWorld())
 					.withNullableParameter(LootParameters.TOOL, context.get(LootParameters.TOOL))
 					.withNullableParameter(LootParameters.THIS_ENTITY, context.get(LootParameters.THIS_ENTITY))
-					.withNullableParameter(LootParameters.field_237457_g_, context.get(LootParameters.field_237457_g_));
+					.withNullableParameter(LootParameters.ORIGIN, context.get(LootParameters.ORIGIN));
 			return Utils.getDrops(stateForMiddle, builder);
 		}
 		else

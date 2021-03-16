@@ -46,9 +46,9 @@ public class ModelPowerpack<T extends LivingEntity> extends ModelIEArmorBase<T>
 	public ModelRenderer[] modelParts;
 	public ModelRenderer[] colouredParts;
 
-	public ModelPowerpack(float modelSize, float p_i1149_2_, int textureWidthIn, int textureHeightIn)
+	public ModelPowerpack(float modelSize, float yOffsetIn, int textureWidthIn, int textureHeightIn)
 	{
-		super(modelSize, p_i1149_2_, textureWidthIn, textureHeightIn);
+		super(modelSize, yOffsetIn, textureWidthIn, textureHeightIn);
 		((ModelAccess)this).setRenderType(RenderType::getEntityTranslucent);
 		modelParts = new ModelRenderer[8];
 		colouredParts = new ModelRenderer[4];

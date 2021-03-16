@@ -55,7 +55,6 @@ import java.util.Map;
 
 import static blusunrize.immersiveengineering.api.wires.WireType.*;
 
-
 public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity implements IStateBasedDirectional,
 		IIEInternalFluxHandler, IBlockBounds, EnergyConnector, ITickableTileEntity
 {

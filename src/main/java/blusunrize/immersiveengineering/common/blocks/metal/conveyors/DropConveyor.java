@@ -94,7 +94,7 @@ public class DropConveyor extends BasicConveyor
 		if(tile instanceof IConveyorTile)
 			return true;
 		BlockState state = world.getBlockState(pos);
-		VoxelShape shape = state.getCollisionShape(world, pos);
+		VoxelShape shape = state.getCollisionShapeUncached(world, pos);
 		// Combining voxelshapes is a little expensive, so only calculate
 		// when the voxelshape changes. Identity compare is sufficent since they're
 		// usually precomputed.

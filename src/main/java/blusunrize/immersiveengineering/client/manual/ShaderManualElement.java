@@ -24,7 +24,6 @@ import blusunrize.lib.manual.gui.GuiButtonManual;
 import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.ManualScreen;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
@@ -111,8 +110,8 @@ public class ShaderManualElement extends SpecialManualElements
 
 		this.name = ClientUtils.applyFormat(shaderItem.getDisplayName(), TextFormatting.BOLD);
 		IFormattableTextComponent textAssembly = new StringTextComponent("");
-		textAssembly.append(ClientUtils.applyFormat(new TranslationTextComponent("desc.immersiveengineering.info.shader.level"), TextFormatting.BOLD));
-		textAssembly.append(new TranslationTextComponent("desc.immersiveengineering.info.shader.rarity."+shader.rarity.name().toLowerCase(Locale.US)));
+		textAssembly.appendSibling(ClientUtils.applyFormat(new TranslationTextComponent("desc.immersiveengineering.info.shader.level"), TextFormatting.BOLD));
+		textAssembly.appendSibling(new TranslationTextComponent("desc.immersiveengineering.info.shader.rarity."+shader.rarity.name().toLowerCase(Locale.US)));
 		if(unlocked)
 		{
 			String set = shader.info_set==null||shader.info_set.isEmpty()?null: ManualUtils.attemptStringTranslation(Lib.DESC_INFO+"shader.set.%s", shader.info_set);
@@ -121,15 +120,15 @@ public class ShaderManualElement extends SpecialManualElements
 
 			if(set!=null)
 				textAssembly.appendString("\n")
-						.append(ClientUtils.applyFormat(new TranslationTextComponent("desc.immersiveengineering.info.shader.set"), TextFormatting.BOLD))
+						.appendSibling(ClientUtils.applyFormat(new TranslationTextComponent("desc.immersiveengineering.info.shader.set"), TextFormatting.BOLD))
 						.appendString(" "+set);
 			if(reference!=null)
 				textAssembly.appendString("\n")
-						.append(ClientUtils.applyFormat(new TranslationTextComponent("desc.immersiveengineering.info.shader.reference"), TextFormatting.BOLD))
+						.appendSibling(ClientUtils.applyFormat(new TranslationTextComponent("desc.immersiveengineering.info.shader.reference"), TextFormatting.BOLD))
 						.appendString("\n"+reference);
 			if(details!=null)
 				textAssembly.appendString("\n")
-						.append(ClientUtils.applyFormat(new TranslationTextComponent("desc.immersiveengineering.info.shader.details"), TextFormatting.BOLD))
+						.appendSibling(ClientUtils.applyFormat(new TranslationTextComponent("desc.immersiveengineering.info.shader.details"), TextFormatting.BOLD))
 						.appendString("\n"+details);
 
 			String cost = Integer.toString(replicationCost.getCount());
@@ -146,7 +145,7 @@ public class ShaderManualElement extends SpecialManualElements
 		}
 		else
 		{
-			textAssembly.appendString("\n\n").append(new TranslationTextComponent("ie.manual.entry.shaderList.noInfo"));
+			textAssembly.appendString("\n\n").appendSibling(new TranslationTextComponent("ie.manual.entry.shaderList.noInfo"));
 			if(player.abilities.isCreativeMode)
 				buttons.add(new GuiButtonManual(gui, x+10, y+120, 100, 16,
 						new TranslationTextComponent("ie.manual.entry.shaderList.unlock"),

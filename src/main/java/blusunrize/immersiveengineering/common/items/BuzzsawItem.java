@@ -209,7 +209,7 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 			TextFormatting status = (quote < .1?TextFormatting.RED: quote < .3?TextFormatting.GOLD: quote < .6?TextFormatting.YELLOW: TextFormatting.GREEN);
 			list.add(ClientUtils.applyFormat(new TranslationTextComponent(Lib.DESC_FLAVOUR+"buzzsaw.bladeDamage"), TextFormatting.GRAY)
 					.appendString(" ")
-					.append(ClientUtils.applyFormat(
+					.appendSibling(ClientUtils.applyFormat(
 							new TranslationTextComponent(Lib.DESC_INFO+"percent", (int)(quote*100)),
 							status
 					)));

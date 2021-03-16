@@ -124,7 +124,7 @@ public class SkylineHelper
 	{
 		List<VoxelShape> list = Lists.newArrayList();
 		getBlockCollisionBoxes(entityIn, aabb, list, w, ignored);
-		w.getCollisionShapes(entityIn, aabb).forEach(list::add);
+		w.getBlockCollisionShapes(entityIn, aabb).forEach(list::add);
 		return list;
 	}
 

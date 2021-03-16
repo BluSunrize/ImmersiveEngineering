@@ -8,8 +8,8 @@
 package blusunrize.immersiveengineering.common.util.compat.top;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces;
 import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
@@ -52,9 +52,9 @@ public class SideConfigProvider implements IProbeInfoProvider
 			TranslationTextComponent connection = 
 					new TranslationTextComponent(Lib.DESC_INFO+"blockSide.io." + config.getString());
 			
-			combined.append(direction);
+			combined.appendSibling(direction);
 			combined.appendString(": ");
-			combined.append(connection);
+			combined.appendSibling(connection);
 			
 			probeInfo.text(combined);
 		}

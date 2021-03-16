@@ -274,7 +274,7 @@ public class IEBlockInterfaces
 					new Builder(world)
 							.withNullableParameter(LootParameters.TOOL, ItemStack.EMPTY)
 							.withNullableParameter(LootParameters.BLOCK_STATE, world.getBlockState(tile.getPos()))
-							.withNullableParameter(LootParameters.field_237457_g_, Vector3d.copyCentered(tile.getPos()))
+							.withNullableParameter(LootParameters.ORIGIN, Vector3d.copyCentered(tile.getPos()))
 							.build(LootParameterSets.BLOCK)
 			).get(0);
 		}

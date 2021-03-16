@@ -45,7 +45,7 @@ public class IEOreFeature extends Feature<IEOreFeature.IEOreFeatureConfig>
 	{
 		public static final Codec<IEOreFeatureConfig> CODEC = RecordCodecBuilder.create(
 				app -> app.group(
-						RuleTest.field_237127_c_.fieldOf("target")
+						RuleTest.CODEC.fieldOf("target")
 								.forGetter(cfg -> cfg.target),
 						BlockState.CODEC.fieldOf("state")
 								.forGetter(cfg -> cfg.state),

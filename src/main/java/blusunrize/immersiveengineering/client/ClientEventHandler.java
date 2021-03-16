@@ -796,7 +796,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			if(!stack.isEmpty()&&ConveyorHandler.conveyorBlocks.containsValue(Block.getBlockFromItem(stack.getItem()))&&rtr.getFace().getAxis()==Axis.Y)
 			{
 				Direction side = rtr.getFace();
-				VoxelShape shape = world.getBlockState(pos).getRenderShape(world, pos);
+				VoxelShape shape = world.getBlockState(pos).getCollisionShape(world, pos);
 				AxisAlignedBB targetedBB = null;
 				if(!shape.isEmpty())
 					targetedBB = shape.getBoundingBox();

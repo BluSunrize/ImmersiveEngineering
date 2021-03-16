@@ -77,7 +77,7 @@ public class IEExplosiveEntity extends TNTEntity
 		this.prevPosX = x;
 		this.prevPosY = y;
 		this.prevPosZ = z;
-		((TNTEntityAccess)this).setTntPlacedBy(igniter);
+		((TNTEntityAccess)this).setIgniter(igniter);
 		this.size = size;
 		this.block = blockstate;
 		this.explosionDropChance = 1/size;

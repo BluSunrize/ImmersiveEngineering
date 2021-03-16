@@ -61,7 +61,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
 
-//TODO powered MB or not?
 public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTileEntity, MultiblockRecipe>
 		implements IInteractionObjectIE, IConveyorAttachable, IBlockBounds
 {

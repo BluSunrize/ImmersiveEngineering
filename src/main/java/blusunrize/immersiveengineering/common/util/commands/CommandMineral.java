@@ -103,27 +103,27 @@ public class CommandMineral
 		MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(sender.getWorld(), pos);
 		StringTextComponent ret = new StringTextComponent("");
 		if(info==null||info.getTotalWeight()==0)
-			ret.append(new TranslationTextComponent(Lib.CHAT_COMMAND+"mineral.get.none", pos.x, pos.z));
+			ret.appendSibling(new TranslationTextComponent(Lib.CHAT_COMMAND+"mineral.get.none", pos.x, pos.z));
 		else
 		{
-			ret.append(new TranslationTextComponent(Lib.CHAT_COMMAND+"mineral.get", pos.x, pos.z));
+			ret.appendSibling(new TranslationTextComponent(Lib.CHAT_COMMAND+"mineral.get", pos.x, pos.z));
 			for(Pair<MineralVein, Integer> pair : info.getAllVeins())
 			{
 				MineralVein vein = pair.getLeft();
 				double percentage = pair.getRight()/(double)info.getTotalWeight();
 				IFormattableTextComponent component = new StringTextComponent("\n "+Utils.formatDouble(percentage*100, "0.00")+"% ");
-				component.append(new TranslationTextComponent(vein.getMineral().getTranslationKey()));
-				ret.append(component.mergeStyle(TextFormatting.GRAY));
+				component.appendSibling(new TranslationTextComponent(vein.getMineral().getTranslationKey()));
+				ret.appendSibling(component.mergeStyle(TextFormatting.GRAY));
 				component = new StringTextComponent("\n  ");
-				component.append(new TranslationTextComponent(Lib.CHAT_COMMAND+"mineral.get.pos",
+				component.appendSibling(new TranslationTextComponent(Lib.CHAT_COMMAND+"mineral.get.pos",
 						vein.getPos().x, vein.getPos().z, vein.getRadius()));
 				component.appendString("\n  ");
 				if(ExcavatorHandler.mineralVeinYield==0)
-					component.append(new TranslationTextComponent(Lib.DESC_INFO+"coresample.infinite"));
+					component.appendSibling(new TranslationTextComponent(Lib.DESC_INFO+"coresample.infinite"));
 				else
-					component.append(new TranslationTextComponent(Lib.DESC_INFO+"coresample.yield",
+					component.appendSibling(new TranslationTextComponent(Lib.DESC_INFO+"coresample.yield",
 							ExcavatorHandler.mineralVeinYield-vein.getDepletion()));
-				ret.append(component.mergeStyle(TextFormatting.GRAY));
+				ret.appendSibling(component.mergeStyle(TextFormatting.GRAY));
 			}
 		}
 		sender.sendFeedback(ret, true);

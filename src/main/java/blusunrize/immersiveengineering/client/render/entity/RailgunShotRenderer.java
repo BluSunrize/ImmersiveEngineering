@@ -128,7 +128,7 @@ public class RailgunShotRenderer extends EntityRenderer<RailgunShotEntity>
 	}
 
 	@Override
-	public ResourceLocation getEntityTexture(@Nonnull RailgunShotEntity p_110775_1_)
+	public ResourceLocation getEntityTexture(@Nonnull RailgunShotEntity entity)
 	{
 		return new ResourceLocation("immersiveengineering:textures/models/white.png");
 	}

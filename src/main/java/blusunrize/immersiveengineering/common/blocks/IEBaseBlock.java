@@ -144,9 +144,9 @@ public class IEBaseBlock extends Block implements IIEBlock, IWaterLoggable
 	}
 
 	@Override
-	public boolean propagatesSkylightDown(BlockState p_200123_1_, IBlockReader p_200123_2_, BlockPos p_200123_3_)
+	public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos)
 	{
-		return notNormalBlock||super.propagatesSkylightDown(p_200123_1_, p_200123_2_, p_200123_3_);
+		return notNormalBlock||super.propagatesSkylightDown(state, reader, pos);
 	}
 
 	protected BlockState getInitDefaultState()

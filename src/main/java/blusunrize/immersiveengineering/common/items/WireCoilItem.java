@@ -26,7 +26,6 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Locale;
 
-
 public class WireCoilItem extends IEBaseItem implements IWireCoil
 {
 

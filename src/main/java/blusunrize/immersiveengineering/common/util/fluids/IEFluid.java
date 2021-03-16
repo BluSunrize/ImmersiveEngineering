@@ -147,7 +147,7 @@ public class IEFluid extends FlowingFluid
 	}
 
 	@Override
-	protected boolean canDisplace(FluidState p_215665_1_, IBlockReader p_215665_2_, BlockPos p_215665_3_, Fluid fluidIn, Direction direction)
+	protected boolean canDisplace(FluidState fluidState, IBlockReader blockReader, BlockPos pos, Fluid fluidIn, Direction direction)
 	{
 		return direction==Direction.DOWN&&!isEquivalentTo(fluidIn);
 	}
@@ -184,12 +184,12 @@ public class IEFluid extends FlowingFluid
 	}
 
 	@Override
-	public int getLevel(FluidState p_207192_1_)
+	public int getLevel(FluidState state)
 	{
-		if(isSource(p_207192_1_))
+		if(isSource(state))
 			return 8;
 		else
-			return p_207192_1_.get(LEVEL_1_8);
+			return state.get(LEVEL_1_8);
 	}
 
 	@Nonnull
