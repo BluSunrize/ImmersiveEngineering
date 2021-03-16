@@ -68,18 +68,18 @@ public class Advancements extends AdvancementProvider
 	public void act(DirectoryCache cache) throws IOException
 	{
 		Set<ResourceLocation> set = Sets.newHashSet();
-		Consumer<Advancement> consumer = (p_204017_3_) -> {
-			if(!set.add(p_204017_3_.getId()))
+		Consumer<Advancement> consumer = (advancement) -> {
+			if(!set.add(advancement.getId()))
 			{
-				throw new IllegalStateException("Duplicate advancement "+p_204017_3_.getId());
+				throw new IllegalStateException("Duplicate advancement "+advancement.getId());
 			}
 			else
 			{
-				Path path1 = getPath(OUTPUT, p_204017_3_);
+				Path path1 = getPath(OUTPUT, advancement);
 
 				try
 				{
-					IDataProvider.save(GSON, cache, p_204017_3_.copy().serialize(), path1);
+					IDataProvider.save(GSON, cache, advancement.copy().serialize(), path1);
 				} catch(IOException ioexception)
 				{
 					IELogger.error("Couldn't save advancement {}", path1, ioexception);

@@ -131,9 +131,10 @@ public class ExcavatorHandler
 				int radius = 12+rand.nextInt(32);
 				int radiusSq = radius*radius;
 				boolean crossover = MINERAL_VEIN_LIST.get(world.getDimensionKey()).stream().anyMatch(vein -> {
-					int dX = vein.getPos().x-finalPos.x;
-					int dZ = vein.getPos().z-finalPos.z;
-					int dSq = dX*dX+dZ*dZ;
+					// Use longs to prevent overflow
+					long dX = vein.getPos().x-finalPos.x;
+					long dZ = vein.getPos().z-finalPos.z;
+					long dSq = dX*dX+dZ*dZ;
 					return dSq < vein.getRadius()*vein.getRadius()||dSq < radiusSq;
 				});
 				if(!crossover)

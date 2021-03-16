@@ -32,7 +32,7 @@ public class GuiButtonManualNavigation extends Button
 	}
 
 	@Override
-	public void renderButton(MatrixStack transform, int mx, int my, float partial)
+	public void renderWidget(MatrixStack transform, int mx, int my, float partial)
 	{
 		ManualUtils.bindTexture(gui.texture);
 		RenderSystem.color3f(1.0F, 1.0F, 1.0F);

@@ -241,7 +241,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 		{
 			RevolverPerk perk = RevolverPerk.get(key);
 			if(perk!=null)
-				list.add(new StringTextComponent("  ").append(perk.getDisplayString(perks.getDouble(key))));
+				list.add(new StringTextComponent("  ").appendSibling(perk.getDisplayString(perks.getDouble(key))));
 		}
 	}
 
@@ -300,7 +300,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 	}
 
 	@Override
-	public UseAction getUseAction(ItemStack p_77661_1_)
+	public UseAction getUseAction(ItemStack stack)
 	{
 		return UseAction.BOW;
 	}
@@ -890,7 +890,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 				averageTier += dTier;
 				int iTier = (int)MathHelper.clamp((dTier < 0?Math.floor(dTier): Math.ceil(dTier)), -3, 3);
 				String translate = Lib.DESC_INFO+"revolver.perk."+perk.name().toLowerCase(Locale.US)+".tier"+iTier;
-				name = new TranslationTextComponent(translate).append(name);
+				name = new TranslationTextComponent(translate).appendSibling(name);
 			}
 
 			int rarityTier = (int)Math.ceil(MathHelper.clamp(averageTier+3, 0, 6)/6*5);

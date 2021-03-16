@@ -11,12 +11,14 @@ package blusunrize.immersiveengineering.common.blocks.generic;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.EnumProperty;
-import net.minecraft.util.ActionResultType;
+import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
@@ -41,10 +43,15 @@ public class WallmountBlock extends IEBaseBlock
 
 	public WallmountBlock(String name, Properties blockProps)
 	{
-		//TODO
-		super(name, blockProps, BlockItemIE::new, IEProperties.FACING_HORIZONTAL,
-				ORIENTATION, BlockStateProperties.WATERLOGGED);
+		super(name, blockProps, BlockItemIE::new);
 		lightOpacity = 0;
+	}
+
+	@Override
+	protected void fillStateContainer(Builder<Block, BlockState> builder)
+	{
+		super.fillStateContainer(builder);
+		builder.add(IEProperties.FACING_HORIZONTAL, ORIENTATION, BlockStateProperties.WATERLOGGED);
 	}
 
 	@Nullable

@@ -14,10 +14,12 @@ import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.wires.WireApi;
 import blusunrize.immersiveengineering.common.IETileTypes;
-import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectorBlock;
+import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectableBlock;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -28,14 +30,19 @@ import net.minecraft.world.World;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FeedthroughBlock extends MiscConnectorBlock<FeedthroughTileEntity>
+public class FeedthroughBlock extends MiscConnectableBlock<FeedthroughTileEntity>
 {
 	public FeedthroughBlock()
 	{
-		super("feedthrough", IETileTypes.FEEDTHROUGH,
-				//TODO maybe clean up a bit
-				IEProperties.FACING_ALL, BlockStateProperties.WATERLOGGED
-		);
+		super("feedthrough", IETileTypes.FEEDTHROUGH);
+	}
+
+	@Override
+	protected void fillStateContainer(Builder<Block, BlockState> builder)
+	{
+		super.fillStateContainer(builder);
+		// TODO Axis instead of FACING_ALL?
+		builder.add(IEProperties.FACING_ALL, BlockStateProperties.WATERLOGGED);
 	}
 
 	@Override

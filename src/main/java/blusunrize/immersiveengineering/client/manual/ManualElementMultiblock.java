@@ -163,11 +163,11 @@ public class ManualElementMultiblock extends SpecialManualElements
 						s = greenTick.deepCopy();
 					else
 						s = new StringTextComponent(hasAnyItems?"   ": "");
-					s.append(applyFormat(
+					s.appendSibling(applyFormat(
 							new StringTextComponent(sIndent.toString()+req.getCount()+"x "), TextFormatting.GRAY
 					));
 					if(!req.isEmpty())
-						s.append(applyFormat(req.getDisplayName().deepCopy(), req.getRarity().color));
+						s.appendSibling(applyFormat(req.getDisplayName().deepCopy(), req.getRarity().color));
 					else
 						s.appendString("???");
 					componentTooltip.add(s);

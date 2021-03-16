@@ -11,11 +11,13 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.IETileTypes;
-import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectorBlock;
+import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectableBlock;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.Property;
+import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Mirror;
@@ -23,14 +25,21 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 
-public class EnergyMeterBlock extends MiscConnectorBlock<EnergyMeterTileEntity>
+public class EnergyMeterBlock extends MiscConnectableBlock<EnergyMeterTileEntity>
 {
 	public static final Property<Direction> FACING = IEProperties.FACING_HORIZONTAL;
 	public static final Property<Boolean> DUMMY = IEProperties.MULTIBLOCKSLAVE;
 
 	public EnergyMeterBlock()
 	{
-		super("current_transformer", IETileTypes.ENERGY_METER, DUMMY, FACING, BlockStateProperties.WATERLOGGED);
+		super("current_transformer", IETileTypes.ENERGY_METER);
+	}
+
+	@Override
+	protected void fillStateContainer(Builder<Block, BlockState> builder)
+	{
+		super.fillStateContainer(builder);
+		builder.add(DUMMY, FACING, BlockStateProperties.WATERLOGGED);
 	}
 
 	@Override

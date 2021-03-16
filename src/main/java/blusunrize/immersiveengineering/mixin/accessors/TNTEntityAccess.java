@@ -18,5 +18,5 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface TNTEntityAccess
 {
 	@Accessor
-	void setTntPlacedBy(LivingEntity newPlacer);
+	void setIgniter(LivingEntity newPlacer);
 }

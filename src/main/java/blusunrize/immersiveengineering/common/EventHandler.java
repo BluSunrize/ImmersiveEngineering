@@ -238,7 +238,7 @@ public class EventHandler
 	@SubscribeEvent
 	public void onLivingDrops(LivingDropsEvent event)
 	{
-		if(!event.isCanceled()&&!event.getEntityLiving().isNonBoss())
+		if(!event.isCanceled()&&!event.getEntityLiving().canChangeDimension())
 		{
 			Rarity r = Rarity.EPIC;
 			for(Class<? extends MobEntity> boring : listOfBoringBosses)
@@ -281,7 +281,7 @@ public class EventHandler
 			float mod = 1.5f+((amp*amp)*.5f);
 			event.setAmount(event.getAmount()*mod);
 		}
-		if(!event.isCanceled()&&!event.getEntityLiving().isNonBoss()&&event.getAmount() >= event.getEntityLiving().getHealth()&&event.getSource().getTrueSource() instanceof PlayerEntity&&((PlayerEntity)event.getSource().getTrueSource()).getHeldItem(Hand.MAIN_HAND).getItem() instanceof DrillItem)
+		if(!event.isCanceled()&&!event.getEntityLiving().canChangeDimension()&&event.getAmount() >= event.getEntityLiving().getHealth()&&event.getSource().getTrueSource() instanceof PlayerEntity&&((PlayerEntity)event.getSource().getTrueSource()).getHeldItem(Hand.MAIN_HAND).getItem() instanceof DrillItem)
 			Utils.unlockIEAdvancement((PlayerEntity)event.getSource().getTrueSource(), "main/secret_drillbreak");
 	}
 

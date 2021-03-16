@@ -146,7 +146,7 @@ public class DrillItem extends DieselToolItem
 			TextFormatting status = quote < .1?TextFormatting.RED: quote < .3?TextFormatting.GOLD: quote < .6?TextFormatting.YELLOW: TextFormatting.GREEN;
 			list.add(TextUtils.applyFormat(new TranslationTextComponent(Lib.DESC_FLAVOUR+"drill.headDamage"), TextFormatting.GRAY)
 					.appendString(" ")
-					.append(TextUtils.applyFormat(
+					.appendSibling(TextUtils.applyFormat(
 							new TranslationTextComponent(Lib.DESC_INFO+"percent", (int)(quote*100)),
 							status
 					)));

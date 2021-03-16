@@ -17,6 +17,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.state.Property;
+import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Mirror;
@@ -36,8 +37,14 @@ public class ModWorkbenchBlock extends IETileProviderBlock
 	public ModWorkbenchBlock(String name)
 	{
 		super(name, Block.Properties.create(Material.WOOD).sound(SoundType.WOOD).hardnessAndResistance(2, 5).notSolid(),
-				BlockItemIE::new,
-				DUMMY, FACING);
+				BlockItemIE::new);
+	}
+
+	@Override
+	protected void fillStateContainer(Builder<Block, BlockState> builder)
+	{
+		super.fillStateContainer(builder);
+		builder.add(DUMMY, FACING);
 	}
 
 	@Nullable

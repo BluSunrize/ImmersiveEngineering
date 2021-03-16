@@ -78,9 +78,9 @@ public abstract class LootGenerator implements IDataProvider
 		}
 	}
 
-	private static Path getPath(Path p_218439_0_, ResourceLocation p_218439_1_)
+	private static Path getPath(Path pathIn, ResourceLocation id)
 	{
-		return p_218439_0_.resolve("data/"+p_218439_1_.getNamespace()+"/loot_tables/"+p_218439_1_.getPath()+".json");
+		return pathIn.resolve("data/"+id.getNamespace()+"/loot_tables/"+id.getPath()+".json");
 	}
 
 	protected abstract void registerTables();

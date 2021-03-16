@@ -12,13 +12,14 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IPostBlock;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Connectors;
-import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectorBlock;
+import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectableBlock;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
-import com.google.common.collect.ImmutableList;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
+import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -28,13 +29,18 @@ import net.minecraft.world.IWorld;
 import javax.annotation.Nullable;
 import java.util.Optional;
 
-public class PostTransformerBlock extends MiscConnectorBlock<PostTransformerTileEntity>
+public class PostTransformerBlock extends MiscConnectableBlock<PostTransformerTileEntity>
 {
 	public PostTransformerBlock()
 	{
-		super("post_transformer", IETileTypes.POST_TRANSFORMER,
-				ImmutableList.of(IEProperties.FACING_HORIZONTAL, BlockStateProperties.WATERLOGGED),
-				(b, p) -> null);
+		super("post_transformer", IETileTypes.POST_TRANSFORMER, (b, p) -> null);
+	}
+
+	@Override
+	protected void fillStateContainer(Builder<Block, BlockState> builder)
+	{
+		super.fillStateContainer(builder);
+		builder.add(IEProperties.FACING_HORIZONTAL, BlockStateProperties.WATERLOGGED);
 	}
 
 	@Override

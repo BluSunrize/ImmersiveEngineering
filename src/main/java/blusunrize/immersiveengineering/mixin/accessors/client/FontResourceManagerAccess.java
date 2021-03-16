@@ -20,6 +20,6 @@ import java.util.Map;
 @Mixin(FontResourceManager.class)
 public interface FontResourceManagerAccess
 {
-	@Accessor("field_238546_d_")
-	Map<ResourceLocation, Font> getFonts();
+	@Accessor
+	Map<ResourceLocation, Font> getIdToFontMap();
 }

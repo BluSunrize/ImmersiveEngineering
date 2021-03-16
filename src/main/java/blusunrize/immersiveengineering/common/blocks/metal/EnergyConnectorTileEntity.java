@@ -21,14 +21,12 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBou
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Connectors;
 import blusunrize.immersiveengineering.common.blocks.generic.ImmersiveConnectableTileEntity;
-import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectorBlock;
+import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectableBlock;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.wires.IEWireTypes.IEWireType;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import it.unimi.dsi.fastutil.objects.Object2FloatAVLTreeMap;
@@ -47,35 +45,42 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3i;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.registries.DeferredRegister;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import static blusunrize.immersiveengineering.api.wires.WireType.*;
-
 
 public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity implements IStateBasedDirectional,
 		IIEInternalFluxHandler, IBlockBounds, EnergyConnector, ITickableTileEntity
 {
-	public static final BiMap<Pair<String, Boolean>, TileEntityType<EnergyConnectorTileEntity>> DATA_TYPE_MAP = HashBiMap.create();
+	public static final Map<Pair<String, Boolean>, RegistryObject<TileEntityType<EnergyConnectorTileEntity>>>
+			SPEC_TO_TYPE = new HashMap<>();
+	public static final Map<ResourceLocation, Pair<String, Boolean>> NAME_TO_SPEC = new HashMap<>();
 
-	public static void registerConnectorTEs(RegistryEvent.Register<TileEntityType<?>> event)
+	public static void registerConnectorTEs(DeferredRegister<TileEntityType<?>> event)
 	{
 		for(String type : new String[]{LV_CATEGORY, MV_CATEGORY, HV_CATEGORY})
 			for(int b = 0; b < 2; ++b)
 			{
 				boolean relay = b!=0;
 				ImmutablePair<String, Boolean> key = new ImmutablePair<>(type, relay);
-				TileEntityType<EnergyConnectorTileEntity> teType = new TileEntityType<>(() -> new EnergyConnectorTileEntity(type, relay),
-						ImmutableSet.of(Connectors.ENERGY_CONNECTORS.get(key)), null);
-				teType.setRegistryName(ImmersiveEngineering.MODID, type.toLowerCase(Locale.US)+"_"+(relay?"relay": "conn"));
-				event.getRegistry().register(teType);
-				DATA_TYPE_MAP.put(key, teType);
+				String name = type.toLowerCase(Locale.US)+"_"+(relay?"relay": "conn");
+				RegistryObject<TileEntityType<EnergyConnectorTileEntity>> teType = event.register(
+						name, () -> new TileEntityType<>(
+								() -> new EnergyConnectorTileEntity(type, relay),
+								ImmutableSet.of(Connectors.ENERGY_CONNECTORS.get(key)), null)
+				);
+				SPEC_TO_TYPE.put(key, teType);
+				NAME_TO_SPEC.put(ImmersiveEngineering.rl(name), key);
 			}
 	}
 
@@ -91,7 +96,7 @@ public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity im
 	public EnergyConnectorTileEntity(TileEntityType<? extends EnergyConnectorTileEntity> type)
 	{
 		super(type);
-		Pair<String, Boolean> data = DATA_TYPE_MAP.inverse().get(type);
+		Pair<String, Boolean> data = NAME_TO_SPEC.get(type.getRegistryName());
 		this.voltage = data.getKey();
 		this.relay = data.getValue();
 		this.storageToMachine = new FluxStorage(getMaxInput(), getMaxInput(), getMaxInput());
@@ -100,7 +105,7 @@ public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity im
 
 	public EnergyConnectorTileEntity(String voltage, boolean relay)
 	{
-		this(DATA_TYPE_MAP.get(new ImmutablePair<>(voltage, relay)));
+		this(SPEC_TO_TYPE.get(new ImmutablePair<>(voltage, relay)).get());
 	}
 
 	@Override
@@ -123,7 +128,7 @@ public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity im
 	@Override
 	public EnumProperty<Direction> getFacingProperty()
 	{
-		return MiscConnectorBlock.DEFAULT_FACING_PROP;
+		return MiscConnectableBlock.DEFAULT_FACING_PROP;
 	}
 
 	@Override

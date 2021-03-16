@@ -100,7 +100,7 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 
 	@Nonnull
 	@Override
-	public EntitySize getSize(Pose p_213305_1_)
+	public EntitySize getSize(Pose poseIn)
 	{
 		return new EntitySize(.125f, .125f, true);
 	}
@@ -137,7 +137,7 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 	@Override
 	public void tick()
 	{
-		if(this.func_234616_v_()==null&&this.world.isRemote)
+		if(this.getShooter()==null&&this.world.isRemote)
 			this.shooterUUID = getShooterSynced();
 
 		this.baseTick();
@@ -150,7 +150,7 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 		//TODO better air check
 		if(localState.getMaterial()!=Material.AIR)
 		{
-			VoxelShape shape = localState.getCollisionShape(this.world, stuckIn);
+			VoxelShape shape = localState.getCollisionShapeUncached(this.world, stuckIn);
 			for(AxisAlignedBB subbox : shape.toBoundingBoxList())
 				if(subbox.contains(this.getPosX(), this.getPosY(), this.getPosZ()))
 				{
@@ -312,7 +312,7 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 		{
 			boolean flag = this.pickupStatus==AbstractArrowEntity.PickupStatus.ALLOWED
 					||this.pickupStatus==AbstractArrowEntity.PickupStatus.CREATIVE_ONLY&&player.abilities.isCreativeMode
-					||this.getNoClip()&&this.func_234616_v_().getUniqueID()==player.getUniqueID();
+					||this.getNoClip()&&this.getShooter().getUniqueID()==player.getUniqueID();
 			if(this.pickupStatus==AbstractArrowEntity.PickupStatus.ALLOWED
 					&&!player.inventory.addItemStackToInventory(this.getArrowStack()))
 				flag = false;
@@ -417,7 +417,7 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 	}
 
 	@Override
-	public boolean attackEntityFrom(DamageSource p_70097_1_, float p_70097_2_)
+	public boolean attackEntityFrom(DamageSource source, float amount)
 	{
 		return false;
 	}

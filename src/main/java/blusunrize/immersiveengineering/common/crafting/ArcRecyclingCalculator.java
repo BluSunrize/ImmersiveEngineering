@@ -136,7 +136,7 @@ public class ArcRecyclingCalculator
 		{
 			// Check if recipe output is among the items that have fixed returns
 			Pair<ItemStack, Double> brokenDown = ApiUtils.breakStackIntoPreciseIngots(stack);
-			if(brokenDown!=null&&checker.isAllowed(brokenDown.getLeft())&&brokenDown.getRight() > 0)
+			if(brokenDown!=null&&ArcRecyclingChecker.isValidRecyclingOutput(brokenDown.getLeft())&&brokenDown.getRight() > 0)
 				return new RecyclingCalculation(recipe, ItemHandlerHelper.copyStackWithSize(stack, 1),
 						ImmutableMap.of(brokenDown.getLeft(), brokenDown.getRight()));
 

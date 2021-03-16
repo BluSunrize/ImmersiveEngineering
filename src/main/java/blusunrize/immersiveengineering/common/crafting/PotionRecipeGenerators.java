@@ -25,8 +25,8 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static blusunrize.immersiveengineering.common.crafting.PotionHelper.getFluidStackForType;
 import static blusunrize.immersiveengineering.common.crafting.PotionHelper.getFluidTagForType;
+import static blusunrize.immersiveengineering.common.util.fluids.PotionFluid.getFluidStackForType;
 
 /**
  * @author BluSunrize - 22.02.2017

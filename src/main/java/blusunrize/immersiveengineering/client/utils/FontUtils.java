@@ -20,6 +20,6 @@ public class FontUtils
 		IFormattableTextComponent coloredComponent = new StringTextComponent("#"+hexCol);
 		Style coloredStyle = coloredComponent.getStyle().setColor(Color.fromInt(color));
 		coloredComponent.setStyle(coloredStyle);
-		return base.append(coloredComponent);
+		return base.appendSibling(coloredComponent);
 	}
 }

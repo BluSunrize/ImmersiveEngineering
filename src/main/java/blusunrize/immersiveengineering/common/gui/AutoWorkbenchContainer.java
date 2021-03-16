@@ -108,9 +108,9 @@ public class AutoWorkbenchContainer extends IEBaseContainer<AutoWorkbenchTileEnt
 	}
 
 	@Override
-	public void onCraftMatrixChanged(IInventory p_75130_1_)
+	public void onCraftMatrixChanged(IInventory inventoryIn)
 	{
-		super.onCraftMatrixChanged(p_75130_1_);
+		super.onCraftMatrixChanged(inventoryIn);
 		tile.markContainingBlockForUpdate(null);
 	}
 }

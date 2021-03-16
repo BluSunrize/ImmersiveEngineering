@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IModelDataBlock;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import com.google.common.collect.ImmutableList;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.material.PushReaction;
@@ -30,6 +31,7 @@ import net.minecraft.item.ItemUseContext;
 import net.minecraft.loot.LootContext.Builder;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.IntegerProperty;
+import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -60,15 +62,22 @@ import java.util.Locale;
 public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBlock, IModelOffsetProvider
 {
 	public static final IntegerProperty POST_SLAVE = IntegerProperty.create("post_slave", 0, 3);
-	public static final EnumProperty<HorizontalOffset> HORIZONTAL_OFFSET = EnumProperty.create("horizontal_offset",
-			HorizontalOffset.class);
+	public static final EnumProperty<HorizontalOffset> HORIZONTAL_OFFSET = EnumProperty.create(
+			"horizontal_offset", HorizontalOffset.class
+	);
 
 	public PostBlock(String name, Properties blockProps)
 	{
-		//TODO
-		super(name, blockProps, BlockItemIE::new, POST_SLAVE, HORIZONTAL_OFFSET, BlockStateProperties.WATERLOGGED);
+		super(name, blockProps, BlockItemIE::new);
 		setMobility(PushReaction.BLOCK);
 		lightOpacity = 0;
+	}
+
+	@Override
+	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
+	{
+		super.fillStateContainer(builder);
+		builder.add(POST_SLAVE, HORIZONTAL_OFFSET, BlockStateProperties.WATERLOGGED);
 	}
 
 	@Override
@@ -369,31 +378,29 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBloc
 	{
 		ArrayList<String> visible = new ArrayList<>();
 		visible.add("base");
-		final int offset = 1-state.get(POST_SLAVE);
-		pos = pos.subtract(state.get(HORIZONTAL_OFFSET).getOffset());
-		for(int i = 0; i <= 2; i++)
+		final int height = state.get(POST_SLAVE);
+		BlockPos centerPos = pos.subtract(state.get(HORIZONTAL_OFFSET).getOffset());
+		BlockState centerState = world.getBlockState(centerPos);
+		if(centerState.getBlock()==this)
 		{
-			BlockPos upperPos = pos.up(offset+i);
-			BlockState upperState = world.getBlockState(upperPos);
-			if(upperState.getBlock()==this)
-			{
-				for(Direction f : DirectionUtils.BY_HORIZONTAL_INDEX)
-					if(hasConnection(upperState, f, world, upperPos))
+			// With model splitting it's enough to check the model state for the current layer, since none of the arm
+			// models extend into other layers
+			for(Direction f : DirectionUtils.BY_HORIZONTAL_INDEX)
+				if(hasConnection(centerState, f, world, centerPos))
+				{
+					String name = f.getOpposite().getString();
+					if(height==3)//Arms
 					{
-						String name = f.getOpposite().getString();
-						if(i==2)//Arms
-						{
-							BlockPos armPos = upperPos.offset(f);
-							boolean down = hasConnection(world.getBlockState(armPos), Direction.DOWN, world, armPos);
-							if(down)
-								visible.add("arm_"+name+"_down");
-							else
-								visible.add("arm_"+name+"_up");
-						}
-						else//Simple Connectors
-							visible.add("con_"+i+"_"+name);
+						BlockPos armPos = centerPos.offset(f);
+						boolean down = hasConnection(world.getBlockState(armPos), Direction.DOWN, world, armPos);
+						if(down)
+							visible.add("arm_"+name+"_down");
+						else
+							visible.add("arm_"+name+"_up");
 					}
-			}
+					else//Simple Connectors
+						visible.add("con_"+(height-1)+"_"+name);
+				}
 		}
 		IEObjState modelState = new IEObjState(VisibilityList.show(visible));
 		return new SinglePropertyModelData<>(modelState, Model.IE_OBJ_STATE);

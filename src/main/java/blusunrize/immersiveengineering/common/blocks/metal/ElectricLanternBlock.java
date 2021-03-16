@@ -10,23 +10,24 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.IETileTypes;
-import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectorBlock;
+import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectableBlock;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.state.Property;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.state.StateContainer.Builder;
+import net.minecraft.state.properties.BlockStateProperties;
 
-public class ElectricLanternBlock extends MiscConnectorBlock<ElectricLanternTileEntity>
+public class ElectricLanternBlock extends MiscConnectableBlock<ElectricLanternTileEntity>
 {
-
-	public ElectricLanternBlock(String name, Property<?>... extraProperties)
+	public ElectricLanternBlock(String name)
 	{
-		super(name, IETileTypes.ELECTRIC_LANTERN, extraProperties);
+		super(name, props -> props.setLightLevel(state -> state.get(IEProperties.ACTIVE)?15: 0),
+				IETileTypes.ELECTRIC_LANTERN);
 	}
 
 	@Override
-	public int getLightValue(BlockState state, IBlockReader world, BlockPos pos)
+	protected void fillStateContainer(Builder<Block, BlockState> builder)
 	{
-		return state.get(IEProperties.ACTIVE)?15: 0;
+		super.fillStateContainer(builder);
+		builder.add(IEProperties.FACING_TOP_DOWN, IEProperties.ACTIVE, BlockStateProperties.WATERLOGGED);
 	}
 }

@@ -280,7 +280,7 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 				ItemStack tool = new ItemStack(Items.IRON_PICKAXE);
 				tool.addEnchantment(Enchantments.SILK_TOUCH, 1);
 				LootContext.Builder dropContext = new Builder((ServerWorld)world)
-						.withNullableParameter(LootParameters.field_237457_g_, Vector3d.copyCentered(pos))
+						.withNullableParameter(LootParameters.ORIGIN, Vector3d.copyCentered(pos))
 						.withNullableParameter(LootParameters.TOOL, tool);
 
 				List<ItemStack> itemsNullable = blockstate.getDrops(dropContext);

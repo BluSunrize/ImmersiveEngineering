@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileE
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
+import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.world.IBlockReader;
@@ -28,10 +29,16 @@ public class StoneMultiBlock<T extends MultiblockPartTileEntity<? super T>> exte
 
 	public StoneMultiBlock(String name, RegistryObject<TileEntityType<T>> type)
 	{
-		super(name, Block.Properties.create(Material.ROCK).hardnessAndResistance(2, 20).notSolid(),
-				IEProperties.ACTIVE);
+		super(name, Block.Properties.create(Material.ROCK).hardnessAndResistance(2, 20).notSolid());
 		this.type = type;
 		lightOpacity = 0;
+	}
+
+	@Override
+	protected void fillStateContainer(Builder<Block, BlockState> builder)
+	{
+		super.fillStateContainer(builder);
+		builder.add(IEProperties.ACTIVE);
 	}
 
 	@Nullable

@@ -87,7 +87,7 @@ public class SawbladeRenderer extends EntityRenderer<SawbladeEntity>
 	}
 
 	@Override
-	public ResourceLocation getEntityTexture(@Nonnull SawbladeEntity p_110775_1_)
+	public ResourceLocation getEntityTexture(@Nonnull SawbladeEntity entity)
 	{
 		return SAWBLADE;
 	}

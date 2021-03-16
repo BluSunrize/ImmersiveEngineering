@@ -15,9 +15,9 @@ public class ModelEarmuffs extends ModelIEArmorBase
 	public ModelRenderer[] modelParts;
 	public ModelRenderer[] colouredParts;
 
-	public ModelEarmuffs(float modelSize, float p_i1149_2_, int textureWidthIn, int textureHeightIn)
+	public ModelEarmuffs(float modelSize, float yOffsetIn, int textureWidthIn, int textureHeightIn)
 	{
-		super(modelSize, p_i1149_2_, textureWidthIn, textureHeightIn);
+		super(modelSize, yOffsetIn, textureWidthIn, textureHeightIn);
 		modelParts = new ModelRenderer[8];
 		colouredParts = new ModelRenderer[4];
 		this.modelParts[0] = new ModelRenderer(this, 0, 16);

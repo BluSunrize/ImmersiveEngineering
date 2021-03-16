@@ -52,7 +52,7 @@ public class BlockOverlayUtils
 			IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
 			for(ITextComponent s : text)
 				if(s!=null)
-					ClientUtils.font().func_238416_a_(
+					ClientUtils.font().drawEntityText(
 							LanguageMap.getInstance().func_241870_a(s),
 							scaledWidth/2+8, scaledHeight/2+8+(i++)*ClientUtils.font().FONT_HEIGHT, 0xffffffff, true,
 							transform.getLast().getMatrix(), buffer, false, 0, 0xf000f0

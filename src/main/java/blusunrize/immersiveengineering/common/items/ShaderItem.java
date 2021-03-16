@@ -127,12 +127,12 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, ITextureOverr
 		//TODO proper translation
 		list.add(new TranslationTextComponent(Lib.DESC_INFO+"shader.level")
 				.appendString(this.getRarity(stack).color.toString())
-				.append(new TranslationTextComponent(Lib.DESC_INFO+"shader.rarity."+this.getRarity(stack).name().toLowerCase(Locale.US)))
+				.appendSibling(new TranslationTextComponent(Lib.DESC_INFO+"shader.rarity."+this.getRarity(stack).name().toLowerCase(Locale.US)))
 		);
 		if(!Screen.hasShiftDown())
 			list.add(new TranslationTextComponent(Lib.DESC_INFO+"shader.applyTo")
 					.appendString(" ")
-					.append(new TranslationTextComponent(Lib.DESC_INFO+"holdShift")));
+					.appendSibling(new TranslationTextComponent(Lib.DESC_INFO+"holdShift")));
 		else
 		{
 			list.add(new TranslationTextComponent(Lib.DESC_INFO+"shader.applyTo"));
@@ -158,7 +158,7 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, ITextureOverr
 		ResourceLocation rl = getShaderName(stack);
 		if(rl!=null)
 			itc.appendString(": ")
-					.append(new TranslationTextComponent("item."+rl.getNamespace()+".shader.name."+rl.getPath()));
+					.appendSibling(new TranslationTextComponent("item."+rl.getNamespace()+".shader.name."+rl.getPath()));
 		return itc;
 	}
 

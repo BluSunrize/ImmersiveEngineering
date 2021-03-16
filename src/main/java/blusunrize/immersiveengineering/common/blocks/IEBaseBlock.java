@@ -29,7 +29,6 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.pathfinding.PathType;
 import net.minecraft.state.Property;
-import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
@@ -44,17 +43,11 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ToolType;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.function.BiFunction;
 
 public class IEBaseBlock extends Block implements IIEBlock, IWaterLoggable
 {
-	protected static Property[] tempProperties;
-
 	public final String name;
-	public final Property[] additionalProperties;
 	boolean isHidden;
 	boolean hasFlavour;
 	//TODO wtf is variable opacity?
@@ -63,13 +56,12 @@ public class IEBaseBlock extends Block implements IIEBlock, IWaterLoggable
 	protected boolean canHammerHarvest;
 	protected final boolean notNormalBlock;
 
-	public IEBaseBlock(String name, Block.Properties blockProps, BiFunction<Block, Item.Properties, Item> createItemBlock, Property... additionalProperties)
+	public IEBaseBlock(String name, Block.Properties blockProps, BiFunction<Block, Item.Properties, Item> createItemBlock)
 	{
-		super(setTempProperties(blockProps, additionalProperties));
+		super(blockProps.variableOpacity());
 		this.notNormalBlock = !getDefaultState().isSolid();
 		this.name = name;
 
-		this.additionalProperties = Arrays.copyOf(tempProperties, tempProperties.length);
 		this.setDefaultState(getInitDefaultState());
 		ResourceLocation registryName = createRegistryName();
 		setRegistryName(registryName);
@@ -82,21 +74,6 @@ public class IEBaseBlock extends Block implements IIEBlock, IWaterLoggable
 			IEContent.registeredIEItems.add(item);
 		}
 		lightOpacity = 15;
-	}
-
-	//TODO do we still need this hackyness?
-	protected static Block.Properties setTempProperties(Properties blockProps, Object[] additionalProperties)
-	{
-		List<Property<?>> propList = new ArrayList<>();
-		for(Object o : additionalProperties)
-		{
-			if(o instanceof Property)
-				propList.add((Property<?>)o);
-			if(o instanceof Property[])
-				propList.addAll(Arrays.asList(((Property<?>[])o)));
-		}
-		tempProperties = propList.toArray(new Property[0]);
-		return blockProps.variableOpacity();
 	}
 
 	public IEBaseBlock setHidden(boolean shouldHide)
@@ -167,16 +144,9 @@ public class IEBaseBlock extends Block implements IIEBlock, IWaterLoggable
 	}
 
 	@Override
-	public boolean propagatesSkylightDown(BlockState p_200123_1_, IBlockReader p_200123_2_, BlockPos p_200123_3_)
+	public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos)
 	{
-		return notNormalBlock||super.propagatesSkylightDown(p_200123_1_, p_200123_2_, p_200123_3_);
-	}
-
-	@Override
-	protected void fillStateContainer(Builder<Block, BlockState> builder)
-	{
-		super.fillStateContainer(builder);
-		builder.add(tempProperties);
+		return notNormalBlock||super.propagatesSkylightDown(state, reader, pos);
 	}
 
 	protected BlockState getInitDefaultState()
@@ -345,9 +315,9 @@ public class IEBaseBlock extends Block implements IIEBlock, IWaterLoggable
 	public abstract static class IELadderBlock extends IEBaseBlock
 	{
 		public IELadderBlock(String name, Block.Properties material,
-							 BiFunction<Block, Item.Properties, Item> itemBlock, Property... additionalProperties)
+							 BiFunction<Block, Item.Properties, Item> itemBlock)
 		{
-			super(name, material, itemBlock, additionalProperties);
+			super(name, material, itemBlock);
 		}
 
 		@Override

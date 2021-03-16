@@ -11,15 +11,20 @@ package blusunrize.immersiveengineering.common.util.fluids;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.items.PotionBucketItem;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.*;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
@@ -30,21 +35,52 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidAttributes.Builder;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
 
 public class PotionFluid extends Fluid
 {
+	public static final Item bucket = new PotionBucketItem();
+
 	public PotionFluid()
 	{
 		setRegistryName(ImmersiveEngineering.MODID, "potion");
 		IEContent.registeredIEFluids.add(this);
+		IEContent.registeredIEItems.add(bucket);
+	}
+
+	public static FluidStack getFluidStackForType(Potion type, int amount)
+	{
+		if(type==Potions.WATER||type==null)
+			return new FluidStack(Fluids.WATER, amount);
+		FluidStack stack = new FluidStack(IEContent.fluidPotion, amount);
+		stack.getOrCreateTag().putString("Potion", type.getRegistryName().toString());
+		return stack;
+	}
+
+	public static Potion getType(FluidStack stack)
+	{
+		return fromTag(stack.getTag());
+	}
+
+	public static Potion fromTag(@Nullable CompoundNBT tag)
+	{
+		if(tag==null||!tag.contains("Potion", NBT.TAG_STRING))
+			return Potions.WATER;
+		ResourceLocation name = ResourceLocation.tryCreate(tag.getString("Potion"));
+		if(name==null)
+			return Potions.WATER;
+		Potion result = ForgeRegistries.POTION_TYPES.getValue(name);
+		return result==Potions.EMPTY?Potions.WATER: result;
 	}
 
 	@Nonnull
@@ -55,15 +91,15 @@ public class PotionFluid extends Fluid
 	}
 
 	@Override
-	protected boolean canDisplace(@Nonnull FluidState p_215665_1_, @Nonnull IBlockReader p_215665_2_,
-								  @Nonnull BlockPos p_215665_3_, @Nonnull Fluid p_215665_4_, @Nonnull Direction p_215665_5_)
+	protected boolean canDisplace(@Nonnull FluidState fluidState, @Nonnull IBlockReader blockReader,
+								  @Nonnull BlockPos pos, @Nonnull Fluid fluid, @Nonnull Direction direction)
 	{
 		return true;
 	}
 
 	@Nonnull
 	@Override
-	protected Vector3d getFlow(@Nonnull IBlockReader p_215663_1_, @Nonnull BlockPos p_215663_2_, @Nonnull FluidState p_215663_3_)
+	protected Vector3d getFlow(@Nonnull IBlockReader blockReader, @Nonnull BlockPos pos, @Nonnull FluidState fluidState)
 	{
 		return Vector3d.ZERO;
 	}
@@ -106,7 +142,7 @@ public class PotionFluid extends Fluid
 	}
 
 	@Override
-	public int getLevel(@Nonnull FluidState p_207192_1_)
+	public int getLevel(@Nonnull FluidState state)
 	{
 		return 0;
 	}
@@ -139,7 +175,7 @@ public class PotionFluid extends Fluid
 					IFormattableTextComponent itextcomponent = new TranslationTextComponent(instance.getEffectName());
 					Effect effect = instance.getPotion();
 					if(instance.getAmplifier() > 0)
-						itextcomponent.appendString(" ").append(new TranslationTextComponent("potion.potency."+instance.getAmplifier()));
+						itextcomponent.appendString(" ").appendSibling(new TranslationTextComponent("potion.potency."+instance.getAmplifier()));
 					if(instance.getDuration() > 20)
 						itextcomponent.appendString(" (").appendString(EffectUtils.getPotionDurationString(instance, 1)).appendString(")");
 
@@ -176,6 +212,12 @@ public class PotionFluid extends Fluid
 			if(stack==null||!stack.hasTag())
 				return 0xff0000ff;
 			return 0xff000000|PotionUtils.getPotionColorFromEffectList(PotionUtils.getEffectsFromTag(stack.getTag()));
+		}
+
+		@Override
+		public ItemStack getBucket(FluidStack stack)
+		{
+			return PotionBucketItem.forPotion(getType(stack));
 		}
 	}
 }

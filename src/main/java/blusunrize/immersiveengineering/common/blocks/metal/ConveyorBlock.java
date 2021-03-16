@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorTile;
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -23,6 +24,7 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.EnumProperty;
+import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -46,10 +48,17 @@ public class ConveyorBlock extends IETileProviderBlock implements ConveyorHandle
 	{
 		super(ConveyorHandler.getRegistryNameFor(type).getPath(),
 				Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(3.0F, 15.0F).notSolid(),
-				BlockItemIE::new, FACING, BlockStateProperties.WATERLOGGED);
+				BlockItemIE::new);
 		this.typeName = type;
 		lightOpacity = 0;
 		ConveyorHandler.conveyorBlocks.put(type, this);
+	}
+
+	@Override
+	protected void fillStateContainer(Builder<Block, BlockState> builder)
+	{
+		super.fillStateContainer(builder);
+		builder.add(FACING, BlockStateProperties.WATERLOGGED);
 	}
 
 	@Override

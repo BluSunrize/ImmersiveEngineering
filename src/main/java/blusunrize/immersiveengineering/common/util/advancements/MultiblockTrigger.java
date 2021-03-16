@@ -117,9 +117,9 @@ public class MultiblockTrigger implements ICriterionTrigger<MultiblockTrigger.In
 		}
 
 		@Override
-		public JsonObject serialize(ConditionArraySerializer p_230240_1_)
+		public JsonObject serialize(ConditionArraySerializer conditions)
 		{
-			JsonObject jsonobject = super.serialize(p_230240_1_);
+			JsonObject jsonobject = super.serialize(conditions);
 			jsonobject.addProperty("multiblock", this.multiblock.toString());
 			jsonobject.add("item", this.hammer.serialize());
 			return jsonobject;

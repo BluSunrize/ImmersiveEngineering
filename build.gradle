@@ -10,7 +10,7 @@ buildscript {
         maven {url='https://repo.spongepowered.org/repository/maven-public/'}
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1.+', changing: true
         classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.0'
         classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
     }
@@ -67,13 +67,12 @@ def version_replaces = [
 def jsonPatterns = ["**/*.json", "**/*.mcmeta"]
 
 processResources {
+    duplicatesStrategy = DuplicatesStrategy.FAIL
+    exclude 'META-INF/mods.toml'
     from(sourceSets.main.resources.srcDirs) {
         include 'META-INF/mods.toml'
 
         expand version_replaces
-    }
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'META-INF/mods.toml'
     }
     //Minify json resources
     doLast {
@@ -83,6 +82,15 @@ processResources {
     }
 }
 
+task replaceInModsToml(type: Copy) {
+    outputs.upToDateWhen { false }
+    from(sourceSets.main.resources) {
+        include "META-INF/mods.toml"
+        expand version_replaces
+    }
+    into "$buildDir/resources/main/"
+}
+
 // When using "Run using IntelliJ" (the only option with well-working hotswapping) the used "resources" directory is
 // different from the one used by gradle/the processResources task
 task copyResourcesForIntelliJ(type: Copy) {
@@ -90,20 +98,11 @@ task copyResourcesForIntelliJ(type: Copy) {
     into "$projectDir/out/production/resources"
 }
 
-processResources.finalizedBy copyResourcesForIntelliJ
+processResources.finalizedBy replaceInModsToml, copyResourcesForIntelliJ
 
 minecraft {
-    // The mappings can be changed at any time, and must be in the following format.
-    // snapshot_YYYYMMDD   Snapshot are built nightly.
-    // stable_#            Stables are built at the discretion of the MCP team.
-    // Use non-default mappings at your own risk. they may not always work.
-    // Simply re-run your setup task after changing the mappings to update your workspace.
-    mappings channel: 'snapshot', version: '20201028-1.16.3'
-    // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
+    mappings channel: 'snapshot', version: "${version_mcp}"
 
-
-    // Default run configurations.
-    // These can be tweaked, removed, or duplicated as needed.
     runs {
         client {
             workingDirectory project.file('run')

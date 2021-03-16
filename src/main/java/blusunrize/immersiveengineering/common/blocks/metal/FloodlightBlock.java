@@ -10,23 +10,23 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.IETileTypes;
-import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectorBlock;
+import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectableBlock;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
 
-public class FloodlightBlock extends MiscConnectorBlock<FloodlightTileEntity>
+public class FloodlightBlock extends MiscConnectableBlock<FloodlightTileEntity>
 {
-
 	public FloodlightBlock(String name)
 	{
-		super(name, IETileTypes.FLOODLIGHT, IEProperties.ACTIVE, IEProperties.FACING_ALL, BlockStateProperties.WATERLOGGED);
+		super(name, props -> props.setLightLevel(state -> state.get(IEProperties.ACTIVE)?15: 0), IETileTypes.FLOODLIGHT);
 	}
 
 	@Override
-	public int getLightValue(BlockState state, IBlockReader world, BlockPos pos)
+	protected void fillStateContainer(Builder<Block, BlockState> builder)
 	{
-		return state.get(IEProperties.ACTIVE)?15: 0;
+		super.fillStateContainer(builder);
+		builder.add(IEProperties.ACTIVE, IEProperties.FACING_ALL, BlockStateProperties.WATERLOGGED);
 	}
 }

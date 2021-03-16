@@ -91,7 +91,7 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 						}
 						for(ItemStack ss : inputs)
 							tooltip.add(TextUtils.applyFormat(
-									new StringTextComponent(ss.getCount()+"x ").append(ss.getDisplayName()),
+									new StringTextComponent(ss.getCount()+"x ").appendSibling(ss.getDisplayName()),
 									TextFormatting.GRAY
 							));
 

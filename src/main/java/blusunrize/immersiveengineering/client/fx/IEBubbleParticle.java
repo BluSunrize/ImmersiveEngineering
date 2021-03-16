@@ -61,9 +61,9 @@ public class IEBubbleParticle extends SpriteTexturedParticle
 	{
 		private final IAnimatedSprite texture;
 
-		public Factory(IAnimatedSprite p_i50227_1_)
+		public Factory(IAnimatedSprite spriteSet)
 		{
-			this.texture = p_i50227_1_;
+			this.texture = spriteSet;
 		}
 
 		public Particle makeParticle(BasicParticleType typeIn, ClientWorld worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)

@@ -45,7 +45,7 @@ public class RevolverpartItem extends IEBaseItem
 		{
 			RevolverItem.RevolverPerk perk = RevolverItem.RevolverPerk.get(key);
 			if(perk!=null)
-				list.add(new StringTextComponent("  ").append(perk.getDisplayString(perks.getDouble(key))));
+				list.add(new StringTextComponent("  ").appendSibling(perk.getDisplayString(perks.getDouble(key))));
 		}
 	}
 }

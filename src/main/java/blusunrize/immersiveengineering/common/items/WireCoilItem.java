@@ -40,7 +40,6 @@ import static blusunrize.immersiveengineering.api.wires.utils.WireUtils.findObst
 import static blusunrize.immersiveengineering.api.wires.utils.WirecoilUtils.clearWireLink;
 import static blusunrize.immersiveengineering.api.wires.utils.WirecoilUtils.hasWireLink;
 
-
 public class WireCoilItem extends IEBaseItem implements IWireCoil
 {
 	@Nonnull

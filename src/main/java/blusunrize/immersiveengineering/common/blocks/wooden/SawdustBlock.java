@@ -12,12 +12,16 @@ import blusunrize.immersiveengineering.api.utils.shapes.CachedVoxelShapes;
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.pathfinding.PathType;
 import net.minecraft.state.IntegerProperty;
+import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -27,7 +31,6 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraftforge.common.ToolType;
-import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nullable;
 
@@ -50,7 +53,14 @@ public class SawdustBlock extends IEBaseBlock
 		super("sawdust",
 				Block.Properties.create(Material.WOOD, MaterialColor.SAND).sound(SoundType.SAND)
 						.harvestTool(ToolType.SHOVEL).hardnessAndResistance(0.5F).doesNotBlockMovement().notSolid(),
-				BlockItemIE::new, LAYERS);
+				BlockItemIE::new);
+	}
+
+	@Override
+	protected void fillStateContainer(Builder<Block, BlockState> builder)
+	{
+		super.fillStateContainer(builder);
+		builder.add(LAYERS);
 	}
 
 	@Override
@@ -96,7 +106,7 @@ public class SawdustBlock extends IEBaseBlock
 	{
 		BlockState blockstate = worldIn.getBlockState(pos.down());
 		Block block = blockstate.getBlock();
-		return Block.doesSideFillSquare(blockstate.getCollisionShape(worldIn, pos.down()), Direction.UP)
+		return Block.doesSideFillSquare(blockstate.getCollisionShapeUncached(worldIn, pos.down()), Direction.UP)
 				||block==this&&blockstate.get(LAYERS)==MAX_LAYER;
 	}
 

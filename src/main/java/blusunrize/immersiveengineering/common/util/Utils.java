@@ -958,7 +958,7 @@ public class Utils
 			}
 
 			@Override
-			public boolean canInteractWith(@Nonnull PlayerEntity p_75145_1_)
+			public boolean canInteractWith(@Nonnull PlayerEntity playerIn)
 			{
 				return false;
 			}
@@ -1044,7 +1044,7 @@ public class Utils
 		{
 			BlockPos pos = new BlockPos(start);
 			BlockState state = world.getBlockState(pos);
-			RayTraceResult rtr = state.getCollisionShape(world, pos).rayTrace(start, end, pos);
+			RayTraceResult rtr = state.getCollisionShapeUncached(world, pos).rayTrace(start, end, pos);
 			if(rtr!=null&&rtr.getType()!=Type.MISS)
 				ret.add(pos);
 			checked.add(pos);
@@ -1075,7 +1075,7 @@ public class Utils
 			if(!checked.contains(blockPos)&&i+lengthAdd+standartOff < dif)
 			{
 				state = world.getBlockState(blockPos);
-				RayTraceResult rtr = state.getCollisionShape(world, blockPos).rayTrace(pos, posNext, blockPos);
+				RayTraceResult rtr = state.getCollisionShapeUncached(world, blockPos).rayTrace(pos, posNext, blockPos);
 				if(rtr!=null&&rtr.getType()!=Type.MISS)
 					ret.add(blockPos);
 				//				if (place)
@@ -1087,7 +1087,7 @@ public class Utils
 			if(!checked.contains(blockPos)&&i+lengthAdd-standartOff < dif)
 			{
 				state = world.getBlockState(blockPos);
-				RayTraceResult rtr = state.getCollisionShape(world, blockPos).rayTrace(posVeryPrev, posPrev, blockPos);
+				RayTraceResult rtr = state.getCollisionShapeUncached(world, blockPos).rayTrace(posVeryPrev, posPrev, blockPos);
 				if(rtr!=null&&rtr.getType()!=Type.MISS)
 					ret.add(blockPos);
 				checked.add(blockPos);
