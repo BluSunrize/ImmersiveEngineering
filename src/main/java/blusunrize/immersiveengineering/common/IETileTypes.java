@@ -252,6 +252,11 @@ public class IETileTypes
 			"fakelight", makeType(FakeLightTileEntity::new, () -> Misc.fakeLight)
 	);
 
+	static
+	{
+		EnergyConnectorTileEntity.registerConnectorTEs(REGISTER);
+	}
+
 	private static <T extends TileEntity> Supplier<TileEntityType<T>> makeType(Supplier<T> create, Supplier<Block> valid)
 	{
 		return makeTypeMultipleBlocks(create, () -> ImmutableSet.of(valid.get()));

@@ -20,7 +20,7 @@ import blusunrize.immersiveengineering.api.wires.redstone.RedstoneNetworkHandler
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
-import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectorBlock;
+import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectableBlock;
 import blusunrize.immersiveengineering.common.util.SafeChunkUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
@@ -190,7 +190,7 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 	@Override
 	public EnumProperty<Direction> getFacingProperty()
 	{
-		return MiscConnectorBlock.DEFAULT_FACING_PROP;
+		return MiscConnectableBlock.DEFAULT_FACING_PROP;
 	}
 
 	@Override

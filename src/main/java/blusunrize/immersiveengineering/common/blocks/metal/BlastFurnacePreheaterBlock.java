@@ -17,6 +17,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -25,8 +26,14 @@ public class BlastFurnacePreheaterBlock extends GenericTileBlock<BlastFurnacePre
 	public BlastFurnacePreheaterBlock()
 	{
 		super("blastfurnace_preheater", IETileTypes.BLASTFURNACE_PREHEATER,
-				Block.Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(3, 15).notSolid(),
-				IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE);
+				Block.Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(3, 15).notSolid());
+	}
+
+	@Override
+	protected void fillStateContainer(Builder<Block, BlockState> builder)
+	{
+		super.fillStateContainer(builder);
+		builder.add(IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE);
 	}
 
 	@Override

@@ -11,25 +11,31 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
-import blusunrize.immersiveengineering.api.wires.*;
-import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
+import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
+import blusunrize.immersiveengineering.api.wires.Connection;
+import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
+import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
+import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IMirrorAble;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.state.EnumProperty;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
+import net.minecraft.util.Direction.AxisDirection;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
@@ -39,19 +45,13 @@ import net.minecraft.util.math.vector.Vector3i;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Set;
 
-import static blusunrize.immersiveengineering.api.wires.WireType.MV_CATEGORY;
-
-public class TransformerTileEntity extends ImmersiveConnectableTileEntity implements IStateBasedDirectional, IMirrorAble,
-		IHasDummyBlocks, ISelectionBounds, ICollisionBounds, IModelOffsetProvider
+public class TransformerTileEntity extends AbstractTransformerTileEntity implements IMirrorAble,
+		IHasDummyBlocks, IModelOffsetProvider, IBlockBounds
 {
-	private static final int RIGHT_INDEX = 0;
-	private static final int LEFT_INDEX = 1;
-	private WireType leftType;
-	private WireType rightType;
 	public int dummy = 0;
-	protected Set<String> acceptableLowerWires = ImmutableSet.of(WireType.LV_CATEGORY);
 
 	public TransformerTileEntity()
 	{
@@ -67,20 +67,11 @@ public class TransformerTileEntity extends ImmersiveConnectableTileEntity implem
 	{
 		return true;
 	}
-	@Override
-	public boolean canConnect()
-	{
-		return true;
-	}
 
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		if(leftType!=null)
-			nbt.putString("leftType", leftType.getUniqueName());
-		if(rightType!=null)
-			nbt.putString("rightType", rightType.getUniqueName());
 		nbt.putInt("dummy", dummy);
 	}
 
@@ -88,14 +79,6 @@ public class TransformerTileEntity extends ImmersiveConnectableTileEntity implem
 	public void readCustomNBT(@Nonnull CompoundNBT nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		if(nbt.contains("leftType"))
-			leftType = WireUtils.getWireTypeFromNBT(nbt, "leftType");
-		else
-			leftType = null;
-		if(nbt.contains("rightType"))
-			rightType = WireUtils.getWireTypeFromNBT(nbt, "rightType");
-		else
-			rightType = null;
 		dummy = nbt.getInt("dummy");
 	}
 
@@ -114,35 +97,8 @@ public class TransformerTileEntity extends ImmersiveConnectableTileEntity implem
 			return master instanceof TransformerTileEntity&&((TransformerTileEntity)master).canConnectCable(cableType, target,
 					new Vector3i(0, 2, 0));
 		}
-		switch(target.getIndex())
-		{
-			case LEFT_INDEX:
-				return canAttach(cableType, leftType, rightType);
-			case RIGHT_INDEX:
-				return canAttach(cableType, rightType, leftType);
-		}
-		return false;
-	}
-
-	private boolean canAttach(WireType toAttach, @Nullable WireType atConn, @Nullable WireType other)
-	{
-		if(atConn!=null)
-			return false;
-		String higherCat = getHigherWiretype();
-		String attachCat = toAttach.getCategory();
-		if(other==null)
-			return higherCat.equals(attachCat)||acceptableLowerWires.contains(attachCat);
-		boolean isHigher = higherCat.equals(toAttach.getCategory());
-		boolean isOtherHigher = higherCat.equals(other.getCategory());
-		if(isHigher^isOtherHigher)
-		{
-			if(isHigher)
-				return true;
-			else
-				return acceptableLowerWires.contains(attachCat);
-		}
 		else
-			return false;
+			return super.canConnectCable(cableType, target, offset);
 	}
 
 	@Override
@@ -153,49 +109,13 @@ public class TransformerTileEntity extends ImmersiveConnectableTileEntity implem
 			TileEntity master = world.getTileEntity(getPos().add(0, -dummy, 0));
 			if(master instanceof TransformerTileEntity)
 				((TransformerTileEntity)master).connectCable(cableType, target, other, otherTarget);
-			return;
 		}
-		switch(target.getIndex())
-		{
-			case LEFT_INDEX:
-				this.leftType = cableType;
-				break;
-			case RIGHT_INDEX:
-				this.rightType = cableType;
-				break;
-		}
-		updateMirrorState();
-	}
-
-	@Override
-	public void removeCable(Connection connection, ConnectionPoint attachedPoint)
-	{
-		WireType type = connection!=null?connection.type: null;
-		if(type==null)
-			leftType = rightType = null;
 		else
-		{
-			switch(attachedPoint.getIndex())
-			{
-				case LEFT_INDEX:
-					leftType = null;
-					break;
-				case RIGHT_INDEX:
-					rightType = null;
-					break;
-			}
-		}
-		updateMirrorState();
-		this.markContainingBlockForUpdate(null);
+			super.connectCable(cableType, target, other, otherTarget);
 	}
 
 	@Override
-	public Vector3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
-	{
-		return getConnectionOffset(con, con.getEndFor(pos).getIndex()==RIGHT_INDEX);
-	}
-
-	private Vector3d getConnectionOffset(Connection con, boolean right)
+	protected Vector3d getConnectionOffset(Connection con, boolean right)
 	{
 		double conRadius = con.type.getRenderDiameter()/2;
 		double offset = getHigherWiretype().equals(con.type.getCategory())?getHigherOffset(): getLowerOffset();
@@ -214,32 +134,23 @@ public class TransformerTileEntity extends ImmersiveConnectableTileEntity implem
 	@Override
 	public ConnectionPoint getTargetedPoint(TargetingInfo target, Vector3i offset)
 	{
-			if(offset.getY()!=2)
-				return null;
-			if(getFacing()==Direction.NORTH)
-				if(target.hitX < .5)
-					return new ConnectionPoint(pos, LEFT_INDEX);
-				else
-					return new ConnectionPoint(pos, RIGHT_INDEX);
-			else if(getFacing()==Direction.SOUTH)
-				if(target.hitX < .5)
-					return new ConnectionPoint(pos, RIGHT_INDEX);
-				else
-					return new ConnectionPoint(pos, LEFT_INDEX);
-			else if(getFacing()==Direction.WEST)
-				if(target.hitZ < .5)
-					return new ConnectionPoint(pos, RIGHT_INDEX);
-				else
-					return new ConnectionPoint(pos, LEFT_INDEX);
-			else if(getFacing()==Direction.EAST)
-				if(target.hitZ < .5)
-					return new ConnectionPoint(pos, LEFT_INDEX);
-				else
-					return new ConnectionPoint(pos, RIGHT_INDEX);
-		return null;
+		if(offset.getY()!=2)
+			return null;
+		Direction facing = getFacing();
+		double hitPos;
+		if(facing.getAxis()==Axis.X)
+			hitPos = target.hitZ;
+		else
+			hitPos = 0.5-target.hitX;
+
+		if((hitPos < .5)==(facing.getAxisDirection()==AxisDirection.POSITIVE))
+			return new ConnectionPoint(pos, LEFT_INDEX);
+		else
+			return new ConnectionPoint(pos, RIGHT_INDEX);
 	}
 
-	private void updateMirrorState()
+	@Override
+	protected void updateMirrorState()
 	{
 		if(dummy!=0)
 		{
@@ -262,33 +173,9 @@ public class TransformerTileEntity extends ImmersiveConnectableTileEntity implem
 	}
 
 	@Override
-	public EnumProperty<Direction> getFacingProperty()
-	{
-		return IEProperties.FACING_HORIZONTAL;
-	}
-
-	@Override
 	public PlacementLimitation getFacingLimitation()
 	{
 		return PlacementLimitation.HORIZONTAL;
-	}
-
-	@Override
-	public boolean mirrorFacingOnPlacement(LivingEntity placer)
-	{
-		return false;
-	}
-
-	@Override
-	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
-	{
-		return false;
-	}
-
-	@Override
-	public boolean canRotate(Direction axis)
-	{
-		return false;
 	}
 
 	@Override
@@ -328,55 +215,23 @@ public class TransformerTileEntity extends ImmersiveConnectableTileEntity implem
 			world.removeBlock(getPos().add(0, -dummy, 0).add(0, i, 0), false);
 	}
 
+	private static final CachedShapesWithTransform<ShapeKey, Pair<Direction, Boolean>> SHAPES =
+			new CachedShapesWithTransform<>(
+					key -> ImmutableList.of(
+							new AxisAlignedBB(0, 0, .3125, .375, key.lowerHeight, .6875),
+							new AxisAlignedBB(.625, 0, .3125, 1, key.higherHeight, .6875)
+					),
+					(pair, aabb) -> CachedShapesWithTransform.withFacingAndMirror(aabb, pair.getFirst(), pair.getSecond())
+			);
+
 	@Nonnull
 	@Override
-	public VoxelShape getCollisionShape(ISelectionContext ctx)
+	public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx)
 	{
 		if(dummy==2)
-			return VoxelShapes.create(getFacing().getAxis()==Axis.Z?0: .3125f, 0, getFacing().getAxis()==Axis.X?0: .3125f, getFacing().getAxis()==Axis.Z?1: .6875f, this instanceof TransformerHVTileEntity?.75f: .5625f, getFacing().getAxis()==Axis.X?1: .6875f);
-		return VoxelShapes.fullCube();
-	}
-
-	boolean cachedMirrored = false;
-	private VoxelShape shape = null;
-
-	@Override
-	public VoxelShape getSelectionShape(@Nullable ISelectionContext ctx)
-	{
-		boolean mirrored = getIsMirrored();
-		if(dummy==2&&(shape==null||cachedMirrored!=mirrored))
-		{
-			double offsetA = mirrored?getHigherOffset(): getLowerOffset();
-			double offsetB = mirrored?getLowerOffset(): getHigherOffset();
-			if(getFacing()==Direction.NORTH)
-				shape = VoxelShapes.combine(
-						VoxelShapes.create(0, 0, .3125, .375, offsetB, .6875),
-						VoxelShapes.create(.625, 0, .3125, 1, offsetA, .6875),
-						IBooleanFunction.OR
-				);
-			if(getFacing()==Direction.SOUTH)
-				shape = VoxelShapes.combine(
-						VoxelShapes.create(0, 0, .3125, .375, offsetA, .6875),
-						VoxelShapes.create(.625, 0, .3125, 1, offsetB, .6875),
-						IBooleanFunction.OR
-				);
-			if(getFacing()==Direction.WEST)
-				shape = VoxelShapes.combine(
-						VoxelShapes.create(.3125, 0, 0, .6875, offsetA, .375),
-						VoxelShapes.create(.3125, 0, .625, .6875, offsetB, 1),
-						IBooleanFunction.OR
-				);
-			if(getFacing()==Direction.EAST)
-				shape = VoxelShapes.combine(
-						VoxelShapes.create(.3125, 0, 0, .6875, offsetB, .375),
-						VoxelShapes.create(.3125, 0, .625, .6875, offsetA, 1),
-						IBooleanFunction.OR
-				);
-			cachedMirrored = mirrored;
-		}
-		else if(dummy!=2)
-			shape = VoxelShapes.fullCube();
-		return shape;
+			return SHAPES.get(new ShapeKey(getLowerOffset(), getHigherOffset()), Pair.of(getFacing(), !getIsMirrored()));
+		else
+			return VoxelShapes.fullCube();
 	}
 
 	@Override
@@ -395,18 +250,13 @@ public class TransformerTileEntity extends ImmersiveConnectableTileEntity implem
 		return .5625F;
 	}
 
-	public String getHigherWiretype()
-	{
-		return MV_CATEGORY;
-	}
-
 	@Override
 	public Collection<ConnectionPoint> getConnectionPoints()
 	{
 		if(isDummy())
 			return ImmutableList.of();
 		else
-			return ImmutableList.of(new ConnectionPoint(pos, RIGHT_INDEX), new ConnectionPoint(pos, LEFT_INDEX));
+			return super.getConnectionPoints();
 	}
 
 	@Override
@@ -415,12 +265,39 @@ public class TransformerTileEntity extends ImmersiveConnectableTileEntity implem
 		if(isDummy())
 			return ImmutableList.of();
 		else
-			return ImmutableList.of(new Connection(pos, LEFT_INDEX, RIGHT_INDEX));
+			return super.getInternalConnections();
 	}
 
 	@Override
 	public BlockPos getModelOffset(BlockState state, @Nullable Vector3i size)
 	{
 		return new BlockPos(0, dummy, 0);
+	}
+
+	private static class ShapeKey
+	{
+		private final double lowerHeight;
+		private final double higherHeight;
+
+		private ShapeKey(double lowerHeight, double higherHeight)
+		{
+			this.lowerHeight = lowerHeight;
+			this.higherHeight = higherHeight;
+		}
+
+		@Override
+		public boolean equals(Object o)
+		{
+			if(this==o) return true;
+			if(o==null||getClass()!=o.getClass()) return false;
+			ShapeKey shapeKey = (ShapeKey)o;
+			return Double.compare(shapeKey.lowerHeight, lowerHeight)==0&&Double.compare(shapeKey.higherHeight, higherHeight)==0;
+		}
+
+		@Override
+		public int hashCode()
+		{
+			return Objects.hash(lowerHeight, higherHeight);
+		}
 	}
 }

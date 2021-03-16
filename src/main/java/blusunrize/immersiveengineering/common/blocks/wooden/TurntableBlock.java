@@ -15,6 +15,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
+import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
@@ -28,7 +29,14 @@ public class TurntableBlock extends IETileProviderBlock
 	public TurntableBlock(String name)
 	{
 		super(name, Block.Properties.create(Material.WOOD).sound(SoundType.WOOD).hardnessAndResistance(2, 5),
-				BlockItemIE::new, IEProperties.FACING_ALL);
+				BlockItemIE::new);
+	}
+
+	@Override
+	protected void fillStateContainer(Builder<Block, BlockState> builder)
+	{
+		super.fillStateContainer(builder);
+		builder.add(IEProperties.FACING_ALL);
 	}
 
 	@Nullable

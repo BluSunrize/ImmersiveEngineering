@@ -9,7 +9,10 @@
 package blusunrize.immersiveengineering.common;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.*;
+import blusunrize.immersiveengineering.api.CapabilitySkyhookData;
+import blusunrize.immersiveengineering.api.IEApi;
+import blusunrize.immersiveengineering.api.IETags;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
@@ -78,7 +81,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.Effects;
-import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.BannerPattern;
 import net.minecraft.tileentity.FurnaceTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -304,8 +306,8 @@ public class IEContent
 		StoneDecoration.concreteStairs[0] = new IEStairsBlock("stairs_concrete", stoneDecoProps, (IEBaseBlock)StoneDecoration.concrete);
 		StoneDecoration.concreteStairs[1] = new IEStairsBlock("stairs_concrete_tile", stoneDecoProps, (IEBaseBlock)StoneDecoration.concreteTile);
 		StoneDecoration.concreteStairs[2] = new IEStairsBlock("stairs_concrete_leaded", stoneDecoLeadedProps, (IEBaseBlock)StoneDecoration.concreteLeaded);
-		StoneDecoration.coresample = new GenericTileBlock<>("coresample", IETileTypes.CORE_SAMPLE,
-				stoneDecoPropsNotSolid, (b, p) -> null, IEProperties.FACING_HORIZONTAL);
+		StoneDecoration.coresample = new HorizontalFacingBlock<>("coresample", IETileTypes.CORE_SAMPLE,
+				stoneDecoPropsNotSolid, ($1, $2) -> null);
 
 		Block.Properties standardWoodProperties = Block.Properties.create(Material.WOOD)
 				.sound(SoundType.WOOD)
@@ -329,8 +331,8 @@ public class IEContent
 		WoodenDecoration.treatedFence = new IEFenceBlock("treated_fence", standardWoodPropertiesNoOverlay);
 		WoodenDecoration.treatedScaffolding = new ScaffoldingBlock("treated_scaffold", standardWoodPropertiesNotSolid);
 
-		WoodenDevices.craftingTable = new GenericTileBlock<>("craftingtable", IETileTypes.CRAFTING_TABLE,
-				standardWoodPropertiesNotSolid, IEProperties.FACING_HORIZONTAL);
+		WoodenDevices.craftingTable = new HorizontalFacingBlock<>("craftingtable", IETileTypes.CRAFTING_TABLE,
+				standardWoodPropertiesNotSolid);
 		WoodenDevices.workbench = new ModWorkbenchBlock("workbench");
 		WoodenDevices.gunpowderBarrel = new GunpowderBarrelBlock("gunpowder_barrel");
 		WoodenDevices.woodenBarrel = new BarrelBlock("wooden_barrel", false);
@@ -339,8 +341,7 @@ public class IEContent
 		WoodenDevices.reinforcedCrate = new CrateBlock("reinforced_crate", true);
 
 		WoodenDevices.sorter = new SorterBlock("sorter", false);
-		WoodenDevices.itemBatcher = new GenericTileBlock<>("item_batcher", IETileTypes.ITEM_BATCHER,
-				standardWoodProperties, IEProperties.FACING_ALL);
+		WoodenDevices.itemBatcher = new ItemBatcherBlock(standardWoodProperties);
 		WoodenDevices.fluidSorter = new SorterBlock("fluid_sorter", true);
 		WoodenDevices.windmill = new WindmillBlock("windmill");
 		WoodenDevices.watermill = new WatermillBlock("watermill");
@@ -408,37 +409,31 @@ public class IEContent
 		}
 		for(String cat : new String[]{WireType.LV_CATEGORY, WireType.MV_CATEGORY, WireType.HV_CATEGORY})
 		{
-			Block connector = new PowerConnectorBlock(cat, false);
-			Block relay;
-			if(!WireType.HV_CATEGORY.equals(cat))
-				relay = new PowerConnectorBlock(cat, true);
-			else
-				relay = new PowerConnectorBlock(cat, true);
-			Connectors.ENERGY_CONNECTORS.put(new ImmutablePair<>(cat, false), connector);
-			Connectors.ENERGY_CONNECTORS.put(new ImmutablePair<>(cat, true), relay);
+			Connectors.ENERGY_CONNECTORS.put(
+					new ImmutablePair<>(cat, false), BasicConnectorBlock.forPower(cat, false)
+			);
+			Connectors.ENERGY_CONNECTORS.put(
+					new ImmutablePair<>(cat, true), BasicConnectorBlock.forPower(cat, true)
+			);
 		}
 
-		Connectors.connectorStructural = new MiscConnectorBlock<>("connector_structural", IETileTypes.CONNECTOR_STRUCTURAL);
+		Connectors.connectorStructural = new BasicConnectorBlock<>("connector_structural", IETileTypes.CONNECTOR_STRUCTURAL);
 		Connectors.postTransformer = new PostTransformerBlock();
 		Connectors.transformer = new TransformerBlock();
 		Connectors.transformerHV = new TransformerHVBlock();
-		Connectors.breakerswitch = new MiscConnectorBlock<>("breaker_switch", IETileTypes.BREAKER_SWITCH,
-				IEProperties.ACTIVE, IEProperties.FACING_ALL, BlockStateProperties.WATERLOGGED);
-		Connectors.redstoneBreaker = new MiscConnectorBlock<>("redstone_breaker", IETileTypes.REDSTONE_BREAKER,
-				IEProperties.ACTIVE, IEProperties.FACING_ALL, BlockStateProperties.WATERLOGGED);
+		Connectors.breakerswitch = new BreakerSwitchBlock<>("breaker_switch", IETileTypes.BREAKER_SWITCH);
+		Connectors.redstoneBreaker = new BreakerSwitchBlock<>("redstone_breaker", IETileTypes.REDSTONE_BREAKER);
 		Connectors.currentTransformer = new EnergyMeterBlock();
-		Connectors.connectorRedstone = new MiscConnectorBlock<>("connector_redstone", IETileTypes.CONNECTOR_REDSTONE);
-		Connectors.connectorProbe = new MiscConnectorBlock<>("connector_probe", IETileTypes.CONNECTOR_PROBE);
-		Connectors.connectorBundled = new MiscConnectorBlock<>("connector_bundled", IETileTypes.CONNECTOR_BUNDLED);
+		Connectors.connectorRedstone = new BasicConnectorBlock<>("connector_redstone", IETileTypes.CONNECTOR_REDSTONE);
+		Connectors.connectorProbe = new BasicConnectorBlock<>("connector_probe", IETileTypes.CONNECTOR_PROBE);
+		Connectors.connectorBundled = new BasicConnectorBlock<>("connector_bundled", IETileTypes.CONNECTOR_BUNDLED);
 
 		Connectors.feedthrough = new FeedthroughBlock();
 
 		MetalDevices.fluidPlacer = new GenericTileBlock<>("fluid_placer", IETileTypes.FLUID_PLACER,
 				metalPropertiesNotSolid);
-		MetalDevices.razorWire = new MiscConnectorBlock<>("razor_wire", IETileTypes.RAZOR_WIRE,
-				IEProperties.FACING_HORIZONTAL, BlockStateProperties.WATERLOGGED);
-		MetalDevices.toolbox = new GenericTileBlock<>("toolbox_block", IETileTypes.TOOLBOX, metalPropertiesNoOverlay,
-				(b, p) -> null, IEProperties.FACING_HORIZONTAL);
+		MetalDevices.razorWire = new RazorWireBlock();
+		MetalDevices.toolbox = new HorizontalFacingBlock<>("toolbox_block", IETileTypes.TOOLBOX, metalPropertiesNoOverlay, ($1, $2) -> null);
 		MetalDevices.capacitorLV = new GenericTileBlock<>("capacitor_lv", IETileTypes.CAPACITOR_LV, defaultMetalProperties);
 		MetalDevices.capacitorMV = new GenericTileBlock<>("capacitor_mv", IETileTypes.CAPACITOR_MV, defaultMetalProperties);
 		MetalDevices.capacitorHV = new GenericTileBlock<>("capacitor_hv", IETileTypes.CAPACITOR_HV, defaultMetalProperties);
@@ -446,16 +441,14 @@ public class IEContent
 		MetalDevices.barrel = new BarrelBlock("metal_barrel", true);
 		MetalDevices.fluidPump = new FluidPumpBlock();
 		MetalDevices.blastFurnacePreheater = new BlastFurnacePreheaterBlock();
-		MetalDevices.furnaceHeater = new GenericTileBlock<>("furnace_heater", IETileTypes.FURNACE_HEATER,
-				defaultMetalProperties, IEProperties.ACTIVE, IEProperties.FACING_ALL);
-		MetalDevices.dynamo = new GenericTileBlock<>("dynamo", IETileTypes.DYNAMO, defaultMetalProperties, IEProperties.FACING_HORIZONTAL);
+		MetalDevices.furnaceHeater = new FurnaceHeaterBlock(defaultMetalProperties);
+		MetalDevices.dynamo = new HorizontalFacingBlock<>("dynamo", IETileTypes.DYNAMO, defaultMetalProperties);
 		MetalDevices.thermoelectricGen = new GenericTileBlock<>("thermoelectric_generator", IETileTypes.THERMOELECTRIC_GEN,
 				defaultMetalProperties);
-		MetalDevices.electricLantern = new ElectricLanternBlock("electric_lantern",
-				IEProperties.FACING_TOP_DOWN, IEProperties.ACTIVE, BlockStateProperties.WATERLOGGED);
-		MetalDevices.chargingStation = new GenericTileBlock<>("charging_station", IETileTypes.CHARGING_STATION,
-				metalPropertiesNoOverlay, IEProperties.FACING_HORIZONTAL);
-		MetalDevices.fluidPipe = new GenericTileBlock<>("fluid_pipe", IETileTypes.FLUID_PIPE, metalPropertiesNoOverlay, BlockStateProperties.WATERLOGGED);
+		MetalDevices.electricLantern = new ElectricLanternBlock("electric_lantern");
+		MetalDevices.chargingStation = new HorizontalFacingBlock<>("charging_station", IETileTypes.CHARGING_STATION,
+				metalPropertiesNoOverlay);
+		MetalDevices.fluidPipe = new FluidPipeBlock(metalPropertiesNoOverlay);
 		MetalDevices.sampleDrill = new SampleDrillBlock();
 		MetalDevices.teslaCoil = new TeslaCoilBlock();
 		MetalDevices.floodlight = new FloodlightBlock("floodlight");
@@ -463,8 +456,7 @@ public class IEContent
 		MetalDevices.turretGun = new TurretBlock<>("turret_gun", IETileTypes.TURRET_GUN);
 		MetalDevices.cloche = new ClocheBlock();
 		for(EnumMetals metal : new EnumMetals[]{EnumMetals.IRON, EnumMetals.STEEL, EnumMetals.ALUMINUM, EnumMetals.COPPER})
-			MetalDevices.chutes.put(metal, new GenericTileBlock<>("chute_"+metal.tagName(), IETileTypes.CHUTE,
-					metalPropertiesNotSolid, IEProperties.FACING_HORIZONTAL, BlockStateProperties.WATERLOGGED));
+			MetalDevices.chutes.put(metal, new ChuteBlock(metal, metalPropertiesNotSolid));
 
 		Multiblocks.cokeOven = new StoneMultiBlock<>("coke_oven", IETileTypes.COKE_OVEN);
 		Multiblocks.blastFurnace = new StoneMultiBlock<>("blast_furnace", IETileTypes.BLAST_FURNACE);
@@ -730,7 +722,6 @@ public class IEContent
 	@SubscribeEvent
 	public static void registerTEs(RegistryEvent.Register<TileEntityType<?>> event)
 	{
-		EnergyConnectorTileEntity.registerConnectorTEs(event);
 		ConveyorHandler.registerConveyorTEs(event);
 	}
 

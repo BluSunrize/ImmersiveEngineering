@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.EnergyConnectorTileEntity;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
@@ -24,8 +25,8 @@ import net.minecraft.block.material.PushReaction;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.state.Property;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
@@ -33,20 +34,33 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 
 public abstract class ConnectorBlock extends IETileProviderBlock
 {
-	public ConnectorBlock(String name, BiFunction<Block, Item.Properties, Item> item, Property... additional)
+	public ConnectorBlock(String name, BiFunction<Block, Item.Properties, Item> item)
 	{
-		super(name, Block.Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(3.0F, 15.0F).notSolid(),
-				item, additional);
+		this(name, item, $ -> {
+		});
+	}
+
+	public ConnectorBlock(
+			String name, BiFunction<Block, Item.Properties, Item> item, Consumer<AbstractBlock.Properties> extraSetup
+	)
+	{
+		super(name, Util.make(
+				Block.Properties.create(Material.IRON)
+						.sound(SoundType.METAL)
+						.hardnessAndResistance(3.0F, 15.0F)
+						.notSolid(),
+				extraSetup), item);
 		lightOpacity = 0;
 		setMobility(PushReaction.BLOCK);
 	}
 
-	public ConnectorBlock(String name, Property... additional)
+	public ConnectorBlock(String name)
 	{
-		this(name, BlockItemIE::new, additional);
+		this(name, BlockItemIE::new);
 	}
 
 	@Override

@@ -17,6 +17,7 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
@@ -33,7 +34,14 @@ public class WatermillBlock extends IETileProviderBlock
 	public WatermillBlock(String name)
 	{
 		super(name, Block.Properties.create(Material.WOOD).sound(SoundType.WOOD).hardnessAndResistance(2, 5).notSolid(),
-				BlockItemIE::new, IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL);
+				BlockItemIE::new);
+	}
+
+	@Override
+	protected void fillStateContainer(Builder<Block, BlockState> builder)
+	{
+		super.fillStateContainer(builder);
+		builder.add(IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL);
 	}
 
 	@Nullable

@@ -8,8 +8,10 @@
 
 package blusunrize.immersiveengineering.common.blocks.cloth;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.state.IntegerProperty;
+import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
@@ -20,7 +22,14 @@ public class ShaderBannerStandingBlock extends ShaderBannerBlock
 
 	public ShaderBannerStandingBlock()
 	{
-		super("shader_banner", ROTATION, BlockStateProperties.WATERLOGGED);
+		super("shader_banner");
+	}
+
+	@Override
+	protected void fillStateContainer(Builder<Block, BlockState> builder)
+	{
+		super.fillStateContainer(builder);
+		builder.add(ROTATION, BlockStateProperties.WATERLOGGED);
 	}
 
 	@Override

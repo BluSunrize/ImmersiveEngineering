@@ -14,6 +14,7 @@ import com.google.common.collect.Maps;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.state.Property;
+import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Mirror;
@@ -21,7 +22,6 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 
 import java.util.Map;
@@ -38,7 +38,14 @@ public class ShaderBannerWallBlock extends ShaderBannerBlock
 
 	public ShaderBannerWallBlock()
 	{
-		super("shader_banner_wall", FACING, BlockStateProperties.WATERLOGGED);
+		super("shader_banner_wall");
+	}
+
+	@Override
+	protected void fillStateContainer(Builder<Block, BlockState> builder)
+	{
+		super.fillStateContainer(builder);
+		builder.add(FACING, BlockStateProperties.WATERLOGGED);
 	}
 
 	@Override

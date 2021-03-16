@@ -13,12 +13,14 @@ import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
 import com.google.common.collect.ImmutableMap;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.Property;
+import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -40,8 +42,14 @@ public class LanternBlock extends IEBaseBlock implements IHasObjProperty
 						.sound(SoundType.METAL)
 						.hardnessAndResistance(3, 15)
 						.setLightLevel(b -> 14).notSolid(),
-				BlockItem::new,
-				FACING, BlockStateProperties.WATERLOGGED);
+				BlockItem::new);
+	}
+
+	@Override
+	protected void fillStateContainer(Builder<Block, BlockState> builder)
+	{
+		super.fillStateContainer(builder);
+		builder.add(FACING, BlockStateProperties.WATERLOGGED);
 	}
 
 	private static final Map<Direction, VoxelShape> SHAPES = ImmutableMap.<Direction, VoxelShape>builder()
