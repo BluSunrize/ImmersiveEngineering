@@ -33,9 +33,8 @@ class FeatureMineralVein extends Feature<NoFeatureConfig>
 
 	public FeatureMineralVein()
 	{
-		super(NoFeatureConfig.field_236558_a_);
+		super(NoFeatureConfig.CODEC);
 	}
-
 
 	@Override
 	public boolean generate(@Nonnull ISeedReader worldIn, @Nonnull ChunkGenerator generator, @Nonnull Random random,

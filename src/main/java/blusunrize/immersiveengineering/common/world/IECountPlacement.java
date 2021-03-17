@@ -31,10 +31,10 @@ public class IECountPlacement extends SimplePlacement<IECountPlacement.IEFeature
 		super(IEFeatureSpreadConfig.CODEC);
 	}
 
-	public Stream<BlockPos> getPositions(Random random, IEFeatureSpreadConfig p_212852_2_, BlockPos pos)
+	public Stream<BlockPos> getPositions(Random random, IEFeatureSpreadConfig config, BlockPos pos)
 	{
-		return IntStream.range(0, p_212852_2_.getSpreadFeature().func_242259_a(random))
-				.mapToObj(p_242878_1_ -> pos);
+		return IntStream.range(0, config.getSpreadFeature().getSpread(random))
+				.mapToObj(count -> pos);
 	}
 
 	public static class IEFeatureSpreadConfig implements IPlacementConfig, IFeatureConfig
@@ -59,7 +59,7 @@ public class IECountPlacement extends SimplePlacement<IECountPlacement.IEFeature
 
 		public FeatureSpread getSpreadFeature()
 		{
-			return FeatureSpread.func_242252_a(IEServerConfig.getRawConfig().getInt(count));
+			return FeatureSpread.create(IEServerConfig.getRawConfig().getInt(count));
 		}
 	}
 }

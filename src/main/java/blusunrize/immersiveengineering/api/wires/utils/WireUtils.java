@@ -80,7 +80,7 @@ public class WireUtils
 
 	public static boolean preventsConnection(World worldIn, BlockPos pos, BlockState state, Vector3d a, Vector3d b)
 	{
-		VoxelShape shape = state.getCollisionShape(worldIn, pos);
+		VoxelShape shape = state.getCollisionShapeUncached(worldIn, pos);
 		shape = VoxelShapes.combine(shape, VoxelShapes.fullCube(), IBooleanFunction.AND);
 		for(AxisAlignedBB aabb : shape.toBoundingBoxList())
 		{

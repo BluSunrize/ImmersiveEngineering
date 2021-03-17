@@ -133,7 +133,7 @@ public class Villages
 	{
 		return SingleJigsawAccess.construct(
 				Either.left(rl(name)),
-				() -> ProcessorLists.field_244101_a,
+				() -> ProcessorLists.EMPTY,
 				PlacementBehaviour.RIGID
 		);
 	}
@@ -152,7 +152,7 @@ public class Villages
 		for(JigsawPiece p : shuffled)
 			newPieces.computeInt(p, (JigsawPiece pTemp, Integer i) -> (i==null?0: i)+1);
 		newPieces.put(SingleJigsawAccess.construct(
-				Either.left(toAdd), () -> ProcessorLists.field_244101_a, PlacementBehaviour.RIGID
+				Either.left(toAdd), () -> ProcessorLists.EMPTY, PlacementBehaviour.RIGID
 		), weight);
 		List<Pair<JigsawPiece, Integer>> newPieceList = newPieces.object2IntEntrySet().stream()
 				.map(e -> Pair.of(e.getKey(), e.getIntValue()))

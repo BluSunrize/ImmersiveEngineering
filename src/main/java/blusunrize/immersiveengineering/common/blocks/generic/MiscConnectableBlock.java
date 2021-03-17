@@ -26,7 +26,6 @@ import javax.annotation.Nullable;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
-//TODO the constructors are a mess, maybe add a builder or something?
 public class MiscConnectableBlock<T extends TileEntity & IImmersiveConnectable> extends ConnectorBlock
 {
 	public static final EnumProperty<Direction> DEFAULT_FACING_PROP = IEProperties.FACING_ALL;

@@ -59,7 +59,7 @@ public class RevolvershotRenderer extends EntityRenderer<RevolvershotEntity>
 
 	@Override
 	@Nonnull
-	public ResourceLocation getEntityTexture(@Nonnull RevolvershotEntity p_110775_1_)
+	public ResourceLocation getEntityTexture(@Nonnull RevolvershotEntity entity)
 	{
 		return new ResourceLocation("immersiveengineering:textures/models/bullet.png");
 	}

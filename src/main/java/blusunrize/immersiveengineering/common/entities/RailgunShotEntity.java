@@ -136,7 +136,7 @@ public class RailgunShotEntity extends IEProjectileEntity
 			IRailgunProjectile projectileProperties = getProjectileProperties();
 			if(projectileProperties!=null)
 			{
-				Entity shooter = this.func_234616_v_();
+				Entity shooter = this.getShooter();
 				UUID shooterUuid = this.getShooterUUID();
 				if(mop instanceof EntityRayTraceResult)
 				{

@@ -100,11 +100,11 @@ public class RevolvershotEntity extends IEProjectileEntity
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean isInRangeToRenderDist(double p_70112_1_)
+	public boolean isInRangeToRenderDist(double distance)
 	{
 		double d1 = this.getBoundingBox().getAverageEdgeLength()*4.0D;
 		d1 *= 64.0D;
-		return p_70112_1_ < d1*d1;
+		return distance < d1*d1;
 	}
 
 	@Override
@@ -219,7 +219,7 @@ public class RevolvershotEntity extends IEProjectileEntity
 	}
 
 	@Override
-	public boolean attackEntityFrom(DamageSource p_70097_1_, float p_70097_2_)
+	public boolean attackEntityFrom(DamageSource source, float amount)
 	{
 		return false;
 	}

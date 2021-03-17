@@ -91,15 +91,15 @@ public class PotionFluid extends Fluid
 	}
 
 	@Override
-	protected boolean canDisplace(@Nonnull FluidState p_215665_1_, @Nonnull IBlockReader p_215665_2_,
-								  @Nonnull BlockPos p_215665_3_, @Nonnull Fluid p_215665_4_, @Nonnull Direction p_215665_5_)
+	protected boolean canDisplace(@Nonnull FluidState fluidState, @Nonnull IBlockReader blockReader,
+								  @Nonnull BlockPos pos, @Nonnull Fluid fluid, @Nonnull Direction direction)
 	{
 		return true;
 	}
 
 	@Nonnull
 	@Override
-	protected Vector3d getFlow(@Nonnull IBlockReader p_215663_1_, @Nonnull BlockPos p_215663_2_, @Nonnull FluidState p_215663_3_)
+	protected Vector3d getFlow(@Nonnull IBlockReader blockReader, @Nonnull BlockPos pos, @Nonnull FluidState fluidState)
 	{
 		return Vector3d.ZERO;
 	}
@@ -142,7 +142,7 @@ public class PotionFluid extends Fluid
 	}
 
 	@Override
-	public int getLevel(@Nonnull FluidState p_207192_1_)
+	public int getLevel(@Nonnull FluidState state)
 	{
 		return 0;
 	}
@@ -175,7 +175,7 @@ public class PotionFluid extends Fluid
 					IFormattableTextComponent itextcomponent = new TranslationTextComponent(instance.getEffectName());
 					Effect effect = instance.getPotion();
 					if(instance.getAmplifier() > 0)
-						itextcomponent.appendString(" ").append(new TranslationTextComponent("potion.potency."+instance.getAmplifier()));
+						itextcomponent.appendString(" ").appendSibling(new TranslationTextComponent("potion.potency."+instance.getAmplifier()));
 					if(instance.getDuration() > 20)
 						itextcomponent.appendString(" (").appendString(EffectUtils.getPotionDurationString(instance, 1)).appendString(")");
 

@@ -56,7 +56,7 @@ public class ShaderBagItem extends IEBaseItem
 	{
 		return new TranslationTextComponent(Lib.DESC_INFO+"shader.rarity."+this.rarity.name().toLowerCase(Locale.US))
 				.appendString(" ")
-				.append(super.getDisplayName(stack));
+				.appendSibling(super.getDisplayName(stack));
 	}
 
 	@Override

@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.data.models;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.gson.*;
 import net.minecraft.client.renderer.model.ItemTransformVec3f;
+import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.TransformationMatrix;
 import net.minecraft.util.math.vector.Vector3f;
@@ -105,9 +106,23 @@ public class TransformationMap
 			baseTransform = TransformationMatrix.identity();
 		for(Entry<Perspective, TransformationMatrix> e : transforms.entrySet())
 		{
-			TransformationMatrix transform = e.getValue().compose(baseTransform);
+			TransformationMatrix transform = composeForgeLike(e.getValue(), baseTransform);
 			this.transforms.put(e.getKey(), transform);
 		}
+	}
+
+	/**
+	 * Composes two matrices, with special cases for one being the identity. There's a method for that in Forge in
+	 * principle, but calling it is rather inconsistent due to a naming conflict with official names and Forge making
+	 * an absolute mess of mappings and patches.
+	 */
+	private static TransformationMatrix composeForgeLike(TransformationMatrix a, TransformationMatrix b)
+	{
+		if(a.isIdentity()) return b;
+		if(b.isIdentity()) return a;
+		Matrix4f m = a.getMatrix();
+		m.mul(b.getMatrix());
+		return new TransformationMatrix(m);
 	}
 
 	private TransformationMatrix readMatrix(JsonObject json, Gson GSON)

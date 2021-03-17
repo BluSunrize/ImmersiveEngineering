@@ -150,7 +150,7 @@ public class ClientUtils
 		if(unicodeRenderer==null)
 			unicodeRenderer = new FontRenderer(rl -> {
 				FontResourceManager resourceManager = ((MinecraftAccess)Minecraft.getInstance()).getFontResourceMananger();
-				Map<ResourceLocation, Font> fonts = ((FontResourceManagerAccess)resourceManager).getFonts();
+				Map<ResourceLocation, Font> fonts = ((FontResourceManagerAccess)resourceManager).getIdToFontMap();
 				return fonts.get(Minecraft.UNIFORM_FONT_RENDERER_NAME);
 			});
 		return unicodeRenderer;

@@ -22,9 +22,9 @@ public abstract class ModelIEArmorBase<T extends LivingEntity> extends BipedMode
 {
 	T entityTemp;
 
-	public ModelIEArmorBase(float modelSize, float p_i1149_2_, int textureWidthIn, int textureHeightIn)
+	public ModelIEArmorBase(float modelSize, float yOffsetIn, int textureWidthIn, int textureHeightIn)
 	{
-		super(modelSize, p_i1149_2_, textureWidthIn, textureHeightIn);
+		super(modelSize, yOffsetIn, textureWidthIn, textureHeightIn);
 	}
 
 	@Override

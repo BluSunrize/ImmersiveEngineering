@@ -150,7 +150,7 @@ public class GuiReactiveList extends Button
 			if(j > entries.length-1)
 				j = entries.length-1;
 			String s = translationFunction!=null?translationFunction.apply(entries[j]): entries[j];
-			int overLength = s.length()-fr.func_238412_a_(s, strWidth).length();
+			int overLength = s.length()-fr.trimStringToWidth(s, strWidth).length();
 			if(overLength > 0)//String is too long
 			{
 				if(selectionHover&&hoverTimer > 20)
@@ -158,7 +158,7 @@ public class GuiReactiveList extends Button
 					int textOffset = (hoverTimer/10)%(s.length());
 					s = s.substring(textOffset)+" "+s.substring(0, textOffset);
 				}
-				s = fr.func_238412_a_(s, strWidth);
+				s = fr.trimStringToWidth(s, strWidth);
 			}
 			float tx = ((x+padding[2])/textScale);
 			float ty = ((y+padding[0]+(fr.FONT_HEIGHT*i))/textScale);

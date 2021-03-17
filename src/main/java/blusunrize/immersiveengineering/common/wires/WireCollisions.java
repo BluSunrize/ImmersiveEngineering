@@ -58,7 +58,7 @@ public class WireCollisions
 
 	public static void notifyBlockUpdate(@Nonnull World worldIn, @Nonnull BlockPos pos, @Nonnull BlockState oldState, @Nonnull BlockState newState, int flags)
 	{
-		if(IEServerConfig.WIRES.blocksBreakWires.get()&&!worldIn.isRemote&&(flags&1)!=0&&!newState.getCollisionShape(worldIn, pos).isEmpty())
+		if(IEServerConfig.WIRES.blocksBreakWires.get()&&!worldIn.isRemote&&(flags&1)!=0&&!newState.getCollisionShapeUncached(worldIn, pos).isEmpty())
 		{
 			GlobalWireNetwork globalNet = GlobalWireNetwork.getNetwork(worldIn);
 			Collection<CollisionInfo> data = globalNet.getCollisionData().getCollisionInfo(pos);

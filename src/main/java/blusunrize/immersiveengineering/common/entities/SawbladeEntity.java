@@ -118,12 +118,12 @@ public class SawbladeEntity extends IEProjectileEntity
 			if(mop instanceof EntityRayTraceResult)
 			{
 				Entity hit = ((EntityRayTraceResult)mop).getEntity();
-				Entity shooter = func_234616_v_();
+				Entity shooter = getShooter();
 				// todo: make this configurable?
 				hit.attackEntityFrom(IEDamageSources.causeSawbladeDamage(this, shooter), 12.0f);
 			}
 			int dmg = Math.round(getAmmo().getMaxDamage()*.05f);
-			Entity shooter = func_234616_v_();
+			Entity shooter = getShooter();
 			if(getAmmo().attemptDamageItem(dmg, world.rand, shooter instanceof ServerPlayerEntity?(ServerPlayerEntity)shooter: null))
 				this.remove();
 			if(mop instanceof BlockRayTraceResult)

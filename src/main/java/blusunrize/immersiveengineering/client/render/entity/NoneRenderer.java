@@ -31,7 +31,7 @@ public class NoneRenderer<T extends Entity> extends EntityRenderer<T>
 	}
 
 	@Override
-	public ResourceLocation getEntityTexture(@Nonnull T p_110775_1_)
+	public ResourceLocation getEntityTexture(@Nonnull T entity)
 	{
 		return null;
 	}

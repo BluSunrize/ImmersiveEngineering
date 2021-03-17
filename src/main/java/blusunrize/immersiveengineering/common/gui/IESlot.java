@@ -86,19 +86,19 @@ public abstract class IESlot extends Slot
 			super(container, inv, id, x, y);
 		}
 
-		public boolean isItemValid(ItemStack p_75214_1_)
+		public boolean isItemValid(ItemStack stack)
 		{
-			return AbstractFurnaceTileEntity.isFuel(p_75214_1_)||isBucket(p_75214_1_);
+			return AbstractFurnaceTileEntity.isFuel(stack)||isBucket(stack);
 		}
 
-		public int getItemStackLimit(ItemStack p_178170_1_)
+		public int getItemStackLimit(ItemStack stack)
 		{
-			return isBucket(p_178170_1_)?1: super.getItemStackLimit(p_178170_1_);
+			return isBucket(stack)?1: super.getItemStackLimit(stack);
 		}
 
-		public static boolean isBucket(ItemStack p_178173_0_)
+		public static boolean isBucket(ItemStack stack)
 		{
-			return p_178173_0_.getItem()==Items.BUCKET;
+			return stack.getItem()==Items.BUCKET;
 		}
 
 	}

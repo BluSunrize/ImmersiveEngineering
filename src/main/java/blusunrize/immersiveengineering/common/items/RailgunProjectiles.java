@@ -95,9 +95,9 @@ public class RailgunProjectiles
 			{
 				if(shooter!=null)
 				{
-					ammo.damageItem(1, shooter, (p_220047_1_) -> p_220047_1_.sendBreakAnimation(shooter.getActiveHand()));
+					ammo.damageItem(1, shooter, (player) -> player.sendBreakAnimation(shooter.getActiveHand()));
 					TridentEntity trident = new TridentEntity(shooter.world, shooter, ammo);
-					trident.func_234612_a_(shooter, shooter.rotationPitch, shooter.rotationYaw, 0.0F, 2.5F, 1.0F);
+					trident.setDirectionAndMovement(shooter, shooter.rotationPitch, shooter.rotationYaw, 0.0F, 2.5F, 1.0F);
 					if(shooter.abilities.isCreativeMode)
 						trident.pickupStatus = AbstractArrowEntity.PickupStatus.CREATIVE_ONLY;
 					return trident;
@@ -122,7 +122,7 @@ public class RailgunProjectiles
 				{
 					EnderPearlEntity pearl = new EnderPearlEntity(shooter.world, shooter);
 					pearl.setItem(ammo);
-					pearl.func_234612_a_(shooter, shooter.rotationPitch, shooter.rotationYaw, 0.0F, 2.5F, 1.0F);
+					pearl.setDirectionAndMovement(shooter, shooter.rotationPitch, shooter.rotationYaw, 0.0F, 2.5F, 1.0F);
 					return pearl;
 				}
 				return defaultProjectile;

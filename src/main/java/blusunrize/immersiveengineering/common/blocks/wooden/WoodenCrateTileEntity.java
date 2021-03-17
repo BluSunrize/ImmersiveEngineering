@@ -150,7 +150,7 @@ public class WoodenCrateTileEntity extends IEBaseTileEntity implements IIEInvent
 					.getLootTableFromLocation(this.lootTable);
 			this.lootTable = null;
 			LootContext.Builder contextBuilder = new LootContext.Builder((ServerWorld)this.world);
-			contextBuilder.withParameter(LootParameters.field_237457_g_, Vector3d.copyCentered(pos));
+			contextBuilder.withParameter(LootParameters.ORIGIN, Vector3d.copyCentered(pos));
 			if(player!=null)
 				contextBuilder.withLuck(player.getLuck());
 			LootContext context = contextBuilder.build(LootParameterSets.CHEST);

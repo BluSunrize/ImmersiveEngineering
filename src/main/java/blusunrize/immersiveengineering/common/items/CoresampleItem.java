@@ -77,12 +77,12 @@ public class CoresampleItem extends IEBaseItem
 							Utils.formatDouble(data.getPercentageInTotalSample()*100, "0.00")+"% "
 					);
 					MineralMix mineral = data.getType();
-					component.append(new TranslationTextComponent(mineral.getTranslationKey()));
+					component.appendSibling(new TranslationTextComponent(mineral.getTranslationKey()));
 					list.add(component.mergeStyle(baseColor));
 					if(showYield)
 					{
 						component = new StringTextComponent("  ");
-						component.append(new TranslationTextComponent(Lib.DESC_INFO+"coresample.saturation",
+						component.appendSibling(new TranslationTextComponent(Lib.DESC_INFO+"coresample.saturation",
 								Utils.formatDouble(data.getSaturation()*100, "0.00")
 						));
 						list.add(component.mergeStyle(TextFormatting.DARK_GRAY));
@@ -91,9 +91,9 @@ public class CoresampleItem extends IEBaseItem
 						int yield = ExcavatorHandler.mineralVeinYield-data.getDepletion();
 						yield *= (1-mineral.failChance);
 						if(ExcavatorHandler.mineralVeinYield==0)
-							component.append(new TranslationTextComponent(Lib.DESC_INFO+"coresample.infinite"));
+							component.appendSibling(new TranslationTextComponent(Lib.DESC_INFO+"coresample.infinite"));
 						else
-							component.append(new TranslationTextComponent(Lib.DESC_INFO+"coresample.yield",
+							component.appendSibling(new TranslationTextComponent(Lib.DESC_INFO+"coresample.yield",
 									yield));
 						list.add(component.mergeStyle(TextFormatting.DARK_GRAY));
 					}

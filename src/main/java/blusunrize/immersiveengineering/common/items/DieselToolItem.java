@@ -165,7 +165,7 @@ public abstract class DieselToolItem extends UpgradeableToolItem
 	}
 
 	@Override
-	public UseAction getUseAction(ItemStack p_77661_1_)
+	public UseAction getUseAction(ItemStack stack)
 	{
 		return UseAction.BOW;
 	}

@@ -109,6 +109,7 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.resource.IResourceType;
 import net.minecraftforge.resource.ISelectiveResourceReloadListener;
 import net.minecraftforge.resource.VanillaResourceType;
@@ -126,6 +127,7 @@ import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
 
 public class ClientEventHandler implements ISelectiveResourceReloadListener
 {
+	private static final boolean ENABLE_VEIN_DEBUG = false;
 	private boolean shieldToggleButton = false;
 	private int shieldToggleTimer = 0;
 	private static final String[] BULLET_TOOLTIP = {"  IE ", "  AMMO ", "  HERE ", "  -- "};
@@ -802,7 +804,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			if(!stack.isEmpty()&&ConveyorHandler.conveyorBlocks.containsValue(Block.getBlockFromItem(stack.getItem()))&&rtr.getFace().getAxis()==Axis.Y)
 			{
 				Direction side = rtr.getFace();
-				VoxelShape shape = world.getBlockState(pos).getRenderShape(world, pos);
+				VoxelShape shape = world.getBlockState(pos).getCollisionShape(world, pos);
 				AxisAlignedBB targetedBB = null;
 				if(!shape.isEmpty())
 					targetedBB = shape.getBoundingBox();
@@ -908,13 +910,16 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		}
 
 		/* Debug for Mineral Veins */
-
-		boolean show;
-		// Default <=> shift is sneak, use ctrl instead
-		if(Minecraft.getInstance().gameSettings.keyBindSneak.isDefault())
-			show = Screen.hasControlDown();
-		else
-			show = Screen.hasShiftDown();
+		// !isProduction: Safety feature to make sure this doesn't run even if the enable flag is left on by accident
+		boolean show = ENABLE_VEIN_DEBUG&&!FMLLoader.isProduction();
+		if(show)
+		{
+			// Default <=> shift is sneak, use ctrl instead
+			if(Minecraft.getInstance().gameSettings.keyBindSneak.isDefault())
+				show = Screen.hasControlDown();
+			else
+				show = Screen.hasShiftDown();
+		}
 		if(show)
 		{
 			RegistryKey<World> dimension = ClientUtils.mc().player.getEntityWorld().getDimensionKey();
