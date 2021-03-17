@@ -11,11 +11,11 @@ package blusunrize.immersiveengineering.common.util.compat.computers.cctweaked;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
-import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Connectors;
 import blusunrize.immersiveengineering.common.blocks.metal.ConnectorBundledTileEntity;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
-import blusunrize.immersiveengineering.common.util.compat.computers.generic.owners.*;
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackOwner;
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.Callbacks;
 import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.block.BlockState;
@@ -35,6 +35,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class ComputerCraftCompatModule extends IECompatModule
 {
@@ -86,26 +87,8 @@ public class ComputerCraftCompatModule extends IECompatModule
 		MinecraftForge.EVENT_BUS.addGenericListener(TileEntity.class, this::attachPeripheral);
 		try
 		{
-			//TODO move to generic code!
-			knownPeripherals.put(IETileTypes.CRUSHER.get(), new PeripheralCreator<>(new CrusherCallbacks()));
-			knownPeripherals.put(IETileTypes.ARC_FURNACE.get(), new PeripheralCreator<>(new ArcFurnaceCallbacks()));
-			knownPeripherals.put(
-					IETileTypes.BOTTLING_MACHINE.get(), new PeripheralCreator<>(new BottlingMachineCallbacks())
-			);
-			knownPeripherals.put(IETileTypes.CAPACITOR_LV.get(), new PeripheralCreator<>(new CapacitorCallbacks("lv")));
-			knownPeripherals.put(IETileTypes.CAPACITOR_MV.get(), new PeripheralCreator<>(new CapacitorCallbacks("mv")));
-			knownPeripherals.put(IETileTypes.CAPACITOR_HV.get(), new PeripheralCreator<>(new CapacitorCallbacks("hv")));
-			knownPeripherals.put(IETileTypes.DIESEL_GENERATOR.get(), new PeripheralCreator<>(new DieselGenCallbacks()));
-			knownPeripherals.put(IETileTypes.ENERGY_METER.get(), new PeripheralCreator<>(new EnergyMeterCallbacks()));
-			knownPeripherals.put(IETileTypes.EXCAVATOR.get(), new PeripheralCreator<>(new ExcavatorCallbacks()));
-			knownPeripherals.put(IETileTypes.FERMENTER.get(), new PeripheralCreator<>(new FermenterCallbacks()));
-			knownPeripherals.put(IETileTypes.SQUEEZER.get(), new PeripheralCreator<>(new SqueezerCallbacks()));
-			knownPeripherals.put(IETileTypes.MIXER.get(), new PeripheralCreator<>(new MixerCallbacks()));
-			knownPeripherals.put(IETileTypes.REFINERY.get(), new PeripheralCreator<>(new RefineryCallbacks()));
-			knownPeripherals.put(IETileTypes.FLOODLIGHT.get(), new PeripheralCreator<>(new FloodlightCallbacks()));
-			knownPeripherals.put(IETileTypes.SAMPLE_DRILL.get(), new PeripheralCreator<>(new SampleDrillCallbacks()));
-			knownPeripherals.put(IETileTypes.TESLACOIL.get(), new PeripheralCreator<>(new TeslaCoilCallbacks()));
-			knownPeripherals.put(IETileTypes.ASSEMBLER.get(), new PeripheralCreator<>(new AssemblerCallbacks()));
+			for(Entry<TileEntityType<?>, CallbackOwner<?>> entry : Callbacks.getCallbacks().entrySet())
+				knownPeripherals.put(entry.getKey(), new PeripheralCreator<>(entry.getValue()));
 		} catch(IllegalAccessException e)
 		{
 			throw new RuntimeException(e);
