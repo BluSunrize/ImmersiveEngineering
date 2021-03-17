@@ -34,7 +34,7 @@ public class ComputerCallback<T>
 			wrapResult = $ -> new Object[0];
 		else
 			wrapResult = o -> new Object[]{o};
-		this.wrapReturnValue = wrapResult.compose(converters.getSerializer(resultType));
+		this.wrapReturnValue = wrapResult.compose(converters.getConverter(resultType));
 		this.name = owner.renameMethod(method.getName());
 		Class<?>[] allArguments = method.getParameterTypes();
 		Preconditions.checkState(allArguments.length > 0);

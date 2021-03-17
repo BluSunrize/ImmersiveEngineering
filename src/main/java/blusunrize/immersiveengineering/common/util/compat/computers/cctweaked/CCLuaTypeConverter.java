@@ -11,19 +11,20 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-public class CCLuaTypeConverter implements LuaTypeConverter
+public class CCLuaTypeConverter extends LuaTypeConverter
 {
 	public static final CCLuaTypeConverter INSTANCE = new CCLuaTypeConverter();
 
 	@Override
-	public Function<Object, Object> getSerializer(Class<?> type)
+	@Nullable
+	protected Function<Object, Object> getInternalConverter(Class<?> type)
 	{
 		if(type==ItemStack.class)
 			return t -> serialize((ItemStack)t);
 		else if(type==FluidStack.class)
 			return t -> serialize((FluidStack)t);
 		else
-			return Function.identity();
+			return null;
 	}
 
 	public Object serialize(ItemStack stack)
@@ -32,6 +33,7 @@ public class CCLuaTypeConverter implements LuaTypeConverter
 		result.put("name", getNameOrNull(stack.getItem()));
 		result.put("count", stack.getCount());
 		result.put("damage", stack.getDamage());
+		result.put("maxDamage", stack.getMaxDamage());
 		return result;
 	}
 

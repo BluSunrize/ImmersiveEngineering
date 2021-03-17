@@ -43,6 +43,9 @@ public class Callbacks
 		register(IETileTypes.SAMPLE_DRILL, new SampleDrillCallbacks());
 		register(IETileTypes.TESLACOIL, new TeslaCoilCallbacks());
 		register(IETileTypes.ASSEMBLER, new AssemblerCallbacks());
+		register(IETileTypes.AUTO_WORKBENCH, new AutoWorkbenchCallbacks());
+		register(IETileTypes.SILO, new SiloCallbacks());
+		register(IETileTypes.SAWMILL, new SawmillCallbacks());
 		initialized = true;
 	}
 
