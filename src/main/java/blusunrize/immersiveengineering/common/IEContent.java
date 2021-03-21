@@ -35,7 +35,6 @@ import blusunrize.immersiveengineering.api.wires.localhandlers.LocalNetworkHandl
 import blusunrize.immersiveengineering.api.wires.localhandlers.WireDamageHandler;
 import blusunrize.immersiveengineering.api.wires.redstone.CapabilityRedstoneNetwork;
 import blusunrize.immersiveengineering.api.wires.redstone.RedstoneNetworkHandler;
-import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
 import blusunrize.immersiveengineering.api.wires.utils.WirecoilUtils;
 import blusunrize.immersiveengineering.client.utils.ClocheRenderFunctions;
 import blusunrize.immersiveengineering.common.blocks.*;
@@ -148,7 +147,7 @@ public class IEContent
 		/*WIRES*/
 		IEWireTypes.modConstruction();
 		/*CONVEYORS*/
-		ConveyorHandler.registerMagnetSupression((entity, iConveyorTile) -> {
+		ConveyorHandler.registerMagnetSuppression((entity, iConveyorTile) -> {
 			CompoundNBT data = entity.getPersistentData();
 			if(!data.getBoolean(Lib.MAGNET_PREVENT_NBT))
 				data.putBoolean(Lib.MAGNET_PREVENT_NBT, true);
@@ -899,7 +898,6 @@ public class IEContent
 				}
 		);
 		WireDamageHandler.GET_WIRE_DAMAGE.setValue(IEDamageSources::causeWireDamage);
-		WireUtils.RAYTRACE.setValue(Utils::rayTrace);
 		GlobalWireNetwork.SANITIZE_CONNECTIONS.setValue(IEServerConfig.WIRES.sanitizeConnections::get);
 		GlobalWireNetwork.VALIDATE_CONNECTIONS.setValue(IECommonConfig.validateNet::get);
 		ConveyorHandler.ITEM_AGE_ACCESS.setValue(new ItemAgeAccessor()

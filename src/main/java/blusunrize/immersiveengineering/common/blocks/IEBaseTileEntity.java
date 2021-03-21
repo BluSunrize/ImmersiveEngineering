@@ -8,10 +8,10 @@
 
 package blusunrize.immersiveengineering.common.blocks;
 
-import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.utils.SafeChunkUtils;
 import blusunrize.immersiveengineering.api.utils.client.CombinedModelData;
 import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
+import blusunrize.immersiveengineering.client.models.PrivateProperties;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
@@ -278,12 +278,15 @@ public abstract class IEBaseTileEntity extends TileEntity implements BlockstateP
 
 	@Nonnull
 	@Override
+	// Note: The line in the superclass javadoc about this being called off-thread is not actually correct, see
+	// https://github.com/MinecraftForge/MinecraftForge/commit/06a30e9f23289a45c3c58e83d84c3dee01757e2b#r36351093 and
+	// the original PR
 	public IModelData getModelData()
 	{
 		IModelData base = super.getModelData();
 		if(this instanceof IPropertyPassthrough)
 			return CombinedModelData.combine(
-					base, new SinglePropertyModelData<>(this, Model.TILEENTITY_PASSTHROUGH)
+					base, new SinglePropertyModelData<>(this, PrivateProperties.TILEENTITY_PASSTHROUGH)
 			);
 		else
 			return base;

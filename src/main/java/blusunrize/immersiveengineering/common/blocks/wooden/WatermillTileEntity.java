@@ -167,8 +167,8 @@ public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTi
 			rotationVec = new Vector3d(0, 0, 0);
 			Vector3d dirHoz = getHorizontalVec();
 			Vector3d dirVer = getVerticalVec();
-			rotationVec = Utils.addVectors(rotationVec, dirHoz);
-			rotationVec = Utils.addVectors(rotationVec, dirVer);
+			rotationVec = rotationVec.add(dirHoz);
+			rotationVec = rotationVec.add(dirVer);
 			//			world.addBlockEvent(xCoord, yCoord, zCoord, getBlockState(), (int)((float)rotationVec.xCoord*10000f), (int)((float)rotationVec.zCoord*10000f));
 		}
 		return rotationVec;
@@ -178,12 +178,12 @@ public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTi
 	{
 		Vector3d dir = new Vector3d(0, 0, 0);
 		boolean faceZ = getFacing().ordinal() <= 3;
-		dir = Utils.addVectors(dir, Utils.getFlowVector(world, getPos().add(-(faceZ?1: 0), +3, -(faceZ?0: 1))));
-		dir = Utils.addVectors(dir, Utils.getFlowVector(world, getPos().add(0, +3, 0)));
-		dir = Utils.addVectors(dir, Utils.getFlowVector(world, getPos().add(+(faceZ?1: 0), +3, +(faceZ?0: 1))));
+		dir = dir.add(Utils.getFlowVector(world, getPos().add(-(faceZ?1: 0), +3, -(faceZ?0: 1))));
+		dir = dir.add(Utils.getFlowVector(world, getPos().add(0, +3, 0)));
+		dir = dir.add(Utils.getFlowVector(world, getPos().add(+(faceZ?1: 0), +3, +(faceZ?0: 1))));
 
-		dir = Utils.addVectors(dir, Utils.getFlowVector(world, getPos().add(-(faceZ?2: 0), +2, -(faceZ?0: 2))));
-		dir = Utils.addVectors(dir, Utils.getFlowVector(world, getPos().add(+(faceZ?2: 0), +2, +(faceZ?0: 2))));
+		dir = dir.add(Utils.getFlowVector(world, getPos().add(-(faceZ?2: 0), +2, -(faceZ?0: 2))));
+		dir = dir.add(Utils.getFlowVector(world, getPos().add(+(faceZ?2: 0), +2, +(faceZ?0: 2))));
 
 		dir = dir.subtract(Utils.getFlowVector(world, getPos().add(-(faceZ?2: 0), -2, -(faceZ?0: 2))));
 		dir = dir.subtract(Utils.getFlowVector(world, getPos().add(+(faceZ?2: 0), -2, +(faceZ?0: 2))));
@@ -199,17 +199,17 @@ public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTi
 		Vector3d dir = new Vector3d(0, 0, 0);
 
 		Vector3d dirNeg = new Vector3d(0, 0, 0);
-		dirNeg = Utils.addVectors(dirNeg, Utils.getFlowVector(world, getPos().add(-(getFacing().getAxis()==Axis.Z?2: 0), 2, -(getFacing().getAxis()==Axis.Z?0: 2))));
-		dirNeg = Utils.addVectors(dirNeg, Utils.getFlowVector(world, getPos().add(-(getFacing().getAxis()==Axis.Z?3: 0), 1, -(getFacing().getAxis()==Axis.Z?0: 3))));
-		dirNeg = Utils.addVectors(dirNeg, Utils.getFlowVector(world, getPos().add(-(getFacing().getAxis()==Axis.Z?3: 0), 0, -(getFacing().getAxis()==Axis.Z?0: 3))));
-		dirNeg = Utils.addVectors(dirNeg, Utils.getFlowVector(world, getPos().add(-(getFacing().getAxis()==Axis.Z?3: 0), -1, -(getFacing().getAxis()==Axis.Z?0: 3))));
-		dirNeg = Utils.addVectors(dirNeg, Utils.getFlowVector(world, getPos().add(-(getFacing().getAxis()==Axis.Z?2: 0), -2, -(getFacing().getAxis()==Axis.Z?0: 2))));
+		dirNeg = dirNeg.add(Utils.getFlowVector(world, getPos().add(-(getFacing().getAxis()==Axis.Z?2: 0), 2, -(getFacing().getAxis()==Axis.Z?0: 2))));
+		dirNeg = dirNeg.add(Utils.getFlowVector(world, getPos().add(-(getFacing().getAxis()==Axis.Z?3: 0), 1, -(getFacing().getAxis()==Axis.Z?0: 3))));
+		dirNeg = dirNeg.add(Utils.getFlowVector(world, getPos().add(-(getFacing().getAxis()==Axis.Z?3: 0), 0, -(getFacing().getAxis()==Axis.Z?0: 3))));
+		dirNeg = dirNeg.add(Utils.getFlowVector(world, getPos().add(-(getFacing().getAxis()==Axis.Z?3: 0), -1, -(getFacing().getAxis()==Axis.Z?0: 3))));
+		dirNeg = dirNeg.add(Utils.getFlowVector(world, getPos().add(-(getFacing().getAxis()==Axis.Z?2: 0), -2, -(getFacing().getAxis()==Axis.Z?0: 2))));
 		Vector3d dirPos = new Vector3d(0, 0, 0);
-		dirPos = Utils.addVectors(dirPos, Utils.getFlowVector(world, getPos().add((getFacing().getAxis()==Axis.Z?2: 0), 2, (getFacing().getAxis()==Axis.Z?0: 2))));
-		dirPos = Utils.addVectors(dirPos, Utils.getFlowVector(world, getPos().add((getFacing().getAxis()==Axis.Z?3: 0), 1, (getFacing().getAxis()==Axis.Z?0: 3))));
-		dirPos = Utils.addVectors(dirPos, Utils.getFlowVector(world, getPos().add((getFacing().getAxis()==Axis.Z?3: 0), 0, (getFacing().getAxis()==Axis.Z?0: 3))));
-		dirPos = Utils.addVectors(dirPos, Utils.getFlowVector(world, getPos().add((getFacing().getAxis()==Axis.Z?3: 0), -1, (getFacing().getAxis()==Axis.Z?0: 3))));
-		dirPos = Utils.addVectors(dirPos, Utils.getFlowVector(world, getPos().add((getFacing().getAxis()==Axis.Z?2: 0), -2, (getFacing().getAxis()==Axis.Z?0: 2))));
+		dirPos = dirPos.add(Utils.getFlowVector(world, getPos().add((getFacing().getAxis()==Axis.Z?2: 0), 2, (getFacing().getAxis()==Axis.Z?0: 2))));
+		dirPos = dirPos.add(Utils.getFlowVector(world, getPos().add((getFacing().getAxis()==Axis.Z?3: 0), 1, (getFacing().getAxis()==Axis.Z?0: 3))));
+		dirPos = dirPos.add(Utils.getFlowVector(world, getPos().add((getFacing().getAxis()==Axis.Z?3: 0), 0, (getFacing().getAxis()==Axis.Z?0: 3))));
+		dirPos = dirPos.add(Utils.getFlowVector(world, getPos().add((getFacing().getAxis()==Axis.Z?3: 0), -1, (getFacing().getAxis()==Axis.Z?0: 3))));
+		dirPos = dirPos.add(Utils.getFlowVector(world, getPos().add((getFacing().getAxis()==Axis.Z?2: 0), -2, (getFacing().getAxis()==Axis.Z?0: 2))));
 		if(getFacing().getAxis()==Axis.Z)
 			dir = dir.add(dirNeg.y-dirPos.y, 0, 0);
 		else

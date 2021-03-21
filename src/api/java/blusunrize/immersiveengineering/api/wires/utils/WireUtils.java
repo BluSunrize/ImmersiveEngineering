@@ -8,12 +8,11 @@
 
 package blusunrize.immersiveengineering.api.wires.utils;
 
-import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
+import blusunrize.immersiveengineering.api.utils.Raytracer;
 import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.api.wires.Connection.CatenaryData;
 import blusunrize.immersiveengineering.api.wires.WireCollisionData.CollisionInfo;
 import com.google.common.base.Preconditions;
-import com.google.common.util.concurrent.AtomicDouble;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -28,6 +27,7 @@ import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.World;
+import org.apache.commons.lang3.mutable.MutableDouble;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
 
@@ -40,8 +40,6 @@ import java.util.function.Consumer;
 
 public class WireUtils
 {
-	public static final SetRestrictedField<RaytraceCallback> RAYTRACE = SetRestrictedField.common();
-
 	public static Connection getConnectionMovedThrough(World world, LivingEntity e)
 	{
 		Vector3d start = e.getEyePosition(0);
@@ -54,8 +52,8 @@ public class WireUtils
 		GlobalWireNetwork global = GlobalWireNetwork.getNetwork(world);
 		WireCollisionData collisionData = global.getCollisionData();
 		AtomicReference<Connection> ret = new AtomicReference<>();
-		AtomicDouble minDistSq = new AtomicDouble(Double.POSITIVE_INFINITY);
-		RAYTRACE.getValue().rayTrace(start, end, world, (pos) ->
+		MutableDouble minDistSq = new MutableDouble(Double.POSITIVE_INFINITY);
+		Raytracer.rayTrace(start, end, world, (pos) ->
 		{
 			Collection<CollisionInfo> infoAtPos = collisionData.getCollisionInfo(pos);
 			for(CollisionInfo wireInfo : infoAtPos)
@@ -69,10 +67,10 @@ public class WireUtils
 					t = MathHelper.clamp(t, 0, 1);
 					Vector3d closest = wireInfo.intersectA.add(t*across.x, t*across.y, t*across.z);
 					double distSq = closest.squareDistanceTo(startRelative);
-					if(distSq < minDistSq.get())
+					if(distSq < minDistSq.doubleValue())
 					{
 						ret.set(c);
-						minDistSq.set(distSq);
+						minDistSq.setValue(distSq);
 					}
 				}
 			}
@@ -234,13 +232,7 @@ public class WireUtils
 		globalNet.addConnection(new Connection(conn.type, fixedPos, newEnd));
 	}
 
-	public interface RaytraceCallback
-	{
-		HashSet<BlockPos> rayTrace(Vector3d start, Vector3d end, World world, Consumer<BlockPos> out);
-	}
-
-	//TODO dedup with Utils#…
-	private static double getCoeffForMinDistance(Vector3d point, Vector3d line, Vector3d across)
+	public static double getCoeffForMinDistance(Vector3d point, Vector3d line, Vector3d across)
 	{
 		if(across.x==0&&across.z==0)
 			return (point.y-line.y)/across.y;

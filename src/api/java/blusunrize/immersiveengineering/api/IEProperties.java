@@ -18,7 +18,6 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.Property;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.TransformationMatrix;
@@ -202,7 +201,5 @@ public class IEProperties
 		public static final ModelProperty<MineralMix[]> MINERAL = new ModelProperty<>();
 		public static final ModelProperty<Map<Direction, IOSideConfig>> SIDECONFIG = new ModelProperty<>();
 		public static final ModelProperty<BlockPos> SUBMODEL_OFFSET = new ModelProperty<>();
-		//TODO remove?
-		public static final ModelProperty<TileEntity> TILEENTITY_PASSTHROUGH = new ModelProperty<>();
 	}
 }

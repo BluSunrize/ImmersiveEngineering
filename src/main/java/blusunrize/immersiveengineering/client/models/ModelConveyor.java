@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.client.models;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
@@ -99,9 +98,9 @@ public class ModelConveyor extends BakedIEModel
 			facing = blockState.get(IEProperties.FACING_HORIZONTAL);
 			if(extraData.hasProperty(CONVEYOR_MODEL_DATA))
 				conveyor = extraData.getData(CONVEYOR_MODEL_DATA);
-			if(extraData.hasProperty(Model.TILEENTITY_PASSTHROUGH))
+			if(extraData.hasProperty(PrivateProperties.TILEENTITY_PASSTHROUGH))
 			{
-				tile = extraData.getData(Model.TILEENTITY_PASSTHROUGH);
+				tile = extraData.getData(PrivateProperties.TILEENTITY_PASSTHROUGH);
 				if(tile instanceof IDirectionalTile)
 					facing = ((IDirectionalTile)tile).getFacing();
 			}

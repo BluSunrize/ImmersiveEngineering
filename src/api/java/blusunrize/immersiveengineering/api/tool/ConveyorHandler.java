@@ -61,8 +61,8 @@ public class ConveyorHandler
 	public static final Map<ResourceLocation, Function<TileEntity, ? extends IConveyorBelt>> functionRegistry = new LinkedHashMap<>();
 	public static final Map<ResourceLocation, TileEntityType<? extends TileEntity>> tileEntities = new LinkedHashMap<>();
 	public static final Map<Class<? extends IConveyorBelt>, ResourceLocation> reverseClassRegistry = new LinkedHashMap<>();
-	public static final Set<BiConsumer<Entity, IConveyorTile>> magnetSupressionFunctions = new HashSet<>();
-	public static final Set<BiConsumer<Entity, IConveyorTile>> magnetSupressionReverse = new HashSet<>();
+	public static final Set<BiConsumer<Entity, IConveyorTile>> magnetSuppressionFunctions = new HashSet<>();
+	public static final Set<BiConsumer<Entity, IConveyorTile>> magnetSuppressionReverse = new HashSet<>();
 	public static final SetRestrictedField<ItemAgeAccessor> ITEM_AGE_ACCESS = SetRestrictedField.common();
 
 	public static final Map<ResourceLocation, Block> conveyorBlocks = new HashMap<>();
@@ -200,30 +200,30 @@ public class ConveyorHandler
 	 * the reversal function is optional, to revert possible NBT changes
 	 * the tileentity parsed is an instanceof
 	 */
-	public static void registerMagnetSupression(BiConsumer<Entity, IConveyorTile> function, @Nullable BiConsumer<Entity, IConveyorTile> revert)
+	public static void registerMagnetSuppression(BiConsumer<Entity, IConveyorTile> function, @Nullable BiConsumer<Entity, IConveyorTile> revert)
 	{
-		magnetSupressionFunctions.add(function);
+		magnetSuppressionFunctions.add(function);
 		if(revert!=null)
-			magnetSupressionReverse.add(revert);
+			magnetSuppressionReverse.add(revert);
 	}
 
 	/**
-	 * applies all registered magnets supressors to the entity
+	 * applies all registered magnets suppressors to the entity
 	 */
-	public static void applyMagnetSupression(Entity entity, IConveyorTile tile)
+	public static void applyMagnetSuppression(Entity entity, IConveyorTile tile)
 	{
 		if(entity!=null)
-			for(BiConsumer<Entity, IConveyorTile> func : magnetSupressionFunctions)
+			for(BiConsumer<Entity, IConveyorTile> func : magnetSuppressionFunctions)
 				func.accept(entity, tile);
 	}
 
 	/**
-	 * applies all registered magnet supression removals
+	 * applies all registered magnet suppression removals
 	 */
-	public static void revertMagnetSupression(Entity entity, IConveyorTile tile)
+	public static void revertMagnetSuppression(Entity entity, IConveyorTile tile)
 	{
 		if(entity!=null)
-			for(BiConsumer<Entity, IConveyorTile> func : magnetSupressionReverse)
+			for(BiConsumer<Entity, IConveyorTile> func : magnetSuppressionReverse)
 				func.accept(entity, tile);
 	}
 
@@ -473,12 +473,12 @@ public class ConveyorHandler
 					entity.setPosition(entity.getPosX()+move*getFacing().getXOffset(), entity.getPosY()+1*move, entity.getPosZ()+move*getFacing().getZOffset());
 				}
 				if(!contact)
-					ConveyorHandler.applyMagnetSupression(entity, (IConveyorTile)getTile());
+					ConveyorHandler.applyMagnetSuppression(entity, (IConveyorTile)getTile());
 				else
 				{
 					BlockPos nextPos = getTile().getPos().offset(getFacing());
 					if(!(SafeChunkUtils.getSafeTE(getTile().getWorld(), nextPos) instanceof IConveyorTile))
-						ConveyorHandler.revertMagnetSupression(entity, (IConveyorTile)getTile());
+						ConveyorHandler.revertMagnetSuppression(entity, (IConveyorTile)getTile());
 				}
 
 				// In the first tick this could be an entity the conveyor belt just dropped, causing #3023
@@ -513,7 +513,7 @@ public class ConveyorHandler
 		 */
 		default void onItemDeployed(ItemEntity entity)
 		{
-			ConveyorHandler.applyMagnetSupression(entity, (IConveyorTile)getTile());
+			ConveyorHandler.applyMagnetSuppression(entity, (IConveyorTile)getTile());
 		}
 
 		default void handleInsertion(ItemEntity entity, ConveyorDirection conDir, double distX, double distZ)

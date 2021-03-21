@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.api.wires.Connection.RenderData;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.BakedIEModel;
+import blusunrize.immersiveengineering.client.models.PrivateProperties;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces;
 import blusunrize.immersiveengineering.mixin.accessors.client.RenderTypeAccess;
 import com.google.common.cache.Cache;
@@ -76,9 +77,9 @@ public class BakedConnectionModel extends BakedIEModel
 		{
 			//TODO more general system for this!
 			Object[] additional = null;
-			if(extraData.hasProperty(Model.TILEENTITY_PASSTHROUGH))
+			if(extraData.hasProperty(PrivateProperties.TILEENTITY_PASSTHROUGH))
 			{
-				TileEntity te = extraData.getData(Model.TILEENTITY_PASSTHROUGH);
+				TileEntity te = extraData.getData(PrivateProperties.TILEENTITY_PASSTHROUGH);
 				if(te instanceof IEBlockInterfaces.ICacheData)
 					additional = ((IEBlockInterfaces.ICacheData)te).getCacheData();
 			}
