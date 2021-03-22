@@ -61,15 +61,19 @@ public class ClocheRenderer extends TileEntityRenderer<ClocheTileEntity>
 		// particles not rendering at all outside of fabulous mode
 		matrixStack.push();
 		ActiveRenderInfo activeInfo = Minecraft.getInstance().gameRenderer.getActiveRenderInfo();
-		matrixStack.translate(activeInfo.getProjectedView().x, activeInfo.getProjectedView().y, activeInfo.getProjectedView().z);
+		matrixStack.translate(
+				activeInfo.getProjectedView().x-tile.getPos().getX(),
+				activeInfo.getProjectedView().y-tile.getPos().getY(),
+				activeInfo.getProjectedView().z-tile.getPos().getZ()
+		);
 		IVertexBuilder baseBuffer = IERenderTypes.disableLighting(bufferIn)
 				.getBuffer(RenderType.getEntityCutout(AtlasTexture.LOCATION_PARTICLES_TEXTURE));
 		TransformingVertexBuilder particleBuilder = new TransformingVertexBuilder(baseBuffer, matrixStack);
-		// Need to fix *some* normal, so just use "up" for all quads
+		// Need to fix *some* normal, so just use "up" for all quads. Does not seem to actually affect rendering.
 		particleBuilder.setNormal(0, 1, 0);
 		particleBuilder.setOverlay(OverlayTexture.NO_OVERLAY);
 		for(Particle p : tile.particles)
-			p.renderParticle(particleBuilder, activeInfo, Minecraft.getInstance().getRenderPartialTicks());
+			p.renderParticle(particleBuilder, activeInfo, partialTicks);
 		matrixStack.pop();
 
 		ClocheRecipe recipe = tile.getRecipe();

@@ -155,9 +155,9 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 						renderGrowth = 0;
 					if(Utils.RAND.nextInt(8)==0)
 					{
-						double partX = .5;
-						double partY = 2.6875;
-						double partZ = .5;
+						double partX = this.pos.getX()+.5;
+						double partY = this.pos.getY()+2.6875;
+						double partZ = this.pos.getZ()+.5;
 						Particle part = ((ParticleManagerAccess)Minecraft.getInstance().particles).invokeMakeParticle(
 								new RedstoneParticleData(.55f, .1f, .1f, 1),
 								partX, partY, partZ,
