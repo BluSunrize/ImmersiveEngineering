@@ -33,7 +33,10 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxH
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
+import blusunrize.immersiveengineering.mixin.accessors.client.ParticleManagerAccess;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.LivingEntity;
@@ -41,6 +44,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.state.Property;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tileentity.ITickableTileEntity;
@@ -76,6 +80,8 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IStateBasedDirectional, IBlockBounds, IHasDummyBlocks,
@@ -102,6 +108,7 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 		}
 	};
 	public FluxStorage energyStorage = new FluxStorage(16000, Math.max(256, IEServerConfig.MACHINES.cloche_consumption.get()));
+	public List<Particle> particles = new ArrayList<>();
 
 	public int fertilizerAmount = 0;
 	public float fertilizerMod = 1;
@@ -114,7 +121,7 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 		super(IETileTypes.CLOCHE.get());
 	}
 
-	private CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntityAt(this,
+	private final CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntityAt(this,
 			() -> new DirectionalBlockPos(pos.up().offset(getFacing().getOpposite()), getFacing()),
 			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 
@@ -127,6 +134,13 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 		ItemStack seed = inventory.get(SLOT_SEED);
 		if(world.isRemote)
 		{
+			for(Iterator<Particle> iterator = particles.iterator(); iterator.hasNext(); )
+			{
+				Particle p = iterator.next();
+				p.tick();
+				if(!p.isAlive())
+					iterator.remove();
+			}
 			if(energyStorage.getEnergyStored() > IEServerConfig.MACHINES.cloche_consumption.get()&&fertilizerAmount > 0&&renderActive)
 			{
 				ClocheRecipe recipe = getRecipe();
@@ -141,10 +155,19 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 						renderGrowth = 0;
 					if(Utils.RAND.nextInt(8)==0)
 					{
-						double partX = getPos().getX()+.5;
-						double partY = getPos().getY()+2.6875;
-						double partZ = getPos().getZ()+.5;
-						ImmersiveEngineering.proxy.spawnRedstoneFX(getWorldNonnull(), partX, partY, partZ, .25, .25, .25, 1f, .55f, .1f, .1f);
+						double partX = .5;
+						double partY = 2.6875;
+						double partZ = .5;
+						Particle part = ((ParticleManagerAccess)Minecraft.getInstance().particles).invokeMakeParticle(
+								new RedstoneParticleData(.55f, .1f, .1f, 1),
+								partX, partY, partZ,
+								.25, .25, .25
+						);
+						if(part!=null)
+						{
+							part.setMaxAge(20);
+							this.particles.add(part);
+						}
 					}
 				}
 			}
