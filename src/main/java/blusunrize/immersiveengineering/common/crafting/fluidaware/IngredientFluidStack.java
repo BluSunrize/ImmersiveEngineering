@@ -42,7 +42,7 @@ public class IngredientFluidStack extends Ingredient
 
 	public IngredientFluidStack(INamedTag<Fluid> tag, int amount)
 	{
-		this(new FluidTagInput(tag, amount));
+		this(new FluidTagInput(tag, amount, null));
 	}
 
 	public FluidTagInput getFluidTagInput()

@@ -9,6 +9,16 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.client.TextUtils;
+import blusunrize.immersiveengineering.api.energy.DieselHandler;
+import blusunrize.immersiveengineering.api.shader.CapabilityShader;
+import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
+import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Item;
+import blusunrize.immersiveengineering.api.shader.ShaderCase;
+import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
+import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryEntry;
+import blusunrize.immersiveengineering.api.tool.ITool;
+import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.common.gui.IESlot;
@@ -197,7 +207,7 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	{
 		list.add(IEItemFluidHandler.fluidItemInfoFlavor(getFluid(stack), getCapacity(stack, CAPACITY)));
 		if(getHead(stack).isEmpty())
-			list.add(ClientUtils.applyFormat(
+			list.add(TextUtils.applyFormat(
 					new TranslationTextComponent(Lib.DESC_FLAVOUR+"buzzsaw.noBlade"),
 					TextFormatting.GRAY
 			));
@@ -207,9 +217,9 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 			int dmg = maxDmg-getHeadDamage(stack);
 			float quote = dmg/(float)maxDmg;
 			TextFormatting status = (quote < .1?TextFormatting.RED: quote < .3?TextFormatting.GOLD: quote < .6?TextFormatting.YELLOW: TextFormatting.GREEN);
-			list.add(ClientUtils.applyFormat(new TranslationTextComponent(Lib.DESC_FLAVOUR+"buzzsaw.bladeDamage"), TextFormatting.GRAY)
+			list.add(TextUtils.applyFormat(new TranslationTextComponent(Lib.DESC_FLAVOUR+"buzzsaw.bladeDamage"), TextFormatting.GRAY)
 					.appendString(" ")
-					.appendSibling(ClientUtils.applyFormat(
+					.appendSibling(TextUtils.applyFormat(
 							new TranslationTextComponent(Lib.DESC_INFO+"percent", (int)(quote*100)),
 							status
 					)));

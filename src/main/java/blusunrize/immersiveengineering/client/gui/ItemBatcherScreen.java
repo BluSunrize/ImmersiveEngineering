@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonDyeColor;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonState;
@@ -107,7 +108,7 @@ public class ItemBatcherScreen extends IEContainerScreen<ItemBatcherContainer>
 		if(buttonBatchMode.isHovered())
 		{
 			tooltip.add(new TranslationTextComponent(Lib.GUI_CONFIG+"item_batcher.batchmode"));
-			tooltip.add(ClientUtils.applyFormat(
+			tooltip.add(TextUtils.applyFormat(
 					new TranslationTextComponent(Lib.GUI_CONFIG+"item_batcher.batchmode."+buttonBatchMode.getState().name()),
 					TextFormatting.GRAY
 			));
@@ -117,7 +118,7 @@ public class ItemBatcherScreen extends IEContainerScreen<ItemBatcherContainer>
 			if(b.isHovered())
 			{
 				tooltip.add(new TranslationTextComponent(Lib.GUI_CONFIG+"item_batcher.redstone_color"));
-				tooltip.add(ClientUtils.applyFormat(
+				tooltip.add(TextUtils.applyFormat(
 						new TranslationTextComponent("color.minecraft."+b.getState().getTranslationKey()),
 						TextFormatting.GRAY
 				));

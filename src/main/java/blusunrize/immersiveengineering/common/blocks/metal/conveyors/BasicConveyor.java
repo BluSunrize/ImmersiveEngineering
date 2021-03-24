@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
 import blusunrize.immersiveengineering.api.utils.EntityCollisionTracker;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedVoxelShapes;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDecoration;
 import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBeltTileEntity;
@@ -410,6 +411,15 @@ public class BasicConveyor implements IConveyorBelt
 			return ((ConveyorBeltTileEntity)te).isRSPowered();
 		else
 			return te.getWorld().getRedstonePowerFromNeighbors(te.getPos()) > 0;
+	}
+
+	@Override
+	public Direction getFacing()
+	{
+		TileEntity te = getTile();
+		if(te instanceof IDirectionalTile)
+			return ((IDirectionalTile)te).getFacing();
+		return Direction.NORTH;
 	}
 
 	private static class ShapeKey

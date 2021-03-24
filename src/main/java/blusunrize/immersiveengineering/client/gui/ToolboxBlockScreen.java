@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.gui.ToolboxBlockContainer;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -35,7 +36,7 @@ public class ToolboxBlockScreen extends IEContainerScreen<ToolboxBlockContainer>
 		super.render(transform, mx, my, partial);
 		ArrayList<ITextComponent> tooltip = new ArrayList<>();
 		int slot = -1;
-		for(int i = 0; i < ((ToolboxBlockContainer)this.container).slotCount; i++)
+		for(int i = 0; i < this.container.slotCount; i++)
 		{
 			Slot s = this.container.getSlot(i);
 			if(!s.getHasStack()&&mx > guiLeft+s.xPos&&mx < guiLeft+s.xPos+16&&my > guiTop+s.yPos&&my < guiTop+s.yPos+16)
@@ -45,7 +46,7 @@ public class ToolboxBlockScreen extends IEContainerScreen<ToolboxBlockContainer>
 		if(slot >= 0)
 			ss = slot < 3?"food": slot < 10?"tool": slot < 16?"wire": "any";
 		if(ss!=null)
-			tooltip.add(ClientUtils.applyFormat(
+			tooltip.add(TextUtils.applyFormat(
 					new TranslationTextComponent(Lib.DESC_INFO+"toolbox."+ss),
 					TextFormatting.GRAY
 			));

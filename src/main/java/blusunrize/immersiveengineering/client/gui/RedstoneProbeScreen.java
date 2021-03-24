@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonBoolean;
 import blusunrize.immersiveengineering.common.blocks.metal.ConnectorProbeTileEntity;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
@@ -89,7 +89,7 @@ public class RedstoneProbeScreen extends ClientTileScreen<ConnectorProbeTileEnti
 			if(colorButtonsSend[i].isHovered()||colorButtonsReceive[i].isHovered())
 			{
 				tooltip.add(new TranslationTextComponent(Lib.GUI_CONFIG+"redstone_color"));
-				tooltip.add(ClientUtils.applyFormat(
+				tooltip.add(TextUtils.applyFormat(
 						new TranslationTextComponent("color.minecraft."+DyeColor.byId(i).getTranslationKey()),
 						TextFormatting.GRAY
 				));

@@ -17,11 +17,14 @@ import blusunrize.immersiveengineering.api.shader.ShaderLayer;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
+import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.fx.FluidSplashParticle.Data;
 import blusunrize.immersiveengineering.client.fx.FractalParticle;
 import blusunrize.immersiveengineering.client.fx.IEParticles;
 import blusunrize.immersiveengineering.client.gui.*;
+import blusunrize.immersiveengineering.client.manual.ManualElementBlueprint;
+import blusunrize.immersiveengineering.client.manual.ManualElementMultiblock;
 import blusunrize.immersiveengineering.client.models.*;
 import blusunrize.immersiveengineering.client.models.ModelConveyor.ConveyorLoader;
 import blusunrize.immersiveengineering.client.models.ModelCoresample.CoresampleLoader;
@@ -152,7 +155,7 @@ public class ClientProxy extends CommonProxy
 			ModelLoaderRegistry.registerLoader(FeedthroughLoader.LOCATION, new FeedthroughLoader());
 			ModelLoaderRegistry.registerLoader(SplitModelLoader.LOCATION, new SplitModelLoader());
 			ModelLoaderRegistry.registerLoader(Loader.LOADER_NAME, new PotionBucketModel.Loader());
-			VertexBufferHolder.addToAPI();
+			populateAPI();
 
 			requestModelsAndTextures();
 		}
@@ -297,7 +300,6 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void postInit()
 	{
-		IEManual.initManual();
 		IEManual.addIEManualEntries();
 
 		//TODO ClientCommandHandler.instance.registerCommand(new CommandHandler(true));
@@ -729,5 +731,17 @@ public class ClientProxy extends CommonProxy
 				new ResourceLocation(ImmersiveEngineering.MODID, "item/buzzsaw_diesel.obj.ie"),
 				"sawblade_entity", ModelType.IE_OBJ
 		);
+	}
+
+	public static void populateAPI()
+	{
+		SetRestrictedField.startInitializing(true);
+		VertexBufferHolder.addToAPI();
+		ManualHelper.MAKE_MULTIBLOCK_ELEMENT.setValue(mb -> new ManualElementMultiblock(ManualHelper.getManual(), mb));
+		ManualHelper.MAKE_BLUEPRINT_ELEMENT.setValue(
+				stacks -> new ManualElementBlueprint(ManualHelper.getManual(), stacks)
+		);
+		IEManual.initManual();
+		SetRestrictedField.lock(true);
 	}
 }

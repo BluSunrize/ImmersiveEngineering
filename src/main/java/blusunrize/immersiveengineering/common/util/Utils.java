@@ -12,20 +12,14 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
+import blusunrize.immersiveengineering.api.utils.Raytracer;
 import blusunrize.immersiveengineering.common.items.HammerItem;
 import blusunrize.immersiveengineering.common.items.ScrewdriverItem;
 import blusunrize.immersiveengineering.common.items.WirecutterItem;
-import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
-import com.google.common.base.Charsets;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.Lists;
-import com.google.common.io.Resources;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementManager;
 import net.minecraft.advancements.PlayerAdvancements;
@@ -49,15 +43,10 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.loot.*;
 import net.minecraft.loot.LootContext.Builder;
-import net.minecraft.loot.conditions.ILootCondition;
-import net.minecraft.loot.conditions.LootConditionManager;
-import net.minecraft.loot.functions.ILootFunction;
-import net.minecraft.loot.functions.LootFunctionManager;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
@@ -69,16 +58,15 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.math.*;
-import net.minecraft.util.math.RayTraceContext.BlockMode;
-import net.minecraft.util.math.RayTraceContext.FluidMode;
-import net.minecraft.util.math.RayTraceResult.Type;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector4f;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidAttributes;
@@ -87,20 +75,16 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.io.IOException;
 import java.lang.reflect.Method;
-import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.function.BiPredicate;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public class Utils
@@ -147,26 +131,6 @@ public class Utils
 					.put(Tags.Items.DYES_WHITE.getName(), DyeColor.WHITE)
 					.build();
 
-	public static final BiMap<ITag<Item>, Item> WOOL_DYE_BIMAP =
-			ImmutableBiMap.<ITag<Item>, Item>builder()
-					.put(Tags.Items.DYES_BLACK, Items.BLACK_WOOL)
-					.put(Tags.Items.DYES_RED, Items.RED_WOOL)
-					.put(Tags.Items.DYES_GREEN, Items.GREEN_WOOL)
-					.put(Tags.Items.DYES_BROWN, Items.BROWN_WOOL)
-					.put(Tags.Items.DYES_BLUE, Items.BLUE_WOOL)
-					.put(Tags.Items.DYES_PURPLE, Items.PURPLE_WOOL)
-					.put(Tags.Items.DYES_CYAN, Items.CYAN_WOOL)
-					.put(Tags.Items.DYES_LIGHT_GRAY, Items.LIGHT_GRAY_WOOL)
-					.put(Tags.Items.DYES_GRAY, Items.GRAY_WOOL)
-					.put(Tags.Items.DYES_PINK, Items.PINK_WOOL)
-					.put(Tags.Items.DYES_LIME, Items.LIME_WOOL)
-					.put(Tags.Items.DYES_YELLOW, Items.YELLOW_WOOL)
-					.put(Tags.Items.DYES_LIGHT_BLUE, Items.LIGHT_BLUE_WOOL)
-					.put(Tags.Items.DYES_MAGENTA, Items.MAGENTA_WOOL)
-					.put(Tags.Items.DYES_ORANGE, Items.ORANGE_WOOL)
-					.put(Tags.Items.DYES_WHITE, Items.WHITE_WOOL)
-					.build();
-
 	@Nullable
 	public static DyeColor getDye(ItemStack stack)
 	{
@@ -193,17 +157,7 @@ public class Utils
 
 	public static FluidStack copyFluidStackWithAmount(FluidStack stack, int amount, boolean stripPressure)
 	{
-		if(stack==null)
-			return null;
-		FluidStack fs = new FluidStack(stack, amount);
-		if(stripPressure&&fs.hasTag()&&fs.getOrCreateTag().contains("pressurized"))
-		{
-			CompoundNBT tag = fs.getOrCreateTag();
-			tag.remove("pressurized");
-			if(tag.isEmpty())
-				fs.setTag(null);
-		}
-		return fs;
+		return FluidUtils.copyFluidStackWithAmount(stack, amount, stripPressure);
 	}
 
 	private static final long UUID_BASE = 109406000905L;
@@ -219,22 +173,6 @@ public class Utils
 	public static boolean isBlockAt(World world, BlockPos pos, Block b)
 	{
 		return world.getBlockState(pos).getBlock()==b;
-	}
-
-	public static boolean isOreBlockAt(World world, BlockPos pos, ITag<Block> tag)
-	{
-		BlockState state = world.getBlockState(pos);
-		return state.getBlock().isIn(tag);
-	}
-
-	public static int generatePlayerInfluencedInt(int median, int deviation, PlayerEntity player, boolean isBad, double luckScale)
-	{
-		int number = player.getRNG().nextInt(deviation);
-		if(isBad)
-			number = -number;
-		number += (int)(luckScale*player.getLuck());
-
-		return median+Math.min(number, deviation);
 	}
 
 	public static double generateLuckInfluencedDouble(double median, double deviation, double luck, Random rng, boolean isBad, double luckScale)
@@ -292,13 +230,6 @@ public class Utils
 		return I18n.format(Lib.DESC_INFO+"mininglvl."+Math.max(-1, Math.min(lvl, 6)));
 	}
 
-	public static String getModVersion(String modid)
-	{
-		return ModList.get().getModContainerById(modid)
-				.map(container -> container.getModInfo().getVersion().toString())
-				.orElse("");
-	}
-
 	public static String getModName(String modid)
 	{
 		return ModList.get().getModContainerById(modid)
@@ -341,44 +272,6 @@ public class Utils
 		return f;
 	}
 
-	public static RayTraceResult getMovingObjectPositionFromPlayer(World world, LivingEntity living, boolean bool,
-																   FluidMode fluidMode)
-	{
-		float f = 1.0F;
-		float f1 = living.prevRotationPitch+(living.rotationPitch-living.prevRotationPitch)*f;
-		float f2 = living.prevRotationYaw+(living.rotationYaw-living.prevRotationYaw)*f;
-		double d0 = living.prevPosX+(living.getPosX()-living.prevPosX)*(double)f;
-		double d1 = living.prevPosY+(living.getPosY()-living.prevPosY)*(double)f+(double)(world.isRemote?living.getEyeHeight()-(living instanceof PlayerEntity?((PlayerEntity)living).getEyeHeight(): 0): living.getEyeHeight()); // isRemote check to revert changes to ray trace position due to adding the eye height clientside and player yOffset differences
-		double d2 = living.prevPosZ+(living.getPosZ()-living.prevPosZ)*(double)f;
-		Vector3d vec3 = new Vector3d(d0, d1, d2);
-		float f3 = MathHelper.cos(-f2*(float)Math.PI/180-(float)Math.PI);
-		float f4 = MathHelper.sin(-f2*(float)Math.PI/180-(float)Math.PI);
-		float f5 = -MathHelper.cos(-f1*(float)Math.PI/180);
-		float f6 = MathHelper.sin(-f1*(float)Math.PI/180);
-		float f7 = f4*f5;
-		float f8 = f3*f5;
-		double d3 = 5.0D;
-		if(living instanceof PlayerEntity)
-			d3 = living.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue();
-
-		Vector3d vec31 = vec3.add((double)f7*d3, (double)f6*d3, (double)f8*d3);
-		RayTraceContext ctx = new RayTraceContext(vec3, vec31, BlockMode.COLLIDER, fluidMode, living);
-		return world.rayTraceBlocks(ctx);
-	}
-
-	public static boolean canBlocksSeeOther(World world, BlockPos cc0, BlockPos cc1, Vector3d pos0, Vector3d pos1)
-	{
-		HashSet<BlockPos> inter = rayTrace(pos0, pos1, world);
-		Iterator<BlockPos> it = inter.iterator();
-		while(it.hasNext())
-		{
-			BlockPos cc = it.next();
-			if(!cc.equals(cc0)&&!cc.equals(cc1))
-				return false;
-		}
-		return true;
-	}
-
 	public static Vector3d getLivingFrontPos(LivingEntity entity, double offset, double height, HandSide hand, boolean useSteppedYaw, float partialTicks)
 	{
 		double offsetX = hand==HandSide.LEFT?-.3125: hand==HandSide.RIGHT?.3125: 0;
@@ -411,21 +304,6 @@ public class Utils
 		List<LivingEntity> list = world.getEntitiesWithinAABB(LivingEntity.class, box);
 		list.removeIf(e -> !isPointInCone(dirNorm, radius, length, truncationLength, e.getPositionVec().subtract(start)));
 		return list;
-	}
-
-	public static boolean isPointInConeByAngle(Vector3d start, Vector3d normDirection, double aperture, double length, Vector3d relativePoint)
-	{
-		return isPointInCone(normDirection, Math.tan(aperture/2)*length, length, 0, relativePoint);
-	}
-
-	public static boolean isPointInCone(Vector3d start, Vector3d normDirection, double radius, double length, Vector3d relativePoint)
-	{
-		return isPointInCone(normDirection, radius, length, 0, relativePoint);
-	}
-
-	public static boolean isPointInConeByAngle(Vector3d start, Vector3d normDirection, float aperture, double length, float truncationLength, Vector3d relativePoint)
-	{
-		return isPointInCone(normDirection, Math.tan(aperture/2)*length, length, truncationLength, relativePoint);
 	}
 
 	/**
@@ -474,15 +352,6 @@ public class Utils
 		double v = (dot00*dot12-dot01*dot02)*invDenom;
 
 		return (u >= 0)&&(v >= 0)&&(u+v < 1);
-	}
-
-	private static Vector3d getVectorForRotation(float pitch, float yaw)
-	{
-		float f = MathHelper.cos(-yaw*(float)Math.PI/180-(float)Math.PI);
-		float f1 = MathHelper.sin(-yaw*(float)Math.PI/180-(float)Math.PI);
-		float f2 = -MathHelper.cos(-pitch*(float)Math.PI/180);
-		float f3 = MathHelper.sin(-pitch*(float)Math.PI/180);
-		return new Vector3d((double)(f1*f2), (double)f3, (double)(f*f2));
 	}
 
 	public static void attractEnemies(LivingEntity target, float radius)
@@ -545,11 +414,6 @@ public class Utils
 		BlockState bState = world.getBlockState(pos);
 		FluidState fState = bState.getFluidState();
 		return fState.getFlow(world, pos);
-	}
-
-	public static Vector3d addVectors(Vector3d vec0, Vector3d vec1)
-	{
-		return vec0.add(vec1.x, vec1.y, vec1.z);
 	}
 
 	public static double minInArray(double... f)
@@ -833,16 +697,6 @@ public class Utils
 		return world.getRecipeManager().getRecipe(IRecipeType.CRAFTING, crafting, world);
 	}
 
-	public static NonNullList<ItemStack> createNonNullItemStackListFromArray(ItemStack[] stacks)
-	{
-		NonNullList<ItemStack> list = NonNullList.withSize(stacks.length, ItemStack.EMPTY);
-		for(int i = 0; i < stacks.length; i++)
-		{
-			list.set(i, stacks[i]);
-		}
-		return list;
-	}
-
 	public static NonNullList<ItemStack> createNonNullItemStackListFromItemStack(ItemStack stack)
 	{
 		NonNullList<ItemStack> list = NonNullList.withSize(1, ItemStack.EMPTY);
@@ -909,34 +763,6 @@ public class Utils
 		return true;
 	}
 
-
-	/* Reasoning for the formula for pos (below): pos should be the point on the catenary (horizontally) closest to the player position
-	A conn start, B conn across, C player pos
-	P:=A+tB are the points on the line, t in [0, 1]
-	C-A=:D
-	E:=|C-P| (Distance from the player to a point on the line)
-	E**2=(Cx-Ax-tBx)**2+(Cy-Ay-tBy)**2+(Cz-Az-tBz)**2
-	=(Dx-tBx)**2+(Dy-tBy)**2+(Dz-tBz)**2
-	=Dx**2-2tDxBx+t**2Bx**2+Dy**2-2tDyBy+t**2By**2+Dz**2-2tDzBz+t**2Bz**2
-	=t**2(Bx**2+By**2+Bz**2)-(2DxBx+2DyBy+2DzBz)t+Dz**2+Dy**2+Dx**2
-
-	E**2'=(2Bx**2+2*By**2+2Bz**2)*t-2DxBx-2DyBy-2DzBz=0
-	t=(DxBx+DyBy+DzBz)/(Bx**2+By**2+Bz**2)
-	 =D*B/|B|**2
-	 */
-	public static double getCoeffForMinDistance(Vector3d point, Vector3d line, Vector3d across)
-	{
-		if(across.x==0&&across.z==0)
-		{
-			return (point.y-line.y)/across.y;
-		}
-		else
-		{
-			Vector3d delta = point.subtract(line);
-			return delta.dotProduct(across)/across.lengthSquared();
-		}
-	}
-
 	public static boolean isVecInBlock(Vector3d vec3d, BlockPos pos, BlockPos offset, double eps)
 	{
 		return vec3d.x >= pos.getX()-offset.getX()-eps&&
@@ -992,131 +818,9 @@ public class Utils
 		}
 	}
 
-	public static HashSet<BlockPos> rayTrace(Vector3d start, Vector3d end, World world)
-	{
-		return rayTrace(start, end, world, (p) -> {
-		});
-	}
-
-	public static HashSet<BlockPos> rayTrace(Vector3d start, Vector3d end, World world, Consumer<BlockPos> out)
-	{
-		HashSet<BlockPos> ret = new HashSet<BlockPos>();
-		HashSet<BlockPos> checked = new HashSet<BlockPos>();
-		// x
-		if(start.x > end.x)
-		{
-			Vector3d tmp = start;
-			start = end;
-			end = tmp;
-		}
-		double min = start.x;
-		double dif = end.x-min;
-		double lengthAdd = Math.ceil(min)-start.x;
-		Vector3d mov = start.subtract(end);
-		if(mov.x!=0)
-		{
-			mov = scalarProd(mov, 1/mov.x);
-			ray(dif, mov, start, lengthAdd, ret, world, checked, out);
-		}
-		// y
-		if(mov.y!=0)
-		{
-			if(start.y > end.y)
-			{
-				Vector3d tmp = start;
-				start = end;
-				end = tmp;
-			}
-			min = start.y;
-			dif = end.y-min;
-			lengthAdd = Math.ceil(min)-start.y;
-			mov = start.subtract(end);
-			mov = scalarProd(mov, 1/mov.y);
-
-			ray(dif, mov, start, lengthAdd, ret, world, checked, out);
-		}
-
-		// z
-		if(mov.z!=0)
-		{
-			if(start.z > end.z)
-			{
-				Vector3d tmp = start;
-				start = end;
-				end = tmp;
-			}
-			min = start.z;
-			dif = end.z-min;
-			lengthAdd = Math.ceil(min)-start.z;
-			mov = start.subtract(end);
-			mov = scalarProd(mov, 1/mov.z);
-
-			ray(dif, mov, start, lengthAdd, ret, world, checked, out);
-		}
-		if(checked.isEmpty())
-		{
-			BlockPos pos = new BlockPos(start);
-			BlockState state = world.getBlockState(pos);
-			RayTraceResult rtr = state.getCollisionShapeUncached(world, pos).rayTrace(start, end, pos);
-			if(rtr!=null&&rtr.getType()!=Type.MISS)
-				ret.add(pos);
-			checked.add(pos);
-			out.accept(pos);
-		}
-		return ret;
-	}
-
-	private static void ray(double dif, Vector3d mov, Vector3d start, double lengthAdd, HashSet<BlockPos> ret, World world, HashSet<BlockPos> checked, Consumer<BlockPos> out)
-	{
-		//Do NOT set this to true unless for debugging. Causes blocks to be placed along the traced ray
-		boolean place = false;
-		double standartOff = .0625;
-		for(int i = 0; i < dif; i++)
-		{
-			Vector3d pos = addVectors(start, scalarProd(mov, i+lengthAdd+standartOff));
-			Vector3d posNext = addVectors(start,
-					scalarProd(mov, i+1+lengthAdd+standartOff));
-			Vector3d posPrev = addVectors(start,
-					scalarProd(mov, i+lengthAdd-standartOff));
-			Vector3d posVeryPrev = addVectors(start,
-					scalarProd(mov, i-1+lengthAdd-standartOff));
-
-			BlockPos blockPos = new BlockPos((int)Math.floor(pos.x),
-					(int)Math.floor(pos.y), (int)Math.floor(pos.z));
-			Block b;
-			BlockState state;
-			if(!checked.contains(blockPos)&&i+lengthAdd+standartOff < dif)
-			{
-				state = world.getBlockState(blockPos);
-				RayTraceResult rtr = state.getCollisionShapeUncached(world, blockPos).rayTrace(pos, posNext, blockPos);
-				if(rtr!=null&&rtr.getType()!=Type.MISS)
-					ret.add(blockPos);
-				//				if (place)
-				//					world.setBlockState(blockPos, tmp);
-				checked.add(blockPos);
-				out.accept(blockPos);
-			}
-			blockPos = new BlockPos((int)Math.floor(posPrev.x), (int)Math.floor(posPrev.y), (int)Math.floor(posPrev.z));
-			if(!checked.contains(blockPos)&&i+lengthAdd-standartOff < dif)
-			{
-				state = world.getBlockState(blockPos);
-				RayTraceResult rtr = state.getCollisionShapeUncached(world, blockPos).rayTrace(posVeryPrev, posPrev, blockPos);
-				if(rtr!=null&&rtr.getType()!=Type.MISS)
-					ret.add(blockPos);
-				checked.add(blockPos);
-				out.accept(blockPos);
-			}
-		}
-	}
-
-	public static Vector3d scalarProd(Vector3d v, double s)
-	{
-		return new Vector3d(v.x*s, v.y*s, v.z*s);
-	}
-
 	public static BlockPos rayTraceForFirst(Vector3d start, Vector3d end, World w, Set<BlockPos> ignore)
 	{
-		HashSet<BlockPos> trace = rayTrace(start, end, w);
+		Set<BlockPos> trace = Raytracer.rayTrace(start, end, w);
 		for(BlockPos cc : ignore)
 			trace.remove(cc);
 		if(start.x!=end.x)
@@ -1130,9 +834,9 @@ public class Utils
 		return null;
 	}
 
-	public static HashSet<BlockPos> findMinOrMax(HashSet<BlockPos> in, boolean max, int coord)
+	public static Set<BlockPos> findMinOrMax(Set<BlockPos> in, boolean max, int coord)
 	{
-		HashSet<BlockPos> ret = new HashSet<BlockPos>();
+		Set<BlockPos> ret = new HashSet<>();
 		int currMinMax = max?Integer.MIN_VALUE: Integer.MAX_VALUE;
 		//find minimum
 		for(BlockPos cc : in)
@@ -1283,44 +987,6 @@ public class Utils
 		Collections.shuffle(stacks, rand);
 	}
 
-	private static final Gson GSON_INSTANCE = (new GsonBuilder()).registerTypeAdapter(RandomValueRange.class, new RandomValueRange.Serializer())
-			.registerTypeAdapter(LootPool.class, new LootPool.Serializer()).registerTypeAdapter(LootTable.class, new LootTable.Serializer())
-			//TODO .registerTypeHierarchyAdapter(ILootGenerator.class, new ILootGenerator.Serializer())
-			.registerTypeHierarchyAdapter(ILootFunction.class, LootFunctionManager.func_237450_a_())
-			.registerTypeHierarchyAdapter(ILootCondition.class, LootConditionManager.func_237474_a_())
-			.registerTypeHierarchyAdapter(LootContext.EntityTarget.class, new LootContext.EntityTarget.Serializer()).create();
-
-	public static LootTable loadBuiltinLootTable(ResourceLocation resource, LootTableManager lootTableManager)
-	{
-		URL url = Utils.class.getResource("/assets/"+resource.getNamespace()+"/loot_tables/"+resource.getPath()+".json");
-		if(url==null)
-			return LootTable.EMPTY_LOOT_TABLE;
-		else
-		{
-			String s;
-			try
-			{
-				s = Resources.toString(url, Charsets.UTF_8);
-			} catch(IOException ioexception)
-			{
-//				IELogger.warn(("Failed to load loot table " + resource.toString() + " from " + url.toString()));
-				ioexception.printStackTrace();
-				return LootTable.EMPTY_LOOT_TABLE;
-			}
-
-			try
-			{
-				return net.minecraftforge.common.ForgeHooks.loadLootTable(GSON_INSTANCE, resource, GSON_INSTANCE.fromJson(s, JsonObject.class),
-						false, lootTableManager);
-			} catch(JsonParseException jsonparseexception)
-			{
-//				IELogger.error(("Failed to load loot table " + resource.toString() + " from " + url.toString()));
-				jsonparseexception.printStackTrace();
-				return LootTable.EMPTY_LOOT_TABLE;
-			}
-		}
-	}
-
 	public static int calcRedstoneFromInventory(IIEInventory inv)
 	{
 		if(inv==null)
@@ -1344,49 +1010,6 @@ public class Utils
 		}
 	}
 
-
-	public static Map<String, Object> saveStack(ItemStack stack)
-	{
-		HashMap<String, Object> ret = new HashMap<>();
-		if(!stack.isEmpty())
-		{
-			ret.put("size", stack.getCount());
-			ret.put("name", stack.getItem().getRegistryName());
-			ret.put("nameUnlocalized", stack.getTranslationKey());
-			ret.put("label", stack.getDisplayName());
-			ret.put("damage", stack.getDamage());
-			ret.put("maxDamage", stack.getMaxDamage());
-			ret.put("maxSize", stack.getMaxStackSize());
-			ret.put("hasTag", stack.hasTag());
-		}
-		return ret;
-	}
-
-	public static Map<String, Object> saveFluidTank(FluidTank tank)
-	{
-		HashMap<String, Object> ret = new HashMap<>();
-		if(tank!=null&&tank.getFluid()!=null)
-		{
-			ret.put("name", tank.getFluid().getDisplayName().getString());
-			ret.put("amount", tank.getFluidAmount());
-			ret.put("capacity", tank.getCapacity());
-			ret.put("hasTag", tank.getFluid().hasTag());
-		}
-		return ret;
-	}
-
-	public static Map<String, Object> saveFluidStack(FluidStack stack)
-	{
-		HashMap<String, Object> ret = new HashMap<>();
-		if(!stack.isEmpty())
-		{
-			ret.put("name", stack.getDisplayName().getString());
-			ret.put("amount", stack.getAmount());
-			ret.put("hasTag", stack.hasTag());
-		}
-		return ret;
-	}
-
 	public static List<ItemStack> getDrops(BlockState state, Builder builder)
 	{
 		ResourceLocation resourcelocation = state.getBlock().getLootTable();
@@ -1405,51 +1028,6 @@ public class Utils
 	{
 		IBlockReader w = getSingleBlockWorldAccess(state);
 		return state.getBlock().getPickBlock(state, rtr, w, BlockPos.ZERO, player);
-	}
-
-	public static Direction applyRotationToFacing(Rotation rot, Direction facing)
-	{
-		switch(rot)
-		{
-			case CLOCKWISE_90:
-				facing = facing.rotateY();
-				break;
-			case CLOCKWISE_180:
-				facing = facing.getOpposite();
-				break;
-			case COUNTERCLOCKWISE_90:
-				facing = facing.rotateYCCW();
-				break;
-		}
-		return facing;
-	}
-
-	public static Rotation getRotationBetweenFacings(Direction orig, Direction to)
-	{
-		if(to==orig)
-			return Rotation.NONE;
-		if(orig.getAxis()==Axis.Y||to.getAxis()==Axis.Y)
-			return null;
-		orig = orig.rotateY();
-		if(orig==to)
-			return Rotation.CLOCKWISE_90;
-		orig = orig.rotateY();
-		if(orig==to)
-			return Rotation.CLOCKWISE_180;
-		orig = orig.rotateY();
-		if(orig==to)
-			return Rotation.COUNTERCLOCKWISE_90;
-		return null;//This shouldn't ever happen
-	}
-
-	public static AxisAlignedBB transformAABB(AxisAlignedBB original, Direction facing)
-	{
-		Matrix4 mat = new Matrix4(facing);
-		Vector3d minOld = new Vector3d(original.minX, original.minY, original.minZ);
-		Vector3d maxOld = new Vector3d(original.maxX, original.maxY, original.maxZ);
-		Vector3d firstNew = mat.apply(minOld);
-		Vector3d secondNew = mat.apply(maxOld);
-		return new AxisAlignedBB(firstNew, secondNew);
 	}
 
 	public static List<AxisAlignedBB> flipBoxes(boolean flipFront, boolean flipRight, List<AxisAlignedBB> boxes)

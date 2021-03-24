@@ -18,7 +18,6 @@ import net.minecraft.tags.ITag.INamedTag;
 
 import static blusunrize.immersiveengineering.api.utils.TagUtils.createItemWrapper;
 
-
 /**
  * An Enum of  non-metal ores from Vanilla, IE and other mods. Used for generating Crusher recipes
  */

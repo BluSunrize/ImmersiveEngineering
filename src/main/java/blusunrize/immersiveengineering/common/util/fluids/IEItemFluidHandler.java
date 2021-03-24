@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.util.fluids;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IAdvancedFluidItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
@@ -34,12 +34,12 @@ public class IEItemFluidHandler extends FluidHandlerItemStack
 		{
 			FluidAttributes attr = fluid.getFluid().getAttributes();
 			TextFormatting rarity = attr.getRarity()==Rarity.COMMON?TextFormatting.GRAY: attr.getRarity().color;
-			return ClientUtils.applyFormat(
+			return TextUtils.applyFormat(
 					new TranslationTextComponent(Lib.DESC_FLAVOUR+"fluidStack", fluid.getDisplayName(), fluid.getAmount(), fluidCapacity),
 					rarity
 			);
 		}
-		return ClientUtils.applyFormat(
+		return TextUtils.applyFormat(
 				new TranslationTextComponent(Lib.DESC_FLAVOUR+"drill.empty"),
 				TextFormatting.GRAY
 		);

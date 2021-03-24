@@ -10,11 +10,11 @@ package blusunrize.immersiveengineering.client.manual;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.utils.IngredientUtils;
-import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.network.MessageShaderManual;
 import blusunrize.immersiveengineering.common.network.MessageShaderManual.MessageType;
 import blusunrize.lib.manual.ManualInstance;
@@ -108,9 +108,9 @@ public class ShaderManualElement extends SpecialManualElements
 		else
 			exampleItems = null;
 
-		this.name = ClientUtils.applyFormat(shaderItem.getDisplayName(), TextFormatting.BOLD);
+		this.name = TextUtils.applyFormat(shaderItem.getDisplayName(), TextFormatting.BOLD);
 		IFormattableTextComponent textAssembly = new StringTextComponent("");
-		textAssembly.appendSibling(ClientUtils.applyFormat(new TranslationTextComponent("desc.immersiveengineering.info.shader.level"), TextFormatting.BOLD));
+		textAssembly.appendSibling(TextUtils.applyFormat(new TranslationTextComponent("desc.immersiveengineering.info.shader.level"), TextFormatting.BOLD));
 		textAssembly.appendSibling(new TranslationTextComponent("desc.immersiveengineering.info.shader.rarity."+shader.rarity.name().toLowerCase(Locale.US)));
 		if(unlocked)
 		{
@@ -120,15 +120,15 @@ public class ShaderManualElement extends SpecialManualElements
 
 			if(set!=null)
 				textAssembly.appendString("\n")
-						.appendSibling(ClientUtils.applyFormat(new TranslationTextComponent("desc.immersiveengineering.info.shader.set"), TextFormatting.BOLD))
+						.appendSibling(TextUtils.applyFormat(new TranslationTextComponent("desc.immersiveengineering.info.shader.set"), TextFormatting.BOLD))
 						.appendString(" "+set);
 			if(reference!=null)
 				textAssembly.appendString("\n")
-						.appendSibling(ClientUtils.applyFormat(new TranslationTextComponent("desc.immersiveengineering.info.shader.reference"), TextFormatting.BOLD))
+						.appendSibling(TextUtils.applyFormat(new TranslationTextComponent("desc.immersiveengineering.info.shader.reference"), TextFormatting.BOLD))
 						.appendString("\n"+reference);
 			if(details!=null)
 				textAssembly.appendString("\n")
-						.appendSibling(ClientUtils.applyFormat(new TranslationTextComponent("desc.immersiveengineering.info.shader.details"), TextFormatting.BOLD))
+						.appendSibling(TextUtils.applyFormat(new TranslationTextComponent("desc.immersiveengineering.info.shader.details"), TextFormatting.BOLD))
 						.appendString("\n"+details);
 
 			String cost = Integer.toString(replicationCost.getCount());

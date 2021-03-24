@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.client.models;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
@@ -51,6 +50,7 @@ import net.minecraft.world.IBlockDisplayReader;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.IModelLoader;
 import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
 
 import javax.annotation.Nonnull;
@@ -61,7 +61,7 @@ import java.util.function.Function;
 @SuppressWarnings("deprecation")
 public class ModelConveyor extends BakedIEModel
 {
-	static List<BakedQuad> emptyQuads = Lists.newArrayList();
+	private static final ModelProperty<IConveyorBelt> CONVEYOR_MODEL_DATA = new ModelProperty<>();
 	public static HashMap<String, List<BakedQuad>> modelCache = new HashMap<>();
 	public static ResourceLocation[] rl_casing = {
 			new ResourceLocation(ImmersiveEngineering.MODID, "block/conveyor/casing_top"),
@@ -96,11 +96,11 @@ public class ModelConveyor extends BakedIEModel
 		else
 		{
 			facing = blockState.get(IEProperties.FACING_HORIZONTAL);
-			if(extraData.hasProperty(Model.CONVEYOR))
-				conveyor = extraData.getData(Model.CONVEYOR);
-			if(extraData.hasProperty(Model.TILEENTITY_PASSTHROUGH))
+			if(extraData.hasProperty(CONVEYOR_MODEL_DATA))
+				conveyor = extraData.getData(CONVEYOR_MODEL_DATA);
+			if(extraData.hasProperty(PrivateProperties.TILEENTITY_PASSTHROUGH))
 			{
-				tile = extraData.getData(Model.TILEENTITY_PASSTHROUGH);
+				tile = extraData.getData(PrivateProperties.TILEENTITY_PASSTHROUGH);
 				if(tile instanceof IDirectionalTile)
 					facing = ((IDirectionalTile)tile).getFacing();
 			}
@@ -484,7 +484,7 @@ public class ModelConveyor extends BakedIEModel
 		if(conveyorName!=null)
 		{
 			IConveyorBelt belt = ConveyorHandler.getConveyor(conveyorName, world.getTileEntity(pos));
-			return CombinedModelData.combine(tileData, new SinglePropertyModelData<>(belt, Model.CONVEYOR));
+			return CombinedModelData.combine(tileData, new SinglePropertyModelData<>(belt, CONVEYOR_MODEL_DATA));
 		}
 		else
 			return tileData;

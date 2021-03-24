@@ -10,9 +10,9 @@ package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
 import blusunrize.immersiveengineering.api.tool.ITool;
-import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
@@ -102,7 +102,7 @@ public class HammerItem extends IEBaseItem implements ITool
 		{
 			list.add(new StringTextComponent(s));
 			for(int i = 0; i < tagList.size(); i++)
-				list.add(ClientUtils.applyFormat(
+				list.add(TextUtils.applyFormat(
 						new TranslationTextComponent(Lib.DESC_INFO+"multiblock."+tagList.getString(i)),
 						TextFormatting.DARK_GRAY
 				));

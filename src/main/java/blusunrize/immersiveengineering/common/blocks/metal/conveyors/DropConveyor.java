@@ -79,7 +79,7 @@ public class DropConveyor extends BasicConveyor
 				entity.setMotion(0, entity.getMotion().y, 0);
 				entity.setPosition(getTile().getPos().getX()+.5, getTile().getPos().getY()-.5, getTile().getPos().getZ()+.5);
 				if(!(inventoryTile instanceof IConveyorTile))
-					ConveyorHandler.revertMagnetSupression(entity, (IConveyorTile)getTile());
+					ConveyorHandler.revertMagnetSuppression(entity, (IConveyorTile)getTile());
 			}
 			else
 				super.handleInsertion(entity, conDir, distX, distZ);

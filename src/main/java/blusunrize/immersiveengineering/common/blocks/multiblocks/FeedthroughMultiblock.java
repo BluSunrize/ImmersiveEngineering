@@ -89,7 +89,7 @@ public class FeedthroughMultiblock implements IMultiblock
 	}
 
 	@Override
-	public Vector3i getSize()
+	public Vector3i getSize(@Nullable World world)
 	{
 		return new Vector3i(3, 1, 1);
 	}
@@ -119,7 +119,7 @@ public class FeedthroughMultiblock implements IMultiblock
 	}
 
 	@Override
-	public boolean isBlockTrigger(BlockState state, Direction d)
+	public boolean isBlockTrigger(BlockState state, Direction side, @Nullable World world)
 	{
 		return WireApi.getWireType(state)!=null;
 	}
@@ -195,7 +195,7 @@ public class FeedthroughMultiblock implements IMultiblock
 	}
 
 	@Override
-	public List<BlockInfo> getStructure()
+	public List<BlockInfo> getStructure(@Nullable World world)
 	{
 		if(structure.isEmpty())
 		{

@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
-import blusunrize.immersiveengineering.api.wires.ImmersiveConnectableTileEntity;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler.EnergyConnector;
 import blusunrize.immersiveengineering.client.ClientUtils;
@@ -21,6 +20,7 @@ import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.FakeLightBlock.FakeLightTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Misc;
+import blusunrize.immersiveengineering.common.blocks.generic.ImmersiveConnectableTileEntity;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.SpawnInterdictionHandler;
@@ -252,7 +252,7 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 		int range = 32;
 		HashSet<BlockPos> ignore = new HashSet<BlockPos>();
 		ignore.add(getPos());
-		BlockPos hit = Utils.rayTraceForFirst(Utils.addVectors(vec, light), light.add(vec.x*range, vec.y*range, vec.z*range), world, ignore);
+		BlockPos hit = Utils.rayTraceForFirst(vec.add(light), light.add(vec.x*range, vec.y*range, vec.z*range), world, ignore);
 		double maxDistance = hit!=null?Vector3d.copyCentered(hit).add(0, 0.25, 0).squareDistanceTo(light): range*range;
 		for(int i = 1+offset; i <= range; i++)
 		{

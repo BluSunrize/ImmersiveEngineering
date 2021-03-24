@@ -199,7 +199,7 @@ public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTi
 	@Override
 	public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx)
 	{
-		return CachedShapesWithTransform.get(SHAPES, this);
+		return getShape(SHAPES);
 	}
 
 	private static List<AxisAlignedBB> getShape(BlockPos posInMultiblock)

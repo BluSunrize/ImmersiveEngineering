@@ -10,8 +10,8 @@ package blusunrize.immersiveengineering.common.entities;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.CapabilitySkyhookData.SkyhookUserData;
 import blusunrize.immersiveengineering.api.wires.*;
+import blusunrize.immersiveengineering.common.entities.CapabilitySkyhookData.SkyhookUserData;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.network.MessageSkyhookSync;
 import blusunrize.immersiveengineering.common.util.SkylineHelper;
@@ -46,7 +46,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
-import static blusunrize.immersiveengineering.api.CapabilitySkyhookData.SKYHOOK_USER_DATA;
+import static blusunrize.immersiveengineering.common.entities.CapabilitySkyhookData.SKYHOOK_USER_DATA;
 
 public class SkylineHookEntity extends Entity
 {

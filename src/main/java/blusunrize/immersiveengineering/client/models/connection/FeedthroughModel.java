@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.client.models.connection;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.utils.QuadTransformer;
 import blusunrize.immersiveengineering.api.utils.client.CombinedModelData;
 import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
@@ -56,6 +55,7 @@ import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelProperty;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -80,6 +80,7 @@ public class FeedthroughModel extends BakedIEModel
 			.expireAfterAccess(2, TimeUnit.MINUTES)
 			.maximumSize(100)
 			.build();
+	private static final ModelProperty<FeedthroughData> FEEDTHROUGH = new ModelProperty<>();
 
 	@Nonnull
 	@Override
@@ -91,9 +92,9 @@ public class FeedthroughModel extends BakedIEModel
 		int offset = 1;
 		Int2IntFunction colorMultiplier = i -> 0xffffffff;
 
-		if(extraData.hasProperty(Model.FEEDTHROUGH))
+		if(extraData.hasProperty(FEEDTHROUGH))
 		{
-			FeedthroughData data = extraData.getData(Model.FEEDTHROUGH);
+			FeedthroughData data = extraData.getData(FEEDTHROUGH);
 			assert (data!=null);
 			baseState = data.baseState;
 			wire = data.wire;
@@ -131,7 +132,7 @@ public class FeedthroughModel extends BakedIEModel
 					feedthrough.offset,
 					i -> color
 			);
-			ret.add(new SinglePropertyModelData<>(d, Model.FEEDTHROUGH));
+			ret.add(new SinglePropertyModelData<>(d, FEEDTHROUGH));
 		}
 		return CombinedModelData.combine(ret.toArray(new IModelData[0]));
 	}

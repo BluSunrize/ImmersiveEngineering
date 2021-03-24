@@ -19,8 +19,8 @@ import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.wires.LocalWireNetwork;
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler;
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler.Path;
+import blusunrize.immersiveengineering.api.wires.utils.WireLink;
 import blusunrize.immersiveengineering.api.wires.utils.WirecoilUtils;
-import blusunrize.immersiveengineering.api.wires.utils.WirecoilUtils.WireLink;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.client.util.ITooltipFlag;
@@ -52,7 +52,7 @@ public class VoltmeterItem extends IEBaseItem implements ITool
 		super.addInformation(stack, worldIn, tooltip, flagIn);
 		if(WirecoilUtils.hasWireLink(stack))
 		{
-			WirecoilUtils.WireLink link = WirecoilUtils.WireLink.readFromItem(stack);
+			WireLink link = WireLink.readFromItem(stack);
 			tooltip.add(new TranslationTextComponent(
 					Lib.DESC_INFO+"attachedToDim",
 					link.cp.getX(),
