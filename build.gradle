@@ -295,6 +295,11 @@ task datagenJar(type: Jar, dependsOn: datagenClasses) {
     }
 }
 
+task apiJar(type: Jar, dependsOn: apiClasses) {
+    classifier = 'api'
+    from sourceSets.api.output
+}
+
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
     from sourceSets.main.allSource
@@ -306,6 +311,7 @@ artifacts {
     archives sourcesJar
     archives shadowJar
     archives datagenJar
+    archives apiJar
 }
 
 shadowJar {
