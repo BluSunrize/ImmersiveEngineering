@@ -26,7 +26,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.state.EnumProperty;
+import net.minecraft.state.Property;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
@@ -170,7 +170,7 @@ public class ToolboxTileEntity extends IEBaseTileEntity implements IStateBasedDi
 	}
 
 	@Override
-	public EnumProperty<Direction> getFacingProperty()
+	public Property<Direction> getFacingProperty()
 	{
 		return IEProperties.FACING_HORIZONTAL;
 	}

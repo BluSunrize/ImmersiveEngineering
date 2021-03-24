@@ -29,7 +29,7 @@ import net.minecraft.loot.LootContext;
 import net.minecraft.loot.LootParameters;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
-import net.minecraft.state.EnumProperty;
+import net.minecraft.state.Property;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
@@ -250,7 +250,7 @@ public class FeedthroughTileEntity extends ImmersiveConnectableTileEntity implem
 	}
 
 	@Override
-	public EnumProperty<Direction> getFacingProperty()
+	public Property<Direction> getFacingProperty()
 	{
 		return IEProperties.FACING_ALL;
 	}

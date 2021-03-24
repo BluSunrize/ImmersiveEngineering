@@ -26,7 +26,7 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.state.EnumProperty;
+import net.minecraft.state.Property;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -134,7 +134,7 @@ public class FurnaceHeaterTileEntity extends IEBaseTileEntity implements ITickab
 	}
 
 	@Override
-	public EnumProperty<Direction> getFacingProperty()
+	public Property<Direction> getFacingProperty()
 	{
 		return IEProperties.FACING_ALL;
 	}

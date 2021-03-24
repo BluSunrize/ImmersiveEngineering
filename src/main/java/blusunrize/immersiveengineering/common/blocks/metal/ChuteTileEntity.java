@@ -30,7 +30,7 @@ import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.state.EnumProperty;
+import net.minecraft.state.Property;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -68,7 +68,7 @@ public class ChuteTileEntity extends IEBaseTileEntity implements IStateBasedDire
 	}
 
 	@Override
-	public EnumProperty<Direction> getFacingProperty()
+	public Property<Direction> getFacingProperty()
 	{
 		return IEProperties.FACING_HORIZONTAL;
 	}

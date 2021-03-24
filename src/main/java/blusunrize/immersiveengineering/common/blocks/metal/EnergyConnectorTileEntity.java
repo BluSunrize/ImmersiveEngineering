@@ -33,7 +33,7 @@ import it.unimi.dsi.fastutil.objects.Object2FloatAVLTreeMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.state.EnumProperty;
+import net.minecraft.state.Property;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
@@ -126,7 +126,7 @@ public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity im
 	}
 
 	@Override
-	public EnumProperty<Direction> getFacingProperty()
+	public Property<Direction> getFacingProperty()
 	{
 		return MiscConnectableBlock.DEFAULT_FACING_PROP;
 	}

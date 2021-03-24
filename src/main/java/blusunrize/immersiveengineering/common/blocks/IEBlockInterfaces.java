@@ -29,8 +29,8 @@ import net.minecraft.loot.LootContext;
 import net.minecraft.loot.LootContext.Builder;
 import net.minecraft.loot.LootParameterSets;
 import net.minecraft.loot.LootParameters;
-import net.minecraft.state.EnumProperty;
 import net.minecraft.state.IntegerProperty;
+import net.minecraft.state.Property;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -226,7 +226,7 @@ public class IEBlockInterfaces
 	public interface IStateBasedDirectional extends IDirectionalTile, BlockstateProvider
 	{
 
-		EnumProperty<Direction> getFacingProperty();
+		Property<Direction> getFacingProperty();
 
 		@Override
 		default Direction getFacing()
