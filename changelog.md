@@ -1,3 +1,18 @@
+##### Version 1.16.5-5.0.0-pre
+ - Add buckets for potion fluids (Malte)
+ - Clean up the API (Malte)
+   - This is a breaking change, don't expect addons to work without being updated!
+ - Fix servers kicking players for flying when using the skyhook or standing on conveyors (Malte)
+ - Fix the skyhook moving players to NaN coordinates in some cases (Malte)
+ - Fix particles indicating garden cloche power state (Malte)
+ - Fix issues with arc recycling recipe generation (Malte)
+ - Fix mineral veins not being generated in some areas (Malte)
+ - Fix structural arms not using their blockstate property (Malte)
+   - This made them near unusable in structure files
+ - Fix dupe bug when interacting with barrels with stacked fluid containers (Malte)
+ - Fix duplicate files being included in the IE jar
+ - Potentially fix lanterns and floodlights with OptiFine (Malte)
+
 ##### Version 1.16.5-4.2.4-134
  - Fix issues with the manual (BluSunrize)
 
