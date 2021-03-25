@@ -124,7 +124,9 @@ public class WireCoilItem extends IEBaseItem implements IWireCoil
 				{
 					final WireLink otherLink = WireLink.readFromItem(stack);
 					TileEntity tileEntityLinkingPos = world.getTileEntity(otherLink.cp.getPosition());
-					int distanceSq = (int)Math.ceil(otherLink.cp.getPosition().distanceSq(masterPos));
+					int distanceSq = (int)Math.ceil(otherLink.cp.getPosition().distanceSq(
+							masterPos.getX(), masterPos.getY(), masterPos.getZ(), false
+					));
 					int maxLengthSq = coil.getMaxLength(stack); //not squared yet
 					maxLengthSq *= maxLengthSq;
 					if(!otherLink.dimension.equals(world.getDimensionKey()))

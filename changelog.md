@@ -10,7 +10,8 @@
  - Fix structural arms not using their blockstate property (Malte)
    - This made them near unusable in structure files
  - Fix dupe bug when interacting with barrels with stacked fluid containers (Malte)
- - Fix duplicate files being included in the IE jar
+ - Fix duplicate files being included in the IE jar (Malte)
+ - Fix inconsistent wire length checks (Malte)
  - Potentially fix lanterns and floodlights with OptiFine (Malte)
 
 ##### Version 1.16.5-4.2.4-134

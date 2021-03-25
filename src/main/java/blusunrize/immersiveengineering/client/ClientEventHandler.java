@@ -531,7 +531,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 								RayTraceResult rtr = ClientUtils.mc().objectMouseOver;
 								double d;
 								if(rtr instanceof BlockRayTraceResult)
-									d = ((BlockRayTraceResult)rtr).getPos().distanceSq(pos.getX(), pos.getY(), pos.getZ(), true);
+									d = ((BlockRayTraceResult)rtr).getPos().distanceSq(pos.getX(), pos.getY(), pos.getZ(), false);
 								else
 									d = player.getDistanceSq(pos.getX(), pos.getY(), pos.getZ());
 								int max = ((IWireCoil)equipped.getItem()).getWireType(equipped).getMaxLength();
@@ -553,29 +553,17 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						);
 					}
 					else if(equipped.getItem() instanceof RevolverItem||equipped.getItem() instanceof SpeedloaderItem)
-					{
 						ItemOverlayUtils.renderRevolverOverlay(buffer, transform, scaledWidth, scaledHeight, player, hand, equipped);
-					}
 					else if(equipped.getItem() instanceof RailgunItem)
-					{
 						ItemOverlayUtils.renderRailgunOverlay(buffer, transform, scaledWidth, scaledHeight, player, hand, equipped);
-					}
 					else if(equipped.getItem() instanceof DrillItem)
-					{
 						ItemOverlayUtils.renderDrillOverlay(buffer, transform, scaledWidth, scaledHeight, player, hand, equipped);
-					}
 					else if(equipped.getItem() instanceof BuzzsawItem)
-					{
 						ItemOverlayUtils.renderBuzzsawOverlay(buffer, transform, scaledWidth, scaledHeight, player, hand, equipped);
-					}
 					else if(equipped.getItem() instanceof ChemthrowerItem)
-					{
 						ItemOverlayUtils.renderChemthrowerOverlay(buffer, transform, scaledWidth, scaledHeight, player, hand, equipped);
-					}
 					else if(equipped.getItem() instanceof IEShieldItem)
-					{
 						ItemOverlayUtils.renderShieldOverlay(buffer, transform, scaledWidth, scaledHeight, player, hand, equipped);
-					}
 					if(equipped.getItem()==Tools.voltmeter)
 					{
 						RayTraceResult rrt = ClientUtils.mc().objectMouseOver;
