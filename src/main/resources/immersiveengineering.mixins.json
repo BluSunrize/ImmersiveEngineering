@@ -15,6 +15,7 @@
     "accessors.PoITypeAccess",
     "accessors.PotionBrewingAccess",
     "accessors.RecipeManagerAccess",
+    "accessors.ServerPlayNetHandlerAccess",
     "accessors.SingleJigsawAccess",
     "accessors.TemplateAccess",
     "accessors.TileEntityAccess",

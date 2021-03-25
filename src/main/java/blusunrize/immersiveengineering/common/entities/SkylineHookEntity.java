@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.entities;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.utils.PlayerUtils;
 import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.common.entities.CapabilitySkyhookData.SkyhookUserData;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
@@ -159,6 +160,7 @@ public class SkylineHookEntity extends Entity
 		//TODO figure out how to get the speed keeping on dismount working with less sync packets
 		if(this.ticksExisted%5==0&&!world.isRemote)
 			sendUpdatePacketTo(player);
+		PlayerUtils.resetFloatingState(player);
 		boolean moved = false;
 		double inLineDirection;
 		if(connection.getCatenaryData().isVertical())

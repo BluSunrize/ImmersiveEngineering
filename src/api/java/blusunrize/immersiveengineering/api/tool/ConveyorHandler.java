@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.api.tool;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
+import blusunrize.immersiveengineering.api.utils.PlayerUtils;
 import blusunrize.immersiveengineering.api.utils.SafeChunkUtils;
 import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import com.google.common.collect.ImmutableList;
@@ -428,6 +429,7 @@ public class ConveyorHandler
 				return;
 			if(entity instanceof PlayerEntity&&entity.isSneaking())
 				return;
+			PlayerUtils.resetFloatingState(entity);
 			ConveyorDirection conveyorDirection = getConveyorDirection();
 			float heightLimit = conveyorDirection==ConveyorDirection.HORIZONTAL?.25f: 1f;
 			BlockPos pos = getTile().getPos();
