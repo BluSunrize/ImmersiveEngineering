@@ -149,13 +149,9 @@ public class Connection
 				double middleL = (lower+upper)/2;
 				double middleVal = Math.sinh(middleL)/middleL;
 				if(middleVal < goal)
-				{
 					lower = middleL;
-				}
 				else if(middleVal > goal)
-				{
 					upper = middleL;
-				}
 				else
 				{
 					upper = lower = middleL;

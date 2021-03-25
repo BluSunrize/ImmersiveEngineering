@@ -113,7 +113,6 @@ public class SkylineHookEntity extends Entity
 		this.start = start;
 		Vector3d pos = connection.getPoint(this.linePos, start).add(Vector3d.copy(start.getPosition()));
 		this.setLocationAndAngles(pos.x, pos.y, pos.z, this.rotationYaw, this.rotationPitch);
-		this.setPosition(pos.x, pos.y, pos.z);
 		if(!connection.getCatenaryData().isVertical())
 			this.angle = Math.atan2(connection.getCatenaryData().getDeltaZ(), connection.getCatenaryData().getDeltaX());
 		ignoreCollisions.clear();
@@ -261,14 +260,8 @@ public class SkylineHookEntity extends Entity
 		this.rotationYaw = (float)(Math.atan2(motion.z, motion.x)*180.0D/Math.PI)+90.0F;
 		this.rotationPitch = (float)(Math.atan2(f1, motion.y)*180.0D/Math.PI)-90.0F;
 
-		while(this.rotationPitch-this.prevRotationPitch < -180.0F)
-			this.prevRotationPitch -= 360.0F;
-		while(this.rotationPitch-this.prevRotationPitch >= 180.0F)
-			this.prevRotationPitch += 360.0F;
-		while(this.rotationYaw-this.prevRotationYaw < -180.0F)
-			this.prevRotationYaw -= 360.0F;
-		while(this.rotationYaw-this.prevRotationYaw >= 180.0F)
-			this.prevRotationYaw += 360.0F;
+		this.prevRotationPitch = this.rotationPitch-MathHelper.wrapDegrees(this.rotationPitch-this.prevRotationPitch);
+		this.prevRotationYaw = this.rotationYaw-MathHelper.wrapDegrees(this.rotationYaw-this.prevRotationYaw);
 
 		this.rotationPitch = this.prevRotationPitch+(this.rotationPitch-this.prevRotationPitch)*0.2F;
 		this.rotationYaw = this.prevRotationYaw+(this.rotationYaw-this.prevRotationYaw)*0.2F;
@@ -319,7 +312,7 @@ public class SkylineHookEntity extends Entity
 		if(possible!=null)
 		{
 			Vector3d look = player.getLookVec();
-			line = possible.stream().filter(c -> !c.equals(connection))
+			line = possible.stream().filter(c -> !c.equals(connection)&&!c.isInternal())
 					.max(Comparator.comparingDouble(c -> {
 						c.generateCatenaryData(world);
 						double factor;

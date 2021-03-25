@@ -303,7 +303,7 @@ public class IEWireTypes
 		@Override
 		public double getSlack()
 		{
-			return 0;
+			return 1.001;
 		}
 
 		@Override
