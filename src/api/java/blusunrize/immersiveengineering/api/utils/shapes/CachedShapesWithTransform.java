@@ -54,14 +54,7 @@ public class CachedShapesWithTransform<ShapeKey, TransformKey> extends CachedVox
 	{
 		AxisAlignedBB mirrored = in;
 		if(mirror)
-			mirrored = new AxisAlignedBB(
-					1-in.minX,
-					in.minY,
-					in.minZ,
-					1-in.maxX,
-					in.maxY,
-					in.maxZ
-			);
+			mirrored = new AxisAlignedBB(1-in.minX, in.minY, in.minZ, 1-in.maxX, in.maxY, in.maxZ);
 		return ShapeUtils.transformAABB(mirrored, d);
 	}
 
