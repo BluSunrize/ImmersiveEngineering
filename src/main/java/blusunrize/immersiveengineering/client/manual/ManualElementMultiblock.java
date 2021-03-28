@@ -61,6 +61,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 	private final int yOffTotal;
 
 	private long lastStep = -1;
+	private long lastPrintedErrorTimeMs = -1;
 
 	public ManualElementMultiblock(ManualInstance manual, IMultiblock multiblock)
 	{
@@ -181,6 +182,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 		if(multiblock.getStructure(null)!=null)
 		{
 			IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
+			MatrixStack.Entry lastEntryBeforeTry = transform.getLast();
 			try
 			{
 				long currentTime = System.currentTimeMillis();
@@ -245,12 +247,19 @@ public class ManualElementMultiblock extends SpecialManualElements
 									transform.pop();
 								}
 							}
+				transform.pop();
+				transform.pop();
 			} catch(Exception e)
 			{
-				e.printStackTrace();
+				final long now = System.currentTimeMillis();
+				if(now > lastPrintedErrorTimeMs+1000)
+				{
+					e.printStackTrace();
+					lastPrintedErrorTimeMs = now;
+				}
+				while(lastEntryBeforeTry!=transform.getLast())
+					transform.pop();
 			}
-			transform.pop();
-			transform.pop();
 			buffer.finish();
 
 			if(componentTooltip!=null)
