@@ -764,7 +764,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			TileEntity tile = player.world.getTileEntity(rtr.getPos());
 			ItemStack stack = player instanceof LivingEntity?((LivingEntity)player).getHeldItem(Hand.MAIN_HAND): ItemStack.EMPTY;
 
-			if(Utils.isHammer(stack)&&tile instanceof TurntableTileEntity)
+			if(tile instanceof TurntableTileEntity&&Utils.isHammer(stack))
 			{
 				TurntableTileEntity turntableTile = ((TurntableTileEntity)tile);
 				Direction side = rtr.getFace();
