@@ -12,6 +12,8 @@
  - Fix dupe bug when interacting with barrels with stacked fluid containers (Malte)
  - Fix duplicate files being included in the IE jar (Malte)
  - Fix inconsistent wire length checks (Malte)
+ - Fix drills breaking stone without heads or fuel (Malte)
+ - Fix the metal press dropping two molds when broken with a drill (Malte)
  - Potentially fix lanterns and floodlights with OptiFine (Malte)
 
 ##### Version 1.16.5-4.2.4-134
