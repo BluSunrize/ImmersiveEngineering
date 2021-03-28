@@ -26,6 +26,7 @@ import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -37,8 +38,10 @@ public class SafeChunkUtils
 	private static final Map<IWorld, Set<ChunkPos>> unloadingChunks = new WeakHashMap<>();
 
 	//Based on a version by Ellpeck, but changed to use canTick and slightly extended
-	public static Chunk getSafeChunk(IWorld w, BlockPos pos)
+	public static Chunk getSafeChunk(@Nullable IWorld w, BlockPos pos)
 	{
+		if(w==null)
+			return null;
 		AbstractChunkProvider provider = w.getChunkProvider();
 		ChunkPos chunkPos = new ChunkPos(pos);
 		if(unloadingChunks.getOrDefault(w, ImmutableSet.of()).contains(chunkPos))
@@ -49,12 +52,12 @@ public class SafeChunkUtils
 			return null;
 	}
 
-	public static boolean isChunkSafe(IWorld w, BlockPos pos)
+	public static boolean isChunkSafe(@Nullable IWorld w, BlockPos pos)
 	{
 		return getSafeChunk(w, pos)!=null;
 	}
 
-	public static TileEntity getSafeTE(IWorld w, BlockPos pos)
+	public static TileEntity getSafeTE(@Nullable IWorld w, BlockPos pos)
 	{
 		Chunk c = getSafeChunk(w, pos);
 		if(c==null)
@@ -64,7 +67,7 @@ public class SafeChunkUtils
 	}
 
 	@Nonnull
-	public static BlockState getBlockState(IWorld w, BlockPos pos)
+	public static BlockState getBlockState(@Nullable IWorld w, BlockPos pos)
 	{
 		Chunk c = getSafeChunk(w, pos);
 		if(c==null)
@@ -73,15 +76,15 @@ public class SafeChunkUtils
 			return c.getBlockState(pos);
 	}
 
-	public static int getRedstonePower(World w, BlockPos pos, Direction d)
+	public static int getRedstonePower(@Nullable World w, BlockPos pos, Direction d)
 	{
-		if(!isChunkSafe(w, pos))
+		if(w==null||!isChunkSafe(w, pos))
 			return 0;
 		else
 			return w.getRedstonePower(pos, d);
 	}
 
-	public static int getRedstonePowerFromNeighbors(World w, BlockPos pos)
+	public static int getRedstonePowerFromNeighbors(@Nullable World w, BlockPos pos)
 	{
 		int ret = 0;
 		for(Direction d : DirectionUtils.VALUES)
