@@ -52,7 +52,7 @@ public class BlueprintInventory extends Inventory
 		for(int i = 0; i < inputs.size(); i++)
 			inputs.set(i, inputInventory.getStackInSlot(i+1));
 		//Consume
-		recipe.consumeInputs(inputs, taken.getCount()/recipe.output.getCount());
+		recipe.consumeInputs(inputs, (int)Math.ceil((double)taken.getCount()/recipe.output.getCount()));
 		//Update remains
 		for(int i = 0; i < inputs.size(); i++)
 			inputInventory.setInventorySlotContents(i+1, inputs.get(i));
