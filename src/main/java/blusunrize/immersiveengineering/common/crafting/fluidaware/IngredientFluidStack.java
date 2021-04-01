@@ -60,6 +60,7 @@ public class IngredientFluidStack extends Ingredient
 			cachedStacks = this.fluidTagInput.getMatchingFluidStacks()
 					.stream()
 					.map(FluidUtil::getFilledBucket)
+					.filter(s -> !s.isEmpty())
 					.toArray(ItemStack[]::new);
 		return this.cachedStacks;
 	}
