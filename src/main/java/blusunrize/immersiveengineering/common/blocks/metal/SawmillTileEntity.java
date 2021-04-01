@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
+import blusunrize.immersiveengineering.common.util.ListUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
@@ -511,6 +512,12 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 	public NonNullList<ItemStack> getInventory()
 	{
 		return null;
+	}
+
+	@Override
+	public NonNullList<ItemStack> getDroppedItems()
+	{
+		return ListUtils.fromItems(sawblade);
 	}
 
 	@Override

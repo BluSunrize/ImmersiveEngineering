@@ -8,12 +8,14 @@
  - Fix issues with arc recycling recipe generation (Malte)
  - Fix mineral veins not being generated in some areas (Malte)
  - Fix structural arms not using their blockstate property (Malte)
-   - This made them near unusable in structure files
+     - This made them near unusable in structure files
  - Fix dupe bug when interacting with barrels with stacked fluid containers (Malte)
  - Fix duplicate files being included in the IE jar (Malte)
  - Fix inconsistent wire length checks (Malte)
  - Fix drills breaking stone without heads or fuel (Malte)
  - Fix the metal press dropping two molds when broken with a drill (Malte)
+ - Fix the sawmill not dropping its sawblade when broken (Malte)
+ - Fix IE recipes involving water buckets not working in some scenarios (Malte)
  - Potentially fix lanterns and floodlights with OptiFine (Malte)
 
 ##### Version 1.16.5-4.2.4-134
