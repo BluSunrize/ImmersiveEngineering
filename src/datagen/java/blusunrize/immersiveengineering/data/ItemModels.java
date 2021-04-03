@@ -183,6 +183,8 @@ public class ItemModels extends TRSRItemModelProvider
 				.transforms(modLoc("item/post"));
 		obj(WoodenDevices.workbench, rl("block/wooden_device/workbench.obj.ie"))
 				.transforms(rl("item/workbench"));
+		obj(WoodenDevices.circuitTable, rl("block/wooden_device/circuit_table.obj"))
+				.transforms(rl("item/workbench"));
 
 		obj(WoodenDevices.treatedWallmount, modLoc("block/wooden_device/wallmount.obj"))
 				.texture("texture", modLoc("block/wooden_device/wallmount"))

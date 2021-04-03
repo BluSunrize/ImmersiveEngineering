@@ -107,6 +107,7 @@ public final class IEBlocks
 	{
 		public static Block craftingTable;
 		public static Block workbench;
+		public static Block circuitTable;
 		public static Block gunpowderBarrel;
 		public static Block woodenBarrel;
 		public static Block turntable;

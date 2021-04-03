@@ -167,6 +167,11 @@ public class MultiblockStates extends ExtendedBlockstateProvider
 						ModWorkbenchTileEntity.MASTER_POS, ModWorkbenchTileEntity.DUMMY_POS
 				)),
 				null, null);
+		createMultiblock(WoodenDevices.circuitTable,
+				split(obj("block/wooden_device/circuit_table.obj"), ImmutableList.of(
+						ModWorkbenchTileEntity.MASTER_POS, ModWorkbenchTileEntity.DUMMY_POS
+				)),
+				null, null);
 		createMultiblock(MetalDevices.sampleDrill,
 				split(
 						obj("block/metal_device/core_drill.obj"),

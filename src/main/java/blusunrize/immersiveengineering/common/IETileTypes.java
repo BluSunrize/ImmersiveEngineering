@@ -73,6 +73,9 @@ public class IETileTypes
 	public static final RegistryObject<TileEntityType<ModWorkbenchTileEntity>> MOD_WORKBENCH = REGISTER.register(
 			"modworkbench", makeType(ModWorkbenchTileEntity::new, () -> WoodenDevices.workbench)
 	);
+	public static final RegistryObject<TileEntityType<CircuitTableTileEntity>> CIRCUIT_TABLE = REGISTER.register(
+			"circuittable", makeType(CircuitTableTileEntity::new, () -> WoodenDevices.circuitTable)
+	);
 	public static final RegistryObject<TileEntityType<SorterTileEntity>> SORTER = REGISTER.register(
 			"sorter", makeType(SorterTileEntity::new, () -> WoodenDevices.sorter)
 	);

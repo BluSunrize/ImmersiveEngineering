@@ -358,6 +358,7 @@ public class IEContent
 		WoodenDevices.craftingTable = new HorizontalFacingBlock<>("craftingtable", IETileTypes.CRAFTING_TABLE,
 				standardWoodPropertiesNotSolid);
 		WoodenDevices.workbench = new ModWorkbenchBlock("workbench");
+		WoodenDevices.circuitTable = new CircuitTableBlock("circuit_table");
 		WoodenDevices.gunpowderBarrel = new GunpowderBarrelBlock("gunpowder_barrel");
 		WoodenDevices.woodenBarrel = new BarrelBlock("wooden_barrel", false);
 		WoodenDevices.turntable = new TurntableBlock("turntable");
