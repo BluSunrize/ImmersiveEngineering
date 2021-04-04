@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.gui;
 
+import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.common.blocks.wooden.CircuitTableTileEntity;
 import invtweaks.api.container.ChestContainer;
 import net.minecraft.entity.player.PlayerEntity;
@@ -25,8 +26,12 @@ public class CircuitTableContainer extends IEBaseContainer<CircuitTableTileEntit
 		this.player = inventoryPlayer.player;
 
 		int slotCount = 0;
-		for(int i = 0; i < 4; i++)
-			addSlot(new Slot(this.inv, slotCount++, 8, 7+i*18));
+
+		this.addSlot(new IESlot.Tagged(this, this.inv, slotCount++, 8, 7, IETags.circuitPCB));
+		this.addSlot(new IESlot.Tagged(this, this.inv, slotCount++, 8, 25, IETags.circuitLogic));
+		this.addSlot(new IESlot.Tagged(this, this.inv, slotCount++, 8, 43, IETags.circuitTraces));
+		this.addSlot(new IESlot.Tagged(this, this.inv, slotCount++, 8, 61, IETags.circuitSolder));
+
 		this.addSlot(new IESlot.Output(this, this.inv, slotCount, 194, 56));
 
 		this.slotCount = 1;

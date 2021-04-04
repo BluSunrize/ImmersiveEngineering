@@ -98,6 +98,10 @@ class ItemTags extends ItemTagsProvider
 				.addItemEntry(WoodenDevices.reinforcedCrate.asItem())
 				.addItemEntry(Misc.cartWoodenCrate)
 				.addItemEntry(Misc.cartReinforcedCrate);
+		getOrCreateBuilder(IETags.circuitPCB).addItemEntry(Ingredients.circuitBoard);
+		getOrCreateBuilder(IETags.circuitLogic).addItemEntry(Ingredients.electronTube);
+		getOrCreateBuilder(IETags.circuitTraces).addTag(IETags.copperWire);
+		getOrCreateBuilder(IETags.circuitSolder).addTag(IETags.getTagsFor(EnumMetals.LEAD).ingot);
 
 		getOrCreateBuilder(TagUtils.createItemWrapper(new ResourceLocation("curios:back")))
 				.addItemEntry(Misc.powerpack);

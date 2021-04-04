@@ -68,6 +68,10 @@ public class IETags
 	public static final INamedTag<Item> sawblades = createItemWrapper(forgeLoc("sawblades"));
 	//Utility tags
 	public static final INamedTag<Item> forbiddenInCrates = createItemWrapper(rl("forbidden_in_crates"));
+	public static final INamedTag<Item> circuitPCB = createItemWrapper(rl("circuits/pcb"));
+	public static final INamedTag<Item> circuitLogic = createItemWrapper(rl("circuits/logic"));
+	public static final INamedTag<Item> circuitTraces = createItemWrapper(rl("circuits/traces"));
+	public static final INamedTag<Item> circuitSolder = createItemWrapper(rl("circuits/solder"));
 
 	public static final INamedTag<Fluid> fluidCreosote = createFluidWrapper(forgeLoc("creosote"));
 	public static final INamedTag<Fluid> fluidPlantoil = createFluidWrapper(forgeLoc("plantoil"));
