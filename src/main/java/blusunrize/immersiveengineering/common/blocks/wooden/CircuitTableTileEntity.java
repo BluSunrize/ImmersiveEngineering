@@ -8,14 +8,19 @@
 
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
+import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
+import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
+import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorageAdvanced;
 import blusunrize.immersiveengineering.api.tool.LogicCircuitHandler.LogicCircuitInstruction;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
+import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
+import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.block.BlockState;
@@ -42,13 +47,14 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class CircuitTableTileEntity extends IEBaseTileEntity implements IIEInventory, IStateBasedDirectional,
+public class CircuitTableTileEntity extends IEBaseTileEntity implements IIEInventory, IIEInternalFluxHandler, IStateBasedDirectional,
 		IHasDummyBlocks, IInteractionObjectIE, IModelOffsetProvider
 {
 	public static final BlockPos MASTER_POS = BlockPos.ZERO;
 	public static final BlockPos DUMMY_POS = new BlockPos(1, 0, 0);
 	public static final String[] SLOT_TYPES = new String[]{"backplane", "logic", "traces", "solder"};
 
+	public FluxStorageAdvanced energyStorage = new FluxStorageAdvanced(32000);
 	NonNullList<ItemStack> inventory = NonNullList.withSize(5, ItemStack.EMPTY);
 
 	public CircuitTableTileEntity()
@@ -59,6 +65,7 @@ public class CircuitTableTileEntity extends IEBaseTileEntity implements IIEInven
 	@Override
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
+		energyStorage.readFromNBT(nbt);
 		if(!descPacket)
 		{
 			ItemStackHelper.loadAllItems(nbt, inventory);
@@ -68,6 +75,7 @@ public class CircuitTableTileEntity extends IEBaseTileEntity implements IIEInven
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
+		energyStorage.writeToNBT(nbt);
 		if(!descPacket)
 		{
 			ItemStackHelper.saveAllItems(nbt, inventory);
@@ -246,5 +254,39 @@ public class CircuitTableTileEntity extends IEBaseTileEntity implements IIEInven
 			return DUMMY_POS;
 		else
 			return MASTER_POS;
+	}
+
+	@Nonnull
+	@Override
+	public FluxStorage getFluxStorage()
+	{
+		if(this.isDummy())
+		{
+			CircuitTableTileEntity te = master();
+			if(te!=null)
+				return te.getFluxStorage();
+		}
+		return this.energyStorage;
+	}
+
+	@Nonnull
+	@Override
+	public IOSideConfig getEnergySideConfig(Direction facing)
+	{
+		return this.isDummy()&&facing==this.getFacing()?IOSideConfig.INPUT: IOSideConfig.NONE;
+	}
+
+	IEForgeEnergyWrapper wrapper = null;
+
+	@Override
+	public IEForgeEnergyWrapper getCapabilityWrapper(Direction facing)
+	{
+		if(this.isDummy()&&facing==this.getFacing())
+		{
+			if(wrapper==null||wrapper.side!=this.getFacing())
+				wrapper = new IEForgeEnergyWrapper(this, this.getFacing());
+			return wrapper;
+		}
+		return null;
 	}
 }

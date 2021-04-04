@@ -37,6 +37,8 @@ import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
 public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 {
+	private CircuitTableTileEntity tile;
+
 	private GuiSelectingList operatorList;
 	private final List<GuiButtonState<LogicCircuitRegister>> inputs = new ArrayList<>(LogicCircuitOperator.TOTAL_MAX_INPUTS);
 	private GuiButtonState<LogicCircuitRegister> output;
@@ -57,6 +59,7 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 	public CircuitTableScreen(CircuitTableContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{
 		super(container, inventoryPlayer, title);
+		this.tile = container.tile;
 		this.xSize = 234;
 		this.ySize = 182;
 	}
@@ -140,6 +143,8 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 					TextFormatting.GRAY
 			));
 		}
+		if(mx >= guiLeft+217&&mx < guiLeft+224&&my > guiTop+16&&my < guiTop+62)
+			tooltip.add(new StringTextComponent(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" IF"));
 		if(!tooltip.isEmpty())
 			GuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
 	}
@@ -173,5 +178,8 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 		RenderSystem.color3f(1.0F, 1.0F, 1.0F);
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/circuit_table.png");
 		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
+
+		int stored = (int)(46*(tile.getEnergyStored(null)/(float)tile.getMaxEnergyStored(null)));
+		ClientUtils.drawGradientRect(guiLeft+217, guiTop+16+(46-stored), guiLeft+224, guiTop+62, 0xffb51500, 0xff600b00);
 	}
 }
