@@ -239,7 +239,7 @@ public class IEContent
 			if(!m.isVanillaMetal())
 			{
 				storage = new IEBaseBlock("storage_"+name, Block.Properties.create(Material.IRON)
-						.sound(m==EnumMetals.STEEL?SoundType.NETHERITE:SoundType.METAL)
+						.sound(m==EnumMetals.STEEL?SoundType.NETHERITE: SoundType.METAL)
 						.hardnessAndResistance(5, 10)
 						.setRequiresTool()
 						.harvestTool(ToolType.PICKAXE)
@@ -357,8 +357,8 @@ public class IEContent
 
 		WoodenDevices.craftingTable = new HorizontalFacingBlock<>("craftingtable", IETileTypes.CRAFTING_TABLE,
 				standardWoodPropertiesNotSolid);
-		WoodenDevices.workbench = new ModWorkbenchBlock("workbench");
-		WoodenDevices.circuitTable = new CircuitTableBlock("circuit_table");
+		WoodenDevices.workbench = new DeskBlock("workbench", IETileTypes.MOD_WORKBENCH);
+		WoodenDevices.circuitTable = new DeskBlock("circuit_table", IETileTypes.CIRCUIT_TABLE);
 		WoodenDevices.gunpowderBarrel = new GunpowderBarrelBlock("gunpowder_barrel");
 		WoodenDevices.woodenBarrel = new BarrelBlock("wooden_barrel", false);
 		WoodenDevices.turntable = new TurntableBlock("turntable");
