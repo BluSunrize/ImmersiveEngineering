@@ -63,6 +63,7 @@ public class GuiHandler
 		register(CraftingTableTileEntity.class, Lib.GUIID_CraftingTable, CraftingTableContainer::new);
 		register(WoodenCrateTileEntity.class, Lib.GUIID_WoodenCrate, CrateContainer::new);
 		register(ModWorkbenchTileEntity.class, Lib.GUIID_Workbench, ModWorkbenchContainer::new);
+		register(CircuitTableTileEntity.class, Lib.GUIID_CircuitTable, CircuitTableContainer::new);
 		register(AssemblerTileEntity.class, Lib.GUIID_Assembler, AssemblerContainer::new);
 		register(SorterTileEntity.class, Lib.GUIID_Sorter, SorterContainer::new);
 		register(ItemBatcherTileEntity.class, Lib.GUIID_ItemBatcher, ItemBatcherContainer::new);
