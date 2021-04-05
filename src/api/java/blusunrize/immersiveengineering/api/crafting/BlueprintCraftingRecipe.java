@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -33,7 +32,7 @@ import java.util.stream.Collectors;
  */
 public class BlueprintCraftingRecipe extends MultiblockRecipe
 {
-	public static IRecipeType<BlueprintCraftingRecipe> TYPE = IRecipeType.register(Lib.MODID+":blueprint");
+	public static IRecipeType<BlueprintCraftingRecipe> TYPE;
 	public static RegistryObject<IERecipeSerializer<BlueprintCraftingRecipe>> SERIALIZER;
 
 	@Nonnull

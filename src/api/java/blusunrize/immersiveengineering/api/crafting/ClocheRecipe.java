@@ -9,7 +9,6 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.ClocheRenderFunction.ClocheRenderReference;
 import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import com.google.common.collect.ImmutableList;
@@ -27,7 +26,7 @@ import java.util.Map;
 
 public class ClocheRecipe extends IESerializableRecipe
 {
-	public static IRecipeType<ClocheRecipe> TYPE = IRecipeType.register(Lib.MODID+":cloche");
+	public static IRecipeType<ClocheRecipe> TYPE;
 	public static RegistryObject<IERecipeSerializer<ClocheRecipe>> SERIALIZER;
 
 	public final List<ItemStack> outputs;

@@ -9,7 +9,6 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
-import blusunrize.immersiveengineering.api.Lib;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.Ingredient;
@@ -21,7 +20,7 @@ import java.util.Map;
 
 public class BlastFurnaceFuel extends IESerializableRecipe
 {
-	public static IRecipeType<BlastFurnaceFuel> TYPE = IRecipeType.register(Lib.MODID+":blast_furnace_fuel");
+	public static IRecipeType<BlastFurnaceFuel> TYPE;
 	public static RegistryObject<IERecipeSerializer<BlastFurnaceFuel>> SERIALIZER;
 
 	// Initialized by reload listener

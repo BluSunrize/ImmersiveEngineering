@@ -29,7 +29,7 @@ import java.util.Random;
 
 public class MineralMix extends IESerializableRecipe
 {
-	public static IRecipeType<MineralMix> TYPE = IRecipeType.register(Lib.MODID+":mineral_mix");
+	public static IRecipeType<MineralMix> TYPE;
 	public static RegistryObject<IERecipeSerializer<MineralMix>> SERIALIZER;
 
 	public static Map<ResourceLocation, MineralMix> mineralList = new HashMap<>();

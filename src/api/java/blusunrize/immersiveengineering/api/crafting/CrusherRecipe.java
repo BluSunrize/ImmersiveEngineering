@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.Lib;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
@@ -32,7 +31,7 @@ import java.util.Map;
  */
 public class CrusherRecipe extends MultiblockRecipe
 {
-	public static IRecipeType<CrusherRecipe> TYPE = IRecipeType.register(Lib.MODID+":crusher");
+	public static IRecipeType<CrusherRecipe> TYPE;
 	public static RegistryObject<IERecipeSerializer<CrusherRecipe>> SERIALIZER;
 
 	public final Ingredient input;

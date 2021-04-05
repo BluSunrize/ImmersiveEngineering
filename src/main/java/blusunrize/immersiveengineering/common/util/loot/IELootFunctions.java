@@ -29,7 +29,7 @@ public class IELootFunctions
 	public static LootPoolEntryType tileDrop;
 	public static LootPoolEntryType multiblockOrigBlock;
 
-	public static void preInit()
+	public static void register()
 	{
 		bluprintz = registerFunction(BluprintzLootFunction.ID, new BluprintzLootFunction.Serializer());
 		windmill = registerFunction(WindmillLootFunction.ID, new WindmillLootFunction.Serializer());

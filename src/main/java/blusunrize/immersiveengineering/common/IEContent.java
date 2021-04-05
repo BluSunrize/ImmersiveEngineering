@@ -644,7 +644,7 @@ public class IEContent
 
 		ClocheRenderFunctions.init();
 
-		IELootFunctions.preInit();
+		DeferredWorkQueue.runLater(IELootFunctions::register);
 		IEShaders.commonConstruction();
 		IEMultiblocks.init();
 		BlueprintCraftingRecipe.registerDefaultCategories();

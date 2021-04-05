@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.ComparableItemStack;
-import blusunrize.immersiveengineering.api.Lib;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
@@ -28,7 +27,7 @@ import java.util.*;
  */
 public class MetalPressRecipe extends MultiblockRecipe
 {
-	public static IRecipeType<MetalPressRecipe> TYPE = IRecipeType.register(Lib.MODID+":metal_press");
+	public static IRecipeType<MetalPressRecipe> TYPE;
 	public static RegistryObject<IERecipeSerializer<MetalPressRecipe>> SERIALIZER;
 
 	public IngredientWithSize input;

@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
@@ -29,7 +28,7 @@ import java.util.Map;
  */
 public class BottlingMachineRecipe extends MultiblockRecipe
 {
-	public static IRecipeType<BottlingMachineRecipe> TYPE = IRecipeType.register(Lib.MODID+":bottling_machine");
+	public static IRecipeType<BottlingMachineRecipe> TYPE;
 	public static RegistryObject<IERecipeSerializer<BottlingMachineRecipe>> SERIALIZER;
 
 	public final Ingredient input;

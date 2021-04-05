@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
-import blusunrize.immersiveengineering.api.Lib;
 import com.google.common.collect.Lists;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
@@ -29,7 +28,7 @@ import java.util.*;
  */
 public class SqueezerRecipe extends MultiblockRecipe
 {
-	public static IRecipeType<SqueezerRecipe> TYPE = IRecipeType.register(Lib.MODID+":squeezer");
+	public static IRecipeType<SqueezerRecipe> TYPE;
 	public static RegistryObject<IERecipeSerializer<SqueezerRecipe>> SERIALIZER;
 
 	public IngredientWithSize input;

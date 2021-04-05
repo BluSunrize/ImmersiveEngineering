@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
-import blusunrize.immersiveengineering.api.Lib;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -28,7 +27,7 @@ import java.util.function.Predicate;
  */
 public class ArcFurnaceRecipe extends MultiblockRecipe
 {
-	public static IRecipeType<ArcFurnaceRecipe> TYPE = IRecipeType.register(Lib.MODID+":arc_furnace");
+	public static IRecipeType<ArcFurnaceRecipe> TYPE;
 	public static RegistryObject<IERecipeSerializer<ArcFurnaceRecipe>> SERIALIZER;
 
 	public final IngredientWithSize input;

@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
-import blusunrize.immersiveengineering.api.Lib;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeType;
@@ -26,7 +25,7 @@ import java.util.*;
  */
 public class MixerRecipe extends MultiblockRecipe
 {
-	public static IRecipeType<MixerRecipe> TYPE = IRecipeType.register(Lib.MODID+":mixer");
+	public static IRecipeType<MixerRecipe> TYPE;
 	public static RegistryObject<IERecipeSerializer<MixerRecipe>> SERIALIZER;
 
 	public final IngredientWithSize[] itemInputs;

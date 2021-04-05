@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeType;
@@ -25,7 +24,7 @@ import java.util.Map;
  */
 public class CokeOvenRecipe extends IESerializableRecipe
 {
-	public static IRecipeType<CokeOvenRecipe> TYPE = IRecipeType.register(Lib.MODID+":coke_oven");
+	public static IRecipeType<CokeOvenRecipe> TYPE;
 	public static RegistryObject<IERecipeSerializer<CokeOvenRecipe>> SERIALIZER;
 
 	public final IngredientWithSize input;

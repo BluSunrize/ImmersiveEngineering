@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
-import blusunrize.immersiveengineering.api.Lib;
 import com.google.common.collect.Lists;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
@@ -29,7 +28,7 @@ import java.util.*;
  */
 public class FermenterRecipe extends MultiblockRecipe
 {
-	public static IRecipeType<FermenterRecipe> TYPE = IRecipeType.register(Lib.MODID+":fermenter");
+	public static IRecipeType<FermenterRecipe> TYPE;
 	public static RegistryObject<IERecipeSerializer<FermenterRecipe>> SERIALIZER;
 
 	public IngredientWithSize input;

@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
@@ -25,7 +24,7 @@ import java.util.Map;
 
 public class SawmillRecipe extends MultiblockRecipe
 {
-	public static IRecipeType<SawmillRecipe> TYPE = IRecipeType.register(Lib.MODID+":sawmill");
+	public static IRecipeType<SawmillRecipe> TYPE;
 	public static RegistryObject<IERecipeSerializer<SawmillRecipe>> SERIALIZER;
 
 	public final Ingredient input;
