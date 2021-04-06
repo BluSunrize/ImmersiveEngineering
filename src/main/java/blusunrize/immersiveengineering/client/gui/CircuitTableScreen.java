@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.client.gui;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.api.tool.LogicCircuitHandler.LogicCircuitInstruction;
@@ -20,6 +21,7 @@ import blusunrize.immersiveengineering.client.gui.elements.GuiButtonState;
 import blusunrize.immersiveengineering.client.gui.elements.GuiSelectingList;
 import blusunrize.immersiveengineering.common.blocks.wooden.CircuitTableTileEntity;
 import blusunrize.immersiveengineering.common.gui.CircuitTableContainer;
+import blusunrize.immersiveengineering.common.network.MessageContainerUpdate;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.entity.player.PlayerInventory;
@@ -37,23 +39,29 @@ import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
 public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 {
-	private CircuitTableTileEntity tile;
+	private final CircuitTableTileEntity tile;
 
+	// Buttons
 	private GuiSelectingList operatorList;
-	private final List<GuiButtonState<LogicCircuitRegister>> inputs = new ArrayList<>(LogicCircuitOperator.TOTAL_MAX_INPUTS);
-	private GuiButtonState<LogicCircuitRegister> output;
+	private final List<GuiButtonState<LogicCircuitRegister>> inputButtons = new ArrayList<>(LogicCircuitOperator.TOTAL_MAX_INPUTS);
+	private GuiButtonState<LogicCircuitRegister> outputButton;
+
+	// Process
+	private boolean active = false;
+	private int process = 0;
 
 	private final ResettableLazy<Optional<LogicCircuitInstruction>> instruction = new ResettableLazy<>(() -> {
 		LogicCircuitOperator operator = getSelectedOperator();
 		if(operator==null)
 			return Optional.empty();
-		return Optional.of(
-				new LogicCircuitInstruction(
-						operator,
-						output.getState(),
-						inputs.stream().map(GuiButtonState::getState).filter(Objects::nonNull)
-								.limit(operator.getArgumentCount()).toArray(LogicCircuitRegister[]::new))
-		);
+		// collect inputs
+		LogicCircuitRegister[] inputs = inputButtons.stream().map(GuiButtonState::getState).filter(Objects::nonNull)
+				.limit(operator.getArgumentCount()).toArray(LogicCircuitRegister[]::new);
+		// if input array is to short, can't make an instruction
+		if(inputs.length < operator.getArgumentCount())
+			return Optional.empty();
+		// else, build instruction
+		return Optional.of(new LogicCircuitInstruction(operator, outputButton.getState(), inputs));
 	});
 
 	public CircuitTableScreen(CircuitTableContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
@@ -71,13 +79,13 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 		mc().keyboardListener.enableRepeatEvents(true);
 
 		this.operatorList = (GuiSelectingList)this.addButton(new GuiSelectingList(this, guiLeft+58, guiTop+16, 36, 56, btn -> {
-			this.instruction.reset();
 			this.minecraft.enqueue(this::updateButtons);
+			this.minecraft.enqueue(this::updateInstruction);
 		}, Arrays.stream(LogicCircuitOperator.values()).map(Enum::name).toArray(String[]::new)).setPadding(1, 1, 2, 0));
 
-		this.output = this.addButton(new GuiButtonLogicCircuitRegister(
+		this.outputButton = this.addButton(new GuiButtonLogicCircuitRegister(
 				guiLeft+121, guiTop+56,
-				new StringTextComponent("Output"), btn -> this.instruction.reset())
+				new StringTextComponent("Output"), btn -> this.minecraft.enqueue(this::updateInstruction))
 		);
 		this.updateButtons();
 	}
@@ -88,6 +96,15 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 		return LogicCircuitOperator.getByString(operatorList.getSelectedString());
 	}
 
+	private void updateInstruction()
+	{
+		this.instruction.reset();
+		this.instruction.get().ifPresent(instr -> {
+			this.container.instruction = instr;
+			ImmersiveEngineering.packetHandler.sendToServer(new MessageContainerUpdate(this.container.windowId, instr.serialize()));
+		});
+	}
+
 	private void updateButtons()
 	{
 		LogicCircuitOperator operator = getSelectedOperator();
@@ -95,9 +112,9 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 		{
 			int inputCount = operator.getArgumentCount();
 			int inputStart = 130-(inputCount*10-1);
-			if(inputCount < this.inputs.size())
+			if(inputCount < this.inputButtons.size())
 			{
-				Iterator<GuiButtonState<LogicCircuitRegister>> it = this.inputs.iterator();
+				Iterator<GuiButtonState<LogicCircuitRegister>> it = this.inputButtons.iterator();
 				int i = 0;
 				// Reposition buttons and remove excess
 				while(it.hasNext())
@@ -116,12 +133,12 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 			{
 				for(int i = 0; i < inputCount; i++)
 				{
-					if(i < this.inputs.size()) // Reposition buttons
-						this.inputs.get(i).x = guiLeft+inputStart+20*i;
+					if(i < this.inputButtons.size()) // Reposition buttons
+						this.inputButtons.get(i).x = guiLeft+inputStart+20*i;
 					else // Add new ones
-						this.inputs.add(this.addButton(new GuiButtonLogicCircuitRegister(
+						this.inputButtons.add(this.addButton(new GuiButtonLogicCircuitRegister(
 								guiLeft+inputStart+20*i, guiTop+18,
-								new StringTextComponent("Input "+(i+1)), btn -> this.instruction.reset())
+								new StringTextComponent("Input "+(i+1)), btn -> this.minecraft.enqueue(this::updateInstruction))
 						));
 				}
 			}
@@ -181,5 +198,11 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 
 		int stored = (int)(46*(tile.getEnergyStored(null)/(float)tile.getMaxEnergyStored(null)));
 		ClientUtils.drawGradientRect(guiLeft+217, guiTop+16+(46-stored), guiLeft+224, guiTop+62, 0xffb51500, 0xff600b00);
+
+		int progress = (int)(this.process/100f*50);
+		if(progress > 0)
+			this.blit(transform, guiLeft+185, guiTop+16, 234, 36, Math.min(progress, 18), 7);
+		if(progress > 18)
+			this.blit(transform, guiLeft+196, guiTop+18, 234, 43, 13, Math.min(progress-18, 32));
 	}
 }

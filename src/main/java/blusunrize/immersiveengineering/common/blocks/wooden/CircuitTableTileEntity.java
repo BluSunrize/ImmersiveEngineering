@@ -54,8 +54,10 @@ public class CircuitTableTileEntity extends IEBaseTileEntity implements IIEInven
 	public static final BlockPos DUMMY_POS = new BlockPos(1, 0, 0);
 	public static final String[] SLOT_TYPES = new String[]{"backplane", "logic", "traces", "solder"};
 
+	private static final int ASSEMBLY_ENERGY = 5000;
+
 	public FluxStorageAdvanced energyStorage = new FluxStorageAdvanced(32000);
-	NonNullList<ItemStack> inventory = NonNullList.withSize(5, ItemStack.EMPTY);
+	NonNullList<ItemStack> inventory = NonNullList.withSize(4, ItemStack.EMPTY);
 
 	public CircuitTableTileEntity()
 	{
@@ -96,6 +98,26 @@ public class CircuitTableTileEntity extends IEBaseTileEntity implements IIEInven
 				return (int)Math.ceil((instruction.getOperator().getComplexity()+instruction.getInputs().length+1)/2f);
 		}
 		return -1;
+	}
+
+	public boolean canAssemble(LogicCircuitInstruction instruction)
+	{
+		if(this.getFluxStorage().getEnergyStored() < ASSEMBLY_ENERGY)
+			return false;
+		for(int i = 0; i < 4; i++)
+		{
+			ItemStack input = this.inventory.get(i);
+			if(input.getCount() < getIngredientAmount(instruction, i))
+				return false;
+		}
+		return true;
+	}
+
+	public void consumeInputs(LogicCircuitInstruction instruction)
+	{
+		this.getFluxStorage().extractEnergy(ASSEMBLY_ENERGY, false);
+		for(int i = 0; i < 4; i++)
+			this.inventory.get(i).shrink(getIngredientAmount(instruction, i));
 	}
 
 	@OnlyIn(Dist.CLIENT)
