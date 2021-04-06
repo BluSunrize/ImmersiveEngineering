@@ -180,6 +180,7 @@ public class ImmersiveEngineering
 		IECompatModule.doModulesInit();
 		proxy.initEnd();
 		registerMessage(MessageTileSync.class, MessageTileSync::new);
+		registerMessage(MessageContainerUpdate.class, MessageContainerUpdate::new, PLAY_TO_SERVER);
 		registerMessage(MessageSpeedloaderSync.class, MessageSpeedloaderSync::new, PLAY_TO_CLIENT);
 		registerMessage(MessageSkyhookSync.class, MessageSkyhookSync::new, PLAY_TO_CLIENT);
 		registerMessage(MessageMinecartShaderSync.class, MessageMinecartShaderSync::new);

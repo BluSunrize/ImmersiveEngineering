@@ -16,6 +16,7 @@ import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.items.ItemHandlerHelper;
 
@@ -144,5 +145,10 @@ public class IEBaseContainer<T extends TileEntity> extends Container
 		super.onContainerClosed(playerIn);
 		if(inv!=null)
 			this.inv.closeInventory(playerIn);
+	}
+
+	public void receiveMessageFromScreen(CompoundNBT nbt)
+	{
+
 	}
 }
