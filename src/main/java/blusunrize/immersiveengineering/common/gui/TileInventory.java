@@ -12,21 +12,24 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteract
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.vector.Vector3d;
 
 public class TileInventory implements IInventory
 {
-	TileEntity tile;
-	IIEInventory inv;
-	String name;
+	final TileEntity tile;
+	final IIEInventory inv;
+	final String name;
+	final Container eventHandler;
 
-	public TileInventory(TileEntity tile)
+	public TileInventory(TileEntity tile, Container eventHandler)
 	{
 		this.tile = tile;
 		this.inv = (IIEInventory)tile;
-		this.name = tile.getClass().getName();
+		this.eventHandler = eventHandler;
+		String name = tile.getClass().getName();
 		this.name = "IE"+(name.substring(name.lastIndexOf("TileEntity")+"TileEntity".length()));
 	}
 
@@ -60,6 +63,7 @@ public class TileInventory implements IInventory
 	{
 		ItemStack stack = inv.getInventory().get(index);
 		if(!stack.isEmpty())
+		{
 			if(stack.getCount() <= count)
 				inv.getInventory().set(index, ItemStack.EMPTY);
 			else
@@ -68,6 +72,8 @@ public class TileInventory implements IInventory
 				if(stack.getCount()==0)
 					inv.getInventory().set(index, ItemStack.EMPTY);
 			}
+			eventHandler.onCraftMatrixChanged(this);
+		}
 		return stack;
 	}
 
@@ -83,6 +89,7 @@ public class TileInventory implements IInventory
 	public void setInventorySlotContents(int index, ItemStack stack)
 	{
 		inv.getInventory().set(index, stack);
+		eventHandler.onCraftMatrixChanged(this);
 	}
 
 	@Override

@@ -34,7 +34,7 @@ public class IEBaseContainer<T extends TileEntity> extends Container
 		super(GuiHandler.getContainerTypeFor(tile), id);
 		this.tile = tile;
 		if(tile instanceof IIEInventory)
-			this.inv = new TileInventory(tile);
+			this.inv = new TileInventory(tile, this);
 	}
 
 	@Override
@@ -81,7 +81,7 @@ public class IEBaseContainer<T extends TileEntity> extends Container
 				else
 					slot.putStack(ItemHandlerHelper.copyStackWithSize(stackHeld, amount));
 			}
-			if(stackSlot.getCount()>slot.getSlotStackLimit())
+			if(stackSlot.getCount() > slot.getSlotStackLimit())
 				stackSlot.setCount(slot.getSlotStackLimit());
 		}
 		else if(dragType==5)
