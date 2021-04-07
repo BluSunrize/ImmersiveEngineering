@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "immersiveengineering:wooden_device/logic_unit"
+    },
+    "facing=south": {
+      "model": "immersiveengineering:wooden_device/logic_unit",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "immersiveengineering:wooden_device/logic_unit",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "immersiveengineering:wooden_device/logic_unit",
+      "y": 90
+    }
+  }
+}

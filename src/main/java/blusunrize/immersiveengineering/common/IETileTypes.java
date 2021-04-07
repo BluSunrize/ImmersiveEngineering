@@ -88,6 +88,9 @@ public class IETileTypes
 	public static final RegistryObject<TileEntityType<FluidSorterTileEntity>> FLUID_SORTER = REGISTER.register(
 			"fluidsorter", makeType(FluidSorterTileEntity::new, () -> WoodenDevices.fluidSorter)
 	);
+	public static final RegistryObject<TileEntityType<LogicUnitTileEntity>> LOGIC_UNIT = REGISTER.register(
+			"logicunit", makeType(LogicUnitTileEntity::new, () -> WoodenDevices.logicUnit)
+	);
 	public static final RegistryObject<TileEntityType<WatermillTileEntity>> WATERMILL = REGISTER.register(
 			"watermill", makeType(WatermillTileEntity::new, () -> WoodenDevices.watermill)
 	);

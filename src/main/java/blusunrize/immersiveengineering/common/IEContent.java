@@ -364,6 +364,8 @@ public class IEContent
 		WoodenDevices.turntable = new TurntableBlock("turntable");
 		WoodenDevices.crate = new CrateBlock("crate", false);
 		WoodenDevices.reinforcedCrate = new CrateBlock("reinforced_crate", true);
+		WoodenDevices.logicUnit = new HorizontalFacingBlock<>("logic_unit", IETileTypes.LOGIC_UNIT,
+				standardWoodPropertiesNotSolid);
 
 		WoodenDevices.sorter = new SorterBlock("sorter", false);
 		WoodenDevices.itemBatcher = new ItemBatcherBlock(standardWoodProperties);

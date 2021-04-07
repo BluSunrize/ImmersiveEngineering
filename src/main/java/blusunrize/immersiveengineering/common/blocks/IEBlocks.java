@@ -120,6 +120,7 @@ public final class IEBlocks
 		public static Block watermill;
 		//TODO move to deco?
 		public static Block treatedWallmount;
+		public static Block logicUnit;
 	}
 
 

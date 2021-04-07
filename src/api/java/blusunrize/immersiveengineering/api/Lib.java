@@ -54,6 +54,7 @@ public class Lib
 	public static final ResourceLocation GUIID_Assembler = new ResourceLocation(MODID, "assembler");
 	public static final ResourceLocation GUIID_Sorter = new ResourceLocation(MODID, "sorter");
 	public static final ResourceLocation GUIID_ItemBatcher = new ResourceLocation(MODID, "item_batcher");
+	public static final ResourceLocation GUIID_LogicUnit = new ResourceLocation(MODID, "logic_unit");
 	public static final ResourceLocation GUIID_Squeezer = new ResourceLocation(MODID, "squeezer");
 	public static final ResourceLocation GUIID_Fermenter = new ResourceLocation(MODID, "fermenter");
 	public static final ResourceLocation GUIID_Refinery = new ResourceLocation(MODID, "refinery");
