@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.gui;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.tool.LogicCircuitHandler.LogicCircuitInstruction;
 import blusunrize.immersiveengineering.common.blocks.wooden.CircuitTableTileEntity;
-import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
+import blusunrize.immersiveengineering.common.items.LogicCircuitBoardItem;
 import invtweaks.api.container.ChestContainer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -71,11 +71,7 @@ public class CircuitTableContainer extends IEBaseContainer<CircuitTableTileEntit
 	public void onCraftMatrixChanged(IInventory inventory)
 	{
 		if(instruction!=null&&this.tile.canAssemble(instruction))
-		{
-			ItemStack stack = new ItemStack(Ingredients.circuitBoard);
-			stack.getOrCreateTag().put("logic_instruction", instruction.serialize());
-			this.outputInventory.setInventorySlotContents(0, stack);
-		}
+			this.outputInventory.setInventorySlotContents(0, LogicCircuitBoardItem.buildCircuitBoard(instruction));
 		else
 			this.outputInventory.setInventorySlotContents(0, ItemStack.EMPTY);
 		super.onCraftMatrixChanged(inventory);
