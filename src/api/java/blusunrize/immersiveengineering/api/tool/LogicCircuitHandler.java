@@ -94,9 +94,9 @@ public class LogicCircuitHandler
 			this.output = output;
 			this.inputs = inputs;
 
-			StringBuilder s = new StringBuilder(output.name()+" = ");
+			StringBuilder s = new StringBuilder(output.name()+" = "+operator.name());
 			for(int i = 0; i < inputs.length; i++)
-				s.append(i!=0?", ": "").append(inputs[i].toString());
+				s.append(i!=0?", ": ": ").append(inputs[i].toString());
 			this.formattedString = s.toString();
 		}
 
