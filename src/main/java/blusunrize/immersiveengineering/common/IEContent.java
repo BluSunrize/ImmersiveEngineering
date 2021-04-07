@@ -629,6 +629,7 @@ public class IEContent
 				return new MetalBarrelMinecartEntity(MetalBarrelMinecartEntity.TYPE, world, x, y, z);
 			}
 		};
+		IEItems.Misc.logicCircuitBoard = new LogicCircuitBoardItem();
 
 		IEItems.Misc.bannerPatternHammer = addBanner("hammer", "hmr");
 		IEItems.Misc.bannerPatternBevels = addBanner("bevels", "bvl");

@@ -144,6 +144,7 @@ public final class IEItems
 		public static Item cartReinforcedCrate;
 		public static Item cartWoodenBarrel;
 		public static Item cartMetalBarrel;
+		public static Item logicCircuitBoard;
 
 		public static Item bannerPatternHammer;
 		public static Item bannerPatternBevels;

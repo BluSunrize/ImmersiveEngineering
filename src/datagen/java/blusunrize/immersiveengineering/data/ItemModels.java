@@ -242,6 +242,7 @@ public class ItemModels extends TRSRItemModelProvider
 		addItemModels("", Tools.sawblade, Tools.rockcutter);
 		addItemModels("", IEItems.Misc.maintenanceKit);
 		addItemModels("", IEItems.Misc.cartWoodenCrate, IEItems.Misc.cartReinforcedCrate, IEItems.Misc.cartWoodenBarrel, IEItems.Misc.cartMetalBarrel);
+		addItemModels("", IEItems.Misc.logicCircuitBoard);
 		addItemModel("banner_pattern", IEItems.Misc.bannerPatternHammer);
 		addItemModel("banner_pattern", IEItems.Misc.bannerPatternBevels);
 		addItemModel("banner_pattern", IEItems.Misc.bannerPatternOrnate);
