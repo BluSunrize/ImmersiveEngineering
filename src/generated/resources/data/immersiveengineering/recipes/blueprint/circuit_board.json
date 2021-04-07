@@ -6,9 +6,6 @@
     },
     {
       "tag": "forge:plates/copper"
-    },
-    {
-      "item": "immersiveengineering:electron_tube"
     }
   ],
   "category": "components",

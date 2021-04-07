@@ -380,7 +380,6 @@ public class Recipes extends RecipeProvider
 		BlueprintCraftingRecipeBuilder.builder("components", new ItemStack(Ingredients.circuitBoard))
 				.addInput(StoneDecoration.insulatingGlass)
 				.addInput(IETags.getTagsFor(EnumMetals.COPPER).plate)
-				.addInput(new ItemStack(Ingredients.electronTube, 2))
 				.build(out, toRL("blueprint/circuit_board"));
 
 		Item[] molds = {Molds.moldPlate, Molds.moldGear, Molds.moldRod, Molds.moldBulletCasing, Molds.moldWire, Molds.moldPacking4, Molds.moldPacking9, Molds.moldUnpacking};
