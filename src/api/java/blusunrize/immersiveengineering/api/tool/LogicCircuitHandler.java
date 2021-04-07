@@ -15,7 +15,6 @@ import net.minecraft.nbt.StringNBT;
 import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nullable;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.function.Predicate;
 
@@ -76,7 +75,7 @@ public class LogicCircuitHandler
 		WHITE, ORANGE, MAGENTA, LIGHT_BLUE, YELLOW, LIME, PINK, GRAY,
 		LIGHT_GRAY, CYAN, PURPLE, BLUE, BROWN, GREEN, RED, BLACK,
 		// Plus 8 internal storages
-		R0, R1, R2, R3, R4, R5, R6, R7, R8;
+		R0, R1, R2, R3, R4, R5, R6, R7;
 	}
 
 	public static final class LogicCircuitInstruction
