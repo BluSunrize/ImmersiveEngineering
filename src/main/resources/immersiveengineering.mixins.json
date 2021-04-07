@@ -6,6 +6,7 @@
   "mixins": [
     "accessors.ConcretePowderBlockAccess",
     "accessors.ContainerAccess",
+    "accessors.DimensionTypeAccessor",
     "accessors.EntityAccess",
     "accessors.ExplosionAccess",
     "accessors.FurnaceTEAccess",

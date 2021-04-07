@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.client.manual;
 
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
-import blusunrize.immersiveengineering.mixin.accessors.TileEntityAccess;
+import blusunrize.immersiveengineering.common.util.fakeworld.TemplateWorld;
 import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.ManualUtils;
 import blusunrize.lib.manual.SpecialManualElements;
@@ -18,14 +18,12 @@ import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.ManualScreen;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.fluid.FluidState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -33,14 +31,12 @@ import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.TransformationMatrix;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.util.text.*;
-import net.minecraft.world.IBlockReader;
 import net.minecraft.world.gen.feature.template.Template.BlockInfo;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
 
-import javax.annotation.Nullable;
 import java.util.*;
-import java.util.Map.Entry;
+import java.util.function.Predicate;
 
 import static blusunrize.immersiveengineering.api.client.TextUtils.applyFormat;
 
@@ -57,7 +53,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 	private TransformationMatrix additionalTransform;
 	private List<ITextComponent> componentTooltip;
 	private final MultiblockRenderInfo renderInfo;
-	private final MultiblockBlockAccess blockAccess;
+	private final TemplateWorld structureWorld;
 	private final int yOffTotal;
 
 	private long lastStep = -1;
@@ -67,11 +63,12 @@ public class ManualElementMultiblock extends SpecialManualElements
 	{
 		super(manual);
 		this.multiblock = multiblock;
-		renderInfo = new MultiblockRenderInfo(multiblock);
+		List<BlockInfo> structure = multiblock.getStructure(Minecraft.getInstance().world);
+		renderInfo = new MultiblockRenderInfo(structure);
 		float diagLength = (float)Math.sqrt(renderInfo.structureHeight*renderInfo.structureHeight+
 				renderInfo.structureWidth*renderInfo.structureWidth+
 				renderInfo.structureLength*renderInfo.structureLength);
-		blockAccess = new MultiblockBlockAccess(renderInfo);
+		structureWorld = new TemplateWorld(structure, renderInfo);
 		transX = 60+renderInfo.structureWidth/2F;
 		transY = 35+diagLength/2;
 		additionalTransform = new TransformationMatrix(
@@ -222,8 +219,8 @@ public class ManualElementMultiblock extends SpecialManualElements
 							for(int w = 0; w < structureWidth; w++)
 							{
 								BlockPos pos = new BlockPos(l, h, w);
-								BlockState state = blockAccess.getBlockState(pos);
-								if(!state.isAir(blockAccess, pos))
+								BlockState state = structureWorld.getBlockState(pos);
+								if(!state.isAir(structureWorld, pos))
 								{
 									transform.push();
 									transform.translate(l, h, w);
@@ -236,7 +233,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 										else
 											overlay = OverlayTexture.NO_OVERLAY;
 										IModelData modelData = EmptyModelData.INSTANCE;
-										TileEntity te = blockAccess.getTileEntity(pos);
+										TileEntity te = structureWorld.getTileEntity(pos);
 										if(te!=null)
 											modelData = te.getModelData();
 
@@ -315,76 +312,9 @@ public class ManualElementMultiblock extends SpecialManualElements
 		return this.multiblock;
 	}
 
-	static class MultiblockBlockAccess implements IBlockReader
-	{
-		private final MultiblockRenderInfo data;
-		private final Map<BlockPos, TileEntity> tiles;
-
-		MultiblockBlockAccess(MultiblockRenderInfo data)
-		{
-			this.data = data;
-			this.tiles = new HashMap<>();
-			for(Entry<BlockPos, BlockInfo> p : data.data.entrySet())
-				if(p.getValue().nbt!=null&&!p.getValue().nbt.isEmpty())
-				{
-					TileEntity te = TileEntity.readTileEntity(p.getValue().state, p.getValue().nbt);
-					if(te!=null)
-					{
-						((TileEntityAccess)te).setCachedBlockState(p.getValue().state);
-						tiles.put(p.getKey(), te);
-					}
-				}
-		}
-
-		@Nullable
-		@Override
-		public TileEntity getTileEntity(BlockPos pos)
-		{
-			if(data.data.containsKey(pos))
-			{
-				int x = pos.getX();
-				int y = pos.getY();
-				int z = pos.getZ();
-				int index = y*(data.structureLength*data.structureWidth)+x*data.structureWidth+z;
-				if(index <= data.getLimiter())
-					return tiles.get(pos);
-			}
-			return null;
-		}
-
-		@Override
-		public int getLightValue(BlockPos pos)
-		{
-			// full brightness always
-			return 15<<20|15<<4;
-		}
-
-		@Override
-		public BlockState getBlockState(BlockPos pos)
-		{
-			if(data.data.containsKey(pos))
-			{
-				int x = pos.getX();
-				int y = pos.getY();
-				int z = pos.getZ();
-				int index = y*(data.structureLength*data.structureWidth)+x*data.structureWidth+z;
-				if(index <= data.getLimiter())
-					return data.data.get(pos).state;
-			}
-			return Blocks.AIR.getDefaultState();
-		}
-
-		@Override
-		public FluidState getFluidState(BlockPos pos)
-		{
-			return getBlockState(pos).getFluidState();
-		}
-	}
-
 	//Stolen back from boni's StructureInfo
-	static class MultiblockRenderInfo
+	static class MultiblockRenderInfo implements Predicate<BlockPos>
 	{
-		public IMultiblock multiblock;
 		public Map<BlockPos, BlockInfo> data = new HashMap<>();
 		int blockCount = 0;
 		int[] countPerLevel;
@@ -396,15 +326,9 @@ public class ManualElementMultiblock extends SpecialManualElements
 		private int blockIndex = -1;
 		private int maxBlockIndex;
 
-		MultiblockRenderInfo(IMultiblock multiblock)
+		MultiblockRenderInfo(List<BlockInfo> structure)
 		{
-			this.multiblock = multiblock;
-			init(multiblock.getStructure(null));
 			maxBlockIndex = blockIndex = structureHeight*structureLength*structureWidth;
-		}
-
-		public void init(List<BlockInfo> structure)
-		{
 			structureHeight = 0;
 			structureWidth = 0;
 			structureLength = 0;
@@ -461,6 +385,13 @@ public class ManualElementMultiblock extends SpecialManualElements
 		int getLimiter()
 		{
 			return blockIndex;
+		}
+
+		@Override
+		public boolean test(BlockPos blockPos)
+		{
+			int index = blockPos.getZ()+structureWidth*(blockPos.getX()+structureLength*blockPos.getY());
+			return index <= getLimiter();
 		}
 	}
 }
