@@ -391,26 +391,13 @@ public class BlockStates extends ExtendedBlockstateProvider
 				modLoc("block/metal_device/thermoelectric_gen_top")
 		)));
 		{
-			JsonObject solid = new JsonObject();
-			solid.addProperty("loader", forgeLoc("obj").toString());
-			solid.addProperty("detectCullableFaces", false);
-			solid.addProperty("flip-v", true);
-			solid.addProperty("model", modLoc("models/block/metal_device/charging_station.obj").toString());
-			JsonObject translucent = new JsonObject();
-			translucent.addProperty("loader", forgeLoc("obj").toString());
-			translucent.addProperty("detectCullableFaces", false);
-			translucent.addProperty("flip-v", true);
-			translucent.addProperty("model", modLoc("models/block/metal_device/charging_station_glass.obj").toString());
-			ModelFile full = models().getBuilder("metal_device/charging_station")
-					.customLoader(MultiLayerBuilder::begin)
-					.addLayer("solid", solid)
-					.addLayer("translucent", translucent)
-					.end()
-					.parent(new ExistingModelFile(mcLoc("block/block"), existingFileHelper))
-					.texture("particle", DataGenUtils.getTextureFromObj(
-							modLoc("block/metal_device/charging_station.obj"),
-							existingFileHelper
-					));
+			ModelFile full = createMultiLayer("metal_device/charging_station", renderType -> {
+				if("solid".equals(renderType))
+					return modLoc("models/block/metal_device/charging_station.obj");
+				else if("translucent".equals(renderType))
+					return modLoc("models/block/metal_device/charging_station_glass.obj");
+				return null;
+			}, modLoc("block/metal_device/charging_station.obj"));
 			createRotatedBlock(MetalDevices.chargingStation,
 					state -> full,
 					ImmutableList.of()
@@ -569,6 +556,31 @@ public class BlockStates extends ExtendedBlockstateProvider
 						.setModels(new ConfiguredModel(model, 0, rotation, true));
 			}
 		}
+	}
+
+	private final static String[] RENDER_LAYERS = {"solid", "cutout_mipped", "cutout", "translucent"};
+
+	protected ModelFile createMultiLayer(String path, Function<String, ResourceLocation> modelGetter, ResourceLocation particle)
+	{
+		MultiLayerBuilder<BlockModelBuilder> modelBuilder = models().getBuilder(path)
+				.customLoader(MultiLayerBuilder::begin);
+
+		for(String renderType : RENDER_LAYERS)
+		{
+			ResourceLocation rl = modelGetter.apply(renderType);
+			if(rl!=null)
+			{
+				JsonObject object = new JsonObject();
+				object.addProperty("loader", forgeLoc("obj").toString());
+				object.addProperty("detectCullableFaces", false);
+				object.addProperty("flip-v", true);
+				object.addProperty("model", rl.toString());
+				modelBuilder.addLayer(renderType, object);
+			}
+		}
+		return modelBuilder.end()
+				.parent(new ExistingModelFile(mcLoc("block/block"), existingFileHelper))
+				.texture("particle", DataGenUtils.getTextureFromObj(particle, existingFileHelper));
 	}
 
 	public static <T extends Comparable<T>> void forEach(PartialBlockstate base, Property<T> prop,
