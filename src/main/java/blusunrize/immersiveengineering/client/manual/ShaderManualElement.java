@@ -29,10 +29,8 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.IFormattableTextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.IReorderingProcessor;
+import net.minecraft.util.text.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -167,26 +165,37 @@ public class ShaderManualElement extends SpecialManualElements
 		RenderHelper.enableStandardItemLighting();
 		float scale = 2;
 		transform.push();
+		transform.translate(x, y, 0);
 		transform.scale(scale, scale, scale);
 		boolean examples = exampleItems!=null&&exampleItems.length > 0;
 
-		ManualUtils.renderItemStack(transform, shaderItem, (int)((x+10+(examples?0: 34))/scale), (int)((y-8)/scale), false);
+		ManualUtils.renderItemStack(transform, shaderItem, (int)((10+(examples?0: 34))/scale), (int)((-8)/scale), false);
 		if(examples&&example >= 0&&example < exampleItems.length)
-			ManualUtils.renderItemStack(transform, exampleItems[example], (int)((x+63)/scale), (int)((y-8)/scale), false);
+			ManualUtils.renderItemStack(transform, exampleItems[example], (int)((63)/scale), (int)((-8)/scale), false);
 
 		transform.scale(1/scale, 1/scale, 1/scale);
 		if(unlocked)
-			ManualUtils.renderItemStack(transform, replicationCost.getRandomizedExampleStack(mc().player.ticksExisted), x+102, y+118, false);
+			ManualUtils.renderItemStack(transform, replicationCost.getRandomizedExampleStack(mc().player.ticksExisted), 102, 118, false);
 
 		RenderHelper.disableStandardItemLighting();
 
 		int w = manual.fontRenderer().getStringWidth(this.name.getString());
-		manual.fontRenderer().func_238418_a_(this.name, x + 60 - w/2, y+24, 120, manual.getTextColour());
+		drawWrappedWithTransform(transform, this.name, 60-w/2, 24);
 		if(this.text!=null&&!this.text.getString().isEmpty())
-			manual.fontRenderer().func_238418_a_(this.text, x, y+38, 120, manual.getTextColour());
+			drawWrappedWithTransform(transform, this.text, 0, 38);
 
 		transform.pop();
+	}
 
+	private void drawWrappedWithTransform(
+			MatrixStack transform, ITextProperties text, int x, int y
+	)
+	{
+		for(IReorderingProcessor line : manual.fontRenderer().trimStringToWidth(text, 120))
+		{
+			manual.fontRenderer().func_238422_b_(transform, line, (float)x, (float)y, manual.getTextColour());
+			y += manual.fontRenderer().FONT_HEIGHT;
+		}
 	}
 
 	@Override

@@ -4,6 +4,7 @@ import blusunrize.immersiveengineering.mixin.accessors.DimensionTypeAccessor;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
@@ -25,6 +26,7 @@ import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.chunk.AbstractChunkProvider;
 import net.minecraft.world.gen.feature.template.Template.BlockInfo;
 import net.minecraft.world.storage.MapData;
+import net.minecraftforge.common.util.Lazy;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -35,11 +37,12 @@ import java.util.function.Predicate;
 
 public class TemplateWorld extends World
 {
+	private final Lazy<DynamicRegistries> FALLBACK_REGISTRIES = Lazy.of(DynamicRegistries::func_239770_b_);
+
 	private final Map<String, MapData> maps = new HashMap<>();
 	private final Scoreboard scoreboard = new Scoreboard();
 	private final RecipeManager recipeManager = new RecipeManager();
 	private final TemplateChunkProvider chunkProvider;
-	private final DynamicRegistries registries = DynamicRegistries.func_239770_b_();
 
 	public TemplateWorld(List<BlockInfo> blocks, Predicate<BlockPos> shouldShow)
 	{
@@ -147,7 +150,12 @@ public class TemplateWorld extends World
 	@Override
 	public DynamicRegistries func_241828_r()
 	{
-		return registries;
+		World clientWorld = Minecraft.getInstance().world;
+		if(clientWorld!=null)
+			return clientWorld.func_241828_r();
+		else
+			// Should never happen, but will work correctly in case it does
+			return FALLBACK_REGISTRIES.get();
 	}
 
 	@Override

@@ -61,7 +61,7 @@ public class TextSplitter
 
 	public TextSplitter(ManualInstance m)
 	{
-		this(m, (s) -> s);
+		this(m, Function.identity());
 	}
 
 	public TextSplitter(ManualInstance m, Function<String, String> tokenTransform)
@@ -72,7 +72,7 @@ public class TextSplitter
 			{
 				for(TextFormatting f : TextFormatting.values())
 					if(!f.isFancyStyling())
-						s = s.replace(f.toString(), f.toString()+extraFormat);
+						s = s.replace(f.toString(), f+extraFormat);
 				s = extraFormat+s;
 			}
 			return s;

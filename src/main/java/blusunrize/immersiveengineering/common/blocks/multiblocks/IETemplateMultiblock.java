@@ -102,7 +102,8 @@ public abstract class IETemplateMultiblock extends TemplateMultiblock
 		Template result = super.getTemplate(world);
 		Preconditions.checkState(
 				result.getSize().equals(size),
-				"Wrong template size for multiblock "+getTemplateLocation()+", template size: "+result.getSize()
+				"Wrong template size for multiblock %s, template size: %s",
+				getTemplateLocation(), result.getSize()
 		);
 		return result;
 	}
