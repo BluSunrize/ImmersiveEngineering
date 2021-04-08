@@ -316,35 +316,30 @@ public class ManualElementMultiblock extends SpecialManualElements
 	static class MultiblockRenderInfo implements Predicate<BlockPos>
 	{
 		public Map<BlockPos, BlockInfo> data = new HashMap<>();
-		int blockCount = 0;
-		int[] countPerLevel;
-		int structureHeight = 0;
-		int structureLength = 0;
-		int structureWidth = 0;
-		int showLayer = -1;
+		private final int structureHeight;
+		private final int structureLength;
+		private final int structureWidth;
+		private final int maxBlockIndex;
 
-		private int blockIndex = -1;
-		private int maxBlockIndex;
+		private int showLayer = -1;
+		private int blockIndex;
 
 		MultiblockRenderInfo(List<BlockInfo> structure)
 		{
-			maxBlockIndex = blockIndex = structureHeight*structureLength*structureWidth;
-			structureHeight = 0;
-			structureWidth = 0;
-			structureLength = 0;
-
-			countPerLevel = new int[structureHeight];
-			blockCount = structure.size();
+			int structureHeight = 0;
+			int structureWidth = 0;
+			int structureLength = 0;
 			for(BlockInfo block : structure)
 			{
 				structureHeight = Math.max(structureHeight, block.pos.getY()+1);
 				structureWidth = Math.max(structureWidth, block.pos.getZ()+1);
 				structureLength = Math.max(structureLength, block.pos.getX()+1);
-				if(structureHeight!=countPerLevel.length)
-					countPerLevel = Arrays.copyOf(countPerLevel, structureHeight);
-				++countPerLevel[block.pos.getY()];
 				data.put(block.pos, block);
 			}
+			this.maxBlockIndex = this.blockIndex = structureHeight*structureLength*structureWidth;
+			this.structureHeight = structureHeight;
+			this.structureLength = structureLength;
+			this.structureWidth = structureWidth;
 		}
 
 		void setShowLayer(int layer)
@@ -363,7 +358,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 
 		void step()
 		{
-			int start = blockIndex;
+			final int start = blockIndex;
 			do
 			{
 				if(++blockIndex >= maxBlockIndex)
