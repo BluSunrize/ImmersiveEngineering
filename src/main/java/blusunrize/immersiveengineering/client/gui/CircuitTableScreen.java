@@ -205,4 +205,15 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 		if(progress > 18)
 			this.blit(transform, guiLeft+196, guiTop+18, 234, 43, 13, Math.min(progress-18, 32));
 	}
+
+	@Override
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers)
+	{
+		for(GuiButtonState input : this.inputButtons)
+			if(input.isHovered())
+				return input.keyPressed(keyCode, scanCode, modifiers);
+		if(this.outputButton.isHovered())
+			return this.outputButton.keyPressed(keyCode, scanCode, modifiers);
+		return super.keyPressed(keyCode, scanCode, modifiers);
+	}
 }

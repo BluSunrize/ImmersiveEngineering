@@ -54,6 +54,11 @@ public class GuiButtonState<E> extends GuiButtonIE
 		return this.states[this.state];
 	}
 
+	protected int getStateAsInt()
+	{
+		return this.state;
+	}
+
 	public int[] getTextOffset(FontRenderer fontrenderer)
 	{
 		return this.textOffset;
