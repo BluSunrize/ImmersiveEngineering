@@ -48,6 +48,7 @@ public class ConnectorProbeTileEntity extends ConnectorRedstoneTileEntity
 {
 	public DyeColor redstoneChannelSending = DyeColor.WHITE;
 	private int lastOutput = 0;
+
 	public ConnectorProbeTileEntity()
 	{
 		super(IETileTypes.CONNECTOR_PROBE.get());
@@ -111,7 +112,7 @@ public class ConnectorProbeTileEntity extends ConnectorRedstoneTileEntity
 	@Override
 	public void updateInput(byte[] signals, ConnectionPoint cp)
 	{
-		signals[redstoneChannelSending.ordinal()] = (byte)Math.max(lastOutput, signals[redstoneChannelSending.ordinal()]);
+		signals[redstoneChannelSending.ordinal()] = (byte)lastOutput;
 		rsDirty = false;
 	}
 
