@@ -157,7 +157,7 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 		{
 			int slotNum = this.hoveredSlot.slotNumber;
 			tooltip.add(TextUtils.applyFormat(
-					new TranslationTextComponent(Lib.DESC_INFO+"circuit_table."+CircuitTableTileEntity.SLOT_TYPES[slotNum]),
+					new TranslationTextComponent(Lib.DESC_INFO+"circuit_table.slot."+CircuitTableTileEntity.SLOT_TYPES[slotNum]),
 					TextFormatting.GRAY
 			));
 		}
