@@ -162,6 +162,13 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 		}
 		if(mx >= guiLeft+217&&mx < guiLeft+224&&my > guiTop+16&&my < guiTop+62)
 			tooltip.add(new StringTextComponent(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" IF"));
+
+		for(GuiButtonState<LogicCircuitRegister> input : this.inputButtons)
+			if(input.isHovered())
+				tooltip.add(TextUtils.applyFormat(input.getState().getDescription(), TextFormatting.GRAY));
+		if(this.outputButton.isHovered())
+			tooltip.add(TextUtils.applyFormat(outputButton.getState().getDescription(), TextFormatting.GRAY));
+
 		if(!tooltip.isEmpty())
 			GuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
 	}

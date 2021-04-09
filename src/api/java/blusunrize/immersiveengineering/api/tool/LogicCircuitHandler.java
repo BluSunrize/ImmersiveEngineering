@@ -8,10 +8,14 @@
 
 package blusunrize.immersiveengineering.api.tool;
 
+import blusunrize.immersiveengineering.api.Lib;
 import com.google.common.base.Preconditions;
+import net.minecraft.item.DyeColor;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nullable;
@@ -76,6 +80,14 @@ public class LogicCircuitHandler
 		LIGHT_GRAY, CYAN, PURPLE, BLUE, BROWN, GREEN, RED, BLACK,
 		// Plus 8 internal storages
 		R0, R1, R2, R3, R4, R5, R6, R7;
+
+		public ITextComponent getDescription()
+		{
+			if(this.ordinal() < 16)
+				return new TranslationTextComponent("color.minecraft."+DyeColor.byId(this.ordinal()).getTranslationKey());
+			else
+				return new TranslationTextComponent(Lib.DESC_INFO+"register", this.ordinal()-16);
+		}
 	}
 
 	public static final class LogicCircuitInstruction
