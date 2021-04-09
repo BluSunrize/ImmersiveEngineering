@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.tool.LogicCircuitHandler.ILogicCircuitHandler;
 import blusunrize.immersiveengineering.api.tool.LogicCircuitHandler.LogicCircuitRegister;
+import blusunrize.immersiveengineering.api.utils.ResettableLazy;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.redstone.CapabilityRedstoneNetwork;
 import blusunrize.immersiveengineering.api.wires.redstone.CapabilityRedstoneNetwork.RedstoneBundleConnection;
@@ -36,6 +37,7 @@ import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
+import java.util.EnumMap;
 import java.util.Objects;
 
 public class LogicUnitTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInventory,
@@ -128,7 +130,7 @@ public class LogicUnitTileEntity extends IEBaseTileEntity implements ITickableTi
 
 	private final static int SIZE_COLORS = DyeColor.values().length;
 	private final static int SIZE_REGISTERS = LogicCircuitRegister.values().length-SIZE_COLORS;
-	boolean[] inputs = new boolean[SIZE_COLORS];
+	EnumMap<Direction, boolean[]> inputs = new EnumMap<>(Direction.class);
 	boolean[] registers = new boolean[SIZE_REGISTERS];
 	boolean[] outputs = new boolean[SIZE_COLORS];
 
@@ -149,10 +151,20 @@ public class LogicUnitTileEntity extends IEBaseTileEntity implements ITickableTi
 				@Override
 				public void onChange(ConnectionPoint cp, RedstoneNetworkHandler handler, Direction side)
 				{
-					for(DyeColor dye : DyeColor.values())
-						inputs[dye.getId()] = handler.getValue(dye.getId()) > 0;
-					if(runCircuits())
+					byte[] foreignInputs = handler.getValuesExcluding(cp);
+					boolean[] sideInputs = inputs.getOrDefault(side, new boolean[SIZE_COLORS]);
+					boolean[] preInput = Arrays.copyOf(sideInputs, SIZE_COLORS);
+					for(int i = 0; i < SIZE_COLORS; i++)
+						sideInputs[i] = foreignInputs[i] > 0;
+					// if the input changed, update and run circuits
+					if(!Arrays.equals(preInput, sideInputs))
+					{
+						inputs.put(side, sideInputs);
+						combinedInputs.reset();
+						if(runCircuits())
+							handler.updateValues();
 						redstoneCap.ifPresent(RedstoneBundleConnection::markDirty);
+					}
 				}
 
 				@Override
@@ -173,11 +185,19 @@ public class LogicUnitTileEntity extends IEBaseTileEntity implements ITickableTi
 		return super.getCapability(capability, facing);
 	}
 
+	ResettableLazy<boolean[]> combinedInputs = new ResettableLazy<>(
+			() -> this.inputs.values().stream().reduce((b1, b2) -> {
+				boolean[] ret = new boolean[SIZE_COLORS];
+				for(int i = 0; i < SIZE_COLORS; i++)
+					ret[i] = b1[i]||b2[i];
+				return ret;
+			}).orElse(new boolean[SIZE_COLORS]));
+
 	@Override
 	public boolean getLogicCircuitRegister(LogicCircuitRegister register)
 	{
 		if(register.ordinal() < SIZE_COLORS)
-			return this.inputs[register.ordinal()];
+			return combinedInputs.get()[register.ordinal()];
 		return this.registers[register.ordinal()-SIZE_COLORS];
 	}
 
