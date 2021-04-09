@@ -11,13 +11,18 @@ package blusunrize.immersiveengineering.api.wires.redstone;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.api.wires.localhandlers.LocalNetworkHandler;
+import com.google.common.base.Preconditions;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class RedstoneNetworkHandler extends LocalNetworkHandler
 {
 	public static final ResourceLocation ID = new ResourceLocation(Lib.MODID, "redstone");
-	private byte[] values = new byte[16];
+	private byte[] totalValues = new byte[16];
+	private final Map<ConnectionPoint, byte[]> emittedValues = new HashMap<>();
 
 	public RedstoneNetworkHandler(LocalWireNetwork local, GlobalWireNetwork global)
 	{
@@ -31,8 +36,9 @@ public class RedstoneNetworkHandler extends LocalNetworkHandler
 			return new RedstoneNetworkHandler(localNet, globalNet);
 		RedstoneNetworkHandler otherRS = (RedstoneNetworkHandler)other;
 		RedstoneNetworkHandler ret = new RedstoneNetworkHandler(localNet, globalNet);
-		for(int i = 0; i < 16; ++i)
-			ret.values[i] = (byte)Math.max(values[i], otherRS.values[i]);
+		fillWithMax(totalValues, otherRS.totalValues, ret.totalValues);
+		ret.emittedValues.putAll(this.emittedValues);
+		ret.emittedValues.putAll(otherRS.emittedValues);
 		return ret;
 	}
 
@@ -43,7 +49,10 @@ public class RedstoneNetworkHandler extends LocalNetworkHandler
 			return;
 		localNet.addAsFutureTask(() -> {
 			IRedstoneConnector rsConn = (IRedstoneConnector)iic;
-			rsConn.updateInput(values, newCP);
+
+			byte[] emitted = getEmitted(rsConn, newCP);
+			fillWithMax(emitted, totalValues, totalValues);
+			emittedValues.put(newCP, emitted);
 			for(ConnectionPoint cp : localNet.getConnectionPoints())
 			{
 				IImmersiveConnectable here = localNet.getConnector(cp);
@@ -55,12 +64,17 @@ public class RedstoneNetworkHandler extends LocalNetworkHandler
 
 	public void updateValues()
 	{
-		values = new byte[16];
+		totalValues = new byte[16];
+		emittedValues.clear();
 		for(ConnectionPoint cp : localNet.getConnectionPoints())
 		{
 			IImmersiveConnectable here = localNet.getConnector(cp);
 			if(here instanceof IRedstoneConnector)
-				((IRedstoneConnector)here).updateInput(values, cp);
+			{
+				byte[] output = getEmitted((IRedstoneConnector)here, cp);
+				emittedValues.put(cp, output);
+				fillWithMax(output, totalValues, totalValues);
+			}
 		}
 		for(ConnectionPoint cp : localNet.getConnectionPoints())
 		{
@@ -106,6 +120,35 @@ public class RedstoneNetworkHandler extends LocalNetworkHandler
 
 	public byte getValue(int redstoneChannel)
 	{
-		return values[redstoneChannel];
+		return totalValues[redstoneChannel];
+	}
+
+	public byte[] getValuesExcluding(ConnectionPoint excluded)
+	{
+		byte[] ret = new byte[16];
+		for(Map.Entry<ConnectionPoint, byte[]> entry : emittedValues.entrySet())
+		{
+			if(!entry.getKey().equals(excluded))
+			{
+				fillWithMax(entry.getValue(), ret, ret);
+			}
+		}
+		return ret;
+	}
+
+	private static byte[] getEmitted(IRedstoneConnector connector, ConnectionPoint cp)
+	{
+		byte[] ret = new byte[16];
+		connector.updateInput(ret, cp);
+		return ret;
+	}
+
+	private static void fillWithMax(byte[] inA, byte[] inB, byte[] out)
+	{
+		Preconditions.checkArgument(inA.length==16);
+		Preconditions.checkArgument(inB.length==16);
+		Preconditions.checkArgument(out.length==16);
+		for(int i = 0; i < 16; ++i)
+			out[i] = (byte)Math.max(inA[i], inB[i]);
 	}
 }
