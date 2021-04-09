@@ -20,7 +20,9 @@ import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
+import blusunrize.immersiveengineering.common.blocks.metal.ConnectorBundledTileEntity;
 import blusunrize.immersiveengineering.common.items.LogicCircuitBoardItem;
+import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -30,6 +32,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.Property;
 import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
@@ -145,6 +148,16 @@ public class LogicUnitTileEntity extends IEBaseTileEntity implements ITickableTi
 		return !Arrays.equals(outPre, outputs);
 	}
 
+	private void markConnectorsDirty()
+	{
+		for(Direction d : Direction.values())
+		{
+			TileEntity te = Utils.getExistingTileEntity(world, getPos().offset(d));
+			if(te instanceof ConnectorBundledTileEntity&&((ConnectorBundledTileEntity)te).getFacing()==d.getOpposite())
+				((ConnectorBundledTileEntity)te).markDirtyExtraSource();
+		}
+	}
+
 	private final LazyOptional<RedstoneBundleConnection> redstoneCap = registerConstantCap(
 			new RedstoneBundleConnection()
 			{
@@ -162,8 +175,7 @@ public class LogicUnitTileEntity extends IEBaseTileEntity implements ITickableTi
 						inputs.put(side, sideInputs);
 						combinedInputs.reset();
 						if(runCircuits())
-							handler.updateValues();
-						redstoneCap.ifPresent(RedstoneBundleConnection::markDirty);
+							markConnectorsDirty();
 					}
 				}
 
@@ -171,7 +183,8 @@ public class LogicUnitTileEntity extends IEBaseTileEntity implements ITickableTi
 				public void updateInput(byte[] signals, ConnectionPoint cp, Direction side)
 				{
 					for(DyeColor dye : DyeColor.values())
-						signals[dye.getId()] = (byte)Math.max(signals[dye.getId()], outputs[dye.getId()]?15: 0);
+						if(outputs[dye.getId()])
+							signals[dye.getId()] = (byte)15;
 				}
 			}
 	);
