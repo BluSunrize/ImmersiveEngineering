@@ -21,6 +21,7 @@ import blusunrize.immersiveengineering.client.gui.elements.GuiButtonState;
 import blusunrize.immersiveengineering.client.gui.elements.GuiSelectingList;
 import blusunrize.immersiveengineering.common.blocks.wooden.CircuitTableTileEntity;
 import blusunrize.immersiveengineering.common.gui.CircuitTableContainer;
+import blusunrize.immersiveengineering.common.items.LogicCircuitBoardItem;
 import blusunrize.immersiveengineering.common.network.MessageContainerUpdate;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -160,8 +161,14 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 					TextFormatting.GRAY
 			));
 		}
-		if(mx >= guiLeft+217&&mx < guiLeft+224&&my > guiTop+16&&my < guiTop+62)
+		if(isMouseIn(mx, my, 217, 16, 7, 46))
 			tooltip.add(new StringTextComponent(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" IF"));
+
+		if(isMouseIn(mx, my, 52, 7, 100, 70)&&this.playerInventory.getItemStack().getItem() instanceof LogicCircuitBoardItem)
+			tooltip.add(TextUtils.applyFormat(
+					new TranslationTextComponent(Lib.DESC_INFO+"circuit_table.copy"),
+					TextFormatting.GRAY
+			));
 
 		for(GuiButtonState<LogicCircuitRegister> input : this.inputButtons)
 			if(input.isHovered())
@@ -222,5 +229,25 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 		if(this.outputButton.isHovered())
 			return this.outputButton.keyPressed(keyCode, scanCode, modifiers);
 		return super.keyPressed(keyCode, scanCode, modifiers);
+	}
+
+	@Override
+	public boolean mouseClicked(double mouseX, double mouseY, int button)
+	{
+		if(isMouseIn((int)mouseX, (int)mouseY, 52, 7, 100, 70)&&this.playerInventory.getItemStack().getItem() instanceof LogicCircuitBoardItem)
+		{
+			LogicCircuitInstruction instr = LogicCircuitBoardItem.getInstruction(this.playerInventory.getItemStack());
+			if(instr!=null)
+			{
+				this.operatorList.setSelectedString(instr.getOperator().name());
+				this.updateButtons();
+				this.outputButton.setStateByInt(instr.getOutput().ordinal());
+				LogicCircuitRegister[] inputs = instr.getInputs();
+				for(int i = 0; i < inputs.length; i++)
+					this.inputButtons.get(i).setStateByInt(inputs[i].ordinal());
+				return true;
+			}
+		}
+		return super.mouseClicked(mouseX, mouseY, button);
 	}
 }

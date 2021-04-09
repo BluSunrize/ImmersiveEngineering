@@ -36,6 +36,12 @@ public abstract class IEContainerScreen<C extends Container> extends ContainerSc
 		this.renderHoveredTooltip(transform, mouseX, mouseY);
 	}
 
+	protected boolean isMouseIn(int mouseX, int mouseY, int x, int y, int w, int h)
+	{
+		return mouseX >= guiLeft+x&&mouseY >= guiTop+y
+				&&mouseX < guiLeft+x+w&&mouseY < guiTop+y+h;
+	}
+
 	protected void clearIntArray(IIntArray ints)
 	{
 		// Clear GUI ints, the sync code assumes that 0 is the initial state

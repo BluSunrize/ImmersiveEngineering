@@ -27,12 +27,19 @@ public class GuiSelectingList extends GuiReactiveList
 	public void render(MatrixStack transform, int mx, int my, float partialTicks)
 	{
 		super.render(transform, mx, my, partialTicks);
-		if(selectedOption >= offset && selectedOption-offset < perPage)
+		if(selectedOption >= offset&&selectedOption-offset < perPage)
 		{
 			FontRenderer fr = ClientUtils.mc().fontRenderer;
 			int yOff = (selectedOption-offset)*fr.FONT_HEIGHT;
 			fill(transform, x, y+yOff, x+width, y+yOff+fr.FONT_HEIGHT, Lib.COLOUR_I_ImmersiveOrange&0x88ffffff);
 		}
+	}
+
+	public void setSelectedString(String key)
+	{
+		for(int i = 0; i < this.entries.length; i++)
+			if(key.equals(this.entries[i]))
+				this.selectedOption = i;
 	}
 
 	@Nullable
