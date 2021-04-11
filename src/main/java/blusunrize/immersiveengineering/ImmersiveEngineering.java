@@ -109,8 +109,8 @@ public class ImmersiveEngineering
 		RecipeSerializers.RECIPE_SERIALIZERS.register(FMLJavaModLoadingContext.get().getModEventBus());
 		Villages.Registers.POINTS_OF_INTEREST.register(FMLJavaModLoadingContext.get().getModEventBus());
 		Villages.Registers.PROFESSIONS.register(FMLJavaModLoadingContext.get().getModEventBus());
-		ModLoadingContext.get().registerConfig(Type.COMMON, IECommonConfig.CONFIG_SPEC);
-		ModLoadingContext.get().registerConfig(Type.CLIENT, IEClientConfig.CONFIG_SPEC);
+		ModLoadingContext.get().registerConfig(Type.COMMON, IECommonConfig.CONFIG_SPEC.getBaseSpec());
+		ModLoadingContext.get().registerConfig(Type.CLIENT, IEClientConfig.CONFIG_SPEC.getBaseSpec());
 		ModLoadingContext.get().registerConfig(Type.SERVER, IEServerConfig.CONFIG_SPEC.getBaseSpec());
 		IEContent.modConstruction();
 		proxy.modConstruction();

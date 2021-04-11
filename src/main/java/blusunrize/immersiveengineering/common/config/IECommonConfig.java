@@ -10,14 +10,17 @@
 package blusunrize.immersiveengineering.common.config;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.wires.WireLogger;
+import blusunrize.immersiveengineering.common.config.CachedConfig.BooleanValue;
+import blusunrize.immersiveengineering.common.config.CachedConfig.ConfigValue;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import com.google.common.collect.ImmutableList;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
-import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.config.ModConfig.ModConfigEvent;
+import net.minecraftforge.fml.config.ModConfig.Type;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
 
@@ -25,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@EventBusSubscriber(modid = Lib.MODID, bus = Bus.MOD)
 public class IECommonConfig
 {
 	public static final BooleanValue enableWireLogger;
@@ -33,11 +37,11 @@ public class IECommonConfig
 	public static final Map<String, BooleanValue> compat = new HashMap<>();
 	public static final ConfigValue<List<? extends String>> preferredOres;
 
-	public static final ForgeConfigSpec CONFIG_SPEC;
+	public static final CachedConfig CONFIG_SPEC;
 
 	static
 	{
-		ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
+		CachedConfig.Builder builder = new CachedConfig.Builder();
 		builder.comment(
 				"IMPORTANT NOTICE:",
 				"THIS IS ONLY THE COMMON CONFIG. It does not contain all the values adjustable for IE.",
@@ -78,11 +82,14 @@ public class IECommonConfig
 	@SubscribeEvent
 	public static void onCommonReload(ModConfigEvent ev)
 	{
-		Level wireLoggerLevel;
-		if(enableWireLogger.get())
-			wireLoggerLevel = Level.ALL;
-		else
-			wireLoggerLevel = Level.WARN;
-		Configurator.setLevel(WireLogger.logger.getName(), wireLoggerLevel);
+		if(CONFIG_SPEC.reloadIfMatched(ev, Type.COMMON))
+		{
+			Level wireLoggerLevel;
+			if(enableWireLogger.get())
+				wireLoggerLevel = Level.ALL;
+			else
+				wireLoggerLevel = Level.WARN;
+			Configurator.setLevel(WireLogger.logger.getName(), wireLoggerLevel);
+		}
 	}
 }

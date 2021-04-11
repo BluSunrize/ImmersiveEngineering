@@ -52,6 +52,7 @@ public class TileTags extends ForgeRegistryTagsProvider<TileEntityType<?>>
 	protected void registerTags()
 	{
 		// Some tiles needs to config to be available in the constructor, so just load the default values
+		IEServerConfig.CONFIG_SPEC.refreshCached();
 		IEServerConfig.refresh();
 		for(RegistryObject<TileEntityType<?>> type : IETileTypes.REGISTER.getEntries())
 		{
