@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.wooden.SorterTileEntity;
 import blusunrize.immersiveengineering.common.gui.SorterContainer;
@@ -59,9 +60,8 @@ public class SorterScreen extends IEContainerScreen<SorterContainer>
 					int type = ((ButtonSorter)button).type;
 					String[] split = I18n.format(Lib.DESC_INFO+"filter."+(type==0?"oreDict": type==1?"nbt": "fuzzy")).split("<br>");
 					for(int i = 0; i < split.length; i++)
-						tooltip.add(ClientUtils.applyFormat(
-								new StringTextComponent(split[i]),
-								i==0?TextFormatting.WHITE: TextFormatting.GRAY
+						tooltip.add(TextUtils.applyFormat(
+								new StringTextComponent(split[i]), i==0?TextFormatting.WHITE: TextFormatting.GRAY
 						));
 					GuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
 				}

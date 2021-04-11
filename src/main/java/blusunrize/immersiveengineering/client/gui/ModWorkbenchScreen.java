@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.client.ClientUtils;
@@ -67,7 +68,7 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 					if(isPointInRegion(s.xPos, s.yPos, 16, 16, mx, my))
 					{
 						List<ITextComponent> tooltip = new ArrayList<>();
-						tooltip.add(ClientUtils.applyFormat(
+						tooltip.add(TextUtils.applyFormat(
 								recipe.output.getDisplayName().deepCopy(),
 								recipe.output.getRarity().color
 						));
@@ -89,7 +90,7 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 								inputs.add(toAdd.copy());
 						}
 						for(ItemStack ss : inputs)
-							tooltip.add(ClientUtils.applyFormat(
+							tooltip.add(TextUtils.applyFormat(
 									new StringTextComponent(ss.getCount()+"x ").appendSibling(ss.getDisplayName()),
 									TextFormatting.GRAY
 							));

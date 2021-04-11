@@ -55,7 +55,6 @@ public class PotionFluid extends Fluid
 	{
 		setRegistryName(ImmersiveEngineering.MODID, "potion");
 		IEContent.registeredIEFluids.add(this);
-		IEContent.registeredIEItems.add(bucket);
 	}
 
 	public static FluidStack getFluidStackForType(Potion type, int amount)

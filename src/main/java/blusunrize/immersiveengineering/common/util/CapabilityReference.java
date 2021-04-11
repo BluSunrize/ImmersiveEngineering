@@ -32,18 +32,6 @@ public abstract class CapabilityReference<T>
 		return new TECapReference<>(local::getWorld, pos, cap);
 	}
 
-	@Deprecated
-	// Only exists since some addons (IP) use CapRef despite it not being API…
-	public static <T> CapabilityReference<T> forTileEntity(
-			TileEntity local, Supplier<blusunrize.immersiveengineering.api.DirectionalBlockPos> pos, Capability<T> cap
-	)
-	{
-		return forTileEntityAt(local, () -> {
-			blusunrize.immersiveengineering.api.DirectionalBlockPos posOld = pos.get();
-			return new DirectionalBlockPos(posOld.toImmutable(), posOld.direction);
-		}, cap);
-	}
-
 	public static <T> CapabilityReference<T> forRelative(TileEntity local, Capability<T> cap, Vector3i offset, Direction side)
 	{
 		return forTileEntityAt(local, () -> new DirectionalBlockPos(local.getPos().add(offset), side.getOpposite()), cap);

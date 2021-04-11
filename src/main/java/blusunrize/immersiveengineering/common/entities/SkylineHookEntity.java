@@ -10,8 +10,9 @@ package blusunrize.immersiveengineering.common.entities;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.CapabilitySkyhookData.SkyhookUserData;
+import blusunrize.immersiveengineering.api.utils.PlayerUtils;
 import blusunrize.immersiveengineering.api.wires.*;
+import blusunrize.immersiveengineering.common.entities.CapabilitySkyhookData.SkyhookUserData;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.network.MessageSkyhookSync;
 import blusunrize.immersiveengineering.common.util.SkylineHelper;
@@ -46,7 +47,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
-import static blusunrize.immersiveengineering.api.CapabilitySkyhookData.SKYHOOK_USER_DATA;
+import static blusunrize.immersiveengineering.common.entities.CapabilitySkyhookData.SKYHOOK_USER_DATA;
 
 public class SkylineHookEntity extends Entity
 {
@@ -113,7 +114,6 @@ public class SkylineHookEntity extends Entity
 		this.start = start;
 		Vector3d pos = connection.getPoint(this.linePos, start).add(Vector3d.copy(start.getPosition()));
 		this.setLocationAndAngles(pos.x, pos.y, pos.z, this.rotationYaw, this.rotationPitch);
-		this.setPosition(pos.x, pos.y, pos.z);
 		if(!connection.getCatenaryData().isVertical())
 			this.angle = Math.atan2(connection.getCatenaryData().getDeltaZ(), connection.getCatenaryData().getDeltaX());
 		ignoreCollisions.clear();
@@ -160,6 +160,7 @@ public class SkylineHookEntity extends Entity
 		//TODO figure out how to get the speed keeping on dismount working with less sync packets
 		if(this.ticksExisted%5==0&&!world.isRemote)
 			sendUpdatePacketTo(player);
+		PlayerUtils.resetFloatingState(player);
 		boolean moved = false;
 		double inLineDirection;
 		if(connection.getCatenaryData().isVertical())
@@ -261,14 +262,8 @@ public class SkylineHookEntity extends Entity
 		this.rotationYaw = (float)(Math.atan2(motion.z, motion.x)*180.0D/Math.PI)+90.0F;
 		this.rotationPitch = (float)(Math.atan2(f1, motion.y)*180.0D/Math.PI)-90.0F;
 
-		while(this.rotationPitch-this.prevRotationPitch < -180.0F)
-			this.prevRotationPitch -= 360.0F;
-		while(this.rotationPitch-this.prevRotationPitch >= 180.0F)
-			this.prevRotationPitch += 360.0F;
-		while(this.rotationYaw-this.prevRotationYaw < -180.0F)
-			this.prevRotationYaw -= 360.0F;
-		while(this.rotationYaw-this.prevRotationYaw >= 180.0F)
-			this.prevRotationYaw += 360.0F;
+		this.prevRotationPitch = this.rotationPitch-MathHelper.wrapDegrees(this.rotationPitch-this.prevRotationPitch);
+		this.prevRotationYaw = this.rotationYaw-MathHelper.wrapDegrees(this.rotationYaw-this.prevRotationYaw);
 
 		this.rotationPitch = this.prevRotationPitch+(this.rotationPitch-this.prevRotationPitch)*0.2F;
 		this.rotationYaw = this.prevRotationYaw+(this.rotationYaw-this.prevRotationYaw)*0.2F;
@@ -319,7 +314,7 @@ public class SkylineHookEntity extends Entity
 		if(possible!=null)
 		{
 			Vector3d look = player.getLookVec();
-			line = possible.stream().filter(c -> !c.equals(connection))
+			line = possible.stream().filter(c -> !c.equals(connection)&&!c.isInternal())
 					.max(Comparator.comparingDouble(c -> {
 						c.generateCatenaryData(world);
 						double factor;

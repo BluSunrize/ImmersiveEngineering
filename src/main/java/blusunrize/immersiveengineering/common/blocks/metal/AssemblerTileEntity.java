@@ -9,9 +9,9 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
-import blusunrize.immersiveengineering.api.tool.AssemblerHandler;
-import blusunrize.immersiveengineering.api.tool.AssemblerHandler.RecipeQuery;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttachable;
+import blusunrize.immersiveengineering.api.tool.assembler.AssemblerHandler;
+import blusunrize.immersiveengineering.api.tool.assembler.RecipeQuery;
 import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
@@ -190,7 +190,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 				int consumed = IEServerConfig.MACHINES.assembler_consumption.get();
 
 				AssemblerHandler.IRecipeAdapter adapter = AssemblerHandler.findAdapter(pattern.recipe);
-				AssemblerHandler.RecipeQuery[] queries = adapter.getQueriedInputs(pattern.recipe, pattern.inv, world);
+				RecipeQuery[] queries = adapter.getQueriedInputs(pattern.recipe, pattern.inv, world);
 				if(queries==null)
 					continue;
 				if(this.energyStorage.extractEnergy(consumed, true)==consumed&&
@@ -288,10 +288,10 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 		}
 		for(int i = 0; i < queries.length; i++)
 		{
-			AssemblerHandler.RecipeQuery recipeQuery = queries[i];
+			RecipeQuery recipeQuery = queries[i];
 			if(recipeQuery!=null)
 			{
-				int querySize = recipeQuery.querySize;
+				int querySize = recipeQuery.getItemCount();
 				if(recipeQuery.isFluid())
 				{
 					boolean hasFluid = false;

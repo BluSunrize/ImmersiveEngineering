@@ -29,9 +29,6 @@ public class OneProbeCompatModule extends IECompatModule implements Function<ITh
 	}
 
 	@Override
-	public void registerRecipes() { }
-
-	@Override
 	public void init() { }
 
 	@Override

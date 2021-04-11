@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.client.gui;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonBoolean;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonState;
@@ -88,7 +89,7 @@ public class RedstoneConnectorScreen extends ClientTileScreen<ConnectorRedstoneT
 		if(buttonInOut.isHovered())
 		{
 			tooltip.add(new TranslationTextComponent(Lib.GUI_CONFIG+"redstone_iomode"));
-			tooltip.add(ClientUtils.applyFormat(
+			tooltip.add(TextUtils.applyFormat(
 					buttonInOut.getState().getTextComponent(),
 					TextFormatting.GRAY
 			));
@@ -98,7 +99,7 @@ public class RedstoneConnectorScreen extends ClientTileScreen<ConnectorRedstoneT
 			if(colorButtons[i].isHovered())
 			{
 				tooltip.add(new TranslationTextComponent(Lib.GUI_CONFIG+"redstone_color"));
-				tooltip.add(ClientUtils.applyFormat(
+				tooltip.add(TextUtils.applyFormat(
 						new TranslationTextComponent("color.minecraft."+DyeColor.byId(i).getTranslationKey()),
 						TextFormatting.GRAY
 				));

@@ -10,11 +10,11 @@ package blusunrize.immersiveengineering.client.manual;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.utils.IngredientUtils;
-import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.network.MessageShaderManual;
 import blusunrize.immersiveengineering.common.network.MessageShaderManual.MessageType;
 import blusunrize.lib.manual.ManualInstance;
@@ -29,10 +29,8 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.IFormattableTextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.IReorderingProcessor;
+import net.minecraft.util.text.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -108,9 +106,9 @@ public class ShaderManualElement extends SpecialManualElements
 		else
 			exampleItems = null;
 
-		this.name = ClientUtils.applyFormat(shaderItem.getDisplayName(), TextFormatting.BOLD);
+		this.name = TextUtils.applyFormat(shaderItem.getDisplayName(), TextFormatting.BOLD);
 		IFormattableTextComponent textAssembly = new StringTextComponent("");
-		textAssembly.appendSibling(ClientUtils.applyFormat(new TranslationTextComponent("desc.immersiveengineering.info.shader.level"), TextFormatting.BOLD));
+		textAssembly.appendSibling(TextUtils.applyFormat(new TranslationTextComponent("desc.immersiveengineering.info.shader.level"), TextFormatting.BOLD));
 		textAssembly.appendSibling(new TranslationTextComponent("desc.immersiveengineering.info.shader.rarity."+shader.rarity.name().toLowerCase(Locale.US)));
 		if(unlocked)
 		{
@@ -120,15 +118,15 @@ public class ShaderManualElement extends SpecialManualElements
 
 			if(set!=null)
 				textAssembly.appendString("\n")
-						.appendSibling(ClientUtils.applyFormat(new TranslationTextComponent("desc.immersiveengineering.info.shader.set"), TextFormatting.BOLD))
+						.appendSibling(TextUtils.applyFormat(new TranslationTextComponent("desc.immersiveengineering.info.shader.set"), TextFormatting.BOLD))
 						.appendString(" "+set);
 			if(reference!=null)
 				textAssembly.appendString("\n")
-						.appendSibling(ClientUtils.applyFormat(new TranslationTextComponent("desc.immersiveengineering.info.shader.reference"), TextFormatting.BOLD))
+						.appendSibling(TextUtils.applyFormat(new TranslationTextComponent("desc.immersiveengineering.info.shader.reference"), TextFormatting.BOLD))
 						.appendString("\n"+reference);
 			if(details!=null)
 				textAssembly.appendString("\n")
-						.appendSibling(ClientUtils.applyFormat(new TranslationTextComponent("desc.immersiveengineering.info.shader.details"), TextFormatting.BOLD))
+						.appendSibling(TextUtils.applyFormat(new TranslationTextComponent("desc.immersiveengineering.info.shader.details"), TextFormatting.BOLD))
 						.appendString("\n"+details);
 
 			String cost = Integer.toString(replicationCost.getCount());
@@ -167,26 +165,37 @@ public class ShaderManualElement extends SpecialManualElements
 		RenderHelper.enableStandardItemLighting();
 		float scale = 2;
 		transform.push();
+		transform.translate(x, y, 0);
 		transform.scale(scale, scale, scale);
 		boolean examples = exampleItems!=null&&exampleItems.length > 0;
 
-		ManualUtils.renderItemStack(transform, shaderItem, (int)((x+10+(examples?0: 34))/scale), (int)((y-8)/scale), false);
+		ManualUtils.renderItemStack(transform, shaderItem, (int)((10+(examples?0: 34))/scale), (int)((-8)/scale), false);
 		if(examples&&example >= 0&&example < exampleItems.length)
-			ManualUtils.renderItemStack(transform, exampleItems[example], (int)((x+63)/scale), (int)((y-8)/scale), false);
+			ManualUtils.renderItemStack(transform, exampleItems[example], (int)((63)/scale), (int)((-8)/scale), false);
 
 		transform.scale(1/scale, 1/scale, 1/scale);
 		if(unlocked)
-			ManualUtils.renderItemStack(transform, replicationCost.getRandomizedExampleStack(mc().player.ticksExisted), x+102, y+118, false);
+			ManualUtils.renderItemStack(transform, replicationCost.getRandomizedExampleStack(mc().player.ticksExisted), 102, 118, false);
 
 		RenderHelper.disableStandardItemLighting();
 
 		int w = manual.fontRenderer().getStringWidth(this.name.getString());
-		manual.fontRenderer().func_238418_a_(this.name, x + 60 - w/2, y+24, 120, manual.getTextColour());
+		drawWrappedWithTransform(transform, this.name, 60-w/2, 24);
 		if(this.text!=null&&!this.text.getString().isEmpty())
-			manual.fontRenderer().func_238418_a_(this.text, x, y+38, 120, manual.getTextColour());
+			drawWrappedWithTransform(transform, this.text, 0, 38);
 
 		transform.pop();
+	}
 
+	private void drawWrappedWithTransform(
+			MatrixStack transform, ITextProperties text, int x, int y
+	)
+	{
+		for(IReorderingProcessor line : manual.fontRenderer().trimStringToWidth(text, 120))
+		{
+			manual.fontRenderer().func_238422_b_(transform, line, (float)x, (float)y, manual.getTextColour());
+			y += manual.fontRenderer().FONT_HEIGHT;
+		}
 	}
 
 	@Override

@@ -47,7 +47,7 @@ public class UnionMultiblock implements IMultiblock
 	}
 
 	@Override
-	public boolean isBlockTrigger(BlockState state, Direction d)
+	public boolean isBlockTrigger(BlockState state, Direction side, @Nullable World world)
 	{
 		return false;
 	}
@@ -78,7 +78,7 @@ public class UnionMultiblock implements IMultiblock
 			{
 				boolean added = false;
 				for(ItemStack ex : ret)
-					if(ex.equals(stack))
+					if(ItemStack.areItemsEqual(ex, stack))
 					{
 						ex.grow(stack.getCount());
 						added = true;

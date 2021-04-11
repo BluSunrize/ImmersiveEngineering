@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
@@ -25,6 +26,7 @@ import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.Connection.RenderData;
 import blusunrize.immersiveengineering.api.wires.IWireCoil;
 import blusunrize.immersiveengineering.api.wires.WireType;
+import blusunrize.immersiveengineering.api.wires.utils.WireLink;
 import blusunrize.immersiveengineering.api.wires.utils.WirecoilUtils;
 import blusunrize.immersiveengineering.client.fx.FractalParticle;
 import blusunrize.immersiveengineering.client.gui.BlastFurnaceScreen;
@@ -218,7 +220,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		{
 			ItemStack shader = wrapper.getShaderItem();
 			if(!shader.isEmpty())
-				event.getToolTip().add(ClientUtils.applyFormat(
+				event.getToolTip().add(TextUtils.applyFormat(
 						shader.getDisplayName(),
 						TextFormatting.DARK_GRAY
 				));
@@ -227,7 +229,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		{
 			ItemStack earmuffs = ItemNBTHelper.getItemStack(event.getItemStack(), Lib.NBT_Earmuffs);
 			if(!earmuffs.isEmpty())
-				event.getToolTip().add(ClientUtils.applyFormat(
+				event.getToolTip().add(TextUtils.applyFormat(
 						earmuffs.getDisplayName(),
 						TextFormatting.GRAY
 				));
@@ -237,11 +239,11 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			ItemStack powerpack = ItemNBTHelper.getItemStack(event.getItemStack(), Lib.NBT_Powerpack);
 			if(!powerpack.isEmpty())
 			{
-				event.getToolTip().add(ClientUtils.applyFormat(
+				event.getToolTip().add(TextUtils.applyFormat(
 						powerpack.getDisplayName(),
 						TextFormatting.GRAY
 				));
-				event.getToolTip().add(ClientUtils.applyFormat(
+				event.getToolTip().add(TextUtils.applyFormat(
 						new StringTextComponent(EnergyHelper.getEnergyStored(powerpack)+"/"+EnergyHelper.getMaxEnergyStored(powerpack)+" IF"),
 						TextFormatting.GRAY
 				));
@@ -250,7 +252,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		if(ClientUtils.mc().currentScreen!=null
 				&&ClientUtils.mc().currentScreen instanceof BlastFurnaceScreen
 				&&BlastFurnaceFuel.isValidBlastFuel(event.getItemStack()))
-			event.getToolTip().add(ClientUtils.applyFormat(
+			event.getToolTip().add(TextUtils.applyFormat(
 					new TranslationTextComponent("desc.immersiveengineering.info.blastFuelTime", BlastFurnaceFuel.getBlastFuelTime(event.getItemStack())),
 					TextFormatting.GRAY
 			));
@@ -258,7 +260,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		if(IEClientConfig.tagTooltips.get()&&event.getFlags().isAdvanced())
 		{
 			for(ResourceLocation oid : ItemTags.getCollection().getOwningTags(event.getItemStack().getItem()))
-				event.getToolTip().add(ClientUtils.applyFormat(
+				event.getToolTip().add(TextUtils.applyFormat(
 						new StringTextComponent(oid.toString()),
 						TextFormatting.GRAY
 				));
@@ -519,7 +521,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 					{
 						if(WirecoilUtils.hasWireLink(equipped))
 						{
-							WirecoilUtils.WireLink link = WirecoilUtils.WireLink.readFromItem(equipped);
+							WireLink link = WireLink.readFromItem(equipped);
 							BlockPos pos = link.cp.getPosition();
 							String s = I18n.format(Lib.DESC_INFO+"attachedTo", pos.getX(), pos.getY(), pos.getZ());
 							int col = WireType.ELECTRUM.getColour(null);
@@ -529,7 +531,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 								RayTraceResult rtr = ClientUtils.mc().objectMouseOver;
 								double d;
 								if(rtr instanceof BlockRayTraceResult)
-									d = ((BlockRayTraceResult)rtr).getPos().distanceSq(pos.getX(), pos.getY(), pos.getZ(), true);
+									d = ((BlockRayTraceResult)rtr).getPos().distanceSq(pos.getX(), pos.getY(), pos.getZ(), false);
 								else
 									d = player.getDistanceSq(pos.getX(), pos.getY(), pos.getZ());
 								int max = ((IWireCoil)equipped.getItem()).getWireType(equipped).getMaxLength();
@@ -551,29 +553,17 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						);
 					}
 					else if(equipped.getItem() instanceof RevolverItem||equipped.getItem() instanceof SpeedloaderItem)
-					{
 						ItemOverlayUtils.renderRevolverOverlay(buffer, transform, scaledWidth, scaledHeight, player, hand, equipped);
-					}
 					else if(equipped.getItem() instanceof RailgunItem)
-					{
 						ItemOverlayUtils.renderRailgunOverlay(buffer, transform, scaledWidth, scaledHeight, player, hand, equipped);
-					}
 					else if(equipped.getItem() instanceof DrillItem)
-					{
 						ItemOverlayUtils.renderDrillOverlay(buffer, transform, scaledWidth, scaledHeight, player, hand, equipped);
-					}
 					else if(equipped.getItem() instanceof BuzzsawItem)
-					{
 						ItemOverlayUtils.renderBuzzsawOverlay(buffer, transform, scaledWidth, scaledHeight, player, hand, equipped);
-					}
 					else if(equipped.getItem() instanceof ChemthrowerItem)
-					{
 						ItemOverlayUtils.renderChemthrowerOverlay(buffer, transform, scaledWidth, scaledHeight, player, hand, equipped);
-					}
 					else if(equipped.getItem() instanceof IEShieldItem)
-					{
 						ItemOverlayUtils.renderShieldOverlay(buffer, transform, scaledWidth, scaledHeight, player, hand, equipped);
-					}
 					if(equipped.getItem()==Tools.voltmeter)
 					{
 						RayTraceResult rrt = ClientUtils.mc().objectMouseOver;
@@ -774,7 +764,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			TileEntity tile = player.world.getTileEntity(rtr.getPos());
 			ItemStack stack = player instanceof LivingEntity?((LivingEntity)player).getHeldItem(Hand.MAIN_HAND): ItemStack.EMPTY;
 
-			if(Utils.isHammer(stack)&&tile instanceof TurntableTileEntity)
+			if(tile instanceof TurntableTileEntity&&Utils.isHammer(stack))
 			{
 				TurntableTileEntity turntableTile = ((TurntableTileEntity)tile);
 				Direction side = rtr.getFace();

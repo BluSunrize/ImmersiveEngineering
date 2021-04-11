@@ -9,8 +9,11 @@
 
 package blusunrize.immersiveengineering.common.config;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import com.google.common.collect.ImmutableList;
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.fml.config.ModConfig.ModConfigEvent;
+import net.minecraftforge.fml.config.ModConfig.Type;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -34,6 +37,16 @@ public class CachedConfig
 	public void refreshCached()
 	{
 		value.forEach(ConfigValue::refresh);
+	}
+
+	public boolean reloadIfMatched(ModConfigEvent ev, Type configType)
+	{
+		if(ev.getConfig().getModId().equals(ImmersiveEngineering.MODID)&&ev.getConfig().getType()==configType)
+		{
+			refreshCached();
+			return true;
+		}
+		return false;
 	}
 
 	public ForgeConfigSpec getBaseSpec()
@@ -146,6 +159,12 @@ public class CachedConfig
 			return this;
 		}
 
+		public Builder pop(int count)
+		{
+			inner.pop(count);
+			return this;
+		}
+
 		public <T> ConfigValue<T> define(String name, T defValue)
 		{
 			return new ConfigValue<>(this, inner.define(name, defValue));
@@ -174,6 +193,12 @@ public class CachedConfig
 		public CachedConfig build()
 		{
 			return new CachedConfig(values, inner.build());
+		}
+
+		public Builder push(ImmutableList<String> of)
+		{
+			inner.push(of);
+			return this;
 		}
 	}
 }

@@ -24,14 +24,14 @@ jobs:
         with:
           java-version: 1.8
       - name: Compile IE
-        run: ./gradlew compileJava
+        run: ./gradlew --max-workers 1 compileJava
       - name: Run unit tests
-        run: ./gradlew test
+        run: ./gradlew --max-workers 1 test
       - name: Create list of existing generated resources
         run: find src/generated/resources/ ! -path "**/.cache*" > resources.txt
       - name: Run data generation
         # Hide the non-zero return code from gradle. runData always returns !=0 (to stop gradle from "caching" it?)
-        run: ./gradlew runData || true
+        run: ./gradlew --max-workers 1 runData || true
       - name: Check for crashes during data generation
         run: bash -c "[ -f run/ie_data_gen_done ]"
       - name: Check that no files have changed

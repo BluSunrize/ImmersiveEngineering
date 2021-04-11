@@ -10,21 +10,26 @@
 package blusunrize.immersiveengineering.common.config;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.common.config.CachedConfig.BooleanValue;
+import blusunrize.immersiveengineering.common.config.CachedConfig.ConfigValue;
+import blusunrize.immersiveengineering.common.config.CachedConfig.DoubleValue;
+import blusunrize.immersiveengineering.common.config.CachedConfig.IntValue;
 import blusunrize.immersiveengineering.common.wires.IEWireTypes.IEWireType;
 import com.google.common.collect.ImmutableList;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
-import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
-import net.minecraftforge.common.ForgeConfigSpec.DoubleValue;
-import net.minecraftforge.common.ForgeConfigSpec.IntValue;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.config.ModConfig.ModConfigEvent;
+import net.minecraftforge.fml.config.ModConfig.Type;
 
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+@EventBusSubscriber(value = Dist.CLIENT, modid = Lib.MODID, bus = Bus.MOD)
 public class IEClientConfig
 {
 	public final static BooleanValue showUpdateNews;
@@ -42,9 +47,9 @@ public class IEClientConfig
 	public final static DoubleValue increasedTileRenderdistance;
 	public final static Map<IEWireType, IntValue> wireColors = new EnumMap<>(IEWireType.class);
 
-	public static final ForgeConfigSpec CONFIG_SPEC;
+	public static final CachedConfig CONFIG_SPEC;
 
-	private static void addColor(ForgeConfigSpec.Builder builder, IEWireType type, int defaultColor)
+	private static void addColor(CachedConfig.Builder builder, IEWireType type, int defaultColor)
 	{
 		wireColors.put(type, builder.defineInRange(type.name().toLowerCase(Locale.ENGLISH), defaultColor,
 				Integer.MIN_VALUE, Integer.MAX_VALUE));
@@ -52,7 +57,7 @@ public class IEClientConfig
 
 	static
 	{
-		ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
+		CachedConfig.Builder builder = new CachedConfig.Builder();
 		disableFancyTESR = builder
 				.comment("Disables most lighting code for certain models that are rendered dynamically (TESR). May improve FPS.",
 						"Affects turrets and garden cloches")
@@ -108,7 +113,7 @@ public class IEClientConfig
 	@SubscribeEvent
 	public static void onConfigChange(ModConfigEvent ev)
 	{
-		if(lastBadEyesight!=badEyesight.get())
+		if(CONFIG_SPEC.reloadIfMatched(ev, Type.CLIENT)&&lastBadEyesight!=badEyesight.get())
 		{
 			lastBadEyesight = badEyesight.get();
 			ImmersiveEngineering.proxy.resetManual();

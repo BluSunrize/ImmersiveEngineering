@@ -9,30 +9,33 @@
 package blusunrize.immersiveengineering.common;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.CapabilitySkyhookData;
-import blusunrize.immersiveengineering.api.IEApi;
-import blusunrize.immersiveengineering.api.IETags;
-import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.*;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
+import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
+import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
+import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
-import blusunrize.immersiveengineering.api.tool.AssemblerHandler;
-import blusunrize.immersiveengineering.api.tool.AssemblerHandler.RecipeQuery;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
+import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
+import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ItemAgeAccessor;
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler;
-import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler.DefaultFurnaceAdapter;
-import blusunrize.immersiveengineering.api.wires.NetHandlerCapability;
+import blusunrize.immersiveengineering.api.tool.assembler.AssemblerHandler;
+import blusunrize.immersiveengineering.api.tool.assembler.FluidTagRecipeQuery;
+import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
+import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler;
 import blusunrize.immersiveengineering.api.wires.localhandlers.LocalNetworkHandler;
 import blusunrize.immersiveengineering.api.wires.localhandlers.WireDamageHandler;
 import blusunrize.immersiveengineering.api.wires.redstone.CapabilityRedstoneNetwork;
 import blusunrize.immersiveengineering.api.wires.redstone.RedstoneNetworkHandler;
+import blusunrize.immersiveengineering.api.wires.utils.WirecoilUtils;
 import blusunrize.immersiveengineering.client.utils.ClocheRenderFunctions;
 import blusunrize.immersiveengineering.common.blocks.*;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
@@ -44,13 +47,17 @@ import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.CoverType;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.StaticTemplateManager;
 import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
 import blusunrize.immersiveengineering.common.blocks.plant.PottedHempBlock;
 import blusunrize.immersiveengineering.common.blocks.stone.PartialConcreteBlock;
 import blusunrize.immersiveengineering.common.blocks.stone.StoneMultiBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.BarrelBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
+import blusunrize.immersiveengineering.common.config.IECommonConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.crafting.DefaultAssemblerAdapter;
+import blusunrize.immersiveengineering.common.crafting.IngredientWithSizeSerializer;
 import blusunrize.immersiveengineering.common.crafting.fluidaware.IngredientFluidStack;
 import blusunrize.immersiveengineering.common.entities.*;
 import blusunrize.immersiveengineering.common.items.*;
@@ -59,24 +66,28 @@ import blusunrize.immersiveengineering.common.items.IEItems.Molds;
 import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import blusunrize.immersiveengineering.common.items.IEItems.Weapons;
 import blusunrize.immersiveengineering.common.items.ToolUpgradeItem.ToolUpgrade;
-import blusunrize.immersiveengineering.common.util.IELogger;
-import blusunrize.immersiveengineering.common.util.IEPotions;
-import blusunrize.immersiveengineering.common.util.IEShaders;
+import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.fluids.ConcreteFluid;
 import blusunrize.immersiveengineering.common.util.fluids.IEFluid;
 import blusunrize.immersiveengineering.common.util.fluids.PotionFluid;
 import blusunrize.immersiveengineering.common.util.loot.IELootFunctions;
+import blusunrize.immersiveengineering.common.wires.CapabilityInit;
 import blusunrize.immersiveengineering.common.wires.IEWireTypes;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import blusunrize.immersiveengineering.common.world.OreRetrogenFeature;
+import blusunrize.immersiveengineering.mixin.accessors.ConcretePowderBlockAccess;
+import blusunrize.immersiveengineering.mixin.accessors.ItemEntityAccess;
+import blusunrize.immersiveengineering.mixin.accessors.TemplateAccess;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.EquipmentSlotType.Group;
 import net.minecraft.item.*;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.potion.Effect;
@@ -85,7 +96,11 @@ import net.minecraft.tileentity.BannerPattern;
 import net.minecraft.tileentity.FurnaceTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
@@ -99,10 +114,12 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.function.Supplier;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
+import static blusunrize.immersiveengineering.api.tool.assembler.AssemblerHandler.defaultAdapter;
 import static blusunrize.immersiveengineering.common.util.fluids.IEFluid.createBuilder;
 
 @Mod.EventBusSubscriber(modid = MODID, bus = Bus.MOD)
@@ -130,7 +147,7 @@ public class IEContent
 		/*WIRES*/
 		IEWireTypes.modConstruction();
 		/*CONVEYORS*/
-		ConveyorHandler.registerMagnetSupression((entity, iConveyorTile) -> {
+		ConveyorHandler.registerMagnetSuppression((entity, iConveyorTile) -> {
 			CompoundNBT data = entity.getPersistentData();
 			if(!data.getBoolean(Lib.MAGNET_PREVENT_NBT))
 				data.putBoolean(Lib.MAGNET_PREVENT_NBT, true);
@@ -619,7 +636,7 @@ public class IEContent
 		IEItems.Misc.iconDrillbreak = new FakeIconItem("drillbreak");
 		IEItems.Misc.iconRavenholm = new FakeIconItem("ravenholm");
 
-		ConveyorHandler.createConveyorBlocks();
+		createConveyorBlocks();
 		BulletHandler.emptyCasing = new ItemStack(Ingredients.emptyCasing);
 		BulletHandler.emptyShell = new ItemStack(Ingredients.emptyShell);
 		IEWireTypes.setup();
@@ -627,11 +644,21 @@ public class IEContent
 
 		ClocheRenderFunctions.init();
 
-		IELootFunctions.preInit();
+		DeferredWorkQueue.runLater(IELootFunctions::register);
 		IEShaders.commonConstruction();
 		IEMultiblocks.init();
 		BlueprintCraftingRecipe.registerDefaultCategories();
 		IETileTypes.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
+		populateAPI();
+	}
+
+	public static void createConveyorBlocks()
+	{
+		for(ResourceLocation rl : ConveyorHandler.classRegistry.keySet())
+		{
+			Block b = new ConveyorBlock(rl);
+			ConveyorHandler.conveyorBlocks.put(rl, b);
+		}
 	}
 
 	@SubscribeEvent
@@ -722,7 +749,7 @@ public class IEContent
 	@SubscribeEvent
 	public static void registerTEs(RegistryEvent.Register<TileEntityType<?>> event)
 	{
-		ConveyorHandler.registerConveyorTEs(event);
+		ConveyorBeltTileEntity.registerConveyorTEs(event);
 	}
 
 	public static void init()
@@ -741,7 +768,7 @@ public class IEContent
 		);
 
 		CapabilityShader.register();
-		NetHandlerCapability.register();
+		CapabilityInit.register();
 		CapabilitySkyhookData.register();
 		CapabilityRedstoneNetwork.register();
 		ShaderRegistry.itemShader = IEItems.Misc.shader;
@@ -757,8 +784,9 @@ public class IEContent
 		AssemblerHandler.registerSpecialIngredientConverter((o) ->
 		{
 			if(o instanceof IngredientFluidStack)
-				return new RecipeQuery(((IngredientFluidStack)o).getFluidTagInput(), ((IngredientFluidStack)o).getFluidTagInput().getAmount());
-			else return null;
+				return new FluidTagRecipeQuery(((IngredientFluidStack)o).getFluidTagInput());
+			else
+				return null;
 		});
 
 		DieselHandler.registerFuel(IETags.fluidBiodiesel, 250);
@@ -833,5 +861,59 @@ public class IEContent
 		patternItem.setRegistryName(ImmersiveEngineering.MODID, "bannerpattern_"+name);
 		IEContent.registeredIEItems.add(patternItem);
 		return patternItem;
+	}
+
+	public static void populateAPI()
+	{
+		SetRestrictedField.startInitializing(false);
+		ApiUtils.disableTicking.setValue(EventHandler.REMOVE_FROM_TICKING::add);
+		IngredientWithSize.SERIALIZER.setValue(IngredientWithSizeSerializer.INSTANCE);
+		BlueprintCraftingRecipe.blueprintItem.setValue(IEItems.Misc.blueprint);
+		ExcavatorHandler.setSetDirtyCallback(IESaveData::setDirty);
+		TemplateMultiblock.setCallbacks(
+				bs -> Utils.getPickBlock(
+						bs, new BlockRayTraceResult(Vector3d.ZERO, Direction.DOWN, BlockPos.ZERO, false),
+						ImmersiveEngineering.proxy.getClientPlayer()
+				),
+				(loc, server) -> {
+					try
+					{
+						return StaticTemplateManager.loadStaticTemplate(loc, server);
+					} catch(IOException e)
+					{
+						throw new RuntimeException(e);
+					}
+				},
+				template -> ((TemplateAccess)template).getBlocks()
+		);
+		defaultAdapter = new DefaultAssemblerAdapter();
+		WirecoilUtils.COIL_USE.setValue(WireCoilItem::doCoilUse);
+		AssemblerHandler.registerRecipeAdapter(IRecipe.class, defaultAdapter);
+		BulletHandler.GET_BULLET_ITEM.setValue(Weapons.bullets::get);
+		ChemthrowerHandler.SOLIDIFY_CONCRETE_POWDER.setValue(
+				(world, pos) -> {
+					Block b = world.getBlockState(pos).getBlock();
+					if(b instanceof ConcretePowderBlock)
+						world.setBlockState(pos, ((ConcretePowderBlockAccess)b).getSolidifiedState(), 3);
+				}
+		);
+		WireDamageHandler.GET_WIRE_DAMAGE.setValue(IEDamageSources::causeWireDamage);
+		GlobalWireNetwork.SANITIZE_CONNECTIONS.setValue(IEServerConfig.WIRES.sanitizeConnections::get);
+		GlobalWireNetwork.VALIDATE_CONNECTIONS.setValue(IECommonConfig.validateNet::get);
+		ConveyorHandler.ITEM_AGE_ACCESS.setValue(new ItemAgeAccessor()
+		{
+			@Override
+			public int getAgeNonsided(ItemEntity entity)
+			{
+				return ((ItemEntityAccess)entity).getAgeNonsided();
+			}
+
+			@Override
+			public void setAge(ItemEntity entity, int newAge)
+			{
+				((ItemEntityAccess)entity).setAge(newAge);
+			}
+		});
+		SetRestrictedField.lock(false);
 	}
 }

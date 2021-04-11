@@ -39,7 +39,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class ConveyorBlock extends IETileProviderBlock
+public class ConveyorBlock extends IETileProviderBlock implements ConveyorHandler.IConveyorBlock
 {
 	private final ResourceLocation typeName;
 	public static final EnumProperty<Direction> FACING = IEProperties.FACING_HORIZONTAL;
@@ -102,6 +102,7 @@ public class ConveyorBlock extends IETileProviderBlock
 		return true;
 	}
 
+	@Override
 	public ResourceLocation getTypeName()
 	{
 		return typeName;

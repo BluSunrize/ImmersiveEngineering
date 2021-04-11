@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.common.entities.IEMinecartEntity;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.block.AbstractRailBlock;
@@ -86,7 +86,7 @@ public abstract class IEMinecartItem extends IEBaseItem
 		{
 			FluidStack fs = FluidStack.loadFluidStackFromNBT(ItemNBTHelper.getTagCompound(stack, "tank"));
 			if(fs!=null)
-				tooltip.add(ClientUtils.applyFormat(
+				tooltip.add(TextUtils.applyFormat(
 						new TranslationTextComponent(Lib.DESC_INFO+"fluidStored", fs.getDisplayName(), fs.getAmount()),
 						TextFormatting.GRAY
 				));

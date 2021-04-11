@@ -8,6 +8,8 @@
 
 package blusunrize.immersiveengineering.common.blocks;
 
+import blusunrize.immersiveengineering.api.EnumMetals;
+import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.common.blocks.generic.IEFenceBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.CoverType;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
@@ -23,7 +25,6 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
@@ -172,7 +173,7 @@ public final class IEBlocks
 		public static Block turretChem;
 		public static Block turretGun;
 		public static Block cloche;
-		public static final Map<ResourceLocation, Block> CONVEYORS = new HashMap<>();
+		public static final Map<ResourceLocation, Block> CONVEYORS = ConveyorHandler.conveyorBlocks;
 		public static Map<EnumMetals, Block> chutes = new EnumMap<>(EnumMetals.class);
 	}
 

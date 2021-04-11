@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonBoolean;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE;
@@ -90,7 +91,7 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerContainer>
 					tooltip.add(tile.patterns[i].inv.get(9).getDisplayName());
 					tile.patterns[i].inv.get(9).getItem().addInformation(tile.patterns[i].inv.get(9), ClientUtils.mc().world, tooltip, TooltipFlags.NORMAL);
 					for(int j = 0; j < tooltip.size(); j++)
-						ClientUtils.applyFormat(
+						TextUtils.applyFormat(
 								tooltip.get(j),
 								j==0?tile.patterns[i].inv.get(9).getRarity().color: TextFormatting.GRAY
 						);

@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.SorterScreen.ButtonSorter;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
@@ -65,7 +66,7 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 					for(int i = 0; i < split.length; i++)
 					{
 						ITextComponent component = new StringTextComponent(split[i]);
-						ClientUtils.applyFormat(
+						TextUtils.applyFormat(
 								component,
 								i==0?TextFormatting.WHITE: TextFormatting.GRAY
 						);

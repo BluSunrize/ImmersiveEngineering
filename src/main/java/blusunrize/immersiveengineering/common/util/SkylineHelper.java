@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.wires.Connection.CatenaryData;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
+import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
 import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
 import com.google.common.collect.Lists;
 import net.minecraft.block.BlockState;
@@ -43,7 +44,7 @@ import java.util.Spliterators.AbstractSpliterator;
 import java.util.function.Consumer;
 import java.util.stream.StreamSupport;
 
-import static blusunrize.immersiveengineering.api.CapabilitySkyhookData.SKYHOOK_USER_DATA;
+import static blusunrize.immersiveengineering.common.entities.CapabilitySkyhookData.SKYHOOK_USER_DATA;
 
 public class SkylineHelper
 {
@@ -63,13 +64,13 @@ public class SkylineHelper
 			Vector3d vEnd = Vector3d.copy(cpB.getPosition());
 
 			if(iicB!=null)
-				vStart = Utils.addVectors(vStart, iicB.getConnectionOffset(connection, cpB));
+				vStart = vStart.add(iicB.getConnectionOffset(connection, cpB));
 			if(iicA!=null)
-				vEnd = Utils.addVectors(vEnd, iicA.getConnectionOffset(connection, cpA));
+				vEnd = vEnd.add(iicA.getConnectionOffset(connection, cpA));
 
 			Vector3d pos = player.getEyePosition(0);
 			Vector3d across = new Vector3d(vEnd.x-vStart.x, vEnd.y-vStart.y, vEnd.z-vStart.z);
-			double linePos = Utils.getCoeffForMinDistance(pos, vStart, across);
+			double linePos = WireUtils.getCoeffForMinDistance(pos, vStart, across);
 			connection.generateCatenaryData(player.world);
 			CatenaryData catData = connection.getCatenaryData();
 

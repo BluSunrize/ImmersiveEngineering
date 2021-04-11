@@ -22,7 +22,7 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxC
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.state.EnumProperty;
+import net.minecraft.state.Property;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -53,7 +53,7 @@ public class DynamoTileEntity extends IEBaseTileEntity implements IIEInternalFlu
 	}
 
 	@Override
-	public EnumProperty<Direction> getFacingProperty()
+	public Property<Direction> getFacingProperty()
 	{
 		return IEProperties.FACING_HORIZONTAL;
 	}

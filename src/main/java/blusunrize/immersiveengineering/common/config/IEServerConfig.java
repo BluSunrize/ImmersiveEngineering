@@ -663,7 +663,7 @@ public class IEServerConfig
 	@SubscribeEvent
 	public static void onConfigReload(ModConfig.ModConfigEvent ev)
 	{
-		if(ev.getConfig().getType()==Type.SERVER&&ImmersiveEngineering.MODID.equals(ev.getConfig().getModId()))
+		if(CONFIG_SPEC.reloadIfMatched(ev, Type.SERVER))
 		{
 			rawConfig = ev.getConfig().getConfigData();
 			refresh();
@@ -672,8 +672,6 @@ public class IEServerConfig
 
 	public static void refresh()
 	{
-		CONFIG_SPEC.refreshCached();
-
 		ExternalHeaterHandler.defaultFurnaceEnergyCost = IEServerConfig.MACHINES.heater_consumption.get();
 		ExternalHeaterHandler.defaultFurnaceSpeedupCost = IEServerConfig.MACHINES.heater_speedupConsumption.get();
 		ExcavatorHandler.mineralVeinYield = IEServerConfig.MACHINES.excavator_yield.get();

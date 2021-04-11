@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.blocks;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -65,20 +65,20 @@ public class BlockItemIE extends BlockItem
 			if(ieBlock.hasFlavour())
 			{
 				String flavourKey = Lib.DESC_FLAVOUR+ieBlock.getNameForFlavour();
-				tooltip.add(ClientUtils.applyFormat(new TranslationTextComponent(flavourKey),
+				tooltip.add(TextUtils.applyFormat(new TranslationTextComponent(flavourKey),
 						TextFormatting.GRAY));
 			}
 		}
 		super.addInformation(stack, world, tooltip, advanced);
 		if(ItemNBTHelper.hasKey(stack, "energyStorage"))
-			tooltip.add(ClientUtils.applyFormat(new TranslationTextComponent(Lib.DESC_INFO+"energyStored",
+			tooltip.add(TextUtils.applyFormat(new TranslationTextComponent(Lib.DESC_INFO+"energyStored",
 							ItemNBTHelper.getInt(stack, "energyStorage")),
 					TextFormatting.GRAY));
 		if(ItemNBTHelper.hasKey(stack, "tank"))
 		{
 			FluidStack fs = FluidStack.loadFluidStackFromNBT(ItemNBTHelper.getTagCompound(stack, "tank"));
 			if(fs!=null)
-				tooltip.add(ClientUtils.applyFormat(
+				tooltip.add(TextUtils.applyFormat(
 						new TranslationTextComponent(Lib.DESC_INFO+"fluidStored", fs.getDisplayName(), fs.getAmount()),
 						TextFormatting.GRAY));
 		}

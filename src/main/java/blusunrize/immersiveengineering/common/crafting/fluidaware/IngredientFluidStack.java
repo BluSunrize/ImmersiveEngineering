@@ -42,7 +42,7 @@ public class IngredientFluidStack extends Ingredient
 
 	public IngredientFluidStack(INamedTag<Fluid> tag, int amount)
 	{
-		this(new FluidTagInput(tag, amount));
+		this(new FluidTagInput(tag, amount, null));
 	}
 
 	public FluidTagInput getFluidTagInput()
@@ -60,6 +60,7 @@ public class IngredientFluidStack extends Ingredient
 			cachedStacks = this.fluidTagInput.getMatchingFluidStacks()
 					.stream()
 					.map(FluidUtil::getFilledBucket)
+					.filter(s -> !s.isEmpty())
 					.toArray(ItemStack[]::new);
 		return this.cachedStacks;
 	}

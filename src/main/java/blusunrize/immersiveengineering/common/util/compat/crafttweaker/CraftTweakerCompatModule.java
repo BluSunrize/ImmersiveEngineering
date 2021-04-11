@@ -20,12 +20,6 @@ public class CraftTweakerCompatModule extends IECompatModule
 	}
 
 	@Override
-	public void registerRecipes()
-	{
-
-	}
-
-	@Override
 	public void init()
 	{
 

@@ -30,7 +30,7 @@ public class GeneratedListRecipe extends IESerializableRecipe
 	public static Map<ResourceLocation, RecipeListGenerator<?>> LIST_GENERATORS = new HashMap<>();
 	public static RegistryObject<IERecipeSerializer<GeneratedListRecipe>> SERIALIZER;
 
-	static
+	public static void init()
 	{
 		LIST_GENERATORS.put(rl("mixer_potion_list"), new RecipeListGenerator<>(
 				PotionRecipeGenerators::initPotionRecipes, MixerRecipe.SERIALIZER.getId(),

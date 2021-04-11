@@ -31,6 +31,11 @@ sourceSets {
     manual {
         compileClasspath = main.compileClasspath
     }
+    api {
+        compileClasspath = main.compileClasspath
+        compileClasspath += manual.output
+        runtimeClasspath += manual.output
+    }
     main {
         resources {
             srcDirs = [
@@ -38,8 +43,8 @@ sourceSets {
                     "$rootDir/src/generated/resources"
             ]
         }
-        compileClasspath += manual.output
-        runtimeClasspath += manual.output
+        compileClasspath += manual.output + api.output
+        runtimeClasspath += manual.output + api.output
     }
     datagen {
         compileClasspath += main.compileClasspath
@@ -48,8 +53,8 @@ sourceSets {
         runtimeClasspath += main.output
     }
     test {
-        compileClasspath += manual.output
-        runtimeClasspath += manual.output
+        compileClasspath += manual.output + api.output
+        runtimeClasspath += manual.output + api.output
     }
 }
 
@@ -114,6 +119,7 @@ minecraft {
                 immersiveengineering {
                     source sourceSets.main
                     source sourceSets.manual
+                    source sourceSets.api
                 }
             }
         }
@@ -135,6 +141,7 @@ minecraft {
             mods {
                 immersiveengineering {
                     source sourceSets.main
+                    source sourceSets.api
                 }
             }
         }
@@ -159,6 +166,7 @@ minecraft {
                     source sourceSets.main
                     source sourceSets.datagen
                     source sourceSets.manual
+                    source sourceSets.api
                 }
             }
         }
@@ -173,9 +181,6 @@ repositories {
     maven { // JEI & Tinkers
         name 'DVS1 Maven FS'
         url 'https://dvs1.progwml6.com/files/maven'
-    }
-    maven { // Because JEI has a ridiculous FTB dependency now
-        url 'https://maven.latmod.com/'
     }
     maven { // BlockModelSplitter
         name 'Jared maven'
@@ -198,10 +203,7 @@ repositories {
 dependencies {
     minecraft "net.minecraftforge:forge:${version_minecraft}-${version_forge}"
 
-//    runtimeOnly fg.deobf("mezz.jei:jei-1.16.3:7.6.0.49")
-    //runtimeOnly fg.deobf("nbtedit:NBTEdit:0.9.0")
-    compileOnly fg.deobf("mezz.jei:jei-1.16.3:7.6.0.49:api")
-    compileOnly fg.deobf('com.feed_the_beast.mods:ftb-gui-library:1.0.0.18')
+    compileOnly fg.deobf("mezz.jei:jei-1.16.5:7.6.1.75:api")
     compileOnly fg.deobf("org.squiddev:cc-tweaked-1.16.4:1.94.0")
     compileOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:1.16-3.+")
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.4.0:api")
@@ -287,16 +289,23 @@ task datagenJar(type: Jar, dependsOn: datagenClasses) {
     }
 }
 
+task apiJar(type: Jar, dependsOn: apiClasses) {
+    classifier = 'api'
+    from sourceSets.api.output
+}
+
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
     from sourceSets.main.allSource
     from sourceSets.manual.allSource
+    from sourceSets.api.allSource
 }
 
 artifacts {
     archives sourcesJar
     archives shadowJar
     archives datagenJar
+    archives apiJar
 }
 
 shadowJar {
@@ -305,6 +314,7 @@ shadowJar {
         include(dependency('malte0811:BlockModelSplitter:.*'))
     }
     from(sourceSets.manual.output)
+    from(sourceSets.api.output)
 }
 
 reobf {

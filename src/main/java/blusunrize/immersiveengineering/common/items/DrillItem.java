@@ -9,8 +9,8 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
-import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -123,7 +123,7 @@ public class DrillItem extends DieselToolItem
 	{
 		list.add(IEItemFluidHandler.fluidItemInfoFlavor(getFluid(stack), getCapacity(stack, CAPACITY)));
 		if(getHead(stack).isEmpty())
-			list.add(ClientUtils.applyFormat(
+			list.add(TextUtils.applyFormat(
 					new TranslationTextComponent(Lib.DESC_FLAVOUR+"drill.noHead"),
 					TextFormatting.GRAY
 			));
@@ -133,9 +133,9 @@ public class DrillItem extends DieselToolItem
 			int dmg = maxDmg-getHeadDamage(stack);
 			float quote = dmg/(float)maxDmg;
 			TextFormatting status = quote < .1?TextFormatting.RED: quote < .3?TextFormatting.GOLD: quote < .6?TextFormatting.YELLOW: TextFormatting.GREEN;
-			list.add(ClientUtils.applyFormat(new TranslationTextComponent(Lib.DESC_FLAVOUR+"drill.headDamage"), TextFormatting.GRAY)
+			list.add(TextUtils.applyFormat(new TranslationTextComponent(Lib.DESC_FLAVOUR+"drill.headDamage"), TextFormatting.GRAY)
 					.appendString(" ")
-					.appendSibling(ClientUtils.applyFormat(
+					.appendSibling(TextUtils.applyFormat(
 							new TranslationTextComponent(Lib.DESC_INFO+"percent", (int)(quote*100)),
 							status
 					)));
@@ -203,7 +203,7 @@ public class DrillItem extends DieselToolItem
 		ItemStack head = getHead(stack);
 		if(!head.isEmpty())
 			return ((IDrillHead)head.getItem()).getMiningLevel(head)+ItemNBTHelper.getInt(stack, "harvestLevel");
-		return 0;
+		return -1;
 	}
 
 	@Override

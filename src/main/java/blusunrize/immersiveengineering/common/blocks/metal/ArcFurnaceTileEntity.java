@@ -290,7 +290,7 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 	@Override
 	public VoxelShape getCollisionShape(ISelectionContext ctx)
 	{
-		return CachedShapesWithTransform.get(COLLISION_SHAPES, this);
+		return getShape(COLLISION_SHAPES);
 	}
 
 	private static List<AxisAlignedBB> getCollisionShape(BlockPos posInMultiblock)
@@ -353,7 +353,7 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 	@Override
 	public VoxelShape getSelectionShape(@Nullable ISelectionContext ctx)
 	{
-		return CachedShapesWithTransform.get(SHAPES, this);
+		return getShape(SHAPES);
 	}
 
 	private static List<AxisAlignedBB> getShape(BlockPos posInMultiblock)
