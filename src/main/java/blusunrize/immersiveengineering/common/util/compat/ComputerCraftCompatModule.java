@@ -23,11 +23,6 @@ public class ComputerCraftCompatModule extends IECompatModule
 	}
 
 	@Override
-	public void registerRecipes()
-	{
-	}
-
-	@Override
 	public void init()
 	{
 		ComputerCraftAPI.registerBundledRedstoneProvider((world, pos, direction) -> {

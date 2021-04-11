@@ -8,12 +8,12 @@
 
 package blusunrize.immersiveengineering.common.util.compat;
 
+import blusunrize.immersiveengineering.common.config.CachedConfig.BooleanValue;
 import blusunrize.immersiveengineering.common.config.IECommonConfig;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CraftTweakerCompatModule;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 import net.minecraftforge.fml.ModList;
 
 import java.util.HashMap;
@@ -54,18 +54,6 @@ public abstract class IECompatModule
 				{
 					IELogger.logger.error("Compat module for "+e.getKey()+" could not be preInitialized. Report this and include the error message below!", exception);
 				}
-	}
-
-	public static void doModulesRecipes()
-	{
-		for(IECompatModule compat : IECompatModule.modules)
-			try
-			{
-				compat.registerRecipes();
-			} catch(Exception exception)
-			{
-				IELogger.logger.error("Compat module for "+compat+" could not register recipes. Report this and include the error message below!", exception);
-			}
 	}
 
 	public static void doModulesInit()
@@ -124,8 +112,6 @@ public abstract class IECompatModule
 	}
 
 	public abstract void preInit();
-
-	public abstract void registerRecipes();
 
 	public abstract void init();
 
