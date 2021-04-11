@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.tool.LogicCircuitHandler.ILogicCircuitHandler;
 import blusunrize.immersiveengineering.api.tool.LogicCircuitHandler.LogicCircuitRegister;
 import blusunrize.immersiveengineering.api.utils.ResettableLazy;
@@ -18,12 +19,16 @@ import blusunrize.immersiveengineering.api.wires.redstone.CapabilityRedstoneNetw
 import blusunrize.immersiveengineering.api.wires.redstone.RedstoneNetworkHandler;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.blocks.metal.ConnectorBundledTileEntity;
 import blusunrize.immersiveengineering.common.items.LogicCircuitBoardItem;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
+import com.google.common.collect.Lists;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.ItemStackHelper;
@@ -35,16 +40,16 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
+import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
-import java.util.Arrays;
-import java.util.EnumMap;
-import java.util.Objects;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class LogicUnitTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInventory,
-		IInteractionObjectIE, IStateBasedDirectional, ILogicCircuitHandler
+		IInteractionObjectIE, IStateBasedDirectional, ILogicCircuitHandler, IHasObjProperty
 {
 	private final NonNullList<ItemStack> inventory = NonNullList.withSize(10, ItemStack.EMPTY);
 
@@ -79,19 +84,13 @@ public class LogicUnitTileEntity extends IEBaseTileEntity implements ITickableTi
 	@Override
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		if(!descPacket)
-		{
-			ItemStackHelper.loadAllItems(nbt, inventory);
-		}
+		ItemStackHelper.loadAllItems(nbt, inventory);
 	}
 
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		if(!descPacket)
-		{
-			ItemStackHelper.saveAllItems(nbt, inventory);
-		}
+		ItemStackHelper.saveAllItems(nbt, inventory);
 	}
 
 	@Override
@@ -221,5 +220,27 @@ public class LogicUnitTileEntity extends IEBaseTileEntity implements ITickableTi
 			this.outputs[register.ordinal()] = state;
 		else
 			this.registers[register.ordinal()-SIZE_COLORS] = state;
+	}
+
+	private final Map<String, VisibilityList> visibilityListMap = new ConcurrentHashMap<>();
+	private static VisibilityList visibilityTransparent = VisibilityList.show("tubes");
+
+	private String getVisibilityKey()
+	{
+		return this.inventory.stream().map(itemStack -> !itemStack.isEmpty()?"1": "0").reduce((s, s2) -> s+s2).orElse("");
+	}
+
+	@Override
+	public VisibilityList compileDisplayList(BlockState state)
+	{
+		if(MinecraftForgeClient.getRenderLayer()==RenderType.getTranslucent())
+			return visibilityTransparent;
+		return visibilityListMap.computeIfAbsent(getVisibilityKey(), key -> {
+			List<String> parts = Lists.newArrayList("base");
+			for(int i = 0; i < key.length(); i++)
+				if(key.charAt(i)=='1')
+					parts.add("board_"+i);
+			return VisibilityList.show(parts);
+		});
 	}
 }

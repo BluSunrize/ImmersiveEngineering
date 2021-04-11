@@ -312,20 +312,7 @@ public class BlockStates extends ExtendedBlockstateProvider
 						.baseName(modLoc("block/wooden_device/barrel"))
 						.end()
 		);
-		{
-			ModelFile full = createMultiLayer("wooden_device/logic_unit", renderType -> {
-				if("solid".equals(renderType))
-					return modLoc("models/block/wooden_device/logic_unit.obj");
-				else if("translucent".equals(renderType))
-					return modLoc("models/block/wooden_device/logic_unit_glass.obj");
-				return null;
-			}, modLoc("block/wooden_device/logic_unit.obj"));
-			createRotatedBlock(WoodenDevices.logicUnit,
-					state -> full,
-					ImmutableList.of()
-			);
-			itemModel(WoodenDevices.logicUnit, full);
-		}
+		createRotatedBlock(WoodenDevices.logicUnit, state -> ieObj("block/wooden_device/logic_unit.obj.ie"), ImmutableList.of());
 
 		createRotatedBlock(Cloth.curtain,
 				state -> new ExistingModelFile(rl(
