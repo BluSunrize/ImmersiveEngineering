@@ -33,6 +33,9 @@ public class Connection
 	@Nullable
 	private CatenaryData catData;
 	boolean blockDataGenerated = false;
+	@Nullable
+	private LocalWireNetwork cachedLocalNet;
+	private int cachedNetVersion = -1;
 
 	private Connection(@Nonnull WireType type, @Nonnull ConnectionPoint endA, @Nonnull ConnectionPoint endB, boolean internal)
 	{
@@ -91,6 +94,15 @@ public class Connection
 	public ConnectionPoint getEndB()
 	{
 		return endB;
+	}
+
+	public LocalWireNetwork getContainingNet(GlobalWireNetwork global)
+	{
+		if(cachedLocalNet==null||(cachedLocalNet.getVersion()!=cachedNetVersion&&!cachedLocalNet.isValid(getEndA())))
+			cachedLocalNet = global.getLocalNet(getEndA());
+		if(cachedLocalNet!=null)
+			cachedNetVersion = cachedLocalNet.getVersion();
+		return cachedLocalNet;
 	}
 
 	public boolean isPositiveEnd(ConnectionPoint p)

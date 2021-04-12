@@ -40,6 +40,7 @@ public class LocalWireNetwork implements IWorldTickable
 	final Map<ResourceLocation, Multiset<ILocalHandlerProvider>> handlerUsers = new HashMap<>();
 	private List<Runnable> runNextTick = new ArrayList<>();
 	private boolean isValid = true;
+	private int version = 0;
 
 	public LocalWireNetwork(CompoundNBT subnet, GlobalWireNetwork globalNet)
 	{
@@ -140,6 +141,7 @@ public class LocalWireNetwork implements IWorldTickable
 
 	void addConnector(ConnectionPoint cp, IImmersiveConnectable iic, GlobalWireNetwork globalNet)
 	{
+		++version;
 		{
 			Collection<Connection> existing = connections.get(cp);
 			Preconditions.checkState(
@@ -165,6 +167,7 @@ public class LocalWireNetwork implements IWorldTickable
 
 	void loadConnector(BlockPos p, IImmersiveConnectable iic, boolean adding, GlobalWireNetwork globalNet)
 	{
+		++version;
 		IImmersiveConnectable existingIIC = connectors.get(p);
 		if(adding)
 			Preconditions.checkState(
@@ -194,6 +197,7 @@ public class LocalWireNetwork implements IWorldTickable
 
 	boolean unloadConnector(BlockPos pos, @Nullable IImmersiveConnectable iicToRemove)
 	{
+		++version;
 		IImmersiveConnectable existingIIC = connectors.get(pos);
 		if(iicToRemove!=existingIIC)
 		{
@@ -248,6 +252,7 @@ public class LocalWireNetwork implements IWorldTickable
 
 	void removeConnection(Connection c)
 	{
+		++version;
 		for(ConnectionPoint end : new ConnectionPoint[]{c.getEndA(), c.getEndB()})
 		{
 			boolean success = false;
@@ -270,6 +275,7 @@ public class LocalWireNetwork implements IWorldTickable
 
 	void removeConnector(BlockPos p)
 	{
+		++version;
 		IImmersiveConnectable iic = connectors.get(p);
 		if(iic==null)
 		{
@@ -300,6 +306,7 @@ public class LocalWireNetwork implements IWorldTickable
 
 	void addConnection(Connection conn, GlobalWireNetwork globalNet)
 	{
+		++version;
 		IImmersiveConnectable connA = connectors.get(conn.getEndA().getPosition());
 		Preconditions.checkNotNull(connA, "No connector at %s", conn.getEndA().getPosition());
 		IImmersiveConnectable connB = connectors.get(conn.getEndB().getPosition());
@@ -369,6 +376,7 @@ public class LocalWireNetwork implements IWorldTickable
 	// Returns the nets that need to be changed
 	Collection<LocalWireNetwork> split(GlobalWireNetwork globalNet)
 	{
+		++version;
 		Set<ConnectionPoint> toVisit = new HashSet<>(getConnectionPoints());
 		Collection<LocalWireNetwork> ret = new ArrayList<>();
 		while(!toVisit.isEmpty())
@@ -467,6 +475,7 @@ public class LocalWireNetwork implements IWorldTickable
 	// Internal use only, for network sanitization
 	void removeCP(ConnectionPoint cp)
 	{
+		++version;
 		for(Connection c : getConnections(cp).toArray(new Connection[0]))
 			removeConnection(c);
 		connections.remove(cp);
@@ -483,6 +492,7 @@ public class LocalWireNetwork implements IWorldTickable
 
 	public void setInvalid()
 	{
+		++version;
 		isValid = false;
 	}
 
@@ -494,5 +504,15 @@ public class LocalWireNetwork implements IWorldTickable
 	public boolean isValid(ConnectionPoint cp)
 	{
 		return isValid&&connections.containsKey(cp);
+	}
+
+	/**
+	 * Returns the current "version" of the local network. If the version is the same as in a previous call the graph
+	 * structure of this component (and its validity) is guaranteed to have stayed the same. The exact value has no
+	 * meaning, and spurious changes are allowed.
+	 */
+	public int getVersion()
+	{
+		return version;
 	}
 }
