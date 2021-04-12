@@ -9,18 +9,20 @@
 package blusunrize.immersiveengineering.api.wires;
 
 import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
-import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Multimap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 public class WireCollisionData
 {
-	private final Multimap<BlockPos, CollisionInfo> blockToWires = HashMultimap.create();
+	private final Map<BlockPos, List<CollisionInfo>> blockToWires = new Object2ObjectOpenHashMap<>();
 	private final GlobalWireNetwork net;
 	private final boolean isRemote;
 
@@ -40,9 +42,9 @@ public class WireCollisionData
 				WireLogger.logger.info("Raytracing for addition of {}", conn);
 				if((net.getLocalNet(conn.getEndA())!=net.getLocalNet(conn.getEndB()))) throw new AssertionError();
 				WireUtils.raytraceAlongCatenary(conn, net.getLocalNet(conn.getEndA()), (p) ->
-								blockToWires.put(p.getLeft(), new CollisionInfo(p.getMiddle(), p.getRight(), conn, true))
+								add(p.getLeft(), new CollisionInfo(p.getMiddle(), p.getRight(), conn, true))
 						, (p) ->
-								blockToWires.put(p.getLeft(), new CollisionInfo(p.getMiddle(), p.getRight(), conn, false))
+								add(p.getLeft(), new CollisionInfo(p.getMiddle(), p.getRight(), conn, false))
 				);
 				conn.blockDataGenerated = true;
 			}
@@ -56,17 +58,31 @@ public class WireCollisionData
 		{
 			WireLogger.logger.info("Raytracing for removal of {}", conn);
 			WireUtils.raytraceAlongCatenary(conn.getCatenaryData(), conn.getEndA().getPosition(),
-					(p) -> blockToWires.get(p.getLeft()).removeIf(filter -> filter.conn==conn),
-					(p) -> blockToWires.get(p.getLeft()).removeIf(filter -> filter.conn==conn)
+					p -> remove(p.getLeft(), conn), p -> remove(p.getLeft(), conn)
 			);
 			conn.blockDataGenerated = false;
 		}
 	}
 
+	private void remove(BlockPos pos, Connection toRemove)
+	{
+		List<CollisionInfo> existing = blockToWires.computeIfAbsent(pos, $ -> new ArrayList<>());
+		existing.removeIf(i -> i.conn==toRemove);
+		if(existing.isEmpty())
+			blockToWires.remove(pos);
+	}
+
+	private void add(BlockPos pos, CollisionInfo info)
+	{
+		List<CollisionInfo> existing = blockToWires.computeIfAbsent(pos, $ -> new ArrayList<>());
+		if(!existing.contains(info))
+			existing.add(info);
+	}
+
 	@Nonnull
 	public Collection<CollisionInfo> getCollisionInfo(BlockPos pos)
 	{
-		Collection<CollisionInfo> ret = blockToWires.asMap().get(pos);
+		List<CollisionInfo> ret = blockToWires.get(pos);
 		if(ret==null)
 			ret = ImmutableList.of();
 		return ret;
@@ -81,7 +97,6 @@ public class WireCollisionData
 		@Nonnull
 		public final Connection conn;
 		public final boolean isInBlock;
-		private LocalWireNetwork cachedLocalNet;
 
 		public CollisionInfo(@Nonnull Vector3d intersectA, @Nonnull Vector3d intersectB, @Nonnull Connection conn,
 							 boolean isInBlock)
@@ -94,9 +109,7 @@ public class WireCollisionData
 
 		public LocalWireNetwork getLocalNet()
 		{
-			if(cachedLocalNet==null||!cachedLocalNet.isValid(conn.getEndA()))
-				cachedLocalNet = net.getLocalNet(conn.getEndA());
-			return cachedLocalNet;
+			return conn.getContainingNet(net);
 		}
 
 		@Override
