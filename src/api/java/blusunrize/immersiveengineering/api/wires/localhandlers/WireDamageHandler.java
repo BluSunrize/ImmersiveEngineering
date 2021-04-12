@@ -20,8 +20,6 @@ import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHan
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler.Path;
 import blusunrize.immersiveengineering.api.wires.utils.IElectricDamageSource;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.ResourceLocation;
@@ -30,10 +28,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.function.BiFunction;
 
 public class WireDamageHandler extends LocalNetworkHandler implements ICollisionHandler
@@ -62,68 +60,72 @@ public class WireDamageHandler extends LocalNetworkHandler implements ICollision
 		double extra = shockWire.getDamageRadius();
 		AxisAlignedBB eAabb = e.getBoundingBox();
 		AxisAlignedBB includingExtra = eAabb.grow(extra).offset(-pos.getX(), -pos.getY(), -pos.getZ());
-		boolean endpointsInEntity = includingExtra.contains(info.intersectA)||includingExtra.contains(info.intersectB);
-		Optional<Vector3d> rayRes;
-		if(endpointsInEntity)
-			rayRes = Optional.empty();
-		else
-			rayRes = includingExtra.rayTrace(info.intersectA, info.intersectB);
-		Map<ConnectionPoint, EnergyConnector> sources = energyHandler.getSources();
-		if(!sources.isEmpty()&&(endpointsInEntity||rayRes.isPresent()))
-		{
-			Object2IntMap<ConnectionPoint> available = getAvailableEnergy(sources);
-			Map<ConnectionPoint, Path> paths = new HashMap<>();
-			int totalAvailable = 0;
-			ConnectionPoint target = info.conn.getEndA();//TODO less random choice?
-			for(Object2IntMap.Entry<ConnectionPoint> entry : available.object2IntEntrySet())
-			{
-				Path path = energyHandler.getPath(entry.getKey(), target);
-				if(path!=null)
-				{
-					totalAvailable += entry.getIntValue()*(1-path.loss);
-					paths.put(entry.getKey(), path);
-				}
-			}
-			totalAvailable = Math.min(totalAvailable, shockWire.getTransferRate());
+		boolean collides = includingExtra.contains(info.intersectA)||includingExtra.contains(info.intersectB);
+		if(!collides&&!includingExtra.rayTrace(info.intersectA, info.intersectB).isPresent())
+			return;
+		final ConnectionPoint target = info.conn.getEndA();//TODO less random choice?
+		final List<SourceData> available = getAvailableEnergy(energyHandler, target);
+		if(available.isEmpty())
+			return;
+		int totalAvailable = 0;
+		for(SourceData source : available)
+			totalAvailable += source.amountAvailable*(1-source.pathToSource.loss);
+		totalAvailable = Math.min(totalAvailable, shockWire.getTransferRate());
 
-			final float maxPossibleDamage = shockWire.getDamageAmount(e, info.conn, totalAvailable);
-			if(maxPossibleDamage > 0)
-			{
-				IElectricDamageSource dmg =
-						GET_WIRE_DAMAGE.getValue().apply(maxPossibleDamage, shockWire.getElectricSource());
-				if(dmg.apply(e))
-				{
-					final float actualDamage = dmg.getDamage();
-					Vector3d v = e.getLookVec();
-					ApiUtils.knockbackNoSource(e, actualDamage/KNOCKBACK_PER_DAMAGE, v.x, v.z);
-					//Consume energy
-					double factor = actualDamage/maxPossibleDamage;
-					Object2DoubleMap<Connection> transferred = energyHandler.getTransferredNextTick();
-					for(Object2IntMap.Entry<ConnectionPoint> entry : available.object2IntEntrySet())
-					{
-						Path path = paths.get(entry.getKey());
-						int availableFromSource = entry.getIntValue();
-						double energyFromSource = availableFromSource*factor;
-						EnergyConnector source = sources.get(entry.getKey());
-						source.extractEnergy(MathHelper.ceil(energyFromSource));
-						for(Connection c : path.conns)
-							transferred.mergeDouble(c, energyFromSource, Double::sum);
-					}
-				}
-			}
+		final float maxPossibleDamage = shockWire.getDamageAmount(e, info.conn, totalAvailable);
+		if(maxPossibleDamage <= 0)
+			return;
+		IElectricDamageSource dmg = GET_WIRE_DAMAGE.getValue()
+				.apply(maxPossibleDamage, shockWire.getElectricSource());
+		if(!dmg.apply(e))
+			return;
+		final float actualDamage = dmg.getDamage();
+		Vector3d v = e.getLookVec();
+		ApiUtils.knockbackNoSource(e, actualDamage/KNOCKBACK_PER_DAMAGE, v.x, v.z);
+		//Consume energy
+		final double factor = actualDamage/maxPossibleDamage;
+		Object2DoubleMap<Connection> transferred = energyHandler.getTransferredNextTick();
+		for(SourceData source : available)
+		{
+			final double energyFromSource = source.amountAvailable*factor;
+			source.source.extractEnergy(MathHelper.ceil(energyFromSource));
+			for(Connection c : source.pathToSource.conns)
+				transferred.mergeDouble(c, energyFromSource, Double::sum);
 		}
 	}
 
-	private Object2IntMap<ConnectionPoint> getAvailableEnergy(Map<ConnectionPoint, EnergyConnector> sources)
+	private List<SourceData> getAvailableEnergy(EnergyTransferHandler energyHandler, ConnectionPoint target)
 	{
-		Object2IntMap<ConnectionPoint> ret = new Object2IntOpenHashMap<>();
-		for(Entry<ConnectionPoint, EnergyConnector> c : sources.entrySet())
+		List<SourceData> ret = new ArrayList<>();
+		Map<ConnectionPoint, Path> paths = null;
+		for(Entry<ConnectionPoint, EnergyConnector> c : energyHandler.getSources().entrySet())
 		{
-			int energy = c.getValue().getAvailableEnergy();
-			if(energy > 0)
-				ret.put(c.getKey(), energy);
+			final int energy = c.getValue().getAvailableEnergy();
+			if(energy <= 0)
+				continue;
+			if(paths==null)
+				paths = energyHandler.getPathsFromSource(target);
+			final Path path = paths.get(c.getKey());
+			if(path!=null)
+				ret.add(new SourceData(energy, path, c.getValue(), c.getKey()));
 		}
 		return ret;
+	}
+
+	private static class SourceData
+	{
+		private final int amountAvailable;
+		private final Path pathToSource;
+		private final EnergyConnector source;
+		private final ConnectionPoint point;
+
+		public SourceData(int amount, Path path, EnergyConnector source, ConnectionPoint point)
+		{
+			this.amountAvailable = amount;
+			this.pathToSource = path;
+			this.source = source;
+			this.point = point;
+		}
 	}
 
 	private EnergyTransferHandler getEnergyHandler()
