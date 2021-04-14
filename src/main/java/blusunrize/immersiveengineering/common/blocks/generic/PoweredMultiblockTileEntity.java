@@ -34,17 +34,18 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import net.minecraftforge.fml.ModList;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTileEntity<T, R>, R extends MultiblockRecipe>
 		extends MultiblockPartTileEntity<T> implements IIEInventory, IIEInternalFluxHandler,
@@ -83,22 +84,6 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 				}
 			}
 		}
-		if(nbt.contains("computerOn", Constants.NBT.TAG_BYTE)&&ModList.get().isLoaded("opencomputers"))
-		{
-			byte cOn = nbt.getByte("computerOn");
-			switch(cOn)
-			{
-				case 0:
-					computerOn = Optional.of(false);
-					break;
-				case 1:
-					computerOn = Optional.of(true);
-					break;
-				case 2:
-					computerOn = Optional.empty();
-					break;
-			}
-		}
 	}
 
 	@Override
@@ -107,13 +92,9 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 		super.writeCustomNBT(nbt, descPacket);
 		energyStorage.writeToNBT(nbt);
 		ListNBT processNBT = new ListNBT();
-		for(MultiblockProcess process : this.processQueue)
+		for(MultiblockProcess<?> process : this.processQueue)
 			processNBT.add(writeProcessToNBT(process));
 		nbt.put("processQueue", processNBT);
-		if(computerOn.isPresent())
-			nbt.putBoolean("computerOn", computerOn.get());
-		else
-			nbt.putByte("computerOn", (byte)2);
 	}
 
 	@Nullable

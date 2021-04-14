@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.util.compat;
 import blusunrize.immersiveengineering.common.config.CachedConfig.BooleanValue;
 import blusunrize.immersiveengineering.common.config.IECommonConfig;
 import blusunrize.immersiveengineering.common.util.IELogger;
+import blusunrize.immersiveengineering.common.util.compat.computers.cctweaked.ComputerCraftCompatModule;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CraftTweakerCompatModule;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;

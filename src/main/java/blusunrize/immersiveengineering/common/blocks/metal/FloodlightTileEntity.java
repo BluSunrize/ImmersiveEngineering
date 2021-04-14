@@ -26,6 +26,7 @@ import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.SpawnInterdictionHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerControlState;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.entity.LivingEntity;
@@ -65,7 +66,7 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 {
 	public int energyStorage = 0;
 	private int energyDraw = IEServerConfig.MACHINES.floodlight_energyDraw.get();
-	private int maximumStorage = IEServerConfig.MACHINES.floodlight_maximumStorage.get();
+	public int maximumStorage = IEServerConfig.MACHINES.floodlight_maximumStorage.get();
 	public boolean redstoneControlInverted = false;
 	public Direction facing = Direction.NORTH;
 	public float rotY = 0;
@@ -76,8 +77,7 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 	final int timeBetweenSwitches = 20;
 	int switchCooldown = 0;
 	private boolean shouldUpdate = true;
-	public boolean computerOn = true;
-	public int controllingComputers = 0;
+	public ComputerControlState computerControl = ComputerControlState.NO_COMPUTER;
 	public int turnCooldown = 0;
 
 	public FloodlightTileEntity()
@@ -103,7 +103,8 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 			shouldUpdate = false;
 		}
 
-		enabled = (controllingComputers > 0&&computerOn)||(isRSPowered()^redstoneControlInverted);
+		enabled = (computerControl.isEnabled()&&computerControl.isStillAttached())
+				||(isRSPowered()^redstoneControlInverted);
 		if(energyStorage >= (!activeBeforeTick?energyDraw*10: energyDraw)&&enabled&&switchCooldown <= 0)
 		{
 			energyStorage -= energyDraw;
@@ -319,11 +320,13 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 		}
 		if(world!=null&&world.isRemote)
 			this.markContainingBlockForUpdate(null);
-		if(descPacket)
+		if(descPacket&&nbt.contains("computerOn"))
 		{
-			controllingComputers = nbt.getBoolean("computerControlled")?1: 0;
-			computerOn = nbt.getBoolean("computerOn");
+			boolean computerOn = nbt.getBoolean("computerOn");
+			computerControl = new ComputerControlState(() -> true, computerOn);
 		}
+		else
+			computerControl = ComputerControlState.NO_COMPUTER;
 		if(world!=null&&getIsActive())
 			checkLight();
 	}
@@ -343,11 +346,8 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 			BlockPos cc = fakeLights.get(i);
 			nbt.putIntArray("fakeLight_"+i, new int[]{cc.getX(), cc.getY(), cc.getZ()});
 		}
-		if(descPacket)
-		{
-			nbt.putBoolean("computerControlled", controllingComputers > 0);
-			nbt.putBoolean("computerOn", computerOn);
-		}
+		if(descPacket&&computerControl.isStillAttached())
+			nbt.putBoolean("computerOn", computerControl.isEnabled());
 	}
 
 	@Override
@@ -569,7 +569,7 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 		if(!canComputerTurn())
 		{
 			if(throwException)
-				throw new IllegalArgumentException("The floodlight can't turn again yet.");
+				throw new RuntimeException("The floodlight can't turn again yet.");
 			else
 				return;
 		}
@@ -584,7 +584,7 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 		if(!canComputerTurn())
 		{
 			if(throwException)
-				throw new IllegalArgumentException("The floodlight can't turn again yet.");
+				throw new RuntimeException("The floodlight can't turn again yet.");
 			else
 				return;
 		}

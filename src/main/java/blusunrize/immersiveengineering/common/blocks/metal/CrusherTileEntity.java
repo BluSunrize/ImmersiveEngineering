@@ -29,8 +29,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.NonNullList;
@@ -62,40 +60,11 @@ import java.util.Set;
 
 public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEntity, CrusherRecipe> implements ISoundTile, IBlockBounds
 {
-	public List<ItemStack> inputs = new ArrayList<>();
-	public int process = 0;
-
 	public float animation_barrelRotation = 0;
 
 	public CrusherTileEntity()
 	{
 		super(IEMultiblocks.CRUSHER, 32000, true, IETileTypes.CRUSHER.get());
-	}
-
-	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
-	{
-		super.readCustomNBT(nbt, descPacket);
-		if(!descPacket)
-		{
-			ListNBT invList = nbt.getList("inputs", 10);
-			inputs.clear();
-			for(int i = 0; i < invList.size(); i++)
-				inputs.add(ItemStack.read(invList.getCompound(i)));
-		}
-	}
-
-	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
-	{
-		super.writeCustomNBT(nbt, descPacket);
-		if(!descPacket)
-		{
-			ListNBT invList = new ListNBT();
-			for(ItemStack s : inputs)
-				invList.add(s.write(new CompoundNBT()));
-			nbt.put("inputs", invList);
-		}
 	}
 
 	@Override

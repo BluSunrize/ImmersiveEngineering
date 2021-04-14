@@ -47,6 +47,8 @@ import java.util.Set;
 public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTileEntity, RefineryRecipe> implements
 		ISelectionBounds, ICollisionBounds, IInteractionObjectIE, IBlockBounds
 {
+	public static final int OUTPUT_EMPTY = 4;
+	public static final int OUTPUT_FILLED = 5;
 	public FluidTank[] tanks = new FluidTank[]{
 			new FluidTank(24*FluidAttributes.BUCKET_VOLUME),
 			new FluidTank(24*FluidAttributes.BUCKET_VOLUME),

@@ -97,7 +97,7 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 		if(isDummy()||isRSDisabled()||world.isRemote||world.getGameTime()%16!=((getPos().getX()^getPos().getZ())&15)||inventory.get(0).isEmpty())
 			return;
 
-		BlueprintCraftingRecipe[] recipes = EngineersBlueprintItem.getRecipes(inventory.get(0));
+		BlueprintCraftingRecipe[] recipes = getAvailableRecipes();
 		if(recipes.length > 0&&(this.selectedRecipe >= 0&&this.selectedRecipe < recipes.length))
 		{
 			BlueprintCraftingRecipe recipe = recipes[this.selectedRecipe];
@@ -120,6 +120,11 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 				}
 			}
 		}
+	}
+
+	public BlueprintCraftingRecipe[] getAvailableRecipes()
+	{
+		return EngineersBlueprintItem.getRecipes(inventory.get(0));
 	}
 
 	@Override

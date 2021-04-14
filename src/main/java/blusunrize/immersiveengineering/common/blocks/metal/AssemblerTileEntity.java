@@ -21,6 +21,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.CapabilityReference;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerControlState;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
@@ -64,8 +65,11 @@ import java.util.Set;
 public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTileEntity, MultiblockRecipe>
 		implements IInteractionObjectIE, IConveyorAttachable, IBlockBounds
 {
-	public boolean[] computerOn = new boolean[3];
-	public boolean isComputerControlled = false;
+	public ComputerControlState[] computerControlByRecipe = {
+			ComputerControlState.NO_COMPUTER,
+			ComputerControlState.NO_COMPUTER,
+			ComputerControlState.NO_COMPUTER,
+	};
 
 	public AssemblerTileEntity()
 	{
@@ -99,15 +103,6 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 				patterns[iPattern].readFromNBT(patternList);
 			}
 		}
-		{
-			byte cOn = nbt.getByte("computerControlled");
-			isComputerControlled = (cOn&1)!=0;
-			if(isComputerControlled)
-			{
-				for(int i = 0; i < 3; i++)
-					computerOn[i] = (cOn&(2<<i))!=0;
-			}
-		}
 	}
 
 	@Override
@@ -127,14 +122,6 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 				patterns[iPattern].writeToNBT(patternList);
 				nbt.put("pattern"+iPattern, patternList);
 			}
-		}
-		if(isComputerControlled)
-		{
-			byte cOn = 1;
-			for(int i = 0; i < 3; i++)
-				if(computerOn[i])
-					cOn |= 2<<i;
-			nbt.putByte("computerControlled", cOn);
 		}
 	}
 
@@ -185,7 +172,8 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 		for(int p = 0; p < patterns.length; p++)
 		{
 			CrafterPatternInventory pattern = patterns[p];
-			if(isComputerControlled&&!computerOn[p])
+			ComputerControlState state = computerControlByRecipe[p];
+			if(state.isStillAttached()&&!state.isEnabled())
 				continue;
 			if(!pattern.inv.get(9).isEmpty()&&canOutput(pattern.inv.get(9), p))
 			{

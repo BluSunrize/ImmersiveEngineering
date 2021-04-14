@@ -20,6 +20,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMulti
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerControlState;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.LivingEntity;
@@ -52,7 +53,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.EnumMap;
-import java.util.Optional;
 import java.util.Set;
 
 public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntity<T>> extends IEBaseTileEntity
@@ -72,7 +72,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	protected final boolean hasRedstoneControl;
 	protected boolean redstoneControlInverted = false;
 	//Absent means no controlling computers
-	public Optional<Boolean> computerOn = Optional.empty();
+	public ComputerControlState computerControl = ComputerControlState.NO_COMPUTER;
 
 	protected MultiblockPartTileEntity(IETemplateMultiblock multiblockInstance, TileEntityType<? extends T> type, boolean hasRSControl)
 	{
@@ -408,11 +408,16 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 
 	public boolean isRSDisabled()
 	{
-		if(computerOn.isPresent())
-			return !computerOn.get();
 		Set<BlockPos> rsPositions = getRedstonePos();
 		if(rsPositions==null||rsPositions.isEmpty())
 			return false;
+		MultiblockPartTileEntity<?> master = master();
+		if(master==null)
+			master = this;
+		if(master.computerControl.isStillAttached())
+			return !master.computerControl.isEnabled();
+		else
+			master.computerControl = ComputerControlState.NO_COMPUTER;
 		for(BlockPos rsPos : rsPositions)
 		{
 			T tile = this.getTileForPos(rsPos);

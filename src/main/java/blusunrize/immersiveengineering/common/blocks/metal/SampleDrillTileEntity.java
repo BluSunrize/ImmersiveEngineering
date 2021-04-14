@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
-import blusunrize.immersiveengineering.api.excavator.MineralMix;
 import blusunrize.immersiveengineering.api.excavator.MineralWorldInfo;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
@@ -22,6 +21,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummy
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.items.CoresampleItem;
+import blusunrize.immersiveengineering.common.items.CoresampleItem.VeinSampleData;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
@@ -46,6 +46,7 @@ import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
 
 public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInternalFluxHandler, IHasDummyBlocks,
 		IPlayerInteraction, IModelOffsetProvider
@@ -120,19 +121,12 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 	}
 
 	@Nullable
-	public MineralMix[] getVein()
+	public List<VeinSampleData> getVein()
 	{
 		if(sample.isEmpty())
 			return null;
 		else
-			return CoresampleItem.getMineralMixes(sample);
-	}
-
-	public int getExpectedVeinYield()
-	{
-		if(sample.isEmpty())
-			return -1;
-		return ExcavatorHandler.mineralVeinYield-sample.getOrCreateTag().getInt("depletion");
+			return CoresampleItem.getVeins(sample);
 	}
 
 	@Nonnull
