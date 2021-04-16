@@ -2,15 +2,19 @@ package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.common.util.fluids.PotionFluid;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionUtils;
 import net.minecraft.potion.Potions;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.ITextComponent;
@@ -24,9 +28,13 @@ import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
 
 public class PotionBucketItem extends IEBaseItem
@@ -50,6 +58,16 @@ public class PotionBucketItem extends IEBaseItem
 		return PotionFluid.fromTag(stack.getTag());
 	}
 
+	@Override
+	public void fillItemGroup(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items)
+	{
+		List<Potion> sortedPotions = new ArrayList<>(ForgeRegistries.POTION_TYPES.getValues());
+		sortedPotions.sort(Comparator.comparing(e -> getPotionName(e).getString()));
+		for(Potion p : sortedPotions)
+			if(p!=Potions.WATER)
+				items.add(forPotion(p));
+	}
+
 	@Nullable
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundNBT nbt)
@@ -61,11 +79,15 @@ public class PotionBucketItem extends IEBaseItem
 	@Override
 	public ITextComponent getDisplayName(@Nonnull ItemStack stack)
 	{
-		String potionKey = getPotion(stack).getNamePrefixed(Items.POTION.getTranslationKey()+".effect.");
 		return new TranslationTextComponent(
-				"item.immersiveengineering.potion_bucket",
-				new TranslationTextComponent(potionKey)
+				"item.immersiveengineering.potion_bucket", getPotionName(getPotion(stack))
 		);
+	}
+
+	private static ITextComponent getPotionName(Potion potion)
+	{
+		String potionKey = potion.getNamePrefixed(Items.POTION.getTranslationKey()+".effect.");
+		return new TranslationTextComponent(potionKey);
 	}
 
 	@Nonnull
@@ -81,6 +103,14 @@ public class PotionBucketItem extends IEBaseItem
 			return forgeResult;
 		else
 			return ActionResult.resultPass(stack);
+	}
+
+	@Override
+	public void addInformation(
+			@Nonnull ItemStack stack, @Nullable World worldIn, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flagIn
+	)
+	{
+		PotionUtils.addPotionTooltip(stack, tooltip, 1.0F);
 	}
 
 	private static class FluidHandler implements IFluidHandlerItem, ICapabilityProvider
