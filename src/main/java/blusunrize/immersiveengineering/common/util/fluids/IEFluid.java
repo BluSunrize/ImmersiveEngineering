@@ -99,20 +99,9 @@ public class IEFluid extends FlowingFluid
 			IEContent.registeredIEBlocks.add(this.block);
 			this.bucket = new BucketItem(() -> this.source, new Item.Properties()
 					.maxStackSize(1)
-					.group(ImmersiveEngineering.itemGroup))
+					.group(ImmersiveEngineering.itemGroup)
+					.containerItem(Items.BUCKET))
 			{
-				@Override
-				public ItemStack getContainerItem(ItemStack itemStack)
-				{
-					return new ItemStack(Items.BUCKET);
-				}
-
-				@Override
-				public boolean hasContainerItem(ItemStack stack)
-				{
-					return true;
-				}
-
 				@Override
 				public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundNBT nbt)
 				{

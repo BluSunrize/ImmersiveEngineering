@@ -26,6 +26,7 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ItemAgeAccessor;
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler;
 import blusunrize.immersiveengineering.api.tool.assembler.AssemblerHandler;
+import blusunrize.immersiveengineering.api.tool.assembler.FluidStackRecipeQuery;
 import blusunrize.immersiveengineering.api.tool.assembler.FluidTagRecipeQuery;
 import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
@@ -104,9 +105,12 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
@@ -787,6 +791,31 @@ public class IEContent
 				return new FluidTagRecipeQuery(((IngredientFluidStack)o).getFluidTagInput());
 			else
 				return null;
+		});
+		// Buckets
+		// TODO add "duplicates" of the fluid-aware recipes that only use buckets, so that other mods using similar
+		//  code don't need explicit compat?
+		AssemblerHandler.registerSpecialIngredientConverter((o) ->
+		{
+			final ItemStack[] matching = o.getMatchingStacks();
+			if(!o.isVanilla()||matching.length!=1)
+				return null;
+			final Item potentialBucket = matching[0].getItem();
+			if(!(potentialBucket instanceof BucketItem))
+				return null;
+			//Explicitly check for vanilla-style non-dynamic container items
+			//noinspection deprecation
+			if(!potentialBucket.hasContainerItem()||potentialBucket.getContainerItem()!=Items.BUCKET)
+				return null;
+			final Fluid contained = ((BucketItem)potentialBucket).getFluid();
+			return new FluidStackRecipeQuery(new FluidStack(contained, FluidAttributes.BUCKET_VOLUME));
+		});
+		// Milk is a weird special case
+		AssemblerHandler.registerSpecialIngredientConverter(o -> {
+			final ItemStack[] matching = o.getMatchingStacks();
+			if(!o.isVanilla()||matching.length!=1||matching[0].getItem()!=Items.MILK_BUCKET||!ForgeMod.MILK.isPresent())
+				return null;
+			return new FluidStackRecipeQuery(new FluidStack(ForgeMod.MILK.get(), FluidAttributes.BUCKET_VOLUME));
 		});
 
 		DieselHandler.registerFuel(IETags.fluidBiodiesel, 250);
