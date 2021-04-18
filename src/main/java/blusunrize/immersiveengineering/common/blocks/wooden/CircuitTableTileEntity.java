@@ -291,6 +291,22 @@ public class CircuitTableTileEntity extends IEBaseTileEntity implements IIEInven
 		return this.energyStorage;
 	}
 
+	@Override
+	public void postEnergyTransferUpdate(int energy, boolean simulate)
+	{
+		if(this.isDummy())
+		{
+			CircuitTableTileEntity te = master();
+			if(te!=null)
+				te.postEnergyTransferUpdate(energy, simulate);
+		}
+		else if(!simulate&&energy!=0)
+		{
+			this.markDirty();
+			this.markContainingBlockForUpdate(null);
+		}
+	}
+
 	@Nonnull
 	@Override
 	public IOSideConfig getEnergySideConfig(Direction facing)
