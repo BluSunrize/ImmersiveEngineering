@@ -14,12 +14,13 @@ import net.minecraft.item.DyeColor;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.function.Predicate;
 
 public class LogicCircuitHandler
@@ -71,6 +72,11 @@ public class LogicCircuitHandler
 				return null;
 			return valueOf(name);
 		}
+
+		public TextComponent getDescription()
+		{
+			return new TranslationTextComponent(Lib.DESC_INFO+"operator."+this.name().toLowerCase(Locale.ENGLISH));
+		}
 	}
 
 	public enum LogicCircuitRegister
@@ -81,7 +87,7 @@ public class LogicCircuitHandler
 		// Plus 8 internal storages
 		R0, R1, R2, R3, R4, R5, R6, R7;
 
-		public ITextComponent getDescription()
+		public TextComponent getDescription()
 		{
 			if(this.ordinal() < 16)
 				return new TranslationTextComponent("color.minecraft."+DyeColor.byId(this.ordinal()).getTranslationKey());
@@ -96,7 +102,7 @@ public class LogicCircuitHandler
 		private final LogicCircuitRegister output;
 		private final LogicCircuitRegister[] inputs;
 
-		private final String formattedString;
+		private final TextComponent formattedString;
 
 		public LogicCircuitInstruction(LogicCircuitOperator operator, LogicCircuitRegister output, LogicCircuitRegister[] inputs)
 		{
@@ -105,10 +111,14 @@ public class LogicCircuitHandler
 			this.output = output;
 			this.inputs = inputs;
 
-			StringBuilder s = new StringBuilder(output.name()+" = "+operator.name());
+			this.formattedString = this.output.getDescription();
+			this.formattedString.appendString(" = ");
+			this.formattedString.appendSibling(this.operator.getDescription());
 			for(int i = 0; i < inputs.length; i++)
-				s.append(i!=0?", ": ": ").append(inputs[i].toString());
-			this.formattedString = s.toString();
+			{
+				this.formattedString.appendString(i!=0?", ": ": ");
+				this.formattedString.appendSibling(inputs[i].getDescription());
+			}
 		}
 
 		public LogicCircuitOperator getOperator()
@@ -134,7 +144,7 @@ public class LogicCircuitHandler
 			handler.setLogicCircuitRegister(output, operator.apply(bInputs));
 		}
 
-		public String getFormattedString()
+		public TextComponent getFormattedString()
 		{
 			return this.formattedString;
 		}

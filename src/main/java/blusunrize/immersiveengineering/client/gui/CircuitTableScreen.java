@@ -47,10 +47,6 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 	private final List<GuiButtonState<LogicCircuitRegister>> inputButtons = new ArrayList<>(LogicCircuitOperator.TOTAL_MAX_INPUTS);
 	private GuiButtonState<LogicCircuitRegister> outputButton;
 
-	// Process
-	private boolean active = false;
-	private int process = 0;
-
 	private final ResettableLazy<Optional<LogicCircuitInstruction>> instruction = new ResettableLazy<>(() -> {
 		LogicCircuitOperator operator = getSelectedOperator();
 		if(operator==null)
@@ -212,18 +208,12 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 
 		int stored = (int)(46*(tile.getEnergyStored(null)/(float)tile.getMaxEnergyStored(null)));
 		ClientUtils.drawGradientRect(guiLeft+217, guiTop+16+(46-stored), guiLeft+224, guiTop+62, 0xffb51500, 0xff600b00);
-
-		int progress = (int)(this.process/100f*50);
-		if(progress > 0)
-			this.blit(transform, guiLeft+185, guiTop+16, 234, 36, Math.min(progress, 18), 7);
-		if(progress > 18)
-			this.blit(transform, guiLeft+196, guiTop+18, 234, 43, 13, Math.min(progress-18, 32));
 	}
 
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers)
 	{
-		for(GuiButtonState input : this.inputButtons)
+		for(GuiButtonState<?> input : this.inputButtons)
 			if(input.isHovered())
 				return input.keyPressed(keyCode, scanCode, modifiers);
 		if(this.outputButton.isHovered())

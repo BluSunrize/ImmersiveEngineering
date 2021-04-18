@@ -44,7 +44,7 @@ public class LogicCircuitBoardItem extends IEBaseItem
 	{
 		LogicCircuitInstruction instruction = getInstruction(stack);
 		if(instruction!=null)
-			list.add(TextUtils.applyFormat(new StringTextComponent(instruction.getFormattedString()), TextFormatting.GRAY));
+			list.add(TextUtils.applyFormat(instruction.getFormattedString(), TextFormatting.GRAY));
 	}
 
 	@Nullable
