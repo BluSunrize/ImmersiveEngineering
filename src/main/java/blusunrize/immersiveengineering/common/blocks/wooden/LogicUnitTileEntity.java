@@ -141,7 +141,6 @@ public class LogicUnitTileEntity extends IEBaseTileEntity implements ITickableTi
 		boolean[] outPre = Arrays.copyOf(outputs, SIZE_COLORS);
 		this.inventory.stream().map(LogicCircuitBoardItem::getInstruction).filter(Objects::nonNull)
 				.forEachOrdered(instruction -> {
-					System.out.println("Running instruction: "+instruction.getFormattedString());
 					instruction.apply(this);
 				});
 		return !Arrays.equals(outPre, outputs);
