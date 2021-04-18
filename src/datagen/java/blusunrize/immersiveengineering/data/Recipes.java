@@ -1301,6 +1301,15 @@ public class Recipes extends RecipeProvider
 				.key('c', Ingredients.componentIron)
 				.addCriterion("has_"+toPath(MetalDevices.fluidPipe), hasItem(MetalDevices.fluidPipe))
 				.build(out, toRL(toPath(WoodenDevices.fluidSorter)));
+		ShapedRecipeBuilder.shapedRecipe(WoodenDevices.logicUnit)
+				.patternLine("wtw")
+				.patternLine("tct")
+				.patternLine("wtw")
+				.key('w', IETags.getItemTag(IETags.treatedWood))
+				.key('t', Ingredients.electronTube)
+				.key('c', Ingredients.circuitBoard)
+				.addCriterion("has_"+toPath(Ingredients.circuitBoard), hasItem(Ingredients.circuitBoard))
+				.build(out, toRL(toPath(WoodenDevices.logicUnit)));
 
 		ShapedRecipeBuilder.shapedRecipe(WoodenDevices.turntable)
 				.patternLine("iwi")
@@ -1348,6 +1357,15 @@ public class Recipes extends RecipeProvider
 				.key('f', WoodenDecoration.treatedFence)
 				.addCriterion("has_treated_planks", hasItem(IETags.getItemTag(IETags.treatedWood)))
 				.build(out, toRL(toPath(WoodenDevices.workbench)));
+		ShapedRecipeBuilder.shapedRecipe(WoodenDevices.circuitTable)
+				.patternLine("sst")
+				.patternLine("c e")
+				.key('t', Tools.screwdriver)
+				.key('s', IETags.getItemTag(IETags.treatedWoodSlab))
+				.key('c', WoodenDevices.craftingTable)
+				.key('e', MetalDecoration.engineeringLight)
+				.addCriterion("has_"+toPath(Ingredients.circuitBoard), hasItem(Ingredients.circuitBoard))
+				.build(out, toRL(toPath(WoodenDevices.circuitTable)));
 
 		ShapedRecipeBuilder.shapedRecipe(WoodenDevices.woodenBarrel)
 				.patternLine("sss")
