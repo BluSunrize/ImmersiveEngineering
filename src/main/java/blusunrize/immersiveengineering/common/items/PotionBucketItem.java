@@ -61,6 +61,8 @@ public class PotionBucketItem extends IEBaseItem
 	@Override
 	public void fillItemGroup(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items)
 	{
+		if(!isInGroup(group))
+			return;
 		List<Potion> sortedPotions = new ArrayList<>(ForgeRegistries.POTION_TYPES.getValues());
 		sortedPotions.sort(Comparator.comparing(e -> getPotionName(e).getString()));
 		for(Potion p : sortedPotions)
