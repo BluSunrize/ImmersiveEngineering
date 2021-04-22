@@ -18,6 +18,7 @@ import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nullable;
 
+// TODO replace with GlobalPos in next world breaking update
 public class DimensionChunkCoords extends ChunkPos
 {
 	public RegistryKey<World> dimension;

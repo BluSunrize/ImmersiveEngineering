@@ -29,6 +29,7 @@ import blusunrize.immersiveengineering.api.tool.assembler.AssemblerHandler;
 import blusunrize.immersiveengineering.api.tool.assembler.FluidStackRecipeQuery;
 import blusunrize.immersiveengineering.api.tool.assembler.FluidTagRecipeQuery;
 import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
+import blusunrize.immersiveengineering.api.utils.TemplateWorldCreator;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler;
@@ -68,6 +69,7 @@ import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import blusunrize.immersiveengineering.common.items.IEItems.Weapons;
 import blusunrize.immersiveengineering.common.items.ToolUpgradeItem.ToolUpgrade;
 import blusunrize.immersiveengineering.common.util.*;
+import blusunrize.immersiveengineering.common.util.fakeworld.TemplateWorld;
 import blusunrize.immersiveengineering.common.util.fluids.ConcreteFluid;
 import blusunrize.immersiveengineering.common.util.fluids.IEFluid;
 import blusunrize.immersiveengineering.common.util.fluids.PotionFluid;
@@ -943,6 +945,7 @@ public class IEContent
 				((ItemEntityAccess)entity).setAge(newAge);
 			}
 		});
+		TemplateWorldCreator.CREATOR.setValue(TemplateWorld::new);
 		SetRestrictedField.lock(false);
 	}
 }

@@ -1,10 +1,10 @@
 package blusunrize.immersiveengineering.common.util.fakeworld;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.mixin.accessors.DimensionTypeAccessor;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
@@ -150,7 +150,7 @@ public class TemplateWorld extends World
 	@Override
 	public DynamicRegistries func_241828_r()
 	{
-		World clientWorld = Minecraft.getInstance().world;
+		World clientWorld = ImmersiveEngineering.proxy.getClientWorld();
 		if(clientWorld!=null)
 			return clientWorld.func_241828_r();
 		else
