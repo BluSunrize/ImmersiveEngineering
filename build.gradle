@@ -4,7 +4,7 @@ import net.minecraftforge.gradle.common.task.SignJar
 
 buildscript {
     repositories {
-        maven { url = 'https://files.minecraftforge.net/maven' }
+        maven { url = 'https://maven.minecraftforge.net' }
         maven {url "https://plugins.gradle.org/m2/"}
         mavenCentral()
         maven {url='https://repo.spongepowered.org/repository/maven-public/'}
