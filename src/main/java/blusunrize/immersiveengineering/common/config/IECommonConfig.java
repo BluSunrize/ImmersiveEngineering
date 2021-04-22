@@ -10,6 +10,7 @@
 package blusunrize.immersiveengineering.common.config;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.wires.WireLogger;
 import blusunrize.immersiveengineering.common.config.CachedConfig.BooleanValue;
@@ -90,6 +91,7 @@ public class IECommonConfig
 			else
 				wireLoggerLevel = Level.WARN;
 			Configurator.setLevel(WireLogger.logger.getName(), wireLoggerLevel);
+			IEApi.modPreference = preferredOres.get();
 		}
 	}
 }

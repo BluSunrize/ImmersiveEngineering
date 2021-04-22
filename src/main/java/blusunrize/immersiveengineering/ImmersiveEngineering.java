@@ -128,7 +128,6 @@ public class ImmersiveEngineering
 
 		IEAdvancements.preInit();
 
-		IEApi.modPreference = IECommonConfig.preferredOres.get();
 		IEApi.prefixToIngotMap.put("ingots", new Integer[]{1, 1});
 		IEApi.prefixToIngotMap.put("nuggets", new Integer[]{1, 9});
 		IEApi.prefixToIngotMap.put("storage_blocks", new Integer[]{9, 1});
