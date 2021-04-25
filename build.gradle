@@ -299,6 +299,7 @@ task sourcesJar(type: Jar, dependsOn: classes) {
     from sourceSets.main.allSource
     from sourceSets.manual.allSource
     from sourceSets.api.allSource
+    from sourceSets.datagen.allSource
 }
 
 artifacts {
