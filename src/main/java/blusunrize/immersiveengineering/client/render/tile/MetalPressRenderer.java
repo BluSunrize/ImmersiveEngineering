@@ -118,21 +118,20 @@ public class MetalPressRenderer extends TileEntityRenderer<MetalPressTileEntity>
 			MultiblockProcess<?> process = te.processQueue.get(i);
 			if(!(process instanceof PoweredMultiblockTileEntity.MultiblockProcessInWorld))
 				continue;
+			List<ItemStack> displays = ((MultiblockProcessInWorld<?>)process).getDisplayItem();
+			if(displays.isEmpty())
+				continue;
 			matrixStack.push();
 			matrixStack.translate(0, 0, -TRANSLATION_DISTANCE*shift[i]);
 			if(piston > .92)
 				matrixStack.translate(0, .92-piston, 0);
 
-			List<ItemStack> displays = ((MultiblockProcessInWorld<?>)process).getDisplayItem();
-			if(!displays.isEmpty())
-			{
-				matrixStack.rotate(new Quaternion(new Vector3f(1, 0, 0), -90, true));
-				float scale = .625f;
-				matrixStack.scale(scale, scale, 1);
-				ClientUtils.mc().getItemRenderer().renderItem(displays.get(0), TransformType.FIXED, combinedLightIn, combinedOverlayIn,
-						matrixStack, bufferIn);
-				matrixStack.pop();
-			}
+			matrixStack.rotate(new Quaternion(new Vector3f(1, 0, 0), -90, true));
+			float scale = .625f;
+			matrixStack.scale(scale, scale, 1);
+			ClientUtils.mc().getItemRenderer().renderItem(displays.get(0), TransformType.FIXED, combinedLightIn, combinedOverlayIn,
+					matrixStack, bufferIn);
+			matrixStack.pop();
 		}
 		matrixStack.pop();
 	}
