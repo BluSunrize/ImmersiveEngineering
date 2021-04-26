@@ -43,6 +43,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.tileentity.LecternTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
@@ -312,7 +313,7 @@ public class EventHandler
 	{
 		ItemStack current = event.getPlayer().getHeldItem(Hand.MAIN_HAND);
 		//Stop the combustion drill from working underwater
-		if(!current.isEmpty()&&current.getItem()==Tools.drill&&event.getPlayer().isInWater())
+		if(!current.isEmpty()&&current.getItem()==Tools.drill&&event.getPlayer().areEyesInFluid(FluidTags.WATER))
 			if(((DrillItem)Tools.drill).getUpgrades(current).getBoolean("waterproof"))
 				event.setNewSpeed(event.getOriginalSpeed()*5);
 			else
