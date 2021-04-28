@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.api.utils.PlayerUtils;
 import blusunrize.immersiveengineering.api.utils.SafeChunkUtils;
 import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
@@ -466,7 +467,7 @@ public class ConveyorHandler
 				double distZ = Math.abs(pos.offset(getFacing()).getZ()+.5-entity.getPosZ());
 				double threshold = .9;
 				boolean contact = getFacing().getAxis()==Axis.Z?distZ < threshold: distX < threshold;
-				World w = getTile().getWorld();
+				World w = Preconditions.checkNotNull(getTile().getWorld());
 				BlockPos upPos = pos.offset(getFacing()).up();
 				if(contact&&conveyorDirection==ConveyorDirection.UP&&
 						!Block.doesSideFillSquare(w.getBlockState(upPos).getShape(w, upPos), Direction.DOWN))
@@ -493,7 +494,7 @@ public class ConveyorHandler
 						if(access.getAgeNonsided(item) > item.lifespan-60*20&&!outputBlocked)
 							access.setAge(item, item.lifespan-60*20);
 					}
-					else
+					else if(!w.isRemote)
 						handleInsertion(item, conveyorDirection, distX, distZ);
 				}
 			}
@@ -520,8 +521,6 @@ public class ConveyorHandler
 
 		default void handleInsertion(ItemEntity entity, ConveyorDirection conDir, double distX, double distZ)
 		{
-			if(getTile().getWorld().isRemote)
-				return;
 			BlockPos invPos = getOutputInventory();
 			World world = getTile().getWorld();
 			boolean contact = getFacing().getAxis()==Axis.Z?distZ < .7: distX < .7;

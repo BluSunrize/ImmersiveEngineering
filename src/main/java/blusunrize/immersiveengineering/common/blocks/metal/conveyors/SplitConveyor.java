@@ -78,7 +78,7 @@ public class SplitConveyor extends BasicConveyor
 	public void handleInsertion(ItemEntity entity, ConveyorDirection conDir, double distX, double distZ)
 	{
 		String nbtKey = "immersiveengineering:conveyorDir"+Integer.toHexString(getTile().getPos().hashCode());
-		if(entity.getPersistentData().contains(nbtKey, NBT.TAG_INT)&&!getTile().getWorld().isRemote)
+		if(entity.getPersistentData().contains(nbtKey, NBT.TAG_INT))
 		{
 			Direction redirect = Direction.values()[entity.getPersistentData().getInt(nbtKey)];
 			BlockPos nextPos = getTile().getPos().offset(redirect);
