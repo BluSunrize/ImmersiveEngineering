@@ -158,7 +158,7 @@ public class CommandMineral
 		{
 			MineralVein vein = new MineralVein(pos, mineral.getId(), radius);
 			ExcavatorHandler.addVein(sender.getWorld().getDimensionKey(), vein);
-			IESaveData.setDirty();
+			IESaveData.markInstanceDirty();
 			sender.sendFeedback(new TranslationTextComponent(Lib.CHAT_COMMAND+
 					"mineral.put.success", mineral.getId(), radius, pos.x, pos.z), true);
 		}
@@ -195,7 +195,7 @@ public class CommandMineral
 			int depletion = IntegerArgumentType.getInteger(context, "depletion");
 			for(Pair<MineralVein, Integer> pair : info.getAllVeins())
 				pair.getLeft().setDepletion(depletion);
-			IESaveData.setDirty();
+			IESaveData.markInstanceDirty();
 			sender.sendFeedback(new TranslationTextComponent(Lib.CHAT_COMMAND+
 					"mineral.set_depletion.success", depletion), true);
 		}

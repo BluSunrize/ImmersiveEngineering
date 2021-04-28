@@ -135,7 +135,7 @@ public class IESaveData extends WorldSavedData
 	}
 
 
-	public static void setDirty()
+	public static void markInstanceDirty()
 	{
 		if(INSTANCE!=null)
 			INSTANCE.markDirty();

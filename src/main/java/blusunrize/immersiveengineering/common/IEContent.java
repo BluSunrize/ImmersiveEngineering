@@ -900,7 +900,7 @@ public class IEContent
 		ApiUtils.disableTicking.setValue(EventHandler.REMOVE_FROM_TICKING::add);
 		IngredientWithSize.SERIALIZER.setValue(IngredientWithSizeSerializer.INSTANCE);
 		BlueprintCraftingRecipe.blueprintItem.setValue(IEItems.Misc.blueprint);
-		ExcavatorHandler.setSetDirtyCallback(IESaveData::setDirty);
+		ExcavatorHandler.setSetDirtyCallback(IESaveData::markInstanceDirty);
 		TemplateMultiblock.setCallbacks(
 				bs -> Utils.getPickBlock(
 						bs, new BlockRayTraceResult(Vector3d.ZERO, Direction.DOWN, BlockPos.ZERO, false),
