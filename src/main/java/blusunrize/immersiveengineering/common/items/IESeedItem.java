@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.util.GenericDeferredWork;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ComposterBlock;
@@ -21,7 +22,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.PlantType;
-import net.minecraftforge.fml.DeferredWorkQueue;
 
 public class IESeedItem extends BlockItem implements IPlantable
 {
@@ -32,9 +32,7 @@ public class IESeedItem extends BlockItem implements IPlantable
 		IEContent.registeredIEItems.add(this);
 
 		// Register for composting
-		DeferredWorkQueue.runLater(
-				() -> ComposterBlock.CHANCES.putIfAbsent(this, 0.3f)
-		);
+		GenericDeferredWork.enqueue(() -> ComposterBlock.CHANCES.putIfAbsent(this, 0.3f));
 	}
 
 	@Override

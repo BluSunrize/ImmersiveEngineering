@@ -116,6 +116,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
+import net.minecraftforge.fml.event.lifecycle.ParallelDispatchEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -758,10 +759,10 @@ public class IEContent
 		ConveyorBeltTileEntity.registerConveyorTEs(event);
 	}
 
-	public static void init()
+	public static void init(ParallelDispatchEvent ev)
 	{
 		/*WORLDGEN*/
-		DeferredWorkQueue.runLater(
+		ev.enqueueWork(
 				() -> {
 					IEWorldGen.addOreGen(Metals.ores.get(EnumMetals.COPPER), "copper", IEServerConfig.ORES.ore_copper);
 					IEWorldGen.addOreGen(Metals.ores.get(EnumMetals.ALUMINUM), "bauxite", IEServerConfig.ORES.ore_bauxite);

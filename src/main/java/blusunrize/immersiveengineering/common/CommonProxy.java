@@ -40,6 +40,7 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.event.lifecycle.ParallelDispatchEvent;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import java.util.UUID;
@@ -51,7 +52,7 @@ public class CommonProxy
 	{
 	}
 
-	public void preInit()
+	public void preInit(ParallelDispatchEvent ev)
 	{
 	}
 

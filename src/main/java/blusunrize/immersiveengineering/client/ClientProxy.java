@@ -115,11 +115,11 @@ import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
+import net.minecraftforge.fml.event.lifecycle.ParallelDispatchEvent;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.HashMap;
@@ -164,10 +164,10 @@ public class ClientProxy extends CommonProxy
 	public static boolean stencilEnabled = false;
 
 	@Override
-	public void preInit()
+	public void preInit(ParallelDispatchEvent ev)
 	{
 		if(IEClientConfig.stencilBufferEnabled.get())
-			DeferredWorkQueue.runLater(() -> {
+			ev.enqueueWork(() -> {
 				Minecraft.getInstance().getFramebuffer().enableStencil();
 				stencilEnabled = true;
 			});

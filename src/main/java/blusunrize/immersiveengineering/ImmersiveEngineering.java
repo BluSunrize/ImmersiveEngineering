@@ -124,7 +124,7 @@ public class ImmersiveEngineering
 
 	public void setup(FMLCommonSetupEvent event)
 	{
-		proxy.preInit();
+		proxy.preInit(event);
 
 		IEAdvancements.preInit();
 
@@ -172,7 +172,7 @@ public class ImmersiveEngineering
 		new ThreadContributorSpecialsDownloader();
 
 		proxy.preInitEnd();
-		IEContent.init();
+		IEContent.init(event);
 
 		MinecraftForge.EVENT_BUS.register(new EventHandler());
 		proxy.init();

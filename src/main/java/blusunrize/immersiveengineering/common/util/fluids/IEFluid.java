@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.util.fluids;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.util.GenericDeferredWork;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.block.FlowingFluidBlock;
@@ -116,7 +117,7 @@ public class IEFluid extends FlowingFluid
 			};
 			this.bucket.setRegistryName(ImmersiveEngineering.MODID, fluidName+"_bucket");
 			IEContent.registeredIEItems.add(this.bucket);
-			DispenserBlock.registerDispenseBehavior(this.bucket, BUCKET_DISPENSE_BEHAVIOR);
+			GenericDeferredWork.registerDispenseBehavior(this.bucket, BUCKET_DISPENSE_BEHAVIOR);
 			flowing = createFlowingVariant();
 			setRegistryName(ImmersiveEngineering.MODID, fluidName);
 			IE_FLUIDS.add(this);

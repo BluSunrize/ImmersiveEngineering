@@ -24,7 +24,6 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEEnergyItem;
 import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamageSource;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.block.DispenserBlock;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -66,7 +65,7 @@ public class IEShieldItem extends UpgradeableToolItem implements IIEEnergyItem, 
 	public IEShieldItem()
 	{
 		super("shield", new Properties().defaultMaxDamage(1024).setISTER(() -> () -> IEOBJItemRenderer.INSTANCE), "SHIELD");
-		DispenserBlock.registerDispenseBehavior(this, ArmorItem.DISPENSER_BEHAVIOR);
+		GenericDeferredWork.registerDispenseBehavior(this, ArmorItem.DISPENSER_BEHAVIOR);
 	}
 
 	@Override

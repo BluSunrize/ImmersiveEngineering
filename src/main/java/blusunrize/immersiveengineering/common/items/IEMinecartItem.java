@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.items;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.common.entities.IEMinecartEntity;
+import blusunrize.immersiveengineering.common.util.GenericDeferredWork;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.block.AbstractRailBlock;
 import net.minecraft.block.BlockState;
@@ -42,7 +43,7 @@ public abstract class IEMinecartItem extends IEBaseItem
 	public IEMinecartItem(String name)
 	{
 		super("minecart_"+name, new Properties().maxStackSize(1));
-		DispenserBlock.registerDispenseBehavior(this, MINECART_DISPENSER_BEHAVIOR);
+		GenericDeferredWork.registerDispenseBehavior(this, MINECART_DISPENSER_BEHAVIOR);
 	}
 
 	public abstract IEMinecartEntity createCart(World world, double x, double y, double z, ItemStack stack);
