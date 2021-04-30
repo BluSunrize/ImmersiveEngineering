@@ -916,12 +916,23 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			List<ResourceLocation> keyList = new ArrayList<>(MineralMix.mineralList.keySet());
 			keyList.sort(Comparator.comparing(ResourceLocation::toString));
 			Multimap<RegistryKey<World>, MineralVein> minerals;
+			final ColumnPos playerCol = new ColumnPos(ClientUtils.mc().player.getPosition());
+			// 24: very roughly 16 * sqrt(2)
+			final long maxDistance = ClientUtils.mc().gameSettings.renderDistanceChunks*24L;
+			final long maxDistanceSq = maxDistance*maxDistance;
 			synchronized(minerals = ExcavatorHandler.getMineralVeinList())
 			{
 				for(MineralVein vein : minerals.get(dimension))
 				{
+					if(vein.getMineral()==null)
+						continue;
 					transform.push();
 					ColumnPos pos = vein.getPos();
+					final long xDiff = pos.x-playerCol.x;
+					final long zDiff = pos.z-playerCol.z;
+					long distToPlayerSq = xDiff*xDiff+zDiff*zDiff;
+					if(distToPlayerSq > maxDistanceSq)
+						continue;
 					int iC = keyList.indexOf(vein.getMineral().getId());
 					DyeColor color = DyeColor.values()[iC%16];
 					float[] rgb = color.getColorComponentValues();

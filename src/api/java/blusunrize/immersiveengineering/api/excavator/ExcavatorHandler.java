@@ -94,6 +94,7 @@ public class ExcavatorHandler
 				final double finalTotalSaturation = totalSaturation;
 				worldInfo = new MineralWorldInfo(inVeins.stream()
 						.map(pair -> Pair.of(pair.getLeft(), (int)(pair.getRight()/finalTotalSaturation*1000)))
+						.filter(p -> p.getLeft().getMineral()!=null)
 						.collect(Collectors.toList())
 				);
 				MINERAL_INFO_CACHE.put(cacheKey, worldInfo);
