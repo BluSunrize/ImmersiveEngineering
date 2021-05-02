@@ -547,6 +547,7 @@ public class IEContent
 		IEItems.Ingredients.wireElectrum = new IEBaseItem("wire_electrum");
 		IEItems.Ingredients.wireAluminum = new IEBaseItem("wire_aluminum");
 		IEItems.Ingredients.wireSteel = new IEBaseItem("wire_steel");
+		IEItems.Ingredients.wireLead = new IEBaseItem("wire_lead");
 		IEItems.Ingredients.dustSaltpeter = new IEBaseItem("dust_saltpeter");
 		IEItems.Ingredients.dustSulfur = new IEBaseItem("dust_sulfur");
 		IEItems.Ingredients.dustWood = new IEBaseItem("dust_wood")

@@ -61,6 +61,7 @@ public class IETags
 	public static final INamedTag<Item> electrumWire = createItemWrapper(getWire("electrum"));
 	public static final INamedTag<Item> aluminumWire = createItemWrapper(getWire("aluminum"));
 	public static final INamedTag<Item> steelWire = createItemWrapper(getWire("steel"));
+	public static final INamedTag<Item> leadWire = createItemWrapper(getWire("lead"));
 	public static final INamedTag<Item> saltpeterDust = createItemWrapper(getDust("saltpeter"));
 	public static final INamedTag<Item> sulfurDust = createItemWrapper(getDust("sulfur"));
 	public static final INamedTag<Item> sawdust = createItemWrapper(getDust("wood"));

@@ -85,6 +85,7 @@ class ItemTags extends ItemTagsProvider
 		getOrCreateBuilder(IETags.electrumWire).addItemEntry(Ingredients.wireElectrum);
 		getOrCreateBuilder(IETags.aluminumWire).addItemEntry(Ingredients.wireAluminum);
 		getOrCreateBuilder(IETags.steelWire).addItemEntry(Ingredients.wireSteel);
+		getOrCreateBuilder(IETags.leadWire).addItemEntry(Ingredients.wireLead);
 		getOrCreateBuilder(IETags.saltpeterDust).addItemEntry(Ingredients.dustSaltpeter);
 		getOrCreateBuilder(IETags.sulfurDust).addItemEntry(Ingredients.dustSulfur);
 		getOrCreateBuilder(IETags.sawdust).addItemEntry(Ingredients.dustWood);
