@@ -2487,6 +2487,11 @@ public class Recipes extends RecipeProvider
 				.addIngredient(Tools.wirecutter)
 				.addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot))
 				.build(out, toRL(toPath(Ingredients.wireSteel)));
+		ShapelessRecipeBuilder.shapelessRecipe(Ingredients.wireLead)
+				.addIngredient(IETags.getTagsFor(EnumMetals.LEAD).plate)
+				.addIngredient(Tools.wirecutter)
+				.addCriterion("has_lead_ingot", hasItem(IETags.getTagsFor(EnumMetals.LEAD).ingot))
+				.build(out, toRL(toPath(Ingredients.wireLead)));
 
 		ShapelessRecipeBuilder.shapelessRecipe(Metals.dusts.get(EnumMetals.ELECTRUM), 2)
 				.addIngredient(IETags.getTagsFor(EnumMetals.GOLD).dust)
