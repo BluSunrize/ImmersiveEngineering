@@ -196,7 +196,7 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 				else
 					col = DyeColor.RED;
 			}
-			this.font.drawString(transform, "x "+amount, 30, 12+18*i, col.getColorValue());
+			this.font.drawString(transform, "x "+amount, 30, 18+20*i, col.getColorValue());
 		}
 	}
 

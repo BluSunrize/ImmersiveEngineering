@@ -30,9 +30,9 @@ public class CircuitTableContainer extends IEBaseContainer<CircuitTableTileEntit
 	{
 		super(inventoryPlayer, tile, id);
 
-		this.addSlot(new IESlot.Tagged(this, this.inv, this.slotCount++, 8, 7, IETags.circuitPCB));
-		this.addSlot(new IESlot.Tagged(this, this.inv, this.slotCount++, 8, 25, IETags.circuitLogic));
-		this.addSlot(new IESlot.Tagged(this, this.inv, this.slotCount++, 8, 61, IETags.circuitSolder));
+		this.addSlot(new IESlot.Tagged(this, this.inv, this.slotCount++, 8, 14, IETags.circuitPCB));
+		this.addSlot(new IESlot.Tagged(this, this.inv, this.slotCount++, 8, 34, IETags.circuitLogic));
+		this.addSlot(new IESlot.Tagged(this, this.inv, this.slotCount++, 8, 54, IETags.circuitSolder));
 
 		this.addSlot(new IESlot.Output(this, this.outputInventory, 0, 194, 56)
 		{
