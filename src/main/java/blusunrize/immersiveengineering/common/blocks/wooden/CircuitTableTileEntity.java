@@ -52,12 +52,12 @@ public class CircuitTableTileEntity extends IEBaseTileEntity implements IIEInven
 {
 	public static final BlockPos MASTER_POS = BlockPos.ZERO;
 	public static final BlockPos DUMMY_POS = new BlockPos(1, 0, 0);
-	public static final String[] SLOT_TYPES = new String[]{"backplane", "logic", "traces", "solder"};
+	public static final String[] SLOT_TYPES = new String[]{"backplane", "logic", "solder"};
 
 	private static final int ASSEMBLY_ENERGY = 5000;
 
 	public FluxStorageAdvanced energyStorage = new FluxStorageAdvanced(32000);
-	NonNullList<ItemStack> inventory = NonNullList.withSize(4, ItemStack.EMPTY);
+	NonNullList<ItemStack> inventory = NonNullList.withSize(3, ItemStack.EMPTY);
 
 	public CircuitTableTileEntity()
 	{
@@ -92,9 +92,7 @@ public class CircuitTableTileEntity extends IEBaseTileEntity implements IIEInven
 				return 1;
 			case 1: // logic
 				return instruction.getOperator().getComplexity();
-			case 2: // traces
-				return instruction.getInputs().length+1;
-			case 3: // solder
+			case 2: // solder
 				return (int)Math.ceil((instruction.getOperator().getComplexity()+instruction.getInputs().length+1)/2f);
 		}
 		return -1;
@@ -104,7 +102,7 @@ public class CircuitTableTileEntity extends IEBaseTileEntity implements IIEInven
 	{
 		if(this.getFluxStorage().getEnergyStored() < ASSEMBLY_ENERGY)
 			return false;
-		for(int i = 0; i < 4; i++)
+		for(int i = 0; i < SLOT_TYPES.length; i++)
 		{
 			ItemStack input = this.inventory.get(i);
 			if(input.getCount() < getIngredientAmount(instruction, i))
@@ -116,7 +114,7 @@ public class CircuitTableTileEntity extends IEBaseTileEntity implements IIEInven
 	public void consumeInputs(LogicCircuitInstruction instruction)
 	{
 		this.getFluxStorage().extractEnergy(ASSEMBLY_ENERGY, false);
-		for(int i = 0; i < 4; i++)
+		for(int i = 0; i < SLOT_TYPES.length; i++)
 			this.inventory.get(i).shrink(getIngredientAmount(instruction, i));
 	}
 

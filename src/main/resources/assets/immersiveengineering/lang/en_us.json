@@ -330,7 +330,6 @@
   "desc.immersiveengineering.info.multiblock.IE:Squeezer": "Squeezer",
   "desc.immersiveengineering.info.circuit_table.slot.backplane": "Backplane",
   "desc.immersiveengineering.info.circuit_table.slot.logic": "Logic Components",
-  "desc.immersiveengineering.info.circuit_table.slot.traces": "Traces",
   "desc.immersiveengineering.info.circuit_table.slot.solder": "Solder",
   "desc.immersiveengineering.info.circuit_table.copy": "Click to copy instruction",
   "desc.immersiveengineering.info.register": "Register %1$s",

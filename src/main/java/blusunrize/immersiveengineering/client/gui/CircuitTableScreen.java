@@ -37,6 +37,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
+import static blusunrize.immersiveengineering.common.blocks.wooden.CircuitTableTileEntity.SLOT_TYPES;
 
 public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 {
@@ -149,11 +150,11 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 
 		ArrayList<ITextComponent> tooltip = new ArrayList<>();
 
-		if(this.hoveredSlot!=null&&this.hoveredSlot.slotNumber < 4&&!this.hoveredSlot.getHasStack())
+		if(this.hoveredSlot!=null&&this.hoveredSlot.slotNumber < SLOT_TYPES.length&&!this.hoveredSlot.getHasStack())
 		{
 			int slotNum = this.hoveredSlot.slotNumber;
 			tooltip.add(TextUtils.applyFormat(
-					new TranslationTextComponent(Lib.DESC_INFO+"circuit_table.slot."+CircuitTableTileEntity.SLOT_TYPES[slotNum]),
+					new TranslationTextComponent(Lib.DESC_INFO+"circuit_table.slot."+SLOT_TYPES[slotNum]),
 					TextFormatting.GRAY
 			));
 		}
@@ -183,7 +184,7 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 		drawCenteredString(transform, this.font, "Inputs:", 130, 8, DyeColor.LIGHT_GRAY.getColorValue());
 		drawCenteredString(transform, this.font, "Outputs:", 130, 42, DyeColor.LIGHT_GRAY.getColorValue());
 
-		for(int i = 0; i < 4; i++)
+		for(int i = 0; i < SLOT_TYPES.length; i++)
 		{
 			int amount = 0;
 			DyeColor col = DyeColor.LIGHT_GRAY;

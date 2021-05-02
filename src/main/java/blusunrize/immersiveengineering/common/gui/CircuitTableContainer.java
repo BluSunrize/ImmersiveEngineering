@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.tool.LogicCircuitHandler.LogicCircuitInstruction;
 import blusunrize.immersiveengineering.common.blocks.wooden.CircuitTableTileEntity;
 import blusunrize.immersiveengineering.common.items.LogicCircuitBoardItem;
-import invtweaks.api.container.ChestContainer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
@@ -21,7 +20,6 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 
-@ChestContainer
 public class CircuitTableContainer extends IEBaseContainer<CircuitTableTileEntity>
 {
 	private final Inventory outputInventory = new Inventory(1);
@@ -34,7 +32,6 @@ public class CircuitTableContainer extends IEBaseContainer<CircuitTableTileEntit
 
 		this.addSlot(new IESlot.Tagged(this, this.inv, this.slotCount++, 8, 7, IETags.circuitPCB));
 		this.addSlot(new IESlot.Tagged(this, this.inv, this.slotCount++, 8, 25, IETags.circuitLogic));
-		this.addSlot(new IESlot.Tagged(this, this.inv, this.slotCount++, 8, 43, IETags.circuitTraces));
 		this.addSlot(new IESlot.Tagged(this, this.inv, this.slotCount++, 8, 61, IETags.circuitSolder));
 
 		this.addSlot(new IESlot.Output(this, this.outputInventory, 0, 194, 56)
