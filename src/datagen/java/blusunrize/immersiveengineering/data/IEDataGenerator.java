@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.data;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.wires.redstone.CapabilityRedstoneNetwork;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.StaticTemplateManager;
 import blusunrize.immersiveengineering.data.blockstates.BlockStates;
@@ -56,6 +57,8 @@ public class IEDataGenerator
 			gen.addProvider(new ConnectorBlockStates(gen, exHelper));
 			gen.addProvider(new ItemModels(gen, exHelper, blockStates));
 			gen.addProvider(new Advancements(gen));
+			gen.addProvider(new StructureUpdater("structures/multiblocks", Lib.MODID, exHelper, gen));
+			gen.addProvider(new StructureUpdater("structures/village", Lib.MODID, exHelper, gen));
 			// Always keep this as the last provider!
 			gen.addProvider(new RunCompleteHelper());
 		}
