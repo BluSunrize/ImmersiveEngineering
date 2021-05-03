@@ -1,14 +1,13 @@
 /*
- * BluSunrize
- * Copyright (c) 2017
+ *  BluSunrize
+ *  Copyright (c) 2021
  *
- * This code is licensed under "Blu's License of Common Sense"
- * Details can be found in the license file in the root folder of this project
+ *  This code is licensed under "Blu's License of Common Sense"
+ *  Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.common.util;
+package blusunrize.immersiveengineering.api.utils;
 
-import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -17,6 +16,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.util.NonNullSupplier;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -25,6 +26,8 @@ import java.util.function.Supplier;
 
 public abstract class CapabilityReference<T>
 {
+	private static final Logger LOGGER = LogManager.getLogger();
+
 	public static <T> CapabilityReference<T> forTileEntityAt(
 			TileEntity local, Supplier<DirectionalBlockPos> pos, Capability<T> cap
 	)
@@ -122,7 +125,7 @@ public abstract class CapabilityReference<T>
 			{
 				if(currentCap.isPresent()&&lastTE!=null&&lastTE.isRemoved())
 				{
-					IELogger.logger.warn(
+					LOGGER.warn(
 							"The tile entity {} (class {}) was removed, but the value {} provided by it "+
 									"for the capability {} is still marked as valid. This is likely a bug in the mod(s) adding "+
 									"the tile entity/the capability",
@@ -131,7 +134,7 @@ public abstract class CapabilityReference<T>
 							currentCap.orElseThrow(RuntimeException::new),
 							cap.getName());
 				}
-				lastTE = Utils.getExistingTileEntity(currWorld, currPos.getPosition());
+				lastTE = SafeChunkUtils.getSafeTE(currWorld, currPos.getPosition());
 				if(lastTE!=null)
 					currentCap = lastTE.getCapability(cap, currPos.getSide());
 				else
