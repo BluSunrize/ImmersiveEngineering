@@ -82,6 +82,7 @@ public class EventHandler
 	public static HashSet<IEExplosion> currentExplosions = new HashSet<IEExplosion>();
 	public static final Queue<Pair<RegistryKey<World>, BlockPos>> requestedBlockUpdates = new LinkedList<>();
 	public static final Set<TileEntity> REMOVE_FROM_TICKING = new HashSet<>();
+	public static final Queue<Runnable> SERVER_TASKS = new ArrayDeque<>();
 
 	@SubscribeEvent
 	public void onLoad(WorldEvent.Load event)
@@ -152,11 +153,6 @@ public class EventHandler
 	}*/
 
 
-	public static List<ResourceLocation> lootInjections = Arrays.asList(
-			new ResourceLocation(ImmersiveEngineering.MODID, "chests/stronghold_library"),
-			new ResourceLocation(ImmersiveEngineering.MODID, "chests/village_blacksmith")
-	);
-
 	@SubscribeEvent
 	public void onEntityJoiningWorld(EntityJoinWorldEvent event)
 	{
@@ -176,6 +172,14 @@ public class EventHandler
 			{
 				event.world.tickableTileEntities.removeAll(REMOVE_FROM_TICKING);
 				REMOVE_FROM_TICKING.removeIf((te) -> te.getWorld()==event.world);
+			}
+			// Explicitly support tasks adding more tasks to be delayed
+			int numToRun = SERVER_TASKS.size();
+			for(int i = 0; i < numToRun; ++i)
+			{
+				Runnable next = SERVER_TASKS.poll();
+				if(next!=null)
+					next.run();
 			}
 		}
 		if(event.phase==TickEvent.Phase.START)

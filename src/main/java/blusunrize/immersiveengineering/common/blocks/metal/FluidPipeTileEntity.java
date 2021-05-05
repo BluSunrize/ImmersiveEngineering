@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.IETags;
@@ -17,6 +16,7 @@ import blusunrize.immersiveengineering.api.fluid.IFluidPipe;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedVoxelShapes;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
+import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock.IELadderBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
@@ -171,9 +171,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 	{
 		super.onLoad();
 		if(world!=null&&!world.isRemote)
-		{
-			//TODO this really shouldn't be necessary IMO...
-			ApiUtils.addFutureServerTask(world, () -> {
+			EventHandler.SERVER_TASKS.add(() -> {
 				boolean changed = false;
 				for(Direction f : DirectionUtils.VALUES)
 					changed |= updateConnectionByte(f);
@@ -182,8 +180,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 					world.notifyNeighborsOfStateChange(pos, getBlockState().getBlock());
 					markContainingBlockForUpdate(null);
 				}
-			}, true);
-		}
+			});
 	}
 
 	@Override
