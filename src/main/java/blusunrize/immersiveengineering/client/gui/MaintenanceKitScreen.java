@@ -16,10 +16,13 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 public class MaintenanceKitScreen extends ToolModificationScreen<MaintenanceKitContainer>
 {
+	private static final ResourceLocation TEXTURE = makeTextureLocation("maintenance_kit");
+
 	public MaintenanceKitScreen(MaintenanceKitContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{
 		super(container, inventoryPlayer, title);
@@ -35,7 +38,7 @@ public class MaintenanceKitScreen extends ToolModificationScreen<MaintenanceKitC
 	@Override
 	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float f, int mx, int my)
 	{
-		ClientUtils.bindTexture("immersiveengineering:textures/gui/maintenance_kit.png");
+		ClientUtils.bindTexture(TEXTURE);
 		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
 
 		for(int i = 0; i < container.internalSlots; i++)

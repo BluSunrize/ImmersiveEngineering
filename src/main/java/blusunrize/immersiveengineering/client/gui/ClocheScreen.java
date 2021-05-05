@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -27,7 +28,9 @@ import java.util.List;
 
 public class ClocheScreen extends IEContainerScreen<ClocheContainer>
 {
-	private ClocheTileEntity tile;
+	private static final ResourceLocation TEXTURE = makeTextureLocation("cloche");
+
+	private final ClocheTileEntity tile;
 
 	public ClocheScreen(ClocheContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{
@@ -40,7 +43,7 @@ public class ClocheScreen extends IEContainerScreen<ClocheContainer>
 	{
 		super.render(transform, mx, my, partial);
 		List<ITextComponent> tooltip = new ArrayList<>();
-		ClientUtils.handleGuiTank(transform, tile.tank, guiLeft+8, guiTop+8, 16, 47, 176, 30, 20, 51, mx, my, "immersiveengineering:textures/gui/cloche.png", tooltip);
+		ClientUtils.handleGuiTank(transform, tile.tank, guiLeft+8, guiTop+8, 16, 47, 176, 30, 20, 51, mx, my, TEXTURE, tooltip);
 		if(mx > guiLeft+30&&mx < guiLeft+37&&my > guiTop+22&&my < guiTop+68)
 		{
 			tooltip.add(new TranslationTextComponent(Lib.DESC_INFO+"fertFill", Utils.formatDouble(tile.fertilizerAmount/(float)IEServerConfig.MACHINES.cloche_fertilizer.get(), "0.00")));
@@ -58,11 +61,11 @@ public class ClocheScreen extends IEContainerScreen<ClocheContainer>
 	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float f, int mx, int my)
 	{
 		RenderSystem.enableBlend();
-		ClientUtils.bindTexture("immersiveengineering:textures/gui/cloche.png");
+		ClientUtils.bindTexture(TEXTURE);
 		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
 		RenderSystem.disableBlend();
 
-		ClientUtils.handleGuiTank(transform, tile.tank, guiLeft+8, guiTop+8, 16, 47, 176, 30, 20, 51, mx, my, "immersiveengineering:textures/gui/cloche.png", null);
+		ClientUtils.handleGuiTank(transform, tile.tank, guiLeft+8, guiTop+8, 16, 47, 176, 30, 20, 51, mx, my, TEXTURE, null);
 		int stored = (int)(46*(tile.fertilizerAmount/(float)IEServerConfig.MACHINES.cloche_fertilizer.get()));
 		ClientUtils.drawGradientRect(guiLeft+30, guiTop+22+(46-stored), guiLeft+37, guiTop+68, 0xff95ed00, 0xff8a5a00);
 

@@ -36,7 +36,7 @@ public class GuiButtonItem extends Button
 	{
 		if(this.visible)
 		{
-			ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
+ClientUtils.bindTexture(GuiReactiveList.TEXTURE);
 			this.isHovered = mouseX >= this.x&&mouseY >= this.y&&mouseX < this.x+this.width&&mouseY < this.y+this.height;
 			RenderSystem.enableBlend();
 			RenderSystem.blendFuncSeparate(770, 771, 1, 0);

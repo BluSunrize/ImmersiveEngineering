@@ -21,6 +21,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.item.DyeColor;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -34,6 +35,8 @@ import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
 public class RedstoneConnectorScreen extends ClientTileScreen<ConnectorRedstoneTileEntity>
 {
+	private static final ResourceLocation TEXTURE = IEContainerScreen.makeTextureLocation("redstone_configuration");
+
 	public RedstoneConnectorScreen(ConnectorRedstoneTileEntity tileEntity, ITextComponent title)
 	{
 		super(tileEntity, title);
@@ -53,7 +56,7 @@ public class RedstoneConnectorScreen extends ClientTileScreen<ConnectorRedstoneT
 		this.buttons.clear();
 
 		buttonInOut = new GuiButtonState<>(guiLeft+41, guiTop+20, 18, 18, StringTextComponent.EMPTY, new IOSideConfig[]{IOSideConfig.INPUT, IOSideConfig.OUTPUT},
-				tileEntity.ioMode.ordinal()-1, "immersiveengineering:textures/gui/redstone_configuration.png", 176, 0, 1,
+				tileEntity.ioMode.ordinal()-1, TEXTURE, 176, 0, 1,
 				btn -> sendConfig("ioMode", btn.getNextState().ordinal())
 		);
 		this.addButton(buttonInOut);
@@ -124,7 +127,7 @@ public class RedstoneConnectorScreen extends ClientTileScreen<ConnectorRedstoneT
 	public static GuiButtonBoolean buildColorButton(GuiButtonBoolean[] buttons, int posX, int posY, boolean active, DyeColor color, Consumer<GuiButtonBoolean> onClick)
 	{
 		return new GuiButtonBoolean(posX, posY, 12, 12, "", active,
-				"immersiveengineering:textures/gui/redstone_configuration.png", 194, 0, 1,
+				TEXTURE, 194, 0, 1,
 				btn -> {
 					if(btn.getNextState())
 						onClick.accept((GuiButtonBoolean)btn);

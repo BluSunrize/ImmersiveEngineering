@@ -87,35 +87,16 @@ import static blusunrize.immersiveengineering.api.client.TextUtils.applyFormat;
 
 public class ClientUtils
 {
-	static HashMap<String, ResourceLocation> resourceMap = new HashMap<String, ResourceLocation>();
 	public static TextureAtlasSprite[] destroyBlockIcons = new TextureAtlasSprite[10];
-
-	public static Tessellator tes()
-	{
-		return Tessellator.getInstance();
-	}
 
 	public static Minecraft mc()
 	{
 		return Minecraft.getInstance();
 	}
 
-	public static void bindTexture(String path)
+	public static void bindTexture(ResourceLocation texture)
 	{
-		mc().getTextureManager().bindTexture(getResource(path));
-	}
-
-	public static void bindAtlas()
-	{
-		mc().getTextureManager().bindTexture(PlayerContainer.LOCATION_BLOCKS_TEXTURE);
-	}
-
-	public static ResourceLocation getResource(String path)
-	{
-		ResourceLocation rl = resourceMap.containsKey(path)?resourceMap.get(path): new ResourceLocation(path);
-		if(!resourceMap.containsKey(path))
-			resourceMap.put(path, rl);
-		return rl;
+		mc().getTextureManager().bindTexture(texture);
 	}
 
 	public static TextureAtlasSprite getSprite(ResourceLocation rl)
@@ -518,12 +499,12 @@ public class ClientUtils
 		drawColouredRect(x+8+w/2, y+8-h/2, 1, h, 0x77999999);
 	}
 
-	public static void handleGuiTank(MatrixStack transform, IFluidTank tank, int x, int y, int w, int h, int oX, int oY, int oW, int oH, int mX, int mY, String originalTexture, List<ITextComponent> tooltip)
+	public static void handleGuiTank(MatrixStack transform, IFluidTank tank, int x, int y, int w, int h, int oX, int oY, int oW, int oH, int mX, int mY, ResourceLocation originalTexture, List<ITextComponent> tooltip)
 	{
 		handleGuiTank(transform, tank.getFluid(), tank.getCapacity(), x, y, w, h, oX, oY, oW, oH, mX, mY, originalTexture, tooltip);
 	}
 
-	public static void handleGuiTank(MatrixStack transform, FluidStack fluid, int capacity, int x, int y, int w, int h, int oX, int oY, int oW, int oH, int mX, int mY, String originalTexture, List<ITextComponent> tooltip)
+	public static void handleGuiTank(MatrixStack transform, FluidStack fluid, int capacity, int x, int y, int w, int h, int oX, int oY, int oW, int oH, int mX, int mY, ResourceLocation originalTexture, List<ITextComponent> tooltip)
 	{
 		if(tooltip==null)
 		{
@@ -537,7 +518,7 @@ public class ClientUtils
 			}
 			int xOff = (w-oW)/2;
 			int yOff = (h-oH)/2;
-			RenderType renderType = IERenderTypes.getGui(new ResourceLocation(originalTexture));
+			RenderType renderType = IERenderTypes.getGui(originalTexture);
 			drawTexturedRect(buffer.getBuffer(renderType), transform, x+xOff, y+yOff, oW, oH, 256f, oX, oX+oW, oY, oY+oH);
 			buffer.finish(renderType);
 			transform.pop();

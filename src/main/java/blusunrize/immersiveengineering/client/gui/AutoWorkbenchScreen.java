@@ -21,6 +21,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
@@ -30,6 +31,7 @@ import java.util.List;
 
 public class AutoWorkbenchScreen extends IEContainerScreen<AutoWorkbenchContainer>
 {
+	private static final ResourceLocation TEXTURE = makeTextureLocation("auto_workbench");
 	private AutoWorkbenchTileEntity tile;
 
 	public AutoWorkbenchScreen(AutoWorkbenchContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
@@ -90,7 +92,7 @@ public class AutoWorkbenchScreen extends IEContainerScreen<AutoWorkbenchContaine
 	@Override
 	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float f, int mx, int my)
 	{
-		ClientUtils.bindTexture("immersiveengineering:textures/gui/auto_workbench.png");
+		ClientUtils.bindTexture(TEXTURE);
 		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
 
 		int stored = (int)(46*(tile.getEnergyStored(null)/(float)tile.getMaxEnergyStored(null)));

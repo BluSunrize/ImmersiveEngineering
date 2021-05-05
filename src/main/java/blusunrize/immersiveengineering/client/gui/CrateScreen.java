@@ -13,10 +13,13 @@ import blusunrize.immersiveengineering.common.blocks.wooden.WoodenCrateTileEntit
 import blusunrize.immersiveengineering.common.gui.CrateContainer;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 public class CrateScreen extends IEContainerScreen<CrateContainer>
 {
+	private static final ResourceLocation TEXTURE = makeTextureLocation("crate");
+
 	public CrateScreen(CrateContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{
 		super(container, inventoryPlayer, title);
@@ -34,7 +37,7 @@ public class CrateScreen extends IEContainerScreen<CrateContainer>
 	@Override
 	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float f, int mx, int my)
 	{
-		ClientUtils.bindTexture("immersiveengineering:textures/gui/crate.png");
+		ClientUtils.bindTexture(TEXTURE);
 		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
 	}
 }

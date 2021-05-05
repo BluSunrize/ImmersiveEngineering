@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.common.gui.BlastFurnaceContainer;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 import java.util.function.Function;
@@ -23,6 +24,7 @@ import java.util.function.Function;
 public class BlastFurnaceScreen extends IEContainerScreen<BlastFurnaceContainer>
 {
 	private static final Function<BlastFurnacePreheaterTileEntity, Boolean> PREHEATER_ACTIVE = tile -> tile.active;
+	private static final ResourceLocation TEXTURE = makeTextureLocation("blast_furnace");
 
 	public BlastFurnaceScreen(BlastFurnaceContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{
@@ -48,7 +50,7 @@ public class BlastFurnaceScreen extends IEContainerScreen<BlastFurnaceContainer>
 	@Override
 	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float f, int mx, int my)
 	{
-		ClientUtils.bindTexture("immersiveengineering:textures/gui/blast_furnace.png");
+		ClientUtils.bindTexture(TEXTURE);
 		this.blit(transform, guiLeft, guiTop, 0, 0, 176, ySize);
 
 		if(container.tile instanceof BlastFurnaceAdvancedTileEntity)

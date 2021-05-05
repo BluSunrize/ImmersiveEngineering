@@ -23,6 +23,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -35,9 +36,11 @@ import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
 public class ItemBatcherScreen extends IEContainerScreen<ItemBatcherContainer>
 {
-	ItemBatcherTileEntity tile;
-	GuiButtonState<BatchMode> buttonBatchMode;
-	GuiButtonDyeColor[] buttonsRedstone = new GuiButtonDyeColor[9];
+	private static final ResourceLocation TEXTURE = makeTextureLocation("item_batcher");
+
+	private final ItemBatcherTileEntity tile;
+	private GuiButtonState<BatchMode> buttonBatchMode;
+	private final GuiButtonDyeColor[] buttonsRedstone = new GuiButtonDyeColor[9];
 
 	public ItemBatcherScreen(ItemBatcherContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{
@@ -54,7 +57,7 @@ public class ItemBatcherScreen extends IEContainerScreen<ItemBatcherContainer>
 
 		this.buttons.clear();
 		buttonBatchMode = new GuiButtonState<>(guiLeft+7, guiTop+92, 18, 18, StringTextComponent.EMPTY,
-				ItemBatcherTileEntity.BatchMode.values(), tile.batchMode.ordinal(), "immersiveengineering:textures/gui/item_batcher.png",
+				ItemBatcherTileEntity.BatchMode.values(), tile.batchMode.ordinal(), TEXTURE,
 				176, 36, 1,
 				btn -> {
 					CompoundNBT tag = new CompoundNBT();
@@ -131,7 +134,7 @@ public class ItemBatcherScreen extends IEContainerScreen<ItemBatcherContainer>
 	@Override
 	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float f, int mx, int my)
 	{
-		ClientUtils.bindTexture("immersiveengineering:textures/gui/item_batcher.png");
+		ClientUtils.bindTexture(TEXTURE);
 		// Background
 		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
 	}

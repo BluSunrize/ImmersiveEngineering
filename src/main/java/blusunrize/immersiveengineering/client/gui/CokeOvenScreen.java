@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.common.blocks.stone.CokeOvenTileEntity;
 import blusunrize.immersiveengineering.common.gui.CokeOvenContainer;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
@@ -21,6 +22,8 @@ import java.util.List;
 
 public class CokeOvenScreen extends IEContainerScreen<CokeOvenContainer>
 {
+	private static final ResourceLocation TEXTURE = makeTextureLocation("coke_oven");
+
 	private CokeOvenTileEntity tile;
 
 	public CokeOvenScreen(CokeOvenContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
@@ -35,7 +38,7 @@ public class CokeOvenScreen extends IEContainerScreen<CokeOvenContainer>
 	{
 		super.render(transform, mx, my, partial);
 		List<ITextComponent> tooltip = new ArrayList<>();
-		ClientUtils.handleGuiTank(transform, tile.tank, guiLeft+129, guiTop+20, 16, 47, 176, 31, 20, 51, mx, my, "immersiveengineering:textures/gui/coke_oven.png", tooltip);
+		ClientUtils.handleGuiTank(transform, tile.tank, guiLeft+129, guiTop+20, 16, 47, 176, 31, 20, 51, mx, my, TEXTURE, tooltip);
 		if(!tooltip.isEmpty())
 			GuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
 	}
@@ -43,7 +46,7 @@ public class CokeOvenScreen extends IEContainerScreen<CokeOvenContainer>
 	@Override
 	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float f, int mx, int my)
 	{
-		ClientUtils.bindTexture("immersiveengineering:textures/gui/coke_oven.png");
+		ClientUtils.bindTexture(TEXTURE);
 		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
 
 		if(tile.processMax > 0&&tile.process > 0)
@@ -52,7 +55,7 @@ public class CokeOvenScreen extends IEContainerScreen<CokeOvenContainer>
 			this.blit(transform, guiLeft+59, guiTop+37+12-h, 179, 1+12-h, 9, h);
 		}
 
-		ClientUtils.handleGuiTank(transform, tile.tank, guiLeft+129, guiTop+20, 16, 47, 176, 31, 20, 51, mx, my, "immersiveengineering:textures/gui/coke_oven.png", null);
+		ClientUtils.handleGuiTank(transform, tile.tank, guiLeft+129, guiTop+20, 16, 47, 176, 31, 20, 51, mx, my, TEXTURE, null);
 
 	}
 }

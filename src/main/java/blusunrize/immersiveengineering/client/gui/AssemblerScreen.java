@@ -25,6 +25,7 @@ import net.minecraft.client.util.ITooltipFlag.TooltipFlags;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -37,7 +38,7 @@ import java.util.function.IntConsumer;
 
 public class AssemblerScreen extends IEContainerScreen<AssemblerContainer>
 {
-	static final String texture = "immersiveengineering:textures/gui/assembler.png";
+	private static final ResourceLocation TEXTURE = makeTextureLocation("assembler");
 	public AssemblerTileEntity tile;
 
 	public AssemblerScreen(AssemblerContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
@@ -60,11 +61,11 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerContainer>
 		for(int i = 0; i < 3; ++i)
 		{
 			final int id = i;
-			this.addButton(new GuiButtonIE(guiLeft+11+i*59, guiTop+67, 10, 10, StringTextComponent.EMPTY, texture, 230, 50,
+			this.addButton(new GuiButtonIE(guiLeft+11+i*59, guiTop+67, 10, 10, StringTextComponent.EMPTY, TEXTURE, 230, 50,
 					btn -> sendButtonClick.accept(id))
 					.setHoverOffset(0, 10));
 		}
-		this.addButton(new GuiButtonBoolean(guiLeft+162, guiTop+69, 16, 16, "", tile.recursiveIngredients, texture, 240, 66, 3,
+		this.addButton(new GuiButtonBoolean(guiLeft+162, guiTop+69, 16, 16, "", tile.recursiveIngredients, TEXTURE, 240, 66, 3,
 				btn -> {
 					sendButtonClick.accept(3);
 					tile.recursiveIngredients = !tile.recursiveIngredients;
@@ -80,9 +81,9 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerContainer>
 		if(mx >= guiLeft+187&&mx < guiLeft+194&&my >= guiTop+12&&my < guiTop+59)
 			tooltip.add(new StringTextComponent(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" IF"));
 
-		ClientUtils.handleGuiTank(transform, tile.tanks[0], guiLeft+204, guiTop+13, 16, 46, 250, 0, 20, 50, mx, my, texture, tooltip);
-		ClientUtils.handleGuiTank(transform, tile.tanks[1], guiLeft+182, guiTop+70, 16, 46, 250, 0, 20, 50, mx, my, texture, tooltip);
-		ClientUtils.handleGuiTank(transform, tile.tanks[2], guiLeft+204, guiTop+70, 16, 46, 250, 0, 20, 50, mx, my, texture, tooltip);
+		ClientUtils.handleGuiTank(transform, tile.tanks[0], guiLeft+204, guiTop+13, 16, 46, 250, 0, 20, 50, mx, my, TEXTURE, tooltip);
+		ClientUtils.handleGuiTank(transform, tile.tanks[1], guiLeft+182, guiTop+70, 16, 46, 250, 0, 20, 50, mx, my, TEXTURE, tooltip);
+		ClientUtils.handleGuiTank(transform, tile.tanks[2], guiLeft+204, guiTop+70, 16, 46, 250, 0, 20, 50, mx, my, TEXTURE, tooltip);
 
 		for(int i = 0; i < tile.patterns.length; i++)
 			if(tile.inventory.get(18+i).isEmpty()&&!tile.patterns[i].inv.get(9).isEmpty())
@@ -109,15 +110,15 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerContainer>
 	@Override
 	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float f, int mx, int my)
 	{
-		ClientUtils.bindTexture(texture);
+		ClientUtils.bindTexture(TEXTURE);
 		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
 
 		int stored = (int)(46*(tile.getEnergyStored(null)/(float)tile.getMaxEnergyStored(null)));
 		ClientUtils.drawGradientRect(guiLeft+187, guiTop+13+(46-stored), guiLeft+194, guiTop+59, 0xffb51500, 0xff600b00);
 
-		ClientUtils.handleGuiTank(transform, tile.tanks[0], guiLeft+204, guiTop+13, 16, 46, 230, 0, 20, 50, mx, my, texture, null);
-		ClientUtils.handleGuiTank(transform, tile.tanks[1], guiLeft+182, guiTop+70, 16, 46, 230, 0, 20, 50, mx, my, texture, null);
-		ClientUtils.handleGuiTank(transform, tile.tanks[2], guiLeft+204, guiTop+70, 16, 46, 230, 0, 20, 50, mx, my, texture, null);
+		ClientUtils.handleGuiTank(transform, tile.tanks[0], guiLeft+204, guiTop+13, 16, 46, 230, 0, 20, 50, mx, my, TEXTURE, null);
+		ClientUtils.handleGuiTank(transform, tile.tanks[1], guiLeft+182, guiTop+70, 16, 46, 230, 0, 20, 50, mx, my, TEXTURE, null);
+		ClientUtils.handleGuiTank(transform, tile.tanks[2], guiLeft+204, guiTop+70, 16, 46, 230, 0, 20, 50, mx, my, TEXTURE, null);
 
 		for(int i = 0; i < tile.patterns.length; i++)
 			if(tile.inventory.get(18+i).isEmpty()&&!tile.patterns[i].inv.get(9).isEmpty())

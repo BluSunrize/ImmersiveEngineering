@@ -10,11 +10,11 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
-import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.gui.ToolboxContainer;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -24,6 +24,8 @@ import java.util.ArrayList;
 
 public class ToolboxScreen extends IEContainerScreen<ToolboxContainer>
 {
+	private static final ResourceLocation TEXTURE = makeTextureLocation("toolbox");
+
 	public ToolboxScreen(ToolboxContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{
 		super(container, inventoryPlayer, title);
@@ -57,7 +59,6 @@ public class ToolboxScreen extends IEContainerScreen<ToolboxContainer>
 	@Override
 	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float par1, int par2, int par3)
 	{
-		ClientUtils.bindTexture("immersiveengineering:textures/gui/toolbox.png");
 		this.blit(transform, guiLeft, guiTop-17, 0, 0, 176, ySize+17);
 	}
 

@@ -29,6 +29,7 @@ import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -41,8 +42,10 @@ import java.util.List;
 
 public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 {
-	public FluidSorterTileEntity tile;
-	private PlayerInventory playerInventory;
+	private static final ResourceLocation TEXTURE = makeTextureLocation("sorter");
+
+	public final FluidSorterTileEntity tile;
+	private final PlayerInventory playerInventory;
 
 	public FluidSorterScreen(FluidSorterContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{
@@ -117,7 +120,7 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 	@Override
 	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float f, int mx, int my)
 	{
-		ClientUtils.bindTexture("immersiveengineering:textures/gui/sorter.png");
+		ClientUtils.bindTexture(TEXTURE);
 		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
 		{
 			IRenderTypeBuffer.Impl buffers = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());

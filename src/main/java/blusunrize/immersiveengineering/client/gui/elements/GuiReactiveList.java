@@ -10,16 +10,20 @@ package blusunrize.immersiveengineering.client.gui.elements;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.gui.IEContainerScreen;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
 
 import java.util.function.Function;
 
 public class GuiReactiveList extends Button
 {
+	static final ResourceLocation TEXTURE = IEContainerScreen.makeTextureLocation("hud_elements");
+
 	private final Screen gui;
 	private String[] entries;
 	private int[] padding = {0, 0, 0, 0};
@@ -112,7 +116,7 @@ public class GuiReactiveList extends Button
 		int strWidth = width-padding[2]-padding[3]-(needsSlider?6: 0);
 		if(needsSlider)
 		{
-			ClientUtils.bindTexture("immersiveengineering:textures/gui/hud_elements.png");
+			ClientUtils.bindTexture(TEXTURE);
 			this.blit(transform, x+width-6, y, 16, 136, 6, 4);
 			this.blit(transform, x+width-6, y+height-4, 16, 144, 6, 4);
 			for(int i = 0; i < height-8; i += 2)

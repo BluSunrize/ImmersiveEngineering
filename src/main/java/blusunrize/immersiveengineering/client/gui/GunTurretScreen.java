@@ -46,7 +46,7 @@ public class GunTurretScreen extends TurretScreen
 	@Override
 	protected void addCustomButtons()
 	{
-		this.addButton(new GuiButtonBoolean(guiLeft+134, guiTop+31, 16, 16, "", ((TurretGunTileEntity)tile).expelCasings, "immersiveengineering:textures/gui/turret.png", 176, 81, 0,
+		this.addButton(new GuiButtonBoolean(guiLeft+134, guiTop+31, 16, 16, "", ((TurretGunTileEntity)tile).expelCasings, TEXTURE, 176, 81, 0,
 				btn -> {
 					CompoundNBT tag = new CompoundNBT();
 					int listOffset = -1;

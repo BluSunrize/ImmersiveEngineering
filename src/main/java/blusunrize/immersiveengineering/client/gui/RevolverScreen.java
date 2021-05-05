@@ -28,9 +28,11 @@ import net.minecraft.util.text.ITextComponent;
 
 public class RevolverScreen extends IEContainerScreen<RevolverContainer>
 {
-	private int[] bullets = new int[2];
-	private boolean otherRevolver = false;
-	private int offset = 0;
+	private static final ResourceLocation TEXTURE = makeTextureLocation("revolver");
+
+	private final int[] bullets = new int[2];
+	private final boolean otherRevolver;
+	private final int offset;
 
 	public RevolverScreen(RevolverContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{
@@ -53,7 +55,7 @@ public class RevolverScreen extends IEContainerScreen<RevolverContainer>
 	@Override
 	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float par1, int par2, int par3)
 	{
-		ClientUtils.bindTexture("immersiveengineering:textures/gui/revolver.png");
+		ClientUtils.bindTexture(TEXTURE);
 		this.blit(transform, guiLeft+(offset > 0?offset: 0), guiTop+77, 0, 125, 176, 89);
 
 		int off = (offset < 0?-offset: 0);

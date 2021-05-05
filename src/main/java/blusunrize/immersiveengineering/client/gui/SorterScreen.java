@@ -23,6 +23,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -38,7 +39,9 @@ import static com.mojang.blaze3d.platform.GlStateManager.SourceFactor.SRC_ALPHA;
 
 public class SorterScreen extends IEContainerScreen<SorterContainer>
 {
-	SorterTileEntity tile;
+	private static final ResourceLocation TEXTURE = makeTextureLocation("sorter");
+
+	private final SorterTileEntity tile;
 
 	public SorterScreen(SorterContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{
@@ -72,7 +75,7 @@ public class SorterScreen extends IEContainerScreen<SorterContainer>
 	@Override
 	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float f, int mx, int my)
 	{
-		ClientUtils.bindTexture("immersiveengineering:textures/gui/sorter.png");
+		ClientUtils.bindTexture(TEXTURE);
 		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
 		for(int side = 0; side < 6; side++)
 		{
@@ -82,7 +85,6 @@ public class SorterScreen extends IEContainerScreen<SorterContainer>
 			RenderSystem.enableBlend();
 			ClientUtils.font().drawStringWithShadow(transform, s, x-(ClientUtils.font().getStringWidth(s)/2), y, 0xaacccccc);
 		}
-		ClientUtils.bindTexture("immersiveengineering:textures/gui/sorter.png");
 	}
 
 	@Override
@@ -127,7 +129,7 @@ public class SorterScreen extends IEContainerScreen<SorterContainer>
 		{
 			if(this.visible)
 			{
-				ClientUtils.bindTexture("immersiveengineering:textures/gui/sorter.png");
+				ClientUtils.bindTexture(TEXTURE);
 				isHovered = mx >= this.x&&my >= this.y&&mx < this.x+this.width&&my < this.y+this.height;
 				RenderSystem.enableBlend();
 				RenderSystem.blendFuncSeparate(SRC_ALPHA, ONE_MINUS_SRC_ALPHA, ONE, ZERO);

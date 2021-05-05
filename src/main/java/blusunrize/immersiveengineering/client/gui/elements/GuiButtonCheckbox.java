@@ -9,14 +9,18 @@
 package blusunrize.immersiveengineering.client.gui.elements;
 
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.client.gui.IEContainerScreen;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.ResourceLocation;
 
 public class GuiButtonCheckbox extends GuiButtonBoolean
 {
+	private static final ResourceLocation TEXTURE = IEContainerScreen.makeTextureLocation("hud_elements");
+
 	public GuiButtonCheckbox(int x, int y, String name, boolean state, IIEPressable<GuiButtonState<Boolean>> handler)
 	{
-		super(x, y, 8, 8, name, state, "immersiveengineering:textures/gui/hud_elements.png", 0, 128, -1, handler);
+		super(x, y, 8, 8, name, state, TEXTURE, 0, 128, -1, handler);
 	}
 
 	@Override

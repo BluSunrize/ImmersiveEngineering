@@ -24,6 +24,7 @@ import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -33,10 +34,10 @@ import net.minecraftforge.fml.client.gui.GuiUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
-
 public class MixerScreen extends IEContainerScreen<MixerContainer>
 {
+	private static final ResourceLocation TEXTURE = makeTextureLocation("mixer");
+
 	private MixerTileEntity tile;
 
 	public MixerScreen(MixerContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
@@ -51,7 +52,7 @@ public class MixerScreen extends IEContainerScreen<MixerContainer>
 	{
 		super.init();
 		this.buttons.clear();
-		this.addButton(new GuiButtonBoolean(guiLeft+106, guiTop+61, 30, 16, "", tile.outputAll, "immersiveengineering:textures/gui/mixer.png", 176, 82, 1,
+		this.addButton(new GuiButtonBoolean(guiLeft+106, guiTop+61, 30, 16, "", tile.outputAll, TEXTURE, 176, 82, 1,
 				btn -> {
 					CompoundNBT tag = new CompoundNBT();
 					tile.outputAll = !btn.getState();
@@ -108,7 +109,7 @@ public class MixerScreen extends IEContainerScreen<MixerContainer>
 	{
 		transform.push();
 		IRenderTypeBuffer.Impl buffers = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
-		ClientUtils.bindTexture(rl("textures/gui/mixer.png").toString());
+		ClientUtils.bindTexture(TEXTURE);
 		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
 
 		for(MultiblockProcess<MixerRecipe> process : tile.processQueue)

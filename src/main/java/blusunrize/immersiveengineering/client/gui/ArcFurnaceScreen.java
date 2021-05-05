@@ -19,6 +19,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -30,7 +31,7 @@ import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
 public class ArcFurnaceScreen extends IEContainerScreen<ArcFurnaceContainer>
 {
-	static final String texture = "immersiveengineering:textures/gui/arc_furnace.png";
+	private static final ResourceLocation TEXTURE = makeTextureLocation("arc_furnace");
 	private ArcFurnaceTileEntity tile;
 	private GuiButtonIE distributeButton;
 
@@ -59,7 +60,7 @@ public class ArcFurnaceScreen extends IEContainerScreen<ArcFurnaceContainer>
 	@Override
 	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float f, int mx, int my)
 	{
-		ClientUtils.bindTexture(texture);
+		ClientUtils.bindTexture(TEXTURE);
 		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
 
 		for(MultiblockProcess process : tile.processQueue)
@@ -80,7 +81,7 @@ public class ArcFurnaceScreen extends IEContainerScreen<ArcFurnaceContainer>
 	{
 		super.init();
 		Minecraft mc = mc();
-		distributeButton = new GuiButtonIE(guiLeft+10, guiTop+10, 16, 16, StringTextComponent.EMPTY, texture, 179, 0,
+		distributeButton = new GuiButtonIE(guiLeft+10, guiTop+10, 16, 16, StringTextComponent.EMPTY, TEXTURE, 179, 0,
 				btn -> {
 					if(mc.player!=null&&mc.player.inventory.getItemStack().isEmpty())
 						autoSplitStacks();

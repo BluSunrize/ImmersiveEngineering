@@ -14,6 +14,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 public class GuiButtonState<E> extends GuiButtonIE
@@ -23,7 +24,7 @@ public class GuiButtonState<E> extends GuiButtonIE
 	protected final int offsetDir;
 	public int[] textOffset = {0, 0};
 
-	public GuiButtonState(int x, int y, int w, int h, ITextComponent name, E[] states, int initialState, String texture, int u,
+	public GuiButtonState(int x, int y, int w, int h, ITextComponent name, E[] states, int initialState, ResourceLocation texture, int u,
 						  int v, int offsetDir, IIEPressable<GuiButtonState<E>> handler)
 	{
 		super(x, y, w, h, name, texture, u, v, handler);

@@ -22,6 +22,7 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -35,6 +36,8 @@ import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
 public abstract class TurretScreen extends IEContainerScreen<TurretContainer>
 {
+	protected static final ResourceLocation TEXTURE = makeTextureLocation("turret");
+
 	public TurretTileEntity tile;
 	private TextFieldWidget nameField;
 
@@ -63,7 +66,7 @@ public abstract class TurretScreen extends IEContainerScreen<TurretContainer>
 					CompoundNBT tag = new CompoundNBT();
 					int listOffset = -1;
 					int rem = list.selectedOption;
-					if(rem>=0&&tile.targetList.size()>0)
+					if(rem >= 0&&tile.targetList.size() > 0)
 					{
 						tile.targetList.remove(rem);
 						tag.putInt("remove", rem);
@@ -72,7 +75,7 @@ public abstract class TurretScreen extends IEContainerScreen<TurretContainer>
 					}
 				}, tile.targetList.toArray(new String[0]))
 				.setPadding(0, 0, 2, 2));
-		this.addButton(new GuiButtonIE(guiLeft+74, guiTop+84, 24, 16, new TranslationTextComponent(Lib.GUI_CONFIG+"turret.add"), "immersiveengineering:textures/gui/turret.png", 176, 65,
+		this.addButton(new GuiButtonIE(guiLeft+74, guiTop+84, 24, 16, new TranslationTextComponent(Lib.GUI_CONFIG+"turret.add"), TEXTURE, 176, 65,
 				btn -> {
 					CompoundNBT tag = new CompoundNBT();
 					int listOffset = -1;
@@ -155,7 +158,7 @@ public abstract class TurretScreen extends IEContainerScreen<TurretContainer>
 	@Override
 	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float f, int mx, int my)
 	{
-		ClientUtils.bindTexture("immersiveengineering:textures/gui/turret.png");
+		ClientUtils.bindTexture(TEXTURE);
 		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
 
 		int stored = (int)(46*(tile.getEnergyStored(null)/(float)tile.getMaxEnergyStored(null)));

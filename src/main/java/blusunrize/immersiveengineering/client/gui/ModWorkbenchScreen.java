@@ -25,6 +25,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -39,7 +40,9 @@ import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
 public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchContainer>
 {
-	private ModWorkbenchTileEntity workbench;
+	private static final ResourceLocation TEXTURE = makeTextureLocation("workbench");
+
+	private final ModWorkbenchTileEntity workbench;
 
 	public ModWorkbenchScreen(ModWorkbenchContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{
@@ -106,7 +109,7 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 	@Override
 	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float f, int mx, int my)
 	{
-		ClientUtils.bindTexture("immersiveengineering:textures/gui/workbench.png");
+		ClientUtils.bindTexture(TEXTURE);
 		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
 
 

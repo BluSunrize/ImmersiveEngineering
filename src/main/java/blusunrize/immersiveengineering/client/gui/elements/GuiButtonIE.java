@@ -18,15 +18,16 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 public class GuiButtonIE extends Button
 {
-	protected final String texture;
+	protected final ResourceLocation texture;
 	protected final int texU;
 	protected final int texV;
 
-	public GuiButtonIE(int x, int y, int w, int h, ITextComponent name, String texture, int u, int v, IIEPressable handler)
+	public GuiButtonIE(int x, int y, int w, int h, ITextComponent name, ResourceLocation texture, int u, int v, IIEPressable handler)
 	{
 		super(x, y, w, h, name, handler);
 		this.texture = texture;
