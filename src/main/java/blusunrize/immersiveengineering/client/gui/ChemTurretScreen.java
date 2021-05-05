@@ -9,8 +9,8 @@
 package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonBoolean;
+import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.common.blocks.metal.TurretChemTileEntity;
 import blusunrize.immersiveengineering.common.gui.TurretContainer;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -31,7 +31,7 @@ public class ChemTurretScreen extends TurretScreen
 	@Override
 	protected void renderCustom(MatrixStack transform, List<ITextComponent> tooltipOut, int mx, int my)
 	{
-		ClientUtils.handleGuiTank(transform, ((TurretChemTileEntity)tile).tank, guiLeft+134, guiTop+16, 16, 47, 196, 0, 20, 51, mx, my,
+		GuiHelper.handleGuiTank(transform, ((TurretChemTileEntity)tile).tank, guiLeft+134, guiTop+16, 16, 47, 196, 0, 20, 51, mx, my,
 				TEXTURE, tooltipOut);
 		if(mx >= guiLeft+135&&mx < guiLeft+149&&my >= guiTop+68&&my < guiTop+82)
 			tooltipOut.add(new TranslationTextComponent(Lib.GUI_CONFIG+"turret.ignite_fluid"));
@@ -42,7 +42,7 @@ public class ChemTurretScreen extends TurretScreen
 	{
 		super.drawGuiContainerBackgroundLayer(transform, f, mx, my);
 		this.blit(transform, guiLeft+132, guiTop+14, 176, 0, 20, 51);
-		ClientUtils.handleGuiTank(transform, ((TurretChemTileEntity)tile).tank, guiLeft+134, guiTop+16, 16, 47, 196, 0, 20, 51, mx, my, TEXTURE, null);
+		GuiHelper.handleGuiTank(transform, ((TurretChemTileEntity)tile).tank, guiLeft+134, guiTop+16, 16, 47, 196, 0, 20, 51, mx, my, TEXTURE, null);
 	}
 
 	@Override

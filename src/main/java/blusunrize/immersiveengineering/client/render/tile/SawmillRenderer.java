@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.utils.RenderUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.SawmillTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.SawmillTileEntity.SawmillProcess;
@@ -68,7 +69,7 @@ public class SawmillRenderer extends TileEntityRenderer<SawmillTileEntity>
 			if(te.shouldRenderAsActive())
 				spin += 36f*partialTicks;
 			matrixStack.rotate(new Quaternion(0, 0, spin, true));
-			ClientUtils.renderModelTESRFast(
+			RenderUtils.renderModelTESRFast(
 					BLADE.getNullQuads(Direction.NORTH, state), solidBuilder, matrixStack, combinedLightIn,
 					combinedOverlayIn);
 			matrixStack.pop();

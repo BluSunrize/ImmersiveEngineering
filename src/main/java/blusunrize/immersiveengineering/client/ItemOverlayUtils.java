@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.client;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.client.gui.RevolverScreen;
+import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.items.*;
@@ -108,11 +109,11 @@ public class ItemOverlayUtils
 		float dy = scaledHeight-16;
 		transform.push();
 		transform.translate(dx, dy, 0);
-		ClientUtils.drawTexturedRect(builder, transform, 0, -32, 64, 32, 1, 1, 1, 1, 0, 64/256f, 96/256f, 128/256f);
+		GuiHelper.drawTexturedColoredRect(builder, transform, 0, -32, 64, 32, 1, 1, 1, 1, 0, 64/256f, 96/256f, 128/256f);
 
 		ItemStack ammo = RailgunItem.findAmmo(equipped, player);
 		if(!ammo.isEmpty())
-			ClientUtils.renderItemWithOverlayIntoGUI(buffer, transform, ammo, 6, -22);
+			GuiHelper.renderItemWithOverlayIntoGUI(buffer, transform, ammo, 6, -22);
 
 		transform.translate(30, -27.5, 0);
 		transform.scale(scale, scale, 1);
@@ -143,7 +144,7 @@ public class ItemOverlayUtils
 		float uMax = 210/256f;
 		float vMin = 9/256f;
 		float vMax = 71/256f;
-		ClientUtils.drawTexturedRect(builder, transform, -24, -68, w, h, 1, 1, 1, 1, uMin, uMax, vMin, vMax);
+		GuiHelper.drawTexturedColoredRect(builder, transform, -24, -68, w, h, 1, 1, 1, 1, uMin, uMax, vMin, vMax);
 
 		transform.translate(-23, -37, 0);
 		LazyOptional<IFluidHandlerItem> handlerOpt = FluidUtil.getFluidHandler(equipped);
@@ -164,7 +165,7 @@ public class ItemOverlayUtils
 				float angle = 83-(166*amount/cap);
 				transform.push();
 				transform.rotate(new Quaternion(0, 0, angle, true));
-				ClientUtils.drawTexturedRect(builder, transform, 6, -2, 24, 4, 1, 1, 1, 1, 91/256f, 123/256f, 80/256f, 87/256f);
+				GuiHelper.drawTexturedColoredRect(builder, transform, 6, -2, 24, 4, 1, 1, 1, 1, 91/256f, 123/256f, 80/256f, 87/256f);
 				transform.pop();
 				transform.translate(23, 37, 0);
 
@@ -179,10 +180,10 @@ public class ItemOverlayUtils
 										  PlayerEntity player, Hand hand, ItemStack equipped)
 	{
 		renderFluidTankOverlay(buffer, transform, scaledWidth, scaledHeight, player, hand, equipped, false, (builder, handler) -> {
-			ClientUtils.drawTexturedRect(builder, transform, -54, -73, 66, 72, 1, 1, 1, 1, 108/256f, 174/256f, 4/256f, 76/256f);
+			GuiHelper.drawTexturedColoredRect(builder, transform, -54, -73, 66, 72, 1, 1, 1, 1, 108/256f, 174/256f, 4/256f, 76/256f);
 			ItemStack head = ((DrillItem)equipped.getItem()).getHead(equipped);
 			if(!head.isEmpty())
-				ClientUtils.renderItemWithOverlayIntoGUI(buffer, transform, head, -51, -45);
+				GuiHelper.renderItemWithOverlayIntoGUI(buffer, transform, head, -51, -45);
 		});
 	}
 
@@ -190,10 +191,10 @@ public class ItemOverlayUtils
 											PlayerEntity player, Hand hand, ItemStack equipped)
 	{
 		renderFluidTankOverlay(buffer, transform, scaledWidth, scaledHeight, player, hand, equipped, false, (builder, handler) -> {
-			ClientUtils.drawTexturedRect(builder, transform, -54, -73, 66, 72, 1, 1, 1, 1, 108/256f, 174/256f, 4/256f, 76/256f);
+			GuiHelper.drawTexturedColoredRect(builder, transform, -54, -73, 66, 72, 1, 1, 1, 1, 108/256f, 174/256f, 4/256f, 76/256f);
 			ItemStack blade = ((BuzzsawItem)equipped.getItem()).getHead(equipped);
 			if(!blade.isEmpty())
-				ClientUtils.renderItemWithOverlayIntoGUI(buffer, transform, blade, -51, -45);
+				GuiHelper.renderItemWithOverlayIntoGUI(buffer, transform, blade, -51, -45);
 		});
 	}
 
@@ -201,11 +202,11 @@ public class ItemOverlayUtils
 												PlayerEntity player, Hand hand, ItemStack equipped)
 	{
 		renderFluidTankOverlay(buffer, transform, scaledWidth, scaledHeight, player, hand, equipped, true, (builder, handler) -> {
-			ClientUtils.drawTexturedRect(builder, transform, -41, -73, 53, 72, 1, 1, 1, 1, 8/256f, 61/256f, 4/256f, 76/256f);
+			GuiHelper.drawTexturedColoredRect(builder, transform, -41, -73, 53, 72, 1, 1, 1, 1, 8/256f, 61/256f, 4/256f, 76/256f);
 			boolean ignite = ChemthrowerItem.isIgniteEnable(equipped);
-			ClientUtils.drawTexturedRect(builder, transform, -32, -43, 12, 12, 1, 1, 1, 1, 66/256f, 78/256f, (ignite?21: 9)/256f, (ignite?33: 21)/256f);
+			GuiHelper.drawTexturedColoredRect(builder, transform, -32, -43, 12, 12, 1, 1, 1, 1, 66/256f, 78/256f, (ignite?21: 9)/256f, (ignite?33: 21)/256f);
 
-			ClientUtils.drawTexturedRect(builder, transform, -100, -20, 64, 16, 1, 1, 1, 1, 0/256f, 64/256f, 76/256f, 92/256f);
+			GuiHelper.drawTexturedColoredRect(builder, transform, -100, -20, 64, 16, 1, 1, 1, 1, 0/256f, 64/256f, 76/256f, 92/256f);
 			FluidStack fuel = handler.getFluidInTank(0);
 			if(!fuel.isEmpty())
 			{
@@ -231,24 +232,24 @@ public class ItemOverlayUtils
 			float dy = scaledHeight;
 			transform.push();
 			transform.translate(dx, dy, 0);
-			ClientUtils.drawTexturedRect(builder, transform, 0, -22, 64, 22, 1, 1, 1, 1, 0, 64/256f, 176/256f, 198/256f);
+			GuiHelper.drawTexturedColoredRect(builder, transform, 0, -22, 64, 22, 1, 1, 1, 1, 0, 64/256f, 176/256f, 198/256f);
 
 			if(upgrades.getBoolean("flash"))
 			{
-				ClientUtils.drawTexturedRect(builder, transform, 11, -38, 16, 16, 1, 1, 1, 1, 11/256f, 27/256f, 160/256f, 176/256f);
+				GuiHelper.drawTexturedColoredRect(builder, transform, 11, -38, 16, 16, 1, 1, 1, 1, 11/256f, 27/256f, 160/256f, 176/256f);
 				if(upgrades.contains("flash_cooldown"))
 				{
 					float h = upgrades.getInt("flash_cooldown")/40f*16;
-					ClientUtils.drawTexturedRect(builder, transform, 11, -22-h, 16, h, 1, 1, 1, 1, 11/256f, 27/256f, (214-h)/256f, 214/256f);
+					GuiHelper.drawTexturedColoredRect(builder, transform, 11, -22-h, 16, h, 1, 1, 1, 1, 11/256f, 27/256f, (214-h)/256f, 214/256f);
 				}
 			}
 			if(upgrades.getBoolean("shock"))
 			{
-				ClientUtils.drawTexturedRect(builder, transform, 40, -38, 12, 16, 1, 1, 1, 1, 40/256f, 52/256f, 160/256f, 176/256f);
+				GuiHelper.drawTexturedColoredRect(builder, transform, 40, -38, 12, 16, 1, 1, 1, 1, 40/256f, 52/256f, 160/256f, 176/256f);
 				if(upgrades.contains("shock_cooldown"))
 				{
 					float h = upgrades.getInt("shock_cooldown")/40f*16;
-					ClientUtils.drawTexturedRect(builder, transform, 40, -22-h, 12, h, 1, 1, 1, 1, 40/256f, 52/256f, (214-h)/256f, 214/256f);
+					GuiHelper.drawTexturedColoredRect(builder, transform, 40, -22-h, 12, h, 1, 1, 1, 1, 40/256f, 52/256f, (214-h)/256f, 214/256f);
 				}
 			}
 			transform.pop();

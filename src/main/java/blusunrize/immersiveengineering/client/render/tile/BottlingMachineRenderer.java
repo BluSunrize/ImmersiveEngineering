@@ -14,7 +14,9 @@ import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.utils.BatchingRenderTypeBuffer;
+import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
+import blusunrize.immersiveengineering.client.utils.RenderUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.BottlingMachineTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.BottlingMachineTileEntity.BottlingProcess;
@@ -144,16 +146,16 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 			{
 				matrixStack.push();
 				matrixStack.translate(0, 0, -tankWidth/2);
-				ClientUtils.drawRepeatedFluidSprite(builder, matrixStack, fs, -tankWidth/2, 0, tankWidth, h);
+				GuiHelper.drawRepeatedFluidSprite(builder, matrixStack, fs, -tankWidth/2, 0, tankWidth, h);
 				matrixStack.pop();
 				matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), 90, true));
 			}
 
 			matrixStack.rotate(new Quaternion(new Vector3f(1, 0, 0), -90, true));
-			ClientUtils.drawRepeatedFluidSprite(builder, matrixStack, fs, -tankWidth/2, -tankWidth/2, tankWidth, tankWidth);
+			GuiHelper.drawRepeatedFluidSprite(builder, matrixStack, fs, -tankWidth/2, -tankWidth/2, tankWidth, tankWidth);
 			matrixStack.rotate(new Quaternion(new Vector3f(1, 0, 0), 180, true));
 			matrixStack.translate(0, 0, -h);
-			ClientUtils.drawRepeatedFluidSprite(builder, matrixStack, fs, -tankWidth/2, -tankWidth/2, tankWidth, tankWidth);
+			GuiHelper.drawRepeatedFluidSprite(builder, matrixStack, fs, -tankWidth/2, -tankWidth/2, tankWidth, tankWidth);
 
 			matrixStack.pop();
 		}
@@ -200,7 +202,7 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 		matrixStack.push();
 		matrixStack.translate(-.5, -.5, -.5);
 		List<BakedQuad> quads = DYNAMIC.getNullQuads(facing, state, data);
-		ClientUtils.renderModelTESRFast(quads, builder, matrixStack, combinedLightIn, combinedOverlayIn);
+		RenderUtils.renderModelTESRFast(quads, builder, matrixStack, combinedLightIn, combinedOverlayIn);
 		matrixStack.pop();
 	}
 
@@ -215,7 +217,7 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 				vertexBuilder -> {
 					innerStack.push();
 					innerStack.rotate(new Quaternion(new Vector3f(0.0F, 1.0F, 0.0F), 90.0F-ClientUtils.mc().getRenderManager().info.getYaw(), true));
-					ClientUtils.renderBox(vertexBuilder, innerStack, -.5f, minY, -.5f, .5f, maxY, .5f);
+					RenderUtils.renderBox(vertexBuilder, innerStack, -.5f, minY, -.5f, .5f, maxY, .5f);
 					innerStack.pop();
 				},
 				"min"+minY+"max"+maxY,

@@ -12,9 +12,7 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.StringTextComponent;
@@ -36,7 +34,7 @@ public class GuiButtonItem extends Button
 	{
 		if(this.visible)
 		{
-ClientUtils.bindTexture(GuiReactiveList.TEXTURE);
+			ClientUtils.bindTexture(GuiReactiveList.TEXTURE);
 			this.isHovered = mouseX >= this.x&&mouseY >= this.y&&mouseX < this.x+this.width&&mouseY < this.y+this.height;
 			RenderSystem.enableBlend();
 			RenderSystem.blendFuncSeparate(770, 771, 1, 0);
@@ -47,17 +45,13 @@ ClientUtils.bindTexture(GuiReactiveList.TEXTURE);
 			if(!item.isEmpty())
 			{
 				Minecraft mc = Minecraft.getInstance();
-				ItemRenderer itemRender = mc.getItemRenderer();
-				FontRenderer font = item.getItem().getFontRenderer(item);
-				if(font==null)
-					font = mc.fontRenderer;
-				itemRender.renderItemAndEffectIntoGUI(item, x+1, y+1);
+				mc.getItemRenderer().renderItemAndEffectIntoGUI(item, x+1, y+1);
 
 				if(!state)
 				{
 					RenderHelper.enableStandardItemLighting();
 					RenderSystem.disableDepthTest();
-					ClientUtils.drawColouredRect(x+1, y+1, 16, 16, 0x77444444);
+					fill(transform, x+1, y+1, x+17, x+17, 0x77444444);
 					RenderSystem.enableDepthTest();
 				}
 				RenderHelper.disableStandardItemLighting();

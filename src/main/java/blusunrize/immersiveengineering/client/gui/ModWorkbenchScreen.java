@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchTileEntity;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.gui.ModWorkbenchContainer;
@@ -116,11 +117,9 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 		for(int i = 0; i < container.slotCount; i++)
 		{
 			Slot s = container.getSlot(i);
-			ClientUtils.drawColouredRect(guiLeft+s.xPos-1, guiTop+s.yPos-1, 17, 1, 0x77222222);
-			ClientUtils.drawColouredRect(guiLeft+s.xPos-1, guiTop+s.yPos+0, 1, 16, 0x77222222);
-			ClientUtils.drawColouredRect(guiLeft+s.xPos+16, guiTop+s.yPos+0, 1, 17, 0x77999999);
-			ClientUtils.drawColouredRect(guiLeft+s.xPos+0, guiTop+s.yPos+16, 16, 1, 0x77999999);
-			ClientUtils.drawColouredRect(guiLeft+s.xPos+0, guiTop+s.yPos+0, 16, 16, 0x77444444);
+			GuiHelper.drawSlot(
+					transform, guiLeft+s.xPos, guiTop+s.yPos, 16, 16, 0x77222222, 0x77444444, 0x77999999
+			);
 		}
 
 		ItemRenderer itemRender = mc().getItemRenderer();
@@ -134,7 +133,7 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 				{
 					itemRender.renderItemAndEffectIntoGUI(ghostStack, guiLeft+s.xPos, guiTop+s.yPos);
 					RenderSystem.depthFunc(GL11.GL_GREATER);
-					ClientUtils.drawColouredRect(guiLeft+s.xPos, guiTop+s.yPos, 16, 16, 0xbb333333);
+					fill(transform, guiLeft+s.xPos, guiTop+s.yPos, guiLeft+s.xPos+16, guiTop+s.yPos+16, 0xbb333333);
 					RenderSystem.depthFunc(GL11.GL_LEQUAL);
 				}
 			}

@@ -9,7 +9,7 @@
 
 package blusunrize.immersiveengineering.mixin.coremods.client;
 
-import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.render.IEBipedRotations;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -27,6 +27,6 @@ public class BipedModelMixin<T extends LivingEntity>
 	)
 	{
 		//noinspection ConstantConditions (IntelliJ warns about the (admittedly crazy-looking) cast)
-		ClientUtils.handleBipedRotations((BipedModel<?>)(Object)this, entityIn);
+		IEBipedRotations.handleBipedRotations((BipedModel<?>)(Object)this, entityIn);
 	}
 }

@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
-import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.utils.RenderUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.CrusherTileEntity;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -67,7 +67,7 @@ public class CrusherRenderer extends TileEntityRenderer<CrusherTileEntity>
 		matrix.push();
 		matrix.translate(-.5, -.5, -.5);
 		List<BakedQuad> quads = BARREL.getNullQuads(facing, Multiblocks.crusher.getDefaultState());
-		ClientUtils.renderModelTESRFast(quads, buffer.getBuffer(RenderType.getSolid()), matrix, light, overlay);
+		RenderUtils.renderModelTESRFast(quads, buffer.getBuffer(RenderType.getSolid()), matrix, light, overlay);
 		matrix.pop();
 	}
 

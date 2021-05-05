@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.common.blocks.metal.FermenterTileEntity;
 import blusunrize.immersiveengineering.common.gui.FermenterContainer;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -38,7 +39,7 @@ public class FermenterScreen extends IEContainerScreen<FermenterContainer>
 	{
 		super.render(transform, mx, my, partial);
 		List<ITextComponent> tooltip = new ArrayList<>();
-		ClientUtils.handleGuiTank(transform, tile.tanks[0], guiLeft+112, guiTop+21, 16, 47, 177, 31, 20, 51, mx, my, TEXTURE, tooltip);
+		GuiHelper.handleGuiTank(transform, tile.tanks[0], guiLeft+112, guiTop+21, 16, 47, 177, 31, 20, 51, mx, my, TEXTURE, tooltip);
 		if(mx > guiLeft+158&&mx < guiLeft+165&&my > guiTop+22&&my < guiTop+68)
 			tooltip.add(new StringTextComponent(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" IF"));
 		if(!tooltip.isEmpty())
@@ -53,9 +54,9 @@ public class FermenterScreen extends IEContainerScreen<FermenterContainer>
 		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
 
 		int stored = (int)(46*(tile.getEnergyStored(null)/(float)tile.getMaxEnergyStored(null)));
-		ClientUtils.drawGradientRect(guiLeft+158, guiTop+22+(46-stored), guiLeft+165, guiTop+68, 0xffb51500, 0xff600b00);
+		fillGradient(transform, guiLeft+158, guiTop+22+(46-stored), guiLeft+165, guiTop+68, 0xffb51500, 0xff600b00);
 
-		ClientUtils.handleGuiTank(transform, tile.tanks[0], guiLeft+112, guiTop+21, 16, 47, 177, 31, 20, 51, mx, my, TEXTURE, null);
+		GuiHelper.handleGuiTank(transform, tile.tanks[0], guiLeft+112, guiTop+21, 16, 47, 177, 31, 20, 51, mx, my, TEXTURE, null);
 
 	}
 }

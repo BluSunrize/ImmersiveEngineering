@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.client.render.tile;
 import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
+import blusunrize.immersiveengineering.client.utils.RenderUtils;
 import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
 import blusunrize.immersiveengineering.common.blocks.metal.ClocheTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -105,7 +106,7 @@ public class ClocheRenderer extends TileEntityRenderer<ClocheTileEntity>
 				}
 				int col = ClientUtils.mc().getBlockColors().getColor(state, null, blockPos, -1);
 				block.getRight().push(matrixStack);
-				ClientUtils.renderModelTESRFancy(plantQuadList, new TransformingVertexBuilder(baseBuilder, matrixStack),
+				RenderUtils.renderModelTESRFancy(plantQuadList, new TransformingVertexBuilder(baseBuilder, matrixStack),
 						tile.getWorldNonnull(), blockPos, false, col, combinedLightIn);
 				matrixStack.pop();
 			}

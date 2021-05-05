@@ -197,9 +197,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 	@Override
 	public void onEntityCollision(World world, Entity entity)
 	{
-		if(!(entity instanceof LivingEntity)||((LivingEntity)entity).isOnLadder()||this.cover==Blocks.AIR)
-			return;
-		else
+		if(entity instanceof LivingEntity&&!((LivingEntity)entity).isOnLadder()&&this.cover!=Blocks.AIR)
 		{
 			boolean climb = false;
 			for(Predicate<Block> f : climbablePipeCovers)
@@ -272,8 +270,8 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 		return false;
 	}
 
-	private EnumMap<Direction, LazyOptional<IFluidHandler>> sidedHandlers = new EnumMap<>(Direction.class);
-	private EnumMap<Direction, CapabilityReference<IFluidHandler>> neighbors = new EnumMap<>(Direction.class);
+	private final Map<Direction, LazyOptional<IFluidHandler>> sidedHandlers = new EnumMap<>(Direction.class);
+	private final Map<Direction, CapabilityReference<IFluidHandler>> neighbors = new EnumMap<>(Direction.class);
 
 	{
 		for(Direction f : DirectionUtils.VALUES)

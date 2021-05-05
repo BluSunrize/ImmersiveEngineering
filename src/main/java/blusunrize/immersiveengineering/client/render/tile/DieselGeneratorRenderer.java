@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
-import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.utils.RenderUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.DieselGeneratorTileEntity;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -55,7 +55,7 @@ public class DieselGeneratorRenderer extends TileEntityRenderer<DieselGeneratorT
 		matrixStack.translate(-0.5, 0, -0.5);
 
 		List<BakedQuad> quads = FAN.getNullQuads(te.getFacing(), state);
-		ClientUtils.renderModelTESRFast(quads, bufferIn.getBuffer(RenderType.getSolid()), matrixStack, combinedLightIn,
+		RenderUtils.renderModelTESRFast(quads, bufferIn.getBuffer(RenderType.getSolid()), matrixStack, combinedLightIn,
 				combinedOverlayIn);
 
 		matrixStack.pop();

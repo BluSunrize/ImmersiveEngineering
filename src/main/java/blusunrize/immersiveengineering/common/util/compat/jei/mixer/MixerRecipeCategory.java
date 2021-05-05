@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.util.compat.jei.mixer;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
-import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
@@ -82,7 +82,7 @@ public class MixerRecipeCategory extends IERecipeCategory<MixerRecipe>
 	{
 		tankTexture.draw(transform, 40, 0);
 		arrowDrawable.draw(transform, 117, 19);
-		ClientUtils.drawSlot(138, 17, 16, 47, transform);
+		GuiHelper.drawSlot(138, 17, 16, 47, transform);
 	}
 
 }

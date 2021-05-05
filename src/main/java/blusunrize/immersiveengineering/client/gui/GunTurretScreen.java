@@ -9,8 +9,8 @@
 package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonBoolean;
+import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.common.blocks.metal.TurretGunTileEntity;
 import blusunrize.immersiveengineering.common.gui.TurretContainer;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -39,8 +39,8 @@ public class GunTurretScreen extends TurretScreen
 	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float f, int mx, int my)
 	{
 		super.drawGuiContainerBackgroundLayer(transform, f, mx, my);
-		ClientUtils.drawDarkSlot(guiLeft+134, guiTop+13, 16, 16);
-		ClientUtils.drawDarkSlot(guiLeft+134, guiTop+49, 16, 16);
+		GuiHelper.drawDarkSlot(transform, guiLeft+134, guiTop+13, 16, 16);
+		GuiHelper.drawDarkSlot(transform, guiLeft+134, guiTop+49, 16, 16);
 	}
 
 	@Override

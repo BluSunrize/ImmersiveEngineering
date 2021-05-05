@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
-import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.blocks.metal.SheetmetalTankTileEntity;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -63,7 +63,7 @@ public class SheetmetalTankRenderer extends TileEntityRenderer<SheetmetalTankTil
 			{
 				float h = fs.getAmount()/(float)tile.tank.getCapacity();
 				matrixStack.translate(0, 0, .004f);
-				ClientUtils.drawRepeatedFluidSprite(bufferIn.getBuffer(RenderType.getSolid()), matrixStack, fs,
+				GuiHelper.drawRepeatedFluidSprite(bufferIn.getBuffer(RenderType.getSolid()), matrixStack, fs,
 						0, 0+(1-h)*16, 16, h*16);
 			}
 			matrixStack.pop();

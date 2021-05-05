@@ -14,8 +14,7 @@ import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.excavator.MineralMix;
 import blusunrize.immersiveengineering.api.excavator.MineralVein;
 import blusunrize.immersiveengineering.api.excavator.MineralWorldInfo;
-import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.ClientUtils.TimestampFormat;
+import blusunrize.immersiveengineering.client.utils.TimestampFormat;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.StoneDecoration;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -123,7 +122,7 @@ public class CoresampleItem extends IEBaseItem
 					if(dist < 0)
 						list.add(new StringTextComponent("Somehow this sample is dated in the future...are you a time traveller?!").mergeStyle(TextFormatting.RED));
 					else
-						list.add(new TranslationTextComponent(Lib.DESC_INFO+"coresample.timestamp", ClientUtils.fomatTimestamp(dist, TimestampFormat.DHM)).mergeStyle(baseColor));
+						list.add(new TranslationTextComponent(Lib.DESC_INFO+"coresample.timestamp", TimestampFormat.formatTimestamp(dist, TimestampFormat.DHM)).mergeStyle(baseColor));
 				}
 				else if(hasStamp)
 					list.add(new TranslationTextComponent(Lib.DESC_INFO+"coresample.timezone").mergeStyle(baseColor));

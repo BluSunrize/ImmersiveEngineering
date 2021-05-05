@@ -14,9 +14,9 @@ import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.Connection.RenderData;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
-import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.BakedIEModel;
 import blusunrize.immersiveengineering.client.models.PrivateProperties;
+import blusunrize.immersiveengineering.client.utils.ModelUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces;
 import blusunrize.immersiveengineering.mixin.accessors.client.RenderTypeAccess;
 import com.google.common.cache.Cache;
@@ -91,7 +91,7 @@ public class BakedConnectionModel extends BakedIEModel
 			{
 				ConnectionPoint here = c.getEndFor(orig.here);
 				data.add(new Connection.RenderData(c, c.getEndB().equals(here),
-						ClientUtils.getSolidVertexCountForSide(here, c, RenderData.POINTS_PER_WIRE)));
+						getSolidVertexCountForSide(here, c, RenderData.POINTS_PER_WIRE)));
 			}
 			ModelKey key = new ModelKey(data, ad, orig.here);
 			try
@@ -196,8 +196,8 @@ public class BakedConnectionModel extends BakedIEModel
 						segmentEnd.subtract(cross),
 						segmentStart.subtract(cross),
 						segmentStart.add(cross)};
-				ret.add(ClientUtils.createSmartLightingBakedQuad(DefaultVertexFormats.BLOCK, vertices, Direction.DOWN, t, rgb, false, here));
-				ret.add(ClientUtils.createSmartLightingBakedQuad(DefaultVertexFormats.BLOCK, vertices, Direction.UP, t, rgb, true, here));
+				ret.add(ModelUtils.createSmartLightingBakedQuad(DefaultVertexFormats.BLOCK, vertices, Direction.DOWN, t, rgb, false, here));
+				ret.add(ModelUtils.createSmartLightingBakedQuad(DefaultVertexFormats.BLOCK, vertices, Direction.UP, t, rgb, true, here));
 
 				if(!vertical)
 				{
@@ -210,11 +210,48 @@ public class BakedConnectionModel extends BakedIEModel
 						segmentEnd.subtract(cross),
 						segmentStart.subtract(cross),
 						segmentStart.add(cross)};
-				ret.add(ClientUtils.createSmartLightingBakedQuad(DefaultVertexFormats.BLOCK, vertices, Direction.WEST, t, rgb, false, here));
-				ret.add(ClientUtils.createSmartLightingBakedQuad(DefaultVertexFormats.BLOCK, vertices, Direction.EAST, t, rgb, true, here));
+				ret.add(ModelUtils.createSmartLightingBakedQuad(DefaultVertexFormats.BLOCK, vertices, Direction.WEST, t, rgb, false, here));
+				ret.add(ModelUtils.createSmartLightingBakedQuad(DefaultVertexFormats.BLOCK, vertices, Direction.EAST, t, rgb, true, here));
 			}
 		}
 		return ret;
+	}
+
+	public static int getSolidVertexCountForSide(ConnectionPoint start, Connection conn, int totalPoints)
+	{
+		List<Integer> crossings = new ArrayList<>();
+		Vector3d lastPoint = conn.getPoint(0, start);
+		for(int i = 1; i <= totalPoints; i++)
+		{
+			Vector3d current = conn.getPoint(i/(double)totalPoints, start);
+			if(crossesChunkBoundary(current, lastPoint, start.getPosition()))
+				crossings.add(i);
+			lastPoint = current;
+		}
+		boolean greater = conn.isPositiveEnd(start);
+		if(crossings.size() > 0)
+		{
+			int index = crossings.size()/2;
+			if(crossings.size()%2==0&&greater)
+				index--;
+			return crossings.get(index)-(greater?0: 1);
+		}
+		else
+			return greater?totalPoints: 0;
+	}
+
+	public static boolean crossesChunkBoundary(Vector3d start, Vector3d end, BlockPos offset)
+	{
+		if(crossesChunkBorderSingleDim(start.x, end.x, offset.getX()))
+			return true;
+		if(crossesChunkBorderSingleDim(start.y, end.y, offset.getY()))
+			return true;
+		return crossesChunkBorderSingleDim(start.z, end.z, offset.getZ());
+	}
+
+	private static boolean crossesChunkBorderSingleDim(double a, double b, int offset)
+	{
+		return ((int)Math.floor(a+offset)) >> 4!=((int)Math.floor(b+offset)) >> 4;
 	}
 
 	public static class SpecificConnectionModel

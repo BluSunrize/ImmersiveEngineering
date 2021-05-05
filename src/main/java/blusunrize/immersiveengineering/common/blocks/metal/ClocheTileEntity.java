@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
+import blusunrize.immersiveengineering.client.utils.ModelUtils;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
@@ -601,10 +602,10 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 			{
 				BlockState state = Utils.getStateFromItemStack(soil);
 				if(state!=null)
-					rl = ClientUtils.getSideTexture(state, Direction.UP);
+					rl = ModelUtils.getSideTexture(state, Direction.UP);
 			} catch(Exception e)
 			{
-				rl = ClientUtils.getSideTexture(soil, Direction.UP);
+				rl = ModelUtils.getSideTexture(soil, Direction.UP);
 			}
 		}
 		if(rl==null&&!soil.isEmpty()&&Utils.isFluidRelatedItemStack(soil))

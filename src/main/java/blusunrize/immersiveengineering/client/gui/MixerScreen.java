@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonBoolean;
+import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity.MultiblockProcessInMachine;
@@ -38,7 +39,7 @@ public class MixerScreen extends IEContainerScreen<MixerContainer>
 {
 	private static final ResourceLocation TEXTURE = makeTextureLocation("mixer");
 
-	private MixerTileEntity tile;
+	private final MixerTileEntity tile;
 
 	public MixerScreen(MixerContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{
@@ -88,7 +89,7 @@ public class MixerScreen extends IEContainerScreen<MixerContainer>
 						int newY = (int)(47*(fluidUpToNow/capacity));
 						if(myRelative >= lastY&&myRelative < newY)
 						{
-							ClientUtils.addFluidTooltip(fs, tooltip, (int)capacity);
+							GuiHelper.addFluidTooltip(fs, tooltip, (int)capacity);
 							break;
 						}
 						lastY = newY;
@@ -124,7 +125,7 @@ public class MixerScreen extends IEContainerScreen<MixerContainer>
 			}
 
 		int stored = (int)(46*(tile.getEnergyStored(null)/(float)tile.getMaxEnergyStored(null)));
-		ClientUtils.drawGradientRect(guiLeft+158, guiTop+22+(46-stored), guiLeft+165, guiTop+68, 0xffb51500, 0xff600b00);
+		fillGradient(transform, guiLeft+158, guiTop+22+(46-stored), guiLeft+165, guiTop+68, 0xffb51500, 0xff600b00);
 
 		float capacity = tile.tank.getCapacity();
 		int fluidUpToNow = 0;
@@ -136,7 +137,7 @@ public class MixerScreen extends IEContainerScreen<MixerContainer>
 			{
 				fluidUpToNow += fs.getAmount();
 				int newY = (int)(47*(fluidUpToNow/capacity));
-				ClientUtils.drawRepeatedFluidSpriteGui(buffers, transform, fs, guiLeft+76, guiTop+58-newY, 58, newY-lastY);
+				GuiHelper.drawRepeatedFluidSpriteGui(buffers, transform, fs, guiLeft+76, guiTop+58-newY, 58, newY-lastY);
 				lastY = newY;
 			}
 		}

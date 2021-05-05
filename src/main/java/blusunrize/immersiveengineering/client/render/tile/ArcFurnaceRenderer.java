@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
+import blusunrize.immersiveengineering.client.utils.RenderUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.ArcFurnaceTileEntity;
 import com.google.common.collect.Lists;
@@ -79,7 +80,7 @@ public class ArcFurnaceRenderer extends TileEntityRenderer<ArcFurnaceTileEntity>
 
 		matrixStack.push();
 		List<BakedQuad> quads = ELECTRODES.getNullQuads(te.getFacing(), state, new SinglePropertyModelData<>(objState, Model.IE_OBJ_STATE));
-		ClientUtils.renderModelTESRFast(
+		RenderUtils.renderModelTESRFast(
 				quads, bufferIn.getBuffer(RenderType.getSolid()), matrixStack, combinedLightIn, combinedOverlayIn
 		);
 		matrixStack.translate(.5, .5, .5);
@@ -105,16 +106,16 @@ public class ArcFurnaceRenderer extends TileEntityRenderer<ArcFurnaceTileEntity>
 			if(h > 1)
 			{
 				matrixStack.translate(0, -h, 0);
-				ClientUtils.renderTexturedBox(fullbright, matrixStack, .375F, 0, .375F, .625F, 1, .625F, hotMetal_flow, true);
+				RenderUtils.renderTexturedBox(fullbright, matrixStack, .375F, 0, .375F, .625F, 1, .625F, hotMetal_flow, true);
 				matrixStack.translate(0, 1, 0);
-				ClientUtils.renderTexturedBox(fullbright, matrixStack, .375F, 0, .375F, .625F, h-1, .625F, hotMetal_flow, true);
+				RenderUtils.renderTexturedBox(fullbright, matrixStack, .375F, 0, .375F, .625F, h-1, .625F, hotMetal_flow, true);
 				matrixStack.translate(0, -1, 0);
 				matrixStack.translate(0, h, 0);
 			}
 			else
 			{
 				matrixStack.translate(0, -h, 0);
-				ClientUtils.renderTexturedBox(fullbright, matrixStack, .375F, 0, .375F, .625F, h, .625F, hotMetal_flow, true);
+				RenderUtils.renderTexturedBox(fullbright, matrixStack, .375F, 0, .375F, .625F, h, .625F, hotMetal_flow, true);
 				matrixStack.translate(0, h, 0);
 			}
 			if(pour > (process-speed))
@@ -123,7 +124,7 @@ public class ArcFurnaceRenderer extends TileEntityRenderer<ArcFurnaceTileEntity>
 			{
 				float h2 = (pour > (process-speed)?.625f: pour/(process-speed)*.625f);
 				matrixStack.translate(0, -1.6875f, 0);
-				ClientUtils.renderTexturedBox(fullbright, matrixStack, .125F, 0, .125F, .875F, h2, .875F, hotMetal_still, false);
+				RenderUtils.renderTexturedBox(fullbright, matrixStack, .125F, 0, .125F, .875F, h2, .875F, hotMetal_still, false);
 				matrixStack.translate(0, 1.6875f, 0);
 			}
 			matrixStack.pop();

@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
-import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.MixerTileEntity;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -77,7 +77,7 @@ public class MixerRenderer extends TileEntityRenderer<MixerTileEntity>
 				float yy = fs.getAmount()/(float)te.tank.getCapacity()*1.125f;
 				matrixStack.translate(0, 0, -yy);
 				float w = (i < te.tank.getFluidTypes()-1||yy >= .125)?26: 16+yy/.0125f;
-				ClientUtils.drawRepeatedFluidSprite(bufferIn.getBuffer(RenderType.getTranslucent()), matrixStack, fs,
+				GuiHelper.drawRepeatedFluidSprite(bufferIn.getBuffer(RenderType.getTranslucent()), matrixStack, fs,
 						-w/2, -w/2, w, w);
 			}
 		}

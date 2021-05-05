@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.common.gui.MaintenanceKitContainer;
 import blusunrize.immersiveengineering.common.network.MessageMaintenanceKit;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -44,7 +45,7 @@ public class MaintenanceKitScreen extends ToolModificationScreen<MaintenanceKitC
 		for(int i = 0; i < container.internalSlots; i++)
 		{
 			Slot s = container.getSlot(i);
-			ClientUtils.drawSlot(guiLeft+s.xPos, guiTop+s.yPos, 16, 16, 0x44, transform);
+			GuiHelper.drawSlot(guiLeft+s.xPos, guiTop+s.yPos, 16, 16, 0x44, transform);
 		}
 	}
 }

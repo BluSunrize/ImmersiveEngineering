@@ -33,9 +33,7 @@ import blusunrize.immersiveengineering.client.gui.BlastFurnaceScreen;
 import blusunrize.immersiveengineering.client.gui.RevolverScreen;
 import blusunrize.immersiveengineering.client.render.tile.AutoWorkbenchRenderer;
 import blusunrize.immersiveengineering.client.render.tile.AutoWorkbenchRenderer.BlueprintLines;
-import blusunrize.immersiveengineering.client.utils.FontUtils;
-import blusunrize.immersiveengineering.client.utils.IERenderTypes;
-import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
+import blusunrize.immersiveengineering.client.utils.*;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
 import blusunrize.immersiveengineering.common.blocks.wooden.TurntableTileEntity;
@@ -347,7 +345,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				transform.push();
 				transform.translate(obstruction.getX(), obstruction.getY(), obstruction.getZ());
 				final float eps = 1e-3f;
-				ClientUtils.renderBox(builder, transform, -eps, -eps, -eps, 1+eps, 1+eps, 1+eps);
+				RenderUtils.renderBox(builder, transform, -eps, -eps, -eps, 1+eps, 1+eps, 1+eps);
 				transform.pop();
 			}
 		}
@@ -376,7 +374,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						transform.rotate(new Quaternion(0, 0, -i*45, true));
 						transform.translate(-.5, .5, -.001);
 						IVertexBuilder builder = buffer.getBuffer(IERenderTypes.getGui(rl("textures/models/blueprint_frame.png")));
-						ClientUtils.drawTexturedRect(builder, transform, .125f, -.875f, .75f, .75f, 1, 1, 1, 1, 1, 0, 1, 0);
+						GuiHelper.drawTexturedColoredRect(builder, transform, .125f, -.875f, .75f, .75f, 1, 1, 1, 1, 1, 0, 1, 0);
 						//Width depends on distance
 						float lineWidth = playerDistanceSq < 3?3: playerDistanceSq < 25?2: playerDistanceSq < 40?1: .5f;
 						transform.translate(.75, -.25, -.002);
@@ -437,20 +435,20 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 
 				if(resMin==width)
 				{
-					ClientUtils.drawColouredRect(0, 0, width, (int)offsetY+1, 0xff000000, buffers, transform);
-					ClientUtils.drawColouredRect(0, (int)offsetY+resMin, width, (int)offsetY+1, 0xff000000, buffers, transform);
+					GuiHelper.drawColouredRect(0, 0, width, (int)offsetY+1, 0xff000000, buffers, transform);
+					GuiHelper.drawColouredRect(0, (int)offsetY+resMin, width, (int)offsetY+1, 0xff000000, buffers, transform);
 				}
 				else
 				{
-					ClientUtils.drawColouredRect(0, 0, (int)offsetX+1, height, 0xff000000, buffers, transform);
-					ClientUtils.drawColouredRect((int)offsetX+resMin, 0, (int)offsetX+1, height, 0xff000000, buffers, transform);
+					GuiHelper.drawColouredRect(0, 0, (int)offsetX+1, height, 0xff000000, buffers, transform);
+					GuiHelper.drawColouredRect((int)offsetX+resMin, 0, (int)offsetX+1, height, 0xff000000, buffers, transform);
 				}
 				transform.translate(offsetX, offsetY, 0);
 				IVertexBuilder builder = buffers.getBuffer(IERenderTypes.getGui(rl("textures/gui/scope.png")));
-				ClientUtils.drawTexturedRect(builder, transform, 0, 0, resMin, resMin, 1, 1, 1, 1, 0f, 1f, 0f, 1f);
+				GuiHelper.drawTexturedColoredRect(builder, transform, 0, 0, resMin, resMin, 1, 1, 1, 1, 0f, 1f, 0f, 1f);
 
 				builder = buffers.getBuffer(IERenderTypes.getGui(rl("textures/gui/hud_elements.png")));
-				ClientUtils.drawTexturedRect(builder, transform, 218/256f*resMin, 64/256f*resMin, 24/256f*resMin, 128/256f*resMin, 1, 1, 1, 1, 64/256f, 88/256f, 96/256f, 224/256f);
+				GuiHelper.drawTexturedColoredRect(builder, transform, 218/256f*resMin, 64/256f*resMin, 24/256f*resMin, 128/256f*resMin, 1, 1, 1, 1, 64/256f, 88/256f, 96/256f, 224/256f);
 				ItemStack equipped = ClientUtils.mc().player.getHeldItem(Hand.MAIN_HAND);
 				if(!equipped.isEmpty()&&equipped.getItem() instanceof IZoomTool)
 				{
@@ -468,7 +466,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						transform.translate(0, (5+stepOffset)/256*resMin, 0);
 						for(int i = 0; i < steps.length; i++)
 						{
-							ClientUtils.drawTexturedRect(builder, transform, 0, 0, 8/256f*resMin, 7/256f*resMin, 1, 1, 1, 1, 88/256f, 96/256f, 96/256f, 103/256f);
+							GuiHelper.drawTexturedColoredRect(builder, transform, 0, 0, 8/256f*resMin, 7/256f*resMin, 1, 1, 1, 1, 88/256f, 96/256f, 96/256f, 103/256f);
 							transform.translate(0, stepLength/256*resMin, 0);
 							totalOffset += stepLength;
 
@@ -483,7 +481,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						if(curStep < steps.length)
 						{
 							transform.translate(6/256f*resMin, curStep*stepLength/256*resMin, 0);
-							ClientUtils.drawTexturedRect(builder, transform, 0, 0, 8/256f*resMin, 7/256f*resMin, 1, 1, 1, 1, 88/256f, 98/256f, 103/256f, 110/256f);
+							GuiHelper.drawTexturedColoredRect(builder, transform, 0, 0, 8/256f*resMin, 7/256f*resMin, 1, 1, 1, 1, 88/256f, 98/256f, 103/256f, 110/256f);
 							ClientUtils.font().renderString((1/steps[curStep])+"x", (int)(16/256f*resMin), 0, 0xffffff, true,
 									transform.getLast().getMatrix(), buffers, false, 0, 0xf000f0);
 							transform.translate(-6/256f*resMin, -curStep*stepLength/256*resMin, 0);
@@ -858,7 +856,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				{
 					ImmutableList<BlockPos> blocks = ((IDrillHead)head.getItem()).getExtraBlocksDug(head, world,
 							(PlayerEntity)player, event.getTarget());
-					BlockOverlayUtils.drawAdditionalBlockbreak(event, (PlayerEntity)player, event.getPartialTicks(), blocks);
+					BlockOverlayUtils.drawAdditionalBlockbreak(event, (PlayerEntity)player, blocks);
 				}
 			}
 		}

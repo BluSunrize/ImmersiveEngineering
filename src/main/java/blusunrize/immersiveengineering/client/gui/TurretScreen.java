@@ -162,7 +162,7 @@ public abstract class TurretScreen extends IEContainerScreen<TurretContainer>
 		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
 
 		int stored = (int)(46*(tile.getEnergyStored(null)/(float)tile.getMaxEnergyStored(null)));
-		ClientUtils.drawGradientRect(guiLeft+158, guiTop+16+(46-stored), guiLeft+165, guiTop+62, 0xffb51500, 0xff600b00);
+		fillGradient(transform, guiLeft+158, guiTop+16+(46-stored), guiLeft+165, guiTop+62, 0xffb51500, 0xff600b00);
 	}
 
 	@Override

@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.common.blocks.metal.ClocheTileEntity;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.gui.ClocheContainer;
@@ -43,7 +44,7 @@ public class ClocheScreen extends IEContainerScreen<ClocheContainer>
 	{
 		super.render(transform, mx, my, partial);
 		List<ITextComponent> tooltip = new ArrayList<>();
-		ClientUtils.handleGuiTank(transform, tile.tank, guiLeft+8, guiTop+8, 16, 47, 176, 30, 20, 51, mx, my, TEXTURE, tooltip);
+		GuiHelper.handleGuiTank(transform, tile.tank, guiLeft+8, guiTop+8, 16, 47, 176, 30, 20, 51, mx, my, TEXTURE, tooltip);
 		if(mx > guiLeft+30&&mx < guiLeft+37&&my > guiTop+22&&my < guiTop+68)
 		{
 			tooltip.add(new TranslationTextComponent(Lib.DESC_INFO+"fertFill", Utils.formatDouble(tile.fertilizerAmount/(float)IEServerConfig.MACHINES.cloche_fertilizer.get(), "0.00")));
@@ -65,11 +66,11 @@ public class ClocheScreen extends IEContainerScreen<ClocheContainer>
 		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
 		RenderSystem.disableBlend();
 
-		ClientUtils.handleGuiTank(transform, tile.tank, guiLeft+8, guiTop+8, 16, 47, 176, 30, 20, 51, mx, my, TEXTURE, null);
+		GuiHelper.handleGuiTank(transform, tile.tank, guiLeft+8, guiTop+8, 16, 47, 176, 30, 20, 51, mx, my, TEXTURE, null);
 		int stored = (int)(46*(tile.fertilizerAmount/(float)IEServerConfig.MACHINES.cloche_fertilizer.get()));
-		ClientUtils.drawGradientRect(guiLeft+30, guiTop+22+(46-stored), guiLeft+37, guiTop+68, 0xff95ed00, 0xff8a5a00);
+		fillGradient(transform, guiLeft+30, guiTop+22+(46-stored), guiLeft+37, guiTop+68, 0xff95ed00, 0xff8a5a00);
 
 		stored = (int)(46*(tile.getEnergyStored(null)/(float)tile.getMaxEnergyStored(null)));
-		ClientUtils.drawGradientRect(guiLeft+158, guiTop+22+(46-stored), guiLeft+165, guiTop+68, 0xffb51500, 0xff600b00);
+		fillGradient(transform, guiLeft+158, guiTop+22+(46-stored), guiLeft+165, guiTop+68, 0xffb51500, 0xff600b00);
 	}
 }

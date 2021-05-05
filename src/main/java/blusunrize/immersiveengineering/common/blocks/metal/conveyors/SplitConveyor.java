@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.SafeChunkUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.ModelConveyor;
+import blusunrize.immersiveengineering.client.utils.ModelUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.collect.ImmutableList;
@@ -215,13 +216,13 @@ public class SplitConveyor extends BasicConveyor
 		Vector3d[] vertices = {new Vector3d(.0625f, 0, 0), new Vector3d(.0625f, 0, 1), new Vector3d(.9375f, 0, 1), new Vector3d(.9375f, 0, 0)};
 
 		// replace bottom with casing
-		baseModel.set(0, ClientUtils.createBakedQuad(DefaultVertexFormats.BLOCK, ClientUtils.applyMatrixToVertices(tMatrix, vertices), Utils.rotateFacingTowardsDir(Direction.DOWN, getFacing()), ClientUtils.getSprite(ModelConveyor.rl_casing[3]), new double[]{1, 0, 15, 16}, colour, true));
+		baseModel.set(0, ModelUtils.createBakedQuad(DefaultVertexFormats.BLOCK, ClientUtils.applyMatrixToVertices(tMatrix, vertices), Utils.rotateFacingTowardsDir(Direction.DOWN, getFacing()), ClientUtils.getSprite(ModelConveyor.rl_casing[3]), new double[]{1, 0, 15, 16}, colour, true));
 
 		vertices = new Vector3d[]{new Vector3d(.0625f, .1875f, 0), new Vector3d(.0625f, .1875f, 1), new Vector3d(.9375f, .1875f, 1), new Vector3d(.9375f, .1875f, 0)};
-		baseModel.add(ClientUtils.createBakedQuad(DefaultVertexFormats.BLOCK, ClientUtils.applyMatrixToVertices(tMatrix, vertices), Direction.UP, tex_casing0, new double[]{1, 16, 15, 0}, colour, false));
+		baseModel.add(ModelUtils.createBakedQuad(DefaultVertexFormats.BLOCK, ClientUtils.applyMatrixToVertices(tMatrix, vertices), Direction.UP, tex_casing0, new double[]{1, 16, 15, 0}, colour, false));
 
 		vertices = new Vector3d[]{new Vector3d(.0625f, 0, 0), new Vector3d(.0625f, .1875f, 0), new Vector3d(.9375f, .1875f, 0), new Vector3d(.9375f, 0, 0)};
-		baseModel.set(15, ClientUtils.createBakedQuad(DefaultVertexFormats.BLOCK, ClientUtils.applyMatrixToVertices(tMatrix, vertices), getFacing(), ClientUtils.getSprite(ModelConveyor.rl_casing[1]), new double[]{1, 16, 15, 13}, colour, false));
+		baseModel.set(15, ModelUtils.createBakedQuad(DefaultVertexFormats.BLOCK, ClientUtils.applyMatrixToVertices(tMatrix, vertices), getFacing(), ClientUtils.getSprite(ModelConveyor.rl_casing[1]), new double[]{1, 16, 15, 13}, colour, false));
 
 		vertices = new Vector3d[]{new Vector3d(.0625f, .125f, 0), new Vector3d(.0625f, .1875f, 0), new Vector3d(.9375f, .1875f, 0), new Vector3d(.9375f, .125f, 0)};
 		Vector3d[] vertices2 = new Vector3d[]{new Vector3d(.5f, .125f, 0), new Vector3d(.5f, .125f, .5f), new Vector3d(.5f, .1875f, .5f), new Vector3d(.5f, .1875f, 0)};
@@ -235,12 +236,12 @@ public class SplitConveyor extends BasicConveyor
 				vertices3[iv] = vertices3[iv].add(-.0625f, 0, 0);
 			}
 			double v = 16-i;
-			baseModel.add(ClientUtils.createBakedQuad(DefaultVertexFormats.BLOCK, ClientUtils.applyMatrixToVertices(tMatrix, vertices), getFacing(), tex_casing0, new double[]{1, v-1, 15, v}, colour, true));
+			baseModel.add(ModelUtils.createBakedQuad(DefaultVertexFormats.BLOCK, ClientUtils.applyMatrixToVertices(tMatrix, vertices), getFacing(), tex_casing0, new double[]{1, v-1, 15, v}, colour, true));
 			if(i < 7)
 			{
 				double u = 8-i;
-				baseModel.add(ClientUtils.createBakedQuad(DefaultVertexFormats.BLOCK, ClientUtils.applyMatrixToVertices(tMatrix, vertices2), getFacing(), tex_casing0, new double[]{u-1, 16, u, 8}, colour, true));
-				baseModel.add(ClientUtils.createBakedQuad(DefaultVertexFormats.BLOCK, ClientUtils.applyMatrixToVertices(tMatrix, vertices3), getFacing(), tex_casing0, new double[]{u-1, 16, u, 8}, colour, false));
+				baseModel.add(ModelUtils.createBakedQuad(DefaultVertexFormats.BLOCK, ClientUtils.applyMatrixToVertices(tMatrix, vertices2), getFacing(), tex_casing0, new double[]{u-1, 16, u, 8}, colour, true));
+				baseModel.add(ModelUtils.createBakedQuad(DefaultVertexFormats.BLOCK, ClientUtils.applyMatrixToVertices(tMatrix, vertices3), getFacing(), tex_casing0, new double[]{u-1, 16, u, 8}, colour, false));
 			}
 		}
 		super.modifyQuads(baseModel);

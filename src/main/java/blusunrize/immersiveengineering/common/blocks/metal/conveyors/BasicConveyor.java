@@ -14,7 +14,7 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirectio
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
 import blusunrize.immersiveengineering.api.utils.EntityCollisionTracker;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedVoxelShapes;
-import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.utils.ModelUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDecoration;
@@ -345,22 +345,22 @@ public class BasicConveyor implements IConveyorBelt
 				return ret;
 			};
 
-			baseModel.addAll(ClientUtils.createBakedBox(new Vector3d(0, .75f, 0), new Vector3d(1, 1, 1), matrix, facing, vertexTransformer, getSprite, colour));
+			baseModel.addAll(ModelUtils.createBakedBox(new Vector3d(0, .75f, 0), new Vector3d(1, 1, 1), matrix, facing, vertexTransformer, getSprite, colour));
 
 			if(getTile()==null||this.renderWall(getFacing(), 0))
-				baseModel.addAll(ClientUtils.createBakedBox(new Vector3d(0, .1875f, 0), new Vector3d(.0625f, .75f, 1), matrix, facing, vertexTransformer, getSpriteHorizontal, colour));
+				baseModel.addAll(ModelUtils.createBakedBox(new Vector3d(0, .1875f, 0), new Vector3d(.0625f, .75f, 1), matrix, facing, vertexTransformer, getSpriteHorizontal, colour));
 			else
 			{
-				baseModel.addAll(ClientUtils.createBakedBox(new Vector3d(0, .1875f, 0), new Vector3d(.0625f, .75f, .0625f), matrix, facing, getSpriteHorizontal, colour));
-				baseModel.addAll(ClientUtils.createBakedBox(new Vector3d(0, .1875f, .9375f), new Vector3d(.0625f, .75f, 1), matrix, facing, getSpriteHorizontal, colour));
+				baseModel.addAll(ModelUtils.createBakedBox(new Vector3d(0, .1875f, 0), new Vector3d(.0625f, .75f, .0625f), matrix, facing, getSpriteHorizontal, colour));
+				baseModel.addAll(ModelUtils.createBakedBox(new Vector3d(0, .1875f, .9375f), new Vector3d(.0625f, .75f, 1), matrix, facing, getSpriteHorizontal, colour));
 			}
 
 			if(getTile()==null||this.renderWall(getFacing(), 1))
-				baseModel.addAll(ClientUtils.createBakedBox(new Vector3d(.9375f, .1875f, 0), new Vector3d(1, .75f, 1), matrix, facing, vertexTransformer, getSpriteHorizontal, colour));
+				baseModel.addAll(ModelUtils.createBakedBox(new Vector3d(.9375f, .1875f, 0), new Vector3d(1, .75f, 1), matrix, facing, vertexTransformer, getSpriteHorizontal, colour));
 			else
 			{
-				baseModel.addAll(ClientUtils.createBakedBox(new Vector3d(.9375f, .1875f, 0), new Vector3d(1, .75f, .0625f), matrix, facing, getSpriteHorizontal, colour));
-				baseModel.addAll(ClientUtils.createBakedBox(new Vector3d(.9375f, .1875f, .9375f), new Vector3d(1, .75f, 1), matrix, facing, getSpriteHorizontal, colour));
+				baseModel.addAll(ModelUtils.createBakedBox(new Vector3d(.9375f, .1875f, 0), new Vector3d(1, .75f, .0625f), matrix, facing, getSpriteHorizontal, colour));
+				baseModel.addAll(ModelUtils.createBakedBox(new Vector3d(.9375f, .1875f, .9375f), new Vector3d(1, .75f, 1), matrix, facing, getSpriteHorizontal, colour));
 			}
 		}
 	}

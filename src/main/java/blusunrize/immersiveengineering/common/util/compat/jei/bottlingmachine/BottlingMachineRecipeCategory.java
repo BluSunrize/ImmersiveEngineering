@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.util.compat.jei.bottlingmachine;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
-import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
@@ -70,7 +70,7 @@ public class BottlingMachineRecipeCategory extends IERecipeCategory<BottlingMach
 	@Override
 	public void draw(BottlingMachineRecipe recipe, MatrixStack transform, double mouseX, double mouseY)
 	{
-		ClientUtils.drawSlot(75, 15, 16, 48, transform);
+		GuiHelper.drawSlot(75, 15, 16, 48, transform);
 
 		transform.push();
 		transform.scale(3, 3, 1);

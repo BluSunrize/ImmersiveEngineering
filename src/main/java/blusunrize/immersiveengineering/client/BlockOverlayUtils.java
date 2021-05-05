@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.client;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.excavator.MineralMix;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
+import blusunrize.immersiveengineering.client.utils.RenderUtils;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.mixin.accessors.client.WorldRendererAccess;
@@ -245,7 +246,7 @@ public class BlockOverlayUtils
 	/**
 	 * Draw additional block breaking texture at targeted positions
 	 */
-	public static void drawAdditionalBlockbreak(DrawHighlightEvent ev, PlayerEntity player, float partialTicks, Collection<BlockPos> blocks)
+	public static void drawAdditionalBlockbreak(DrawHighlightEvent ev, PlayerEntity player, Collection<BlockPos> blocks)
 	{
 		Vector3d renderView = ev.getInfo().getProjectedView();
 		for(BlockPos pos : blocks)
@@ -263,7 +264,7 @@ public class BlockOverlayUtils
 		transform.translate(-renderView.x, -renderView.y, -renderView.z);
 		PlayerController controllerMP = ClientUtils.mc().playerController;
 		if(controllerMP.getIsHittingBlock())
-			ClientUtils.drawBlockDamageTexture(transform, ev.getBuffers(), player, partialTicks, player.world, blocks);
+			RenderUtils.drawBlockDamageTexture(transform, ev.getBuffers(), player.world, blocks);
 		transform.pop();
 	}
 

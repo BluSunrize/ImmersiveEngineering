@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
-import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.utils.RenderUtils;
 import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.TurretGunTileEntity;
@@ -93,7 +93,7 @@ public class TurretRenderer extends TileEntityRenderer<TurretTileEntity>
 		matrix.translate(-.5, 0, -.5);
 		List<BakedQuad> quads = model.getQuads(state, null, Utils.RAND, new SinglePropertyModelData<>(
 				new IEObjState(VisibilityList.show(parts)), Model.IE_OBJ_STATE));
-		ClientUtils.renderModelTESRFancy(quads, new TransformingVertexBuilder(solidBuilder, matrix), world, pos, !isFirst, -1, light);
+		RenderUtils.renderModelTESRFancy(quads, new TransformingVertexBuilder(solidBuilder, matrix), world, pos, !isFirst, -1, light);
 		matrix.pop();
 	}
 

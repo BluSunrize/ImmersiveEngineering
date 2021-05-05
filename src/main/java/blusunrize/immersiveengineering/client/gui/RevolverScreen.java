@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.gui.RevolverContainer;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
@@ -77,11 +78,11 @@ public class RevolverScreen extends IEContainerScreen<RevolverContainer>
 		IVertexBuilder builder = buffer.getBuffer(IERenderTypes.getGui(
 				new ResourceLocation(ImmersiveEngineering.MODID, "textures/gui/revolver.png")));
 
-		ClientUtils.drawTexturedRect(builder, transform, 0, 1, 74, 74, 1, 1, 1, 1, 0/256f, 74/256f, 51/256f, 125/256f);
+		GuiHelper.drawTexturedColoredRect(builder, transform, 0, 1, 74, 74, 1, 1, 1, 1, 0/256f, 74/256f, 51/256f, 125/256f);
 		if(bulletAmount >= 18)
-			ClientUtils.drawTexturedRect(builder, transform, 47, 1, 103, 74, 1, 1, 1, 1, 74/256f, 177/256f, 51/256f, 125/256f);
+			GuiHelper.drawTexturedColoredRect(builder, transform, 47, 1, 103, 74, 1, 1, 1, 1, 74/256f, 177/256f, 51/256f, 125/256f);
 		else if(bulletAmount > 8)
-			ClientUtils.drawTexturedRect(builder, transform, 57, 1, 79, 39, 1, 1, 1, 1, 57/256f, 136/256f, 12/256f, 51/256f);
+			GuiHelper.drawTexturedColoredRect(builder, transform, 57, 1, 79, 39, 1, 1, 1, 1, 57/256f, 136/256f, 12/256f, 51/256f);
 		buffer.finish();
 
 		ItemRenderer ir = ClientUtils.mc().getItemRenderer();

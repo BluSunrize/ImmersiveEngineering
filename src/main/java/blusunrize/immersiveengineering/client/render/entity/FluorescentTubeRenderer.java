@@ -8,9 +8,9 @@
 
 package blusunrize.immersiveengineering.client.render.entity;
 
-import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
+import blusunrize.immersiveengineering.client.utils.RenderUtils;
 import blusunrize.immersiveengineering.common.entities.FluorescentTubeEntity;
 import blusunrize.immersiveengineering.common.items.FluorescentTubeItem;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
@@ -67,11 +67,11 @@ public class FluorescentTubeRenderer extends EntityRenderer<FluorescentTubeEntit
 					.apply(new ResourceLocation("minecraft:block/iron_block"));
 
 		IVertexBuilder builder = bufferIn.getBuffer(IERenderTypes.getPositionTex(PlayerContainer.LOCATION_BLOCKS_TEXTURE));
-		ClientUtils.renderTexturedBox(builder, matrixStackIn,
+		RenderUtils.renderTexturedBox(builder, matrixStackIn,
 				0, 0, 0,
 				.0625F, 1, .0625F,
 				tex.getMinU(), tex.getMinV(), tex.getMaxU(), tex.getMaxV());
-		ClientUtils.renderTexturedBox(builder, matrixStackIn,
+		RenderUtils.renderTexturedBox(builder, matrixStackIn,
 				.0625F, .9375F, 0,
 				.25F, 1, .0625F,
 				tex.getMinU(), tex.getMinV(), tex.getMaxU(), tex.getMaxV());

@@ -73,7 +73,7 @@ public class ArcFurnaceScreen extends IEContainerScreen<ArcFurnaceContainer>
 			}
 
 		int stored = (int)(46*(tile.getEnergyStored(null)/(float)tile.getMaxEnergyStored(null)));
-		ClientUtils.drawGradientRect(guiLeft+157, guiTop+22+(46-stored), guiLeft+164, guiTop+68, 0xffb51500, 0xff600b00);
+		fillGradient(transform, guiLeft+157, guiTop+22+(46-stored), guiLeft+164, guiTop+68, 0xffb51500, 0xff600b00);
 	}
 
 	@Override

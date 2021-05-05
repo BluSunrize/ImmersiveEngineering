@@ -9,8 +9,8 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
-import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
+import blusunrize.immersiveengineering.client.utils.ModelUtils;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
@@ -48,7 +48,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static blusunrize.immersiveengineering.client.ClientUtils.putVertexData;
+import static blusunrize.immersiveengineering.client.utils.ModelUtils.putVertexData;
 import static net.minecraft.util.Direction.*;
 
 public class StructuralArmTileEntity extends IEBaseTileEntity implements IOBJModelCallback<BlockState>,
@@ -362,10 +362,10 @@ public class StructuralArmTileEntity extends IEBaseTileEntity implements IOBJMod
 							   TextureAtlasSprite tas, double[] uvs, float[] alpha)
 	{
 		side = Utils.rotateFacingTowardsDir(side, this.getFacing());
-		quads.add(ClientUtils.createBakedQuad(format, vertices, side, tas, uvs, alpha, false));
+		quads.add(ModelUtils.createBakedQuad(format, vertices, side, tas, uvs, alpha, false));
 		for(int i = 0; i < vertices.length; i++)
 			vertices[i] = SHRINK.apply(vertices[i]);
-		quads.add(ClientUtils.createBakedQuad(format, vertices, side.getOpposite(), tas, uvs, alpha, true));
+		quads.add(ModelUtils.createBakedQuad(format, vertices, side.getOpposite(), tas, uvs, alpha, true));
 	}
 
 	private void addSides(List<BakedQuad> quads, Vector3d[] vertices, TextureAtlasSprite tas, double lowerV,

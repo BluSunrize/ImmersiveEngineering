@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.SorterScreen.ButtonSorter;
+import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.blocks.wooden.FluidSorterTileEntity;
 import blusunrize.immersiveengineering.common.gui.FluidSorterContainer;
@@ -84,7 +85,7 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 					int x = guiLeft+4+(side/2)*58+(i < 3?i*18: i > 4?(i-5)*18: i==3?0: 36);
 					int y = guiTop+22+(side%2)*76+(i < 3?0: i > 4?36: 18);
 					if(mx > x&&mx < x+16&&my > y&&my < y+16)
-						ClientUtils.addFluidTooltip(tile.filters[side][i], tooltip, 0);
+						GuiHelper.addFluidTooltip(tile.filters[side][i], tooltip, 0);
 				}
 		if(!tooltip.isEmpty())
 			GuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
@@ -135,7 +136,7 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 							int x = guiLeft+4+(side/2)*58+(i < 3?i*18: i > 4?(i-5)*18: i==3?0: 36);
 							int y = guiTop+22+(side%2)*76+(i < 3?0: i > 4?36: 18);
 							int col = tile.filters[side][i].getFluid().getAttributes().getColor(tile.filters[side][i]);
-							ClientUtils.drawTexturedRect(
+							GuiHelper.drawTexturedColoredRect(
 									builder, transform, x, y, 16, 16,
 									(col >> 16&255)/255.0f, (col >> 8&255)/255.0f, (col&255)/255.0f, 1,
 									sprite.getMinU(), sprite.getMaxU(), sprite.getMinV(), sprite.getMaxV());

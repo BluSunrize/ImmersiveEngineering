@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.crafting.StackWithChance;
 import blusunrize.immersiveengineering.api.excavator.MineralMix;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.utils.ModelUtils;
 import blusunrize.immersiveengineering.common.items.CoresampleItem;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.cache.Cache;
@@ -232,7 +233,7 @@ public class ModelCoresample extends BakedIEModel
 	protected final void putVertexData(Vector3d normal, Vector3d[] vertices, double[] uvs, TextureAtlasSprite sprite, List<BakedQuad> out)
 	{
 		float d = LightUtil.diffuseLight((float)normal.x, (float)normal.y, (float)normal.z);
-		BakedQuad quad = ClientUtils.createBakedQuad(format, vertices, Direction.getFacingFromVector(normal.x, normal.y, normal.z),
+		BakedQuad quad = ModelUtils.createBakedQuad(format, vertices, Direction.getFacingFromVector(normal.x, normal.y, normal.z),
 				sprite,
 				uvs,
 				new float[]{d, d, d, 1},

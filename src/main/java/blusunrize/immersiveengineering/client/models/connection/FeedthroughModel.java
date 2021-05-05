@@ -14,8 +14,8 @@ import blusunrize.immersiveengineering.api.utils.client.CombinedModelData;
 import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
 import blusunrize.immersiveengineering.api.wires.WireApi;
 import blusunrize.immersiveengineering.api.wires.WireType;
-import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.BakedIEModel;
+import blusunrize.immersiveengineering.client.utils.ModelUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Connectors;
 import blusunrize.immersiveengineering.common.blocks.metal.FeedthroughTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.FeedthroughTileEntity.FeedthroughData;
@@ -397,7 +397,7 @@ public class FeedthroughModel extends BakedIEModel
 					.getModel(info.conn.get().with(IEProperties.FACING_ALL, Direction.DOWN));
 			List<BakedQuad> conn = new ArrayList<>(model.getQuads(null, side, Utils.RAND, EmptyModelData.INSTANCE));
 			if(side==facing)
-				conn.add(ClientUtils.createBakedQuad(DefaultVertexFormats.BLOCK, vertices, Direction.UP, info.tex, info.uvs, WHITE, false));
+				conn.add(ModelUtils.createBakedQuad(DefaultVertexFormats.BLOCK, vertices, Direction.UP, info.tex, info.uvs, WHITE, false));
 			Function<BakedQuad, BakedQuad> transf = new QuadTransformer(new TransformationMatrix(mat.toMatrix4f()), null);//I hope no one uses tint index for connectors
 			if(transf!=null)
 				return conn.stream().map(transf).collect(Collectors.toList());

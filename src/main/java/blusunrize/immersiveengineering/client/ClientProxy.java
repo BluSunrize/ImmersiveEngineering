@@ -81,7 +81,6 @@ import net.minecraft.client.renderer.entity.BipedRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
-import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.client.world.ClientWorld;
@@ -353,12 +352,6 @@ public class ClientProxy extends CommonProxy
 			Preconditions.checkNotNull(p.sprite);
 		}
 		WireType.iconDefaultWire = event.getMap().getSprite(new ResourceLocation(MODID, "block/wire"));
-		AtlasTexture texturemap = event.getMap();
-		for(int i = 0; i < ClientUtils.destroyBlockIcons.length; i++)
-		{
-			ClientUtils.destroyBlockIcons[i] = texturemap.getSprite(new ResourceLocation("block/destroy_stage_"+i));
-			Preconditions.checkNotNull(ClientUtils.destroyBlockIcons[i]);
-		}
 	}
 
 	public void registerItemModel(Item item, String path, String renderCase)

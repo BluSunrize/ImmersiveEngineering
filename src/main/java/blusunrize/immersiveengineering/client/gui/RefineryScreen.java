@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.common.blocks.metal.RefineryTileEntity;
 import blusunrize.immersiveengineering.common.gui.RefineryContainer;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -54,15 +55,15 @@ public class RefineryScreen extends IEContainerScreen<RefineryContainer>
 		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
 
 		int stored = (int)(46*(tile.getEnergyStored(null)/(float)tile.getMaxEnergyStored(null)));
-		ClientUtils.drawGradientRect(guiLeft+157, guiTop+21+(46-stored), guiLeft+164, guiTop+67, 0xffb51500, 0xff600b00);
+		fillGradient(transform, guiLeft+157, guiTop+21+(46-stored), guiLeft+164, guiTop+67, 0xffb51500, 0xff600b00);
 
 		handleTanks(transform, mx, my, null);
 	}
 
 	private void handleTanks(MatrixStack transform, int mx, int my, @Nullable List<ITextComponent> tooltip)
 	{
-		ClientUtils.handleGuiTank(transform, tile.tanks[0], guiLeft+13, guiTop+20, 16, 47, 177, 31, 20, 51, mx, my, TEXTURE, tooltip);
-		ClientUtils.handleGuiTank(transform, tile.tanks[1], guiLeft+61, guiTop+20, 16, 47, 177, 31, 20, 51, mx, my, TEXTURE, tooltip);
-		ClientUtils.handleGuiTank(transform, tile.tanks[2], guiLeft+109, guiTop+20, 16, 47, 177, 31, 20, 51, mx, my, TEXTURE, tooltip);
+		GuiHelper.handleGuiTank(transform, tile.tanks[0], guiLeft+13, guiTop+20, 16, 47, 177, 31, 20, 51, mx, my, TEXTURE, tooltip);
+		GuiHelper.handleGuiTank(transform, tile.tanks[1], guiLeft+61, guiTop+20, 16, 47, 177, 31, 20, 51, mx, my, TEXTURE, tooltip);
+		GuiHelper.handleGuiTank(transform, tile.tanks[2], guiLeft+109, guiTop+20, 16, 47, 177, 31, 20, 51, mx, my, TEXTURE, tooltip);
 	}
 }

@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.common.blocks.stone.CokeOvenTileEntity;
 import blusunrize.immersiveengineering.common.gui.CokeOvenContainer;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -38,7 +39,7 @@ public class CokeOvenScreen extends IEContainerScreen<CokeOvenContainer>
 	{
 		super.render(transform, mx, my, partial);
 		List<ITextComponent> tooltip = new ArrayList<>();
-		ClientUtils.handleGuiTank(transform, tile.tank, guiLeft+129, guiTop+20, 16, 47, 176, 31, 20, 51, mx, my, TEXTURE, tooltip);
+		GuiHelper.handleGuiTank(transform, tile.tank, guiLeft+129, guiTop+20, 16, 47, 176, 31, 20, 51, mx, my, TEXTURE, tooltip);
 		if(!tooltip.isEmpty())
 			GuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
 	}
@@ -55,7 +56,7 @@ public class CokeOvenScreen extends IEContainerScreen<CokeOvenContainer>
 			this.blit(transform, guiLeft+59, guiTop+37+12-h, 179, 1+12-h, 9, h);
 		}
 
-		ClientUtils.handleGuiTank(transform, tile.tank, guiLeft+129, guiTop+20, 16, 47, 176, 31, 20, 51, mx, my, TEXTURE, null);
+		GuiHelper.handleGuiTank(transform, tile.tank, guiLeft+129, guiTop+20, 16, 47, 176, 31, 20, 51, mx, my, TEXTURE, null);
 
 	}
 }

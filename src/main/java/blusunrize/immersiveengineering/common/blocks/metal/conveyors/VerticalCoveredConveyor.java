@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirectio
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.ModelConveyor;
+import blusunrize.immersiveengineering.client.utils.ModelUtils;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
@@ -143,32 +144,32 @@ public class VerticalCoveredConveyor extends VerticalConveyor
 
 			if(!renderBottom)//just vertical
 			{
-				baseModel.addAll(ClientUtils.createBakedBox(new Vector3d(0, 0, .75f), new Vector3d(1, 1, 1), matrix, getFacing(), getSprite, colour));
-				baseModel.addAll(ClientUtils.createBakedBox(new Vector3d(0, 0, .1875f), new Vector3d(.0625f, 1, .75f), matrix, getFacing(), getSprite, colour));
-				baseModel.addAll(ClientUtils.createBakedBox(new Vector3d(.9375f, 0, .1875f), new Vector3d(1, 1, .75f), matrix, getFacing(), getSprite, colour));
+				baseModel.addAll(ModelUtils.createBakedBox(new Vector3d(0, 0, .75f), new Vector3d(1, 1, 1), matrix, getFacing(), getSprite, colour));
+				baseModel.addAll(ModelUtils.createBakedBox(new Vector3d(0, 0, .1875f), new Vector3d(.0625f, 1, .75f), matrix, getFacing(), getSprite, colour));
+				baseModel.addAll(ModelUtils.createBakedBox(new Vector3d(.9375f, 0, .1875f), new Vector3d(1, 1, .75f), matrix, getFacing(), getSprite, colour));
 			}
 			else
 			{
 				boolean straightInput = getTile()!=null&&isInwardConveyor(getTile(), getFacing().getOpposite());
-				baseModel.addAll(ClientUtils.createBakedBox(new Vector3d(0, .9375f, .75f), new Vector3d(1, 1, 1), matrix, getFacing(), getSprite, colour));
+				baseModel.addAll(ModelUtils.createBakedBox(new Vector3d(0, .9375f, .75f), new Vector3d(1, 1, 1), matrix, getFacing(), getSprite, colour));
 				if(!straightInput)
-					baseModel.addAll(ClientUtils.createBakedBox(new Vector3d(0, .1875f, .9375f), new Vector3d(1, 1f, 1), matrix, getFacing(), getSprite, colour));
+					baseModel.addAll(ModelUtils.createBakedBox(new Vector3d(0, .1875f, .9375f), new Vector3d(1, 1f, 1), matrix, getFacing(), getSprite, colour));
 				else//has direct input, needs a cutout
 				{
-					baseModel.addAll(ClientUtils.createBakedBox(new Vector3d(0, .75f, .9375f), new Vector3d(1, 1, 1), matrix, getFacing(), getSprite, colour));
-					baseModel.addAll(ClientUtils.createBakedBox(new Vector3d(0, .1875f, .9375f), new Vector3d(.0625f, .75f, 1), matrix, getFacing(), getSprite, colour));
-					baseModel.addAll(ClientUtils.createBakedBox(new Vector3d(.9375f, .1875f, .9375f), new Vector3d(1, .75f, 1), matrix, getFacing(), getSprite, colour));
+					baseModel.addAll(ModelUtils.createBakedBox(new Vector3d(0, .75f, .9375f), new Vector3d(1, 1, 1), matrix, getFacing(), getSprite, colour));
+					baseModel.addAll(ModelUtils.createBakedBox(new Vector3d(0, .1875f, .9375f), new Vector3d(.0625f, .75f, 1), matrix, getFacing(), getSprite, colour));
+					baseModel.addAll(ModelUtils.createBakedBox(new Vector3d(.9375f, .1875f, .9375f), new Vector3d(1, .75f, 1), matrix, getFacing(), getSprite, colour));
 				}
 
 				if(walls[0])//wall to the left
-					baseModel.addAll(ClientUtils.createBakedBox(new Vector3d(0, .1875f, .1875f), new Vector3d(.0625f, 1, .9375f), matrix, getFacing(), getSprite, colour));
+					baseModel.addAll(ModelUtils.createBakedBox(new Vector3d(0, .1875f, .1875f), new Vector3d(.0625f, 1, .9375f), matrix, getFacing(), getSprite, colour));
 				else//cutout to the left
-					baseModel.addAll(ClientUtils.createBakedBox(new Vector3d(0, .75f, .1875f), new Vector3d(.0625f, 1, .9375f), matrix, getFacing(), getSprite, colour));
+					baseModel.addAll(ModelUtils.createBakedBox(new Vector3d(0, .75f, .1875f), new Vector3d(.0625f, 1, .9375f), matrix, getFacing(), getSprite, colour));
 
 				if(walls[1])//wall to the right
-					baseModel.addAll(ClientUtils.createBakedBox(new Vector3d(.9375f, .1875f, .1875f), new Vector3d(1, 1, .9375f), matrix, getFacing(), getSprite, colour));
+					baseModel.addAll(ModelUtils.createBakedBox(new Vector3d(.9375f, .1875f, .1875f), new Vector3d(1, 1, .9375f), matrix, getFacing(), getSprite, colour));
 				else//cutout to the right
-					baseModel.addAll(ClientUtils.createBakedBox(new Vector3d(.9375f, .75f, .1875f), new Vector3d(1, 1, .9375f), matrix, getFacing(), getSprite, colour));
+					baseModel.addAll(ModelUtils.createBakedBox(new Vector3d(.9375f, .75f, .1875f), new Vector3d(1, 1, .9375f), matrix, getFacing(), getSprite, colour));
 			}
 		}
 		return baseModel;

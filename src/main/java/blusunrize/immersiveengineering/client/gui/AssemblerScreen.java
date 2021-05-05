@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonBoolean;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE;
+import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.common.blocks.metal.AssemblerTileEntity;
 import blusunrize.immersiveengineering.common.gui.AssemblerContainer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
@@ -81,9 +82,9 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerContainer>
 		if(mx >= guiLeft+187&&mx < guiLeft+194&&my >= guiTop+12&&my < guiTop+59)
 			tooltip.add(new StringTextComponent(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" IF"));
 
-		ClientUtils.handleGuiTank(transform, tile.tanks[0], guiLeft+204, guiTop+13, 16, 46, 250, 0, 20, 50, mx, my, TEXTURE, tooltip);
-		ClientUtils.handleGuiTank(transform, tile.tanks[1], guiLeft+182, guiTop+70, 16, 46, 250, 0, 20, 50, mx, my, TEXTURE, tooltip);
-		ClientUtils.handleGuiTank(transform, tile.tanks[2], guiLeft+204, guiTop+70, 16, 46, 250, 0, 20, 50, mx, my, TEXTURE, tooltip);
+		GuiHelper.handleGuiTank(transform, tile.tanks[0], guiLeft+204, guiTop+13, 16, 46, 250, 0, 20, 50, mx, my, TEXTURE, tooltip);
+		GuiHelper.handleGuiTank(transform, tile.tanks[1], guiLeft+182, guiTop+70, 16, 46, 250, 0, 20, 50, mx, my, TEXTURE, tooltip);
+		GuiHelper.handleGuiTank(transform, tile.tanks[2], guiLeft+204, guiTop+70, 16, 46, 250, 0, 20, 50, mx, my, TEXTURE, tooltip);
 
 		for(int i = 0; i < tile.patterns.length; i++)
 			if(tile.inventory.get(18+i).isEmpty()&&!tile.patterns[i].inv.get(9).isEmpty())
@@ -114,11 +115,11 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerContainer>
 		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
 
 		int stored = (int)(46*(tile.getEnergyStored(null)/(float)tile.getMaxEnergyStored(null)));
-		ClientUtils.drawGradientRect(guiLeft+187, guiTop+13+(46-stored), guiLeft+194, guiTop+59, 0xffb51500, 0xff600b00);
+		fillGradient(transform, guiLeft+187, guiTop+13+(46-stored), guiLeft+194, guiTop+59, 0xffb51500, 0xff600b00);
 
-		ClientUtils.handleGuiTank(transform, tile.tanks[0], guiLeft+204, guiTop+13, 16, 46, 230, 0, 20, 50, mx, my, TEXTURE, null);
-		ClientUtils.handleGuiTank(transform, tile.tanks[1], guiLeft+182, guiTop+70, 16, 46, 230, 0, 20, 50, mx, my, TEXTURE, null);
-		ClientUtils.handleGuiTank(transform, tile.tanks[2], guiLeft+204, guiTop+70, 16, 46, 230, 0, 20, 50, mx, my, TEXTURE, null);
+		GuiHelper.handleGuiTank(transform, tile.tanks[0], guiLeft+204, guiTop+13, 16, 46, 230, 0, 20, 50, mx, my, TEXTURE, null);
+		GuiHelper.handleGuiTank(transform, tile.tanks[1], guiLeft+182, guiTop+70, 16, 46, 230, 0, 20, 50, mx, my, TEXTURE, null);
+		GuiHelper.handleGuiTank(transform, tile.tanks[2], guiLeft+204, guiTop+70, 16, 46, 230, 0, 20, 50, mx, my, TEXTURE, null);
 
 		for(int i = 0; i < tile.patterns.length; i++)
 			if(tile.inventory.get(18+i).isEmpty()&&!tile.patterns[i].inv.get(9).isEmpty())
@@ -134,7 +135,7 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerContainer>
 				itemRenderer.renderItemOverlayIntoGUI(font, stack, guiLeft+27+i*58, guiTop+64, TextFormatting.GRAY.toString()+stack.getCount());
 
 				RenderSystem.disableDepthTest();
-				ClientUtils.drawColouredRect(guiLeft+27+i*58, guiTop+64, 16, 16, 0x77444444);
+				fill(transform, guiLeft+27+i*58, guiTop+64, guiLeft+27+i*74, guiTop+80, 0x77444444);
 				RenderSystem.enableDepthTest();
 
 				transform.pop();
