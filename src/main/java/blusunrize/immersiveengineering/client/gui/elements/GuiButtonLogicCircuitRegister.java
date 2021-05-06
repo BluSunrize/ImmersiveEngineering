@@ -9,10 +9,12 @@
 package blusunrize.immersiveengineering.client.gui.elements;
 
 import blusunrize.immersiveengineering.api.tool.LogicCircuitHandler.LogicCircuitRegister;
+import blusunrize.immersiveengineering.client.gui.IEContainerScreen;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.item.DyeColor;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
@@ -20,9 +22,11 @@ import java.util.List;
 
 public class GuiButtonLogicCircuitRegister extends GuiButtonState<LogicCircuitRegister>
 {
+	private static final ResourceLocation TEXTURE = IEContainerScreen.makeTextureLocation("circuit_table");
+
 	public GuiButtonLogicCircuitRegister(int x, int y, ITextComponent name, IIEPressable<GuiButtonState<LogicCircuitRegister>> handler)
 	{
-		super(x, y, 18, 18, name, LogicCircuitRegister.values(), 0, "immersiveengineering:textures/gui/circuit_table.png", 234, 0, -1, handler);
+		super(x, y, 18, 18, name, LogicCircuitRegister.values(), 0, TEXTURE, 234, 0, -1, handler);
 		this.textOffset = new int[]{3, 5};
 	}
 

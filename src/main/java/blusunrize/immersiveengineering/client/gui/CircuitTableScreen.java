@@ -27,6 +27,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.DyeColor;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -41,6 +42,8 @@ import static blusunrize.immersiveengineering.common.blocks.wooden.CircuitTableT
 
 public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 {
+	private static final ResourceLocation TEXTURE = IEContainerScreen.makeTextureLocation("circuit_table");
+
 	private final CircuitTableTileEntity tile;
 
 	// Buttons
@@ -204,11 +207,11 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float f, int mx, int my)
 	{
 		RenderSystem.color3f(1.0F, 1.0F, 1.0F);
-		ClientUtils.bindTexture("immersiveengineering:textures/gui/circuit_table.png");
+		ClientUtils.bindTexture(TEXTURE);
 		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
 
 		int stored = (int)(46*(tile.getEnergyStored(null)/(float)tile.getMaxEnergyStored(null)));
-		ClientUtils.drawGradientRect(guiLeft+217, guiTop+16+(46-stored), guiLeft+224, guiTop+62, 0xffb51500, 0xff600b00);
+		fillGradient(transform, guiLeft+217, guiTop+16+(46-stored), guiLeft+224, guiTop+62, 0xffb51500, 0xff600b00);
 	}
 
 	@Override
