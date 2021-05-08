@@ -10,6 +10,7 @@
 package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.utils.SafeChunkUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISpawnInterdiction;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import net.minecraft.entity.Entity;
@@ -35,36 +36,7 @@ public class SpawnInterdictionHandler
 	@SubscribeEvent
 	public static void onEnderTeleport(EnderTeleportEvent event)
 	{
-		if(event.getEntityLiving().getType().getClassification()==EntityClassification.MONSTER)
-		{
-			synchronized(interdictionTiles)
-			{
-				Set<ISpawnInterdiction> dimSet = interdictionTiles.get(event.getEntity().world.getDimensionKey());
-				if(dimSet!=null)
-				{
-					Iterator<ISpawnInterdiction> it = dimSet.iterator();
-					while(it.hasNext())
-					{
-						ISpawnInterdiction interdictor = it.next();
-						if(interdictor instanceof TileEntity)
-						{
-							if(((TileEntity)interdictor).isRemoved()||((TileEntity)interdictor).getWorld()==null)
-								it.remove();
-							else if(Vector3d.copy(((TileEntity)interdictor).getPos()).squareDistanceTo(event.getEntity().getPositionVec()) <= interdictor.getInterdictionRangeSquared())
-								event.setCanceled(true);
-						}
-						else if(interdictor instanceof Entity)
-						{
-							if(!((Entity)interdictor).isAlive()||((Entity)interdictor).world==null)
-								it.remove();
-							else if(((Entity)interdictor).getDistanceSq(event.getEntity()) <= interdictor.getInterdictionRangeSquared())
-								event.setCanceled(true);
-						}
-					}
-				}
-			}
-		}
-		if(event.getEntityLiving().getActivePotionEffect(IEPotions.stunned)!=null)
+		if(shouldCancel(event.getEntity())||event.getEntityLiving().getActivePotionEffect(IEPotions.stunned)!=null)
 			event.setCanceled(true);
 	}
 
@@ -74,31 +46,38 @@ public class SpawnInterdictionHandler
 		if(event.getResult()==Event.Result.ALLOW||event.getResult()==Event.Result.DENY
 				||event.isSpawner())
 			return;
-		if(event.getEntityLiving().getType().getClassification()==EntityClassification.MONSTER)
+		if(shouldCancel(event.getEntity()))
+			event.setResult(Event.Result.DENY);
+	}
+
+	private static boolean shouldCancel(Entity entity)
+	{
+		if(entity.getType().getClassification()!=EntityClassification.MONSTER)
+			return false;
+		RegistryKey<World> dimension = entity.world.getDimensionKey();
+		synchronized(interdictionTiles)
 		{
-			synchronized(interdictionTiles)
+			if(!interdictionTiles.containsKey(dimension))
+				return false;
+			Iterator<ISpawnInterdiction> it = interdictionTiles.get(dimension).iterator();
+			while(it.hasNext())
 			{
-				RegistryKey<World> dimension = event.getEntity().world.getDimensionKey();
-				if(interdictionTiles.containsKey(dimension))
+				ISpawnInterdiction interdictor = it.next();
+				if(interdictor instanceof TileEntity)
 				{
-					Iterator<ISpawnInterdiction> it = interdictionTiles.get(dimension).iterator();
-					while(it.hasNext())
+					TileEntity interdictorTE = (TileEntity)interdictor;
+					if(interdictorTE.isRemoved()||interdictorTE.getWorld()==null)
+						it.remove();
+					else if(SafeChunkUtils.isChunkSafe(interdictorTE.getWorld(), interdictorTE.getPos()))
 					{
-						ISpawnInterdiction interdictor = it.next();
-						if(interdictor instanceof TileEntity)
-						{
-							if(((TileEntity)interdictor).isRemoved()||((TileEntity)interdictor).getWorld()==null)
-								it.remove();
-							else if(Vector3d.copy(((TileEntity)interdictor).getPos()).squareDistanceTo(event.getEntity().getPositionVec()) <= interdictor.getInterdictionRangeSquared())
-							{
-								event.setResult(Event.Result.DENY);
-								break;
-							}
-						}
+						Vector3d tilePos = Vector3d.copyCentered(interdictorTE.getPos());
+						if(tilePos.squareDistanceTo(entity.getPositionVec()) <= interdictor.getInterdictionRangeSquared())
+							return true;
 					}
 				}
 			}
 		}
+		return false;
 	}
 
 	public static <T extends TileEntity & ISpawnInterdiction>
