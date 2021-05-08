@@ -28,6 +28,8 @@ import net.minecraft.util.math.vector.Vector3i;
 
 import java.util.List;
 
+import static net.minecraft.state.properties.BlockStateProperties.WATERLOGGED;
+
 public class IEMultiblocks
 {
 	public static IETemplateMultiblock CRUSHER;
@@ -101,6 +103,19 @@ public class IEMultiblocks
 			if(expected.getBlock()==Blocks.HOPPER&&found.getBlock()==Blocks.HOPPER)
 				return Result.allow(4);
 			return Result.DEFAULT;
+		});
+		//Allow multiblocks to be formed under water
+		BlockMatcher.addPreprocessor((expected, found, world, pos) -> {
+			// Un-waterlog if the expected state is dry, but the found one is not
+			if(expected.hasProperty(WATERLOGGED)&&found.hasProperty(WATERLOGGED)
+					&&!expected.get(WATERLOGGED)&&found.get(WATERLOGGED))
+			{
+				return found.with(WATERLOGGED, false);
+			}
+			else
+			{
+				return found;
+			}
 		});
 
 		//Init IE multiblocks

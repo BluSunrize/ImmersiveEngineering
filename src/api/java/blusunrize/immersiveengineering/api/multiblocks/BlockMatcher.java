@@ -23,10 +23,16 @@ import java.util.stream.Stream;
 public class BlockMatcher
 {
 	private final static List<MatcherPredicate> GLOBAL_MATCHERS = new ArrayList<>();
+	private final static List<Preprocessor> PREPROCESSING = new ArrayList<>();
 
 	public static void addPredicate(MatcherPredicate newPredicate)
 	{
 		GLOBAL_MATCHERS.add(newPredicate);
+	}
+
+	public static void addPreprocessor(Preprocessor preprocessor)
+	{
+		PREPROCESSING.add(preprocessor);
 	}
 
 	public static Result matches(BlockState expected, BlockState found, World world, BlockPos pos)
@@ -37,14 +43,24 @@ public class BlockMatcher
 	public static Result matches(BlockState expected, BlockState found, World world, BlockPos pos,
 								 List<MatcherPredicate> additional)
 	{
+		for(Preprocessor p : PREPROCESSING)
+			found = p.preprocessFoundState(expected, found, world, pos);
+		BlockState finalFound = found;
 		return Stream.concat(GLOBAL_MATCHERS.stream(), additional.stream())
-				.map(pred -> pred.matches(expected, found, world, pos))
+				.map(pred -> pred.matches(expected, finalFound, world, pos))
 				.reduce(Result.DEFAULT, Result::combine);
 	}
 
 	public interface MatcherPredicate
 	{
 		Result matches(BlockState expected, BlockState found, @Nullable World world, @Nullable BlockPos pos);
+	}
+
+	public interface Preprocessor
+	{
+		BlockState preprocessFoundState(
+				BlockState expected, BlockState found, @Nullable World world, @Nullable BlockPos pos
+		);
 	}
 
 	public static class Result
