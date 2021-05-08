@@ -20,6 +20,7 @@
     "accessors.SingleJigsawAccess",
     "accessors.TemplateAccess",
     "accessors.TileEntityAccess",
+    "accessors.TileTypeAccess",
     "accessors.TNTEntityAccess",
     "coremods.AbstractBlockStateMixin",
     "coremods.ServerWorldMixin"

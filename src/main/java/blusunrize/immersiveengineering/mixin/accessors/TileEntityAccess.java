@@ -17,6 +17,6 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 @Mixin(TileEntity.class)
 public interface TileEntityAccess
 {
-	@Accessor
-	void setCachedBlockState(BlockState state);
+	@Accessor("cachedBlockState")
+	BlockState getCachedBlockStateDirectly();
 }

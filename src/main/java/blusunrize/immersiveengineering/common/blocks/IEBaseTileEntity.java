@@ -17,6 +17,8 @@ import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
+import blusunrize.immersiveengineering.mixin.accessors.TileEntityAccess;
+import blusunrize.immersiveengineering.mixin.accessors.TileTypeAccess;
 import com.google.common.base.Preconditions;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -244,6 +246,8 @@ public abstract class IEBaseTileEntity extends TileEntity implements BlockstateP
 	@Override
 	public BlockState getBlockState()
 	{
+		if(world==null&&((TileEntityAccess)this).getCachedBlockStateDirectly()==null)
+			return ((TileTypeAccess)getType()).getValidBlocks().iterator().next().getDefaultState();
 		if(overrideBlockState!=null)
 			return overrideBlockState;
 		else
