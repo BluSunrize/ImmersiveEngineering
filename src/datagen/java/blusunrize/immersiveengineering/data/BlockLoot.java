@@ -86,6 +86,7 @@ public class BlockLoot extends LootGenerator
 		register(MetalDevices.turretChem, tileDrop());
 		register(MetalDevices.turretGun, tileDrop(), dropInv());
 		register(WoodenDevices.woodenBarrel, tileDrop());
+		register(WoodenDevices.logicUnit, tileDrop());
 		register(MetalDevices.barrel, tileDrop());
 
 		registerMultiblocks();

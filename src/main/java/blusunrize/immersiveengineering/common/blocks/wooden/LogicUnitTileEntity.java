@@ -22,10 +22,12 @@ import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop;
 import blusunrize.immersiveengineering.common.blocks.metal.ConnectorBundledTileEntity;
 import blusunrize.immersiveengineering.common.items.LogicCircuitBoardItem;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.RenderType;
@@ -34,22 +36,25 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.LootContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.Property;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-public class LogicUnitTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInventory,
+public class LogicUnitTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInventory, ITileDrop,
 		IInteractionObjectIE, IStateBasedDirectional, ILogicCircuitHandler, IHasObjProperty
 {
 	private final static int SIZE_COLORS = DyeColor.values().length;
@@ -99,6 +104,24 @@ public class LogicUnitTileEntity extends IEBaseTileEntity implements ITickableTi
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		ItemStackHelper.saveAllItems(nbt, inventory);
+	}
+
+	@Override
+	public List<ItemStack> getTileDrops(LootContext context)
+	{
+		ItemStack stack = new ItemStack(getBlockState().getBlock(), 1);
+		CompoundNBT nbt = new CompoundNBT();
+		ItemStackHelper.saveAllItems(nbt, inventory);
+		if(!nbt.isEmpty())
+			stack.setTag(nbt);
+		return ImmutableList.of(stack);
+	}
+
+	@Override
+	public void readOnPlacement(LivingEntity placer, ItemStack stack)
+	{
+		if(stack.hasTag())
+			readCustomNBT(stack.getOrCreateTag(), false);
 	}
 
 	@Override
