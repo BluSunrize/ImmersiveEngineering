@@ -72,6 +72,7 @@ public class GuiButtonLogicCircuitRegister extends GuiButtonState<LogicCircuitRe
 	@Override
 	public boolean charTyped(char codePoint, int modifiers)
 	{
+		codePoint = Character.toLowerCase(codePoint);
 		if(Character.isDigit(codePoint))
 		{
 			int number = Character.digit(codePoint, 10);

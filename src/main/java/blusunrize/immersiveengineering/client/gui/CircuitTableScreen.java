@@ -218,12 +218,6 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 	}
 
 	@Override
-	public boolean keyPressed(int keyCode, int scanCode, int modifiers)
-	{
-		return super.keyPressed(keyCode, scanCode, modifiers);
-	}
-
-	@Override
 	public boolean charTyped(char codePoint, int modifiers)
 	{
 		for(GuiButtonState<?> input : this.inputButtons)
