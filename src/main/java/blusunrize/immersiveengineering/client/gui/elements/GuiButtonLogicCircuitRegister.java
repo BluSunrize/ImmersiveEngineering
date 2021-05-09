@@ -13,12 +13,15 @@ import blusunrize.immersiveengineering.client.gui.IEContainerScreen;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.item.DyeColor;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.List;
+import java.util.Locale;
 
 public class GuiButtonLogicCircuitRegister extends GuiButtonState<LogicCircuitRegister>
 {
@@ -60,21 +63,28 @@ public class GuiButtonLogicCircuitRegister extends GuiButtonState<LogicCircuitRe
 	static
 	{
 		for(DyeColor dye : DyeColor.values())
-			SPLIT_BY_INITIAL.get(dye.name().charAt(0)).add(dye.getId());
+		{
+			String transl = I18n.format("color.minecraft."+dye.getTranslationKey()).toLowerCase(Locale.ROOT);
+			SPLIT_BY_INITIAL.get(transl.charAt(0)).add(dye.getId());
+		}
 	}
 
 	@Override
-	public boolean keyPressed(int keyCode, int scanCode, int modifiers)
+	public boolean charTyped(char codePoint, int modifiers)
 	{
-		if(keyCode >= 48&&keyCode <= 55) // digits 0-8
+		if(Character.isDigit(codePoint))
 		{
-			this.setStateByInt(keyCode-48+16); // keycode to zero, plus 16 colors
-			this.onPress.onPress(this);
-			return true;
+			int number = Character.digit(codePoint, 10);
+			if(number>=0 && number<8)
+			{
+				this.setStateByInt(number+16); // plus 16 colors
+				this.onPress.onPress(this);
+				return true;
+			}
 		}
-		else if(keyCode >= 65&&keyCode <= 90) // A-Z
+		else if(Character.isAlphabetic(codePoint))
 		{
-			List<Integer> options = SPLIT_BY_INITIAL.get((char)keyCode);
+			List<Integer> options = SPLIT_BY_INITIAL.get(codePoint);
 			if(!options.isEmpty())
 			{
 				int next = (options.indexOf(this.getStateAsInt())+1)%options.size();
