@@ -209,12 +209,6 @@ public class CircuitTableTileEntity extends IEBaseTileEntity implements IIEInven
 		return IEProperties.FACING_HORIZONTAL;
 	}
 
-	@Override
-	public boolean isDummy()
-	{
-		return getState().get(IEProperties.MULTIBLOCKSLAVE);
-	}
-
 	@Nullable
 	@Override
 	public CircuitTableTileEntity master()

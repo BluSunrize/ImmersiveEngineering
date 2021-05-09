@@ -41,7 +41,9 @@ public class LogicCircuitHandler
 		private final int complexity;
 
 		public static final int TOTAL_MAX_INPUTS = Arrays.stream(values())
-				.map(LogicCircuitOperator::getArgumentCount).max(Integer::compareTo).orElse(1);
+				.mapToInt(LogicCircuitOperator::getArgumentCount)
+				.max()
+				.orElse(1);
 
 		LogicCircuitOperator(int argumentCount, Predicate<boolean[]> operator, int complexity)
 		{

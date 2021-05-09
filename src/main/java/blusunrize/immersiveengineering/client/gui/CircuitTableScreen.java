@@ -56,9 +56,12 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 		if(operator==null)
 			return Optional.empty();
 		// collect inputs
-		LogicCircuitRegister[] inputs = inputButtons.stream().map(GuiButtonState::getState).filter(Objects::nonNull)
-				.limit(operator.getArgumentCount()).toArray(LogicCircuitRegister[]::new);
-		// if input array is to short, can't make an instruction
+		LogicCircuitRegister[] inputs = inputButtons.stream()
+				.map(GuiButtonState::getState)
+				.filter(Objects::nonNull)
+				.limit(operator.getArgumentCount())
+				.toArray(LogicCircuitRegister[]::new);
+		// if input array is too short, can't make an instruction
 		if(inputs.length < operator.getArgumentCount())
 			return Optional.empty();
 		// else, build instruction
@@ -151,7 +154,7 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 	{
 		super.render(transform, mx, my, partial);
 
-		ArrayList<ITextComponent> tooltip = new ArrayList<>();
+		List<ITextComponent> tooltip = new ArrayList<>();
 
 		if(this.hoveredSlot!=null&&this.hoveredSlot.slotNumber < SLOT_TYPES.length&&!this.hoveredSlot.getHasStack())
 		{

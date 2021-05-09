@@ -47,11 +47,19 @@ import net.minecraftforge.common.util.LazyOptional;
 import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public class LogicUnitTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInventory,
 		IInteractionObjectIE, IStateBasedDirectional, ILogicCircuitHandler, IHasObjProperty
 {
+	private final static int SIZE_COLORS = DyeColor.values().length;
+	private final static int SIZE_REGISTERS = LogicCircuitRegister.values().length-SIZE_COLORS;
+
 	private final NonNullList<ItemStack> inventory = NonNullList.withSize(10, ItemStack.EMPTY);
+
+	private final Map<Direction, boolean[]> inputs = new EnumMap<>(Direction.class);
+	private final boolean[] registers = new boolean[SIZE_REGISTERS];
+	private final boolean[] outputs = new boolean[SIZE_COLORS];
 
 	public LogicUnitTileEntity()
 	{
@@ -130,12 +138,6 @@ public class LogicUnitTileEntity extends IEBaseTileEntity implements ITickableTi
 		redstoneCap.ifPresent(RedstoneBundleConnection::markDirty);
 	}
 
-	private final static int SIZE_COLORS = DyeColor.values().length;
-	private final static int SIZE_REGISTERS = LogicCircuitRegister.values().length-SIZE_COLORS;
-	EnumMap<Direction, boolean[]> inputs = new EnumMap<>(Direction.class);
-	boolean[] registers = new boolean[SIZE_REGISTERS];
-	boolean[] outputs = new boolean[SIZE_COLORS];
-
 	private boolean runCircuits()
 	{
 		boolean[] outPre = Arrays.copyOf(outputs, SIZE_COLORS);
@@ -196,13 +198,13 @@ public class LogicUnitTileEntity extends IEBaseTileEntity implements ITickableTi
 		return super.getCapability(capability, facing);
 	}
 
-	ResettableLazy<boolean[]> combinedInputs = new ResettableLazy<>(
-			() -> this.inputs.values().stream().reduce((b1, b2) -> {
-				boolean[] ret = new boolean[SIZE_COLORS];
-				for(int i = 0; i < SIZE_COLORS; i++)
-					ret[i] = b1[i]||b2[i];
-				return ret;
-			}).orElse(new boolean[SIZE_COLORS]));
+	ResettableLazy<boolean[]> combinedInputs = new ResettableLazy<>(() -> {
+		boolean[] ret = new boolean[SIZE_COLORS];
+		for(boolean[] side : this.inputs.values())
+			for(int i = 0; i < SIZE_COLORS; ++i)
+				ret[i] |= side[i];
+		return ret;
+	});
 
 	@Override
 	public boolean getLogicCircuitRegister(LogicCircuitRegister register)
@@ -226,7 +228,7 @@ public class LogicUnitTileEntity extends IEBaseTileEntity implements ITickableTi
 
 	private String getVisibilityKey()
 	{
-		return this.inventory.stream().map(itemStack -> !itemStack.isEmpty()?"1": "0").reduce((s, s2) -> s+s2).orElse("");
+		return this.inventory.stream().map(itemStack -> !itemStack.isEmpty()?"1": "0").collect(Collectors.joining());
 	}
 
 	@Override

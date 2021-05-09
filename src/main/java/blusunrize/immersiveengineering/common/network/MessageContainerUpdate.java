@@ -50,9 +50,7 @@ public class MessageContainerUpdate implements IMessage
 		ctx.enqueueWork(() -> {
 			player.markPlayerActive();
 			if(player.openContainer.windowId==windowId&&player.openContainer instanceof IEBaseContainer)
-			{
 				((IEBaseContainer<?>)player.openContainer).receiveMessageFromScreen(nbt);
-			}
 		});
 	}
 }
