@@ -25,6 +25,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBas
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop;
 import blusunrize.immersiveengineering.common.blocks.metal.ConnectorBundledTileEntity;
 import blusunrize.immersiveengineering.common.items.LogicCircuitBoardItem;
+import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.collect.ImmutableList;
@@ -43,13 +44,11 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -158,7 +157,7 @@ public class LogicUnitTileEntity extends IEBaseTileEntity implements ITickableTi
 	public void doGraphicalUpdates(int slot)
 	{
 		this.markDirty();
-		redstoneCap.ifPresent(RedstoneBundleConnection::markDirty);
+		redstoneCaps.values().forEach(cap -> cap.ifPresent(RedstoneBundleConnection::markDirty));
 	}
 
 	private boolean runCircuits()
@@ -181,43 +180,51 @@ public class LogicUnitTileEntity extends IEBaseTileEntity implements ITickableTi
 		}
 	}
 
-	private final LazyOptional<RedstoneBundleConnection> redstoneCap = registerConstantCap(
-			new RedstoneBundleConnection()
-			{
-				@Override
-				public void onChange(ConnectionPoint cp, RedstoneNetworkHandler handler, Direction side)
-				{
-					byte[] foreignInputs = handler.getValuesExcluding(cp);
-					boolean[] sideInputs = inputs.getOrDefault(side, new boolean[SIZE_COLORS]);
-					boolean[] preInput = Arrays.copyOf(sideInputs, SIZE_COLORS);
-					for(int i = 0; i < SIZE_COLORS; i++)
-						sideInputs[i] = foreignInputs[i] > 0;
-					// if the input changed, update and run circuits
-					if(!Arrays.equals(preInput, sideInputs))
-					{
-						inputs.put(side, sideInputs);
-						combinedInputs.reset();
-						if(runCircuits())
-							markConnectorsDirty();
-					}
-				}
+	private Map<Direction, LazyOptional<RedstoneBundleConnection>> redstoneCaps = new EnumMap<>(Direction.class);
 
-				@Override
-				public void updateInput(byte[] signals, ConnectionPoint cp, Direction side)
-				{
-					for(DyeColor dye : DyeColor.values())
-						if(outputs[dye.getId()])
-							signals[dye.getId()] = (byte)15;
-				}
-			}
-	);
+	{
+		for(Direction f : DirectionUtils.VALUES)
+		{
+			LazyOptional<RedstoneBundleConnection> forSide = registerConstantCap(
+					new RedstoneBundleConnection()
+					{
+						@Override
+						public void onChange(ConnectionPoint cp, RedstoneNetworkHandler handler, Direction side)
+						{
+							byte[] foreignInputs = handler.getValuesExcluding(cp);
+							boolean[] sideInputs = inputs.getOrDefault(side, new boolean[SIZE_COLORS]);
+							boolean[] preInput = Arrays.copyOf(sideInputs, SIZE_COLORS);
+							for(int i = 0; i < SIZE_COLORS; i++)
+								sideInputs[i] = foreignInputs[i] > 0;
+							// if the input changed, update and run circuits
+							if(!Arrays.equals(preInput, sideInputs))
+							{
+								inputs.put(side, sideInputs);
+								combinedInputs.reset();
+								if(runCircuits())
+									markConnectorsDirty();
+							}
+						}
+
+						@Override
+						public void updateInput(byte[] signals, ConnectionPoint cp, Direction side)
+						{
+							for(DyeColor dye : DyeColor.values())
+								if(outputs[dye.getId()])
+									signals[dye.getId()] = (byte)15;
+						}
+					}
+			);
+			redstoneCaps.put(f, forSide);
+		}
+	}
 
 	@Nonnull
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing)
 	{
-		if(capability==CapabilityRedstoneNetwork.REDSTONE_BUNDLE_CONNECTION)
-			return redstoneCap.cast();
+		if(capability==CapabilityRedstoneNetwork.REDSTONE_BUNDLE_CONNECTION&&facing!=null)
+			return redstoneCaps.get(facing).cast();
 		return super.getCapability(capability, facing);
 	}
 
