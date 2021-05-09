@@ -27,8 +27,10 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.tags.ITag.INamedTag;
 import net.minecraft.tileentity.AbstractFurnaceTileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -585,6 +587,25 @@ public abstract class IESlot extends Slot
 			if(type==SLOT_FERTILIZER)
 				return ClocheFertilizer.isValidFertilizer(itemStack);
 			return true;
+		}
+	}
+
+	public static class Tagged extends IESlot
+	{
+		private final INamedTag<Item> tag;
+
+		public Tagged(Container container, IInventory inv, int id, int x, int y, INamedTag<Item> tag)
+		{
+			super(container, inv, id, x, y);
+			this.tag = tag;
+		}
+
+		@Override
+		public boolean isItemValid(ItemStack itemStack)
+		{
+			if(itemStack.isEmpty())
+				return false;
+			return this.tag.contains(itemStack.getItem());
 		}
 	}
 

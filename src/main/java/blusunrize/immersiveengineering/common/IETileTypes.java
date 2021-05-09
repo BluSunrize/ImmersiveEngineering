@@ -73,6 +73,9 @@ public class IETileTypes
 	public static final RegistryObject<TileEntityType<ModWorkbenchTileEntity>> MOD_WORKBENCH = REGISTER.register(
 			"modworkbench", makeType(ModWorkbenchTileEntity::new, () -> WoodenDevices.workbench)
 	);
+	public static final RegistryObject<TileEntityType<CircuitTableTileEntity>> CIRCUIT_TABLE = REGISTER.register(
+			"circuittable", makeType(CircuitTableTileEntity::new, () -> WoodenDevices.circuitTable)
+	);
 	public static final RegistryObject<TileEntityType<SorterTileEntity>> SORTER = REGISTER.register(
 			"sorter", makeType(SorterTileEntity::new, () -> WoodenDevices.sorter)
 	);
@@ -84,6 +87,9 @@ public class IETileTypes
 	);
 	public static final RegistryObject<TileEntityType<FluidSorterTileEntity>> FLUID_SORTER = REGISTER.register(
 			"fluidsorter", makeType(FluidSorterTileEntity::new, () -> WoodenDevices.fluidSorter)
+	);
+	public static final RegistryObject<TileEntityType<LogicUnitTileEntity>> LOGIC_UNIT = REGISTER.register(
+			"logicunit", makeType(LogicUnitTileEntity::new, () -> WoodenDevices.logicUnit)
 	);
 	public static final RegistryObject<TileEntityType<WatermillTileEntity>> WATERMILL = REGISTER.register(
 			"watermill", makeType(WatermillTileEntity::new, () -> WoodenDevices.watermill)

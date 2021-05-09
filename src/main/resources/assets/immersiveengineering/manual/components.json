@@ -1,5 +1,5 @@
 {
-    "mech_components": {
+    "start": {
         "type": "crafting",
         "recipes": [
             [
@@ -16,7 +16,7 @@
         "type": "crafting",
         "recipe": "crafting/blueprint_components"
     },
-    "tubes": {
+    "mech_components": {
         "type": "blueprint",
         "recipes": [
             {
@@ -24,7 +24,12 @@
             },
             {
                 "item": "immersiveengineering:component_steel"
-            },
+            }
+        ]
+    },
+    "tubes": {
+        "type": "blueprint",
+        "recipes": [
             {
                 "item": "immersiveengineering:electron_tube"
             }

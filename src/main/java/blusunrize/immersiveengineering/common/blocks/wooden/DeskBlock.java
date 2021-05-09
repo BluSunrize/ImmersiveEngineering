@@ -9,8 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
-import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
+import blusunrize.immersiveengineering.common.blocks.generic.GenericTileBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -19,25 +18,22 @@ import net.minecraft.block.material.Material;
 import net.minecraft.state.Property;
 import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
+import net.minecraftforge.fml.RegistryObject;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-public class ModWorkbenchBlock extends IETileProviderBlock
+public class DeskBlock<T extends TileEntity> extends GenericTileBlock<T>
 {
 	public static final Property<Direction> FACING = IEProperties.FACING_HORIZONTAL;
 	public static final Property<Boolean> DUMMY = IEProperties.MULTIBLOCKSLAVE;
 
-	public ModWorkbenchBlock(String name)
+	public DeskBlock(String name, RegistryObject<TileEntityType<T>> tileType)
 	{
-		super(name, Block.Properties.create(Material.WOOD).sound(SoundType.WOOD).hardnessAndResistance(2, 5).notSolid(),
-				BlockItemIE::new);
+		super(name, tileType, Block.Properties.create(Material.WOOD).sound(SoundType.WOOD).hardnessAndResistance(2, 5).notSolid());
 	}
 
 	@Override
@@ -45,13 +41,6 @@ public class ModWorkbenchBlock extends IETileProviderBlock
 	{
 		super.fillStateContainer(builder);
 		builder.add(DUMMY, FACING);
-	}
-
-	@Nullable
-	@Override
-	public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world)
-	{
-		return new ModWorkbenchTileEntity();
 	}
 
 	@Override

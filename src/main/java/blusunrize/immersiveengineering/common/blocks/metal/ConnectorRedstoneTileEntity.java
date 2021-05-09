@@ -132,7 +132,7 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 	public void updateInput(byte[] signals, ConnectionPoint cp)
 	{
 		if(isRSInput())
-			signals[redstoneChannel.getId()] = (byte)Math.max(getMaxRSInput(), signals[redstoneChannel.getId()]);
+			signals[redstoneChannel.getId()] = (byte)getMaxRSInput();
 		rsDirty = false;
 	}
 

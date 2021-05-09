@@ -183,6 +183,10 @@ public class ItemModels extends TRSRItemModelProvider
 				.transforms(modLoc("item/post"));
 		obj(WoodenDevices.workbench, rl("block/wooden_device/workbench.obj.ie"))
 				.transforms(rl("item/workbench"));
+		obj(WoodenDevices.circuitTable, rl("block/wooden_device/circuit_table.obj"))
+				.transforms(rl("item/workbench"));
+		obj(WoodenDevices.logicUnit, rl("block/wooden_device/logic_unit.obj.ie"))
+				.transforms(rl("item/block"));
 
 		obj(WoodenDevices.treatedWallmount, modLoc("block/wooden_device/wallmount.obj"))
 				.texture("texture", modLoc("block/wooden_device/wallmount"))
@@ -216,7 +220,7 @@ public class ItemModels extends TRSRItemModelProvider
 				Ingredients.componentIron, Ingredients.componentSteel, Ingredients.waterwheelSegment, Ingredients.windmillBlade, Ingredients.windmillSail,
 				Ingredients.woodenGrip, Ingredients.gunpartBarrel, Ingredients.gunpartDrum, Ingredients.gunpartHammer,
 				Ingredients.dustCoke, Ingredients.dustHopGraphite, Ingredients.ingotHopGraphite,
-				Ingredients.wireCopper, Ingredients.wireElectrum, Ingredients.wireAluminum, Ingredients.wireSteel,
+				Ingredients.wireCopper, Ingredients.wireElectrum, Ingredients.wireAluminum, Ingredients.wireSteel, Ingredients.wireLead,
 				Ingredients.dustSaltpeter, Ingredients.dustSulfur, Ingredients.dustWood, Ingredients.electronTube, Ingredients.circuitBoard);
 
 		addItemModels(
@@ -240,6 +244,7 @@ public class ItemModels extends TRSRItemModelProvider
 		addItemModels("", Tools.sawblade, Tools.rockcutter);
 		addItemModels("", IEItems.Misc.maintenanceKit);
 		addItemModels("", IEItems.Misc.cartWoodenCrate, IEItems.Misc.cartReinforcedCrate, IEItems.Misc.cartWoodenBarrel, IEItems.Misc.cartMetalBarrel);
+		addItemModels("", IEItems.Misc.logicCircuitBoard);
 		addItemModel("banner_pattern", IEItems.Misc.bannerPatternHammer);
 		addItemModel("banner_pattern", IEItems.Misc.bannerPatternBevels);
 		addItemModel("banner_pattern", IEItems.Misc.bannerPatternOrnate);

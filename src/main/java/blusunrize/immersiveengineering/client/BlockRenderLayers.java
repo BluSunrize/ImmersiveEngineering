@@ -57,6 +57,10 @@ public class BlockRenderLayers
 		}
 		RenderTypeLookup.setRenderLayer(WoodenDecoration.treatedScaffolding, RenderType.getCutout());
 		RenderTypeLookup.setRenderLayer(
+				WoodenDevices.logicUnit,
+				rt -> rt==RenderType.getSolid()||rt==RenderType.getTranslucent()
+		);
+		RenderTypeLookup.setRenderLayer(
 				Connectors.ENERGY_CONNECTORS.get(ImmutablePair.of(WireType.HV_CATEGORY, true)),
 				rt -> rt==RenderType.getSolid()||rt==RenderType.getTranslucent()
 		);

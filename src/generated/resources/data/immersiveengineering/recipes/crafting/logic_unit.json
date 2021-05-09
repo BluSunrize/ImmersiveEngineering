@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "wtw",
+    "tct",
+    "wtw"
+  ],
+  "key": {
+    "w": {
+      "tag": "forge:treated_wood"
+    },
+    "t": {
+      "item": "immersiveengineering:electron_tube"
+    },
+    "c": {
+      "item": "immersiveengineering:circuit_board"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:logic_unit"
+  }
+}

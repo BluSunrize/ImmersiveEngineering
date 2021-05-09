@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/logic_unit"
+    ]
+  },
+  "criteria": {
+    "has_circuit_board": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "immersiveengineering:circuit_board"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/logic_unit"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_circuit_board",
+      "has_the_recipe"
+    ]
+  ]
+}

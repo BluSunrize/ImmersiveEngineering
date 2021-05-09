@@ -42,6 +42,7 @@
       "breaker",
       "current_transformer",
       "redstone_wire",
+      "logic_circuits",
       "diesel_generator",
       "lightning_rod"
     ]

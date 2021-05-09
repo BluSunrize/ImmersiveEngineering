@@ -1,0 +1,10 @@
+{
+  "start": {
+    "type": "crafting",
+    "recipe": "crafting/circuit_table"
+  },
+  "unit": {
+    "type": "crafting",
+    "recipe": "crafting/logic_unit"
+  }
+}

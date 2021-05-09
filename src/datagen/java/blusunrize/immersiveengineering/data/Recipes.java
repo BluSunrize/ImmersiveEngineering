@@ -380,7 +380,6 @@ public class Recipes extends RecipeProvider
 		BlueprintCraftingRecipeBuilder.builder("components", new ItemStack(Ingredients.circuitBoard))
 				.addInput(StoneDecoration.insulatingGlass)
 				.addInput(IETags.getTagsFor(EnumMetals.COPPER).plate)
-				.addInput(new ItemStack(Ingredients.electronTube, 2))
 				.build(out, toRL("blueprint/circuit_board"));
 
 		Item[] molds = {Molds.moldPlate, Molds.moldGear, Molds.moldRod, Molds.moldBulletCasing, Molds.moldWire, Molds.moldPacking4, Molds.moldPacking9, Molds.moldUnpacking};
@@ -1302,6 +1301,15 @@ public class Recipes extends RecipeProvider
 				.key('c', Ingredients.componentIron)
 				.addCriterion("has_"+toPath(MetalDevices.fluidPipe), hasItem(MetalDevices.fluidPipe))
 				.build(out, toRL(toPath(WoodenDevices.fluidSorter)));
+		ShapedRecipeBuilder.shapedRecipe(WoodenDevices.logicUnit)
+				.patternLine("wtw")
+				.patternLine("tct")
+				.patternLine("wtw")
+				.key('w', IETags.getItemTag(IETags.treatedWood))
+				.key('t', Ingredients.electronTube)
+				.key('c', Ingredients.circuitBoard)
+				.addCriterion("has_"+toPath(Ingredients.circuitBoard), hasItem(Ingredients.circuitBoard))
+				.build(out, toRL(toPath(WoodenDevices.logicUnit)));
 
 		ShapedRecipeBuilder.shapedRecipe(WoodenDevices.turntable)
 				.patternLine("iwi")
@@ -1349,6 +1357,15 @@ public class Recipes extends RecipeProvider
 				.key('f', WoodenDecoration.treatedFence)
 				.addCriterion("has_treated_planks", hasItem(IETags.getItemTag(IETags.treatedWood)))
 				.build(out, toRL(toPath(WoodenDevices.workbench)));
+		ShapedRecipeBuilder.shapedRecipe(WoodenDevices.circuitTable)
+				.patternLine("sst")
+				.patternLine("c e")
+				.key('t', Tools.screwdriver)
+				.key('s', IETags.getItemTag(IETags.treatedWoodSlab))
+				.key('c', WoodenDevices.craftingTable)
+				.key('e', MetalDecoration.engineeringLight)
+				.addCriterion("has_"+toPath(Ingredients.circuitBoard), hasItem(Ingredients.circuitBoard))
+				.build(out, toRL(toPath(WoodenDevices.circuitTable)));
 
 		ShapedRecipeBuilder.shapedRecipe(WoodenDevices.woodenBarrel)
 				.patternLine("sss")
@@ -2470,6 +2487,11 @@ public class Recipes extends RecipeProvider
 				.addIngredient(Tools.wirecutter)
 				.addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot))
 				.build(out, toRL(toPath(Ingredients.wireSteel)));
+		ShapelessRecipeBuilder.shapelessRecipe(Ingredients.wireLead)
+				.addIngredient(IETags.getTagsFor(EnumMetals.LEAD).plate)
+				.addIngredient(Tools.wirecutter)
+				.addCriterion("has_lead_ingot", hasItem(IETags.getTagsFor(EnumMetals.LEAD).ingot))
+				.build(out, toRL(toPath(Ingredients.wireLead)));
 
 		ShapelessRecipeBuilder.shapelessRecipe(Metals.dusts.get(EnumMetals.ELECTRUM), 2)
 				.addIngredient(IETags.getTagsFor(EnumMetals.GOLD).dust)

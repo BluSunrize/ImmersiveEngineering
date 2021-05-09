@@ -54,6 +54,16 @@ public class GuiButtonState<E> extends GuiButtonIE
 		return this.states[this.state];
 	}
 
+	protected int getStateAsInt()
+	{
+		return this.state;
+	}
+
+	public int[] getTextOffset(FontRenderer fontrenderer)
+	{
+		return this.textOffset;
+	}
+
 	@Override
 	public void render(MatrixStack transform, int mouseX, int mouseY, float partialTicks)
 	{
@@ -76,7 +86,8 @@ public class GuiButtonState<E> extends GuiButtonIE
 					txtCol = 0xA0A0A0;
 				else if(this.isHovered)
 					txtCol = Lib.COLOUR_I_ImmersiveOrange;
-				this.drawString(transform, fontrenderer, getMessage(), x+textOffset[0], y+textOffset[1], txtCol);
+				int[] offset = getTextOffset(fontrenderer);
+				this.drawString(transform, fontrenderer, getMessage(), x+offset[0], y+offset[1], txtCol);
 			}
 		}
 	}

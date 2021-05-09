@@ -65,6 +65,7 @@ public final class IEItems
 		public static Item wireElectrum;
 		public static Item wireAluminum;
 		public static Item wireSteel;
+		public static Item wireLead;
 		public static Item dustSaltpeter;
 		public static Item dustSulfur;
 		public static Item dustWood;
@@ -144,6 +145,7 @@ public final class IEItems
 		public static Item cartReinforcedCrate;
 		public static Item cartWoodenBarrel;
 		public static Item cartMetalBarrel;
+		public static Item logicCircuitBoard;
 
 		public static Item bannerPatternHammer;
 		public static Item bannerPatternBevels;

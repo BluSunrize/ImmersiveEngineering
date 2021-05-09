@@ -25,15 +25,15 @@ public class GuiReactiveList extends Button
 	static final ResourceLocation TEXTURE = IEContainerScreen.makeTextureLocation("hud_elements");
 
 	private final Screen gui;
-	private String[] entries;
+	protected String[] entries;
 	private int[] padding = {0, 0, 0, 0};
 	private boolean needsSlider = false;
-	private int perPage;
+	protected int perPage;
 	private Function<String, String> translationFunction;
 	private int scrollMode = 0;
 	private float textScale = 1;
 
-	private int offset;
+	protected int offset;
 	private int maxOffset;
 
 	private long prevWheelNano = 0;
@@ -199,10 +199,9 @@ public class GuiReactiveList extends Button
 	public boolean mouseClicked(double mx, double my, int key)
 	{
 		selectedOption = -1;
-		if (this.active && this.visible)
-			if (this.isValidClickButton(key) && this.clicked(mx,my))
+		if(this.active&&this.visible)
+			if(this.isValidClickButton(key)&&this.clicked(mx, my))
 			{
-
 				FontRenderer fr = ClientUtils.mc().fontRenderer;
 				double mmY = my-this.y;
 				for(int i = 0; i < Math.min(perPage, entries.length); i++)

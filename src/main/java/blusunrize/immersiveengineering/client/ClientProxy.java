@@ -600,9 +600,11 @@ public class ClientProxy extends CommonProxy
 		registerScreen(Lib.GUIID_CraftingTable, CraftingTableScreen::new);
 		registerScreen(Lib.GUIID_WoodenCrate, CrateScreen::new);
 		registerScreen(Lib.GUIID_Workbench, ModWorkbenchScreen::new);
+		registerScreen(Lib.GUIID_CircuitTable, CircuitTableScreen::new);
 		registerScreen(Lib.GUIID_Assembler, AssemblerScreen::new);
 		registerScreen(Lib.GUIID_Sorter, SorterScreen::new);
 		registerScreen(Lib.GUIID_ItemBatcher, ItemBatcherScreen::new);
+		registerScreen(Lib.GUIID_LogicUnit, LogicUnitScreen::new);
 		registerScreen(Lib.GUIID_Squeezer, SqueezerScreen::new);
 		registerScreen(Lib.GUIID_Fermenter, FermenterScreen::new);
 		registerScreen(Lib.GUIID_Refinery, RefineryScreen::new);

@@ -85,6 +85,7 @@ class ItemTags extends ItemTagsProvider
 		getOrCreateBuilder(IETags.electrumWire).addItemEntry(Ingredients.wireElectrum);
 		getOrCreateBuilder(IETags.aluminumWire).addItemEntry(Ingredients.wireAluminum);
 		getOrCreateBuilder(IETags.steelWire).addItemEntry(Ingredients.wireSteel);
+		getOrCreateBuilder(IETags.leadWire).addItemEntry(Ingredients.wireLead);
 		getOrCreateBuilder(IETags.saltpeterDust).addItemEntry(Ingredients.dustSaltpeter);
 		getOrCreateBuilder(IETags.sulfurDust).addItemEntry(Ingredients.dustSulfur);
 		getOrCreateBuilder(IETags.sawdust).addItemEntry(Ingredients.dustWood);
@@ -98,6 +99,9 @@ class ItemTags extends ItemTagsProvider
 				.addItemEntry(WoodenDevices.reinforcedCrate.asItem())
 				.addItemEntry(Misc.cartWoodenCrate)
 				.addItemEntry(Misc.cartReinforcedCrate);
+		getOrCreateBuilder(IETags.circuitPCB).addItemEntry(Ingredients.circuitBoard);
+		getOrCreateBuilder(IETags.circuitLogic).addItemEntry(Ingredients.electronTube);
+		getOrCreateBuilder(IETags.circuitSolder).addTag(IETags.copperWire).addTag(IETags.leadWire);
 
 		getOrCreateBuilder(TagUtils.createItemWrapper(new ResourceLocation("curios:back")))
 				.addItemEntry(Misc.powerpack);

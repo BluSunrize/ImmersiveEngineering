@@ -239,7 +239,7 @@ public class IEContent
 			if(!m.isVanillaMetal())
 			{
 				storage = new IEBaseBlock("storage_"+name, Block.Properties.create(Material.IRON)
-						.sound(m==EnumMetals.STEEL?SoundType.NETHERITE:SoundType.METAL)
+						.sound(m==EnumMetals.STEEL?SoundType.NETHERITE: SoundType.METAL)
 						.hardnessAndResistance(5, 10)
 						.setRequiresTool()
 						.harvestTool(ToolType.PICKAXE)
@@ -357,12 +357,15 @@ public class IEContent
 
 		WoodenDevices.craftingTable = new HorizontalFacingBlock<>("craftingtable", IETileTypes.CRAFTING_TABLE,
 				standardWoodPropertiesNotSolid);
-		WoodenDevices.workbench = new ModWorkbenchBlock("workbench");
+		WoodenDevices.workbench = new DeskBlock("workbench", IETileTypes.MOD_WORKBENCH);
+		WoodenDevices.circuitTable = new DeskBlock("circuit_table", IETileTypes.CIRCUIT_TABLE);
 		WoodenDevices.gunpowderBarrel = new GunpowderBarrelBlock("gunpowder_barrel");
 		WoodenDevices.woodenBarrel = new BarrelBlock("wooden_barrel", false);
 		WoodenDevices.turntable = new TurntableBlock("turntable");
 		WoodenDevices.crate = new CrateBlock("crate", false);
 		WoodenDevices.reinforcedCrate = new CrateBlock("reinforced_crate", true);
+		WoodenDevices.logicUnit = new HorizontalFacingBlock<>("logic_unit", IETileTypes.LOGIC_UNIT,
+				standardWoodPropertiesNotSolid);
 
 		WoodenDevices.sorter = new SorterBlock("sorter", false);
 		WoodenDevices.itemBatcher = new ItemBatcherBlock(standardWoodProperties);
@@ -544,6 +547,7 @@ public class IEContent
 		IEItems.Ingredients.wireElectrum = new IEBaseItem("wire_electrum");
 		IEItems.Ingredients.wireAluminum = new IEBaseItem("wire_aluminum");
 		IEItems.Ingredients.wireSteel = new IEBaseItem("wire_steel");
+		IEItems.Ingredients.wireLead = new IEBaseItem("wire_lead");
 		IEItems.Ingredients.dustSaltpeter = new IEBaseItem("dust_saltpeter");
 		IEItems.Ingredients.dustSulfur = new IEBaseItem("dust_sulfur");
 		IEItems.Ingredients.dustWood = new IEBaseItem("dust_wood")
@@ -628,6 +632,7 @@ public class IEContent
 				return new MetalBarrelMinecartEntity(MetalBarrelMinecartEntity.TYPE, world, x, y, z);
 			}
 		};
+		IEItems.Misc.logicCircuitBoard = new LogicCircuitBoardItem();
 
 		IEItems.Misc.bannerPatternHammer = addBanner("hammer", "hmr");
 		IEItems.Misc.bannerPatternBevels = addBanner("bevels", "bvl");
