@@ -94,11 +94,6 @@ public class ConnectorBundledTileEntity extends ImmersiveConnectableTileEntity i
 		);
 	}
 
-	public void markDirtyExtraSource()
-	{
-		this.dirtyExtraSource = true;
-	}
-
 	@Override
 	public void onChange(ConnectionPoint cp, RedstoneNetworkHandler handler)
 	{

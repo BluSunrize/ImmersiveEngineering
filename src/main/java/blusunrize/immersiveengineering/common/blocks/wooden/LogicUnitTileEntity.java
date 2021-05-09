@@ -23,10 +23,8 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjPr
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop;
-import blusunrize.immersiveengineering.common.blocks.metal.ConnectorBundledTileEntity;
 import blusunrize.immersiveengineering.common.items.LogicCircuitBoardItem;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
-import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -41,7 +39,6 @@ import net.minecraft.loot.LootContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.Property;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.client.MinecraftForgeClient;
@@ -172,12 +169,7 @@ public class LogicUnitTileEntity extends IEBaseTileEntity implements ITickableTi
 
 	private void markConnectorsDirty()
 	{
-		for(Direction d : Direction.values())
-		{
-			TileEntity te = Utils.getExistingTileEntity(world, getPos().offset(d));
-			if(te instanceof ConnectorBundledTileEntity&&((ConnectorBundledTileEntity)te).getFacing()==d.getOpposite())
-				((ConnectorBundledTileEntity)te).markDirtyExtraSource();
-		}
+		redstoneCaps.values().forEach(cap -> cap.ifPresent(RedstoneBundleConnection::markDirty));
 	}
 
 	private Map<Direction, LazyOptional<RedstoneBundleConnection>> redstoneCaps = new EnumMap<>(Direction.class);
