@@ -23,6 +23,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public interface ClocheRenderFunction
@@ -30,6 +31,12 @@ public interface ClocheRenderFunction
 	float getScale(ItemStack seed, float growth);
 
 	Collection<Pair<BlockState, TransformationMatrix>> getBlocks(ItemStack stack, float growth);
+
+	// hook for dynamic cloche recipes
+	default void injectQuads(ItemStack stack, float growth, Consumer<?> quadConsumer)
+	{
+		// default behaviour: do nothing
+	}
 
 
 	/**

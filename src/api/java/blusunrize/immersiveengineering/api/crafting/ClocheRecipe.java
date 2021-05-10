@@ -56,6 +56,18 @@ public class ClocheRecipe extends IESerializableRecipe
 		this(id, ImmutableList.of(output), seed, soil, time, renderReference);
 	}
 
+	// Allow for more dynamic recipes in subclasses
+	public List<ItemStack> getOutputs(ItemStack seed, ItemStack soil)
+	{
+		return this.outputs;
+	}
+
+	// Allow for more dynamic recipes in subclasses
+	public int getTime(ItemStack seed, ItemStack soil)
+	{
+		return this.time;
+	}
+
 	@Override
 	protected IERecipeSerializer<ClocheRecipe> getIESerializer()
 	{
