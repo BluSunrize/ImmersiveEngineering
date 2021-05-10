@@ -93,7 +93,6 @@ public class ClocheRenderer extends TileEntityRenderer<ClocheTileEntity>
 			matrixStack.translate((1-scale)/2, 0, (1-scale)/2);
 			matrixStack.scale(scale, scale, scale);
 
-			//
 			Collection<Pair<BlockState, TransformationMatrix>> blocks = recipe.renderFunction.getBlocks(seed, growth);
 			for(Pair<BlockState, TransformationMatrix> block : blocks)
 			{

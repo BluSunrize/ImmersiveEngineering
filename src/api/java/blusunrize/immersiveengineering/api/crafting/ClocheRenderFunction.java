@@ -32,10 +32,25 @@ public interface ClocheRenderFunction
 
 	Collection<Pair<BlockState, TransformationMatrix>> getBlocks(ItemStack stack, float growth);
 
-	// hook for dynamic cloche recipes
+	/**
+	 * Method to inject quads into the Cloche's plant rendering.
+	 * Any quads passed to the consumer will be included in the plant rendering.
+	 *
+	 *
+	 * Immersive Engineering will not cache any quads injected by this method,
+	 * therefore it is up to the implementation to make sure quads are properly cached.
+	 *
+	 * Additionally, even though this method is only called client side, the containing class exists on both sides.
+	 * As a result, it is imperative that implementations of this method do not contain direct references to client-only
+	 * code.
+	 *
+	 * @param stack the stack containing the seed for which the plant is being rendered
+	 * @param growth the current growth progress of the plant which is being rendered
+	 * @param quadConsumer the consumer to pass quads to
+	 */
 	default void injectQuads(ItemStack stack, float growth, Consumer<?> quadConsumer)
 	{
-		// default behaviour: do nothing
+
 	}
 
 
