@@ -13,7 +13,6 @@
     "accessors.HeroGiftsTaskAccess",
     "accessors.ItemEntityAccess",
     "accessors.PaletteAccess",
-    "accessors.PoITypeAccess",
     "accessors.PotionBrewingAccess",
     "accessors.RecipeManagerAccess",
     "accessors.ServerPlayNetHandlerAccess",

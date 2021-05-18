@@ -187,10 +187,7 @@ public class ModWorkbenchTileEntity extends IEBaseTileEntity implements IIEInven
 		boolean mirror = dummyDir!=facing.rotateY();
 		if(mirror)
 			setDummy(true);
-		world.setBlockState(dummyPos, state);
-		ModWorkbenchTileEntity tileEntityDummy = ((ModWorkbenchTileEntity)world.getTileEntity(dummyPos));
-		tileEntityDummy.setDummy(!mirror);
-		tileEntityDummy.setFacing(facing);
+		world.setBlockState(dummyPos, state.with(IEProperties.MULTIBLOCKSLAVE, !mirror));
 	}
 
 	@Override

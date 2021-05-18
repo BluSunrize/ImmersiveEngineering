@@ -9,8 +9,8 @@
 package blusunrize.immersiveengineering.common.world;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.EnumMetals;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
@@ -31,7 +31,6 @@ import blusunrize.immersiveengineering.common.items.ToolUpgradeItem.ToolUpgrade;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.mixin.accessors.HeroGiftsTaskAccess;
-import blusunrize.immersiveengineering.mixin.accessors.PoITypeAccess;
 import blusunrize.immersiveengineering.mixin.accessors.SingleJigsawAccess;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -203,9 +202,7 @@ public class Villages
 
 		private static PointOfInterestType createPOI(String name, Collection<BlockState> block)
 		{
-			PointOfInterestType type = new PointOfInterestType(MODID+":"+name, ImmutableSet.copyOf(block), 1, 1);
-			PoITypeAccess.callRegisterBlockStates(type);
-			return type;
+			return new PointOfInterestType(MODID+":"+name, ImmutableSet.copyOf(block), 1, 1);
 		}
 
 		private static VillagerProfession createProf(ResourceLocation name, PointOfInterestType poi, SoundEvent sound)
