@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.fluid.IFluidPipe;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
+import blusunrize.immersiveengineering.api.utils.SafeChunkUtils;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedVoxelShapes;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.EventHandler;
@@ -526,6 +527,8 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 
 	public boolean updateConnectionByte(Direction dir)
 	{
+		if(world==null||world.isRemote||!SafeChunkUtils.isChunkSafe(world, pos.offset(dir)))
+			return false;
 		final byte oldConn = connections;
 		int i = dir.getIndex();
 		int mask = 1<<i;
