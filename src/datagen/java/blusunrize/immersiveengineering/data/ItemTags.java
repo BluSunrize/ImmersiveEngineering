@@ -103,6 +103,9 @@ class ItemTags extends ItemTagsProvider
 		getOrCreateBuilder(IETags.circuitLogic).addItemEntry(Ingredients.electronTube);
 		getOrCreateBuilder(IETags.circuitSolder).addTag(IETags.copperWire).addTag(IETags.leadWire);
 
+		/* MOD COMPAT STARTS HERE */
+
+		// Curios
 		getOrCreateBuilder(TagUtils.createItemWrapper(new ResourceLocation("curios:back")))
 				.addItemEntry(Misc.powerpack);
 		getOrCreateBuilder(TagUtils.createItemWrapper(new ResourceLocation("curios:head")))

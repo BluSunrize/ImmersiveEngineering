@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.EnumMetals;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.IETags.MetalTags;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.utils.TagUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Misc;
@@ -25,6 +26,7 @@ import net.minecraft.data.BlockTagsProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.item.DyeColor;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
@@ -97,5 +99,11 @@ class IEBlockTags extends BlockTagsProvider
 				.addItemEntry(StoneDecoration.coke);
 		getOrCreateBuilder(BlockTags.FLOWER_POTS)
 				.addItemEntry(Misc.pottedHemp);
+
+		/* MOD COMPAT STARTS HERE */
+
+		// TConstruct
+		getOrCreateBuilder(TagUtils.createBlockWrapper(new ResourceLocation("tconstruct:harvestable/stackable")))
+				.addItemEntry(Misc.hempPlant);
 	}
 }
