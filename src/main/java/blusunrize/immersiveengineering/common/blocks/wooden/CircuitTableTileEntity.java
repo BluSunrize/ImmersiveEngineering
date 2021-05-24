@@ -194,7 +194,7 @@ public class CircuitTableTileEntity extends IEBaseTileEntity implements IIEInven
 	@Override
 	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
 	{
-		return true;
+		return false;
 	}
 
 	@Override
