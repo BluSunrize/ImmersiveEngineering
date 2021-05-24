@@ -102,7 +102,7 @@ public class ConnectorBlockStates extends ExtendedBlockstateProvider
 
 		ModelFile ctModel = split(obj("block/connector/e_meter.obj"), ImmutableList.of(BlockPos.ZERO, new BlockPos(0, -1, 0)));
 		createConnector(Connectors.currentTransformer, ctModel, RenderType.getSolid());
-		createConnector(MetalDevices.razorWire, ieObj("block/razor_wire.obj.ie"), RenderType.getSolid());
+		createConnector(MetalDevices.razorWire, ieObj("block/razor_wire.obj.ie"), RenderType.getCutout());
 		createConnector(Cloth.balloon, ieObj("block/balloon.obj.ie"), RenderType.getTranslucent());
 	}
 
