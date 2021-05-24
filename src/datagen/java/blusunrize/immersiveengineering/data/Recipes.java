@@ -767,6 +767,11 @@ public class Recipes extends RecipeProvider
 				.setEnergy(4200)
 				.build(out, toRL("crusher/nether_gold"));
 
+		CrusherRecipeBuilder.builder(new ItemStack(Items.NETHER_WART, 9))
+				.addInput(Items.NETHER_WART_BLOCK)
+				.setEnergy(1600)
+				.build(out, toRL("crusher/nether_wart"));
+
 		/* SAWMILL */
 		for(RecipeWoods wood : RecipeWoods.values())
 		{
