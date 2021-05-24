@@ -220,6 +220,9 @@ public class TurretGunTileEntity extends TurretTileEntity
 	private LazyOptional<IItemHandler> itemHandler = registerConstantCap(
 			new IEInventoryHandler(2, this, 0, new boolean[]{true, false}, new boolean[]{false, true})
 	);
+	public LazyOptional<IItemHandler> containerHandler = registerConstantCap(
+			new IEInventoryHandler(2, this)
+	);
 
 	@Nonnull
 	@Override
