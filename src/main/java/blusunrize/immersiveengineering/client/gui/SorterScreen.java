@@ -61,7 +61,7 @@ public class SorterScreen extends IEContainerScreen<SorterContainer>
 				{
 					List<ITextComponent> tooltip = new ArrayList<>();
 					int type = ((ButtonSorter)button).type;
-					String[] split = I18n.format(Lib.DESC_INFO+"filter."+(type==0?"oreDict": type==1?"nbt": "fuzzy")).split("<br>");
+					String[] split = I18n.format(Lib.DESC_INFO+"filter."+(type==0?"tag": type==1?"nbt": "damage")).split("<br>");
 					for(int i = 0; i < split.length; i++)
 						tooltip.add(TextUtils.applyFormat(
 								new StringTextComponent(split[i]), i==0?TextFormatting.WHITE: TextFormatting.GRAY
