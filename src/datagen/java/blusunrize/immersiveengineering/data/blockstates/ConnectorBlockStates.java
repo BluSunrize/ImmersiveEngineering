@@ -80,6 +80,7 @@ public class ConnectorBlockStates extends ExtendedBlockstateProvider
 						"block/metal_device/e_lantern_on", rl("block/metal_device/e_lantern.obj"),
 						ImmutableMap.of("texture", modLoc("block/metal_device/electric_lantern_on"))
 				))
+				.autoRotationData()
 				.layers(RenderType.getSolid())
 				.build();
 

@@ -181,6 +181,12 @@ public class ElectricLanternTileEntity extends ImmersiveConnectableTileEntity im
 	{
 		if(!world.isRemote)
 			setFacing(getFacing().getOpposite());
+		for(ConnectionPoint cp : getConnectionPoints())
+			for(Connection c : getLocalNet(cp.getIndex()).getConnections(cp))
+				if(!c.isInternal())
+					globalNet.updateCatenaryData(c, world);
+		markDirty();
+		markContainingBlockForUpdate(getBlockState());
 		return true;
 	}
 
