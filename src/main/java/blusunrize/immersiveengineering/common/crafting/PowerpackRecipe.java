@@ -23,6 +23,7 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 
@@ -75,8 +76,7 @@ public class PowerpackRecipe implements ICraftingRecipe
 		if(!powerpack.isEmpty()&&!armor.isEmpty()&&!ItemNBTHelper.hasKey(armor, Lib.NBT_Powerpack))
 		{
 			ItemStack output = armor.copy();
-			ItemNBTHelper.setItemStack(output, Lib.NBT_Powerpack, powerpack.copy());
-
+			ItemNBTHelper.setItemStack(output, Lib.NBT_Powerpack, ItemHandlerHelper.copyStackWithSize(powerpack, 1));
 			return output;
 		}
 		else if(!armor.isEmpty()&&ItemNBTHelper.hasKey(armor, Lib.NBT_Powerpack))
