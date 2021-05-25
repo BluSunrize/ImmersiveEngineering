@@ -39,6 +39,12 @@ public class EarmuffsRecipe implements ICraftingRecipe
 	}
 
 	@Override
+	public boolean isDynamic()
+	{
+		return true;
+	}
+
+	@Override
 	public boolean matches(CraftingInventory inv, @Nonnull World worldIn)
 	{
 		ItemStack earmuffs = ItemStack.EMPTY;

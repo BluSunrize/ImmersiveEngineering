@@ -37,6 +37,12 @@ public class PowerpackRecipe implements ICraftingRecipe
 	}
 
 	@Override
+	public boolean isDynamic()
+	{
+		return true;
+	}
+
+	@Override
 	public boolean matches(CraftingInventory inv, @Nonnull World world)
 	{
 		ItemStack powerpack = ItemStack.EMPTY;
