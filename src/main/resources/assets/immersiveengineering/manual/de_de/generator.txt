@@ -1,0 +1,7 @@
+Power Generation
+
+<&dynamo_recipe>Die Übertragung von Strom ist sehr hilfreich, vorausgesetzt, Du hast Strom. Um tatsächlich Flux zu erzeugen, kannst Du die kinetischen Kräfte von Windmühlen und Wasserrädern verwenden. Wenn Du diese an einen Dynamo anschließst, wird Strom erzeugt, der darauf basiert, wie schnell sie sich drehen.<np>
+<&waterwheel_recipes>Das Wasserrad ist eine ziemlich einfache Möglichkeit, einen Dynamo anzutreiben. Die Drehgeschwindigkeit basiert auf dem um es herum fließenden Wasser. Um optimale Ergebnisse zu erzielen, solltest Du das Wasser in einem Halbkreis von oben nach unten auf einer Seite und entlang der Unterseite lenken. Bis zu drei Wasserräder können gegeneinander gestellt werden.<np>
+<&windmill_recipes>Die Windmühle ist eine kostenlose und einfache Möglichkeit, Strom zu erzeugen, wenn auch keine sehr leistungsstarke. Seine Geschwindigkeit hängt vom Raum vor ihm ab, wobei sich seine kinetische Leistung stark verringert, wenn der Luftstrom verdeckt wird. Darüber hinaus führen Wetterbedingungen wie Regen oder Gewitter zu stärkeren Winden und höheren Rotationsgeschwindigkeiten.<np>
+<&sail_recipe>Deine windbasierte Stromerzeugung kann verbessert werden, indem Du die Blätter Deiner Windmühle mit Stoff bedeckest. Dadurch wird die Oberfläche und damit die Drehzahl und die Energieabgabe vergrößert.
+Die erforderlichen Segel werden aus <link;hemp;zähem Hanfstoff;start> gefertigt und durch Klicken mit der rechten Maustaste auf die Windmühle aufgebracht.

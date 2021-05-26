@@ -1,0 +1,13 @@
+Railgun
+Velocitas Eradico
+Die Railgun (oder genauer gesagt das tragbare Induktionskatapult) ist ein Wunder der Technik. Es besteht aus zwei Schienen, durch die ein elektrischer Strom fließt und einen Schlitten und damit ein Projektil beschleunigt.
+Der Prozess ist energieintensiv, beschleunigt jedoch verschiedene Projektile auf hohe Geschwindigkeiten.
+Um ein Projektil aus Deinem Inventar zu schießen, klicke und halte die Verwendungstaste gedrückt, bis der Ladezustand 99 erreicht hat, und lasse sie dann los.
+
+Übliche Projektile sind §2Eisen§r, §2Aluminium§r und §2Stahlstäbe§r sowie §2Graphit-Elektroden§r. Du kannst jedoch auch exotischere Projektile abfeuern, z. B. <link;buzzsaw;§2Sägeblätter§r> oder §2Dreizacke§r.
+Um zwischen Projektilen zu wechseln, schleiche und scrolle mit dem Mausrad oder verwenden die Tastenkombination §l<keybind;key.immersiveengineering.chemthrowerSwitch>§r, wenn dies in den Optionen eingestellt wurde.
+
+Aufgrund des geringen internen Energiespeichers wird empfohlen, die Railgun zusammen mit einem <link;powerpack;Kondensatorrucksack> zu verwenden.
+Wie bei anderen IE-Tools kann die Railgun in der <link;workbench;Ingenieurswerkbank> angepasst und mit <link;shader;Shader> erweitert werden.<np>
+<&speed>Die §2erweiterten Kühlkörper§r tragen dazu bei, den Wärmestau während des Ladevorgangs zu verringern und die Ladezeit der Railgun erheblich zu verkürzen.<np>
+<&scope>Mit der §2Präzisionsreichweite§r kannst Du mit der Railgun zoomen. Verwende §l<keybind;key.immersiveengineering.railgunZoom>§r, um das Zielfernrohr zu verwenden, und bewege das Mausrad, um zwischen den Vergrößerungsstufen zu wechseln.

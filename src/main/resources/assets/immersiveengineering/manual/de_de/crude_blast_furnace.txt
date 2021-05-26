@@ -1,0 +1,6 @@
+Roh-Hochofen
+Einfacher Stahl
+<&block>Der Roh-Hochofen wird verwendet, um den Kohlenstoffgehalt von Eisen zu erhöhen und ihn in Stahl umzuwandeln. Um dies zu erreichen, dürfen für den Ofen nur reine, kohlenstoffreiche Brennstoffe verwendet werden, insbesondere Kohlekoks und Holzkohle.
+Zusammen mit Stahl erzeugt der Ofen auch Schlacke, die Du entfernen musst, oder der Ofen funktioniert nicht mehr. Während es sich technisch gesehen um ein Abfallprodukt handelt, kannst Du mit Schlacke Beton erzeugen.
+<&multiblock>Um einen Hochofen zu bilden, ordnen Sie 27 dieser Blöcke in einem 3x3x3-Würfel an und klicken Sie mit einem Ingenieurhammer mit der rechten Maustaste auf einen der mittleren Blöcke der Seiten.
+Auf der folgenden Seite findest Du ein Diagramm. Der Roh-Hochofen ist nicht automatisierbar. Alle Ein- und Ausgänge müssen manuell über die GUI angeordnet werden. Wenn Du die Erstellung von Stahl automatisieren möchtest, solltest Du Dich wahrscheinlich mit der Erstellung eines <link;improved_blast_furnace;verbesserten Hochofen;> befassen. 

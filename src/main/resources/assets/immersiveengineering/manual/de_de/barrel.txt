@@ -1,0 +1,4 @@
+Holzfass
+Rollt nicht
+<&recipe>Holzfässer sind einfache Behälter, in denen Flüssigkeit gespeichert werden kann. Du kannst bis zu 12 Eimer aufbewahren, aber da sie aus Holz sind, können sie keine Gase oder heißen Flüssigkeiten aufbewahren.
+Wenn Du mit einem Hammer mit der rechten Maustaste auf die Ober- oder Unterseite des Fasses klickst, wird zwischen Ein-, Ausgang oder keiner Verbindung umgeschaltet. 

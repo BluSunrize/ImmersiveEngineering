@@ -1,0 +1,6 @@
+Fermenter
+Skál!
+Der Fermenter ist eine Multiblockstruktur, die durch einen Fermentationsprozess Ethanol aus bestimmten Früchten, Körnern und Gemüse extrahiert. Die Struktur wird wie oben gezeigt aufgebaut und unter Verwendung des Ingenieurshammers auf dem zentralen Kessel von der Seite mit den technischen Blöcken gebildet.
+Gegenstände können über die beiden mit blauen Punkten markierten Luken auf der Rückseite in den Fermenter eingegeben werden. Die Schraffur mit dem orangefarbenen Punkt dient als Objektausgabe und der Block darunter zur Ausgabe von Flüssigkeiten.
+Durch Anlegen eines Redstone-Signals an das Bedienfeld an der Vorderseite wird der Prozess der Maschine angehalten. Dieses Verhalten kann mithilfe des Ingenieurshammers umgekehrt werden.
+<np>Die folgende Liste zeigt verschiedene Elemente, die zu Ethanol fermentiert werden können, und die Menge, die sie produzieren.<&list>

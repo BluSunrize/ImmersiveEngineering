@@ -1,0 +1,16 @@
+Mineralvorkommen
+Erz-tastisch
+Die Erzvorkommen auf Deiner Welt sind für Dich nichts Neues. Was Du bisher jedoch nicht berücksichtigt hast, sind Mineraladern, die eine Mischung aus verschiedenen Erzen enthalten. Aufgrund ihrer breiten und dünnen Verbreitung kann der durchschnittliche Bergmann sie nicht finden, aber eine <link;excavator;spezielle Maschine> kann möglicherweise dabei helfen.
+<&survey_tools>Um nach Mineraladern zu suchen, solltest Du einige §2Mineralvermessungswerkzeuge§r herstellen. Indem Du diese Werkzeuge auf verschiedene natürliche Bodenblöcke wagst und verwendest, kannst Du Adern identifizieren und deren ungefähre Position ermitteln.
+
+Mit jeder Probe, die Du aus derselben Ader entnimmst, kannst Du genauer ablesen, was sie enthält und woher sie stammt. Beachte, dass sich die Adern überlappen können, sodass Du möglicherweise Spuren verschiedener Venen nahe beieinander findest.
+<np>
+<&sample_drill>Nachdem Du den Typ und die Position der Ader eingegrenzt hast, verwende einen §2Kernprobenbohrer§r, um genau zu lesen, welche Adern sich an einer genauen Position befinden.
+Versorge die Maschine mit Strom und klicke mit der rechten Maustaste darauf oder aktiviere sie mit Redstone. Der Bohrer verbraucht <config;i;machines.coredrill.consumption> Flux/t , um an seiner Stelle eine Kernprobe zu extrahieren, die detaillierte Informationen über die Mineralader liefert.
+<np>
+<&core_sample>Die Probe zeigt Dir nicht nur genau, welche Mineralien dort gefunden werden, einschließlich ihrer relativen Anwesenheit, sondern auch ihre individuelle §2Sättigung§r. Eine höhere Sättigung bedeutet eine höhere Chance für einen Bagger, sein Schaufelrad zu füllen.
+
+Scleiche und klicke mit der rechten Maustaste auf eine Kernprobe, um sie in der Welt zu platzieren. So können Sie seine Position und Informationen lesen. Wenn sie platziert sind, kannst Du mit der rechten Maustaste darauf klicken, um die ursprüngliche Position zu markieren.
+
+Auf den folgenden Seiten werden alle Arten von Adern und Erzen, die aus ihnen gewonnen werden können, aufgelistet.
+<np>

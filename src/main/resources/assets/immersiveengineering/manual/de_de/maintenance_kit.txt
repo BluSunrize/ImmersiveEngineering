@@ -1,0 +1,5 @@
+Wartungskit
+Reparaturen unterwegs
+<&recipe>Unter den Ingenieuren, die um die Welt reisen oder einen Großteil ihrer Zeit in Minen verbringen, kristallisiert sich ein Problem heraus. Ihre Werkzeuge müssen ständig gewartet werden, und das Mitführen einer gesamten Werkbank ist einfach nicht möglich. Glücklicherweise können die meisten kleineren Reparaturen und Neukonfigurationen mit einem Wartungskit durchgeführt werden.
+
+Mit dem Wartungskit, einer Reihe von Werkzeugen, die in ein stabiles Hanfgewebe eingewickelt sind, kannst Du Deine Werkzeuge ganz nach Deinen Wünschen anpassen, wie dies bei der <link;workbench;Ingenieurswerkbank> der Fall ist. Du musst dich nicht mehr um die Oberflächenerneuerung kümmern, um den Kopf Deines Bergbau-Bohrers zu wechseln, oder musst zu Deiner Werkstatt zurückkehren, um Deine Ohrenschützer zu konfigurieren. All dies kann jetzt mit dem Wartungskit auch unterwegs durchgeführt werden! 

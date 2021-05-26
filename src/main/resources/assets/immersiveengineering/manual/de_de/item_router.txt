@@ -1,0 +1,5 @@
+Element Router
+Linker Fuß gelb, rechte Hand grün
+<&recipe>Der Element Router ist ein Block, der Elemente akzeptiert und auf gefilterten Pfaden verteilt. Lege es ab und klicke mit der rechten Maustaste darauf, um die Benutzeroberfläche zu öffnen, in der sechs verschiedene farb- und richtungskoordinierte Filter angezeigt werden.<np>
+Wenn ein Element in den Router eingeht, wird es an eine Ausgabe weitergeleitet, deren Filter mit dem Element übereinstimmt. Wenn kein passender Filter gefunden wird, wird es an eine ungefilterte Ausgabe weitergeleitet. Wenn der Router das Element überhaupt nicht weiterleiten kann, kann das Element nicht in den Router gelangen.
+Elemente können auch nicht auf der Seite ausgegeben werden, von der sie eingefügt wurden. Die Schaltflächen über jedem Filter können verwendet werden, damit der Router OreDictionary, NBT und Metadaten respektiert oder ignoriert. 

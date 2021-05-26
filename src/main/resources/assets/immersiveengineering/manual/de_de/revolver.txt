@@ -1,0 +1,13 @@
+Revolver
+Wanted: Dead or Alive
+<&recipe>Der Revolver, eine elegantere Waffe aus einer zivilisierten Zeit, ist eine Leistung kleiner Mechaniker. Klein ist hier relativ, da diese Waffe für 12 Hülsen geeignet ist.
+Ähnlich wie bei der Bergbaubohrmaschine ermöglicht der Revolver Änderungen in der <link;workbench;Ingenieurswerkbank>, wie auf den letzten Seiten beschrieben.
+
+Beachte, dass das Abfeuern des Revolvers ziemlich laut ist und die Aufmerksamkeit feindlicher Mobs in der Gegend auf sich zieht!
+
+Es gibt verschiedene <link;bullets;Arten von Munition;>, die der Revolver akzeptiert. Um ihn zu laden, schleiche + klicke mit der rechten Maustaste auf die Waffe und setzen die Patronen in die Hülsen ein.<np>
+<&speedloader>Ein geladener Revolver-Speedloader in Deinem Inventar wird verwendet, um den Revolver nach dem letzten Schuss wieder aufzufüllen.
+<np>
+<&bayonet>Indem Du ein §2Bajonett§r am Revolver anbringen, stattest Du ihn mit Nahkampffähigkeiten aus, die Nahkampfschaden ermöglichen, der so stark ist wie ein Eisenschwert.<np>
+<&extmag>Mit dem §2erweiterten Magazin§r können 6 weitere Patronen in den Revolver geladen werden. Dieses Magazin wird von einem Speedloader nicht nachgefüllt.<np>
+<&tubes>Die §2Verstärkerelektronenröhren§r üben einen elektrischen Schlag auf abgefeuerte Projektile aus. Dieser Schock hält an, bis er das Ziel trifft (frage nicht, wie es funktioniert) und weitergegeben wird. Das Ziel wird für den Bruchteil einer Sekunde betäubt und alle angetriebenen Geräte, die es möglicherweise verwendet, werden leicht entladen.

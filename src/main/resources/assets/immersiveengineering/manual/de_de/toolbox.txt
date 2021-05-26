@@ -1,0 +1,4 @@
+Ingenieurswerkzeugkiste
+Die Handtasche des Ingenieurs
+Die Werkzeugkiste ist ein einfacher, transportierter Behälter, in dem alle wichtigen Dinge eines Ingenieurs aufbewahrt werden! Wenn Du mit der Maus über die entsprechenden Slots fährst, erfährst Du, was diese akzeptieren.
+'Essen' und 'Alles' sind selbsterklärend, 'Kabel'-Steckplätze sind für Spulen, Steckverbinder und ähnliche Gegenstände und 'Tools' speichert jedes IE-Tool sowie Spitzhacken, Schaufeln und Äxte! Durch Schleichen und Klicken mit der rechten Maustaste kann die Werkzeugkiste als Block platziert werden. Während der Platzierung kann das Inventar weiterhin mit einem Rechtsklick aufgerufen werden. Durch erneutes Schleichen und Klicken mit der rechten Maustaste wird die Toolbox aufgenommen. 

@@ -1,0 +1,3 @@
+Kanister
+Besser als Eimer
+<&recipe>Kanister sind einfache Metallbehälter, in denen Flüssigkeiten transportiert werden. Sie können bis zu 10 Eimer aufbewahren und diese Flüssigkeit sowohl in die Welt als auch in Maschinen gießen. Sie können keine Flüssigkeiten aufnehmen. Darüber hinaus können sie verwendet werden, um flüssigkeitsverbrauchende Gegenstände wie <link;mining_drill;Bergbaubohrmaschinen;start> nachzufüllen, indem sie zusammen hergestellt werden. 

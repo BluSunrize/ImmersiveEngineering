@@ -1,0 +1,7 @@
+Abfüllmaschine
+Füll auf!
+<&multiblock>Die Abfüllmaschine füllt Flüssigkeiten in Behälter.
+Die Struktur wird wie oben gezeigt erstellt, kann jedoch gespiegelt werden. Um es zu formen, klicke mit einem Ingenieurshammer mit der rechten Maustaste auf das zentrale Förderband. Die Richtung der Förderer ist wichtig.<np>
+Flüssigkeit wird durch die Anschlüsse am unteren Block des Metalltanks eingeleitet. Energie wird durch den Anschluss oben auf der gegenüberliegenden Seite eingespeist.
+Im Allgemeinen kann die Abfüllmaschine jeden Behälter füllen, für den eine gefüllte Version verfügbar ist (Eimer, Glasflasche). Es werden auch andere Gegenstände akzeptiert, in denen Flüssigkeiten gespeichert werden können, z.B. die <link;mining_drill;Bergbaubohrmaschine;start> oder der <link;jerrycan;Kanister;start>.
+Zusätzlich sind möglicherweise spezielle Rezepte erhältlich. 

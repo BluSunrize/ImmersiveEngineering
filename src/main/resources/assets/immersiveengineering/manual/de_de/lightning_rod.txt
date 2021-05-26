@@ -1,0 +1,7 @@
+Blitzableiter
+Vom Blitz getroffen!
+Blitz ist ein Phänomen der Natur. Es enthält eine enorme Menge an roher Kraft, und dieser Blitzableiter kann diese Kraft nutzen.
+Indem Du viele Stahlzäune auf diesem Multiblock stapelst, erhöhst Du die Wahrscheinlichkeit, dass ein Blitz bei Regen oder Gewitter auf ihn trifft.
+Wenn der Stahlmast getroffen wird, werden die erzeugten enormen Energiemengen in der Basis des Blitzableiters gespeichert und dann langsam auf die seitlichen Energieanschlüsse verteilt.
+
+Du kannst die Wahrscheinlichkeit erhöhen, dass der Blitzableiter getroffen wird, indem Du ein "Netz" aus Stahlzäunen erstellst, das mit dem obersten Zaun verbunden ist. 

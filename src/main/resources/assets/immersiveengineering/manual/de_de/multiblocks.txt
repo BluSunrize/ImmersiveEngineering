@@ -1,0 +1,4 @@
+Multiblock-Konstruktionen
+Wo ist mein Inbusschlüssel?
+Das Einpassen komplexer Maschinen in einen einzelnen 1x1x1-Würfel scheint eine Aufgabe zu sein, die ohne den Einsatz von Magie oder möglicherweise schrumpfenden Strahlen nicht zu bewältigen ist. Um komplexere Maschinen zu erstellen, benötigst Du Komponentenblöcke. Die häufigsten sind auf den folgenden Seiten aufgeführt.
+<&recipes>

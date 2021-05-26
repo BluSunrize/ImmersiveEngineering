@@ -1,0 +1,7 @@
+Gartenglocke
+Lokalisierter Regenwald
+<&recipe>Die Gartenglocke oder Belljar ist ein Gerät, das das Wachstum von Pflanzen beschleunigen soll. Es ermöglicht sogar dem landwirtschaftlich anspruchsvollen Ingenieur, Pflanzen anzubauen und ihren Ertrag zu ernten.<np>
+Das Gerät nimmt Strom, Flüssigkeit und Gegenstände über seine jeweiligen Anschlüsse auf.
+Wasser und Strom sind immer erforderlich, und Du kannst dem linken Schlitz Dünger hinzufügen, um die Wachstumsgeschwindigkeit zu erhöhen.
+Boden und Samen werden in die Mitte gelegt; Für jeden Samen muss der richtige Boden verwendet werden, und Erde wird automatisch in Ackerland umgebaut.<np>
+Produzierte Gegenstände werden in den Schlitzen rechts aufbewahrt und automatisch durch die Luke an der Vorderseite der Glaskuppel ausgegeben. 

@@ -1,0 +1,9 @@
+Metallkonstruktionen
+Nieten
+<&storage_and_sheetmetal_recipes>Neben behandeltem Holz bilden verarbeitete Metalle gemeinsame Bausteine. Du könnenkannst fast jedes Metall zu Blöcken und Platten verarbeiten oder Eisenbarren zu einem Blechblock hämmern.<np>
+<&architecture_recipes>Stahl ist nicht nur ein wesentlicher Bestandteil von Hochspannungsarchitekturen, sondern auch in der Architektur sehr nützlich. Stahlgerüste können verwendet werden, um schnell kletterbare Strukturen zu schaffen, Stahlzäune halten Bösewichte in Schach und Strukturarme bieten hervorragende Befestigungspunkte für Ihre HV-Relais.<np>
+<&connector_recipes>Strukturelle Steckverbinder funktionieren ähnlich wie normale Steckverbinder, aber anstatt Energie zu übertragen, sind sie rein dekorativ.
+Sie akzeptieren keine normalen Kabel, sondern Hanfseile und Stahlkabel (siehe nächste Seite).
+Du kannst sie auch drehen, indem Du mit einem Ingenieurshammer mit der rechten Maustaste darauf klickst.<np>
+<&ladder_recipes>Metallleitern sind ... nun, Leitern aus Metall. Du kannst sie besteigen, und sie sehen cool aus.
+Du kannst sie auch mit Gerüsten kombinieren, um daraus überdachte Leitern zu machen. 

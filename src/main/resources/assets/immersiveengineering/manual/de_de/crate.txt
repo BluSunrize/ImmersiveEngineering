@@ -1,0 +1,7 @@
+Holzvorratskiste
+Schalte einen Gang hoch!
+<&normal>Holzvorratskisten sind Blöcke, die einer Truhe sehr ähnlich sind. Sie sind aus behandeltem Holz gefertigt und bieten 27 Speicherplätze. Wenn sie jedoch zerbrochen sind, behalten sie diesen Speicherplatz bei, sodass Du sie zusammen mit ihrem Inhalt verschieben kannst.
+Wie Truhen geben sie ein Komparatorsignal aus, das auf der Anzahl der gespeicherten Elemente basiert.
+
+<&reinforced>Die verstärkte Lagerkiste bietet die gleiche Kapazität wie eine normale Kiste, ist jedoch im Gegensatz zu diesen unempfindlich gegen Explosionen. Lästige Kriechpflanzen oder schlecht platzierte Bergbaukosten zerstören Deine Wertsachen nicht mehr!
+Das Upgrade-Rezept behält den Inhalt der Kiste. 

@@ -1,0 +1,14 @@
+Erze
+Grabe grabe Loch
+<&copper>§lKupfererz§r befindet sich in der Welt zwischen den Schichten <config;i;ores.copper.min_y> und <config;i;ores.copper.max_y> und benötigt zum Abbau eine Steinspitzhacke.
+Das Erz schmilzt zu Kupferbarren, die zur Herstellung grundlegender Kupferkabel, Spulen und anderer integraler Bestandteile der IE-Architektur verwendet werden.
+<&alu>§lBauxiterz§r befindet sich in der Welt zwischen den Schichten <config;i;ores.bauxite.min_y> und <config;i;ores.bauxite.max_y> und benötigt zum Abbau eine Steinspitzhacke.
+Das Erz schmilzt zu Aluminiumbarren, aus denen zusammen mit Stahl Hochspannungskabel hergestellt werden.
+<&lead>§lBleierz§r befindet sich in der Welt zwischen den Schichten <config;i;ores.lead.min_y> und <config;i;ores.lead.max_y> und benötigt zum Abbau eine Eisenspitzhacke.
+Das Erz schmilzt zu Bleiblöcken, aus denen Kondensatoren hergestellt werden.
+<&silver>§lSilbererz§r befindet sich in der Welt zwischen den Schichten <config;i;ores.silver.min_y> und <config;i;ores.silver.max_y> und benötigt zum Abbau eine Eisenspitzhacke.
+Das Erz schmilzt zu Silberbarren, die mit Gold legiert werden, um Elektrum zu erzeugen, einen weitaus effektiveren Leiter.
+<&nickel>§lNickelerz§r befindet sich in der Welt zwischen den Schichten <config;i;ores.nickel.min_y> und <config;i;ores.nickel.max_y> und benötigt zum Abbau eine Eisenspitzhacke.
+Das Erz schmilzt zu Nickelblöcken, die mit Kupfer legiert werden, um Konstantan zu erzeugen, einen hitzebeständigen Leiter, der bei der Herstellung von <link;thermoelectric;Thermoelektrischen Generatoren;start> verwendet wird.
+<&uranium>§lUraniumerz§r befindet sich in der Welt zwischen den Schichten <config;i;ores.uranium.min_y> und <config;i;ores.uranium.max_y> und benötigt zum Abbau eine Eisenspitzhacke.
+Das Erz wird zu Uranbarren schmelzen, aber es gibt derzeit nicht viele Verwendungszwecke für das Metall. Ein Uranblock kann als Wärmequelle für den <link;thermoelectric;Thermoelektrischen Generator;start> dienen, und das Metall wird in zukünftigen Bemühungen verwendet. 

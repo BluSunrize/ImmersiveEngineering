@@ -1,0 +1,4 @@
+Stacheldraht
+Übergroßer Eierschneider
+<&recipe>Stacheldraht ist ein Draht mit geschärften Metallstücken. Er wird jede Entität verlangsamen und schneiden, die versucht, sich durch ihn zu bewegen.
+Stacheldraht kann nur mit Drahtschneidern entfernt werden, andere Versuche beschädigen den Spieler. Zusätzlich kann ein Niederspannungskabel angeschlossen werden, um den Stacheldraht für zusätzlichen Schaden zu elektrifizieren. 

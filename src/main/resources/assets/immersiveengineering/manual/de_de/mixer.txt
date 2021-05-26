@@ -1,0 +1,6 @@
+Mischer
+Bottiche mit Keksteig!
+Der Mischer ist eine Multiblockstruktur, die Feststoffe in Flüssigkeiten löst und diese miteinander vermischt. Die Struktur wird wie oben gezeigt aufgebaut und unter Verwendung des Ingenieurshammers auf dem zentralen Blechblock geformt.
+Die häufigsten Anwendungen für diese Maschine sind das Mischen von flüssigem Beton aus Wasser, 2 Teilen Sand, 1 Teil Kies und 1 Teil Ton oder die Herstellung von Tränken aus Wasser und ihren verschiedenen Bestandteilen.
+Flüssigkeiten werden über den Anschluss an der Unterseite des Netzteils in den Mischer eingeleitet. Elemente können über die beiden Luken auf der Rückseite eingegeben werden. Der Flüssigkeitsanschluss an der Vorderseite dient als Flüssigkeitsausgang.
+Durch Anlegen eines Redstone-Signals an das Bedienfeld an der Vorderseite wird der Prozess der Maschine angehalten. Dieses Verhalten kann mithilfe des Ingenieurshammers umgekehrt werden. 

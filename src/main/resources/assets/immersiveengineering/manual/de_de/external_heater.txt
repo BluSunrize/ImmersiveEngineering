@@ -1,0 +1,6 @@
+Außenheizung 
+Jetzt kochst Du mit Flux!
+<&recipe>Die Außenheizung macht genau das, was ihr Name andeutet, sie erzeugt Wärmeenergie aus Flussmittel. Wenn diese Wärmeenergie neben einem normalen Ofen aufgestellt wird, treibt sie den Ofen an und lässt ihn ohne Brennstoff darin schmelzen.<np>
+Klicke mit einem Hammer auf eine Seite der Heizung, um einen Energieakzeptor zu erhalten, und schleiche, um auf die gegenüberliegende Seite zu zielen.
+Die Heizung verbraucht für jede hinzugefügte Wärmeeinheit §o8 Flux/t§r. Während der Anfangsphase des Ofens erzeugt die Heizung bis zu §o4§r Wärmeeinheiten pro Tick, aber sobald der Ofen die maximale Temperatur erreicht, benötigt er nur §o1§r Wärmeeinheit, um ihn am Laufen zu halten.<np>
+Noch besser ist, dass der Heizer bei maximaler Temperatur des Ofens zusätzliche §o24 Flux/t§r verbraucht, um die Verarbeitungsgeschwindigkeit des Ofens zu erhöhen. Die Heizung wirkt sich nur auf einen Ofen mit einem gültigen Eingang und Platz im Ausgangsschlitz aus, um Energie zu sparen. Du kannst jedoch ein Redstone-Signal an die Heizung anlegen, um diese Funktionalität zu deaktivieren und den Ofen auf voller Hitze zu halten. 

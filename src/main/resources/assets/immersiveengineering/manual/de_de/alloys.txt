@@ -1,0 +1,3 @@
+Legierungen
+Mixed Metal Arts
+Durch das Mischen von Stäuben entsteht eine Legierungsmischung, die dann zu legierten Barren geschmolzen werden kann. Constantan hat thermoelektrische Eigenschaften und wird zur Herstellung der <link;generator;Thermoelektrischen Generatoren> verwendet. Elektrum ist ein ausgezeichneter elektrischer Leiter, der in <link;wiring;Mittelspannungsarchitektur> verwendet wird.

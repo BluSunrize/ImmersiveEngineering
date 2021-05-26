@@ -1,0 +1,6 @@
+Flüssigkeitsrouter
+Milch geht nach links, Säure geht nach rechts
+<&recipe>Der Flüssigkeitsrouter funktioniert ähnlich wie der <link;item_router;Gegenstandsrouter;start>. Durch eine beliebige Seite eingegebene Flüssigkeiten werden basierend auf der Einrichtung der sechs Seitenfilter neu verteilt. 
+Durch Klicken auf einen Eimer oder einen anderen Flüssigkeitsbehälter in die Steckplätze der GUI wird der Filter für diese Flüssigkeit konfiguriert.<np>
+Wenn Flüssigkeiten in den Router geleitet werden, werden sie zu einem Ausgang geleitet, dessen Filter mit der Flüssigkeit übereinstimmt. Wenn kein passender Filter gefunden wird, wird die Flüssigkeit zu einem ungefilterten Ausgang geleitet. Wenn keine verfügbare oder gültige Route vorhanden ist, wird keine Flüssigkeit akzeptiert.
+Die Tasten über jedem Filter können verwendet werden, damit der Router die NBT-Daten der Flüssigkeit respektiert oder ignoriert.

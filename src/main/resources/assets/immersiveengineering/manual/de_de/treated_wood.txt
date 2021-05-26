@@ -1,0 +1,9 @@
+Behandeltes Holz
+Sehr langlebig 
+<&treated_wood>Behandeltes Holz sidd ganz einfach Holzbretter, die mit Kreosotöl bedeckt sind. Sie sind jedoch eines der wichtigsten Materialien, die Du in Immersive Engineering verwenden wirst. Du sollten also besser darauf vorbereitet sein, viel davon zu erstellen.<np>
+<&recipes><np>
+<&posts>Pfosten aus behandeltem Holz bieten hervorragende Befestigungspunkte für Deine Kabelverbinder. Sie sind 4 Blöcke hoch, sodass Du sie ohne den richtigen Abstand nicht platzieren kannst.
+Verwende den Hammer an den Seiten des obersten Blocks, um einen Arm am Pfosten zu befestigen.
+Du kannst auch <link;wiring;Trafos;transformer_recipes> auf der Stange platzieren, wodurch sie weniger aufdringlich wird.
+Wenn Du Blöcke unter die Arme des Holzpfostens legst, werden die Arme auf den Kopf gestellt.<np>
+<&wallmount>Behandeltes Holz kann auch zur Herstellung von §2Wandrahmen§r verwendet werden. Dies kann sehr nützlich sein, um Steckverbinder ohne Verwendung von Pfosten optisch ansprechend zu montieren.

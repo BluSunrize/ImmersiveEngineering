@@ -1,0 +1,3 @@
+Beton
+Festungsmaterial
+<&recipe>Beton ist ein sehr harter und widerstandsfähiger Verbundwerkstoff. Er ist billig herzustellen und eignet sich hervorragend für die überschüssige Schlacke, die vom <link;crude_blast_furnace;Hochofen> produziert wird.

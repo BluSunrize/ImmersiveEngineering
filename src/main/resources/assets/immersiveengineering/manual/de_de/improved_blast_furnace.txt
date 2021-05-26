@@ -1,0 +1,6 @@
+Verbesserter Hochofen
+Industrialisierte Verfeinerung
+<&brick_recipe> Der verbesserte Hochofen ist eine viel professionellere Methode zur <link;crude_blast_furnace;Erzeugung von Stahl;>. Er ermöglicht nicht nur die Automatisierung von Ein- und Ausgängen, sondern kann auch mit Vorwärmern ausgestattet werden, um den Verfeinerungsprozess durch Zugabe von heißer Luft zu beschleunigen.
+Der Ofen besteht aus verstärkten Ziegeln. Es wird daher empfohlen, die ersten Stahlchargen für dieses Upgrade auszugeben.
+<&multiblock>Die Struktur des Ofens ähnelt der seines Vorgängers, jedoch wurden die Steine verstärkt und oben ein Trichter angebracht, um die Eingänge zu trichtern. Stahl wird an der Vorderseite des Ofens und Schlacke an der Rückseite ausgegeben, und der Ofen wird automatisch an angeschlossene Lagerbestände oder Förderbänder abgegeben. Eisen und Kohlekoks werden von oben eingespeist.<np>
+<&preheater>Hochofen-Vorwärmer werden verwendet, um Luft zu erwärmen und dann in den Ofen zu blasen, um den Raffinierungsprozess von Eisen zu beschleunigen. Jeder Ofen kann bis zu zwei Vorwärmer haben, die an die Anschlüsse auf jeder Seite angeschlossen sind, und jeder Vorwärmer benötigt zum Betrieb <config;i;machines.preheater_consumption> Flux/t.

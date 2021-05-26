@@ -1,0 +1,4 @@
+Ingenieurswerkbank
+Für verschiedene Projekte
+Die Ingenieurswerkbanks ist ein einfaches Upgrade der normalen Werkbank. Zusätzlich zu der polierten, behandelten Holzoberfläche bleibt die Zutat im Crafting-Gitter, wenn die Oberfläche geschlossen wird.
+Es verfügt auch über eine kleine Schublade, in der einige Deiner Handwerkskomponenten aufbewahrt werden können. 

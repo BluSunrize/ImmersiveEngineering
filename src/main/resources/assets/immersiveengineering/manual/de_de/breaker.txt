@@ -1,0 +1,6 @@
+Unterbrecherschalter
+Einschalten - Ausschalten
+<&manual_breaker>Unterbrecherschalter sind einfach Schalter, die den Stromfluss durch Kabel stoppen können. Sie können zwei Kabel des gleichen Typs verbinden und lassen nur dann Strom durch, wenn sie aktiviert sind. Dies kann verwendet werden, um stromhungrige Maschinen vom Netzwerk zu trennen oder bei Bedarf einen zusätzlichen Satz Generatoren anzuschließen! Aufgrund des hohen Risikos akzeptieren diese Schalter keine HV-Kabel.
+Sie senden auch ein Redstone-Signal aus, wenn sie eingeschaltet sind. Dieses Verhalten kann durch Klicken auf den Schalter mit einem Ingenieursschraubenzieher umgekehrt werden.
+Darüber hinaus sind sie eine hervorragende Möglichkeit, Deine <link;lighting;strombetriebenen Laternen;electric_lantern> zu steuern!<np>
+<&rs_breaker> zu steuern. Der Redstone Unterbrecher ähnelt einem normalen Schalter, kann jedoch nicht manuell betätigt werden. Stattdessen wird ein Redstone-Signal benötigt, um die Verbindung zu trennen. Im Gegenzug ist dieses Gerät gut genug isoliert, um auch den Anschluss von Hochspannungskabeln zu ermöglichen! 

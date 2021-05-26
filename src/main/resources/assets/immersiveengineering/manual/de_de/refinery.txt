@@ -1,0 +1,6 @@
+Raffinerie
+Flüssigkeiten mischen!
+<&multiblock>Die Raffinerie ist ein komplexer Multiblock, der ein oder zwei Flüssigkeiten in eine andere raffinieren kann. Die häufigste Anwendung hierfür ist die Verfeinerung von <link;squeezer;Pflanzenöl;start> und <link;fermenter;Ethanol;start> zu Biodiesel.
+Um die Struktur zu bilden, klicken Sie mit der rechten Maustaste auf den Schweren Ingenieursbaustein in der mittleren Ebene.
+Flüssigkeiten werden über die beiden Anschlüsse auf beiden Seiten des Blocks und über den orange markierten Anschluss an der Vorderseite abgegeben.
+Durch Anlegen eines Redstone-Signals an das Bedienfeld an der Vorderseite wird der Prozess der Maschine angehalten. Dieses Verhalten kann mithilfe des Ingenieurshammers umgekehrt werden. 

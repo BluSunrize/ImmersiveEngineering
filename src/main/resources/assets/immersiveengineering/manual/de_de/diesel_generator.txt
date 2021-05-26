@@ -1,0 +1,7 @@
+Dieselgenerator
+Besser als Lautstärke: Mehr Lautstärke.
+Hochspannungsarchitektur mag faszinierend sein, ist aber nur dann sehr nützlich, wenn Du einen Generator hast, der tatsächlich die erforderliche Leistung dafür erzeugen kann.
+Der Dieselgenerator ist eine der wenigen Möglichkeiten, diese Art von Energie zu erzeugen. Er wird als komplexe Multiblock-Struktur erstellt und wird von <link;refinery;Biodiesel> oder anderen Arten von brennbarem Kraftstoff betrieben. Aufgrund seiner hohen Leistung wird der Kraftstoff sehr schnell verarbeitet. Stelle daher sicher, dass Du über eine ausreichende Kraftstoffproduktion verfügst, um ihn zu betreiben.
+<&structure>Die Struktur besteht aus Ingenieurs-, Generator- und Kühlerblöcken, sowie Flüssigkeitsrohren und Gerüsten. Ordne sie in der oben gezeigten Form an und klicken mit einem Ingenieurshammer mit der rechten Maustaste auf den Zentralgenerator.
+Kraftstoff muss an den unteren Ecken des Generators zugeführt werden, während Energie an bis zu drei Anschlüssen oben abgegeben wird. Der <config;i;machines.dieselGen_output>Flux/t der Generatorausgänge wird auf alle verbundenen Punkte aufgeteilt. Der Generator läuft nur, wenn mindestens ein Ausgang Energie aufnehmen kann.
+Die kleine Klemme an der Seite schaltet den Generator aus, wenn sie mit einem Redstone-Signal versorgt wird. Dieses Verhalten kann mithilfe des Ingenieurshammer umgekehrt werden. 

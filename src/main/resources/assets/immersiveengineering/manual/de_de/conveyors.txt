@@ -1,0 +1,22 @@
+Förderbänder
+Wer braucht schon Schienen?
+<&conveyor_recipes>Förderbänder sind eine einfache Möglichkeit, alle möglichen Dinge rund um Deine Basis zu transportieren. Während sie stark genug sind, um Lebewesen wie Kühe oder Schafe zu bewegen, liegt ihre wahre Stärke im Transport von Gegenständen.
+Wenn Du Gegenstände darauf wirfst, bewegen sich die Gegenstände entlang des Bandes. Sollte das Band ein Inventar führen, wird der Gegenstand eingelegt.
+Blöcke wie Hopper können Gegenstände auf die Bänder fallen lassen (Rechtsklick) oder einstellen, ob sie nach oben oder unten laufen sollen (Schleichen + Rechtsklick).
+Wenn Du mit der rechten Maustaste auf ein Band mit einem beliebigen Farbstoff kilckst, werden die Wände des Bandes gefärbt, um leicht zu erkennen, wohin das Band geht.<np>
+<&conveyor_redstone_recipe>Das Redstone-gesteuerte Förderband kann mit einem Redstone-Signal deaktiviert werden.
+Das Bedienfeld an der Seite ermöglicht das Anbringen eines Hebels, es kann jedoch ein Redstone-Signal aus jeder Richtung eingegeben werden. Schleichen + Rechtsklick mit einem Ingenieurshammer, um das Panel auf die andere Seite zu bewegen.<np>
+<&conveyor_dropper_recipe>Das fallende Förderband ist ganz einfach ein Band mit einer Luke in der Mitte, mit der Gegenstände, die darüber laufen, nach unten fallen gelassen werden können.
+Gegenstände werden in die darunter liegenden Lagerbestände eingefügt oder einfach fallen gelassen, wenn sich unter dem Band ein leerer Raum befindet.
+Falls gewünscht, kann die Luke mit einem Redstone-Signal geschlossen werden.<np>
+<&conveyor_extract_recipe>Das extrahierende Förderband verfügt über die Fähigkeit, Gegenstände aus einem Inventar auf ähnliche Weise wie ein Hopper zu extrahieren. Im Gegensatz zu letzterem besitzt es jedoch kein internes Inventar und legt extrahierte Gegenstände auf das Band.
+Schleichen + Rechtsklick mit einem Ingenieurshammer, um die Eingabeseite zu ändern. Verwende den Ingenieursschraubendreher, um die Geschwindigkeit einzustellen, mit der er extrahiert wird.<np>
+<&conveyor_vertical_recipe>Das vertikale Förderband ist ein Band, das an Wänden montiert werden soll. Mit den an diesem angebrachten Eimern werden die Objekte gerade nach oben gehoben. Trotz der Verwendung des Begriffs "Eimer" werden keine Flüssigkeiten angehoben.
+Dieses Band kann in darüber liegende Lagerbestände eingelegt werden oder einfach Gegenstände über die Kante oben auf weitere Förderbänder ausstoßen.<np>
+<&conveyor_splitter_recipe>Das Spaltförderband wechselt zwischen der Umleitung von Gegenständen und Objekten nach links und rechts, schlicht und einfach. Diese Funktion kann verwendet werden, um eine gleichmäßigere Verteilung in Deine Fabriken zu erreichen.<np>
+<&conveyor_covered_recipe>Das überdachte Förderband funktioniert wie ein normales Band, ist jedoch von einem Gerüst abgedeckt, das verhindert, dass Spieler Gegenstände von ihm aufnehmen.
+Du kannst mit anderen Gerüst- oder Glastypen mit der rechten Maustaste darauf klicken, um das Erscheinungsbild der Abdeckung zu ändern.<np>
+<&conveyor_other_covered_recipes>In ähnlicher Weise können die Förderer zum Fallenlassen, Extrahieren, Teilen und Aufheben auch mit Gerüsten abgedeckt werden, um die gleichen Vorteile der "Verhinderung des Aufnehmens" zu erzielen, während sie weiterhin wie gewohnt funktionieren.
+<&chute_recipes>Rutschen sind einfache Konstruktionen aus Blech, mit denen Objekte gerade nach unten fallen können.
+Sie können in darunter liegende Lagerbestände eingefügt und von Förderbändern oder ähnlichen Vorrichtungen eingefügt werden. Gegenstände in ihnen werden von den Spielern nicht aufgenommen und sollten gegen die meisten Arten von Anziehung, magnetisch oder magisch, immun sein.
+Schleichen + Rechtsklick mit einem Ingenieurshammer, um die Rutsche in ein Eckstück zu verwandeln, das ein Objekt zur Seite lenkt. 

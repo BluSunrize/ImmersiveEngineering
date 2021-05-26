@@ -1,0 +1,9 @@
+Industriehanf
+530 stoffe es
+<&items>Industriehanf ist eine bemerkenswerte Pflanze! Ihre Samen sind nicht nur nützlich für die Herstellung von <link;refinery;Biodiesel;start>, die Hanffasern werden auch für die Herstellung von robustem Gewebe verwendet.
+Die Samen können durch Brechen von hohem Gras erhalten werden.<np>
+<&fabric_recipe>Robustes Gewebe ist ein elastisches Gewebe aus Hanffasern. Es wird verwendet, um <link;generator;Verbesserte Windmühlen;sail_recipe> sowie <link;balloon;Balloons;start> und <link;this;Sprungtücher;cushion_recipe> zu erstellen.<np>
+<&cushion_recipe>Sprungkissen sind einfache Blöcke aus zähem Stoff, die mit Luft gefüllt sind. Sie sind in der Lage, Stöße zu absorbieren und Fallschäden bei der Landung zu verhindern, aber im Gegensatz zu Schleimblöcken wirst Du nicht zurückgeworfen.<np>
+<&curtain_recipe>Streifenvorhänge sind Stoffstücke, die an Türrahmen oder anderen Öffnungen angebracht werden, um die Sicht zu blockieren.
+Wenn eine Entität sie passiert, senden sie ein Redstone-Signal aus. Klicke mit einem Ingenieursschraubendreher mit der rechten Maustaste darauf, um starke Signale zu aktivieren.
+Sie können auf die gleiche Weise wie Lederrüstungen gefärbt werden. 

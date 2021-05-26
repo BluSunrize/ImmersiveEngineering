@@ -1,0 +1,11 @@
+Kreissäge
+Wir gehen nicht nach Ravenholm
+<&recipes>Diese große, tragbare Kreissäge wurde entwickelt, um Bäume und andere Laubstücke, die einem makellosen Fabrikgebäude im Wege stehen könnten, schnell zu bearbeiten.
+Nachdem Du mit der <link;workbench;Ingenieurswerkbank;start> ein Sägeblatt platziert und mit <link;refinery;Biodiesel;start> oder einem anderen Kraftstoff beladen hast, kannst Du alles von kleinen Birken bis zu großen Dschungelbäumen durchschneiden.
+
+Wie bei einigen anderen Tools kann die Buzzsaw in der <link;workbench;Ingenieurswerkbank> geändert werden. Diese Verbesserungen wirken sich auf die Größe des internen Tanks und die Haltbarkeit des Sägeblattes aus.
+<np>
+<&rockcutter_recipe>Durch Ersetzen des normalen Sägeblattes durch ein §2Steinsägeblatt§r kann die Kreissäge verwendet werden, um Steinblöcke sauber aus dem Boden zu schneiden, ähnlich wie bei der Verzauberung nach §2Silktouch§r. Die Klinge mit Diamantspitze eignet sich jedoch nicht mehr zum Schnitzen durch Holz oder zum Fällen von Bäumen.<np>
+<&tank_recipe>Der §2große Tank§r erhöht die Flüssigkeitskapazität der Kreissäge um 2000 mb.<np>
+<&lube_recipe>Das §2erweiterte Schmiersystem§r bringt zusätzliches Schmiermittel auf das Sägeblatt auf, wodurch die Geschwindigkeit verringert wird, mit der es an Haltbarkeit verliert.<np>
+<&quiver_recipe>Wenn Du den §2Klingenköcher§r an der Seite der Kreissäge anbringen, kannst Du zwei zusätzliche Sägeblätter mitnehmen. Du kannst zwischen den gespeicherten Blättern wechseln, indem Du <config;b;tools.chemthrower.scroll;sneaking and using the scrollwheel, or through use of;using> die Tastenkombination §l<keybind;key.immersiveengineering.chemthrowerSwitch>§r verwendest, falls dies in den Optionen eingestellt wurde. 

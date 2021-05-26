@@ -1,0 +1,9 @@
+Sägewerk
+???
+Das Sägewerk ist eine Maschinenbaugruppe, die Holzstämme in ordentlich gestapelte Bretter schneidet. Die Maschine arbeitet in zwei Schritten, indem zuerst die Rinde des Baumstamms abgezogen und dann mit einem <link;buzzsaw;Sägeblatt> der abgezogene Baumstamm auseinandergeschnitten wird.<np>
+<&sawdust>In beiden Schritten des Prozesses werden §2Sägespäne§r erstellt, die über den Anschluss an der Vorderseite der Maschine gesammelt und ausgegeben werden. Dieses Sägemehl kann später zu Papier verarbeitet werden.<np>
+Die Maschine wird wie auf der ersten Seite gezeigt gebaut und unter Verwendung eines §2Ingenieurshammer§r auf dem zentralen Blechblock geformt.
+Durch Anlegen eines Redstone-Signals an das Bedienfeld an der Vorderseite wird die Maschine angehalten. Dieses Verhalten kann mithilfe des §2Ingenieursschraubendrehers§r umgekehrt werden<np>
+Um vollständig für die Verarbeitung bereit zu sein, musst Du ein <link;buzzsaw;Sägeblatt> erstellen und durch Klicken mit der rechten Maustaste in den Schlitz auf der Rückseite einfügen. Schleiche und klicke mit der rechten Maustaste, um das Sägeblatt wieder herauszunehmen.
+Wenn Du Stämme ohne Sägeblatt durch die Maschine laufen lässt, werden §2gestreifte Stämme§r erstellt, die nicht auseinandergeschnitten werden. Dieser Vorgang ist viel schneller als das manuelle Entfernen.
+Das Sägeblatt wird während des Gebrauchs beschädigt und muss möglicherweise nach einer Weile ausgetauscht werden. 

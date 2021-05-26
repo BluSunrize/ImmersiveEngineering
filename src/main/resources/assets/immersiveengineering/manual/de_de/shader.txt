@@ -1,0 +1,8 @@
+Shaders
+Blau! Nein, gelb!
+Shader sind Gegenstände, die man auf der Welt finden oder durch den Handel mit Dorfbewohnern erwerben kann. Sie haben keinen eigenen Zweck, können aber mit <link;revolver;Revolver>, <link;mining_drill;Bohrmaschinen>, <link;chemthrower;Chemischen Werfern>, <link;shield;Überzogenen Schildern> oder <link;railgun;Railguns> ausgestattet werden, um das Design des Gegenstands zu ändern. Lege das Objekt einfach in eine <link;workbench;Ingenieurswerkbank> und statte den Shader im entsprechenden Steckplatz aus.
+Du kannst sie auch auf ein Minecart, ein Banner oder einen <link;balloon;Ballon> anwenden, indem Du mit der rechten Maustaste klickst!
+
+Eine vollständige Liste aller verfügbaren Shader, ihres Aussehens, ihrer Referenzen und weiterer Details findest Du unter <link;shader_list;diesem Link><np>
+<&grab_bag>Shader Wundertüten sind Gegenstände, die einen zufälligen Shader enthalten. Sie können in Kisten gefunden, von Dorfbewohnern gehandelt oder von Bossen fallen gelassen werden. Die Seltenheit des enthaltenen Shaders ist gleich oder besser als die Seltenheit der Tüte. Wenn Du eine Tüte verwendest, erhältst Du mit größerer Wahrscheinlichkeit einen Shader, den Du noch nicht besitzst, als einen, den Du bereits besitzst.
+Shader-Wundertüten können zu zwei Tüten einer niedrigeren Ebene verarbeitet werden. Dies verringert Deine Chancen, seltenere Shader zu erhalten, bietet Dir jedoch mehr Versuche. 

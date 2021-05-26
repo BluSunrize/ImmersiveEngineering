@@ -1,0 +1,5 @@
+Graphit
+Kohles Zeug
+Hochgeordneter pyrolytischer Graphit (HOP) ist ein komplexes, hochkomprimiertes Kohlenstoffmaterial, das in speziellen Konstruktionen verwendet wird.
+HOP Graphitstaub entsteht durch Komprimieren von acht Stücken Koksstaub in der <link;squeezer;Industriepresse>. Dieser Staub kann dann zu einem Barren geschmolzen werden.
+<&electrode>Die häufigste Verwendung für HOP-Graphit ist die Erstellung von Elektroden, die im <link;arc_furnace;Lichtbogenofen> verwendet werden sollen. Diese Elektroden werden mit einer <link;blueprints;Blaupause> erstellt, die Du in bestimmten Truhen finden oder mit einem Dorfbewohner tauschen kannst. Du kannst auch Elektroden in der Metallpresse erstellen, indem Du die Stabform auf 4 Barren verwendest. Die auf diese Weise hergestellten Elektroden sind jedoch weniger haltbar. 

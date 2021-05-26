@@ -1,0 +1,6 @@
+Industriepresse
+Drückende Angelegenheiten
+Die Industriepresse ist eine Multiblock-Struktur, die mithilfe eines großen Kolbens Saft oder Öl aus organischen Materialien drückt. Die Struktur wird wie oben gezeigt aufgebaut und unter Verwendung des Ingenieurshammers auf dem zentralen Holzfass von der Seite mit den Konstruktionsblöcken geformt.
+Gegenstände können über die beiden mit blauen Punkten markierten Luken auf der Rückseite in die Industriepresse eingegeben werden. Die Schraffur mit dem orangefarbenen Punkt dient als Ausgabe von Gegenständen und der Block darunter zur Ausgabe von Flüssigkeiten.
+Durch Anlegen eines Redstone-Signals an das Bedienfeld an der Vorderseite wird der Prozess der Maschine angehalten. Dieses Verhalten kann mithilfe des Ingenieurshammers umgekehrt werden.
+<np>Die folgende Liste zeigt verschiedene Elemente, die in Pflanzenöl gepresst werden können, und die Menge, die sie produzieren.<&list>
