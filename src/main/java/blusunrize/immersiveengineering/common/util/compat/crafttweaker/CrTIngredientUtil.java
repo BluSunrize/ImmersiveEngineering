@@ -17,6 +17,7 @@ import com.blamejared.crafttweaker.impl.ingredients.IngredientWithAmount;
 import com.blamejared.crafttweaker.impl.item.MCWeightedItemStack;
 import com.blamejared.crafttweaker.impl.tag.MCTag;
 import com.blamejared.crafttweaker.impl.tag.MCTagWithAmount;
+import com.google.common.base.Preconditions;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
@@ -77,6 +78,7 @@ public class CrTIngredientUtil
 	{
 		//noinspection unchecked
 		final ITag<Fluid> internal = (ITag<Fluid>)tag.getInternal();
+		Preconditions.checkNotNull(internal, "Invalid fluid tag used for recipe: "+tag.toString());
 		return new FluidTagInput(internal, amount, null);
 	}
 
@@ -87,6 +89,7 @@ public class CrTIngredientUtil
 	{
 		//noinspection unchecked
 		final ITag<Fluid> internal = (ITag<Fluid>)tag.getTag().getInternal();
+		Preconditions.checkNotNull(internal, "Invalid fluid tag used for recipe: "+tag.toString());
 		return new FluidTagInput(internal, tag.getAmount(), null);
 	}
 }
