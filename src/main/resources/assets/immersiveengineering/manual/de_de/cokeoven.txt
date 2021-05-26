@@ -1,0 +1,4 @@
+Koksofen
+Heißes Thema!
+<&recipe>Der Koksofen ist die erste wichtige Maschine, die Du erstellen musst, um mit Immersive Engineering fortzufahren. Seine Funktionalität ist einfach, er erwärmt Kohle oder Kohleblöcke, ohne sie mit Sauerstoff zu versorgen, wodurch Kokskohle entsteht, ein kohlenstoffreicher Brennstoff. Noch wichtiger ist, dass bei diesem Verfahren §lKreosotöl§r entsteht, das als <link;treated_wood;Schutzmittel für Holz> verwendet wird. In ähnlicher Weise kannst Du mit diesem Ofen auch Holzstämme zu Holzkohle verbrennen, wenn auch mit einer geringeren Ausbeute an Kreosot. <&multiblock> Um einen Koksofen zu bilden, ordne 27 dieser Blöcke in einem 3x3x3-Würfel an und klicke mit einem Ingenieurshammer mit der rechten Maustaste auf einen der mittleren Blöcke der Seiten.
+Auf der folgenden Seite findest Du ein Diagramm. 

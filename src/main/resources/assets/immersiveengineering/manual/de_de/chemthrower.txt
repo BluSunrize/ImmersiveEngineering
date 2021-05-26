@@ -1,0 +1,10 @@
+Chemischer Werfer
+VERBRENNE ALLE DINGE!
+Der chemische Werfer ist ein Gerät, das Flüssigkeiten aus seinem Innentank befördert. Das Gerät kann mit jeder Flüssigkeit oder jedem Gas beladen werden und sprüht es mit der rechten Maustaste heraus.
+Es verfügt auch über eine Funktion zum Zünden der Flüssigkeit, wenn diese entflammbar ist. Um das Pilotlicht umzuschalten, schleiche und klicke mit der rechten Maustaste.
+Wie bei einigen anderen Werkzeugen kann der Chechemische Werfer in der <link;workbench;Ingenieurswerkbank> geändert werden. Diese Upgrades wirken sich auf die Größe des Tanks, die Reichweite und die Ausbreitung aus.
+
+<&large>The §2große Tank§r erhöht die Flüssigkeitskapazität des chemischen Werfers um 2000 mb.
+<&focus>Die §2Fokusdüse§r verringert die Ausbreitung von herausgesprühten Flüssigkeiten und erhöht deren Reichweite geringfügig, sodass Du weitere Ziele präziser treffen kannst.
+<&multi>Mit dem §2Multitank§r kann der Chemthrower bis zu drei verschiedene Flüssigkeiten speichern. Du kannst den aktiven Tank auswählen, indem Du <config;b;tools.chemthrower.scroll;sneaking and using the scrollwheel, or through use of;using> die Tastenkombination §l §l<keybind;key.immersiveengineering.chemthrowerSwitch>§r verwenden, falls dies in den Optionen eingestellt wurde.
+Dieses Upgrade schließt sich gegenseitig für den §2großen Tank§r aus. 

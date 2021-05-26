@@ -1,0 +1,15 @@
+Geschützturme
+Bist du noch da?
+Übersetzungsergebnisse
+Geschützturme sind der nächste Schritt ist die automatisierte Verteidigung Deiner Fabrik. Sie verfügen über ein komplexes optisches System in Kombination mit einem mechanischen "Gehirn", um Ziele effektiv zu unterscheiden und zu erfassen und sie mithilfe der eingebauten Waffen zu neutralisieren.
+Alle Türme verfügen an ihrer Basis über Energieanschlüsse und erfordern ein Redstone-Signal, um aktiv zu sein. Dieses Verhalten kann jedoch durch Schleichen und Klicken mit der rechten Maustaste mit einem Ingenieursschraubendreher umgekehrt werden.<np>
+Nach dem Platzieren werden sich die Türme an ihren Besitzer erinnern und anderen Benutzern nicht erlauben, sie zu brechen oder zu ändern. Wenn Du mit der rechten Maustaste auf den Turm klickst, wird die GUI mit einer Liste von Namen mit einem Eingabefeld sowie mehreren Ausrichtungsoptionen angezeigt.
+Standardmäßig ist die Liste eine schwarze Liste von Zielen, die möglicherweise nicht angegriffen werden. Diese Liste verwendet Kreaturennamen, sodass Tiere auf die Whitelist gesetzt werden können.<np>
+<&turret_chemthrower_recipe>Der Chemiewerferturm nutzt die Flüssigkeitsantriebsfähigkeiten des <link;chemthrower;gleichnamigen Werkzeugs;start>, um Ziele in allen Bereichen abzudecken, von Wasser über das Löschen von Flammen bis hin zu Dieselöl, um sie zu starten.<np>
+Dieser Turm verfügt über einen Flüssigkeitsanschluss am Boden und auf der Rückseite der Basis, damit Rohre daran angeschlossen werden können. Zusätzlich verfügt die GUI auf der linken Seite über eine Taste, die die Zündflamme deaktiviert oder aktiviert und die abgegebene Flüssigkeit entzündet, sofern sie entflammbar ist.
+
+§oDie Anbieter dieser Blaupause haften nicht für Schäden an Benutzern, Nachbarn oder verschiedenen Nutztieren, die entstehen können.§r<np>
+<&turret_gun_recipe>Der Revolverturm verfügt über eine stark modifizierte Version des <link;revolver;Revolvers;start> in einem weitaus größeren und imposanteren Gehäuse. Die Konstruktion beinhaltet auch ein erweitertes Magazin, um eine erhöhte interne Lagerung von Munition zu ermöglichen.<np>
+Ein Anschluss zum automatischen Einsetzen von Munition und zum Herausziehen verbrauchter Hüllen befindet sich hinten und unten an der Basis. Dieser Turm kann bis zu einem Stapel Patronen speichern, und die GUI verfügt über eine Schaltfläche zum Umschalten des automatischen Ausstoßes verbrauchter Hüllen.
+
+§oBeachten, dass bestimmte Munition dem Benutzer oder seinem Eigentum Kollateralschäden zufügen kann.§r

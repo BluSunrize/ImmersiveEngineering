@@ -1,0 +1,5 @@
+Silo
+Randvoll!
+Silos bieten Platz für viele Gegenstände des gleichen Typs und eignen sich daher hervorragend für die Massenlagerung von Samen, Schlacke oder Kopfsteinpflaster. Sie bieten Platz für 41472 Gegenstände, was einer Kapazität von 24 Truhen entspricht.
+Gegenstände müssen von oben eingegeben und von unten extrahiert werden. Durch Anlegen eines Redstone-Signals an den unteren Block werden diese automatisch ausgegeben.
+Ein am unteren Mittelblock angebrachter Komparator sendet ein Redstone-Signal aus, das proportional zur Füllung des Silos ist. Das Anbringen des Komparators an einer der oberen 6 Schichten führt zu einem Signal, das proportional zur Höhe des Komparators ist. Zum Beispiel würde ein Komparator, der an der dritten Schicht eines Silos angebracht ist, kein Signal aussenden, bis der Tank 2/6 voll ist und eine Signalstärke von 15 hat, wenn das Silo halb voll oder mehr ist. 

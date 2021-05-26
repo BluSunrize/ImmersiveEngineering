@@ -1,0 +1,5 @@
+Ladestation
+Lade deine Sicht!
+<&recipe>Die Ladestation ist ein Gerät, mit dem Du Werkzeuge und andere Gegenstände aufladen kannst.
+Energie kann über den Boden oder die Rückseite eingegeben werden und Gegenstände können manuell eingelegt oder automatisch eingefügt werden.<np>
+Die Elektronenröhren an der Vorderseite geben eine Rückmeldung über die aktuelle Ladung des Gegenstands, der Block gibt für die gleichen Zwecke auch ein Komparatorsignal aus. 

@@ -1,0 +1,6 @@
+Schweres Schild
+Ein-Mann-Phalanx
+<&recipe>Der schwere Schild ist ein direktes Upgrade der normalen Holzschilde, mit denen Du möglicherweise vertraut bist. In ähnlicher Weise blockiert dieser Schild die meisten von vorne eintreffenden Schäden, aber seine Haltbarkeit wurde erheblich erhöht und kann verbessert werden.<np>
+<&flashbulb>Das Upgrade der §2Blitzlichtbirne§r fügt dem Schild eine helle Glühbirne und einen Reflektorschirm hinzu. Bei einem Angriff erzeugt das Gerät einen hellen, blendenden Blitz, der alle vor dem Benutzer desorientiert.<np>
+<&electric>Wenn Du dem Schild §2Schockstrahler§r hinzufügst, kannst Du dich an angreifenden Feinden rächen. Wenn der Schild getroffen wird, gibt er einen Schock ab und fügt dem Angreifer geringen Schaden zu. Außerdem werden Projektile verdampft, anstatt sie nur anzuhalten.<np>
+<&magnetic>Der §2Magnethandschuh§r dient als einfacher Weg, um bei Bedrohung auf den Schild zuzugreifen. Wenn Du mit diesem Upgrade ausgestattet bist, tippe einfach zweimal auf die §l<keybind;key.immersiveengineering.magnetEquip>§r Taste, um den Schild aus Deinem Inventar zu holen und in Deine Nebenhand zu legen. 

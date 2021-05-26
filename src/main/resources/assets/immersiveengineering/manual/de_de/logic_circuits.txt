@@ -1,0 +1,17 @@
+Logikschaltungen
+Turing abgeschlossen
+Mit der hohen Geschwindigkeit und Vielseitigkeit von <link;redstone_wire;Redstonekabeln> und den einzigartigen Eigenschaften eines <link;components;Vakuumrohrs;tubes> ist es jetzt möglich, den Platzbedarf komplexer Redstone-Schaltkreise erheblich zu reduzieren.
+Mit der Schaltungstabelle können Sie viel kleinere Logikschaltungen erstellen. Dazu benötigst Du eine <link;components;backplane;pcb>, einige Vakuumröhren und einige Lötmittel wie Blei oder Kupferdrähte. Der Tisch muss auch über den Eingang auf der Rückseite mit Energie versorgt werden.
+
+Mit den verschiedenen Komponenten wählst Du dann das Schaltungsmuster aus, das Du erstellen möchtest, und bestimmst die Eingangswerte sowie den festgelegten Ausgang.
+Die verfügbaren Ein- und Ausgänge sind die 16 farbigen Kanäle eines Redstone-Kabels sowie 8 "Register". Diese ermöglichen die temporäre Speicherung eines Werts innerhalb des Blocks, der die Logik verarbeitet - dazu später mehr.
+
+Nach dem Einstellen des Operators, der Ein- und Ausgänge siehst Du links neben den Eingangssteckplätzen die erforderliche Liste der Komponenten. Die Anzahl der erforderlichen Komponenten hängt von der Komplexität der Schaltung ab, wobei §lNAND§r am einfachsten herzustellen ist. Solange genügend Komponenten vorhanden sind, kannst Du die fertige Schaltung vom Ausgang rechts nehmen.<np>
+Hilfreiche Shortcuts:
+- Wenn Du mit der Maus über eine Ein- oder Ausgabetaste fährst, drücke eine nummerierte Taste, um sie in das nummerierte Register zu ändern. Drücke einen Buchstaben, um durch die Farben zu blättern, die mit diesem Buchstaben beginnen.
+- Nimm eine fertige Logikschaltung und klicke in der Mitte der Schnittstelle der Schaltungstabelle darauf, um die Anweisungen in die Tabelle zu kopieren.<np>
+<&unit>Die Logikeinheit ist der Block, in dem abgeschlossene Logikschaltungen zur Verwendung geschlitzt sind. Er bietet ausreichend Platz für insgesamt §210 Schaltkreise§r und verfügt über ein vollständiges eingebautes §28Register§r, sodass es für jeden Schaltkreis verwendet werden kann.
+Damit eine Logikeinheit mit den farbigen Redstone-Systemen verbunden werden kann, muss an ihrer Seite ein <link;redstone_wire;Redstone-Schnittstellenanschluss;bundled> angebracht sein.
+Jedes Mal, wenn einer der angeschlossenen Steckverbinder seinen Zustand ändert, durchläuft die Logikeinheit ihre Schaltkreise und führt alle 10 Operationen aus.
+Wenn eine Schaltung ein Register als Ausgang verwendet, wird der resultierende Wert im Register gespeichert und kann von einer späteren Schaltung als Eingang verwendet werden.
+Der gleiche Schnittstellenanschluss, der für die Eingabe verwendet wird, kann auch als Ausgabe verwendet werden. 

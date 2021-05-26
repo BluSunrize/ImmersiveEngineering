@@ -1,0 +1,7 @@
+Metallpresse
+Unter Druck!
+<&multiblock>Die Metallpresse ist eine automatisierte Formgebung für Metall. Es verwendet einen Hochdruckkolben, um eine Form auf einen Block zu drücken und daraus eine Platte, eine Stange oder andere Metallkomponenten zu formen.
+Die Struktur wird wie oben gezeigt erstellt. Um den Multiblock zu bilden, klicke mit einem Ingenieurshammer auf den Kolben. Die Kraftübertragung erfolgt über die Oberseite und die Gegenstände über die Förderbänder, offensichtlich in Bewegungsrichtung. Der untere mittlere Block ist der Redstone-Steuerungsport. Wenn Du mit einem Ingenieurshammer mit der rechten Maustaste darauf klickst, kannst Du die Redstone-Steuerung umkehren.<np>
+<&mold_blueprint>Um tatsächlich arbeiten zu können, muss für die Metallpresse eine Form am Kolben angebracht werden. Diese Formen werden in der <link;workbench;§o§nIngenieurswerkbank§r> unter Verwendung der oben angezeigten Blaupause erstellt.<np>
+<&mold_recipes>Formen werden wie oben gezeigt hergestellt, wobei der Kabelschneider bei jedem Herstellungsvorgang einige Schäden erleidet. Sie werden dann in die Metallpresse eingeführt, indem Du mit der rechten Maustaste auf den Multiblock mit einer Form in der Hand klickst.<np>
+<&packing>Mit den Verpackungs- und Auspackformen können 4 oder 9 desselben Elements in die entsprechende Aufbewahrungsform komprimiert und erneut ausgepackt werden. Dies kann verwendet werden, um Barren als Blöcke zu speichern oder um automatisch einfache Blöcke wie Sandstein zu erstellen. 

@@ -1,0 +1,7 @@
+Ohrschützer
+LAUTE GERÄUSCHE!
+<&recipe>Ohrenschützer sind Geräte zum Schutz des Gehörs. Sie sind sehr wichtig für Ingenieure, die in unmittelbarer Nähe von <link;diesel_generator;Dieselgeneratoren;> oder anderen lauten Maschinen arbeiten.
+Während Du Ohrschützer trägst, werden alle Geräusche um 90% reduziert und Deine Ohren werden wesentlich warmer und verschwommener! :D
+<&color_and_armor>Wenn Du die Ohrschützer in die <link;workbench;Ingenieurswerkbank;> einfügst, kannst Du angeben, welche Arten von Geräuschen gelöscht werden sollen und um wie viel deren Lautstärke reduziert werden soll.
+Du kannst sie färben, als würdest Du Lederrüstungen verwenden.
+Wenn Du sie mit einem anderen Helm herstellst, werden die Verteidiger an diesem Gerät befestigt. Wenn Du nur den Helm herstellst, werden die Verteidiger wieder entfernt, um weitere Anpassungen zu ermöglichen. 

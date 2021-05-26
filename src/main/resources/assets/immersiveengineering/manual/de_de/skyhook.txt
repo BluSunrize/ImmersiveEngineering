@@ -1,0 +1,8 @@
+Ingenieursskyhook
+Booker, fang!
+Der Ingenieursskyhook ist ein motorisiertes Greifersystem zum Einhängen in Drähte, Hanfseile oder Stahlkabel.
+Damit können Ingenieure schnell die Länge einer Stromleitung überqueren, um zwischen Umspannwerken oder anderen Installationen zu wechseln. Halte einfach die rechte Maustaste gedrückt, während Du dich in der Nähe eines Kabels befinden, und Du wirst daran befestigt.
+Der Knopf kann während der Fahrt losgelassen werden. Wenn Du jedoch den Skyhook loslässt oder schleichst, steigst Du ab.
+
+Die Schwerkraft reicht aus, um sich mit einer angemessenen Geschwindigkeit entlang absteigender Drähte zu bewegen. Die Standardbewegungstasten können verwendet werden, um sich entlang aufsteigender Drähte zu bewegen.
+Wenn der Skyhook eine Kreuzung erreicht, fährt er so nah wie möglich in der Richtung fort, in die der Spieler schaut. 

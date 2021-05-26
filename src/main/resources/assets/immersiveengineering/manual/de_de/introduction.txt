@@ -1,0 +1,8 @@
+Einführung
+Einstieg in die Technik
+Grüße, Ingenieurkollege und willkommen bei Immersive Engineering. Dieses Tagebuch soll als Leitfaden für die Einrichtung aller neuen Maschinen und Funktionen dienen, die dieser Mod zu bieten hat.
+Beginnen wir zunächst mit den Grundlagen: Immersive Engineering basiert auf dem Konzept der retrofuturistischen Erzeugung und Übertragung von Energie. Die Energie, die in diesem Mod verwendet wird, ist Forge Energy, eine Eigenschaft, die mit vielen anderen derzeit verfügbaren Mods geteilt wird.
+Die Energieübertragung zwischen §lAnschlüssen§r erfolgt durch Verwendung von §lKabeln§r. Kabel können nur einen begrenzten Abstand von Blöcken überbrücken, daher musst mehr Stecker als §lRelais§r zwischen den Kabeln verwenden.
+Du hast die Wahl zwischen drei verschiedenen Kabeltypen, die sich in den Übertragungsraten unterscheiden: <config;iA;wires.wireTransferRate;l3> Flux/tick. Um zwischen verschiedenen Kabeltypen zu wechseln, musst Du §lTrafos§r verwenden.
+<&hammer>Der Ingenieurshammer ist das wichtigste Werkzeug, das Dir zur Verfügung steht. Es wird verwendet, um Multiblöcke wie den Koksofen und den Hochofen zu formen, Erze zu Staub zu zerkleinern oder Blöcke wie Holzpfosten zu konfigurieren.
+<&screwdriver>Der Ingenieursschraubendreher ist ein weiterer häufiger Gegenstände in Deiner Werkzeugkiste, den Du für die genaue Konfiguration bestimmter Maschinenteile benötigst. 

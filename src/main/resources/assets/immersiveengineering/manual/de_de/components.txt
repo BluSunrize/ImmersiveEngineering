@@ -1,0 +1,7 @@
+Komponenten herstellen
+Integrale Stücke
+Viele Maschinen und Werkzeuge bestehen aus verschiedenen Unterkomponenten. Einige davon musst Du regelmäßig verwenden, weshalb sie einen eigenen Eintrag in diesem Handbuch haben. Die mechanischen Komponenten aus §2Eisen§r und §2Stahl§§r sind ein wesentlicher Bestandteil der Mehrzahl der Multiblocks und Maschinen.<np>
+<&create_bp>Da Du diese Komponenten häufiger erstellst, kann es ratsam sein, eine <link;blueprints;Blaupause> für sie zu erstellen.
+<&mech_components> Wenn Du diese Blaupause in einer <link;workbench;Ingenieurswerkbank> verwendest, kannst Du die Komponenten zu reduzierten Kosten erstellen.
+<&tube>Eine weitere, wenn auch weniger häufig verwendete Komponente sind §2Vakuumröhren§r. Diese Glasröhren werden als Elemente in elektronischen Maschinen verwendet und in <link;lighting;Licht emittierenden Geräten>.<np>
+<&pcb>Eine selten verwendete, aber entscheidende Komponente ist die §2Rückwandplatine§r. Auf diese isolierte Kupferplatte sind verschiedene Komponenten gelötet, um <link;logic_circuits;Logische Schaltungen> zu erstellen, oder sie dient als Komponente in "intelligenten" Geräten. 

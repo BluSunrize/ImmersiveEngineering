@@ -1,0 +1,6 @@
+Kondensatorrucksack
+Do....Ray....Egon!
+Energiespeicher benötigen Platz und einige schwere Komponenten. Daher ist es ineffizient, große Energiemengen in jedem Werkzeug einzeln zu speichern, wodurch sie schwieriger zu nutzen sind.
+Der Kondensatorrucksack stellt einen Kompromiss dar und bietet eine zentrale Energiespeicherung für alle angetriebenen Werkzeuge.
+Der Rucksack lädt alle Werkzeuge auf, die in der Haupt- oder Nebenhand gehalten werden, sowie die Ausrüstung, die Du trägst.
+Der Kondensator kann wie ein Brustpanzer auf dem Rücken getragen werden, oder Du kannst ihn an den gängigsten Rüstungssätzen befestigen, um die Vorteile einer Stromversorgung und eines Schutzes zu nutzen. 

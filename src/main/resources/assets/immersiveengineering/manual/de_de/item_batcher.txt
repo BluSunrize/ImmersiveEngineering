@@ -1,0 +1,7 @@
+Element Batcher
+Komm jetzt zusammen
+<&recipe>Der Element Batcher dient zum Sammeln einer Reihe von Elementen von einem Eingabeförderer, bevor diese weitergeleitet werden, um optimierte Chargengrößen auf Maschinen zu übertragen.<np>
+Platziere den Block und öffne seine Schnittstelle, um verschiedene Filter einzustellen. Alle eingehenden Elemente werden in die Steckplätze direkt unter den Filtern aufgenommen, und die gesammelte Charge wird nur ausgegeben, wenn alle Filter erfüllt sind.
+Dieses Verhalten kann mit der Schaltfläche "Ausgabemodus" eingestellt werden. Das oben angegebene Standardverhalten ist als  §2batched mode§r bekannt. Im §2Einzelmodus§r wird stattdessen jeder Artikel ausgegeben, der seine gefilterte Menge erfüllt.<np>
+Mit den 9 Schaltflächen unter dem Puffer kannst Du zwischen den Farben von <link;redstone_wire;Redstonekabeln> wechseln. Durch Anschließen eines <link;redstone_wire;Redstone-Schnittstellenanschlusses;bundled> sendet der Element Batcher Signale entlang der Redstone-Kabel, wenn ein Filter erfüllt ist.
+Auf diese Weise kannst Du alle Förderbänder oder Produktionsmaschinen deaktivieren, wenn die erforderliche Menge an Elementen erreicht ist. Beachte, dass mehrere Filter, die dieselbe Farbe verwenden, alle erfüllt sein müssen, damit ein Signal gesendet werden kann. 

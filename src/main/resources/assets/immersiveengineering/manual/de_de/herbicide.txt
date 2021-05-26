@@ -1,0 +1,6 @@
+Herbizid
+Eine Plage auf der Flora
+<&items>Herbizid ist eine chemische Verbindung mit ziemlich giftigen Auswirkungen auf die lokale Pflanzenwelt.<br>
+Wenn es in einen <link;chemthrower;Chemischen Werfer> geladen wird, wird es als feiner Nebel dispergiert, der alle Pflanzen verdorrt und zerstört, mit denen er in Kontakt kommt.
+Die Flüssigkeit entfernt Blätter von Bäumen, zerstört Blumen, Büsche und Feldfrüchte und entfernt das Gras vom Schmutz. Sie wird auch Ackerland dehydrieren und ruinieren.<br>
+Um Herbizid herzustellen, mische einen halben Eimer <link;fermenter;Ethanol> mit §2Kupferstaub§r und §2Nitratstaub§r im <link;mixer;Mischer>.

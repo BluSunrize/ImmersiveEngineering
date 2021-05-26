@@ -1,0 +1,15 @@
+Lichtbogenofen
+Kein Reaktor
+Der Lichtbogenofen ist eine massive Struktur, mit der Metalle schnell geschmolzen werden. Er besteht aus einem Stahlbehälter mit Elektroden, die das Metall erwärmen.
+Der Ofen eignet sich hervorragend zum Schmelzen von Erzen und zur Erzeugung von Stahl aufgrund seiner hohen Geschwindigkeit und seiner Fähigkeit, mehrere Gegenstände gleichzeitig zu verarbeiten. Er ist jedoch auch in seiner Arbeitsweise komplex und muss gewartet werden, um weiter funktionieren zu können.
+Die Schlacke muss aus der Maschine entfernt werden, da sie sonst nicht mehr funktioniert und die Elektroden müssen im Laufe der Zeit ausgetauscht werden.
+Um die Struktur zu formen, baue sie wie auf der ersten Seite gezeigt zusammen und klicke dann mit einem Ingenieurshammer auf den Kessel.
+Die Energiezufuhr erfolgt über die drei Anschlüsse an der Rückseite. Wenn Du das Bedienfeld an der Vorderseite mit einem Redstone-Signal versorgst, wird die Maschine ausgeschaltet. Wenn Du mit der rechten Maustaste auf das Bedienfeld, den Eimer oder die Wanne klickst, wird die Benutzeroberfläche geöffnet.<np>
+§lInterface:§r
+Die Benutzeroberfläche mag auf den ersten Blick verwirrend aussehen, ist aber recht einfach. 
+
+Die drei Slots oben sind für die <link;graphite;Graphitelektroden;electrode>.
+Die zwölf Slots links sind die Inputslots für Metalle und Erze. Neben jedem Slot befindet sich ein Temperaturbalken, der den Fortschritt des Schmelzens darstellt.
+Die vier Slots auf der rechten Seite sind für "Additive", verschiedene Materialien, die der Metallschmelze während des Herstellungsprozesses zugesetzt werden. Ein Beispiel hierfür wäre das Hinzufügen von Koksstaub zum Schmelzen von Eisen, um Stahl zu erzeugen.
+Inputs und Additive werden durch die beiden Schraffuren oben in der Struktur eingefügt, Inputs links und Additive rechts von den Elektroden.
+Die sieben Slots unten sind sechs Outputslots und ein Slot für Schlacke. Die Outputs werden aus dem "Eimer" an der Vorderseite der Struktur abgerufen und durch den Anschluss an der Rückseite der Maschine geschlackt. Der Lichtbogenofen schiebt den Output und die Schlacke automatisch in die angeschlossenen Lagerbestände (einschließlich Förderbänder).

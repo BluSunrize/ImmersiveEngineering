@@ -1,0 +1,7 @@
+Drehscheibe
+Ich kann nicht mithalten
+<&recipe>Die Drehscheibe dreht die darauf platzierten Blöcke.
+Wenn Du den Ingenieurshammer hältst, während Du auf eine Seite der Maschine schaust, werden die Drehseite und die Drehrichtung der Zielseite angezeigt.
+Die Drehrichtung wird für jede der 4 Seiten um die Drehachse individuell eingestellt, sodass je nach Seite, die das Redstone-Signal empfängt, um ±90° oder 180° gedreht werden können.
+
+Wenn Du mit dem Hammer nach rechtsklickst, wird er neu ausgerichtet. Wenn Du dabei schleichst, wirst Du durch die Drehrichtungen der Drehscheibe iterieren. 

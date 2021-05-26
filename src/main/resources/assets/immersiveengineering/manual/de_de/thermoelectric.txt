@@ -1,0 +1,5 @@
+Thermoelektrischer Generator
+Heiß und kalt
+<&recipe>Thermoelektrische Generatoren sind eine weitere Option zur Stromerzeugung und arbeiten ohne die Verwendung mechanischer Teile. Stattdessen verwenden sie die Temperaturgradienten zwischen zwei Quellen.
+Wenn eine heiße Flüssigkeit auf einer Seite und eine kältere Flüssigkeit auf der gegenüberliegenden Seite platziert werden, wird Energie basierend auf der Differenz zwischen den beiden Temperaturen erzeugt.
+<&values>Die folgende Liste enthält andere, nicht flüssige Blöcke, die als Temperaturquellen verwendet werden können. 

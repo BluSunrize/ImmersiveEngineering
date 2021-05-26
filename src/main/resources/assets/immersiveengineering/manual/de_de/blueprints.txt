@@ -1,0 +1,3 @@
+Ingenieursblaupausen
+Zurück zum Zeichenbrett
+Diese Seite enthält alle Ingenieursblaupausen, die mit normalen Mitteln erstellt werden können. Andere Blaupausen müssen möglicherweise von Dorfbewohnern erworben oder auf der Welt gefunden werden. All dies kann in einer <link;workbench;Ingenieurswerkbank> verwendet werden, um die von ihnen beschriebenen Gegenstände herzustellen. 

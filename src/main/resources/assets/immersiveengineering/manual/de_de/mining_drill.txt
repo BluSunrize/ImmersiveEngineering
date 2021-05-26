@@ -1,0 +1,8 @@
+Bergbaubohrmaschine
+Mein Bohrer wird das Grundgestein durchbohren!
+<&drill_base_recipes>Die handgehaltene, dieselbetriebene Bohrmaschine ist ein großer Fortschritt im Bergbau. Mit austauschbaren Bohrköpfen und Upgrades können die Eigenschaften fast vollständig geändert werden. Um es zu ändern, platziere es in einer <link;workbench;Ingenieurswerkbank;start>. Der Bohrer läuft mit <link;refinery;Biodiesel;start> ab und kann direkt in der Raffinerie gefüllt werden.<np>
+<&drill_head_recipes> Der §2Bohrkopf§r bestimmt Basis-§2Mining-Level§r, §2-geschwindigkeit§r und §2-größe§r sowie den §2Angriffsschaden§r. Wenn Du Blöcke graben, wird der Bohrkopf beschädigt, kann jedoch in einem Amboss repariert werden.<np>
+<&drill_waterproof_recipe>Da der Bohrer von einem Verbrennungsmotor angetrieben wird, läuft er nicht unter Wasser, es sei denn, Du stattest ihn mit dem §2Drucklufttank§r-Upgrade aus. Mit diesem Upgrade läuft er jedoch nicht nur unter Wasser, sondern ignoriert auch die Verlangsamung, die normalerweise beim Graben in Wasser auftritt.<np>
+<&drill_lube_recipe>Das §2erweiterte Schmiersystem§r trägt regelmäßig zusätzliches Schmiermittel auf den Bohrer, wodurch der Haltbarkeitsverlust des Bohrkopfs verringert wird.<np>
+<&drill_damage_recipe>Durch Hinzufügen von §2zusätzlichen Bohrern§r zur Maschine wird ihr Zerstörungspotential erhöht, wodurch der Schaden gegen Lebewesen erhöht wird und sie schneller laufen und graben kann. Das Upgrade kann bis zu dreimal gestapelt werden.<np>
+<&drill_capacity_recipe>Mit dem §2großen Benzintank§r kann der Bohrer mehr Kraftstoff intern speichern kann und so die Nutzungszeit verlängert.

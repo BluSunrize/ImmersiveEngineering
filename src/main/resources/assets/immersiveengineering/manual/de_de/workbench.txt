@@ -1,0 +1,6 @@
+Werkbank & Blaupausen
+Immer überladen
+Die Ingenieurswerkbank ist ein professioneller Arbeitstisch für den ausgebildeten Ingenieur. Sie wird häufig verwendet, um die unter <link;blueprints;Ingenieursblaupause> beschriebenen Gegenstände zu erstellen.
+Eine Vielzahl von Bauplänen kann hergestellt werden, wie im jeweiligen manuellen Eintrag beschrieben, während einige ausgewählte nur auf der Welt entdeckt oder von Dorfbewohnern gekauft werden können.
+Um eine Blaupause in der Werkbank zu verwenden, setze sie in den Schlitz links von der GUI und die erforderlichen Zutaten in die sechs Schlitze in der Mitte. Die resultierenden Gegenstände können dann von der rechten Seite abgerufen werden. Wenn Du mit der Maus über diese Ausgabeschlitze fährst, erfährst Du genau, welche Materialien für die einzelnen Gegenstände benötigt werden.<np>
+Eine sekundäre Funktion der Werkbank ist das Ändern und Konfigurieren komplexerer Tools und Gadgets. Beispiele hierfür sind <link;mining_drill;Bergbaubohrmaschinen>, <link;shield;Schwer überzogene Schilder> oder <link;revolver;Revolver>. Wenn sie im Hauptsteckplatz der Workbench platziert werden, werden diese Tools verändert, indem entsprechende Upgrades in die neuen angezeigten Steckplätze eingefügt werden.

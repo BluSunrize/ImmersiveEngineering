@@ -1,0 +1,4 @@
+Legierungsofen
+Metalle mischen
+<&recipe>Der Legierungsofen ist ein einfacher Ofen aus hitzebeständigem Sandstein und Ziegeln. Darin sind die Temperaturen hoch genug, um Metalle in einen flüssigen Zustand zu schmelzen und zu mischen, wodurch eine <link;alloys;Legierung> entsteht.
+Dies ermöglicht die Herstellung wichtiger Legierungen wie Electrum und Constantan, ohne dass mühsame Stäube gemischt werden müssen. <&multiblock>Um den Ofen zu formen, ordne 8 der Ofensteine wie oben gezeigt in einem 2x2x2-Würfel an und klicke mit einem Ingenieurshammer mit der rechten Maustaste auf einen der Seitenblöcke. 

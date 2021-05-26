@@ -1,0 +1,22 @@
+Redstonekabel
+Integrationsübernahme
+<&coil>§2Redstonekabel§r sind mit Redstone-Staub beschichtetes Aluminium. Die resultierenden Kabel bieten eine einfache Möglichkeit, Redstone-Signale über große Entfernungen zu übertragen, ohne an Signalstärke zu verlieren.<&connector>Die §2Kabelverbinder§r funktionieren wie alle anderen Kabelverbinder, wenn sie verbunden werden. Für die Redstone-Verkabelung sind jedoch keine Relais erforderlich. Stecker und Relais sind der gleiche Block.
+Mit dem Ingenieursschraubendreher können die Anschlüsse zwischen Ein- und Ausgangsmodus konfiguriert und auf eine von 16 Farbfrequenzen eingestellt werden.
+<&probe>§2Redstone-Sondenanschlüsse§r haben eine Funktionalität, die teilweise mit Komparatoren vergleichbar ist. Während sie nicht in der Lage sind, Signale aktiv zu vergleichen, können sie Inventare lesen, um festzustellen, wie voll sie sind. Zusätzlich können diese Sonden auf zwei Kanälen arbeiten, wobei sie ihr Lesesignal auf einem senden und weiterhin Signale auf einem anderen empfangen. Diese Kanäle können auch mit dem Ingenieursschraubendreher konfiguriert werden.
+
+Beachte, dass viele der Multiblocks des IE über eine Komparatorfunktion verfügen, wie auf den folgenden Seiten beschrieben. Sofern verfügbar, ist die Redstone-Steuerfläche des Multiblocks der vorgesehene Punkt zum Anschließen eines Komparators.<np>
+§lTank: §rAs wie in seinem <link;tank;manuellen Eintrag> beschrieben.
+§lSilo: §rAs wie in seinem <link;silo;manuellen Eintrag> beschrieben.
+§lMonteur: §rGibt ein Signal relativ zur Füllung des Inventars aus.
+§lAutomatische Werkbank: §rGibt ein Signal relativ zur Füllung des Inventars aus.
+§lZerkleinerer: §rGibt ein Signal relativ zur Füllung des Inventars aus.
+§lIndustriepresse: §rGibt ein Signal relativ zur Füllung des Inventars aus.
+§lFermenter: §rGibt ein Signal relativ zur Füllung des Inventars aus.
+§lBagger: §rOutputs a signal relative to the remaining ore in the vein.
+§lLichtbogenofen: §rGibt ein Signal relativ zur Füllung des Inventars aus.
+Wenn Du einen Komparator an die Elektroden oben anschließst, wird zusätzlich ein Signal gesendet, das auf deren Integrität basiert.
+§lMischer: §rGibt ein Signal relativ zur Füllung des Inventars aus.<np>
+<&bundled>§2Redstone-Schnittstellenanschlüsse§r können an andere Blöcke angeschlossen werden, die die farbigen Redstone-Signale verwenden können.
+Der Schnittstellenanschluss ist inaktiv und besitzt keine Farbe, keinen Eingabe- oder Ausgabestatus, ermöglicht jedoch die direkte Schnittstelle von Blöcken wie <link;item_batcher;Element Batcher> mit dem Drahtnetz.
+
+

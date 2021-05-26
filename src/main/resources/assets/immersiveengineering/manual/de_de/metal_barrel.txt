@@ -1,0 +1,3 @@
+Metallfass
+Rollt nicht
+Metallfässer funktionieren genau wie <link;barrel;Holzfässer;>. Sie speichern die gleiche Menge an Flüssigkeit und ihre Ein- und Ausgänge sind auf die gleiche Weise konfiguriert. Im Gegensatz zur Holzversion können diese jedoch Gase und heiße Flüssigkeiten speichern und werden nicht automatisch ausgegeben, wenn sie durch ein Redstone-Signal deaktiviert werden. 

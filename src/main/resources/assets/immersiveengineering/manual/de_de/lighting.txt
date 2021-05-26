@@ -1,0 +1,7 @@
+Technische Beleuchtung
+Das Ödland erleuchten
+<&lantern>Tief in den Hallen der Fabriken kann es ziemlich dunkel sein. Um sich immer noch in den Maschinen zurechtzufinden, solltest Du den Platz wahrscheinlich mit einigen Laternen beleuchten. Diese Laternen liefern fast so viel Licht wie ein Glowstone-Block.
+<&electric_lantern>Angetriebene Laternen sind eine der ersten erfundenen Anwendungen für elektrischen Strom. Um diese auszuführen, musst Du sie über Kabel direkt an Dein Stromnetz anschließen. Sie ermöglichen die Übertragung von Strom durch sie, sodass Du sie in einer Reihe verknüpfen kannst.
+Wenn Du den Ingenieurshammer verwenden, werden sie auf den Kopf gestellt. Solange sie mit ein wenig Energie versorgt werden, werden sie die Umgebung wie eine normale Laterne beleuchten, aber zusätzlich verhindern sie auch, dass feindliche Mobs in einem Radius von 32 Blöcken erscheinen!<np>
+<&floodlight>Flutlichter sind starke Lichtquellen. Während sie mehr Energie benötigen als eine einfache angetriebene Laterne, erzeugen sie einen Lichtkegel mit einer Länge von bis zu 32 Blöcken. Verwende einen Ingenieurshammer auf der Ober- oder Unterseite des Blocks, um das Licht zu drehen, oder klicke auf die Seiten, um die Helligkeit zu ändern.
+Im Allgemeinen benötigen Flutlichter ein Redstone-Signal, um ausgeführt zu werden. Ihr Steuerverhalten kann jedoch umgekehrt werden, indem Du mit der rechten Maustaste mit einem Schraubenzieher auf die Basis klickst.

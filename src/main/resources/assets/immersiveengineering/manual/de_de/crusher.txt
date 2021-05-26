@@ -1,0 +1,6 @@
+Zerkleinerer
+Halt die Hände da raus!
+Das Zerkleinern eines Erzes ist ein wirksamer Weg, um den Ertrag zu erhöhen, da jedes Erz zwei Stäube erzeugt, die Du dann schmelzen kannst. Dieser Zerkleinerer in Industriegröße ist eine schnelle Möglichkeit, dies zu tun. Die Verarbeitungsgeschwindigkeit der Maschine hängt von der zugeführten Leistung ab.
+Durch Anlegen eines Redstone-Signals an das Bedienfeld an der Vorderseite wird der Zerkleinererprozess angehalten. Dieses Verhalten kann mithilfe des Ingenieurshammers umgekehrt werden.
+Die Struktur wird durch Klicken mit der rechten Maustaste auf den zentralen Block der Vorderseite gebildet. Die Vorderseite ist die breite Seite der Struktur, die unten einen lichttechnischen Block aufweist.
+Er wird jedoch nicht nur zum Zerkleinern von Erzen verwendet. Jedes Lebewesen, das in die Maschine fällt, erleidet schweren Schaden und der Zerkleinerer gibt die entsprechenden Tropfen aus. Ebenso werden alle Gegenstände, die nicht verarbeitet werden können, zerstört. 

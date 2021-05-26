@@ -1,0 +1,4 @@
+Bagger
+Besser als Zwerge
+<&excavator>Der Bagger ist einer der Höhepunkte der modernen Technik. Es ist in der Lage <link;minerals;Mineralien>  aus Adern zu graben, die durch normalen Bergbau nicht zugänglich sind. Im Gegenzug ist der Bagger jedoch eine komplexe Struktur, für deren Betrieb <config;i;machines.excavator.consumption> Flux/t erforderlich sind. 
+<&wheel><&full>Die Struktur besteht aus zwei Teilen: dem auf der ersten Seite gezeigten Motor und dem auf der zweiten Seite angezeigten Schaufelrad, das in die auf der vorherigen Seite gezeigten "Streben" des Motors passt. Der Energieeintrag für den Motor ist auf der Seite, auf der Rückseite befinden sich ein Redstone-Bedienfeld und der Gegenstand. <br> Wenn der Bagger Erze ausgräbt, nimmt der Ertrag der Ader langsam ab, aber eine Ader Mineralien kann bis zu <config;i;machines.excavator.yield> Erzblöcke liefern.

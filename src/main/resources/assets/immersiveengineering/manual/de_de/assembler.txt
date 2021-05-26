@@ -1,0 +1,10 @@
+Montierer
+Zusammenbau erforderlich
+<&multiblock>Der Montierer ist eine komplexe Maschine, mit der Gegenstände hergestellt werden können, ähnlich wie es ein Spieler tun würde.
+Um die Struktur zu formen, baue sie wie oben gezeigt und verwende den Hammer auf einem der Förderer.<np>
+Der Förderer, auf den Du geklickt hast, ist die Eingabeseite, die durch die blaue Markierung darüber und den Pfeil auf der Seite der Maschine angezeigt wird.
+Mit dem Montierer können bis zu 3 Rezepte gespeichert werden, die der Reihe nach ausgeführt werden. Die Ausgaben früherer Rezepte können als Eingaben für folgende Rezepte verwendet werden.
+In den 3 Crafting-Gittern werden die Rezepte gespeichert, und in den 18 Slots darunter befindet sich das Inventar für Materialien.<np>
+Die Eingangsseite verfügt neben einem Elementeingang auch über einen Flüssigkeitseingang, um die drei internen Tanks der Maschine zu füllen.
+Flüssigkeit in diesen Tanks kann verwendet werden, um Flüssigkeitsbehälter wie Wassereimer in Rezepten zu ersetzen.
+Die Stromversorgung der Maschine erfolgt über den oberen Mittelblock. 

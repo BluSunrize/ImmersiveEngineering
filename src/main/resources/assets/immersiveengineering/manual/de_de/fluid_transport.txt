@@ -1,0 +1,12 @@
+Flüssigkeitstransport
+Professioneller Klempner
+<&pipe_recipe>Der Transport von Flüssigkeiten ist im Maschinenbau sehr wichtig geworden. Flüssigkeitsrohre und Flüssigkeitspumpen machen genau das. Flüssigkeitsrohre sind für sich genommen ziemlich langsam bei der Übertragung von Flüssigkeiten, aber wenn eine Pumpe zum Einbringen der Flüssigkeit verwendet wird, bewegt sie sich viel schneller.<np>
+Du kannst mit einem Ingenieurshammer mit der rechten Maustaste auf das Verbindungsstück eines Rohrs klicken, um zu verhindern, dass es mit dieser Seite verbunden wird.
+Flüssigkeitsrohre können mit Holz- oder Stahlgerüsten abgedeckt werden. Klicke einfach mit der rechten Maustaste auf ein Stück Gerüst, um es abzudecken. Zerstöre das Rohr, um das Gerüst wiederzugewinnen.<np>
+<&pump_recipe>Flüssigkeitspumpen haben drei wesentliche Funktionen. Sie können verwendet werden, um unter hohem Druck in Rohre eingeführt zu werden, Flüssigkeiten viel schneller zu übertragen oder um Flüssigkeiten aus der Welt aufzunehmen.
+Wenn Du mit einem Hammer auf den Boden der Pumpe schlägst, werden die Seiten zwischen Ein- und Ausgang umgeschaltet.<np>
+Damit die Pumpe Flüssigkeitsblöcke aufnehmen kann, benötigt sie oben eine Leistungsaufnahme und ein Redstone-Signal. Pumpen können auch zum Absaugen aus Tanks und anderen Flüssigkeitsbehältern verwendet werden, die keine automatische Ausgabe haben. Dies erfordert ebenfalls ein Redstone-Signal, verbraucht jedoch keinen Strom.<np>
+Wasserblöcke dienen als unendliche Flüssigkeitsquelle für die Pumpe, solange mehr als 3 Blöcke angeschlossen sind.
+
+Aufgenommene Flüssigkeitsblöcke werden durch Pflasterstein ersetzt, um die Verzögerung fließender Flüssigkeiten zu verringern. Dieses Verhalten kann mit einem Ingenieurshammer an der Pumpe ein- und ausgeschaltet werden.<np>
+<&outlet_recipe>Der Flüssigkeitsausguss fungiert als Endpunkt für ein Rohrsystem und ermöglicht die Platzierung von Flüssigkeit in der Welt. Die Seiten können zwischen Eingang, Ausgang (offenes Tor) oder geschlossen konfiguriert werden. Ein Redstone-Signal kann verwendet werden, um den Ausguss auszuschalten. Der Block gibt immer nur Flüssigkeit bis zu seiner eigenen Höhe aus. 

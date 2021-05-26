@@ -1,0 +1,3 @@
+Stromwandler
+88 Flux pro Stunde!
+Der Stromwandler ist ein Messgerät für elektrische Energie. Es kann an jede Stromleitung angeschlossen werden und verfolgt die durch sie übertragene Energie, wobei beim Klicken mit der rechten Maustaste ein durchschnittlicher Flux/t zurückgegeben wird. 

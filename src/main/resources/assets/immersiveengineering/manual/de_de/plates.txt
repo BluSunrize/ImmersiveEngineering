@@ -1,0 +1,3 @@
+Metallplatten
+Flach wie eine Flunder
+Metallplatten sind ein Handwerksmaterial, das für die Herstellung einiger Maschinen oder Blöcke benötigt wird. Sie werden durch Hämmern eines Barrens mit einem Ingenieurshammer oder in einer <link;metal_press;Metallpresse> hergestellt. 

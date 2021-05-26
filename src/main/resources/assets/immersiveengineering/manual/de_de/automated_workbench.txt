@@ -1,0 +1,7 @@
+Automatische Werkbank
+Für die, die nicht mit Schaltung fahren können
+<&multiblock>Die Automatische Werkbank ist einer der ersten großen Erfolge im Small-Scale-Engineering.
+Die Maschine kann einer Reihe von Anweisungen folgen, die durch eine <link;blueprints;Blaupause;start> beschrieben werden, um die von ihr beschriebenen Elemente zusammenzusetzen.<np>
+Beim Zusammenbau des Multiblocks kann ein Blueprint auf den Zeichentisch gelegt werden. Nach Auswahl des Elements, das erstellt werden soll, wird der Montageprozess gestartet. Damit die Maschine funktioniert, muss sie mit Material und Strom versorgt werden.
+Elementeingaben sind die beiden mit blauen Punkten gekennzeichneten Schraffuren, über denen die Leistungsaufnahme liegt. Fertige Gegenstände werden am Ende des Förderbandes fallen gelassen.
+Ein Redstone-Signal unterhalb des Zeichentischs kann zur Steuerung verwendet werden. 

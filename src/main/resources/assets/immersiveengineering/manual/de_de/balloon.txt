@@ -1,0 +1,8 @@
+Ballon
+...mach einfach 99 davon
+<&recipe>Luftballons sind Stoffsäcke mit einer Wärmequelle darunter, um sie über Wasser zu halten. Sie geben auch Licht ab, sind aber anders als die Fackel keine Brandgefahr.
+Ballons können wie normale Blöcke platziert werden, oder wenn kein Block als Ziel ausgewählt wird, werden sie vor Dir in der Luft platziert.
+Ähnlich wie bei <link;metalconstruction;Strukturellen Anschlüssen;connector_recipes> kannst Du Hanfseil und Stahldraht am Ballon befestigen.
+Mit einem Klick kannst Du einen Höhenversatz für den Ballon festlegen und ihn bis zu 5 Blöcke über dem Ziel platzieren.
+Du kannst auch Farbstoffe für einen platzierten Ballon verwenden. Welchen Teil Du färbst, hängt davon ab, wo Du ihn anvisierst.
+Durch Klicken mit der rechten Maustaste mit einem Ingenieurshammer wird das Design des Ballons zwischen horizontalen oder vertikalen Streifen umgeschaltet. 
