@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
 import blusunrize.immersiveengineering.api.tool.IUpgradeableTool;
 import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchTileEntity;
+import blusunrize.immersiveengineering.common.gui.IESlot.BlueprintOutput;
 import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import blusunrize.immersiveengineering.mixin.accessors.ContainerAccess;
@@ -175,7 +176,9 @@ public class ModWorkbenchContainer extends IEBaseContainer<ModWorkbenchTileEntit
 
 			if(stackInSlot.getCount()==stack.getCount())
 				return ItemStack.EMPTY;
-			slotObject.onTake(player, stack);
+			ItemStack remainderStack = slotObject.onTake(player, stackInSlot);
+			if(slotObject instanceof BlueprintOutput)
+				player.dropItem(remainderStack, false);
 		}
 		return stack;
 	}
