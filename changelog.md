@@ -1,7 +1,22 @@
 ##### Version 1.16.5-5.0.0-pre
- - Add buckets for potion fluids (Malte)
  - Clean up the API (Malte)
-   - This is a breaking change, don't expect addons to work without being updated!
+     - THIS IS A BREAKING CHANGE!
+     - Don't expect addons to work without being updated!
+ - Add buckets for potion fluids (Malte)
+ - Add ComputerCraft compat (Malte)
+ - Add Redstone Logic system (BluSunrize)
+     - New Block: Circuit Table, use it to make logic circuits!
+     - New Block: Logic Unit, it plugs into redstone wires to do logic operations!
+     - Changed recipes for circuit boards! 
+ - Add missing death message for punching someone into a live wire (BluSunrize)
+ - Add crusher recipe for netherwart blocks (BluSunrize)
+ - Add TConstruct compat, allowing Hemp to be harvested with a kama (BluSunrize)
+ - Change Item Routers: (BluSunrize)
+     - Allow items to pass into unfiltered outputs if the filtered location is full
+     - Change "OreDictionary" to "Tags", and update icons & manual documentation
+ - Improve documentation for Feedthrough Insulators (IKnewOne)
+ - Improve container logic for the Workbench (MalkContent)
+ - Adjust internal handling of Cloche recipes, allowing more dynamic recipes for mod compat (InfinityRaider) 
  - Fix servers kicking players for flying when using the skyhook or standing on conveyors (Malte)
  - Fix the skyhook moving players to NaN coordinates in some cases (Malte)
  - Fix particles indicating garden cloche power state (Malte)
@@ -16,7 +31,25 @@
  - Fix the metal press dropping two molds when broken with a drill (Malte)
  - Fix the sawmill not dropping its sawblade when broken (Malte)
  - Fix IE recipes involving water buckets not working in some scenarios (Malte)
+ - Fix issues with multithreaded loading (Malte)
+ - Fix material list for the combined excavator (Malte)
+ - Fix registering of potion fluid and recipes (Malte)
+ - Fix drill speed exploit in water (Malte)
+ - Fix issues related to removed mineral veins (Malte)
+ - Fix multiblocks not forming when blocks are waterlogged (Malte)
+ - Fix visual disconnects on fluid pipes (Malte)
+ - Fix workbench deleting adjacent blocks (BluSunrize)
+ - Fix powered lanterns not being flipable (BluSunrize)
+ - Fix villager requiring IE steel ingots instead of config preference (BluSunrize)
+ - Fix turret GUI not allowing unfired bullets to be removed (BluSunrize)
+ - Fix transparency render glitch with razor wire (BluSunrize)
+ - Fix drill being usable without fuel (BluSunrize)
+ - Fix dupe bug with capacitor backpacks (BluSunrize)
+ - Fix craftweaker compat allowing invalid fluid inputs (BluSunrize)
+     - They now crash during Craftweaker loading, causing an appropriate error in the CT log
+ - Fix posts having different bounding boxes on different levels, making them hard to climb (TwistedGate)
  - Potentially fix lanterns and floodlights with OptiFine (Malte)
+ - Translations Added/Updated: de_de (astrutz)
 
 ##### Version 1.16.5-4.2.4-134
  - Fix issues with the manual (BluSunrize)
