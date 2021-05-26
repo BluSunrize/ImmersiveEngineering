@@ -163,8 +163,6 @@ public class ModWorkbenchContainer extends IEBaseContainer<ModWorkbenchTileEntit
 								b = false;
 								break;
 							}
-							else
-								continue;
 					}
 					if(b)
 						return ItemStack.EMPTY;
