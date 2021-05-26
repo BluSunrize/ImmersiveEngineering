@@ -15,15 +15,18 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.Property;
 import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.RegistryObject;
 
 public class DeskBlock<T extends TileEntity> extends GenericTileBlock<T>
@@ -63,6 +66,14 @@ public class DeskBlock<T extends TileEntity> extends GenericTileBlock<T>
 	}
 
 	@Override
+	public boolean canIEBlockBePlaced(BlockState newState, BlockItemUseContext context)
+	{
+		BlockPos start = context.getPos();
+		World w = context.getWorld();
+		return areAllReplaceable(start, start.up(2), context);
+	}
+
+	@Override
 	public BlockState updatePostPlacement(BlockState stateIn, Direction updateSide, BlockState updatedState,
 										  IWorld worldIn, BlockPos currentPos, BlockPos updatedPos)
 	{
@@ -85,5 +96,18 @@ public class DeskBlock<T extends TileEntity> extends GenericTileBlock<T>
 					return stateIn.with(FACING, candidate);
 			}
 		return Blocks.AIR.getDefaultState();
+	}
+
+	public static Direction getDeskDummyOffset(World world, BlockPos pos, Direction facing, BlockItemUseContext ctx)
+	{
+		Direction dummyDir;
+		if(facing.getAxis()==Axis.X)
+			dummyDir = ctx.getHitVec().z < .5?Direction.NORTH: Direction.SOUTH;
+		else
+			dummyDir = ctx.getHitVec().x < .5?Direction.WEST: Direction.EAST;
+		BlockPos dummyPos = pos.offset(dummyDir);
+		if(!world.getBlockState(dummyPos).isReplaceable(BlockItemUseContext.func_221536_a(ctx, dummyPos, dummyDir)))
+			dummyDir = dummyDir.getOpposite();
+		return dummyDir;
 	}
 }

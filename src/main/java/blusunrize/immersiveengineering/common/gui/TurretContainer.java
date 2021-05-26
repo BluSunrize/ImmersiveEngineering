@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.common.items.BulletItem;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TurretContainer extends IEBaseContainer<TurretTileEntity>
 {
@@ -26,8 +25,8 @@ public class TurretContainer extends IEBaseContainer<TurretTileEntity>
 
 		if(tile instanceof TurretGunTileEntity)
 		{
-			this.addSlot(new IESlot.Bullet(tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)
-					.orElseThrow(RuntimeException::new), 0, 134, 13, 64)
+			this.addSlot(new IESlot.Bullet(
+					((TurretGunTileEntity)tile).containerHandler.orElseThrow(RuntimeException::new), 0, 134, 13, 64)
 			{
 				@Override
 				public boolean isItemValid(ItemStack itemStack)

@@ -239,7 +239,7 @@ public abstract class IESlot extends Slot
 		{
 			if(preventDoubles)
 				for(Slot slot : container.inventorySlots)
-					if(slot instanceof Upgrades&&((Upgrades)slot).preventDoubles&&ItemStack.areItemsEqual(slot.getStack(), itemStack))
+					if(this!=slot&&slot instanceof Upgrades&&ItemStack.areItemsEqual(slot.getStack(), itemStack))
 						return false;
 			return !itemStack.isEmpty()&&itemStack.getItem() instanceof IUpgrade&&((IUpgrade)itemStack.getItem()).getUpgradeTypes(itemStack).contains(type)&&((IUpgrade)itemStack.getItem()).canApplyUpgrades(upgradeableTool, itemStack);
 		}

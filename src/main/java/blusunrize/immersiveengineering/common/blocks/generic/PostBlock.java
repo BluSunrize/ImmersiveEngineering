@@ -214,7 +214,7 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBloc
 		if(dummy==0)
 			return VoxelShapes.create(.25f, 0, .25f, .75f, 1, .75f);
 		if(dummy <= 2)
-			return VoxelShapes.create(.375f, 0, .375f, .625f, 1, .625f);
+			return VoxelShapes.create(.3125f, .0f, .3125f, .6875f, 1.0f, .6875f);
 		if(dummy==3)
 		{
 			float down = hasConnection(state, Direction.DOWN, world, pos)?0: .4375f;

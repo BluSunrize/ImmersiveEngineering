@@ -15,20 +15,18 @@ import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
-import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.SpecialRecipe;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 
-public class ShaderBagRecipe implements ICraftingRecipe
+public class ShaderBagRecipe extends SpecialRecipe
 {
-	private final ResourceLocation id;
-
 	public ShaderBagRecipe(ResourceLocation id)
 	{
-		this.id = id;
+		super(id);
 	}
 
 	@Override
@@ -92,9 +90,4 @@ public class ShaderBagRecipe implements ICraftingRecipe
 		return RecipeSerializers.SHADER_BAG_SERIALIZER.get();
 	}
 
-	@Override
-	public ResourceLocation getId()
-	{
-		return id;
-	}
 }

@@ -25,6 +25,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.crafting.ShaderBagRecipe;
 import blusunrize.immersiveengineering.common.crafting.fluidaware.IngredientFluidStack;
 import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.items.IEItems;
@@ -192,6 +193,8 @@ public class Recipes extends RecipeProvider
 				.build(out, ImmersiveEngineering.MODID+":revolver_cycle");
 		CustomRecipeBuilder.customRecipe(RecipeSerializers.IE_REPAIR_SERIALIZER.get())
 				.build(out, ImmersiveEngineering.MODID+":ie_item_repair");
+		CustomRecipeBuilder.customRecipe(RecipeSerializers.SHADER_BAG_SERIALIZER.get())
+				.build(out, ImmersiveEngineering.MODID+":shaderbag_downgrading");
 		GeneratedListRecipeBuilder.build(out, rl("arc_recycling_list"));
 		GeneratedListRecipeBuilder.build(out, rl("mixer_potion_list"));
 		GeneratedListRecipeBuilder.build(out, rl("potion_bottling_list"));
@@ -726,7 +729,7 @@ public class Recipes extends RecipeProvider
 		CrusherRecipeBuilder.builder(new ItemStack(Items.GLOWSTONE_DUST, 4))
 				.addInput(Blocks.GLOWSTONE)
 				.setEnergy(3200)
-				.build(out, toRL("crusher/quartz"));
+				.build(out, toRL("crusher/glowstone"));
 		CrusherRecipeBuilder.builder(new ItemStack(Items.BLAZE_POWDER, 4))
 				.addSecondary(IETags.sulfurDust, .5f)
 				.addInput(Tags.Items.RODS_BLAZE)
@@ -766,6 +769,11 @@ public class Recipes extends RecipeProvider
 				.addInput(Items.NETHER_GOLD_ORE)
 				.setEnergy(4200)
 				.build(out, toRL("crusher/nether_gold"));
+
+		CrusherRecipeBuilder.builder(new ItemStack(Items.NETHER_WART, 9))
+				.addInput(Items.NETHER_WART_BLOCK)
+				.setEnergy(1600)
+				.build(out, toRL("crusher/nether_wart"));
 
 		/* SAWMILL */
 		for(RecipeWoods wood : RecipeWoods.values())

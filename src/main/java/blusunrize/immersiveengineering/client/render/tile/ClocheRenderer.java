@@ -40,6 +40,7 @@ import net.minecraftforge.client.model.data.EmptyModelData;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 public class ClocheRenderer extends TileEntityRenderer<ClocheTileEntity>
 {
@@ -86,7 +87,8 @@ public class ClocheRenderer extends TileEntityRenderer<ClocheTileEntity>
 
 			NonNullList<ItemStack> inventory = tile.getInventory();
 			ItemStack seed = inventory.get(ClocheTileEntity.SLOT_SEED);
-			float growth = MathHelper.clamp(tile.renderGrowth/recipe.time, 0, 1);
+			ItemStack soil = inventory.get(ClocheTileEntity.SLOT_SOIL);
+			float growth = MathHelper.clamp(tile.renderGrowth/recipe.getTime(seed, soil), 0, 1);
 			float scale = recipe.renderFunction.getScale(seed, growth);
 			matrixStack.translate((1-scale)/2, 0, (1-scale)/2);
 			matrixStack.scale(scale, scale, scale);
@@ -110,6 +112,17 @@ public class ClocheRenderer extends TileEntityRenderer<ClocheTileEntity>
 						tile.getWorldNonnull(), blockPos, false, col, combinedLightIn);
 				matrixStack.pop();
 			}
+
+			// Injection of quads from dynamic recipes
+			List<BakedQuad> injectedQuadList = new ArrayList<>();
+			Consumer<?> quadInjector = (object) -> {if(object instanceof BakedQuad) injectedQuadList.add((BakedQuad) object);};
+			recipe.renderFunction.injectQuads(seed, growth, quadInjector);
+			if(injectedQuadList.size() > 0)
+			{
+				RenderUtils.renderModelTESRFancy(injectedQuadList, new TransformingVertexBuilder(baseBuilder, matrixStack),
+						tile.getWorldNonnull(), blockPos, false, -1, combinedLightIn);
+			}
+
 			matrixStack.pop();
 		}
 	}

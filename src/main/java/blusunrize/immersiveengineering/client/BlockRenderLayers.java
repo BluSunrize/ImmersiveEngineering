@@ -76,6 +76,7 @@ public class BlockRenderLayers
 				Connectors.feedthrough,
 				rt -> true
 		);
+		RenderTypeLookup.setRenderLayer(MetalDevices.razorWire, RenderType.getCutout());
 		RenderTypeLookup.setRenderLayer(MetalDevices.fluidPlacer, RenderType.getCutout());
 		RenderTypeLookup.setRenderLayer(MetalDevices.furnaceHeater, RenderType.getCutout());
 		RenderTypeLookup.setRenderLayer(MetalDevices.fluidPipe, RenderType.getCutout());

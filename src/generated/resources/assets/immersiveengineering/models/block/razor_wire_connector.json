@@ -5,6 +5,6 @@
   "loader": "immersiveengineering:connector",
   "base_model": "immersiveengineering:block/razor_wire",
   "layers": [
-    "solid"
+    "cutout"
   ]
 }

@@ -107,8 +107,12 @@ public class DrillItem extends DieselToolItem
 		if(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY==null)
 			return ItemStack.EMPTY;
 		LazyOptional<IItemHandler> cap = drill.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
-		ItemStack head = cap.orElseThrow(RuntimeException::new).getStackInSlot(0);
-		return !head.isEmpty()&&head.getItem() instanceof IDrillHead?head: ItemStack.EMPTY;
+		if(cap.isPresent())
+		{
+			ItemStack head = cap.map(handler -> handler.getStackInSlot(0)).orElse(ItemStack.EMPTY);
+			return !head.isEmpty()&&head.getItem() instanceof IDrillHead?head: ItemStack.EMPTY;
+		}
+		return ItemStack.EMPTY;
 	}
 
 	@Override
@@ -201,7 +205,7 @@ public class DrillItem extends DieselToolItem
 	public int getHarvestLevel(ItemStack stack, @Nonnull ToolType tool, @Nullable PlayerEntity player, @Nullable BlockState blockState)
 	{
 		ItemStack head = getHead(stack);
-		if(!head.isEmpty())
+		if(!head.isEmpty()&&canToolBeUsed(stack, player))
 			return ((IDrillHead)head.getItem()).getMiningLevel(head)+ItemNBTHelper.getInt(stack, "harvestLevel");
 		return -1;
 	}
@@ -286,7 +290,7 @@ public class DrillItem extends DieselToolItem
 					{
 						block.onPlayerDestroy(world, pos, state);
 						block.harvestBlock(world, player, pos, state, te, stack);
-						if (world instanceof ServerWorld)
+						if(world instanceof ServerWorld)
 							block.dropXpOnBlockBreak((ServerWorld)world, pos, xpDropEvent);
 					}
 				}

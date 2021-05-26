@@ -133,6 +133,7 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 		if(dummy!=0||isRSPowered())
 			return;
 		ItemStack seed = inventory.get(SLOT_SEED);
+		ItemStack soil = inventory.get(SLOT_SOIL);
 		if(world.isRemote)
 		{
 			for(Iterator<Particle> iterator = particles.iterator(); iterator.hasNext(); )
@@ -147,7 +148,7 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 				ClocheRecipe recipe = getRecipe();
 				if(recipe!=null&&fertilizerAmount > 0)
 				{
-					if(renderGrowth < recipe.time+IEServerConfig.MACHINES.cloche_growth_mod.get()*fertilizerMod)
+					if(renderGrowth < recipe.getTime(seed, soil) + IEServerConfig.MACHINES.cloche_growth_mod.get()*fertilizerMod)
 					{
 						renderGrowth += IEServerConfig.MACHINES.cloche_growth_mod.get()*fertilizerMod;
 						fertilizerAmount--;
@@ -182,9 +183,9 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 				if(recipe!=null&&fertilizerAmount > 0&&energyStorage.extractEnergy(consumption, true)==consumption)
 				{
 					boolean consume = false;
-					if(growth >= recipe.time)
+					if(growth >= recipe.getTime(seed, soil))
 					{
-						List<ItemStack> outputs = recipe.outputs;
+						List<ItemStack> outputs = recipe.getOutputs(seed, soil);
 						int canFit = 0;
 						boolean[] emptySlotsUsed = new boolean[4];
 						for(ItemStack output : outputs)

@@ -71,7 +71,7 @@ public class SorterTileEntity extends IEBaseTileEntity implements IInteractionOb
 			Direction[][] validOutputs = getValidOutputs(inputSide, stack);
 			stack = doInsert(stack, validOutputs[0], simulate);
 			// Only if no filtered outputs were found, use unfiltered
-			if(validOutputs[0].length==0)
+			if(validOutputs[0].length==0 || !stack.isEmpty())
 				stack = doInsert(stack, validOutputs[1], simulate);
 			if(first)
 				routed = null;

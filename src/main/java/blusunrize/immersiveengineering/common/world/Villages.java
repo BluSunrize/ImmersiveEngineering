@@ -458,8 +458,9 @@ public class Villages
 				MapData.addTargetDecoration(selling, blockPos, "ie:coresample_treasure", Type.RED_X);
 				selling.setDisplayName(new TranslationTextComponent("item.immersiveengineering.map_orevein"));
 				ItemNBTHelper.setLore(selling, new TranslationTextComponent(vein.getMineral().getTranslationKey()));
+				ItemStack steelIngot = IEApi.getPreferredTagStack(IETags.getIngot(EnumMetals.STEEL.tagName()));
 				return new MerchantOffer(new ItemStack(Items.EMERALD, 8+random.nextInt(8)),
-						new ItemStack(Metals.ingots.get(EnumMetals.STEEL), 4+random.nextInt(8)), selling, 0, 1, 30, 0.5F);
+						ItemHandlerHelper.copyStackWithSize(steelIngot, 4+random.nextInt(8)), selling, 0, 1, 30, 0.5F);
 			}
 			return null;
 		}

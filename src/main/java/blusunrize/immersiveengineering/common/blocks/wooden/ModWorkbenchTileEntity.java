@@ -33,7 +33,6 @@ import net.minecraft.nbt.INBT;
 import net.minecraft.state.Property;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -172,18 +171,9 @@ public class ModWorkbenchTileEntity extends IEBaseTileEntity implements IIEInven
 	@Override
 	public void placeDummies(BlockItemUseContext ctx, BlockState state)
 	{
-		final Direction facing = getFacing();
-		Direction dummyDir;
-		if(facing.getAxis()==Axis.X)
-			dummyDir = ctx.getHitVec().z < .5?Direction.NORTH: Direction.SOUTH;
-		else
-			dummyDir = ctx.getHitVec().x < .5?Direction.WEST: Direction.EAST;
+		Direction facing = getFacing();
+		Direction dummyDir = DeskBlock.getDeskDummyOffset(world, getPos(), facing, ctx);
 		BlockPos dummyPos = pos.offset(dummyDir);
-		if(!world.getBlockState(dummyPos).isReplaceable(BlockItemUseContext.func_221536_a(ctx, dummyPos, dummyDir)))
-		{
-			dummyDir = dummyDir.getOpposite();
-			dummyPos = pos.offset(dummyDir);
-		}
 		boolean mirror = dummyDir!=facing.rotateY();
 		if(mirror)
 			setDummy(true);
