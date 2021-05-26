@@ -31,16 +31,13 @@ import java.util.function.Supplier;
 public abstract class IETemplateMultiblock extends TemplateMultiblock
 {
 	private final Supplier<BlockState> baseState;
-	//TODO move to TemplateMultiblock in the next API break
-	private final BlockPos size;
 
 	public IETemplateMultiblock(
 			ResourceLocation loc, BlockPos masterFromOrigin, BlockPos triggerFromOrigin, BlockPos size,
 			Supplier<BlockState> baseState
 	)
 	{
-		super(loc, masterFromOrigin, triggerFromOrigin, ImmutableMap.of());
-		this.size = size;
+		super(loc, masterFromOrigin, triggerFromOrigin, size, ImmutableMap.of());
 		this.baseState = baseState;
 	}
 

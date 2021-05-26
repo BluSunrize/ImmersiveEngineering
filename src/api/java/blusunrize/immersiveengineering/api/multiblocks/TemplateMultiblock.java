@@ -60,6 +60,7 @@ public abstract class TemplateMultiblock implements IMultiblock
 	private final ResourceLocation loc;
 	protected final BlockPos masterFromOrigin;
 	protected final BlockPos triggerFromOrigin;
+	protected final BlockPos size;
 	protected final List<MatcherPredicate> additionalPredicates;
 	@Nullable
 	private Template template;
@@ -67,23 +68,24 @@ public abstract class TemplateMultiblock implements IMultiblock
 	private ItemStack[] materials;
 	private BlockState trigger = Blocks.AIR.getDefaultState();
 
-	public TemplateMultiblock(ResourceLocation loc, BlockPos masterFromOrigin, BlockPos triggerFromOrigin,
+	public TemplateMultiblock(ResourceLocation loc, BlockPos masterFromOrigin, BlockPos triggerFromOrigin, BlockPos size,
 							  List<MatcherPredicate> additionalPredicates)
 	{
 		this.loc = loc;
 		this.masterFromOrigin = masterFromOrigin;
 		this.triggerFromOrigin = triggerFromOrigin;
+		this.size = size;
 		this.additionalPredicates = additionalPredicates;
 	}
 
-	public TemplateMultiblock(ResourceLocation loc, BlockPos masterFromOrigin, BlockPos triggerFromOrigin)
+	public TemplateMultiblock(ResourceLocation loc, BlockPos masterFromOrigin, BlockPos triggerFromOrigin, BlockPos size)
 	{
-		this(loc, masterFromOrigin, triggerFromOrigin, ImmutableMap.of());
+		this(loc, masterFromOrigin, triggerFromOrigin, size, ImmutableMap.of());
 	}
 
-	public TemplateMultiblock(ResourceLocation loc, BlockPos masterFromOrigin, BlockPos triggerFromOrigin, Map<Block, ITag<Block>> tags)
+	public TemplateMultiblock(ResourceLocation loc, BlockPos masterFromOrigin, BlockPos triggerFromOrigin, BlockPos size, Map<Block, ITag<Block>> tags)
 	{
-		this(loc, masterFromOrigin, triggerFromOrigin, ImmutableList.of(
+		this(loc, masterFromOrigin, triggerFromOrigin, size, ImmutableList.of(
 				(expected, found, world, pos) -> {
 					ITag<Block> tag = tags.get(expected.getBlock());
 					if(tag!=null)
@@ -320,7 +322,8 @@ public abstract class TemplateMultiblock implements IMultiblock
 			Function<BlockState, ItemStack> pickBlock,
 			BiFunction<ResourceLocation, MinecraftServer, Template> loadTemplate,
 			Function<Template, List<Palette>> getPalettes
-	) {
+	)
+	{
 		PICK_BLOCK.setValue(pickBlock);
 		LOAD_TEMPLATE.setValue(loadTemplate);
 		GET_PALETTES.setValue(getPalettes);
