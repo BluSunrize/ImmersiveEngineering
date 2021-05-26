@@ -48,6 +48,7 @@
 - Fix craftweaker compat allowing invalid fluid inputs (BluSunrize)
     - They now crash during Craftweaker loading, causing an appropriate error in the CT log
 - Fix posts having different bounding boxes on different levels, making them hard to climb (TwistedGate)
+- Fix performance issue with empty fluid outlets (Malte)
 - Potentially fix lanterns and floodlights with OptiFine (Malte)
 - Translations Added/Updated: de_de (astrutz)
 

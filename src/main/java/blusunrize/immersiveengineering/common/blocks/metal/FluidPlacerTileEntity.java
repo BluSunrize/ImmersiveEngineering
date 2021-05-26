@@ -170,7 +170,7 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickable
 
 	private boolean fluidMatches(BlockPos targetPos)
 	{
-		if(!world.isAreaLoaded(targetPos, 1))
+		if(!world.isAreaLoaded(targetPos, 1)||tank.getFluid().isEmpty())
 			return false;
 		BlockState state = world.getBlockState(targetPos);
 		return state.getFluidState().getFluid()==tank.getFluid().getFluid();
