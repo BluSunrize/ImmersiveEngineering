@@ -729,7 +729,7 @@ public class Recipes extends RecipeProvider
 		CrusherRecipeBuilder.builder(new ItemStack(Items.GLOWSTONE_DUST, 4))
 				.addInput(Blocks.GLOWSTONE)
 				.setEnergy(3200)
-				.build(out, toRL("crusher/quartz"));
+				.build(out, toRL("crusher/glowstone"));
 		CrusherRecipeBuilder.builder(new ItemStack(Items.BLAZE_POWDER, 4))
 				.addSecondary(IETags.sulfurDust, .5f)
 				.addInput(Tags.Items.RODS_BLAZE)
