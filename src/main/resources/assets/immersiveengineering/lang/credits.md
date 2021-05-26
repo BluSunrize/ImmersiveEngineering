@@ -8,3 +8,4 @@ LOCALIZATION
 	- ru_RU: lex1975
 	- zh_TW: xaxa123, vongola12324
 	- es_ES: FrannDzs, 
+	- de_DE: astrutz
