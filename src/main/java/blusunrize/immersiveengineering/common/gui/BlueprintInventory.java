@@ -14,7 +14,6 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
-import net.minecraftforge.items.ItemHandlerHelper;
 
 public class BlueprintInventory extends Inventory
 {
@@ -36,10 +35,7 @@ public class BlueprintInventory extends Inventory
 		for(int i = 0; i < this.recipes.length; i++)
 		{
 			if(recipes[i].matchesRecipe(inputs))
-			{
-				ItemStack out = recipes[i].output;
-				this.setInventorySlotContents(i, ItemHandlerHelper.copyStackWithSize(out, out.getCount()));
-			}
+				this.setInventorySlotContents(i, recipes[i].output.copy());
 			else
 				this.setInventorySlotContents(i, ItemStack.EMPTY);
 		}
@@ -52,7 +48,7 @@ public class BlueprintInventory extends Inventory
 		for(int i = 0; i < inputs.size(); i++)
 			inputs.set(i, inputInventory.getStackInSlot(i+1));
 		//Consume
-		recipe.consumeInputs(inputs, (int)Math.ceil((double)taken.getCount()/recipe.output.getCount()));
+		recipe.consumeInputs(inputs, 1);
 		//Update remains
 		for(int i = 0; i < inputs.size(); i++)
 			inputInventory.setInventorySlotContents(i+1, inputs.get(i));
