@@ -35,12 +35,10 @@ public class BlueprintInventory extends Inventory
 		//Iterate Recipes and set output slots
 		for(int i = 0; i < this.recipes.length; i++)
 		{
-			int craftable = recipes[i].getMaxCrafted(inputs);
-			if(craftable > 0)
+			if(recipes[i].matchesRecipe(inputs))
 			{
 				ItemStack out = recipes[i].output;
-				craftable = Math.min(out.getCount()*craftable, 64-(64%out.getCount()));
-				this.setInventorySlotContents(i, ItemHandlerHelper.copyStackWithSize(out, craftable));
+				this.setInventorySlotContents(i, ItemHandlerHelper.copyStackWithSize(out, out.getCount()));
 			}
 			else
 				this.setInventorySlotContents(i, ItemStack.EMPTY);
@@ -54,9 +52,11 @@ public class BlueprintInventory extends Inventory
 		for(int i = 0; i < inputs.size(); i++)
 			inputs.set(i, inputInventory.getStackInSlot(i+1));
 		//Consume
-		recipe.consumeInputs(inputs, taken.getCount()/recipe.output.getCount());
+		recipe.consumeInputs(inputs, (int)Math.ceil((double)taken.getCount()/recipe.output.getCount()));
 		//Update remains
 		for(int i = 0; i < inputs.size(); i++)
 			inputInventory.setInventorySlotContents(i+1, inputs.get(i));
+
+		updateOutputs(inputInventory);
 	}
 }
