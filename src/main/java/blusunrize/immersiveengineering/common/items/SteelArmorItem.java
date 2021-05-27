@@ -30,7 +30,7 @@ public class SteelArmorItem extends ArmorItem
 
 	public SteelArmorItem(EquipmentSlotType type)
 	{
-		super(mat, type, new Properties().maxStackSize(1).group(ImmersiveEngineering.itemGroup));
+		super(mat, type, new Properties().maxStackSize(1).group(ImmersiveEngineering.ITEM_GROUP));
 		String name = "armor_steel_"+type.getName().toLowerCase(Locale.ENGLISH);
 		setRegistryName(ImmersiveEngineering.MODID, name);
 		IEContent.registeredIEItems.add(this);

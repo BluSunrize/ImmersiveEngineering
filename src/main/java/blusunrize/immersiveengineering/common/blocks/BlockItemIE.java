@@ -45,7 +45,7 @@ public class BlockItemIE extends BlockItem
 
 	public BlockItemIE(Block b)
 	{
-		this(b, new Item.Properties().group(ImmersiveEngineering.itemGroup));
+		this(b, new Item.Properties().group(ImmersiveEngineering.ITEM_GROUP));
 		setRegistryName(b.getRegistryName());
 	}
 

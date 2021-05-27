@@ -53,6 +53,6 @@ public class IETools
 
 	private static Item.Properties toolProperties()
 	{
-		return new Item.Properties().group(ImmersiveEngineering.itemGroup).maxStackSize(1);
+		return new Item.Properties().group(ImmersiveEngineering.ITEM_GROUP).maxStackSize(1);
 	}
 }

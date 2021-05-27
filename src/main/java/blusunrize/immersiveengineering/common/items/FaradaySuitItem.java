@@ -37,7 +37,7 @@ public class FaradaySuitItem extends ArmorItem implements IElectricEquipment
 
 	public FaradaySuitItem(EquipmentSlotType type)
 	{
-		super(mat, type, new Properties().maxStackSize(1).group(ImmersiveEngineering.itemGroup));
+		super(mat, type, new Properties().maxStackSize(1).group(ImmersiveEngineering.ITEM_GROUP));
 		String name = "armor_faraday_"+type.getName().toLowerCase(Locale.ENGLISH);
 		setRegistryName(ImmersiveEngineering.MODID, name);
 		IEContent.registeredIEItems.add(this);

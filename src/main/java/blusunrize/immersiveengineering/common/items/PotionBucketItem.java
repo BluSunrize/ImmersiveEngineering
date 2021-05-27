@@ -41,7 +41,7 @@ public class PotionBucketItem extends IEBaseItem
 {
 	public PotionBucketItem()
 	{
-		super("potion_bucket", new Properties().maxStackSize(1));
+		super("potion_bucket", new Properties().maxStackSize(1), ItemGroup.BREWING);
 	}
 
 	public static ItemStack forPotion(Potion type)

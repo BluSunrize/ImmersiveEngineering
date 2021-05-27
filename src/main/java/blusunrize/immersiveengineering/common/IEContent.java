@@ -894,7 +894,7 @@ public class IEContent
 		String enumName = MODID+"_"+name;
 		id = "ie_"+id;
 		BannerPattern pattern = BannerPattern.create(enumName.toUpperCase(), enumName, id, true);
-		Item patternItem = new BannerPatternItem(pattern, new Item.Properties().group(ImmersiveEngineering.itemGroup));
+		Item patternItem = new BannerPatternItem(pattern, new Item.Properties().group(ImmersiveEngineering.ITEM_GROUP));
 		patternItem.setRegistryName(ImmersiveEngineering.MODID, "bannerpattern_"+name);
 		IEContent.registeredIEItems.add(patternItem);
 		return patternItem;

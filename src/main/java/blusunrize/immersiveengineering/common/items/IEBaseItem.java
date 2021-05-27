@@ -19,6 +19,7 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -40,7 +41,12 @@ public class IEBaseItem extends Item implements IColouredItem
 
 	public IEBaseItem(String name, Properties props)
 	{
-		super(props.group(ImmersiveEngineering.itemGroup));
+		this(name, props, ImmersiveEngineering.ITEM_GROUP);
+	}
+
+	public IEBaseItem(String name, Properties props, ItemGroup group)
+	{
+		super(props.group(group));
 		this.itemName = name;
 		setRegistryName(ImmersiveEngineering.MODID, name);
 		IEContent.registeredIEItems.add(this);

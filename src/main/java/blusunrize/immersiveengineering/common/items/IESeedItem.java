@@ -27,7 +27,7 @@ public class IESeedItem extends BlockItem implements IPlantable
 {
 	public IESeedItem(Block cropBlock)
 	{
-		super(cropBlock, new Properties().group(ImmersiveEngineering.itemGroup));
+		super(cropBlock, new Properties().group(ImmersiveEngineering.ITEM_GROUP));
 		setRegistryName(ImmersiveEngineering.MODID, "seed");
 		IEContent.registeredIEItems.add(this);
 

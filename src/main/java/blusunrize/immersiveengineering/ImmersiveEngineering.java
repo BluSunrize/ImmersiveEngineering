@@ -230,9 +230,7 @@ public class ImmersiveEngineering
 	)
 	{
 		if(!knownPacketTypes.add(packetType))
-		{
 			throw new IllegalStateException("Duplicate packet type: "+packetType.getName());
-		}
 		packetHandler.registerMessage(messageId++, packetType, IMessage::toBytes, decoder, (t, ctx) -> {
 			t.process(ctx);
 			ctx.get().setPacketHandled(true);
@@ -290,7 +288,7 @@ public class ImmersiveEngineering
 		return new ResourceLocation(MODID, path);
 	}
 
-	public static ItemGroup itemGroup = new ItemGroup(MODID)
+	public static final ItemGroup ITEM_GROUP = new ItemGroup(MODID)
 	{
 		@Override
 		@Nonnull

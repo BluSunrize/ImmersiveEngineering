@@ -67,7 +67,7 @@ public class IEBaseBlock extends Block implements IIEBlock, IWaterLoggable
 		setRegistryName(registryName);
 
 		IEContent.registeredIEBlocks.add(this);
-		Item item = createItemBlock.apply(this, new Item.Properties().group(ImmersiveEngineering.itemGroup));
+		Item item = createItemBlock.apply(this, new Item.Properties().group(ImmersiveEngineering.ITEM_GROUP));
 		if(item!=null)
 		{
 			item.setRegistryName(registryName);
