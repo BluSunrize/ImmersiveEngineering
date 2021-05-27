@@ -1,3 +1,6 @@
+##### Version 1.16.5-5.0.0-pre
+- Move potion buckets to vanilla brewing tab (Malte)
+
 ##### Version 1.16.5-5.0.0-135
 - Clean up the API (Malte)
     - THIS IS A BREAKING CHANGE!
