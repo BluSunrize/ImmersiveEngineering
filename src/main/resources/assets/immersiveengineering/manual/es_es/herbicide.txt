@@ -1,0 +1,6 @@
+Herbicida
+Una plaga para la flora
+<&items>El herbicida es un compuesto químico con efectos bastante venenosos para la flora local.
+Cuando se carga en un <link;chemthrower;Lanzador Químico> se dispersa como una fina niebla, que marchita y destruye cualquier planta con la que entra en contacto.
+El fluido arrancará las hojas de los árboles, destruirá las flores, los arbustos y los cultivos y arrancará la hierba de la tierra. También deshidratará y arruinará las tierras de cultivo.<br>
+Para elaborar el Herbicida, mezcla medio cubo de <link;fermenter;etanol> con §2Polvo de Cobre§r y §2Polvo de Nitrato§r en la <link;mixer;Mezcladora>.
