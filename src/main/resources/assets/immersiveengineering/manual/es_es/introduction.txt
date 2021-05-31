@@ -2,7 +2,7 @@ Introducción
 Comenzar en la ingeniería
 Saludos, compañero ingeniero, y bienvenido a Immersive Engineering. Este diario te servirá de guía para configurar todas las nuevas máquinas y funciones que ofrece este mod.
 Empecemos por lo básico: Immersive Engineering está construido en torno al concepto de generación y transferencia de energía retrofuturista. La energía que se utiliza en este mod es la energía de Flux, un rasgo compartido con muchos otros mods disponibles actualmente.
-La energía se transmite entre §lconectores§r mediante el uso de §cables§r. Los cables sólo pueden salvar una distancia limitada de bloques, por lo que tendrá que utilizar más conectores, como §lrelés§r entre los cables.
+La energía se transmite entre §lconectores§r mediante el uso de §cables§r. Los cables sólo pueden llegar a una distancia limitada de bloques, por lo que tendrá que utilizar más conectores, como §lrelés§r entre los cables.
 Tiene la posibilidad de elegir entre tres tipos diferentes de cables, que difieren en las transferencias, <config;iA;wires.wireTransferRate;l3> Flux/tick. Para cambiar entre los diferentes tipos de cable, tendrá que utilizar §ltransformadores§r.
 <&hammer>El Martillo del Ingeniero es la herramienta más importante a su disposición. Te servirá para formar multibloques como el Horno de Coque y el Alto Horno, aplastar minerales hasta convertirlos en polvo o configurar bloques como los Postes de Madera.
 <&screwdriver>El Destornillador de Ingeniero es otro elemento común en tu caja de herramientas, que necesitarás para hacer configuraciones precisas en ciertas piezas de maquinaria.
