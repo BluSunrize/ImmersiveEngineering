@@ -288,7 +288,7 @@
   "desc.immersiveengineering.info.shader.immersiveengineering:minecart": "Vagoneta",
   "desc.immersiveengineering.info.shader.immersiveengineering:balloon": "Globo",
   "desc.immersiveengineering.info.shader.immersiveengineering:banner": "Pergamino",
-  "desc.immersiveengineering.info.shader.level": "Nivel: ",
+  "desc.immersiveengineering.info.shader.level": "Rareza: ",
   "desc.immersiveengineering.info.shader.rarity.common": "Común",
   "desc.immersiveengineering.info.shader.rarity.uncommon": "Poco común",
   "desc.immersiveengineering.info.shader.rarity.rare": "Raro",
