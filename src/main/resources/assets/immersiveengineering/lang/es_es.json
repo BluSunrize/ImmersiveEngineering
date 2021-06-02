@@ -451,7 +451,7 @@
   "chat.immersiveengineering.warning.connectionExists": "Esta conexión ya está hecha",
   "chat.immersiveengineering.warning.invalidPoint": "Uno de los puntos de conexión es inválido",
   "chat.immersiveengineering.info.skyhookLimited": "El gancho limitará su velocidad automáticamente",
-  "chat.immersiveengineering.info.skyhookUnlimited": "La velocidad del gancho es inlimitada",
+  "chat.immersiveengineering.info.skyhookUnlimited": "La velocidad del gancho es ilimitada",
   "chat.immersiveengineering.info.averageLoss": "Media de pérdida: %1$s%%",
   "chat.immersiveengineering.info.energyStorage": "Energía almacenada: %1$s/%2$s IF",
   "chat.immersiveengineering.info.tooHot": "¡El fluido está demasiado caliente para este contenedor!",
