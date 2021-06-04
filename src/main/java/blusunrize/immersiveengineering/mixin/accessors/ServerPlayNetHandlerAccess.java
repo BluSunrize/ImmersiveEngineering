@@ -9,8 +9,10 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface ServerPlayNetHandlerAccess extends PlayerUtils.ConnectionAccess
 {
 	@Accessor
+	@Override
 	void setFloating(boolean shouldFloat);
 
 	@Accessor
+	@Override
 	void setFloatingTickCount(int ticks);
 }

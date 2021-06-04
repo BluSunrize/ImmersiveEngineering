@@ -22,7 +22,8 @@
     "accessors.TileTypeAccess",
     "accessors.TNTEntityAccess",
     "coremods.AbstractBlockStateMixin",
-    "coremods.ServerWorldMixin"
+    "coremods.ServerWorldMixin",
+    "coremods.TemplateMixin"
   ],
   "client": [
     "accessors.client.FontResourceManagerAccess",
