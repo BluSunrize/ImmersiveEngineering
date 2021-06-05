@@ -201,7 +201,7 @@
   "desc.immersiveengineering.info.blockSide.connectFluid.none": "Sin conexión",
   "desc.immersiveengineering.info.blockSide.connectFluid.input": "Entrada de fluidos",
   "desc.immersiveengineering.info.blockSide.connectFluid.output": "Salida de fluidos",
-  "desc.immersiveengineering.info.filter.tag": "Filtro: Diccionario de minerales<br>Filtra ítems basándose en<br>sus nombres OreDictionary.",
+  "desc.immersiveengineering.info.filter.tag": "Filtro: OreDictionary<br>Filtra ítems basándose en<br>sus nombres OreDictionary.",
   "desc.immersiveengineering.info.filter.nbt": "Filtro: Datos NBT<br>Filtra ítems en<br>base a sus datos NBT.",
   "desc.immersiveengineering.info.filter.damage": "Filtro: Difuso<br>Filtra ítems sin tener<br>en cuenta su valor de daño.",
   "desc.immersiveengineering.info.oreDict.off": "Diccionario de minerales: Desactivado",
