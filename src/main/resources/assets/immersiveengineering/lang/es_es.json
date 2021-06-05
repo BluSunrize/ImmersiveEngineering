@@ -439,7 +439,7 @@
   "gui.immersiveengineering.config.item_batcher.batchmode.SINGLE": "Salida cuando se cumple cualquier filtro",
   "gui.immersiveengineering.config.item_batcher.batchmode.ALL": "Salida cuando se cumplen todos los filtros",
   "gui.immersiveengineering.config.item_batcher.redstone_color": "Color de la señal redstone:",
-  "gui.immersiveengineering.config.redstone_iomode": "Modo de entrada y salida redstone:",
+  "gui.immersiveengineering.config.redstone_iomode": "Modo de entrada y salida de la señal redstone:",
   "gui.immersiveengineering.config.redstone_color": "Color de la señal redstone:",
   "gui.immersiveengineering.config.redstone_color_sending": "Enviando señal de color",
   "gui.immersiveengineering.config.redstone_color_receiving": "Recibiendo señal de color",
