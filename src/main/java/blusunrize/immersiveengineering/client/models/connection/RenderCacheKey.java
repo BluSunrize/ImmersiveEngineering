@@ -8,13 +8,9 @@
 
 package blusunrize.immersiveengineering.client.models.connection;
 
-import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.mixin.accessors.client.RenderTypeAccess;
-import com.google.common.collect.ImmutableList;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.client.model.data.ModelProperty;
 
 import java.util.Arrays;
 
@@ -31,28 +27,6 @@ public class RenderCacheKey
 		additionalProperties = additional;
 	}
 
-	public RenderCacheKey(BlockState state, RenderType l, RenderCacheKey baseKey, IModelData data,
-						  ImmutableList<Object> additional, ModelProperty<?>... toSave)
-	{
-		this(state, l, additional, getAllProperties(baseKey, data, toSave));
-	}
-
-	public RenderCacheKey(BlockState state, RenderType l, IModelData data, ImmutableList<Object> additional,
-						  ModelProperty<?>... toSave)
-	{
-		this(state, l, null, data, additional, toSave);
-	}
-
-	private static Object[] getAllProperties(RenderCacheKey base, IModelData data, ModelProperty<?>[] toSave)
-	{
-		Object[] ret = Arrays.copyOf(base.additionalProperties, toSave.length+base.additionalProperties.length);
-		for(int i = 0; i < toSave.length; ++i)
-		{
-			ret[i+base.additionalProperties.length] = data.getData(toSave[i]);
-		}
-		return ret;
-	}
-
 	@Override
 	public boolean equals(Object obj)
 	{
@@ -63,7 +37,7 @@ public class RenderCacheKey
 		RenderCacheKey o = (RenderCacheKey)obj;
 		if(o.layer!=layer)
 			return false;
-		if(!Utils.areArraysEqualIncludingBlockstates(additionalProperties, o.additionalProperties))
+		if(!Arrays.equals(additionalProperties, o.additionalProperties))
 			return false;
 		return state.equals(o.state);
 	}
@@ -73,7 +47,7 @@ public class RenderCacheKey
 	{
 		int val = layer==null?0: ((RenderTypeAccess)layer).getName().hashCode();
 		final int prime = 31;
-		val = prime*val+Utils.hashBlockstate(state);
+		val = prime*val+state.hashCode();
 		val = prime*val+Arrays.hashCode(additionalProperties);
 		return val;
 	}

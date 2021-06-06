@@ -11,18 +11,18 @@ package blusunrize.immersiveengineering.client.models.connection;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties.ConnectionModelData;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
+import blusunrize.immersiveengineering.api.client.ICacheKeyProvider;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.Connection.RenderData;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.client.models.BakedIEModel;
-import blusunrize.immersiveengineering.client.models.PrivateProperties;
 import blusunrize.immersiveengineering.client.utils.ModelUtils;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces;
 import blusunrize.immersiveengineering.mixin.accessors.client.RenderTypeAccess;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.mojang.datafixers.util.Either;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
@@ -32,7 +32,6 @@ import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.inventory.container.PlayerContainer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -49,8 +48,9 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
-public class BakedConnectionModel extends BakedIEModel
+public class BakedConnectionModel<T> extends BakedIEModel
 {
 	Lazy<TextureAtlasSprite> textureAtlasSprite = Lazy.of(() -> Minecraft.getInstance().getModelManager()
 			.getAtlasTexture(PlayerContainer.LOCATION_BLOCKS_TEXTURE)
@@ -61,12 +61,23 @@ public class BakedConnectionModel extends BakedIEModel
 			.build();
 	@Nullable
 	private final IBakedModel base;
+	private final Either<ICacheKeyProvider<T>, T> extraCacheKey;
 	private final ImmutableSet<String> layers;
 
-	public BakedConnectionModel(@Nullable IBakedModel basic, Collection<String> layers)
+	public BakedConnectionModel(@Nullable IBakedModel basic, Collection<String> layers, T extraCacheKey)
 	{
 		base = basic;
 		this.layers = ImmutableSet.copyOf(layers);
+		this.extraCacheKey = Either.right(extraCacheKey);
+	}
+
+	public BakedConnectionModel(
+			@Nullable IBakedModel basic, Collection<String> layers, ICacheKeyProvider<T> extraCacheKey
+	)
+	{
+		base = basic;
+		this.layers = ImmutableSet.copyOf(layers);
+		this.extraCacheKey = Either.left(extraCacheKey);
 	}
 
 	@Nonnull
@@ -75,15 +86,8 @@ public class BakedConnectionModel extends BakedIEModel
 	{
 		if(side==null&&extraData.hasProperty(Model.CONNECTIONS))
 		{
-			//TODO more general system for this!
-			Object[] additional = null;
-			if(extraData.hasProperty(PrivateProperties.TILEENTITY_PASSTHROUGH))
-			{
-				TileEntity te = extraData.getData(PrivateProperties.TILEENTITY_PASSTHROUGH);
-				if(te instanceof IEBlockInterfaces.ICacheData)
-					additional = ((IEBlockInterfaces.ICacheData)te).getCacheData();
-			}
-			RenderCacheKey ad = new RenderCacheKey(state, null, additional);
+			T extraKey = extraCacheKey.map(ickp -> ickp.getKey(state, side, rand, extraData), Function.identity());
+			RenderCacheKey ad = new RenderCacheKey(state, null, extraKey);
 			Set<Connection.RenderData> data = new HashSet<>();
 			ConnectionModelData orig = extraData.getData(Model.CONNECTIONS);
 			assert (orig!=null);

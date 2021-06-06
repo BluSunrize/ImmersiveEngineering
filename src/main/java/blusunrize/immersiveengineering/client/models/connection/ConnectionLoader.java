@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.client.models.connection;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.client.ICacheKeyProvider;
 import blusunrize.immersiveengineering.client.models.UnbakedModelGeometry;
 import blusunrize.immersiveengineering.client.models.connection.ConnectionLoader.ConnectorModel;
 import com.google.common.collect.ImmutableList;
@@ -17,6 +18,7 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
+import com.mojang.datafixers.util.Unit;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -108,7 +110,10 @@ public class ConnectionLoader implements IModelLoader<ConnectorModel>
 				base = null;
 			else
 				base = baseModel.bake(owner, bakery, spriteGetter, modelTransform, overrides, modelLocation);
-			return new BakedConnectionModel(base, layers);
+			if(base instanceof ICacheKeyProvider<?>)
+				return new BakedConnectionModel<>(base, layers, (ICacheKeyProvider<?>)base);
+			else
+				return new BakedConnectionModel<>(base, layers, Unit.INSTANCE);
 		}
 
 		@Override

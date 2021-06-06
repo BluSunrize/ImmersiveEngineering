@@ -13,7 +13,10 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.common.IETileTypes;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPropertyPassthrough;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop;
 import blusunrize.immersiveengineering.common.blocks.generic.ImmersiveConnectableTileEntity;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -49,7 +52,7 @@ import java.util.Set;
 import static blusunrize.immersiveengineering.api.wires.WireApi.INFOS;
 
 public class FeedthroughTileEntity extends ImmersiveConnectableTileEntity implements ITileDrop,
-		IPropertyPassthrough, IBlockBounds, ICacheData, IStateBasedDirectional
+		IPropertyPassthrough, IBlockBounds, IStateBasedDirectional
 {
 	public static final String WIRE = "wire";
 	private static final String OFFSET = "offset";
@@ -210,14 +213,6 @@ public class FeedthroughTileEntity extends ImmersiveConnectableTileEntity implem
 			aabb = VoxelShapes.create(tmp[0], tmp[1], tmp[2], tmp[3], tmp[4], tmp[5]);
 		}
 		return aabb;
-	}
-
-	@Override
-	public Object[] getCacheData()
-	{
-		return new Object[]{
-				stateForMiddle, reference, getFacing()
-		};
 	}
 
 	@Override

@@ -9,12 +9,14 @@
 package blusunrize.immersiveengineering.client.models.connection;
 
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.client.ICacheKeyProvider;
 import blusunrize.immersiveengineering.api.utils.QuadTransformer;
 import blusunrize.immersiveengineering.api.utils.client.CombinedModelData;
 import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
 import blusunrize.immersiveengineering.api.wires.WireApi;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.models.BakedIEModel;
+import blusunrize.immersiveengineering.client.models.connection.FeedthroughModel.FeedthroughCacheKey;
 import blusunrize.immersiveengineering.client.utils.ModelUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Connectors;
 import blusunrize.immersiveengineering.common.blocks.metal.FeedthroughTileEntity;
@@ -74,7 +76,7 @@ import static blusunrize.immersiveengineering.common.blocks.metal.FeedthroughTil
 import static blusunrize.immersiveengineering.common.blocks.metal.FeedthroughTileEntity.WIRE;
 import static net.minecraft.util.Direction.Axis.Y;
 
-public class FeedthroughModel extends BakedIEModel
+public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<FeedthroughCacheKey>
 {
 	public static final Cache<FeedthroughCacheKey, SpecificFeedthroughModel> CACHE = CacheBuilder.newBuilder()
 			.expireAfterAccess(2, TimeUnit.MINUTES)
@@ -86,28 +88,11 @@ public class FeedthroughModel extends BakedIEModel
 	@Override
 	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData)
 	{
-		BlockState baseState = Blocks.STONE.getDefaultState();
-		WireType wire = WireType.COPPER;
-		Direction facing = Direction.NORTH;
-		int offset = 1;
-		Int2IntFunction colorMultiplier = i -> 0xffffffff;
-
-		if(extraData.hasProperty(FEEDTHROUGH))
-		{
-			FeedthroughData data = extraData.getData(FEEDTHROUGH);
-			assert (data!=null);
-			baseState = data.baseState;
-			wire = data.wire;
-			facing = data.facing;
-			offset = data.offset;
-			colorMultiplier = data.colorMultiplier;
-		}
-		final Int2IntFunction colorMultiplierFinal = colorMultiplier;
-		FeedthroughCacheKey key = new FeedthroughCacheKey(wire, baseState, offset, facing, MinecraftForgeClient.getRenderLayer(), colorMultiplier);
+		FeedthroughCacheKey key = getKey(state, side, rand, extraData);
 		SpecificFeedthroughModel ret = CACHE.getIfPresent(key);
 		if(ret==null)
 		{
-			ret = new SpecificFeedthroughModel(key, colorMultiplierFinal);
+			ret = new SpecificFeedthroughModel(key, key.allColorMultipliers);
 			Preconditions.checkState(key.usedColorMultipliers!=null);
 			CACHE.put(key, ret);
 		}
@@ -162,7 +147,7 @@ public class FeedthroughModel extends BakedIEModel
 		return ModelLoader.White.instance();
 	}
 
-	private ItemCameraTransforms transform = new ItemCameraTransforms(
+	private static final ItemCameraTransforms transform = new ItemCameraTransforms(
 			new ItemTransformVec3f(new Vector3f(75, 45, 0), new Vector3f(0, 0, 0), new Vector3f(.375F, .375F, .375F)),//3Left
 			new ItemTransformVec3f(new Vector3f(75, 45, 0), new Vector3f(0, 0, 0), new Vector3f(.375F, .375F, .375F)),//3Right
 			new ItemTransformVec3f(new Vector3f(0, 225, 0), new Vector3f(0, 0, 0), new Vector3f(.4F, .4F, .4F)),//1Left
@@ -188,10 +173,36 @@ public class FeedthroughModel extends BakedIEModel
 		return INSTANCE;
 	}
 
+	@Nonnull
+	@Override
+	public FeedthroughCacheKey getKey(
+			@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData
+	)
+	{
+		BlockState baseState = Blocks.STONE.getDefaultState();
+		WireType wire = WireType.COPPER;
+		Direction facing = Direction.NORTH;
+		int offset = 1;
+		Int2IntFunction colorMultiplier = i -> 0xffffffff;
+
+		if(extraData.hasProperty(FEEDTHROUGH))
+		{
+			FeedthroughData data = extraData.getData(FEEDTHROUGH);
+			assert (data!=null);
+			baseState = data.baseState;
+			wire = data.wire;
+			facing = data.facing;
+			offset = data.offset;
+			colorMultiplier = data.colorMultiplier;
+		}
+		return new FeedthroughCacheKey(
+				wire, baseState, offset, facing, MinecraftForgeClient.getRenderLayer(), colorMultiplier
+		);
+	}
+
 	private static class FeedthroughItemOverride extends ItemOverrideList
 	{
-
-		private static Cache<ItemStack, FeedthroughModel> ITEM_MODEL_CACHE = CacheBuilder.newBuilder()
+		private static final Cache<ItemStack, FeedthroughModel> ITEM_MODEL_CACHE = CacheBuilder.newBuilder()
 				.maximumSize(100)
 				.expireAfterAccess(60, TimeUnit.SECONDS)
 				.build();
@@ -199,7 +210,7 @@ public class FeedthroughModel extends BakedIEModel
 		@Nonnull
 		@Override
 		public IBakedModel getOverrideModel(@Nonnull IBakedModel originalModel, ItemStack stack,
-												 @Nullable ClientWorld world, @Nullable LivingEntity entity)
+											@Nullable ClientWorld world, @Nullable LivingEntity entity)
 		{
 			Item connItem = Item.getItemFromBlock(Connectors.feedthrough);
 			if(stack.getItem()==connItem)
@@ -218,7 +229,7 @@ public class FeedthroughModel extends BakedIEModel
 
 	}
 
-	private static class FeedthroughCacheKey
+	public static class FeedthroughCacheKey
 	{
 		final WireType type;
 		final BlockState baseState;
@@ -288,8 +299,7 @@ public class FeedthroughModel extends BakedIEModel
 		@Override
 		public int hashCode()
 		{
-			int ret = Utils.hashBlockstate(baseState);
-			return 31*ret+Objects.hash(type, offset, facing, layer);
+			return Objects.hash(type, offset, facing, layer, baseState);
 		}
 	}
 

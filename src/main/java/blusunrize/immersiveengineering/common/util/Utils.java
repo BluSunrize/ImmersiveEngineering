@@ -52,7 +52,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.state.Property;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
@@ -729,39 +728,6 @@ public class Utils
 		for(int i = 0; i < in.length; i++)
 			ret[i] += .5;
 		return ret;
-	}
-
-	public static int hashBlockstate(BlockState state)
-	{
-		int val = 0;
-		final int prime = 31;
-		for(Property<?> n : state.getProperties())
-		{
-			Object o = state.get(n);
-			val = prime*val+Objects.hash(o);
-		}
-		return val;
-	}
-
-	public static boolean areArraysEqualIncludingBlockstates(Object[] a, Object[] a2)
-	{
-		if(a==a2)
-			return true;
-		if(a==null||a2==null)
-			return false;
-
-		int length = a.length;
-		if(a2.length!=length)
-			return false;
-
-		for(int i = 0; i < length; i++)
-		{
-			Object o1 = a[i];
-			Object o2 = a2[i];
-			if(!(o1==null?o2==null: o1.equals(o2)))
-				return false;
-		}
-		return true;
 	}
 
 	public static boolean isVecInBlock(Vector3d vec3d, BlockPos pos, BlockPos offset, double eps)

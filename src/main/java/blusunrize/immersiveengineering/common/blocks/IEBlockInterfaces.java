@@ -475,11 +475,6 @@ public class IEBlockInterfaces
 	{
 	}
 
-	public interface ICacheData
-	{
-		Object[] getCacheData();
-	}
-
 	public interface IModelDataBlock
 	{
 		IModelData getModelData(@Nonnull IBlockDisplayReader world, @Nonnull BlockPos pos, @Nonnull BlockState state,
