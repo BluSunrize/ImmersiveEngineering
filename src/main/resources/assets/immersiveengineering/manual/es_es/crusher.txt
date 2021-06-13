@@ -1,6 +1,7 @@
-Trituradora
-¡Mantén las manos fuera!
-Triturar un mineral es una forma eficaz de aumentar su rendimiento, ya que cada mineral crea dos polvos que luego puedes fundir. Esta trituradora de tamaño industrial es una forma rápida de hacerlo. La velocidad de procesamiento de la máquina depende de la energía que se le suministre.
-La aplicación de una señal de Redstone al panel de control de la parte delantera detendrá el proceso de la trituradora, este comportamiento puede invertirse mediante el uso del Martillo del ingeniero.
-La estructura se forma haciendo clic con el botón derecho del ratón en el bloque central del frente. El frente es el lado ancho de la estructura que tiene un bloque de ingeniería ligero en la parte inferior.
-Sin embargo, no sólo se utiliza para triturar minerales. Todo ser vivo que caiga en la máquina recibirá un daño grave y la trituradora emitirá las gotas correspondientes. Asimismo, todos los objetos que no puedan ser procesados serán destruidos.
+§lTrituradora industrial§r
+§o¡Mantén las manos fuera!§r
+Triturar un §nmineral§r es una forma eficaz de aumentar su rendimiento, ya que cada mineral crea dos §npolvos§r que luego puedes §nfundir§r. Esta trituradora de tamaño industrial es una forma rápida de hacerlo. La velocidad de procesamiento de la máquina depende de la energía que se le suministre.
+La aplicación de una señal de redstone al panel de control de la parte delantera detendrá el proceso de la trituradora, este comportamiento puede invertirse mediante el uso del §lMartillo del Ingeniero§r.
+La estructura se forma haciendo click derecho en el bloque central del frente. El frente es el lado ancho de la estructura que tiene un §lbloque de ingeniería ligera§r en la parte inferior.
+Sin embargo, no sólo se utiliza para triturar §nminerales§r. Todo §nser vivo§r que caiga en la máquina recibirá un §ndaño grave§r y la trituradora emitirá las caídas correspondientes. Asimismo, todos los objetos que no puedan ser procesados §nserán destruidos§r.
+

@@ -1,11 +1,11 @@
-Sierra circular portátil
-No vamos a Ravenholm
-<&recipes>Esta gran sierra circular portátil está diseñada para hacer un trabajo rápido con los árboles y otras piezas de follaje que puedan interponerse en el camino de una prístina nave industrial.
-Después de usar el <link;workbench;Banco de Trabajo del Ingeniero;start> y colocar una hoja de sierra en ella, y cargarla con  <link;refinery;Biodiesel;start> u otro combustible, puede utilizarse para tallar desde pequeños abedules hasta grandes árboles de la selva.
+§lSierra circular§r
+§oNo vamos a Ravenholm§r
+<&recipes>Esta gran §lsierra circular§r portátil ha sido diseñada para acabar rápidamente con los árboles y otras piezas de follaje que puedan interponerse en el camino de una fábrica impoluta.
+Después de usar el §1<link;workbench;banco de trabajo del ingeniero;start>§r para colocar una §lhoja de sierra§r en ella, y cargarla con §1<link;refinery;biodiésel;start>§r u otro combustible, puede usarse para tallar desde pequeños abedules hasta grandes árboles de la selva.
 
-Al igual que otras herramientas, la sierra circular puede modificarse en el <link;workbench;Banco de Trabajo del Ingeniero>. Estas mejoras afectan al tamaño del depósito interno y a la durabilidad de su hoja de sierra.
+Al igual que otras herramientas, la §lsierra circular§r puede modificarse en el §1<link;workbench;banco de trabajo del ingeniero>§r. Estas mejoras afectan al tamaño del depósito interno y a la durabilidad de su hoja de sierra.
 <np>
-<&rockcutter_recipe>Sustituyendo la hoja de sierra normal por una §2Hoja de sierra para cortar roca§r, la sierra circular puede utilizarse para cortar limpiamente cubos de piedra del suelo, de forma muy parecida al encantamiento §2Toque de seda§r. Sin embargo, la hoja con dientes de diamantados ya no es útil para tallar la madera o talar árboles.<np>
-<&tank_recipe>El §2Tanque Grande§r aumenta la capacidad de fluido de la sierra circular en 2000 mb.<np>
-<&lube_recipe>El §2Sistema de lubricación avanzado§r aplica un lubricante adicional a la hoja de sierra, reduciendo la velocidad a la que pierde durabilidad.<np>
-<&quiver_recipe>Fijando el §2Carcaj de cuchillas§r a la sierra circular, puede llevar hasta dos hojas de sierra adicionales. Puede alternar entre las hojas almacenadas mediante <config;b;tools.chemthrower.scroll; manteniendo shift y utilizando la rueda de desplazamiento, o mediante el uso de la combinación de teclas ;using>§l<keybind;key.immersiveengineering.chemthrowerSwitch>§r si se ha establecido en las opciones.
+<&rockcutter_recipe>Sustituyendo la hoja de sierra normal por un §ldisco de corte§r, la sierra puede utilizarse para cortar limpiamente cubos de piedra del suelo, de forma parecida al encantamiento §ltoque de seda§r. Sin embargo, la hoja con punta de diamante ya no es útil para tallar madera o talar árboles.<np>
+<&tank_recipe>El §ltanque grande§r aumenta la capacidad de fluido de la §lsierra circular§r en 2000 mb.<np>
+<&lube_recipe>El §lsistema avanzado de lubricación§r aplica lubricante adicional a la §lhoja de sierra§r, reduciendo la velocidad en la que se pierde la durabilidad.<np>
+<&quiver_recipe>Al acoplar un §lcarcaj para hojas de corte§r al lado de la §lsierra circular§r, puedes llevar dos §lhojas de sierra§r adicionales. Puedes alternar entre las §lhojas§r guardadas mediante <config;b;tools.chemthrower.scroll;Mayús izq. y utilizando la rueda del ratón, o mediante el uso de;using> el enlace de tecla §l<keybind;key.immersiveengineering.chemthrowerSwitch>§r si se ha establecido en las opciones.

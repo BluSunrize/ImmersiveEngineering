@@ -1,6 +1,6 @@
-Mochila de condensador
-¡Haga....rayos....Egon!
-El almacenamiento de energía requiere espacio y algunos componentes de gran peso. Por ello, almacenar grandes cantidades de energía en cada herramienta individualmente es ineficiente y hace que sean difíciles de manejar.
-La mochila de condensadores actúa como un compromiso, ofreciendo un almacenamiento centralizado de energía para que cualquier herramienta accionada pueda aprovecharla.
-La mochila carga todas las herramientas que lleves en la mano principal o en la mano secundaria, así como las piezas de armadura que lleves puestas.
-El condensador se puede llevar a la espalda como una pieza de armadura pectoral, o se puede acoplar a los conjuntos de armadura más comunes para obtener el beneficio de una fuente de alimentación, así como la protección.
+Capacitor Backpack
+Do....Ray....Egon!
+Energy storage takes space and some heavy weight components. As such, storing large amounts of energy in each tool individually is inefficient and makes them akward to wield.
+The Capacitor Backpack acts as a compromise, offering a centralized storage of energy for any powered tools to tap into.
+The backpack charges any tools held in main- or offhand as well as any armorpieces you are wearing.
+The capacitor can be worn on your back like a piece of chest armor, or you may attach it to most common sets of armor in order to gain the benefit of a power-supply as well as protection.

@@ -1,5 +1,5 @@
 Silo
-¡Lleno hasta los topes!
-Los silos ofrecen espacio para muchos artículos del mismo tipo, lo que los hace excelentes para el almacenamiento masivo de semillas, escoria o adoquines. Tienen espacio para 41472 elementos, lo que equivale a la capacidad de 24 cofres.
-Los elementos deben introducirse por la parte superior y extraerse por la inferior. Aplicar una señal de Redstone al bloque inferior hará que salga automáticamente.
-Un comparador unido al bloque central inferior emitirá una señal de Redstone proporcional a lo lleno que esté el silo. Si se fija el comparador a una de las 6 capas superiores, se obtiene una señal proporcional a la altura del comparador. Por ejemplo, un comparador acoplado a la tercera capa de un silo no emitirá ninguna señal hasta que el depósito esté 2/6 lleno y tendrá una intensidad de señal de 15 si el silo está medio lleno o más.
+Full to the brim!
+Silos offer space for a lot of items of the same type, making them excellent for mass storage of seeds, slag or cobblestone. They have space for 41472 items, equaling the capacity of 24 chests.
+Items must be input through the top and extracted from the bottom. Applying a redstone signal to the bottom block will make it output automatically.
+A comparator attached to the bottom center block will it emit a redstone signal proportional to how full the silo is. Attaching the comparator to one of the top 6 layers results in a signal proportional to the height of the comparator. For example, a comparator attached to the third layer of a silo would not emit any signal until the tank is 2/6 full and have a signal strength of 15 if the silo is half full or more.

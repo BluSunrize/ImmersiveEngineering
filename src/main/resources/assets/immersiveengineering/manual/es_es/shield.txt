@@ -1,6 +1,6 @@
-Escudo de chapas gruesas
-Falange de un solo hombre
-<&recipe>El Escudo de chapas gruesas es una mejora directa de los escudos de madera normales que conoces. De forma similar, este escudo bloqueará la mayor parte del daño recibido, pero su durabilidad también se ha incrementado considerablemente, y se puede mejorar.<np>
-<&flashbulb>La mejora de §2Foco§r añade una foco y una pantalla reflectora al escudo. Al ser atacado, el dispositivo producirá un destello brillante y cegador, desorientando a todos los que estén delante del usuario.<np>
-<&electric>Agregando §2Emisores de choque§r al escudo te permite tomar represalias contra los enemigos que te atacan. Cuando el escudo es golpeado, emite una descarga que inflige un daño menor al agresor. Además, vaporiza los proyectiles en lugar de detenerlos..<np>
-<&magnetic>Los §2Guantes Magnéticos§r sirven para acceder fácilmente al escudo cuando se ve amenazado. Con esta mejora equipada, basta con tocar dos veces §l<keybind;key.immersiveengineering.magnetEquip>§r hará que recuperes el escudo de tu inventario y lo coloques en la ranura de tu mano libre.
+Heavy Plated Shield
+One Man Phalanx
+<&recipe>The Heavy Plated Shield is a direct upgrade to the normal wooden shields you might be acquainted with. In similar fashion, this shield will block most incoming damage from the front, but its durability has been increased considerably, and it can be upgraded.<np>
+<&flashbulb>The §2Flashbulb§r upgrade adds a bright lightbulb and reflector screen to the shield. Upon being attacked, the device will produce a bright, blinding flash, disorienting everyone in front of the user.<np>
+<&electric>Adding §2Shock Emitters§r to the shield allows you to retaliate against attacking enemies. When the shield is struck, it will emit a shock, inflicting minor damage to the aggressor. Additionally, it will vapourize projectiles rather than just stopping them.<np>
+<&magnetic>The §2Magnetic Glove§r serves as an easy way to access the shield when threatened. With this upgrade equipped, simply double-tapping the §l<keybind;key.immersiveengineering.magnetEquip>§r Key will have you retrieve the shield from your inventory and place it in your offhand slot.

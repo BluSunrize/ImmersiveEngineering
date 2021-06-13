@@ -1,14 +1,14 @@
-Torretas
-¿Sigues ahí?
-Las Torretas son el siguiente paso en la defensa automatizada de tu fábrica. Disponen de un complejo sistema óptico combinado con un "cerebro" mecánico para distinguir y adquirir eficazmente los objetivos y utilizar el armamento incorporado para neutralizarlos.
-Todas las torretas cuentan con puertos de energía en su base, y requieren una señal de Redstone para estar activas, aunque este comportamiento se puede invertir agachándose y haciendo clic con el botón derecho del ratón con un Destornillador del Ingeniero.<np>
-Una vez colocadas, las torretas recordarán a su propietario y no permitirán que otros usuarios las rompan o modifiquen. Al hacer clic con el botón derecho del ratón en la torreta, aparece la interfaz gráfica de usuario, que presenta una lista de nombres con un campo de entrada, así como múltiples opciones de objetivos.
-Por defecto, la lista es una lista negra de objetivos que no pueden ser atacados. Esta lista utiliza nombres de criaturas, por lo que es posible hacer una lista blanca de animales.<np>
-<&turret_chemthrower_recipe>La Torreta del Lanzador de productos químicos utiliza la capacidad de propulsión de fluidos del <link;chemthrower;Lanzador de productos químicos;start> para cubrir los objetivos con cualquier cosa, desde agua para apagar las llamas, hasta gasoil para encenderlas.<np>
-Esta torreta cuenta con un puerto de fluido en la parte inferior y posterior de la base para permitir que las tuberías se conecten a ella. Además, la interfaz gráfica de usuario tiene un botón a la izquierda que desactiva o activa la llama piloto, encendiendo el fluido dispensado, siempre que sea inflamable.
+Turrets
+Are you still there?
+Turrets are the next step is automated defense of your factory. They feature a complex optical system combined with a mechanical "brain" to effectively distinguish and acquire targets and use the inbuilt weaponry to neutralize them.
+All turrets feature energy ports at their base, and require a redstone signal to be active, although this behavior can be inverted by sneaking and rightclicking it with an Engineer's Screwdriver.<np>
+Upon being placed, Turrets will remember their owner and will not allow other users to break or modify them. Rightclicking the turret brings up the GUI which features a list of names with an entry field, as well as multiple targeting options.
+By the default the list is a blacklist of targets that may not be attacked. This list utilizes creature names, so whitelisting animals is possible.<np>
+<&turret_chemthrower_recipe>The Chemthrower Turret utilizes the fluid propelling capabilities of the <link;chemthrower;eponymous tool;start> to cover targets in anything, ranging from water to douse flames, to diesel oil to start them.<np>
+This Turret features a fluid port in the bottom and back of the base to allow pipes to connect to it. Additionally, the GUI has a button on the left which dis- or enables the pilot flame, igniting the dispensed fluid, provided that it is flammable.
 
-§oLos proveedores de este plano no se hacen responsables de los daños que puedan sufrir el usuario, los vecinos o los distintos animales de la granja.§r<np>
-<&turret_gun_recipe>La Torreta del cañón presenta una versión muy modificada del <link;revolver;Revólver;start> internamente en una carcasa mucho más grande e imponente. La construcción también incluye un cargador ampliado para permitir un mayor almacenamiento interno de munición.<np>
-En la parte posterior e inferior de la base se encuentra un puerto para la inserción automática de la munición y la extracción de los casquillos gastados. Esta torreta puede almacenar hasta una pila completa de cartuchos y la interfaz gráfica de usuario cuenta con un botón para activar la expulsión automática de los casquillos usados.
+§oThe providers of this blueprint are not liable for any damage to user, neighbours or various farm animals that may incur.§r<np>
+<&turret_gun_recipe>The Gun Turret features a heavily modified version of the <link;revolver;Revolver's;start> internals in a far bigger and more imposing casing. The construction also involves an extended magazine to allow for increased internal storage of ammunition.<np>
+A port for the automatic insertion of ammo and extraction of spent casing is located within the back and bottom of the base. This Turret can store up to a full stack of cartridges and the GUI features a button to toggle the automatic expulsion of spent casings.
 
-§oTenga en cuenta que ciertas municiones pueden causar daños colaterales al usuario o a sus bienes.§r
+§oNote that certain ammunitions may cause collateral damage to the user or their property.§r

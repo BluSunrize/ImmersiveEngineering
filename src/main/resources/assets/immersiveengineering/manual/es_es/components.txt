@@ -1,9 +1,11 @@
-Componentes modificados
-Piezas integrales
-<&mech_components>Muchas máquinas y herramientas se construyen a partir de varios subcomponentes. Algunos de ellos los tendrá que utilizar de forma habitual, por lo que tienen su propia entrada en este manual. El §2Componente mecánico de hierro§r y el §2Componente mecánico de acero§r son parte integrante de la mayoría de los Multibloques y de la maquinaria.<np>
-<&create_bp>Como se encontrará creando estos componentes con más frecuencia, puede ser aconsejable redactar un <link;blueprints;Plano> para ellos. El uso de este plano en un <link;workbench;Banco de Trabajo del Ingeniero> le permitirá construir los componentes a un coste reducido.
-Las recetas del Banco de Trabajo se encuentran en la siguiente página.<np>
-<&tubes>Otro componente, aunque menos utilizado, son los §2Tubos de vacío§r. Estos tubos de vidrio se utilizan como elementos en la maquinaria electrónica y se emplean en <link;lighting;dispositivos emisores de luz>.<np>
-<&pcb>Un componente poco utilizado, pero crucial en la maquinaria avanzada que requiere un cálculo preciso es la §2Placa de circuito integrado§r. Son poco prácticas y grandes, pero pueden realizar operaciones matemáticas básicas en menos de un segundo.
+§lComponentes mecánicos§r
+§oPiezas integrales§r
+Muchas §nmáquinas§r y §nherramientas§r se construyen a partir de varios §nsubcomponentes§r. Algunos de ellos los tendrá que utilizar de forma habitual, por lo que tienen su propia entrada en este manual. 
+
+Los §lcomponentes mecánicos de hierro§r y los §lcomponentes mecánicos de acero§r son parte integral de la mayoría de los multibloques y la maquinaria.<np>
+<&create_bp>Como se encontrará creando estos componentes frecuentemente, puede ser aconsejable redactar un §1<link;blueprints;plano de ingeniería>§r para ellos.
+<&mech_components>Usar este plano en un §1<link;workbench;banco de trabajo del ingeniero>§r te permitirá construir los §lcomponentes§r §oa un coste reducido§r.
+<&tubes>Otro componente, aunque menos utilizado, son las §lválvulas de vacío§r. Estos tubos de vidrio se utilizan como elementos en maquinaria electrónica y se emplean en §1<link;lighting;dispositivos emisores de luz>§r.<np>
+<&pcb>Un componente poco utilizado, pero crucial, es la §lplaca de circuitos§r. Esta placa de cobre aislada tiene una variedad de componentes soldados a ella para crear §1<link;logic_circuits;circuitos lógicos>§r, o sirve como componente en artilugios "inteligentes".
 
 

@@ -1,6 +1,6 @@
-Mezcladora
-Cubas de masa de galletas
-La Mezcladora es una estructura multibloque que disuelve sólidos en fluidos, mezclándolos. La estructura se construye como se muestra arriba y se forma utilizando el Martillo del Ingeniero en el bloque central de chapa.
-Los usos más comunes de esta máquina son la mezcla de Hormigón líquido a partir de agua, 2 partes de arena 1 parte de grava y 1 parte de arcilla, o la creación de Pociones a partir de agua y sus diversos ingredientes.
-Los fluidos se introducen en el mezclador a través del puerto situado en la parte inferior de su fuente de alimentación. Los elementos pueden introducirse a través de las dos trampillas de la parte trasera. El puerto de fluidos de la parte delantera sirve de salida de fluidos.
-La aplicación de una señal de Redstone al panel de control en la parte delantera detendrá el proceso de la máquina, este comportamiento puede ser invertido mediante el uso del Martillo del Ingeniero.
+Mixer
+Vats of Cookie Dough!
+The Mixer is a multiblock structure that dissolves solids in fluids, mixing them together. The structure is built as shown above and formed by using the Engineer's Hammer on the central sheetmetal block.
+The most common uses for this machine are the mixing of fluid concrete from water, 2 parts sand 1 part gravel and 1 part clay, or the creation of potions from water and their various ingredients.
+Fluids are input into the mixer through the port at the bottom of its powersupply. Items can be input via the two hatches at the back. The fluid port at the front serves as the fluid output.
+Applying a redstone signal to the control panel at the front will halt the machine's process, this behavior can be inverted by use of the Engineer's Hammer.

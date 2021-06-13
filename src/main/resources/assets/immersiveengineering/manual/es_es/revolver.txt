@@ -1,13 +1,13 @@
-Revólver
-Se busca: Vivo o muerto
-<&recipe>El revólver, un arma más elegante de una época más civilizada, es un logro de la mecánica pequeña. Lo de pequeña es relativo aquí, ya que esta arma tiene cámara para calibre 12.
-Al igual que el Taladro Minero, el Revólver permitirá la modificación en el <link;workbench;Banco de Trabajo del Ingeniero>, como se detalla en las últimas páginas.
+Revolver
+Wanted: Dead or Alive
+<&recipe>The Revolver, a more elegant weapon from a more civilized age, is an achievement of small mechanics. Small being relative here, since this weapon is chambered for 12-gauge.
+Similar to the Mining Drill, the Revolver will allow for modification in the <link;workbench;Engineer's Workbench>, as detailed on the last pages.
 
-Ten en cuenta que disparar el revólver es bastante ruidoso, y atraerá la atención de las mafias hostiles de la zona!
+Note that firing the revolver is quite noisy, and will attract the attention of hostile mobs in the area!
 
-Hay diferentes <link;bullets;Tipos de Munición;> que el Revólver aceptará. Para cargarla, agáchate y haz clic con el botón derecho en el arma y coloca los cartuchos en las ranuras.<np>
-<&speedloader>Un cargador rápido equipado en tu inventario se utilizará para recargar el revólver después de haber disparado el último tiro.
+There are different <link;bullets;types of ammunition;> the Revolver will accept. To load it, sneak + rightclick the weapon, then place cartridges into the slots.<np>
+<&speedloader>A loaded Speedloader in your inventory will be used to refill the revolver after you've fired your last shot.
 <np>
-<&bayonet>Al adjuntar una §2Bayoneta§r a el revólver, lo equipas con capacidades de combate cuerpo a cuerpo, permitiendo un daño cuerpo a cuerpo tan poderoso como una Espada de Hierro.<np>
-<&extmag>El §2Cargador Ampliado§r permite cargar 6 cartuchos más en el revólver. Este cargador no se rellena con un cargador rápido.<np>
-<&tubes>El §2Amplificador de tubos de electrones§r aplica una descarga eléctrica a los proyectiles disparados. Esta descarga persiste hasta que impacta en el objetivo (no preguntes cómo funciona) y se transmite. El objetivo quedará aturdido durante una fracción de segundo y todo el equipo eléctrico que pueda estar utilizando sufrirá una ligera descarga.
+<&bayonet>By attaching a §2bayonet§r to the revolver, you outfit it with close-quarter-combat capabilities, allowing for melee damage as powerful as an Iron Sword.<np>
+<&extmag>The §2Extended Magazine§r allows loading 6 more cartridges into the revolver. This magazine does not get refilled by a speedloader.<np>
+<&tubes>The §2Amplifying Electron Tubes§r apply an electric shock to fired projectiles. This shock persists till it hits the target (don't ask how it works) and is passed on. The target will be stunned for a fraction of a second and all powered equipment they may be using will suffer a slight discharge.

@@ -1,6 +1,6 @@
-Banco de Trabajo y Planos
-Siempre desordenado
-El Banco de Trabajo del Ingeniero es un banco de trabajo profesional para el ingeniero culto. Se utiliza ampliamente para construir los elementos descritos en <link;blueprints;Planos>.
-Se puede fabricar una gran variedad de planos, tal y como se detalla en la entrada del manual correspondiente, mientras que algunos selectos sólo pueden descubrirse en el mundo o comprarse a los aldeanos.
-Para utilizar un Plano en el Banco de Trabajo del Ingeniero, colóquelo en la ranura de la izquierda de la interfaz gráfica y los ingredientes necesarios en las seis ranuras del centro. Los artículos resultantes pueden recuperarse en la parte derecha. Al pasar el ratón por encima de estas ranuras de salida se le informará exactamente de los materiales necesarios para cada artículo.<np>
-Una función secundaria del Banco de Trabajo es la modificación y configuración de herramientas y gadgets más complejos. El <link;mining_drill;Taladro de Minería>, el <link;shield;Escudo de chapas gruesas> o el <link;revolver;Revólver> son ejemplos de este tipo de objetos. Cuando se colocan en la ranura principal del Banco de Trabajo, su uso se convierte en el de modificar estas herramientas insertando las mejoras aplicables en las nuevas ranuras que aparecen.
+Workbench & Blueprints
+Always cluttered
+The Engineer's Workbench is a professional worktable for the educated engineer. It is widely used to construct the items described in <link;blueprints;Engineer's Blueprints>.
+A wide variety of blueprints can be crafted, as detailed in the respective manual entry, whereas a few select ones can only be discovered in the world or purchased from villagers.
+To use a blueprint in the Workbench, put it in the slot on the left of the GUI and the necessary ingredients in the six slots in the middle. The resulting items can then be retrieved from the right side. Hovering your mouse over these output slots will inform you exactly which materials are needed for each item.<np>
+A secondary function of the Workbench is the modification and configuration of more complex tools and gadgets. The <link;mining_drill;Mining Drill>, <link;shield;Heavy Plated Shield> or <link;revolver;Revolver> are examples of such items. When placed in the main slot of the workbench, it's use becomes that of modifying these tools by inserting applicable upgrades into the new slots that appear.

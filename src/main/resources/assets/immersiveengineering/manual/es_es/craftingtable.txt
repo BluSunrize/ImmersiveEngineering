@@ -1,4 +1,4 @@
-Mesa de Trabajo del Ingeniero
-Para varios proyectos
-La Mesa de Trabajo del Ingeniero es una simple mejora de la Mesa de Trabajo normal. Además de la superficie de madera pulida y tratada, mantiene el ingrediente dentro de la rejilla de artesanía cuando la interfaz está cerrada.
-También cuenta con un pequeño cajón para guardar algunos de tus componentes creados.
+§lMesa de trabajo del ingeniero§r
+§oPara varios proyectos§r
+La §lmesa de trabajo del ingeniero§r es una simple mejora de la §lmesa de trabajo§r normal. Además de la superficie de §nmadera pulida y tratada§r, mantiene el ingrediente dentro de la rejilla de trabajo cuando la interfaz está cerrada.
+También cuenta con un pequeño cajón para guardar algunos de tus componentes de trabajo.

@@ -1,6 +1,6 @@
-Calentador externo
-¡Ahora se cocina con Flux!
-<&recipe>El Calentador externo hace exactamente lo que su nombre indica, genera energía térmica a partir del Flux. Cuando se coloca junto a un horno normal, esta energía térmica alimentará el horno, permitiéndole fundir sin ningún combustible en su interior.<np>
-Haz clic en un lado del calentador con un Martillo para convertirlo en un aceptador de energía, y agáchate para apuntar al lado opuesto.
-El calentador consumirá §o8 Flux/t§r por cada unidad de calor añadida. Durante la fase inicial del horno, el calentador producirá hasta §o4§r unidades de calor por tick, pero en cuanto el horno alcance la temperatura máxima, sólo requerirá §o1§r unidad de calor para mantenerlo en funcionamiento.<np>
-Y lo que es mejor, mientras el horno esté a la máxima temperatura, el calentador consumirá un adicional de §o24 Flux/t§r para aumentar la velocidad de procesamiento de los hornos. El calentador sólo afectará a un horno con una entrada válida y espacio en la ranura de salida, para conservar la energía. Sin embargo, puedes aplicar una señal de Redstone al calentador para desactivar esa funcionalidad y hacer que mantenga el horno a pleno rendimiento.
+External Heater
+Now you're cooking with flux!
+<&recipe>The External Heater does exactly what its name implies, it generates thermal energy from Flux. When placed next to a normal furnace, this thermal energy will power the furnace, allowing it to smelt without any fuel inside it.<np>
+Click a side of the heater with a hammer to make ir an energy acceptor, sneak to target the opposing side.
+The heater will consume §o8 Flux/t§r for each heat unit added. During the initial phase of the furnace, the heater will produce up to §o4§r units of heat per tick, but as soon as the furnace reaches maximum temperature, it will only require §o1§r unit of heat to keep it going.<np>
+Even better, while the furnace is at maximum temperature, the heater will consume an additional §o24 Flux/t§r to increase the furnaces's processing speed. The heater will only affect a furnace with a valid input and space in the output slot, in order to conserve energy. However, you can apply a redstone signal to the heater to diable that functionality and have it keep the furnace at full heat.

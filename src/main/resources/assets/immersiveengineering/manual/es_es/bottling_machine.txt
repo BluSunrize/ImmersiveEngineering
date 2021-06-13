@@ -1,7 +1,7 @@
-Máquina embotelladora
-¡Llénela!
-<&multiblock>La Máquina embotelladora llena de fluidos los contenedores.
-La estructura se crea como se muestra arriba, pero puede ser espejada. Para formarla, haga clic con el botón derecho del ratón en el transportador central con un Martillo del Ingeniero. La dirección de los transportadores es importante.<np>
+§lEmbotelladora§r
+§o¡Llénela!§r
+<&multiblock>La §lembotelladora§r rellena los contenedores con fluidos.
+La estructura se crea como se muestra arriba, pero puede ser espejada. Para formarla, haz click derecho en la §lcinta transportadora§r central con un §lMartillo del Ingeniero§r. La dirección de las §lcintas transportadoras§r es importante.<np>
 El fluido se introduce a través de los puertos del bloque inferior del tanque metálico. La energía se introduce a través del puerto situado en la parte superior del lado opuesto.
-En general, la embotelladora podrá llenar cualquier recipiente que tenga una versión llena disponible (cubo, frasco de vidrio). También aceptará otros elementos que puedan almacenar líquidos, como el <link;mining_drill;Taladro de Minería;start> o un <link;jerrycan;Bidón;start>.
-Además, puede haber recetas especiales.
+En general, la §lembotelladora§r podrá llenar cualquier recipiente que tenga una versión llena disponible (cubo, botella de vidrio). También aceptará otros objetos que puedan almacenar fluidos, como el §1<link;mining_drill;barreno;start>§r o un §1<link;jerrycan;bidón;start>§r.
+Además, §opuede haber recetas especiales disponibles§r.
