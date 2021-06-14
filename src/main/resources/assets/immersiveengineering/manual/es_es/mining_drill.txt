@@ -1,8 +1,8 @@
-Taladro de minería
-¡Mi taladro perforará el lecho de roca!
-<&drill_base_recipes>El Taladro de minería con motor diésel es un gran avance en la minería. Con cabezales de perforación intercambiables y mejoras, sus propiedades son casi totalmente modificables. Para modificarlo, colócalo en un <link;workbench;Banco de Trabajo del Ingeniero;start>. El taladro funciona con Biodiesel y puede llenarse directamente en la <link;refinery;Refinería;start>.<np>
-<&drill_head_recipes>El §2Cabezal de broca§r determina la base de §2nivel minero§r, §2velocidad§r, y §2tamaño§r, así como el §2daño de ataque§r. Al excavar bloques, el cabezal del taladro sufre daños, pero se puede reparar en un yunque.<np>
-<&drill_waterproof_recipe>Como el taladro está impulsado por un motor de combustión, no funcionará bajo el agua a menos que lo equipe con el §2Depósito de aire presurizado§r. Sin embargo, con esta mejora equipada, no sólo funcionará mientras esté sumergido, sino que también ignorará la ralentización que suele producirse al excavar en el agua.<np>
-<&drill_lube_recipe>El §2Sistema de lubricación avanzado§r aplica lubricante adicional a la broca de forma regular, disminuyendo el desgaste del cabezal de la broca.<np>
-<&drill_damage_recipe>Añadiendo §2Sinfines adicionales§r al taladro, se incrementa su potencial destructivo, aumentando su daño contra las criaturas vivas y permitiéndole correr y cavar más rápido. La mejora se acumula hasta tres veces.<np>
-<&drill_capacity_recipe>El §2Tanque Grande§r permite que el taladro almacene más combustible internamente, ampliando el tiempo de uso antes de rellenar.
+Mining Drill
+My drill will pierce the Bedrock!
+<&drill_base_recipes>The handheld, diesel-powered drill is a big advancement in mining. With exchangeable drill heads and upgrades, its properties are almost entirely modifiable. To modify it, place it in an <link;workbench;Engineer's Workbench;start>. The drill runs off of <link;refinery;Biodiesel;start> and can be filled directly in the refinery.<np>
+<&drill_head_recipes>The §2Drill Head§r determines the base §2mining level§r, §2speed§r, and §2size§r, as well as the §2attack damage§r. As you dig blocks, the drill head takes damage, but it can be repaired in an anvil.<np>
+<&drill_waterproof_recipe>As the drill is powered by a combustion engine, it will not run underwater unless you equip it with the §2Pressurized Air Tank§r Upgrade. However, with this upgrade equipped, it will not only run while submerged, but also ignore the slowdown usually experienced when digging in water.<np>
+<&drill_lube_recipe>The §2Advanced Lubrication System§r applied additional lubricant to the drill at a regular basis, decreasing the durability loss of the drill head.<np>
+<&drill_damage_recipe>By adding §2Additional Augers§r to the drill, its destructive potential is increased, increasing its damage against living creatures and allowing it to run and dig faster. The upgrade stacks up to three times.<np>
+<&drill_capacity_recipe>The §2Large Fuel Tank§r allows the drill to store more fuel internally, extending the time you can use it before refilling.

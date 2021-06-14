@@ -1,15 +1,17 @@
-Horno de arco eléctrico
-No es un reactor
-El horno de arco eléctrico es una estructura utilizada para fundir rápidamente los metales. Consiste en una cuba de acero coronada por electrodos que calientan el metal.
-El horno destaca en la fundición de minerales y en la creación de acero debido a su alta velocidad y a su capacidad para procesar varios elementos al mismo tiempo, pero también es complejo en su funcionamiento y requerirá mantenimiento para seguir funcionando.
-Hay que eliminar la escoria de la máquina o dejará de funcionar, y los electrodos que se degradan deben ser sustituidos con el tiempo.
-Para formar la estructura, hay que ensamblarla como se muestra en la primera página, y luego pulsar el caldero con un martillo del ingeniero.
-La energía se introduce a través de los tres conectores de la parte trasera, y si se suministra al panel de control de la parte delantera una señal de redstone se apagará la máquina. Si haces click derecho en el panel, el "cubo" o la cuba, se abrirá la interfaz.<np>
+§lHorno de arco eléctrico§r
+§oNo es un reactor§r
+El §lhorno de arco eléctrico§r es una estructura de gran tamaño que se utiliza para fundir rápidamente los §nmetales§r. Consiste en una cuba de acero coronada por electrodos que calientan el metal.
+El horno destaca en la fundición de §nminerales§r y en la creación de §lacero§r debido a su alta velocidad y a su capacidad para procesar varios elementos al mismo tiempo, pero también es complejo en su funcionamiento y necesitará §nmantenimiento§r para seguir funcionando.
+
+Hay que eliminar la §lescoria§r de la máquina o dejará de funcionar, y los §lelectrodos§r que se degradan deben ser sustituidos con el tiempo.
+Para formar la estructura, hay que ensamblarla como se muestra en la primera página, y luego pulsar el §lcaldero§r con un §lMartillo del Ingeniero§r.
+La energía se introduce a través de los tres conectores de la parte trasera, y si se suministra una señal de redstone al panel de control de la parte delantera se apagará la máquina. Si haces click derecho en el panel, el "cubo" o la cuba, se abrirá la interfaz.<np>
+
 §lInterfaz:§r
 La interfaz puede parecer confusa al verla por primera vez, pero es bastante sencilla.
 
-Las tres ranuras de la parte superior son para los <link;graphite;electrodos de grafito;electrode>.
-Las doce ranuras de la izquierda son las ranuras de entrada de metales y minerales. Cada ranura tiene una barra de temperatura al lado, que representa el progreso de la fundición.
-Las cuatro ranuras de la derecha son para los "aditivos", diferentes materiales que se añaden al metal fundido durante el proceso de elaboración. Un ejemplo sería añadir polvo de coque a la fundición de hierro para crear acero.
-Los insumos y aditivos se introducen a través de las dos trampillas de la parte superior de la estructura, los insumos a la izquierda y los aditivos a la derecha de los electrodos.
-Las siete ranuras de la parte inferior son seis ranuras de salida y una ranura para la escoria. Las salidas se extraen del "cubo" situado en la parte delantera de la estructura, y la escoria a través del puerto situado en la parte trasera de la máquina. El horno de arco eléctrico empujará automáticamente la salida y la escoria a los inventarios conectados (esto incluye las cintas transportadoras).
+Las tres ranuras de la parte superior son para los §1<link;graphite;electrodos de grafito;electrode>§r.
+Las doce ranuras de la izquierda son las ranuras de entrada de §nmetales§r y §nminerales§r. Cada ranura tiene una barra de temperatura a su lado, que representa el progreso de la fundición.
+Las cuatro ranuras de la derecha son para los "§naditivos§r", diferentes materiales que se añaden al metal fundido durante el proceso de elaboración. Un ejemplo sería añadir §lpolvo de coque§r a la fundición de §lhierro§r para crear §lacero§r.
+Los §ninsumos§r y los §naditivos§r se introducen a través de las dos trampillas de la parte superior de la estructura, los §ninsumos§r a la izquierda y los §naditivos§r a la derecha de los §lelectrodos§r.
+Las siete ranuras de la parte inferior son seis ranuras de salida y una ranura para la §lescoria§r. Las §nproducciones§r se extraen del "cubo" situado en la parte delantera de la estructura, y la §nescoria§r a través del puerto situado en la parte trasera de la máquina. El §lhorno de arco eléctrico§r empujará automáticamente la §nproducción§r y la §nescoria§r a los §ninventarios conectados§r (§oesto incluye las cintas transportadoras§r).

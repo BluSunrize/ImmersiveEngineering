@@ -1,7 +1,7 @@
-Estación de ensamblaje automática
-Para los que no saben usa con palanca
-<&multiblock>La estación de ensamblaje automática es uno de los primeros grandes éxitos de la ingeniería a pequeña escala.
-La máquina es capaz de seguir un conjunto de instrucciones descritas en un <link;blueprints;Plano;start> para ensamblar los elementos que se detallan.<np>
-Al ensamblar el multibloque, se puede colocar un plano en su mesa de dibujo. Después de seleccionar el elemento que debe crearse, comenzará el proceso de montaje. Para que la máquina funcione, será necesario suministrarle materiales y energía.
-Las entradas de artículos son las dos trampillas marcadas con puntos azules, la entrada de energía se encuentra por encima de ellas. Los objetos terminados se dejan caer al final de la cinta transportadora.
-Puede usarse una señal de redstone debajo de la mesa de dibujo para controlarla.
+§lEstación de ensamblaje auto.§r
+§oPara los que no saben conducir§r
+<&multiblock>La §lestación de ensamblaje automática§r es uno de los primeros grandes éxitos de la ingeniería a pequeña escala.
+La máquina es capaz de seguir un conjunto de instrucciones descritas en un §1<link;blueprints;plano de ingeniería;start>§r para ensamblar los objetos detallados por este.<np>
+Al ensamblar el multibloque, se puede colocar un §lplano de ingeniería§r en su mesa de dibujo. Tras seleccionar el objeto que debe crearse, comenzará el proceso de ensamblaje. Para que la máquina funcione, será necesario suministrarle §nmateriales§r y §nenergía§r.
+Las entradas de objetos son las dos trampillas marcadas con puntos azules, la entrada de energía se encuentra por encima de ellas. Los objetos terminados se depositan al final de la §lcinta transportadora§r.
+Una señal de redstone debajo de la mesa de dibujo puede utilizarse para su control.

@@ -1,10 +1,10 @@
-Lanzador de productos químicos
-¡QUEMA TODAS LAS COSAS!
-El Lanzador de Productos Químicos es un dispositivo que propulsa fluidos desde su tanque interno. El dispositivo puede cargarse con cualquier fluido, líquido o gas, y, al hacer clic con el botón derecho, lo rociará.
-También cuenta con una función para encender el fluido, si es inflamable. Para encender el piloto, hay que agacharse y hacer clic con el botón derecho.
-Al igual que otras herramientas, el lanzador de productos químicos puede modificarse en el <link;workbench;Banco de Trabajo del Ingeniero>. Estas mejoras afectan al tamaño del tanque, al alcance y a la dispersión.
+§lLanzador químico§r
+§o¡Quema todas tus cosas!§r
+El §llanzador químico§r es un dispositivo que arroja §nfluidos§r desde su tanque interno. El dispositivo puede cargarse con cualquier §nfluido§r, §nlíquido§r o §ngas§r, y, al hacer click con el botón derecho, lo rociará.
+También cuenta con una función para encender el fluido, si es inflamable. Para encender el piloto, pulsa Mayús izq. y haz click con el botón derecho del ratón.
+Al igual que otras herramientas, el §llanzador químico§r puede modificarse en el §1<link;workbench;banco de trabajo del ingeniero>§r. Estas mejoras afectan al tamaño del depósito, al alcance y a la dispersión.
 
-<&large>El §2Tanque Grande§r aumenta la capacidad de fluido del lanzador de productos químicos en 2000 mb.
-<&focus>La §2Boquilla enfocada§r disminuye la dispersión de los fluidos rociados y también aumenta ligeramente su alcance, lo que le permite alcanzar objetivos más lejanos con mayor precisión.
-<&multi>El §2Multitanque§r permite al lanzador de productos químicos almacenar hasta tres fluidos diferentes. Puede seleccionar el tanque activo mediante <config;b;tools.chemthrower.scroll;> shift + rueda de desplazamiento, o mediante el uso de la combinación de teclas <;using>§l<keybind;key.immersiveengineering.chemthrowerSwitch>§r si se ha establecido en las opciones.
-Esta actualización es mutuamente excluyente con el §2Tanque Grande§r.
+<&large>El §ltanque grande§r aumenta la capacidad de fluido del lanzador de productos químicos en 2000 mb.
+<&focus>La §lboquilla de precisión§r disminuye la dispersión de los fluidos pulverizados y también aumenta ligeramente su alcance, lo que le permite alcanzar objetivos más lejanos con mayor precisión.
+<&multi>El §lmultitanque§r permite al lanzador químico almacenar hasta tres fluidos diferentes. Puede seleccionar el tanque activo mediante <config;b;tools.chemthrower.scroll;Mayús izq. y utilizando la rueda del ratón, o mediante el uso de;using> el enlace de tecla §l<keybind;key.immersiveengineering.chemthrowerSwitch>§r si se ha establecido en las opciones.
+Esta mejora es mutuamente excluyente con el §ltanque grande§r.

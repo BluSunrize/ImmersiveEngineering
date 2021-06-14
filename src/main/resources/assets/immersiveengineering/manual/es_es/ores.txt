@@ -1,14 +1,14 @@
-Minerales
-Excava un agujero
-<&copper>El §lMineral de cobre§r se encuentra en el mundo entre las capas <config;i;ores.copper.min_y> y <config;i;ores.copper.max_y>, y requiere un pico de piedra para recojer.
-El mineral se fundirá en lingotes de cobre, que se utilizan en la fabricación de alambres básicos de cobre, bobinas y otras partes integrales de la arquitectura de IE.
-<&alu>El §lMineral de bauxita§r se encuentra en el mundo entre las capas <config;i;ores.bauxite.min_y> y <config;i;ores.bauxite.max_y>, y requiere un pico de piedra para recojer.
-El mineral se fundirá en lingotes de aluminio que, junto con el acero, se utilizan para crear cables de alta tensión.
-<&lead>El §lMineral de plomo§r se encuentra en el mundo entre las capas <config;i;ores.lead.min_y> y <config;i;ores.lead.max_y>, y requiere un pico de hierro para recojer.
-El mineral se fundirá en lingotes de plomo, que se utilizan en la creación de condensadores.
-<&silver>El §lMineral de plata§r se encuentra en el mundo entre las capas <config;i;ores.silver.min_y> y <config;i;ores.silver.max_y>, y requiere un pico de hierro para recojer.
-El mineral se fundirá en lingotes de plata, que se alean con el oro para crear electrum, un conductor mucho más eficaz.
-<&nickel>El §lMineral de níquel§r se encuentra en el mundo entre las capas <config;i;ores.nickel.min_y> y <config;i;ores.nickel.max_y>, y requiere un pico de hierro para recojer.
-El mineral se fundirá en lingotes de níquel, que se alean con el cobre para crear el constantan, un conductor resistente al calor utilizado en la creación de <link;thermoelectric;Generadores Termoeléctricos;start>.
-<&uranium>El §lMineral de uranio§r se encuentra en el mundo entre las capas <config;i;ores.uranium.min_y> y <config;i;ores.uranium.max_y>, y requiere un pico de hierro para recojer.
-El mineral se funde en lingotes de uranio, pero actualmente no hay muchos usos para el metal. Un bloque de uranio puede servir como fuente de calor para el <link;thermoelectric;Generador Termoeléctrico;start> y el metal se utilizará en futuros emprendimientos.
+Ores
+Diggy diggy hole
+<&copper>§lCopper Ore§r is found in the world between layers <config;i;ores.copper.min_y> and <config;i;ores.copper.max_y>, and requires a Stone Pickaxe to harvest.
+The ore will smelt into copper ingots, which are used in crafting basic copper wires, coils, and other integral parts of the IE architecture.
+<&alu>§lBauxite Ore§r is found in the world between layers <config;i;ores.bauxite.min_y> and <config;i;ores.bauxite.max_y>, and requires a Stone Pickaxe to harvest.
+The ore will smelt into aluminium ingots, which, together with steel, are used to create high-voltage wires.
+<&lead>§lLead Ore§r is found in the world between layers <config;i;ores.lead.min_y> and <config;i;ores.lead.max_y>, and requires an Iron Pickaxe to harvest.
+The ore will smelt into lead ingots, which are used in creating capacitors.
+<&silver>§lSilver Ore§r is found in the world between layers <config;i;ores.silver.min_y> and <config;i;ores.silver.max_y>, and requires an Iron Pickaxe to harvest.
+The ore will smelt into silver ingots, which alloy with gold to create electrum, a far more effective conductor.
+<&nickel>§lNickel Ore§r is found in the world between layers <config;i;ores.nickel.min_y> and <config;i;ores.nickel.max_y>, and requires an Iron Pickaxe to harvest.
+The ore will smelt into nickel ingots, which alloy with copper to create constantan, a heat resistant conductor used in the creation of <link;thermoelectric;Thermoelectric Generators;start>.
+<&uranium>§lUranium Ore§r is found in the world between layers <config;i;ores.uranium.min_y> and <config;i;ores.uranium.max_y>, and requires an Iron Pickaxe to harvest.
+The ore will smelt into uranium ingots, but there are currently not many uses for the metal. A uranium block can serve as a heatsource for the <link;thermoelectric;Thermoelectric Generator;start> and the metal will be used in future endeavours.

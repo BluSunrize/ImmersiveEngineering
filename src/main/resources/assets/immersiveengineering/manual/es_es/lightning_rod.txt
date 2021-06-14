@@ -1,7 +1,7 @@
-Pararrayos
-¡Un rayo!
-El rayo es un fenómeno de la naturaleza. Contiene una enorme cantidad de energía bruta, y este pararrayos es capaz de aprovechar ese poder.
-Apilando un montón de vallas de acero en este multibloque, aumentas la posibilidad de que un rayo caiga sobre él durante la lluvia o las tormentas.
-Cuando el poste de acero es golpeado, las enormes cantidades de energía creadas se almacenan en la base del pararrayos y luego se distribuyen lentamente a las conexiones de energía en los lados.
+Lightning Rod
+Thunderstruck!
+Lightning is a phenomenon of nature. It contains a huge amount of raw power, and this lightning rod is able to harness that power.
+By stacking a lot of steel fences on this multiblock, you increase the chance of a lightning bolt striking it during rain or thunderstorms.
+When the steel pole is struck, the huge amounts of energy created are stored in the base of the lightning rod and then slowly distributed to the energy connections at the sides.
 
-Puedes mejorar las posibilidades de que el pararrayos sea golpeado creando una "red" de vallas de acero conectadas a la valla más alta.
+You can improve the chances of the Lightning Rod getting struck by creating a "net" of steel fences connected to the topmost fence.

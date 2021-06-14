@@ -1,6 +1,6 @@
-Enrutador de fluidos
-La leche va a la izquierda, el ácido a la derecha
-<&recipe>El Enrutador de fluidos funciona de forma muy parecida al <link;item_router;Enrutador de elementos;start>. Los fluidos introducidos a través de cualquier lado se redistribuirán en función de cómo estén configurados los seis filtros laterales.
-Al hacer clic en un cubo o en cualquier otro tipo de recipiente de fluido en las ranuras de la interfaz gráfica de usuario, se configurará el filtro para ese fluido.<np>
-Cuando se introducen fluidos en el enrutador, se dirigirán a una salida cuyo filtro coincida con el fluido o, si no se encuentra ningún filtro que coincida, el fluido se dirigirá a una salida sin filtrar. Si no hay ninguna ruta disponible o válida, no se aceptará ningún fluido.
-Los botones situados encima de cada filtro pueden utilizarse para que el enrutador respete o ignore los datos NBT del fluido.
+Fluid Router
+Milk goes left, acid goes right
+<&recipe>The Fluid Router works much akin to the <link;item_router;Item Router;start>. Fluids input through any side will be redistributed based on how the six side filters are set up.
+Clicking a bucket or any other type of fluid container into the slots of the GUI will configure the filter to that fluid.<np>
+When any fluids are piped into the router, they will be routed to an output whose filter matches the fluid, or, if no matching filter is found, the fluid routes to an unfiltered output. If there is no available or valid route, no fluid will be accepted.
+The buttons above each filter can be used to have the router respect or ignore the fluid's NBT data.

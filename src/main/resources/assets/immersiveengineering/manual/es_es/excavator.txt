@@ -1,4 +1,4 @@
-Excavadora
-Mejor que los enanos
-<&excavator>La Excavadora es una de las cimas de la ingeniería moderna. Es capaz de excavar <link;minerals;Minerales> de vetas inaccesibles por la minería normal. A cambio, sin embargo, la excavadora es una estructura compleja que requiere <config;i;machines.excavator.consumption> Flux/t para poder operar.
-<&wheel><&full>La estructura se compone de dos piezas: El motor que se muestra en la primera página y la rueda de cangilones que se muestra en la segunda, que encaja en los "tirantes" del motor como se muestra en la página anterior. La entrada de energía para el motor está en su lado, la parte posterior cuenta con un panel de control de redstone y la salida de artículos.<br>A medida que la excavadora extrae minerales, el rendimiento de la veta disminuye lentamente, pero una veta de minerales puede proporcionar hasta <config;i;machines.excavator.yield> bloques de mineral.
+Excavator
+Better than Dwarves
+<&excavator>The Excavator is one of the pinnacles of modern engineering. It is able to dig up <link;minerals;minerals> from veins inaccessible by normal mining. In return however, the excavator is a complex structure which requires <config;i;machines.excavator.consumption> Flux/t in order to operate.
+<&wheel><&full>The structure is comprised of two pieces: The engine shown on the first page and the bucket wheel displayed on the second, which fits into the 'braces' of the engine as displayed on the previous page. The energy input for the engine is on its side, the back features a redstone control panel and the item output.<br>As the excavator digs up ores, the yield of the vein slowly decreases, but a vein of minerals can provide up to <config;i;machines.excavator.yield> blocks of ore.

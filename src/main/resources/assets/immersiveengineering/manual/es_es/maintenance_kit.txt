@@ -1,5 +1,5 @@
-Kit de Mantenimiento
-Reparaciones sobre la marcha
-<&recipe>Entre los ingenieros que viajan por el mundo o que pasan gran parte de su tiempo en las minas, surge un problema. Sus herramientas requieren un mantenimiento constante, y llevar todo un banco de trabajo no es viable. Afortunadamente, la mayoría de las reparaciones y reconfiguraciones menores pueden realizarse con este kit de mantenimiento.
+Maintenance Kit
+On the go repairs
+<&recipe>Among those Engineers that travel the world or spend much of their time in mines, one problem crystalizes itself. Their tools require constant maintenance, and carrying around an entire workbench just isn't viable. Fortunately, the majority of minor repairs and re-configurations can be performed with a maintenance kit.
 
-El Kit de Mantenimiento, es un conjunto de herramientas envueltas en una resistente tela de cáñamo, que te permite personalizar tus herramientas de forma muy parecida a como lo hace el <link;workbench;Banco de Trabajo del Ingeniero>. Ya no tendrás que ocuparte de volver a cambiar el cabezal de tu Taladro de Minería o dirigirte a tu taller para configurar tus Protectores Auditivos. Todo esto se puede hacer sobre la marcha con el Kit de Mantenimiento.
+A set of tools, wrapped in sturdy hemp cloth, the maintenance kit allows you to customize your tools much in the way the <link;workbench;Engineer's Workbench> does. No longer will you have to deal with resurfacing to change the head on your Mining Drill or head back to your workshop to configure your Ear Defenders. All of this can now be performed on the go with the Maintenance Kit!

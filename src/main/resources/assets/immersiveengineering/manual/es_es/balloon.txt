@@ -1,8 +1,8 @@
-Globo
-...sólo haz 99 de ellos
-<&recipe>Los globos son sacos de tela con una fuente de calor debajo para mantenerlos a flote. También emiten luz, pero a pesar de la antorcha, no suponen un peligro de incendio.
-Los globos pueden colocarse como los bloques normales o, cuando no se apunte a ningún bloque, se colocarán en el aire frente a ti.
-Similar al <link;metalconstruction;Conector de cable estructural;connector_recipes>, puedes atar cuerda de cáñamo y alambre de acero al globo.
-Agacharte y clickear te permite establecer un desplazamiento de altura para el globo, permitiéndote colocarlo hasta 5 bloques por encima del objetivo.
-También puedes utilizar tintes en un globo colocado; la parte que tiñas dependerá del lugar al que apuntes.
-Si haces clic con el botón derecho usando un Martillo del Ingeniero, el diseño del globo cambiará a rayas horizontales o verticales.
+§lGlobo§r
+§o...sólo haz 99 de ellos§r
+<&recipe>Los §lglobos§r son sacos de tela con una fuente de calor debajo para mantenerlos a flote. También emiten luz, pero a pesar de la antorcha, no suponen un peligro de incendio.
+Pueden colocarse como los bloques normales o, cuando no se apunte a ningún bloque, se colocarán en el aire frente a ti.
+Similar al §1<link;metalconstruction;conector de cable estructural;connector_recipes>§r, puedes atar §lcuerda de cáñamo§r y §lcable de acero§r al globo.
+Pulsando Mayús izq. puedes establecer un margen de altura para el globo, pudiendo colocarlo hasta 5 bloques por encima del objetivo.
+También se pueden utilizar tintes en un §lglobo§r; la parte que se tiña dependerá del lugar desde el que se apunte.
+Al hacerle click derecho con un §lMartillo del Ingeniero§r se cambiará el diseño del §lglobo§r entre rayas horizontales o verticales.

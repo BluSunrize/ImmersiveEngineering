@@ -1,3 +1,7 @@
-Aleaciones
-El arte de mezclar el metal
-Al mezclar los polvos se crea una mezcla de aleación que luego puede fundirse en lingotes aleados. El constantán tiene propiedades termoeléctricas y se utiliza en la creación del <link;generator;generador termoeléctrico> y el electro es un excelente conductor eléctrico utilizado en la <link;wiring;arquitectura de media tensión>.
+§lAleaciones§r
+§oEl arte de mezclar metales§r
+Mezclando ciertos polvos se crea una mezcla de aleación que luego puede fundirse en lingotes aleados:
+
+§lConstantán§r: tiene propiedades termoeléctricas y se utiliza en la creación del §1<link;generator;generador termoeléctrico>§r.
+
+§lElectro§r: es un excelente conductor eléctrico que se utiliza en la §1<link;wiring;arquitectura de media tensión>§r.

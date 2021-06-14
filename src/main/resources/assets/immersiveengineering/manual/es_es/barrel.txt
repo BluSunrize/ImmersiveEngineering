@@ -1,4 +1,4 @@
-Barril de madera tratada
-No rueda
-<&recipe>Los barriles de madera tratada son simples contenedores que pueden almacenar fluidos. Pueden almacenar hasta 12 cubos, pero como son de madera, no pueden almacenar gases ni fluidos calientes.
-Si haces clic con el botón derecho del ratón en la parte superior o inferior del barril con un Martillo, cambiarás entre entrada, salida o sin conexión.
+§lBarril de madera§r
+§oNo rueda§r
+<&recipe>Los §lbarriles de madera§r son simples contenedores que pueden almacenar fluidos. Pueden almacenar hasta 12 cubos, pero como son de madera, §nno pueden almacenar gases ni fluidos calientes§r.
+Al hacer click derecho en la parte superior o inferior del barril con un §lMartillo del Ingeniero§r, se cambiará entre entrada, salida o sin conexión.
