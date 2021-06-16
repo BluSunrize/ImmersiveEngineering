@@ -25,7 +25,6 @@ import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
-import com.google.common.base.Preconditions;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
@@ -92,8 +91,7 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 		SpecificFeedthroughModel ret = CACHE.getIfPresent(key);
 		if(ret==null)
 		{
-			ret = new SpecificFeedthroughModel(key, key.allColorMultipliers);
-			Preconditions.checkState(key.usedColorMultipliers!=null);
+			ret = new SpecificFeedthroughModel(key, s -> key.defaultColorMultipliers);
 			CACHE.put(key, ret);
 		}
 		return ret.getQuads(state, side, rand);
@@ -115,7 +113,7 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 					feedthrough.reference,
 					state.get(IEProperties.FACING_ALL),
 					feedthrough.offset,
-					i -> color
+					color
 			);
 			ret.add(new SinglePropertyModelData<>(d, FEEDTHROUGH));
 		}
@@ -183,7 +181,7 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 		WireType wire = WireType.COPPER;
 		Direction facing = Direction.NORTH;
 		int offset = 1;
-		Int2IntFunction colorMultiplier = i -> 0xffffffff;
+		int colorMultiplier = 0xffffffff;
 
 		if(extraData.hasProperty(FEEDTHROUGH))
 		{
@@ -236,33 +234,25 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 		final int offset;
 		final Direction facing;
 		final RenderType layer;
-		@Nullable
-		Int2IntMap usedColorMultipliers;
-		@Nullable
-		final Int2IntFunction allColorMultipliers;
+		final int defaultColorMultipliers;
+		final Int2IntMap specificColorMultipliers;
 
 		public FeedthroughCacheKey(WireType type, BlockState baseState, int offset, Direction facing,
 								   RenderType layer)
 		{
-			this.type = type;
-			this.baseState = baseState;
-			this.offset = offset;
-			this.facing = facing;
-			this.layer = layer;
-			this.allColorMultipliers = null;
-			this.usedColorMultipliers = new Int2IntOpenHashMap();
+			this(type, baseState, offset, facing, layer, -1);
 		}
 
 		public FeedthroughCacheKey(WireType type, BlockState baseState, int offset, Direction facing,
-								   RenderType layer, Int2IntFunction colorMultiplier)
+								   RenderType layer, int colorMultiplier)
 		{
 			this.type = type;
 			this.baseState = baseState;
 			this.offset = offset;
 			this.facing = facing;
 			this.layer = layer;
-			this.allColorMultipliers = colorMultiplier;
-			this.usedColorMultipliers = null;
+			this.defaultColorMultipliers = colorMultiplier;
+			this.specificColorMultipliers = new Int2IntOpenHashMap();
 		}
 
 		@Override
@@ -271,35 +261,13 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 			if(this==o) return true;
 			if(o==null||getClass()!=o.getClass()) return false;
 			FeedthroughCacheKey that = (FeedthroughCacheKey)o;
-			return offset==that.offset&&
-					Objects.equals(type, that.type)&&
-					baseState.equals(that.baseState)&&
-					facing==that.facing&&
-					Objects.equals(layer, that.layer)&&
-					sameColorMultipliersAs(that);
-		}
-
-		private boolean sameColorMultipliersAs(FeedthroughCacheKey that)
-		{
-			if(that.usedColorMultipliers!=null&&this.usedColorMultipliers!=null)
-				return this.usedColorMultipliers.equals(that.usedColorMultipliers);
-			else if(that.usedColorMultipliers!=null&&this.allColorMultipliers!=null)
-			{
-				for(int i : that.usedColorMultipliers.keySet())
-					if(this.allColorMultipliers.get(i)!=that.usedColorMultipliers.get(i))
-						return false;
-				return true;
-			}
-			else if(that.allColorMultipliers!=null&&this.usedColorMultipliers!=null)
-				return that.sameColorMultipliersAs(this);
-			else
-				throw new IllegalStateException("Can't compare FeedthroughCacheKey's that use functions!");
+			return offset==that.offset&&defaultColorMultipliers==that.defaultColorMultipliers&&type.equals(that.type)&&baseState.equals(that.baseState)&&facing==that.facing&&layer.equals(that.layer);
 		}
 
 		@Override
 		public int hashCode()
 		{
-			return Objects.hash(type, offset, facing, layer, baseState);
+			return Objects.hash(type, baseState, offset, facing, layer, defaultColorMultipliers);
 		}
 	}
 
@@ -335,13 +303,12 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 			{
 				ItemColors colors = mc().getItemColors();
 				ItemStack stack = new ItemStack(k.baseState.getBlock(), 1);
-				colorMultiplierBasic = (i) -> colors.getColor(stack, i);
+				colorMultiplierBasic = i -> colors.getColor(stack, i);
 			}
 			Int2IntFunction colorMultiplierFinal = colorMultiplierBasic;
-			k.usedColorMultipliers = new Int2IntOpenHashMap();
 			Int2IntFunction colorMultiplier = i -> {
 				int ret = colorMultiplierFinal.get(i);
-				k.usedColorMultipliers.put(i, ret);
+				k.specificColorMultipliers.put(i, ret);
 				return ret;
 			};
 			for(int j = 0; j < 7; j++)

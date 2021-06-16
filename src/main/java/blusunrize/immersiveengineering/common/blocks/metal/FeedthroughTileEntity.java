@@ -22,7 +22,6 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.LivingEntity;
@@ -284,9 +283,9 @@ public class FeedthroughTileEntity extends ImmersiveConnectableTileEntity implem
 		public final WireType wire;
 		public final Direction facing;
 		public final int offset;
-		public final Int2IntFunction colorMultiplier;
+		public final int colorMultiplier;
 
-		public FeedthroughData(BlockState baseState, WireType wire, Direction facing, int offset, Int2IntFunction colorMultiplier)
+		public FeedthroughData(BlockState baseState, WireType wire, Direction facing, int offset, int colorMultiplier)
 		{
 			this.baseState = baseState;
 			this.wire = wire;
