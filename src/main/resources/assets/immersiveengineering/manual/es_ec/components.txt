@@ -1,0 +1,12 @@
+§lComponentes mecánicos§r
+§oPiezas integrales§r
+Muchas máquinas y herramientas se construyen a partir de varios §nsubcomponentes§r. 
+Algunos de ellos los tendrá que utilizar de forma habitual, por lo que tienen su propia entrada en este manual.<np>
+
+Los §lcomponentes mecánicos de hierro§r y los §lcomponentes mecánicos de acero§r son parte integral de la mayoría de los §nmultibloques§r y la §nmaquinaria§r.<np>
+<&create_bp>Como se encontrará creando estos §lcomponentes§r frecuentemente, puede ser aconsejable redactar un §1<link;blueprints;plano de ingeniería>§r para ellos.
+<&mech_components>Usar este plano en un §1<link;workbench;banco de trabajo del ingeniero>§r te permitirá construir los componentes§r a un coste reducido.
+<&tubes>Otro componente, aunque menos utilizado, son las §lválvulas de vacío§r. Estos tubos de vidrio se utilizan como elementos en maquinaria electrónica y se emplean en §1<link;lighting;dispositivos emisores de luz>§r.<np>
+<&pcb>Un componente poco utilizado, pero crucial, es la §lplaca de circuito impreso§r. Esta placa de cobre aislada tiene una variedad de componentes soldados a ella para crear §1<link;logic_circuits;circuitos lógicos>§r, o sirve como componente en artilugios "inteligentes".
+
+

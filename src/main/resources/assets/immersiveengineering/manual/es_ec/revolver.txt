@@ -1,0 +1,13 @@
+§lRevólver§r
+§oSe busca: vivo o muerto§r
+<&recipe>El §lrevólver§r, un arma más elegante de una época más civilizada, es un logro de la mecánica pequeña. Lo de pequeña es relativo aquí, ya que esta arma tiene recámara para calibre 12.
+Al igual que el §ltaladro minero§r, el §lrevólver§r permite ser modificado en el §1<link;workbench;banco de trabajo del ingeniero>§r, como se detalla en las últimas páginas.
+
+Ten en cuenta que disparar el §lrevólver§r es bastante ruidoso, ¡y atraerá la atención de las criaturas hostiles de la zona!
+
+Hay diferentes §1<link;bullets;tipos de munición;>§r que el §lrevólver§r aceptará. Para cargarlo, haz click derecho en el arma, y luego coloca los cartuchos en las ranuras.<np>
+<&speedloader> Un §lcargador rápido para revólver§r equipado en tu inventario se utilizará para recargar el §lrevólver§r después de que hayas disparado tu último tiro.
+<np>
+<&bayonet>Al acoplar una §lbayoneta§r al §lrevólver§r, lo equipas con capacidades de combate cuerpo a cuerpo, lo que le provee un daño tan poderoso como una §lespada de hierro§r.<np>
+<&extmag>El §lcargador ampliado§r permite cargar 6 cartuchos más en el §lrevólver§r. Este cargador no se rellena con un §lcargador rápido para revólver§r.<np>
+<&tubes>Las §lválvulas termoiónicas§r aplican una descarga eléctrica a los proyectiles disparados. Esta descarga persiste hasta que impacta en el objetivo (no preguntes cómo funciona) y se transmite. El objetivo quedará aturdido durante una fracción de segundo y todo el equipo eléctrico que pueda estar utilizando sufrirá una ligera descarga.
