@@ -1,0 +1,6 @@
+§lEstación de recarga§r
+§o¡Cargue sus gafas!§r
+<&recipe>La §lestación de recarga§r es un dispositivo que permite cargar §nherramientas§r y otros §nobjetos§r.
+
+La energía puede introducirse por la parte inferior o por la trasera y los §lobjetos§r pueden colocarse manualmente o introducirse automáticamente.<np>
+Las §lválvulas de vacío§r de la parte delantera proporcionan información sobre la carga actual del §nobjeto§r, pero el bloque también emitirá una señal de §lcomparador§r para los mismos fines.

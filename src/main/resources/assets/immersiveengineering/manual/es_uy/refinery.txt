@@ -1,0 +1,6 @@
+§lRefinería§r
+§o¡Mezclando fluidos!§r
+<&multiblock>La §lrefinería§r es un complejo multibloque que puede refinar uno o dos fluidos en otro. La aplicación más común de esto es el refinamiento de §1<link;squeezer;aceite vegetal;start>§r y §1<link;fermenter;etanol;start>§r en §lbiodiésel§r.
+Para formar la estructura, haga click derecho en el §lbloque de ingeniería pesada§r de la capa intermedia.
+Los fluidos se introducen a través de los dos puertos situados a ambos lados del bloque y salen por el puerto marcado en naranja de la parte delantera.
+La aplicación de una señal de redstone en el panel de control de la parte delantera detendrá el proceso de la máquina, este comportamiento puede invertirse mediante el uso del §lMartillo del Ingeniero§r.

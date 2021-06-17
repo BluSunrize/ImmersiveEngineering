@@ -1,0 +1,8 @@
+§lTaladro minero§r
+§o¡Mi taladro perforará el lecho rocoso!§r
+<&drill_base_recipes>El taladro de mano con motor diesel es un gran avance en la minería. Con §lbrocas intercambiables§r y mejoras, sus propiedades son casi totalmente modificables. Para modificarlo, colócalo en un §1<link;workbench;banco de trabajo del ingeniero;start>§r. El taladro funciona con §1<link;refinery;biodiésel;start>§r y puede llenarse directamente en la refinería.<np>
+<&drill_head_recipes>La §lbroca§r determina el nivel de minado base, la velocidad y el tamaño, así como el daño de ataque. Al excavar bloques, la §lbroca§r recibe daños, pero puede repararse en un §lyunque§r.<np>
+<&drill_waterproof_recipe>Como el §ltaladro§r funciona con un motor de combustión, no funcionará bajo el agua a menos que lo equipes con la mejora §ltanque de aire presurizado§r. Sin embargo, con esta mejora equipada, no solo funcionará mientras esté sumergido, sino que también ignorará la ralentización que se suele experimentar al excavar en el §lagua§r.<np>
+<&drill_lube_recipe>El §lsistema avanzado de lubricación§r aplica lubricante adicional al §ltaladro§r de forma regular, disminuyendo la pérdida de durabilidad de la §lbroca§r.<np>
+<&drill_damage_recipe>Al añadir §lbrocas adicionales§r al §ltaladro§r, se incrementa su potencial destructivo, aumentando su daño contra criaturas vivas y permitiéndole correr y cavar más rápido. La mejora se acumula hasta tres veces.<np>
+<&drill_capacity_recipe>El §ltanque grande§r permite que el §ltaladro§r almacene más combustible internamente, ampliando el tiempo que puedes usarlo antes de rellenarlo.

@@ -1,0 +1,22 @@
+§lCables de Redstone§r
+§oToma de contacto con la integración§r
+<&coil>Los §lcables de redstone§r son de §lalambre de aluminio§r recubierto de §lpolvo de redstone§r. Los cables resultantes proporcionan una manera fácil de transferir señales de redstone a larga distancia sin perder ninguna fuerza en la señal.<np>
+<&connector>Los §lconectores de cables de redstone§r funcionan como cualquier otro conector de cable en términos de conexión, sin embargo, el cableado de redstone no requiere §lrelés§r; los conectores y los relés son el mismo bloque.
+Con el §lDestornillador del Ingeniero§r, los conectores pueden configurarse entre el modo de entrada y el de salida y ajustarse a una de las 16 frecuencias de colores.<np>
+<&probe>§lLos conectores de sonda de redstone§r tienen una funcionalidad parcialmente comparable a los §lcomparadores de redstone§r. Aunque no son capaces de comparar activamente las señales, son capaces de leer los inventarios para saber cómo están de llenos. Además, estas sondas pueden operar en dos canales, enviando su señal de lectura en uno, y aún recibiendo señales en otro. Estos canales también pueden ser configurados utilizando el §lDestornillador del Ingeniero§r.<np>
+
+Tenga en cuenta que muchos de los multibloques de IE cuentan con funcionalidad de §lcomparador§r, como se describe en las páginas siguientes. Cuando está disponible, la superficie de control de redstone del multibloque es el lugar designado para conectar un §lcomparador§r.<np>
+- §lTanque: §rComo se detalla en su §1<link;tank;entrada del manual>§r
+- §lSilo: §rComo se detalla en su §1<link;silo;entrada del manual>§r
+- §lEstación de ensamblaje: §rEmite una señal relativa al llenado del inventario.
+- §lEstación de ensamblaje automática: §rEmite una señal relativa al llenado del inventario.
+- §lTrituradora industrial: §rEmite una señal relativa al llenado del inventario.
+- §lExprimidora industrial: §rEmite una señal relativa al llenado del inventario.
+- §lFermentadora industrial: §rEmite una señal relativa al llenado del inventario.
+- §lExcavadora: §rEmite una señal relativa al mineral restante en la veta.
+- §lHorno de arco: §rEmite una señal relativa al llenado del inventario.
+Además, si se conecta un §lcomparador§r a los §lelectrodos§r de la parte superior, se enviará una señal en función de su integridad.
+- §lMezcladora industrial: §rEmite una señal relativa al llenado del inventario.<np>
+<&bundled>Los §lconectores de interfaz de redstone§r están diseñados para ser conectados a otros bloques que pueden hacer uso de las señales de redstone de color.
+El conector de interfaz es interno y no posee un color, estado de entrada o salida, pero permite a bloques como el §1<link;item_batcher;filtro de ítems>§r interactuar directamente con la red de cables.
+

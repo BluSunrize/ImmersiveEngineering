@@ -1,0 +1,15 @@
+§lCartuchos de revólver§r
+§oMuniciones para ocelot§r
+
+Los cartuchos se crean en el §lbanco de trabajo del ingeniero§r, mediante el uso de §1<link;blueprints;planos de ingeniería>§r específicos. Los planos para la munición normal los puedes crear tú mismo, algunos requerirán que compres los planos adecuados a otra persona.<np>
+<&empty>Las §lvainas§r y los §lcartuchos§r son la base de todo proyectil. Las §lvainas§r también pueden fabricarse en la §1<link;metal_press;prensa de metales>§r, utilizando el §lmolde§r apropiado, a un coste muy reducido.<np>
+<&casull>Las §lbalas casull§r se crean con un plano de "§nProyectiles comunes§r". Son un simple proyectil de §lplomo§r que inflige un daño medio.<np>
+<&ap>Las §lbalas perforadoras§r se crean con el mismo plano. Hacen la misma cantidad de daño, pero penetran el blindaje por pura fuerza cinética.<np>
+<&buckshot>Los §lcartuchos de perdigones§r, creados con el mencionado plano, están llenos de múltiples proyectiles pequeños que se disparan en forma de cono. Este cartucho es muy eficaz a corta distancia.<np>
+<&he>Los §lcartuchos explosivos§r se crean con un plano de "§nProyectiles Especializados§r". Disparan un proyectil que explota al impactar, causando daños a los seres vivos y al terreno.<np>
+<&silver>Las §lbalas de plata§r, también creadas con un plano de "§nProyectiles Comunes§r", consisten en un núcleo de §lplomo§r envuelto en §lplata§r, lo que los hace muy eficaces contra los muertos vivientes.<np>
+<&dragon>Los §lcartuchos aliento de dragón§r se crean con un plano de "§nProyectiles Especializados§r". Al igual que los perdigones, son eficaces a corta distancia, pero en lugar de pequeños disparos de metal, están rellenos de un polvo metálico inflamable, creando una explosión de llamas.<np>
+<&potion>Las §lbalas de vial§r también se crean con un plano de "§nProyectiles Especializados§r". Se pueden rellenar con cualquier §lpoción§r, creando una rejilla de fabricación y esta poción se aplicará al impactar. Las pociones normales requieren un impacto directo, las pociones de salpicadura tienen un área de efecto y las pociones persistentes crean una nube de poción temporal y persistente.<np>
+<&flare>Los §lcartuchos incendiarios§r se crean con un plano de "§nProyectiles Especializados§r". Cuando se dispara, la bengala explota después de una cierta distancia y luego se hunde lentamente en el suelo. Puedes combinar el cartucho con §ltintes§r en una §lmesa de trabajo§r para cambiar su color.<np>
+<&homing>Las §lbalas autodirigidas§r se crean con un plano de "§nProyectiles Especializados§r". Utilizando las intrigantes propiedades de un §lOjo de Ender§r, estos proyectiles adquieren la capacidad de buscar y perseguir al objetivo más cercano.
+<&wolfpack>Los §lcartuchos wolfpack§r se crean con el mismo plano y consisten en una colección de disparos múltiples en un solo proyectil. El proyectil inicial no está guiado, pero al impactar se divide en seis disparos de localización de objetivos que destrozan a los enemigos circundantes.

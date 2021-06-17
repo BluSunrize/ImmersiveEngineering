@@ -1,0 +1,6 @@
+§lExprimidora industrial§r
+§oEl prensado es importante§r
+La §lexprimidora industrial§r es una estructura de varios bloques que exprime el zumo o el aceite de los materiales orgánicos mediante el uso de un gran pistón. La estructura se construye como se muestra arriba y se forma usando el §lMartillo del Ingeniero§r en el §lbarril de madera§r central, desde el lado que tiene los §lbloques de ingeniería§r.
+Los objetos pueden introducirse a través de las dos escotillas de la parte trasera que están marcadas con puntos azules. La escotilla con el punto naranja sirve para la salida de objetos y el bloque de abajo para la salida de fluidos.
+Aplicando una señal de redstone al panel de control en la parte delantera se detendrá el proceso de la máquina, este comportamiento puede ser invertido mediante el uso del §lMartillo del Ingeniero§r.
+<np>La siguiente lista muestra varios objetos que pueden ser exprimidos en aceite vegetal, y la cantidad que producen.<&list>
