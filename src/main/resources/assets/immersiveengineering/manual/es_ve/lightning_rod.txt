@@ -1,0 +1,7 @@
+§lPararrayos§r
+§o¡Un rayo!§r
+El rayo es un fenómeno de la naturaleza. Contiene una enorme cantidad de energía bruta, y este §lpararrayos§r es capaz de aprovechar ese poder.
+Al apilar un montón de §lvallas de acero§r en este multibloque, aumentas la posibilidad de que un rayo caiga sobre él durante las lluvias o las tormentas.
+Cuando la §lvalla de acero§r es golpeada, las enormes cantidades de energía creadas se almacenan en la base del §lpararrayos§r y luego se distribuyen lentamente a las conexiones de energía en los laterales.
+
+Puede mejorar las posibilidades de que el §lpararrayos§r sea alcanzado creando una "red" de §lvallas de acero§r conectadas a la valla superior.

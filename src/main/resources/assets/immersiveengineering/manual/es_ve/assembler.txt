@@ -1,0 +1,10 @@
+§lEstación de ensamblaje§r
+§oSe requiere algo de montaje§r
+<&multiblock>La §lestación de ensamblaje§r es una máquina compleja capaz de fabricar objetos, de forma similar a como lo haría un jugador.
+Para formar la estructura, constrúyela como se ha demostrado anteriormente y utiliza el §lMartillo del Ingeniero§r en una de las §lcintas transportadoras§r.<np>
+La cinta que ha cliqueado será la de entrada, indicada por el marcador azul que hay sobre ella y por la flecha que hay en el lateral de la máquina.
+Permite almacenar hasta 3 recetas en su interior que se ejecutarán en orden. Las salidas de las recetas anteriores pueden ser utilizadas como entradas para las siguientes recetas.
+Las 3 rejillas de elaboración almacenan las recetas, y las 18 ranuras debajo de ellas son el inventario de materiales.<np>
+El lado de entrada, además de una entrada de objetos también cuenta con una entrada de fluidos para llenar los tres tanques internos de la máquina.
+El fluido de estos tanques puede usarse para reemplazar los contenedores de fluido como los cubos de agua en las recetas.
+La alimentación eléctrica de la máquina se realiza a través del bloque central superior.

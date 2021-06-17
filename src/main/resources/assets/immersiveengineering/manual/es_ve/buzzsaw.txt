@@ -1,0 +1,11 @@
+§lSierra circular§r
+§oNo vamos a Ravenholm§r
+<&recipes>Esta gran §lsierra circular§r portátil ha sido diseñada para acabar rápidamente con los árboles y otras piezas de follaje que puedan interponerse en el camino de una fábrica impoluta.
+Después de usar el §1<link;workbench;banco de trabajo del ingeniero;start>§r para colocar una §lhoja de sierra§r en ella, y cargarla con §1<link;refinery;biodiésel;start>§r u otro combustible, puede usarse para tallar desde pequeños abedules hasta grandes árboles de la selva.
+
+Al igual que otras herramientas, la §lsierra circular§r puede modificarse en el §1<link;workbench;banco de trabajo del ingeniero>§r. Estas mejoras afectan al tamaño del depósito interno y a la durabilidad de su hoja de sierra.
+<np>
+<&rockcutter_recipe>Sustituyendo la hoja de sierra normal por un §ldisco de corte§r, la sierra puede utilizarse para cortar limpiamente cubos de piedra del suelo, de forma parecida al encantamiento §ltoque de seda§r. Sin embargo, la hoja con punta de diamante ya no es útil para tallar madera o talar árboles.<np>
+<&tank_recipe>El §ltanque grande§r aumenta la capacidad de fluido de la §lsierra circular§r en 2000 mb.<np>
+<&lube_recipe>El §lsistema avanzado de lubricación§r aplica lubricante adicional a la §lhoja de sierra§r, reduciendo la velocidad en la que se pierde la durabilidad.<np>
+<&quiver_recipe>Al acoplar un §lcarcaj para hojas de corte§r junto a la §lsierra circular§r, puedes llevar dos §lhojas de sierra§r adicionales. Puedes alternar entre las §lhojas§r guardadas mediante <config;b;tools.chemthrower.scroll;Mayús izq. y utilizando la rueda del ratón, o mediante el uso de;using> el enlace de tecla §l<keybind;key.immersiveengineering.chemthrowerSwitch>§r si se ha establecido en las opciones.

@@ -1,0 +1,5 @@
+§lKit de mantenimiento§r
+§oReparaciones sobre la marcha§r
+<&recipe>Entre los ingenieros que viajan por el mundo o que pasan gran parte de su tiempo en las minas, hay un problema que se cristaliza. Sus herramientas requieren un mantenimiento constante, y llevar todo un banco de trabajo no es viable. Afortunadamente, la mayoría de las reparaciones y reconfiguraciones menores pueden realizarse con un §lkit de mantenimiento§r.
+
+El §lkit de mantenimiento§r, un conjunto de herramientas envueltas en una resistente tela de cáñamo, le permite personalizar sus herramientas de forma muy parecida a como lo hace el §1<link;workbench;banco de trabajo del ingeniero>§r. Ya no tendrás que ocuparte de volver a cambiar la §lbroca§r de tu §ltaladro minero§r o dirigirte a tu taller para configurar tus §lorejeras§r. Todo esto se puede hacer sobre la marcha con el §lkit de mantenimiento§r.

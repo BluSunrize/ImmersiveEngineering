@@ -1,0 +1,6 @@
+§lInterruptor de palanca§r
+§oClap on - Clap off§r
+<&manual_breaker>Los §linterruptores de palanca§r son simplemente interruptores que pueden detener el flujo de energía a través de los §lcables§r. Pueden conectar dos §lcables§r del mismo tipo y sólo permitirán el paso de energía cuando se activen. Pueden utilizarse para separar de la red la maquinaria que consume energía o para conectar un grupo electrógeno adicional cuando sea necesario. Debido al alto riesgo, estos interruptores §lno aceptan cables de alta tensión§r.
+También emiten una señal de redstone cuando se encienden; este comportamiento puede invertirse pulsando el interruptor con un §lDestornillador del Ingeniero§r.
+¡Además, son una forma excelente de controlar tus §1<link;lighting;faroles eléctricos;electric_lantern>§r!<np>
+<&rs_breaker>El §linterruptor de redstone§r es similar a un interruptor normal, pero no puede ser operado manualmente. En su lugar, requerirá una señal de redstone para interrumpir la conexión. A cambio, este dispositivo está lo suficientemente bien aislado como para permitir la conexión de §lcables de alta tensión§r.

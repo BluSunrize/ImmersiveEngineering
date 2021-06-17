@@ -1,0 +1,7 @@
+§lJardín cloche§r
+§oBosque tropical localizado§r
+<&recipe>El §ljardín cloche§r, o campana victoriana, es un dispositivo diseñado para §nacelerar§r el crecimiento de las plantas. Permite que incluso un ingeniero con problemas agrícolas pueda cultivar plantas y cosechar sus frutos.<np>
+El dispositivo acepta energía, fluidos y objetos a través de sus respectivos puertos.
+El agua y la energía son siempre necesarios, y se puede añadir §lfertilizante§r en la ranura de la izquierda para aumentar la velocidad de crecimiento.
+La §ltierra§r y las §lsemillas§r se colocan en el centro; cada semilla requiere la tierra correcta para crecer, y la tierra se labra automáticamente en el campo de cultivo.<np>
+Los objetos producidos se almacenan en las ranuras de la derecha, y saldrán automáticamente por la escotilla de la parte delantera de la cúpula de cristal.

@@ -1,0 +1,9 @@
+§lConstrucciones metálicas§r
+§oRemachando§r
+<&storage_and_sheetmetal_recipes><np>
+Aparte de la §lmadera tratada§r, los §lmetales procesados§r son bloques de construcción comunes. Puedes elaborar casi cualquier metal en §lbloques§r y §lplacas§r, o martillar §llingotes de hierro§r hasta conseguir un bloque de §lenchapado§r.<np>
+<&architecture_recipes>El §lacero§r no sólo es una parte integral de las arquitecturas de alto voltaje. Los §landamios de acero§r pueden utilizarse para crear rápidamente estructuras escalables, las §lvallas de acero§r mantienen a raya a los enemigos, y los §nbrazos estructurales§r son excelentes puntos de fijación para los §lrelés de alta tensión§r.<np>
+<&connector_recipes>Los §lconectores de cable estructurales§r funcionan de forma similar a los conectores normales, pero en lugar de transferir energía, son puramente decorativos.
+No aceptan cables normales, sino §lcuerda de cáñamo§r y §lcable de acero§r.
+También puedes girarlos haciendo click derecho con un §lMartillo del Ingeniero§r.<np>
+<&ladder_recipes>A estas §lescaleras de mano de metal§r puedes combinarlas con §landamios§r para convertirlas en §lescaleras cubiertas§r.
