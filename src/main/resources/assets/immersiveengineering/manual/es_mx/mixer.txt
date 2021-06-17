@@ -1,0 +1,6 @@
+§lMezcladora industrial§r
+§o¡Cubetas de masa de galletas!§r
+La §lmezcladora industrial§r es una estructura multibloque que disuelve sólidos en fluidos, mezclándolos. La estructura se construye como se muestra arriba y se forma utilizando el §lMartillo del Ingeniero§r en el bloque central de chapa.
+Los usos más comunes de esta máquina son la mezcla de §lhormigón líquido§r a partir de §lagua§r, 2 partes de §larena§r 1 parte de §lgrava§r y 1 parte de §larcilla§r, o la creación de §lpociones§r a partir de §lagua§r y sus diversos ingredientes.
+Los fluidos se introducen en la mezcladora a través del puerto situado en la parte inferior de su fuente de alimentación. Los objetos pueden introducirse a través de las dos trampillas de la parte trasera. El puerto de fluidos de la parte delantera sirve de salida de fluidos.
+Si se aplica una señal de redstone al panel de control de la parte delantera, se detendrá el proceso de la máquina; este comportamiento puede invertirse utilizando el §lMartillo del Ingeniero§r.

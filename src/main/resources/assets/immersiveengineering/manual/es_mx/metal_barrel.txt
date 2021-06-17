@@ -1,0 +1,3 @@
+§lBarril de metal§r
+§oNo rueda§r
+Los §lbarriles de metal§r funcionan exactamente igual que los §1<link;barrel;barriles de madera;>§r. Almacenan la misma cantidad de fluido y sus entradas y salidas están configuradas de la misma manera, pero a diferencia de la versión de madera, estos pueden almacenar gases y fluidos calientes, y no saldrán automáticamente si son desactivados por una señal de redstone.

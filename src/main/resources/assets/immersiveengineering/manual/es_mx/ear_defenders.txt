@@ -1,0 +1,7 @@
+§lOrejeras§r
+§o¡RUIDOS FUERTES!§r
+<&recipe>Las §lorejeras§r son dispositivos para proteger su audición. Son muy importantes para los ingenieros que trabajan cerca de §1<link;diesel_generator;generadores industriales;>§r u otra maquinaria ruidosa.
+Mientras se llevan puestas, todos los ruidos se reducen en un 90% y hacen que tus oídos estén considerablemente más cálidos y difusos.
+<&color_and_armor> Al colocarlas en el §1<link;workbench;banco de trabajo del ingeniero;>§r puedes especificar qué tipos de ruidos quieres que se anulen y en qué medida debe reducirse su volumen.
+Puedes §nteñirlas§r como lo harías con una §larmadura de cuero§r.
+Si los creas junto con cualquier otro §lcasco§r, las §lorejeras§r se unirán a esa pieza de equipo; si creas el §lcasco§r solo, las §lorejeras§r se eliminarán de nuevo, para permitir una mayor personalización.

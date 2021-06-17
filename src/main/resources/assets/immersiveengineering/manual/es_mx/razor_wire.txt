@@ -1,0 +1,4 @@
+§lConcertina§r
+§oCortahuevos sobredimensionado§r
+<&recipe>La §lconcertina§r es un alambre con piezas de metal afiladas. Ralentiza y corta a cualquier entidad que intente atravesarlo.
+Sólo puede ser eliminada con §lcortacables§r, cualquier otro intento dañará al jugador. Además, se puede conectar un §lcable de baja tensión§r para electrificar la §lconcertina§r y causar más daño.

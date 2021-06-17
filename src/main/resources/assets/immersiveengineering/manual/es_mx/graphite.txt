@@ -1,0 +1,5 @@
+§lGrafito§r
+§oMaterial de carbón§r
+El grafito es un material de carbono complejo, altamente comprimido, que se utiliza en construcciones especiales de ingeniería.
+El §lpolvo de grafito§r se crea comprimiendo ocho piezas de §lpolvo de coque§r en la §1<link;squeezer;exprimidora industrial>§r. Ese polvo puede entonces fundirse en un §llingote§r.<np>
+<&electrode>El uso más común del grafito es la creación de §lelectrodos§r para ser utilizados en el §1<link;arc_furnace;horno de arco>§r. Estos §lelectrodos§r se crean con un §1<link;blueprints;plano de ingeniería>§r, que puedes encontrar en ciertos §lcofres§r o comerciar con un aldeano. También puedes crear §lelectrodos§r en la §lprensa de metal§r, usando el §lmolde de varilla§r en 4 §llingotes§r, pero los §lelectrodos§r creados de esta manera tienen menos durabilidad.

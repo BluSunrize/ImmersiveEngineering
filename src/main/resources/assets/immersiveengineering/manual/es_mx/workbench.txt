@@ -1,0 +1,6 @@
+§lBanco de trabajo y planos§r
+§oSiempre desordenado§r
+El §lbanco de trabajo del ingeniero§r es una mesa de trabajo profesional para el ingeniero culto. Se utiliza ampliamente para construir los objetos descritos en §1<link;blueprints;planos de ingeniería>§r.
+Se puede fabricar una gran variedad de §lplanos§r, tal y como se detalla en la entrada del manual correspondiente, mientras que unos pocos y selectos sólo pueden descubrirse en el mundo o comprarse a los aldeanos.
+Para utilizar un §lplano§r en el §lbanco de trabajo del ingeniero§r, ponlo en la ranura de la izquierda de la interfaz gráfica y los ingredientes necesarios en las seis ranuras del centro. Los objetos resultantes se pueden recuperar en la parte derecha. Al pasar el ratón por encima de estas ranuras de salida se le informará exactamente de los materiales necesarios para cada objeto.<np>
+Una función secundaria del §lbanco de trabajo§r es la modificación y configuración de herramientas y artilugios más complejos. El §1<link;mining_drill;taladro minero>§r, el §1<link;shield;escudo pesado>§r o el §1<link;revolver;revólver>§r son ejemplos de estos objetos. Cuando se colocan en la ranura principal, su uso se convierte en el de modificar estas herramientas insertando las mejoras aplicables en las nuevas ranuras que aparecen.
