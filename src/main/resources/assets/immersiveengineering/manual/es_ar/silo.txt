@@ -1,0 +1,5 @@
+§lSilo§r
+§o¡Lleno hasta los topes!§r
+Los §lsilos§r ofrecen espacio para muchos objetos del mismo tipo, por lo que son excelentes para el almacenamiento masivo de §lsemillas§r, §lescoria§r o §lrocas§r. Tienen espacio para 41472 objetos, lo que equivale a la capacidad de 24 §lcofres§r.
+Los objetos deben introducirse por la parte superior y extraerse por la inferior. La aplicación de una señal de redstone al bloque inferior hará que salga automáticamente.
+Un §lcomparador§r conectado al bloque central inferior emitirá una señal de redstone proporcional a lo lleno que esté el §lsilo§r. Si se conecta el §lcomparador§r a una de las 6 capas superiores, se obtiene una señal proporcional a la altura del §lcomparador§r. Por ejemplo, un §lcomparador§r acoplado a la tercera capa de un §lsilo§r no emitirá ninguna señal hasta que el depósito esté 2/6 lleno y tendrá una intensidad de señal de 15 si el §lsilo§r está medio lleno o más.

@@ -1,0 +1,4 @@
+§lBarril de madera§r
+§oNo rueda§r
+<&recipe>Los §lbarriles de madera§r son simples contenedores que pueden almacenar fluidos. Pueden almacenar hasta 12 cubos, pero como son de madera, no pueden almacenar gases ni fluidos calientes.
+Al hacer click derecho en la parte superior o inferior del barril con un §lMartillo del Ingeniero§r, se cambiará entre entrada, salida o sin conexión.

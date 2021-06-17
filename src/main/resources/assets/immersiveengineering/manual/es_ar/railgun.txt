@@ -1,0 +1,13 @@
+§lCañón de riel§r
+§oVelocitas Eradico§r
+El §lcañón de riel§r (o más exactamente catapulta de inducción portátil) es una maravilla de la ingeniería. Consta de dos raíles por los que fluye una corriente eléctrica que acelera un raíl y, por tanto, un §lproyectil§r.
+El proceso requiere mucha energía, pero acelera varios §lproyectiles§r a gran velocidad.
+Para lanzar un §lproyectil§r desde tu inventario, mantén pulsado el botón de uso hasta que el nivel de carga llegue a 99, y luego suéltalo.
+
+Los proyectiles más comunes son §lhierro§r, §laluminio§r y §lbarras de acero§r, así como §lelectrodos de grafito§r. Sin embargo, también puedes disparar proyectiles más exóticos, como §1<link;buzzsaw;hojas de sierra>§r o §ltridentes§r.
+Para cambiar de proyectil, desliza la rueda del ratón o utiliza el enlace de teclas §l<keybind;key.immersiveengineering.chemthrowerSwitch>§r si se ha establecido en las opciones.
+
+Debido al bajo almacenamiento de energía interna, se recomienda utilizar el §lcañón de riel§r junto con un §1<link;powerpack;condensador portátil>§r.
+Al igual que otras herramientas de IE, el §lcañón de riel§r puede modificarse en el §1<link;workbench;banco de trabajo del ingeniero>§r y personalizarse con §1<link;shader;apariencias>§r.<np>
+<&speed>Los §ldisipadores avanzados§r ayudan a mitigar la acumulación de calor durante el proceso de carga, reduciendo en gran medida el tiempo de carga del §lcañón de riel§r.<np>
+<&scope>La §lmira telescópica§r te permite hacer zoom con el cañón de riel. Presiona §l<keybind;key.immersiveengineering.railgunZoom>§r para utilizar la mira y desplaza la rueda del ratón para cambiar entre los niveles de aumento.

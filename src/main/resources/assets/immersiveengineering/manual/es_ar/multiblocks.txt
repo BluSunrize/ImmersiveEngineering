@@ -1,0 +1,4 @@
+§lConstrucciones multibloque§r
+§o¿Dónde está mi llave Allen?§r
+Encajar una maquinaria compleja en un solo cubo de 1x1x1 parece una tarea inabarcable sin el uso de la magia o, posiblemente, de los rayos encogedores. Así que para crear máquinas más complejas, necesitarás §lbloques de ingeniería§r. Los más comunes se han enumerado en las siguientes páginas.
+<&recipes>

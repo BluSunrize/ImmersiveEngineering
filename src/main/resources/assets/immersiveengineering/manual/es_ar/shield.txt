@@ -1,0 +1,6 @@
+§lEscudo pesado§r
+§oFalange de un solo hombre§r
+<&recipe>El §lescudo pesado§r es una mejora directa de los escudos de madera normales que puedes conocer. De manera similar, este escudo bloqueará la mayor parte del daño entrante desde el frente, pero su durabilidad se ha incrementado considerablemente, y puede ser mejorado.<np>
+<&flashbulb>La mejora §lflash§r añade una brillante bombilla y una pantalla reflectora al escudo. Al ser atacado, el dispositivo producirá un destello brillante y cegador, desorientando a todos los que estén delante del usuario.<np>
+<&electric>Añadir §lemisores de electrochoque§r al escudo te permite tomar represalias contra los enemigos que te atacan. Cuando el escudo sea golpeado, emitirá una descarga, infligiendo un daño menor al agresor. Además, vaporizará los proyectiles en lugar de simplemente detenerlos.<np>
+<&magnetic>El §lguante magnético§r sirve para acceder fácilmente al escudo cuando se ve amenazado. Con esta mejora equipada, basta con tocar dos veces la tecla §l<keybind;key.immersiveengineering.magnetEquip>§r para recuperar el escudo de tu inventario y colocarlo en tu mano libre.

@@ -1,0 +1,4 @@
+§lCaja de herramientas del ing.§r
+§oEl bolso del ingeniero§r
+La §lcaja de herramientas del ingeniero§r es un simple contenedor que se lleva encima y que sirve para guardar todo lo esencial de un ingeniero. Al pasar el ratón por encima de las ranuras correspondientes, se indica lo que aceptan.
+Las ranuras de "§lComida§r" y "§lOtros objetos§r" se explican por sí mismas, las de "§lCableado§r" son para §lbobinas§r, §lconectores§r y artículos similares, y las de "§lHerramientas§r" almacenan cualquier herramienta de IE, así como §lpicos§r, §lpalas§r y §lhachas§r. Al hacer Mayús izq. + click derecho, la §lcaja de herramientas§r puede ser colocada como un bloque. Mientras está colocada, se puede acceder al inventario con un click derecho. Si vuelves a hacer Mayús izq. + click derecho, podrás recoger la §lcaja de herramientas§r.
