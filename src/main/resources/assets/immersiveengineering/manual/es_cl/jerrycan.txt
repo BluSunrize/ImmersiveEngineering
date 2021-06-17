@@ -1,0 +1,3 @@
+§lBidón§r
+§oMejor que los cubos§r
+<&recipe>Los §lbidones§r son simples contenedores metálicos utilizados para transportar fluidos. Pueden almacenar hasta 10 §lcubos§r y pueden verter ese fluido tanto en el mundo como en las §nmáquinas§r. No pueden recoger fluidos. Además, pueden usarse para rellenar objetos que consumen fluidos, como el §1<link;mining_drill;taladro minero;start>§r, fabricándolos juntos.

@@ -1,0 +1,14 @@
+§lTorretas§r
+§o¿Sigues ahí?§r
+Las §ltorretas§r son el siguiente paso en la defensa automatizada de tu fábrica. Disponen de un complejo sistema óptico combinado con un "cerebro" mecánico para distinguir y adquirir eficazmente los objetivos y utilizar el armamento incorporado para neutralizarlos.
+Todas las §ltorretas§r cuentan con puertos de energía en su base, y requieren una señal de redstone para estar activas, aunque este comportamiento puede invertirse haciendo click derecho con un §lDestornillador del Ingeniero§r.<np>
+Una vez colocadas, las §ltorretas§r recordarán a su propietario y no permitirán que otros usuarios las rompan o modifiquen. Al hacer click derecho en la §ltorreta§r, aparece la interfaz gráfica, que presenta una lista de nombres con un campo de entrada, así como múltiples opciones de objetivos.
+Por defecto, la lista es una lista negra de objetivos que no pueden ser atacados. Esta lista utiliza nombres de criaturas, por lo que es posible hacer una lista blanca de animales.<np>
+<&turret_chemthrower_recipe>La §ltorreta con lanzador químico§r utiliza las capacidades de propulsión de fluidos del §1<link;chemthrower;lanzador químico;start>§r para cubrir los objetivos con cualquier cosa, desde §lagua§r para apagar las llamas, hasta §ldiésel§r para encenderlas.<np>
+Esta §ltorreta§r cuenta con un puerto de fluidos en la parte inferior y posterior de la base para permitir que las §ltuberías§r se conecten a ella. Además, la interfaz tiene un botón a la izquierda que desactiva o activa la llama piloto, encendiendo el fluido dispensado, siempre que sea inflamable.
+
+§oLos proveedores de este plano no se hacen responsables de los daños que puedan sufrir el usuario, los vecinos o los distintos animales de la granja§r.<np>
+<&turret_gun_recipe>La §ltorreta armada§r cuenta con una versión muy modificada del §1<link;revolver;revólver;start>§r en una carcasa mucho más grande e imponente. La construcción también incluye un §lcargador ampliado§r para permitir un mayor almacenamiento interno de §nmunición§r.<np>
+En la parte posterior e inferior de la base se encuentra un puerto para la inserción automática de §nmunición§r y la extracción de los §ncasquillos§r gastados. Esta §ltorreta§r puede almacenar hasta una pila completa de §ncartuchos§r y la interfaz cuenta con un botón para activar la expulsión automática de las §lvainas§r.
+
+§oTenga en cuenta que ciertas municiones pueden causar daños colaterales al usuario o a sus bienes§r.

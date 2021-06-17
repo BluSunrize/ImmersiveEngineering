@@ -1,0 +1,6 @@
+§lFermentadora industrial§r
+§o¡Skál!§r
+La §lfermentadora industrial§r es una estructura de varios bloques que extrae §letanol§r de ciertas §nfrutas§r, §ngranos§r y §nverduras§r mediante un proceso de §nfermentación§r. La estructura se construye como se muestra arriba y se forma usando el §lMartillo del Ingeniero§r en el §lcaldero§r central, desde el lado que tiene los §lbloques de Ingeniería§r.
+Los §nobjetos§r pueden introducirse a través de las dos trampillas de la parte trasera que están marcadas con puntos azules. La escotilla con el punto naranja sirve para la salida de objetos y el bloque de abajo para la salida de fluidos.
+Aplicando una señal de redstone al panel de control en la parte delantera se detendrá el proceso de la máquina, este comportamiento puede ser invertido mediante el uso del §lMartillo del Ingeniero§r.
+<np>La siguiente lista muestra varios objetos que pueden ser fermentados en §letanol§r, y la cantidad que producen.<&list>

@@ -1,0 +1,8 @@
+§lMaderas tratadas§r
+§oMuy duradera§r
+<&treated_wood> Las §lmaderas tratadas§r son §ltablones de madera§r cubiertos de §laceite de creosota§r. Sin embargo, es uno de los materiales más importantes que utilizarás en §lImmersive Engineering§r, así que será mejor que estés preparado para crear una gran cantidad de ella.<np>
+<&recipes><&posts>Los §lpostes§r hechos de §lmadera tratada§r son excelentes puntos de sujeción para tus §lconectores de cables§r. Tienen 4 bloques de altura, por lo que no podrá colocarlos sin el espacio libre adecuado.
+Usando el §lMartillo del Ingeniero§r en los lados del bloque más alto fijará un brazo al §lposte§r.
+También puedes colocar§1<link;wiring;transformadores;transformer_recipes>§r en el poste, lo que lo hace menos molesto.
+Al colocar los bloques debajo de los brazos del §lposte de madera§r, los brazos quedarán al revés.<np>
+<&wallmount>La §lmadera tratada§r también se puede utilizar para fabricar §lsoportes de madera tratada§r, que pueden ser muy útiles para montar §lconectores§r de una manera visualmente atractiva sin utilizar §lpostes§r.

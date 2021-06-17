@@ -1,0 +1,6 @@
+§lCaja de madera tratada§r
+§o¡Sube ese equipo!§r
+<&normal>Las §lcajas de madera tratada§r son bloques bastante similares a un §lcofre§r. Fabricadas con §lmadera tratada§r, ofrecen 27 espacios de almacenamiento; sin embargo, cuando se rompen, §nconservan§r ese almacenamiento, permitiéndote §nmoverlas§r junto con su contenido. Al igual que los §lcofres§r, emitirán una señal de §lcomparador§r en función de la cantidad de objetos almacenados.<np>
+
+<&reinforced>La §lcaja de madera reforzada§r ofrece la misma capacidad que una caja normal, pero a diferencia de ellas, estas cajas son §ninmunes a las explosiones§r. Ya no habrá molestos creepers o cargas mineras mal colocadas que destruyan tus objetos valiosos.
+La receta de mejora §omantendrá el contenido de la caja§r.

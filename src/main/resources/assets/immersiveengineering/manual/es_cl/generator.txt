@@ -1,0 +1,7 @@
+§lGeneración de energía§r
+
+<&dynamo_recipe>Transferir energía es bastante útil siempre que tengas energía. Para generar realmente Flux, puedes utilizar las fuerzas cinéticas de los §lmolinos de viento§r y las §lruedas hidráulicas§r. Conectando éstos a una §ldinamo§r se generará energía en función de la velocidad a la que giren.<np>
+<&waterwheel_recipes> La §lrueda hidráulica§r es una forma bastante fácil de alimentar una §ldinamo§r. Su velocidad de giro se basa en el agua que fluye a su alrededor, por lo que para obtener resultados óptimos, querrás dirigir el agua en un semicírculo desde la parte superior hasta un lado y a lo largo de la parte inferior. Se pueden colocar hasta tres §lruedas hidráulicas§r enfrentadas.<np>
+<&windmill_recipes>El §lmolino de viento§r es una forma fácil y gratuita de generar energía, aunque no muy potente. Su velocidad depende del espacio que tenga delante, y su rendimiento cinético se reduce mucho si la corriente de aire está obstruida. Además, las condiciones meteorológicas como la lluvia o las tormentas eléctricas provocan vientos más fuertes y aumentan la velocidad de rotación.<np>
+<&sail_recipe>La generación de energía eólica puede mejorarse cubriendo las §laspas§r del §lmolino de viento§ con §ltela§r. Al hacerlo, aumenta la superficie y con ella la velocidad de rotación y la producción de energía.
+Las velas necesarias se fabrican con §1<link;hemp;tela resistente;start>§r y se aplican al §lmolino de viento§r haciendo click derecho en el mundo.
