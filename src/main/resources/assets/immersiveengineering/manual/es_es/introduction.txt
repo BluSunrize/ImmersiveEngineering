@@ -1,8 +1,8 @@
-Introducción
-Comenzar con la ingeniería
-Saludos, compañero ingeniero, y bienvenido a Immersive Engineering. Este diario te servirá de guía para configurar todas las nuevas máquinas y funciones que ofrece este mod.
-Empecemos por lo más básico: Immersive Engineering está construido en torno al concepto de generación y transferencia retrofuturista de energía. La energía utilizada en este mod es la Energía de Flux, un rasgo compartido con muchos otros mods actualmente disponibles.
-La energía se transmite entre §lConectores§r mediante el uso de §lCables§r. Los cables sólo pueden llegar una distancia limitada de bloques, por lo que tendrá que utilizar más conectores como §lRelés§r entre los cables.
-Puede elegir entre tres tipos diferentes de cables, que se diferencian por sus transferencias, <config;iA;wires.wireTransferRate;l3> Flux/tick. Para cambiar de un tipo de cable a otro, deberá utilizar §lTransformadores§r.
-<&hammer>El Martillo del Ingeniero es la herramienta más importante a tu disposición. Se utilizará para formar multibloques como el Horno de Coque y el Alto Horno de crudo, triturando minerales hasta convertirlos en polvo> o configurando bloques como los postes de madera.
-<&screwdriver>El Destornillador del Ingeniero es otro elemento común en su caja de herramientas, que necesitará para realizar una configuración precisa en ciertas piezas de maquinaria.
+§lIntroducción§r
+§oEntrando en la ingeniería§r
+Saludos, compañero ingeniero, y bienvenido a §lImmersive Engineering§r. Este diario te servirá de guía para configurar todas las nuevas máquinas y funciones que ofrece este mod.
+Empecemos por lo básico: §lImmersive Engineering§r está construido en torno al concepto de generación y transferencia de energía retrofuturista. La energía que se utiliza en este mod es la §lForge Energy§r, un rasgo compartido con muchos otros mods disponibles actualmente.
+La energía se transmite entre §lconectores§r mediante el uso de §lcables§r. Éstos sólo pueden abarcar una distancia limitada de bloques, por lo que tendrá que utilizar más conectores como los §lrelés§r para extender la línea eléctrica.
+Tiene la posibilidad de elegir entre tres tipos de §lcable§r diferentes, que difieren en las transferencias, <config;iA;wires.wireTransferRate;l3> Flux/tick. Para cambiar entre los diferentes tipos de §lcable§r, tendrá que utilizar §ltransformadores§r.<np>
+<&hammer>El §lMartillo del Ingeniero§r es la herramienta más importante a tu disposición. Te servirá para formar multibloques como el §lhorno de coque§r y el §lalto horno industrial§r, aplastar minerales hasta convertirlos en §lpolvo§r o configurar bloques como los §lpostes de madera§r.<np>
+<&screwdriver>El §lDestornillador del Ingeniero§r es otro elemento común en tu caja de herramientas, que necesitarás para hacer configuraciones precisas en ciertas piezas de maquinaria.

@@ -1,14 +1,14 @@
-Minerales
-Excava un agujero
-<&copper>El §lMineral de cobre§r se encuentra en el mundo entre las capas <config;i;ores.copper.min_y> y <config;i;ores.copper.max_y>, y requiere un pico de piedra para recojer.
-El mineral se fundirá en lingotes de cobre, que se utilizan en la fabricación de alambres básicos de cobre, bobinas y otras partes integrales de la arquitectura de IE.
-<&alu>El §lMineral de bauxita§r se encuentra en el mundo entre las capas <config;i;ores.bauxite.min_y> y <config;i;ores.bauxite.max_y>, y requiere un pico de piedra para recojer.
-El mineral se fundirá en lingotes de aluminio que, junto con el acero, se utilizan para crear cables de alta tensión.
-<&lead>El §lMineral de plomo§r se encuentra en el mundo entre las capas <config;i;ores.lead.min_y> y <config;i;ores.lead.max_y>, y requiere un pico de hierro para recojer.
-El mineral se fundirá en lingotes de plomo, que se utilizan en la creación de condensadores.
-<&silver>El §lMineral de plata§r se encuentra en el mundo entre las capas <config;i;ores.silver.min_y> y <config;i;ores.silver.max_y>, y requiere un pico de hierro para recojer.
-El mineral se fundirá en lingotes de plata, que se alean con el oro para crear electrum, un conductor mucho más eficaz.
-<&nickel>El §lMineral de níquel§r se encuentra en el mundo entre las capas <config;i;ores.nickel.min_y> y <config;i;ores.nickel.max_y>, y requiere un pico de hierro para recojer.
-El mineral se fundirá en lingotes de níquel, que se alean con el cobre para crear el constantan, un conductor resistente al calor utilizado en la creación de <link;thermoelectric;Generadores Termoeléctricos;start>.
-<&uranium>El §lMineral de uranio§r se encuentra en el mundo entre las capas <config;i;ores.uranium.min_y> y <config;i;ores.uranium.max_y>, y requiere un pico de hierro para recojer.
-El mineral se funde en lingotes de uranio, pero actualmente no hay muchos usos para el metal. Un bloque de uranio puede servir como fuente de calor para el <link;thermoelectric;Generador Termoeléctrico;start> y el metal se utilizará en futuros emprendimientos.
+§lMinerales§r
+§oCavando pozos§r
+<&copper>La §lmena de cobre§r se encuentra en el mundo entre las capas <config;i;ores.copper.min_y> y <config;i;ores.copper.max_y>, y requiere un §lpico de piedra§r para su recolección.
+El mineral se fundirá en §llingotes de cobre§r, que se utilizan en la elaboración de §lcables de baja tensión§r, §lbobinas§r y otras partes integrales de la arquitectura de IE.
+<&alu>La §lmena de bauxita§r se encuentra en el mundo entre las capas <config;i;ores.bauxite.min_y> y <config;i;ores.bauxite.max_y>, y requiere un §lpico de piedra§r para su recolección.
+El mineral se funde en §llingotes de aluminio§r que, junto con el §lacero§r, se utilizan para crear §lcables de alta tensión§r.
+<&lead>La §lmena de plomo§r se encuentra en el mundo entre las capas <config;i;ores.lead.min_y> y <config;i;ores.lead.max_y>, y requiere un §lpico de hierro§r para su recolección.
+El mineral se fundirá en §llingotes de plomo§r, que se utilizan para crear §lcondensadores§r.
+<&silver>La §lmena de plata§r se encuentra en el mundo entre las capas <config;i;ores.silver.min_y> y <config;i;ores.silver.max_y>, y requiere un §lpico de hierro§r para su recolección.
+El mineral se fundirá en §llingotes de plata§r, que se alean con el §loro§r para crear §lelectro§r, un conductor mucho más eficaz.
+<&nickel>La §lmena de níquel§r se encuentra en el mundo entre las capas <config;i;ores.nickel.min_y> y <config;i;ores.nickel.max_y>, y requiere un §lpico de hierro§r para su recolección.
+El mineral se fundirá en §llingotes de níquel§r, que se alean con el §lcobre§ para crear §lconstantán§r, un conductor resistente al calor que se utiliza en la creación de §1<link;thermoelectric;generadores termoeléctricos;start>.
+<&uranium>La §lmena de uranio§r se encuentra en el mundo entre las capas <config;i;ores.uranium.min_y> y <config;i;ores.uranium.max_y>, y requiere un §lpico de hierro§r para su recolección.
+El mineral se fundirá en §llingotes de uranio§r, pero actualmente no hay muchos usos para el metal. Un bloque de §luranio§r puede servir como fuente de calor para el §1<link;thermoelectric;generador termoeléctrico;start>§r y el metal se utilizará en futuros proyectos.

@@ -1,3 +1,3 @@
-Planos
-De vuelta a la mesa de dibujo
-Esta página contiene todos los Planos que se pueden fabricar por medios normales. Otros Planos pueden ser adquiridos de los aldeanos o encontrados en el mundo. Todos ellos se pueden utilizar en una <link;workbench;Mesa de Trabajo del Ingeniero> para elaborar los artículos que describen.
+§lPlanos de ingeniería§r
+§oDe vuelta a la mesa de dibujo§r
+Esta página contiene todos los §lplanos de ingeniería§r que se pueden fabricar por medios normales. Otros planos pueden ser adquiridos de los aldeanos o encontrados en el mundo. Todos ellos pueden usarse en una §1<link;workbench;mesa de trabajo del ingeniero>§r para fabricar los objetos que describen.

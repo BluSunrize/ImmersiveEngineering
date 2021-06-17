@@ -1,4 +1,9 @@
-Excavadora
-Mejor que los enanos
-<&excavator>La Excavadora es una de las cimas de la ingeniería moderna. Es capaz de excavar <link;minerals;Minerales> de vetas inaccesibles por la minería normal. A cambio, sin embargo, la excavadora es una estructura compleja que requiere <config;i;machines.excavator.consumption> Flux/t para poder operar.
-<&wheel><&full>La estructura se compone de dos piezas: El motor que se muestra en la primera página y la rueda de cangilones que se muestra en la segunda, que encaja en los "tirantes" del motor como se muestra en la página anterior. La entrada de energía para el motor está en su lado, la parte posterior cuenta con un panel de control de redstone y la salida de artículos.<br>A medida que la excavadora extrae minerales, el rendimiento de la veta disminuye lentamente, pero una veta de minerales puede proporcionar hasta <config;i;machines.excavator.yield> bloques de mineral.
+§lExcavadora§r
+§oMejor que los enanos§r
+<&full>La §lexcavadora§r es uno de los pináculos de la ingeniería moderna. Es capaz de desenterrar §1<link;minerals;minerales>§r de vetas inaccesibles por la minería normal. A cambio, sin embargo, la excavadora es una estructura compleja que requiere <config;i;machines.excavator.consumption> Flux/t para funcionar.
+La estructura se compone de dos piezas.<np> 
+<&excavator>§lEl motor§r:
+La entrada de energía para el §nmotor§r está en su costado, la parte trasera presenta un panel de control de redstone y la salida de §nobjetos§r.<np>
+<&wheel>§lLa rueda de cangilones§r:
+Encaja en los brazos del §nmotor§r como se muestra en la primera página. 
+A medida que la excavadora extrae §nminerales§r, el rendimiento de la veta disminuye lentamente, pero una veta de §nminerales§r puede proporcionar hasta <config;i;machines.excavator.yield> bloques de §nmineral§r.
