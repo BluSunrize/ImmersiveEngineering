@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.client.utils;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.util.fluids.IEFluid;
+import blusunrize.immersiveengineering.common.fluids.IEFluid;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;

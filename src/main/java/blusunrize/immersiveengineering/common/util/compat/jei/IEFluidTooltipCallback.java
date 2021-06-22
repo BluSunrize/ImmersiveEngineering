@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.util.compat.jei;
 
-import blusunrize.immersiveengineering.common.util.fluids.PotionFluid;
+import blusunrize.immersiveengineering.common.fluids.PotionFluid;
 import mezz.jei.api.gui.ingredient.ITooltipCallback;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fluids.FluidStack;

@@ -2,7 +2,7 @@ package blusunrize.immersiveengineering.client.models;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.utils.QuadTransformer;
-import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.fluids.IEFluids;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonDeserializationContext;
@@ -38,7 +38,7 @@ public final class PotionBucketModel implements IModelGeometry<PotionBucketModel
 {
 	private final QuadTransformer recolorTransformer;
 	private final IModelGeometry<?> baseGeometry = new DynamicBucketModel(
-			IEContent.fluidPotion, false, true, true, true
+			IEFluids.fluidPotion.get(), false, true, true, true
 	);
 
 	public PotionBucketModel(int color)
@@ -59,7 +59,7 @@ public final class PotionBucketModel implements IModelGeometry<PotionBucketModel
 		ItemMultiLayerBakedModel.Builder builder = ItemMultiLayerBakedModel.builder(
 				owner, baseModel.getParticleTexture(EmptyModelData.INSTANCE), new OverrideHandler(overrides, bakery, owner), transformMap
 		);
-		ResourceLocation fluidMaskLocation = IEContent.fluidPotion.getAttributes().getStillTexture();
+		ResourceLocation fluidMaskLocation = IEFluids.fluidPotion.get().getAttributes().getStillTexture();
 		for(Pair<IBakedModel, RenderType> layer : baseModel.getLayerModels(ItemStack.EMPTY, false))
 		{
 			List<BakedQuad> baseQuads = layer.getFirst().getQuads(null, null, Utils.RAND, EmptyModelData.INSTANCE);

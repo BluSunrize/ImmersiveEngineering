@@ -23,8 +23,8 @@ import blusunrize.immersiveengineering.common.blocks.plant.EnumHempGrowth;
 import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.SawdustBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
+import blusunrize.immersiveengineering.common.fluids.IEFluids;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
-import blusunrize.immersiveengineering.common.util.fluids.IEFluid;
 import blusunrize.immersiveengineering.data.DataGenUtils;
 import blusunrize.immersiveengineering.data.models.MultiLayerBuilder;
 import blusunrize.immersiveengineering.data.models.SideConfigBuilder;
@@ -36,6 +36,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.block.Block;
 import net.minecraft.block.FenceBlock;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.DyeColor;
 import net.minecraft.state.Property;
 import net.minecraft.util.Direction;
@@ -416,12 +417,13 @@ public class BlockStates extends ExtendedBlockstateProvider
 				.texture("plant", new ResourceLocation(ImmersiveEngineering.MODID, "block/hemp/potted")));
 		createSawdust();
 
-		for(IEFluid f : IEFluid.IE_FLUIDS)
+		for(IEFluids.FluidEntry entry : IEFluids.ALL_ENTRIES)
 		{
-			ResourceLocation stillTexture = f.getAttributes().getStillTexture();
-			ModelFile model = models().getBuilder("block/fluid/"+f.getRegistryName().getPath())
+			Fluid still = entry.getStill();
+			ResourceLocation stillTexture = still.getAttributes().getStillTexture();
+			ModelFile model = models().getBuilder("block/fluid/"+still.getRegistryName().getPath())
 					.texture("particle", stillTexture);
-			getVariantBuilder(f.block).partialState().setModels(new ConfiguredModel(model));
+			getVariantBuilder(entry.getBlock()).partialState().setModels(new ConfiguredModel(model));
 		}
 		createRotatedBlock(MetalDevices.toolbox, state -> obj("block/toolbox.obj"),
 				ImmutableList.of());

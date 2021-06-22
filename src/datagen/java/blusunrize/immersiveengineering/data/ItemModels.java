@@ -18,13 +18,13 @@ import blusunrize.immersiveengineering.client.models.PotionBucketModel.Loader;
 import blusunrize.immersiveengineering.client.models.connection.FeedthroughLoader;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.CoverType;
+import blusunrize.immersiveengineering.common.fluids.IEFluids;
+import blusunrize.immersiveengineering.common.fluids.PotionFluid;
 import blusunrize.immersiveengineering.common.items.IEItems;
 import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.items.IEItems.Molds;
 import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import blusunrize.immersiveengineering.common.items.IEItems.Weapons;
-import blusunrize.immersiveengineering.common.util.fluids.IEFluid;
-import blusunrize.immersiveengineering.common.util.fluids.PotionFluid;
 import blusunrize.immersiveengineering.data.blockstates.MultiblockStates;
 import blusunrize.immersiveengineering.data.models.IEOBJBuilder;
 import blusunrize.immersiveengineering.data.models.SpecialModelBuilder;
@@ -33,7 +33,6 @@ import blusunrize.immersiveengineering.data.models.TRSRModelBuilder;
 import com.google.common.base.Preconditions;
 import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.resources.ResourcePackType;
 import net.minecraft.util.IItemProvider;
@@ -278,8 +277,7 @@ public class ItemModels extends TRSRItemModelProvider
 		ieObj(Weapons.chemthrower, modLoc("item/chemthrower.obj.ie"))
 				.transforms(modLoc("item/chemthrower"));
 
-		for(IEFluid f : IEFluid.IE_FLUIDS)
-			createBucket(f);
+		IEFluids.ALL_ENTRIES.forEach(this::createBucket);
 		withExistingParent(name(PotionFluid.bucket), forgeLoc("item/bucket"))
 				.customLoader(SpecialModelBuilder.forLoader(Loader.LOADER_NAME))
 				.end();
@@ -290,11 +288,11 @@ public class ItemModels extends TRSRItemModelProvider
 				.customLoader(SpecialModelBuilder.forLoader(CoresampleLoader.LOCATION));
 	}
 
-	private void createBucket(Fluid f)
+	private void createBucket(IEFluids.FluidEntry entry)
 	{
-		withExistingParent(name(f.getFilledBucket()), forgeLoc("item/bucket"))
+		withExistingParent(name(entry.getBucket()), forgeLoc("item/bucket"))
 				.customLoader(DynamicBucketModelBuilder::begin)
-				.fluid(f);
+				.fluid(entry.getStill());
 	}
 
 	private void createStoneModels()

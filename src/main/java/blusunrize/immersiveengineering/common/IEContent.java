@@ -62,6 +62,8 @@ import blusunrize.immersiveengineering.common.crafting.DefaultAssemblerAdapter;
 import blusunrize.immersiveengineering.common.crafting.IngredientWithSizeSerializer;
 import blusunrize.immersiveengineering.common.crafting.fluidaware.IngredientFluidStack;
 import blusunrize.immersiveengineering.common.entities.*;
+import blusunrize.immersiveengineering.common.fluids.IEFluid;
+import blusunrize.immersiveengineering.common.fluids.IEFluids;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.items.IEItems.Molds;
@@ -70,9 +72,6 @@ import blusunrize.immersiveengineering.common.items.IEItems.Weapons;
 import blusunrize.immersiveengineering.common.items.ToolUpgradeItem.ToolUpgrade;
 import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.fakeworld.TemplateWorld;
-import blusunrize.immersiveengineering.common.util.fluids.ConcreteFluid;
-import blusunrize.immersiveengineering.common.util.fluids.IEFluid;
-import blusunrize.immersiveengineering.common.util.fluids.PotionFluid;
 import blusunrize.immersiveengineering.common.util.loot.IELootFunctions;
 import blusunrize.immersiveengineering.common.wires.CapabilityInit;
 import blusunrize.immersiveengineering.common.wires.IEWireTypes;
@@ -127,7 +126,6 @@ import java.util.function.Supplier;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 import static blusunrize.immersiveengineering.api.tool.assembler.AssemblerHandler.defaultAdapter;
-import static blusunrize.immersiveengineering.common.util.fluids.IEFluid.createBuilder;
 
 @Mod.EventBusSubscriber(modid = MODID, bus = Bus.MOD)
 public class IEContent
@@ -135,15 +133,6 @@ public class IEContent
 	public static List<Block> registeredIEBlocks = new ArrayList<>();
 	public static List<Item> registeredIEItems = new ArrayList<>();
 	public static List<Class<? extends TileEntity>> registeredIETiles = new ArrayList<>();
-	public static List<Fluid> registeredIEFluids = new ArrayList<>();
-
-	public static IEFluid fluidCreosote;
-	public static IEFluid fluidPlantoil;
-	public static IEFluid fluidEthanol;
-	public static IEFluid fluidBiodiesel;
-	public static IEFluid fluidConcrete;
-	public static IEFluid fluidHerbicide;
-	public static Fluid fluidPotion;
 
 	public static final Feature<OreFeatureConfig> ORE_RETROGEN = new OreRetrogenFeature(OreFeatureConfig.CODEC);
 
@@ -180,18 +169,9 @@ public class IEContent
 		ShaderRegistry.rarityWeightMap.put(Rarity.EPIC, 3);
 		ShaderRegistry.rarityWeightMap.put(Lib.RARITY_MASTERWORK, 1);
 
-		fluidCreosote = new IEFluid("creosote", new ResourceLocation("immersiveengineering:block/fluid/creosote_still"),
-				new ResourceLocation("immersiveengineering:block/fluid/creosote_flow"), createBuilder(1100, 3000));
-		fluidPlantoil = new IEFluid("plantoil", new ResourceLocation("immersiveengineering:block/fluid/plantoil_still"),
-				new ResourceLocation("immersiveengineering:block/fluid/plantoil_flow"), createBuilder(925, 2000));
-		fluidEthanol = new IEFluid("ethanol", new ResourceLocation("immersiveengineering:block/fluid/ethanol_still"),
-				new ResourceLocation("immersiveengineering:block/fluid/ethanol_flow"), createBuilder(789, 1000));
-		fluidBiodiesel = new IEFluid("biodiesel", new ResourceLocation("immersiveengineering:block/fluid/biodiesel_still"),
-				new ResourceLocation("immersiveengineering:block/fluid/biodiesel_flow"), createBuilder(789, 1000));
-		fluidConcrete = new ConcreteFluid();
-		fluidPotion = new PotionFluid();
-		fluidHerbicide = new IEFluid("herbicide", new ResourceLocation("immersiveengineering:block/fluid/herbicide_still"),
-				new ResourceLocation("immersiveengineering:block/fluid/herbicide_flow"), createBuilder(789, 1000));
+		IEFluids.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
+		IEBlocks.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
+		IEItems.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
 
 		Block.Properties sheetmetalProperties = Block.Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(3, 10);
 		ImmersiveEngineering.proxy.registerContainersAndScreens();
@@ -711,14 +691,6 @@ public class IEContent
 	}
 
 	@SubscribeEvent
-	public static void registerFluids(RegistryEvent.Register<Fluid> event)
-	{
-		checkNonNullNames(registeredIEFluids);
-		for(Fluid fluid : registeredIEFluids)
-			event.getRegistry().register(fluid);
-	}
-
-	@SubscribeEvent
 	public static void registerPotions(RegistryEvent.Register<Effect> event)
 	{
 		/*POTIONS*/
@@ -830,11 +802,11 @@ public class IEContent
 		DieselHandler.registerDrillFuel(IETags.fluidBiodiesel);
 		DieselHandler.registerFuel(IETags.fluidCreosote, 20);
 
-		fluidCreosote.block.setEffect(IEPotions.flammable, 100, 0);
-		fluidEthanol.block.setEffect(Effects.NAUSEA, 70, 0);
-		fluidBiodiesel.block.setEffect(IEPotions.flammable, 100, 1);
-		fluidConcrete.block.setEffect(Effects.SLOWNESS, 20, 3);
-		fluidCreosote.setBurnTime(800);
+		// TODO move to IEFluids/constructors?
+		IEFluids.fluidCreosote.getBlock().setEffect(IEPotions.flammable, 100, 0);
+		IEFluids.fluidEthanol.getBlock().setEffect(Effects.NAUSEA, 70, 0);
+		IEFluids.fluidBiodiesel.getBlock().setEffect(IEPotions.flammable, 100, 1);
+		IEFluids.fluidConcrete.getBlock().setEffect(Effects.SLOWNESS, 20, 3);
 
 		ChemthrowerEffects.register();
 

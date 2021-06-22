@@ -17,7 +17,6 @@ import blusunrize.immersiveengineering.api.crafting.builders.*;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.wires.WireType;
-import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.CoverType;
@@ -25,8 +24,8 @@ import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
-import blusunrize.immersiveengineering.common.crafting.ShaderBagRecipe;
 import blusunrize.immersiveengineering.common.crafting.fluidaware.IngredientFluidStack;
+import blusunrize.immersiveengineering.common.fluids.IEFluids;
 import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.items.IEItems;
 import blusunrize.immersiveengineering.common.items.IEItems.Metals;
@@ -48,6 +47,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.data.*;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.EquipmentSlotType.Group;
 import net.minecraft.item.DyeColor;
@@ -837,23 +837,24 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL("sawmill/bookshelf"));
 
 		/* SQUEEZER */
-		SqueezerRecipeBuilder.builder(IEContent.fluidPlantoil, 80)
+		Fluid plantOil = IEFluids.fluidPlantoil.getStill();
+		SqueezerRecipeBuilder.builder(plantOil, 80)
 				.addInput(Items.WHEAT_SEEDS)
 				.setEnergy(6400)
 				.build(out, toRL("squeezer/wheat_seeds"));
-		SqueezerRecipeBuilder.builder(IEContent.fluidPlantoil, 60)
+		SqueezerRecipeBuilder.builder(plantOil, 60)
 				.addInput(Items.BEETROOT_SEEDS)
 				.setEnergy(6400)
 				.build(out, toRL("squeezer/beetroot_seeds"));
-		SqueezerRecipeBuilder.builder(IEContent.fluidPlantoil, 40)
+		SqueezerRecipeBuilder.builder(plantOil, 40)
 				.addInput(Items.PUMPKIN_SEEDS)
 				.setEnergy(6400)
 				.build(out, toRL("squeezer/pumpkin_seeds"));
-		SqueezerRecipeBuilder.builder(IEContent.fluidPlantoil, 20)
+		SqueezerRecipeBuilder.builder(plantOil, 20)
 				.addInput(Items.MELON_SEEDS)
 				.setEnergy(6400)
 				.build(out, toRL("squeezer/melon_seeds"));
-		SqueezerRecipeBuilder.builder(IEContent.fluidPlantoil, 120)
+		SqueezerRecipeBuilder.builder(plantOil, 120)
 				.addInput(Misc.hempSeeds)
 				.setEnergy(6400)
 				.build(out, toRL("squeezer/hemp_seeds"));
@@ -863,45 +864,47 @@ public class Recipes extends RecipeProvider
 				.setEnergy(19200)
 				.build(out, toRL("squeezer/graphite_dust"));
 		/* FERMENTER */
-		FermenterRecipeBuilder.builder(IEContent.fluidEthanol, 80)
+		Fluid ethanol = IEFluids.fluidEthanol.getStill();
+		FermenterRecipeBuilder.builder(ethanol, 80)
 				.addInput(Items.SUGAR_CANE)
 				.setEnergy(6400)
 				.build(out, toRL("fermenter/sugar_cane"));
-		FermenterRecipeBuilder.builder(IEContent.fluidEthanol, 20)
+		FermenterRecipeBuilder.builder(ethanol, 20)
 				.addInput(Items.MELON_SLICE)
 				.setEnergy(6400)
 				.build(out, toRL("fermenter/melon_slice"));
-		FermenterRecipeBuilder.builder(IEContent.fluidEthanol, 80)
+		FermenterRecipeBuilder.builder(ethanol, 80)
 				.addInput(Items.APPLE)
 				.setEnergy(6400)
 				.build(out, toRL("fermenter/apple"));
-		FermenterRecipeBuilder.builder(IEContent.fluidEthanol, 80)
+		FermenterRecipeBuilder.builder(ethanol, 80)
 				.addInput(Tags.Items.CROPS_POTATO)
 				.setEnergy(6400)
 				.build(out, toRL("fermenter/potato"));
 		/* REFINERY */
-		RefineryRecipeBuilder.builder(IEContent.fluidBiodiesel, 16)
+		RefineryRecipeBuilder.builder(ethanol, 16)
 				.addInput(IETags.fluidPlantoil, 8)
 				.addInput(IETags.fluidEthanol, 8)
 				.setEnergy(80)
 				.build(out, toRL("refinery/biodiesel"));
 		/* MIXER */
 		int half_bucket = FluidAttributes.BUCKET_VOLUME/2;
-		MixerRecipeBuilder.builder(IEContent.fluidConcrete, half_bucket)
+		Fluid concrete = IEFluids.fluidConcrete.getStill();
+		MixerRecipeBuilder.builder(concrete, half_bucket)
 				.addFluidTag(FluidTags.WATER, half_bucket)
 				.addInput(new IngredientWithSize(Tags.Items.SAND, 2))
 				.addInput(Tags.Items.GRAVEL)
 				.addInput(IETags.clay)
 				.setEnergy(3200)
 				.build(out, toRL("mixer/concrete"));
-		MixerRecipeBuilder.builder(IEContent.fluidConcrete, half_bucket)
+		MixerRecipeBuilder.builder(concrete, half_bucket)
 				.addFluidTag(FluidTags.WATER, half_bucket)
 				.addInput(new IngredientWithSize(IETags.slag, 2))
 				.addInput(Tags.Items.GRAVEL)
 				.addInput(IETags.clay)
 				.setEnergy(3200)
 				.build(out, toRL("mixer/concrete"));
-		MixerRecipeBuilder.builder(IEContent.fluidHerbicide, half_bucket)
+		MixerRecipeBuilder.builder(IEFluids.fluidHerbicide.getStill(), half_bucket)
 				.addFluidTag(IETags.fluidEthanol, half_bucket)
 				.addInput(IETags.saltpeterDust)
 				.addInput(IETags.getTagsFor(EnumMetals.COPPER).dust)
@@ -1225,7 +1228,7 @@ public class Recipes extends RecipeProvider
 				.patternLine("www")
 				.key('w', ItemTags.PLANKS)
 				.key('b', new IngredientFluidStack(IETags.fluidCreosote, FluidAttributes.BUCKET_VOLUME))
-				.addCriterion("has_creosote", hasItem(IEContent.fluidCreosote.getFilledBucket()))
+				.addCriterion("has_creosote", hasItem(IEFluids.fluidCreosote.getBucket()))
 				.build(out, toRL(toPath(WoodenDecoration.treatedWood.get(TreatedWoodStyles.HORIZONTAL))));
 
 		ShapedRecipeBuilder.shapedRecipe(WoodenDecoration.sawdust, 9)
@@ -2567,7 +2570,7 @@ public class Recipes extends RecipeProvider
 				.key('s', Tags.Items.RODS_WOODEN)
 				.addCriterion("has_wool", hasItem(ItemTags.WOOL))
 				.addCriterion("has_stick", hasItem(Tags.Items.RODS_WOODEN))
-				.addCriterion("has_creosote", hasItem(IEContent.fluidCreosote.getFilledBucket()))
+				.addCriterion("has_creosote", hasItem(IEFluids.fluidCreosote.getBucket()))
 				.build(out, toRL(toPath(Items.TORCH)));
 		ShapelessRecipeBuilder.shapelessRecipe(Items.STRING)
 				.addIngredient(Ingredient.fromTag(IETags.fiberHemp), 3)

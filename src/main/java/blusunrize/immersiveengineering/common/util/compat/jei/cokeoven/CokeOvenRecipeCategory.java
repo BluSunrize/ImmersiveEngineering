@@ -10,8 +10,8 @@ package blusunrize.immersiveengineering.common.util.compat.jei.cokeoven;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.CokeOvenRecipe;
-import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
+import blusunrize.immersiveengineering.common.fluids.IEFluids;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
@@ -48,7 +48,7 @@ public class CokeOvenRecipeCategory extends IERecipeCategory<CokeOvenRecipe>
 	{
 		ingredients.setInputLists(VanillaTypes.ITEM, JEIIngredientStackListBuilder.make(recipe.input).build());
 		ingredients.setOutput(VanillaTypes.ITEM, recipe.output);
-		ingredients.setOutput(VanillaTypes.FLUID, new FluidStack(IEContent.fluidCreosote, recipe.creosoteOutput));
+		ingredients.setOutput(VanillaTypes.FLUID, new FluidStack(IEFluids.fluidCreosote.getStill(), recipe.creosoteOutput));
 	}
 
 	@Override
@@ -66,7 +66,7 @@ public class CokeOvenRecipeCategory extends IERecipeCategory<CokeOvenRecipe>
 		{
 			IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
 			guiFluidStacks.init(0, false, 121, 4, 16, 47, 5*FluidAttributes.BUCKET_VOLUME, false, tankOverlay);
-			guiFluidStacks.set(0, new FluidStack(IEContent.fluidCreosote, recipe.creosoteOutput));
+			guiFluidStacks.set(0, new FluidStack(IEFluids.fluidCreosote.getStill(), recipe.creosoteOutput));
 			guiFluidStacks.addTooltipCallback(JEIHelper.fluidTooltipCallback);
 		}
 	}

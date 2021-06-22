@@ -6,8 +6,9 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.common.util.fluids;
+package blusunrize.immersiveengineering.common.fluids;
 
+import blusunrize.immersiveengineering.common.fluids.IEFluids.FluidEntry;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FlowingFluidBlock;
@@ -20,44 +21,35 @@ import net.minecraft.potion.EffectInstance;
 import net.minecraft.state.Property;
 import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.state.StateHolder;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.function.Supplier;
 
 public class IEFluidBlock extends FlowingFluidBlock
 {
-	private final IEFluid ieFluid;
+	private static FluidEntry entryStatic;
+	private final FluidEntry entry;
 	@Nullable
 	private Effect effect;
 	private int duration;
 	private int level;
-	private static IEFluid tempFluid;
 
-	private static Supplier<IEFluid> supply(IEFluid fluid)
+	public IEFluidBlock(IEFluids.FluidEntry entry)
 	{
-		tempFluid = fluid;
-		return () -> fluid;
-	}
-
-	public IEFluidBlock(IEFluid ieFluid)
-	{
-		super(supply(ieFluid), Properties.create(Material.WATER));
-		this.ieFluid = ieFluid;
+		super(entry.getStillGetter(), Util.make(Properties.create(Material.WATER), $ -> entryStatic = entry));
+		this.entry = entry;
+		entryStatic = null;
 	}
 
 	@Override
 	protected void fillStateContainer(@Nonnull Builder<Block, BlockState> builder)
 	{
 		super.fillStateContainer(builder);
-		IEFluid f;
-		if(ieFluid!=null)
-			f = ieFluid;
-		else
-			f = tempFluid;
-		builder.add(f.getStateContainer().getProperties().toArray(new Property[0]));
+		for(Property<?> p : (entry==null?entryStatic: entry).getProperties())
+			builder.add(p);
 	}
 
 	@Nonnull
@@ -65,13 +57,13 @@ public class IEFluidBlock extends FlowingFluidBlock
 	public FluidState getFluidState(@Nonnull BlockState state)
 	{
 		FluidState baseState = super.getFluidState(state);
-		for(Property<?> prop : ieFluid.getStateContainer().getProperties())
+		for(Property<?> prop : getFluid().getStateContainer().getProperties())
 			if(prop!=FlowingFluidBlock.LEVEL)
 				baseState = withCopiedValue(prop, baseState, state);
 		return baseState;
 	}
 
-	private <T extends StateHolder<?, T>, S extends Comparable<S>>
+	public static <T extends StateHolder<?, T>, S extends Comparable<S>>
 	T withCopiedValue(Property<S> prop, T oldState, StateHolder<?, ?> copyFrom)
 	{
 		return oldState.with(prop, copyFrom.get(prop));

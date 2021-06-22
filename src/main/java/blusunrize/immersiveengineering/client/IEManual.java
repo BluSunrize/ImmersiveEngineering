@@ -26,7 +26,7 @@ import blusunrize.immersiveengineering.client.manual.IEManualInstance;
 import blusunrize.immersiveengineering.client.manual.ManualElementBlueprint;
 import blusunrize.immersiveengineering.client.manual.ManualElementMultiblock;
 import blusunrize.immersiveengineering.client.manual.ShaderManualElement;
-import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.fluids.IEFluids;
 import blusunrize.lib.manual.*;
 import blusunrize.lib.manual.ManualEntry.ManualEntryBuilder;
 import blusunrize.lib.manual.Tree.InnerNode;
@@ -137,7 +137,7 @@ public class IEManual
 			ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());
 			builder.addSpecialElement("list", 0,
 					addDynamicTable(
-							() -> FermenterRecipe.getFluidValuesSorted(IEContent.fluidEthanol, true),
+							() -> FermenterRecipe.getFluidValuesSorted(IEFluids.fluidEthanol.getStill(), true),
 							"mB"
 					)
 			);
@@ -148,7 +148,7 @@ public class IEManual
 			ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());
 			builder.addSpecialElement("list", 0,
 					addDynamicTable(
-							() -> SqueezerRecipe.getFluidValuesSorted(IEContent.fluidPlantoil, true),
+							() -> SqueezerRecipe.getFluidValuesSorted(IEFluids.fluidPlantoil.getStill(), true),
 							"mB"
 					)
 			);

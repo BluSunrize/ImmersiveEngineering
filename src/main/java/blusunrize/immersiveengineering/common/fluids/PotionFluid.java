@@ -6,11 +6,9 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.common.util.fluids;
+package blusunrize.immersiveengineering.common.fluids;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.items.PotionBucketItem;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockState;
@@ -51,17 +49,11 @@ public class PotionFluid extends Fluid
 {
 	public static final Item bucket = new PotionBucketItem();
 
-	public PotionFluid()
-	{
-		setRegistryName(ImmersiveEngineering.MODID, "potion");
-		IEContent.registeredIEFluids.add(this);
-	}
-
 	public static FluidStack getFluidStackForType(Potion type, int amount)
 	{
 		if(type==Potions.WATER||type==null)
 			return new FluidStack(Fluids.WATER, amount);
-		FluidStack stack = new FluidStack(IEContent.fluidPotion, amount);
+		FluidStack stack = new FluidStack(IEFluids.fluidPotion.get(), amount);
 		stack.getOrCreateTag().putString("Potion", type.getRegistryName().toString());
 		return stack;
 	}

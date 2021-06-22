@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.blocks.stone;
 
 import blusunrize.immersiveengineering.api.crafting.CokeOvenRecipe;
-import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IActiveState;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
@@ -17,6 +16,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteract
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IProcessTile;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
+import blusunrize.immersiveengineering.common.fluids.IEFluids;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
@@ -123,7 +123,7 @@ public class CokeOvenTileEntity extends MultiblockPartTileEntity<CokeOvenTileEnt
 							inventory.get(OUTPUT_SLOT).grow(recipe.output.copy().getCount());
 						else if(inventory.get(OUTPUT_SLOT).isEmpty())
 							inventory.set(OUTPUT_SLOT, recipe.output.copy());
-						this.tank.fill(new FluidStack(IEContent.fluidCreosote, recipe.creosoteOutput), FluidAction.EXECUTE);
+						this.tank.fill(new FluidStack(IEFluids.fluidCreosote.getStill(), recipe.creosoteOutput), FluidAction.EXECUTE);
 					}
 					processMax = 0;
 					setActive(false);

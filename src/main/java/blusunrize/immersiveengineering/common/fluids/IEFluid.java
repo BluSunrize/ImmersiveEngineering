@@ -6,11 +6,9 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.common.util.fluids;
+package blusunrize.immersiveengineering.common.fluids;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.util.GenericDeferredWork;
+import blusunrize.immersiveengineering.common.fluids.IEFluids.FluidEntry;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.block.FlowingFluidBlock;
@@ -29,6 +27,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.IDataSerializer;
+import net.minecraft.state.Property;
 import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -40,15 +39,11 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.wrappers.FluidBucketWrapper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -58,70 +53,35 @@ import java.util.function.Consumer;
  */
 public class IEFluid extends FlowingFluid
 {
-	public static final Collection<IEFluid> IE_FLUIDS = new ArrayList<>();
-	protected final String fluidName;
+	private static FluidEntry entryStatic;
+	protected final FluidEntry entry;
 	protected final ResourceLocation stillTex;
 	protected final ResourceLocation flowingTex;
-	protected IEFluid flowing;
-	protected IEFluid source;
 	@Nullable
 	protected final Consumer<FluidAttributes.Builder> buildAttributes;
-	public IEFluidBlock block;
-	protected Item bucket;
-	private int burnTime = -1;
 
-	public IEFluid(String fluidName, ResourceLocation stillTex, ResourceLocation flowingTex)
+	public static IEFluid makeFluid(
+			FluidConstructor make,
+			IEFluids.FluidEntry entry, ResourceLocation stillTex, ResourceLocation flowingTex, @Nullable Consumer<FluidAttributes.Builder> buildAttributes
+	)
 	{
-		this(fluidName, stillTex, flowingTex, null);
+		entryStatic = entry;
+		IEFluid result = make.create(entry, stillTex, flowingTex, buildAttributes);
+		entryStatic = null;
+		return result;
 	}
 
-	public IEFluid(String fluidName, ResourceLocation stillTex, ResourceLocation flowingTex, @Nullable Consumer<FluidAttributes.Builder> buildAttributes)
+	public IEFluid(IEFluids.FluidEntry entry, ResourceLocation stillTex, ResourceLocation flowingTex)
 	{
-		this(fluidName, stillTex, flowingTex, buildAttributes, true);
+		this(entry, stillTex, flowingTex, null);
 	}
 
-	public IEFluid(String fluidName, ResourceLocation stillTex, ResourceLocation flowingTex, @Nullable Consumer<FluidAttributes.Builder> buildAttributes, boolean isSource)
+	public IEFluid(IEFluids.FluidEntry entry, ResourceLocation stillTex, ResourceLocation flowingTex, @Nullable Consumer<FluidAttributes.Builder> buildAttributes)
 	{
-		this.fluidName = fluidName;
+		this.entry = entry;
 		this.stillTex = stillTex;
 		this.flowingTex = flowingTex;
 		this.buildAttributes = buildAttributes;
-		IEContent.registeredIEFluids.add(this);
-		if(!isSource)
-		{
-			flowing = this;
-			setRegistryName(ImmersiveEngineering.MODID, fluidName+"_flowing");
-		}
-		else
-		{
-			source = this;
-			this.block = new IEFluidBlock(this);
-			this.block.setRegistryName(ImmersiveEngineering.MODID, fluidName+"_fluid_block");
-			IEContent.registeredIEBlocks.add(this.block);
-			this.bucket = new BucketItem(() -> this.source, new Item.Properties()
-					.maxStackSize(1)
-					.group(ImmersiveEngineering.ITEM_GROUP)
-					.containerItem(Items.BUCKET))
-			{
-				@Override
-				public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundNBT nbt)
-				{
-					return new FluidBucketWrapper(stack);
-				}
-
-				@Override
-				public int getBurnTime(ItemStack itemStack)
-				{
-					return burnTime;
-				}
-			};
-			this.bucket.setRegistryName(ImmersiveEngineering.MODID, fluidName+"_bucket");
-			IEContent.registeredIEItems.add(this.bucket);
-			GenericDeferredWork.registerDispenseBehavior(this.bucket, BUCKET_DISPENSE_BEHAVIOR);
-			flowing = createFlowingVariant();
-			setRegistryName(ImmersiveEngineering.MODID, fluidName);
-			IE_FLUIDS.add(this);
-		}
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -133,7 +93,7 @@ public class IEFluid extends FlowingFluid
 	@Override
 	public Item getFilledBucket()
 	{
-		return bucket;
+		return entry.getBucket();
 	}
 
 	@Override
@@ -145,7 +105,7 @@ public class IEFluid extends FlowingFluid
 	@Override
 	public boolean isEquivalentTo(Fluid fluidIn)
 	{
-		return fluidIn==source||fluidIn==flowing;
+		return fluidIn==entry.getStill()||fluidIn==entry.getStill();
 	}
 
 	//TODO all copied from water. Maybe make configurable?
@@ -162,15 +122,26 @@ public class IEFluid extends FlowingFluid
 	}
 
 	@Override
+	protected void fillStateContainer(Builder<Fluid, FluidState> builder)
+	{
+		super.fillStateContainer(builder);
+		for(Property<?> p : (entry==null?entryStatic: entry).getProperties())
+			builder.add(p);
+	}
+
+	@Override
 	protected BlockState getBlockState(FluidState state)
 	{
-		return block.getDefaultState().with(FlowingFluidBlock.LEVEL, getLevelFromState(state));
+		BlockState result = entry.getBlock().getDefaultState().with(FlowingFluidBlock.LEVEL, getLevelFromState(state));
+		for(Property<?> prop : entry.getProperties())
+			result = IEFluidBlock.withCopiedValue(prop, result, state);
+		return result;
 	}
 
 	@Override
 	public boolean isSource(FluidState state)
 	{
-		return state.getFluid()==source;
+		return state.getFluid()==entry.getStill();
 	}
 
 	@Override
@@ -196,14 +167,14 @@ public class IEFluid extends FlowingFluid
 	@Override
 	public Fluid getFlowingFluid()
 	{
-		return flowing;
+		return entry.getFlowing();
 	}
 
 	@Nonnull
 	@Override
 	public Fluid getStillFluid()
 	{
-		return source;
+		return entry.getStill();
 	}
 
 	@Override
@@ -230,35 +201,37 @@ public class IEFluid extends FlowingFluid
 		return 1;
 	}
 
-	public void setBurnTime(int burnTime)
-	{
-		this.burnTime = burnTime;
-	}
-
-	protected IEFluid createFlowingVariant()
-	{
-		IEFluid ret = new IEFluid(fluidName, stillTex, flowingTex, buildAttributes, false)
-		{
-			@Override
-			protected void fillStateContainer(Builder<Fluid, FluidState> builder)
-			{
-				super.fillStateContainer(builder);
-				builder.add(LEVEL_1_8);
-			}
-		};
-		ret.source = this;
-		ret.bucket = bucket;
-		ret.block = block;
-		ret.setDefaultState(ret.getStateContainer().getBaseState().with(LEVEL_1_8, 7));
-		return ret;
-	}
-
 	public static Consumer<FluidAttributes.Builder> createBuilder(int density, int viscosity)
 	{
-		return builder -> {
-			builder.viscosity(viscosity)
-					.density(density);
-		};
+		return builder -> builder.viscosity(viscosity).density(density);
+	}
+
+	public static class Flowing extends IEFluid
+	{
+		public Flowing(
+				IEFluids.FluidEntry entry,
+				ResourceLocation stillTex, ResourceLocation flowingTex,
+				@Nullable Consumer<FluidAttributes.Builder> buildAttributes
+		)
+		{
+			super(entry, stillTex, flowingTex, buildAttributes);
+		}
+
+		@Override
+		protected void fillStateContainer(Builder<Fluid, FluidState> builder)
+		{
+			super.fillStateContainer(builder);
+			builder.add(LEVEL_1_8);
+		}
+	}
+
+	public interface FluidConstructor
+	{
+		IEFluid create(
+				IEFluids.FluidEntry entry,
+				ResourceLocation stillTex, ResourceLocation flowingTex,
+				@Nullable Consumer<FluidAttributes.Builder> buildAttributes
+		);
 	}
 
 	public static final IDataSerializer<Optional<FluidStack>> OPTIONAL_FLUID_STACK = new IDataSerializer<Optional<FluidStack>>()

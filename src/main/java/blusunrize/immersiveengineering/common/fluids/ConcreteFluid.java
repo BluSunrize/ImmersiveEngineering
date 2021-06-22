@@ -6,11 +6,12 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.common.util.fluids;
+package blusunrize.immersiveengineering.common.fluids;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.StoneDecoration;
+import blusunrize.immersiveengineering.common.fluids.IEFluids.FluidEntry;
 import blusunrize.immersiveengineering.common.util.IEPotions;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -41,16 +42,9 @@ import java.util.function.Consumer;
 
 public class ConcreteFluid extends IEFluid
 {
-	public ConcreteFluid()
+	public ConcreteFluid(IEFluids.FluidEntry entry, ResourceLocation stillTex, ResourceLocation flowingTex, @Nullable Consumer<Builder> buildAttributes)
 	{
-		this("concrete", new ResourceLocation("immersiveengineering:block/fluid/concrete_still"),
-				new ResourceLocation("immersiveengineering:block/fluid/concrete_flow"), createBuilder(2400, 4000),
-				true);
-	}
-
-	public ConcreteFluid(String fluidName, ResourceLocation stillTex, ResourceLocation flowingTex, @Nullable Consumer<Builder> buildAttributes, boolean isSource)
-	{
-		super(fluidName, stillTex, flowingTex, buildAttributes, isSource);
+		super(entry, stillTex, flowingTex, buildAttributes);
 	}
 
 	@Override
@@ -92,43 +86,27 @@ public class ConcreteFluid extends IEFluid
 			for(LivingEntity living : world.getEntitiesWithinAABB(LivingEntity.class, new AxisAlignedBB(pos, pos.add(1, 1, 1))))
 				living.addPotionEffect(new EffectInstance(IEPotions.concreteFeet, Integer.MAX_VALUE));
 		}
-		else if(world.getBlockState(pos).getBlock()==block)
+		else if(world.getBlockState(pos).getBlock()==entry.getBlock())
 		{
 			BlockState newState = world.getBlockState(pos).with(IEProperties.INT_16, timer+(hasFlownInTick?1: 2));
 			world.setBlockState(pos, newState);
 		}
 	}
 
-	@Override
-	protected void fillStateContainer(StateContainer.Builder<Fluid, FluidState> builder)
+	public static class Flowing extends ConcreteFluid
 	{
-		super.fillStateContainer(builder);
-		builder.add(IEProperties.INT_16);
-	}
-
-	@Override
-	protected BlockState getBlockState(FluidState state)
-	{
-		return super.getBlockState(state).with(IEProperties.INT_16, state.get(IEProperties.INT_16));
-	}
-
-	@Override
-	protected ConcreteFluid createFlowingVariant()
-	{
-		ConcreteFluid ret = new ConcreteFluid(fluidName, stillTex, flowingTex, buildAttributes, false)
+		public Flowing(FluidEntry entry, ResourceLocation stillTex, ResourceLocation flowingTex, @Nullable Consumer<Builder> buildAttributes)
 		{
-			@Override
-			protected void fillStateContainer(StateContainer.Builder<Fluid, FluidState> builder)
-			{
-				super.fillStateContainer(builder);
-				builder.add(LEVEL_1_8);
-			}
-		};
-		ret.source = this;
-		ret.bucket = bucket;
-		ret.block = block;
-		ret.setDefaultState(ret.getStateContainer().getBaseState().with(LEVEL_1_8, 7));
-		return ret;
+			super(entry, stillTex, flowingTex, buildAttributes);
+			setDefaultState(getStateContainer().getBaseState().with(LEVEL_1_8, 7));
+		}
+
+		@Override
+		protected void fillStateContainer(StateContainer.Builder<Fluid, FluidState> builder)
+		{
+			super.fillStateContainer(builder);
+			builder.add(LEVEL_1_8);
+		}
 	}
 
 	private static Method doesSideHaveHoles = ObfuscationReflectionHelper.findMethod(FlowingFluid.class, "func_212751_a",

@@ -11,19 +11,19 @@ package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.wires.WireType;
-import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
-import blusunrize.immersiveengineering.common.blocks.generic.ConnectorBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.CoverType;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
-import blusunrize.immersiveengineering.common.util.fluids.IEFluid;
+import blusunrize.immersiveengineering.common.fluids.IEFluids;
 import net.minecraft.block.Block;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
+import net.minecraft.fluid.Fluid;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -117,12 +117,9 @@ public class BlockRenderLayers
 
 		RenderTypeLookup.setRenderLayer(Misc.hempPlant, RenderType.getCutout());
 		RenderTypeLookup.setRenderLayer(Misc.pottedHemp, RenderType.getCutout());
-		RenderTypeLookup.setRenderLayer(IEContent.fluidPotion, RenderType.getTranslucent());
-		for(IEFluid fluid : IEFluid.IE_FLUIDS)
-			if(fluid!=IEContent.fluidConcrete)
-			{
-				RenderTypeLookup.setRenderLayer(fluid, RenderType.getTranslucent());
-				RenderTypeLookup.setRenderLayer(fluid.getFlowingFluid(), RenderType.getTranslucent());
-			}
+		RenderTypeLookup.setRenderLayer(IEFluids.fluidPotion.get(), RenderType.getTranslucent());
+		for(RegistryObject<Fluid> f : IEFluids.REGISTER.getEntries())
+			if(f.get()!=IEFluids.fluidConcrete.getFlowing()&&f.get()!=IEFluids.fluidConcrete.getStill())
+				RenderTypeLookup.setRenderLayer(f.get(), RenderType.getTranslucent());
 	}
 }
