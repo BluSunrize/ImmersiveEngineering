@@ -1,7 +1,7 @@
-§lFiltro de ítems§r
+§lFiltro de objetos§r
 §oVengan juntos, ahora mismo§r
-<&recipe>El §lfiltro de ítems§r está diseñado para recoger un conjunto de objetos de una §lcinta transportadora§r de entrada antes de enviarlos hacia adelante, con el fin de transferir tamaños de lote optimizados a la maquinaria.<np>
+<&recipe>El §lfiltro de objetos§r está diseñado para recoger un conjunto de objetos de una §lcinta transportadora§r de entrada antes de enviarlos hacia adelante, con el fin de transferir tamaños de lote optimizados a la maquinaria.<np>
 Coloque el bloque y abra su interfaz para establecer una variedad de filtros. Todos los objetos entrantes serán aceptados en las ranuras situadas justo debajo de los filtros, y el lote recogido sólo saldrá cuando se satisfagan todos los filtros.
 Este comportamiento puede ajustarse con el botón denominado §lModo de salida§r. El comportamiento por defecto indicado anteriormente se conoce como §lModo de dos lotes§r. En el §lmodo individual§r, cualquier objeto que satisfaga su cantidad filtrada se emitirá en su lugar.<np>
-Utilizando los 9 botones situados debajo del buffer, se puede alternar entre los colores de <link;redstone_wire;cables de redstone>. Al adjuntar un <link;redstone_wire;conector de interfaz de redstone;bundled>, el filtro de ítems enviará señales a lo largo de los cables de redstone cuando se satisfaga un filtro.
+Utilizando los 9 botones situados debajo del buffer, se puede alternar entre los colores de <link;redstone_wire;cables de redstone>. Al adjuntar un <link;redstone_wire;conector de interfaz de redstone;bundled>, el filtro de objetos enviará señales a lo largo de los cables de redstone cuando se satisfaga un filtro.
 Esto le permite desactivar cualquier cinta transportadora de extracción o maquinaria de producción cuando se alcanza la cantidad requerida de objetos. Tenga en cuenta que si varios filtros utilizan el mismo color, todos ellos deben ser satisfechos para que se envíe una señal.

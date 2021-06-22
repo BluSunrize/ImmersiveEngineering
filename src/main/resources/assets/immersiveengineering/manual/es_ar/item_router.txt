@@ -1,6 +1,6 @@
-§lDistribuidor de ítems§r
+§lDistribuidor de objetos§r
 §oPie izq. amarillo, mano derecha verde§r
-<&recipe>El §ldistribuidor de ítems§r es un bloque que aceptará y redistribuirá los objetos en rutas filtradas. Colócalo abajo y haz clic derecho para abrir la interfaz, que muestra seis filtros diferentes coordinados por color y dirección.<np>
+<&recipe>El §ldistribuidor de objetos§r es un bloque que aceptará y redistribuirá los objetos en rutas filtradas. Colócalo abajo y haz clic derecho para abrir la interfaz, que muestra seis filtros diferentes coordinados por color y dirección.<np>
 Cuando un objeto entra en el distribuidor, se encamina a una salida cuyo filtro coincida con el objeto o, si no se encuentra ningún filtro que coincida, se encamina a una salida sin filtrar. Si el distribuidor no puede dirigir el objeto en primer lugar, no permitirá que el objeto entre en el distribuidor.
 Los objetos tampoco pueden salir hacia el lado desde el que se insertaron.<np>
 Los botones situados encima de cada filtro se pueden utilizar para ajustar aún más el funcionamiento:
