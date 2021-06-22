@@ -1,6 +1,6 @@
 §lHorno de aleaciones§r
 §oMezclando metales§r
-<&recipe>El §lhorno de aleaciones§r es un simple horno hecho de piedra arenisca y ladrillos resistentes al calor. Dentro de éste, las temperaturas son lo suficientemente altas como para permitir que los metales se fundan hasta alcanzar un estado líquido y se mezclen, creando una §1<link;alloys;aleación>§r.
+<&recipe>El §lhorno de aleaciones§r es un simple horno hecho de arenisca y ladrillos resistentes al calor. Dentro de éste, las temperaturas son lo suficientemente altas como para permitir que los metales se fundan hasta alcanzar un estado líquido y se mezclen, creando una §1<link;alloys;aleación>§r.
 
 Esto permite la creación de aleaciones importantes como el §lelectro§r y el §lconstantán§r sin requerir de la tediosa mezcla de polvos.<np>
-<&multiblock> Para formar el horno, coloque 8 §lladrillos refractarios para horno de aleaciones§r en un cubo de 2x2x2, como se muestra arriba, y haga click derecho en uno de los bloques laterales con un §lMartillo del Ingeniero§r.
+<&multiblock> Para formar el horno, coloque 8 §lladrillos refractarios para horno de aleaciones§r en un cubo de 2x2x2, como se muestra arriba, y haga clic derecho en uno de los bloques laterales con un §lMartillo del Ingeniero§r.

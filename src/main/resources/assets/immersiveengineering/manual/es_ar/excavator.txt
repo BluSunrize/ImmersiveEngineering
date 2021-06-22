@@ -3,7 +3,7 @@
 <&full>La §lexcavadora§r es uno de los pináculos de la ingeniería moderna. Es capaz de desenterrar §1<link;minerals;minerales>§r de vetas inaccesibles por la minería normal. A cambio, sin embargo, la excavadora es una estructura compleja que requiere <config;i;machines.excavator.consumption> Flux/t para funcionar.
 La estructura se compone de dos piezas.<np> 
 <&excavator>§lEl motor§r:
-La entrada de energía para el §nmotor§r está en su costado, la parte trasera presenta un panel de control de redstone y la salida de §nobjetos§r.<np>
+Es el cuerpo de la máquina. La entrada de energía está en su costado y la parte trasera presenta un panel de control de redstone y la salida de §nobjetos§r.<np>
 <&wheel>§lLa rueda de cangilones§r:
 Encaja en los brazos del §nmotor§r como se muestra en la primera página. 
 A medida que la excavadora extrae §nminerales§r, el rendimiento de la veta disminuye lentamente, pero una veta de §nminerales§r puede proporcionar hasta <config;i;machines.excavator.yield> bloques de §nmineral§r.

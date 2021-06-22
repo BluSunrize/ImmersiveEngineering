@@ -2,6 +2,6 @@
 §oLeche por aqui, ácido por allá§r
 <&recipe>El §ldistribuidor de fluidos§r funciona de forma muy parecida al §1<link;item_router;distribuidor de ítems;start>§r. Los fluidos que se introduzcan por cualquier lado se redistribuirán en función de cómo estén configurados los seis filtros laterales.
 
-Al hacer click en un §lcubo§r o cualquier otro tipo de contenedor de fluidos en las ranuras de la interfaz gráfica, el filtro se configurará para ese fluido.<np>
+Al hacer clic en un §lcubo§r o cualquier otro tipo de contenedor de fluidos en las ranuras de la interfaz gráfica, el filtro se configurará para ese fluido.<np>
 Cuando cualquier fluido se introduce en el §ldistribuidor§r, se dirigirá a una salida cuyo filtro coincida con el fluido o, si no se encuentra ningún filtro que coincida, el fluido se dirigirá a una salida sin filtrar. Si no hay una ruta disponible o válida, no se aceptará ningún fluido.
 Los botones situados encima de cada filtro pueden utilizarse para que el §ldistribuidor§r respete o ignore los datos NBT del fluido.

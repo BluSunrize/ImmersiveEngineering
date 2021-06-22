@@ -5,5 +5,5 @@ Las §lsemillas§r se pueden obtener rompiendo la §lhierba alta§r.<np>
 <&fabric_recipe>La §ltela resistente§r es un tejido hecho de §lfibra de cáñamo industrial§r. Se utiliza para crear §1<link;generator;molinos de viento mejorados;sail_recipe>§r, así como §1<link;balloon;globos;start>§r y §1<link;this;cojines de salto;cushion_recipe>§r.<np>
 <&cushion_recipe>Los §lcojines de salto§r son simples bloques creados con §ltela resistente§r e inflados con aire. Son capaces de absorber los impactos y evitar los daños por caída cuando se aterriza sobre ellos, pero, a diferencia de los §lbloques de slime§r, no te harán rebotar.<np>
 <&curtain_recipe>Las §lcortinas de tiras§r son piezas de §ltela resistente§r que se montan en los marcos de las puertas u otras aberturas para que sirvan para bloquear la vista.
-Cuando una entidad las atraviesa, emiten una señal de redstone. Haz click en ellas con un §lDestornillador del Ingeniero§r para activar las señales fuertes.
+Cuando una entidad las atraviesa, emiten una señal de redstone. Haz clic en ellas con un §lDestornillador del Ingeniero§r para activar las señales fuertes.
 Se pueden §nteñir§r de la misma manera que las §larmaduras de cuero§r.

@@ -4,6 +4,6 @@ El §laserradero§r es un conjunto de máquinas que cortan los troncos de madera
 <&sawdust>En ambas etapas del proceso se crea §lcapa de serrín§r, que se recoge y sale por el puerto situado en la parte delantera de la máquina. Este serrín puede transformarse posteriormente en papel.<np>
 La máquina se construye como se muestra en la primera página y se forma utilizando un §lMartillo del Ingeniero§r en el bloque central de chapa.
 Aplicando una señal de redstone al panel de control en la parte frontal se detendrá la máquina, este comportamiento puede ser invertido mediante el uso del §lDestornillador del Ingeniero§r.<np>
-Para estar completamente listo para el proceso, necesitarás fabricar una §l<link;buzzsaw;hoja de sierra circular>§r e insertarla en la ranura de la parte trasera haciendo click derecho. Haz click derecho para sacar la hoja de sierra de nuevo.
+Para estar completamente listo para el proceso, necesitarás fabricar una §l<link;buzzsaw;hoja de sierra circular>§r e insertarla en la ranura de la parte trasera haciendo clic derecho. Haz clic derecho para sacar la hoja de sierra de nuevo.
 Si pasas los troncos por la máquina sin la hoja de sierra, se crearán §l troncos sin corteza§r que no se cortarán. Este proceso es mucho más rápido que el descortezado manual.
 La hoja de sierra se dañará durante su uso y puede ser necesario sustituirla después de un tiempo.

@@ -3,6 +3,6 @@
 <&recipe>Los §lglobos§r son sacos de §ltela resistente§r con una fuente de calor debajo para mantenerlos a flote. También emiten luz, pero a pesar de la §lantorcha§r, no suponen un peligro de incendio.
 Pueden colocarse como los bloques normales o, cuando no se apunte a ningún bloque, se colocarán en el aire frente a ti.
 Similar al §1<link;metalconstruction;conector de cable estructural;connector_recipes>§r, puedes atar §lcuerda de cáñamo§r y §lcable de acero§r al §lglobo§r.
-Pulsando Mayús izq. puedes establecer un margen de altura para el §lglobo§r, pudiendo colocarlo hasta 5 bloques por encima del objetivo.
+Pulsando §lmayús izq§r puedes establecer un margen de altura para el §lglobo§r, pudiendo colocarlo hasta 5 bloques por encima del objetivo.
 También se pueden utilizar tintes en un §lglobo§r; la parte que se tiña dependerá del lugar desde el que se apunte.
-Al hacerle click derecho con un §lMartillo del Ingeniero§r se cambiará el diseño del §lglobo§r entre rayas horizontales o verticales.
+Al hacerle clic derecho con un §lMartillo del Ingeniero§r se cambiará el diseño del §lglobo§r entre rayas horizontales o verticales.

@@ -6,11 +6,11 @@ Los §lyacimientos minerales§r que se encuentran en tu mundo no son nada nuevo 
 Cada muestra que tomes de la misma §lveta§r te dará una lectura más precisa de lo que contiene y de dónde se origina. Tenga en cuenta que pueden superponerse, por lo que es posible que encuentre rastros de diferentes §lvetas§r muy cerca unas de otras.
 <np>
 <&sample_drill>Después de identificar el tipo y la posición de la §lveta§r, utilice un §ltaladro para muestras de perforación§r para obtener una lectura precisa de las §lvetas§r que se encuentran en una posición exacta.
-Suministra energía a la máquina y haz click derecho o utiliza redstone para activarla. El §ltaladro§r consume <config;i;machines.coredrill.consumption> Flux/t para luego extraer una §lmuestra del núcleo§r que proporciona información detallada sobre la §lveta mineral§r.
+Suministra energía a la máquina y haz clic derecho o utiliza redstone para activarla. El §ltaladro§r consume <config;i;machines.coredrill.consumption> Flux/t para luego extraer una §lmuestra del núcleo§r que proporciona información detallada sobre la §lveta mineral§r.
 <np>
 <&core_sample> La §lmuestra§r no sólo le dirá exactamente qué minerales se encuentran allí, incluyendo su presencia relativa, sino también su §nsaturación§r individual. Una mayor §nsaturación§r significa una mayor posibilidad de que la §lexcavadora§r llene su §lrueda de cangilones§r.
 
-Si haces click derecho en una §lmuestra de núcleo§r, la colocarás en el mundo y podrás leer su posición e información. Además, una vez colocada, puedes hacer click derecho en un §lmapa§r para marcar su posición original.
+Si haces clic derecho en una §lmuestra de núcleo§r, la colocarás en el mundo y podrás leer su posición e información. Además, una vez colocada, puedes hacer clic derecho en un §lmapa§r para marcar su posición original.
 
 En las siguientes páginas se enumeran todos los tipos de vetas y los minerales que se pueden extraer de ellas.
 <np>

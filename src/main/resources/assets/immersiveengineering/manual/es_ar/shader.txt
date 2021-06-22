@@ -1,7 +1,7 @@
 §lApariencias§r 
 §o¡Azul! No, ¡amarillo!§r
 Las §lapariencias§r son objetos que puedes encontrar en el mundo o adquirir comerciando con los aldeanos. No tienen un propósito por sí mismos, pero pueden equiparse a §1<link;revolver;revólveres>§r, §1<link;mining_drill;taladros>§r, §1<link;chemthrower;lanzadores químicos>§r, §1<link;shield;escudos pesados>§r o §1<link;railgun;cañones de riel>§r (y posiblemente otras cosas que aún tienes que descubrir) para cambiar los diseños del objeto. Sólo tienes que ponerlo en un §1<link;workbench;banco de trabajo del ingeniero>§r y equipar la §lapariencia§r en la ranura correspondiente.
-También puedes aplicarlas a una §lvagoneta§r, a un §lestandarte§r o a un §1<link;balloon;globo>§r haciendo click derecho.
+También puedes aplicarlas a una §lvagoneta§r, a un §lestandarte§r o a un §1<link;balloon;globo>§r haciendo clic derecho.
 
 Para una lista completa de todos las §lapariencias§r disponibles, sus aspectos, referencias y más detalles, §1<link;shader_list;comprueba aquí>§r<np>
 <&grab_bag>Las §lbolsas de apariencias§r son objetos que contienen una §lapariencia§r aleatoria. Pueden ser encontradas en §lcajas§r, intercambiadas con los aldeanos o dejados caer por los jefes. La rareza de la §lapariencia§r contenida es igual o mejor que la rareza de la §lbolsa§r. Cuando usas una §lbolsa§r, es más probable que consigas una §lapariencia§r que aún no tienes, que una que ya posees.

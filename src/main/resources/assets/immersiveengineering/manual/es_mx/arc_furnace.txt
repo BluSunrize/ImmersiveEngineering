@@ -5,7 +5,7 @@ El horno destaca en la fundición de §nminerales§r y en la creación de §lace
 
 Hay que eliminar la §lescoria§r de la máquina o dejará de funcionar, y los §lelectrodos§r que se degradan deben ser sustituidos con el tiempo.
 Para formar la estructura, hay que ensamblarla como se muestra en la primera página, y luego pulsar el §lcaldero§r con un §lMartillo del Ingeniero§r.
-La energía se introduce a través de los tres conectores de la parte trasera, y si se suministra una señal de redstone al panel de control de la parte delantera se apagará la máquina. Si haces click derecho en el panel, el "cubo" o la cuba, se abrirá la interfaz.<np>
+La energía se introduce a través de los tres conectores de la parte trasera, y si se suministra una señal de redstone al panel de control de la parte delantera se apagará la máquina. Si haces clic derecho en el panel, el "cubo" o la cuba, se abrirá la interfaz.<np>
 
 §lInterfaz:§r
 La interfaz puede parecer confusa al verla por primera vez, pero es bastante sencilla.
