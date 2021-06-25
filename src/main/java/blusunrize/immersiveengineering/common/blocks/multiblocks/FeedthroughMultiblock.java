@@ -64,7 +64,7 @@ public class FeedthroughMultiblock implements IMultiblock
 
 	private Block getDemoConnector()
 	{
-		return Connectors.getEnergyConnector(WireType.LV_CATEGORY, false);
+		return Connectors.getEnergyConnector(WireType.LV_CATEGORY, false).get();
 	}
 
 	@Override

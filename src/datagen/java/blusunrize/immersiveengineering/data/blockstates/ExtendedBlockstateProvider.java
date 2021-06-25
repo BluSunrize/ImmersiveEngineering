@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Supplier;
 
 public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 {
@@ -44,36 +45,40 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 		this.existingFileHelper = exFileHelper;
 	}
 
+	protected String name(Supplier<? extends Block> b)
+	{
+		return name(b.get());
+	}
 
 	protected String name(Block b)
 	{
 		return b.getRegistryName().getPath();
 	}
 
-	public void simpleBlockItem(Block b, ModelFile model)
+	public void simpleBlockAndItem(Supplier<? extends Block> b, ModelFile model)
 	{
-		simpleBlockItem(b, new ConfiguredModel(model));
+		simpleBlockAndItem(b, new ConfiguredModel(model));
 	}
 
-	protected void simpleBlockItem(Block b, ConfiguredModel model)
+	protected void simpleBlockAndItem(Supplier<? extends Block> b, ConfiguredModel model)
 	{
-		simpleBlock(b, model);
+		simpleBlock(b.get(), model);
 		itemModel(b, model.model);
 	}
 
-	protected void cubeSideVertical(Block b, ResourceLocation side, ResourceLocation vertical)
+	protected void cubeSideVertical(Supplier<? extends Block> b, ResourceLocation side, ResourceLocation vertical)
 	{
-		simpleBlockItem(b, models().cubeBottomTop(name(b), side, vertical, vertical));
+		simpleBlockAndItem(b, models().cubeBottomTop(name(b), side, vertical, vertical));
 	}
 
-	protected void cubeAll(Block b, ResourceLocation texture)
+	protected void cubeAll(Supplier<? extends Block> b, ResourceLocation texture)
 	{
-		simpleBlockItem(b, models().cubeAll(name(b), texture));
+		simpleBlockAndItem(b, models().cubeAll(name(b), texture));
 	}
 
-	protected void scaffold(Block b, ResourceLocation others, ResourceLocation top)
+	protected void scaffold(Supplier<? extends Block> b, ResourceLocation others, ResourceLocation top)
 	{
-		simpleBlockItem(
+		simpleBlockAndItem(
 				b,
 				models().withExistingParent(name(b), modLoc("block/ie_scaffolding"))
 						.texture("side", others)
@@ -82,14 +87,14 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 		);
 	}
 
-	protected void slabFor(Block b, ResourceLocation texture)
+	protected void slabFor(Supplier<? extends Block> b, ResourceLocation texture)
 	{
 		slabFor(b, texture, texture, texture);
 	}
 
-	protected void slabFor(Block b, ResourceLocation side, ResourceLocation top, ResourceLocation bottom)
+	protected void slabFor(Supplier<? extends Block> b, ResourceLocation side, ResourceLocation top, ResourceLocation bottom)
 	{
-		slab(IEBlocks.toSlab.get(b), side, top, bottom);
+		slab(IEBlocks.toSlab.get(b.get().getRegistryName()).get(), side, top, bottom);
 	}
 
 	protected void slab(SlabBlock b, ResourceLocation side, ResourceLocation top, ResourceLocation bottom)
@@ -100,12 +105,22 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 				models().slabTop(name(b)+"_top", side, bottom, top),
 				models().cubeBottomTop(name(b)+"_double", side, bottom, top)
 		);
-		itemModel(b, mainModel);
+		itemModel(() -> b, mainModel);
+	}
+
+	protected void stairsFor(Supplier<? extends Block> b, ResourceLocation texture)
+	{
+		stairs(IEBlocks.toStairs.get(b.get().getRegistryName()).get(), texture);
 	}
 
 	protected void stairs(StairsBlock b, ResourceLocation texture)
 	{
 		stairs(b, texture, texture, texture);
+	}
+
+	protected void stairsFor(Supplier<? extends Block> b, ResourceLocation side, ResourceLocation top, ResourceLocation bottom)
+	{
+		stairs(IEBlocks.toStairs.get(b.get().getRegistryName()).get(), side, top, bottom);
 	}
 
 	protected void stairs(StairsBlock b, ResourceLocation side, ResourceLocation top, ResourceLocation bottom)
@@ -115,7 +130,7 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 		ModelFile stairsInner = models().stairsInner(baseName+"_inner", side, bottom, top);
 		ModelFile stairsOuter = models().stairsOuter(baseName+"_outer", side, bottom, top);
 		stairsBlock(b, stairs, stairsInner, stairsOuter);
-		itemModel(b, stairs);
+		itemModel(() -> b, stairs);
 	}
 
 	protected ResourceLocation forgeLoc(String path)
@@ -128,7 +143,7 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 		return new ResourceLocation(in.getNamespace(), "models/"+in.getPath());
 	}
 
-	protected void itemModel(Block block, ModelFile model)
+	protected void itemModel(Supplier<? extends Block> block, ModelFile model)
 	{
 		itemModels().getBuilder(name(block)).parent(model);
 	}

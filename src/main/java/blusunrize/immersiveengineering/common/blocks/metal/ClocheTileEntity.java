@@ -403,7 +403,7 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 		{
 			BlockPos pos = lowest.up(i);
 			BlockState state = getWorldNonnull().getBlockState(pos);
-			if(state.getBlock()==MetalDevices.cloche)
+			if(state.getBlock()==MetalDevices.cloche.get())
 				getWorldNonnull().setBlockState(pos, state.with(getFacingProperty(), facing));
 		}
 	}

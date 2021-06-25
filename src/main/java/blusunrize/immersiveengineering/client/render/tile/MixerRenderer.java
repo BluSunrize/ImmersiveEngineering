@@ -45,7 +45,7 @@ public class MixerRenderer extends TileEntityRenderer<MixerTileEntity>
 		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 		BlockPos blockPos = te.getPos();
 		BlockState state = te.getWorld().getBlockState(blockPos);
-		if(state.getBlock()!=Multiblocks.mixer)
+		if(state.getBlock()!=Multiblocks.mixer.get())
 			return;
 		IBakedModel model = AGITATOR.get(te.getFacing());
 

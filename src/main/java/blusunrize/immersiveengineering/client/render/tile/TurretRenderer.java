@@ -53,7 +53,7 @@ public class TurretRenderer extends TileEntityRenderer<TurretTileEntity>
 		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 		BlockPos blockPos = tile.getPos();
 		BlockState state = tile.getWorld().getBlockState(blockPos);
-		if(state.getBlock()!=MetalDevices.turretChem&&state.getBlock()!=MetalDevices.turretGun)
+		if(state.getBlock()!=MetalDevices.turretChem.get()&&state.getBlock()!=MetalDevices.turretGun.get())
 			return;
 		IBakedModel model = blockRenderer.getBlockModelShapes().getModel(state);
 

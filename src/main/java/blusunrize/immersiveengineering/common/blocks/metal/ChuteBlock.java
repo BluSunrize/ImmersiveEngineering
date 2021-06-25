@@ -1,6 +1,5 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.EnumMetals;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.generic.GenericTileBlock;
@@ -12,9 +11,9 @@ import net.minecraft.state.properties.BlockStateProperties;
 
 public class ChuteBlock extends GenericTileBlock<ChuteTileEntity>
 {
-	public ChuteBlock(EnumMetals metal, AbstractBlock.Properties properties)
+	public ChuteBlock(AbstractBlock.Properties properties)
 	{
-		super("chute_"+metal.tagName(), IETileTypes.CHUTE, properties);
+		super(IETileTypes.CHUTE, properties);
 	}
 
 	@Override

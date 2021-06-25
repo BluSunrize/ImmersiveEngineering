@@ -28,6 +28,7 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -212,27 +213,27 @@ public class MultiblockStates extends ExtendedBlockstateProvider
 		return splitModel(name+"_split", baseModel, CUBE_THREE, false);
 	}
 
-	private void createMultiblock(Block b, ModelFile masterModel, ModelFile mirroredModel)
+	private void createMultiblock(Supplier<? extends Block> b, ModelFile masterModel, ModelFile mirroredModel)
 	{
 		createMultiblock(b, masterModel, mirroredModel, IEProperties.FACING_HORIZONTAL, IEProperties.MIRRORED);
 	}
 
-	private void createMultiblock(Block b, ModelFile masterModel)
+	private void createMultiblock(Supplier<? extends Block> b, ModelFile masterModel)
 	{
 		createMultiblock(b, masterModel, null, IEProperties.FACING_HORIZONTAL, null);
 	}
 
-	private void createMultiblock(Block b, ModelFile masterModel, @Nullable ModelFile mirroredModel,
+	private void createMultiblock(Supplier<? extends Block> b, ModelFile masterModel, @Nullable ModelFile mirroredModel,
 								  @Nullable Property<Boolean> mirroredState)
 	{
 		createMultiblock(b, masterModel, mirroredModel, IEProperties.FACING_HORIZONTAL, mirroredState);
 	}
 
-	private void createMultiblock(Block b, ModelFile masterModel, @Nullable ModelFile mirroredModel,
+	private void createMultiblock(Supplier<? extends Block> b, ModelFile masterModel, @Nullable ModelFile mirroredModel,
 								  EnumProperty<Direction> facing, @Nullable Property<Boolean> mirroredState)
 	{
 		Preconditions.checkArgument((mirroredModel==null)==(mirroredState==null));
-		VariantBlockStateBuilder builder = getVariantBuilder(b);
+		VariantBlockStateBuilder builder = getVariantBuilder(b.get());
 		boolean[] possibleMirrorStates;
 		if(mirroredState!=null)
 			possibleMirrorStates = new boolean[]{false, true};

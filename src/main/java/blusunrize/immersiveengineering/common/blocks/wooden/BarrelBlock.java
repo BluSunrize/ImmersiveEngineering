@@ -8,9 +8,9 @@
 
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
-import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalBarrelTileEntity;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
@@ -25,9 +25,9 @@ public class BarrelBlock extends IETileProviderBlock
 {
 	private final boolean metal;
 
-	public BarrelBlock(String name, boolean metal)
+	public BarrelBlock(AbstractBlock.Properties props, boolean metal)
 	{
-		super(name, getProperties(metal), BlockItemIE::new);
+		super(props);
 		this.metal = metal;
 	}
 
@@ -41,7 +41,7 @@ public class BarrelBlock extends IETileProviderBlock
 			return new WoodenBarrelTileEntity();
 	}
 
-	private static Block.Properties getProperties(boolean metal)
+	public static Block.Properties getProperties(boolean metal)
 	{
 		Block.Properties base;
 		if(metal)

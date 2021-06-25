@@ -8,8 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.items.HammerItem;
 import blusunrize.immersiveengineering.common.items.ScrewdriverItem;
 import blusunrize.immersiveengineering.common.items.WirecutterItem;
@@ -24,13 +22,15 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.pathfinding.PathType;
 import net.minecraft.state.Property;
 import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.*;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.MathHelper;
@@ -43,11 +43,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ToolType;
 
-import java.util.function.BiFunction;
-
 public class IEBaseBlock extends Block implements IIEBlock, IWaterLoggable
 {
-	public final String name;
 	boolean isHidden;
 	boolean hasFlavour;
 	//TODO wtf is variable opacity?
@@ -56,23 +53,12 @@ public class IEBaseBlock extends Block implements IIEBlock, IWaterLoggable
 	protected boolean canHammerHarvest;
 	protected final boolean notNormalBlock;
 
-	public IEBaseBlock(String name, Block.Properties blockProps, BiFunction<Block, Item.Properties, Item> createItemBlock)
+	public IEBaseBlock(Block.Properties blockProps)
 	{
 		super(blockProps.variableOpacity());
 		this.notNormalBlock = !getDefaultState().isSolid();
-		this.name = name;
 
 		this.setDefaultState(getInitDefaultState());
-		ResourceLocation registryName = createRegistryName();
-		setRegistryName(registryName);
-
-		IEContent.registeredIEBlocks.add(this);
-		Item item = createItemBlock.apply(this, new Item.Properties().group(ImmersiveEngineering.ITEM_GROUP));
-		if(item!=null)
-		{
-			item.setRegistryName(registryName);
-			IEContent.registeredIEItems.add(item);
-		}
 		lightOpacity = 15;
 	}
 
@@ -96,7 +82,7 @@ public class IEBaseBlock extends Block implements IIEBlock, IWaterLoggable
 	@Override
 	public String getNameForFlavour()
 	{
-		return name;
+		return getRegistryName().getPath();
 	}
 
 	@Override
@@ -223,11 +209,6 @@ public class IEBaseBlock extends Block implements IIEBlock, IWaterLoggable
 		return super.isToolEffective(state, tool);
 	}
 
-	public ResourceLocation createRegistryName()
-	{
-		return new ResourceLocation(ImmersiveEngineering.MODID, name);
-	}
-
 	@Override
 	@SuppressWarnings("deprecation")
 	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand,
@@ -314,10 +295,9 @@ public class IEBaseBlock extends Block implements IIEBlock, IWaterLoggable
 
 	public abstract static class IELadderBlock extends IEBaseBlock
 	{
-		public IELadderBlock(String name, Block.Properties material,
-							 BiFunction<Block, Item.Properties, Item> itemBlock)
+		public IELadderBlock(Block.Properties material)
 		{
-			super(name, material, itemBlock);
+			super(material);
 		}
 
 		@Override

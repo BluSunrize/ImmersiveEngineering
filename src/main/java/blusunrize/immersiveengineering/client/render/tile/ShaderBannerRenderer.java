@@ -59,7 +59,7 @@ public class ShaderBannerRenderer extends TileEntityRenderer<ShaderBannerTileEnt
 		matrixStack.push();
 
 		// Check which of the two blocks we are so we can calculate the orientation.
-		if(te.getState().getBlock() == Cloth.shaderBanner)
+		if(te.getState().getBlock() == Cloth.shaderBanner.get())
 		{
 			// Standing banner, we have 16 different rotations.
 			int orientation = te.getState().get(ShaderBannerStandingBlock.ROTATION);
@@ -71,7 +71,7 @@ public class ShaderBannerRenderer extends TileEntityRenderer<ShaderBannerTileEnt
 		else
 		{
 			// Must be the wall banner, attaches to the side of the block with no support pillar.
-			assert te.getState().getBlock() == Cloth.shaderBannerWall;
+			assert te.getState().getBlock() == Cloth.shaderBannerWall.get();
 
 			Direction facing = te.getState().get(ShaderBannerWallBlock.FACING);
 			float rotation = facing.getHorizontalAngle();

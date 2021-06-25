@@ -98,7 +98,7 @@ public class ChemthrowerEffects
 					return;
 				BlockRayTraceResult brtr = (BlockRayTraceResult)mop;
 				BlockState hit = world.getBlockState(brtr.getPos());
-				if(hit.getBlock()!=StoneDecoration.concreteSprayed)
+				if(hit.getBlock()!=StoneDecoration.concreteSprayed.get())
 				{
 					BlockPos pos = brtr.getPos().offset(brtr.getFace());
 					if(!world.isAirBlock(pos))

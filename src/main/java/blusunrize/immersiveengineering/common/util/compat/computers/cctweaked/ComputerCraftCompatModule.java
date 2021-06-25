@@ -55,7 +55,7 @@ public class ComputerCraftCompatModule extends IECompatModule
 		ComputerCraftAPI.registerBundledRedstoneProvider((world, pos, direction) -> {
 			final int doNotHandle = -1;
 			BlockState state = world.getBlockState(pos);
-			if(state.getBlock()!=Connectors.connectorBundled)
+			if(state.getBlock()!=Connectors.connectorBundled.get())
 				return doNotHandle;
 			TileEntity tile = world.getTileEntity(pos);
 			if(!(tile instanceof ConnectorBundledTileEntity))

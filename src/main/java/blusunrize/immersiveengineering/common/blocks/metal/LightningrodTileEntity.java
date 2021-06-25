@@ -141,7 +141,7 @@ public class LightningrodTileEntity extends MultiblockPartTileEntity<Lightningro
 
 	private boolean isFence(BlockPos pos)
 	{
-		return Utils.isBlockAt(world, pos, MetalDecoration.steelFence);
+		return Utils.isBlockAt(world, pos, MetalDecoration.steelFence.get());
 	}
 
 	@Override

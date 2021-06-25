@@ -25,9 +25,9 @@ import javax.annotation.Nullable;
 
 public class TransformerHVBlock extends MiscConnectableBlock<TransformerHVTileEntity>
 {
-	public TransformerHVBlock()
+	public TransformerHVBlock(Properties props)
 	{
-		super("transformer_hv", IETileTypes.TRANSFORMER_HV);
+		super(props, IETileTypes.TRANSFORMER_HV);
 	}
 
 	@Override

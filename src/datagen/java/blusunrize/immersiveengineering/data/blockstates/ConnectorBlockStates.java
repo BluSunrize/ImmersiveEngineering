@@ -17,6 +17,7 @@ import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 import javax.annotation.Nonnull;
+import java.util.function.Supplier;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
 
@@ -106,7 +107,7 @@ public class ConnectorBlockStates extends ExtendedBlockstateProvider
 		createConnector(Cloth.balloon, ieObj("block/balloon.obj.ie"), RenderType.getTranslucent());
 	}
 
-	private void transformerModel(String baseName, Block transformer)
+	private void transformerModel(String baseName, Supplier<? extends Block> transformer)
 	{
 		buildConnector(transformer).binaryModel(
 				IEProperties.MIRRORED,
@@ -119,7 +120,7 @@ public class ConnectorBlockStates extends ExtendedBlockstateProvider
 				.build();
 	}
 
-	private void createConnector(Block b, ModelFile model, RenderType... layers)
+	private void createConnector(Supplier<? extends Block> b, ModelFile model, RenderType... layers)
 	{
 		buildConnector(b)
 				.fixedModel(model)
@@ -128,9 +129,9 @@ public class ConnectorBlockStates extends ExtendedBlockstateProvider
 				.build();
 	}
 
-	private ConnectorBlockBuilder buildConnector(Block b)
+	private ConnectorBlockBuilder buildConnector(Supplier<? extends Block> b)
 	{
-		return ConnectorBlockBuilder.builder(models(), getVariantBuilder(b), this::addParticleTextureFrom);
+		return ConnectorBlockBuilder.builder(models(), getVariantBuilder(b.get()), this::addParticleTextureFrom);
 	}
 
 	@Nonnull

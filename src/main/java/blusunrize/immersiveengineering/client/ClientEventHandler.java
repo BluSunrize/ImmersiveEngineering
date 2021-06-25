@@ -789,7 +789,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			}
 
 			World world = player.world;
-			if(!stack.isEmpty()&&ConveyorHandler.conveyorBlocks.containsValue(Block.getBlockFromItem(stack.getItem()))&&rtr.getFace().getAxis()==Axis.Y)
+			if(!stack.isEmpty()&&ConveyorHandler.isConveyorBlock(Block.getBlockFromItem(stack.getItem()))&&rtr.getFace().getAxis()==Axis.Y)
 			{
 				Direction side = rtr.getFace();
 				VoxelShape shape = world.getBlockState(pos).getCollisionShape(world, pos);

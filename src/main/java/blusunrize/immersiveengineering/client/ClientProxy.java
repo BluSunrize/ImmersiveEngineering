@@ -48,6 +48,7 @@ import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IColouredBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTile;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.BlockEntry;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
@@ -271,9 +272,12 @@ public class ClientProxy extends CommonProxy
 		for(Item item : IEContent.registeredIEItems)
 			if(item instanceof IColouredItem&&((IColouredItem)item).hasCustomItemColours())
 				mc().getItemColors().register(IEDefaultColourHandlers.INSTANCE, item);
-		for(Block block : IEContent.registeredIEBlocks)
+		for(BlockEntry<?> blockEntry : BlockEntry.ALL_ENTRIES)
+		{
+			Block block = blockEntry.get();
 			if(block instanceof IColouredBlock&&((IColouredBlock)block).hasCustomBlockColours())
 				mc().getBlockColors().register(IEDefaultColourHandlers.INSTANCE, block);
+		}
 
 		/*Render Layers*/
 		Map<String, PlayerRenderer> skinMap = Minecraft.getInstance().getRenderManager().getSkinMap();

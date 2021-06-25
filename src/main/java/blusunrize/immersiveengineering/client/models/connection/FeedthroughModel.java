@@ -210,7 +210,7 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 		public IBakedModel getOverrideModel(@Nonnull IBakedModel originalModel, ItemStack stack,
 											@Nullable ClientWorld world, @Nullable LivingEntity entity)
 		{
-			Item connItem = Item.getItemFromBlock(Connectors.feedthrough);
+			Item connItem = Item.getItemFromBlock(Connectors.feedthrough.get());
 			if(stack.getItem()==connItem)
 			{
 				try

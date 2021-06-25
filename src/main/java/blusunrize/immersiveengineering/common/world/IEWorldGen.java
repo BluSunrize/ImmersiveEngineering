@@ -52,6 +52,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.function.Supplier;
 
 public class IEWorldGen
 {
@@ -59,8 +60,9 @@ public class IEWorldGen
 	public static Map<String, Pair<OreConfig, BlockState>> retroFeatures = new HashMap<>();
 	public static boolean anyRetrogenEnabled = false;
 
-	public static void addOreGen(Block block, String name, OreConfig config)
+	public static void addOreGen(Supplier<? extends Block> blockSupplier, String name, OreConfig config)
 	{
+		Block block = blockSupplier.get();
 		IEOreFeatureConfig cfg = new IEOreFeatureConfig(FillerBlockType.BASE_STONE_OVERWORLD, block.getDefaultState(), config);
 		ConfiguredFeature<?, ?> feature = register(new ResourceLocation(Lib.MODID, name),
 				IE_CONFIG_ORE.get().withConfiguration(cfg)

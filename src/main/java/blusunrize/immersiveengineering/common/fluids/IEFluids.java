@@ -12,10 +12,13 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.BlockEntry;
 import blusunrize.immersiveengineering.common.fluids.IEFluid.FluidConstructor;
 import blusunrize.immersiveengineering.common.items.IEItems;
 import blusunrize.immersiveengineering.common.util.GenericDeferredWork;
 import com.google.common.collect.ImmutableList;
+import net.minecraft.block.AbstractBlock.Properties;
+import net.minecraft.block.material.Material;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.BucketItem;
 import net.minecraft.item.Item;
@@ -35,7 +38,9 @@ import org.apache.commons.lang3.mutable.MutableObject;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
@@ -46,6 +51,7 @@ public class IEFluids
 {
 	public static final DeferredRegister<Fluid> REGISTER = DeferredRegister.create(ForgeRegistries.FLUIDS, Lib.MODID);
 	public static final List<FluidEntry> ALL_ENTRIES = new ArrayList<>();
+	public static final Set<BlockEntry<?>> ALL_FLUID_BLOCKS = new HashSet<>();
 
 	public static final FluidEntry fluidCreosote = new FluidEntry(
 			"creosote", 800, rl("block/fluid/creosote_still"), rl("block/fluid/creosote_flow")
@@ -73,7 +79,7 @@ public class IEFluids
 	{
 		private final RegistryObject<IEFluid> flowing;
 		private final RegistryObject<IEFluid> still;
-		private final RegistryObject<IEFluidBlock> block;
+		private final BlockEntry<IEFluidBlock> block;
 		private final RegistryObject<BucketItem> bucket;
 		private final List<Property<?>> properties;
 
@@ -122,9 +128,10 @@ public class IEFluids
 			this.flowing = REGISTER.register(name+"_flowing", () -> IEFluid.makeFluid(
 					makeFlowing, thisMutable.getValue(), stillTex, flowingTex, buildAttributes
 			));
-			this.block = IEBlocks.REGISTER.register(name+"_fluid", () -> new IEFluidBlock(thisMutable.getValue()));
+			this.block = new IEBlocks.BlockEntry<>(name+"_fluid_block", () -> Properties.create(Material.WATER), p -> new IEFluidBlock(thisMutable.getValue(), p));
 			this.bucket = IEItems.REGISTER.register(name+"_bucket", () -> makeBucket(still, burnTime));
 			thisMutable.setValue(this);
+			ALL_FLUID_BLOCKS.add(block);
 			ALL_ENTRIES.add(this);
 		}
 

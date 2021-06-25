@@ -54,7 +54,7 @@ public class MetalPressRenderer extends TileEntityRenderer<MetalPressTileEntity>
 		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 		BlockPos blockPos = te.getPos();
 		BlockState state = te.getWorld().getBlockState(blockPos);
-		if(state.getBlock()!=Multiblocks.metalPress)
+		if(state.getBlock()!=Multiblocks.metalPress.get())
 			return;
 		IBakedModel model = PISTON.get(null);
 

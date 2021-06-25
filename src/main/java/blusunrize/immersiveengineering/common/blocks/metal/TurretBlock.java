@@ -13,8 +13,6 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.generic.GenericTileBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.tileentity.TileEntityType;
@@ -22,9 +20,9 @@ import net.minecraftforge.fml.RegistryObject;
 
 public class TurretBlock<T extends TurretTileEntity> extends GenericTileBlock<T>
 {
-	public TurretBlock(String name, RegistryObject<TileEntityType<T>> tileType)
+	public TurretBlock(RegistryObject<TileEntityType<T>> tileType, Properties props)
 	{
-		super(name, tileType, Block.Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(3, 15).notSolid());
+		super(tileType, props);
 	}
 
 	@Override

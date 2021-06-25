@@ -38,15 +38,14 @@ import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
-import java.util.function.BiFunction;
 
 public abstract class IETileProviderBlock extends IEBaseBlock implements IColouredBlock
 {
 	private boolean hasColours = false;
 
-	public IETileProviderBlock(String name, Block.Properties blockProps, BiFunction<Block, Item.Properties, Item> itemBlock)
+	public IETileProviderBlock(Block.Properties blockProps)
 	{
-		super(name, blockProps, itemBlock);
+		super(blockProps);
 	}
 
 	@Override

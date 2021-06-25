@@ -8,13 +8,10 @@
 
 package blusunrize.immersiveengineering.common.blocks.plant;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.EnumProperty;
@@ -22,7 +19,6 @@ import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
@@ -34,23 +30,20 @@ import net.minecraftforge.common.PlantType;
 
 import java.util.EnumMap;
 import java.util.Random;
+import java.util.function.Supplier;
 
 public class HempBlock extends BushBlock implements IGrowable
 {
-	public final String name;
+	public static final Supplier<Properties> PROPERTIES = () -> Block.Properties.create(Material.PLANTS)
+			.sound(SoundType.CROP)
+			.doesNotBlockMovement()
+			.hardnessAndResistance(0)
+			.tickRandomly();
 	public final static EnumProperty<EnumHempGrowth> GROWTH = EnumProperty.create("growth", EnumHempGrowth.class);
 
-	public HempBlock(String name)
+	public HempBlock(Properties props)
 	{
-		super(Block.Properties.create(Material.PLANTS)
-				.sound(SoundType.CROP)
-				.doesNotBlockMovement()
-				.hardnessAndResistance(0)
-				.tickRandomly());
-		this.name = name;
-		setRegistryName(ImmersiveEngineering.MODID, name);
-		IEContent.registeredIEBlocks.add(this);
-		IEContent.registeredIEItems.add(new BlockItemIE(this));
+		super(props);
 	}
 
 	@Override
@@ -206,8 +199,8 @@ public class HempBlock extends BushBlock implements IGrowable
 	}
 
 	@Override
-	public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player)
+	public Item asItem()
 	{
-		return new ItemStack(Misc.hempSeeds);
+		return Misc.hempSeeds;
 	}
 }

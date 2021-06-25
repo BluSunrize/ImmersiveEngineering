@@ -44,7 +44,7 @@ public class SawmillRenderer extends TileEntityRenderer<SawmillTileEntity>
 		//Grab model
 		BlockPos blockPos = te.getPos();
 		BlockState state = te.getWorld().getBlockState(blockPos);
-		if(state.getBlock()!=Multiblocks.sawmill)
+		if(state.getBlock()!=Multiblocks.sawmill.get())
 			return;
 
 		//Outer GL Wrapping, initial translation

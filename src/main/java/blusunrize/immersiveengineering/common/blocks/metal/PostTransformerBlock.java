@@ -31,9 +31,9 @@ import java.util.Optional;
 
 public class PostTransformerBlock extends MiscConnectableBlock<PostTransformerTileEntity>
 {
-	public PostTransformerBlock()
+	public PostTransformerBlock(Properties props)
 	{
-		super("post_transformer", IETileTypes.POST_TRANSFORMER, (b, p) -> null);
+		super(props, IETileTypes.POST_TRANSFORMER);
 	}
 
 	@Override
@@ -46,7 +46,7 @@ public class PostTransformerBlock extends MiscConnectableBlock<PostTransformerTi
 	@Override
 	public Item asItem()
 	{
-		return Connectors.transformer.asItem();
+		return Connectors.transformer.get().asItem();
 	}
 
 	@Override

@@ -168,19 +168,19 @@ public class Villages
 
 		// TODO: Add more workstations. We need a different one for each profession
 		public static final RegistryObject<PointOfInterestType> POI_CRAFTINGTABLE = POINTS_OF_INTEREST.register(
-				"craftingtable", () -> createPOI("craftingtable", assembleStates(WoodenDevices.craftingTable))
+				"craftingtable", () -> createPOI("craftingtable", assembleStates(WoodenDevices.craftingTable.get()))
 		);
 		public static final RegistryObject<PointOfInterestType> POI_ANVIL = POINTS_OF_INTEREST.register(
 				"anvil", () -> createPOI("anvil", assembleStates(Blocks.ANVIL))
 		);
 		public static final RegistryObject<PointOfInterestType> POI_ENERGYMETER = POINTS_OF_INTEREST.register(
-				"energymeter", () -> createPOI("energymeter", assembleStates(Connectors.currentTransformer))
+				"energymeter", () -> createPOI("energymeter", assembleStates(Connectors.currentTransformer.get()))
 		);
 		public static final RegistryObject<PointOfInterestType> POI_BANNER = POINTS_OF_INTEREST.register(
-				"shaderbanner", () -> createPOI("shaderbanner", assembleStates(Cloth.shaderBanner))
+				"shaderbanner", () -> createPOI("shaderbanner", assembleStates(Cloth.shaderBanner.get()))
 		);
 		public static final RegistryObject<PointOfInterestType> POI_WORKBENCH = POINTS_OF_INTEREST.register(
-				"workbench", () -> createPOI("workbench", assembleStates(WoodenDevices.workbench))
+				"workbench", () -> createPOI("workbench", assembleStates(WoodenDevices.workbench.get()))
 		);
 
 		public static final RegistryObject<VillagerProfession> PROF_ENGINEER = PROFESSIONS.register(

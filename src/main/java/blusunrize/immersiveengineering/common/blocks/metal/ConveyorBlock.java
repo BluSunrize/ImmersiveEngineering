@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorTile;
-import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -38,20 +37,23 @@ import net.minecraft.world.World;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class ConveyorBlock extends IETileProviderBlock implements ConveyorHandler.IConveyorBlock
 {
+	public static final Supplier<Properties> PROPERTIES = () -> Properties.create(Material.IRON)
+			.sound(SoundType.METAL)
+			.hardnessAndResistance(3.0F, 15.0F)
+			.notSolid();
+
 	private final ResourceLocation typeName;
 	public static final EnumProperty<Direction> FACING = IEProperties.FACING_HORIZONTAL;
 
-	public ConveyorBlock(ResourceLocation type)
+	public ConveyorBlock(ResourceLocation type, Properties props)
 	{
-		super(ConveyorHandler.getRegistryNameFor(type).getPath(),
-				Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(3.0F, 15.0F).notSolid(),
-				BlockItemIE::new);
+		super(props);
 		this.typeName = type;
 		lightOpacity = 0;
-		ConveyorHandler.conveyorBlocks.put(type, this);
 	}
 
 	@Override

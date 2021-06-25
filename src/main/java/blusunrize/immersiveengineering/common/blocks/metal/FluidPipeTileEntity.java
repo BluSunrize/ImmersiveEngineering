@@ -102,11 +102,11 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 	{
 		validPipeCovers.add(IETags.scaffoldingAlu::contains);
 		validPipeCovers.add(IETags.scaffoldingSteel::contains);
-		validPipeCovers.add(input -> input==WoodenDecoration.treatedScaffolding);
+		validPipeCovers.add(input -> input==WoodenDecoration.treatedScaffolding.get());
 
 		climbablePipeCovers.add(IETags.scaffoldingAlu::contains);
 		climbablePipeCovers.add(IETags.scaffoldingSteel::contains);
-		climbablePipeCovers.add(input -> input==WoodenDecoration.treatedScaffolding);
+		climbablePipeCovers.add(input -> input==WoodenDecoration.treatedScaffolding.get());
 	}
 
 	public Object2BooleanMap<Direction> sideConfig = new Object2BooleanOpenHashMap<>();

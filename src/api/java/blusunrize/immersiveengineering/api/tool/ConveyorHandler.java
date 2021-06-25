@@ -67,7 +67,7 @@ public class ConveyorHandler
 	public static final Set<BiConsumer<Entity, IConveyorTile>> magnetSuppressionReverse = new HashSet<>();
 	public static final SetRestrictedField<ItemAgeAccessor> ITEM_AGE_ACCESS = SetRestrictedField.common();
 
-	public static final Map<ResourceLocation, Block> conveyorBlocks = new HashMap<>();
+	public static final SetRestrictedField<Function<ResourceLocation, Block>> conveyorBlocks = SetRestrictedField.common();
 	public static final ResourceLocation textureConveyorColour = new ResourceLocation("immersiveengineering:block/conveyor/colour");
 
 	// Should work for multiple dimensions since the calls aren't "interleaved" for multiple dimensions
@@ -170,7 +170,15 @@ public class ConveyorHandler
 
 	public static Block getBlock(ResourceLocation typeName)
 	{
-		return conveyorBlocks.get(typeName);
+		return conveyorBlocks.getValue().apply(typeName);
+	}
+
+	public static boolean isConveyorBlock(Block b)
+	{
+		for(ResourceLocation rl : classRegistry.keySet())
+			if(b==getBlock(rl))
+				return true;
+		return false;
 	}
 
 	/**

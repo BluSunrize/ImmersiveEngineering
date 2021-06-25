@@ -322,7 +322,7 @@ public class EventHandler
 				event.setNewSpeed(event.getOriginalSpeed()*5);
 			else
 				event.setCanceled(true);
-		if(event.getState().getBlock()==MetalDevices.razorWire)
+		if(event.getState().getBlock()==MetalDevices.razorWire.get())
 			if(current.getItem()!=Tools.wirecutter)
 			{
 				event.setCanceled(true);

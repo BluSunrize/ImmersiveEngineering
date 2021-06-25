@@ -8,14 +8,8 @@
 
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.entities.IEExplosiveEntity;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.TNTBlock;
+import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Direction;
@@ -27,16 +21,17 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import java.util.function.Supplier;
 
 public class GunpowderBarrelBlock extends TNTBlock
 {
+	public static final Supplier<Properties> PROPERTIES = () -> Block.Properties.create(Material.WOOD)
+			.sound(SoundType.WOOD)
+			.hardnessAndResistance(2, 5);
 
-	public GunpowderBarrelBlock(String name)
+	public GunpowderBarrelBlock(AbstractBlock.Properties props)
 	{
-		super(Block.Properties.create(Material.WOOD).sound(SoundType.WOOD).hardnessAndResistance(2, 5));
-		setRegistryName(ImmersiveEngineering.MODID, name);
-		IEContent.registeredIEBlocks.add(this);
-		IEContent.registeredIEItems.add(new BlockItemIE(this));
+		super(props);
 	}
 
 	@Override

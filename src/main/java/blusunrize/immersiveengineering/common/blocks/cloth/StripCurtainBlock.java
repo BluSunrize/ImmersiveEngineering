@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.blocks.cloth;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.utils.FontUtils;
-import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.block.Block;
@@ -32,16 +31,20 @@ import net.minecraft.world.IBlockReader;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class StripCurtainBlock extends IETileProviderBlock
 {
 	public static BooleanProperty CEILING_ATTACHED = BooleanProperty.create("ceiling_attached");
 	public static EnumProperty<Direction> FACING = IEProperties.FACING_HORIZONTAL;
+	public static final Supplier<Properties> PROPERTIES = () -> Block.Properties.create(Material.WOOL)
+			.sound(SoundType.CLOTH)
+			.hardnessAndResistance(0.8F)
+			.notSolid();
 
-	public StripCurtainBlock()
+	public StripCurtainBlock(Properties props)
 	{
-		super("strip_curtain", Block.Properties.create(Material.WOOL).sound(SoundType.CLOTH).hardnessAndResistance(0.8F).notSolid(),
-				BlockItemIE::new);
+		super(props);
 		setLightOpacity(0);
 		setHasColours();
 	}

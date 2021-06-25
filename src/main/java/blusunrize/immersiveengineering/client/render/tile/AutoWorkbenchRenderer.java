@@ -74,7 +74,7 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 		BlockPos blockPos = te.getPos();
 		BlockState state = te.getWorldNonnull().getBlockState(blockPos);
-		if(state.getBlock()!=Multiblocks.autoWorkbench)
+		if(state.getBlock()!=Multiblocks.autoWorkbench.get())
 			return;
 		IBakedModel model = DYNAMIC.get(te.getFacing());
 

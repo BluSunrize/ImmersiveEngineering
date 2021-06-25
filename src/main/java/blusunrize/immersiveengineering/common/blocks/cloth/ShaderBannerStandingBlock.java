@@ -20,9 +20,9 @@ public class ShaderBannerStandingBlock extends ShaderBannerBlock
 {
 	public static final IntegerProperty ROTATION = BlockStateProperties.ROTATION_0_15;
 
-	public ShaderBannerStandingBlock()
+	public ShaderBannerStandingBlock(Properties props)
 	{
-		super("shader_banner");
+		super(props);
 	}
 
 	@Override

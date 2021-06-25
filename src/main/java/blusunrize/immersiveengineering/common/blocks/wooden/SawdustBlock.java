@@ -9,15 +9,12 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.utils.shapes.CachedVoxelShapes;
-import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import com.google.common.collect.ImmutableList;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.material.MaterialColor;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.pathfinding.PathType;
 import net.minecraft.state.IntegerProperty;
@@ -30,7 +27,6 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
-import net.minecraftforge.common.ToolType;
 
 import javax.annotation.Nullable;
 
@@ -48,12 +44,9 @@ public class SawdustBlock extends IEBaseBlock
 			}
 	);
 
-	public SawdustBlock()
+	public SawdustBlock(AbstractBlock.Properties props)
 	{
-		super("sawdust",
-				Block.Properties.create(Material.WOOD, MaterialColor.SAND).sound(SoundType.SAND)
-						.harvestTool(ToolType.SHOVEL).hardnessAndResistance(0.5F).doesNotBlockMovement().notSolid(),
-				BlockItemIE::new);
+		super(props);
 	}
 
 	@Override

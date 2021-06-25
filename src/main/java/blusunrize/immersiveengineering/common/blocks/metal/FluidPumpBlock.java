@@ -14,8 +14,6 @@ import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.generic.GenericTileBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.state.properties.BlockStateProperties;
@@ -24,10 +22,9 @@ import net.minecraft.world.World;
 
 public class FluidPumpBlock extends GenericTileBlock<FluidPumpTileEntity>
 {
-	public FluidPumpBlock()
+	public FluidPumpBlock(Properties props)
 	{
-		super("fluid_pump", IETileTypes.FLUID_PUMP,
-				Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(3, 15).notSolid());
+		super(IETileTypes.FLUID_PUMP, props);
 	}
 
 	@Override

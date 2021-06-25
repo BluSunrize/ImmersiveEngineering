@@ -17,7 +17,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.item.BlockItem;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.Property;
 import net.minecraft.state.StateContainer.Builder;
@@ -31,18 +30,21 @@ import net.minecraft.world.IBlockReader;
 
 import javax.annotation.Nullable;
 import java.util.Map;
+import java.util.function.Supplier;
 
 public class LanternBlock extends IEBaseBlock implements IHasObjProperty
 {
+	public static final Supplier<Properties> PROPERTIES = () -> Properties.create(Material.IRON)
+			.sound(SoundType.METAL)
+			.hardnessAndResistance(3, 15)
+			.setLightLevel(b -> 14)
+			.notSolid();
+
 	private static final Property<Direction> FACING = IEProperties.FACING_ALL;
 
-	public LanternBlock(String name)
+	public LanternBlock(Properties props)
 	{
-		super(name, Properties.create(Material.IRON)
-						.sound(SoundType.METAL)
-						.hardnessAndResistance(3, 15)
-						.setLightLevel(b -> 14).notSolid(),
-				BlockItem::new);
+		super(props);
 	}
 
 	@Override

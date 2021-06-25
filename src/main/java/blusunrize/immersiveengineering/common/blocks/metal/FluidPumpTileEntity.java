@@ -521,8 +521,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 	public void breakDummies(BlockPos pos, BlockState state)
 	{
 		for(int i = 0; i <= 1; i++)
-			if(Utils.isBlockAt(world, getPos().add(0, isDummy()?-1: 0, 0).add(0, i, 0),
-					MetalDevices.fluidPump))
+			if(Utils.isBlockAt(world, getPos().add(0, isDummy()?-1: 0, 0).add(0, i, 0), MetalDevices.fluidPump.get()))
 				world.removeBlock(getPos().add(0, isDummy()?-1: 0, 0).add(0, i, 0), false);
 	}
 

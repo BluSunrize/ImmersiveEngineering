@@ -46,7 +46,7 @@ public class SqueezerMultiblock extends IETemplateMultiblock
 	public void renderFormedStructure(MatrixStack transform, IRenderTypeBuffer buffer)
 	{
 		if(renderStack==null)
-			renderStack = new ItemStack(Multiblocks.squeezer);
+			renderStack = new ItemStack(Multiblocks.squeezer.get());
 		transform.translate(1.5, 1.5, 1.5);
 		transform.rotate(new Quaternion(0, 45, 0, true));
 		transform.rotate(new Quaternion(-20, 0, 0, true));

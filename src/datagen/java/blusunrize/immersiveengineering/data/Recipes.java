@@ -17,8 +17,10 @@ import blusunrize.immersiveengineering.api.crafting.builders.*;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.wires.WireType;
+import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
+import blusunrize.immersiveengineering.common.blocks.metal.ChuteBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.CoverType;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
@@ -118,15 +120,15 @@ public class Recipes extends RecipeProvider
 			Item ingot = Metals.ingots.get(metal);
 			Item plate = Metals.plates.get(metal);
 			Item dust = Metals.dusts.get(metal);
-			Block block = IEBlocks.Metals.storage.get(metal);
-			Block sheetMetal = IEBlocks.Metals.sheetmetal.get(metal);
+			BlockEntry<Block> block = IEBlocks.Metals.storage.get(metal);
+			BlockEntry<IEBaseBlock> sheetMetal = IEBlocks.Metals.sheetmetal.get(metal);
 			if(!metal.isVanillaMetal())
 			{
 				add3x3Conversion(ingot, nugget, tags.nugget, out);
 				add3x3Conversion(block, ingot, tags.ingot, out);
 				if(IEBlocks.Metals.ores.containsKey(metal))
 				{
-					Block ore = IEBlocks.Metals.ores.get(metal);
+					BlockEntry<Block> ore = IEBlocks.Metals.ores.get(metal);
 					addStandardSmeltingBlastingRecipe(ore, ingot, metal.smeltingXP, out);
 				}
 			}
@@ -159,8 +161,8 @@ public class Recipes extends RecipeProvider
 				addStandardSmeltingBlastingRecipe(Misc.faradaySuit.get(slot), Metals.nuggets.get(EnumMetals.ALUMINUM), 0.1F, out, "_recycle_faraday_"+slot.getName());
 			}
 
-		for(Entry<Block, SlabBlock> blockSlab : IEBlocks.toSlab.entrySet())
-			addSlab(blockSlab.getKey(), blockSlab.getValue(), out);
+		for(Entry<ResourceLocation, BlockEntry<SlabBlock>> blockSlab : IEBlocks.toSlab.entrySet())
+			addSlab(ForgeRegistries.BLOCKS.getValue(blockSlab.getKey()), blockSlab.getValue(), out);
 
 		recipesStoneDecorations(out);
 		recipesWoodenDecorations(out);
@@ -346,7 +348,7 @@ public class Recipes extends RecipeProvider
 				.addInput(Misc.hempSeeds)
 				.addSoil(Blocks.DIRT)
 				.setTime(800)
-				.setRender(new ClocheRenderReference("hemp", IEBlocks.Misc.hempPlant))
+				.setRender(new ClocheRenderReference("hemp", IEBlocks.Misc.hempPlant.get()))
 				.build(out, toRL("cloche/hemp"));
 
 		Ingredient shroomSoil = Ingredient.fromItems(Blocks.MYCELIUM, Blocks.PODZOL);
@@ -1085,33 +1087,33 @@ public class Recipes extends RecipeProvider
 				out);
 		add3x3Conversion(StoneDecoration.coke, IEItems.Ingredients.coalCoke, IETags.coalCoke, out);
 
-		addStairs(StoneDecoration.hempcrete, StoneDecoration.hempcreteStairs, out);
-		addStairs(StoneDecoration.concrete, StoneDecoration.concreteStairs[0], out);
-		addStairs(StoneDecoration.concreteTile, StoneDecoration.concreteStairs[1], out);
-		addStairs(StoneDecoration.concreteLeaded, StoneDecoration.concreteStairs[2], out);
+		addStairs(StoneDecoration.hempcrete, out);
+		addStairs(StoneDecoration.concrete, out);
+		addStairs(StoneDecoration.concreteTile, out);
+		addStairs(StoneDecoration.concreteLeaded, out);
 
-		SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(StoneDecoration.hempcrete), IEBlocks.toSlab.get(StoneDecoration.hempcrete), 2)
+		SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(StoneDecoration.hempcrete), IEBlocks.toSlab.get(StoneDecoration.hempcrete.getId()), 2)
 				.addCriterion("has_hempcrete", hasItem(StoneDecoration.hempcrete))
 				.build(out, toRL("hempcrete_slab_from_hempcrete_stonecutting"));
-		SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(StoneDecoration.hempcrete), StoneDecoration.hempcreteStairs)
+		SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(StoneDecoration.hempcrete), IEBlocks.toStairs.get(StoneDecoration.hempcrete.getId()))
 				.addCriterion("has_hempcrete", hasItem(StoneDecoration.hempcrete))
 				.build(out, toRL("hempcrete_stairs_from_hempcrete_stonecutting"));
-		SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(StoneDecoration.concrete), IEBlocks.toSlab.get(StoneDecoration.concrete), 2)
+		SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(StoneDecoration.concrete), IEBlocks.toSlab.get(StoneDecoration.concrete.getId()), 2)
 				.addCriterion("has_concrete", hasItem(StoneDecoration.concrete))
 				.build(out, toRL("concrete_slab_from_concrete_stonecutting"));
-		SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(StoneDecoration.concrete), StoneDecoration.concreteStairs[0])
+		SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(StoneDecoration.concrete), IEBlocks.toStairs.get(StoneDecoration.concrete.getId()))
 				.addCriterion("has_concrete", hasItem(StoneDecoration.concrete))
 				.build(out, toRL("concrete_stairs_from_concrete_stonecutting"));
-		SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(StoneDecoration.concreteTile), IEBlocks.toSlab.get(StoneDecoration.concreteTile), 2)
+		SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(StoneDecoration.concreteTile), IEBlocks.toSlab.get(StoneDecoration.concreteTile.getId()), 2)
 				.addCriterion("has_concrete", hasItem(StoneDecoration.concrete))
 				.build(out, toRL("concrete_tile_slab_from_concrete_tile_stonecutting"));
-		SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(StoneDecoration.concreteTile), StoneDecoration.concreteStairs[1])
+		SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(StoneDecoration.concreteTile), IEBlocks.toStairs.get(StoneDecoration.concreteTile.getId()))
 				.addCriterion("has_concrete", hasItem(StoneDecoration.concrete))
 				.build(out, toRL("concrete_tile_stairs_from_concrete_tile_stonecutting"));
-		SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(StoneDecoration.concreteLeaded), IEBlocks.toSlab.get(StoneDecoration.concreteLeaded), 2)
+		SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(StoneDecoration.concreteLeaded), IEBlocks.toSlab.get(StoneDecoration.concreteLeaded.getId()), 2)
 				.addCriterion("has_concrete", hasItem(StoneDecoration.concrete))
 				.build(out, toRL("concrete_leaded_slab_from_concrete_leaded_stonecutting"));
-		SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(StoneDecoration.concreteLeaded), StoneDecoration.concreteStairs[2])
+		SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(StoneDecoration.concreteLeaded), IEBlocks.toStairs.get(StoneDecoration.concreteLeaded.getId()))
 				.addCriterion("has_concrete", hasItem(StoneDecoration.concrete))
 				.build(out, toRL("concrete_leaded_stairs_from_concrete_leaded_stonecutting"));
 		SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(StoneDecoration.concrete), StoneDecoration.concreteTile)
@@ -1183,7 +1185,7 @@ public class Recipes extends RecipeProvider
 	private void recipesWoodenDecorations(@Nonnull Consumer<IFinishedRecipe> out)
 	{
 		for(TreatedWoodStyles style : TreatedWoodStyles.values())
-			addStairs(WoodenDecoration.treatedWood.get(style), WoodenDecoration.treatedStairs.get(style), out);
+			addStairs(WoodenDecoration.treatedWood.get(style), out);
 
 		int numTreatedStyles = TreatedWoodStyles.values().length;
 		for(TreatedWoodStyles from : TreatedWoodStyles.values())
@@ -1393,7 +1395,7 @@ public class Recipes extends RecipeProvider
 		for(DyeColor dye : DyeColor.values())
 		{
 			ITag<Item> dyeTag = createItemWrapper(new ResourceLocation("forge", "dyes/"+dye.getTranslationKey()));
-			Block coloredSheetmetal = MetalDecoration.coloredSheetmetal.get(dye);
+			Block coloredSheetmetal = MetalDecoration.coloredSheetmetal.get(dye).get();
 			ShapedRecipeBuilder.shapedRecipe(coloredSheetmetal, 8)
 					.patternLine("sss")
 					.patternLine("sds")
@@ -1406,8 +1408,8 @@ public class Recipes extends RecipeProvider
 
 		for(MetalScaffoldingType type : MetalScaffoldingType.values())
 		{
-			addStairs(MetalDecoration.steelScaffolding.get(type), MetalDecoration.steelScaffoldingStair.get(type), out);
-			addStairs(MetalDecoration.aluScaffolding.get(type), MetalDecoration.aluScaffoldingStair.get(type), out);
+			addStairs(MetalDecoration.steelScaffolding.get(type), out);
+			addStairs(MetalDecoration.aluScaffolding.get(type), out);
 		}
 
 		int numScaffoldingTypes = MetalScaffoldingType.values().length;
@@ -1670,7 +1672,7 @@ public class Recipes extends RecipeProvider
 				.patternLine("w w")
 				.patternLine("www")
 				.key('w', IETags.getItemTag(IETags.getTagsFor(EnumMetals.IRON).sheetmetal))
-				.key('s', IEBlocks.toSlab.get(IEBlocks.Metals.sheetmetal.get(EnumMetals.IRON)))
+				.key('s', IEBlocks.toSlab.get(IEBlocks.Metals.sheetmetal.get(EnumMetals.IRON).getId()))
 				.addCriterion("has_iron_sheet_slab", hasItem(IEBlocks.Metals.sheetmetal.get(EnumMetals.IRON)))
 				.build(out, toRL(toPath(MetalDevices.barrel)));
 		ShapedRecipeBuilder.shapedRecipe(MetalDevices.fluidPump)
@@ -1818,7 +1820,7 @@ public class Recipes extends RecipeProvider
 				.key('b', Items.IRON_BARS)
 				.addCriterion("has_iron_plate", hasItem(IETags.getTagsFor(EnumMetals.IRON).plate))
 				.build(out, toRL(toPath(MetalDevices.fluidPlacer)));
-		for(Entry<EnumMetals, Block> chute : MetalDevices.chutes.entrySet())
+		for(Entry<EnumMetals, BlockEntry<ChuteBlock>> chute : MetalDevices.chutes.entrySet())
 			ShapedRecipeBuilder.shapedRecipe(chute.getValue(), 12)
 					.patternLine("s s")
 					.patternLine("s s")
@@ -2956,8 +2958,9 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL(toPath(block)+"_from_slab"));
 	}
 
-	private void addStairs(IItemProvider block, IItemProvider stairs, Consumer<IFinishedRecipe> out)
+	private void addStairs(IItemProvider block, Consumer<IFinishedRecipe> out)
 	{
+		IItemProvider stairs = IEBlocks.toStairs.get(block.asItem().getRegistryName());
 		ShapedRecipeBuilder.shapedRecipe(stairs, 4)
 				.key('s', block)
 				.patternLine("s  ")

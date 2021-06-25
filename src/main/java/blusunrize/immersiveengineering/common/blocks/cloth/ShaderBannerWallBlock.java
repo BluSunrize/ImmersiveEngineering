@@ -36,9 +36,9 @@ public class ShaderBannerWallBlock extends ShaderBannerBlock
 			Direction.WEST, Block.makeCuboidShape(14.0D, 0.0D, 0.0D, 16.0D, 12.5D, 16.0D),
 			Direction.EAST, Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 2.0D, 12.5D, 16.0D)));
 
-	public ShaderBannerWallBlock()
+	public ShaderBannerWallBlock(Properties props)
 	{
-		super("shader_banner_wall");
+		super(props);
 	}
 
 	@Override

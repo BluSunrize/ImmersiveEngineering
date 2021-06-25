@@ -28,6 +28,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import java.util.Objects;
 import java.util.Set;
 
 public class IEPotions
@@ -82,14 +83,14 @@ public class IEPotions
 
 			ForgeRegistries.POTIONS.register(this.setRegistryName(resource));
 			concrete = ImmutableSet.<Block>builder()
-					.add(StoneDecoration.concrete)
-					.add(StoneDecoration.concreteTile)
-					.add(StoneDecoration.concreteSprayed)
-					.add(StoneDecoration.concreteStairs)
-					.add(StoneDecoration.concreteThreeQuarter)
-					.add(StoneDecoration.concreteSheet)
-					.add(StoneDecoration.concreteQuarter)
-					.add(StoneDecoration.concreteLeaded)
+					.add(StoneDecoration.concrete.get())
+					.add(StoneDecoration.concreteTile.get())
+					.add(StoneDecoration.concreteSprayed.get())
+					.add(IEBlocks.toStairs.get(StoneDecoration.concrete.getId()).get())
+					.add(StoneDecoration.concreteThreeQuarter.get())
+					.add(StoneDecoration.concreteSheet.get())
+					.add(StoneDecoration.concreteQuarter.get())
+					.add(StoneDecoration.concreteLeaded.get())
 					.build();
 		}
 
@@ -140,8 +141,10 @@ public class IEPotions
 				BlockState state = living.world.getBlockState(living.getPosition());
 				if(!concrete.contains(state.getBlock())&&
 						concrete.stream()
+								.map(Block::getRegistryName)
 								.map(IEBlocks.toSlab::get)
-								.noneMatch(b -> b==state.getBlock()))
+								.filter(Objects::nonNull)
+								.noneMatch(b -> b.get()==state.getBlock()))
 				{
 					living.removePotionEffect(this);
 					IELogger.logger.info("Removing concrete feet");

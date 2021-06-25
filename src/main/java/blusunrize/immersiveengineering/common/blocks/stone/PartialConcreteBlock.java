@@ -8,8 +8,8 @@
 
 package blusunrize.immersiveengineering.common.blocks.stone;
 
-import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -22,16 +22,14 @@ import net.minecraft.world.IBlockReader;
 public class PartialConcreteBlock extends IEBaseBlock
 {
 	private final VoxelShape shape;
-	private final boolean full;
 
-	public PartialConcreteBlock(String name, int pixels)
+	public PartialConcreteBlock(AbstractBlock.Properties properties, int pixels)
 	{
-		super(name, forHeight(pixels), BlockItemIE::new);
+		super(properties);
 		shape = VoxelShapes.create(0, 0, 0, 1, pixels/16F, 1);
-		full = pixels==16;
 	}
 
-	private static Block.Properties forHeight(int pixels)
+	public static Block.Properties makeProperties()
 	{
 		return Block.Properties.create(Material.ROCK).hardnessAndResistance(2, 20).notSolid();
 	}

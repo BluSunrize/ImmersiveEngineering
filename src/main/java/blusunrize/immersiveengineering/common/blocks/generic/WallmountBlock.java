@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.blocks.generic;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -41,9 +40,9 @@ public class WallmountBlock extends IEBaseBlock
 	public static final EnumProperty<Orientation> ORIENTATION =
 			EnumProperty.create("orientation", Orientation.class);
 
-	public WallmountBlock(String name, Properties blockProps)
+	public WallmountBlock(Properties blockProps)
 	{
-		super(name, blockProps, BlockItemIE::new);
+		super(blockProps);
 		lightOpacity = 0;
 	}
 

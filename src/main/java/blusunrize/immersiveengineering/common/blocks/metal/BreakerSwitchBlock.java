@@ -11,9 +11,9 @@ import net.minecraftforge.fml.RegistryObject;
 
 public class BreakerSwitchBlock<T extends BreakerSwitchTileEntity> extends MiscConnectableBlock<T>
 {
-	public BreakerSwitchBlock(String name, RegistryObject<TileEntityType<T>> tileType)
+	public BreakerSwitchBlock(Properties props, RegistryObject<TileEntityType<T>> tileType)
 	{
-		super(name, tileType);
+		super(props, tileType);
 	}
 
 	@Override

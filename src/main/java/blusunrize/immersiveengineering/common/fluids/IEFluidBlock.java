@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.common.fluids.IEFluids.FluidEntry;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FlowingFluidBlock;
-import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.fluid.FluidState;
@@ -37,9 +36,9 @@ public class IEFluidBlock extends FlowingFluidBlock
 	private int duration;
 	private int level;
 
-	public IEFluidBlock(IEFluids.FluidEntry entry)
+	public IEFluidBlock(IEFluids.FluidEntry entry, Properties props)
 	{
-		super(entry.getStillGetter(), Util.make(Properties.create(Material.WATER), $ -> entryStatic = entry));
+		super(entry.getStillGetter(), Util.make(props, $ -> entryStatic = entry));
 		this.entry = entry;
 		entryStatic = null;
 	}

@@ -10,10 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.generic.GenericTileBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.SoundType;
+import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.Property;
@@ -29,14 +26,20 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.RegistryObject;
 
+import java.util.function.Supplier;
+
 public class DeskBlock<T extends TileEntity> extends GenericTileBlock<T>
 {
+	public static final Supplier<Properties> PROPERTIES = () -> Properties.create(Material.WOOD)
+			.sound(SoundType.WOOD)
+			.hardnessAndResistance(2, 5)
+			.notSolid();
 	public static final Property<Direction> FACING = IEProperties.FACING_HORIZONTAL;
 	public static final Property<Boolean> DUMMY = IEProperties.MULTIBLOCKSLAVE;
 
-	public DeskBlock(String name, RegistryObject<TileEntityType<T>> tileType)
+	public DeskBlock(RegistryObject<TileEntityType<T>> tileType, AbstractBlock.Properties props)
 	{
-		super(name, tileType, Block.Properties.create(Material.WOOD).sound(SoundType.WOOD).hardnessAndResistance(2, 5).notSolid());
+		super(tileType, props);
 	}
 
 	@Override

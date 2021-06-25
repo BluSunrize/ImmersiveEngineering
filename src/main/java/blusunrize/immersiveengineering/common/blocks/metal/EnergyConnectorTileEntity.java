@@ -77,7 +77,7 @@ public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity im
 				RegistryObject<TileEntityType<EnergyConnectorTileEntity>> teType = event.register(
 						name, () -> new TileEntityType<>(
 								() -> new EnergyConnectorTileEntity(type, relay),
-								ImmutableSet.of(Connectors.ENERGY_CONNECTORS.get(key)), null)
+								ImmutableSet.of(Connectors.ENERGY_CONNECTORS.get(key).get()), null)
 				);
 				SPEC_TO_TYPE.put(key, teType);
 				NAME_TO_SPEC.put(ImmersiveEngineering.rl(name), key);

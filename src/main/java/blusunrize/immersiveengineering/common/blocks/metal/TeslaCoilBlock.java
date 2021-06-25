@@ -14,8 +14,6 @@ import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.generic.GenericTileBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.util.math.BlockPos;
@@ -23,10 +21,9 @@ import net.minecraft.world.World;
 
 public class TeslaCoilBlock extends GenericTileBlock<TeslaCoilTileEntity>
 {
-	public TeslaCoilBlock()
+	public TeslaCoilBlock(Properties props)
 	{
-		super("tesla_coil", IETileTypes.TESLACOIL,
-				Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(3, 15).notSolid());
+		super(IETileTypes.TESLACOIL, props);
 	}
 
 	@Override

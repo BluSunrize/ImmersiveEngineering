@@ -8,11 +8,13 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Connectors;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.Item;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -20,9 +22,9 @@ import javax.annotation.Nullable;
 
 public class TransformerBlockItem extends BlockItemIE
 {
-	public TransformerBlockItem(Block b, Properties props)
+	public TransformerBlockItem(Block b)
 	{
-		super(b, props);
+		super(b, new Item.Properties().group(ImmersiveEngineering.ITEM_GROUP));
 	}
 
 	@Nullable

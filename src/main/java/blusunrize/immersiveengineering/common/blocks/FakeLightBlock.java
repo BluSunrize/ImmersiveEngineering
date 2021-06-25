@@ -30,12 +30,17 @@ import net.minecraft.world.IWorldReader;
 import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nonnull;
+import java.util.function.Supplier;
 
 public class FakeLightBlock extends IETileProviderBlock
 {
-	public FakeLightBlock()
+	public static final Supplier<Properties> PROPERTIES = () -> Properties.create(Material.AIR)
+			.notSolid()
+			.setLightLevel(b -> 15);
+
+	public FakeLightBlock(Properties props)
 	{
-		super("fake_light", Properties.create(Material.AIR).notSolid().setLightLevel(b -> 15), (b, p) -> null);
+		super(props);
 	}
 
 	@Override

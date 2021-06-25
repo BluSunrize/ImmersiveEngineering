@@ -11,7 +11,7 @@ public class FurnaceHeaterBlock extends GenericTileBlock<FurnaceHeaterTileEntity
 {
 	public FurnaceHeaterBlock(Properties blockProps)
 	{
-		super("furnace_heater", IETileTypes.FURNACE_HEATER, blockProps);
+		super(IETileTypes.FURNACE_HEATER, blockProps);
 	}
 
 	@Override

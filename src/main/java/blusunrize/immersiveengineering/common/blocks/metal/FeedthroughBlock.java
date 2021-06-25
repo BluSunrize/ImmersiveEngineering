@@ -32,9 +32,9 @@ import java.util.List;
 
 public class FeedthroughBlock extends MiscConnectableBlock<FeedthroughTileEntity>
 {
-	public FeedthroughBlock()
+	public FeedthroughBlock(Properties props)
 	{
-		super("feedthrough", IETileTypes.FEEDTHROUGH);
+		super(props, IETileTypes.FEEDTHROUGH);
 	}
 
 	@Override

@@ -14,7 +14,6 @@ import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.IPostBlock;
 import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
 import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
-import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IModelDataBlock;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
@@ -66,9 +65,9 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBloc
 			"horizontal_offset", HorizontalOffset.class
 	);
 
-	public PostBlock(String name, Properties blockProps)
+	public PostBlock(Properties blockProps)
 	{
-		super(name, blockProps, BlockItemIE::new);
+		super(blockProps);
 		setMobility(PushReaction.BLOCK);
 		lightOpacity = 0;
 	}

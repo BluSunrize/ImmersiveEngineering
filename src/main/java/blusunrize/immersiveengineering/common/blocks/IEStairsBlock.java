@@ -8,34 +8,30 @@
 
 package blusunrize.immersiveengineering.common.blocks;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.common.IEContent;
 import net.minecraft.block.Block;
 import net.minecraft.block.StairsBlock;
-import net.minecraft.util.ResourceLocation;
+
+import java.util.function.Supplier;
 
 public class IEStairsBlock extends StairsBlock implements IIEBlock
 {
-	private final IIEBlock base;
+	private final Supplier<? extends IIEBlock> base;
 
-	public <T extends Block & IIEBlock> IEStairsBlock(String name, Properties properties, T base)
+	public <T extends Block & IIEBlock> IEStairsBlock(Properties properties, Supplier<T> base)
 	{
-		super(base.getDefaultState(), properties);
+		super(() -> base.get().getDefaultState(), properties);
 		this.base = base;
-		setRegistryName(new ResourceLocation(ImmersiveEngineering.MODID, name));
-		IEContent.registeredIEBlocks.add(this);
-		IEContent.registeredIEItems.add(new BlockItemIE(this));
 	}
 
 	@Override
 	public boolean hasFlavour()
 	{
-		return base.hasFlavour();
+		return base.get().hasFlavour();
 	}
 
 	@Override
 	public String getNameForFlavour()
 	{
-		return base.getNameForFlavour();
+		return base.get().getNameForFlavour();
 	}
 }

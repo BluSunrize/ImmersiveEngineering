@@ -57,7 +57,7 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 		//Grab model
 		BlockPos blockPos = te.getPos();
 		BlockState state = te.getWorld().getBlockState(blockPos);
-		if(state.getBlock()!=Multiblocks.bottlingMachine)
+		if(state.getBlock()!=Multiblocks.bottlingMachine.get())
 			return;
 		Direction facing = te.getFacing();
 

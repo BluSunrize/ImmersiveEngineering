@@ -12,9 +12,11 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.EnumMetals;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.wires.WireType;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.BlockEntry;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDevices;
+import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.BasicConveyor;
 import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.items.IEItems.Metals;
@@ -35,7 +37,6 @@ import net.minecraft.advancements.criterion.ImpossibleTrigger;
 import net.minecraft.advancements.criterion.InventoryChangeTrigger;
 import net.minecraft.advancements.criterion.ItemPredicate;
 import net.minecraft.advancements.criterion.PlacedBlockTrigger;
-import net.minecraft.block.Block;
 import net.minecraft.command.FunctionObject;
 import net.minecraft.data.AdvancementProvider;
 import net.minecraft.data.DataGenerator;
@@ -49,7 +50,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -126,12 +127,12 @@ public class Advancements extends AdvancementProvider
 
 			Advancement.Builder b_conveyor = advancement(rtfm, MetalDevices.CONVEYORS.get(BasicConveyor.NAME), "place_conveyor", FrameType.TASK, true, true, false)
 					.withRequirementsStrategy(IRequirementsStrategy.OR);
-			for(Map.Entry<ResourceLocation, Block> entry : MetalDevices.CONVEYORS.entrySet())
-				b_conveyor.withCriterion(entry.getKey().getPath(), PlacedBlockTrigger.Instance.placedBlock(entry.getValue()));
+			for(Entry<ResourceLocation, BlockEntry<ConveyorBlock>> entry : MetalDevices.CONVEYORS.entrySet())
+				b_conveyor.withCriterion(entry.getKey().getPath(), PlacedBlockTrigger.Instance.placedBlock(entry.getValue().get()));
 			Advancement conveyor = b_conveyor.register(consumer, "immersiveengineering:main/place_conveyor");
 
 			Advancement windmill = advancement(rtfm, WoodenDevices.windmill, "place_windmill", FrameType.TASK, true, true, false)
-					.withCriterion("windmill", PlacedBlockTrigger.Instance.placedBlock(WoodenDevices.windmill))
+					.withCriterion("windmill", PlacedBlockTrigger.Instance.placedBlock(WoodenDevices.windmill.get()))
 					.register(consumer, "immersiveengineering:main/place_windmill");
 
 			Advancement heater = advancement(wire, MetalDevices.furnaceHeater, "craft_heater", FrameType.TASK, true, true, false)
@@ -143,7 +144,7 @@ public class Advancements extends AdvancementProvider
 					.register(consumer, "immersiveengineering:main/craft_pump");
 
 			Advancement floodlight = advancement(wire, MetalDevices.floodlight, "place_floodlight", FrameType.TASK, true, true, false)
-					.withCriterion("floodlight", PlacedBlockTrigger.Instance.placedBlock(MetalDevices.floodlight))
+					.withCriterion("floodlight", PlacedBlockTrigger.Instance.placedBlock(MetalDevices.floodlight.get()))
 					.register(consumer, "immersiveengineering:main/place_floodlight");
 
 			Advancement workbench = advancement(rtfm, WoodenDevices.workbench, "craft_workbench", FrameType.TASK, true, true, false)

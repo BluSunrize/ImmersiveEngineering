@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.fluids;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.BlockEntry;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.StoneDecoration;
 import blusunrize.immersiveengineering.common.fluids.IEFluids.FluidEntry;
 import blusunrize.immersiveengineering.common.util.IEPotions;
@@ -71,18 +72,18 @@ public class ConcreteFluid extends IEFluid
 		int quantaRemaining = 16-level;
 		if(timer >= Math.min(14, quantaRemaining))
 		{
-			Block solidBlock;
+			BlockEntry<? extends Block> solidBlock;
 			if(level >= 14)
 				solidBlock = StoneDecoration.concreteSheet;
 			else if(level >= 10)
 				solidBlock = StoneDecoration.concreteQuarter;
 			else if(level >= 6)
-				solidBlock = IEBlocks.toSlab.get(StoneDecoration.concrete);
+				solidBlock = IEBlocks.toSlab.get(StoneDecoration.concrete.getId());
 			else if(level >= 2)
 				solidBlock = StoneDecoration.concreteThreeQuarter;
 			else
 				solidBlock = StoneDecoration.concrete;
-			world.setBlockState(pos, solidBlock.getDefaultState());
+			world.setBlockState(pos, solidBlock.get().getDefaultState());
 			for(LivingEntity living : world.getEntitiesWithinAABB(LivingEntity.class, new AxisAlignedBB(pos, pos.add(1, 1, 1))))
 				living.addPotionEffect(new EffectInstance(IEPotions.concreteFeet, Integer.MAX_VALUE));
 		}

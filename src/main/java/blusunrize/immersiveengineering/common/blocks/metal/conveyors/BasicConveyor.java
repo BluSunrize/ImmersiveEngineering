@@ -122,7 +122,7 @@ public class BasicConveyor implements IConveyorBelt
 
 	public static Block getDefaultCover()
 	{
-		return MetalDecoration.steelScaffolding.get(MetalScaffoldingType.STANDARD);
+		return MetalDecoration.steelScaffolding.get(MetalScaffoldingType.STANDARD).get();
 	}
 
 	@Override
@@ -307,7 +307,7 @@ public class BasicConveyor implements IConveyorBelt
 	{
 		validCoveyorCovers.add(IETags.scaffoldingAlu::contains);
 		validCoveyorCovers.add(IETags.scaffoldingSteel::contains);
-		validCoveyorCovers.add(input -> input==WoodenDecoration.treatedScaffolding);
+		validCoveyorCovers.add(input -> input==WoodenDecoration.treatedScaffolding.get());
 		validCoveyorCovers.add(Tags.Blocks.GLASS::contains);
 	}
 

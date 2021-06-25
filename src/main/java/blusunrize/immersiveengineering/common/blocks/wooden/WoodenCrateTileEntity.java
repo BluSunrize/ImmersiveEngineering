@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
@@ -121,7 +122,7 @@ public class WoodenCrateTileEntity extends IEBaseTileEntity implements IIEInvent
 		else
 		{
 			Block b = getBlockState().getBlock();
-			if(b instanceof CrateBlock&&((CrateBlock)b).isReinforced())
+			if(b ==WoodenDevices.reinforcedCrate.get())
 				return new TranslationTextComponent("block.immersiveengineering.reinforced_crate");
 			else
 				return new TranslationTextComponent("block.immersiveengineering.crate");

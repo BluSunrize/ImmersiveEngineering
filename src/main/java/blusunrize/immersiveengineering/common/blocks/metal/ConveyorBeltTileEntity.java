@@ -232,7 +232,7 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IStateBa
 		for(ResourceLocation rl : ConveyorHandler.classRegistry.keySet())
 		{
 			TileEntityType<ConveyorBeltTileEntity> te = new TileEntityType<>(() -> new ConveyorBeltTileEntity(rl),
-					ImmutableSet.of(ConveyorHandler.conveyorBlocks.get(rl)),
+					ImmutableSet.of(ConveyorHandler.getBlock(rl)),
 					null);
 			te.setRegistryName(ConveyorHandler.getRegistryNameFor(rl));
 			ConveyorHandler.tileEntities.put(rl, te);

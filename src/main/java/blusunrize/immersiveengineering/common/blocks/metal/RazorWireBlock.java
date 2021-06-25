@@ -10,9 +10,9 @@ import net.minecraft.state.properties.BlockStateProperties;
 
 public class RazorWireBlock extends MiscConnectableBlock<RazorWireTileEntity>
 {
-	public RazorWireBlock()
+	public RazorWireBlock(Properties props)
 	{
-		super("razor_wire", IETileTypes.RAZOR_WIRE);
+		super(props, IETileTypes.RAZOR_WIRE);
 	}
 
 	@Override

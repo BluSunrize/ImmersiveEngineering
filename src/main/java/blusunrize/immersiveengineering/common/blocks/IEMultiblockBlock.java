@@ -27,9 +27,9 @@ import net.minecraft.world.World;
 
 public abstract class IEMultiblockBlock extends IETileProviderBlock
 {
-	public IEMultiblockBlock(String name, Properties props)
+	public IEMultiblockBlock(Properties props)
 	{
-		super(name, props, BlockItemIE::new);
+		super(props);
 		setMobility(PushReaction.BLOCK);
 	}
 
@@ -59,7 +59,7 @@ public abstract class IEMultiblockBlock extends IETileProviderBlock
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof MultiblockPartTileEntity)
-			return Utils.getPickBlock(((MultiblockPartTileEntity)te).getOriginalBlock(), target, player);
+			return Utils.getPickBlock(((MultiblockPartTileEntity<?>)te).getOriginalBlock(), target, player);
 		return ItemStack.EMPTY;
 	}
 

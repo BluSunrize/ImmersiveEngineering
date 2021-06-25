@@ -8,9 +8,10 @@
 
 package blusunrize.immersiveengineering.data;
 
-import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
+import blusunrize.immersiveengineering.common.blocks.generic.GenericTileBlock;
+import blusunrize.immersiveengineering.common.blocks.metal.CapacitorTileEntity;
 import blusunrize.immersiveengineering.common.blocks.plant.EnumHempGrowth;
 import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.SawdustBlock;
@@ -18,6 +19,7 @@ import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.loot.*;
 import blusunrize.immersiveengineering.data.loot.LootGenerator;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.advancements.criterion.StatePropertiesPredicate;
 import net.minecraft.block.Block;
 import net.minecraft.block.SlabBlock;
@@ -39,6 +41,7 @@ import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
+import java.util.function.Supplier;
 
 public class BlockLoot extends LootGenerator
 {
@@ -80,7 +83,9 @@ public class BlockLoot extends LootGenerator
 		register(Cloth.shaderBanner, tileDrop());
 		register(Cloth.shaderBannerWall, tileDrop());
 		register(Cloth.curtain, tileDrop());
-		for(Block cap : new Block[]{MetalDevices.capacitorLV, MetalDevices.capacitorMV, MetalDevices.capacitorHV, MetalDevices.capacitorCreative})
+		for(BlockEntry<? extends GenericTileBlock<? extends CapacitorTileEntity>> cap : ImmutableList.of(
+				MetalDevices.capacitorLV, MetalDevices.capacitorMV, MetalDevices.capacitorHV, MetalDevices.capacitorCreative
+		))
 			register(cap, tileDrop());
 		register(Connectors.feedthrough, tileDrop());
 		register(MetalDevices.turretChem, tileDrop());
@@ -130,7 +135,7 @@ public class BlockLoot extends LootGenerator
 
 	private void registerSlabs()
 	{
-		for(SlabBlock slab : IEBlocks.toSlab.values())
+		for(BlockEntry<SlabBlock> slab : IEBlocks.toSlab.values())
 		{
 			LootFunction.Builder<?> doubleSlabFunction = SetCount.builder(new ConstantRange(2))
 					.acceptCondition(propertyIs(slab, SlabBlock.TYPE, SlabType.DOUBLE));
@@ -143,12 +148,12 @@ public class BlockLoot extends LootGenerator
 
 	private void registerAllRemainingAsDefault()
 	{
-		for(Block b : IEContent.registeredIEBlocks)
-			if(!tables.containsKey(toTableLoc(b.getRegistryName())))
+		for(BlockEntry<?> b : BlockEntry.ALL_ENTRIES)
+			if(!tables.containsKey(toTableLoc(b.getId())))
 				registerSelfDropping(b);
 	}
 
-	private void registerMultiblock(Block b)
+	private void registerMultiblock(Supplier<? extends Block> b)
 	{
 		register(b, dropInv(), dropOriginalBlock());
 	}
@@ -171,7 +176,7 @@ public class BlockLoot extends LootGenerator
 				.addEntry(MBOriginalBlockLootEntry.builder());
 	}
 
-	private void register(Block b, LootPool.Builder... pools)
+	private void register(Supplier<? extends Block> b, LootPool.Builder... pools)
 	{
 		LootTable.Builder builder = LootTable.builder();
 		for(LootPool.Builder pool : pools)
@@ -179,9 +184,9 @@ public class BlockLoot extends LootGenerator
 		register(b, builder);
 	}
 
-	private void register(Block b, LootTable.Builder table)
+	private void register(Supplier<? extends Block> b, LootTable.Builder table)
 	{
-		register(b.getRegistryName(), table);
+		register(b.get().getRegistryName(), table);
 	}
 
 	private void register(ResourceLocation name, LootTable.Builder table)
@@ -190,10 +195,10 @@ public class BlockLoot extends LootGenerator
 			throw new IllegalStateException("Duplicate loot table "+name);
 	}
 
-	private void registerSelfDropping(Block b, LootPool.Builder... pool)
+	private void registerSelfDropping(Supplier<? extends Block> b, LootPool.Builder... pool)
 	{
 		LootPool.Builder[] withSelf = Arrays.copyOf(pool, pool.length+1);
-		withSelf[withSelf.length-1] = singleItem(b);
+		withSelf[withSelf.length-1] = singleItem(b.get());
 		register(b, withSelf);
 	}
 
@@ -247,9 +252,11 @@ public class BlockLoot extends LootGenerator
 				.acceptFunction(ApplyBonus.binomialWithBonusCount(ench, prob, extra));
 	}
 
-	private <T extends Comparable<T> & IStringSerializable> ILootCondition.IBuilder propertyIs(Block b, Property<T> prop, T value)
+	private <T extends Comparable<T> & IStringSerializable> ILootCondition.IBuilder propertyIs(
+			Supplier<? extends Block> b, Property<T> prop, T value
+	)
 	{
-		return BlockStateProperty.builder(b)
+		return BlockStateProperty.builder(b.get())
 				.fromProperties(
 						StatePropertiesPredicate.Builder.newBuilder().withProp(prop, value)
 				);

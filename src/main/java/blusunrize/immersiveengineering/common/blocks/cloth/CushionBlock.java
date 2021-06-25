@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.blocks.cloth;
 
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
-import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -17,11 +16,17 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import java.util.function.Supplier;
+
 public class CushionBlock extends IEBaseBlock
 {
-	public CushionBlock()
+	public static final Supplier<Properties> PROPERTIES = () -> Block.Properties.create(Material.WOOL)
+			.sound(SoundType.CLOTH)
+			.hardnessAndResistance(0.8F);
+
+	public CushionBlock(Properties props)
 	{
-		super("cushion", Block.Properties.create(Material.WOOL).sound(SoundType.CLOTH).hardnessAndResistance(0.8F), BlockItemIE::new);
+		super(props);
 	}
 
 	@Override

@@ -24,14 +24,21 @@ import net.minecraft.world.IBlockReader;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.function.Supplier;
 
 public abstract class ShaderBannerBlock extends IETileProviderBlock
 {
+	public static final Supplier<Properties> PROPERTIES = () -> Block.Properties.create(Material.WOOL)
+			.hardnessAndResistance(1.0F)
+			.sound(SoundType.CLOTH)
+			.doesNotBlockMovement()
+			.notSolid();
+
 	private static final VoxelShape SHAPE = Block.makeCuboidShape(4.0D, 0.0D, 4.0D, 12.0D, 16.0D, 12.0D);
 
-	public ShaderBannerBlock(String name)
+	public ShaderBannerBlock(Properties props)
 	{
-		super(name, Block.Properties.create(Material.WOOL).hardnessAndResistance(1.0F).sound(SoundType.CLOTH).doesNotBlockMovement().notSolid(), (b, p) -> null);
+		super(props);
 	}
 
 	@Nullable

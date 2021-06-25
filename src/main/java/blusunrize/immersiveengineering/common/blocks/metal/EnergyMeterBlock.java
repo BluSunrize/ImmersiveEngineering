@@ -30,9 +30,9 @@ public class EnergyMeterBlock extends MiscConnectableBlock<EnergyMeterTileEntity
 	public static final Property<Direction> FACING = IEProperties.FACING_HORIZONTAL;
 	public static final Property<Boolean> DUMMY = IEProperties.MULTIBLOCKSLAVE;
 
-	public EnergyMeterBlock()
+	public EnergyMeterBlock(Properties props)
 	{
-		super("current_transformer", IETileTypes.ENERGY_METER);
+		super(props, IETileTypes.ENERGY_METER);
 	}
 
 	@Override

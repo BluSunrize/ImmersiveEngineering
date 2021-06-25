@@ -11,7 +11,7 @@ public class ItemBatcherBlock extends GenericTileBlock<ItemBatcherTileEntity>
 {
 	public ItemBatcherBlock(Properties blockProps)
 	{
-		super("item_batcher", IETileTypes.ITEM_BATCHER, blockProps);
+		super(IETileTypes.ITEM_BATCHER, blockProps);
 	}
 
 	@Override

@@ -23,16 +23,19 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.function.Supplier;
 
 public class BalloonBlock extends IETileProviderBlock
 {
-	public BalloonBlock()
+	public static final Supplier<Properties> PROPERTIES = () -> Properties.create(Material.WOOL)
+			.sound(SoundType.CLOTH)
+			.hardnessAndResistance(0.8F)
+			.setLightLevel(s -> 13)
+			.notSolid();
+
+	public BalloonBlock(Properties props)
 	{
-		super("balloon", Properties.create(Material.WOOL)
-				.sound(SoundType.CLOTH)
-				.hardnessAndResistance(0.8F)
-				.setLightLevel(s -> 13)
-				.notSolid(), BlockItemBalloon::new);
+		super(props);
 		setHasColours();
 		setLightOpacity(0);
 	}

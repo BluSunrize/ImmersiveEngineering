@@ -11,7 +11,7 @@ public class FluidPipeBlock extends GenericTileBlock<FluidPipeTileEntity>
 {
 	public FluidPipeBlock(Properties blockProps)
 	{
-		super("fluid_pipe", IETileTypes.FLUID_PIPE, blockProps);
+		super(IETileTypes.FLUID_PIPE, blockProps);
 	}
 
 	@Override

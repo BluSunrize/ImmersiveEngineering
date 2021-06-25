@@ -39,7 +39,7 @@ public class CokeOvenRecipeCategory extends IERecipeCategory<CokeOvenRecipe>
 		super(CokeOvenRecipe.class, helper, UID, "block.immersiveengineering.coke_oven");
 		ResourceLocation background = new ResourceLocation(Lib.MODID, "textures/gui/coke_oven.png");
 		setBackground(helper.createDrawable(background, 8, 16, 142, 54));
-		setIcon(new ItemStack(IEBlocks.Multiblocks.cokeOven));
+		setIcon(new ItemStack(IEBlocks.Multiblocks.cokeOven.get()));
 		tankOverlay = helper.createDrawable(background, 178, 33, 16, 47);
 	}
 

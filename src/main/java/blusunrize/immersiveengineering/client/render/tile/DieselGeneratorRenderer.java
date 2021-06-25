@@ -43,7 +43,7 @@ public class DieselGeneratorRenderer extends TileEntityRenderer<DieselGeneratorT
 
 		BlockPos blockPos = te.getPos();
 		BlockState state = te.getWorld().getBlockState(blockPos);
-		if(state.getBlock()!=Multiblocks.dieselGenerator)
+		if(state.getBlock()!=Multiblocks.dieselGenerator.get())
 			return;
 
 		matrixStack.push();

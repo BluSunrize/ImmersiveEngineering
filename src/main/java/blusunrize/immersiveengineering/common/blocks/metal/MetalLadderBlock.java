@@ -8,18 +8,12 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.items.HammerItem;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.LadderBlock;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.IBooleanFunction;
@@ -32,7 +26,6 @@ import net.minecraftforge.common.ToolType;
 
 import javax.annotation.Nullable;
 import java.util.EnumMap;
-import java.util.Locale;
 import java.util.Map;
 
 public class MetalLadderBlock extends LadderBlock
@@ -63,19 +56,10 @@ public class MetalLadderBlock extends LadderBlock
 
 	private final CoverType type;
 
-	public MetalLadderBlock(CoverType type)
+	public MetalLadderBlock(CoverType type, Properties props)
 	{
-		super(
-				Properties.create(Material.IRON)
-						.sound(SoundType.METAL)
-						.hardnessAndResistance(3, 15)
-						.notSolid()
-		);
+		super(props);
 		this.type = type;
-		setRegistryName(new ResourceLocation(ImmersiveEngineering.MODID, "metal_ladder_"+type.name().toLowerCase(Locale.US)));
-
-		IEContent.registeredIEBlocks.add(this);
-		IEContent.registeredIEItems.add(new BlockItemIE(this));
 	}
 
 	@Override

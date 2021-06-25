@@ -41,7 +41,7 @@ public class SampleDrillRenderer extends TileEntityRenderer<SampleDrillTileEntit
 			return;
 
 		BlockState state = tile.getWorldNonnull().getBlockState(tile.getPos());
-		if(state.getBlock()!=MetalDevices.sampleDrill)
+		if(state.getBlock()!=MetalDevices.sampleDrill.get())
 			return;
 
 		matrixStack.push();

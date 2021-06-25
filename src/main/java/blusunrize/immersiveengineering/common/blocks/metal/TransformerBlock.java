@@ -25,10 +25,9 @@ import javax.annotation.Nullable;
 
 public class TransformerBlock extends MiscConnectableBlock<TransformerTileEntity>
 {
-	public TransformerBlock()
+	public TransformerBlock(Properties props)
 	{
-		super("transformer", IETileTypes.TRANSFORMER,
-				TransformerBlockItem::new);
+		super(props, IETileTypes.TRANSFORMER);
 	}
 
 	@Override

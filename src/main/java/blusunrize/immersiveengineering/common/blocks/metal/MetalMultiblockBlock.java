@@ -13,9 +13,6 @@ import blusunrize.immersiveengineering.common.blocks.IEMultiblockBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.state.Property;
 import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -29,9 +26,9 @@ public class MetalMultiblockBlock<T extends MultiblockPartTileEntity<T>> extends
 {
 	private final Supplier<TileEntityType<T>> tileType;
 
-	public MetalMultiblockBlock(String name, Supplier<TileEntityType<T>> te, Property<?>... additionalProperties)
+	public MetalMultiblockBlock(Supplier<TileEntityType<T>> te, Properties props)
 	{
-		super(name, Block.Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(3, 15).notSolid());
+		super(props);
 		tileType = te;
 		lightOpacity = 0;
 	}

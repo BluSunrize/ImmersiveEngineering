@@ -42,7 +42,7 @@ public class SqueezerRenderer extends TileEntityRenderer<SqueezerTileEntity>
 		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 		BlockPos blockPos = te.getPos();
 		BlockState state = te.getWorld().getBlockState(blockPos);
-		if(state.getBlock()!=Multiblocks.squeezer)
+		if(state.getBlock()!=Multiblocks.squeezer.get())
 			return;
 		IBakedModel model = PISTON.get(te.getFacing());
 

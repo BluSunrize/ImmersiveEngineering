@@ -22,14 +22,19 @@ import net.minecraftforge.fml.RegistryObject;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.function.Supplier;
 
 public class StoneMultiBlock<T extends MultiblockPartTileEntity<? super T>> extends IEMultiblockBlock
 {
-	private RegistryObject<TileEntityType<T>> type;
+	public static final Supplier<Properties> PROPERTIES = () -> Properties.create(Material.ROCK)
+			.hardnessAndResistance(2, 20)
+			.notSolid();
 
-	public StoneMultiBlock(String name, RegistryObject<TileEntityType<T>> type)
+	private final RegistryObject<TileEntityType<T>> type;
+
+	public StoneMultiBlock(Properties props, RegistryObject<TileEntityType<T>> type)
 	{
-		super(name, Block.Properties.create(Material.ROCK).hardnessAndResistance(2, 20).notSolid());
+		super(props);
 		this.type = type;
 		lightOpacity = 0;
 	}

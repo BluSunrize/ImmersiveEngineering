@@ -14,18 +14,15 @@ import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.generic.GenericTileBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.util.math.BlockPos;
 
 public class SampleDrillBlock extends GenericTileBlock<SampleDrillTileEntity>
 {
-	public SampleDrillBlock()
+	public SampleDrillBlock(Properties props)
 	{
-		super("sample_drill", IETileTypes.SAMPLE_DRILL,
-				Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(3, 15).notSolid());
+		super(IETileTypes.SAMPLE_DRILL, props);
 	}
 
 	@Override

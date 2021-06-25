@@ -17,6 +17,8 @@ import blusunrize.immersiveengineering.client.models.ModelCoresample.CoresampleL
 import blusunrize.immersiveengineering.client.models.PotionBucketModel.Loader;
 import blusunrize.immersiveengineering.client.models.connection.FeedthroughLoader;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
+import blusunrize.immersiveengineering.common.blocks.metal.ChuteBlock;
+import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.CoverType;
 import blusunrize.immersiveengineering.common.fluids.IEFluids;
 import blusunrize.immersiveengineering.common.fluids.PotionFluid;
@@ -31,7 +33,6 @@ import blusunrize.immersiveengineering.data.models.SpecialModelBuilder;
 import blusunrize.immersiveengineering.data.models.TRSRItemModelProvider;
 import blusunrize.immersiveengineering.data.models.TRSRModelBuilder;
 import com.google.common.base.Preconditions;
-import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.item.Item;
 import net.minecraft.resources.ResourcePackType;
@@ -94,7 +95,7 @@ public class ItemModels extends TRSRItemModelProvider
 				.transforms(rl("item/cloche"));
 		obj(MetalDevices.teslaCoil, rl("block/metal_device/teslacoil.obj"))
 				.transforms(rl("item/teslacoil"));
-		for(Entry<EnumMetals, Block> chute : MetalDevices.chutes.entrySet())
+		for(Entry<EnumMetals, BlockEntry<ChuteBlock>> chute : MetalDevices.chutes.entrySet())
 			obj(chute.getValue(), rl("block/metal_device/chute_inv.obj"))
 					.texture("texture", modLoc("block/metal/sheetmetal_"+chute.getKey().tagName()))
 					.transforms(rl("item/block"));
@@ -156,7 +157,7 @@ public class ItemModels extends TRSRItemModelProvider
 				.texture("texture", modLoc("block/metal_decoration/steel_wallmount"))
 				.transforms(modLoc("item/wallmount"));
 
-		for(Block b : MetalDevices.CONVEYORS.values())
+		for(BlockEntry<ConveyorBlock> b : MetalDevices.CONVEYORS.values())
 			getBuilder(b).customLoader(SpecialModelBuilder.forLoader(ConveyorLoader.LOCATION));
 
 		obj(MetalDecoration.lantern, modLoc("block/lantern_inventory.obj"))

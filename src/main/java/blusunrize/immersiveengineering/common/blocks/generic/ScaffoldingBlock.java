@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks.generic;
 
-import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -32,9 +31,9 @@ public class ScaffoldingBlock extends IEBaseBlock.IELadderBlock
 	);
 	public static final VoxelShape CHECK_SHAPE = VoxelShapes.create(0, -20, 0, 1, -19, 1);
 
-	public ScaffoldingBlock(String name, Properties material)
+	public ScaffoldingBlock(Properties material)
 	{
-		super(name, material, BlockItemIE::new);
+		super(material);
 		lightOpacity = 0;
 	}
 
