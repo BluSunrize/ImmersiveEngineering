@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "immersiveengineering:block/fluid/creosote_still"
+      "model": "immersiveengineering:block/fluid/creosote"
     }
   }
 }

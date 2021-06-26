@@ -122,7 +122,7 @@ public class IEFluids
 		{
 			this.properties = properties;
 			Mutable<FluidEntry> thisMutable = new MutableObject<>();
-			this.still = REGISTER.register(name+"_still", () -> IEFluid.makeFluid(
+			this.still = REGISTER.register(name, () -> IEFluid.makeFluid(
 					makeStill, thisMutable.getValue(), stillTex, flowingTex, buildAttributes
 			));
 			this.flowing = REGISTER.register(name+"_flowing", () -> IEFluid.makeFluid(

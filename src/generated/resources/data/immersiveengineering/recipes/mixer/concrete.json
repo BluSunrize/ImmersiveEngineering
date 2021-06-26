@@ -15,7 +15,7 @@
     }
   ],
   "result": {
-    "fluid": "immersiveengineering:concrete_still",
+    "fluid": "immersiveengineering:concrete",
     "amount": 500
   },
   "fluid": {

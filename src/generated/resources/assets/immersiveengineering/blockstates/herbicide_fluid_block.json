@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "immersiveengineering:block/fluid/herbicide_still"
+      "model": "immersiveengineering:block/fluid/herbicide"
     }
   }
 }

@@ -1,7 +1,7 @@
 {
   "type": "immersiveengineering:fermenter",
   "fluid": {
-    "fluid": "immersiveengineering:ethanol_still",
+    "fluid": "immersiveengineering:ethanol",
     "amount": 80
   },
   "input": {

@@ -1,7 +1,7 @@
 {
   "type": "immersiveengineering:squeezer",
   "fluid": {
-    "fluid": "immersiveengineering:plantoil_still",
+    "fluid": "immersiveengineering:plantoil",
     "amount": 40
   },
   "input": {
