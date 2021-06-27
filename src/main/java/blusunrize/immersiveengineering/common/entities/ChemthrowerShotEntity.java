@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.entities;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect;
 import blusunrize.immersiveengineering.common.fluids.IEFluid;
@@ -17,9 +16,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.EntityType.Builder;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
@@ -42,15 +39,6 @@ public class ChemthrowerShotEntity extends IEProjectileEntity
 {
 	private FluidStack fluid;
 	private static final DataParameter<Optional<FluidStack>> dataMarker_fluid = EntityDataManager.createKey(ChemthrowerShotEntity.class, IEFluid.OPTIONAL_FLUID_STACK);
-	public static final EntityType<ChemthrowerShotEntity> TYPE = Builder
-			.<ChemthrowerShotEntity>create(ChemthrowerShotEntity::new, EntityClassification.MISC)
-			.size(0.1F, 0.1F)
-			.build(ImmersiveEngineering.MODID+":chemthrower_shot");
-
-	static
-	{
-		TYPE.setRegistryName(ImmersiveEngineering.MODID, "chemthrower_shot");
-	}
 
 	public ChemthrowerShotEntity(EntityType<ChemthrowerShotEntity> type, World world)
 	{
@@ -59,14 +47,14 @@ public class ChemthrowerShotEntity extends IEProjectileEntity
 
 	public ChemthrowerShotEntity(World world, double x, double y, double z, double ax, double ay, double az, FluidStack fluid)
 	{
-		super(TYPE, world, x, y, z);
+		super(IEEntityTypes.CHEMTHROWER_SHOT.get(), world, x, y, z);
 		this.fluid = fluid;
 		this.setFluidSynced();
 	}
 
 	public ChemthrowerShotEntity(World world, LivingEntity living, double ax, double ay, double az, FluidStack fluid)
 	{
-		super(TYPE, world, living, ax, ay, az);
+		super(IEEntityTypes.CHEMTHROWER_SHOT.get(), world, living, ax, ay, az);
 		this.fluid = fluid;
 		this.setFluidSynced();
 	}

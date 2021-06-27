@@ -16,9 +16,7 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.EntityType.Builder;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -41,16 +39,6 @@ import net.minecraftforge.fml.network.PacketDistributor;
 
 public class RevolvershotEntity extends IEProjectileEntity
 {
-	public static final EntityType<RevolvershotEntity> TYPE = Builder
-			.<RevolvershotEntity>create(RevolvershotEntity::new, EntityClassification.MISC)
-			.size(0.125f, 0.125f)
-			.build(ImmersiveEngineering.MODID+":revolver_shot");
-
-	static
-	{
-		TYPE.setRegistryName(ImmersiveEngineering.MODID, "revolvershot");
-	}
-
 	private IBullet bulletType;
 	public boolean bulletElectro = false;
 	public ItemStack bulletPotion = ItemStack.EMPTY;
@@ -60,11 +48,6 @@ public class RevolvershotEntity extends IEProjectileEntity
 	public RevolvershotEntity(EntityType<? extends RevolvershotEntity> type, World world)
 	{
 		super(type, world);
-	}
-
-	public RevolvershotEntity(World world)
-	{
-		this(TYPE, world);
 	}
 
 	public RevolvershotEntity(EntityType<? extends RevolvershotEntity> eType, World world, LivingEntity shooter, double x, double y, double z,
@@ -78,17 +61,12 @@ public class RevolvershotEntity extends IEProjectileEntity
 	public RevolvershotEntity(World world, double x, double y, double z,
 							  double ax, double ay, double az, IBullet type)
 	{
-		this(TYPE, world, null, x, y, z, ax, ay, az, type);
+		this(IEEntityTypes.REVOLVERSHOT.get(), world, null, x, y, z, ax, ay, az, type);
 	}
 
 	public RevolvershotEntity(World world, LivingEntity living, double ax, double ay, double az, IBullet type)
 	{
-		this(TYPE, world, living, ax, ay, az, type);
-	}
-
-	public RevolvershotEntity(World world, LivingEntity living, double ax, double ay, double az, ResourceLocation type)
-	{
-		this(TYPE, world, living, ax, ay, az, BulletHandler.getBullet(type));
+		this(IEEntityTypes.REVOLVERSHOT.get(), world, living, ax, ay, az, type);
 	}
 
 	public RevolvershotEntity(EntityType<? extends RevolvershotEntity> eType, World world, LivingEntity living, double ax, double ay, double az, IBullet type)

@@ -9,14 +9,11 @@
 
 package blusunrize.immersiveengineering.common.entities;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.blocks.wooden.WoodenBarrelTileEntity;
 import blusunrize.immersiveengineering.common.items.IEItems;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.EntityType.Builder;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -26,26 +23,15 @@ import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidUtil;
 
-import javax.annotation.Nonnull;
 import java.util.function.Supplier;
 
 import static net.minecraftforge.fluids.capability.CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
 
 public class BarrelMinecartEntity extends IEMinecartEntity<WoodenBarrelTileEntity>
 {
-	public static final EntityType<BarrelMinecartEntity> TYPE = Builder
-			.<BarrelMinecartEntity>create(BarrelMinecartEntity::new, EntityClassification.MISC)
-			.size(0.98F, 0.7F)
-			.build(ImmersiveEngineering.MODID+":cart_woodenbarrel");
-
-	static
-	{
-		TYPE.setRegistryName(ImmersiveEngineering.MODID, "cart_woodenbarrel");
-	}
-
 	public BarrelMinecartEntity(World world, double x, double y, double z)
 	{
-		this(TYPE, world, x, y, z);
+		this(IEEntityTypes.BARREL_MINECART.get(), world, x, y, z);
 	}
 
 	public BarrelMinecartEntity(EntityType<?> type, World world, double x, double y, double z)
@@ -91,13 +77,6 @@ public class BarrelMinecartEntity extends IEMinecartEntity<WoodenBarrelTileEntit
 			return ActionResultType.SUCCESS;//always return true to avoid placing lava in the world
 		}
 		return ActionResultType.PASS;
-	}
-
-	@Nonnull
-	@Override
-	public EntityType<?> getType()
-	{
-		return TYPE;
 	}
 
 	@Override

@@ -17,9 +17,7 @@ import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.network.MessageSkyhookSync;
 import blusunrize.immersiveengineering.common.util.SkylineHelper;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.EntityType.Builder;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -51,16 +49,6 @@ import static blusunrize.immersiveengineering.common.entities.CapabilitySkyhookD
 
 public class SkylineHookEntity extends Entity
 {
-	public static final EntityType<SkylineHookEntity> TYPE = Builder
-			.<SkylineHookEntity>create(SkylineHookEntity::new, EntityClassification.MISC)
-			.size(.125F, .125F)
-			.build(ImmersiveEngineering.MODID+":skyline_hook");
-
-	static
-	{
-		TYPE.setRegistryName(ImmersiveEngineering.MODID, "skyline_hook");
-	}
-
 	public static final double GRAVITY = 10;
 	private static final double MAX_SPEED = 2.5;
 	private static final double LIMIT_SPEED = .25;
@@ -86,7 +74,7 @@ public class SkylineHookEntity extends Entity
 	public SkylineHookEntity(World world, Connection connection, ConnectionPoint start, double linePos, Hand hand, double horSpeed,
 							 boolean limitSpeed)
 	{
-		this(TYPE, world);
+		this(IEEntityTypes.SKYLINE_HOOK.get(), world);
 		this.hand = hand;
 		this.limitSpeed = limitSpeed;
 		setConnectionAndPos(connection, start, linePos, horSpeed);

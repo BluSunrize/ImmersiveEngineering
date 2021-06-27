@@ -8,14 +8,11 @@
 
 package blusunrize.immersiveengineering.common.entities;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.util.IEExplosion;
 import blusunrize.immersiveengineering.mixin.accessors.TNTEntityAccess;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.EntityType.Builder;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.item.TNTEntity;
@@ -41,17 +38,6 @@ import java.util.Optional;
 
 public class IEExplosiveEntity extends TNTEntity
 {
-	public static final EntityType<IEExplosiveEntity> TYPE = Builder
-			.<IEExplosiveEntity>create(IEExplosiveEntity::new, EntityClassification.MISC)
-			.immuneToFire()
-			.size(0.98F, 0.98F)
-			.build(ImmersiveEngineering.MODID+":explosive");
-
-	static
-	{
-		TYPE.setRegistryName(ImmersiveEngineering.MODID, "explosive");
-	}
-
 	private float size;
 	private Explosion.Mode mode = Mode.BREAK;
 	private boolean isFlaming = false;
@@ -67,26 +53,21 @@ public class IEExplosiveEntity extends TNTEntity
 		super(type, world);
 	}
 
-	public IEExplosiveEntity(World world, double x, double y, double z, LivingEntity igniter, BlockState blockstate, float size)
+	public IEExplosiveEntity(World world, BlockPos pos, LivingEntity igniter, BlockState blockstate, float size)
 	{
-		super(TYPE, world);
-		this.setPosition(x, y, z);
+		super(IEEntityTypes.EXPLOSIVE.get(), world);
+		this.setPosition(pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5);
 		double jumpingDirection = world.rand.nextDouble()*2*Math.PI;
 		this.setMotion(-Math.sin(jumpingDirection)*0.02D, 0.2, -Math.cos(jumpingDirection)*0.02D);
 		this.setFuse(80);
-		this.prevPosX = x;
-		this.prevPosY = y;
-		this.prevPosZ = z;
+		this.prevPosX = getPosX();
+		this.prevPosY = getPosY();
+		this.prevPosZ = getPosZ();
 		((TNTEntityAccess)this).setIgniter(igniter);
 		this.size = size;
 		this.block = blockstate;
 		this.explosionDropChance = 1/size;
 		this.setBlockSynced();
-	}
-
-	public IEExplosiveEntity(World world, BlockPos pos, LivingEntity igniter, BlockState blockstate, float size)
-	{
-		this(world, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, igniter, blockstate, size);
 	}
 
 	public IEExplosiveEntity setMode(Mode smoke)
@@ -207,13 +188,6 @@ public class IEExplosiveEntity extends TNTEntity
 			this.func_233566_aG_();
 			this.world.addParticle(ParticleTypes.SMOKE, this.getPosX(), this.getPosY()+0.5D, this.getPosZ(), 0.0D, 0.0D, 0.0D);
 		}
-	}
-
-	@Nonnull
-	@Override
-	public EntityType<?> getType()
-	{
-		return TYPE;
 	}
 
 	@Override

@@ -8,15 +8,12 @@
 
 package blusunrize.immersiveengineering.common.entities;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler.IRailgunProjectile;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.EntityType.Builder;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -35,16 +32,6 @@ import java.util.UUID;
 
 public class RailgunShotEntity extends IEProjectileEntity
 {
-	public static final EntityType<RailgunShotEntity> TYPE = Builder
-			.<RailgunShotEntity>create(RailgunShotEntity::new, EntityClassification.MISC)
-			.size(.5F, .5F)
-			.build(ImmersiveEngineering.MODID+":railgun_shot");
-
-	static
-	{
-		TYPE.setRegistryName(ImmersiveEngineering.MODID, "railgun_shot");
-	}
-
 	private ItemStack ammo = ItemStack.EMPTY;
 	private static final DataParameter<ItemStack> dataMarker_ammo = EntityDataManager.createKey(RailgunShotEntity.class, DataSerializers.ITEMSTACK);
 	private IRailgunProjectile ammoProperties;
@@ -55,17 +42,9 @@ public class RailgunShotEntity extends IEProjectileEntity
 		this.pickupStatus = PickupStatus.ALLOWED;
 	}
 
-	public RailgunShotEntity(World world, double x, double y, double z, double ax, double ay, double az, ItemStack ammo)
-	{
-		super(TYPE, world, x, y, z);
-		this.ammo = ammo;
-		this.setAmmoSynced();
-		this.pickupStatus = PickupStatus.ALLOWED;
-	}
-
 	public RailgunShotEntity(World world, LivingEntity living, double ax, double ay, double az, ItemStack ammo)
 	{
-		super(TYPE, world, living, ax, ay, az);
+		super(IEEntityTypes.RAILGUN_SHOT.get(), world, living, ax, ay, az);
 		this.ammo = ammo;
 		this.setAmmoSynced();
 		this.pickupStatus = PickupStatus.ALLOWED;

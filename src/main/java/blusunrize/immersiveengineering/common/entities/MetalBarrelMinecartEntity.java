@@ -9,41 +9,22 @@
 
 package blusunrize.immersiveengineering.common.entities;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalBarrelTileEntity;
 import blusunrize.immersiveengineering.common.blocks.wooden.WoodenBarrelTileEntity;
 import blusunrize.immersiveengineering.common.items.IEItems;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.EntityType.Builder;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-import javax.annotation.Nonnull;
 import java.util.function.Supplier;
 
 public class MetalBarrelMinecartEntity extends BarrelMinecartEntity
 {
-	public static final EntityType<MetalBarrelMinecartEntity> TYPE = Builder
-			.<MetalBarrelMinecartEntity>create(MetalBarrelMinecartEntity::new, EntityClassification.MISC)
-			.size(0.98F, 0.7F)
-			.build(ImmersiveEngineering.MODID+":cart_metalbarrel");
-
-	static
-	{
-		TYPE.setRegistryName(ImmersiveEngineering.MODID, "cart_metalbarrel");
-	}
-
 	public MetalBarrelMinecartEntity(World world, double x, double y, double z)
 	{
-		this(TYPE, world, x, y, z);
-	}
-
-	public MetalBarrelMinecartEntity(EntityType<?> type, World world, double x, double y, double z)
-	{
-		super(type, world, x, y, z);
+		super(IEEntityTypes.METAL_BARREL_CART.get(), world, x, y, z);
 	}
 
 	public MetalBarrelMinecartEntity(EntityType<?> type, World world)
@@ -55,13 +36,6 @@ public class MetalBarrelMinecartEntity extends BarrelMinecartEntity
 	public ItemStack getCartItem()
 	{
 		return new ItemStack(IEItems.Minecarts.cartMetalBarrel.get());
-	}
-
-	@Nonnull
-	@Override
-	public EntityType<?> getType()
-	{
-		return TYPE;
 	}
 
 	@Override

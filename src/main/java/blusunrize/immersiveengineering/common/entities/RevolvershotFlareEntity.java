@@ -13,9 +13,7 @@ import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.EntityType.Builder;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.datasync.DataParameter;
@@ -30,16 +28,6 @@ import net.minecraft.world.World;
 
 public class RevolvershotFlareEntity extends RevolvershotEntity
 {
-	public static final EntityType<RevolvershotFlareEntity> TYPE = Builder
-			.<RevolvershotFlareEntity>create(RevolvershotFlareEntity::new, EntityClassification.MISC)
-			.size(0.125f, 0.125f)
-			.build(ImmersiveEngineering.MODID+":revolver_shot_flare");
-
-	static
-	{
-		TYPE.setRegistryName(ImmersiveEngineering.MODID, "revolver_shot_flare");
-	}
-
 	public int colour = -1;
 	private static final DataParameter<Integer> dataMarker_colour = EntityDataManager.createKey(RevolvershotFlareEntity.class, DataSerializers.VARINT);
 	private BlockPos lightPos;
@@ -52,13 +40,13 @@ public class RevolvershotFlareEntity extends RevolvershotEntity
 
 	public RevolvershotFlareEntity(World world, double x, double y, double z, double ax, double ay, double az, IBullet type)
 	{
-		super(TYPE, world, null, x, y, z, ax, ay, az, type);
+		super(IEEntityTypes.FLARE_REVOLVERSHOT.get(), world, null, x, y, z, ax, ay, az, type);
 		this.setTickLimit(400);
 	}
 
 	public RevolvershotFlareEntity(World world, LivingEntity living, double ax, double ay, double az, IBullet type, ItemStack stack)
 	{
-		super(TYPE, world, living, ax, ay, az, type);
+		super(IEEntityTypes.FLARE_REVOLVERSHOT.get(), world, living, ax, ay, az, type);
 		this.setTickLimit(400);
 	}
 

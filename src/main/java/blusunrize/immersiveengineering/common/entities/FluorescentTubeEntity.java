@@ -8,16 +8,13 @@
 
 package blusunrize.immersiveengineering.common.entities;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.tool.ITeslaEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.TeslaCoilTileEntity;
 import blusunrize.immersiveengineering.common.items.FluorescentTubeItem;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.EntityType.Builder;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -40,15 +37,6 @@ import javax.annotation.Nonnull;
 public class FluorescentTubeEntity extends Entity implements ITeslaEntity
 {
 	public static final float TUBE_LENGTH = 1.5F;
-	public static final EntityType<FluorescentTubeEntity> TYPE = Builder
-			.<FluorescentTubeEntity>create(FluorescentTubeEntity::new, EntityClassification.MISC)
-			.size(TUBE_LENGTH/2, 1+TUBE_LENGTH/2)
-			.build(ImmersiveEngineering.MODID+":fluorescent_tube");
-
-	static
-	{
-		TYPE.setRegistryName(ImmersiveEngineering.MODID, "fluorescent_tube");
-	}
 
 	private static final DataParameter<Boolean> dataMarker_active = EntityDataManager.createKey(FluorescentTubeEntity.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Float> dataMarker_r = EntityDataManager.createKey(FluorescentTubeEntity.class, DataSerializers.FLOAT);
@@ -64,7 +52,7 @@ public class FluorescentTubeEntity extends Entity implements ITeslaEntity
 
 	public FluorescentTubeEntity(World world, ItemStack tube, float angleVert)
 	{
-		this(TYPE, world);
+		this(IEEntityTypes.FLUORESCENT_TUBE.get(), world);
 		rotationYaw = angleVert;
 		rgb = FluorescentTubeItem.getRGB(tube);
 	}

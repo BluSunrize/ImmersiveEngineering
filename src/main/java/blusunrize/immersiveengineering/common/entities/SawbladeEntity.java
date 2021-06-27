@@ -8,13 +8,10 @@
 
 package blusunrize.immersiveengineering.common.entities;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.EntityType.Builder;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -32,16 +29,6 @@ import javax.annotation.Nonnull;
 
 public class SawbladeEntity extends IEProjectileEntity
 {
-	public static final EntityType<SawbladeEntity> TYPE = Builder
-			.<SawbladeEntity>create(SawbladeEntity::new, EntityClassification.MISC)
-			.size(.75F, .2F)
-			.build(ImmersiveEngineering.MODID+":sawblade");
-
-	static
-	{
-		TYPE.setRegistryName(ImmersiveEngineering.MODID, "sawblade");
-	}
-
 	private ItemStack ammo = ItemStack.EMPTY;
 	private static final DataParameter<ItemStack> dataMarker_ammo = EntityDataManager.createKey(SawbladeEntity.class, DataSerializers.ITEMSTACK);
 
@@ -53,7 +40,7 @@ public class SawbladeEntity extends IEProjectileEntity
 
 	public SawbladeEntity(World world, LivingEntity living, double ax, double ay, double az, ItemStack ammo)
 	{
-		super(TYPE, world, living, ax, ay, az);
+		super(IEEntityTypes.SAWBLADE.get(), world, living, ax, ay, az);
 		this.ammo = ammo;
 		this.setAmmoSynced();
 		this.pickupStatus = PickupStatus.ALLOWED;

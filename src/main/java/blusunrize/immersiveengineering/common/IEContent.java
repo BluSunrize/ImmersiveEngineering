@@ -49,7 +49,8 @@ import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.crafting.DefaultAssemblerAdapter;
 import blusunrize.immersiveengineering.common.crafting.IngredientWithSizeSerializer;
 import blusunrize.immersiveengineering.common.crafting.fluidaware.IngredientFluidStack;
-import blusunrize.immersiveengineering.common.entities.*;
+import blusunrize.immersiveengineering.common.entities.CapabilitySkyhookData;
+import blusunrize.immersiveengineering.common.entities.IEEntityTypes;
 import blusunrize.immersiveengineering.common.fluids.IEFluid;
 import blusunrize.immersiveengineering.common.fluids.IEFluids;
 import blusunrize.immersiveengineering.common.items.*;
@@ -71,7 +72,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ConcretePowderBlock;
 import net.minecraft.block.ShulkerBoxBlock;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.*;
@@ -144,6 +144,8 @@ public class IEContent
 
 		IEFluids.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
 		IEPotions.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
+		IETileTypes.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
+		IEEntityTypes.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
 		IEBlocks.init();
 		IEItems.init();
 
@@ -160,7 +162,6 @@ public class IEContent
 		IEShaders.commonConstruction();
 		IEMultiblocks.init();
 		BlueprintCraftingRecipe.registerDefaultCategories();
-		IETileTypes.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
 		populateAPI();
 	}
 
@@ -174,27 +175,6 @@ public class IEContent
 	public static void registerFeatures(RegistryEvent.Register<Feature<?>> event)
 	{
 		event.getRegistry().register(ORE_RETROGEN.setRegistryName(new ResourceLocation(ImmersiveEngineering.MODID, "ore_retro")));
-	}
-
-	@SubscribeEvent
-	public static void registerEntityTypes(RegistryEvent.Register<EntityType<?>> event)
-	{
-		event.getRegistry().registerAll(
-				ChemthrowerShotEntity.TYPE,
-				FluorescentTubeEntity.TYPE,
-				IEExplosiveEntity.TYPE,
-				RailgunShotEntity.TYPE,
-				RevolvershotEntity.TYPE,
-				RevolvershotFlareEntity.TYPE,
-				RevolvershotHomingEntity.TYPE,
-				SkylineHookEntity.TYPE,
-				WolfpackShotEntity.TYPE,
-				CrateMinecartEntity.TYPE,
-				ReinforcedCrateMinecartEntity.TYPE,
-				BarrelMinecartEntity.TYPE,
-				MetalBarrelMinecartEntity.TYPE,
-				SawbladeEntity.TYPE
-		);
 	}
 
 	public static void init(ParallelDispatchEvent ev)

@@ -53,7 +53,8 @@ import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.crafting.RecipeReloadListener;
-import blusunrize.immersiveengineering.common.entities.*;
+import blusunrize.immersiveengineering.common.entities.IEEntityTypes;
+import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
 import blusunrize.immersiveengineering.common.gui.GuiHandler;
 import blusunrize.immersiveengineering.common.items.DrillheadItem.DrillHeadPerm;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
@@ -85,6 +86,7 @@ import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Container;
@@ -117,6 +119,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
@@ -173,20 +176,25 @@ public class ClientProxy extends CommonProxy
 				stencilEnabled = true;
 			});
 
-		RenderingRegistry.registerEntityRenderingHandler(RevolvershotEntity.TYPE, RevolvershotRenderer::new);
-		RenderingRegistry.registerEntityRenderingHandler(RevolvershotFlareEntity.TYPE, RevolvershotRenderer::new);
-		RenderingRegistry.registerEntityRenderingHandler(RevolvershotHomingEntity.TYPE, RevolvershotRenderer::new);
-		RenderingRegistry.registerEntityRenderingHandler(WolfpackShotEntity.TYPE, RevolvershotRenderer::new);
-		RenderingRegistry.registerEntityRenderingHandler(SkylineHookEntity.TYPE, NoneRenderer::new);
-		RenderingRegistry.registerEntityRenderingHandler(ChemthrowerShotEntity.TYPE, ChemthrowerShotRenderer::new);
-		RenderingRegistry.registerEntityRenderingHandler(RailgunShotEntity.TYPE, RailgunShotRenderer::new);
-		RenderingRegistry.registerEntityRenderingHandler(IEExplosiveEntity.TYPE, IEExplosiveRenderer::new);
-		RenderingRegistry.registerEntityRenderingHandler(FluorescentTubeEntity.TYPE, FluorescentTubeRenderer::new);
-		RenderingRegistry.registerEntityRenderingHandler(BarrelMinecartEntity.TYPE, IEMinecartRenderer::new);
-		RenderingRegistry.registerEntityRenderingHandler(CrateMinecartEntity.TYPE, IEMinecartRenderer::new);
-		RenderingRegistry.registerEntityRenderingHandler(ReinforcedCrateMinecartEntity.TYPE, IEMinecartRenderer::new);
-		RenderingRegistry.registerEntityRenderingHandler(MetalBarrelMinecartEntity.TYPE, IEMinecartRenderer::new);
-		RenderingRegistry.registerEntityRenderingHandler(SawbladeEntity.TYPE, SawbladeRenderer::new);
+		registerEntityRenderingHandler(IEEntityTypes.REVOLVERSHOT, RevolvershotRenderer::new);
+		registerEntityRenderingHandler(IEEntityTypes.FLARE_REVOLVERSHOT, RevolvershotRenderer::new);
+		registerEntityRenderingHandler(IEEntityTypes.HOMING_REVOLVERSHOT, RevolvershotRenderer::new);
+		registerEntityRenderingHandler(IEEntityTypes.WOLFPACK_SHOT, RevolvershotRenderer::new);
+		registerEntityRenderingHandler(IEEntityTypes.SKYLINE_HOOK, NoneRenderer::new);
+		registerEntityRenderingHandler(IEEntityTypes.CHEMTHROWER_SHOT, ChemthrowerShotRenderer::new);
+		registerEntityRenderingHandler(IEEntityTypes.RAILGUN_SHOT, RailgunShotRenderer::new);
+		registerEntityRenderingHandler(IEEntityTypes.EXPLOSIVE, IEExplosiveRenderer::new);
+		registerEntityRenderingHandler(IEEntityTypes.FLUORESCENT_TUBE, FluorescentTubeRenderer::new);
+		registerEntityRenderingHandler(IEEntityTypes.BARREL_MINECART, IEMinecartRenderer::new);
+		registerEntityRenderingHandler(IEEntityTypes.CRATE_MINECART, IEMinecartRenderer::new);
+		registerEntityRenderingHandler(IEEntityTypes.REINFORCED_CRATE_CART, IEMinecartRenderer::new);
+		registerEntityRenderingHandler(IEEntityTypes.METAL_BARREL_CART, IEMinecartRenderer::new);
+		registerEntityRenderingHandler(IEEntityTypes.SAWBLADE, SawbladeRenderer::new);
+	}
+
+	private <T extends Entity> void registerEntityRenderingHandler(Supplier<EntityType<T>> type, IRenderFactory<? super T> renderer)
+	{
+		RenderingRegistry.registerEntityRenderingHandler(type.get(), renderer);
 	}
 
 	@Override
