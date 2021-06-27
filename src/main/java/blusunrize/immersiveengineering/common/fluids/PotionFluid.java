@@ -47,8 +47,6 @@ import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
 
 public class PotionFluid extends Fluid
 {
-	public static final Item bucket = new PotionBucketItem();
-
 	public static FluidStack getFluidStackForType(Potion type, int amount)
 	{
 		if(type==Potions.WATER||type==null)

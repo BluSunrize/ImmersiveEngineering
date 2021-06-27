@@ -52,7 +52,7 @@ public class FluorescentTubeItem extends IEBaseItem implements IConfigurableTool
 
 	public FluorescentTubeItem()
 	{
-		super("fluorescent_tube", new Properties().maxStackSize(1).setISTER(() -> () -> IEOBJItemRenderer.INSTANCE));
+		super(new Properties().maxStackSize(1).setISTER(() -> () -> IEOBJItemRenderer.INSTANCE));
 	}
 
 	@Override

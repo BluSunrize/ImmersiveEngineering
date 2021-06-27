@@ -34,7 +34,10 @@ import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static blusunrize.immersiveengineering.api.wires.utils.WireUtils.findObstructingBlocks;
 import static blusunrize.immersiveengineering.api.wires.utils.WirecoilUtils.clearWireLink;
@@ -45,9 +48,9 @@ public class WireCoilItem extends IEBaseItem implements IWireCoil
 	@Nonnull
 	private final WireType type;
 
-	public WireCoilItem(WireType type)
+	public WireCoilItem(@Nonnull WireType type)
 	{
-		super("wirecoil_"+type.getUniqueName().toLowerCase(Locale.US), new Properties());
+		super(new Properties());
 		this.type = type;
 	}
 

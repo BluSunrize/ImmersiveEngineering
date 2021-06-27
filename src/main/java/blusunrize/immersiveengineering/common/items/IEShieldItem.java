@@ -64,7 +64,7 @@ public class IEShieldItem extends UpgradeableToolItem implements IIEEnergyItem, 
 {
 	public IEShieldItem()
 	{
-		super("shield", new Properties().defaultMaxDamage(1024).setISTER(() -> () -> IEOBJItemRenderer.INSTANCE), "SHIELD");
+		super(new Properties().defaultMaxDamage(1024).setISTER(() -> () -> IEOBJItemRenderer.INSTANCE), "SHIELD");
 		GenericDeferredWork.registerDispenseBehavior(this, ArmorItem.DISPENSER_BEHAVIOR);
 	}
 

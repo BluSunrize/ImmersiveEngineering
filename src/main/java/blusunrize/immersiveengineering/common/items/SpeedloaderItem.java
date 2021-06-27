@@ -31,7 +31,7 @@ public class SpeedloaderItem extends InternalStorageItem implements ITool, IBull
 {
 	public SpeedloaderItem()
 	{
-		super("speedloader", new Properties().maxStackSize(1));
+		super(new Properties().maxStackSize(1));
 	}
 
 	@Override

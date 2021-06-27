@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.common.fluids.PotionFluid;
+import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemGroup;
@@ -41,14 +42,14 @@ public class PotionBucketItem extends IEBaseItem
 {
 	public PotionBucketItem()
 	{
-		super("potion_bucket", new Properties().maxStackSize(1), ItemGroup.BREWING);
+		super(new Properties().maxStackSize(1), ItemGroup.BREWING);
 	}
 
 	public static ItemStack forPotion(Potion type)
 	{
 		if(type==Potions.WATER||type==null)
 			return new ItemStack(Items.WATER_BUCKET);
-		ItemStack result = new ItemStack(PotionFluid.bucket);
+		ItemStack result = new ItemStack(Misc.potionBucket);
 		result.getOrCreateTag().putString("Potion", type.getRegistryName().toString());
 		return result;
 	}

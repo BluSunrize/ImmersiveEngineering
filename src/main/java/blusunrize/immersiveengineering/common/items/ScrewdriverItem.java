@@ -26,7 +26,7 @@ public class ScrewdriverItem extends IEBaseItem implements ITool
 
 	public ScrewdriverItem()
 	{
-		super("screwdriver", new Properties());
+		super(new Properties().maxStackSize(1));
 	}
 
 	@Nonnull

@@ -44,7 +44,7 @@ public class PowerpackItem extends IEBaseItem implements IIEEnergyItem
 {
 	public PowerpackItem()
 	{
-		super("powerpack", new Properties().maxStackSize(1));
+		super(new Properties().maxStackSize(1));
 	}
 
 	@Nullable

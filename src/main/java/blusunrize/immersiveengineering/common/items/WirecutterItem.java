@@ -48,7 +48,7 @@ public class WirecutterItem extends IEBaseItem implements ITool
 
 	public WirecutterItem()
 	{
-		super("wirecutter", new Properties().defaultMaxDamage(100));
+		super(new Properties().defaultMaxDamage(100));
 	}
 
 	@Override

@@ -38,6 +38,11 @@ public class CrateMinecartEntity extends IEMinecartEntity<WoodenCrateTileEntity>
 		TYPE.setRegistryName(ImmersiveEngineering.MODID, "cart_woodencrate");
 	}
 
+	public CrateMinecartEntity(World world, double x, double y, double z)
+	{
+		this(TYPE, world, x, y, z);
+	}
+
 	public CrateMinecartEntity(EntityType<?> type, World world, double x, double y, double z)
 	{
 		super(type, world, x, y, z);
@@ -51,7 +56,7 @@ public class CrateMinecartEntity extends IEMinecartEntity<WoodenCrateTileEntity>
 	@Override
 	public ItemStack getCartItem()
 	{
-		return new ItemStack(IEItems.Misc.cartWoodenCrate);
+		return new ItemStack(IEItems.Minecarts.cartWoodenCrate.get());
 	}
 
 	@Override

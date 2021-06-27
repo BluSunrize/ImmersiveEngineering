@@ -201,6 +201,6 @@ public class HempBlock extends BushBlock implements IGrowable
 	@Override
 	public Item asItem()
 	{
-		return Misc.hempSeeds;
+		return Misc.hempSeeds.asItem();
 	}
 }

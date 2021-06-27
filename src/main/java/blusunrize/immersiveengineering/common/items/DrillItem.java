@@ -67,7 +67,7 @@ public class DrillItem extends DieselToolItem
 
 	public DrillItem()
 	{
-		super("drill", withIEOBJRender().maxStackSize(1).setISTER(() -> () -> IEOBJItemRenderer.INSTANCE), "DRILL");
+		super(withIEOBJRender().maxStackSize(1).setISTER(() -> () -> IEOBJItemRenderer.INSTANCE), "DRILL");
 	}
 
 	/* ------------- WORKBENCH & INVENTORY ------------- */

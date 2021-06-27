@@ -116,10 +116,10 @@ public class Recipes extends RecipeProvider
 		{
 			IETags.MetalTags tags = IETags.getTagsFor(metal);
 
-			Item nugget = Metals.nuggets.get(metal);
-			Item ingot = Metals.ingots.get(metal);
-			Item plate = Metals.plates.get(metal);
-			Item dust = Metals.dusts.get(metal);
+			IItemProvider nugget = Metals.nuggets.get(metal);
+			IItemProvider ingot = Metals.ingots.get(metal);
+			IItemProvider plate = Metals.plates.get(metal);
+			IItemProvider dust = Metals.dusts.get(metal);
 			BlockEntry<Block> block = IEBlocks.Metals.storage.get(metal);
 			BlockEntry<IEBaseBlock> sheetMetal = IEBlocks.Metals.sheetmetal.get(metal);
 			if(!metal.isVanillaMetal())
@@ -387,9 +387,9 @@ public class Recipes extends RecipeProvider
 				.addInput(IETags.getTagsFor(EnumMetals.COPPER).plate)
 				.build(out, toRL("blueprint/circuit_board"));
 
-		Item[] molds = {Molds.moldPlate, Molds.moldGear, Molds.moldRod, Molds.moldBulletCasing, Molds.moldWire, Molds.moldPacking4, Molds.moldPacking9, Molds.moldUnpacking};
-		for(Item mold : molds)
-			BlueprintCraftingRecipeBuilder.builder("molds", mold)
+		IItemProvider[] molds = {Molds.moldPlate, Molds.moldGear, Molds.moldRod, Molds.moldBulletCasing, Molds.moldWire, Molds.moldPacking4, Molds.moldPacking9, Molds.moldUnpacking};
+		for(IItemProvider mold : molds)
+			BlueprintCraftingRecipeBuilder.builder("molds", mold.asItem())
 					.addInput(new IngredientWithSize(IETags.getTagsFor(EnumMetals.STEEL).plate, 3))
 					.addInput(Tools.wirecutter)
 					.build(out, toRL("blueprint/"+toPath(mold)));
@@ -472,35 +472,35 @@ public class Recipes extends RecipeProvider
 				.addInput(new IngredientWithSize(IETags.hopGraphiteIngot, 4))
 				.build(out, toRL("blueprint/electrode"));
 
-		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", Misc.bannerPatternHammer)
+		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", BannerPatterns.bannerPatternHammer)
 				.addInput(Items.PAPER)
 				.addInput(Tools.hammer)
 				.build(out, toRL("blueprint/banner_hammer"));
-		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", Misc.bannerPatternBevels)
+		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", BannerPatterns.bannerPatternBevels)
 				.addInput(Items.PAPER)
 				.addInput(IETags.plates)
 				.build(out, toRL("blueprint/banner_bevels"));
-		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", Misc.bannerPatternOrnate)
+		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", BannerPatterns.bannerPatternOrnate)
 				.addInput(Items.PAPER)
 				.addInput(IETags.getTagsFor(EnumMetals.SILVER).dust)
 				.build(out, toRL("blueprint/banner_ornate"));
-		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", Misc.bannerPatternTreatedWood)
+		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", BannerPatterns.bannerPatternTreatedWood)
 				.addInput(Items.PAPER)
 				.addInput(IETags.getItemTag(IETags.treatedWood))
 				.build(out, toRL("blueprint/banner_treatedwood"));
-		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", Misc.bannerPatternWindmill)
+		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", BannerPatterns.bannerPatternWindmill)
 				.addInput(Items.PAPER)
 				.addInput(WoodenDevices.windmill)
 				.build(out, toRL("blueprint/banner_windmill"));
-		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", Misc.bannerPatternWolfR)
+		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", BannerPatterns.bannerPatternWolfR)
 				.addInput(Items.PAPER)
 				.addInput(BulletHandler.getBulletItem(BulletItem.WOLFPACK))
 				.build(out, toRL("blueprint/banner_wolf_r"));
-		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", Misc.bannerPatternWolfL)
+		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", BannerPatterns.bannerPatternWolfL)
 				.addInput(Items.PAPER)
 				.addInput(BulletHandler.getBulletItem(BulletItem.WOLFPACK))
 				.build(out, toRL("blueprint/banner_wolf_l"));
-		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", Misc.bannerPatternWolf)
+		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", BannerPatterns.bannerPatternWolf)
 				.addInput(Items.PAPER)
 				.addInput(BulletHandler.getBulletItem(BulletItem.WOLFPACK))
 				.build(out, toRL("blueprint/banner_wolf"));
@@ -2699,7 +2699,7 @@ public class Recipes extends RecipeProvider
 				.addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot))
 				.build(out, toRL(toPath(Weapons.speedloader)));
 
-		ShapedRecipeBuilder.shapedRecipe(BulletHandler.emptyShell.getItem(), 5)
+		ShapedRecipeBuilder.shapedRecipe(BulletHandler.emptyShell, 5)
 				.patternLine("prp")
 				.patternLine("prp")
 				.patternLine(" c ")
@@ -2707,15 +2707,15 @@ public class Recipes extends RecipeProvider
 				.key('r', Tags.Items.DYES_RED)
 				.key('c', IETags.getTagsFor(EnumMetals.COPPER).plate)
 				.addCriterion("has_coppper_ingot", hasItem(IETags.getTagsFor(EnumMetals.COPPER).ingot))
-				.build(out, toRL(toPath(BulletHandler.emptyShell.getItem())));
+				.build(out, toRL(toPath(BulletHandler.emptyShell)));
 
-		ShapedRecipeBuilder.shapedRecipe(BulletHandler.emptyCasing.getItem(), 5)
+		ShapedRecipeBuilder.shapedRecipe(BulletHandler.emptyCasing, 5)
 				.patternLine("c c")
 				.patternLine("c c")
 				.patternLine(" c ")
 				.key('c', IETags.getTagsFor(EnumMetals.COPPER).plate)
 				.addCriterion("has_coppper_ingot", hasItem(IETags.getTagsFor(EnumMetals.COPPER).ingot))
-				.build(out, toRL(toPath(BulletHandler.emptyCasing.getItem())));
+				.build(out, toRL(toPath(BulletHandler.emptyCasing)));
 
 		BulletHandler.getBulletStack(BulletItem.FLARE);
 		TurnAndCopyRecipeBuilder.builder(BulletHandler.getBulletItem(BulletItem.FIREWORK))
@@ -2730,7 +2730,7 @@ public class Recipes extends RecipeProvider
 
 	private void recipesMisc(@Nonnull Consumer<IFinishedRecipe> out)
 	{
-		Item wireCoilCopper = Misc.wireCoils.get(WireType.COPPER);
+		IItemProvider wireCoilCopper = Misc.wireCoils.get(WireType.COPPER);
 		ShapedRecipeBuilder.shapedRecipe(wireCoilCopper, 4)
 				.patternLine(" w ")
 				.patternLine("wsw")
@@ -2739,7 +2739,7 @@ public class Recipes extends RecipeProvider
 				.key('s', Tags.Items.RODS_WOODEN)
 				.addCriterion("has_copper_ingot", hasItem(IETags.getTagsFor(EnumMetals.COPPER).ingot))
 				.build(out, toRL(toPath(wireCoilCopper)));
-		Item wireCoilElectrum = Misc.wireCoils.get(WireType.ELECTRUM);
+		IItemProvider wireCoilElectrum = Misc.wireCoils.get(WireType.ELECTRUM);
 		ShapedRecipeBuilder.shapedRecipe(wireCoilElectrum, 4)
 				.patternLine(" w ")
 				.patternLine("wsw")
@@ -2748,7 +2748,7 @@ public class Recipes extends RecipeProvider
 				.key('s', Tags.Items.RODS_WOODEN)
 				.addCriterion("has_electrum_ingot", hasItem(IETags.getTagsFor(EnumMetals.ELECTRUM).ingot))
 				.build(out, toRL(toPath(wireCoilElectrum)));
-		Item wireCoilSteel = Misc.wireCoils.get(WireType.STEEL);
+		IItemProvider wireCoilSteel = Misc.wireCoils.get(WireType.STEEL);
 		TurnAndCopyRecipeBuilder.builder(wireCoilSteel, 4)
 				.allowQuarterTurn()
 				.patternLine(" w ")
@@ -2760,7 +2760,7 @@ public class Recipes extends RecipeProvider
 				.addCriterion("has_steel_ingot", hasItem(IETags.getTagsFor(EnumMetals.STEEL).ingot))
 				.build(out, toRL(toPath(wireCoilSteel)));
 
-		Item wireCoilRope = Misc.wireCoils.get(WireType.STRUCTURE_ROPE);
+		IItemProvider wireCoilRope = Misc.wireCoils.get(WireType.STRUCTURE_ROPE);
 		ShapedRecipeBuilder.shapedRecipe(wireCoilRope, 4)
 				.patternLine(" w ")
 				.patternLine("wsw")
@@ -2769,7 +2769,7 @@ public class Recipes extends RecipeProvider
 				.key('s', Tags.Items.RODS_WOODEN)
 				.addCriterion("has_hemp_fiber", hasItem(Ingredients.hempFiber))
 				.build(out, toRL(toPath(wireCoilRope)));
-		Item wireCoilStructure = Misc.wireCoils.get(WireType.STRUCTURE_STEEL);
+		IItemProvider wireCoilStructure = Misc.wireCoils.get(WireType.STRUCTURE_STEEL);
 		ShapedRecipeBuilder.shapedRecipe(wireCoilStructure, 4)
 				.patternLine(" w ")
 				.patternLine("wsw")
@@ -2786,7 +2786,7 @@ public class Recipes extends RecipeProvider
 				makeIngredient(IETags.fabricHemp),
 				makeIngredient(Misc.wireCoils.get(WireType.ELECTRUM)),
 				makeIngredient(IETags.fabricHemp), out);
-		Item wireCoilRedstone = Misc.wireCoils.get(WireType.REDSTONE);
+		IItemProvider wireCoilRedstone = Misc.wireCoils.get(WireType.REDSTONE);
 		TurnAndCopyRecipeBuilder.builder(wireCoilRedstone, 4)
 				.allowQuarterTurn()
 				.patternLine(" w ")
@@ -2863,42 +2863,42 @@ public class Recipes extends RecipeProvider
 				.addCriterion("has_glowstone", hasItem(Tags.Items.DUSTS_GLOWSTONE))
 				.build(out, toRL(toPath(MetalDecoration.lantern)));
 
-		ShapedRecipeBuilder.shapedRecipe(Misc.cartWoodenCrate)
+		ShapedRecipeBuilder.shapedRecipe(Minecarts.cartWoodenCrate)
 				.patternLine("B")
 				.patternLine("C")
 				.key('B', WoodenDevices.crate)
 				.key('C', Items.MINECART)
 				.addCriterion("has_minecart", hasItem(Items.MINECART))
-				.build(out, toRL(toPath(Misc.cartWoodenCrate)));
-		ShapedRecipeBuilder.shapedRecipe(Misc.cartReinforcedCrate)
+				.build(out, toRL(toPath(Minecarts.cartWoodenCrate)));
+		ShapedRecipeBuilder.shapedRecipe(Minecarts.cartReinforcedCrate)
 				.patternLine("B")
 				.patternLine("C")
 				.key('B', WoodenDevices.reinforcedCrate)
 				.key('C', Items.MINECART)
 				.addCriterion("has_minecart", hasItem(Items.MINECART))
-				.build(out, toRL(toPath(Misc.cartReinforcedCrate)));
-		ShapedRecipeBuilder.shapedRecipe(Misc.cartWoodenBarrel)
+				.build(out, toRL(toPath(Minecarts.cartReinforcedCrate)));
+		ShapedRecipeBuilder.shapedRecipe(Minecarts.cartWoodenBarrel)
 				.patternLine("B")
 				.patternLine("C")
 				.key('B', WoodenDevices.woodenBarrel)
 				.key('C', Items.MINECART)
 				.addCriterion("has_minecart", hasItem(Items.MINECART))
-				.build(out, toRL(toPath(Misc.cartWoodenBarrel)));
-		ShapedRecipeBuilder.shapedRecipe(Misc.cartMetalBarrel)
+				.build(out, toRL(toPath(Minecarts.cartWoodenBarrel)));
+		ShapedRecipeBuilder.shapedRecipe(Minecarts.cartMetalBarrel)
 				.patternLine("B")
 				.patternLine("C")
 				.key('B', MetalDevices.barrel)
 				.key('C', Items.MINECART)
 				.addCriterion("has_minecart", hasItem(Items.MINECART))
-				.build(out, toRL(toPath(Misc.cartMetalBarrel)));
+				.build(out, toRL(toPath(Minecarts.cartMetalBarrel)));
 	}
 
-	private void addArmor(INamedTag<Item> input, Map<EquipmentSlotType, Item> items, String name, Consumer<IFinishedRecipe> out)
+	private void addArmor(INamedTag<Item> input, Map<EquipmentSlotType, ? extends IItemProvider> items, String name, Consumer<IFinishedRecipe> out)
 	{
-		Item head = items.get(EquipmentSlotType.HEAD);
-		Item chest = items.get(EquipmentSlotType.CHEST);
-		Item legs = items.get(EquipmentSlotType.LEGS);
-		Item feet = items.get(EquipmentSlotType.FEET);
+		IItemProvider head = items.get(EquipmentSlotType.HEAD);
+		IItemProvider chest = items.get(EquipmentSlotType.CHEST);
+		IItemProvider legs = items.get(EquipmentSlotType.LEGS);
+		IItemProvider feet = items.get(EquipmentSlotType.FEET);
 		ShapedRecipeBuilder.shapedRecipe(head)
 				.patternLine("xxx")
 				.patternLine("x x")

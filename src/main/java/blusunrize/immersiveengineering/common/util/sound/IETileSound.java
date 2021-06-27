@@ -171,8 +171,8 @@ public class IETileSound implements ITickableSound
 		{
 			ItemStack head = ClientUtils.mc().player.getItemStackFromSlot(EquipmentSlotType.HEAD);
 			ItemStack earmuffs = ItemStack.EMPTY;
-			if(!head.isEmpty()&&(head.getItem()==Misc.earmuffs||ItemNBTHelper.hasKey(head, Lib.NBT_Earmuffs)))
-				earmuffs = head.getItem()==Misc.earmuffs?head: ItemNBTHelper.getItemStack(head, Lib.NBT_Earmuffs);
+			if(!head.isEmpty()&&(head.getItem()==Misc.earmuffs.get()||ItemNBTHelper.hasKey(head, Lib.NBT_Earmuffs)))
+				earmuffs = head.getItem()==Misc.earmuffs.get()?head: ItemNBTHelper.getItemStack(head, Lib.NBT_Earmuffs);
 			else if(ModList.get().isLoaded("curios"))
 				earmuffs = CuriosCompatModule.getEarmuffs(ClientUtils.mc().player);
 

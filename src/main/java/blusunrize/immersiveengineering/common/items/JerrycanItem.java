@@ -42,7 +42,7 @@ public class JerrycanItem extends IEBaseItem
 
 	public JerrycanItem()
 	{
-		super("jerrycan", new Properties().maxStackSize(1));
+		super(new Properties().maxStackSize(1));
 	}
 
 	@Override

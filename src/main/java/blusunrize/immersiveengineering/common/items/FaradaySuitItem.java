@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.tool.IElectricEquipment;
-import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamageSource;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -28,7 +27,6 @@ import net.minecraft.util.SoundEvents;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Locale;
 import java.util.Map;
 
 public class FaradaySuitItem extends ArmorItem implements IElectricEquipment
@@ -38,9 +36,6 @@ public class FaradaySuitItem extends ArmorItem implements IElectricEquipment
 	public FaradaySuitItem(EquipmentSlotType type)
 	{
 		super(mat, type, new Properties().maxStackSize(1).group(ImmersiveEngineering.ITEM_GROUP));
-		String name = "armor_faraday_"+type.getName().toLowerCase(Locale.ENGLISH);
-		setRegistryName(ImmersiveEngineering.MODID, name);
-		IEContent.registeredIEItems.add(this);
 	}
 
 	@Override

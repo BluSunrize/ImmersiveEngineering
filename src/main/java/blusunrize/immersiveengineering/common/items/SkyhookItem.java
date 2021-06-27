@@ -49,7 +49,7 @@ public class SkyhookItem extends UpgradeableToolItem implements ITool
 {
 	public SkyhookItem()
 	{
-		super("skyhook", new Properties().maxStackSize(1), "SKYHOOK");
+		super(new Properties().maxStackSize(1), "SKYHOOK");
 	}
 
 	@Override

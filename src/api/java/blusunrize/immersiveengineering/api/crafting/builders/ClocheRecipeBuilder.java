@@ -29,7 +29,7 @@ public class ClocheRecipeBuilder extends IEFinishedRecipe<ClocheRecipeBuilder>
 		setMultipleResults(4);
 	}
 
-	public static ClocheRecipeBuilder builder(Item result)
+	public static ClocheRecipeBuilder builder(IItemProvider result)
 	{
 		return new ClocheRecipeBuilder().addResult(result);
 	}

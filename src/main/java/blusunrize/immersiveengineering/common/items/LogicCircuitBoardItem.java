@@ -14,7 +14,6 @@ import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -28,7 +27,7 @@ public class LogicCircuitBoardItem extends IEBaseItem
 {
 	public LogicCircuitBoardItem()
 	{
-		super("logic_circuit", new Properties().maxStackSize(1));
+		super(new Properties().maxStackSize(1));
 	}
 
 	@Nonnull
@@ -57,7 +56,7 @@ public class LogicCircuitBoardItem extends IEBaseItem
 
 	public static ItemStack buildCircuitBoard(LogicCircuitInstruction instruction)
 	{
-		ItemStack stack = new ItemStack(Misc.logicCircuitBoard);
+		ItemStack stack = new ItemStack(Misc.logicCircuitBoard.get());
 		stack.setTag(instruction.serialize());
 		return stack;
 	}

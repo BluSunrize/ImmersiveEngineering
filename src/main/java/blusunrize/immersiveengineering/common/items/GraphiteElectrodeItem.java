@@ -24,7 +24,7 @@ public class GraphiteElectrodeItem extends IEBaseItem
 {
 	public GraphiteElectrodeItem()
 	{
-		super("graphite_electrode", new Properties().maxStackSize(16));
+		super(new Properties().maxStackSize(16));
 	}
 
 	@Override

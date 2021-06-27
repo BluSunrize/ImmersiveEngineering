@@ -67,7 +67,7 @@ public class JEIHelper implements IModPlugin
 	@Override
 	public void registerItemSubtypes(ISubtypeRegistration subtypeRegistry)
 	{
-		subtypeRegistry.registerSubtypeInterpreter(Misc.blueprint, EngineersBlueprintItem::getCategory);
+		subtypeRegistry.registerSubtypeInterpreter(Misc.blueprint.asItem(), EngineersBlueprintItem::getCategory);
 	}
 
 	@Override

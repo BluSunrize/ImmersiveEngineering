@@ -31,7 +31,7 @@ public class ToolboxItem extends InternalStorageItem
 
 	public ToolboxItem()
 	{
-		super("toolbox", new Properties().maxStackSize(1));
+		super(new Properties().maxStackSize(1));
 		ToolboxHandler.addToolType(stack -> IEServerConfig.TOOLS.toolbox_tools.get().contains(stack.getItem().getRegistryName().toString()));
 		ToolboxHandler.addFoodType(stack -> IEServerConfig.TOOLS.toolbox_foods.get().contains(stack.getItem().getRegistryName().toString()));
 		ToolboxHandler.addWiringType((stack, world) -> IEServerConfig.TOOLS.toolbox_wiring.get().contains(stack.getItem().getRegistryName().toString()));

@@ -54,7 +54,7 @@ public class SurveyToolsItem extends IEBaseItem
 
 	public SurveyToolsItem()
 	{
-		super("survey_tools", new Properties().maxStackSize(1).defaultMaxDamage(300));
+		super(new Properties().maxStackSize(1).defaultMaxDamage(300));
 		// earthen materials
 		CAN_USE_ON.add((world, pos) -> {
 			BlockState state = world.getBlockState(pos);

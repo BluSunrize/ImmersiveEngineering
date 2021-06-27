@@ -51,7 +51,7 @@ public class CoresampleItem extends IEBaseItem
 {
 	public CoresampleItem()
 	{
-		super("coresample", new Properties().group(ImmersiveEngineering.ITEM_GROUP));
+		super(new Properties().group(ImmersiveEngineering.ITEM_GROUP));
 	}
 
 	@Override

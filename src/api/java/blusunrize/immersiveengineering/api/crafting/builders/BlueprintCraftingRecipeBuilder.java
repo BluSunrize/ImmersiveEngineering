@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tags.ITag;
+import net.minecraft.util.IItemProvider;
 
 public class BlueprintCraftingRecipeBuilder extends IEFinishedRecipe<BlueprintCraftingRecipeBuilder>
 {
@@ -23,7 +24,7 @@ public class BlueprintCraftingRecipeBuilder extends IEFinishedRecipe<BlueprintCr
 		setUseInputArray(6);
 	}
 
-	public static BlueprintCraftingRecipeBuilder builder(String category, Item result)
+	public static BlueprintCraftingRecipeBuilder builder(String category, IItemProvider result)
 	{
 		return new BlueprintCraftingRecipeBuilder().addWriter(jsonObject -> jsonObject.addProperty("category", category)).addResult(result);
 	}

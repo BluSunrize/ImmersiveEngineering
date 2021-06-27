@@ -32,7 +32,7 @@ public class EngineersBlueprintItem extends IEBaseItem
 {
 	public EngineersBlueprintItem()
 	{
-		super("blueprint", new Properties().maxStackSize(1));
+		super(new Properties().maxStackSize(1));
 	}
 
 	@Nonnull

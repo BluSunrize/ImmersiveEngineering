@@ -33,6 +33,11 @@ public class ReinforcedCrateMinecartEntity extends CrateMinecartEntity
 		TYPE.setRegistryName(ImmersiveEngineering.MODID, "cart_reinforcedcrate");
 	}
 
+	public ReinforcedCrateMinecartEntity(World world, double x, double y, double z)
+	{
+		super(TYPE, world, x, y, z);
+	}
+
 	public ReinforcedCrateMinecartEntity(EntityType<?> type, World world, double x, double y, double z)
 	{
 		super(type, world, x, y, z);
@@ -52,7 +57,7 @@ public class ReinforcedCrateMinecartEntity extends CrateMinecartEntity
 	@Override
 	public ItemStack getCartItem()
 	{
-		return new ItemStack(IEItems.Misc.cartReinforcedCrate);
+		return new ItemStack(IEItems.Minecarts.cartReinforcedCrate.get());
 	}
 
 	@Nonnull

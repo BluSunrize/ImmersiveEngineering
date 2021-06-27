@@ -18,7 +18,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.EntityRayTraceResult;
@@ -42,8 +44,8 @@ import java.util.function.Function;
 public class BulletHandler
 {
 	public static final SetRestrictedField<Function<IBullet, Item>> GET_BULLET_ITEM = SetRestrictedField.common();
-	public static ItemStack emptyCasing = ItemStack.EMPTY;
-	public static ItemStack emptyShell = ItemStack.EMPTY;
+	public static IItemProvider emptyCasing = Items.AIR;
+	public static IItemProvider emptyShell = Items.AIR;
 
 	private final static BiMap<ResourceLocation, IBullet> REGISTRY = HashBiMap.create();
 

@@ -59,7 +59,7 @@ public class DrillheadItem extends IEBaseItem implements IDrillHead
 
 	public DrillheadItem(DrillHeadPerm perms)
 	{
-		super("drillhead_"+perms.name, new Properties().maxStackSize(1));
+		super(new Properties().maxStackSize(1));
 		this.perms = perms;
 	}
 
@@ -244,7 +244,7 @@ public class DrillheadItem extends IEBaseItem implements IDrillHead
 					block = state.getBlock();
 					float h = state.getPlayerRelativeBlockHardness(player, world, pos);
 					boolean canHarvest = block.canHarvestBlock(world.getBlockState(pos), world, pos, player);
-					boolean drillMat = ((DrillItem)Tools.drill).isEffective(ItemStack.EMPTY, state.getMaterial());
+					boolean drillMat = Tools.drill.get().isEffective(ItemStack.EMPTY, state.getMaterial());
 					boolean hardness = h > maxHardness;
 					if(canHarvest&&drillMat&&hardness)
 						b.add(pos);

@@ -314,8 +314,8 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		{
 			ItemStack head = ClientUtils.mc().player.getItemStackFromSlot(EquipmentSlotType.HEAD);
 			ItemStack earmuffs = ItemStack.EMPTY;
-			if(!head.isEmpty()&&(head.getItem()==Misc.earmuffs||ItemNBTHelper.hasKey(head, Lib.NBT_Earmuffs)))
-				earmuffs = head.getItem()==Misc.earmuffs?head: ItemNBTHelper.getItemStack(head, Lib.NBT_Earmuffs);
+			if(!head.isEmpty()&&(head.getItem()==Misc.earmuffs.get()||ItemNBTHelper.hasKey(head, Lib.NBT_Earmuffs)))
+				earmuffs = head.getItem()==Misc.earmuffs.get()?head: ItemNBTHelper.getItemStack(head, Lib.NBT_Earmuffs);
 			else if(ModList.get().isLoaded("curios"))
 				earmuffs = CuriosCompatModule.getEarmuffs(ClientUtils.mc().player);
 
@@ -541,7 +541,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 									true, transform.getLast().getMatrix(), buffer, false, 0, 0xf000f0);
 						}
 					}
-					else if(equipped.getItem()==Misc.fluorescentTube)
+					else if(equipped.getItem()==Misc.fluorescentTube.get())
 					{
 						int color = FluorescentTubeItem.getRGBInt(equipped, 1);
 						String s = I18n.format(Lib.DESC_INFO+"colour")+"#"+FontUtils.hexColorString(color);
@@ -562,7 +562,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						ItemOverlayUtils.renderChemthrowerOverlay(buffer, transform, scaledWidth, scaledHeight, player, hand, equipped);
 					else if(equipped.getItem() instanceof IEShieldItem)
 						ItemOverlayUtils.renderShieldOverlay(buffer, transform, scaledWidth, scaledHeight, player, hand, equipped);
-					if(equipped.getItem()==Tools.voltmeter)
+					if(equipped.getItem()==Tools.voltmeter.get())
 					{
 						RayTraceResult rrt = ClientUtils.mc().objectMouseOver;
 						IFluxReceiver receiver = null;

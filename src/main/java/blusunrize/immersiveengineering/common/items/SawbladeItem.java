@@ -19,9 +19,9 @@ public class SawbladeItem extends IEBaseItem
 	private final float sawbladeSpeed;
 	private final float sawbladeDamage;
 
-	public SawbladeItem(String name, int maxDamage, float sawbladeSpeed, float sawbladeDamage)
+	public SawbladeItem(int maxDamage, float sawbladeSpeed, float sawbladeDamage)
 	{
-		super(name, new Properties().defaultMaxDamage(maxDamage).setNoRepair());
+		super(new Properties().defaultMaxDamage(maxDamage).setNoRepair());
 		this.sawbladeSpeed = sawbladeSpeed;
 		this.sawbladeDamage = sawbladeDamage;
 		BuzzsawItem.SAWBLADES.add(this);

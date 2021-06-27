@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.items;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.EnumMetals;
 import blusunrize.immersiveengineering.api.IETags;
-import blusunrize.immersiveengineering.common.IEContent;
 import net.minecraft.entity.Entity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ArmorItem;
@@ -22,7 +21,6 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 
 import javax.annotation.Nonnull;
-import java.util.Locale;
 
 public class SteelArmorItem extends ArmorItem
 {
@@ -31,9 +29,6 @@ public class SteelArmorItem extends ArmorItem
 	public SteelArmorItem(EquipmentSlotType type)
 	{
 		super(mat, type, new Properties().maxStackSize(1).group(ImmersiveEngineering.ITEM_GROUP));
-		String name = "armor_steel_"+type.getName().toLowerCase(Locale.ENGLISH);
-		setRegistryName(ImmersiveEngineering.MODID, name);
-		IEContent.registeredIEItems.add(this);
 	}
 
 	@Override

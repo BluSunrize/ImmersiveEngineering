@@ -28,9 +28,9 @@ public class RockcutterItem extends SawbladeItem
 		enchants.add(tag);
 	}
 
-	public RockcutterItem(String name, int maxDamage, float sawbladeSpeed, float sawbladeDamage)
+	public RockcutterItem(int maxDamage, float sawbladeSpeed, float sawbladeDamage)
 	{
-		super(name, maxDamage, sawbladeSpeed, sawbladeDamage);
+		super(maxDamage, sawbladeSpeed, sawbladeDamage);
 	}
 
 	@Override

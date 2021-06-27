@@ -9,11 +9,9 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.util.GenericDeferredWork;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.ComposterBlock;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemGroup;
@@ -24,18 +22,11 @@ import net.minecraft.world.IBlockReader;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.PlantType;
 
-import java.util.function.Supplier;
-
 public class IESeedItem extends BlockItem implements IPlantable
 {
-	private final Supplier<? extends Block> cropBlock;
-
-	public IESeedItem(Supplier<? extends Block> cropBlock)
+	public IESeedItem(Block cropBlock)
 	{
-		super(Blocks.AIR, new Properties().group(ImmersiveEngineering.ITEM_GROUP));
-		this.cropBlock = cropBlock;
-		setRegistryName(ImmersiveEngineering.MODID, "seed");
-		IEContent.registeredIEItems.add(this);
+		super(cropBlock, new Properties().group(ImmersiveEngineering.ITEM_GROUP));
 
 		// Register for composting
 		GenericDeferredWork.enqueue(() -> ComposterBlock.CHANCES.putIfAbsent(this, 0.3f));
@@ -64,11 +55,5 @@ public class IESeedItem extends BlockItem implements IPlantable
 	public BlockState getPlant(IBlockReader world, BlockPos pos)
 	{
 		return this.getBlock().getDefaultState();
-	}
-
-	@Override
-	public Block getBlock()
-	{
-		return cropBlock.get();
 	}
 }

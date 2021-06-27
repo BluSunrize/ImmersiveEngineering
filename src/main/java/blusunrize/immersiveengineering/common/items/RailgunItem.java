@@ -72,7 +72,7 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 {
 	public RailgunItem()
 	{
-		super("railgun", new Properties().maxStackSize(1).setISTER(() -> () -> IEOBJItemRenderer.INSTANCE), "RAILGUN");
+		super(new Properties().maxStackSize(1).setISTER(() -> () -> IEOBJItemRenderer.INSTANCE), "RAILGUN");
 	}
 
 	@Override

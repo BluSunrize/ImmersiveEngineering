@@ -43,7 +43,7 @@ public class VoltmeterItem extends IEBaseItem implements ITool
 {
 	public VoltmeterItem()
 	{
-		super("voltmeter", new Properties().maxStackSize(1));
+		super(new Properties().maxStackSize(1));
 	}
 
 	@Override

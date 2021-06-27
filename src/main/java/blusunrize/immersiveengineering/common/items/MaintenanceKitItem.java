@@ -22,7 +22,7 @@ public class MaintenanceKitItem extends IEBaseItem
 {
 	public MaintenanceKitItem()
 	{
-		super("maintenance_kit", new Properties().maxStackSize(1).defaultMaxDamage(50));
+		super(new Properties().maxStackSize(1).defaultMaxDamage(50));
 	}
 
 	@Nonnull

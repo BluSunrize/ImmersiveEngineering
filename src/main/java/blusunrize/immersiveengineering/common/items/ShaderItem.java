@@ -58,7 +58,7 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, ITextureOverr
 {
 	public ShaderItem()
 	{
-		super("shader", new Properties().maxStackSize(1));
+		super(new Properties().maxStackSize(1));
 	}
 
 	@Override

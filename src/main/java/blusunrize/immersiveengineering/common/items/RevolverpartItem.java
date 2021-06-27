@@ -24,7 +24,7 @@ public class RevolverpartItem extends IEBaseItem
 {
 	public RevolverpartItem(String name)
 	{
-		super(name, new Properties().maxStackSize(1));
+		super(new Properties().maxStackSize(1));
 	}
 
 	@Nonnull

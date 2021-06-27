@@ -14,9 +14,9 @@ import net.minecraft.util.NonNullList;
 
 public class FakeIconItem extends IEBaseItem
 {
-	public FakeIconItem(String name)
+	public FakeIconItem()
 	{
-		super("fake_icon_"+name, new Properties().maxStackSize(1));
+		super(new Properties().maxStackSize(1));
 	}
 
 	@Override

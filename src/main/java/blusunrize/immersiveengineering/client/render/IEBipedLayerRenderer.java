@@ -48,27 +48,27 @@ public class IEBipedLayerRenderer<E extends LivingEntity, M extends BipedModel<E
 	{
 		ItemStack head = living.getItemStackFromSlot(EquipmentSlotType.HEAD);
 		ItemStack earmuffs = ItemStack.EMPTY;
-		if(!head.isEmpty()&&(head.getItem()==Misc.earmuffs||ItemNBTHelper.hasKey(head, Lib.NBT_Earmuffs)))
-			earmuffs = head.getItem()==Misc.earmuffs?head: ItemNBTHelper.getItemStack(head, Lib.NBT_Earmuffs);
+		if(!head.isEmpty()&&(head.getItem()==Misc.earmuffs.get()||ItemNBTHelper.hasKey(head, Lib.NBT_Earmuffs)))
+			earmuffs = head.getItem()==Misc.earmuffs.get()?head: ItemNBTHelper.getItemStack(head, Lib.NBT_Earmuffs);
 		else if(ModList.get().isLoaded("curios"))
 			earmuffs = CuriosCompatModule.getEarmuffs(living);
 
 		if(!earmuffs.isEmpty())
 		{
-			BipedModel<E> model = Misc.earmuffs.getArmorModel(living, earmuffs, EquipmentSlotType.HEAD, null);
+			BipedModel<E> model = Misc.earmuffs.get().getArmorModel(living, earmuffs, EquipmentSlotType.HEAD, null);
 			model.setRotationAngles(living, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-			RenderType type = model.getRenderType(new ResourceLocation(Misc.earmuffs.getArmorTexture(earmuffs, living, EquipmentSlotType.HEAD, "overlay")));
+			RenderType type = model.getRenderType(new ResourceLocation(Misc.earmuffs.get().getArmorTexture(earmuffs, living, EquipmentSlotType.HEAD, "overlay")));
 			model.render(matrixStackIn, bufferIn.getBuffer(type), packedLightIn, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
 			int colour = ((IColouredItem)earmuffs.getItem()).getColourForIEItem(earmuffs, 0);
-			type = model.getRenderType(new ResourceLocation(Misc.earmuffs.getArmorTexture(earmuffs, living, EquipmentSlotType.HEAD, null)));
+			type = model.getRenderType(new ResourceLocation(Misc.earmuffs.get().getArmorTexture(earmuffs, living, EquipmentSlotType.HEAD, null)));
 			model.render(matrixStackIn, bufferIn.getBuffer(type), packedLightIn, OverlayTexture.NO_OVERLAY,
 					(colour >> 16&255)/255f, (colour >> 8&255)/255f, (colour&255)/255f, 1F);
 		}
 
 		ItemStack chest = living.getItemStackFromSlot(EquipmentSlotType.CHEST);
-		if(!chest.isEmpty()&&(chest.getItem()==Misc.powerpack||ItemNBTHelper.hasKey(chest, Lib.NBT_Powerpack)))
+		if(!chest.isEmpty()&&(chest.getItem()==Misc.powerpack.asItem()||ItemNBTHelper.hasKey(chest, Lib.NBT_Powerpack)))
 		{
-			ItemStack powerpack = chest.getItem()==Misc.powerpack?chest: ItemNBTHelper.getItemStack(chest, Lib.NBT_Powerpack);
+			ItemStack powerpack = chest.getItem()==Misc.powerpack.asItem()?chest: ItemNBTHelper.getItemStack(chest, Lib.NBT_Powerpack);
 			addWornPowerpack(living, powerpack);
 		}
 		else if(ModList.get().isLoaded("curios"))
@@ -99,10 +99,10 @@ public class IEBipedLayerRenderer<E extends LivingEntity, M extends BipedModel<E
 	{
 		if(!powerpack.isEmpty())
 		{
-			BipedModel<E> model = Misc.powerpack.getArmorModel(living, powerpack, EquipmentSlotType.CHEST, null);
+			BipedModel<E> model = Misc.powerpack.asItem().getArmorModel(living, powerpack, EquipmentSlotType.CHEST, null);
 			model.setRotationAngles(living, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 			RenderType type = model.getRenderType(
-					new ResourceLocation(Misc.powerpack.getArmorTexture(powerpack, living, EquipmentSlotType.CHEST, null))
+					new ResourceLocation(Misc.powerpack.asItem().getArmorTexture(powerpack, living, EquipmentSlotType.CHEST, null))
 			);
 			model.render(matrixStackIn, bufferIn.getBuffer(type), packedLightIn, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
 		}

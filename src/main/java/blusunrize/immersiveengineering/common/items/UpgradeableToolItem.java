@@ -28,9 +28,9 @@ public abstract class UpgradeableToolItem extends InternalStorageItem implements
 {
 	private String upgradeType;
 
-	public UpgradeableToolItem(String name, Item.Properties props, String upgradeType)
+	public UpgradeableToolItem(Item.Properties props, String upgradeType)
 	{
-		super(name, props);
+		super(props);
 		this.upgradeType = upgradeType;
 	}
 

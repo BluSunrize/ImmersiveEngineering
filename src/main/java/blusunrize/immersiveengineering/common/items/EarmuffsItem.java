@@ -42,7 +42,7 @@ public class EarmuffsItem extends IEBaseItem implements IDyeableArmorItem, IConf
 {
 	public EarmuffsItem()
 	{
-		super("earmuffs");
+		super();
 	}
 
 	@Override

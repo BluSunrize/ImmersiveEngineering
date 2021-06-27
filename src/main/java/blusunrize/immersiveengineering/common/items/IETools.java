@@ -9,46 +9,35 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.common.IEContent;
 import net.minecraft.item.*;
+
+import java.util.function.Supplier;
 
 public class IETools
 {
-	public static ShovelItem createShovel(IItemTier tier, String name)
+	public static Supplier<ShovelItem> createShovel(IItemTier tier)
 	{
-		ShovelItem ret = new ShovelItem(tier, 1.5f, -3.0f, toolProperties());
-		return init(ret, name);
+		return () -> new ShovelItem(tier, 1.5f, -3.0f, toolProperties());
 	}
 
-	public static AxeItem createAxe(IItemTier tier, String name)
+	public static Supplier<AxeItem> createAxe(IItemTier tier)
 	{
-		AxeItem ret = new AxeItem(tier, 5.5f, -3.1f, toolProperties());
-		return init(ret, name);
+		return () -> new AxeItem(tier, 5.5f, -3.1f, toolProperties());
 	}
 
-	public static PickaxeItem createPickaxe(IItemTier tier, String name)
+	public static Supplier<PickaxeItem> createPickaxe(IItemTier tier)
 	{
-		PickaxeItem ret = new PickaxeItem(tier, 1, -2.8f, toolProperties());
-		return init(ret, name);
+		return () -> new PickaxeItem(tier, 1, -2.8f, toolProperties());
 	}
 
-	public static SwordItem createSword(IItemTier tier, String name)
+	public static Supplier<SwordItem> createSword(IItemTier tier)
 	{
-		SwordItem ret = new SwordItem(tier, 3, -2.4F, toolProperties());
-		return init(ret, name);
+		return () -> new SwordItem(tier, 3, -2.4F, toolProperties());
 	}
 
-	public static HoeItem createHoe(IItemTier tier, String name)
+	public static Supplier<HoeItem> createHoe(IItemTier tier)
 	{
-		HoeItem ret = new HoeItem(tier, (int)-tier.getAttackDamage(), 0.0F, toolProperties());
-		return init(ret, name);
-	}
-
-	private static <I extends Item> I init(I i, String name)
-	{
-		i.setRegistryName(ImmersiveEngineering.MODID, name);
-		IEContent.registeredIEItems.add(i);
-		return i;
+		return () -> new HoeItem(tier, (int)-tier.getAttackDamage(), 0.0F, toolProperties());
 	}
 
 	private static Item.Properties toolProperties()

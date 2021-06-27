@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.items;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.common.entities.IEMinecartEntity;
+import blusunrize.immersiveengineering.common.entities.IEMinecartEntity.MinecartConstructor;
 import blusunrize.immersiveengineering.common.util.GenericDeferredWork;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.block.AbstractRailBlock;
@@ -38,15 +39,21 @@ import net.minecraftforge.fluids.FluidStack;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public abstract class IEMinecartItem extends IEBaseItem
+public class IEMinecartItem extends IEBaseItem
 {
-	public IEMinecartItem(String name)
+	private final MinecartConstructor constructor;
+
+	public IEMinecartItem(MinecartConstructor constructor)
 	{
-		super("minecart_"+name, new Properties().maxStackSize(1));
+		super(new Properties().maxStackSize(1));
+		this.constructor = constructor;
 		GenericDeferredWork.registerDispenseBehavior(this, MINECART_DISPENSER_BEHAVIOR);
 	}
 
-	public abstract IEMinecartEntity createCart(World world, double x, double y, double z, ItemStack stack);
+	public final IEMinecartEntity<?> createCart(World world, double x, double y, double z, ItemStack stack)
+	{
+		return constructor.make(world, x, y, z);
+	}
 
 	@Override
 	public ActionResultType onItemUse(ItemUseContext context)

@@ -125,7 +125,7 @@ public class PowerpackRecipe implements ICraftingRecipe
 	{
 		if(!(stack.getItem() instanceof ArmorItem)||((ArmorItem)stack.getItem()).getEquipmentSlot()!=EquipmentSlotType.CHEST)
 			return false;
-		if(stack.getItem()==Misc.powerpack)
+		if(stack.getItem()==Misc.powerpack.asItem())
 			return false;
 		String regName = stack.getItem().getRegistryName().toString();
 		for(String s : IEServerConfig.TOOLS.powerpack_whitelist.get())

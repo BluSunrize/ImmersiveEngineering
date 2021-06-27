@@ -217,7 +217,7 @@ public class WindmillTileEntity extends IEBaseTileEntity implements ITickableTil
 	@Override
 	public boolean interact(Direction side, PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
-		if(sails < 8&&heldItem.getItem()==Ingredients.windmillSail)
+		if(sails < 8&&heldItem.getItem()==Ingredients.windmillSail.asItem())
 		{
 			this.sails++;
 			if(!player.abilities.isCreativeMode)

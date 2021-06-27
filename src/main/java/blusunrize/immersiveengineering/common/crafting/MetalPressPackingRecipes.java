@@ -38,20 +38,20 @@ public class MetalPressPackingRecipes
 	public static MetalPressRecipe get2x2PackingContainer()
 	{
 		return new MetalPressPackingRecipe(
-				new ResourceLocation(Lib.MODID, "metalpress/packing2x2"), Molds.moldPacking4, 2
+				new ResourceLocation(Lib.MODID, "metalpress/packing2x2"), Molds.moldPacking4.asItem(), 2
 		);
 	}
 
 	public static MetalPressRecipe get3x3PackingContainer()
 	{
 		return new MetalPressPackingRecipe(
-				new ResourceLocation(Lib.MODID, "metalpress/packing3x3"), Molds.moldPacking9, 3
+				new ResourceLocation(Lib.MODID, "metalpress/packing3x3"), Molds.moldPacking9.asItem(), 3
 		);
 	}
 
 	public static MetalPressRecipe getUnpackingContainer()
 	{
-		return new MetalPressContainerRecipe(new ResourceLocation(Lib.MODID, "metalpress/unpacking"), Molds.moldUnpacking)
+		return new MetalPressContainerRecipe(new ResourceLocation(Lib.MODID, "metalpress/unpacking"), Molds.moldUnpacking.asItem())
 		{
 			@Override
 			protected MetalPressRecipe getRecipeFunction(ItemStack input, World world)
@@ -143,7 +143,7 @@ public class MetalPressPackingRecipes
 			ItemStack output = originalRecipe.getRight();
 			ResourceLocation originalId = originalRecipe.getLeft().getId();
 			String id = "metalpress/packing_"+originalId.getNamespace()+".."+originalId.getPath();
-			return new RecipeDelegate(id, output, input, big?Molds.moldPacking9: Molds.moldPacking4);
+			return new RecipeDelegate(id, output, input, (big?Molds.moldPacking9: Molds.moldPacking4).get());
 		}
 
 		public static RecipeDelegate getUnpacking(Pair<ICraftingRecipe, ItemStack> originalRecipe, ItemStack input)
@@ -151,7 +151,7 @@ public class MetalPressPackingRecipes
 			ItemStack output = originalRecipe.getRight();
 			ResourceLocation originalId = originalRecipe.getLeft().getId();
 			String id = "metalpress/unpacking_"+originalId.getNamespace()+".."+originalId.getPath();
-			return new RecipeDelegate(id, output, input, Molds.moldUnpacking);
+			return new RecipeDelegate(id, output, input, Molds.moldUnpacking.get());
 		}
 
 		@Override

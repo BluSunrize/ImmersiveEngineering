@@ -16,17 +16,16 @@ import blusunrize.immersiveengineering.client.models.ModelConveyor.ConveyorLoade
 import blusunrize.immersiveengineering.client.models.ModelCoresample.CoresampleLoader;
 import blusunrize.immersiveengineering.client.models.PotionBucketModel.Loader;
 import blusunrize.immersiveengineering.client.models.connection.FeedthroughLoader;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.Metals;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
 import blusunrize.immersiveengineering.common.blocks.metal.ChuteBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.CoverType;
 import blusunrize.immersiveengineering.common.fluids.IEFluids;
-import blusunrize.immersiveengineering.common.fluids.PotionFluid;
+import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.items.IEItems;
-import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
-import blusunrize.immersiveengineering.common.items.IEItems.Molds;
-import blusunrize.immersiveengineering.common.items.IEItems.Tools;
-import blusunrize.immersiveengineering.common.items.IEItems.Weapons;
+import blusunrize.immersiveengineering.common.items.IEItems.Misc;
+import blusunrize.immersiveengineering.common.items.IEItems.*;
 import blusunrize.immersiveengineering.data.blockstates.MultiblockStates;
 import blusunrize.immersiveengineering.data.models.IEOBJBuilder;
 import blusunrize.immersiveengineering.data.models.SpecialModelBuilder;
@@ -208,10 +207,10 @@ public class ItemModels extends TRSRItemModelProvider
 
 	private void createItemModels()
 	{
-		addItemModels("metal_", IEItems.Metals.ingots.values().stream().filter(i -> ImmersiveEngineering.MODID.equals(i.getRegistryName().getNamespace())).toArray(Item[]::new));
-		addItemModels("metal_", IEItems.Metals.nuggets.values().stream().filter(i -> ImmersiveEngineering.MODID.equals(i.getRegistryName().getNamespace())).toArray(Item[]::new));
-		addItemModels("metal_", IEItems.Metals.dusts.values().toArray(new Item[IEItems.Metals.ingots.size()]));
-		addItemModels("metal_", IEItems.Metals.plates.values().toArray(new Item[IEItems.Metals.ingots.size()]));
+		addItemModels("metal_", IEItems.Metals.ingots.values().stream().filter(i -> ImmersiveEngineering.MODID.equals(i.getId().getNamespace())).toArray(IItemProvider[]::new));
+		addItemModels("metal_", IEItems.Metals.nuggets.values().stream().filter(i -> ImmersiveEngineering.MODID.equals(i.getId().getNamespace())).toArray(IItemProvider[]::new));
+		addItemModels("metal_", IEItems.Metals.dusts.values().toArray(new IItemProvider[0]));
+		addItemModels("metal_", IEItems.Metals.plates.values().toArray(new IItemProvider[0]));
 		for(Item bag : IEItems.Misc.shaderBag.values())
 			addItemModel("shader_bag", bag);
 
@@ -228,13 +227,13 @@ public class ItemModels extends TRSRItemModelProvider
 				Tools.manual, Tools.steelPick, Tools.steelShovel, Tools.steelAxe, Tools.steelHoe, Tools.steelSword
 		);
 		addItemModels("", Tools.surveyTools);
-		addItemModels("", IEItems.Misc.wireCoils.values().toArray(new Item[0]));
+		addItemModels("", IEItems.Misc.wireCoils.values().toArray(new IItemProvider[0]));
 		addItemModels("", IEItems.Misc.graphiteElectrode);
-		addItemModels("", IEItems.Misc.toolUpgrades.values().toArray(new Item[0]));
+		addItemModels("", IEItems.Misc.toolUpgrades.values().toArray(new IItemProvider[0]));
 		addItemModels("", Molds.moldPlate, Molds.moldGear, Molds.moldRod, Molds.moldBulletCasing, Molds.moldWire, Molds.moldPacking4, Molds.moldPacking9, Molds.moldUnpacking);
 		addItemModels("bullet_", Ingredients.emptyCasing, Ingredients.emptyShell);
-		for(Entry<IBullet, Item> bullet : Weapons.bullets.entrySet())
-			addLayeredItemModel(bullet.getValue(), bullet.getKey().getTextures());
+		for(Entry<IBullet, ItemRegObject<BulletItem>> bullet : Weapons.bullets.entrySet())
+			addLayeredItemModel(bullet.getValue().asItem(), bullet.getKey().getTextures());
 		addItemModels("", IEItems.Misc.faradaySuit.values());
 		addItemModels("", IEItems.Tools.steelArmor.values());
 		addItemModel("blueprint", IEItems.Misc.blueprint);
@@ -243,16 +242,16 @@ public class ItemModels extends TRSRItemModelProvider
 		addItemModel("drillhead_steel", Tools.drillheadSteel);
 		addItemModels("", Tools.sawblade, Tools.rockcutter);
 		addItemModels("", IEItems.Misc.maintenanceKit);
-		addItemModels("", IEItems.Misc.cartWoodenCrate, IEItems.Misc.cartReinforcedCrate, IEItems.Misc.cartWoodenBarrel, IEItems.Misc.cartMetalBarrel);
+		addItemModels("", IEItems.Minecarts.cartWoodenCrate, IEItems.Minecarts.cartReinforcedCrate, IEItems.Minecarts.cartWoodenBarrel, IEItems.Minecarts.cartMetalBarrel);
 		addItemModels("", IEItems.Misc.logicCircuitBoard);
-		addItemModel("banner_pattern", IEItems.Misc.bannerPatternHammer);
-		addItemModel("banner_pattern", IEItems.Misc.bannerPatternBevels);
-		addItemModel("banner_pattern", IEItems.Misc.bannerPatternOrnate);
-		addItemModel("banner_pattern", IEItems.Misc.bannerPatternTreatedWood);
-		addItemModel("banner_pattern", IEItems.Misc.bannerPatternWindmill);
-		addItemModel("banner_pattern", IEItems.Misc.bannerPatternWolfR);
-		addItemModel("banner_pattern", IEItems.Misc.bannerPatternWolfL);
-		addItemModel("banner_pattern", IEItems.Misc.bannerPatternWolf);
+		addItemModel("banner_pattern", IEItems.BannerPatterns.bannerPatternHammer);
+		addItemModel("banner_pattern", IEItems.BannerPatterns.bannerPatternBevels);
+		addItemModel("banner_pattern", IEItems.BannerPatterns.bannerPatternOrnate);
+		addItemModel("banner_pattern", IEItems.BannerPatterns.bannerPatternTreatedWood);
+		addItemModel("banner_pattern", IEItems.BannerPatterns.bannerPatternWindmill);
+		addItemModel("banner_pattern", IEItems.BannerPatterns.bannerPatternWolfR);
+		addItemModel("banner_pattern", IEItems.BannerPatterns.bannerPatternWolfL);
+		addItemModel("banner_pattern", IEItems.BannerPatterns.bannerPatternWolf);
 		addItemModels("", IEItems.Misc.iconBirthday, IEItems.Misc.iconLucky, IEItems.Misc.iconDrillbreak, IEItems.Misc.iconRavenholm);
 
 		obj(Tools.voltmeter, rl("item/voltmeter.obj"))
@@ -279,7 +278,7 @@ public class ItemModels extends TRSRItemModelProvider
 				.transforms(modLoc("item/chemthrower"));
 
 		IEFluids.ALL_ENTRIES.forEach(this::createBucket);
-		withExistingParent(name(PotionFluid.bucket), forgeLoc("item/bucket"))
+		withExistingParent(name(Misc.potionBucket), forgeLoc("item/bucket"))
 				.customLoader(SpecialModelBuilder.forLoader(Loader.LOADER_NAME))
 				.end();
 
@@ -427,33 +426,33 @@ public class ItemModels extends TRSRItemModelProvider
 
 	}
 
-	private void addItemModels(String texturePrefix, Item... items)
+	private void addItemModels(String texturePrefix, IItemProvider... items)
 	{
 		addItemModels(texturePrefix, Arrays.asList(items));
 	}
 
-	private void addItemModels(String texturePrefix, ResourceLocation parent, Item... items)
+	private void addItemModels(String texturePrefix, ResourceLocation parent, IItemProvider... items)
 	{
 		addItemModels(texturePrefix, parent, Arrays.asList(items));
 	}
 
-	private void addItemModels(String texturePrefix, Collection<Item> items)
+	private void addItemModels(String texturePrefix, Collection<? extends IItemProvider> items)
 	{
 		addItemModels(texturePrefix, mcLoc("item/generated"), items);
 	}
 
-	private void addItemModels(String texturePrefix, ResourceLocation parent, Collection<Item> items)
+	private void addItemModels(String texturePrefix, ResourceLocation parent, Collection<? extends IItemProvider> items)
 	{
-		for(Item item : items)
-			addItemModel(texturePrefix==null?null: (texturePrefix+item.getRegistryName().getPath()), item, parent);
+		for(IItemProvider item : items)
+			addItemModel(texturePrefix==null?null: (texturePrefix+item.asItem().getRegistryName().getPath()), item, parent);
 	}
 
-	private void addItemModel(String texture, Item item)
+	private void addItemModel(String texture, IItemProvider item)
 	{
 		addItemModel(texture, item, mcLoc("item/generated"));
 	}
 
-	private void addItemModel(String texture, Item item, ResourceLocation parent)
+	private void addItemModel(String texture, IItemProvider item, ResourceLocation parent)
 	{
 		String path = name(item);
 		String textureLoc = texture==null?path: ("item/"+texture);

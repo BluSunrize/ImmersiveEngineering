@@ -35,7 +35,7 @@ public class RevolverCycleRecipe extends SpecialRecipe
 			ItemStack stackInSlot = inv.getStackInSlot(i);
 			if(!stackInSlot.isEmpty())
 			{
-				if(revolver.isEmpty()&&stackInSlot.getItem()==Weapons.revolver)
+				if(revolver.isEmpty()&&stackInSlot.getItem()==Weapons.revolver.asItem())
 					revolver = stackInSlot;
 				else
 					return false;
@@ -54,7 +54,7 @@ public class RevolverCycleRecipe extends SpecialRecipe
 			ItemStack stackInSlot = inv.getStackInSlot(i);
 			if(!stackInSlot.isEmpty())
 			{
-				if(revolver.isEmpty()&&stackInSlot.getItem()==Weapons.revolver)
+				if(revolver.isEmpty()&&stackInSlot.getItem()==Weapons.revolver.asItem())
 					revolver = stackInSlot.copy();
 				else
 					return ItemStack.EMPTY;

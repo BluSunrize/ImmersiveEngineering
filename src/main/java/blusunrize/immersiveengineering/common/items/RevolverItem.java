@@ -94,7 +94,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 {
 	public RevolverItem()
 	{
-		super("revolver", withIEOBJRender().maxStackSize(1).setISTER(() -> () -> IEOBJItemRenderer.INSTANCE), "REVOLVER");
+		super(withIEOBJRender().maxStackSize(1).setISTER(() -> () -> IEOBJItemRenderer.INSTANCE), "REVOLVER");
 	}
 
 	public static UUID speedModUUID = Utils.generateNewUUID();

@@ -44,6 +44,7 @@ import net.minecraft.item.*;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.resources.DataPackRegistries;
+import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -153,7 +154,7 @@ public class ImmersiveEngineering
 		ArcRecyclingChecker.allowEnumeratedItemsForRecycling(() -> Stream.of(
 				Molds.moldPlate, Molds.moldGear, Molds.moldRod, Molds.moldBulletCasing, Molds.moldWire,
 				Molds.moldPacking4, Molds.moldPacking9, Molds.moldUnpacking
-		));
+		).map(IItemProvider::asItem));
 		// Blocks, Plates, Rods, Wires, Gears, Scaffoldings, Fences
 		ArcRecyclingChecker.allowItemTagForRecycling(IETags.plates);
 		ArcRecyclingChecker.allowPrefixedTagForRecycling("rods/");

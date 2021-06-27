@@ -61,9 +61,9 @@ public abstract class DieselToolItem extends UpgradeableToolItem
 {
 	protected static final int CAPACITY = 2*FluidAttributes.BUCKET_VOLUME;
 
-	public DieselToolItem(String name, Item.Properties props, String upgradeType)
+	public DieselToolItem(Item.Properties props, String upgradeType)
 	{
-		super(name, props, upgradeType);
+		super(props, upgradeType);
 	}
 
 	@Override

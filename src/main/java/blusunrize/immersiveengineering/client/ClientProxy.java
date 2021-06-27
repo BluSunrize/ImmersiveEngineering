@@ -44,7 +44,6 @@ import blusunrize.immersiveengineering.client.render.tile.*;
 import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
 import blusunrize.immersiveengineering.client.utils.VertexBufferHolder;
 import blusunrize.immersiveengineering.common.CommonProxy;
-import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IColouredBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTile;
@@ -58,6 +57,7 @@ import blusunrize.immersiveengineering.common.entities.*;
 import blusunrize.immersiveengineering.common.gui.GuiHandler;
 import blusunrize.immersiveengineering.common.items.DrillheadItem.DrillHeadPerm;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
+import blusunrize.immersiveengineering.common.items.IEItems;
 import blusunrize.immersiveengineering.common.items.RevolverItem;
 import blusunrize.immersiveengineering.common.items.RockcutterItem;
 import blusunrize.immersiveengineering.common.util.IELogger;
@@ -115,6 +115,7 @@ import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
@@ -269,9 +270,12 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.bindTileEntityRenderer(IETileTypes.SHADER_BANNER.get(), ShaderBannerRenderer::new);
 
 		/*Colours*/
-		for(Item item : IEContent.registeredIEItems)
+		for(RegistryObject<Item> itemRO : IEItems.REGISTER.getEntries())
+		{
+			Item item = itemRO.get();
 			if(item instanceof IColouredItem&&((IColouredItem)item).hasCustomItemColours())
 				mc().getItemColors().register(IEDefaultColourHandlers.INSTANCE, item);
+		}
 		for(BlockEntry<?> blockEntry : BlockEntry.ALL_ENTRIES)
 		{
 			Block block = blockEntry.get();

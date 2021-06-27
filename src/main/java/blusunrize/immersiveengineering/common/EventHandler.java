@@ -317,13 +317,13 @@ public class EventHandler
 	{
 		ItemStack current = event.getPlayer().getHeldItem(Hand.MAIN_HAND);
 		//Stop the combustion drill from working underwater
-		if(!current.isEmpty()&&current.getItem()==Tools.drill&&event.getPlayer().areEyesInFluid(FluidTags.WATER))
-			if(((DrillItem)Tools.drill).getUpgrades(current).getBoolean("waterproof"))
+		if(!current.isEmpty()&&current.getItem()==Tools.drill.get()&&event.getPlayer().areEyesInFluid(FluidTags.WATER))
+			if(Tools.drill.get().getUpgrades(current).getBoolean("waterproof"))
 				event.setNewSpeed(event.getOriginalSpeed()*5);
 			else
 				event.setCanceled(true);
 		if(event.getState().getBlock()==MetalDevices.razorWire.get())
-			if(current.getItem()!=Tools.wirecutter)
+			if(current.getItem()!=Tools.wirecutter.get())
 			{
 				event.setCanceled(true);
 				RazorWireTileEntity.applyDamage(event.getEntityLiving());

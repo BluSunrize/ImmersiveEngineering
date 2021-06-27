@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.gui.GuiHandler;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import net.minecraft.entity.player.PlayerEntity;
@@ -30,26 +29,22 @@ import javax.annotation.Nullable;
 
 public class IEBaseItem extends Item implements IColouredItem
 {
-	public String itemName;
 	private int burnTime = -1;
 	private boolean isHidden = false;
 
-	public IEBaseItem(String name)
+	public IEBaseItem()
 	{
-		this(name, new Properties());
+		this(new Properties());
 	}
 
-	public IEBaseItem(String name, Properties props)
+	public IEBaseItem(Properties props)
 	{
-		this(name, props, ImmersiveEngineering.ITEM_GROUP);
+		this(props, ImmersiveEngineering.ITEM_GROUP);
 	}
 
-	public IEBaseItem(String name, Properties props, ItemGroup group)
+	public IEBaseItem(Properties props, ItemGroup group)
 	{
 		super(props.group(group));
-		this.itemName = name;
-		setRegistryName(ImmersiveEngineering.MODID, name);
-		IEContent.registeredIEItems.add(this);
 	}
 
 	public IEBaseItem setBurnTime(int burnTime)

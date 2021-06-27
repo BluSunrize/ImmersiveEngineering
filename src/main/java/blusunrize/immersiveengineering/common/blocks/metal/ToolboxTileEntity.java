@@ -143,7 +143,7 @@ public class ToolboxTileEntity extends IEBaseTileEntity implements IStateBasedDi
 	public List<ItemStack> getTileDrops(LootContext context)
 	{
 		ItemStack stack = new ItemStack(Tools.toolbox);
-		((InternalStorageItem)Tools.toolbox).setContainedItems(stack, inventory);
+		Tools.toolbox.get().setContainedItems(stack, inventory);
 		if(this.name!=null)
 			stack.setDisplayName(this.name);
 		if(enchantments!=null)

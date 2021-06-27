@@ -26,7 +26,7 @@ public class ManualItem extends IEBaseItem
 {
 	public ManualItem()
 	{
-		super("manual", new Properties().maxStackSize(1));
+		super(new Properties().maxStackSize(1));
 	}
 
 

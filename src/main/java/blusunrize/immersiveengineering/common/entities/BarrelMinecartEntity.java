@@ -43,6 +43,11 @@ public class BarrelMinecartEntity extends IEMinecartEntity<WoodenBarrelTileEntit
 		TYPE.setRegistryName(ImmersiveEngineering.MODID, "cart_woodenbarrel");
 	}
 
+	public BarrelMinecartEntity(World world, double x, double y, double z)
+	{
+		this(TYPE, world, x, y, z);
+	}
+
 	public BarrelMinecartEntity(EntityType<?> type, World world, double x, double y, double z)
 	{
 		super(type, world, x, y, z);
@@ -56,7 +61,7 @@ public class BarrelMinecartEntity extends IEMinecartEntity<WoodenBarrelTileEntit
 	@Override
 	public ItemStack getCartItem()
 	{
-		return new ItemStack(IEItems.Misc.cartWoodenBarrel);
+		return new ItemStack(IEItems.Minecarts.cartWoodenBarrel.get());
 	}
 
 	@Override

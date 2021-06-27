@@ -25,9 +25,9 @@ import java.util.Optional;
 public abstract class InternalStorageItem extends IEBaseItem
 {
 
-	public InternalStorageItem(String name, Properties props)
+	public InternalStorageItem(Properties props)
 	{
-		super(name, props);
+		super(props);
 	}
 
 	public abstract int getSlotCount();

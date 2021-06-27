@@ -151,4 +151,9 @@ public abstract class IEMinecartEntity<T extends IEBaseTileEntity> extends Abstr
 	{
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
+
+	public interface MinecartConstructor
+	{
+		IEMinecartEntity<?> make(World world, double x, double y, double z);
+	}
 }

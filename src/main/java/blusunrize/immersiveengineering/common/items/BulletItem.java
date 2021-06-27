@@ -72,17 +72,8 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 
 	public BulletItem(IBullet type)
 	{
-		super(nameFor(type), new Properties());
+		super();
 		this.type = type;
-	}
-
-	private static String nameFor(IBullet bullet)
-	{
-		ResourceLocation name = BulletHandler.findRegistryName(bullet);
-		if(name.getNamespace().equals(ImmersiveEngineering.MODID))
-			return name.getPath();
-		else
-			return name.getNamespace()+"_"+name.getPath();
 	}
 
 	public static void initBullets()
@@ -90,13 +81,13 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 		BulletHandler.registerBullet(CASULL, new BulletHandler.DamagingBullet(
 				(projectile, shooter, hit) -> IEDamageSources.causeCasullDamage((RevolvershotEntity)projectile, shooter),
 				IEServerConfig.TOOLS.bulletDamage_Casull,
-				() -> BulletHandler.emptyCasing,
+				() -> BulletHandler.emptyCasing.asItem().getDefaultInstance(),
 				new ResourceLocation("immersiveengineering:item/bullet_casull")));
 
 		BulletHandler.registerBullet(ARMOR_PIERCING, new BulletHandler.DamagingBullet(
 				(projectile, shooter, hit) -> IEDamageSources.causePiercingDamage((RevolvershotEntity)projectile, shooter),
 				IEServerConfig.TOOLS.bulletDamage_AP,
-				() -> BulletHandler.emptyCasing,
+				() -> BulletHandler.emptyCasing.asItem().getDefaultInstance(),
 				new ResourceLocation("immersiveengineering:item/bullet_armor_piercing")));
 
 		BulletHandler.registerBullet(BUCKSHOT, new BulletHandler.DamagingBullet(
@@ -104,7 +95,7 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 				IEServerConfig.TOOLS.bulletDamage_Buck,
 				true,
 				false,
-				() -> BulletHandler.emptyShell,
+				() -> BulletHandler.emptyShell.asItem().getDefaultInstance(),
 				new ResourceLocation("immersiveengineering:item/bullet_buckshot"))
 		{
 			@Override
@@ -114,7 +105,7 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 			}
 		});
 
-		BulletHandler.registerBullet(HIGH_EXPLOSIVE, new BulletHandler.DamagingBullet(null, 0, () -> BulletHandler.emptyCasing, new ResourceLocation("immersiveengineering:item/bullet_he"))
+		BulletHandler.registerBullet(HIGH_EXPLOSIVE, new BulletHandler.DamagingBullet(null, 0, () -> BulletHandler.emptyCasing.asItem().getDefaultInstance(), new ResourceLocation("immersiveengineering:item/bullet_he"))
 		{
 			@Override
 			public void onHitTarget(World world, RayTraceResult target, UUID shooterId, Entity projectile, boolean headshot)
@@ -146,7 +137,7 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 		BulletHandler.registerBullet(SILVER, new BulletHandler.DamagingBullet(
 				(projectile, shooter, hit) -> IEDamageSources.causeSilverDamage((RevolvershotEntity)projectile, shooter),
 				IEServerConfig.TOOLS.bulletDamage_Silver,
-				() -> BulletHandler.emptyCasing,
+				() -> BulletHandler.emptyCasing.asItem().getDefaultInstance(),
 				new ResourceLocation("immersiveengineering:item/bullet_silver"))
 		{
 			@Override
@@ -164,7 +155,7 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 				IEServerConfig.TOOLS.bulletDamage_Dragon,
 				true,
 				true,
-				() -> BulletHandler.emptyShell,
+				() -> BulletHandler.emptyShell.asItem().getDefaultInstance(),
 				new ResourceLocation("immersiveengineering:item/bullet_dragons_breath"))
 		{
 			@Override
@@ -252,7 +243,7 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 		{
 			super((projectile, shooter, hit) -> IEDamageSources.causePotionDamage((RevolvershotEntity)projectile, shooter),
 					IEServerConfig.TOOLS.bulletDamage_Potion,
-					() -> BulletHandler.emptyCasing,
+					() -> BulletHandler.emptyCasing.asItem().getDefaultInstance(),
 					new ResourceLocation("immersiveengineering:item/bullet_potion"), new ResourceLocation("immersiveengineering:item/bullet_potion_layer"));
 		}
 
@@ -390,7 +381,7 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 		@Override
 		public ItemStack getCasing(ItemStack stack)
 		{
-			return BulletHandler.emptyShell;
+			return BulletHandler.emptyShell.asItem().getDefaultInstance();
 		}
 
 		@Override
@@ -460,7 +451,7 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 		@Override
 		public ItemStack getCasing(ItemStack stack)
 		{
-			return BulletHandler.emptyShell;
+			return BulletHandler.emptyShell.asItem().getDefaultInstance();
 		}
 
 		@Override
@@ -494,7 +485,7 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 		{
 			super((projectile, shooter, hit) -> IEDamageSources.causeHomingDamage((RevolvershotEntity)projectile, shooter),
 					damage,
-					() -> BulletHandler.emptyCasing,
+					() -> BulletHandler.emptyCasing.asItem().getDefaultInstance(),
 					textures);
 		}
 
@@ -521,7 +512,7 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 		{
 			super((projectile, shooter, hit) -> IEDamageSources.causeWolfpackDamage((RevolvershotEntity)projectile, shooter),
 					IEServerConfig.TOOLS.bulletDamage_Wolfpack,
-					() -> BulletHandler.emptyShell,
+					() -> BulletHandler.emptyShell.asItem().getDefaultInstance(),
 					new ResourceLocation("immersiveengineering:item/bullet_wolfpack"));
 		}
 
@@ -570,7 +561,7 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 		{
 			super((projectile, shooter, hit) -> IEDamageSources.causeWolfpackDamage((RevolvershotEntity)projectile, shooter),
 					IEServerConfig.TOOLS.bulletDamage_WolfpackPart,
-					() -> BulletHandler.emptyCasing,
+					() -> BulletHandler.emptyCasing.asItem().getDefaultInstance(),
 					new ResourceLocation("immersiveengineering:item/bullet_wolfpack"));
 		}
 
