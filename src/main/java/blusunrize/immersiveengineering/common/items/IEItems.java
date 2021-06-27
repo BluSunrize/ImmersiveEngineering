@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.items;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.EnumMetals;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.api.wires.WireType;
@@ -282,8 +283,7 @@ public final class IEItems
 		public static ItemRegObject<EngineersBlueprintItem> blueprint = register("blueprint", EngineersBlueprintItem::new);
 		public static ItemRegObject<SkyhookItem> skyhook = register("skyhook", SkyhookItem::new);
 		public static ItemRegObject<ShaderItem> shader = register("shader", ShaderItem::new);
-		//TODO
-		public static Map<Rarity, Item> shaderBag = new EnumMap<>(Rarity.class);
+		public static Map<Rarity, ItemRegObject<ShaderBagItem>> shaderBag = new EnumMap<>(Rarity.class);
 		public static ItemRegObject<EarmuffsItem> earmuffs = register("earmuffs", EarmuffsItem::new);
 		public static ItemRegObject<CoresampleItem> coresample = register("coresample", CoresampleItem::new);
 		public static ItemRegObject<GraphiteElectrodeItem> graphiteElectrode = register("graphite_electrode", GraphiteElectrodeItem::new);
@@ -321,6 +321,14 @@ public final class IEItems
 					IEItems.Misc.faradaySuit.put(slot, register(
 							"armor_faraday_"+slot.getName().toLowerCase(Locale.ENGLISH), () -> new FaradaySuitItem(slot)
 					));
+		}
+
+		public static void registerShaderBags()
+		{
+			for(Rarity r : ShaderRegistry.rarityWeightMap.keySet())
+				IEItems.Misc.shaderBag.put(r, register(
+						"shader_bag_"+r.name().toLowerCase(Locale.US).replace(':', '_'), () -> new ShaderBagItem(r)
+				));
 		}
 	}
 

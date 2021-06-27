@@ -636,7 +636,7 @@ public final class IEBlocks
 				//TODO lantern was vanilla BlockItem?
 			else if(entry!=Misc.fakeLight&&entry!=Misc.pottedHemp&&entry!=StoneDecoration.coresample&&
 					entry!=MetalDevices.toolbox&&entry!=Cloth.shaderBanner&&entry!=Cloth.shaderBannerWall&&
-					entry!=Misc.hempPlant&&!IEFluids.ALL_FLUID_BLOCKS.contains(entry))
+					entry!=Misc.hempPlant&&entry!=Connectors.postTransformer&&!IEFluids.ALL_FLUID_BLOCKS.contains(entry))
 				IEItems.REGISTER.register(entry.getId().getPath(), () -> new BlockItemIE(entry.get()));
 	}
 

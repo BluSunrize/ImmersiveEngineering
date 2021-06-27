@@ -20,6 +20,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.tags.ITag;
+import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.tuple.Triple;
 
@@ -441,11 +442,11 @@ public class ShaderRegistry
 	}
 
 	public static Item itemShader;
-	public static Map<Rarity, Item> itemShaderBag;
+	public static Map<Rarity, ? extends IItemProvider> itemShaderBag;
 	/**
 	 * List of example items for shader manual entries
 	 */
-	public static List<ItemStack> itemExamples = new ArrayList();
+	public static List<ItemStack> itemExamples = new ArrayList<>();
 
 	public static void compileWeight()
 	{

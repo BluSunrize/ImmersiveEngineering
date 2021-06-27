@@ -92,6 +92,7 @@ import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
@@ -104,7 +105,6 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 import static blusunrize.immersiveengineering.api.tool.assembler.AssemblerHandler.defaultAdapter;
@@ -170,16 +170,10 @@ public class IEContent
 		populateAPI();
 	}
 
-	@SubscribeEvent
+	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public static void registerItems(RegistryEvent.Register<Item> event)
 	{
-		for(Rarity r : ShaderRegistry.rarityWeightMap.keySet())
-		{
-			ShaderBagItem item = new ShaderBagItem(r);
-			item.setRegistryName("shader_bag_"+r.name().toLowerCase(Locale.US).replace(':', '_'));
-			event.getRegistry().register(item);
-			IEItems.Misc.shaderBag.put(r, item);
-		}
+		IEItems.Misc.registerShaderBags();
 	}
 
 	@SubscribeEvent

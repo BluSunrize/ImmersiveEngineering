@@ -301,9 +301,9 @@ public class Villages
 				/* Outfitter
 				 * Sells Shaderbags
 				 */
-				Item bag_common = IEItems.Misc.shaderBag.get(Rarity.COMMON);
-				Item bag_uncommon = IEItems.Misc.shaderBag.get(Rarity.UNCOMMON);
-				Item bag_rare = IEItems.Misc.shaderBag.get(Rarity.RARE);
+				IItemProvider bag_common = IEItems.Misc.shaderBag.get(Rarity.COMMON);
+				IItemProvider bag_uncommon = IEItems.Misc.shaderBag.get(Rarity.UNCOMMON);
+				IItemProvider bag_rare = IEItems.Misc.shaderBag.get(Rarity.RARE);
 
 				trades.get(1).add(new ItemsForEmerald(bag_common, new PriceInterval(8, 16), 24, 1, 0.2f));
 				trades.get(2).add(new ItemsForEmerald(bag_uncommon, new PriceInterval(12, 20), 24, 5, 0.2f));

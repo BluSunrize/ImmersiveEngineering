@@ -211,7 +211,7 @@ public class ItemModels extends TRSRItemModelProvider
 		addItemModels("metal_", IEItems.Metals.nuggets.values().stream().filter(i -> ImmersiveEngineering.MODID.equals(i.getId().getNamespace())).toArray(IItemProvider[]::new));
 		addItemModels("metal_", IEItems.Metals.dusts.values().toArray(new IItemProvider[0]));
 		addItemModels("metal_", IEItems.Metals.plates.values().toArray(new IItemProvider[0]));
-		for(Item bag : IEItems.Misc.shaderBag.values())
+		for(IItemProvider bag : IEItems.Misc.shaderBag.values())
 			addItemModel("shader_bag", bag);
 
 		addItemModels("material_", Ingredients.stickTreated, Ingredients.stickIron, Ingredients.stickSteel, Ingredients.stickAluminum,
