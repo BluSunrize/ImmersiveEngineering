@@ -504,9 +504,13 @@ public final class IEBlocks
 		{
 			Preconditions.checkState(CONVEYORS.isEmpty());
 			for(ResourceLocation rl : ConveyorHandler.classRegistry.keySet())
-				CONVEYORS.put(rl, new BlockEntry<>(
+			{
+				BlockEntry<ConveyorBlock> entry = new BlockEntry<>(
 						ConveyorHandler.getRegistryNameFor(rl).getPath(), ConveyorBlock.PROPERTIES, p -> new ConveyorBlock(rl, p)
-				));
+				);
+				CONVEYORS.put(rl, entry);
+				IEItems.REGISTER.register(entry.getId().getPath(), () -> new BlockItemIE(entry.get()));
+			}
 		}
 	}
 
