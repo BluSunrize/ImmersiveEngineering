@@ -123,7 +123,7 @@ public class ChemthrowerEffects
 					shot.remove();
 				world.setBlockState(pos, StoneDecoration.concreteSprayed.getDefaultState());
 				for(LivingEntity living : world.getEntitiesWithinAABB(LivingEntity.class, aabb))
-					living.addPotionEffect(new EffectInstance(IEPotions.concreteFeet, Integer.MAX_VALUE));
+					living.addPotionEffect(new EffectInstance(IEPotions.concreteFeet.get(), Integer.MAX_VALUE));
 			}
 		});
 
@@ -161,9 +161,9 @@ public class ChemthrowerEffects
 			}
 		});
 
-		ChemthrowerHandler.registerEffect(fluidCreosote, new ChemthrowerEffect_Potion(null, 0, IEPotions.flammable, 140, 0));
+		ChemthrowerHandler.registerEffect(fluidCreosote, new ChemthrowerEffect_Potion(null, 0, IEPotions.flammable.get(), 140, 0));
 		ChemthrowerHandler.registerFlammable(fluidCreosote);
-		ChemthrowerHandler.registerEffect(fluidBiodiesel, new ChemthrowerEffect_Potion(null, 0, IEPotions.flammable, 140, 1));
+		ChemthrowerHandler.registerEffect(fluidBiodiesel, new ChemthrowerEffect_Potion(null, 0, IEPotions.flammable.get(), 140, 1));
 		ChemthrowerHandler.registerFlammable(fluidBiodiesel);
 		ChemthrowerHandler.registerFlammable(fluidEthanol);
 		/*TODO

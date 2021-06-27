@@ -273,16 +273,16 @@ public class EventHandler
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public void onLivingHurt(LivingHurtEvent event)
 	{
-		if(event.getSource().isFireDamage()&&event.getEntityLiving().getActivePotionEffect(IEPotions.flammable)!=null)
+		if(event.getSource().isFireDamage()&&event.getEntityLiving().getActivePotionEffect(IEPotions.flammable.get())!=null)
 		{
-			int amp = event.getEntityLiving().getActivePotionEffect(IEPotions.flammable).getAmplifier();
+			int amp = event.getEntityLiving().getActivePotionEffect(IEPotions.flammable.get()).getAmplifier();
 			float mod = 1.5f+((amp*amp)*.5f);
 			event.setAmount(event.getAmount()*mod);
 		}
 		if(("flux".equals(event.getSource().getDamageType())||IEDamageSources.razorShock.equals(event.getSource())||
-				event.getSource() instanceof ElectricDamageSource)&&event.getEntityLiving().getActivePotionEffect(IEPotions.conductive)!=null)
+				event.getSource() instanceof ElectricDamageSource)&&event.getEntityLiving().getActivePotionEffect(IEPotions.conductive.get())!=null)
 		{
-			int amp = event.getEntityLiving().getActivePotionEffect(IEPotions.conductive).getAmplifier();
+			int amp = event.getEntityLiving().getActivePotionEffect(IEPotions.conductive.get()).getAmplifier();
 			float mod = 1.5f+((amp*amp)*.5f);
 			event.setAmount(event.getAmount()*mod);
 		}
@@ -294,9 +294,9 @@ public class EventHandler
 	public void onLivingJump(LivingJumpEvent event)
 	{
 		Vector3d motion = event.getEntity().getMotion();
-		if(event.getEntityLiving().getActivePotionEffect(IEPotions.sticky)!=null)
-			motion = motion.subtract(0, (event.getEntityLiving().getActivePotionEffect(IEPotions.sticky).getAmplifier()+1)*0.3F, 0);
-		else if(event.getEntityLiving().getActivePotionEffect(IEPotions.concreteFeet)!=null)
+		if(event.getEntityLiving().getActivePotionEffect(IEPotions.sticky.get())!=null)
+			motion = motion.subtract(0, (event.getEntityLiving().getActivePotionEffect(IEPotions.sticky.get()).getAmplifier()+1)*0.3F, 0);
+		else if(event.getEntityLiving().getActivePotionEffect(IEPotions.concreteFeet.get())!=null)
 			motion = Vector3d.ZERO;
 		event.getEntity().setMotion(motion);
 	}

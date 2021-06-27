@@ -655,9 +655,9 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	public void onFogUpdate(EntityViewRenderEvent.RenderFogEvent event)
 	{
 		Entity e = event.getInfo().getRenderViewEntity();
-		if(e instanceof LivingEntity&&((LivingEntity)e).isPotionActive(IEPotions.flashed))
+		if(e instanceof LivingEntity&&((LivingEntity)e).isPotionActive(IEPotions.flashed.get()))
 		{
-			EffectInstance effect = ((LivingEntity)e).getActivePotionEffect(IEPotions.flashed);
+			EffectInstance effect = ((LivingEntity)e).getActivePotionEffect(IEPotions.flashed.get());
 			int timeLeft = effect.getDuration();
 			float saturation = Math.max(0.25f, 1-timeLeft/(float)(80+40*effect.getAmplifier()));//Total Time =  4s + 2s per amplifier
 
@@ -676,7 +676,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	public void onFogColourUpdate(EntityViewRenderEvent.FogColors event)
 	{
 		Entity e = event.getInfo().getRenderViewEntity();
-		if(e instanceof LivingEntity&&((LivingEntity)e).isPotionActive(IEPotions.flashed))
+		if(e instanceof LivingEntity&&((LivingEntity)e).isPotionActive(IEPotions.flashed.get()))
 		{
 			event.setRed(1);
 			event.setGreen(1);
@@ -702,7 +702,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		}
 
 		// Concrete feet slow you, but shouldn't break FoV
-		if(player.getActivePotionEffect(IEPotions.concreteFeet)!=null)
+		if(player.getActivePotionEffect(IEPotions.concreteFeet.get())!=null)
 			event.setNewfov(1);
 	}
 

@@ -36,7 +36,7 @@ public class SpawnInterdictionHandler
 	@SubscribeEvent
 	public static void onEnderTeleport(EnderTeleportEvent event)
 	{
-		if(shouldCancel(event.getEntity())||event.getEntityLiving().getActivePotionEffect(IEPotions.stunned)!=null)
+		if(shouldCancel(event.getEntity())||event.getEntityLiving().getActivePotionEffect(IEPotions.stunned.get())!=null)
 			event.setCanceled(true);
 	}
 

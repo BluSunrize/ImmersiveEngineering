@@ -172,7 +172,7 @@ public class IEShieldItem extends UpgradeableToolItem implements IIEEnergyItem, 
 			for(LivingEntity t : targets)
 				if(!player.equals(t))
 				{
-					t.addPotionEffect(new EffectInstance(IEPotions.flashed, 100, 1));
+					t.addPotionEffect(new EffectInstance(IEPotions.flashed.get(), 100, 1));
 					if(t instanceof MobEntity)
 						((MobEntity)t).setAttackTarget(null);
 				}

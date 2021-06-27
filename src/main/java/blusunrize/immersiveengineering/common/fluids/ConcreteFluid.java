@@ -85,7 +85,7 @@ public class ConcreteFluid extends IEFluid
 				solidBlock = StoneDecoration.concrete;
 			world.setBlockState(pos, solidBlock.get().getDefaultState());
 			for(LivingEntity living : world.getEntitiesWithinAABB(LivingEntity.class, new AxisAlignedBB(pos, pos.add(1, 1, 1))))
-				living.addPotionEffect(new EffectInstance(IEPotions.concreteFeet, Integer.MAX_VALUE));
+				living.addPotionEffect(new EffectInstance(IEPotions.concreteFeet.get(), Integer.MAX_VALUE));
 		}
 		else if(world.getBlockState(pos).getBlock()==entry.getBlock())
 		{

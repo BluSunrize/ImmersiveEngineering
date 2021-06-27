@@ -8,10 +8,11 @@
 
 package blusunrize.immersiveengineering.common.util;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEApi;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.StoneDecoration;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -24,8 +25,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.EffectType;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Objects;
@@ -33,65 +35,62 @@ import java.util.Set;
 
 public class IEPotions
 {
-	public static Effect flammable;
-	public static Effect slippery;
-	public static Effect conductive;
-	public static Effect sticky;
-	public static Effect stunned;
-	public static Effect concreteFeet;
-	public static Effect flashed;
+	public static final DeferredRegister<Effect> REGISTER = DeferredRegister.create(ForgeRegistries.POTIONS, Lib.MODID);
 
-	public static void init()
+	public static RegistryObject<Effect> flammable = REGISTER.register(
+			"flammable", () -> new IEPotion(EffectType.HARMFUL, 0x8f3f1f, 0, false, 0, true, true)
+	);
+	public static RegistryObject<Effect> slippery = REGISTER.register(
+			"slippery", () -> new IEPotion(EffectType.HARMFUL, 0x171003, 0, false, 1, true, true)
+	);
+	public static RegistryObject<Effect> conductive = REGISTER.register(
+			"conductive", () -> new IEPotion(EffectType.HARMFUL, 0x690000, 0, false, 2, true, true)
+	);
+	public static RegistryObject<Effect> sticky = REGISTER.register(
+			"sticky", () -> new IEPotion(EffectType.HARMFUL, 0x9c6800, 0, false, 3, true, true)
+					.addAttributesModifier(Attributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -0.5, Operation.MULTIPLY_TOTAL)
+	);
+	public static RegistryObject<Effect> stunned = REGISTER.register(
+			"stunned", () -> new IEPotion(EffectType.HARMFUL, 0x624a98, 0, false, 4, true, true)
+	);
+	public static RegistryObject<Effect> concreteFeet = REGISTER.register(
+			"concrete_feet", () -> new IEPotion(EffectType.HARMFUL, 0x624a98, 0, false, 5, true, true)
+					.addAttributesModifier(Attributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -2D, Operation.MULTIPLY_TOTAL)
+	);
+	public static RegistryObject<Effect> flashed = REGISTER.register(
+			"flashed", () -> new IEPotion(EffectType.HARMFUL, 0x624a98, 0, false, 6, true, true)
+					.addAttributesModifier(Attributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -0.15, Operation.MULTIPLY_TOTAL)
+	);
+
+	static
 	{
-		flammable = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "flammable"), EffectType.HARMFUL,
-				0x8f3f1f, 0, false, 0, true, true);
-		slippery = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "slippery"), EffectType.HARMFUL,
-				0x171003, 0, false, 1, true, true);
-		conductive = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "conductive"), EffectType.HARMFUL,
-				0x690000, 0, false, 2, true, true);
-		sticky = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "sticky"), EffectType.HARMFUL,
-				0x9c6800, 0, false, 3, true, true)
-				.addAttributesModifier(Attributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -0.5, Operation.MULTIPLY_TOTAL);
-		stunned = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "stunned"), EffectType.HARMFUL,
-				0x624a98, 0, false, 4, true, true);
-		concreteFeet = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "concrete_feet"), EffectType.HARMFUL,
-				0x624a98, 0, false, 5, true, true)
-				.addAttributesModifier(Attributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -2D, Operation.MULTIPLY_TOTAL);
-		flashed = new IEPotion(new ResourceLocation(ImmersiveEngineering.MODID, "flashed"), EffectType.HARMFUL,
-				0x624a98, 0, false, 6, true, true)
-				.addAttributesModifier(Attributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -0.15, Operation.MULTIPLY_TOTAL);
-
-		IEApi.potions = new Effect[]{flammable, slippery, conductive, sticky, stunned, concreteFeet, flashed};
+		IEApi.potions = ImmutableList.of(flammable, slippery, conductive, sticky, stunned, concreteFeet, flashed);
 	}
 
 	public static class IEPotion extends Effect
 	{
-		static ResourceLocation tex = new ResourceLocation("immersiveengineering", "textures/gui/potioneffects.png");
+		private static final Set<Block> concrete = ImmutableSet.<Block>builder()
+				.add(StoneDecoration.concrete.get())
+				.add(StoneDecoration.concreteTile.get())
+				.add(StoneDecoration.concreteSprayed.get())
+				.add(IEBlocks.toStairs.get(StoneDecoration.concrete.getId()).get())
+				.add(StoneDecoration.concreteThreeQuarter.get())
+				.add(StoneDecoration.concreteSheet.get())
+				.add(StoneDecoration.concreteQuarter.get())
+				.add(StoneDecoration.concreteLeaded.get())
+				.build();
 		final int tickrate;
 		final boolean halfTickRateWIthAmplifier;
 		boolean showInInventory = true;
 		boolean showInHud = true;
-		private final Set<Block> concrete;
 
-		public IEPotion(ResourceLocation resource, EffectType isBad, int colour, int tick, boolean halveTick, int icon, boolean showInInventory, boolean showInHud)
+		public IEPotion(EffectType isBad, int colour, int tick, boolean halveTick, int icon, boolean showInInventory, boolean showInHud)
 		{
 			super(isBad, colour);
 			this.showInInventory = showInInventory;
 			this.showInHud = showInHud;
 			this.tickrate = tick;
 			this.halfTickRateWIthAmplifier = halveTick;
-
-			ForgeRegistries.POTIONS.register(this.setRegistryName(resource));
-			concrete = ImmutableSet.<Block>builder()
-					.add(StoneDecoration.concrete.get())
-					.add(StoneDecoration.concreteTile.get())
-					.add(StoneDecoration.concreteSprayed.get())
-					.add(IEBlocks.toStairs.get(StoneDecoration.concrete.getId()).get())
-					.add(StoneDecoration.concreteThreeQuarter.get())
-					.add(StoneDecoration.concreteSheet.get())
-					.add(StoneDecoration.concreteQuarter.get())
-					.add(StoneDecoration.concreteLeaded.get())
-					.build();
 		}
 
 		@Override
@@ -124,7 +123,7 @@ public class IEPotions
 		@Override
 		public void performEffect(LivingEntity living, int amplifier)
 		{
-			if(this==IEPotions.slippery)
+			if(this==IEPotions.slippery.get())
 			{
 				if(living.isOnGround())
 					living.moveRelative(0, new Vector3d(0, 1, 0.005));
@@ -136,7 +135,7 @@ public class IEPotions
 					living.setItemStackToSlot(hand, ItemStack.EMPTY);
 				}
 			}
-			else if(this==IEPotions.concreteFeet&&!living.world.isRemote)
+			else if(this==IEPotions.concreteFeet.get()&&!living.world.isRemote)
 			{
 				BlockState state = living.world.getBlockState(living.getPosition());
 				if(!concrete.contains(state.getBlock())&&

@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 /**
  * @author BluSunrize - 13.08.2015
@@ -57,7 +58,7 @@ public class IEApi
 	 * 1: slippery, makes the target slide around and randomly drop their held item<br>
 	 * 2: conductive, increases flux damage done to the target (CoFH/RedstoneArsenal compat112)<br>
 	 */
-	public static Effect[] potions;
+	public static List<Supplier<Effect>> potions;
 
 	/**
 	 * Each element of this list will be called once when the command "/cie resetrender" is run.

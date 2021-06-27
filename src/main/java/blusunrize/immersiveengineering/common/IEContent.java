@@ -79,7 +79,6 @@ import net.minecraft.item.*;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.potion.Effect;
 import net.minecraft.potion.Effects;
 import net.minecraft.tileentity.FurnaceTileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -103,8 +102,6 @@ import net.minecraftforge.fml.event.lifecycle.ParallelDispatchEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 import static blusunrize.immersiveengineering.api.tool.assembler.AssemblerHandler.defaultAdapter;
@@ -112,8 +109,6 @@ import static blusunrize.immersiveengineering.api.tool.assembler.AssemblerHandle
 @Mod.EventBusSubscriber(modid = MODID, bus = Bus.MOD)
 public class IEContent
 {
-	public static List<Item> registeredIEItems = new ArrayList<>();
-
 	public static final Feature<OreFeatureConfig> ORE_RETROGEN = new OreRetrogenFeature(OreFeatureConfig.CODEC);
 
 	public static void modConstruction()
@@ -150,6 +145,7 @@ public class IEContent
 		ShaderRegistry.rarityWeightMap.put(Lib.RARITY_MASTERWORK, 1);
 
 		IEFluids.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
+		IEPotions.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
 		IEBlocks.init();
 		IEItems.init();
 
@@ -180,13 +176,6 @@ public class IEContent
 	public static void registerFeatures(RegistryEvent.Register<Feature<?>> event)
 	{
 		event.getRegistry().register(ORE_RETROGEN.setRegistryName(new ResourceLocation(ImmersiveEngineering.MODID, "ore_retro")));
-	}
-
-	@SubscribeEvent
-	public static void registerPotions(RegistryEvent.Register<Effect> event)
-	{
-		/*POTIONS*/
-		IEPotions.init();
 	}
 
 	@SubscribeEvent
@@ -283,9 +272,9 @@ public class IEContent
 		DieselHandler.registerFuel(IETags.fluidCreosote, 20);
 
 		// TODO move to IEFluids/constructors?
-		IEFluids.fluidCreosote.getBlock().setEffect(IEPotions.flammable, 100, 0);
+		IEFluids.fluidCreosote.getBlock().setEffect(IEPotions.flammable.get(), 100, 0);
 		IEFluids.fluidEthanol.getBlock().setEffect(Effects.NAUSEA, 70, 0);
-		IEFluids.fluidBiodiesel.getBlock().setEffect(IEPotions.flammable, 100, 1);
+		IEFluids.fluidBiodiesel.getBlock().setEffect(IEPotions.flammable.get(), 100, 1);
 		IEFluids.fluidConcrete.getBlock().setEffect(Effects.SLOWNESS, 20, 3);
 
 		ChemthrowerEffects.register();
