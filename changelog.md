@@ -3,6 +3,7 @@
 - Store connections in vanilla structure/template files (Malte)
 - Allow connections to be cut mid-air even when a block is highlighted (Malte)
 - Fix villager houses not generating (Malte)
+- Fix inconsistent behavior of the fluid router (Malte)
 
 ##### Version 1.16.5-5.0.0-135
 - Clean up the API (Malte)

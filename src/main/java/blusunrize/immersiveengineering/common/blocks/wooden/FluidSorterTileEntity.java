@@ -93,8 +93,9 @@ public class FluidSorterTileEntity extends IEBaseTileEntity implements IInteract
 	private int doInsert(FluidStack stack, Direction[] sides, FluidAction doFill)
 	{
 		int ret = 0;
+		FluidStack available = stack.copy();
 		int lengthFiltered = sides.length;
-		while(lengthFiltered > 0&&stack.getAmount() > 0)
+		while(lengthFiltered > 0&&available.getAmount() > 0)
 		{
 			int rand = Utils.RAND.nextInt(lengthFiltered);
 			Direction currentSide = sides[rand];
@@ -102,8 +103,8 @@ public class FluidSorterTileEntity extends IEBaseTileEntity implements IInteract
 			IFluidHandler fluidOut = capRef.getNullable();
 			if(fluidOut!=null)
 			{
-				int filledHere = fluidOut.fill(stack, doFill);
-				stack.shrink(filledHere);
+				int filledHere = fluidOut.fill(available, doFill);
+				available.shrink(filledHere);
 				ret += filledHere;
 			}
 			sides[rand] = sides[lengthFiltered-1];
@@ -248,7 +249,7 @@ public class FluidSorterTileEntity extends IEBaseTileEntity implements IInteract
 		@Override
 		public int fill(FluidStack resource, FluidAction action)
 		{
-			if(resource==null)
+			if(resource.isEmpty())
 				return 0;
 			return tile.routeFluid(facing, resource, action);
 		}
