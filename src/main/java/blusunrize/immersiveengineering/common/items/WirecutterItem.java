@@ -146,6 +146,10 @@ public class WirecutterItem extends IEBaseItem implements ITool
 					damageStack(stack, player, context.getHand());
 			}
 		}
+		else if(player!=null)
+		{
+			return onItemRightClick(world, player, context.getHand()).getType();
+		}
 		return ActionResultType.SUCCESS;
 	}
 
