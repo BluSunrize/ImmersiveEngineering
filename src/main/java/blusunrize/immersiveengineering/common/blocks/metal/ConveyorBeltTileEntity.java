@@ -9,11 +9,14 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorTile;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
@@ -39,6 +42,10 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -46,6 +53,7 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+@EventBusSubscriber(modid = Lib.MODID, bus = Bus.MOD)
 public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IStateBasedDirectional, ICollisionBounds,
 		ISelectionBounds, IHammerInteraction, IPlayerInteraction, IConveyorTile, IPropertyPassthrough,
 		ITickableTileEntity
@@ -227,17 +235,18 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IStateBa
 		return super.isRSPowered();
 	}
 
-	public static void registerConveyorTEs(RegistryEvent.Register<TileEntityType<?>> evt)
+	@SubscribeEvent
+	public static void registerConveyorTEsAndBlocks(RegistryEvent.NewRegistry ev)
 	{
 		for(ResourceLocation rl : ConveyorHandler.classRegistry.keySet())
 		{
-			TileEntityType<ConveyorBeltTileEntity> te = new TileEntityType<>(() -> new ConveyorBeltTileEntity(rl),
-					ImmutableSet.of(ConveyorHandler.getBlock(rl)),
-					null);
-			te.setRegistryName(ConveyorHandler.getRegistryNameFor(rl));
-			ConveyorHandler.tileEntities.put(rl, te);
-			evt.getRegistry().register(te);
+			RegistryObject<TileEntityType<?>> type = IETileTypes.REGISTER.register(
+					ConveyorHandler.getRegistryNameFor(rl).getPath(), () -> new TileEntityType<>(
+							() -> new ConveyorBeltTileEntity(rl), ImmutableSet.of(ConveyorHandler.getBlock(rl)), null
+					));
+			ConveyorHandler.tileEntities.put(rl, type);
 		}
+		MetalDevices.initConveyors();
 	}
 
 	public static class ConveyorInventoryHandler implements IItemHandlerModifiable

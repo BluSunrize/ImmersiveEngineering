@@ -40,7 +40,6 @@ import blusunrize.immersiveengineering.client.utils.ClocheRenderFunctions;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Metals;
-import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBeltTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.FluidPipeTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
@@ -81,7 +80,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.potion.Effects;
 import net.minecraft.tileentity.FurnaceTileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -197,12 +195,6 @@ public class IEContent
 				MetalBarrelMinecartEntity.TYPE,
 				SawbladeEntity.TYPE
 		);
-	}
-
-	@SubscribeEvent
-	public static void registerTEs(RegistryEvent.Register<TileEntityType<?>> event)
-	{
-		ConveyorBeltTileEntity.registerConveyorTEs(event);
 	}
 
 	public static void init(ParallelDispatchEvent ev)

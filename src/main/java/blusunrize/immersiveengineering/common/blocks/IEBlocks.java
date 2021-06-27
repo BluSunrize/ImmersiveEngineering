@@ -26,6 +26,7 @@ import blusunrize.immersiveengineering.common.blocks.wooden.BarrelBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
 import blusunrize.immersiveengineering.common.fluids.IEFluids;
 import blusunrize.immersiveengineering.common.items.IEItems;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.AbstractBlock.Properties;
 import net.minecraft.block.*;
@@ -497,8 +498,13 @@ public final class IEBlocks
 			for(EnumMetals metal : new EnumMetals[]{EnumMetals.IRON, EnumMetals.STEEL, EnumMetals.ALUMINUM, EnumMetals.COPPER})
 				MetalDevices.chutes.put(metal, new BlockEntry<>("chute_"+metal.tagName(), METAL_PROPERTIES_NOT_SOLID, ChuteBlock::new));
 
+		}
+
+		public static void initConveyors()
+		{
+			Preconditions.checkState(CONVEYORS.isEmpty());
 			for(ResourceLocation rl : ConveyorHandler.classRegistry.keySet())
-				MetalDevices.CONVEYORS.put(rl, new BlockEntry<>(
+				CONVEYORS.put(rl, new BlockEntry<>(
 						ConveyorHandler.getRegistryNameFor(rl).getPath(), ConveyorBlock.PROPERTIES, p -> new ConveyorBlock(rl, p)
 				));
 		}

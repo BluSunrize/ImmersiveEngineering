@@ -50,6 +50,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 
 /**
@@ -61,7 +62,7 @@ public class ConveyorHandler
 	public static final Map<ResourceLocation, Class<? extends IConveyorBelt>> classRegistry = new LinkedHashMap<>();
 	public static final Map<ResourceLocation, Set<ResourceLocation>> substituteRegistry = new HashMap<>();
 	public static final Map<ResourceLocation, Function<TileEntity, ? extends IConveyorBelt>> functionRegistry = new LinkedHashMap<>();
-	public static final Map<ResourceLocation, TileEntityType<? extends TileEntity>> tileEntities = new LinkedHashMap<>();
+	public static final Map<ResourceLocation, Supplier<TileEntityType<?>>> tileEntities = new LinkedHashMap<>();
 	public static final Map<Class<? extends IConveyorBelt>, ResourceLocation> reverseClassRegistry = new LinkedHashMap<>();
 	public static final Set<BiConsumer<Entity, IConveyorTile>> magnetSuppressionFunctions = new HashSet<>();
 	public static final Set<BiConsumer<Entity, IConveyorTile>> magnetSuppressionReverse = new HashSet<>();
@@ -147,7 +148,7 @@ public class ConveyorHandler
 
 	public static TileEntityType<? extends TileEntity> getTEType(ResourceLocation typeName)
 	{
-		return tileEntities.get(typeName);
+		return tileEntities.get(typeName).get();
 	}
 
 	public static ResourceLocation getRegistryNameFor(ResourceLocation conveyorLoc)
