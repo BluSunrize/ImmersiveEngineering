@@ -18,6 +18,8 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IProcessT
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMultiblock;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes.TileContainer;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.entity.player.PlayerEntity;
@@ -40,7 +42,7 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import javax.annotation.Nullable;
 
 public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnaceTileEntity> implements IIEInventory,
-		IActiveState, IInteractionObjectIE, IProcessTile, IBlockBounds
+		IActiveState, IInteractionObjectIE<BlastFurnaceTileEntity>, IProcessTile, IBlockBounds
 {
 	NonNullList<ItemStack> inventory = NonNullList.withSize(4, ItemStack.EMPTY);
 	public int process = 0;
@@ -66,9 +68,15 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 	}
 
 	@Override
-	public IInteractionObjectIE getGuiMaster()
+	public BlastFurnaceTileEntity getGuiMaster()
 	{
 		return master();
+	}
+
+	@Override
+	public TileContainer<BlastFurnaceTileEntity, ?> getContainerType()
+	{
+		return IEContainerTypes.BLAST_FURNACE;
 	}
 
 	@Override

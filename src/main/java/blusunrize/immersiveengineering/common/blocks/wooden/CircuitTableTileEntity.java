@@ -19,6 +19,8 @@ import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes.TileContainer;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -26,9 +28,7 @@ import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -47,7 +47,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class CircuitTableTileEntity extends IEBaseTileEntity implements IIEInventory, IIEInternalFluxHandler, IStateBasedDirectional,
-		IHasDummyBlocks, IInteractionObjectIE, IModelOffsetProvider
+		IHasDummyBlocks, IInteractionObjectIE<CircuitTableTileEntity>, IModelOffsetProvider
 {
 	public static final BlockPos MASTER_POS = BlockPos.ZERO;
 	public static final BlockPos DUMMY_POS = new BlockPos(1, 0, 0);
@@ -136,7 +136,7 @@ public class CircuitTableTileEntity extends IEBaseTileEntity implements IIEInven
 	}
 
 	@Override
-	public IInteractionObjectIE getGuiMaster()
+	public CircuitTableTileEntity getGuiMaster()
 	{
 		if(!isDummy())
 			return this;
@@ -147,11 +147,10 @@ public class CircuitTableTileEntity extends IEBaseTileEntity implements IIEInven
 		return null;
 	}
 
-	@Nonnull
 	@Override
-	public Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity player)
+	public TileContainer<CircuitTableTileEntity, ?> getContainerType()
 	{
-		return IInteractionObjectIE.super.createMenu(id, playerInventory, player);
+		return IEContainerTypes.CIRCUIT_TABLE;
 	}
 
 	@Override

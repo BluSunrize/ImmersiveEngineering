@@ -9,12 +9,13 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.tool.ITool;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes.ItemContainerType;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.ListUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
@@ -46,13 +47,20 @@ public class SpeedloaderItem extends InternalStorageItem implements ITool, IBull
 	{
 		ItemStack stack = player.getHeldItem(hand);
 		if(!world.isRemote)
-			openGui(player, hand==Hand.MAIN_HAND?EquipmentSlotType.MAINHAND: EquipmentSlotType.OFFHAND);
+			openGui(player, hand);
 		return new ActionResult<>(ActionResultType.SUCCESS, stack);
+	}
+
+	@Nullable
+	@Override
+	protected ItemContainerType<?> getContainerType()
+	{
+		return IEContainerTypes.REVOLVER;
 	}
 
 	public boolean isEmpty(ItemStack stack)
 	{
-		return stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).map(inv->
+		return stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).map(inv ->
 		{
 			for(int i = 0; i < inv.getSlots(); i++)
 			{

@@ -12,7 +12,6 @@ package blusunrize.immersiveengineering.api;
 import net.minecraft.item.IItemTier;
 import net.minecraft.item.Rarity;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 
 public class Lib
@@ -44,38 +43,37 @@ public class Lib
 	 * Gui IDs
 	 */
 	//Tiles
-	public static final ResourceLocation GUIID_CokeOven = new ResourceLocation(MODID, "cokeoven");
-	public static final ResourceLocation GUIID_AlloySmelter = new ResourceLocation(MODID, "alloysmelter");
-	public static final ResourceLocation GUIID_BlastFurnace = new ResourceLocation(MODID, "blastfurnace");
-	public static final ResourceLocation GUIID_CraftingTable = new ResourceLocation(MODID, "craftingtable");
-	public static final ResourceLocation GUIID_WoodenCrate = new ResourceLocation(MODID, "woodencrate");
-	public static final ResourceLocation GUIID_Workbench = new ResourceLocation(MODID, "workbench");
-	public static final ResourceLocation GUIID_CircuitTable = new ResourceLocation(MODID, "circuittable");
-	public static final ResourceLocation GUIID_Assembler = new ResourceLocation(MODID, "assembler");
-	public static final ResourceLocation GUIID_Sorter = new ResourceLocation(MODID, "sorter");
-	public static final ResourceLocation GUIID_ItemBatcher = new ResourceLocation(MODID, "item_batcher");
-	public static final ResourceLocation GUIID_LogicUnit = new ResourceLocation(MODID, "logic_unit");
-	public static final ResourceLocation GUIID_Squeezer = new ResourceLocation(MODID, "squeezer");
-	public static final ResourceLocation GUIID_Fermenter = new ResourceLocation(MODID, "fermenter");
-	public static final ResourceLocation GUIID_Refinery = new ResourceLocation(MODID, "refinery");
-	public static final ResourceLocation GUIID_ArcFurnace = new ResourceLocation(MODID, "arcfurnace");
-	public static final ResourceLocation GUIID_AutoWorkbench = new ResourceLocation(MODID, "autoworkbench");
-	public static final ResourceLocation GUIID_Mixer = new ResourceLocation(MODID, "mixer");
-	public static final ResourceLocation GUIID_Turret_Gun = new ResourceLocation(MODID, "turret_gun");
-	public static final ResourceLocation GUIID_Turret_Chem = new ResourceLocation(MODID, "turret_chem");
-	public static final ResourceLocation GUIID_FluidSorter = new ResourceLocation(MODID, "fluidsorter");
-	public static final ResourceLocation GUIID_Cloche = new ResourceLocation(MODID, "cloche");
-	public static final ResourceLocation GUIID_ToolboxBlock = new ResourceLocation(MODID, "toolboxblock");
-	public static final ResourceLocation GUIID_RedstoneConnector = new ResourceLocation(MODID, "redstoneconnector");
-	public static final ResourceLocation GUIID_RedstoneProbe = new ResourceLocation(MODID, "redstoneprobe");
+	public static final String GUIID_CokeOven = "cokeoven";
+	public static final String GUIID_AlloySmelter = "alloysmelter";
+	public static final String GUIID_BlastFurnace = "blastfurnace";
+	public static final String GUIID_CraftingTable = "craftingtable";
+	public static final String GUIID_WoodenCrate = "woodencrate";
+	public static final String GUIID_Workbench = "workbench";
+	public static final String GUIID_CircuitTable = "circuittable";
+	public static final String GUIID_Assembler = "assembler";
+	public static final String GUIID_Sorter = "sorter";
+	public static final String GUIID_ItemBatcher = "item_batcher";
+	public static final String GUIID_LogicUnit = "logic_unit";
+	public static final String GUIID_Squeezer = "squeezer";
+	public static final String GUIID_Fermenter = "fermenter";
+	public static final String GUIID_Refinery = "refinery";
+	public static final String GUIID_ArcFurnace = "arcfurnace";
+	public static final String GUIID_AutoWorkbench = "autoworkbench";
+	public static final String GUIID_Mixer = "mixer";
+	public static final String GUIID_Turret_Gun = "turret_gun";
+	public static final String GUIID_Turret_Chem = "turret_chem";
+	public static final String GUIID_FluidSorter = "fluidsorter";
+	public static final String GUIID_Cloche = "cloche";
+	public static final String GUIID_ToolboxBlock = "toolboxblock";
+	public static final String GUIID_RedstoneConnector = "redstoneconnector";
+	public static final String GUIID_RedstoneProbe = "redstoneprobe";
 	//Items
-	public static final ResourceLocation GUIID_Manual = new ResourceLocation(MODID, "manual");
-	public static final ResourceLocation GUIID_Revolver = new ResourceLocation(MODID, "revolver");
-	public static final ResourceLocation GUIID_Toolbox = new ResourceLocation(MODID, "toolbox");
-	public static final ResourceLocation GUIID_MaintenanceKit = new ResourceLocation(MODID, "maintenancekit");
+	public static final String GUIID_Revolver = "revolver";
+	public static final String GUIID_Toolbox = "toolbox";
+	public static final String GUIID_MaintenanceKit = "maintenancekit";
 	//Entities
-	public static final ResourceLocation GUIID_CartCrate = new ResourceLocation(MODID, "cart_crate");
-	public static final ResourceLocation GUIID_CartReinforcedCrate = new ResourceLocation(MODID, "cart_reinforcedcrate");
+	public static final String GUIID_CartCrate = "cart_crate";
+	public static final String GUIID_CartReinforcedCrate = "cart_reinforcedcrate";
 
 	public static final String NBT_Earmuffs = "IE:Earmuffs";
 	public static final String NBT_EarmuffColour = "IE:EarmuffColour";

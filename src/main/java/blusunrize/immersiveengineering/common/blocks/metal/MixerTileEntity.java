@@ -19,6 +19,8 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBou
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes.TileContainer;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.MultiFluidTank;
@@ -53,7 +55,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity, MixerRecipe> implements
-		IInteractionObjectIE, IBlockBounds
+		IInteractionObjectIE<MixerTileEntity>, IBlockBounds
 {
 	public MultiFluidTank tank = new MultiFluidTank(8*FluidAttributes.BUCKET_VOLUME);
 	public NonNullList<ItemStack> inventory = NonNullList.withSize(8, ItemStack.EMPTY);
@@ -518,8 +520,14 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 	}
 
 	@Override
-	public IInteractionObjectIE getGuiMaster()
+	public MixerTileEntity getGuiMaster()
 	{
 		return master();
+	}
+
+	@Override
+	public TileContainer<MixerTileEntity, ?> getContainerType()
+	{
+		return IEContainerTypes.MIXER;
 	}
 }

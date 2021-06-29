@@ -13,13 +13,13 @@ import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes.TileContainer;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -37,7 +37,8 @@ import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 
-public class CraftingTableTileEntity extends IEBaseTileEntity implements IIEInventory, IStateBasedDirectional, IInteractionObjectIE
+public class CraftingTableTileEntity extends IEBaseTileEntity implements IIEInventory, IStateBasedDirectional,
+		IInteractionObjectIE<CraftingTableTileEntity>
 {
 	NonNullList<ItemStack> inventory = NonNullList.withSize(27, ItemStack.EMPTY);
 
@@ -96,16 +97,15 @@ public class CraftingTableTileEntity extends IEBaseTileEntity implements IIEInve
 	}
 
 	@Override
-	public IInteractionObjectIE getGuiMaster()
+	public CraftingTableTileEntity getGuiMaster()
 	{
 		return this;
 	}
 
-	@Nonnull
 	@Override
-	public Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity player)
+	public TileContainer<CraftingTableTileEntity, ?> getContainerType()
 	{
-		return IInteractionObjectIE.super.createMenu(id, playerInventory, player);
+		return IEContainerTypes.CRAFTING_TABLE;
 	}
 
 	@Override

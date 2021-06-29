@@ -15,6 +15,8 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparat
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDevices;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes.TileContainer;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
@@ -51,7 +53,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-public class WoodenCrateTileEntity extends IEBaseTileEntity implements IIEInventory, IInteractionObjectIE, ITileDrop, IComparatorOverride
+public class WoodenCrateTileEntity extends IEBaseTileEntity implements IIEInventory, IInteractionObjectIE<WoodenCrateTileEntity>, ITileDrop, IComparatorOverride
 {
 	NonNullList<ItemStack> inventory = NonNullList.withSize(27, ItemStack.EMPTY);
 	public ResourceLocation lootTable;
@@ -136,9 +138,15 @@ public class WoodenCrateTileEntity extends IEBaseTileEntity implements IIEInvent
 	}
 
 	@Override
-	public IInteractionObjectIE getGuiMaster()
+	public WoodenCrateTileEntity getGuiMaster()
 	{
 		return this;
+	}
+
+	@Override
+	public TileContainer<WoodenCrateTileEntity, ?> getContainerType()
+	{
+		return IEContainerTypes.WOODEN_CRATE;
 	}
 
 	@Nonnull

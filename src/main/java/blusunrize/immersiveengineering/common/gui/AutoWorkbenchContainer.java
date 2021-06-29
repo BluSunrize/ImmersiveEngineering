@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
@@ -22,9 +23,9 @@ public class AutoWorkbenchContainer extends IEBaseContainer<AutoWorkbenchTileEnt
 {
 	public PlayerInventory inventoryPlayer;
 
-	public AutoWorkbenchContainer(int id, PlayerInventory inventoryPlayer, AutoWorkbenchTileEntity tile)
+	public AutoWorkbenchContainer(ContainerType<?> type, int id, PlayerInventory inventoryPlayer, AutoWorkbenchTileEntity tile)
 	{
-		super(inventoryPlayer, tile, id);
+		super(type, inventoryPlayer, tile, id);
 
 		this.inventoryPlayer = inventoryPlayer;
 		this.addSlot(new IESlot.AutoBlueprint(this, this.inv, 0, 102, 69));

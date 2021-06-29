@@ -11,15 +11,17 @@ package blusunrize.immersiveengineering.common.gui;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.common.blocks.stone.BlastFurnaceTileEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
 public class BlastFurnaceContainer extends IEBaseContainer<BlastFurnaceTileEntity>
 {
 	public final BlastFurnaceTileEntity.BlastFurnaceState state;
-	public BlastFurnaceContainer(int id, PlayerInventory inventoryPlayer, BlastFurnaceTileEntity tile)
+
+	public BlastFurnaceContainer(ContainerType<?> type, int id, PlayerInventory inventoryPlayer, BlastFurnaceTileEntity tile)
 	{
-		super(inventoryPlayer, tile, id);
+		super(type, inventoryPlayer, tile, id);
 
 		this.addSlot(new IESlot(this, this.inv, 0, 52, 17)
 		{

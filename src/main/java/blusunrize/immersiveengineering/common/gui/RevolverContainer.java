@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.HandSide;
@@ -57,9 +58,11 @@ public class RevolverContainer extends InternalStorageItemContainer
 	public ItemStack secondRevolver;//NonNull after addSlots is called in the super constructor
 	private int offset = 0;
 
-	public RevolverContainer(int id, PlayerInventory iinventory, World world, EquipmentSlotType slot, ItemStack revolver)
+	public RevolverContainer(
+			ContainerType<?> type, int id, PlayerInventory iinventory, World world, EquipmentSlotType slot, ItemStack revolver
+	)
 	{
-		super(id, iinventory, world, slot, revolver);
+		super(type, id, iinventory, world, slot, revolver);
 	}
 
 	@Override

@@ -17,6 +17,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -28,9 +29,9 @@ public class MaintenanceKitContainer extends ItemContainer
 	private final IInventory inv = new Inventory(ItemStack.EMPTY);
 	private boolean wasUsed = false;
 
-	public MaintenanceKitContainer(int id, PlayerInventory inventoryPlayer, World world, EquipmentSlotType slot, ItemStack item)
+	public MaintenanceKitContainer(ContainerType<?> type, int id, PlayerInventory inventoryPlayer, World world, EquipmentSlotType slot, ItemStack item)
 	{
-		super(id, inventoryPlayer, world, slot, item);
+		super(type, id, inventoryPlayer, world, slot, item);
 		updateSlots();
 	}
 

@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.common.gui.IESlot.ICallbackContainer;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
@@ -24,9 +25,9 @@ public class ToolboxBlockContainer extends IEBaseContainer<ToolboxTileEntity> im
 {
 	private IItemHandler inv;
 
-	public ToolboxBlockContainer(int id, PlayerInventory inventoryPlayer, ToolboxTileEntity tile)
+	public ToolboxBlockContainer(ContainerType<?> type, int id, PlayerInventory inventoryPlayer, ToolboxTileEntity tile)
 	{
-		super(inventoryPlayer, tile, id);
+		super(type, inventoryPlayer, tile, id);
 		this.tile = tile;
 		inv = new ItemStackHandler(tile.getInventory());
 		if(inv instanceof IEItemStackHandler)

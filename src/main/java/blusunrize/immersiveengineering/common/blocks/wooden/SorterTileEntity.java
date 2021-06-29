@@ -12,6 +12,8 @@ import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes.TileContainer;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Iterators;
@@ -40,7 +42,7 @@ import java.util.function.Predicate;
 import static net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 
 //TODO Metadata and oredict are gone. Update manual entry as well.
-public class SorterTileEntity extends IEBaseTileEntity implements IInteractionObjectIE
+public class SorterTileEntity extends IEBaseTileEntity implements IInteractionObjectIE<SorterTileEntity>
 {
 	public SorterInventory filter;
 	public int[] sideFilter = {0, 0, 0, 0, 0, 0};//OreDict,nbt,fuzzy
@@ -134,9 +136,15 @@ public class SorterTileEntity extends IEBaseTileEntity implements IInteractionOb
 	}
 
 	@Override
-	public IInteractionObjectIE getGuiMaster()
+	public SorterTileEntity getGuiMaster()
 	{
 		return this;
+	}
+
+	@Override
+	public TileContainer<SorterTileEntity, ?> getContainerType()
+	{
+		return IEContainerTypes.SORTER;
 	}
 
 	@Override

@@ -238,7 +238,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 		}
 		if(tile instanceof IInteractionObjectIE&&hand==Hand.MAIN_HAND&&!player.isSneaking())
 		{
-			IInteractionObjectIE interaction = (IInteractionObjectIE)tile;
+			IInteractionObjectIE<?> interaction = (IInteractionObjectIE<?>)tile;
 			interaction = interaction.getGuiMaster();
 			if(interaction!=null&&interaction.canUseGui(player)&&!world.isRemote)
 				NetworkHooks.openGui((ServerPlayerEntity)player, interaction, ((TileEntity)interaction).getPos());

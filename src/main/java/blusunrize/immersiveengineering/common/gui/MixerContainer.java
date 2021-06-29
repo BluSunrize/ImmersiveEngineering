@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTi
 import blusunrize.immersiveengineering.common.blocks.metal.MixerTileEntity;
 import blusunrize.immersiveengineering.common.gui.IESlot.ICallbackContainer;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -22,9 +23,9 @@ import net.minecraftforge.items.IItemHandler;
 //TODO custom subclass of ItemStackHandler for markDirty etc
 public class MixerContainer extends IEBaseContainer<MixerTileEntity> implements ICallbackContainer
 {
-	public MixerContainer(int id, PlayerInventory inventoryPlayer, MixerTileEntity tile)
+	public MixerContainer(ContainerType<?> type, int id, PlayerInventory inventoryPlayer, MixerTileEntity tile)
 	{
-		super(inventoryPlayer, tile, id);
+		super(type, inventoryPlayer, tile, id);
 
 		IItemHandler inv = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)
 				.orElseThrow(RuntimeException::new);

@@ -23,6 +23,8 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjPr
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes.TileContainer;
 import blusunrize.immersiveengineering.common.items.LogicCircuitBoardItem;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
@@ -51,7 +53,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public class LogicUnitTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInventory, ITileDrop,
-		IInteractionObjectIE, IStateBasedDirectional, ILogicCircuitHandler, IHasObjProperty
+		IInteractionObjectIE<LogicUnitTileEntity>, IStateBasedDirectional, ILogicCircuitHandler, IHasObjProperty
 {
 	private final static int SIZE_COLORS = DyeColor.values().length;
 	private final static int SIZE_REGISTERS = LogicCircuitRegister.values().length-SIZE_COLORS;
@@ -127,9 +129,15 @@ public class LogicUnitTileEntity extends IEBaseTileEntity implements ITickableTi
 	}
 
 	@Override
-	public IInteractionObjectIE getGuiMaster()
+	public LogicUnitTileEntity getGuiMaster()
 	{
 		return this;
+	}
+
+	@Override
+	public TileContainer<LogicUnitTileEntity, ?> getContainerType()
+	{
+		return IEContainerTypes.LOGIC_UNIT;
 	}
 
 	@Override

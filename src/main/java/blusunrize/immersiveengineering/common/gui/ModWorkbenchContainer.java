@@ -21,6 +21,7 @@ import blusunrize.immersiveengineering.mixin.accessors.ContainerAccess;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -35,9 +36,9 @@ public class ModWorkbenchContainer extends IEBaseContainer<ModWorkbenchTileEntit
 	private BlueprintInventory inventoryBPoutput;
 	public ShaderInventory shaderInv;
 
-	public ModWorkbenchContainer(int id, PlayerInventory inventoryPlayer, ModWorkbenchTileEntity tile)
+	public ModWorkbenchContainer(ContainerType<?> type, int id, PlayerInventory inventoryPlayer, ModWorkbenchTileEntity tile)
 	{
-		super(inventoryPlayer, tile, id);
+		super(type, inventoryPlayer, tile, id);
 		this.world = tile.getWorldNonnull();
 		this.inventoryPlayer = inventoryPlayer;
 		rebindSlots();

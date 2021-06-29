@@ -11,16 +11,17 @@ package blusunrize.immersiveengineering.client.gui;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.wooden.WoodenCrateTileEntity;
 import blusunrize.immersiveengineering.common.gui.CrateContainer;
+import blusunrize.immersiveengineering.common.gui.CrateEntityContainer;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class CrateScreen extends IEContainerScreen<CrateContainer>
+public abstract class CrateScreen<C extends CrateContainer> extends IEContainerScreen<C>
 {
 	private static final ResourceLocation TEXTURE = makeTextureLocation("crate");
 
-	public CrateScreen(CrateContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
+	public CrateScreen(C container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{
 		super(container, inventoryPlayer, title);
 		this.ySize = 168;
@@ -39,5 +40,22 @@ public class CrateScreen extends IEContainerScreen<CrateContainer>
 	{
 		ClientUtils.bindTexture(TEXTURE);
 		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
+	}
+
+	// Unfortunately necessary to calm down the compiler wrt generics
+	public static class StandardCrate extends CrateScreen<CrateContainer>
+	{
+		public StandardCrate(CrateContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
+		{
+			super(container, inventoryPlayer, title);
+		}
+	}
+
+	public static class EntityCrate extends CrateScreen<CrateEntityContainer>
+	{
+		public EntityCrate(CrateEntityContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
+		{
+			super(container, inventoryPlayer, title);
+		}
 	}
 }

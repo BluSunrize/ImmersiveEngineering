@@ -18,6 +18,8 @@ import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes.TileContainer;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
@@ -44,7 +46,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ItemBatcherTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInventory,
-		IInteractionObjectIE, IStateBasedDirectional
+		IInteractionObjectIE<ItemBatcherTileEntity>, IStateBasedDirectional
 {
 	public static final int NUM_SLOTS = 9;
 	private final NonNullList<ItemStack> filters = NonNullList.withSize(NUM_SLOTS, ItemStack.EMPTY);
@@ -195,9 +197,15 @@ public class ItemBatcherTileEntity extends IEBaseTileEntity implements ITickable
 	}
 
 	@Override
-	public IInteractionObjectIE getGuiMaster()
+	public ItemBatcherTileEntity getGuiMaster()
 	{
 		return this;
+	}
+
+	@Override
+	public TileContainer<ItemBatcherTileEntity, ?> getContainerType()
+	{
+		return IEContainerTypes.ITEM_BATCHER;
 	}
 
 	@Override

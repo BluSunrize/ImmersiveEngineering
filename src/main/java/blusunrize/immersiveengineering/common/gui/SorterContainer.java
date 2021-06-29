@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.gui;
 import blusunrize.immersiveengineering.common.blocks.wooden.SorterTileEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
@@ -20,9 +21,9 @@ public class SorterContainer extends IEBaseContainer<SorterTileEntity>
 {
 	int slotCount;
 
-	public SorterContainer(int windowId, PlayerInventory inventoryPlayer, SorterTileEntity tile)
+	public SorterContainer(ContainerType<?> type, int windowId, PlayerInventory inventoryPlayer, SorterTileEntity tile)
 	{
-		super(inventoryPlayer, tile, windowId);
+		super(type, inventoryPlayer, tile, windowId);
 		this.tile = tile;
 		for(int side = 0; side < 6; side++)
 			for(int i = 0; i < SorterTileEntity.filterSlotsPerSide; i++)

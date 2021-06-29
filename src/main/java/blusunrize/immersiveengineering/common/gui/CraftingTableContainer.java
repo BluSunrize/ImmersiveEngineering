@@ -16,6 +16,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.CraftResultInventory;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.CraftingResultSlot;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
@@ -34,9 +35,9 @@ public class CraftingTableContainer extends IEBaseContainer<CraftingTableTileEnt
 	private final CraftResultInventory craftResultInventory = new CraftResultInventory();
 	private final PlayerEntity player;
 
-	public CraftingTableContainer(int id, PlayerInventory inventoryPlayer, CraftingTableTileEntity tile)
+	public CraftingTableContainer(ContainerType<?> type, int id, PlayerInventory inventoryPlayer, CraftingTableTileEntity tile)
 	{
-		super(inventoryPlayer, tile, id);
+		super(type, inventoryPlayer, tile, id);
 		this.player = inventoryPlayer.player;
 
 		this.addSlot(new CraftingResultSlot(player, craftingInventory, craftResultInventory, 0, 124, 35));

@@ -14,6 +14,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -30,9 +31,9 @@ public class IEBaseContainer<T extends TileEntity> extends Container
 	public IInventory inv;
 	public int slotCount;
 
-	public IEBaseContainer(PlayerInventory inventoryPlayer, T tile, int id)
+	public IEBaseContainer(ContainerType<?> type, PlayerInventory inventoryPlayer, T tile, int id)
 	{
-		super(GuiHandler.getContainerTypeFor(tile), id);
+		super(type, id);
 		this.tile = tile;
 		if(tile instanceof IIEInventory)
 			this.inv = new TileInventory(tile, this);

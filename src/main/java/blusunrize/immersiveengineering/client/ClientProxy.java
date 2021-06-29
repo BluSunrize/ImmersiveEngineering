@@ -55,7 +55,8 @@ import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.crafting.RecipeReloadListener;
 import blusunrize.immersiveengineering.common.entities.IEEntityTypes;
 import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
-import blusunrize.immersiveengineering.common.gui.GuiHandler;
+import blusunrize.immersiveengineering.common.gui.IEBaseContainer;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
 import blusunrize.immersiveengineering.common.items.DrillheadItem.DrillHeadPerm;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.items.IEItems;
@@ -90,7 +91,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -123,6 +123,7 @@ import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.ParallelDispatchEvent;
 import org.lwjgl.glfw.GLFW;
 
@@ -597,56 +598,64 @@ public class ClientProxy extends CommonProxy
 	}
 
 	@Override
-	public void openTileScreen(ResourceLocation guiId, TileEntity tileEntity)
+	public void openTileScreen(String guiId, TileEntity tileEntity)
 	{
-		if(guiId==Lib.GUIID_RedstoneConnector&&tileEntity instanceof ConnectorRedstoneTileEntity)
+		if(guiId.equals(Lib.GUIID_RedstoneConnector)&&tileEntity instanceof ConnectorRedstoneTileEntity)
 			Minecraft.getInstance().displayGuiScreen(new RedstoneConnectorScreen((ConnectorRedstoneTileEntity)tileEntity, tileEntity.getBlockState().getBlock().getTranslatedName()));
 
-		if(guiId==Lib.GUIID_RedstoneProbe&&tileEntity instanceof ConnectorProbeTileEntity)
+		if(guiId.equals(Lib.GUIID_RedstoneProbe)&&tileEntity instanceof ConnectorProbeTileEntity)
 			Minecraft.getInstance().displayGuiScreen(new RedstoneProbeScreen((ConnectorProbeTileEntity)tileEntity, tileEntity.getBlockState().getBlock().getTranslatedName()));
 	}
 
-	@Override
-	public void registerContainersAndScreens()
+	@SubscribeEvent
+	public static void registerContainersAndScreens(FMLClientSetupEvent ev)
 	{
-		super.registerContainersAndScreens();
-		registerScreen(Lib.GUIID_CokeOven, CokeOvenScreen::new);
-		registerScreen(Lib.GUIID_AlloySmelter, AlloySmelterScreen::new);
-		registerScreen(Lib.GUIID_BlastFurnace, BlastFurnaceScreen::new);
-		registerScreen(Lib.GUIID_CraftingTable, CraftingTableScreen::new);
-		registerScreen(Lib.GUIID_WoodenCrate, CrateScreen::new);
-		registerScreen(Lib.GUIID_Workbench, ModWorkbenchScreen::new);
-		registerScreen(Lib.GUIID_CircuitTable, CircuitTableScreen::new);
-		registerScreen(Lib.GUIID_Assembler, AssemblerScreen::new);
-		registerScreen(Lib.GUIID_Sorter, SorterScreen::new);
-		registerScreen(Lib.GUIID_ItemBatcher, ItemBatcherScreen::new);
-		registerScreen(Lib.GUIID_LogicUnit, LogicUnitScreen::new);
-		registerScreen(Lib.GUIID_Squeezer, SqueezerScreen::new);
-		registerScreen(Lib.GUIID_Fermenter, FermenterScreen::new);
-		registerScreen(Lib.GUIID_Refinery, RefineryScreen::new);
-		registerScreen(Lib.GUIID_ArcFurnace, ArcFurnaceScreen::new);
-		registerScreen(Lib.GUIID_AutoWorkbench, AutoWorkbenchScreen::new);
-		registerScreen(Lib.GUIID_Mixer, MixerScreen::new);
-		registerScreen(Lib.GUIID_Turret_Gun, GunTurretScreen::new);
-		registerScreen(Lib.GUIID_Turret_Chem, ChemTurretScreen::new);
-		registerScreen(Lib.GUIID_FluidSorter, FluidSorterScreen::new);
-		registerScreen(Lib.GUIID_Cloche, ClocheScreen::new);
-		registerScreen(Lib.GUIID_ToolboxBlock, ToolboxBlockScreen::new);
+		registerTileScreen(IEContainerTypes.COKE_OVEN, CokeOvenScreen::new);
+		registerTileScreen(IEContainerTypes.ALLOY_SMELTER, AlloySmelterScreen::new);
+		registerTileScreen(IEContainerTypes.BLAST_FURNACE, BlastFurnaceScreen::new);
+		registerTileScreen(IEContainerTypes.CRAFTING_TABLE, CraftingTableScreen::new);
+		registerTileScreen(IEContainerTypes.WOODEN_CRATE, CrateScreen.StandardCrate::new);
+		registerTileScreen(IEContainerTypes.MOD_WORKBENCH, ModWorkbenchScreen::new);
+		registerTileScreen(IEContainerTypes.CIRCUIT_TABLE, CircuitTableScreen::new);
+		registerTileScreen(IEContainerTypes.ASSEMBLER, AssemblerScreen::new);
+		registerTileScreen(IEContainerTypes.SORTER, SorterScreen::new);
+		registerTileScreen(IEContainerTypes.ITEM_BATCHER, ItemBatcherScreen::new);
+		registerTileScreen(IEContainerTypes.LOGIC_UNIT, LogicUnitScreen::new);
+		registerTileScreen(IEContainerTypes.SQUEEZER, SqueezerScreen::new);
+		registerTileScreen(IEContainerTypes.FERMENTER, FermenterScreen::new);
+		registerTileScreen(IEContainerTypes.REFINERY, RefineryScreen::new);
+		registerTileScreen(IEContainerTypes.ARC_FURNACE, ArcFurnaceScreen::new);
+		registerTileScreen(IEContainerTypes.AUTO_WORKBENCH, AutoWorkbenchScreen::new);
+		registerTileScreen(IEContainerTypes.MIXER, MixerScreen::new);
+		registerTileScreen(IEContainerTypes.GUN_TURRET, GunTurretScreen::new);
+		registerTileScreen(IEContainerTypes.CHEM_TURRET, ChemTurretScreen::new);
+		registerTileScreen(IEContainerTypes.FLUID_SORTER, FluidSorterScreen::new);
+		registerTileScreen(IEContainerTypes.CLOCHE, ClocheScreen::new);
+		registerTileScreen(IEContainerTypes.TOOLBOX_BLOCK, ToolboxBlockScreen::new);
 
-		registerScreen(Lib.GUIID_Toolbox, ToolboxScreen::new);
-		registerScreen(Lib.GUIID_Revolver, RevolverScreen::new);
-		registerScreen(Lib.GUIID_MaintenanceKit, MaintenanceKitScreen::new);
+		registerScreen(IEContainerTypes.TOOLBOX, ToolboxScreen::new);
+		registerScreen(IEContainerTypes.REVOLVER, RevolverScreen::new);
+		registerScreen(IEContainerTypes.MAINTENANCE_KIT, MaintenanceKitScreen::new);
 
-		registerScreen(Lib.GUIID_CartCrate, CrateScreen::new);
-		registerScreen(Lib.GUIID_CartReinforcedCrate, CrateScreen::new);
+		registerScreen(IEContainerTypes.CRATE_MINECART, CrateScreen.EntityCrate::new);
 	}
 
-
-	public <C extends Container, S extends Screen & IHasContainer<C>>
-	void registerScreen(ResourceLocation containerName, IScreenFactory<C, S> factory)
+	public static <C extends Container, S extends Screen & IHasContainer<C>>
+	void registerScreen(IEContainerTypes.EntityContainerType<?, C> type, IScreenFactory<C, S> factory)
 	{
-		ContainerType<C> type = (ContainerType<C>)GuiHandler.getContainerType(containerName);
-		ScreenManager.registerFactory(type, factory);
+		ScreenManager.registerFactory(type.getType(), factory);
+	}
+
+	public static <C extends Container, S extends Screen & IHasContainer<C>>
+	void registerScreen(IEContainerTypes.ItemContainerType<C> type, IScreenFactory<C, S> factory)
+	{
+		ScreenManager.registerFactory(type.getType(), factory);
+	}
+
+	public static <C extends IEBaseContainer<?>, S extends Screen & IHasContainer<C>>
+	void registerTileScreen(IEContainerTypes.TileContainer<?, C> type, IScreenFactory<C, S> factory)
+	{
+		ScreenManager.registerFactory(type.getType(), factory);
 	}
 
 	@Override

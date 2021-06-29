@@ -11,19 +11,19 @@ package blusunrize.immersiveengineering.common.gui;
 import blusunrize.immersiveengineering.api.crafting.RefineryRecipe;
 import blusunrize.immersiveengineering.common.blocks.metal.RefineryTileEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
-import java.util.List;
 import java.util.Optional;
 
 public class RefineryContainer extends IEBaseContainer<RefineryTileEntity>
 {
-	public RefineryContainer(int id, PlayerInventory inventoryPlayer, RefineryTileEntity tile)
+	public RefineryContainer(ContainerType<?> type, int id, PlayerInventory inventoryPlayer, RefineryTileEntity tile)
 	{
-		super(inventoryPlayer, tile, id);
+		super(type, inventoryPlayer, tile, id);
 
 		final RefineryTileEntity tileF = tile;
 		this.addSlot(new IESlot.FluidContainer(this, this.inv, 0, 37, 15, 2)

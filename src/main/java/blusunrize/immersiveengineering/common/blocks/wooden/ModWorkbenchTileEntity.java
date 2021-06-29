@@ -18,6 +18,8 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummy
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes.TileContainer;
 import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
@@ -44,7 +46,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 
 public class ModWorkbenchTileEntity extends IEBaseTileEntity implements IIEInventory, IStateBasedDirectional,
-		IHasDummyBlocks, IInteractionObjectIE, IHasObjProperty, IModelOffsetProvider
+		IHasDummyBlocks, IInteractionObjectIE<ModWorkbenchTileEntity>, IHasObjProperty, IModelOffsetProvider
 {
 	public static final BlockPos MASTER_POS = BlockPos.ZERO;
 	public static final BlockPos DUMMY_POS = new BlockPos(1, 0, 0);
@@ -199,7 +201,7 @@ public class ModWorkbenchTileEntity extends IEBaseTileEntity implements IIEInven
 	}
 
 	@Override
-	public IInteractionObjectIE getGuiMaster()
+	public ModWorkbenchTileEntity getGuiMaster()
 	{
 		if(!isDummy())
 			return this;
@@ -208,6 +210,12 @@ public class ModWorkbenchTileEntity extends IEBaseTileEntity implements IIEInven
 		if(tileEntityModWorkbench instanceof ModWorkbenchTileEntity)
 			return (ModWorkbenchTileEntity)tileEntityModWorkbench;
 		return null;
+	}
+
+	@Override
+	public TileContainer<ModWorkbenchTileEntity, ?> getContainerType()
+	{
+		return IEContainerTypes.MOD_WORKBENCH;
 	}
 
 	private static VisibilityList normalDisplayList = VisibilityList.show("cube0");

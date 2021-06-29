@@ -20,6 +20,8 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISelectio
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTile;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes.TileContainer;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
@@ -56,7 +58,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnaceTileEntity, ArcFurnaceRecipe>
-		implements ISoundTile, IInteractionObjectIE, ISelectionBounds, ICollisionBounds
+		implements ISoundTile, IInteractionObjectIE<ArcFurnaceTileEntity>, ISelectionBounds, ICollisionBounds
 {
 	public static final int FIRST_IN_SLOT = 0;
 	public static final int IN_SLOT_COUNT = 12;
@@ -725,9 +727,15 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 	}
 
 	@Override
-	public IInteractionObjectIE getGuiMaster()
+	public ArcFurnaceTileEntity getGuiMaster()
 	{
 		return master();
+	}
+
+	@Override
+	public TileContainer<ArcFurnaceTileEntity, ?> getContainerType()
+	{
+		return IEContainerTypes.ARC_FURNACE;
 	}
 
 	@Override

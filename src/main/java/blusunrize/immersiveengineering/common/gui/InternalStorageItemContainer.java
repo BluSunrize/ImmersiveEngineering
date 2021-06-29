@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -22,9 +23,11 @@ public abstract class InternalStorageItemContainer extends ItemContainer
 	public final EquipmentSlotType entityEquipmentSlot;
 	public IItemHandler inv;
 
-	public InternalStorageItemContainer(int id, PlayerInventory iinventory, World world, EquipmentSlotType entityEquipmentSlot, ItemStack heldItem)
+	public InternalStorageItemContainer(
+			ContainerType<?> type, int id, PlayerInventory iinventory, World world, EquipmentSlotType entityEquipmentSlot, ItemStack heldItem
+	)
 	{
-		super(id, iinventory, world, entityEquipmentSlot, heldItem);
+		super(type, id, iinventory, world, entityEquipmentSlot, heldItem);
 		this.entityEquipmentSlot = entityEquipmentSlot;
 		this.inv = heldItem.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow(RuntimeException::new);
 		if(inv instanceof IEItemStackHandler)

@@ -28,6 +28,8 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteract
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes.TileContainer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
@@ -86,7 +88,8 @@ import java.util.Iterator;
 import java.util.List;
 
 public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IStateBasedDirectional, IBlockBounds, IHasDummyBlocks,
-		IIEInventory, IIEInternalFluxHandler, IInteractionObjectIE, IOBJModelCallback<BlockState>, IModelOffsetProvider
+		IIEInventory, IIEInternalFluxHandler, IInteractionObjectIE<ClocheTileEntity>, IOBJModelCallback<BlockState>,
+		IModelOffsetProvider
 {
 	public static final int SLOT_SOIL = 0;
 	public static final int SLOT_SEED = 1;
@@ -535,6 +538,12 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 		if(te instanceof ClocheTileEntity)
 			return (ClocheTileEntity)te;
 		return null;
+	}
+
+	@Override
+	public TileContainer<ClocheTileEntity, ?> getContainerType()
+	{
+		return IEContainerTypes.CLOCHE;
 	}
 
 

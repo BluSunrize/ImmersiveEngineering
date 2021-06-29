@@ -13,15 +13,16 @@ import blusunrize.immersiveengineering.api.tool.ToolboxHandler;
 import blusunrize.immersiveengineering.common.gui.IESlot.ICallbackContainer;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 public class ToolboxContainer extends InternalStorageItemContainer implements ICallbackContainer
 {
-	public ToolboxContainer(int id, PlayerInventory inventoryPlayer, World world, EquipmentSlotType slot, ItemStack toolbox)
+	public ToolboxContainer(ContainerType<?> type, int id, PlayerInventory inventoryPlayer, World world, EquipmentSlotType slot, ItemStack toolbox)
 	{
-		super(id, inventoryPlayer, world, slot, toolbox);
+		super(type, id, inventoryPlayer, world, slot, toolbox);
 	}
 
 	@Override

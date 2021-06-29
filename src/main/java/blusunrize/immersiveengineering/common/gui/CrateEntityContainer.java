@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.gui;
 
-import blusunrize.immersiveengineering.common.blocks.wooden.WoodenCrateTileEntity;
+import blusunrize.immersiveengineering.common.entities.CrateMinecartEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -20,16 +20,10 @@ public class CrateEntityContainer extends CrateContainer
 {
 	protected final Entity wrappingEntity;
 
-	public CrateEntityContainer(int id, PlayerInventory inventoryPlayer, WoodenCrateTileEntity tile, Entity entity)
+	public CrateEntityContainer(ContainerType<?> type, int id, PlayerInventory inventoryPlayer, CrateMinecartEntity entity)
 	{
-		super(id, inventoryPlayer, tile);
+		super(type, id, inventoryPlayer, entity.getContainedTileEntity());
 		this.wrappingEntity = entity;
-	}
-
-	@Override
-	public ContainerType<?> getType()
-	{
-		return GuiHandler.getContainerTypeFor(wrappingEntity);
 	}
 
 	@Override

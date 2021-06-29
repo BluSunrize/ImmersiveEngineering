@@ -16,6 +16,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -26,9 +27,9 @@ public class CircuitTableContainer extends IEBaseContainer<CircuitTableTileEntit
 
 	public LogicCircuitInstruction instruction;
 
-	public CircuitTableContainer(int id, PlayerInventory inventoryPlayer, CircuitTableTileEntity tile)
+	public CircuitTableContainer(ContainerType<?> type, int id, PlayerInventory inventoryPlayer, CircuitTableTileEntity tile)
 	{
-		super(inventoryPlayer, tile, id);
+		super(type, inventoryPlayer, tile, id);
 
 		this.addSlot(new IESlot.Tagged(this, this.inv, this.slotCount++, 8, 14, IETags.circuitPCB));
 		this.addSlot(new IESlot.Tagged(this, this.inv, this.slotCount++, 8, 34, IETags.circuitLogic));

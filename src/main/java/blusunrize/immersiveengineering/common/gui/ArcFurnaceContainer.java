@@ -9,18 +9,15 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.common.blocks.metal.ArcFurnaceTileEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-
-import javax.annotation.Nonnull;
 
 public class ArcFurnaceContainer extends IEBaseContainer<ArcFurnaceTileEntity>
 {
-	public ArcFurnaceContainer(int id, PlayerInventory inventoryPlayer, ArcFurnaceTileEntity tile)
+	public ArcFurnaceContainer(ContainerType<?> type, int id, PlayerInventory inventoryPlayer, ArcFurnaceTileEntity tile)
 	{
-		super(inventoryPlayer, tile, id);
+		super(type, inventoryPlayer, tile, id);
 		this.tile = tile;
 		for(int i = 0; i < 12; i++)
 			this.addSlot(new IESlot.ArcInput(this, this.inv, i, 10+i%3*21, 34+i/3*18));
@@ -41,59 +38,5 @@ public class ArcFurnaceContainer extends IEBaseContainer<ArcFurnaceTileEntity>
 				addSlot(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 126+i*18));
 		for(int i = 0; i < 9; i++)
 			addSlot(new Slot(inventoryPlayer, i, 8+i*18, 184));
-	}
-
-	@Nonnull
-	@Override
-	public ItemStack transferStackInSlot(PlayerEntity player, int slot)
-	{
-		return super.transferStackInSlot(player, slot);
-//		ItemStack stack = null;
-//		Slot slotObject = (Slot) inventorySlots.get(slot);
-//
-//		if (slotObject != null && slotObject.getHasStack())
-//		{
-//			ItemStack stackInSlot = slotObject.getStack();
-//			stack = stackInSlot.copy();
-//
-//			if (slot < slotCount)
-//			{
-//				if(!this.mergeItemStack(stackInSlot, slotCount, (slotCount + 36), true))
-//					return null;
-//			}
-//			else
-//			{
-//				int i = -1;
-//				int j = -1;
-//				if(ArcFurnaceRecipe.isValidRecipeInput(stackInSlot))
-//				{
-//					i=0;
-//					j=12;
-//				}
-//				else if(ArcFurnaceRecipe.isValidRecipeAdditive(stackInSlot))
-//				{
-//					i=12;
-//					j=16;
-//				}
-//				else if(IEContent.itemGraphiteElectrode.equals(stack.getItem()))
-//				{
-//					i=23;
-//					j=26;
-//				}
-//				if(i!=-1 && j!=-1)
-//					if(!this.mergeItemStack(stackInSlot, i,j, false))
-//						return null;
-//			}
-//
-//			if (stackInSlot.stackSize == 0)
-//				slotObject.putStack(null);
-//			else
-//				slotObject.onSlotChanged();
-//
-//			if (stackInSlot.stackSize == stack.stackSize)
-//				return null;
-//			slotObject.onTake(player, stackInSlot);
-//		}
-//		return stack;
 	}
 }

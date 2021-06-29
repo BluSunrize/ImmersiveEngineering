@@ -19,6 +19,8 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteract
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISelectionBounds;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes.TileContainer;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import com.google.common.collect.ImmutableList;
@@ -54,7 +56,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public class SqueezerTileEntity extends PoweredMultiblockTileEntity<SqueezerTileEntity, SqueezerRecipe> implements
-		ISelectionBounds, ICollisionBounds, IInteractionObjectIE, IBlockBounds
+		ISelectionBounds, ICollisionBounds, IInteractionObjectIE<SqueezerTileEntity>, IBlockBounds
 {
 	public FluidTank[] tanks = new FluidTank[]{new FluidTank(24*FluidAttributes.BUCKET_VOLUME)};
 	public NonNullList<ItemStack> inventory = NonNullList.withSize(11, ItemStack.EMPTY);
@@ -456,8 +458,14 @@ public class SqueezerTileEntity extends PoweredMultiblockTileEntity<SqueezerTile
 	}
 
 	@Override
-	public IInteractionObjectIE getGuiMaster()
+	public SqueezerTileEntity getGuiMaster()
 	{
 		return master();
+	}
+
+	@Override
+	public TileContainer<SqueezerTileEntity, ?> getContainerType()
+	{
+		return IEContainerTypes.SQUEEZER;
 	}
 }

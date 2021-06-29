@@ -16,6 +16,8 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteract
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IProcessTile;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes.TileContainer;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.entity.player.PlayerEntity;
@@ -40,7 +42,7 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import javax.annotation.Nullable;
 
 public class AlloySmelterTileEntity extends MultiblockPartTileEntity<AlloySmelterTileEntity> implements IIEInventory,
-		IActiveState, IInteractionObjectIE, IProcessTile, IBlockBounds
+		IActiveState, IInteractionObjectIE<AlloySmelterTileEntity>, IProcessTile, IBlockBounds
 {
 	NonNullList<ItemStack> inventory = NonNullList.withSize(4, ItemStack.EMPTY);
 	public int process = 0;
@@ -61,9 +63,15 @@ public class AlloySmelterTileEntity extends MultiblockPartTileEntity<AlloySmelte
 	}
 
 	@Override
-	public IInteractionObjectIE getGuiMaster()
+	public AlloySmelterTileEntity getGuiMaster()
 	{
 		return master();
+	}
+
+	@Override
+	public TileContainer<AlloySmelterTileEntity, ?> getContainerType()
+	{
+		return IEContainerTypes.ALLOY_SMELTER;
 	}
 
 	@Override

@@ -12,6 +12,8 @@ import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes.TileContainer;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.entity.player.PlayerEntity;
@@ -39,7 +41,7 @@ import static net.minecraftforge.fluids.capability.CapabilityFluidHandler.FLUID_
 /**
  * @author BluSunrize - 02.03.2017
  */
-public class FluidSorterTileEntity extends IEBaseTileEntity implements IInteractionObjectIE
+public class FluidSorterTileEntity extends IEBaseTileEntity implements IInteractionObjectIE<FluidSorterTileEntity>
 {
 	public byte[] sortWithNBT = {1, 1, 1, 1, 1, 1};
 	//	public static final int filterSlotsPerSide = 8;
@@ -128,9 +130,15 @@ public class FluidSorterTileEntity extends IEBaseTileEntity implements IInteract
 	}
 
 	@Override
-	public IInteractionObjectIE getGuiMaster()
+	public FluidSorterTileEntity getGuiMaster()
 	{
 		return this;
+	}
+
+	@Override
+	public TileContainer<FluidSorterTileEntity, ?> getContainerType()
+	{
+		return IEContainerTypes.FLUID_SORTER;
 	}
 
 	@Override

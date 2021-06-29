@@ -8,8 +8,9 @@
 
 package blusunrize.immersiveengineering.common.items;
 
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes.ItemContainerType;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
@@ -17,6 +18,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class MaintenanceKitItem extends IEBaseItem
 {
@@ -30,8 +32,15 @@ public class MaintenanceKitItem extends IEBaseItem
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand)
 	{
 		if(!world.isRemote)
-			openGui(player, hand==Hand.MAIN_HAND?EquipmentSlotType.MAINHAND: EquipmentSlotType.OFFHAND);
+			openGui(player, hand);
 		ItemStack stack = player.getHeldItem(hand);
 		return new ActionResult<>(ActionResultType.SUCCESS, stack);
+	}
+
+	@Nullable
+	@Override
+	protected ItemContainerType<?> getContainerType()
+	{
+		return IEContainerTypes.MAINTENANCE_KIT;
 	}
 }

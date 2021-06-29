@@ -24,6 +24,8 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.common.entities.RevolvershotEntity;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes.ItemContainerType;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.gui.RevolverContainer;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
@@ -314,7 +316,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 		{
 			if(player.isSneaking())
 			{
-				openGui(player, hand==Hand.MAIN_HAND?EquipmentSlotType.MAINHAND: EquipmentSlotType.OFFHAND);
+				openGui(player, hand);
 				return new ActionResult<>(ActionResultType.SUCCESS, revolver);
 			}
 			else if(player.getCooledAttackStrength(1) >= 1)
@@ -809,6 +811,13 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 				return matOpen;
 		}
 		return "frame".equals(groups[0])?matClose: matCylinder;
+	}
+
+	@Nullable
+	@Override
+	protected ItemContainerType<?> getContainerType()
+	{
+		return IEContainerTypes.REVOLVER;
 	}
 
 	/* ------------- INNER CLASSES ------------- */

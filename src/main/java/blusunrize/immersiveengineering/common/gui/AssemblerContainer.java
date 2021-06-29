@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.gui;
 import blusunrize.immersiveengineering.common.blocks.metal.AssemblerTileEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
@@ -20,9 +21,9 @@ import javax.annotation.Nonnull;
 
 public class AssemblerContainer extends IEBaseContainer<AssemblerTileEntity>
 {
-	public AssemblerContainer(int id, PlayerInventory inventoryPlayer, AssemblerTileEntity tile)
+	public AssemblerContainer(ContainerType<?> type, int id, PlayerInventory inventoryPlayer, AssemblerTileEntity tile)
 	{
-		super(inventoryPlayer, tile, id);
+		super(type, inventoryPlayer, tile, id);
 		this.tile = tile;
 		for(int i = 0; i < tile.patterns.length; i++)
 		{

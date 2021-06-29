@@ -10,13 +10,14 @@ package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.common.blocks.wooden.LogicUnitTileEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 
 public class LogicUnitContainer extends IEBaseContainer<LogicUnitTileEntity>
 {
-	public LogicUnitContainer(int id, PlayerInventory inventoryPlayer, LogicUnitTileEntity tile)
+	public LogicUnitContainer(ContainerType<?> type, int id, PlayerInventory inventoryPlayer, LogicUnitTileEntity tile)
 	{
-		super(inventoryPlayer, tile, id);
+		super(type, inventoryPlayer, tile, id);
 		for(int i = 0; i < tile.getInventory().size(); i++)
 			this.addSlot(new Slot(this.inv, i, 44+(i%5)*18, 19+(i/5)*18));
 		this.slotCount = tile.getInventory().size();

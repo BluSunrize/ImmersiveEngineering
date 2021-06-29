@@ -14,7 +14,7 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
-import blusunrize.immersiveengineering.common.gui.GuiHandler;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes.TileContainer;
 import com.google.common.base.Preconditions;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -436,10 +436,12 @@ public class IEBlockInterfaces
 		IEObjState getIEObjState(BlockState state);
 	}
 
-	public interface IInteractionObjectIE extends INamedContainerProvider
+	public interface IInteractionObjectIE<T extends TileEntity & IInteractionObjectIE<T>> extends INamedContainerProvider
 	{
 		@Nullable
-		IInteractionObjectIE getGuiMaster();
+		T getGuiMaster();
+
+		TileContainer<T, ?> getContainerType();
 
 		boolean canUseGui(PlayerEntity player);
 
@@ -452,9 +454,10 @@ public class IEBlockInterfaces
 		@Override
 		default Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity playerEntity)
 		{
-			IInteractionObjectIE master = getGuiMaster();
-			Preconditions.checkState(master instanceof TileEntity);
-			return GuiHandler.createContainer(playerInventory, (TileEntity)master, id);
+			T master = getGuiMaster();
+			Preconditions.checkNotNull(master);
+			TileContainer<T, ?> type = getContainerType();
+			return type.create(id, playerInventory, master);
 		}
 
 		@Override

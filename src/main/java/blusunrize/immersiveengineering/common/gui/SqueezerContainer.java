@@ -10,13 +10,14 @@ package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.common.blocks.metal.SqueezerTileEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 
 public class SqueezerContainer extends IEBaseContainer<SqueezerTileEntity>
 {
-	public SqueezerContainer(int id, PlayerInventory inventoryPlayer, SqueezerTileEntity tile)
+	public SqueezerContainer(ContainerType<?> type, int id, PlayerInventory inventoryPlayer, SqueezerTileEntity tile)
 	{
-		super(inventoryPlayer, tile, id);
+		super(type, inventoryPlayer, tile, id);
 
 		for(int i = 0; i < 8; i++)
 			this.addSlot(new Slot(this.inv, i, 8+(i%4)*18, 35+(i/4)*18));

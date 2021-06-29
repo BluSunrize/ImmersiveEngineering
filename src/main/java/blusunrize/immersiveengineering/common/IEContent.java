@@ -53,6 +53,7 @@ import blusunrize.immersiveengineering.common.entities.CapabilitySkyhookData;
 import blusunrize.immersiveengineering.common.entities.IEEntityTypes;
 import blusunrize.immersiveengineering.common.fluids.IEFluid;
 import blusunrize.immersiveengineering.common.fluids.IEFluids;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.items.IEItems.ItemRegObject;
@@ -146,10 +147,9 @@ public class IEContent
 		IEPotions.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
 		IETileTypes.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
 		IEEntityTypes.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
+		IEContainerTypes.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
 		IEBlocks.init();
 		IEItems.init();
-
-		ImmersiveEngineering.proxy.registerContainersAndScreens();
 
 		BulletHandler.emptyCasing = Ingredients.emptyCasing;
 		BulletHandler.emptyShell = Ingredients.emptyShell;

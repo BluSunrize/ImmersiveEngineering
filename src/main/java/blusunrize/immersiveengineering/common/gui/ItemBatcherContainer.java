@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.gui;
 import blusunrize.immersiveengineering.common.blocks.wooden.ItemBatcherTileEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
@@ -22,9 +23,9 @@ import static blusunrize.immersiveengineering.common.blocks.wooden.ItemBatcherTi
 
 public class ItemBatcherContainer extends IEBaseContainer<ItemBatcherTileEntity>
 {
-	public ItemBatcherContainer(int id, PlayerInventory inventoryPlayer, ItemBatcherTileEntity tile)
+	public ItemBatcherContainer(ContainerType<?> type, int id, PlayerInventory inventoryPlayer, ItemBatcherTileEntity tile)
 	{
-		super(inventoryPlayer, tile, id);
+		super(type, inventoryPlayer, tile, id);
 		IItemHandler filterItemHandler = new ItemStackHandler(tile.getFilters());
 		for(int i = 0; i < NUM_SLOTS; i++)
 			this.addSlot(new IESlot.ItemHandlerGhost(filterItemHandler, i, 8+i*18, 30));

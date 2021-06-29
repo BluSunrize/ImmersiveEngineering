@@ -28,13 +28,11 @@ package blusunrize.immersiveengineering.common;
 import blusunrize.immersiveengineering.client.fx.IEParticles;
 import blusunrize.immersiveengineering.common.blocks.metal.BucketWheelTileEntity;
 import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
-import blusunrize.immersiveengineering.common.gui.GuiHandler;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.vector.Vector3d;
@@ -163,13 +161,8 @@ public class CommonProxy
 
 	}
 
-	public void openTileScreen(ResourceLocation guiId, TileEntity tileEntity)
+	public void openTileScreen(String guiId, TileEntity tileEntity)
 	{
-	}
-
-	public void registerContainersAndScreens()
-	{
-		GuiHandler.commonInit();
 	}
 
 	public Item.Properties useIEOBJRenderer(Item.Properties props)

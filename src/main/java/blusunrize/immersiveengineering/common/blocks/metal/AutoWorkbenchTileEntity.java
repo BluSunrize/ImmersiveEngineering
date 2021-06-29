@@ -21,6 +21,8 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteract
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.BasicConveyor;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes.TileContainer;
 import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
@@ -50,7 +52,7 @@ import javax.annotation.Nullable;
 import java.util.Set;
 
 public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWorkbenchTileEntity, MultiblockRecipe>
-		implements IInteractionObjectIE, IConveyorAttachable, IBlockBounds
+		implements IInteractionObjectIE<AutoWorkbenchTileEntity>, IConveyorAttachable, IBlockBounds
 {
 	public AutoWorkbenchTileEntity()
 	{
@@ -362,9 +364,15 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 	}
 
 	@Override
-	public IInteractionObjectIE getGuiMaster()
+	public AutoWorkbenchTileEntity getGuiMaster()
 	{
 		return master();
+	}
+
+	@Override
+	public TileContainer<AutoWorkbenchTileEntity, ?> getContainerType()
+	{
+		return IEContainerTypes.AUTO_WORKBENCH;
 	}
 
 	@Override

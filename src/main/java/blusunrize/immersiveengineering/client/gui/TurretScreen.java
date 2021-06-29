@@ -38,7 +38,7 @@ public abstract class TurretScreen extends IEContainerScreen<TurretContainer>
 {
 	protected static final ResourceLocation TEXTURE = makeTextureLocation("turret");
 
-	public TurretTileEntity tile;
+	public TurretTileEntity<?> tile;
 	private TextFieldWidget nameField;
 
 	public TurretScreen(TurretContainer container, PlayerInventory inventoryPlayer, ITextComponent title)

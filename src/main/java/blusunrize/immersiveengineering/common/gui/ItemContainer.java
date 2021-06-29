@@ -14,6 +14,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -31,9 +32,9 @@ public abstract class ItemContainer extends Container implements Supplier<World>
 	protected final PlayerEntity player;
 	public int internalSlots;
 
-	public ItemContainer(int id, PlayerInventory inventoryPlayer, World world, EquipmentSlotType entityEquipmentSlot, ItemStack heldItem)
+	public ItemContainer(ContainerType<?> type, int id, PlayerInventory inventoryPlayer, World world, EquipmentSlotType entityEquipmentSlot, ItemStack heldItem)
 	{
-		super(GuiHandler.getContainerTypeFor(heldItem), id);
+		super(type, id);
 		this.inventoryPlayer = inventoryPlayer;
 		this.world = world;
 		this.player = inventoryPlayer.player;

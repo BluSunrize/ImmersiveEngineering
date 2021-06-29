@@ -17,6 +17,8 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBou
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes.TileContainer;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import com.google.common.collect.ImmutableList;
@@ -53,7 +55,7 @@ import java.util.List;
 import java.util.Set;
 
 public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTileEntity, FermenterRecipe> implements
-		IBlockBounds, IInteractionObjectIE
+		IBlockBounds, IInteractionObjectIE<FermenterTileEntity>
 {
 	public FluidTank[] tanks = new FluidTank[]{new FluidTank(24*FluidAttributes.BUCKET_VOLUME)};
 	public NonNullList<ItemStack> inventory = NonNullList.withSize(11, ItemStack.EMPTY);
@@ -429,8 +431,14 @@ public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTi
 	}
 
 	@Override
-	public IInteractionObjectIE getGuiMaster()
+	public FermenterTileEntity getGuiMaster()
 	{
 		return master();
+	}
+
+	@Override
+	public TileContainer<FermenterTileEntity, ?> getContainerType()
+	{
+		return IEContainerTypes.FERMENTER;
 	}
 }

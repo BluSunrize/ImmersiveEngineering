@@ -9,9 +9,11 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
-import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.IETileTypes;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.entities.ChemthrowerShotEntity;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes.TileContainer;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.nbt.CompoundNBT;
@@ -31,7 +33,7 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class TurretChemTileEntity extends TurretTileEntity
+public class TurretChemTileEntity extends TurretTileEntity<TurretChemTileEntity>
 {
 	public FluidTank tank = new FluidTank(4*FluidAttributes.BUCKET_VOLUME);
 	public boolean ignite = false;
@@ -152,5 +154,11 @@ public class TurretChemTileEntity extends TurretTileEntity
 		if(!isDummy()&&capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&(facing==null||facing==Direction.DOWN||facing==this.getFacing().getOpposite()))
 			return tankCap.cast();
 		return super.getCapability(capability, facing);
+	}
+
+	@Override
+	public TileContainer<TurretChemTileEntity, ?> getContainerType()
+	{
+		return IEContainerTypes.CHEM_TURRET;
 	}
 }

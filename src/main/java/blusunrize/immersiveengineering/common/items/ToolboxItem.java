@@ -11,11 +11,12 @@ package blusunrize.immersiveengineering.common.items;
 import blusunrize.immersiveengineering.api.tool.ToolboxHandler;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes.ItemContainerType;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
@@ -24,6 +25,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class ToolboxItem extends InternalStorageItem
 {
@@ -43,8 +45,15 @@ public class ToolboxItem extends InternalStorageItem
 	{
 		ItemStack stack = player.getHeldItem(hand);
 		if(!world.isRemote)
-			openGui(player, hand==Hand.MAIN_HAND?EquipmentSlotType.MAINHAND: EquipmentSlotType.OFFHAND);
+			openGui(player, hand);
 		return new ActionResult<>(ActionResultType.SUCCESS, stack);
+	}
+
+	@Nullable
+	@Override
+	protected ItemContainerType<?> getContainerType()
+	{
+		return IEContainerTypes.TOOLBOX;
 	}
 
 	@Override
@@ -52,7 +61,7 @@ public class ToolboxItem extends InternalStorageItem
 	{
 		ItemStack stack = ctx.getItem();
 		PlayerEntity player = ctx.getPlayer();
-		if(player!=null && player.isSneaking())
+		if(player!=null&&player.isSneaking())
 		{
 			World world = ctx.getWorld();
 			BlockPos pos = ctx.getPos();

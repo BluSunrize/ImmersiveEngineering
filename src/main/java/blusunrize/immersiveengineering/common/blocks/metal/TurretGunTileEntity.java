@@ -10,9 +10,11 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
-import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.IETileTypes;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.entities.RevolvershotEntity;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes.TileContainer;
 import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import blusunrize.immersiveengineering.common.util.IESounds;
@@ -39,7 +41,7 @@ import net.minecraftforge.items.IItemHandler;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class TurretGunTileEntity extends TurretTileEntity
+public class TurretGunTileEntity extends TurretTileEntity<TurretGunTileEntity>
 {
 	public int cycleRender;
 	private NonNullList<ItemStack> inventory = NonNullList.withSize(2, ItemStack.EMPTY);
@@ -231,5 +233,11 @@ public class TurretGunTileEntity extends TurretTileEntity
 		if(!isDummy()&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY&&(facing==null||facing==Direction.DOWN||facing==this.getFacing().getOpposite()))
 			return itemHandler.cast();
 		return super.getCapability(capability, facing);
+	}
+
+	@Override
+	public TileContainer<TurretGunTileEntity, ?> getContainerType()
+	{
+		return IEContainerTypes.GUN_TURRET;
 	}
 }

@@ -12,7 +12,6 @@ package blusunrize.immersiveengineering.common.entities;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
-import blusunrize.immersiveengineering.common.gui.GuiHandler;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
@@ -127,7 +126,7 @@ public abstract class IEMinecartEntity<T extends IEBaseTileEntity> extends Abstr
 	@Nullable
 	public Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity playerEntity)
 	{
-		return GuiHandler.createContainer(playerInventory, this, id);
+		return null;
 	}
 
 	@Override

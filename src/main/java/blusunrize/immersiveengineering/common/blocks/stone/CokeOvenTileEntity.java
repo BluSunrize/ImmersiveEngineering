@@ -17,6 +17,8 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IProcessT
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.fluids.IEFluids;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes.TileContainer;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
@@ -47,7 +49,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class CokeOvenTileEntity extends MultiblockPartTileEntity<CokeOvenTileEntity> implements IIEInventory,
-		IActiveState, IInteractionObjectIE, IProcessTile, IBlockBounds
+		IActiveState, IInteractionObjectIE<CokeOvenTileEntity>, IProcessTile, IBlockBounds
 {
 	public static final int INPUT_SLOT = 0;
 	public static final int OUTPUT_SLOT = 1;
@@ -72,9 +74,15 @@ public class CokeOvenTileEntity extends MultiblockPartTileEntity<CokeOvenTileEnt
 	}
 
 	@Override
-	public IInteractionObjectIE getGuiMaster()
+	public CokeOvenTileEntity getGuiMaster()
 	{
 		return master();
+	}
+
+	@Override
+	public TileContainer<CokeOvenTileEntity, ?> getContainerType()
+	{
+		return IEContainerTypes.COKE_OVEN;
 	}
 
 	@Override

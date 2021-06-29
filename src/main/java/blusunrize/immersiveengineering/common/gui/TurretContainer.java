@@ -13,14 +13,15 @@ import blusunrize.immersiveengineering.common.blocks.metal.TurretGunTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.TurretTileEntity;
 import blusunrize.immersiveengineering.common.items.BulletItem;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
-public class TurretContainer extends IEBaseContainer<TurretTileEntity>
+public class TurretContainer extends IEBaseContainer<TurretTileEntity<?>>
 {
-	public TurretContainer(int id, PlayerInventory inventoryPlayer, TurretTileEntity tile)
+	public TurretContainer(ContainerType<?> type, int id, PlayerInventory inventoryPlayer, TurretTileEntity<?> tile)
 	{
-		super(inventoryPlayer, tile, id);
+		super(type, inventoryPlayer, tile, id);
 		this.tile = tile;
 
 		if(tile instanceof TurretGunTileEntity)

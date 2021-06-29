@@ -17,6 +17,8 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteract
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISelectionBounds;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes.TileContainer;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -45,7 +47,7 @@ import java.util.Optional;
 import java.util.Set;
 
 public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTileEntity, RefineryRecipe> implements
-		ISelectionBounds, ICollisionBounds, IInteractionObjectIE, IBlockBounds
+		ISelectionBounds, ICollisionBounds, IInteractionObjectIE<RefineryTileEntity>, IBlockBounds
 {
 	public static final int OUTPUT_EMPTY = 4;
 	public static final int OUTPUT_FILLED = 5;
@@ -419,8 +421,14 @@ public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTile
 	}
 
 	@Override
-	public IInteractionObjectIE getGuiMaster()
+	public RefineryTileEntity getGuiMaster()
 	{
 		return master();
+	}
+
+	@Override
+	public TileContainer<RefineryTileEntity, ?> getContainerType()
+	{
+		return IEContainerTypes.REFINERY;
 	}
 }

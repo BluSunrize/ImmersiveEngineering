@@ -20,6 +20,8 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteract
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes.TileContainer;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerControlState;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
@@ -63,7 +65,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTileEntity, MultiblockRecipe>
-		implements IInteractionObjectIE, IConveyorAttachable, IBlockBounds
+		implements IInteractionObjectIE<AssemblerTileEntity>, IConveyorAttachable, IBlockBounds
 {
 	public ComputerControlState[] computerControlByRecipe = {
 			ComputerControlState.NO_COMPUTER,
@@ -574,9 +576,15 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 	}
 
 	@Override
-	public IInteractionObjectIE getGuiMaster()
+	public AssemblerTileEntity getGuiMaster()
 	{
 		return master();
+	}
+
+	@Override
+	public TileContainer<AssemblerTileEntity, ?> getContainerType()
+	{
+		return IEContainerTypes.ASSEMBLER;
 	}
 
 	private static final BlockPos fluidInputPos = new BlockPos(1, 0, 2);

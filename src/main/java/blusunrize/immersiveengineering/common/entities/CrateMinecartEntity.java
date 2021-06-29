@@ -11,15 +11,21 @@ package blusunrize.immersiveengineering.common.entities;
 
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.blocks.wooden.WoodenCrateTileEntity;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
 import blusunrize.immersiveengineering.common.items.IEItems;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.World;
 import net.minecraftforge.items.CapabilityItemHandler;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
 public class CrateMinecartEntity extends IEMinecartEntity<WoodenCrateTileEntity>
@@ -77,10 +83,17 @@ public class CrateMinecartEntity extends IEMinecartEntity<WoodenCrateTileEntity>
 			this.containedTileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).invalidate();
 	}
 
+	@Nonnull
 	@Override
 	public BlockState getDisplayTile()
 	{
 		return IEBlocks.WoodenDevices.crate.getDefaultState();
 	}
 
+	@Nullable
+	@Override
+	public Container createMenu(int id, @Nonnull PlayerInventory inv, @Nonnull PlayerEntity player)
+	{
+		return IEContainerTypes.CRATE_MINECART.construct(id, inv, this);
+	}
 }

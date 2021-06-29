@@ -12,15 +12,16 @@ import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.common.blocks.wooden.WoodenCrateTileEntity;
 import invtweaks.api.container.ChestContainer;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
 @ChestContainer
 public class CrateContainer extends IEBaseContainer<WoodenCrateTileEntity>
 {
-	public CrateContainer(int id, PlayerInventory inventoryPlayer, WoodenCrateTileEntity tile)
+	public CrateContainer(ContainerType<?> type, int id, PlayerInventory inventoryPlayer, WoodenCrateTileEntity tile)
 	{
-		super(inventoryPlayer, tile, id);
+		super(type, inventoryPlayer, tile, id);
 		for(int i = 0; i < tile.getInventory().size(); i++)
 			this.addSlot(new Slot(this.inv, i, 8+(i%9)*18, 18+(i/9)*18)
 			{

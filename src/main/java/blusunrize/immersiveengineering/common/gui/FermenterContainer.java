@@ -10,13 +10,14 @@ package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.common.blocks.metal.FermenterTileEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 
 public class FermenterContainer extends IEBaseContainer<FermenterTileEntity>
 {
-	public FermenterContainer(int id, PlayerInventory inventoryPlayer, FermenterTileEntity tile)
+	public FermenterContainer(ContainerType<?> type, int id, PlayerInventory inventoryPlayer, FermenterTileEntity tile)
 	{
-		super(inventoryPlayer, tile, id);
+		super(type, inventoryPlayer, tile, id);
 
 		for(int i = 0; i < 8; i++)
 			this.addSlot(new Slot(this.inv, i, 8+(i%4)*18, 19+(i/4)*18));

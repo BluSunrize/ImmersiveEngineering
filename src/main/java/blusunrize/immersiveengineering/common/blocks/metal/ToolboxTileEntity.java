@@ -13,6 +13,8 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
+import blusunrize.immersiveengineering.common.gui.IEContainerTypes.TileContainer;
 import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import blusunrize.immersiveengineering.common.items.InternalStorageItem;
 import blusunrize.immersiveengineering.common.items.ToolboxItem;
@@ -44,7 +46,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class ToolboxTileEntity extends IEBaseTileEntity implements IStateBasedDirectional, IBlockBounds, IIEInventory,
-		IInteractionObjectIE, ITileDrop, IPlayerInteraction
+		IInteractionObjectIE<ToolboxTileEntity>, ITileDrop, IPlayerInteraction
 {
 	NonNullList<ItemStack> inventory = NonNullList.withSize(ToolboxItem.SLOT_COUNT, ItemStack.EMPTY);
 	public ITextComponent name;
@@ -110,9 +112,15 @@ public class ToolboxTileEntity extends IEBaseTileEntity implements IStateBasedDi
 	}
 
 	@Override
-	public IInteractionObjectIE getGuiMaster()
+	public ToolboxTileEntity getGuiMaster()
 	{
 		return this;
+	}
+
+	@Override
+	public TileContainer<ToolboxTileEntity, ?> getContainerType()
+	{
+		return IEContainerTypes.TOOLBOX_BLOCK;
 	}
 
 	@Override
