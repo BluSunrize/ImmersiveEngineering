@@ -8,11 +8,10 @@
 
 package blusunrize.immersiveengineering.common.network;
 
-import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
+import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchTileEntity;
 import blusunrize.immersiveengineering.common.gui.MaintenanceKitContainer;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
@@ -51,17 +50,7 @@ public class MessageMaintenanceKit implements IMessage
 		assert player!=null;
 		ctx.enqueueWork(() -> {
 			if(player.openContainer instanceof MaintenanceKitContainer)
-			{
-				ItemStack tool = ((MaintenanceKitContainer)player.openContainer).inventorySlots.get(0).getStack();
-				if(!tool.isEmpty()&&tool.getItem() instanceof IConfigurableTool)
-					for(String key : nbt.keySet())
-					{
-						if(key.startsWith("b_"))
-							((IConfigurableTool)tool.getItem()).applyConfigOption(tool, key.substring(2), nbt.getBoolean(key));
-						else if(key.startsWith("f_"))
-							((IConfigurableTool)tool.getItem()).applyConfigOption(tool, key.substring(2), nbt.getFloat(key));
-					}
-			}
+				ModWorkbenchTileEntity.applyConfigTo(player.openContainer.inventorySlots.get(0).getStack(), nbt);
 		});
 	}
 }

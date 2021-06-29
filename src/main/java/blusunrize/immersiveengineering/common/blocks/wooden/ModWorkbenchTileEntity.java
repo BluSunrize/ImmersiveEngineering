@@ -129,17 +129,21 @@ public class ModWorkbenchTileEntity extends IEBaseTileEntity implements IIEInven
 	@Override
 	public void receiveMessageFromClient(CompoundNBT message)
 	{
-		if(!inventory.get(0).isEmpty()&&inventory.get(0).getItem() instanceof IConfigurableTool)
-			for(String key : message.keySet())
-			{
-				INBT tag = message.get(key);
-				if(tag instanceof ByteNBT)
-					((IConfigurableTool)inventory.get(0).getItem()).applyConfigOption(inventory.get(0), key,
-							((ByteNBT)tag).getByte()!=0);
-				else if(tag instanceof FloatNBT)
-					((IConfigurableTool)inventory.get(0).getItem()).applyConfigOption(inventory.get(0), key,
-							((FloatNBT)tag).getFloat());
-			}
+		applyConfigTo(inventory.get(0), message);
+	}
+
+	public static void applyConfigTo(ItemStack stack, CompoundNBT message)
+	{
+		if(!(stack.getItem() instanceof IConfigurableTool))
+			return;
+		for(String key : message.keySet())
+		{
+			INBT tag = message.get(key);
+			if(tag instanceof ByteNBT)
+				((IConfigurableTool)stack.getItem()).applyConfigOption(stack, key, ((ByteNBT)tag).getByte()!=0);
+			else if(tag instanceof FloatNBT)
+				((IConfigurableTool)stack.getItem()).applyConfigOption(stack, key, ((FloatNBT)tag).getFloat());
+		}
 	}
 
 	@Override
