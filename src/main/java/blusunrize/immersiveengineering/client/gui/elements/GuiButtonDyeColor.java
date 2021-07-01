@@ -12,11 +12,22 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.item.DyeColor;
 import net.minecraft.util.text.ITextComponent;
 
+import java.util.List;
+import java.util.function.BiConsumer;
+
 public class GuiButtonDyeColor extends GuiButtonState<DyeColor>
 {
+	public GuiButtonDyeColor(
+			int x, int y, String name, DyeColor initialColor,
+			IIEPressable<GuiButtonState<DyeColor>> handler, BiConsumer<List<ITextComponent>, DyeColor> tooltip
+	)
+	{
+		super(x, y, 8, 8, ITextComponent.getTextComponentOrEmpty(name), DyeColor.values(), initialColor.ordinal(), GuiReactiveList.TEXTURE, 0, 128, -1, handler, tooltip);
+	}
+
 	public GuiButtonDyeColor(int x, int y, String name, DyeColor initialColor, IIEPressable<GuiButtonState<DyeColor>> handler)
 	{
-		super(x, y, 8, 8, ITextComponent.getTextComponentOrEmpty(name), DyeColor.values(), initialColor.ordinal(), GuiReactiveList.TEXTURE, 0, 128, -1, handler);
+		this(x, y, name, initialColor, handler, (a, b) -> {});
 	}
 
 	@Override

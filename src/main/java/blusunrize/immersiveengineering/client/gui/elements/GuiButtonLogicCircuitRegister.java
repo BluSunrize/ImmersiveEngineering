@@ -18,12 +18,11 @@ import net.minecraft.item.DyeColor;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.List;
 import java.util.Locale;
 
-public class GuiButtonLogicCircuitRegister extends GuiButtonState<LogicCircuitRegister>
+public class GuiButtonLogicCircuitRegister extends GuiButtonState<LogicCircuitRegister> implements ITooltipWidget
 {
 	private static final ResourceLocation TEXTURE = IEContainerScreen.makeTextureLocation("circuit_table");
 
@@ -40,6 +39,12 @@ public class GuiButtonLogicCircuitRegister extends GuiButtonState<LogicCircuitRe
 		if(state.ordinal() >= 16)
 			return new StringTextComponent(state.name());
 		return StringTextComponent.EMPTY;
+	}
+
+	@Override
+	public void gatherTooltip(int mouseX, int mouseY, List<ITextComponent> tooltip)
+	{
+		tooltip.add(getState().getDescription());
 	}
 
 	@Override

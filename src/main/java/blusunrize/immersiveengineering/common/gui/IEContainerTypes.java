@@ -53,8 +53,8 @@ public class IEContainerTypes
 	public static final TileContainer<ArcFurnaceTileEntity, ArcFurnaceContainer> ARC_FURNACE = register(Lib.GUIID_ArcFurnace, ArcFurnaceContainer::new);
 	public static final TileContainer<AutoWorkbenchTileEntity, AutoWorkbenchContainer> AUTO_WORKBENCH = register(Lib.GUIID_AutoWorkbench, AutoWorkbenchContainer::new);
 	public static final TileContainer<MixerTileEntity, MixerContainer> MIXER = register(Lib.GUIID_Mixer, MixerContainer::new);
-	public static final TileContainer<TurretGunTileEntity, TurretContainer> GUN_TURRET = register(Lib.GUIID_Turret_Gun, TurretContainer::new);
-	public static final TileContainer<TurretChemTileEntity, TurretContainer> CHEM_TURRET = register(Lib.GUIID_Turret_Chem, TurretContainer::new);
+	public static final TileContainer<TurretGunTileEntity, TurretContainer.GunTurretContainer> GUN_TURRET = register(Lib.GUIID_Turret_Gun, TurretContainer.GunTurretContainer::new);
+	public static final TileContainer<TurretChemTileEntity, TurretContainer.ChemTurretContainer> CHEM_TURRET = register(Lib.GUIID_Turret_Chem, TurretContainer.ChemTurretContainer::new);
 	public static final TileContainer<FluidSorterTileEntity, FluidSorterContainer> FLUID_SORTER = register(Lib.GUIID_FluidSorter, FluidSorterContainer::new);
 	public static final TileContainer<ClocheTileEntity, ClocheContainer> CLOCHE = register(Lib.GUIID_Cloche, ClocheContainer::new);
 	public static final TileContainer<ToolboxTileEntity, ToolboxBlockContainer> TOOLBOX_BLOCK = register(Lib.GUIID_ToolboxBlock, ToolboxBlockContainer::new);

@@ -15,16 +15,19 @@ import blusunrize.immersiveengineering.api.tool.LogicCircuitHandler.LogicCircuit
 import blusunrize.immersiveengineering.api.tool.LogicCircuitHandler.LogicCircuitOperator;
 import blusunrize.immersiveengineering.api.tool.LogicCircuitHandler.LogicCircuitRegister;
 import blusunrize.immersiveengineering.api.utils.ResettableLazy;
-import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonLogicCircuitRegister;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonState;
 import blusunrize.immersiveengineering.client.gui.elements.GuiSelectingList;
+import blusunrize.immersiveengineering.client.gui.info.EnergyInfoArea;
+import blusunrize.immersiveengineering.client.gui.info.InfoArea;
+import blusunrize.immersiveengineering.client.gui.info.TooltipArea;
 import blusunrize.immersiveengineering.common.blocks.wooden.CircuitTableTileEntity;
 import blusunrize.immersiveengineering.common.gui.CircuitTableContainer;
 import blusunrize.immersiveengineering.common.items.LogicCircuitBoardItem;
 import blusunrize.immersiveengineering.common.network.MessageContainerUpdate;
+import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.renderer.Rectangle2d;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.DyeColor;
 import net.minecraft.util.ResourceLocation;
@@ -32,10 +35,11 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.fml.client.gui.GuiUtils;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Consumer;
 
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 import static blusunrize.immersiveengineering.common.blocks.wooden.CircuitTableTileEntity.SLOT_TYPES;
@@ -50,6 +54,7 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 	private GuiSelectingList operatorList;
 	private final List<GuiButtonState<LogicCircuitRegister>> inputButtons = new ArrayList<>(LogicCircuitOperator.TOTAL_MAX_INPUTS);
 	private GuiButtonState<LogicCircuitRegister> outputButton;
+	private final Rectangle2d copyArea;
 
 	private final ResettableLazy<Optional<LogicCircuitInstruction>> instruction = new ResettableLazy<>(() -> {
 		LogicCircuitOperator operator = getSelectedOperator();
@@ -70,10 +75,26 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 
 	public CircuitTableScreen(CircuitTableContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{
-		super(container, inventoryPlayer, title);
+		super(container, inventoryPlayer, title, TEXTURE);
 		this.tile = container.tile;
 		this.xSize = 234;
 		this.ySize = 182;
+		this.copyArea = new Rectangle2d(52, 7, 48, 63);
+	}
+
+	@Nonnull
+	@Override
+	protected List<InfoArea> makeInfoAreas()
+	{
+		return ImmutableList.of(
+				new EnergyInfoArea(guiLeft+217, guiTop+16, tile),
+				new TooltipArea(copyArea, l -> {
+					if(this.playerInventory.getItemStack().getItem() instanceof LogicCircuitBoardItem)
+						l.add(TextUtils.applyFormat(
+								new TranslationTextComponent(Lib.DESC_INFO+"circuit_table.copy"), TextFormatting.GRAY
+						));
+				})
+		);
 	}
 
 	@Override
@@ -123,7 +144,7 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 				// Reposition buttons and remove excess
 				while(it.hasNext())
 				{
-					GuiButtonState btn = it.next();
+					GuiButtonState<?> btn = it.next();
 					btn.x = guiLeft+inputStart+20*i;
 					if(++i > inputCount)
 					{
@@ -150,37 +171,14 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 	}
 
 	@Override
-	public void render(MatrixStack transform, int mx, int my, float partial)
+	protected void gatherAdditionalTooltips(int mouseX, int mouseY, Consumer<ITextComponent> addLine, Consumer<ITextComponent> addGray)
 	{
-		super.render(transform, mx, my, partial);
-
-		List<ITextComponent> tooltip = new ArrayList<>();
-
+		super.gatherAdditionalTooltips(mouseX, mouseY, addLine, addGray);
 		if(this.hoveredSlot!=null&&this.hoveredSlot.slotNumber < SLOT_TYPES.length&&!this.hoveredSlot.getHasStack())
 		{
 			int slotNum = this.hoveredSlot.slotNumber;
-			tooltip.add(TextUtils.applyFormat(
-					new TranslationTextComponent(Lib.DESC_INFO+"circuit_table.slot."+SLOT_TYPES[slotNum]),
-					TextFormatting.GRAY
-			));
+			addGray.accept(new TranslationTextComponent(Lib.DESC_INFO+"circuit_table.slot."+SLOT_TYPES[slotNum]));
 		}
-		if(isMouseIn(mx, my, 217, 16, 7, 46))
-			tooltip.add(new StringTextComponent(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" IF"));
-
-		if(isMouseIn(mx, my, 52, 7, 100, 70)&&this.playerInventory.getItemStack().getItem() instanceof LogicCircuitBoardItem)
-			tooltip.add(TextUtils.applyFormat(
-					new TranslationTextComponent(Lib.DESC_INFO+"circuit_table.copy"),
-					TextFormatting.GRAY
-			));
-
-		for(GuiButtonState<LogicCircuitRegister> input : this.inputButtons)
-			if(input.isHovered())
-				tooltip.add(TextUtils.applyFormat(input.getState().getDescription(), TextFormatting.GRAY));
-		if(this.outputButton.isHovered())
-			tooltip.add(TextUtils.applyFormat(outputButton.getState().getDescription(), TextFormatting.GRAY));
-
-		if(!tooltip.isEmpty())
-			GuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
 	}
 
 	@Override
@@ -204,17 +202,6 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 			}
 			this.font.drawString(transform, "x "+amount, 30, 18+20*i, col.getColorValue());
 		}
-	}
-
-	@Override
-	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float f, int mx, int my)
-	{
-		RenderSystem.color3f(1.0F, 1.0F, 1.0F);
-		ClientUtils.bindTexture(TEXTURE);
-		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
-
-		int stored = (int)(46*(tile.getEnergyStored(null)/(float)tile.getMaxEnergyStored(null)));
-		fillGradient(transform, guiLeft+217, guiTop+16+(46-stored), guiLeft+224, guiTop+62, 0xffb51500, 0xff600b00);
 	}
 
 	@Override

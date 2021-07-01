@@ -9,12 +9,14 @@
 package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE;
+import blusunrize.immersiveengineering.client.gui.info.EnergyInfoArea;
+import blusunrize.immersiveengineering.client.gui.info.InfoArea;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity.MultiblockProcessInMachine;
 import blusunrize.immersiveengineering.common.blocks.metal.ArcFurnaceTileEntity;
 import blusunrize.immersiveengineering.common.gui.ArcFurnaceContainer;
+import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerInventory;
@@ -23,57 +25,52 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.fml.client.gui.GuiUtils;
 
-import java.util.ArrayList;
+import javax.annotation.Nonnull;
+import java.util.List;
+import java.util.function.Consumer;
 
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
 public class ArcFurnaceScreen extends IEContainerScreen<ArcFurnaceContainer>
 {
 	private static final ResourceLocation TEXTURE = makeTextureLocation("arc_furnace");
-	private ArcFurnaceTileEntity tile;
+	private final ArcFurnaceTileEntity tile;
 	private GuiButtonIE distributeButton;
 
 	public ArcFurnaceScreen(ArcFurnaceContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{
-		super(container, inventoryPlayer, title);
+		super(container, inventoryPlayer, title, TEXTURE);
 		this.ySize = 207;
 		this.tile = container.tile;
 	}
 
+	@Nonnull
 	@Override
-	public void render(MatrixStack transform, int mx, int my, float partial)
+	protected List<InfoArea> makeInfoAreas()
 	{
-		super.render(transform, mx, my, partial);
-		ArrayList<ITextComponent> tooltip = new ArrayList<>();
-		if(mx > guiLeft+157&&mx < guiLeft+164&&my > guiTop+22&&my < guiTop+68)
-			tooltip.add(new StringTextComponent(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" IF"));
-		if(distributeButton.isHovered())
-			tooltip.add(new TranslationTextComponent(Lib.GUI_CONFIG+"arcfurnace.distribute"));
-
-		if(!tooltip.isEmpty())
-			GuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
+		return ImmutableList.of(new EnergyInfoArea(guiLeft+157, guiTop+22, tile));
 	}
 
+	@Override
+	protected void gatherAdditionalTooltips(int mouseX, int mouseY, Consumer<ITextComponent> addLine, Consumer<ITextComponent> addGray)
+	{
+		super.gatherAdditionalTooltips(mouseX, mouseY, addLine, addGray);
+		if(distributeButton.isHovered())
+			addLine.accept(new TranslationTextComponent(Lib.GUI_CONFIG+"arcfurnace.distribute"));
+	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float f, int mx, int my)
+	protected void drawContainerBackgroundPre(@Nonnull MatrixStack transform, float f, int mx, int my)
 	{
-		ClientUtils.bindTexture(TEXTURE);
-		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
-
-		for(MultiblockProcess process : tile.processQueue)
+		for(MultiblockProcess<?> process : tile.processQueue)
 			if(process instanceof MultiblockProcessInMachine)
 			{
 				float mod = process.processTick/(float)process.maxTicks;
-				int slot = ((MultiblockProcessInMachine)process).getInputSlots()[0];
+				int slot = ((MultiblockProcessInMachine<?>)process).getInputSlots()[0];
 				int h = (int)Math.max(1, mod*16);
 				this.blit(transform, guiLeft+27+slot%3*21, guiTop+34+slot/3*18+(16-h), 176, 16-h, 2, h);
 			}
-
-		int stored = (int)(46*(tile.getEnergyStored(null)/(float)tile.getMaxEnergyStored(null)));
-		fillGradient(transform, guiLeft+157, guiTop+22+(46-stored), guiLeft+164, guiTop+68, 0xffb51500, 0xff600b00);
 	}
 
 	@Override

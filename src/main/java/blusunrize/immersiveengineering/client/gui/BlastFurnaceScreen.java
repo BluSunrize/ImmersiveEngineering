@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.BlastFurnacePreheaterTileEntity;
 import blusunrize.immersiveengineering.common.blocks.stone.BlastFurnaceAdvancedTileEntity;
 import blusunrize.immersiveengineering.common.gui.BlastFurnaceContainer;
@@ -19,6 +18,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
+import javax.annotation.Nonnull;
 import java.util.function.Function;
 
 public class BlastFurnaceScreen extends IEContainerScreen<BlastFurnaceContainer>
@@ -28,7 +28,7 @@ public class BlastFurnaceScreen extends IEContainerScreen<BlastFurnaceContainer>
 
 	public BlastFurnaceScreen(BlastFurnaceContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{
-		super(container, inventoryPlayer, title);
+		super(container, inventoryPlayer, title, TEXTURE);
 		if(container.tile instanceof BlastFurnaceAdvancedTileEntity)
 			this.xSize = 210;
 		clearIntArray(container.tile.getGuiInts());
@@ -48,11 +48,14 @@ public class BlastFurnaceScreen extends IEContainerScreen<BlastFurnaceContainer>
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float f, int mx, int my)
+	protected void drawBackgroundTexture(MatrixStack transform)
 	{
-		ClientUtils.bindTexture(TEXTURE);
-		this.blit(transform, guiLeft, guiTop, 0, 0, 176, ySize);
+		blit(transform, guiLeft, guiTop, 0, 0, 176, ySize);
+	}
 
+	@Override
+	protected void drawContainerBackgroundPre(@Nonnull MatrixStack transform, float f, int mx, int my)
+	{
 		if(container.tile instanceof BlastFurnaceAdvancedTileEntity)
 		{
 			BlastFurnaceAdvancedTileEntity tile = (BlastFurnaceAdvancedTileEntity)container.tile;

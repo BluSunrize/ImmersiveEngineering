@@ -42,9 +42,9 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 	private static Map<String, List<BlueprintCraftingRecipe>> recipesByCategory = Collections.emptyMap();
 	public static SetRestrictedField<IItemProvider> blueprintItem = SetRestrictedField.common();
 
-	public String blueprintCategory;
-	public ItemStack output;
-	public IngredientWithSize[] inputs;
+	public final String blueprintCategory;
+	public final ItemStack output;
+	public final IngredientWithSize[] inputs;
 
 	public BlueprintCraftingRecipe(ResourceLocation id, String blueprintCategory, ItemStack output, IngredientWithSize[] inputs)
 	{

@@ -57,7 +57,7 @@ import java.util.*;
 public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity, MixerRecipe> implements
 		IInteractionObjectIE<MixerTileEntity>, IBlockBounds
 {
-	public MultiFluidTank tank = new MultiFluidTank(8*FluidAttributes.BUCKET_VOLUME);
+	public final MultiFluidTank tank = new MultiFluidTank(8*FluidAttributes.BUCKET_VOLUME);
 	public NonNullList<ItemStack> inventory = NonNullList.withSize(8, ItemStack.EMPTY);
 	public float animation_agitator = 0;
 	public boolean outputAll;

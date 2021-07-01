@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.client.gui;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
-import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonDyeColor;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonState;
 import blusunrize.immersiveengineering.common.blocks.wooden.ItemBatcherTileEntity;
@@ -21,16 +20,15 @@ import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.DyeColor;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.fml.client.gui.GuiUtils;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
@@ -44,7 +42,7 @@ public class ItemBatcherScreen extends IEContainerScreen<ItemBatcherContainer>
 
 	public ItemBatcherScreen(ItemBatcherContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{
-		super(container, inventoryPlayer, title);
+		super(container, inventoryPlayer, title, TEXTURE);
 		this.tile = container.tile;
 		this.ySize = 199;
 	}
@@ -64,7 +62,7 @@ public class ItemBatcherScreen extends IEContainerScreen<ItemBatcherContainer>
 					tile.batchMode = btn.getNextState();
 					tag.putByte("batchMode", (byte)tile.batchMode.ordinal());
 					handleButtonClick(tag);
-				});
+				}, ItemBatcherScreen::gatherBatchmodeTooltip);
 		this.addButton(buttonBatchMode);
 
 		for(int slot = 0; slot < 9; slot++)
@@ -77,7 +75,7 @@ public class ItemBatcherScreen extends IEContainerScreen<ItemBatcherContainer>
 						tag.putInt("redstoneColor_slot", finalSlot);
 						tag.putInt("redstoneColor_val", tile.redstoneColors.get(finalSlot).getId());
 						handleButtonClick(tag);
-					});
+					}, ItemBatcherScreen::gatherRedstoneTooltip);
 			this.addButton(buttonsRedstone[slot]);
 		}
 
@@ -95,47 +93,25 @@ public class ItemBatcherScreen extends IEContainerScreen<ItemBatcherContainer>
 	@Override
 	protected void drawGuiContainerForegroundLayer(MatrixStack transform, int mouseX, int mouseY)
 	{
-		TileEntity te = container.tile;
 		this.font.drawString(transform, I18n.format("block.immersiveengineering.item_batcher"), 8, 6, 0x190b06);
 
 		this.font.drawString(transform, I18n.format(Lib.GUI_CONFIG+"item_batcher.filter"), 8, 20, 0xE0E0E0);
 		this.font.drawString(transform, I18n.format(Lib.GUI_CONFIG+"item_batcher.buffer"), 8, 49, 0xE0E0E0);
 	}
 
-	@Override
-	public void render(MatrixStack transform, int mx, int my, float partial)
-	{
-		super.render(transform, mx, my, partial);
-		ArrayList<ITextComponent> tooltip = new ArrayList<>();
-
-		if(buttonBatchMode.isHovered())
-		{
-			tooltip.add(new TranslationTextComponent(Lib.GUI_CONFIG+"item_batcher.batchmode"));
-			tooltip.add(TextUtils.applyFormat(
-					new TranslationTextComponent(Lib.GUI_CONFIG+"item_batcher.batchmode."+buttonBatchMode.getState().name()),
-					TextFormatting.GRAY
-			));
-		}
-
-		for(GuiButtonDyeColor b : buttonsRedstone)
-			if(b.isHovered())
-			{
-				tooltip.add(new TranslationTextComponent(Lib.GUI_CONFIG+"item_batcher.redstone_color"));
-				tooltip.add(TextUtils.applyFormat(
-						new TranslationTextComponent("color.minecraft."+b.getState().getTranslationKey()),
-						TextFormatting.GRAY
-				));
-			}
-
-		if(!tooltip.isEmpty())
-			GuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
+	private static void gatherBatchmodeTooltip(List<ITextComponent> out, BatchMode mode) {
+		out.add(new TranslationTextComponent(Lib.GUI_CONFIG+"item_batcher.batchmode"));
+		out.add(TextUtils.applyFormat(
+				new TranslationTextComponent(Lib.GUI_CONFIG+"item_batcher.batchmode."+mode.name()),
+				TextFormatting.GRAY
+		));
 	}
 
-	@Override
-	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float f, int mx, int my)
-	{
-		ClientUtils.bindTexture(TEXTURE);
-		// Background
-		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
+	private static void gatherRedstoneTooltip(List<ITextComponent> out, DyeColor color) {
+		out.add(new TranslationTextComponent(Lib.GUI_CONFIG+"item_batcher.redstone_color"));
+		out.add(TextUtils.applyFormat(
+				new TranslationTextComponent("color.minecraft."+color.getTranslationKey()),
+				TextFormatting.GRAY
+		));
 	}
 }

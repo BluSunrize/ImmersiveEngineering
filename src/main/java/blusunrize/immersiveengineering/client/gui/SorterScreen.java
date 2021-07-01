@@ -12,12 +12,12 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.gui.elements.ITooltipWidget;
 import blusunrize.immersiveengineering.common.blocks.wooden.SorterTileEntity;
 import blusunrize.immersiveengineering.common.gui.SorterContainer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
@@ -27,9 +27,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.fml.client.gui.GuiUtils;
 
-import java.util.ArrayList;
+import javax.annotation.Nonnull;
 import java.util.List;
 
 import static com.mojang.blaze3d.platform.GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA;
@@ -45,38 +44,14 @@ public class SorterScreen extends IEContainerScreen<SorterContainer>
 
 	public SorterScreen(SorterContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{
-		super(container, inventoryPlayer, title);
+		super(container, inventoryPlayer, title, TEXTURE);
 		this.tile = container.tile;
 		this.ySize = 244;
 	}
 
 	@Override
-	public void render(MatrixStack transform, int mx, int my, float partial)
+	protected void drawContainerBackgroundPre(@Nonnull MatrixStack transform, float f, int mx, int my)
 	{
-		super.render(transform, mx, my, partial);
-		for(Widget button : this.buttons)
-		{
-			if(button instanceof ButtonSorter)
-				if(mx > button.x&&mx < button.x+18&&my > button.y&&my < button.y+18)
-				{
-					List<ITextComponent> tooltip = new ArrayList<>();
-					int type = ((ButtonSorter)button).type;
-					String[] split = I18n.format(Lib.DESC_INFO+"filter."+(type==0?"tag": type==1?"nbt": "damage")).split("<br>");
-					for(int i = 0; i < split.length; i++)
-						tooltip.add(TextUtils.applyFormat(
-								new StringTextComponent(split[i]), i==0?TextFormatting.WHITE: TextFormatting.GRAY
-						));
-					GuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
-				}
-		}
-	}
-
-
-	@Override
-	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float f, int mx, int my)
-	{
-		ClientUtils.bindTexture(TEXTURE);
-		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
 		for(int side = 0; side < 6; side++)
 		{
 			int x = guiLeft+30+(side/2)*58;
@@ -113,7 +88,7 @@ public class SorterScreen extends IEContainerScreen<SorterContainer>
 			}
 	}
 
-	public static class ButtonSorter extends Button
+	public static class ButtonSorter extends Button implements ITooltipWidget
 	{
 		int type;
 		boolean active = false;
@@ -135,6 +110,17 @@ public class SorterScreen extends IEContainerScreen<SorterContainer>
 				RenderSystem.blendFuncSeparate(SRC_ALPHA, ONE_MINUS_SRC_ALPHA, ONE, ZERO);
 				this.blit(transform, this.x, this.y, 176+type*18, (active?3: 21), this.width, this.height);
 			}
+		}
+
+		@Override
+		public void gatherTooltip(int mouseX, int mouseY, List<ITextComponent> tooltip)
+		{
+			String[] split = I18n.format(Lib.DESC_INFO+"filter."+(type==0?"tag": type==1?"nbt": "damage")).split("<br>");
+			for(int i = 0; i < split.length; i++)
+				if (i == 0)
+					tooltip.add(new StringTextComponent(split[i]));
+				else
+					tooltip.add(TextUtils.applyFormat(new StringTextComponent(split[i]), TextFormatting.GRAY));
 		}
 	}
 }

@@ -27,6 +27,8 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
+import javax.annotation.Nonnull;
+
 public class RevolverScreen extends IEContainerScreen<RevolverContainer>
 {
 	private static final ResourceLocation TEXTURE = makeTextureLocation("revolver");
@@ -37,7 +39,7 @@ public class RevolverScreen extends IEContainerScreen<RevolverContainer>
 
 	public RevolverScreen(RevolverContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{
-		super(container, inventoryPlayer, title);
+		super(container, inventoryPlayer, title, TEXTURE);
 		ItemStack revolver = inventoryPlayer.player.getItemStackFromSlot(container.entityEquipmentSlot);
 		if(!revolver.isEmpty()&&revolver.getItem() instanceof IBulletContainer)
 			this.bullets[0] = ((IBulletContainer)revolver.getItem()).getBulletCount(revolver);
@@ -54,11 +56,8 @@ public class RevolverScreen extends IEContainerScreen<RevolverContainer>
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float par1, int par2, int par3)
+	protected void drawContainerBackgroundPre(@Nonnull MatrixStack transform, float par1, int par2, int par3)
 	{
-		ClientUtils.bindTexture(TEXTURE);
-		this.blit(transform, guiLeft+(offset > 0?offset: 0), guiTop+77, 0, 125, 176, 89);
-
 		int off = (offset < 0?-offset: 0);
 		for(int hand = 0; hand < (otherRevolver?2: 1); hand++)
 		{
@@ -72,11 +71,16 @@ public class RevolverScreen extends IEContainerScreen<RevolverContainer>
 		}
 	}
 
+	@Override
+	protected void drawBackgroundTexture(MatrixStack transform)
+	{
+		this.blit(transform, guiLeft+Math.max(offset, 0), guiTop+77, 0, 125, 176, 89);
+	}
+
 	public static void drawExternalGUI(NonNullList<ItemStack> bullets, int bulletAmount, MatrixStack transform)
 	{
 		IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
-		IVertexBuilder builder = buffer.getBuffer(IERenderTypes.getGui(
-				new ResourceLocation(ImmersiveEngineering.MODID, "textures/gui/revolver.png")));
+		IVertexBuilder builder = buffer.getBuffer(IERenderTypes.getGui(TEXTURE));
 
 		GuiHelper.drawTexturedColoredRect(builder, transform, 0, 1, 74, 74, 1, 1, 1, 1, 0/256f, 74/256f, 51/256f, 125/256f);
 		if(bulletAmount >= 18)

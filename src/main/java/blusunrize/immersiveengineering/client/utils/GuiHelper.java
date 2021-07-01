@@ -8,41 +8,26 @@
 
 package blusunrize.immersiveengineering.client.utils;
 
-import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.fluids.IEFluid;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidTank;
 
-import java.util.List;
-
-import static blusunrize.immersiveengineering.api.client.TextUtils.applyFormat;
 import static blusunrize.immersiveengineering.client.ClientUtils.getSprite;
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
 public class GuiHelper
 {
-	public static void drawColouredRect(int x, int y, int w, int h, int colour, IRenderTypeBuffer buffers,
-										MatrixStack transform)
+	public static void drawColouredRect(int x, int y, int w, int h, int colour, IRenderTypeBuffer buffers, MatrixStack transform)
 	{
 		Matrix4f mat = transform.getLast().getMatrix();
 		IVertexBuilder worldrenderer = buffers.getBuffer(IERenderTypes.TRANSLUCENT_POSITION_COLOR);
@@ -151,70 +136,6 @@ public class GuiHelper
 	public static void drawDarkSlot(MatrixStack transform, int x, int y, int w, int h)
 	{
 		drawSlot(transform, x, y, w, h, 0x77222222, 0x77111111, 0x77999999);
-	}
-
-	public static void handleGuiTank(MatrixStack transform, IFluidTank tank, int x, int y, int w, int h, int oX, int oY, int oW, int oH, int mX, int mY, ResourceLocation originalTexture, List<ITextComponent> tooltip)
-	{
-		handleGuiTank(transform, tank.getFluid(), tank.getCapacity(), x, y, w, h, oX, oY, oW, oH, mX, mY, originalTexture, tooltip);
-	}
-
-	public static void handleGuiTank(MatrixStack transform, FluidStack fluid, int capacity, int x, int y, int w, int h, int oX, int oY, int oW, int oH, int mX, int mY, ResourceLocation originalTexture, List<ITextComponent> tooltip)
-	{
-		if(tooltip==null)
-		{
-			transform.push();
-			IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
-			if(fluid!=null&&fluid.getFluid()!=null)
-			{
-				int fluidHeight = (int)(h*(fluid.getAmount()/(float)capacity));
-				drawRepeatedFluidSpriteGui(buffer, transform, fluid, x, y+h-fluidHeight, w, fluidHeight);
-				RenderSystem.color3f(1, 1, 1);
-			}
-			int xOff = (w-oW)/2;
-			int yOff = (h-oH)/2;
-			RenderType renderType = IERenderTypes.getGui(originalTexture);
-			drawTexturedRect(buffer.getBuffer(renderType), transform, x+xOff, y+yOff, oW, oH, 256f, oX, oX+oW, oY, oY+oH);
-			buffer.finish(renderType);
-			transform.pop();
-		}
-		else
-		{
-			if(mX >= x&&mX < x+w&&mY >= y&&mY < y+h)
-				addFluidTooltip(fluid, tooltip, capacity);
-		}
-	}
-
-	public static void addFluidTooltip(FluidStack fluid, List<ITextComponent> tooltip, int tankCapacity)
-	{
-		if(!fluid.isEmpty())
-			tooltip.add(applyFormat(
-					fluid.getDisplayName(),
-					fluid.getFluid().getAttributes().getRarity(fluid).color
-			));
-		else
-			tooltip.add(new TranslationTextComponent("gui.immersiveengineering.empty"));
-		if(fluid.getFluid() instanceof IEFluid)
-			((IEFluid)fluid.getFluid()).addTooltipInfo(fluid, null, tooltip);
-
-		if(mc().gameSettings.advancedItemTooltips&&!fluid.isEmpty())
-		{
-			if(!Screen.hasShiftDown())
-				tooltip.add(new TranslationTextComponent(Lib.DESC_INFO+"holdShiftForInfo"));
-			else
-			{
-				//TODO translation keys
-				tooltip.add(applyFormat(new StringTextComponent("Fluid Registry: "+fluid.getFluid().getRegistryName()), TextFormatting.DARK_GRAY));
-				tooltip.add(applyFormat(new StringTextComponent("Density: "+fluid.getFluid().getAttributes().getDensity(fluid)), TextFormatting.DARK_GRAY));
-				tooltip.add(applyFormat(new StringTextComponent("Temperature: "+fluid.getFluid().getAttributes().getTemperature(fluid)), TextFormatting.DARK_GRAY));
-				tooltip.add(applyFormat(new StringTextComponent("Viscosity: "+fluid.getFluid().getAttributes().getViscosity(fluid)), TextFormatting.DARK_GRAY));
-				tooltip.add(applyFormat(new StringTextComponent("NBT Data: "+fluid.getTag()), TextFormatting.DARK_GRAY));
-			}
-		}
-
-		if(tankCapacity > 0)
-			tooltip.add(applyFormat(new StringTextComponent(fluid.getAmount()+"/"+tankCapacity+"mB"), TextFormatting.GRAY));
-		else
-			tooltip.add(applyFormat(new StringTextComponent(fluid.getAmount()+"mB"), TextFormatting.GRAY));
 	}
 
 	public static void renderItemWithOverlayIntoGUI(IRenderTypeBuffer buffer, MatrixStack transform,

@@ -17,20 +17,31 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiButtonState<E> extends GuiButtonIE
+import java.util.List;
+import java.util.function.BiConsumer;
+
+public class GuiButtonState<E> extends GuiButtonIE implements ITooltipWidget
 {
 	public E[] states;
 	private int state;
 	protected final int offsetDir;
+	private final BiConsumer<List<ITextComponent>, E> tooltip;
 	public int[] textOffset = {0, 0};
 
 	public GuiButtonState(int x, int y, int w, int h, ITextComponent name, E[] states, int initialState, ResourceLocation texture, int u,
 						  int v, int offsetDir, IIEPressable<GuiButtonState<E>> handler)
 	{
+		this(x, y, w, h, name, states, initialState, texture, u, v, offsetDir, handler, (a, b) -> {});
+	}
+
+	public GuiButtonState(int x, int y, int w, int h, ITextComponent name, E[] states, int initialState, ResourceLocation texture, int u,
+						  int v, int offsetDir, IIEPressable<GuiButtonState<E>> handler, BiConsumer<List<ITextComponent>, E> tooltip)
+	{
 		super(x, y, w, h, name, texture, u, v, handler);
 		this.states = states;
 		this.state = initialState;
 		this.offsetDir = offsetDir;
+		this.tooltip = tooltip;
 		textOffset = new int[]{width+1, height/2-3};
 	}
 
@@ -99,5 +110,11 @@ public class GuiButtonState<E> extends GuiButtonIE
 		if(b)
 			this.state = getNextStateInt();
 		return b;
+	}
+
+	@Override
+	public void gatherTooltip(int mouseX, int mouseY, List<ITextComponent> tooltip)
+	{
+		this.tooltip.accept(tooltip, getState());
 	}
 }

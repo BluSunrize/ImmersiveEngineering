@@ -9,59 +9,44 @@
 package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.client.TextUtils;
-import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.gui.ToolboxBlockContainer;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.fml.client.gui.GuiUtils;
 
-import java.util.ArrayList;
+import java.util.function.Consumer;
 
 public class ToolboxBlockScreen extends IEContainerScreen<ToolboxBlockContainer>
 {
-	private static final ResourceLocation TEXTURE = makeTextureLocation("toolbox");
-
 	public ToolboxBlockScreen(ToolboxBlockContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{
-		super(container, inventoryPlayer, title);
+		super(container, inventoryPlayer, title, makeTextureLocation("toolbox"));
 		this.ySize = 238;
 	}
 
 	@Override
-	public void render(MatrixStack transform, int mx, int my, float partial)
+	protected void gatherAdditionalTooltips(int mouseX, int mouseY, Consumer<ITextComponent> addLine, Consumer<ITextComponent> addGray)
 	{
-		super.render(transform, mx, my, partial);
-		ArrayList<ITextComponent> tooltip = new ArrayList<>();
+		super.gatherAdditionalTooltips(mouseX, mouseY, addLine, addGray);
 		int slot = -1;
 		for(int i = 0; i < this.container.slotCount; i++)
 		{
 			Slot s = this.container.getSlot(i);
-			if(!s.getHasStack()&&mx > guiLeft+s.xPos&&mx < guiLeft+s.xPos+16&&my > guiTop+s.yPos&&my < guiTop+s.yPos+16)
+			if(!s.getHasStack()&&mouseX > guiLeft+s.xPos&&mouseX < guiLeft+s.xPos+16&&mouseY > guiTop+s.yPos&&mouseY < guiTop+s.yPos+16)
 				slot = i;
 		}
 		String ss = null;
 		if(slot >= 0)
 			ss = slot < 3?"food": slot < 10?"tool": slot < 16?"wire": "any";
 		if(ss!=null)
-			tooltip.add(TextUtils.applyFormat(
-					new TranslationTextComponent(Lib.DESC_INFO+"toolbox."+ss),
-					TextFormatting.GRAY
-			));
-		if(!tooltip.isEmpty())
-			GuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
+			addGray.accept(new TranslationTextComponent(Lib.DESC_INFO+"toolbox."+ss));
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float par1, int par2, int par3)
+	protected void drawBackgroundTexture(MatrixStack transform)
 	{
-		ClientUtils.bindTexture(TEXTURE);
-		this.blit(transform, guiLeft, guiTop-17, 0, 0, 176, ySize+17);
+		blit(transform, guiLeft, guiTop - 17, 0, 0, 176, ySize + 17);
 	}
-
 }

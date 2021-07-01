@@ -19,13 +19,16 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 public abstract class ToolModificationScreen<C extends Container> extends IEContainerScreen<C>
 {
-	public ToolModificationScreen(C inventorySlotsIn, PlayerInventory inv, ITextComponent title)
+	public ToolModificationScreen(
+			C inventorySlotsIn, PlayerInventory inv, ITextComponent title, ResourceLocation background
+	)
 	{
-		super(inventorySlotsIn, inv, title);
+		super(inventorySlotsIn, inv, title, background);
 	}
 
 

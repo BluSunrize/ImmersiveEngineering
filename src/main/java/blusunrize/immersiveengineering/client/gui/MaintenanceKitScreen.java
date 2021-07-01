@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.common.gui.MaintenanceKitContainer;
 import blusunrize.immersiveengineering.common.network.MessageMaintenanceKit;
@@ -17,16 +16,15 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+
+import javax.annotation.Nonnull;
 
 public class MaintenanceKitScreen extends ToolModificationScreen<MaintenanceKitContainer>
 {
-	private static final ResourceLocation TEXTURE = makeTextureLocation("maintenance_kit");
-
 	public MaintenanceKitScreen(MaintenanceKitContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{
-		super(container, inventoryPlayer, title);
+		super(container, inventoryPlayer, title, makeTextureLocation("maintenance_kit"));
 		this.xSize = 195;
 	}
 
@@ -37,11 +35,8 @@ public class MaintenanceKitScreen extends ToolModificationScreen<MaintenanceKitC
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float f, int mx, int my)
+	protected void drawContainerBackgroundPre(@Nonnull MatrixStack transform, float f, int mx, int my)
 	{
-		ClientUtils.bindTexture(TEXTURE);
-		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
-
 		for(int i = 0; i < container.internalSlots; i++)
 		{
 			Slot s = container.getSlot(i);

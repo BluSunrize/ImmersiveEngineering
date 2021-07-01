@@ -8,18 +8,18 @@
 
 package blusunrize.immersiveengineering.client.gui;
 
-import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.utils.GuiHelper;
+import blusunrize.immersiveengineering.client.gui.info.EnergyInfoArea;
+import blusunrize.immersiveengineering.client.gui.info.FluidInfoArea;
+import blusunrize.immersiveengineering.client.gui.info.InfoArea;
 import blusunrize.immersiveengineering.common.blocks.metal.FermenterTileEntity;
 import blusunrize.immersiveengineering.common.gui.FermenterContainer;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.google.common.collect.ImmutableList;
+import net.minecraft.client.renderer.Rectangle2d;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraftforge.fml.client.gui.GuiUtils;
 
-import java.util.ArrayList;
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class FermenterScreen extends IEContainerScreen<FermenterContainer>
@@ -30,33 +30,17 @@ public class FermenterScreen extends IEContainerScreen<FermenterContainer>
 
 	public FermenterScreen(FermenterContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{
-		super(container, inventoryPlayer, title);
+		super(container, inventoryPlayer, title, TEXTURE);
 		this.tile = container.tile;
 	}
 
+	@Nonnull
 	@Override
-	public void render(MatrixStack transform, int mx, int my, float partial)
+	protected List<InfoArea> makeInfoAreas()
 	{
-		super.render(transform, mx, my, partial);
-		List<ITextComponent> tooltip = new ArrayList<>();
-		GuiHelper.handleGuiTank(transform, tile.tanks[0], guiLeft+112, guiTop+21, 16, 47, 177, 31, 20, 51, mx, my, TEXTURE, tooltip);
-		if(mx > guiLeft+158&&mx < guiLeft+165&&my > guiTop+22&&my < guiTop+68)
-			tooltip.add(new StringTextComponent(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" IF"));
-		if(!tooltip.isEmpty())
-			GuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
-	}
-
-
-	@Override
-	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float f, int mx, int my)
-	{
-		ClientUtils.bindTexture(TEXTURE);
-		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
-
-		int stored = (int)(46*(tile.getEnergyStored(null)/(float)tile.getMaxEnergyStored(null)));
-		fillGradient(transform, guiLeft+158, guiTop+22+(46-stored), guiLeft+165, guiTop+68, 0xffb51500, 0xff600b00);
-
-		GuiHelper.handleGuiTank(transform, tile.tanks[0], guiLeft+112, guiTop+21, 16, 47, 177, 31, 20, 51, mx, my, TEXTURE, null);
-
+		return ImmutableList.of(
+				new FluidInfoArea(tile.tanks[0], new Rectangle2d(guiLeft+112, guiTop+21, 16, 47), 177, 31, 20, 51, TEXTURE),
+				new EnergyInfoArea(guiLeft+158, guiTop+22, tile)
+		);
 	}
 }

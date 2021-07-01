@@ -8,13 +8,14 @@
 
 package blusunrize.immersiveengineering.client.gui;
 
-import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.stone.AlloySmelterTileEntity;
 import blusunrize.immersiveengineering.common.gui.AlloySmelterContainer;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+
+import javax.annotation.Nonnull;
 
 public class AlloySmelterScreen extends IEContainerScreen<AlloySmelterContainer>
 {
@@ -24,17 +25,14 @@ public class AlloySmelterScreen extends IEContainerScreen<AlloySmelterContainer>
 
 	public AlloySmelterScreen(AlloySmelterContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{
-		super(container, inventoryPlayer, title);
+		super(container, inventoryPlayer, title, TEXTURE);
 		this.tile = container.tile;
 		clearIntArray(tile.guiState);
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float f, int mx, int my)
+	protected void drawContainerBackgroundPre(@Nonnull MatrixStack transform, float f, int mx, int my)
 	{
-		ClientUtils.bindTexture(TEXTURE);
-		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
-
 		if(tile.lastBurnTime > 0)
 		{
 			int h = (int)(12*(tile.burnTime/(float)tile.lastBurnTime));

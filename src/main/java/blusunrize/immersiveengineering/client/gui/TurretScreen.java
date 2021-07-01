@@ -10,13 +10,15 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonCheckbox;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE;
 import blusunrize.immersiveengineering.client.gui.elements.GuiReactiveList;
+import blusunrize.immersiveengineering.client.gui.info.EnergyInfoArea;
+import blusunrize.immersiveengineering.client.gui.info.InfoArea;
 import blusunrize.immersiveengineering.common.blocks.metal.TurretTileEntity;
 import blusunrize.immersiveengineering.common.gui.TurretContainer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
+import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.resources.I18n;
@@ -26,26 +28,32 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.fml.client.gui.GuiUtils;
 import org.lwjgl.glfw.GLFW;
 
-import java.util.ArrayList;
+import javax.annotation.Nonnull;
 import java.util.List;
 
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
-public abstract class TurretScreen extends IEContainerScreen<TurretContainer>
+public abstract class TurretScreen<T extends TurretTileEntity<T>, C extends TurretContainer<T>> extends IEContainerScreen<C>
 {
 	protected static final ResourceLocation TEXTURE = makeTextureLocation("turret");
 
-	public TurretTileEntity<?> tile;
+	public T tile;
 	private TextFieldWidget nameField;
 
-	public TurretScreen(TurretContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
+	public TurretScreen(C container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{
-		super(container, inventoryPlayer, title);
+		super(container, inventoryPlayer, title, TEXTURE);
 		this.tile = container.tile;
 		this.ySize = 190;
+	}
+
+	@Nonnull
+	@Override
+	protected List<InfoArea> makeInfoAreas()
+	{
+		return ImmutableList.of(new EnergyInfoArea(guiLeft+158, guiTop+16, tile));
 	}
 
 	@Override
@@ -138,31 +146,11 @@ public abstract class TurretScreen extends IEContainerScreen<TurretContainer>
 		}
 	}
 
-	protected abstract void renderCustom(MatrixStack transform, List<ITextComponent> tooltipOut, int mx, int my);
-
 	@Override
-	public void render(MatrixStack transform, int mx, int my, float partial)
+	public void render(@Nonnull MatrixStack transform, int mx, int my, float partial)
 	{
 		super.render(transform, mx, my, partial);
 		this.nameField.render(transform, mx, my, partial);
-
-		ArrayList<ITextComponent> tooltip = new ArrayList<>();
-		if(mx >= guiLeft+158&&mx < guiLeft+165&&my >= guiTop+16&&my < guiTop+62)
-			tooltip.add(new StringTextComponent(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" IF"));
-
-		renderCustom(transform, tooltip, mx, my);
-		if(!tooltip.isEmpty())
-			GuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
-	}
-
-	@Override
-	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float f, int mx, int my)
-	{
-		ClientUtils.bindTexture(TEXTURE);
-		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
-
-		int stored = (int)(46*(tile.getEnergyStored(null)/(float)tile.getMaxEnergyStored(null)));
-		fillGradient(transform, guiLeft+158, guiTop+16+(46-stored), guiLeft+165, guiTop+62, 0xffb51500, 0xff600b00);
 	}
 
 	@Override

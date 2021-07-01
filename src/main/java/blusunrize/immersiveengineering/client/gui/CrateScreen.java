@@ -8,22 +8,18 @@
 
 package blusunrize.immersiveengineering.client.gui;
 
-import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.wooden.WoodenCrateTileEntity;
 import blusunrize.immersiveengineering.common.gui.CrateContainer;
 import blusunrize.immersiveengineering.common.gui.CrateEntityContainer;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 public abstract class CrateScreen<C extends CrateContainer> extends IEContainerScreen<C>
 {
-	private static final ResourceLocation TEXTURE = makeTextureLocation("crate");
-
 	public CrateScreen(C container, PlayerInventory inventoryPlayer, ITextComponent title)
 	{
-		super(container, inventoryPlayer, title);
+		super(container, inventoryPlayer, title, makeTextureLocation("crate"));
 		this.ySize = 168;
 	}
 
@@ -31,15 +27,7 @@ public abstract class CrateScreen<C extends CrateContainer> extends IEContainerS
 	protected void drawGuiContainerForegroundLayer(MatrixStack transform, int mouseX, int mouseY)
 	{
 		WoodenCrateTileEntity te = container.tile;
-		this.font.drawString(transform, te.getDisplayName().getUnformattedComponentText(),
-				8, 6, 0x190b06);
-	}
-
-	@Override
-	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float f, int mx, int my)
-	{
-		ClientUtils.bindTexture(TEXTURE);
-		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
+		this.font.drawString(transform, te.getDisplayName().getUnformattedComponentText(), 8, 6, 0x190b06);
 	}
 
 	// Unfortunately necessary to calm down the compiler wrt generics

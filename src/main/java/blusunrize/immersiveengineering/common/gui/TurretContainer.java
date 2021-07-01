@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
+import blusunrize.immersiveengineering.common.blocks.metal.TurretChemTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.TurretGunTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.TurretTileEntity;
 import blusunrize.immersiveengineering.common.items.BulletItem;
@@ -17,9 +18,9 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
-public class TurretContainer extends IEBaseContainer<TurretTileEntity<?>>
+public abstract class TurretContainer<T extends TurretTileEntity<T>> extends IEBaseContainer<T>
 {
-	public TurretContainer(ContainerType<?> type, int id, PlayerInventory inventoryPlayer, TurretTileEntity<?> tile)
+	public TurretContainer(ContainerType<?> type, int id, PlayerInventory inventoryPlayer, T tile)
 	{
 		super(type, inventoryPlayer, tile, id);
 		this.tile = tile;
@@ -47,5 +48,19 @@ public class TurretContainer extends IEBaseContainer<TurretTileEntity<?>>
 				addSlot(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 109+i*18));
 		for(int i = 0; i < 9; i++)
 			addSlot(new Slot(inventoryPlayer, i, 8+i*18, 167));
+	}
+
+	public static class ChemTurretContainer extends TurretContainer<TurretChemTileEntity> {
+		public ChemTurretContainer(ContainerType<?> type, int id, PlayerInventory inventoryPlayer, TurretChemTileEntity tile)
+		{
+			super(type, id, inventoryPlayer, tile);
+		}
+	}
+
+	public static class GunTurretContainer extends TurretContainer<TurretGunTileEntity> {
+		public GunTurretContainer(ContainerType<?> type, int id, PlayerInventory inventoryPlayer, TurretGunTileEntity tile)
+		{
+			super(type, id, inventoryPlayer, tile);
+		}
 	}
 }
