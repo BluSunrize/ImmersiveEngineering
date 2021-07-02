@@ -18,12 +18,12 @@ import blusunrize.immersiveengineering.common.gui.IEContainerTypes.TileContainer
 import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import blusunrize.immersiveengineering.common.items.InternalStorageItem;
 import blusunrize.immersiveengineering.common.items.ToolboxItem;
-import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootContext;
 import net.minecraft.nbt.CompoundNBT;
@@ -48,7 +48,7 @@ import java.util.List;
 public class ToolboxTileEntity extends IEBaseTileEntity implements IStateBasedDirectional, IBlockBounds, IIEInventory,
 		IInteractionObjectIE<ToolboxTileEntity>, ITileDrop, IPlayerInteraction
 {
-	NonNullList<ItemStack> inventory = NonNullList.withSize(ToolboxItem.SLOT_COUNT, ItemStack.EMPTY);
+	private final NonNullList<ItemStack> inventory = NonNullList.withSize(ToolboxItem.SLOT_COUNT, ItemStack.EMPTY);
 	public ITextComponent name;
 	private ListNBT enchantments;
 
@@ -65,7 +65,7 @@ public class ToolboxTileEntity extends IEBaseTileEntity implements IStateBasedDi
 		if(nbt.contains("enchantments", NBT.TAG_LIST))
 			this.enchantments = nbt.getList("enchantments", NBT.TAG_COMPOUND);
 		if(!descPacket)
-			inventory = Utils.readInventory(nbt.getList("inventory", NBT.TAG_COMPOUND), ToolboxItem.SLOT_COUNT);
+			ItemStackHelper.loadAllItems(nbt, inventory);
 	}
 
 	@Override
@@ -76,7 +76,7 @@ public class ToolboxTileEntity extends IEBaseTileEntity implements IStateBasedDi
 		if(this.enchantments!=null)
 			nbt.put("enchantments", this.enchantments);
 		if(!descPacket)
-			nbt.put("inventory", Utils.writeInventory(inventory));
+			ItemStackHelper.saveAllItems(nbt, inventory);
 	}
 
 	@Override
@@ -166,7 +166,6 @@ public class ToolboxTileEntity extends IEBaseTileEntity implements IStateBasedDi
 		{
 			stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).ifPresent(inv ->
 			{
-				inventory = NonNullList.withSize(inv.getSlots(), ItemStack.EMPTY);
 				for(int i = 0; i < inv.getSlots(); i++)
 					inventory.set(i, inv.getStackInSlot(i));
 			});

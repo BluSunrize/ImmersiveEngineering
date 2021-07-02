@@ -44,6 +44,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -96,7 +97,7 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 	public static final int SLOT_FERTILIZER = 2;
 
 	public int dummy = 0;
-	private NonNullList<ItemStack> inventory = NonNullList.withSize(7, ItemStack.EMPTY);
+	private final NonNullList<ItemStack> inventory = NonNullList.withSize(7, ItemStack.EMPTY);
 	public final FluidTank tank = new FluidTank(4*FluidAttributes.BUCKET_VOLUME)
 	{
 		@Override
@@ -346,7 +347,7 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		dummy = nbt.getInt("dummy");
-		inventory = Utils.readInventory(nbt.getList("inventory", 10), 7);
+		ItemStackHelper.loadAllItems(nbt, inventory);
 		energyStorage.readFromNBT(nbt);
 		tank.readFromNBT(nbt.getCompound("tank"));
 		fertilizerAmount = nbt.getInt("fertilizerAmount");
@@ -359,7 +360,7 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		nbt.putInt("dummy", dummy);
-		nbt.put("inventory", Utils.writeInventory(inventory));
+		ItemStackHelper.saveAllItems(nbt, inventory);
 		energyStorage.writeToNBT(nbt);
 		CompoundNBT tankTag = tank.writeToNBT(new CompoundNBT());
 		nbt.put("tank", tankTag);

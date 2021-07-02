@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.RedstoneParticleData;
@@ -44,7 +45,7 @@ import javax.annotation.Nullable;
 public class TurretGunTileEntity extends TurretTileEntity<TurretGunTileEntity>
 {
 	public int cycleRender;
-	private NonNullList<ItemStack> inventory = NonNullList.withSize(2, ItemStack.EMPTY);
+	private final NonNullList<ItemStack> inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 	public boolean expelCasings = false;
 
 	public TurretGunTileEntity()
@@ -207,7 +208,7 @@ public class TurretGunTileEntity extends TurretTileEntity<TurretGunTileEntity>
 		super.readCustomNBT(nbt, descPacket);
 		expelCasings = nbt.getBoolean("expelCasings");
 		if(!descPacket)
-			inventory = Utils.readInventory(nbt.getList("inventory", 10), 2);
+			ItemStackHelper.loadAllItems(nbt, inventory);
 	}
 
 	@Override
@@ -216,10 +217,10 @@ public class TurretGunTileEntity extends TurretTileEntity<TurretGunTileEntity>
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.putBoolean("expelCasings", expelCasings);
 		if(!descPacket)
-			nbt.put("inventory", Utils.writeInventory(inventory));
+			ItemStackHelper.saveAllItems(nbt, inventory);
 	}
 
-	private LazyOptional<IItemHandler> itemHandler = registerConstantCap(
+	private final LazyOptional<IItemHandler> itemHandler = registerConstantCap(
 			new IEInventoryHandler(2, this, 0, new boolean[]{true, false}, new boolean[]{false, true})
 	);
 	public LazyOptional<IItemHandler> containerHandler = registerConstantCap(

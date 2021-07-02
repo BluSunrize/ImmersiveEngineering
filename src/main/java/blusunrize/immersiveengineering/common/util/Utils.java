@@ -49,7 +49,6 @@ import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.loot.*;
 import net.minecraft.loot.LootContext.Builder;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tags.FluidTags;
@@ -835,75 +834,6 @@ public class Utils
 		if(world.isBlockLoaded(pos))
 			return world.getTileEntity(pos);
 		return null;
-	}
-
-
-	//TODO use vanilla helpers instead (ItemStackHelper)
-	@Deprecated
-	public static NonNullList<ItemStack> readInventory(ListNBT nbt, int size)
-	{
-		NonNullList<ItemStack> inv = NonNullList.withSize(size, ItemStack.EMPTY);
-		int max = nbt.size();
-		for(int i = 0; i < max; i++)
-		{
-			CompoundNBT itemTag = nbt.getCompound(i);
-			int slot = itemTag.getByte("Slot")&255;
-			if(slot >= 0&&slot < size)
-				inv.set(slot, ItemStack.read(itemTag));
-		}
-		return inv;
-	}
-
-	@Deprecated
-	public static ListNBT writeInventory(ItemStack[] inv)
-	{
-		ListNBT invList = new ListNBT();
-		for(int i = 0; i < inv.length; i++)
-			if(!inv[i].isEmpty())
-			{
-				CompoundNBT itemTag = new CompoundNBT();
-				itemTag.putByte("Slot", (byte)i);
-				inv[i].write(itemTag);
-				invList.add(itemTag);
-			}
-		return invList;
-	}
-
-	@Deprecated
-	public static ListNBT writeInventory(Collection<ItemStack> inv)
-	{
-		ListNBT invList = new ListNBT();
-		byte slot = 0;
-		for(ItemStack s : inv)
-		{
-			if(!s.isEmpty())
-			{
-				CompoundNBT itemTag = new CompoundNBT();
-				itemTag.putByte("Slot", slot);
-				s.write(itemTag);
-				invList.add(itemTag);
-			}
-			slot++;
-		}
-		return invList;
-	}
-
-	@Deprecated
-	public static NonNullList<ItemStack> loadItemStacksFromNBT(INBT nbt)
-	{
-		NonNullList<ItemStack> itemStacks = NonNullList.create();
-		if(nbt instanceof CompoundNBT)
-		{
-			ItemStack stack = ItemStack.read((CompoundNBT)nbt);
-			itemStacks.add(stack);
-			return itemStacks;
-		}
-		else if(nbt instanceof ListNBT)
-		{
-			ListNBT list = (ListNBT)nbt;
-			return readInventory(list, list.size());
-		}
-		return itemStacks;
 	}
 
 	public static void modifyInvStackSize(NonNullList<ItemStack> inv, int slot, int amount)

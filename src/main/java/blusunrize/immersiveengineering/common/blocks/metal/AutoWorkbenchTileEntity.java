@@ -29,6 +29,7 @@ import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
@@ -59,7 +60,7 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 		super(IEMultiblocks.AUTO_WORKBENCH, 32000, true, IETileTypes.AUTO_WORKBENCH.get());
 	}
 
-	public NonNullList<ItemStack> inventory = NonNullList.withSize(17, ItemStack.EMPTY);
+	public final NonNullList<ItemStack> inventory = NonNullList.withSize(17, ItemStack.EMPTY);
 	public int selectedRecipe = -1;
 
 	@Override
@@ -68,9 +69,7 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 		super.readCustomNBT(nbt, descPacket);
 		selectedRecipe = nbt.getInt("selectedRecipe");
 		if(!descPacket)
-		{
-			inventory = Utils.readInventory(nbt.getList("inventory", 10), 17);
-		}
+			ItemStackHelper.loadAllItems(nbt, inventory);
 	}
 
 	@Override
@@ -79,9 +78,7 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.putInt("selectedRecipe", selectedRecipe);
 //		if(!descPacket) Disabled because blueprint. Have yet to see issue because of this
-		{
-			nbt.put("inventory", Utils.writeInventory(inventory));
-		}
+		ItemStackHelper.saveAllItems(nbt, inventory);
 	}
 
 	@Override

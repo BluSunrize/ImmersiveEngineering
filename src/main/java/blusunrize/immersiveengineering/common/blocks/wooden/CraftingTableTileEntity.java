@@ -15,14 +15,13 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteract
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
 import blusunrize.immersiveengineering.common.gui.IEContainerTypes.TileContainer;
-import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
 import net.minecraft.state.Property;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
@@ -30,7 +29,6 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -40,7 +38,7 @@ import javax.annotation.Nonnull;
 public class CraftingTableTileEntity extends IEBaseTileEntity implements IIEInventory, IStateBasedDirectional,
 		IInteractionObjectIE<CraftingTableTileEntity>
 {
-	NonNullList<ItemStack> inventory = NonNullList.withSize(27, ItemStack.EMPTY);
+	private final NonNullList<ItemStack> inventory = NonNullList.withSize(27, ItemStack.EMPTY);
 
 	public CraftingTableTileEntity()
 	{
@@ -51,36 +49,14 @@ public class CraftingTableTileEntity extends IEBaseTileEntity implements IIEInve
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		if(!descPacket)
-		{
-			inventory = Utils.readInventory(nbt.getList("inventory", NBT.TAG_COMPOUND), 27);
-		}
+			ItemStackHelper.loadAllItems(nbt, inventory);
 	}
 
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
 		if(!descPacket)
-		{
-			writeInv(nbt, false);
-		}
-	}
-
-	public void writeInv(CompoundNBT nbt, boolean toItem)
-	{
-		boolean write = false;
-		ListNBT invList = new ListNBT();
-		for(int i = 0; i < this.inventory.size(); i++)
-			if(!this.inventory.get(i).isEmpty())
-			{
-				if(toItem)
-					write = true;
-				CompoundNBT itemTag = new CompoundNBT();
-				itemTag.putByte("Slot", (byte)i);
-				this.inventory.get(i).write(itemTag);
-				invList.add(itemTag);
-			}
-		if(!toItem||write)
-			nbt.put("inventory", invList);
+			ItemStackHelper.saveAllItems(nbt, inventory);
 	}
 
 	@Override
@@ -132,7 +108,7 @@ public class CraftingTableTileEntity extends IEBaseTileEntity implements IIEInve
 		this.markDirty();
 	}
 
-	private LazyOptional<IItemHandler> insertionCap = registerConstantCap(new IEInventoryHandler(27, this));
+	private final LazyOptional<IItemHandler> insertionCap = registerConstantCap(new IEInventoryHandler(27, this));
 
 	@Nonnull
 	@Override

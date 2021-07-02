@@ -24,6 +24,7 @@ import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
@@ -57,8 +58,8 @@ import java.util.Set;
 public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTileEntity, FermenterRecipe> implements
 		IBlockBounds, IInteractionObjectIE<FermenterTileEntity>
 {
-	public FluidTank[] tanks = new FluidTank[]{new FluidTank(24*FluidAttributes.BUCKET_VOLUME)};
-	public NonNullList<ItemStack> inventory = NonNullList.withSize(11, ItemStack.EMPTY);
+	public final FluidTank[] tanks = new FluidTank[]{new FluidTank(24*FluidAttributes.BUCKET_VOLUME)};
+	public final NonNullList<ItemStack> inventory = NonNullList.withSize(11, ItemStack.EMPTY);
 
 	public FermenterTileEntity()
 	{
@@ -71,7 +72,7 @@ public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTi
 		super.readCustomNBT(nbt, descPacket);
 		tanks[0].readFromNBT(nbt.getCompound("tank"));
 		if(!descPacket)
-			inventory = Utils.readInventory(nbt.getList("inventory", 10), 11);
+			ItemStackHelper.loadAllItems(nbt, inventory);
 	}
 
 	@Override
@@ -81,10 +82,10 @@ public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTi
 		CompoundNBT tankTag = tanks[0].writeToNBT(new CompoundNBT());
 		nbt.put("tank", tankTag);
 		if(!descPacket)
-			nbt.put("inventory", Utils.writeInventory(inventory));
+			ItemStackHelper.saveAllItems(nbt, inventory);
 	}
 
-	private CapabilityReference<IItemHandler> outputCap = CapabilityReference.forTileEntityAt(this,
+	private final CapabilityReference<IItemHandler> outputCap = CapabilityReference.forTileEntityAt(this,
 			() -> {
 				Direction fw = getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY();
 				return new DirectionalBlockPos(this.getPos().offset(fw), fw.getOpposite());
@@ -384,10 +385,10 @@ public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTi
 		this.markContainingBlockForUpdate(null);
 	}
 
-	private LazyOptional<IItemHandler> insertionHandler = registerConstantCap(
+	private final LazyOptional<IItemHandler> insertionHandler = registerConstantCap(
 			new IEInventoryHandler(8, this, 0, new boolean[]{true, true, true, true, true, true, true, true}, new boolean[8])
 	);
-	private LazyOptional<IItemHandler> extractionHandler = registerConstantCap(
+	private final LazyOptional<IItemHandler> extractionHandler = registerConstantCap(
 			new IEInventoryHandler(1, this, 8, new boolean[1], new boolean[]{true})
 	);
 

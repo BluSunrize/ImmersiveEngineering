@@ -28,6 +28,7 @@ import blusunrize.immersiveengineering.common.util.inventory.MultiFluidTank;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
@@ -59,7 +60,7 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 		IInteractionObjectIE<MixerTileEntity>, IBlockBounds
 {
 	public final MultiFluidTank tank = new MultiFluidTank(8*FluidAttributes.BUCKET_VOLUME);
-	public NonNullList<ItemStack> inventory = NonNullList.withSize(8, ItemStack.EMPTY);
+	public final NonNullList<ItemStack> inventory = NonNullList.withSize(8, ItemStack.EMPTY);
 	public float animation_agitator = 0;
 	public boolean outputAll;
 
@@ -74,7 +75,7 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 		super.readCustomNBT(nbt, descPacket);
 		tank.readFromNBT(nbt.getCompound("tank"));
 		if(!descPacket)
-			inventory = Utils.readInventory(nbt.getList("inventory", 10), 8);
+			ItemStackHelper.loadAllItems(nbt, inventory);
 		outputAll = nbt.getBoolean("outputAll");
 	}
 
@@ -85,7 +86,7 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 		CompoundNBT tankTag = tank.writeToNBT(new CompoundNBT());
 		nbt.put("tank", tankTag);
 		if(!descPacket)
-			nbt.put("inventory", Utils.writeInventory(inventory));
+			ItemStackHelper.saveAllItems(nbt, inventory);
 		nbt.putBoolean("outputAll", outputAll);
 	}
 
@@ -441,16 +442,6 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 	protected MixerRecipe getRecipeForId(ResourceLocation id)
 	{
 		return MixerRecipe.recipeList.get(id);
-	}
-
-	@Override
-	protected MultiblockProcess<MixerRecipe> loadProcessFromNBT(CompoundNBT tag)
-	{
-		String id = tag.getString("recipe");
-		MixerRecipe recipe = getRecipeForId(new ResourceLocation(id));
-		if(recipe!=null)
-			return new MultiblockProcessMixer(recipe, tag.getIntArray("process_inputSlots")).setInputTanks(tag.getIntArray("process_inputTanks"));
-		return null;
 	}
 
 	public static class MultiblockProcessMixer extends MultiblockProcessInMachine<MixerRecipe>

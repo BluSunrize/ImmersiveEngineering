@@ -23,6 +23,7 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWra
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -107,11 +108,9 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 		R recipe = getRecipeForId(new ResourceLocation(id));
 		if(recipe!=null)
 			if(isInWorldProcessingMachine())
-				return new MultiblockProcessInWorld<>(recipe, tag.getFloat("process_transformationPoint"),
-						Utils.loadItemStacksFromNBT(tag.get("process_inputItem")));
+				return MultiblockProcessInWorld.load(recipe, tag);
 			else
-				return new MultiblockProcessInMachine<>(recipe, tag.getIntArray("process_inputSlots"))
-						.setInputTanks(tag.getIntArray("process_inputTanks"));
+				return MultiblockProcessInMachine.load(recipe, tag);
 		return null;
 	}
 
@@ -643,6 +642,14 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 			}
 		}
 
+		public static <R extends MultiblockRecipe>
+		MultiblockProcessInMachine<R> load(R recipe, CompoundNBT data)
+		{
+			return new MultiblockProcessInMachine<>(recipe, data.getIntArray("process_inputSlots"))
+					.setInputAmounts(data.getIntArray("process_inputAmounts"))
+					.setInputTanks(data.getIntArray("process_inputTanks"));
+		}
+
 		@Override
 		protected void writeExtraDataToNBT(CompoundNBT nbt)
 		{
@@ -657,13 +664,13 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 
 	public static class MultiblockProcessInWorld<R extends MultiblockRecipe> extends MultiblockProcess<R>
 	{
-		public List<ItemStack> inputItems;
+		public NonNullList<ItemStack> inputItems;
 		protected float transformationPoint;
 
 		public MultiblockProcessInWorld(R recipe, float transformationPoint, NonNullList<ItemStack> inputItem)
 		{
 			super(recipe);
-			this.inputItems = new ArrayList<>(inputItem);
+			this.inputItems = inputItem;
 			this.transformationPoint = transformationPoint;
 		}
 
@@ -678,10 +685,20 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 			return inputItems;
 		}
 
+		public static <R extends MultiblockRecipe>
+		MultiblockProcessInWorld<R> load(R recipe, CompoundNBT data)
+		{
+			NonNullList<ItemStack> inputs = NonNullList.withSize(data.getInt("numInputs"), ItemStack.EMPTY);
+			ItemStackHelper.loadAllItems(data, inputs);
+			float transformationPoint = data.getFloat("process_transformationPoint");
+			return new MultiblockProcessInWorld<>(recipe, transformationPoint, inputs);
+		}
+
 		@Override
 		protected void writeExtraDataToNBT(CompoundNBT nbt)
 		{
-			nbt.put("process_inputItem", Utils.writeInventory(inputItems));
+			ItemStackHelper.saveAllItems(nbt, inputItems);
+			nbt.putInt("numInputs", inputItems.size());
 			nbt.putFloat("process_transformationPoint", transformationPoint);
 		}
 

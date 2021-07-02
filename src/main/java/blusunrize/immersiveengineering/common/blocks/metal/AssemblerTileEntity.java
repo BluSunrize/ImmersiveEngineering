@@ -33,6 +33,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.CompoundNBT;
@@ -83,7 +84,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 			new FluidTank(8*FluidAttributes.BUCKET_VOLUME),
 			new FluidTank(8*FluidAttributes.BUCKET_VOLUME)
 	};
-	public NonNullList<ItemStack> inventory = NonNullList.withSize(18+3, ItemStack.EMPTY);
+	public final NonNullList<ItemStack> inventory = NonNullList.withSize(18+3, ItemStack.EMPTY);
 	public CrafterPatternInventory[] patterns = {new CrafterPatternInventory(this), new CrafterPatternInventory(this), new CrafterPatternInventory(this)};
 	public boolean recursiveIngredients = false;
 
@@ -97,7 +98,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 		recursiveIngredients = nbt.getBoolean("recursiveIngredients");
 		if(!descPacket)
 		{
-			inventory = Utils.readInventory(nbt.getList("inventory", 10), 18+3);
+			ItemStackHelper.loadAllItems(nbt, inventory);
 			for(int iPattern = 0; iPattern < patterns.length; iPattern++)
 			{
 				ListNBT patternList = nbt.getList("pattern"+iPattern, 10);
@@ -117,7 +118,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 		nbt.putBoolean("recursiveIngredients", recursiveIngredients);
 		if(!descPacket)
 		{
-			nbt.put("inventory", Utils.writeInventory(inventory));
+			ItemStackHelper.saveAllItems(nbt, inventory);
 			for(int iPattern = 0; iPattern < patterns.length; iPattern++)
 			{
 				ListNBT patternList = new ListNBT();

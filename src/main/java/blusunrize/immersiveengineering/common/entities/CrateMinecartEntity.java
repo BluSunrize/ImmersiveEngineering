@@ -18,6 +18,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -55,7 +56,7 @@ public class CrateMinecartEntity extends IEMinecartEntity<WoodenCrateTileEntity>
 	public void writeTileToItem(ItemStack itemStack)
 	{
 		CompoundNBT tag = new CompoundNBT();
-		this.containedTileEntity.writeInv(tag, true);
+		ItemStackHelper.saveAllItems(tag, containedTileEntity.getInventory());
 		if(!tag.isEmpty())
 			itemStack.setTag(tag);
 	}

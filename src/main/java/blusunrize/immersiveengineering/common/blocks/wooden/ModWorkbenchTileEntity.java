@@ -26,6 +26,7 @@ import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.ByteNBT;
@@ -50,7 +51,7 @@ public class ModWorkbenchTileEntity extends IEBaseTileEntity implements IIEInven
 {
 	public static final BlockPos MASTER_POS = BlockPos.ZERO;
 	public static final BlockPos DUMMY_POS = new BlockPos(1, 0, 0);
-	NonNullList<ItemStack> inventory = NonNullList.withSize(7, ItemStack.EMPTY);
+	private final NonNullList<ItemStack> inventory = NonNullList.withSize(7, ItemStack.EMPTY);
 
 	public ModWorkbenchTileEntity()
 	{
@@ -60,13 +61,13 @@ public class ModWorkbenchTileEntity extends IEBaseTileEntity implements IIEInven
 	@Override
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		inventory = Utils.readInventory(nbt.getList("inventory", 10), 7);
+		ItemStackHelper.loadAllItems(nbt, inventory);
 	}
 
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		nbt.put("inventory", Utils.writeInventory(inventory));
+		ItemStackHelper.saveAllItems(nbt, inventory);
 	}
 
 	@OnlyIn(Dist.CLIENT)

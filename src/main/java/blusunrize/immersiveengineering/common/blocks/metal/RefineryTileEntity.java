@@ -23,6 +23,7 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
@@ -56,7 +57,7 @@ public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTile
 			new FluidTank(24*FluidAttributes.BUCKET_VOLUME),
 			new FluidTank(24*FluidAttributes.BUCKET_VOLUME)
 	};
-	public NonNullList<ItemStack> inventory = NonNullList.withSize(6, ItemStack.EMPTY);
+	public final NonNullList<ItemStack> inventory = NonNullList.withSize(6, ItemStack.EMPTY);
 
 	public RefineryTileEntity()
 	{
@@ -71,7 +72,7 @@ public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTile
 		tanks[1].readFromNBT(nbt.getCompound("tank1"));
 		tanks[2].readFromNBT(nbt.getCompound("tank2"));
 		if(!descPacket)
-			inventory = Utils.readInventory(nbt.getList("inventory", 10), 6);
+			ItemStackHelper.loadAllItems(nbt, inventory);
 	}
 
 	@Override
@@ -82,7 +83,7 @@ public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTile
 		nbt.put("tank1", tanks[1].writeToNBT(new CompoundNBT()));
 		nbt.put("tank2", tanks[2].writeToNBT(new CompoundNBT()));
 		if(!descPacket)
-			nbt.put("inventory", Utils.writeInventory(inventory));
+			ItemStackHelper.saveAllItems(nbt, inventory);
 	}
 
 	@Override

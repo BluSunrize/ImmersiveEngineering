@@ -27,6 +27,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
@@ -59,11 +60,12 @@ public class SqueezerTileEntity extends PoweredMultiblockTileEntity<SqueezerTile
 		ISelectionBounds, ICollisionBounds, IInteractionObjectIE<SqueezerTileEntity>, IBlockBounds
 {
 	public FluidTank[] tanks = new FluidTank[]{new FluidTank(24*FluidAttributes.BUCKET_VOLUME)};
-	public NonNullList<ItemStack> inventory = NonNullList.withSize(11, ItemStack.EMPTY);
+	public final NonNullList<ItemStack> inventory = NonNullList.withSize(11, ItemStack.EMPTY);
 	public float animation_piston = 0;
 	public boolean animation_down = true;
-	private CapabilityReference<IItemHandler> outputCap = CapabilityReference.forTileEntityAt(this, this::getOutputPos,
-			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+	private final CapabilityReference<IItemHandler> outputCap = CapabilityReference.forTileEntityAt(
+			this, this::getOutputPos, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
+	);
 
 	public SqueezerTileEntity()
 	{
@@ -76,7 +78,7 @@ public class SqueezerTileEntity extends PoweredMultiblockTileEntity<SqueezerTile
 		super.readCustomNBT(nbt, descPacket);
 		tanks[0].readFromNBT(nbt.getCompound("tank"));
 		if(!descPacket)
-			inventory = Utils.readInventory(nbt.getList("inventory", 10), 11);
+			ItemStackHelper.loadAllItems(nbt, inventory);
 	}
 
 	@Override
@@ -86,7 +88,7 @@ public class SqueezerTileEntity extends PoweredMultiblockTileEntity<SqueezerTile
 		CompoundNBT tankTag = tanks[0].writeToNBT(new CompoundNBT());
 		nbt.put("tank", tankTag);
 		if(!descPacket)
-			nbt.put("inventory", Utils.writeInventory(inventory));
+			ItemStackHelper.saveAllItems(nbt, inventory);
 	}
 
 	@Override

@@ -14,8 +14,8 @@ import blusunrize.immersiveengineering.common.gui.IEContainerTypes.ItemContainer
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.ListUtils;
-import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
@@ -94,7 +94,11 @@ public class SpeedloaderItem extends InternalStorageItem implements ITool, IBull
 		if(!remote)
 			return ListUtils.fromItems(this.getContainedItems(revolver).subList(0, getSlotCount()));
 		else
-			return Utils.readInventory(revolver.getOrCreateTag().getList("bullets", 10), getSlotCount());
+		{
+			NonNullList<ItemStack> result = NonNullList.withSize(getSlotCount(), ItemStack.EMPTY);
+			ItemStackHelper.loadAllItems(revolver.getOrCreateTag().getCompound("bullets"), result);
+			return result;
+		}
 	}
 
 	@Nullable
@@ -112,7 +116,7 @@ public class SpeedloaderItem extends InternalStorageItem implements ITool, IBull
 			NonNullList<ItemStack> bullets = NonNullList.withSize(getSlotCount(), ItemStack.EMPTY);
 			for(int i = 0; i < getSlotCount(); i++)
 				bullets.set(i, handler.getStackInSlot(i));
-			retConst.put("bullets", Utils.writeInventory(bullets));
+			retConst.put("bullets", ItemStackHelper.saveAllItems(new CompoundNBT(), bullets));
 		});
 		return retConst;
 	}

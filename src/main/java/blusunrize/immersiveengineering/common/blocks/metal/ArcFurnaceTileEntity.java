@@ -29,6 +29,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
@@ -99,7 +100,7 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 	{
 		super.readCustomNBT(nbt, descPacket);
 		if(!descPacket)
-			inventory = Utils.readInventory(nbt.getList("inventory", 10), 26);
+			ItemStackHelper.loadAllItems(nbt, inventory);
 		else
 		{
 			byte electrodeStatus = nbt.getByte("electrodeStatus");
@@ -122,7 +123,7 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		if(!descPacket)
-			nbt.put("inventory", Utils.writeInventory(inventory));
+			ItemStackHelper.saveAllItems(nbt, inventory);
 		else
 		{
 			byte packed = 0;

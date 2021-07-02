@@ -52,6 +52,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.EquipmentSlotType.Group;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.Item;
@@ -153,7 +154,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 			NonNullList<ItemStack> bullets = NonNullList.withSize(getBulletCount(stack), ItemStack.EMPTY);
 			for(int i = 0; i < getBulletCount(stack); i++)
 				bullets.set(i, handler.getStackInSlot(i));
-			retFinal.put("bullets", Utils.writeInventory(bullets));
+			retFinal.put("bullets", ItemStackHelper.saveAllItems(new CompoundNBT(), bullets));
 		});
 		return retFinal;
 	}
@@ -453,7 +454,11 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 		if(!remote)
 			return ListUtils.fromItems(this.getContainedItems(revolver).subList(0, getBulletCount(revolver)));
 		else
-			return Utils.readInventory(revolver.getOrCreateTag().getList("bullets", NBT.TAG_COMPOUND), getBulletCount(revolver));
+		{
+			NonNullList<ItemStack> stacks = NonNullList.withSize(getBulletCount(revolver), ItemStack.EMPTY);
+			ItemStackHelper.loadAllItems(revolver.getOrCreateTag().getCompound("bullets"), stacks);
+			return stacks;
+		}
 	}
 
 	/* ------------- BULLET UTILITY ------------- */

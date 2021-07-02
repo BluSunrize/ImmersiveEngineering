@@ -26,6 +26,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootContext;
@@ -55,7 +56,7 @@ import java.util.Random;
 
 public class WoodenCrateTileEntity extends IEBaseTileEntity implements IIEInventory, IInteractionObjectIE<WoodenCrateTileEntity>, ITileDrop, IComparatorOverride
 {
-	NonNullList<ItemStack> inventory = NonNullList.withSize(27, ItemStack.EMPTY);
+	private final NonNullList<ItemStack> inventory = NonNullList.withSize(27, ItemStack.EMPTY);
 	public ResourceLocation lootTable;
 	public String name;
 	private ListNBT enchantments;
@@ -77,7 +78,7 @@ public class WoodenCrateTileEntity extends IEBaseTileEntity implements IIEInvent
 			if(nbt.contains("lootTable", NBT.TAG_STRING))
 				this.lootTable = new ResourceLocation(nbt.getString("lootTable"));
 			else
-				inventory = Utils.readInventory(nbt.getList("inventory", NBT.TAG_COMPOUND), 27);
+				ItemStackHelper.loadAllItems(nbt, inventory);
 		}
 	}
 
@@ -93,26 +94,8 @@ public class WoodenCrateTileEntity extends IEBaseTileEntity implements IIEInvent
 			if(lootTable!=null)
 				nbt.putString("lootTable", lootTable.toString());
 			else
-				writeInv(nbt, false);
+				ItemStackHelper.saveAllItems(nbt, inventory);
 		}
-	}
-
-	public void writeInv(CompoundNBT nbt, boolean toItem)
-	{
-		boolean write = false;
-		ListNBT invList = new ListNBT();
-		for(int i = 0; i < this.inventory.size(); i++)
-			if(!this.inventory.get(i).isEmpty())
-			{
-				if(toItem)
-					write = true;
-				CompoundNBT itemTag = new CompoundNBT();
-				itemTag.putByte("Slot", (byte)i);
-				this.inventory.get(i).write(itemTag);
-				invList.add(itemTag);
-			}
-		if(!toItem||write)
-			nbt.put("inventory", invList);
 	}
 
 	@Override
@@ -186,6 +169,7 @@ public class WoodenCrateTileEntity extends IEBaseTileEntity implements IIEInvent
 	}
 
 	@Override
+	@Nonnull
 	public NonNullList<ItemStack> getInventory()
 	{
 		return inventory;
@@ -214,7 +198,7 @@ public class WoodenCrateTileEntity extends IEBaseTileEntity implements IIEInvent
 	{
 		ItemStack stack = new ItemStack(getBlockState().getBlock(), 1);
 		CompoundNBT tag = new CompoundNBT();
-		writeInv(tag, true);
+		ItemStackHelper.saveAllItems(tag, inventory);
 		if(!tag.isEmpty())
 			stack.setTag(tag);
 		if(this.name!=null)
@@ -242,7 +226,7 @@ public class WoodenCrateTileEntity extends IEBaseTileEntity implements IIEInvent
 		return Utils.calcRedstoneFromInventory(this);
 	}
 
-	private LazyOptional<IItemHandler> insertionCap = registerConstantCap(new IEInventoryHandler(27, this));
+	private final LazyOptional<IItemHandler> insertionCap = registerConstantCap(new IEInventoryHandler(27, this));
 
 	@Nonnull
 	@Override
