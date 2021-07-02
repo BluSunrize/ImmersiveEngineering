@@ -208,7 +208,6 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 
 		matrixStack.translate(0, liftPress, 0);
 		renderModelPart(matrixStack, blockRenderer, bufferIn, te.getWorldNonnull(), state, model, blockPos, "pressLift");
-		matrixStack.translate(0, -liftPress, 0);
 
 		matrixStack.pop();
 
@@ -376,7 +375,7 @@ public class AutoWorkbenchRenderer extends TileEntityRenderer<AutoWorkbenchTileE
 		if(images.isEmpty())
 			return null;
 		ArrayList<Pair<TexturePoint, TexturePoint>> lines = new ArrayList<>();
-		HashSet testSet = new HashSet();
+		Set<TexturePoint> testSet = new HashSet<>();
 		HashMultimap<Integer, TexturePoint> area = HashMultimap.create();
 		int wMax = 0;
 		for(BufferedImage bufferedImage : images)

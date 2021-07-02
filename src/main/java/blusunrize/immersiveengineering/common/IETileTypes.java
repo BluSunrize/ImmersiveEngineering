@@ -16,7 +16,11 @@ import blusunrize.immersiveengineering.common.blocks.cloth.BalloonTileEntity;
 import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerTileEntity;
 import blusunrize.immersiveengineering.common.blocks.cloth.StripCurtainTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
-import blusunrize.immersiveengineering.common.blocks.stone.*;
+import blusunrize.immersiveengineering.common.blocks.stone.AlloySmelterTileEntity;
+import blusunrize.immersiveengineering.common.blocks.stone.BlastFurnaceAdvancedTileEntity;
+import blusunrize.immersiveengineering.common.blocks.stone.BlastFurnaceTileEntity.CrudeBlastFurnaceTileEntity;
+import blusunrize.immersiveengineering.common.blocks.stone.CokeOvenTileEntity;
+import blusunrize.immersiveengineering.common.blocks.stone.CoresampleTileEntity;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import com.google.common.collect.ImmutableSet;
@@ -50,8 +54,8 @@ public class IETileTypes
 	public static final RegistryObject<TileEntityType<CokeOvenTileEntity>> COKE_OVEN = REGISTER.register(
 			"cokeoven", makeType(CokeOvenTileEntity::new, Multiblocks.cokeOven)
 	);
-	public static final RegistryObject<TileEntityType<BlastFurnaceTileEntity>> BLAST_FURNACE = REGISTER.register(
-			"blastfurnace", makeType(BlastFurnaceTileEntity::new, Multiblocks.blastFurnace)
+	public static final RegistryObject<TileEntityType<CrudeBlastFurnaceTileEntity>> BLAST_FURNACE = REGISTER.register(
+			"blastfurnace", makeType(CrudeBlastFurnaceTileEntity::new, Multiblocks.blastFurnace)
 	);
 	public static final RegistryObject<TileEntityType<BlastFurnaceAdvancedTileEntity>> BLAST_FURNACE_ADVANCED = REGISTER.register(
 			"blastfurnaceadvanced", makeType(BlastFurnaceAdvancedTileEntity::new, Multiblocks.blastFurnaceAdv)

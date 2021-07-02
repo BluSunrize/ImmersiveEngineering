@@ -441,7 +441,7 @@ public class IEBlockInterfaces
 		@Nullable
 		T getGuiMaster();
 
-		TileContainer<T, ?> getContainerType();
+		TileContainer<? super T, ?> getContainerType();
 
 		boolean canUseGui(PlayerEntity player);
 
@@ -456,7 +456,7 @@ public class IEBlockInterfaces
 		{
 			T master = getGuiMaster();
 			Preconditions.checkNotNull(master);
-			TileContainer<T, ?> type = getContainerType();
+			TileContainer<? super T, ?> type = getContainerType();
 			return type.create(id, playerInventory, master);
 		}
 

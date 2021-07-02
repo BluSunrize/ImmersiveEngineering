@@ -173,10 +173,10 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 
 	public static class MultiblockFluidWrapper implements IFluidHandler
 	{
-		final MultiblockPartTileEntity multiblock;
+		final MultiblockPartTileEntity<?> multiblock;
 		final Direction side;
 
-		public MultiblockFluidWrapper(MultiblockPartTileEntity multiblock, Direction side)
+		public MultiblockFluidWrapper(MultiblockPartTileEntity<?> multiblock, Direction side)
 		{
 			this.multiblock = multiblock;
 			this.side = side;

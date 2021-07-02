@@ -38,7 +38,7 @@ public class IEContainerTypes
 
 	public static final TileContainer<CokeOvenTileEntity, CokeOvenContainer> COKE_OVEN = register(Lib.GUIID_CokeOven, CokeOvenContainer::new);
 	public static final TileContainer<AlloySmelterTileEntity, AlloySmelterContainer> ALLOY_SMELTER = register(Lib.GUIID_AlloySmelter, AlloySmelterContainer::new);
-	public static final TileContainer<BlastFurnaceTileEntity, BlastFurnaceContainer> BLAST_FURNACE = register(Lib.GUIID_BlastFurnace, BlastFurnaceContainer::new);
+	public static final TileContainer<BlastFurnaceTileEntity<?>, BlastFurnaceContainer> BLAST_FURNACE = register(Lib.GUIID_BlastFurnace, BlastFurnaceContainer::new);
 	public static final TileContainer<CraftingTableTileEntity, CraftingTableContainer> CRAFTING_TABLE = register(Lib.GUIID_CraftingTable, CraftingTableContainer::new);
 	public static final TileContainer<WoodenCrateTileEntity, CrateContainer> WOODEN_CRATE = register(Lib.GUIID_WoodenCrate, CrateContainer::new);
 	public static final TileContainer<ModWorkbenchTileEntity, ModWorkbenchContainer> MOD_WORKBENCH = register(Lib.GUIID_Workbench, ModWorkbenchContainer::new);

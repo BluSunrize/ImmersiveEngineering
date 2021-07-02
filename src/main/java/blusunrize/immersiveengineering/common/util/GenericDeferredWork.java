@@ -10,9 +10,13 @@ package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.api.Lib;
 import com.google.common.base.Preconditions;
+import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.DispenserBlock;
+import net.minecraft.block.FlowerPotBlock;
 import net.minecraft.dispenser.IDispenseItemBehavior;
 import net.minecraft.util.IItemProvider;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
@@ -35,6 +39,11 @@ public class GenericDeferredWork
 	{
 		Preconditions.checkState(!done);
 		TO_RUN_ON_THREAD.add(toRun);
+	}
+
+	public static void registerPotablePlant(ResourceLocation flower, Block fullPot)
+	{
+		enqueue(() -> ((FlowerPotBlock)Blocks.FLOWER_POT).addPlant(flower, () -> fullPot));
 	}
 
 	public static void registerDispenseBehavior(IItemProvider item, IDispenseItemBehavior behavior)

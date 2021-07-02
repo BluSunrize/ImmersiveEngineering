@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.Cove
 import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
 import blusunrize.immersiveengineering.common.blocks.plant.PottedHempBlock;
 import blusunrize.immersiveengineering.common.blocks.stone.*;
+import blusunrize.immersiveengineering.common.blocks.stone.BlastFurnaceTileEntity.CrudeBlastFurnaceTileEntity;
 import blusunrize.immersiveengineering.common.blocks.wooden.BarrelBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
 import blusunrize.immersiveengineering.common.fluids.IEFluids;
@@ -153,7 +154,7 @@ public final class IEBlocks
 		public static BlockEntry<StoneMultiBlock<CokeOvenTileEntity>> cokeOven = new BlockEntry<>(
 				"coke_oven", StoneMultiBlock.PROPERTIES, p -> new StoneMultiBlock<>(p, IETileTypes.COKE_OVEN)
 		);
-		public static BlockEntry<StoneMultiBlock<BlastFurnaceTileEntity>> blastFurnace = new BlockEntry<>(
+		public static BlockEntry<StoneMultiBlock<CrudeBlastFurnaceTileEntity>> blastFurnace = new BlockEntry<>(
 				"blast_furnace", StoneMultiBlock.PROPERTIES, p -> new StoneMultiBlock<>(p, IETileTypes.BLAST_FURNACE)
 		);
 		public static BlockEntry<StoneMultiBlock<AlloySmelterTileEntity>> alloySmelter = new BlockEntry<>(

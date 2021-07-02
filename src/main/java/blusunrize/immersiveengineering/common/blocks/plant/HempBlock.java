@@ -59,14 +59,6 @@ public class HempBlock extends BushBlock implements IGrowable
 		builder.add(GROWTH);
 	}
 
-	public EnumHempGrowth getMinGrowth(EnumHempGrowth current)
-	{
-		if(current==EnumHempGrowth.TOP0)
-			return EnumHempGrowth.TOP0;
-		else
-			return EnumHempGrowth.BOTTOM0;
-	}
-
 	public static EnumHempGrowth getMaxGrowth(EnumHempGrowth current)
 	{
 		if(current==EnumHempGrowth.TOP0)

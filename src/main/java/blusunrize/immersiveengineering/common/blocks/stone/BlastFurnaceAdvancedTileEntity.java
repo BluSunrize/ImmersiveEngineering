@@ -35,18 +35,18 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 
-public class BlastFurnaceAdvancedTileEntity extends BlastFurnaceTileEntity
+public class BlastFurnaceAdvancedTileEntity extends BlastFurnaceTileEntity<BlastFurnaceAdvancedTileEntity>
 {
 	public BlastFurnaceAdvancedTileEntity()
 	{
 		super(IEMultiblocks.ADVANCED_BLAST_FURNACE, IETileTypes.BLAST_FURNACE_ADVANCED.get());
 	}
 
-	private CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntityAt(this,
+	private final CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntityAt(this,
 			() -> new DirectionalBlockPos(pos.offset(getFacing(), 2).add(0, -1, 0), getFacing().getOpposite()),
 			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
 	);
-	private CapabilityReference<IItemHandler> slag = CapabilityReference.forTileEntityAt(this,
+	private final CapabilityReference<IItemHandler> slag = CapabilityReference.forTileEntityAt(this,
 			() -> new DirectionalBlockPos(pos.offset(getFacing(), -2).add(0, -1, 0), getFacing().getOpposite()),
 			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
 	);
@@ -72,6 +72,7 @@ public class BlastFurnaceAdvancedTileEntity extends BlastFurnaceTileEntity
 		}
 	}
 
+	@Nonnull
 	@Override
 	public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx)
 	{
@@ -157,13 +158,13 @@ public class BlastFurnaceAdvancedTileEntity extends BlastFurnaceTileEntity
 		return Optional.empty();
 	}
 
-	private LazyOptional<IItemHandler> inputHandler = registerConstantCap(
+	private final LazyOptional<IItemHandler> inputHandler = registerConstantCap(
 			new IEInventoryHandler(2, this, 0, new boolean[]{true, true}, new boolean[]{false, false})
 	);
-	private LazyOptional<IItemHandler> outputHandler = registerConstantCap(
+	private final LazyOptional<IItemHandler> outputHandler = registerConstantCap(
 			new IEInventoryHandler(1, this, 2, new boolean[]{false}, new boolean[]{true})
 	);
-	private LazyOptional<IItemHandler> slagHandler = registerConstantCap(
+	private final LazyOptional<IItemHandler> slagHandler = registerConstantCap(
 			new IEInventoryHandler(1, this, 3, new boolean[]{false}, new boolean[]{true})
 	);
 	//TODO output is facing, 2
@@ -178,7 +179,7 @@ public class BlastFurnaceAdvancedTileEntity extends BlastFurnaceTileEntity
 	{
 		if(ioOffsets.contains(posInMultiblock)&&capability==net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
-			BlastFurnaceAdvancedTileEntity master = (BlastFurnaceAdvancedTileEntity)master();
+			BlastFurnaceAdvancedTileEntity master = master();
 			if(master!=null)
 			{
 				if(inputOffset.equals(posInMultiblock)&&facing==Direction.UP)

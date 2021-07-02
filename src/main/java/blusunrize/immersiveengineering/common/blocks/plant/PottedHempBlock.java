@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.plant;
 
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Misc;
+import blusunrize.immersiveengineering.common.util.GenericDeferredWork;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.FlowerPotBlock;
 import net.minecraft.block.material.Material;
@@ -28,7 +29,7 @@ public class PottedHempBlock extends FlowerPotBlock
 	public PottedHempBlock(Properties props)
 	{
 		super(() -> (FlowerPotBlock)Blocks.FLOWER_POT, () -> IEBlocks.Misc.hempPlant.get(), props);
-		((FlowerPotBlock)Blocks.FLOWER_POT).addPlant(Misc.hempPlant.get().getRegistryName(), () -> this);
+		GenericDeferredWork.registerPotablePlant(Misc.hempPlant.get().getRegistryName(), this);
 	}
 
 	@Override
