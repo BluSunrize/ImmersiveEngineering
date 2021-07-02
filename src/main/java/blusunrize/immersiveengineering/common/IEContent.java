@@ -36,6 +36,7 @@ import blusunrize.immersiveengineering.api.wires.localhandlers.WireDamageHandler
 import blusunrize.immersiveengineering.api.wires.redstone.CapabilityRedstoneNetwork;
 import blusunrize.immersiveengineering.api.wires.redstone.RedstoneNetworkHandler;
 import blusunrize.immersiveengineering.api.wires.utils.WirecoilUtils;
+import blusunrize.immersiveengineering.client.fx.IEParticles;
 import blusunrize.immersiveengineering.client.utils.ClocheRenderFunctions;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
@@ -145,6 +146,7 @@ public class IEContent
 
 		IEFluids.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
 		IEPotions.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
+		IEParticles.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
 		IETileTypes.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
 		IEEntityTypes.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
 		IEContainerTypes.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());

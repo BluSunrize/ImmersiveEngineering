@@ -201,7 +201,7 @@ public class FractalParticle extends Particle
 		@Override
 		public ParticleType<?> getType()
 		{
-			return IEParticles.FRACTAL;
+			return IEParticles.FRACTAL.get();
 		}
 
 		@Override

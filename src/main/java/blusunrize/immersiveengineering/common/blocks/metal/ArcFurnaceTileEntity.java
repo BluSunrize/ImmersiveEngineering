@@ -8,11 +8,11 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
+import blusunrize.immersiveengineering.client.fx.IEParticles;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICollisionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
@@ -151,15 +151,15 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 				for(int i = 0; i < 4; i++)
 				{
 					if(Utils.RAND.nextInt(6)==0)
-						ImmersiveEngineering.proxy.spawnSparkFX(world, getPos().getX()+.5-.25*getFacing().getXOffset(),
+						world.addParticle(IEParticles.SPARKS.get(), getPos().getX()+.5-.25*getFacing().getXOffset(),
 								getPos().getY()+2.9, getPos().getZ()+.5-.25*getFacing().getZOffset(),
 								Utils.RAND.nextDouble()*.05-.025, .025, Utils.RAND.nextDouble()*.05-.025);
 					if(Utils.RAND.nextInt(6)==0)
-						ImmersiveEngineering.proxy.spawnSparkFX(world, getPos().getX()+.5+(getFacing()==Direction.EAST?-.25: .25),
+						world.addParticle(IEParticles.SPARKS.get(), getPos().getX()+.5+(getFacing()==Direction.EAST?-.25: .25),
 								getPos().getY()+2.9, getPos().getZ()+.5+(getFacing()==Direction.SOUTH?.25: -.25),
 								Utils.RAND.nextDouble()*.05-.025, .025, Utils.RAND.nextDouble()*.05-.025);
 					if(Utils.RAND.nextInt(6)==0)
-						ImmersiveEngineering.proxy.spawnSparkFX(world, getPos().getX()+.5+(getFacing()==Direction.WEST?.25: -.25),
+						world.addParticle(IEParticles.SPARKS.get(), getPos().getX()+.5+(getFacing()==Direction.WEST?.25: -.25),
 								getPos().getY()+2.9, getPos().getZ()+.5+(getFacing()==Direction.NORTH?-.25: .25),
 								Utils.RAND.nextDouble()*.05-.025, .025, Utils.RAND.nextDouble()*.05-.025);
 				}

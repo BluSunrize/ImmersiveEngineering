@@ -13,8 +13,6 @@ import blusunrize.immersiveengineering.common.config.IECommonConfig;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.compat.computers.cctweaked.ComputerCraftCompatModule;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CraftTweakerCompatModule;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.ModList;
 
 import java.util.HashMap;
@@ -93,25 +91,6 @@ public abstract class IECompatModule
 			}
 	}
 
-	//We don't want this to happen multiple times after all >_>
-	public static boolean serverStartingDone = false;
-
-	public static void doModulesLoadComplete()
-	{
-		if(!serverStartingDone)
-		{
-			serverStartingDone = true;
-			for(IECompatModule compat : IECompatModule.modules)
-				try
-				{
-					compat.loadComplete();
-				} catch(Exception exception)
-				{
-					IELogger.logger.error("Compat module for "+compat+" could not be initialized. Report this and include the error message below!", exception);
-				}
-		}
-	}
-
 	public abstract void preInit();
 
 	public abstract void init();
@@ -119,25 +98,6 @@ public abstract class IECompatModule
 	public abstract void postInit();
 
 	public void sendIMCs()
-	{
-	}
-
-	public void loadComplete()
-	{
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	public void clientPreInit()
-	{
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	public void clientInit()
-	{
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	public void clientPostInit()
 	{
 	}
 }

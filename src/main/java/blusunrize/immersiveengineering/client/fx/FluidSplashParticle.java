@@ -12,19 +12,14 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.SpriteTexturedParticle;
-import net.minecraft.client.renderer.texture.MissingTextureSprite;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.IParticleData.IDeserializer;
@@ -39,6 +34,7 @@ import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -47,11 +43,8 @@ import javax.annotation.Nullable;
 @OnlyIn(Dist.CLIENT)
 public class FluidSplashParticle extends SpriteTexturedParticle
 {
-	public static final Codec<Data> CODEC = RecordCodecBuilder.create(instance ->
-			instance.group(
-					Codec.STRING.fieldOf("fluid").forGetter(
-							data -> data.fluid.getRegistryName().toString()
-					)).apply(instance, Data::new)
+	public static final Codec<Data> CODEC = ResourceLocation.CODEC.xmap(
+			Data::new, d -> d.fluid.getRegistryName()
 	);
 
 	public FluidSplashParticle(Fluid fluid, ClientWorld worldIn, double xCoordIn, double yCoordIn, double zCoordIn,
@@ -78,7 +71,7 @@ public class FluidSplashParticle extends SpriteTexturedParticle
 		this.prevPosX = this.posX;
 		this.prevPosY = this.posY;
 		this.prevPosZ = this.posZ;
-		this.motionY -= (double)this.particleGravity;
+		this.motionY -= this.particleGravity;
 		this.move(this.motionX, this.motionY, this.motionZ);
 		this.motionX *= 0.98;
 		this.motionY *= 0.98;
@@ -114,10 +107,7 @@ public class FluidSplashParticle extends SpriteTexturedParticle
 
 	public void setFluidTexture(FluidStack fluid)
 	{
-		TextureAtlasSprite sprite = ClientUtils.getSprite(fluid.getFluid().getAttributes().getStillTexture(fluid));
-		if(sprite==null)
-			sprite = Minecraft.getInstance().getAtlasSpriteGetter(PlayerContainer.LOCATION_BLOCKS_TEXTURE).apply(MissingTextureSprite.getLocation());
-		setSprite(sprite);
+		setSprite(ClientUtils.getSprite(fluid.getFluid().getAttributes().getStillTexture(fluid)));
 		int argb = fluid.getFluid().getAttributes().getColor(fluid);
 		this.particleAlpha = ((argb >> 24)&255)/255f;
 		this.particleRed = ((argb >> 16)&255)/255f;
@@ -125,6 +115,7 @@ public class FluidSplashParticle extends SpriteTexturedParticle
 		this.particleRed = (argb&255)/255f;
 	}
 
+	@Nonnull
 	@Override
 	public IParticleRenderType getRenderType()
 	{
@@ -136,7 +127,7 @@ public class FluidSplashParticle extends SpriteTexturedParticle
 	{
 		@Nullable
 		@Override
-		public Particle makeParticle(Data typeIn, ClientWorld worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
+		public Particle makeParticle(Data typeIn, @Nonnull ClientWorld worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
 		{
 			return new FluidSplashParticle(typeIn.fluid, worldIn, x, y, z, xSpeed, ySpeed, zSpeed);
 		}
@@ -146,9 +137,9 @@ public class FluidSplashParticle extends SpriteTexturedParticle
 	{
 		private final Fluid fluid;
 
-		public Data(String name)
+		public Data(ResourceLocation name)
 		{
-			this(ForgeRegistries.FLUIDS.getValue(new ResourceLocation(name)));
+			this(ForgeRegistries.FLUIDS.getValue(name));
 		}
 
 		public Data(Fluid fluid)
@@ -156,18 +147,20 @@ public class FluidSplashParticle extends SpriteTexturedParticle
 			this.fluid = fluid;
 		}
 
+		@Nonnull
 		@Override
 		public ParticleType<?> getType()
 		{
-			return IEParticles.FLUID_SPLASH;
+			return IEParticles.FLUID_SPLASH.get();
 		}
 
 		@Override
 		public void write(PacketBuffer buffer)
 		{
-			buffer.writeString(fluid.getRegistryName().toString());
+			buffer.writeResourceLocation(fluid.getRegistryName());
 		}
 
+		@Nonnull
 		@Override
 		public String getParameters()
 		{
@@ -178,21 +171,19 @@ public class FluidSplashParticle extends SpriteTexturedParticle
 	public static class DataDeserializer implements IDeserializer<Data>
 	{
 
+		@Nonnull
 		@Override
-		public Data deserialize(ParticleType<Data> particleTypeIn, StringReader reader) throws CommandSyntaxException
+		public Data deserialize(@Nonnull ParticleType<Data> particleTypeIn, StringReader reader) throws CommandSyntaxException
 		{
 			String name = reader.getString();
-			Fluid f = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(name));
-			return new Data(f);
+			return new Data(new ResourceLocation(name));
 		}
 
+		@Nonnull
 		@Override
-		public Data read(ParticleType<Data> particleTypeIn, PacketBuffer buffer)
+		public Data read(@Nonnull ParticleType<Data> particleTypeIn, PacketBuffer buffer)
 		{
-			String name = buffer.readString();
-			Fluid f = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(name));
-			return new Data(f);
-
+			return new Data(buffer.readResourceLocation());
 		}
 	}
 }

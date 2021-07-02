@@ -8,12 +8,13 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
+import blusunrize.immersiveengineering.client.fx.FluidSplashParticle.Data;
+import blusunrize.immersiveengineering.client.fx.IEParticles;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
@@ -118,9 +119,9 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 						float angleRad = (float)Math.toRadians(animation_agitator);
 						partPos = partPos.add(r*Math.cos(angleRad), 0, r*Math.sin(angleRad));
 						if(Utils.RAND.nextBoolean())
-							ImmersiveEngineering.proxy.spawnBubbleFX(world, fs, partPos.x, partPos.y, partPos.z, 0, 0, 0);
+							world.addParticle(IEParticles.IE_BUBBLE.get(), partPos.x, partPos.y, partPos.z, 0, 0, 0);
 						else
-							ImmersiveEngineering.proxy.spawnFluidSplashFX(world, fs, partPos.x, partPos.y, partPos.z, 0, 0, 0);
+							world.addParticle(new Data(fs.getFluid()), partPos.x, partPos.y, partPos.z, 0, 0, 0);
 					}
 				}
 				animation_agitator = (animation_agitator+9)%360;

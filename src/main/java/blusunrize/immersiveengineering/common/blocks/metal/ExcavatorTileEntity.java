@@ -188,7 +188,7 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 								this.doProcessOutput(wheel.digStacks.get(target).copy());
 								Block b = Block.getBlockFromItem(wheel.digStacks.get(target).getItem());
 								if(b!=Blocks.AIR)
-									wheel.particleStack = wheel.digStacks.get(target).copy();
+									wheel.spawnParticles(wheel.digStacks.get(target));
 								wheel.digStacks.set(target, ItemStack.EMPTY);
 								wheel.markDirty();
 								this.markContainingBlockForUpdate(null);

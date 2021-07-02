@@ -71,8 +71,7 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 	public boolean redstoneControlInverted = false;
 	public boolean lowPower = false;
 	private Vector3d soundPos = null;
-	@OnlyIn(Dist.CLIENT)
-	public static ArrayListMultimap<BlockPos, LightningAnimation> effectMap;
+	public static final ArrayListMultimap<BlockPos, LightningAnimation> effectMap = ArrayListMultimap.create();
 	private static final ElectricSource TC_FIELD = new ElectricSource(-1);
 
 	public TeslaCoilTileEntity()

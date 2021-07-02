@@ -150,7 +150,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			{
 				if(this.shieldToggleTimer > 0)
 					this.shieldToggleTimer--;
-				if(ClientProxy.keybind_magnetEquip.isKeyDown()&&!this.shieldToggleButton)
+				if(IEKeybinds.keybind_magnetEquip.isKeyDown()&&!this.shieldToggleButton)
 					if(this.shieldToggleTimer <= 0)
 						this.shieldToggleTimer = 7;
 					else
@@ -177,14 +177,14 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 					this.shieldToggleButton = ClientUtils.mc().gameSettings.keyBindBack.isKeyDown();
 
 
-				if(!ClientProxy.keybind_chemthrowerSwitch.isInvalid()&&ClientProxy.keybind_chemthrowerSwitch.isPressed())
+				if(!IEKeybinds.keybind_chemthrowerSwitch.isInvalid()&&IEKeybinds.keybind_chemthrowerSwitch.isPressed())
 				{
 					ItemStack held = event.player.getHeldItem(Hand.MAIN_HAND);
 					if(held.getItem() instanceof IScrollwheel)
 						ImmersiveEngineering.packetHandler.sendToServer(new MessageScrollwheelItem(true));
 				}
 
-				if(!ClientProxy.keybind_railgunZoom.isInvalid()&&ClientProxy.keybind_railgunZoom.isPressed())
+				if(!IEKeybinds.keybind_railgunZoom.isInvalid()&&IEKeybinds.keybind_railgunZoom.isPressed())
 					for(Hand hand : Hand.values())
 					{
 						ItemStack held = event.player.getHeldItem(hand);

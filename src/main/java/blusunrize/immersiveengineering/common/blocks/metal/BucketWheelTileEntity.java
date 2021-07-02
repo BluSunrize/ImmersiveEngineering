@@ -21,14 +21,19 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.particles.ItemParticleData;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
+import net.minecraft.util.Direction.AxisDirection;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -44,7 +49,6 @@ public class BucketWheelTileEntity extends MultiblockPartTileEntity<BucketWheelT
 	public float rotation = 0;
 	public final NonNullList<ItemStack> digStacks = NonNullList.withSize(8, ItemStack.EMPTY);
 	public boolean active = false;
-	public ItemStack particleStack = ItemStack.EMPTY;
 
 	public BucketWheelTileEntity()
 	{
@@ -59,7 +63,6 @@ public class BucketWheelTileEntity extends MultiblockPartTileEntity<BucketWheelT
 		rotation = (Math.abs(nbtRot-rotation) > 5*IEServerConfig.MACHINES.excavator_speed.get())?nbtRot: rotation; // avoid stuttering due to packet delays
 		ItemStackHelper.loadAllItems(nbt, digStacks);
 		active = nbt.getBoolean("active");
-		particleStack = nbt.contains("particleStack", NBT.TAG_COMPOUND)?ItemStack.read(nbt.getCompound("particleStack")): ItemStack.EMPTY;
 	}
 
 	@Override
@@ -69,8 +72,6 @@ public class BucketWheelTileEntity extends MultiblockPartTileEntity<BucketWheelT
 		nbt.putFloat("rotation", rotation);
 		ItemStackHelper.saveAllItems(nbt, digStacks);
 		nbt.putBoolean("active", active);
-		if(!particleStack.isEmpty())
-			nbt.put("particleStack", particleStack.write(new CompoundNBT()));
 	}
 
 	@Override
@@ -104,21 +105,47 @@ public class BucketWheelTileEntity extends MultiblockPartTileEntity<BucketWheelT
 			rotation %= 360;
 		}
 
-		if(world.isRemote)
-		{
-			if(!particleStack.isEmpty())
-			{
-				//TODO this can be done from the server now
-				ImmersiveEngineering.proxy.spawnBucketWheelFX(this, particleStack);
-				particleStack = ItemStack.EMPTY;
-			}
-		}
-		else if(active&&world.getGameTime()%20==0)
+		if(!world.isRemote&&active&&world.getGameTime()%20==0)
 		{
 			CompoundNBT nbt = new CompoundNBT();
 			nbt.putFloat("rotation", rotation);
 			MessageTileSync sync = new MessageTileSync(this, nbt);
 			ImmersiveEngineering.packetHandler.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(pos)), sync);
+		}
+	}
+
+	public void spawnParticles(ItemStack stack)
+	{
+		World w = getWorldNonnull();
+		if(w instanceof ServerWorld&&IEServerConfig.MACHINES.excavator_particles.get())
+		{
+			Direction facing = getFacing();
+			Axis axis = facing.getAxis();
+			int sign = (getIsMirrored()^facing.getAxisDirection()==AxisDirection.NEGATIVE)?1: -1;
+			final double x = getPos().getX()+.5;
+			final double y = getPos().getY()+2.5;
+			final double z = getPos().getZ()+.5;
+			double fixPosOffset = .5*sign;
+			double fixVelOffset = .075*sign;
+			for(int i = 0; i < 16; i++)
+			{
+				double mX = (getWorldNonnull().rand.nextDouble()-.5)*.01;
+				double mY = getWorldNonnull().rand.nextDouble()*-0.05D;
+				double mZ = (getWorldNonnull().rand.nextDouble()-.5)*.01;
+				double rndPosOffset = .2*(getWorldNonnull().rand.nextDouble()-.5);
+
+				if(facing.getAxis()==Axis.X)
+					mX += fixVelOffset;
+				else
+					mZ += fixVelOffset;
+
+				((ServerWorld)w).spawnParticle(
+						new ItemParticleData(ParticleTypes.ITEM, stack),
+						x+axis.getCoordinate(fixPosOffset, 0, rndPosOffset), y, z+axis.getCoordinate(rndPosOffset, 0, fixPosOffset),
+						0,
+						mX, mY, mZ, 1
+				);
+			}
 		}
 	}
 
@@ -132,7 +159,6 @@ public class BucketWheelTileEntity extends MultiblockPartTileEntity<BucketWheelT
 			if(message.contains("empty", NBT.TAG_INT))
 			{
 				int toRemove = message.getInt("empty");
-				particleStack = digStacks.get(toRemove);
 				this.digStacks.set(toRemove, ItemStack.EMPTY);
 			}
 			if(message.contains("rotation", NBT.TAG_INT))

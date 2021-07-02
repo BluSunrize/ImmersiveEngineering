@@ -48,6 +48,7 @@ import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -58,10 +59,8 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkRegistry;
@@ -101,8 +100,6 @@ public class ImmersiveEngineering
 		IELogger.logger = LogManager.getLogger(MODID);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::enqueueIMCs);
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::loadComplete);
-		MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
 		MinecraftForge.EVENT_BUS.addListener(this::registerCommands);
 		MinecraftForge.EVENT_BUS.addListener(this::addReloadListeners);
 		MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::addReloadListenersLowest);
@@ -114,7 +111,7 @@ public class ImmersiveEngineering
 		ModLoadingContext.get().registerConfig(Type.CLIENT, IEClientConfig.CONFIG_SPEC.getBaseSpec());
 		ModLoadingContext.get().registerConfig(Type.SERVER, IEServerConfig.CONFIG_SPEC.getBaseSpec());
 		IEContent.modConstruction();
-		proxy.modConstruction();
+		DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> ClientProxy::modConstruction);
 		IngredientSerializers.init();
 
 		IEWorldGen ieWorldGen = new IEWorldGen();
@@ -125,8 +122,6 @@ public class ImmersiveEngineering
 
 	public void setup(FMLCommonSetupEvent event)
 	{
-		proxy.preInit(event);
-
 		IEAdvancements.preInit();
 
 		IEApi.prefixToIngotMap.put("ingots", new Integer[]{1, 1});
@@ -172,14 +167,11 @@ public class ImmersiveEngineering
 
 		new ThreadContributorSpecialsDownloader();
 
-		proxy.preInitEnd();
 		IEContent.init(event);
 
 		MinecraftForge.EVENT_BUS.register(new EventHandler());
-		proxy.init();
 
 		IECompatModule.doModulesInit();
-		proxy.initEnd();
 		registerMessage(MessageTileSync.class, MessageTileSync::new);
 		registerMessage(MessageContainerUpdate.class, MessageContainerUpdate::new, PLAY_TO_SERVER);
 		registerMessage(MessageSpeedloaderSync.class, MessageSpeedloaderSync::new, PLAY_TO_CLIENT);
@@ -203,9 +195,7 @@ public class ImmersiveEngineering
 		//TODO IEIMCHandler.handleIMCMessages(FMLInterModComms.fetchRuntimeMessages(this));
 
 		event.enqueueWork(Villages::init);
-		proxy.postInit();
 		IECompatModule.doModulesPostInit();
-		proxy.postInitEnd();
 		ShaderRegistry.compileWeight();
 		CommandMineral.registerArguments();
 	}
@@ -241,16 +231,6 @@ public class ImmersiveEngineering
 	public void enqueueIMCs(InterModEnqueueEvent event)
 	{
 		IECompatModule.doModulesIMCs();
-	}
-
-	public void loadComplete(FMLLoadCompleteEvent event)
-	{
-		IECompatModule.doModulesLoadComplete();
-	}
-
-	public void serverStarting(FMLServerStartingEvent event)
-	{
-		proxy.serverStarting();
 	}
 
 	public void registerCommands(RegisterCommandsEvent event)

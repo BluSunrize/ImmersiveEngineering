@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.entities;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.Blocks;
@@ -19,6 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
@@ -83,12 +83,12 @@ public class RevolvershotFlareEntity extends RevolvershotEntity
 			float r = (getColour() >> 16&255)/255f;
 			float g = (getColour() >> 8&255)/255f;
 			float b = (getColour()&255)/255f;
-			ImmersiveEngineering.proxy.spawnRedstoneFX(world, getPosX(), getPosY(), getPosZ(), 0, 0, 0, 1, r, g, b);
+			world.addParticle(new RedstoneParticleData(r, g, b, 1), getPosX(), getPosY(), getPosZ(), 0, 0, 0);
 			if(ticksExisted > 40)
 				for(int i = 0; i < 20; i++)
 				{
 					Vector3d v = new Vector3d(Utils.RAND.nextDouble()-.5, Utils.RAND.nextDouble()-.5, Utils.RAND.nextDouble()-.5);
-					ImmersiveEngineering.proxy.spawnRedstoneFX(world, getPosX()+v.x, getPosY()+v.y, getPosZ()+v.z, v.x/10, v.y/10, v.z/10, 1, r, g, b);
+					world.addParticle(new RedstoneParticleData(r, g, b, 1), getPosX()+v.x, getPosY()+v.y, getPosZ()+v.z, v.x/10, v.y/10, v.z/10);
 				}
 		}
 		if(ticksExisted==40)
@@ -139,7 +139,7 @@ public class RevolvershotFlareEntity extends RevolvershotEntity
 		for(int i = 0; i < 80; i++)
 		{
 			Vector3d v = new Vector3d((Utils.RAND.nextDouble()-.5)*i > 40?2: 1, (Utils.RAND.nextDouble()-.5)*i > 40?2: 1, (Utils.RAND.nextDouble()-.5)*i > 40?2: 1);
-			ImmersiveEngineering.proxy.spawnRedstoneFX(world, getPosX()+v.x, getPosY()+v.y, getPosZ()+v.z, v.x/10, v.y/10, v.z/10, 1, r, g, b);
+			world.addParticle(new RedstoneParticleData(r, g, b, 1), getPosX()+v.x, getPosY()+v.y, getPosZ()+v.z, v.x/10, v.y/10, v.z/10);
 		}
 	}
 }
