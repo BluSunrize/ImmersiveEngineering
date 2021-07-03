@@ -8,6 +8,7 @@
 - Fix the maintenance kit not configuring earmuffs and fluorescent tubes (Malte)
 - Fix the bottling machine not breaking the pump correctly when disassembled (Malte)
 - Fix particles for the charging station partially not rendering (Malte)
+- Fix rockcutter blade not working for the first block after switching blades (Malte)
 
 ##### Version 1.16.5-5.0.0-135
 - Clean up the API (Malte)

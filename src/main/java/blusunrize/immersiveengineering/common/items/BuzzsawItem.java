@@ -10,15 +10,6 @@ package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
-import blusunrize.immersiveengineering.api.energy.DieselHandler;
-import blusunrize.immersiveengineering.api.shader.CapabilityShader;
-import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
-import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Item;
-import blusunrize.immersiveengineering.api.shader.ShaderCase;
-import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
-import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryEntry;
-import blusunrize.immersiveengineering.api.tool.ITool;
-import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.common.gui.IESlot;
@@ -193,13 +184,16 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 		IItemHandler inv = buzzsaw.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).orElseThrow(RuntimeException::new);
 		((IItemHandlerModifiable)inv).setStackInSlot(slot, sawblade);
 
-		ListNBT enchants = null;
-		if(sawblade.getItem() instanceof SawbladeItem)
-			enchants = ((SawbladeItem)sawblade.getItem()).getSawbladeEnchants();
-		if(enchants!=null)
-			buzzsaw.getOrCreateTag().put("Enchantments", enchants);
-		else
-			buzzsaw.getOrCreateTag().remove("Enchantments");
+		if(spare==0)
+		{
+			ListNBT enchants = null;
+			if(sawblade.getItem() instanceof SawbladeItem)
+				enchants = ((SawbladeItem)sawblade.getItem()).getSawbladeEnchants();
+			if(enchants!=null)
+				buzzsaw.getOrCreateTag().put("Enchantments", enchants);
+			else
+				buzzsaw.getOrCreateTag().remove("Enchantments");
+		}
 	}
 
 	@Override
