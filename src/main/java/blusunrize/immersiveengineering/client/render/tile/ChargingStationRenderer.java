@@ -28,8 +28,9 @@ public class ChargingStationRenderer extends TileEntityRenderer<ChargingStationT
 	@Override
 	public void render(ChargingStationTileEntity te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		if(te.getWorldNonnull()!=null&&te.getWorldNonnull().isBlockLoaded(te.getPos()))
+		if(te.getWorldNonnull().isBlockLoaded(te.getPos()))
 		{
+			te.particles.render(matrixStack, te.getPos(), bufferIn, partialTicks);
 			matrixStack.push();
 			matrixStack.translate(.5, .3125, .5);
 			matrixStack.scale(.75f, .75f, .75f);
