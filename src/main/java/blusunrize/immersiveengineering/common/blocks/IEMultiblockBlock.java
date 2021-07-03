@@ -49,7 +49,12 @@ public abstract class IEMultiblockBlock extends IETileProviderBlock
 			if(tileEntity instanceof IEBaseTileEntity)
 				((IEBaseTileEntity)tileEntity).setOverrideState(state);
 			if(tileEntity instanceof MultiblockPartTileEntity)
+			{
+				// Remove the BE here before disassembling: The block is already gone, so setting the block state here
+				// to a block providing a BE will produce strange results otherwise
+				world.removeTileEntity(pos);
 				((MultiblockPartTileEntity<?>)tileEntity).disassemble();
+			}
 		}
 		super.onReplaced(state, world, pos, newState, isMoving);
 	}
