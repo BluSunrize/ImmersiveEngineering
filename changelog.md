@@ -2,6 +2,7 @@
 - Move potion buckets to vanilla brewing tab (Malte)
 - Store connections in vanilla structure/template files (Malte)
 - Allow connections to be cut mid-air even when a block is highlighted (Malte)
+- Re-add particles for overloaded wires (Malte)
 - Fix villager houses not generating (Malte)
 - Fix inconsistent behavior of the fluid router (Malte)
 - Fix the maintenance kit not configuring earmuffs and fluorescent tubes (Malte)
