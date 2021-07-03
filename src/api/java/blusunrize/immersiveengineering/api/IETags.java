@@ -44,6 +44,8 @@ public class IETags
 	public static final INamedTag<Block> scaffoldingSteel = createBlockTag(rl("scaffoldings/steel"));
 	public static final INamedTag<Block> scaffoldingAlu = createBlockTag(rl("scaffoldings/aluminum"));
 	public static final INamedTag<Block> sheetmetals = createBlockTag(forgeLoc("sheetmetals"));
+	public static final INamedTag<Block> fencesSteel = createBlockTag(forgeLoc("fences/steel"));
+	public static final INamedTag<Block> fencesAlu = createBlockTag(forgeLoc("fences/aluminum"));
 	//IE Items
 	public static final INamedTag<Item> treatedStick = createItemWrapper(getRod("treated_wood"));
 	public static final INamedTag<Item> ironRod = createItemWrapper(getRod("iron"));

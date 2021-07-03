@@ -18,7 +18,6 @@ import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 public class FluidPumpBlock extends GenericTileBlock<FluidPumpTileEntity>
 {
@@ -38,7 +37,6 @@ public class FluidPumpBlock extends GenericTileBlock<FluidPumpTileEntity>
 	public boolean canIEBlockBePlaced(BlockState newState, BlockItemUseContext context)
 	{
 		BlockPos start = context.getPos();
-		World w = context.getWorld();
 		return areAllReplaceable(start, start.up(1), context);
 	}
 }

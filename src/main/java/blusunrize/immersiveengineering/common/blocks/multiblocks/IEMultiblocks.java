@@ -20,6 +20,7 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.FourWayBlock;
+import net.minecraft.block.HopperBlock;
 import net.minecraft.state.Property;
 import net.minecraft.tags.ITag;
 import net.minecraft.util.ResourceLocation;
@@ -63,20 +64,14 @@ public class IEMultiblocks
 		BlockMatcher.addPredicate((expected, found, world, pos) -> expected==found?Result.allow(1): Result.deny(1));
 		//FourWayBlock (fences etc): allow additional connections
 		List<Property<Boolean>> sideProperties = ImmutableList.of(
-				FourWayBlock.NORTH,
-				FourWayBlock.EAST,
-				FourWayBlock.SOUTH,
-				FourWayBlock.WEST
+				FourWayBlock.NORTH, FourWayBlock.EAST, FourWayBlock.SOUTH, FourWayBlock.WEST
 		);
-		BlockMatcher.addPredicate((expected, found, world, pos) -> {
+		BlockMatcher.addPreprocessor((expected, found, world, pos) -> {
 			if(expected.getBlock() instanceof FourWayBlock&&expected.getBlock()==found.getBlock())
-			{
 				for(Property<Boolean> side : sideProperties)
-					if(expected.get(side)&&!found.get(side))
-						return Result.deny(2);
-				return Result.allow(2);
-			}
-			return Result.DEFAULT;
+					if(!expected.get(side))
+						found = found.with(side, false);
+			return found;
 		});
 		//Tags
 		ImmutableList.Builder<ITag<Block>> genericTagsBuilder = ImmutableList.builder();
@@ -90,32 +85,30 @@ public class IEMultiblocks
 		genericTagsBuilder.add(IETags.scaffoldingSteel);
 		genericTagsBuilder.add(IETags.treatedWoodSlab);
 		genericTagsBuilder.add(IETags.treatedWood);
+		genericTagsBuilder.add(IETags.fencesSteel);
+		genericTagsBuilder.add(IETags.fencesAlu);
 		List<ITag<Block>> genericTags = genericTagsBuilder.build();
 		BlockMatcher.addPredicate((expected, found, world, pos) -> {
 			if(expected.getBlock()!=found.getBlock())
 				for(ITag<Block> t : genericTags)
 					if(expected.isIn(t)&&found.isIn(t))
-						return Result.allow(3);
+						return Result.allow(2);
 			return Result.DEFAULT;
 		});
 		//Ignore hopper facing
-		BlockMatcher.addPredicate((expected, found, world, pos) -> {
+		BlockMatcher.addPreprocessor((expected, found, world, pos) -> {
 			if(expected.getBlock()==Blocks.HOPPER&&found.getBlock()==Blocks.HOPPER)
-				return Result.allow(4);
-			return Result.DEFAULT;
+				return found.with(HopperBlock.FACING, expected.get(HopperBlock.FACING));
+			return found;
 		});
 		//Allow multiblocks to be formed under water
 		BlockMatcher.addPreprocessor((expected, found, world, pos) -> {
 			// Un-waterlog if the expected state is dry, but the found one is not
 			if(expected.hasProperty(WATERLOGGED)&&found.hasProperty(WATERLOGGED)
 					&&!expected.get(WATERLOGGED)&&found.get(WATERLOGGED))
-			{
 				return found.with(WATERLOGGED, false);
-			}
 			else
-			{
 				return found;
-			}
 		});
 
 		//Init IE multiblocks

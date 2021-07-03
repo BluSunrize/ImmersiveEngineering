@@ -2,9 +2,12 @@
 - Move potion buckets to vanilla brewing tab (Malte)
 - Store connections in vanilla structure/template files (Malte)
 - Allow connections to be cut mid-air even when a block is highlighted (Malte)
+- Re-add particles for overloaded wires (Malte)
 - Fix villager houses not generating (Malte)
 - Fix inconsistent behavior of the fluid router (Malte)
 - Fix the maintenance kit not configuring earmuffs and fluorescent tubes (Malte)
+- Fix the bottling machine not breaking the pump correctly when disassembled (Malte)
+- Fix particles for the charging station partially not rendering (Malte)
 
 ##### Version 1.16.5-5.0.0-135
 - Clean up the API (Malte)

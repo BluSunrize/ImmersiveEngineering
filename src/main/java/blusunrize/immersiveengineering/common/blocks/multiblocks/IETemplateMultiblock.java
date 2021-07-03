@@ -65,12 +65,6 @@ public abstract class IETemplateMultiblock extends TemplateMultiblock
 			IELogger.logger.error("Expected MB TE at {} during placement", actualPos);
 	}
 
-	@Override
-	public void disassemble(World world, BlockPos origin, boolean mirrored, Direction clickDirectionAtCreation)
-	{
-		super.disassemble(world, origin, mirrored, clickDirectionAtCreation);
-	}
-
 	public Direction transformDirection(Direction original)
 	{
 		return original;

@@ -16,10 +16,13 @@ import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMaps;
 import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -352,7 +355,17 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 		default void burn(Connection c, double power, GlobalWireNetwork net, World w)
 		{
 			net.removeConnection(c);
-			//TODO
+			if(c.hasCatenaryData()&&w instanceof ServerWorld)
+			{
+				final int numPoints = 16;
+				final Vector3d offset = Vector3d.copy(c.getEndA().getPosition());
+				for(int i = 1; i < numPoints; ++i)
+				{
+					final double posOnWire = i/(double)numPoints;
+					final Vector3d pos = c.getPoint(posOnWire, c.getEndA()).add(offset);
+					((ServerWorld)w).spawnParticle(ParticleTypes.FLAME, pos.x, pos.y, pos.z, 0, 0, 0, 0, 1);
+				}
+			}
 		}
 	}
 
