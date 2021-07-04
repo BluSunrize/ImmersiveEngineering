@@ -27,15 +27,14 @@ import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
 import blusunrize.immersiveengineering.common.fluids.IEFluids;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.data.DataGenUtils;
-import blusunrize.immersiveengineering.data.models.MultiLayerBuilder;
 import blusunrize.immersiveengineering.data.models.SideConfigBuilder;
 import blusunrize.immersiveengineering.data.models.SpecialModelBuilder;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.gson.JsonObject;
 import net.minecraft.block.Block;
 import net.minecraft.block.FenceBlock;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.DyeColor;
@@ -51,6 +50,7 @@ import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.client.model.generators.ModelFile.ExistingModelFile;
 import net.minecraftforge.client.model.generators.VariantBlockStateBuilder;
 import net.minecraftforge.client.model.generators.VariantBlockStateBuilder.PartialBlockstate;
+import net.minecraftforge.client.model.generators.loaders.MultiLayerModelBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 import javax.annotation.Nullable;
@@ -395,13 +395,10 @@ public class BlockStates extends ExtendedBlockstateProvider
 				modLoc("block/metal_device/thermoelectric_gen_top")
 		)));
 		{
-			ModelFile full = createMultiLayer("metal_device/charging_station", renderType -> {
-				if("solid".equals(renderType))
-					return modLoc("models/block/metal_device/charging_station.obj");
-				else if("translucent".equals(renderType))
-					return modLoc("models/block/metal_device/charging_station_glass.obj");
-				return null;
-			}, modLoc("block/metal_device/charging_station.obj"));
+			ModelFile full = createMultiLayer("metal_device/charging_station", ImmutableMap.of(
+					RenderType.getSolid(), modLoc("block/metal_device/charging_station.obj"),
+					RenderType.getTranslucent(), modLoc("block/metal_device/charging_station_glass.obj")
+			), modLoc("block/metal_device/charging_station.obj"));
 			createRotatedBlock(MetalDevices.chargingStation,
 					state -> full,
 					ImmutableList.of()
@@ -561,25 +558,15 @@ public class BlockStates extends ExtendedBlockstateProvider
 		}
 	}
 
-	private final static String[] RENDER_LAYERS = {"solid", "cutout_mipped", "cutout", "translucent"};
-
-	protected ModelFile createMultiLayer(String path, Function<String, ResourceLocation> modelGetter, ResourceLocation particle)
+	protected ModelFile createMultiLayer(String path, Map<RenderType, ResourceLocation> modelGetter, ResourceLocation particle)
 	{
-		MultiLayerBuilder<BlockModelBuilder> modelBuilder = models().getBuilder(path)
-				.customLoader(MultiLayerBuilder::begin);
+		MultiLayerModelBuilder<BlockModelBuilder> modelBuilder = models().getBuilder(path)
+				.customLoader(MultiLayerModelBuilder::begin);
 
-		for(String renderType : RENDER_LAYERS)
+		for(Entry<RenderType, ResourceLocation> entry : modelGetter.entrySet())
 		{
-			ResourceLocation rl = modelGetter.apply(renderType);
-			if(rl!=null)
-			{
-				JsonObject object = new JsonObject();
-				object.addProperty("loader", forgeLoc("obj").toString());
-				object.addProperty("detectCullableFaces", false);
-				object.addProperty("flip-v", true);
-				object.addProperty("model", rl.toString());
-				modelBuilder.addLayer(renderType, object);
-			}
+			ResourceLocation rl = entry.getValue();
+			modelBuilder.submodel(entry.getKey(), obj(new BlockModelBuilder(rl("temp"), existingFileHelper), rl, ImmutableMap.of()));
 		}
 		return modelBuilder.end()
 				.parent(new ExistingModelFile(mcLoc("block/block"), existingFileHelper))

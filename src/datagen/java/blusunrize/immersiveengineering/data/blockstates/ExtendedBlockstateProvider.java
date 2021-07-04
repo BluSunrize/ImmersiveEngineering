@@ -161,8 +161,15 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 
 	protected BlockModelBuilder obj(String name, ResourceLocation model, Map<String, ResourceLocation> textures)
 	{
+		return obj(models().withExistingParent(name, mcLoc("block")), model, textures);
+	}
+
+	protected BlockModelBuilder obj(
+			BlockModelBuilder base, ResourceLocation model, Map<String, ResourceLocation> textures
+	)
+	{
 		assertModelExists(model);
-		BlockModelBuilder ret = models().withExistingParent(name, mcLoc("block"))
+		BlockModelBuilder ret = base
 				.customLoader(OBJLoaderBuilder::begin)
 				.detectCullableFaces(false)
 				.modelLocation(addModelsPrefix(model))
