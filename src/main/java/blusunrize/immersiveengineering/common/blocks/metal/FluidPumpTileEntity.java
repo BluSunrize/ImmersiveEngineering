@@ -23,6 +23,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.FluidPipeTileEntity.DirectionalFluidOutput;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
@@ -37,7 +38,6 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -65,7 +65,7 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
-public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IBlockBounds, IHasDummyBlocks,
+public class FluidPumpTileEntity extends IEBaseTileEntity implements IETickableBlockEntity, IBlockBounds, IHasDummyBlocks,
 		IConfigurableSides, IFluidPipe, IIEInternalFluxHandler, IBlockOverlayText
 {
 	public Map<Direction, IOSideConfig> sideConfig = new EnumMap<>(Direction.class);
@@ -95,7 +95,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 		super(IETileTypes.FLUID_PUMP.get());
 	}
 
-	private Map<Direction, CapabilityReference<IFluidHandler>> neighborFluids = new EnumMap<>(Direction.class);
+	private final Map<Direction, CapabilityReference<IFluidHandler>> neighborFluids = new EnumMap<>(Direction.class);
 
 	{
 		for(Direction neighbor : DirectionUtils.VALUES)
@@ -107,7 +107,13 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 	public void tick()
 	{
 		checkForNeedlessTicking();
-		if(isDummy()||world.isRemote)
+		IETickableBlockEntity.super.tick();
+	}
+
+	@Override
+	public void tickServer()
+	{
+		if(isDummy())
 			return;
 		if(tank.getFluidAmount() > 0)
 		{
@@ -123,7 +129,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements ITickableTi
 			if(above instanceof FluidPumpTileEntity)
 				hasRSSignal = ((FluidPumpTileEntity)above).isRSPowered();
 		}
-		if(isRSPowered())
+		if(hasRSSignal)
 		{
 			for(Direction f : Direction.values())
 				if(sideConfig.get(f)==IOSideConfig.INPUT)

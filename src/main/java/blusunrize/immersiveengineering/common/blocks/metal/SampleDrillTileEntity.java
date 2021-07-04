@@ -23,6 +23,7 @@ import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.items.CoresampleItem;
 import blusunrize.immersiveengineering.common.items.CoresampleItem.VeinSampleData;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
+import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -32,7 +33,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
@@ -48,7 +48,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInternalFluxHandler, IHasDummyBlocks,
+public class SampleDrillTileEntity extends IEBaseTileEntity implements IETickableBlockEntity, IIEInternalFluxHandler, IHasDummyBlocks,
 		IPlayerInteraction, IModelOffsetProvider
 {
 	public FluxStorage energyStorage = new FluxStorage(8000);
@@ -69,17 +69,28 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 	}
 
 	@Override
+	public boolean canTickAny()
+	{
+		return dummy==0&&!world.isAirBlock(getPos().add(0, -1, 0))&&sample.isEmpty();
+	}
+
+	@Override
+	public void tickClient()
+	{
+		if(active)
+			process++;
+	}
+
+	@Override
 	public void tick()
 	{
 		checkForNeedlessTicking();
-		if(dummy!=0||world.isAirBlock(getPos().add(0, -1, 0))||!sample.isEmpty())
-			return;
-		if(world.isRemote&&active)
-		{
-			process++;
-			return;
-		}
+		IETickableBlockEntity.super.tick();
+	}
 
+	@Override
+	public void tickServer()
+	{
 		boolean powered = isRSPowered();
 		boolean hasEnergy = energyStorage.getEnergyStored() >= IEServerConfig.MACHINES.coredrill_consumption.get();
 		final boolean prevActive = active;

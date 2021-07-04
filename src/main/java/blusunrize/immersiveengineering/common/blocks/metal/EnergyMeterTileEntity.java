@@ -21,6 +21,7 @@ import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.generic.ImmersiveConnectableTileEntity;
+import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
@@ -35,7 +36,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.Property;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
@@ -54,7 +54,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implements ITickableTileEntity, IStateBasedDirectional,
+public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implements IETickableBlockEntity, IStateBasedDirectional,
 		IHasDummyBlocks, IPlayerInteraction, IComparatorOverride, EnergyConnector, IBlockBounds, IModelOffsetProvider
 {
 	public final DoubleList lastPackets = new DoubleArrayList(20);
@@ -91,8 +91,18 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 	public void tick()
 	{
 		checkForNeedlessTicking();
-		if(isDummy()||world.isRemote)
-			return;
+		IETickableBlockEntity.super.tick();
+	}
+
+	@Override
+	public boolean canTickAny()
+	{
+		return !isDummy();
+	}
+
+	@Override
+	public void tickServer()
+	{
 		if(((world.getGameTime()&31)==(pos.toLong()&31)||compVal < 0))
 			updateComparatorValues();
 		EnergyTransferHandler handler = globalNet.getLocalNet(pos)

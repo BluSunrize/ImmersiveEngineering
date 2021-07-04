@@ -99,122 +99,125 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 	}
 
 	@Override
-	public void tick()
+	public boolean canTickAny()
 	{
-		super.tick();
-		if(isDummy()||isRSDisabled())
-			return;
+		return super.canTickAny() && !isRSDisabled();
+	}
 
-		if(world.isRemote)
+	@Override
+	public void tickClient()
+	{
+		super.tickClient();
+		if(shouldRenderAsActive())
 		{
-			if(shouldRenderAsActive())
+			if(Utils.RAND.nextInt(8)==0)
 			{
-				if(Utils.RAND.nextInt(8)==0)
+				FluidStack fs = !tank.fluids.isEmpty()?tank.fluids.get(0): null;
+				if(fs!=null)
 				{
-					FluidStack fs = !tank.fluids.isEmpty()?tank.fluids.get(0): null;
-					if(fs!=null)
+					float amount = tank.getFluidAmount()/(float)tank.getCapacity()*1.125f;
+					Vector3d partPos = new Vector3d(getPos().getX()+.5f+getFacing().getXOffset()*.5f+(getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY()).getXOffset()*.5f, getPos().getY()-.0625f+amount, getPos().getZ()+.5f+getFacing().getZOffset()*.5f+(getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY()).getZOffset()*.5f);
+					float r = Utils.RAND.nextFloat()*.8125f;
+					float angleRad = (float)Math.toRadians(animation_agitator);
+					partPos = partPos.add(r*Math.cos(angleRad), 0, r*Math.sin(angleRad));
+					if(Utils.RAND.nextBoolean())
+						world.addParticle(IEParticles.IE_BUBBLE.get(), partPos.x, partPos.y, partPos.z, 0, 0, 0);
+					else
+						world.addParticle(new Data(fs.getFluid()), partPos.x, partPos.y, partPos.z, 0, 0, 0);
+				}
+			}
+			animation_agitator = (animation_agitator+9)%360;
+		}
+	}
+
+	@Override
+	public void tickServer()
+	{
+		super.tickServer();
+		boolean update = false;
+		boolean foundRecipe = false;
+		if(energyStorage.getEnergyStored() > 0&&processQueue.size() < this.getProcessQueueMaxLength())
+		{
+			int tankAmount = tank.getFluidAmount();
+			if(tankAmount > 0)
+			{
+				Set<Integer> usedInvSlots = new HashSet<>();
+				for(MultiblockProcess<MixerRecipe> process : processQueue)
+					if(process instanceof MultiblockProcessInMachine)
+						for(int i : ((MultiblockProcessInMachine<MixerRecipe>)process).getInputSlots())
+							usedInvSlots.add(i);
+				NonNullList<ItemStack> components = NonNullList.withSize(this.inventory.size(), ItemStack.EMPTY);
+				for(int i = 0; i < components.size(); i++)
+					if(!usedInvSlots.contains(i))
+						components.set(i, inventory.get(i));
+
+				for(FluidStack fs : tank.fluids)
+				{
+					MixerRecipe recipe = MixerRecipe.findRecipe(fs, components);
+					if(recipe!=null)
 					{
-						float amount = tank.getFluidAmount()/(float)tank.getCapacity()*1.125f;
-						Vector3d partPos = new Vector3d(getPos().getX()+.5f+getFacing().getXOffset()*.5f+(getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY()).getXOffset()*.5f, getPos().getY()-.0625f+amount, getPos().getZ()+.5f+getFacing().getZOffset()*.5f+(getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY()).getZOffset()*.5f);
-						float r = Utils.RAND.nextFloat()*.8125f;
-						float angleRad = (float)Math.toRadians(animation_agitator);
-						partPos = partPos.add(r*Math.cos(angleRad), 0, r*Math.sin(angleRad));
-						if(Utils.RAND.nextBoolean())
-							world.addParticle(IEParticles.IE_BUBBLE.get(), partPos.x, partPos.y, partPos.z, 0, 0, 0);
-						else
-							world.addParticle(new Data(fs.getFluid()), partPos.x, partPos.y, partPos.z, 0, 0, 0);
+						foundRecipe = true;
+						MultiblockProcessInMachine<MixerRecipe> process = new MultiblockProcessMixer(recipe, recipe.getUsedSlots(fs, components)).setInputTanks(0);
+						if(this.addProcessToQueue(process, true))
+						{
+							this.addProcessToQueue(process, false);
+							update = true;
+						}
 					}
 				}
-				animation_agitator = (animation_agitator+9)%360;
 			}
 		}
-		else
-		{
-			boolean update = false;
-			boolean foundRecipe = false;
-			if(energyStorage.getEnergyStored() > 0&&processQueue.size() < this.getProcessQueueMaxLength())
-			{
-				int tankAmount = tank.getFluidAmount();
-				if(tankAmount > 0)
-				{
-					Set<Integer> usedInvSlots = new HashSet<>();
-					for(MultiblockProcess<MixerRecipe> process : processQueue)
-						if(process instanceof MultiblockProcessInMachine)
-							for(int i : ((MultiblockProcessInMachine<MixerRecipe>)process).getInputSlots())
-								usedInvSlots.add(i);
-					NonNullList<ItemStack> components = NonNullList.withSize(this.inventory.size(), ItemStack.EMPTY);
-					for(int i = 0; i < components.size(); i++)
-						if(!usedInvSlots.contains(i))
-							components.set(i, inventory.get(i));
 
-					for(FluidStack fs : tank.fluids)
+		int fluidTypes = this.tank.getFluidTypes();
+		if(fluidTypes>0 &&(fluidTypes> 1||!foundRecipe||outputAll))
+		{
+			BlockPos outputPos = this.getPos().down().offset(getFacing().getOpposite(), 2);
+			update |= FluidUtil.getFluidHandler(world, outputPos, getFacing()).map(output ->
+			{
+				boolean ret = false;
+				if(!outputAll)
+				{
+					FluidStack inTank = this.tank.getFluid();
+					FluidStack out = Utils.copyFluidStackWithAmount(inTank, Math.min(inTank.getAmount(), 80), false);
+					int accepted = output.fill(out, FluidAction.SIMULATE);
+					if(accepted > 0)
 					{
-						MixerRecipe recipe = MixerRecipe.findRecipe(fs, components);
-						if(recipe!=null)
+						int drained = output.fill(Utils.copyFluidStackWithAmount(out, Math.min(out.getAmount(), accepted), false),
+								FluidAction.EXECUTE);
+						this.tank.drain(drained, FluidAction.EXECUTE);
+						ret = true;
+					}
+				}
+				else
+				{
+					int totalOut = 0;
+					Iterator<FluidStack> it = this.tank.fluids.iterator();
+					while(it.hasNext())
+					{
+						FluidStack fs = it.next();
+						if(fs!=null)
 						{
-							foundRecipe = true;
-							MultiblockProcessInMachine process = new MultiblockProcessMixer(recipe, recipe.getUsedSlots(fs, components)).setInputTanks(0);
-							if(this.addProcessToQueue(process, true))
+							FluidStack out = Utils.copyFluidStackWithAmount(fs, Math.min(fs.getAmount(), 80-totalOut), false);
+							int accepted = output.fill(out, FluidAction.SIMULATE);
+							if(accepted > 0)
 							{
-								this.addProcessToQueue(process, false);
-								update = true;
+								int drained = output.fill(Utils.copyFluidStackWithAmount(out, Math.min(out.getAmount(), accepted), false), FluidAction.EXECUTE);
+								MultiFluidTank.drain(drained, fs, it, FluidAction.EXECUTE);
+								totalOut += drained;
+								ret = true;
 							}
+							if(totalOut >= 80)
+								break;
 						}
 					}
 				}
-			}
-
-			int fluidTypes = this.tank.getFluidTypes();
-			if(fluidTypes>0 &&(fluidTypes> 1||!foundRecipe||outputAll))
-			{
-				BlockPos outputPos = this.getPos().down().offset(getFacing().getOpposite(), 2);
-				update |= FluidUtil.getFluidHandler(world, outputPos, getFacing()).map(output ->
-				{
-					boolean ret = false;
-					if(!outputAll)
-					{
-						FluidStack inTank = this.tank.getFluid();
-						FluidStack out = Utils.copyFluidStackWithAmount(inTank, Math.min(inTank.getAmount(), 80), false);
-						int accepted = output.fill(out, FluidAction.SIMULATE);
-						if(accepted > 0)
-						{
-							int drained = output.fill(Utils.copyFluidStackWithAmount(out, Math.min(out.getAmount(), accepted), false),
-									FluidAction.EXECUTE);
-							this.tank.drain(drained, FluidAction.EXECUTE);
-							ret = true;
-						}
-					}
-					else
-					{
-						int totalOut = 0;
-						Iterator<FluidStack> it = this.tank.fluids.iterator();
-						while(it.hasNext())
-						{
-							FluidStack fs = it.next();
-							if(fs!=null)
-							{
-								FluidStack out = Utils.copyFluidStackWithAmount(fs, Math.min(fs.getAmount(), 80-totalOut), false);
-								int accepted = output.fill(out, FluidAction.SIMULATE);
-								if(accepted > 0)
-								{
-									int drained = output.fill(Utils.copyFluidStackWithAmount(out, Math.min(out.getAmount(), accepted), false), FluidAction.EXECUTE);
-									MultiFluidTank.drain(drained, fs, it, FluidAction.EXECUTE);
-									totalOut += drained;
-									ret = true;
-								}
-								if(totalOut >= 80)
-									break;
-							}
-						}
-					}
-					return ret;
-				}).orElse(false);
-			}
-			if(update)
-			{
-				this.markDirty();
-				this.markContainingBlockForUpdate(null);
-			}
+				return ret;
+			}).orElse(false);
+		}
+		if(update)
+		{
+			this.markDirty();
+			this.markContainingBlockForUpdate(null);
 		}
 	}
 

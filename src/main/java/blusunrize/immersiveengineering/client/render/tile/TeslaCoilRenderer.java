@@ -35,7 +35,7 @@ public class TeslaCoilRenderer extends TileEntityRenderer<TeslaCoilTileEntity>
 		if(tile.isDummy()||!tile.getWorldNonnull().isBlockLoaded(tile.getPos()))
 			return;
 
-		for(LightningAnimation animation : TeslaCoilTileEntity.effectMap.get(tile.getPos()))
+		for(LightningAnimation animation : tile.effectMap)
 		{
 			if(animation.shoudlRecalculateLightning())
 				animation.createLightning(Utils.RAND);

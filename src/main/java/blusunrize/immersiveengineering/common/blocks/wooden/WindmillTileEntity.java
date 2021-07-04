@@ -11,13 +11,14 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.energy.IRotationAcceptor;
+import blusunrize.immersiveengineering.api.utils.SafeChunkUtils;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedVoxelShapes;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
+import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Lists;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
@@ -25,7 +26,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.Property;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
@@ -42,13 +42,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class WindmillTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IStateBasedDirectional,
+public class WindmillTileEntity extends IEBaseTileEntity implements IETickableBlockEntity, IStateBasedDirectional,
 		IReadOnPlacement, IPlayerInteraction, IHasObjProperty, IBlockBounds
 {
-	public float prevRotation = 0;
 	public float rotation = 0;
 	public float turnSpeed = 0;
-	public float perTick = 0;
 	public int sails = 0;
 
 	public boolean canTurn = false;
@@ -59,35 +57,43 @@ public class WindmillTileEntity extends IEBaseTileEntity implements ITickableTil
 	}
 
 	@Override
-	public void tick()
+	public void tickCommon()
 	{
-		if(world.getGameTime()%128==((getPos().getX()^getPos().getZ())&127))
-			canTurn = checkArea();
 		if(!canTurn)
 			return;
+		rotation += getActualTurnSpeed();
+		rotation %= 1;
+	}
 
+	private double getActualTurnSpeed() {
 		double mod = .00005;
 		if(!world.isRaining())
 			mod *= .75;
 		if(!world.isThundering())
 			mod *= .66;
 		mod *= getSpeedModifier();
+		return mod * turnSpeed;
+	}
 
-
-		prevRotation = (float)(turnSpeed*mod);
-		rotation += turnSpeed*mod;
-		rotation %= 1;
-		perTick = (float)(turnSpeed*mod);
-
-		if(!world.isRemote)
+	@Override
+	public void tickServer()
+	{
+		if(world.getGameTime()%128==((getPos().getX()^getPos().getZ())&127))
 		{
-			TileEntity tileEntity = Utils.getExistingTileEntity(world, pos.offset(getFacing().getOpposite()));
-			if(tileEntity instanceof IRotationAcceptor)
-			{
-				IRotationAcceptor dynamo = (IRotationAcceptor)tileEntity;
-				double power = turnSpeed*mod*800;
-				dynamo.inputRotation(Math.abs(power), getFacing().getOpposite());
-			}
+			final float oldTurnSpeed = turnSpeed;
+			canTurn = checkArea();
+			if(oldTurnSpeed!=turnSpeed)
+				markContainingBlockForUpdate(null);
+		}
+		if(!canTurn)
+			return;
+
+		TileEntity tileEntity = SafeChunkUtils.getSafeTE(world, pos.offset(getFacing().getOpposite()));
+		if(tileEntity instanceof IRotationAcceptor)
+		{
+			IRotationAcceptor dynamo = (IRotationAcceptor)tileEntity;
+			double power = getActualTurnSpeed()*800;
+			dynamo.inputRotation(Math.abs(power), getFacing().getOpposite());
 		}
 	}
 

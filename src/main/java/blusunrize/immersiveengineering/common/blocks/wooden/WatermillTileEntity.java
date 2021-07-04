@@ -11,12 +11,14 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.energy.IRotationAcceptor;
+import blusunrize.immersiveengineering.api.utils.SafeChunkUtils;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
+import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -24,7 +26,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.Property;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
@@ -36,15 +37,15 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 
-public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IStateBasedDirectional, IHasDummyBlocks, IHasObjProperty
+public class WatermillTileEntity extends IEBaseTileEntity implements IETickableBlockEntity, IStateBasedDirectional, IHasDummyBlocks, IHasObjProperty
 {
 	public int[] offset = {0, 0};
 	public float rotation = 0;
 	private Vector3d rotationVec = null;
-	public boolean canTurn = false;
+	// Indicates that the next tick should be skipped since the waterwheel is being controlled by another waterwheel
+	// attached to it
 	public boolean multiblock = false;
-	public float prevRotation = 0;
-	private boolean formed = true;
+	private boolean beingBroken = false;
 	public double perTick;
 
 	public WatermillTileEntity()
@@ -53,84 +54,95 @@ public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTi
 	}
 
 	@Override
+	public boolean canTickAny()
+	{
+		return offset[0] == 0 && offset[1] == 0;
+	}
+
+	@Override
 	public void tick()
 	{
 		checkForNeedlessTicking();
-		if(offset[0]!=0||offset[1]!=0||world==null)
-			return;
-		if(isBlocked())
+		IETickableBlockEntity.super.tick();
+	}
+
+	@Override
+	public void tickClient()
+	{
+		rotation += perTick;
+		rotation %= 1;
+	}
+
+	@Override
+	public void tickServer()
+	{
+		if(isBlocked())//TODO throttle?
 		{
-			canTurn = false;
+			setPerTickAndAdvance(0);
 			return;
 		}
-		else
-			canTurn = multiblock||getRotationVec().length()!=0;
+		if(multiblock)
+		{
+			multiblock = false;
+			return;
+		}
 
 		if(world.getGameTime()%64==((getPos().getX()^getPos().getZ())&63))
-		{
 			rotationVec = null;
-		}
-		prevRotation = rotation;
 
-		TileEntity acc = Utils.getExistingTileEntity(world, getPos().offset(getFacing().getOpposite()));
-		if(!multiblock&&acc instanceof IRotationAcceptor)
+		TileEntity acc = SafeChunkUtils.getSafeTE(world, getPos().offset(getFacing().getOpposite()));
+		if(acc instanceof IRotationAcceptor)
 		{
 			double power = getPower();
 			int l = 1;
-			TileEntity tileEntity = Utils.getExistingTileEntity(world, getPos().offset(getFacing(), l));
-			while(l < 3
-					&&canUse(tileEntity))
+			TileEntity tileEntity = SafeChunkUtils.getSafeTE(world, getPos().offset(getFacing(), l));
+			while(l < 3&&canUse(tileEntity))
 			{
 				power += ((WatermillTileEntity)tileEntity).getPower();
 				l++;
-				tileEntity = Utils.getExistingTileEntity(world, getPos().offset(getFacing(), l));
+				tileEntity = SafeChunkUtils.getSafeTE(world, getPos().offset(getFacing(), l));
 			}
 
-			perTick = 1f/1440*power/l;
-			canTurn = perTick!=0;
-			rotation += perTick;
-			rotation %= 1;
+			setPerTickAndAdvance(1f/1440*power/l);
 			for(int l2 = 1; l2 < l; l2++)
 			{
 				tileEntity = world.getTileEntity(getPos().offset(getFacing(), l2));
 				if(tileEntity instanceof WatermillTileEntity)
 				{
-					((WatermillTileEntity)tileEntity).rotation = rotation;
-					((WatermillTileEntity)tileEntity).canTurn = canTurn;
-					((WatermillTileEntity)tileEntity).perTick = perTick;
-					((WatermillTileEntity)tileEntity).multiblock = true;
+					WatermillTileEntity watermill = (WatermillTileEntity) tileEntity;
+					watermill.setPerTickAndAdvance(perTick);
+					if (watermill.rotation != rotation)
+					{
+						watermill.rotation = rotation;
+						markContainingBlockForUpdate(null);
+					}
+					watermill.multiblock = true;
 				}
 			}
 
-			if(!world.isRemote)
-			{
-				IRotationAcceptor dynamo = (IRotationAcceptor)acc;
-				//				if((facing.getAxis()==Axis.Z)&&dynamo.facing!=2&&dynamo.facing!=3)
-				//					return;
-				//				else if((facing.getAxis()==Axis.X)&&dynamo.facing!=4&&dynamo.facing!=5)
-				//					return;
-				dynamo.inputRotation(Math.abs(power*.75), getFacing().getOpposite());
-			}
+			((IRotationAcceptor)acc).inputRotation(Math.abs(power*.75), getFacing().getOpposite());
 		}
-		else if(!multiblock)
-		{
-			perTick = 1f/1440*getPower();
-			canTurn = perTick!=0;
-			rotation += perTick;
-			rotation %= 1;
+		else
+			setPerTickAndAdvance(1f/1440*getPower());
+	}
+
+	private void setPerTickAndAdvance(double newValue) {
+		if (newValue != perTick) {
+			perTick = newValue;
+			markContainingBlockForUpdate(null);
 		}
-		if(multiblock)
-			multiblock = false;
+		rotation += perTick;
+		rotation %= 1;
 	}
 
 	private boolean canUse(@Nullable TileEntity tileEntity)
 	{
-		return tileEntity instanceof WatermillTileEntity
-				&&((WatermillTileEntity)tileEntity).offset[0]==0
-				&&((WatermillTileEntity)tileEntity).offset[1]==0
-				&&(((WatermillTileEntity)tileEntity).getFacing()==getFacing()||((WatermillTileEntity)tileEntity).getFacing()==getFacing().getOpposite())
-				&&!((WatermillTileEntity)tileEntity).isBlocked()
-				&&!((WatermillTileEntity)tileEntity).multiblock;
+		if (!(tileEntity instanceof WatermillTileEntity))
+			return false;
+		WatermillTileEntity watermill = (WatermillTileEntity) tileEntity;
+		return watermill.offset[0]==0&&watermill.offset[1]==0
+				&&(watermill.getFacing()==getFacing()||watermill.getFacing()==getFacing().getOpposite())
+				&&!watermill.isBlocked()&&!watermill.multiblock;
 	}
 
 	public boolean isBlocked()
@@ -153,11 +165,6 @@ public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTi
 	public double getPower()
 	{
 		return getFacing().getAxis()==Axis.Z?-getRotationVec().x: getRotationVec().z;
-	}
-
-	public void resetRotationVec()
-	{
-		rotationVec = null;
 	}
 
 	public Vector3d getRotationVec()
@@ -232,9 +239,9 @@ public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTi
 	@Override
 	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		prevRotation = nbt.getFloat("prevRotation");
 		offset = nbt.getIntArray("offset");
 		rotation = nbt.getFloat("rotation");
+		perTick = nbt.getDouble("perTick");
 
 		if(offset==null||offset.length < 2)
 			offset = new int[]{0, 0};
@@ -243,9 +250,9 @@ public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTi
 	@Override
 	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
 	{
-		nbt.putFloat("prevRotation", prevRotation);
 		nbt.putIntArray("offset", offset);
 		nbt.putFloat("rotation", rotation);
+		nbt.putDouble("perTick", perTick);
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -257,7 +264,14 @@ public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTi
 	{
 		if(renderAABB==null)
 			if(offset[0]==0&&offset[1]==0)
-				renderAABB = new AxisAlignedBB(getPos().getX()-(getFacing().getAxis()==Axis.Z?2: 0), getPos().getY()-2, getPos().getZ()-(getFacing().getAxis()==Axis.Z?0: 2), getPos().getX()+(getFacing().getAxis()==Axis.Z?3: 0), getPos().getY()+3, getPos().getZ()+(getFacing().getAxis()==Axis.Z?0: 3));
+				renderAABB = new AxisAlignedBB(
+						getPos().getX()-(getFacing().getAxis()==Axis.Z?2: 0),
+						getPos().getY()-2,
+						getPos().getZ()-(getFacing().getAxis()==Axis.Z?0: 2),
+						getPos().getX()+(getFacing().getAxis()==Axis.Z?3: 1),
+						getPos().getY()+3,
+						getPos().getZ()+(getFacing().getAxis()==Axis.Z?1: 3)
+				);
 			else
 				renderAABB = new AxisAlignedBB(getPos().getX(), getPos().getY(), getPos().getZ(), getPos().getX()+1, getPos().getY()+1, getPos().getZ()+1);
 		return renderAABB;
@@ -306,7 +320,7 @@ public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTi
 		if(!isDummy())
 			return this;
 		BlockPos masterPos = getPos().add(getFacing().getAxis()==Axis.Z?-offset[0]: 0, -offset[1], getFacing().getAxis()==Axis.Z?0: -offset[0]);
-		TileEntity te = Utils.getExistingTileEntity(world, masterPos);
+		TileEntity te = SafeChunkUtils.getSafeTE(world, masterPos);
 		return this.getClass().isInstance(te)?(IGeneralMultiblock)te: null;
 	}
 
@@ -329,7 +343,7 @@ public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTi
 	@Override
 	public void breakDummies(BlockPos pos, BlockState state)
 	{
-		if(!formed)
+		if(beingBroken)
 			return;
 		BlockPos initPos = pos.add(getFacing().getAxis()==Axis.Z?-offset[0]: 0, -offset[1], getFacing().getAxis()==Axis.X?-offset[0]: 0);
 		for(int hh = -2; hh <= 2; hh++)
@@ -340,7 +354,7 @@ public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTi
 					TileEntity te = world.getTileEntity(pos2);
 					if(te instanceof WatermillTileEntity)
 					{
-						((WatermillTileEntity)te).formed = false;
+						((WatermillTileEntity)te).beingBroken = true;
 						world.removeBlock(pos2, false);
 					}
 				}

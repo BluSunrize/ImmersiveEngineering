@@ -83,12 +83,9 @@ public class SiloTileEntity extends MultiblockPartTileEntity<SiloTileEntity> imp
 	}
 
 	@Override
-	public void tick()
+	public void tickServer()
 	{
-		checkForNeedlessTicking();
-		if(isDummy()||world.isRemote)
-			return;
-
+		super.tickServer();
 		if(!this.identStack.isEmpty()&&storageAmount > 0&&world.getGameTime()%8==0&&!isRSDisabled())
 		{
 			for(CapabilityReference<IItemHandler> output : outputCaps)

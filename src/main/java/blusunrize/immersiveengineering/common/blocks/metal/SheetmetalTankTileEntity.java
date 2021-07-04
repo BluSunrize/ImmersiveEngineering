@@ -100,11 +100,8 @@ public class SheetmetalTankTileEntity extends MultiblockPartTileEntity<Sheetmeta
 	}
 
 	@Override
-	public void tick()
+	public void tickServer()
 	{
-		checkForNeedlessTicking();
-		if(isDummy()||world.isRemote)
-			return;
 		if(!isRSDisabled())
 			for(CapabilityReference<IFluidHandler> outputRef : fluidNeighbors)
 				if(tank.getFluidAmount() > 0)

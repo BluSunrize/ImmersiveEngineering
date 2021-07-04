@@ -89,11 +89,10 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 	}
 
 	@Override
-	public void tick()
+	public void tickServer()
 	{
-		super.tick();
-
-		if(isDummy()||isRSDisabled()||world.isRemote||world.getGameTime()%16!=((getPos().getX()^getPos().getZ())&15)||inventory.get(0).isEmpty())
+		super.tickServer();
+		if(isRSDisabled()||world.getGameTime()%16!=((getPos().getX()^getPos().getZ())&15)||inventory.get(0).isEmpty())
 			return;
 
 		BlueprintCraftingRecipe[] recipes = getAvailableRecipes();

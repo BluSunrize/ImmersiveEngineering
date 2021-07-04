@@ -103,12 +103,9 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 	);
 
 	@Override
-	public void tick()
+	public void tickCommon()
 	{
-		checkForNeedlessTicking();
-		if(isDummy())
-			return;
-
+		super.tickCommon();
 		if(active||animation_fanFadeIn > 0||animation_fanFadeOut > 0)
 		{
 			float base = 18f;
@@ -127,66 +124,71 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 			animation_fanRotation += step;
 			animation_fanRotation %= 360;
 		}
+	}
 
-		if(world.isRemote)
+	@Override
+	public void tickClient()
+	{
+		super.tickClient();
+		ImmersiveEngineering.proxy.handleTileSound(IESounds.dieselGenerator, this, active, .5f, 1);
+		if(active&&world.getGameTime()%4==0)
 		{
-			ImmersiveEngineering.proxy.handleTileSound(IESounds.dieselGenerator, this, active, .5f, 1);
-			if(active&&world.getGameTime()%4==0)
-			{
-				BlockPos exhaust = this.getBlockPosForPos(new BlockPos(2, 2, 2));
-				Direction fl = getFacing();
-				Direction fw = getFacing().rotateY();
-				if(getIsMirrored())
-					fw = fw.getOpposite();
-				world.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE,
-						exhaust.getX()+.5+(fl.getXOffset()*.3125f)+(-fw.getXOffset()*.3125f), exhaust.getY()+1.25, exhaust.getZ()+.5+(fl.getZOffset()*.3125f)+(-fw.getZOffset()*.3125f), 0.015625-(0.03125*Math.random()), 0.0625, 0.015625-(0.03125*Math.random()));
-			}
+			BlockPos exhaust = this.getBlockPosForPos(new BlockPos(2, 2, 2));
+			Direction fl = getFacing();
+			Direction fw = getFacing().rotateY();
+			if(getIsMirrored())
+				fw = fw.getOpposite();
+			world.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE,
+					exhaust.getX()+.5+(fl.getXOffset()*.3125f)+(-fw.getXOffset()*.3125f), exhaust.getY()+1.25, exhaust.getZ()+.5+(fl.getZOffset()*.3125f)+(-fw.getZOffset()*.3125f), 0.015625-(0.03125*Math.random()), 0.0625, 0.015625-(0.03125*Math.random()));
 		}
-		else
-		{
-			boolean prevActive = active;
+	}
 
-			if(!isRSDisabled()&&!tanks[0].getFluid().isEmpty())
+	@Override
+	public void tickServer()
+	{
+		super.tickServer();
+		boolean prevActive = active;
+
+		if(!isRSDisabled()&&!tanks[0].getFluid().isEmpty())
+		{
+			int burnTime = DieselHandler.getBurnTime(tanks[0].getFluid().getFluid());
+			if(burnTime > 0)
 			{
-				int burnTime = DieselHandler.getBurnTime(tanks[0].getFluid().getFluid());
-				if(burnTime > 0)
+				int fluidConsumed = FluidAttributes.BUCKET_VOLUME/burnTime;
+				int output = IEServerConfig.MACHINES.dieselGen_output.get();
+				List<IEnergyStorage> presentOutputs = outputs.stream()
+						.map(CapabilityReference::getNullable)
+						.filter(Objects::nonNull)
+						.collect(Collectors.toList());
+				if(!presentOutputs.isEmpty()&&
+						tanks[0].getFluidAmount() >= fluidConsumed&&
+						// Sort receivers by lowest input
+						EnergyHelper.distributeFlux(presentOutputs, output, false) < output)
 				{
-					int fluidConsumed = FluidAttributes.BUCKET_VOLUME/burnTime;
-					int output = IEServerConfig.MACHINES.dieselGen_output.get();
-					List<IEnergyStorage> presentOutputs = outputs.stream()
-							.map(CapabilityReference::getNullable)
-							.filter(Objects::nonNull)
-							.collect(Collectors.toList());
-					if(!presentOutputs.isEmpty()&&
-							tanks[0].getFluidAmount() >= fluidConsumed&&
-							// Sort receivers by lowest input
-							EnergyHelper.distributeFlux(presentOutputs, output, false) < output)
+					if(!active)
 					{
-						if(!active)
-						{
-							active = true;
-							animation_fanFadeIn = 80;
-						}
-						tanks[0].drain(fluidConsumed, FluidAction.EXECUTE);
+						active = true;
+						animation_fanFadeIn = 80;
 					}
-					else if(active)
-					{
-						active = false;
-						animation_fanFadeOut = 80;
-					}
+					tanks[0].drain(fluidConsumed, FluidAction.EXECUTE);
+				}
+				else if(active)
+				{
+					active = false;
+					animation_fanFadeOut = 80;
 				}
 			}
-			else if(active)
-			{
-				active = false;
-				animation_fanFadeOut = 80;
-			}
+		}
+		else if(active)
+		{
+			active = false;
+			animation_fanFadeOut = 80;
+		}
 
-			if(prevActive!=active)
-			{
-				this.markDirty();
-				this.markContainingBlockForUpdate(null);
-			}
+		if(prevActive!=active)
+		{
+			this.markDirty();
+			this.markContainingBlockForUpdate(null);
 		}
 	}
 

@@ -87,12 +87,9 @@ public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTile
 	}
 
 	@Override
-	public void tick()
+	public void tickServer()
 	{
-		super.tick();
-		if(world.isRemote||isDummy())
-			return;
-
+		super.tickServer();
 		boolean update = false;
 		if(energyStorage.getEnergyStored() > 0&&processQueue.size() < this.getProcessQueueMaxLength())
 		{

@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
+import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
@@ -28,7 +29,6 @@ import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.Property;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -56,7 +56,7 @@ import javax.annotation.Nullable;
 @EventBusSubscriber(modid = Lib.MODID, bus = Bus.MOD)
 public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IStateBasedDirectional, ICollisionBounds,
 		ISelectionBounds, IHammerInteraction, IPlayerInteraction, IConveyorTile, IPropertyPassthrough,
-		ITickableTileEntity
+		IETickableBlockEntity
 {
 	private final IConveyorBelt conveyorBeltSubtype;
 
@@ -141,7 +141,7 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IStateBa
 	}
 
 	@Override
-	public void tick()
+	public void tickCommon()
 	{
 		ApiUtils.checkForNeedlessTicking(this, te -> te.conveyorBeltSubtype!=null&&!te.conveyorBeltSubtype.isTicking());
 		if(this.conveyorBeltSubtype!=null)

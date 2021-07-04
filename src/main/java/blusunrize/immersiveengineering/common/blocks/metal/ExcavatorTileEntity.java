@@ -115,13 +115,11 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 	}
 
 	@Override
-	public void tick()
+	public void tickServer()
 	{
-		super.tick();
-		if(isDummy())
-			return;
+		super.tickServer();
 		BlockPos wheelPos = this.getBlockPosForPos(wheelCenterOffset);
-		if(!world.isRemote&&world.isAreaLoaded(wheelPos, 5))
+		if(world.isAreaLoaded(wheelPos, 5))
 		{
 			TileEntity center = world.getTileEntity(wheelPos);
 

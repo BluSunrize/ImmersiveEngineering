@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOve
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IScrewdriverInteraction;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
+import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import net.minecraft.block.BlockState;
@@ -27,7 +28,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -51,7 +51,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
-public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IConfigurableSides, IBlockOverlayText, IScrewdriverInteraction
+public class FluidPlacerTileEntity extends IEBaseTileEntity implements IETickableBlockEntity, IConfigurableSides, IBlockOverlayText, IScrewdriverInteraction
 {
 	private final Map<Direction, IOSideConfig> sideConfig = new EnumMap<>(Direction.class);
 
@@ -76,9 +76,9 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements ITickable
 	}
 
 	@Override
-	public void tick()
+	public void tickServer()
 	{
-		if(world.isRemote||(isRSPowered()^redstoneControlInverted))
+		if((isRSPowered()^redstoneControlInverted))
 			return;
 
 		if(tickCount%16==0)

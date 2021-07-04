@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IActiveSt
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
@@ -27,7 +28,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.Property;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -36,7 +36,7 @@ import net.minecraft.util.math.vector.Vector3d;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class FurnaceHeaterTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInternalFluxHandler, IActiveState,
+public class FurnaceHeaterTileEntity extends IEBaseTileEntity implements IETickableBlockEntity, IIEInternalFluxHandler, IActiveState,
 		IStateBasedDirectional, IHammerInteraction
 {
 	public FluxStorage energyStorage = new FluxStorage(32000, Math.max(256,
@@ -48,41 +48,42 @@ public class FurnaceHeaterTileEntity extends IEBaseTileEntity implements ITickab
 	}
 
 	@Override
-	public void tick()
+	public void tickServer()
 	{
-		if(!world.isRemote)
-		{
-			boolean activeBeforeTick = getIsActive();
-			boolean redstonePower = isRSPowered();
-			boolean newActive = activeBeforeTick;
-			if(activeBeforeTick&&!redstonePower)
-				newActive = false;
-			if(energyStorage.getEnergyStored() > 3200||activeBeforeTick)
-				for(Direction fd : DirectionUtils.VALUES)
-				{
-					TileEntity tileEntity = Utils.getExistingTileEntity(world, getPos().offset(fd));
-					int consumed = 0;
-					if(tileEntity!=null)
-						if(tileEntity instanceof IExternalHeatable)
-							consumed = ((IExternalHeatable)tileEntity).doHeatTick(energyStorage.getEnergyStored(), redstonePower);
-						else
-						{
-							ExternalHeaterHandler.HeatableAdapter adapter = ExternalHeaterHandler.getHeatableAdapter(tileEntity.getClass());
-							if(adapter!=null)
-								consumed = adapter.doHeatTick(tileEntity, energyStorage.getEnergyStored(), redstonePower);
-						}
-					if(consumed > 0)
-					{
-						this.energyStorage.extractEnergy(consumed, false);
-						newActive = true;
-					}
-				}
-			if(newActive!=activeBeforeTick)
+		boolean activeBeforeTick = getIsActive();
+		boolean redstonePower = isRSPowered();
+		boolean newActive = activeBeforeTick;
+		if(activeBeforeTick&&!redstonePower)
+			newActive = false;
+		if(energyStorage.getEnergyStored() > 3200||activeBeforeTick)
+			for(Direction fd : DirectionUtils.VALUES)
 			{
-				setActive(newActive);
-				this.markDirty();
+				TileEntity tileEntity = Utils.getExistingTileEntity(world, getPos().offset(fd));
+				int consumed = 0;
+				if(tileEntity!=null)
+					if(tileEntity instanceof IExternalHeatable)
+						consumed = ((IExternalHeatable)tileEntity).doHeatTick(energyStorage.getEnergyStored(), redstonePower);
+					else
+						consumed = heatTile(tileEntity, redstonePower);
+				if(consumed > 0)
+				{
+					this.energyStorage.extractEnergy(consumed, false);
+					newActive = true;
+				}
 			}
+		if(newActive!=activeBeforeTick)
+		{
+			setActive(newActive);
+			this.markDirty();
 		}
+	}
+
+	private <T extends TileEntity> int heatTile(T furnace, boolean redstonePower) {
+		ExternalHeaterHandler.HeatableAdapter<? super T> adapter = ExternalHeaterHandler.getHeatableAdapter(furnace);
+		if(adapter!=null)
+			return adapter.doHeatTick(furnace, energyStorage.getEnergyStored(), redstonePower);
+		else
+			return 0;
 	}
 
 	@Override

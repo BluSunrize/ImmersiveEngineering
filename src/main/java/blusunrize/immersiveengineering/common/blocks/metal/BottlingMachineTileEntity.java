@@ -115,17 +115,16 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 		return "glass".equals(group)==(MinecraftForgeClient.getRenderLayer()==RenderType.getTranslucent());
 	}
 
-	private CapabilityReference<IItemHandler> outputCap = CapabilityReference.forTileEntityAt(this, () -> {
+	private final CapabilityReference<IItemHandler> outputCap = CapabilityReference.forTileEntityAt(this, () -> {
 		Direction outDir = getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY();
 		return new DirectionalBlockPos(getBlockPosForPos(new BlockPos(2, 1, 1)).offset(outDir), outDir.getOpposite());
 	}, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 
 	@Override
-	public void tick()
+	public void tickServer()
 	{
-		super.tick();
-
-		if(isDummy()||isRSDisabled()||world.isRemote)
+		super.tickServer();
+		if(isDummy()||isRSDisabled())
 			return;
 
 		int max = getMaxProcessPerTick();

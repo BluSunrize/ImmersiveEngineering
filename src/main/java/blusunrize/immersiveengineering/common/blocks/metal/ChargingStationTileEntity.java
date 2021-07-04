@@ -20,6 +20,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparat
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
@@ -31,7 +32,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.state.Property;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
@@ -48,7 +48,7 @@ import net.minecraftforge.items.IItemHandler;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class ChargingStationTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInternalFluxHandler, IIEInventory,
+public class ChargingStationTileEntity extends IEBaseTileEntity implements IETickableBlockEntity, IIEInternalFluxHandler, IIEInventory,
 		IStateBasedDirectional, IBlockBounds, IComparatorOverride, IPlayerInteraction
 {
 	public FluxStorageAdvanced energyStorage = new FluxStorageAdvanced(32000);
@@ -63,35 +63,39 @@ public class ChargingStationTileEntity extends IEBaseTileEntity implements ITick
 	}
 
 	@Override
-	public void tick()
+	public void tickClient()
 	{
-		if(world.isRemote)
-			particles.clientTick();
-		if(EnergyHelper.isFluxReceiver(inventory.get(0)))
+		particles.clientTick();
+		if(EnergyHelper.isFluxReceiver(inventory.get(0)) && charging)
 		{
-			if(world.isRemote&&charging)
-			{
-				float charge = 0;
-				float max = EnergyHelper.getMaxEnergyStored(inventory.get(0));
-				if(max > 0)
-					charge = EnergyHelper.getEnergyStored(inventory.get(0))/max;
+			float charge = 0;
+			float max = EnergyHelper.getMaxEnergyStored(inventory.get(0));
+			if(max > 0)
+				charge = EnergyHelper.getEnergyStored(inventory.get(0))/max;
 
-				for(int i = 0; i < 3; i++)
+			for(int i = 0; i < 3; i++)
+			{
+				long time = world.getGameTime();
+				if(charge >= 1||(time%12 >= i*4&&time%12 <= i*4+2))
 				{
-					long time = world.getGameTime();
-					if(charge >= 1||(time%12 >= i*4&&time%12 <= i*4+2))
-					{
-						int shift = i-1;
-						double x = .5+(getFacing()==Direction.WEST?-.46875: getFacing()==Direction.EAST?.46875: getFacing()==Direction.NORTH?(-.1875*shift): (.1875*shift));
-						double y = .25;
-						double z = .5+(getFacing()==Direction.NORTH?-.46875: getFacing()==Direction.SOUTH?.46875: getFacing()==Direction.EAST?(-.1875*shift): (.1875*shift));
-						particles.add(
-								new RedstoneParticleData(1-charge, charge, 0, .5f), x, y, z, .25, .25, .25, -1
-						);
-					}
+					int shift = i-1;
+					double x = .5+(getFacing()==Direction.WEST?-.46875: getFacing()==Direction.EAST?.46875: getFacing()==Direction.NORTH?(-.1875*shift): (.1875*shift));
+					double y = .25;
+					double z = .5+(getFacing()==Direction.NORTH?-.46875: getFacing()==Direction.SOUTH?.46875: getFacing()==Direction.EAST?(-.1875*shift): (.1875*shift));
+					particles.add(
+							new RedstoneParticleData(1-charge, charge, 0, .5f), x, y, z, .25, .25, .25, -1
+					);
 				}
 			}
-			else if(charging)
+		}
+	}
+
+	@Override
+	public void tickServer()
+	{
+		if(EnergyHelper.isFluxReceiver(inventory.get(0)))
+		{
+			if(charging)
 			{
 				if(energyStorage.getEnergyStored()==0)
 				{
@@ -122,7 +126,7 @@ public class ChargingStationTileEntity extends IEBaseTileEntity implements ITick
 		}
 
 
-		if(!world.isRemote&&world.getGameTime()%32==((getPos().getX()^getPos().getZ())&31))
+		if(world.getGameTime()%32==((getPos().getX()^getPos().getZ())&31))
 		{
 			float charge = 0;
 			if(EnergyHelper.isFluxReceiver(inventory.get(0)))
@@ -131,8 +135,6 @@ public class ChargingStationTileEntity extends IEBaseTileEntity implements ITick
 				if(max > 0)
 					charge = EnergyHelper.getEnergyStored(inventory.get(0))/max;
 			}
-			//				else
-			//					charge = (float)(IC2Helper.getCurrentItemCharge(inventory)/IC2Helper.getMaxItemCharge(inventory));
 			int i = (int)(15*charge);
 			if(i!=this.comparatorOutput)
 			{
@@ -271,7 +273,7 @@ public class ChargingStationTileEntity extends IEBaseTileEntity implements ITick
 		this.markContainingBlockForUpdate(null);
 	}
 
-	private LazyOptional<IItemHandler> insertionHandler = registerConstantCap(new IEInventoryHandler(1, this));
+	private final LazyOptional<IItemHandler> insertionHandler = registerConstantCap(new IEInventoryHandler(1, this));
 
 	@Nonnull
 	@Override

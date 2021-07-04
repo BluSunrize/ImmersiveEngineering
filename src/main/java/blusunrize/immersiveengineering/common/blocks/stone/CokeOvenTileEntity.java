@@ -48,6 +48,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+//TODO merge with blast furnace&alloy smelter to some degree?
 public class CokeOvenTileEntity extends MultiblockPartTileEntity<CokeOvenTileEntity> implements IIEInventory,
 		IActiveState, IInteractionObjectIE<CokeOvenTileEntity>, IProcessTile, IBlockBounds
 {
@@ -92,99 +93,96 @@ public class CokeOvenTileEntity extends MultiblockPartTileEntity<CokeOvenTileEnt
 	}
 
 	@Override
-	public void tick()
+	public void tickServer()
 	{
-		checkForNeedlessTicking();
-		if(!world.isRemote&&formed&&!isDummy())
+		super.tickServer();
+		final boolean activeBeforeTick = getIsActive();
+		if(process > 0)
 		{
-			final boolean activeBeforeTick = getIsActive();
-			if(process > 0)
+			if(inventory.get(INPUT_SLOT).isEmpty())
 			{
-				if(inventory.get(INPUT_SLOT).isEmpty())
-				{
-					process = 0;
-					processMax = 0;
-				}
-				else
-				{
-					CokeOvenRecipe recipe = getRecipe();
-					if(recipe==null||recipe.time!=processMax)
-					{
-						process = 0;
-						processMax = 0;
-						setActive(false);
-					}
-					else
-						process--;
-				}
-				this.markContainingBlockForUpdate(null);
+				process = 0;
+				processMax = 0;
 			}
 			else
 			{
-				if(activeBeforeTick)
+				CokeOvenRecipe recipe = getRecipe();
+				if(recipe==null||recipe.time!=processMax)
 				{
-					CokeOvenRecipe recipe = getRecipe();
-					if(recipe!=null)
-					{
-						Utils.modifyInvStackSize(inventory, INPUT_SLOT, -recipe.input.getCount());
-						if(!inventory.get(OUTPUT_SLOT).isEmpty())
-							inventory.get(OUTPUT_SLOT).grow(recipe.output.copy().getCount());
-						else if(inventory.get(OUTPUT_SLOT).isEmpty())
-							inventory.set(OUTPUT_SLOT, recipe.output.copy());
-						this.tank.fill(new FluidStack(IEFluids.fluidCreosote.getStill(), recipe.creosoteOutput), FluidAction.EXECUTE);
-					}
+					process = 0;
 					processMax = 0;
 					setActive(false);
 				}
+				else
+					process--;
+			}
+			this.markContainingBlockForUpdate(null);
+		}
+		else
+		{
+			if(activeBeforeTick)
+			{
 				CokeOvenRecipe recipe = getRecipe();
 				if(recipe!=null)
 				{
-					this.process = recipe.time;
-					this.processMax = process;
-					setActive(true);
+					Utils.modifyInvStackSize(inventory, INPUT_SLOT, -recipe.input.getCount());
+					if(!inventory.get(OUTPUT_SLOT).isEmpty())
+						inventory.get(OUTPUT_SLOT).grow(recipe.output.copy().getCount());
+					else if(inventory.get(OUTPUT_SLOT).isEmpty())
+						inventory.set(OUTPUT_SLOT, recipe.output.copy());
+					this.tank.fill(new FluidStack(IEFluids.fluidCreosote.getStill(), recipe.creosoteOutput), FluidAction.EXECUTE);
 				}
+				processMax = 0;
+				setActive(false);
 			}
-
-			ItemStack inFullSlot = inventory.get(FULL_CONTAINER_SLOT);
-			if(tank.getFluidAmount() > 0&&(inFullSlot.isEmpty()||inFullSlot.getCount()+1 <= inFullSlot.getMaxStackSize()))
+			CokeOvenRecipe recipe = getRecipe();
+			if(recipe!=null)
 			{
-				ItemStack filledContainer = Utils.fillFluidContainer(
-						tank,
-						inventory.get(EMPTY_CONTAINER_SLOT).copy(),
-						inFullSlot,
-						null
-				);
-				if(!filledContainer.isEmpty())
+				this.process = recipe.time;
+				this.processMax = process;
+				setActive(true);
+			}
+		}
+
+		ItemStack inFullSlot = inventory.get(FULL_CONTAINER_SLOT);
+		if(tank.getFluidAmount() > 0&&(inFullSlot.isEmpty()||inFullSlot.getCount()+1 <= inFullSlot.getMaxStackSize()))
+		{
+			ItemStack filledContainer = Utils.fillFluidContainer(
+					tank,
+					inventory.get(EMPTY_CONTAINER_SLOT).copy(),
+					inFullSlot,
+					null
+			);
+			if(!filledContainer.isEmpty())
+			{
+				if(inventory.get(EMPTY_CONTAINER_SLOT).getCount()==1&&!Utils.isFluidContainerFull(filledContainer))
+					inventory.set(EMPTY_CONTAINER_SLOT, filledContainer.copy());
+				else
 				{
-					if(inventory.get(EMPTY_CONTAINER_SLOT).getCount()==1&&!Utils.isFluidContainerFull(filledContainer))
-						inventory.set(EMPTY_CONTAINER_SLOT, filledContainer.copy());
-					else
-					{
-						if(!inFullSlot.isEmpty()&&ItemHandlerHelper.canItemStacksStack(inFullSlot, filledContainer))
-							inFullSlot.grow(filledContainer.getCount());
-						else if(inFullSlot.isEmpty())
-							inventory.set(FULL_CONTAINER_SLOT, filledContainer.copy());
-						Utils.modifyInvStackSize(inventory, EMPTY_CONTAINER_SLOT, -filledContainer.getCount());
-					}
-					markDirty();
-					this.markContainingBlockForUpdate(null);
+					if(!inFullSlot.isEmpty()&&ItemHandlerHelper.canItemStacksStack(inFullSlot, filledContainer))
+						inFullSlot.grow(filledContainer.getCount());
+					else if(inFullSlot.isEmpty())
+						inventory.set(FULL_CONTAINER_SLOT, filledContainer.copy());
+					Utils.modifyInvStackSize(inventory, EMPTY_CONTAINER_SLOT, -filledContainer.getCount());
 				}
+				markDirty();
+				this.markContainingBlockForUpdate(null);
 			}
+		}
 
-			final boolean activeAfterTick = getIsActive();
-			if(activeBeforeTick!=activeAfterTick)
-			{
-				this.markDirty();
-				for(int x = 0; x < 3; ++x)
-					for(int y = 0; y < 3; ++y)
-						for(int z = 0; z < 3; ++z)
-						{
-							BlockPos actualPos = getBlockPosForPos(new BlockPos(x, y, z));
-							TileEntity te = Utils.getExistingTileEntity(world, actualPos);
-							if(te instanceof CokeOvenTileEntity)
-								((CokeOvenTileEntity)te).setActive(activeAfterTick);
-						}
-			}
+		final boolean activeAfterTick = getIsActive();
+		if(activeBeforeTick!=activeAfterTick)
+		{
+			this.markDirty();
+			for(int x = 0; x < 3; ++x)
+				for(int y = 0; y < 3; ++y)
+					for(int z = 0; z < 3; ++z)
+					{
+						BlockPos actualPos = getBlockPosForPos(new BlockPos(x, y, z));
+						TileEntity te = Utils.getExistingTileEntity(world, actualPos);
+						if(te instanceof CokeOvenTileEntity)
+							((CokeOvenTileEntity)te).setActive(activeAfterTick);
+					}
 		}
 	}
 

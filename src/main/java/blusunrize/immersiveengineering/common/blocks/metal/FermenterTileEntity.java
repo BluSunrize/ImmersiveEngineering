@@ -92,107 +92,99 @@ public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTi
 			}, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 
 	@Override
-	public void tick()
+	public void tickServer()
 	{
-		super.tick();
-		if(isDummy()||isRSDisabled())
+		super.tickServer();
+		if(isRSDisabled())
 			return;
-
-		if(!world.isRemote)
+		boolean update = false;
+		if(energyStorage.getEnergyStored() > 0&&processQueue.size() < this.getProcessQueueMaxLength())
 		{
-			boolean update = false;
-			if(energyStorage.getEnergyStored() > 0&&processQueue.size() < this.getProcessQueueMaxLength())
-			{
-				final int[] usedInvSlots = new int[8];
-				for(MultiblockProcess<FermenterRecipe> process : processQueue)
-					if(process instanceof MultiblockProcessInMachine)
-						for(int i : ((MultiblockProcessInMachine<FermenterRecipe>)process).getInputSlots())
-							usedInvSlots[i]++;
+			final int[] usedInvSlots = new int[8];
+			for(MultiblockProcess<FermenterRecipe> process : processQueue)
+				if(process instanceof MultiblockProcessInMachine)
+					for(int i : ((MultiblockProcessInMachine<FermenterRecipe>)process).getInputSlots())
+						usedInvSlots[i]++;
 
-				Integer[] preferredSlots = new Integer[]{0, 1, 2, 3, 4, 5, 6, 7};
-				Arrays.sort(preferredSlots, 0, 8, Comparator.comparingInt(arg0 -> usedInvSlots[arg0]));
-				for(int slot : preferredSlots)
+			Integer[] preferredSlots = new Integer[]{0, 1, 2, 3, 4, 5, 6, 7};
+			Arrays.sort(preferredSlots, 0, 8, Comparator.comparingInt(arg0 -> usedInvSlots[arg0]));
+			for(int slot : preferredSlots)
+			{
+				ItemStack stack = this.getInventory().get(slot);
+				if(!stack.isEmpty())
 				{
-					ItemStack stack = this.getInventory().get(slot);
-					if(!stack.isEmpty())
+					stack = stack.copy();
+					stack.shrink(usedInvSlots[slot]);
+				}
+				if(!stack.isEmpty()&&stack.getCount() > 0)
+				{
+					FermenterRecipe recipe = this.findRecipeForInsertion(stack);
+					if(recipe!=null)
 					{
-						stack = stack.copy();
-						stack.shrink(usedInvSlots[slot]);
-					}
-					if(!stack.isEmpty()&&stack.getCount() > 0)
-					{
-						FermenterRecipe recipe = this.findRecipeForInsertion(stack);
-						if(recipe!=null)
+						MultiblockProcessInMachine<FermenterRecipe> process = new MultiblockProcessInMachine<>(recipe, slot);
+						if(this.addProcessToQueue(process, true))
 						{
-							MultiblockProcessInMachine<FermenterRecipe> process = new MultiblockProcessInMachine<>(recipe, slot);
-							if(this.addProcessToQueue(process, true))
-							{
-								this.addProcessToQueue(process, false);
-								update = true;
-							}
+							this.addProcessToQueue(process, false);
+							update = true;
 						}
 					}
 				}
 			}
+		}
 
-			Direction fw = getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY();
-			if(this.tanks[0].getFluidAmount() > 0)
-			{
-				FluidStack out = Utils.copyFluidStackWithAmount(this.tanks[0].getFluid(), Math.min(this.tanks[0].getFluidAmount(), 80), false);
-				BlockPos outputPos = this.getPos().add(0, -1, 0).offset(fw, 2);
-				update |= FluidUtil.getFluidHandler(world, outputPos, fw.getOpposite())
-						.map(output -> {
-							int accepted = output.fill(out, FluidAction.SIMULATE);
-					if(accepted > 0)
-					{
-						int drained = output.fill(Utils.copyFluidStackWithAmount(out, Math.min(out.getAmount(), accepted), false), FluidAction.EXECUTE);
-						this.tanks[0].drain(drained, FluidAction.EXECUTE);
-						return true;
-					}
-							return false;
-						}).orElse(false);
-				ItemStack empty = getInventory().get(9);
-				if(!empty.isEmpty()&&tanks[0].getFluidAmount() > 0)
+		Direction fw = getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY();
+		if(this.tanks[0].getFluidAmount() > 0)
+		{
+			FluidStack out = Utils.copyFluidStackWithAmount(this.tanks[0].getFluid(), Math.min(this.tanks[0].getFluidAmount(), 80), false);
+			BlockPos outputPos = this.getPos().add(0, -1, 0).offset(fw, 2);
+			update |= FluidUtil.getFluidHandler(world, outputPos, fw.getOpposite())
+					.map(output -> {
+						int accepted = output.fill(out, FluidAction.SIMULATE);
+				if(accepted > 0)
 				{
-					ItemStack full = Utils.fillFluidContainer(tanks[0], empty, getInventory().get(10), null);
-					if(!full.isEmpty())
+					int drained = output.fill(Utils.copyFluidStackWithAmount(out, Math.min(out.getAmount(), accepted), false), FluidAction.EXECUTE);
+					this.tanks[0].drain(drained, FluidAction.EXECUTE);
+					return true;
+				}
+						return false;
+					}).orElse(false);
+			ItemStack empty = getInventory().get(9);
+			if(!empty.isEmpty()&&tanks[0].getFluidAmount() > 0)
+			{
+				ItemStack full = Utils.fillFluidContainer(tanks[0], empty, getInventory().get(10), null);
+				if(!full.isEmpty())
+				{
+					if(getInventory().get(9).getCount()==1&&!Utils.isFluidContainerFull(full))
+						getInventory().set(9, full.copy());
+					else
 					{
-						if(getInventory().get(9).getCount()==1&&!Utils.isFluidContainerFull(full))
-							getInventory().set(9, full.copy());
+						if(!getInventory().get(10).isEmpty()&&ItemHandlerHelper.canItemStacksStack(full, getInventory().get(10)))
+							getInventory().get(10).grow(full.getCount());
 						else
-						{
-							if(!getInventory().get(10).isEmpty()&&ItemHandlerHelper.canItemStacksStack(full, getInventory().get(10)))
-								getInventory().get(10).grow(full.getCount());
-							else
-								getInventory().set(10, full);
-							inventory.get(9).shrink(1);
-							if(inventory.get(9).getCount() <= 0)
-								inventory.set(9, ItemStack.EMPTY);
-						}
-						update = true;
+							getInventory().set(10, full);
+						inventory.get(9).shrink(1);
+						if(inventory.get(9).getCount() <= 0)
+							inventory.set(9, ItemStack.EMPTY);
 					}
+					update = true;
 				}
 			}
-			if(!inventory.get(8).isEmpty()&&world.getGameTime()%8==0)
+		}
+		if(!inventory.get(8).isEmpty()&&world.getGameTime()%8==0)
+		{
+			if(outputCap.isPresent())
 			{
-				if(outputCap.isPresent())
-				{
-					ItemStack stack = ItemHandlerHelper.copyStackWithSize(inventory.get(8), 1);
-					stack = Utils.insertStackIntoInventory(outputCap, stack, false);
-					if(stack.isEmpty())
-					{
-						this.inventory.get(8).shrink(1);
-						if(this.inventory.get(8).getCount() <= 0)
-							this.inventory.set(8, ItemStack.EMPTY);
-					}
-				}
+				ItemStack stack = ItemHandlerHelper.copyStackWithSize(inventory.get(8), 1);
+				stack = Utils.insertStackIntoInventory(outputCap, stack, false);
+				if(stack.isEmpty())
+					this.inventory.get(8).shrink(1);
 			}
+		}
 
-			if(update)
-			{
-				this.markDirty();
-				this.markContainingBlockForUpdate(null);
-			}
+		if(update)
+		{
+			this.markDirty();
+			this.markContainingBlockForUpdate(null);
 		}
 	}
 

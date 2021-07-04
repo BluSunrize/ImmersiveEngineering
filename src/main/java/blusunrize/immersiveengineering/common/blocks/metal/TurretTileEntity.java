@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
@@ -38,7 +39,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
 import net.minecraft.state.Property;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResultType;
@@ -66,7 +66,7 @@ import java.util.List;
 import java.util.UUID;
 
 public abstract class TurretTileEntity<T extends TurretTileEntity<T>> extends IEBaseTileEntity implements
-		ITickableTileEntity, IIEInternalFluxHandler, IIEInventory, IHasDummyBlocks, ITileDrop, IStateBasedDirectional,
+		IETickableBlockEntity, IIEInternalFluxHandler, IIEInventory, IHasDummyBlocks, ITileDrop, IStateBasedDirectional,
 		IBlockBounds, IInteractionObjectIE<T>, IEntityProof, IScrewdriverInteraction, IHasObjProperty,
 		IModelOffsetProvider
 {
@@ -93,11 +93,22 @@ public abstract class TurretTileEntity<T extends TurretTileEntity<T>> extends IE
 	}
 
 	@Override
+	public boolean canTickAny()
+	{
+		return !isDummy();
+	}
+
+	@Override
 	public void tick()
 	{
 		checkForNeedlessTicking();
-		if(isDummy())
-			return;
+		IETickableBlockEntity.super.tick();
+	}
+
+	//TODO split sides more
+	@Override
+	public void tickCommon()
+	{
 		double range = getRange();
 		if(targetId!=null)
 		{
@@ -138,10 +149,11 @@ public abstract class TurretTileEntity<T extends TurretTileEntity<T>> extends IE
 			if(Math.abs(rotationPitch) < 10)
 				this.rotationPitch = 0;
 		}
+	}
 
-
-		if(world.isRemote)
-			return;
+	@Override
+	public void tickServer()
+	{
 		if(world.getGameTime()%64==((getPos().getX()^getPos().getZ())&63))
 			markContainingBlockForUpdate(null);
 

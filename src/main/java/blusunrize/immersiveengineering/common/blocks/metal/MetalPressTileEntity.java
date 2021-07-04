@@ -63,12 +63,18 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 	public ItemStack mold = ItemStack.EMPTY;
 
 	@Override
+	public void tickServer()
+	{
+		super.tickServer();
+	}
+
+	@Override
 	public void tick()
 	{
 		super.tick();
-		if(isDummy()||isRSDisabled()||world.isRemote)
+		if(isRSDisabled())
 			return;
-		for(MultiblockProcess process : processQueue)
+		for(MultiblockProcess<?> process : processQueue)
 		{
 			float maxTicks = process.maxTicks;
 			float transportTime = getTransportTime(maxTicks);

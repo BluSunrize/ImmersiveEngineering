@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.utils.shapes.CachedVoxelShapes;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
+import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.collect.ImmutableList;
@@ -25,7 +26,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.Property;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
@@ -46,7 +46,7 @@ import java.util.List;
 /**
  * @author BluSunrize - 01.10.2016
  */
-public class StripCurtainTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IRedstoneOutput, IScrewdriverInteraction,
+public class StripCurtainTileEntity extends IEBaseTileEntity implements IETickableBlockEntity, IRedstoneOutput, IScrewdriverInteraction,
 		ICollisionBounds, IAdvancedDirectionalTile, IStateBasedDirectional, IColouredTile, ITileDrop, ISelectionBounds
 {
 	public int colour = 0xffffff;
@@ -59,9 +59,9 @@ public class StripCurtainTileEntity extends IEBaseTileEntity implements ITickabl
 	}
 
 	@Override
-	public void tick()
+	public void tickServer()
 	{
-		if(!world.isRemote&&world.getGameTime()%4==((getPos().getX()^getPos().getZ())&3))
+		if(world.getGameTime()%4==((getPos().getX()^getPos().getZ())&3))
 		{
 			AxisAlignedBB aabb = bounds[isCeilingAttached()?(getFacing().getAxis()==Axis.Z?4: 5): ((getFacing().ordinal()-2)%4)];
 			aabb = new AxisAlignedBB(aabb.minX, aabb.minY-.8125, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ).offset(getPos());

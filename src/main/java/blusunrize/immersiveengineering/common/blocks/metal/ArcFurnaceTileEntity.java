@@ -139,42 +139,43 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 	}
 
 	@Override
-	public void tick()
+	public void tickClient()
 	{
-		super.tick();
+		super.tickClient();
 		if(isDummy())
 			return;
-		if(world.isRemote)
-		{
-			if(pouringMetal > 0)
-				pouringMetal--;
-			if(shouldRenderAsActive())
-				for(int i = 0; i < 4; i++)
-				{
-					if(Utils.RAND.nextInt(6)==0)
-						world.addParticle(IEParticles.SPARKS.get(), getPos().getX()+.5-.25*getFacing().getXOffset(),
-								getPos().getY()+2.9, getPos().getZ()+.5-.25*getFacing().getZOffset(),
-								Utils.RAND.nextDouble()*.05-.025, .025, Utils.RAND.nextDouble()*.05-.025);
-					if(Utils.RAND.nextInt(6)==0)
-						world.addParticle(IEParticles.SPARKS.get(), getPos().getX()+.5+(getFacing()==Direction.EAST?-.25: .25),
-								getPos().getY()+2.9, getPos().getZ()+.5+(getFacing()==Direction.SOUTH?.25: -.25),
-								Utils.RAND.nextDouble()*.05-.025, .025, Utils.RAND.nextDouble()*.05-.025);
-					if(Utils.RAND.nextInt(6)==0)
-						world.addParticle(IEParticles.SPARKS.get(), getPos().getX()+.5+(getFacing()==Direction.WEST?.25: -.25),
-								getPos().getY()+2.9, getPos().getZ()+.5+(getFacing()==Direction.NORTH?-.25: .25),
-								Utils.RAND.nextDouble()*.05-.025, .025, Utils.RAND.nextDouble()*.05-.025);
-				}
-		}
-		else if(!isRSDisabled()&&energyStorage.getEnergyStored() > 0)
+		if(pouringMetal > 0)
+			pouringMetal--;
+		if(shouldRenderAsActive())
+			for(int i = 0; i < 4; i++)
+			{
+				if(Utils.RAND.nextInt(6)==0)
+					world.addParticle(IEParticles.SPARKS.get(), getPos().getX()+.5-.25*getFacing().getXOffset(),
+							getPos().getY()+2.9, getPos().getZ()+.5-.25*getFacing().getZOffset(),
+							Utils.RAND.nextDouble()*.05-.025, .025, Utils.RAND.nextDouble()*.05-.025);
+				if(Utils.RAND.nextInt(6)==0)
+					world.addParticle(IEParticles.SPARKS.get(), getPos().getX()+.5+(getFacing()==Direction.EAST?-.25: .25),
+							getPos().getY()+2.9, getPos().getZ()+.5+(getFacing()==Direction.SOUTH?.25: -.25),
+							Utils.RAND.nextDouble()*.05-.025, .025, Utils.RAND.nextDouble()*.05-.025);
+				if(Utils.RAND.nextInt(6)==0)
+					world.addParticle(IEParticles.SPARKS.get(), getPos().getX()+.5+(getFacing()==Direction.WEST?.25: -.25),
+							getPos().getY()+2.9, getPos().getZ()+.5+(getFacing()==Direction.NORTH?-.25: .25),
+							Utils.RAND.nextDouble()*.05-.025, .025, Utils.RAND.nextDouble()*.05-.025);
+			}
+	}
+
+	@Override
+	public void tickServer()
+	{
+		super.tickServer();
+		if (isDummy())
+			return;
+		if(!isRSDisabled()&&energyStorage.getEnergyStored() > 0)
 		{
 			if(this.tickedProcesses > 0)
 				for(int i = FIRST_ELECTRODE_SLOT; i < FIRST_ELECTRODE_SLOT+ELECTRODE_COUNT; i++)
 					if(this.inventory.get(i).attemptDamageItem(1, Utils.RAND, null))
-					{
 						this.inventory.set(i, ItemStack.EMPTY);
-						//						updateClient = true;
-						//						update = true;
-					}
 
 			if(this.processQueue.size() < this.getProcessQueueMaxLength())
 			{

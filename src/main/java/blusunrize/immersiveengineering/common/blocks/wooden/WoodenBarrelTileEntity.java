@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalBarrelTileEntity;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
+import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
@@ -27,7 +28,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootContext;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
@@ -54,7 +54,7 @@ import static blusunrize.immersiveengineering.api.IEEnums.IOSideConfig.NONE;
 import static blusunrize.immersiveengineering.api.IEEnums.IOSideConfig.OUTPUT;
 import static net.minecraftforge.fluids.capability.CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
 
-public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IBlockOverlayText, IConfigurableSides, IPlayerInteraction, ITileDrop, IComparatorOverride
+public class WoodenBarrelTileEntity extends IEBaseTileEntity implements IETickableBlockEntity, IBlockOverlayText, IConfigurableSides, IPlayerInteraction, ITileDrop, IComparatorOverride
 {
 	public static final int IGNITION_TEMPERATURE = 573;
 	public EnumMap<Direction, IOSideConfig> sideConfig = new EnumMap<>(ImmutableMap.of(
@@ -79,11 +79,8 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 	);
 
 	@Override
-	public void tick()
+	public void tickServer()
 	{
-		if(world.isRemote)
-			return;
-
 		boolean update = false;
 		for(Direction side : neighbors.keySet())
 			if(tank.getFluidAmount() > 0&&sideConfig.get(side)==OUTPUT)
@@ -171,7 +168,7 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 			nbt.put("tank", tankTag);
 	}
 
-	private Map<Direction, LazyOptional<IFluidHandler>> sidedFluidHandler = new HashMap<>();
+	private final Map<Direction, LazyOptional<IFluidHandler>> sidedFluidHandler = new HashMap<>();
 
 	{
 		sidedFluidHandler.put(Direction.DOWN, registerCap(() -> new SidedFluidHandler(this, Direction.DOWN)));
@@ -265,8 +262,7 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 
 	public boolean isFluidValid(FluidStack fluid)
 	{
-		return !fluid.isEmpty()&&fluid.getFluid()!=null
-				&&fluid.getFluid().getAttributes().getTemperature(fluid) < IGNITION_TEMPERATURE
+		return !fluid.isEmpty()&&fluid.getFluid().getAttributes().getTemperature(fluid) < IGNITION_TEMPERATURE
 				&&!fluid.getFluid().getAttributes().isGaseous(fluid);
 	}
 

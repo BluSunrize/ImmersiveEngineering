@@ -22,12 +22,12 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBou
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.blocks.generic.ImmersiveConnectableTileEntity;
 import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectableBlock;
+import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.Property;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -47,7 +47,7 @@ import java.util.Objects;
 
 import static blusunrize.immersiveengineering.api.wires.WireType.REDSTONE_CATEGORY;
 
-public class ConnectorBundledTileEntity extends ImmersiveConnectableTileEntity implements ITickableTileEntity, IStateBasedDirectional,
+public class ConnectorBundledTileEntity extends ImmersiveConnectableTileEntity implements IETickableBlockEntity, IStateBasedDirectional,
 		IBlockBounds, IRedstoneConnector
 {
 	public static final List<IBundledProvider> EXTRA_SOURCES = new ArrayList<>();
@@ -73,9 +73,9 @@ public class ConnectorBundledTileEntity extends ImmersiveConnectableTileEntity i
 	}
 
 	@Override
-	public void tick()
+	public void tickServer()
 	{
-		if(hasWorld()&&!world.isRemote&&((attached.isPresent()&&attached.get().pollDirty())||dirtyExtraSource))
+		if(attached.isPresent()&&attached.get().pollDirty()||dirtyExtraSource)
 		{
 			getHandler().updateValues();
 			dirtyExtraSource = false;

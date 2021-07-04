@@ -22,12 +22,12 @@ import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
+import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamageSource;
 import blusunrize.immersiveengineering.mixin.accessors.EntityAccess;
-import com.google.common.collect.ArrayListMultimap;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -37,7 +37,6 @@ import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.state.Property;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -64,14 +63,13 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInternalFluxHandler, IHasDummyBlocks,
+public class TeslaCoilTileEntity extends IEBaseTileEntity implements IETickableBlockEntity, IIEInternalFluxHandler, IHasDummyBlocks,
 		IStateBasedDirectional, IBlockBounds, IScrewdriverInteraction, IModelOffsetProvider
 {
 	public FluxStorage energyStorage = new FluxStorage(48000);
 	public boolean redstoneControlInverted = false;
 	public boolean lowPower = false;
-	private Vector3d soundPos = null;
-	public static final ArrayListMultimap<BlockPos, LightningAnimation> effectMap = ArrayListMultimap.create();
+	public final List<LightningAnimation> effectMap = new ArrayList<>();
 	private static final ElectricSource TC_FIELD = new ElectricSource(-1);
 
 	public TeslaCoilTileEntity()
@@ -80,27 +78,27 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 	}
 
 	@Override
+	public void tickClient()
+	{
+		IETickableBlockEntity.super.tickClient();
+		effectMap.removeIf(LightningAnimation::tick);
+	}
+
+	@Override
 	public void tick()
 	{
 		checkForNeedlessTicking();
-		if(isDummy())
-			return;
-		synchronized(this)
-		{
-			if(world.isRemote&&soundPos!=null)
-			{
-				world.playSound(soundPos.x, soundPos.y, soundPos.z, IESounds.tesla, SoundCategory.BLOCKS, 2.5F, 0.5F+Utils.RAND.nextFloat(), true);
-				soundPos = null;
-			}
-		}
-		if(world.isRemote&&effectMap.containsKey(pos))
-			effectMap.get(pos).removeIf(LightningAnimation::tick);
+		IETickableBlockEntity.super.tick();
+	}
 
+	@Override
+	public void tickServer()
+	{
 		int timeKey = getPos().getX()^getPos().getZ();
 		int energyDrain = IEServerConfig.MACHINES.teslacoil_consumption.get();
 		if(lowPower)
 			energyDrain /= 2;
-		if(!world.isRemote&&world.getGameTime()%32==(timeKey&31)&&canRun(energyDrain))
+		if(world.getGameTime()%32==(timeKey&31)&&canRun(energyDrain))
 		{
 			this.energyStorage.extractEnergy(energyDrain, false);
 
@@ -260,7 +258,7 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 				double dy = target.getPosY()-getPos().getY();
 				double dz = target.getPosZ()-getPos().getZ();
 
-				Direction f = null;
+				Direction f;
 				if(getFacing().getAxis()==Axis.Y)
 				{
 					if(Math.abs(dz) > Math.abs(dx))
@@ -297,10 +295,7 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 				}
 
 				addAnimation(new LightningAnimation(coilPos, (LivingEntity)target));
-				synchronized(this)
-				{
-					soundPos = coilPos;
-				}
+				world.playSound(coilPos.x, coilPos.y, coilPos.z, IESounds.tesla, SoundCategory.BLOCKS, 2.5F, 0.5F+Utils.RAND.nextFloat(), true);
 			}
 		}
 		else if(message.contains("tL", NBT.TAG_DOUBLE))
@@ -353,7 +348,7 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements ITickableTi
 
 	private void addAnimation(LightningAnimation ani)
 	{
-		Minecraft.getInstance().deferTask(() -> effectMap.put(getPos(), ani));
+		Minecraft.getInstance().deferTask(() -> effectMap.add(ani));
 	}
 
 	@Override

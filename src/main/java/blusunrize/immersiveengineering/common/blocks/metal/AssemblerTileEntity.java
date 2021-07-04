@@ -159,16 +159,15 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 		}
 	}
 
-	private CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntityAt(this,
+	private final CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntityAt(this,
 			() -> new DirectionalBlockPos(pos.offset(getFacing(), 2), getFacing().getOpposite()),
 			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 
 	@Override
-	public void tick()
+	public void tickServer()
 	{
-		super.tick();
-
-		if(isDummy()||isRSDisabled()||world.isRemote||world.getGameTime()%16!=((getPos().getX()^getPos().getZ())&15))
+		super.tickServer();
+		if(isDummy()||isRSDisabled()||world.getGameTime()%16!=((getPos().getX()^getPos().getZ())&15))
 			return;
 		boolean update = false;
 		NonNullList<ItemStack>[] outputBuffer = new NonNullList[patterns.length];

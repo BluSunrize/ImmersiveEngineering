@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigur
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Machines.CapacitorConfig;
+import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
@@ -30,7 +31,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootContext;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -43,7 +43,7 @@ import javax.annotation.Nullable;
 import java.util.EnumMap;
 import java.util.List;
 
-public class CapacitorTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInternalFluxHandler, IBlockOverlayText,
+public class CapacitorTileEntity extends IEBaseTileEntity implements IETickableBlockEntity, IIEInternalFluxHandler, IBlockOverlayText,
 		IConfigurableSides, IComparatorOverride, ITileDrop
 {
 	public EnumMap<Direction, IOSideConfig> sideConfig = new EnumMap<>(Direction.class);
@@ -68,21 +68,18 @@ public class CapacitorTileEntity extends IEBaseTileEntity implements ITickableTi
 	}
 
 	@Override
-	public void tick()
+	public void tickServer()
 	{
-		if(!world.isRemote)
-		{
-			for(Direction f : DirectionUtils.VALUES)
-				this.transferEnergy(f);
+		for(Direction f : DirectionUtils.VALUES)
+			this.transferEnergy(f);
 
-			if(world.getGameTime()%32==((getPos().getX()^getPos().getZ())&31))
+		if(world.getGameTime()%32==((getPos().getX()^getPos().getZ())&31))
+		{
+			int i = scaleStoredEnergyTo(15);
+			if(i!=this.comparatorOutput)
 			{
-				int i = scaleStoredEnergyTo(15);
-				if(i!=this.comparatorOutput)
-				{
-					this.comparatorOutput = i;
-					world.updateComparatorOutputLevel(getPos(), getBlockState().getBlock());
-				}
+				this.comparatorOutput = i;
+				world.updateComparatorOutputLevel(getPos(), getBlockState().getBlock());
 			}
 		}
 	}

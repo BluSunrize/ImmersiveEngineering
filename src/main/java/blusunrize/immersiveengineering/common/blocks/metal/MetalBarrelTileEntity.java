@@ -26,15 +26,15 @@ public class MetalBarrelTileEntity extends WoodenBarrelTileEntity
 	}
 
 	@Override
-	public void tick()
+	public void tickServer()
 	{
-		if(!world.isRemote&&!isRSPowered())
-			super.tick();
+		if(!isRSPowered())
+			super.tickServer();
 	}
 
 	@Override
 	public boolean isFluidValid(FluidStack fluid)
 	{
-		return fluid!=null&&fluid.getFluid()!=null;
+		return !fluid.isEmpty();
 	}
 }

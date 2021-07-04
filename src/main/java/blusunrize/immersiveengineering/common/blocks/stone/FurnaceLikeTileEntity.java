@@ -84,12 +84,9 @@ public abstract class FurnaceLikeTileEntity<R, T extends FurnaceLikeTileEntity<R
 	}
 
 	@Override
-	public void tick()
+	public void tickServer()
 	{
-		checkForNeedlessTicking();
-		if(world.isRemote||!formed||isDummy())
-			return;
-
+		super.tickServer();
 		final boolean activeBeforeTick = getIsActive();
 
 		if(burnTime > 0)

@@ -325,7 +325,7 @@ public abstract class IEBaseTileEntity extends TileEntity implements BlockstateP
 
 	protected int getRSInput(Direction from)
 	{
-		if(getWorldNonnull().isRemote||!redstoneBySide.containsKey(from))
+		if(!redstoneBySide.containsKey(from))
 			updateRSForSide(from);
 		return redstoneBySide.get(from);
 	}

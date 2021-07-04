@@ -68,18 +68,15 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 	}
 
 	@Override
-	public void tick()
+	public void tickClient()
 	{
-		super.tick();
-		if(world.isRemote&&!isDummy())
+		super.tickClient();
+		boolean active = shouldRenderAsActive();
+		ImmersiveEngineering.proxy.handleTileSound(IESounds.crusher, this, active, .5f, 1);
+		if(active)
 		{
-			boolean active = shouldRenderAsActive();
-			ImmersiveEngineering.proxy.handleTileSound(IESounds.crusher, this, active, .5f, 1);
-			if(active)
-			{
-				animation_barrelRotation += 18f;
-				animation_barrelRotation %= 360f;
-			}
+			animation_barrelRotation += 18f;
+			animation_barrelRotation %= 360f;
 		}
 	}
 

@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Misc;
 import blusunrize.immersiveengineering.common.blocks.generic.ImmersiveConnectableTileEntity;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.SpawnInterdictionHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -33,7 +34,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.Property;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -60,13 +60,13 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
-public class FloodlightTileEntity extends ImmersiveConnectableTileEntity implements ITickableTileEntity, IAdvancedDirectionalTile,
+public class FloodlightTileEntity extends ImmersiveConnectableTileEntity implements IETickableBlockEntity, IAdvancedDirectionalTile,
 		IHammerInteraction, IScrewdriverInteraction, ISpawnInterdiction, IBlockBounds, IActiveState,
 		IOBJModelCallback<BlockState>, EnergyConnector, IStateBasedDirectional
 {
 	public int energyStorage = 0;
-	private int energyDraw = IEServerConfig.MACHINES.floodlight_energyDraw.get();
-	public int maximumStorage = IEServerConfig.MACHINES.floodlight_maximumStorage.get();
+	private final int energyDraw = IEServerConfig.MACHINES.floodlight_energyDraw.get();
+	public final int maximumStorage = IEServerConfig.MACHINES.floodlight_maximumStorage.get();
 	public boolean redstoneControlInverted = false;
 	public Direction facing = Direction.NORTH;
 	public float rotY = 0;
@@ -86,10 +86,8 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 	}
 
 	@Override
-	public void tick()
+	public void tickServer()
 	{
-		if(world.isRemote)
-			return;
 		if(turnCooldown > 0)
 			turnCooldown--;
 		boolean activeBeforeTick = getIsActive();

@@ -20,6 +20,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteract
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
 import blusunrize.immersiveengineering.common.gui.IEContainerTypes.TileContainer;
+import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
@@ -30,7 +31,6 @@ import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.Property;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
@@ -45,7 +45,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class ItemBatcherTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInventory,
+public class ItemBatcherTileEntity extends IEBaseTileEntity implements IETickableBlockEntity, IIEInventory,
 		IInteractionObjectIE<ItemBatcherTileEntity>, IStateBasedDirectional
 {
 	public static final int NUM_SLOTS = 9;
@@ -82,9 +82,9 @@ public class ItemBatcherTileEntity extends IEBaseTileEntity implements ITickable
 			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 
 	@Override
-	public void tick()
+	public void tickServer()
 	{
-		if(!world.isRemote&&world.getGameTime()%8==0&&output.isPresent()&&isActive())
+		if(world.getGameTime()%8==0&&output.isPresent()&&isActive())
 		{
 			boolean matched = true;
 			if(this.batchMode==BatchMode.ALL)

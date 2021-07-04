@@ -32,6 +32,7 @@ import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
 import blusunrize.immersiveengineering.common.gui.IEContainerTypes.TileContainer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
+import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -49,7 +50,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.state.Property;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
@@ -84,7 +84,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IStateBasedDirectional, IBlockBounds, IHasDummyBlocks,
+public class ClocheTileEntity extends IEBaseTileEntity implements IETickableBlockEntity, IStateBasedDirectional, IBlockBounds, IHasDummyBlocks,
 		IIEInventory, IIEInternalFluxHandler, IInteractionObjectIE<ClocheTileEntity>, IOBJModelCallback<BlockState>,
 		IModelOffsetProvider
 {
@@ -130,147 +130,158 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 	public void tick()
 	{
 		checkForNeedlessTicking();
-		if(dummy!=0||isRSPowered())
-			return;
+		IETickableBlockEntity.super.tick();
+	}
+
+	@Override
+	public boolean canTickAny()
+	{
+		return dummy == 0 && !isRSPowered();
+	}
+
+	@Override
+	public void tickClient()
+	{
+		particles.clientTick();
 		ItemStack seed = inventory.get(SLOT_SEED);
 		ItemStack soil = inventory.get(SLOT_SOIL);
-		if(world.isRemote)
+		if(energyStorage.getEnergyStored() > IEServerConfig.MACHINES.cloche_consumption.get()&&fertilizerAmount > 0&&renderActive)
 		{
-			particles.clientTick();
-			if(energyStorage.getEnergyStored() > IEServerConfig.MACHINES.cloche_consumption.get()&&fertilizerAmount > 0&&renderActive)
+			ClocheRecipe recipe = getRecipe();
+			if(recipe!=null&&fertilizerAmount > 0)
 			{
-				ClocheRecipe recipe = getRecipe();
-				if(recipe!=null&&fertilizerAmount > 0)
+				if(renderGrowth < recipe.getTime(seed, soil)+IEServerConfig.MACHINES.cloche_growth_mod.get()*fertilizerMod)
 				{
-					if(renderGrowth < recipe.getTime(seed, soil)+IEServerConfig.MACHINES.cloche_growth_mod.get()*fertilizerMod)
-					{
-						renderGrowth += IEServerConfig.MACHINES.cloche_growth_mod.get()*fertilizerMod;
-						fertilizerAmount--;
-					}
-					else
-						renderGrowth = 0;
-					if(Utils.RAND.nextInt(8)==0)
-						particles.add(new RedstoneParticleData(.55f, .1f, .1f, 1), .5, 2.6875, .5, .25, .25, .25, 20);
+					renderGrowth += IEServerConfig.MACHINES.cloche_growth_mod.get()*fertilizerMod;
+					fertilizerAmount--;
 				}
+				else
+					renderGrowth = 0;
+				if(Utils.RAND.nextInt(8)==0)
+					particles.add(new RedstoneParticleData(.55f, .1f, .1f, 1), .5, 2.6875, .5, .25, .25, .25, 20);
 			}
 		}
-		else
+	}
+
+	@Override
+	public void tickServer()
+	{
+		ItemStack seed = inventory.get(SLOT_SEED);
+		ItemStack soil = inventory.get(SLOT_SOIL);
+		if(!seed.isEmpty())
 		{
-			if(!seed.isEmpty())
+			ClocheRecipe recipe = getRecipe();
+			int consumption = IEServerConfig.MACHINES.cloche_consumption.get();
+			if(recipe!=null&&fertilizerAmount > 0&&energyStorage.extractEnergy(consumption, true)==consumption)
 			{
-				ClocheRecipe recipe = getRecipe();
-				int consumption = IEServerConfig.MACHINES.cloche_consumption.get();
-				if(recipe!=null&&fertilizerAmount > 0&&energyStorage.extractEnergy(consumption, true)==consumption)
+				boolean consume = false;
+				if(growth >= recipe.getTime(seed, soil))
 				{
-					boolean consume = false;
-					if(growth >= recipe.getTime(seed, soil))
-					{
-						List<ItemStack> outputs = recipe.getOutputs(seed, soil);
-						int canFit = 0;
-						boolean[] emptySlotsUsed = new boolean[4];
-						for(ItemStack output : outputs)
-							if(!output.isEmpty())
-								for(int j = 3; j < 7; j++)
+					List<ItemStack> outputs = recipe.getOutputs(seed, soil);
+					int canFit = 0;
+					boolean[] emptySlotsUsed = new boolean[4];
+					for(ItemStack output : outputs)
+						if(!output.isEmpty())
+							for(int j = 3; j < 7; j++)
+							{
+								ItemStack existing = inventory.get(j);
+								if((existing.isEmpty()&&!emptySlotsUsed[j-3])||(ItemHandlerHelper.canItemStacksStack(existing, output)&&existing.getCount()+output.getCount() <= existing.getMaxStackSize()))
 								{
-									ItemStack existing = inventory.get(j);
-									if((existing.isEmpty()&&!emptySlotsUsed[j-3])||(ItemHandlerHelper.canItemStacksStack(existing, output)&&existing.getCount()+output.getCount() <= existing.getMaxStackSize()))
-									{
-										canFit++;
-										if(existing.isEmpty())
-											emptySlotsUsed[j-3] = true;
-										break;
-									}
-								}
-						if(canFit >= outputs.size())
-						{
-							for(ItemStack output : outputs)
-								for(int j = 3; j < 7; j++)
-								{
-									ItemStack existing = inventory.get(j);
+									canFit++;
 									if(existing.isEmpty())
-									{
-										inventory.set(j, output.copy());
-										break;
-									}
-									else if(ItemHandlerHelper.canItemStacksStack(existing, output)&&existing.getCount()+output.getCount() <= existing.getMaxStackSize())
-									{
-										existing.grow(output.getCount());
-										break;
-									}
+										emptySlotsUsed[j-3] = true;
+									break;
 								}
-							growth = 0;
-							consume = true;
-						}
-					}
-					else
+							}
+					if(canFit >= outputs.size())
 					{
-						growth += IEServerConfig.MACHINES.cloche_growth_mod.get()*fertilizerMod;
+						for(ItemStack output : outputs)
+							for(int j = 3; j < 7; j++)
+							{
+								ItemStack existing = inventory.get(j);
+								if(existing.isEmpty())
+								{
+									inventory.set(j, output.copy());
+									break;
+								}
+								else if(ItemHandlerHelper.canItemStacksStack(existing, output)&&existing.getCount()+output.getCount() <= existing.getMaxStackSize())
+								{
+									existing.grow(output.getCount());
+									break;
+								}
+							}
+						growth = 0;
 						consume = true;
-						if(world.getGameTime()%32==((getPos().getX()^getPos().getZ())&31))
-							sendSyncPacket(0);
-					}
-					if(consume)
-					{
-						energyStorage.extractEnergy(consumption, false);
-						fertilizerAmount--;
-						if(!renderActive)
-						{
-							renderActive = true;
-							sendSyncPacket(0);
-						}
-					}
-					else if(renderActive)
-					{
-						renderActive = false;
-						sendSyncPacket(0);
 					}
 				}
 				else
-					growth = 0;
-
-				int fluidConsumption = IEServerConfig.MACHINES.cloche_fluid.get();
-				if(fertilizerAmount <= 0&&tank.getFluidAmount() >= fluidConsumption)
 				{
-					fertilizerMod = 1;
-					tank.drain(fluidConsumption, FluidAction.EXECUTE);
-					ItemStack fertilizer = inventory.get(SLOT_FERTILIZER);
-					if(!fertilizer.isEmpty())
+					growth += IEServerConfig.MACHINES.cloche_growth_mod.get()*fertilizerMod;
+					consume = true;
+					if(world.getGameTime()%32==((getPos().getX()^getPos().getZ())&31))
+						sendSyncPacket(0);
+				}
+				if(consume)
+				{
+					energyStorage.extractEnergy(consumption, false);
+					fertilizerAmount--;
+					if(!renderActive)
 					{
-						float itemMod = ClocheFertilizer.getFertilizerGrowthModifier(fertilizer);
-						if(itemMod > 0)
-						{
-							fertilizerMod *= itemMod;
-							fertilizer.shrink(1);
-							if(fertilizer.getCount() <= 0)
-								inventory.set(2, ItemStack.EMPTY);
-						}
+						renderActive = true;
+						sendSyncPacket(0);
 					}
-					fertilizerAmount = IEServerConfig.MACHINES.cloche_fertilizer.get();
-					sendSyncPacket(1);
+				}
+				else if(renderActive)
+				{
+					renderActive = false;
+					sendSyncPacket(0);
 				}
 			}
 			else
 				growth = 0;
 
-			if(world.getGameTime()%8==0)
+			int fluidConsumption = IEServerConfig.MACHINES.cloche_fluid.get();
+			if(fertilizerAmount <= 0&&tank.getFluidAmount() >= fluidConsumption)
 			{
-				if(output.isPresent())
-					for(int j = 3; j < 7; j++)
+				fertilizerMod = 1;
+				tank.drain(fluidConsumption, FluidAction.EXECUTE);
+				ItemStack fertilizer = inventory.get(SLOT_FERTILIZER);
+				if(!fertilizer.isEmpty())
+				{
+					float itemMod = ClocheFertilizer.getFertilizerGrowthModifier(fertilizer);
+					if(itemMod > 0)
 					{
-						ItemStack outStack = inventory.get(j);
-						if(!outStack.isEmpty())
-						{
-							int outCount = Math.min(outStack.getCount(), 16);
-							ItemStack stack = ItemHandlerHelper.copyStackWithSize(outStack, outCount);
-							stack = Utils.insertStackIntoInventory(output, stack, false);
-							if(!stack.isEmpty())
-								outCount -= stack.getCount();
-							outStack.shrink(outCount);
-							if(outStack.getCount() <= 0)
-								this.inventory.set(j, ItemStack.EMPTY);
-						}
+						fertilizerMod *= itemMod;
+						fertilizer.shrink(1);
+						if(fertilizer.getCount() <= 0)
+							inventory.set(2, ItemStack.EMPTY);
 					}
+				}
+				fertilizerAmount = IEServerConfig.MACHINES.cloche_fertilizer.get();
+				sendSyncPacket(1);
 			}
+		}
+		else
+			growth = 0;
+
+		if(world.getGameTime()%8==0)
+		{
+			if(output.isPresent())
+				for(int j = 3; j < 7; j++)
+				{
+					ItemStack outStack = inventory.get(j);
+					if(!outStack.isEmpty())
+					{
+						int outCount = Math.min(outStack.getCount(), 16);
+						ItemStack stack = ItemHandlerHelper.copyStackWithSize(outStack, outCount);
+						stack = Utils.insertStackIntoInventory(output, stack, false);
+						if(!stack.isEmpty())
+							outCount -= stack.getCount();
+						outStack.shrink(outCount);
+						if(outStack.getCount() <= 0)
+							this.inventory.set(j, ItemStack.EMPTY);
+					}
+				}
 		}
 	}
 

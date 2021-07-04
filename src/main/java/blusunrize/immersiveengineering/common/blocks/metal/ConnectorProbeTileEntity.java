@@ -55,9 +55,10 @@ public class ConnectorProbeTileEntity extends ConnectorRedstoneTileEntity
 	}
 
 	@Override
-	public void tick()
+	public void tickServer()
 	{
-		if(!world.isRemote&&world.getGameTime()%8!=((getPos().getX()^getPos().getZ())&8))
+		super.tickServer();
+		if(world.getGameTime()%8==((getPos().getX()^getPos().getZ())&8))
 		{
 			int out = getComparatorSignal();
 			if(out!=lastOutput)
@@ -66,7 +67,6 @@ public class ConnectorProbeTileEntity extends ConnectorRedstoneTileEntity
 				this.rsDirty = true;
 			}
 		}
-		super.tick();
 	}
 
 	@Override

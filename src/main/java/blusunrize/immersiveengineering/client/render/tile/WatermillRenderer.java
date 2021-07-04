@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.client.IVertexBufferHolder;
+import blusunrize.immersiveengineering.api.utils.SafeChunkUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.blocks.wooden.WatermillTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -17,7 +18,6 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.Direction;
@@ -43,12 +43,12 @@ public class WatermillRenderer extends TileEntityRenderer<WatermillTileEntity>
 	public void render(WatermillTileEntity tile, float partialTicks, MatrixStack transform, IRenderTypeBuffer bufferIn,
 					   int combinedLightIn, int combinedOverlayIn)
 	{
-		if(tile.isDummy()||!tile.getWorldNonnull().isBlockLoaded(tile.getPos()))
+		if(tile.isDummy()||!SafeChunkUtils.isChunkSafe(tile.getWorldNonnull(), tile.getPos()))
 			return;
 		transform.push();
 		transform.translate(.5, .5, .5);
 		final float dir = (tile.getFacing().getHorizontalAngle()+180)%180;
-		float wheelRotation = 360*(tile.rotation+(!tile.canTurn||tile.rotation==0?0: partialTicks)*(float)tile.perTick);
+		float wheelRotation = 360*(tile.rotation+partialTicks*(float)tile.perTick);
 		transform.rotate(new Quaternion(new Vector3f(0, 1, 0), dir, true));
 		transform.rotate(new Quaternion(new Vector3f(0, 0, 1), wheelRotation, true));
 		transform.translate(-.5, -.5, -.5);

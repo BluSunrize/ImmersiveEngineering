@@ -93,19 +93,21 @@ public class BucketWheelTileEntity extends MultiblockPartTileEntity<BucketWheelT
 	}
 
 	@Override
-	public void tick()
+	public void tickCommon()
 	{
-		checkForNeedlessTicking();
-		if(!formed||!new BlockPos(3, 3, 0).equals(posInMultiblock))
-			return;
-
+		super.tickCommon();
 		if(active)
 		{
 			rotation += IEServerConfig.MACHINES.excavator_speed.get();
 			rotation %= 360;
 		}
+	}
 
-		if(!world.isRemote&&active&&world.getGameTime()%20==0)
+	@Override
+	public void tickServer()
+	{
+		super.tickServer();
+		if(active&&world.getGameTime()%20==0)
 		{
 			CompoundNBT nbt = new CompoundNBT();
 			nbt.putFloat("rotation", rotation);

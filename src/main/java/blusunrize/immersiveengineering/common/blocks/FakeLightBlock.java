@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.blocks;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISpawnInterdiction;
 import blusunrize.immersiveengineering.common.blocks.metal.FloodlightTileEntity;
+import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.SpawnInterdictionHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.BlockState;
@@ -19,7 +20,6 @@ import net.minecraft.block.material.PushReaction;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.pathfinding.PathType;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
@@ -79,7 +79,7 @@ public class FakeLightBlock extends IETileProviderBlock
 		return true;
 	}
 
-	public static class FakeLightTileEntity extends IEBaseTileEntity implements ITickableTileEntity, ISpawnInterdiction
+	public static class FakeLightTileEntity extends IEBaseTileEntity implements IETickableBlockEntity, ISpawnInterdiction
 	{
 		public BlockPos floodlightCoords = null;
 
@@ -89,21 +89,18 @@ public class FakeLightBlock extends IETileProviderBlock
 		}
 
 		@Override
-		public void tick()
+		public void tickServer()
 		{
+			if(floodlightCoords==null)
+			{
+				world.removeBlock(getPos(), false);
+				return;
+			}
 			if(world.getGameTime()%256==((getPos().getX()^getPos().getZ())&255))
 			{
-				if(floodlightCoords==null)
-				{
-					world.removeBlock(getPos(), false);
-					return;
-				}
 				TileEntity tile = Utils.getExistingTileEntity(world, floodlightCoords);
 				if(!(tile instanceof FloodlightTileEntity)||!((FloodlightTileEntity)tile).getIsActive())
-				{
 					world.removeBlock(getPos(), false);
-					return;
-				}
 			}
 
 		}

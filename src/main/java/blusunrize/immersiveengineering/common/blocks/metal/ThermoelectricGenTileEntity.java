@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxConnector;
@@ -22,7 +23,6 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -33,10 +33,10 @@ import javax.annotation.Nullable;
 import java.util.EnumMap;
 import java.util.Map;
 
-public class ThermoelectricGenTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInternalFluxConnector
+public class ThermoelectricGenTileEntity extends IEBaseTileEntity implements IETickableBlockEntity, IIEInternalFluxConnector
 {
 	private int energyOutput = -1;
-	private Map<Direction, CapabilityReference<IEnergyStorage>> energyWrappers = new EnumMap<>(Direction.class);
+	private final Map<Direction, CapabilityReference<IEnergyStorage>> energyWrappers = new EnumMap<>(Direction.class);
 
 	public ThermoelectricGenTileEntity()
 	{
@@ -46,15 +46,12 @@ public class ThermoelectricGenTileEntity extends IEBaseTileEntity implements ITi
 	}
 
 	@Override
-	public void tick()
+	public void tickServer()
 	{
-		if(!world.isRemote)
-		{
-			if(world.getGameTime()%1024==((getPos().getX()^getPos().getZ())&1023))
-				recalculateEnergyOutput();
-			if(this.energyOutput > 0)
-				outputEnergy(this.energyOutput);
-		}
+		if(world.getGameTime()%1024==((getPos().getX()^getPos().getZ())&1023))
+			recalculateEnergyOutput();
+		if(this.energyOutput > 0)
+			outputEnergy(this.energyOutput);
 	}
 
 	public void outputEnergy(int amount)

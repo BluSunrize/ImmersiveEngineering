@@ -52,23 +52,22 @@ public class BlastFurnaceAdvancedTileEntity extends BlastFurnaceTileEntity<Blast
 	);
 
 	@Override
-	public void tick()
+	public void tickServer()
 	{
-		super.tick();
-		if(!world.isRemote&&world.getGameTime()%8==0&&!isDummy())
+		super.tickServer();
+		if(world.getGameTime()%8!=0||isDummy())
+			return;
+		if(!this.inventory.get(2).isEmpty())
 		{
-			if(!this.inventory.get(2).isEmpty())
-			{
-				ItemStack stack = this.inventory.get(2);
-				stack = Utils.insertStackIntoInventory(output, stack, false);
-				this.inventory.set(2, stack);
-			}
-			if(!this.inventory.get(3).isEmpty())
-			{
-				ItemStack stack = this.inventory.get(3);
-				stack = Utils.insertStackIntoInventory(slag, stack, false);
-				this.inventory.set(3, stack);
-			}
+			ItemStack stack = this.inventory.get(2);
+			stack = Utils.insertStackIntoInventory(output, stack, false);
+			this.inventory.set(2, stack);
+		}
+		if(!this.inventory.get(3).isEmpty())
+		{
+			ItemStack stack = this.inventory.get(3);
+			stack = Utils.insertStackIntoInventory(slag, stack, false);
+			this.inventory.set(3, stack);
 		}
 	}
 

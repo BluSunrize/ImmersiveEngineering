@@ -40,7 +40,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.Property;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.client.MinecraftForgeClient;
@@ -52,7 +51,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-public class LogicUnitTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInventory, ITileDrop,
+public class LogicUnitTileEntity extends IEBaseTileEntity implements IIEInventory, ITileDrop,
 		IInteractionObjectIE<LogicUnitTileEntity>, IStateBasedDirectional, ILogicCircuitHandler, IHasObjProperty
 {
 	private final static int SIZE_COLORS = DyeColor.values().length;
@@ -85,11 +84,6 @@ public class LogicUnitTileEntity extends IEBaseTileEntity implements ITickableTi
 	public boolean mirrorFacingOnPlacement(LivingEntity placer)
 	{
 		return placer.isSneaking();
-	}
-
-	@Override
-	public void tick()
-	{
 	}
 
 	@Override

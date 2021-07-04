@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransfor
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMultiblock;
+import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -29,7 +30,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.state.Property;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResultType;
@@ -56,7 +56,7 @@ import java.util.EnumMap;
 import java.util.Set;
 
 public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntity<T>> extends IEBaseTileEntity
-		implements ITickableTileEntity, IStateBasedDirectional, IGeneralMultiblock, IScrewdriverInteraction, IMirrorAble,
+		implements IETickableBlockEntity, IStateBasedDirectional, IGeneralMultiblock, IScrewdriverInteraction, IMirrorAble,
 		IModelOffsetProvider
 {
 	public boolean formed = false;
@@ -159,6 +159,19 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 				this.getAccessibleFluidTanks(facing).length > 0)
 			return fluidCaps.get(facing).cast();
 		return super.getCapability(capability, facing);
+	}
+
+	@Override
+	public boolean canTickAny()
+	{
+		return !isDummy();
+	}
+
+	@Override
+	public void tick()
+	{
+		checkForNeedlessTicking();
+		IETickableBlockEntity.super.tick();
 	}
 
 	//	=================================

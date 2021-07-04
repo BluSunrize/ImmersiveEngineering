@@ -122,40 +122,45 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 	);
 
 	@Override
-	public void tick()
+	public boolean canTickAny()
 	{
-		super.tick();
-		if(isDummy()||isRSDisabled())
-			return;
-		if(world.isRemote)
-		{
-			if(shouldRenderAsActive())
-			{
-				animation_bladeRotation += 36f;
-				animation_bladeRotation %= 360f;
+		return super.canTickAny() && !isRSDisabled();
+	}
 
-				if(!this.sawblade.isEmpty())
+	@Override
+	public void tickClient()
+	{
+		super.tickClient();
+		if(shouldRenderAsActive())
+		{
+			animation_bladeRotation += 36f;
+			animation_bladeRotation %= 360f;
+
+			if(!this.sawblade.isEmpty())
+			{
+				Optional<SawmillProcess> process = sawmillProcessQueue.stream()
+						.filter(SawmillProcess::isSawing).findFirst();
+				if(process.isPresent())
 				{
-					Optional<SawmillProcess> process = sawmillProcessQueue.stream()
-							.filter(SawmillProcess::isSawing).findFirst();
-					if(process.isPresent())
-					{
-						Direction particleDir = getIsMirrored()?getFacing().rotateY(): getFacing().rotateYCCW();
-						AxisAlignedBB aabb = CACHED_SAWBLADE_AABB.apply(this);
-						double posX = aabb.minX+world.rand.nextDouble()*(aabb.maxX-aabb.minX);
-						double posY = aabb.minY+world.rand.nextDouble()*(aabb.maxY-aabb.minY);
-						double posZ = aabb.minZ+world.rand.nextDouble()*(aabb.maxZ-aabb.minZ);
-						double vX = world.rand.nextDouble()*particleDir.getXOffset()*0.3;
-						double vY = world.rand.nextDouble()*0.3;
-						double vZ = world.rand.nextDouble()*particleDir.getZOffset()*0.3;
-						world.addParticle(new ItemParticleData(ParticleTypes.ITEM, process.get().getCurrentStack(true)),
-								posX, posY, posZ, vX, vY, vZ);
-					}
+					Direction particleDir = getIsMirrored()?getFacing().rotateY(): getFacing().rotateYCCW();
+					AxisAlignedBB aabb = CACHED_SAWBLADE_AABB.apply(this);
+					double posX = aabb.minX+world.rand.nextDouble()*(aabb.maxX-aabb.minX);
+					double posY = aabb.minY+world.rand.nextDouble()*(aabb.maxY-aabb.minY);
+					double posZ = aabb.minZ+world.rand.nextDouble()*(aabb.maxZ-aabb.minZ);
+					double vX = world.rand.nextDouble()*particleDir.getXOffset()*0.3;
+					double vY = world.rand.nextDouble()*0.3;
+					double vZ = world.rand.nextDouble()*particleDir.getZOffset()*0.3;
+					world.addParticle(new ItemParticleData(ParticleTypes.ITEM, process.get().getCurrentStack(true)),
+							posX, posY, posZ, vX, vY, vZ);
 				}
 			}
-			return;
 		}
+	}
 
+	@Override
+	public void tickServer()
+	{
+		super.tickServer();
 		tickedProcesses = 0;
 		int max = getMaxProcessPerTick();
 		int i = 0;

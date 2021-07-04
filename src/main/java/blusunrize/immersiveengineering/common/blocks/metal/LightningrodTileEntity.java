@@ -55,41 +55,38 @@ public class LightningrodTileEntity extends MultiblockPartTileEntity<Lightningro
 	}
 
 	@Override
-	public void tick()
+	public void tickServer()
 	{
-		checkForNeedlessTicking();
-		if(!world.isRemote&&formed&&new BlockPos(1, 1, 1).equals(posInMultiblock))
+		super.tickServer();
+		if(energyStorage.getEnergyStored() > 0)
 		{
-			if(energyStorage.getEnergyStored() > 0)
+			TileEntity tileEntity;
+			for(Direction f : DirectionUtils.BY_HORIZONTAL_INDEX)
 			{
-				TileEntity tileEntity;
-				for(Direction f : DirectionUtils.BY_HORIZONTAL_INDEX)
-				{
-					tileEntity = Utils.getExistingTileEntity(world, getPos().offset(f, 2));
-					int output = EnergyHelper.insertFlux(tileEntity, f.getOpposite(), energyStorage.getLimitExtract(), true);
-					output = energyStorage.extractEnergy(output, false);
-					EnergyHelper.insertFlux(tileEntity, f.getOpposite(), output, false);
-				}
+				tileEntity = Utils.getExistingTileEntity(world, getPos().offset(f, 2));
+				int output = EnergyHelper.insertFlux(tileEntity, f.getOpposite(), energyStorage.getLimitExtract(), true);
+				output = energyStorage.extractEnergy(output, false);
+				EnergyHelper.insertFlux(tileEntity, f.getOpposite(), output, false);
 			}
+		}
 
-			if(world.getGameTime()%256==((getPos().getX()^getPos().getZ())&255))
-				fenceNet = null;
-			if(fenceNet==null)
-				fenceNet = this.getFenceNet();
-			if(fenceNet!=null&&fenceNet.size() > 0
-					&&world.getGameTime()%128==((getPos().getX()^getPos().getZ())&127)
-					&&(world.isThundering()||(world.isRaining()&&Utils.RAND.nextInt(10)==0)))
+		if(world.getGameTime()%256==((getPos().getX()^getPos().getZ())&255))
+			fenceNet = null;
+		if(fenceNet==null)
+			fenceNet = this.getFenceNet();
+		if(fenceNet!=null&&fenceNet.size() > 0
+				&&world.getGameTime()%128==((getPos().getX()^getPos().getZ())&127)
+				&&(world.isThundering()||(world.isRaining()&&Utils.RAND.nextInt(10)==0)))
+		{
+			int i = this.height+this.fenceNet.size();
+			if(Utils.RAND.nextInt(4096*world.getHeight()) < i*(getPos().getY()+i))
 			{
-				int i = this.height+this.fenceNet.size();
-				if(Utils.RAND.nextInt(4096*world.getHeight()) < i*(getPos().getY()+i))
-				{
-					this.energyStorage.setEnergy(IEServerConfig.MACHINES.lightning_output.get());
-					BlockPos pos = fenceNet.get(Utils.RAND.nextInt(fenceNet.size()));
-					LightningBoltEntity lightningboltentity = EntityType.LIGHTNING_BOLT.create(world);
-					lightningboltentity.moveForced(Vector3d.copyCenteredHorizontally(pos));
-					lightningboltentity.setEffectOnly(true);
-					world.addEntity(lightningboltentity);
-				}
+				this.energyStorage.setEnergy(IEServerConfig.MACHINES.lightning_output.get());
+				BlockPos pos = fenceNet.get(Utils.RAND.nextInt(fenceNet.size()));
+				LightningBoltEntity lightningboltentity = EntityType.LIGHTNING_BOLT.create(world);
+				lightningboltentity.moveForced(Vector3d.copyCenteredHorizontally(pos));
+				lightningboltentity.setEffectOnly(true);
+				world.addEntity(lightningboltentity);
 			}
 		}
 	}

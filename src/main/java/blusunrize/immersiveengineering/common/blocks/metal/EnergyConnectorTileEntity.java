@@ -24,6 +24,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks.Connectors;
 import blusunrize.immersiveengineering.common.blocks.generic.ImmersiveConnectableTileEntity;
 import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectableBlock;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.wires.IEWireTypes.IEWireType;
@@ -34,7 +35,6 @@ import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.Property;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -60,7 +60,7 @@ import java.util.Map;
 import static blusunrize.immersiveengineering.api.wires.WireType.*;
 
 public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity implements IStateBasedDirectional,
-		IIEInternalFluxHandler, IBlockBounds, EnergyConnector, ITickableTileEntity
+		IIEInternalFluxHandler, IBlockBounds, EnergyConnector, IETickableBlockEntity
 {
 	public static final Map<Pair<String, Boolean>, RegistryObject<TileEntityType<EnergyConnectorTileEntity>>>
 			SPEC_TO_TYPE = new HashMap<>();
@@ -109,20 +109,17 @@ public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity im
 	}
 
 	@Override
-	public void tick()
+	public void tickServer()
 	{
-		if(!world.isRemote)
+		int maxOut = Math.min(storageToMachine.getEnergyStored(), getMaxOutput()-currentTickToMachine);
+		if(maxOut > 0&&output.isPresent())
 		{
-			int maxOut = Math.min(storageToMachine.getEnergyStored(), getMaxOutput()-currentTickToMachine);
-			if(maxOut > 0&&output.isPresent())
-			{
-				IEnergyStorage target = output.get();
-				int inserted = target.receiveEnergy(maxOut, false);
-				storageToMachine.extractEnergy(inserted, false);
-			}
-			currentTickToMachine = 0;
-			currentTickToNet = 0;
+			IEnergyStorage target = output.get();
+			int inserted = target.receiveEnergy(maxOut, false);
+			storageToMachine.extractEnergy(inserted, false);
 		}
+		currentTickToMachine = 0;
+		currentTickToNet = 0;
 	}
 
 	@Override

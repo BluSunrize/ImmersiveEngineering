@@ -11,10 +11,10 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.common.IETileTypes;
+import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -26,17 +26,18 @@ import net.minecraft.util.math.vector.Vector3d;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class RedstoneBreakerTileEntity extends BreakerSwitchTileEntity implements ITickableTileEntity
+public class RedstoneBreakerTileEntity extends BreakerSwitchTileEntity implements IETickableBlockEntity
 {
 	public RedstoneBreakerTileEntity()
 	{
 		super(IETileTypes.REDSTONE_BREAKER.get());
 	}
+
 	@Override
-	public void tick()
+	public void tickServer()
 	{
 		final boolean activeOld = getIsActive();
-		if(!world.isRemote&&(isRSPowered())==activeOld)
+		if(isRSPowered()==activeOld)
 		{
 			setActive(!activeOld);
 			updateConductivity();

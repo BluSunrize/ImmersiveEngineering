@@ -180,11 +180,11 @@ public class TurretGunTileEntity extends TurretTileEntity<TurretGunTileEntity>
 	}
 
 	@Override
-	public void tick()
+	public void tickClient()
 	{
-		if(world.isRemote&&!isDummy()&&cycleRender > 0)
+		super.tickClient();
+		if(!isDummy()&&cycleRender > 0)
 			cycleRender--;
-		super.tick();
 	}
 
 	@Override

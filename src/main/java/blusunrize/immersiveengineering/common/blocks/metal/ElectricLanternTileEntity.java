@@ -17,12 +17,12 @@ import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.generic.ImmersiveConnectableTileEntity;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.SpawnInterdictionHandler;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.Property;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -35,7 +35,7 @@ import net.minecraft.util.math.vector.Vector3i;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class ElectricLanternTileEntity extends ImmersiveConnectableTileEntity implements ISpawnInterdiction, ITickableTileEntity,
+public class ElectricLanternTileEntity extends ImmersiveConnectableTileEntity implements ISpawnInterdiction, IETickableBlockEntity,
 		IStateBasedDirectional, IHammerInteraction, IBlockBounds, IActiveState, EnergyConnector
 {
 	public int energyStorage = 0;
@@ -48,10 +48,8 @@ public class ElectricLanternTileEntity extends ImmersiveConnectableTileEntity im
 	}
 
 	@Override
-	public void tick()
+	public void tickServer()
 	{
-		if(world.isRemote)
-			return;
 		boolean activeBeforeTick = getIsActive();
 		if(energyStorage >= energyDraw)
 		{
@@ -63,9 +61,7 @@ public class ElectricLanternTileEntity extends ImmersiveConnectableTileEntity im
 			setActive(false);
 
 		if(getIsActive()!=activeBeforeTick)
-		{
 			checkLight();
-		}
 	}
 
 	@Override

@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.generic.ImmersiveConnectableTileEntity;
 import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectableBlock;
+import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.BlockState;
@@ -31,7 +32,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.DyeColor;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.Property;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResultType;
@@ -56,7 +56,7 @@ import java.util.Collection;
 
 import static blusunrize.immersiveengineering.api.wires.WireType.REDSTONE_CATEGORY;
 
-public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity implements ITickableTileEntity, IStateBasedDirectional,
+public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity implements IETickableBlockEntity, IStateBasedDirectional,
 		IRedstoneOutput, IScrewdriverInteraction, IBlockBounds, IBlockOverlayText, IOBJModelCallback<BlockState>,
 		IRedstoneConnector
 {
@@ -77,9 +77,9 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 	}
 
 	@Override
-	public void tick()
+	public void tickServer()
 	{
-		if(hasWorld()&&!world.isRemote&&rsDirty)
+		if(rsDirty)
 			globalNet.getLocalNet(pos)
 					.getHandler(RedstoneNetworkHandler.ID, RedstoneNetworkHandler.class)
 					.updateValues();

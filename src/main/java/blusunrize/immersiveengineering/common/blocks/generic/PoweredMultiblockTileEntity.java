@@ -203,11 +203,10 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 	public int tickedProcesses = 0;
 
 	@Override
-	public void tick()
+	public void tickServer()
 	{
-		checkForNeedlessTicking();
-		tickedProcesses = 0;
-		if(world.isRemote||isDummy()||isRSDisabled())
+		super.tickServer();
+		if(isRSDisabled())
 			return;
 
 		int max = getMaxProcessPerTick();
@@ -226,6 +225,7 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 			if(process.clearProcess)
 				processIterator.remove();
 		}
+
 	}
 
 	@Nullable
