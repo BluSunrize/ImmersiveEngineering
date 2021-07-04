@@ -3,6 +3,7 @@
 - Store connections in vanilla structure/template files (Malte)
 - Allow connections to be cut mid-air even when a block is highlighted (Malte)
 - Re-add particles for overloaded wires (Malte)
+- Changed brass recipe to require less copper and match Create (BluSunrize)
 - Fix villager houses not generating (Malte)
 - Fix inconsistent behavior of the fluid router (Malte)
 - Fix the maintenance kit not configuring earmuffs and fluorescent tubes (Malte)

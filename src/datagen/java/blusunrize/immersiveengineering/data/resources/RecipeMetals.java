@@ -65,7 +65,7 @@ public enum RecipeMetals
 					.addConditions(getTagCondition(IETags.getIngot("tin")))
 	),
 	BRASS("brass", false,
-			new AlloyProperties(4, new IngredientWithSize(IETags.getTagsFor(EnumMetals.COPPER).ingot, 3),
+			new AlloyProperties(2, new IngredientWithSize(IETags.getTagsFor(EnumMetals.COPPER).ingot),
 					new IngredientWithSize(createItemWrapper(IETags.getIngot("zinc"))))
 					.addConditions(getTagCondition(IETags.getIngot("zinc")))
 	),
