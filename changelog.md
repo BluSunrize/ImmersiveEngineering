@@ -1,3 +1,6 @@
+##### Version 1.16.5-5.0.1-137
+- Fix dedicated server crash with charging stations and cloches (Malte)
+
 ##### Version 1.16.5-5.0.1-136
 - Move potion buckets to vanilla brewing tab (Malte)
 - Store connections in vanilla structure/template files (Malte)

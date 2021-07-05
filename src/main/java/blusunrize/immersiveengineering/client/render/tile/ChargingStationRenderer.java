@@ -30,7 +30,7 @@ public class ChargingStationRenderer extends TileEntityRenderer<ChargingStationT
 	{
 		if(te.getWorldNonnull().isBlockLoaded(te.getPos()))
 		{
-			te.particles.render(matrixStack, te.getPos(), bufferIn, partialTicks);
+			te.particles.get().render(matrixStack, te.getPos(), bufferIn, partialTicks);
 			matrixStack.push();
 			matrixStack.translate(.5, .3125, .5);
 			matrixStack.scale(.75f, .75f, .75f);

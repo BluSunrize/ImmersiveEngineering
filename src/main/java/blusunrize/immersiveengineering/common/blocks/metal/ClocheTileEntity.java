@@ -20,6 +20,7 @@ import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.fx.CustomParticleManager;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
+import blusunrize.immersiveengineering.client.utils.DistField;
 import blusunrize.immersiveengineering.client.utils.ModelUtils;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
@@ -105,7 +106,7 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 		}
 	};
 	public FluxStorage energyStorage = new FluxStorage(16000, Math.max(256, IEServerConfig.MACHINES.cloche_consumption.get()));
-	public final CustomParticleManager particles = new CustomParticleManager();
+	public final DistField<CustomParticleManager> particles = DistField.client(() -> CustomParticleManager::new);
 
 	public int fertilizerAmount = 0;
 	public float fertilizerMod = 1;
@@ -132,7 +133,7 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 		ItemStack soil = inventory.get(SLOT_SOIL);
 		if(world.isRemote)
 		{
-			particles.clientTick();
+			particles.get().clientTick();
 			if(energyStorage.getEnergyStored() > IEServerConfig.MACHINES.cloche_consumption.get()&&fertilizerAmount > 0&&renderActive)
 			{
 				ClocheRecipe recipe = getRecipe();
@@ -146,7 +147,7 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 					else
 						renderGrowth = 0;
 					if(Utils.RAND.nextInt(8)==0)
-						particles.add(new RedstoneParticleData(.55f, .1f, .1f, 1), .5, 2.6875, .5, .25, .25, .25, 20);
+						particles.get().add(new RedstoneParticleData(.55f, .1f, .1f, 1), .5, 2.6875, .5, .25, .25, .25, 20);
 				}
 			}
 		}

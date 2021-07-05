@@ -56,7 +56,7 @@ public class ClocheRenderer extends TileEntityRenderer<ClocheTileEntity>
 
 		// Render particles in the TER rather than using the standard particle engine to avoid depth issues/the
 		// particles not rendering at all outside of fabulous mode
-		tile.particles.render(matrixStack, blockPos, bufferIn, partialTicks);
+		tile.particles.get().render(matrixStack, blockPos, bufferIn, partialTicks);
 
 		ClocheRecipe recipe = tile.getRecipe();
 		if(recipe!=null)
