@@ -1,0 +1,6 @@
+§lHerbicida§r
+§oUna plaga para la flora§r
+<&items>El §lherbicida§r es un compuesto químico con efectos bastante venenosos para la flora local.
+Cuando se carga en un §1<link;chemthrower;lanzador químico>§r se dispersa como una fina niebla, que marchita y destruye cualquier planta con la que entra en contacto.
+El fluido arrancará las hojas de los árboles, destruirá las flores, los arbustos y los cultivos y arrancará la hierba de la tierra. También deshidratará y arruinará las tierras de cultivo.<br>
+Para elaborar el §lherbicida§r, mezcla medio cubo de §1<link;fermenter;etanol>§r con §lpolvo de cobre§r y §lpolvo de nitrato§r en la §1<link;mixer;mezcladora industrial>§r.
