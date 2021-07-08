@@ -49,8 +49,6 @@ public class WindmillTileEntity extends IEBaseTileEntity implements IETickableBl
 	public float turnSpeed = 0;
 	public int sails = 0;
 
-	public boolean canTurn = false;
-
 	public WindmillTileEntity()
 	{
 		super(IETileTypes.WINDMILL.get());
@@ -59,13 +57,13 @@ public class WindmillTileEntity extends IEBaseTileEntity implements IETickableBl
 	@Override
 	public void tickCommon()
 	{
-		if(!canTurn)
-			return;
 		rotation += getActualTurnSpeed();
 		rotation %= 1;
 	}
 
-	private double getActualTurnSpeed() {
+	public double getActualTurnSpeed() {
+		if (turnSpeed == 0)
+			return 0;
 		double mod = .00005;
 		if(!world.isRaining())
 			mod *= .75;
@@ -81,11 +79,11 @@ public class WindmillTileEntity extends IEBaseTileEntity implements IETickableBl
 		if(world.getGameTime()%128==((getPos().getX()^getPos().getZ())&127))
 		{
 			final float oldTurnSpeed = turnSpeed;
-			canTurn = checkArea();
+			turnSpeed = computeTurnSpeed();
 			if(oldTurnSpeed!=turnSpeed)
 				markContainingBlockForUpdate(null);
 		}
-		if(!canTurn)
+		if(turnSpeed == 0)
 			return;
 
 		TileEntity tileEntity = SafeChunkUtils.getSafeTE(world, pos.offset(getFacing().getOpposite()));
@@ -102,19 +100,19 @@ public class WindmillTileEntity extends IEBaseTileEntity implements IETickableBl
 		return .5f+sails*.125f;
 	}
 
-	public boolean checkArea()
+	public float computeTurnSpeed()
 	{
 		Direction facing = getFacing();
 		if(facing.getAxis()==Direction.Axis.Y)
-			return false;
+			return 0;
 
-		turnSpeed = 0;
+		float turnSpeed = 0;
 		for(int hh = -4; hh <= 4; hh++)
 		{
 			int r = Math.abs(hh)==4?1: Math.abs(hh)==3?2: Math.abs(hh)==2?3: 4;
 			for(int ww = -r; ww <= r; ww++)
 				if((hh!=0||ww!=0)&&!world.isAirBlock(getPos().offset(facing.rotateY(), ww).up(hh)))
-					return false;
+					return 0;
 		}
 
 		int blocked = 0;
@@ -140,10 +138,10 @@ public class WindmillTileEntity extends IEBaseTileEntity implements IETickableBl
 				}
 			}
 			if(blocked > 100)
-				return false;
+				return 0;
 		}
 
-		return true;
+		return turnSpeed;
 	}
 
 	@Override

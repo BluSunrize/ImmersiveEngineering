@@ -68,7 +68,7 @@ public class WindmillRenderer extends TileEntityRenderer<WindmillTileEntity>
 		transform.translate(.5, .5, .5);
 
 		float dir = tile.getFacing()==Direction.SOUTH?0: tile.getFacing()==Direction.NORTH?180: tile.getFacing()==Direction.EAST?90: -90;
-		float rot = 360*(tile.rotation+(!tile.canTurn||tile.rotation==0?0: partialTicks)*tile.perTick);
+		float rot = (float)(360*(tile.rotation+partialTicks*tile.getActualTurnSpeed()));
 
 		transform.rotate(new Quaternion(new Vector3f(tile.getFacing().getAxis()==Axis.X?1: 0, 0, tile.getFacing().getAxis()==Axis.Z?1: 0), rot, true));
 		transform.rotate(new Quaternion(new Vector3f(0, 1, 0), dir, true));
