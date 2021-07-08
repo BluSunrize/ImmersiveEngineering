@@ -292,6 +292,7 @@ task datagenJar(type: Jar, dependsOn: datagenClasses) {
 task apiJar(type: Jar, dependsOn: apiClasses) {
     classifier = 'api'
     from sourceSets.api.output
+    from sourceSets.manual.output
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {

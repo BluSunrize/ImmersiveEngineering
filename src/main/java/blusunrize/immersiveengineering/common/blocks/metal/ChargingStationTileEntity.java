@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorageAdvanced;
 import blusunrize.immersiveengineering.client.fx.CustomParticleManager;
+import blusunrize.immersiveengineering.client.utils.DistField;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
@@ -53,7 +54,7 @@ public class ChargingStationTileEntity extends IEBaseTileEntity implements IETic
 {
 	public FluxStorageAdvanced energyStorage = new FluxStorageAdvanced(32000);
 	public NonNullList<ItemStack> inventory = NonNullList.withSize(1, ItemStack.EMPTY);
-	public final CustomParticleManager particles = new CustomParticleManager();
+	public final DistField<CustomParticleManager> particles = DistField.client(() -> CustomParticleManager::new);
 	private boolean charging = true;
 	public int comparatorOutput = 0;
 
@@ -65,7 +66,7 @@ public class ChargingStationTileEntity extends IEBaseTileEntity implements IETic
 	@Override
 	public void tickClient()
 	{
-		particles.clientTick();
+		particles.get().clientTick();
 		if(EnergyHelper.isFluxReceiver(inventory.get(0)) && charging)
 		{
 			float charge = 0;
@@ -82,7 +83,7 @@ public class ChargingStationTileEntity extends IEBaseTileEntity implements IETic
 					double x = .5+(getFacing()==Direction.WEST?-.46875: getFacing()==Direction.EAST?.46875: getFacing()==Direction.NORTH?(-.1875*shift): (.1875*shift));
 					double y = .25;
 					double z = .5+(getFacing()==Direction.NORTH?-.46875: getFacing()==Direction.SOUTH?.46875: getFacing()==Direction.EAST?(-.1875*shift): (.1875*shift));
-					particles.add(
+					particles.get().add(
 							new RedstoneParticleData(1-charge, charge, 0, .5f), x, y, z, .25, .25, .25, -1
 					);
 				}

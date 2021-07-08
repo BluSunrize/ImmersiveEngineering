@@ -2,7 +2,7 @@
   "type": "immersiveengineering:arc_furnace",
   "results": [
     {
-      "count": 4,
+      "count": 2,
       "base_ingredient": {
         "tag": "forge:ingots/brass"
       }
@@ -30,10 +30,7 @@
     }
   ],
   "input": {
-    "count": 3,
-    "base_ingredient": {
-      "tag": "forge:ingots/copper"
-    }
+    "tag": "forge:ingots/copper"
   },
   "time": 100,
   "energy": 51200

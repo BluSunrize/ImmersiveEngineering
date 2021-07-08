@@ -1,13 +1,18 @@
-##### Version 1.16.5-5.0.0-pre
+##### Version 1.16.5-5.0.2-137
+- Fix dedicated server crash with charging stations and cloches (Malte)
+
+##### Version 1.16.5-5.0.1-136
 - Move potion buckets to vanilla brewing tab (Malte)
 - Store connections in vanilla structure/template files (Malte)
 - Allow connections to be cut mid-air even when a block is highlighted (Malte)
 - Re-add particles for overloaded wires (Malte)
+- Changed brass recipe to require less copper and match Create (BluSunrize)
 - Fix villager houses not generating (Malte)
 - Fix inconsistent behavior of the fluid router (Malte)
 - Fix the maintenance kit not configuring earmuffs and fluorescent tubes (Malte)
 - Fix the bottling machine not breaking the pump correctly when disassembled (Malte)
 - Fix particles for the charging station partially not rendering (Malte)
+- Fix rockcutter blade not working for the first block after switching blades (Malte)
 
 ##### Version 1.16.5-5.0.0-135
 - Clean up the API (Malte)

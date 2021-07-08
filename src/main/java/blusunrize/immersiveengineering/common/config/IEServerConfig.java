@@ -606,6 +606,7 @@ public class IEServerConfig
 		public final DoubleValue bulletDamage_Potion;
 
 		public final IntValue chemthrower_consumption;
+		//TODO rename to include buzzsaw
 		public final BooleanValue chemthrower_scroll;
 		public final IntValue railgun_consumption;
 		public final DoubleValue railgun_damage;

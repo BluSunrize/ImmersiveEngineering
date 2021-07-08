@@ -184,13 +184,16 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 		IItemHandler inv = buzzsaw.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).orElseThrow(RuntimeException::new);
 		((IItemHandlerModifiable)inv).setStackInSlot(slot, sawblade);
 
-		ListNBT enchants = null;
-		if(sawblade.getItem() instanceof SawbladeItem)
-			enchants = ((SawbladeItem)sawblade.getItem()).getSawbladeEnchants();
-		if(enchants!=null)
-			buzzsaw.getOrCreateTag().put("Enchantments", enchants);
-		else
-			buzzsaw.getOrCreateTag().remove("Enchantments");
+		if(spare==0)
+		{
+			ListNBT enchants = null;
+			if(sawblade.getItem() instanceof SawbladeItem)
+				enchants = ((SawbladeItem)sawblade.getItem()).getSawbladeEnchants();
+			if(enchants!=null)
+				buzzsaw.getOrCreateTag().put("Enchantments", enchants);
+			else
+				buzzsaw.getOrCreateTag().remove("Enchantments");
+		}
 	}
 
 	@Override
