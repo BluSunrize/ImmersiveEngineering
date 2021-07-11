@@ -107,6 +107,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.settings.IKeyConflictContext;
@@ -141,23 +142,25 @@ public class ClientProxy extends CommonProxy
 	public void modConstruction()
 	{
 		super.modConstruction();
-
 		// Apparently this runs in data generation runs... but registering model loaders causes NPEs there
 		if(Minecraft.getInstance()!=null)
 		{
-			ModelLoaderRegistry.registerLoader(IEOBJLoader.LOADER_NAME, IEOBJLoader.instance);
-			ModelLoaderRegistry.registerLoader(ConnectionLoader.LOADER_NAME, new ConnectionLoader());
-			ModelLoaderRegistry.registerLoader(ModelConfigurableSides.Loader.NAME, new ModelConfigurableSides.Loader());
-			ModelLoaderRegistry.registerLoader(ConveyorLoader.LOCATION, new ConveyorLoader());
-			ModelLoaderRegistry.registerLoader(CoresampleLoader.LOCATION, new CoresampleLoader());
-			ModelLoaderRegistry.registerLoader(MultiLayerLoader.LOCATION, new MultiLayerLoader());
-			ModelLoaderRegistry.registerLoader(FeedthroughLoader.LOCATION, new FeedthroughLoader());
-			ModelLoaderRegistry.registerLoader(SplitModelLoader.LOCATION, new SplitModelLoader());
-			ModelLoaderRegistry.registerLoader(Loader.LOADER_NAME, new PotionBucketModel.Loader());
 			populateAPI();
-
 			requestModelsAndTextures();
 		}
+	}
+
+	@SubscribeEvent
+	public static void registerModelLoaders(ModelRegistryEvent ev) {
+		ModelLoaderRegistry.registerLoader(IEOBJLoader.LOADER_NAME, IEOBJLoader.instance);
+		ModelLoaderRegistry.registerLoader(ConnectionLoader.LOADER_NAME, new ConnectionLoader());
+		ModelLoaderRegistry.registerLoader(ModelConfigurableSides.Loader.NAME, new ModelConfigurableSides.Loader());
+		ModelLoaderRegistry.registerLoader(ConveyorLoader.LOCATION, new ConveyorLoader());
+		ModelLoaderRegistry.registerLoader(CoresampleLoader.LOCATION, new CoresampleLoader());
+		ModelLoaderRegistry.registerLoader(MultiLayerLoader.LOCATION, new MultiLayerLoader());
+		ModelLoaderRegistry.registerLoader(FeedthroughLoader.LOCATION, new FeedthroughLoader());
+		ModelLoaderRegistry.registerLoader(SplitModelLoader.LOCATION, new SplitModelLoader());
+		ModelLoaderRegistry.registerLoader(Loader.LOADER_NAME, new PotionBucketModel.Loader());
 	}
 
 	public static boolean stencilEnabled = false;
