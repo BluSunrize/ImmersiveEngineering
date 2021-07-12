@@ -280,6 +280,16 @@ public abstract class IEBaseTileEntity extends TileEntity implements BlockstateP
 		return getBlockState();
 	}
 
+	/**
+	 * Most calls to {@link TileEntity#markDirty} should be replaced by this. The vanilla mD also updates comparator
+	 * states and re-caches the block state, while in most cases we just want to say "this needs to be saved to disk"
+	 */
+	protected void markChunkDirty()
+	{
+		if(this.world!=null)
+			this.world.markChunkDirty(this.pos, this);
+	}
+
 	@Nonnull
 	@Override
 	// Note: The line in the superclass javadoc about this being called off-thread is not actually correct, see
