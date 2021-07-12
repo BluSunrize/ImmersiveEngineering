@@ -63,11 +63,6 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 		super(IETileTypes.SAMPLE_DRILL.get());
 	}
 
-	public static boolean _Immovable()
-	{
-		return true;
-	}
-
 	@Override
 	public void tick()
 	{

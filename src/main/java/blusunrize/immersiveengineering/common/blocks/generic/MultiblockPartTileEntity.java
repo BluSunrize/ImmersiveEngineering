@@ -290,11 +290,6 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 		}
 	}
 
-	public static boolean _Immovable()
-	{
-		return true;
-	}
-
 	@Override
 	@Nullable
 	public T master()
