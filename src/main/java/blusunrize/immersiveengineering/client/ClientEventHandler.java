@@ -45,10 +45,7 @@ import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletCont
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IScrollwheel;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.items.IEItems.Tools;
-import blusunrize.immersiveengineering.common.network.MessageMagnetEquip;
-import blusunrize.immersiveengineering.common.network.MessageRequestBlockUpdate;
-import blusunrize.immersiveengineering.common.network.MessageRevolverRotate;
-import blusunrize.immersiveengineering.common.network.MessageScrollwheelItem;
+import blusunrize.immersiveengineering.common.network.*;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.IEPotions;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -79,6 +76,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemFrameEntity;
+import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.DyeColor;
@@ -104,6 +102,7 @@ import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.client.gui.ForgeIngameGui;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -1039,5 +1038,13 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		EntityModel m = renderer.getEntityModel();
 		if(m instanceof IHasHead)
 			((IHasHead)m).getModelHead().showModel = shouldEnable;
+	}
+
+	@SubscribeEvent
+	public void onEntityJoiningWorld(EntityJoinWorldEvent event)
+	{
+		if(event.getEntity().world.isRemote&&event.getEntity() instanceof AbstractMinecartEntity&&
+				event.getEntity().getCapability(CapabilityShader.SHADER_CAPABILITY).isPresent())
+			ImmersiveEngineering.packetHandler.sendToServer(new MessageMinecartShaderSync(event.getEntity(), null));
 	}
 }

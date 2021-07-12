@@ -1,3 +1,7 @@
+##### Version 1.16.5-5.0.2-pre
+- Fix crash when breaking a feedthrough (Malte)
+- Minor performance improvements (Malte)
+
 ##### Version 1.16.5-5.0.2-137
 - Fix dedicated server crash with charging stations and cloches (Malte)
 
