@@ -31,6 +31,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBas
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
+import blusunrize.immersiveengineering.common.util.CachedRecipe;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -81,6 +82,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IStateBasedDirectional, IBlockBounds, IHasDummyBlocks,
 		IIEInventory, IIEInternalFluxHandler, IInteractionObjectIE, IOBJModelCallback<BlockState>, IModelOffsetProvider
@@ -107,6 +109,9 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 	};
 	public FluxStorage energyStorage = new FluxStorage(16000, Math.max(256, IEServerConfig.MACHINES.cloche_consumption.get()));
 	public final DistField<CustomParticleManager> particles = DistField.client(() -> CustomParticleManager::new);
+	private final Supplier<ClocheRecipe> cachedRecipe = CachedRecipe.cached(
+			ClocheRecipe::findRecipe, () -> inventory.get(SLOT_SEED), () -> inventory.get(SLOT_SOIL)
+	);
 
 	public int fertilizerAmount = 0;
 	public float fertilizerMod = 1;
@@ -136,7 +141,7 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 			particles.get().clientTick();
 			if(energyStorage.getEnergyStored() > IEServerConfig.MACHINES.cloche_consumption.get()&&fertilizerAmount > 0&&renderActive)
 			{
-				ClocheRecipe recipe = getRecipe();
+				ClocheRecipe recipe = cachedRecipe.get();
 				if(recipe!=null&&fertilizerAmount > 0)
 				{
 					if(renderGrowth < recipe.getTime(seed, soil)+IEServerConfig.MACHINES.cloche_growth_mod.get()*fertilizerMod)
@@ -155,7 +160,7 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 		{
 			if(!seed.isEmpty())
 			{
-				ClocheRecipe recipe = getRecipe();
+				ClocheRecipe recipe = cachedRecipe.get();
 				int consumption = IEServerConfig.MACHINES.cloche_consumption.get();
 				if(recipe!=null&&fertilizerAmount > 0&&energyStorage.extractEnergy(consumption, true)==consumption)
 				{
@@ -269,14 +274,6 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 					}
 			}
 		}
-	}
-
-	@Nullable
-	public ClocheRecipe getRecipe()
-	{
-		ItemStack soil = inventory.get(SLOT_SOIL);
-		ItemStack seed = inventory.get(SLOT_SEED);
-		return ClocheRecipe.findRecipe(seed, soil);
 	}
 
 	protected void sendSyncPacket(int type)

@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteract
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IProcessTile;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
+import blusunrize.immersiveengineering.common.util.CachedRecipe;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.entity.player.PlayerEntity;
@@ -38,6 +39,7 @@ import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import javax.annotation.Nullable;
+import java.util.function.Supplier;
 
 public class AlloySmelterTileEntity extends MultiblockPartTileEntity<AlloySmelterTileEntity> implements IIEInventory,
 		IActiveState, IInteractionObjectIE, IProcessTile, IBlockBounds
@@ -48,6 +50,9 @@ public class AlloySmelterTileEntity extends MultiblockPartTileEntity<AlloySmelte
 	public int burnTime = 0;
 	public int lastBurnTime = 0;
 	public final AlloySmelterState guiState = new AlloySmelterState();
+	private final Supplier<AlloyRecipe> cachedModel = CachedRecipe.cached(
+			AlloyRecipe::findRecipe, () -> inventory.get(0), () -> inventory.get(1)
+	);
 
 	public AlloySmelterTileEntity()
 	{
@@ -181,15 +186,15 @@ public class AlloySmelterTileEntity extends MultiblockPartTileEntity<AlloySmelte
 		}
 	}
 
+	@Nullable
 	public AlloyRecipe getRecipe()
 	{
-		if(inventory.get(0).isEmpty()||inventory.get(1).isEmpty())
-			return null;
-		AlloyRecipe recipe = AlloyRecipe.findRecipe(inventory.get(0), inventory.get(1));
+		AlloyRecipe recipe = cachedModel.get();
 		if(recipe==null)
 			return null;
-		if(inventory.get(3).isEmpty()||(ItemStack.areItemsEqual(inventory.get(3), recipe.output)&&
-				inventory.get(3).getCount()+recipe.output.getCount() <= getSlotLimit(3)))
+		ItemStack output = inventory.get(3);
+		if(output.isEmpty()||(ItemStack.areItemsEqual(output, recipe.output)&&
+				output.getCount()+recipe.output.getCount() <= getSlotLimit(3)))
 			return recipe;
 		return null;
 	}
