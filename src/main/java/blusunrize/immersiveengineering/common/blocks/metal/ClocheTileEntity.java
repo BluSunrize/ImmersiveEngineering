@@ -109,7 +109,7 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 	};
 	public FluxStorage energyStorage = new FluxStorage(16000, Math.max(256, IEServerConfig.MACHINES.cloche_consumption.get()));
 	public final DistField<CustomParticleManager> particles = DistField.client(() -> CustomParticleManager::new);
-	private final Supplier<ClocheRecipe> cachedRecipe = CachedRecipe.cached(
+	public final Supplier<ClocheRecipe> cachedRecipe = CachedRecipe.cached(
 			ClocheRecipe::findRecipe, () -> inventory.get(SLOT_SEED), () -> inventory.get(SLOT_SOIL)
 	);
 
