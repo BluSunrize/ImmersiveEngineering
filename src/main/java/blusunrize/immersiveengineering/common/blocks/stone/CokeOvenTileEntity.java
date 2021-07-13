@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteract
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IProcessTile;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
+import blusunrize.immersiveengineering.common.util.CachedRecipe;
 import blusunrize.immersiveengineering.common.fluids.IEFluids;
 import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
 import blusunrize.immersiveengineering.common.gui.IEContainerTypes.TileContainer;
@@ -47,6 +48,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.function.Supplier;
 
 //TODO merge with blast furnace&alloy smelter to some degree?
 public class CokeOvenTileEntity extends MultiblockPartTileEntity<CokeOvenTileEntity> implements IIEInventory,
@@ -58,7 +60,10 @@ public class CokeOvenTileEntity extends MultiblockPartTileEntity<CokeOvenTileEnt
 	public static final int FULL_CONTAINER_SLOT = 3;
 
 	public FluidTank tank = new FluidTank(12*FluidAttributes.BUCKET_VOLUME);
-	private NonNullList<ItemStack> inventory = NonNullList.withSize(4, ItemStack.EMPTY);
+	private final NonNullList<ItemStack> inventory = NonNullList.withSize(4, ItemStack.EMPTY);
+	private final Supplier<CokeOvenRecipe> cachedRecipe = CachedRecipe.cached(
+			CokeOvenRecipe::findRecipe, () -> inventory.get(INPUT_SLOT)
+	);
 	public int process = 0;
 	public int processMax = 0;
 	public CokeOvenData guiData = new CokeOvenData();
@@ -189,9 +194,7 @@ public class CokeOvenTileEntity extends MultiblockPartTileEntity<CokeOvenTileEnt
 	@Nullable
 	public CokeOvenRecipe getRecipe()
 	{
-		if(inventory.get(INPUT_SLOT).isEmpty())
-			return null;
-		CokeOvenRecipe recipe = CokeOvenRecipe.findRecipe(inventory.get(INPUT_SLOT));
+		CokeOvenRecipe recipe = cachedRecipe.get();
 		if(recipe==null)
 			return null;
 

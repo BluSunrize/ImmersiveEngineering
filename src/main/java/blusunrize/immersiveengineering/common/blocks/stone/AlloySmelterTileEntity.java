@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.stone;
 import blusunrize.immersiveengineering.api.crafting.AlloyRecipe;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
+import blusunrize.immersiveengineering.common.util.CachedRecipe;
 import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
 import blusunrize.immersiveengineering.common.gui.IEContainerTypes.TileContainer;
 import com.google.common.collect.ImmutableList;
@@ -19,9 +20,14 @@ import net.minecraft.tileentity.FurnaceTileEntity;
 import net.minecraftforge.common.ForgeHooks;
 
 import javax.annotation.Nullable;
+import java.util.function.Supplier;
 
 public class AlloySmelterTileEntity extends FurnaceLikeTileEntity<AlloyRecipe, AlloySmelterTileEntity>
 {
+	private final Supplier<AlloyRecipe> cachedRecipe = CachedRecipe.cached(
+			AlloyRecipe::findRecipe, () -> inventory.get(0), () -> inventory.get(1)
+	);
+
 	public AlloySmelterTileEntity()
 	{
 		super(
@@ -42,9 +48,7 @@ public class AlloySmelterTileEntity extends FurnaceLikeTileEntity<AlloyRecipe, A
 	@Override
 	protected AlloyRecipe getRecipeForInput()
 	{
-		if(inventory.get(0).isEmpty()||inventory.get(1).isEmpty())
-			return null;
-		return AlloyRecipe.findRecipe(inventory.get(0), inventory.get(1));
+		return cachedRecipe.get();
 	}
 
 	@Override

@@ -1,0 +1,17 @@
+§lCircuitos lógicos§r
+§oTuring Completo§r
+Con la gran velocidad y versatilidad de los §1<link;redstone_wire;cables de redstone>§r y las propiedades únicas de una §1<link;components;válvula de vacío;tubes>§r, ahora es posible reducir en gran medida el tamaño de los complejos circuitos de redstone.
+Utilizando la §ltabla de circuitos del ingeniero§r, puedes crear §lcircuitos lógicos§r mucho más pequeños. Para ello, necesitará una §1<link;components;placa de circuito impreso;pcb>§r, algunas §lválvulas de vacío§r y algunas §lsoldaduras§r como §lalambres de plomo o cobre§r. La §ltabla de circuitos del ingeniero§r también necesita ser alimentada con energía a través de la entrada en su parte posterior.
+
+Utilizando los distintos §ncomponentes§r, se selecciona entonces el modelo de circuito que se desea realizar y se deciden los valores de entrada, así como la salida designada.
+Las entradas y salidas disponibles son los 16 canales de color de un cable redstone, así como 8 "Registros". Estos permiten almacenar temporalmente un valor dentro del bloque que maneja la lógica - más adelante se hablará de esto.
+
+Después de configurar el operador, las entradas y las salidas, verá la lista de §ncomponentes§r necesarios junto a las ranuras de entrada de la izquierda. La cantidad de §ncomponentes§r necesarios depende de la complejidad del circuito, siendo §lNAND§r el más fácil de producir. Siempre que haya suficientes §ncomponentes§r, puede tomar el §lcircuito completo§r de la salida a la derecha.<np>
+Atajos útiles:
+- Al pasar por encima de un botón de entrada o salida, pulse una tecla numerada para cambiar al registro numerado. Pulse una letra para recorrer los colores que empiezan por esa letra.
+- Coge un §lcircuito lógico§r terminado y haz clic en el centro de la interfaz de la tabla de circuitos para copiar las instrucciones en la tabla.<np>
+<&unit>La §lunidad lógica§r es el bloque en el que se encajan los §lcircuitos lógicos§r terminados para ser utilizados. Tiene espacio suficiente para un total de §n210 circuitos§r, y cuenta con un total de §n28 registros§r incorporados, lo que permite utilizarla para cualquier circuito.
+Para que una §lunidad lógica§r pueda interactuar con los sistemas de redstone de colores, necesita tener un §1<link;redstone_wire;conector de interfaz de redstone;bundled>§r unido a su lado.
+Cada vez que cualquiera de los conectores adjuntos cambia de estado, la §lunidad lógica§r recorre sus circuitos y realiza las 10 operaciones.
+Si un circuito utiliza un registro como salida, el valor resultante se mantiene en el registro y puede ser utilizado por un circuito posterior como entrada.
+El mismo §lconector de interfaz§r utilizado para la entrada puede utilizarse también como salida.

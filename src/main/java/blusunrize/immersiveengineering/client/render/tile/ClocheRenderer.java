@@ -58,7 +58,7 @@ public class ClocheRenderer extends TileEntityRenderer<ClocheTileEntity>
 		// particles not rendering at all outside of fabulous mode
 		tile.particles.get().render(matrixStack, blockPos, bufferIn, partialTicks);
 
-		ClocheRecipe recipe = tile.getRecipe();
+		ClocheRecipe recipe = tile.cachedRecipe.get();
 		if(recipe!=null)
 		{
 			IVertexBuilder baseBuilder = bufferIn.getBuffer(RenderType.getCutout());

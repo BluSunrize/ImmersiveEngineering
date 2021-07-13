@@ -28,9 +28,8 @@ import java.util.function.Supplier;
 
 public class MessageMinecartShaderSync implements IMessage
 {
-	private int entityID;
-	private boolean request = false;
-	private ItemStack shader;
+	private final int entityID;
+	private final ItemStack shader;
 
 	public MessageMinecartShaderSync(Entity entity, Object o)
 	{
@@ -38,24 +37,20 @@ public class MessageMinecartShaderSync implements IMessage
 		if(o instanceof ShaderWrapper)
 			shader = ((ShaderWrapper)o).getShaderItem();
 		else
-			request = true;
+			shader = ItemStack.EMPTY;
 	}
 
 	public MessageMinecartShaderSync(PacketBuffer buf)
 	{
 		this.entityID = buf.readInt();
-		this.request = buf.readBoolean();
-		if(!request)
-			this.shader = buf.readItemStack();
+		this.shader = buf.readItemStack();
 	}
 
 	@Override
 	public void toBytes(PacketBuffer buf)
 	{
 		buf.writeInt(this.entityID);
-		buf.writeBoolean(this.request);
-		if(!request)
-			buf.writeItemStack(this.shader);
+		buf.writeItemStack(this.shader);
 	}
 
 	@Override

@@ -78,7 +78,6 @@ public class SampleDrillCallbacks extends CallbackOwner<SampleDrillTileEntity>
 	{
 		SampleDrillTileEntity d = env.getObject();
 		d.process = 0;
-		d.active = true;
 		d.sample = ItemStack.EMPTY;
 	}
 

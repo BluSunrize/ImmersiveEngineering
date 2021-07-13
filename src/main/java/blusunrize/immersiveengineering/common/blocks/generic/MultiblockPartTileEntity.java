@@ -20,7 +20,6 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMulti
 import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
-import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerControlState;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -303,11 +302,6 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 		}
 	}
 
-	public static boolean _Immovable()
-	{
-		return true;
-	}
-
 	@Override
 	@Nullable
 	public T master()
@@ -317,9 +311,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 		// Used to provide tile-dependant drops after disassembly
 		if(tempMasterTE!=null)
 			return (T)tempMasterTE;
-		BlockPos masterPos = getPos().subtract(offsetToMaster);
-		TileEntity te = Utils.getExistingTileEntity(world, masterPos);
-		return this.getClass().isInstance(te)?(T)te: null;
+		return getTileForPos(multiblockInstance.getMasterFromOriginOffset());
 	}
 
 	public void updateMasterBlock(BlockState state, boolean blockUpdate)

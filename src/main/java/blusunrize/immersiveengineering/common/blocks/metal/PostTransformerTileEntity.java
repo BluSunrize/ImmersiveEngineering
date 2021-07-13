@@ -12,15 +12,8 @@ import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
-import blusunrize.immersiveengineering.api.wires.Connection;
-import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
-import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
-import blusunrize.immersiveengineering.api.wires.WireType;
-import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
-import blusunrize.immersiveengineering.common.blocks.generic.ImmersiveConnectableTileEntity;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Unit;
@@ -38,11 +31,6 @@ public class PostTransformerTileEntity extends AbstractTransformerTileEntity imp
 	public PostTransformerTileEntity()
 	{
 		super(IETileTypes.POST_TRANSFORMER.get());
-	}
-
-	public static boolean _Immovable()
-	{
-		return true;
 	}
 
 	@Override

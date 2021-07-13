@@ -54,7 +54,7 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements IETickabl
 	public FluxStorage energyStorage = new FluxStorage(8000);
 	public int dummy = 0;
 	public int process = 0;
-	public boolean active = false;
+	public boolean isRunning = false;
 	@Nonnull
 	public ItemStack sample = ItemStack.EMPTY;
 
@@ -63,22 +63,10 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements IETickabl
 		super(IETileTypes.SAMPLE_DRILL.get());
 	}
 
-	public static boolean _Immovable()
-	{
-		return true;
-	}
-
 	@Override
 	public boolean canTickAny()
 	{
-		return dummy==0&&!world.isAirBlock(getPos().add(0, -1, 0))&&sample.isEmpty();
-	}
-
-	@Override
-	public void tickClient()
-	{
-		if(active)
-			process++;
+		return dummy==0&&sample.isEmpty();
 	}
 
 	@Override
@@ -89,34 +77,40 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements IETickabl
 	}
 
 	@Override
+	public void tickClient()
+	{
+		if(isRunning)
+			process++;
+	}
+
+	@Override
 	public void tickServer()
 	{
-		boolean powered = isRSPowered();
-		boolean hasEnergy = energyStorage.getEnergyStored() >= IEServerConfig.MACHINES.coredrill_consumption.get();
-		final boolean prevActive = active;
-		int totalTime = IEServerConfig.MACHINES.coredrill_time.get();
-		int consumption = IEServerConfig.MACHINES.coredrill_consumption.get();
-		if(!active&&powered&&hasEnergy)
-			active = true;
-		else if(active&&!powered&&process >= totalTime)
-			active = false;
+		final int consumption = IEServerConfig.MACHINES.coredrill_consumption.get();
+		final int totalTime = IEServerConfig.MACHINES.coredrill_time.get();
+		boolean canRun = process > 0
+				&&process < totalTime
+				&&energyStorage.getEnergyStored() >= consumption
+				&&!isRSPowered()
+				&&!world.isAirBlock(getPos().add(0, -1, 0));
 
-
-		if(active&&process < totalTime)
-			if(energyStorage.extractEnergy(consumption, false)==consumption)
+		if(canRun&&energyStorage.extractEnergy(consumption, false)==consumption)
+		{
+			process++;
+			if(process >= totalTime)
 			{
-				process++;
-				if(process >= totalTime)
-				{
-					MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(world, getPos());
-					this.sample = createCoreSample(info);
-				}
-				this.markDirty();
+				MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(world, getPos());
+				this.sample = createCoreSample(info);
+				this.process = 0;
+				canRun = false;
 				this.markContainingBlockForUpdate(null);
 			}
-		if(prevActive!=active)
+			this.markChunkDirty();
+		}
+		if(canRun!=isRunning)
 		{
-			this.markDirty();
+			isRunning = canRun;
+			this.markChunkDirty();
 			this.markContainingBlockForUpdate(null);
 		}
 	}
@@ -157,7 +151,7 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements IETickabl
 		energyStorage.writeToNBT(nbt);
 		nbt.putInt("dummy", dummy);
 		nbt.putInt("process", process);
-		nbt.putBoolean("active", active);
+		nbt.putBoolean("isRunning", isRunning);
 		if(!sample.isEmpty())
 			nbt.put("sample", sample.write(new CompoundNBT()));
 	}
@@ -168,10 +162,11 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements IETickabl
 		energyStorage.readFromNBT(nbt);
 		dummy = nbt.getInt("dummy");
 		process = nbt.getInt("process");
-		active = nbt.getBoolean("active");
+		isRunning = nbt.getBoolean("isRunning");
 		if(nbt.contains("sample", NBT.TAG_COMPOUND))
 			sample = ItemStack.read(nbt.getCompound("sample"));
-
+		else
+			sample = ItemStack.EMPTY;
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -274,18 +269,19 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements IETickabl
 		if(!this.sample.isEmpty())
 		{
 			if(!world.isRemote)
+			{
 				player.entityDropItem(this.sample.copy(), .5f);
-			this.sample = ItemStack.EMPTY;
-			this.active = false;
-			markDirty();
-			this.markContainingBlockForUpdate(null);
+				this.sample = ItemStack.EMPTY;
+				markDirty();
+				this.markContainingBlockForUpdate(null);
+			}
 			return true;
 		}
-		else if(!this.active)
+		else if(this.process <= 0)
 		{
-			if(energyStorage.getEnergyStored() >= IEServerConfig.MACHINES.coredrill_consumption.get())
+			if(!world.isRemote&&energyStorage.getEnergyStored() >= IEServerConfig.MACHINES.coredrill_consumption.get())
 			{
-				this.active = true;
+				this.process = 1;
 				markDirty();
 				this.markContainingBlockForUpdate(null);
 			}

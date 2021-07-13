@@ -58,7 +58,6 @@ import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.WorldTickEvent;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
@@ -152,14 +151,6 @@ public class EventHandler
 		}
 	}*/
 
-
-	@SubscribeEvent
-	public void onEntityJoiningWorld(EntityJoinWorldEvent event)
-	{
-		if(event.getEntity().world.isRemote&&event.getEntity() instanceof AbstractMinecartEntity&&
-				event.getEntity().getCapability(CapabilityShader.SHADER_CAPABILITY).isPresent())
-			ImmersiveEngineering.packetHandler.sendToServer(new MessageMinecartShaderSync(event.getEntity(), null));
-	}
 
 	@SubscribeEvent
 	public void onWorldTick(WorldTickEvent event)

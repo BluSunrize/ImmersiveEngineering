@@ -50,7 +50,10 @@ public class SampleDrillRenderer extends TileEntityRenderer<SampleDrillTileEntit
 		int max = IEServerConfig.MACHINES.coredrill_time.get();
 		if(tile.process > 0&&tile.process < max)
 		{
-			matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), ((tile.process+partialTicks)*22.5f)%360f, true));
+			float currentProcess = tile.process;
+			if (tile.isRunning)
+				currentProcess += partialTicks;
+			matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), (currentProcess*22.5f)%360f, true));
 			float push = tile.process/(float)max;
 			if(tile.process > max/2)
 				push = 1-push;

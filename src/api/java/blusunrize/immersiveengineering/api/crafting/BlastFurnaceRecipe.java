@@ -14,6 +14,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.RegistryObject;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.Map;
 
@@ -54,13 +55,27 @@ public class BlastFurnaceRecipe extends IESerializableRecipe
 		return output;
 	}
 
+	public boolean matches(ItemStack input) {
+		return this.input.test(input);
+	}
+
 	// Initialized by reload listener
 	public static Map<ResourceLocation, BlastFurnaceRecipe> recipeList = Collections.emptyMap();
 
+	@Deprecated
 	public static BlastFurnaceRecipe findRecipe(ItemStack input)
 	{
+		return findRecipe(input, null);
+	}
+
+	public static BlastFurnaceRecipe findRecipe(ItemStack input, @Nullable BlastFurnaceRecipe hint)
+	{
+		if (input.isEmpty())
+			return null;
+		if (hint != null && hint.matches(input))
+			return hint;
 		for(BlastFurnaceRecipe recipe : recipeList.values())
-			if(recipe.input.test(input))
+			if(recipe.matches(input))
 				return recipe;
 		return null;
 	}

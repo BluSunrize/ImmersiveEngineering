@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMultiblock;
+import blusunrize.immersiveengineering.common.util.CachedRecipe;
 import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
 import blusunrize.immersiveengineering.common.gui.IEContainerTypes.TileContainer;
 import com.google.common.collect.ImmutableList;
@@ -20,9 +21,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityType;
 
 import javax.annotation.Nullable;
+import java.util.function.Supplier;
 
 public class BlastFurnaceTileEntity<T extends BlastFurnaceTileEntity<T>> extends FurnaceLikeTileEntity<BlastFurnaceRecipe, T>
 {
+	private final Supplier<BlastFurnaceRecipe> cachedRecipe = CachedRecipe.cached(
+			BlastFurnaceRecipe::findRecipe, () -> inventory.get(0)
+	);
+
 	public BlastFurnaceTileEntity(IETemplateMultiblock mb, TileEntityType<T> type)
 	{
 		super(
@@ -43,9 +49,7 @@ public class BlastFurnaceTileEntity<T extends BlastFurnaceTileEntity<T>> extends
 	@Override
 	protected BlastFurnaceRecipe getRecipeForInput()
 	{
-		if(inventory.get(0).isEmpty())
-			return null;
-		return BlastFurnaceRecipe.findRecipe(inventory.get(0));
+		return cachedRecipe.get();
 	}
 
 	@Override
