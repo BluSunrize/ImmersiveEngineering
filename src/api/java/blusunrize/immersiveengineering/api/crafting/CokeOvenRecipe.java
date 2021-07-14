@@ -8,12 +8,12 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
-import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.RegistryObject;
 
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.Map;
 
@@ -41,6 +41,10 @@ public class CokeOvenRecipe extends IESerializableRecipe
 		this.creosoteOutput = creosoteOutput;
 	}
 
+	public boolean matches(ItemStack stack) {
+		return input.test(stack);
+	}
+
 	@Override
 	protected IERecipeSerializer getIESerializer()
 	{
@@ -58,8 +62,17 @@ public class CokeOvenRecipe extends IESerializableRecipe
 
 	public static CokeOvenRecipe findRecipe(ItemStack input)
 	{
+		return findRecipe(input, null);
+	}
+
+	public static CokeOvenRecipe findRecipe(ItemStack input, @Nullable CokeOvenRecipe hint)
+	{
+		if (input.isEmpty())
+			return null;
+		if (hint != null && hint.matches(input))
+			return hint;
 		for(CokeOvenRecipe recipe : recipeList.values())
-			if(ItemUtils.stackMatchesObject(input, recipe.input))
+			if(recipe.matches(input))
 				return recipe;
 		return null;
 	}

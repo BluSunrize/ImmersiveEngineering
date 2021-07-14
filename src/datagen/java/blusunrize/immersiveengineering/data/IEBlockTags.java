@@ -47,6 +47,10 @@ class IEBlockTags extends BlockTagsProvider
 				.addItemEntry(WoodenDecoration.treatedFence);
 		getOrCreateBuilder(BlockTags.WOODEN_FENCES)
 				.addItemEntry(WoodenDecoration.treatedFence);
+		getOrCreateBuilder(IETags.fencesSteel)
+				.addItemEntry(MetalDecoration.steelFence);
+		getOrCreateBuilder(IETags.fencesAlu)
+				.addItemEntry(MetalDecoration.aluFence);
 		getOrCreateBuilder(IETags.clayBlock)
 				.addItemEntry(Blocks.CLAY);
 		getOrCreateBuilder(IETags.glowstoneBlock)

@@ -217,11 +217,6 @@ public class WatermillTileEntity extends IEBaseTileEntity implements ITickableTi
 		return dir;
 	}
 
-	public static boolean _Immovable()
-	{
-		return true;
-	}
-
 	@Override
 	public boolean receiveClientEvent(int id, int arg)
 	{

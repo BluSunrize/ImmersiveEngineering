@@ -2,7 +2,7 @@
   "type": "immersiveengineering:alloy",
   "time": 200,
   "result": {
-    "count": 4,
+    "count": 2,
     "base_ingredient": {
       "tag": "forge:ingots/brass"
     }
@@ -24,10 +24,7 @@
     }
   ],
   "input0": {
-    "count": 3,
-    "base_ingredient": {
-      "tag": "forge:ingots/copper"
-    }
+    "tag": "forge:ingots/copper"
   },
   "input1": {
     "tag": "forge:ingots/zinc"

@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IProcessT
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMultiblock;
+import blusunrize.immersiveengineering.common.util.CachedRecipe;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.entity.player.PlayerEntity;
@@ -38,6 +39,7 @@ import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import javax.annotation.Nullable;
+import java.util.function.Supplier;
 
 public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnaceTileEntity> implements IIEInventory,
 		IActiveState, IInteractionObjectIE, IProcessTile, IBlockBounds
@@ -47,7 +49,10 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 	public int processMax = 0;
 	public int burnTime = 0;
 	public int lastBurnTime = 0;
-	private BlastFurnaceState state = new BlastFurnaceState();
+	private final BlastFurnaceState state = new BlastFurnaceState();
+	private final Supplier<BlastFurnaceRecipe> cachedRecipe = CachedRecipe.cached(
+			BlastFurnaceRecipe::findRecipe, () -> inventory.get(0)
+	);
 
 	public BlastFurnaceTileEntity()
 	{
@@ -188,9 +193,7 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 	@Nullable
 	public BlastFurnaceRecipe getRecipe()
 	{
-		if(inventory.get(0).isEmpty())
-			return null;
-		BlastFurnaceRecipe recipe = BlastFurnaceRecipe.findRecipe(inventory.get(0));
+		BlastFurnaceRecipe recipe = cachedRecipe.get();
 		if(recipe==null)
 			return null;
 		if((inventory.get(2).isEmpty()||(ItemStack.areItemsEqual(inventory.get(2), recipe.output)&&inventory.get(2).getCount()+recipe.output.getCount() <= getSlotLimit(2)))

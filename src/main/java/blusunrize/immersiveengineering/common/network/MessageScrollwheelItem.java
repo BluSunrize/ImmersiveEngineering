@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 
 public class MessageScrollwheelItem implements IMessage
 {
-	private boolean forward;
+	private final boolean forward;
 
 	public MessageScrollwheelItem(boolean forward)
 	{

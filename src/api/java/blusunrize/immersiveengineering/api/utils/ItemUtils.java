@@ -40,11 +40,13 @@ public class ItemUtils
 			return JsonToNBT.getTagFromJson(jsonElement.getAsString());
 	}
 
+	@Deprecated
 	public static boolean stackMatchesObject(ItemStack stack, Object o)
 	{
 		return stackMatchesObject(stack, o, false);
 	}
 
+	@Deprecated
 	public static boolean stackMatchesObject(ItemStack stack, Object o, boolean checkNBT)
 	{
 		if(o instanceof ItemStack)

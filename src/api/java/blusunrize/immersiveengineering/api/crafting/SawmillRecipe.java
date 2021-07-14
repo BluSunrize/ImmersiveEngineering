@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
-import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
@@ -87,7 +86,7 @@ public class SawmillRecipe extends MultiblockRecipe
 	{
 		if(!input.isEmpty())
 			for(SawmillRecipe recipe : recipeList.values())
-				if(ItemUtils.stackMatchesObject(input, recipe.input))
+				if(recipe.input.test(input))
 					return recipe;
 		return null;
 	}

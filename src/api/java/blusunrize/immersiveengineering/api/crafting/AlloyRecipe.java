@@ -13,6 +13,7 @@ import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.RegistryObject;
 
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.Map;
 
@@ -52,13 +53,32 @@ public class AlloyRecipe extends IESerializableRecipe
 		return this.output;
 	}
 
+	public boolean matches(ItemStack input0, ItemStack input1) {
+		if (this.input0.test(input0)&&this.input1.test(input1))
+			return true;
+		else if (this.input0.test(input1)&&this.input1.test(input0))
+			return true;
+		else
+			return false;
+	}
+
 	// Initialized by reload listener
 	public static Map<ResourceLocation, AlloyRecipe> recipeList = Collections.emptyMap();
 
+	@Deprecated
 	public static AlloyRecipe findRecipe(ItemStack input0, ItemStack input1)
 	{
+		return findRecipe(input0, input1, null);
+	}
+
+	public static AlloyRecipe findRecipe(ItemStack input0, ItemStack input1, @Nullable AlloyRecipe hint)
+	{
+		if (input0.isEmpty() || input1.isEmpty())
+			return null;
+		if (hint != null && hint.matches(input0, input1))
+			return hint;
 		for(AlloyRecipe recipe : recipeList.values())
-			if((recipe.input0.test(input0)&&recipe.input1.test(input1))||(recipe.input0.test(input1)&&recipe.input1.test(input0)))
+			if(recipe.matches(input0, input1))
 				return recipe;
 		return null;
 	}

@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.client.utils.RenderUtils;
 import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
 import blusunrize.immersiveengineering.common.blocks.metal.ClocheTileEntity;
@@ -19,15 +18,11 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.Particle;
-import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.item.ItemStack;
@@ -61,24 +56,9 @@ public class ClocheRenderer extends TileEntityRenderer<ClocheTileEntity>
 
 		// Render particles in the TER rather than using the standard particle engine to avoid depth issues/the
 		// particles not rendering at all outside of fabulous mode
-		matrixStack.push();
-		ActiveRenderInfo activeInfo = Minecraft.getInstance().gameRenderer.getActiveRenderInfo();
-		matrixStack.translate(
-				activeInfo.getProjectedView().x-tile.getPos().getX(),
-				activeInfo.getProjectedView().y-tile.getPos().getY(),
-				activeInfo.getProjectedView().z-tile.getPos().getZ()
-		);
-		IVertexBuilder baseBuffer = IERenderTypes.disableLighting(bufferIn)
-				.getBuffer(RenderType.getEntityCutout(AtlasTexture.LOCATION_PARTICLES_TEXTURE));
-		TransformingVertexBuilder particleBuilder = new TransformingVertexBuilder(baseBuffer, matrixStack);
-		// Need to fix *some* normal, so just use "up" for all quads. Does not seem to actually affect rendering.
-		particleBuilder.setNormal(0, 1, 0);
-		particleBuilder.setOverlay(OverlayTexture.NO_OVERLAY);
-		for(Particle p : tile.particles)
-			p.renderParticle(particleBuilder, activeInfo, partialTicks);
-		matrixStack.pop();
+		tile.particles.get().render(matrixStack, blockPos, bufferIn, partialTicks);
 
-		ClocheRecipe recipe = tile.getRecipe();
+		ClocheRecipe recipe = tile.cachedRecipe.get();
 		if(recipe!=null)
 		{
 			IVertexBuilder baseBuilder = bufferIn.getBuffer(RenderType.getCutout());

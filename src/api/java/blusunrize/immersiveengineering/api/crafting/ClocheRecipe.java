@@ -10,7 +10,6 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.crafting.ClocheRenderFunction.ClocheRenderReference;
-import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeType;
@@ -19,6 +18,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.RegistryObject;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -80,14 +80,26 @@ public class ClocheRecipe extends IESerializableRecipe
 		return this.outputs.get(0);
 	}
 
+	@Deprecated
 	public static ClocheRecipe findRecipe(ItemStack seed, ItemStack soil)
 	{
+		return findRecipe(seed, soil, null);
+	}
+
+	public static ClocheRecipe findRecipe(ItemStack seed, ItemStack soil, @Nullable ClocheRecipe hint)
+	{
+		if (seed.isEmpty() || soil.isEmpty())
+			return null;
+		if (hint != null && hint.matches(seed, soil))
+			return hint;
 		for(ClocheRecipe recipe : recipeList.values())
-		{
-			if(ItemUtils.stackMatchesObject(seed, recipe.seed)&&ItemUtils.stackMatchesObject(soil, recipe.soil))
+			if(recipe.matches(seed, soil))
 				return recipe;
-		}
 		return null;
+	}
+
+	public boolean matches(ItemStack seed, ItemStack soil) {
+		return this.seed.test(seed)&&this.soil.test(soil);
 	}
 
 	/* ========== SOIL TEXTURE ========== */

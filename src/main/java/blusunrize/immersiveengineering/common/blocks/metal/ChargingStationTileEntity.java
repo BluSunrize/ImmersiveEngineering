@@ -8,11 +8,12 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorageAdvanced;
+import blusunrize.immersiveengineering.client.fx.CustomParticleManager;
+import blusunrize.immersiveengineering.client.utils.DistField;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
@@ -29,6 +30,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.state.Property;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
@@ -52,6 +54,7 @@ public class ChargingStationTileEntity extends IEBaseTileEntity implements ITick
 {
 	public FluxStorageAdvanced energyStorage = new FluxStorageAdvanced(32000);
 	public NonNullList<ItemStack> inventory = NonNullList.withSize(1, ItemStack.EMPTY);
+	public final DistField<CustomParticleManager> particles = DistField.client(() -> CustomParticleManager::new);
 	private boolean charging = true;
 	public int comparatorOutput = 0;
 
@@ -63,6 +66,8 @@ public class ChargingStationTileEntity extends IEBaseTileEntity implements ITick
 	@Override
 	public void tick()
 	{
+		if(world.isRemote)
+			particles.get().clientTick();
 		if(EnergyHelper.isFluxReceiver(inventory.get(0)))
 		{
 			if(world.isRemote&&charging)
@@ -78,10 +83,12 @@ public class ChargingStationTileEntity extends IEBaseTileEntity implements ITick
 					if(charge >= 1||(time%12 >= i*4&&time%12 <= i*4+2))
 					{
 						int shift = i-1;
-						double x = getPos().getX()+.5+(getFacing()==Direction.WEST?-.46875: getFacing()==Direction.EAST?.46875: getFacing()==Direction.NORTH?(-.1875*shift): (.1875*shift));
-						double y = getPos().getY()+.25;
-						double z = getPos().getZ()+.5+(getFacing()==Direction.NORTH?-.46875: getFacing()==Direction.SOUTH?.46875: getFacing()==Direction.EAST?(-.1875*shift): (.1875*shift));
-						ImmersiveEngineering.proxy.spawnRedstoneFX(world, x, y, z, .25, .25, .25, .5f, 1-charge, charge, 0);
+						double x = .5+(getFacing()==Direction.WEST?-.46875: getFacing()==Direction.EAST?.46875: getFacing()==Direction.NORTH?(-.1875*shift): (.1875*shift));
+						double y = .25;
+						double z = .5+(getFacing()==Direction.NORTH?-.46875: getFacing()==Direction.SOUTH?.46875: getFacing()==Direction.EAST?(-.1875*shift): (.1875*shift));
+						particles.get().add(
+								new RedstoneParticleData(1-charge, charge, 0, .5f), x, y, z, .25, .25, .25, -1
+						);
 					}
 				}
 			}

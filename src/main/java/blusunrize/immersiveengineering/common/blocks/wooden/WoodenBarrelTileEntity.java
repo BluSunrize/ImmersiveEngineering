@@ -203,11 +203,11 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 		@Override
 		public int fill(FluidStack resource, FluidAction doFill)
 		{
-			if(resource==null||(facing!=null&&barrel.sideConfig.get(facing)!=IOSideConfig.INPUT)||!barrel.isFluidValid(resource))
+			if(resource.isEmpty()||(facing!=null&&barrel.sideConfig.get(facing)!=IOSideConfig.INPUT)||!barrel.isFluidValid(resource))
 				return 0;
 
 			int i = barrel.tank.fill(resource, doFill);
-			if(i > 0)
+			if(i > 0&&doFill.execute())
 			{
 				barrel.markDirty();
 				barrel.markContainingBlockForUpdate(null);
@@ -218,7 +218,7 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 		@Override
 		public FluidStack drain(FluidStack resource, FluidAction doDrain)
 		{
-			if(resource==null)
+			if(resource.isEmpty())
 				return FluidStack.EMPTY;
 			return this.drain(resource.getAmount(), doDrain);
 		}

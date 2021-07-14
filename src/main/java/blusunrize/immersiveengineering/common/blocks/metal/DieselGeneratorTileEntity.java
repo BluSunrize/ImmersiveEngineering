@@ -207,12 +207,7 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 		).contains(posInMultiblock))
 			return new AxisAlignedBB(.5f, 0, 0, 1, posInMultiblock.getY()==2?.8125f: 1, posInMultiblock.getZ()==0?1.125f: 1);
 		if(new BlockPos(1, 2, 0).equals(posInMultiblock))
-		{
-			posInMultiblock.getZ();
-			posInMultiblock.getZ();
-			posInMultiblock.getZ();
 			return new AxisAlignedBB(0, 0, 0, 1, posInMultiblock.getY()==2?.8125f: 1, posInMultiblock.getZ()==0?.625f: 1);
-		}
 
 		if(posInMultiblock.getY()==1&&posInMultiblock.getZ()==4)
 			return new AxisAlignedBB(0, .5f, 0, 1, 1, 1);

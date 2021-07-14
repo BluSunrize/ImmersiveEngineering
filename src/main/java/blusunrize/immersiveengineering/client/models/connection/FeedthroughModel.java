@@ -261,7 +261,12 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 			if(this==o) return true;
 			if(o==null||getClass()!=o.getClass()) return false;
 			FeedthroughCacheKey that = (FeedthroughCacheKey)o;
-			return offset==that.offset&&defaultColorMultipliers==that.defaultColorMultipliers&&type.equals(that.type)&&baseState.equals(that.baseState)&&facing==that.facing&&layer.equals(that.layer);
+			return offset==that.offset&&
+					defaultColorMultipliers==that.defaultColorMultipliers&&
+					type.equals(that.type)&&
+					baseState.equals(that.baseState)&&
+					facing==that.facing&&
+					Objects.equals(layer, that.layer);
 		}
 
 		@Override
