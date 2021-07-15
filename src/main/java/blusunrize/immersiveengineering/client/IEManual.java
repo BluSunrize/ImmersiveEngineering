@@ -29,12 +29,14 @@ import blusunrize.immersiveengineering.client.manual.ShaderManualElement;
 import blusunrize.immersiveengineering.common.fluids.IEFluids;
 import blusunrize.lib.manual.*;
 import blusunrize.lib.manual.ManualEntry.ManualEntryBuilder;
+import blusunrize.lib.manual.ManualEntry.SpecialElementData;
 import blusunrize.lib.manual.Tree.InnerNode;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
@@ -115,12 +117,9 @@ public class IEManual
 
 		{
 			ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());
-			builder.addSpecialElement("values", 0,
-					addDynamicTable(
-							() -> ThermoelectricHandler.getThermalValuesSorted(true),
-							"K"
-					)
-			);
+			builder.addSpecialElement(new SpecialElementData("values", 0, addDynamicTable(
+					() -> ThermoelectricHandler.getThermalValuesSorted(true), "K"
+			)));
 			builder.readFromFile(new ResourceLocation(MODID, "thermoelectric"));
 			ieMan.addEntry(energyCat, builder.create(), ieMan.atOffsetFrom(energyCat, "redstone_wire", 0.5));
 		}
@@ -135,23 +134,17 @@ public class IEManual
 		ieMan.hideEntry(blueprints);
 		{
 			ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());
-			builder.addSpecialElement("list", 0,
-					addDynamicTable(
-							() -> FermenterRecipe.getFluidValuesSorted(IEFluids.fluidEthanol.getStill(), true),
-							"mB"
-					)
-			);
+			builder.addSpecialElement(new SpecialElementData("list", 0, addDynamicTable(
+					() -> FermenterRecipe.getFluidValuesSorted(IEFluids.fluidEthanol.getStill(), true), "mB"
+			)));
 			builder.readFromFile(new ResourceLocation(MODID, "fermenter"));
 			ieMan.addEntry(heavyMachinesCat, builder.create(), ieMan.atOffsetFrom(heavyMachinesCat, "assembler", 1/3d));
 		}
 		{
 			ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());
-			builder.addSpecialElement("list", 0,
-					addDynamicTable(
-							() -> SqueezerRecipe.getFluidValuesSorted(IEFluids.fluidPlantoil.getStill(), true),
-							"mB"
-					)
-			);
+			builder.addSpecialElement(new SpecialElementData("list", 0, addDynamicTable(
+					() -> SqueezerRecipe.getFluidValuesSorted(IEFluids.fluidPlantoil.getStill(), true), "mB"
+			)));
 			builder.readFromFile(new ResourceLocation(MODID, "squeezer"));
 			ieMan.addEntry(heavyMachinesCat, builder.create(), ieMan.atOffsetFrom(heavyMachinesCat, "assembler", 2/3d));
 		}
@@ -176,7 +169,7 @@ public class IEManual
 			for(ShaderRegistryEntry shader : ShaderRegistry.shaderRegistry.values())
 			{
 				String key = shader.name.getPath();
-				builder.addSpecialElement(key, 0, new ShaderManualElement(ieMan, shader));
+				builder.addSpecialElement(new SpecialElementData(key, 0, new ShaderManualElement(ieMan, shader)));
 			}
 			builder.setLocation(new ResourceLocation(MODID, "shader_list"));
 			ManualEntry e = builder.create();
@@ -198,9 +191,10 @@ public class IEManual
 		};
 	}
 
-	private static String getMineralVeinTexts(TextSplitter splitter)
+	private static Pair<String, List<SpecialElementData>> getMineralVeinTexts()
 	{
 		StringBuilder text = new StringBuilder();
+		List<SpecialElementData> specials = new ArrayList<>();
 
 		List<MineralMix> mineralsToAdd = new ArrayList<>(MineralMix.mineralList.values());
 		Function<MineralMix, String> toName = mineral -> {
@@ -244,7 +238,7 @@ public class IEManual
 						.append(sorted.getStack().getDisplayName().getString());
 				sortedOres.add(sorted.getStack());
 			}
-			splitter.addSpecialPage(mineral.getId().toString(), 0, new ManualElementItem(ManualHelper.getManual(), sortedOres));
+			specials.add(new SpecialElementData(mineral.getId().toString(), 0, new ManualElementItem(ManualHelper.getManual(), sortedOres)));
 			String desc = I18n.format("ie.manual.entry.minerals_desc", dimensionString, outputString.toString());
 			if(text.length() > 0)
 				text.append("<np>");
@@ -253,7 +247,7 @@ public class IEManual
 					.append(">")
 					.append(desc);
 		}
-		return text.toString();
+		return Pair.of(text.toString(), specials);
 	}
 
 	private static void addChangelogToManual()

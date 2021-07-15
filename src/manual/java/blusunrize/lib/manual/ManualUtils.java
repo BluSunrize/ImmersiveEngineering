@@ -8,6 +8,7 @@
 
 package blusunrize.lib.manual;
 
+import blusunrize.lib.manual.ManualEntry.SpecialElementData;
 import blusunrize.lib.manual.SplitResult.Token;
 import blusunrize.lib.manual.Tree.AbstractNode;
 import blusunrize.lib.manual.gui.GuiButtonManualLink;
@@ -290,25 +291,27 @@ public class ManualUtils
 		}
 	}
 
-	private static void parseSpecial(JsonObject obj, String anchor, TextSplitter splitter, ManualInstance instance)
+	private static void parseSpecial(
+			JsonObject obj, String anchor, ManualInstance instance, List<SpecialElementData> out
+	)
 	{
 		String type = JSONUtils.getString(obj, "type");
 		int offset = JSONUtils.getInt(obj, "offset", 0);
 		ResourceLocation resLoc = getLocationForManual(type, instance);
 		Function<JsonObject, SpecialManualElement> createElement = instance.getElementFactory(resLoc);
-		splitter.addSpecialPage(anchor, offset, createElement.apply(obj));
+		out.add(new SpecialElementData(anchor, offset, () -> createElement.apply(obj)));
 	}
 
-	public static void parseSpecials(JsonObject data, TextSplitter splitter, ManualInstance instance)
+	public static void parseSpecials(JsonObject data, ManualInstance instance, List<SpecialElementData> out)
 	{
 		for(Entry<String, JsonElement> entry : data.entrySet())
 		{
 			JsonElement currData = entry.getValue();
 			if(currData.isJsonObject())
-				parseSpecial(currData.getAsJsonObject(), entry.getKey(), splitter, instance);
+				parseSpecial(currData.getAsJsonObject(), entry.getKey(), instance, out);
 			else
 				for(JsonElement inner : currData.getAsJsonArray())
-					parseSpecial(inner.getAsJsonObject(), entry.getKey(), splitter, instance);
+					parseSpecial(inner.getAsJsonObject(), entry.getKey(), instance, out);
 		}
 	}
 

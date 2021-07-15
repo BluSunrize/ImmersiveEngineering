@@ -11,11 +11,16 @@ package blusunrize.lib.manual;
 import blusunrize.lib.manual.SplitResult.Token;
 import blusunrize.lib.manual.gui.ManualScreen;
 import blusunrize.lib.manual.links.EntryWithLinks;
+import blusunrize.lib.manual.links.Link;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Suppliers;
+import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.datafixers.util.Either;
+import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.client.Minecraft;
@@ -26,16 +31,12 @@ import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.tuple.ImmutableTriple;
-import org.apache.commons.lang3.tuple.Triple;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Function;
+import java.util.*;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -43,34 +44,67 @@ import java.util.stream.Collectors;
 @SuppressWarnings("WeakerAccess")
 public class ManualEntry implements Comparable<ManualEntry>
 {
+	private boolean initialized = false;
+
 	private final ManualInstance manual;
-	private List<ManualPage> pages;
-	private final Function<TextSplitter, EntryData> getContent;
+	private final Supplier<EntryData> getContent;
+	private final ResourceLocation location;
+
+	// in basic init
 	private String title;
 	private String subtext;
-	private final ResourceLocation location;
+	private List<SpecialElementData> specialElements;
+	private Supplier<EntryWithLinks> withLinks;
+	private Supplier<Set<String>> anchors;
+
+	// in full init/ensureInitialized
+	private List<ManualPage> pages;
 	private Int2ObjectMap<SpecialManualElement> specials;
 	private Object2IntMap<String> anchorPoints;
 
-	private ManualEntry(ManualInstance m, Function<TextSplitter, EntryData> getContent,
-						ResourceLocation location)
+	private ManualEntry(ManualInstance m, Supplier<EntryData> getContent, ResourceLocation location)
 	{
 		this.manual = m;
 		this.getContent = getContent;
 		this.location = location;
 	}
 
-	public void refreshPages()
+	public void initBasic() {
+		EntryData data = getContent.get();
+		title = data.title;
+		subtext = data.subtext;
+		String formattedText = manual.formatText(data.content);
+		specialElements = data.specialElements;
+		withLinks = Suppliers.memoize(() -> new EntryWithLinks(formattedText, manual));
+		anchors = Suppliers.memoize(() -> {
+			Set<String> anchors = new HashSet<>();
+			for(Either<String, Link> e : withLinks.get().getUnsplitTokens())
+			{
+				Optional<String> left = e.left();
+				if(left.isPresent())
+				{
+					String s = left.get();
+					if(s.startsWith("<&")&&s.endsWith(">"))
+						anchors.add(s.substring(2, s.length()-1));
+				}
+			}
+			anchors.add(TextSplitter.START);
+			return anchors;
+		});
+	}
+
+	private void ensureInitialized()
 	{
+		if (initialized)
+			return;
 		try
 		{
 			manual.entryRenderPre();
 			TextSplitter splitter = new TextSplitter(manual);
-			EntryData data = getContent.apply(splitter);
-			title = data.title;
-			subtext = data.subtext;
-			EntryWithLinks withLinks = new EntryWithLinks(manual.formatText(data.content), manual);
-			SplitResult result = splitter.split(withLinks.getUnsplitTokens());
+			for (SpecialElementData special : specialElements) {
+				splitter.addSpecialPage(special.anchor, special.offset, special.getElement());
+			}
+			SplitResult result = splitter.split(withLinks.get().getUnsplitTokens());
 			specials = result.specialByPage;
 			anchorPoints = result.pageByAnchor;
 			List<List<List<Token>>> text = result.entry;
@@ -89,10 +123,12 @@ public class ManualEntry implements Comparable<ManualEntry>
 					"Exception while refreshing manual entry "+location+" for manual "+manual.getManualName(),
 					x);
 		}
+		initialized = true;
 	}
 
 	public void renderPage(MatrixStack transform, ManualScreen gui, int x, int y, int mouseX, int mouseY)
 	{
+		ensureInitialized();
 		int page = gui.page;
 		ManualPage toRender = pages.get(page);
 		int offsetText = 0;
@@ -117,13 +153,20 @@ public class ManualEntry implements Comparable<ManualEntry>
 		return title;
 	}
 
-	public Int2ObjectMap<SpecialManualElement> getSpecials()
+	public List<SpecialElementData> getSpecialData()
 	{
+		return specialElements;
+	}
+
+	public Int2ObjectMap<SpecialManualElement> getSpecialsByPage()
+	{
+		ensureInitialized();
 		return specials;
 	}
 
 	public void addButtons(ManualScreen gui, int x, int y, int page, List<Button> pageButtons)
 	{
+			ensureInitialized();
 		ManualPage p = pages.get(page);
 		p.renderText = p.text.stream()
 				.map(
@@ -151,6 +194,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 
 	public int getPageCount()
 	{
+			ensureInitialized();
 		return pages.size();
 	}
 
@@ -161,13 +205,14 @@ public class ManualEntry implements Comparable<ManualEntry>
 
 	public ItemStack getHighlightedStack(int page)
 	{
+			ensureInitialized();
 		return pages.get(page).special.getHighlightedStack();
 	}
 
 	public boolean listForSearch(String search)
 	{
-		for(ManualPage p : pages)
-			if(p.special.listForSearch(search))
+		for (SpecialElementData d : specialElements)
+			if (d.getElement().listForSearch(search))
 				return true;
 		return false;
 	}
@@ -175,17 +220,19 @@ public class ManualEntry implements Comparable<ManualEntry>
 	public void mouseDragged(ManualScreen gui, int x, int y, double clickX, double clickY, double mx, double my,
 							 double lastX, double lastY, int button)
 	{
+		ensureInitialized();
 		pages.get(gui.page).special.mouseDragged(x, y, clickX, clickY, mx, my, lastX, lastY, button);
 	}
 
 	public int getPageForAnchor(String anchor)
 	{
+			ensureInitialized();
 		return anchorPoints.getInt(anchor);
 	}
 
 	public boolean hasAnchor(String anchor)
 	{
-		return anchorPoints.containsKey(anchor);
+		return anchors.get().contains(anchor);
 	}
 
 	public Tree.AbstractNode<ResourceLocation, ManualEntry> getTreeNode()
@@ -216,10 +263,10 @@ public class ManualEntry implements Comparable<ManualEntry>
 
 	public static class ManualEntryBuilder
 	{
-		ManualInstance manual;
-		Function<TextSplitter, EntryData> getContent = null;
+		private final ManualInstance manual;
+		private Supplier<EntryData> getContent = null;
 		private ResourceLocation location;
-		private List<Triple<String, Integer, Supplier<? extends SpecialManualElement>>> hardcodedSpecials = new ArrayList<>();
+		private final List<SpecialElementData> hardcodedSpecials = new ArrayList<>();
 
 		public ManualEntryBuilder(ManualInstance manual)
 		{
@@ -231,40 +278,24 @@ public class ManualEntry implements Comparable<ManualEntry>
 			this.manual = manual;
 		}
 
-		public void addSpecialElement(String anchor, int offset, Supplier<? extends SpecialManualElement> element)
+		public void addSpecialElement(SpecialElementData data)
 		{
-			hardcodedSpecials.add(new ImmutableTriple<>(anchor, offset, element));
+			hardcodedSpecials.add(data);
 		}
 
-		public void addSpecialElement(String anchor, int offset, SpecialManualElement element)
+		public void setContent(Supplier<EntryData> get)
 		{
-			hardcodedSpecials.add(new ImmutableTriple<>(anchor, offset, () -> element));
-		}
-
-		public void setContent(Function<TextSplitter, EntryData> get)
-		{
-			getContent = splitter -> {
-				addHardcodedSpecials(splitter);
-				return get.apply(splitter);
+			getContent = () -> {
+				EntryData base = get.get();
+				List<SpecialElementData> allSpecials = new ArrayList<>(base.specialElements);
+				allSpecials.addAll(hardcodedSpecials);
+				return new EntryData(base.title, base.subtext, base.content, allSpecials);
 			};
 		}
 
 		public void setContent(Supplier<String> title, Supplier<String> subText, Supplier<String> mainText)
 		{
-			getContent = splitter -> {
-				addHardcodedSpecials(splitter);
-				return new EntryData(title.get(), subText.get(), mainText.get());
-			};
-		}
-
-		private void addHardcodedSpecials(TextSplitter splitter)
-		{
-			for(Triple<String, Integer, Supplier<? extends SpecialManualElement>> special : hardcodedSpecials)
-				splitter.addSpecialPage(
-						special.getLeft(),
-						special.getMiddle(),
-						special.getRight().get()
-				);
+			getContent = () -> new EntryData(title.get(), subText.get(), mainText.get(), hardcodedSpecials);
 		}
 
 		public void setContent(String title, String subText, String mainText)
@@ -272,25 +303,24 @@ public class ManualEntry implements Comparable<ManualEntry>
 			setContent(() -> title, () -> subText, () -> mainText);
 		}
 
-		private static Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+		private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
-		public void appendText(Function<TextSplitter, String> text)
+		public void appendText(Supplier<Pair<String, List<SpecialElementData>>> text)
 		{
-			Function<TextSplitter, EntryData> old = getContent;
-			setContent(splitter -> {
-				EntryData base = old.apply(splitter);
-				return new EntryData(
-						base.title,
-						base.subtext,
-						base.content+text.apply(splitter)
-				);
+			Supplier<EntryData> old = getContent;
+			setContent(() -> {
+				EntryData base = old.get();
+				Pair<String, List<SpecialElementData>> toAdd = text.get();
+				List<SpecialElementData> allSpecials = new ArrayList<>(base.specialElements);
+				allSpecials.addAll(toAdd.getSecond());
+				return new EntryData(base.title, base.subtext, base.content+toAdd.getFirst(), allSpecials);
 			});
 		}
 
 		public void readFromFile(ResourceLocation name)
 		{
 			location = name;
-			getContent = (splitter) -> {
+			getContent = () -> {
 				ResourceLocation langLoc = new ResourceLocation(name.getNamespace(),
 						"manual/"+Minecraft.getInstance().getLanguageManager().getCurrentLanguage().getCode()
 								+"/"+name.getPath()+".txt");
@@ -310,16 +340,18 @@ public class ManualEntry implements Comparable<ManualEntry>
 					resLang = getResourceNullable(new ResourceLocation(name.getNamespace(),
 							"manual/en_us/"+name.getPath()+".txt"));
 				if(resLang==null)
-					return new EntryData("ERROR", "This is not a good thing", "Could not find the file for "+name);
+					return new EntryData(
+							"ERROR", "This is not a good thing", "Could not find the file for "+name, ImmutableList.of()
+					);
 				try
 				{
 					JsonObject json = JSONUtils.fromJson(GSON, new InputStreamReader(resData.getInputStream()),
 							JsonObject.class, true);
 					byte[] bytesLang = IOUtils.toByteArray(resLang.getInputStream());
 					String content = new String(bytesLang, StandardCharsets.UTF_8);
-					addHardcodedSpecials(splitter);
+					List<SpecialElementData> allSpecials = new ArrayList<>(hardcodedSpecials);
 					assert json!=null;
-					ManualUtils.parseSpecials(json, splitter, manual);
+					ManualUtils.parseSpecials(json, manual, allSpecials);
 					int titleEnd = content.indexOf('\n');
 					String title = content.substring(0, titleEnd).trim();
 					content = content.substring(titleEnd+1);
@@ -328,7 +360,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 					content = content.substring(subtitleEnd+1).trim();
 					Pattern backslashNewline = Pattern.compile("[^\\\\][\\\\][\r]?\n[\r]?");
 					String rawText = backslashNewline.matcher(content).replaceAll("").replace("\\\\", "\\");
-					return new EntryData(title, subtext, rawText);
+					return new EntryData(title, subtext, rawText, allSpecials);
 				} catch(Exception e)
 				{
 					throw new RuntimeException("Failed to load manual entry from "+name, e);
@@ -402,12 +434,48 @@ public class ManualEntry implements Comparable<ManualEntry>
 		private final String title;
 		private final String subtext;
 		private final String content;
+		private final List<SpecialElementData> specialElements;
 
-		public EntryData(String title, String subtext, String content)
+		public EntryData(String title, String subtext, String content, List<SpecialElementData> specialElements)
 		{
 			this.title = title;
 			this.subtext = subtext;
 			this.content = content;
+			this.specialElements = specialElements;
+		}
+	}
+
+	public static class SpecialElementData {
+		private final String anchor;
+		private final int offset;
+		private final Supplier<? extends SpecialManualElement> element;
+
+		public SpecialElementData(String anchor, int offset, SpecialManualElement element)
+		{
+			this(anchor, offset, () -> element);
+		}
+
+		public SpecialElementData(String anchor, int offset, Supplier<? extends SpecialManualElement> element)
+		{
+			this.anchor = anchor;
+			this.offset = offset;
+			//TODO reset
+			this.element = Suppliers.memoize(element::get);
+		}
+
+		public SpecialManualElement getElement()
+		{
+			return element.get();
+		}
+
+		public String getAnchor()
+		{
+			return anchor;
+		}
+
+		public int getOffset()
+		{
+			return offset;
 		}
 	}
 }

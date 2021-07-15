@@ -10,6 +10,7 @@ package blusunrize.lib.manual;
 
 import blusunrize.lib.manual.ManualElementImage.ManualImage;
 import blusunrize.lib.manual.ManualEntry.ManualEntryBuilder;
+import blusunrize.lib.manual.ManualEntry.SpecialElementData;
 import blusunrize.lib.manual.Tree.AbstractNode;
 import blusunrize.lib.manual.Tree.InnerNode;
 import blusunrize.lib.manual.Tree.Leaf;
@@ -20,12 +21,10 @@ import com.google.common.collect.Maps;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.resources.IResource;
 import net.minecraft.resources.IResourceManager;
@@ -340,20 +339,21 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 		return contentsByName.get(loc);
 	}
 
-	public HashMap<Integer, ManualLink> itemLinks = Maps.newHashMap();
+	//TODO get rid of this absurd hack!
+	private final  Map<Integer, ManualLink> itemLinks = Maps.newHashMap();
 
 	public void indexRecipes()
 	{
 		itemLinks.clear();
 		getAllEntries().forEach((entry) ->
 		{
-			Int2ObjectMap<SpecialManualElement> specials = entry.getSpecials();
-			for(int page : specials.keySet())
+			List<SpecialElementData> specials = entry.getSpecialData();
+			for(SpecialElementData page : specials)
 			{
-				SpecialManualElement p = specials.get(page);
+				SpecialManualElement p = page.getElement();
 				p.recalculateCraftingRecipes();
 				for(ItemStack s : p.getProvidedRecipes())
-					itemLinks.put(getItemHash(s), new ManualLink(entry, TextSplitter.START, page));
+					itemLinks.put(getItemHash(s), new ManualLink(entry, page.getAnchor(), page.getOffset()));
 			}
 		});
 	}
@@ -370,11 +370,7 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 			return 0;
 		int ret = ForgeRegistries.ITEMS.getKey(stack.getItem()).hashCode();
 		if(stack.hasTag())
-		{
-			CompoundNBT nbt = stack.getTag();
-			if(!nbt.isEmpty())
-				ret = ret*31+nbt.hashCode();
-		}
+			ret = ret*31+stack.getTag().hashCode();
 		return ret;
 	}
 
@@ -396,7 +392,7 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 		getAllEntries().forEach(manualEntry -> {
 			try
 			{
-				manualEntry.refreshPages();
+				manualEntry.initBasic();
 			} catch(Exception x)
 			{
 				x.printStackTrace();
@@ -512,7 +508,7 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 				ManualEntry entry = builder.create();
 				mainNode.addNewLeaf(entry, () -> weight);
 				autoloadedEntries.add(Pair.of(backtrace, entry));
-				entry.refreshPages();
+				entry.initBasic();
 			} catch(Exception x)
 			{
 				x.printStackTrace();
