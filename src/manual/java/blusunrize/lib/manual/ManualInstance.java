@@ -15,12 +15,13 @@ import blusunrize.lib.manual.Tree.AbstractNode;
 import blusunrize.lib.manual.Tree.InnerNode;
 import blusunrize.lib.manual.Tree.Leaf;
 import blusunrize.lib.manual.gui.ManualScreen;
+import blusunrize.lib.manual.utils.ItemStackHashStrategy;
 import blusunrize.lib.manual.utils.ManualLogger;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Maps;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.entity.player.PlayerEntity;
@@ -36,7 +37,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.resource.IResourceType;
 import net.minecraftforge.resource.ISelectiveResourceReloadListener;
 import org.apache.commons.lang3.tuple.Pair;
@@ -339,8 +339,7 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 		return contentsByName.get(loc);
 	}
 
-	//TODO get rid of this absurd hack!
-	private final  Map<Integer, ManualLink> itemLinks = Maps.newHashMap();
+	private final Map<ItemStack, ManualLink> itemLinks = new Object2ObjectOpenCustomHashMap<>(ItemStackHashStrategy.INSTANCE);
 
 	public void indexRecipes()
 	{
@@ -353,25 +352,14 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 				SpecialManualElement p = page.getElement();
 				p.recalculateCraftingRecipes();
 				for(ItemStack s : p.getProvidedRecipes())
-					itemLinks.put(getItemHash(s), new ManualLink(entry, page.getAnchor(), page.getOffset()));
+					itemLinks.put(s.copy(), new ManualLink(entry, page.getAnchor(), page.getOffset()));
 			}
 		});
 	}
 
 	public ManualLink getManualLink(ItemStack stack)
 	{
-		int hash = getItemHash(stack);
-		return itemLinks.get(hash);
-	}
-
-	int getItemHash(ItemStack stack)
-	{
-		if(stack.isEmpty())
-			return 0;
-		int ret = ForgeRegistries.ITEMS.getKey(stack.getItem()).hashCode();
-		if(stack.hasTag())
-			ret = ret*31+stack.getTag().hashCode();
-		return ret;
+		return itemLinks.get(stack);
 	}
 
 	public Stream<ManualEntry> getAllEntries()
