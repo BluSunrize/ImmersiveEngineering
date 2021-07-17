@@ -9,6 +9,7 @@
     "accessors.DimensionTypeAccessor",
     "accessors.EntityAccess",
     "accessors.ExplosionAccess",
+    "accessors.FlowingFluidAccess",
     "accessors.FurnaceTEAccess",
     "accessors.HeroGiftsTaskAccess",
     "accessors.ItemEntityAccess",
