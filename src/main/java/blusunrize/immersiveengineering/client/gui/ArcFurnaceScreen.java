@@ -63,11 +63,11 @@ public class ArcFurnaceScreen extends IEContainerScreen<ArcFurnaceContainer>
 		ClientUtils.bindTexture(TEXTURE);
 		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
 
-		for(MultiblockProcess process : tile.processQueue)
+		for(MultiblockProcess<?> process : tile.processQueue)
 			if(process instanceof MultiblockProcessInMachine)
 			{
 				float mod = process.processTick/(float)process.maxTicks;
-				int slot = ((MultiblockProcessInMachine)process).getInputSlots()[0];
+				int slot = ((MultiblockProcessInMachine<?>)process).getInputSlots()[0];
 				int h = (int)Math.max(1, mod*16);
 				this.blit(transform, guiLeft+27+slot%3*21, guiTop+34+slot/3*18+(16-h), 176, 16-h, 2, h);
 			}

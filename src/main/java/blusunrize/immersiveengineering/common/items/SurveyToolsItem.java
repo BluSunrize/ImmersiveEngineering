@@ -15,7 +15,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -43,7 +42,6 @@ import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiPredicate;
@@ -73,12 +71,6 @@ public class SurveyToolsItem extends IEBaseItem
 			BlockState state = world.getBlockState(pos);
 			return state.getMaterial()==Material.ROCK&&state.getBlockHardness(world, pos) < 0.5;
 		});
-	}
-
-	@Override
-	public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
-	{
-		super.addInformation(stack, worldIn, tooltip, flagIn);
 	}
 
 	@Override
