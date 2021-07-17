@@ -12,6 +12,7 @@
     "accessors.FurnaceTEAccess",
     "accessors.HeroGiftsTaskAccess",
     "accessors.ItemEntityAccess",
+    "accessors.MixPredicateAccess",
     "accessors.PaletteAccess",
     "accessors.PotionBrewingAccess",
     "accessors.RecipeManagerAccess",

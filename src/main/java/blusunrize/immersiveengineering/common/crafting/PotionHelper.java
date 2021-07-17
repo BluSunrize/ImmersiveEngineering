@@ -12,24 +12,20 @@ package blusunrize.immersiveengineering.common.crafting;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
-import blusunrize.immersiveengineering.common.util.IELogger;
+import blusunrize.immersiveengineering.mixin.accessors.MixPredicateAccess;
 import blusunrize.immersiveengineering.mixin.accessors.PotionBrewingAccess;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionBrewing;
+import net.minecraft.potion.PotionBrewing.MixPredicate;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.potion.Potions;
 import net.minecraft.tags.FluidTags;
 import net.minecraftforge.common.brewing.BrewingRecipe;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.brewing.IBrewingRecipe;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import net.minecraftforge.registries.IRegistryDelegate;
-
-import java.lang.reflect.Field;
 
 public class PotionHelper
 {
@@ -48,27 +44,11 @@ public class PotionHelper
 	public static void applyToAllPotionRecipes(PotionRecipeProcessor out)
 	{
 		// Vanilla
-		try
-		{
-			String mixPredicateName = "net.minecraft.potion.PotionBrewing$MixPredicate";
-			Class<PotionBrewing> mixPredicateClass = (Class<PotionBrewing>)Class.forName(mixPredicateName);
-			Field f_input = ObfuscationReflectionHelper.findField(mixPredicateClass, "field_185198_a");
-			Field f_reagent = ObfuscationReflectionHelper.findField(mixPredicateClass, "field_185199_b");
-			Field f_output = ObfuscationReflectionHelper.findField(mixPredicateClass, "field_185200_c");
-			f_input.setAccessible(true);
-			f_reagent.setAccessible(true);
-			f_output.setAccessible(true);
-			for(Object mixPredicate : PotionBrewingAccess.getConversions())
-			{
-				Ingredient reagent = (Ingredient)f_reagent.get(mixPredicate);
-				IRegistryDelegate<Potion> input = (IRegistryDelegate<Potion>)f_input.get(mixPredicate);
-				IRegistryDelegate<Potion> output = (IRegistryDelegate<Potion>)f_output.get(mixPredicate);
-				out.apply(output.get(), input.get(), new IngredientWithSize(reagent));
-			}
-		} catch(Exception e)
-		{
-			IELogger.error("Error when trying to figure out vanilla potion recipes", e);
-		}
+		for(MixPredicate<Potion> mixPredicate : PotionBrewingAccess.getConversions())
+			out.apply(
+					mixPredicate.output.get(), mixPredicate.input.get(),
+					new IngredientWithSize(((MixPredicateAccess)mixPredicate).getReagent())
+			);
 
 		// Modded
 		for(IBrewingRecipe recipe : BrewingRecipeRegistry.getRecipes())
