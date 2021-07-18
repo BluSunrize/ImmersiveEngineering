@@ -17,6 +17,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Util;
 import net.minecraft.world.IBlockReader;
 import net.minecraftforge.fml.RegistryObject;
 
@@ -25,11 +26,18 @@ import javax.annotation.Nullable;
 
 public class StoneMultiBlock<T extends MultiblockPartTileEntity<? super T>> extends IEMultiblockBlock
 {
-	private RegistryObject<TileEntityType<T>> type;
+	private final RegistryObject<TileEntityType<T>> type;
 
-	public StoneMultiBlock(String name, RegistryObject<TileEntityType<T>> type)
+	public StoneMultiBlock(String name, RegistryObject<TileEntityType<T>> type, boolean solid)
 	{
-		super(name, Block.Properties.create(Material.ROCK).hardnessAndResistance(2, 20).notSolid());
+		super(name, Util.make(
+				() -> {
+					Properties base = Properties.create(Material.ROCK).hardnessAndResistance(2, 20);
+					if (!solid)
+						base = base.notSolid();
+					return base;
+				}
+		));
 		this.type = type;
 		lightOpacity = 0;
 	}
