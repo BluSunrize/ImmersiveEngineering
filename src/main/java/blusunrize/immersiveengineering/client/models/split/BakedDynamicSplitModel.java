@@ -9,6 +9,7 @@
 
 package blusunrize.immersiveengineering.client.models.split;
 
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.client.ICacheKeyProvider;
 import com.google.common.cache.Cache;
@@ -25,15 +26,17 @@ import net.minecraftforge.client.model.data.IModelData;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 public class BakedDynamicSplitModel<K, T extends ICacheKeyProvider<K> & IBakedModel> extends AbstractSplitModel<T>
 {
+	private static final Set<BakedDynamicSplitModel<?, ?>> WEAK_INSTANCES = Collections.newSetFromMap(new WeakHashMap<>());
+	static {
+		IEApi.renderCacheClearers.add(() -> WEAK_INSTANCES.forEach(m -> m.subModelCache.invalidateAll()));
+	}
+
 	private final Set<Vector3i> parts;
 	private final IModelTransform transform;
 	private final Cache<K, Map<Vector3i, List<BakedQuad>>> subModelCache = CacheBuilder.newBuilder()
