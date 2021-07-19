@@ -111,7 +111,10 @@ public class IngredientWithSize implements Predicate<ItemStack>
 	public ItemStack getRandomizedExampleStack(int rand)
 	{
 		ItemStack[] all = getMatchingStacks();
-		return all[(rand/20)%all.length];
+		if (all.length == 0)
+			return ItemStack.EMPTY;
+		else
+			return all[(rand/20)%all.length];
 	}
 
 	public boolean testIgnoringSize(ItemStack itemstack)

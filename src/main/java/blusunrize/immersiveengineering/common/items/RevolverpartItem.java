@@ -15,6 +15,8 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -38,6 +40,7 @@ public class RevolverpartItem extends IEBaseItem
 	}
 
 	@Override
+	@OnlyIn(Dist.CLIENT)
 	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
 	{
 		CompoundNBT perks = ItemNBTHelper.getTagCompound(stack, "perks");

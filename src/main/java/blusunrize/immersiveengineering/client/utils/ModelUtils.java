@@ -175,9 +175,7 @@ public class ModelUtils
 						// Actual UVs
 						if(sprite==null)//Double Safety. I have no idea how it even happens, but it somehow did .-.
 							sprite = getMissingSprite();
-						builder.put(e,
-								sprite.getInterpolatedU(u),
-								sprite.getInterpolatedV(v));
+						builder.put(e, sprite.getInterpolatedU(u), sprite.getInterpolatedV(v));
 					}
 					else
 						//Lightmap UVs (0, 0 is "automatic")

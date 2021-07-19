@@ -17,6 +17,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Util;
 import net.minecraft.world.IBlockReader;
 import net.minecraftforge.fml.RegistryObject;
 
@@ -26,9 +27,16 @@ import java.util.function.Supplier;
 
 public class StoneMultiBlock<T extends MultiblockPartTileEntity<? super T>> extends IEMultiblockBlock
 {
-	public static final Supplier<Properties> PROPERTIES = () -> Properties.create(Material.ROCK)
-			.hardnessAndResistance(2, 20)
-			.notSolid();
+	public static Supplier<Properties> properties(boolean solid)
+	{
+		return () -> {
+			Properties base = Properties.create(Material.ROCK)
+					.hardnessAndResistance(2, 20);
+			if(!solid)
+				base.notSolid();
+			return base;
+		};
+	}
 
 	private final RegistryObject<TileEntityType<T>> type;
 

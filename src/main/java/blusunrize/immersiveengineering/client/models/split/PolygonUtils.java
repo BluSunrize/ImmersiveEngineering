@@ -93,6 +93,13 @@ public class PolygonUtils
 			rotation.transformPosition(pos);
 			rotation.transformNormal(normal);
 			pos.perspectiveDivide();
+			final double epsilon = 1e-5;
+			for (int i = 0; i < 2; ++i)
+			{
+				if(Math.abs(i - pos.getX()) < epsilon) pos.setX(i);
+				if(Math.abs(i - pos.getY()) < epsilon) pos.setY(i);
+				if(Math.abs(i - pos.getZ()) < epsilon) pos.setZ(i);
+			}
 			for(int i = 0, elementsSize = elements.size(); i < elementsSize; i++)
 			{
 				VertexFormatElement element = elements.get(i);
@@ -109,11 +116,7 @@ public class PolygonUtils
 						break;
 					case UV:
 						if(element.getType()==Type.FLOAT)
-							quadBuilder.put(
-									i,
-									(float)v.getU(),
-									(float)v.getV()
-							);
+							quadBuilder.put(i, (float)v.getU(), (float)v.getV());
 						else
 							quadBuilder.put(i, 0, 0);
 						break;

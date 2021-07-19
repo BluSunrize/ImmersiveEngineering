@@ -8,7 +8,9 @@
 
 package blusunrize.immersiveengineering.client.models.split;
 
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
+import blusunrize.immersiveengineering.api.utils.ResettableLazy;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.BlockState;
@@ -20,26 +22,28 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3i;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.common.util.Lazy;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 public class BakedBasicSplitModel extends AbstractSplitModel<IBakedModel>
 {
-	private final Lazy<Map<Vector3i, List<BakedQuad>>> splitModels;
+	private static final Set<BakedBasicSplitModel> WEAK_INSTANCES = Collections.newSetFromMap(new WeakHashMap<>());
+	static {
+		IEApi.renderCacheClearers.add(() -> WEAK_INSTANCES.forEach(b -> b.splitModels.reset()));
+	}
+
+	private final ResettableLazy<Map<Vector3i, List<BakedQuad>>> splitModels;
 
 	public BakedBasicSplitModel(IBakedModel base, Set<Vector3i> parts, IModelTransform transform, Vector3i size)
 	{
 		super(base, size);
-		this.splitModels = Lazy.concurrentOf(() -> {
+		this.splitModels = new ResettableLazy<>(() -> {
 			List<BakedQuad> quads = base.getQuads(null, null, Utils.RAND, EmptyModelData.INSTANCE);
 			return split(quads, parts, transform);
 		});
+		WEAK_INSTANCES.add(this);
 	}
 
 	@Nonnull

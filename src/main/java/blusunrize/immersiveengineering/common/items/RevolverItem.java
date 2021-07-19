@@ -229,6 +229,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 	}
 
 	@Override
+	@OnlyIn(Dist.CLIENT)
 	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
 	{
 		String tag = getRevolverDisplayTag(stack);

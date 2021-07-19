@@ -72,6 +72,7 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 	}
 
 	@Override
+	@OnlyIn(Dist.CLIENT)
 	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
 	{
 		int cap = getCapacity(stack, CAPACITY);

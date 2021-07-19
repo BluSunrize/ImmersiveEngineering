@@ -113,6 +113,7 @@ public class EarmuffsItem extends IEBaseItem implements IDyeableArmorItem, IConf
 	}
 
 	@Override
+	@OnlyIn(Dist.CLIENT)
 	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
 	{
 		int color = this.getColourForIEItem(stack, 0);

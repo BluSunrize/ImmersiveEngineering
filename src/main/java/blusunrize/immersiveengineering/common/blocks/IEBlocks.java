@@ -152,16 +152,16 @@ public final class IEBlocks
 	public static final class Multiblocks
 	{
 		public static BlockEntry<StoneMultiBlock<CokeOvenTileEntity>> cokeOven = new BlockEntry<>(
-				"coke_oven", StoneMultiBlock.PROPERTIES, p -> new StoneMultiBlock<>(p, IETileTypes.COKE_OVEN)
+				"coke_oven", StoneMultiBlock.properties(true), p -> new StoneMultiBlock<>(p, IETileTypes.COKE_OVEN)
 		);
 		public static BlockEntry<StoneMultiBlock<CrudeBlastFurnaceTileEntity>> blastFurnace = new BlockEntry<>(
-				"blast_furnace", StoneMultiBlock.PROPERTIES, p -> new StoneMultiBlock<>(p, IETileTypes.BLAST_FURNACE)
+				"blast_furnace", StoneMultiBlock.properties(true), p -> new StoneMultiBlock<>(p, IETileTypes.BLAST_FURNACE)
 		);
 		public static BlockEntry<StoneMultiBlock<AlloySmelterTileEntity>> alloySmelter = new BlockEntry<>(
-				"alloy_smelter", StoneMultiBlock.PROPERTIES, p -> new StoneMultiBlock<>(p, IETileTypes.ALLOY_SMELTER)
+				"alloy_smelter", StoneMultiBlock.properties(true), p -> new StoneMultiBlock<>(p, IETileTypes.ALLOY_SMELTER)
 		);
 		public static BlockEntry<StoneMultiBlock<BlastFurnaceAdvancedTileEntity>> blastFurnaceAdv = new BlockEntry<>(
-				"advanced_blast_furnace", StoneMultiBlock.PROPERTIES, p -> new StoneMultiBlock<>(p, IETileTypes.BLAST_FURNACE_ADVANCED)
+				"advanced_blast_furnace", StoneMultiBlock.properties(false), p -> new StoneMultiBlock<>(p, IETileTypes.BLAST_FURNACE_ADVANCED)
 		);
 
 		public static BlockEntry<MetalMultiblockBlock<MetalPressTileEntity>> metalPress = new BlockEntry<>(
