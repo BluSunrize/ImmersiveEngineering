@@ -1,25 +1,12 @@
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
-import net.minecraftforge.gradle.common.task.SignJar
 
-buildscript {
-    repositories {
-        maven { url = 'https://maven.minecraftforge.net' }
-        maven {url "https://plugins.gradle.org/m2/"}
-        mavenCentral()
-        maven {url='https://repo.spongepowered.org/repository/maven-public/'}
-    }
-    dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1.+', changing: true
-        classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.0'
-        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
-    }
+plugins {
+    id 'dev.architectury.loom' version '0.7.2-SNAPSHOT'
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
+    id 'eclipse'
+    id 'maven-publish'
 }
-apply plugin: 'net.minecraftforge.gradle'
-// Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
-apply plugin: 'eclipse'
-apply plugin: 'maven-publish'
-apply plugin: 'com.github.johnrengelman.shadow'
 
 version = buildVersionString()
 group = 'blusunrize.immersiveengineering' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
@@ -53,7 +40,9 @@ sourceSets {
         runtimeClasspath += main.output
     }
     test {
+        compileClasspath += main.compileClasspath
         compileClasspath += manual.output + api.output
+        runtimeClasspath += main.runtimeClasspath
         runtimeClasspath += manual.output + api.output
     }
 }
@@ -100,79 +89,6 @@ task copyResourcesForIntelliJ(type: Copy) {
 
 processResources.finalizedBy replaceInModsToml, copyResourcesForIntelliJ
 
-minecraft {
-    mappings channel: 'snapshot', version: "${version_mcp}"
-
-    runs {
-        client {
-            workingDirectory project.file('run')
-
-            // Recommended logging data for a userdev environment
-            property 'forge.logging.markers', ''
-            property 'fml.earlyprogresswindow', 'false'
-            property 'mixin.env.disableRefMap', 'true'
-
-            // Recommended logging level for the console
-            property 'forge.logging.console.level', 'debug'
-            arg "-mixin.config="+modid+".mixins.json"
-            mods {
-                immersiveengineering {
-                    source sourceSets.main
-                    source sourceSets.manual
-                    source sourceSets.api
-                }
-            }
-        }
-
-        server {
-            workingDirectory project.file('run')
-
-            // Recommended logging data for a userdev environment
-            property 'forge.logging.markers', ''
-
-            // Recommended logging level for the console
-            property 'forge.logging.console.level', 'debug'
-            property 'mixin.env.disableRefMap', 'true'
-
-            // Disable GUI by default, the IDE console can be used to enter commands
-            arg '-nogui'
-            arg "-mixin.config="+modid+".mixins.json"
-
-            mods {
-                immersiveengineering {
-                    source sourceSets.main
-                    source sourceSets.api
-                }
-            }
-        }
-        data {
-            workingDirectory project.file('run')
-
-            // Recommended logging data for a userdev environment
-            property 'forge.logging.markers', ''
-
-            // Recommended logging level for the console
-            property 'forge.logging.console.level', 'debug'
-            property 'fml.earlyprogresswindow', 'false'
-            property 'mixin.env.disableRefMap', 'true'
-
-            args '--mod', 'immersiveengineering', '--all', '--output', file('src/generated/resources/'), '--validate',
-                    '--existing', sourceSets.main.resources.srcDirs[0]
-            arg "-mixin.config="+modid+".mixins.json"
-            ideaModule project.name+".datagen"
-
-            mods {
-                immersiveengineering {
-                    source sourceSets.main
-                    source sourceSets.datagen
-                    source sourceSets.manual
-                    source sourceSets.api
-                }
-            }
-        }
-    }
-}
-
 repositories {
 	maven { // TOP (The one probe)
         name 'tterrag maven'
@@ -186,11 +102,9 @@ repositories {
         name 'Jared maven'
         url 'https://maven.blamejared.com/'
     }
-    repositories {//Curseforge maven, in case some other maven goes offline and for mods that don't have a maven
-        maven {
-            name = "CurseForge"
-            url = "https://minecraft.curseforge.com/api/maven/"
-        }
+    maven {
+        name = "CurseForge"
+        url = "https://minecraft.curseforge.com/api/maven/"
     }
     maven { // CC-Tweaked
         url 'https://squiddev.cc/maven/'
@@ -201,17 +115,18 @@ repositories {
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:${version_minecraft}-${version_forge}"
+    minecraft "com.mojang:minecraft:${project.version_minecraft}"
+    mappings "de.oceanlabs.mcp:mcp_snapshot:${project.version_mcp}"
 
-    compileOnly fg.deobf("mezz.jei:jei-1.16.5:7.6.1.75:api")
-    compileOnly fg.deobf("org.squiddev:cc-tweaked-1.16.4:1.94.0")
-    compileOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:1.16-3.+")
-    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.4.0:api")
+    forge "net.minecraftforge:forge:${project.version_minecraft}-${project.version_forge}"
+
+    compileOnly("mezz.jei:jei-1.16.5:7.6.1.75:api")
+    compileOnly("org.squiddev:cc-tweaked-1.16.4:1.94.0")
+    compileOnly("mcjty.theoneprobe:TheOneProbe-1.16:1.16-3.+")
+    compileOnly("top.theillusivec4.curios:curios-forge:1.16.5-4.0.4.0:api")
     compile "malte0811:BlockModelSplitter:1.2.0"
     testImplementation('junit:junit:4.13')
-    annotationProcessor 'org.spongepowered:mixin:0.8.2:processor'
-
-    compileOnly fg.deobf(group: "com.blamejared.crafttweaker", name: "CraftTweaker-1.16.5", version: "7.1.0.245")
+    compileOnly(group: "com.blamejared.crafttweaker", name: "CraftTweaker-1.16.5", version: "7.1.0.245")
 }
 
 def customGradle = rootProject.file('custom.gradle');
@@ -224,24 +139,6 @@ def reobfArtifact = artifacts.add('default', reobfFile) {
     type 'jar'
     builtBy 'reobfJar'
 }
-
-task signJar(type: SignJar, dependsOn: jar) {
-    onlyIf {
-        project.hasProperty('keyStore')
-    }
-    if (project.hasProperty('keyStore')) {
-        keyStore = project.keyStore
-        alias = project.storeAlias
-        storePass = project.storePass
-        keyPass = project.storePass
-        inputFile = jar.archivePath
-        outputFile = jar.archivePath
-    } else {
-        logger.warn("No key store found, not signing the output jar\n")
-    }
-}
-
-build.dependsOn signJar
 
 String buildVersionString() {
     String ie_output_version = "${version_ie}-${version_buildnumber}"
@@ -317,10 +214,6 @@ shadowJar {
     }
     from(sourceSets.manual.output)
     from(sourceSets.api.output)
-}
-
-reobf {
-    shadowJar {}
 }
 
 //Minimize/optimize all png files, requires optipng on the PATH
@@ -518,12 +411,6 @@ class GenerateUpdateJSON extends DefaultTask {
 task updateJson(type: GenerateUpdateJSON)
 
 processResources.dependsOn updateJson
-
-apply plugin: 'org.spongepowered.mixin'
-
-mixin {
-    add sourceSets.main, "${modid}.refmap.json"
-}
 
 // Prevent Mixin annotation processor from getting into IDEA's annotation processor settings
 // Copied from Botania
