@@ -19,4 +19,7 @@ public interface TileEntityAccess
 {
 	@Accessor("cachedBlockState")
 	BlockState getCachedBlockStateDirectly();
+
+	@Accessor
+	void setCachedBlockState(BlockState newValue);
 }

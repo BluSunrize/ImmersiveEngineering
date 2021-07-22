@@ -19,8 +19,10 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multiset;
+import com.google.common.collect.Sets;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArraySet;
+import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -60,7 +62,8 @@ public class GlobalWireNetwork implements IWorldTickable
 	private static World lastClientWorld;
 	private static GlobalWireNetwork lastClientNet;
 
-	private final Map<ConnectionPoint, LocalWireNetwork> localNets = new HashMap<>();
+	private final Map<ConnectionPoint, LocalWireNetwork> localNetsByPos = new HashMap<>();
+	private final Set<LocalWireNetwork> localNetSet = new ReferenceOpenHashSet<>();
 	private final WireCollisionData collisionData;
 	private final IICProxyProvider proxyProvider;
 	private final IWireSyncManager syncManager;
@@ -201,8 +204,9 @@ public class GlobalWireNetwork implements IWorldTickable
 
 	public void readFromNBT(CompoundNBT nbt)
 	{
-		localNets.values().forEach(LocalWireNetwork::setInvalid);
-		localNets.clear();
+		localNetSet.forEach(LocalWireNetwork::setInvalid);
+		localNetSet.clear();
+		localNetsByPos.clear();
 		ListNBT locals = nbt.getList("locals", NBT.TAG_COMPOUND);
 		for(INBT b : locals)
 		{
@@ -219,10 +223,8 @@ public class GlobalWireNetwork implements IWorldTickable
 	{
 		CompoundNBT ret = new CompoundNBT();
 		ListNBT locals = new ListNBT();
-		Set<LocalWireNetwork> savedNets = Collections.newSetFromMap(new IdentityHashMap<>());
-		for(LocalWireNetwork local : localNets.values())
-			if(savedNets.add(local))
-				locals.add(local.writeToNBT());
+		for(LocalWireNetwork local : localNetSet)
+			locals.add(local.writeToNBT());
 		ret.put("locals", locals);
 		return ret;
 	}
@@ -235,7 +237,7 @@ public class GlobalWireNetwork implements IWorldTickable
 	public LocalWireNetwork getLocalNet(ConnectionPoint pos)
 	{
 		processQueuedLoads();
-		LocalWireNetwork ret = localNets.computeIfAbsent(pos, p -> {
+		LocalWireNetwork ret = localNetsByPos.computeIfAbsent(pos, p -> {
 			LocalWireNetwork newNet = new LocalWireNetwork(this);
 			IImmersiveConnectable proxy = proxyProvider.create(
 					pos.getPosition(),
@@ -243,6 +245,7 @@ public class GlobalWireNetwork implements IWorldTickable
 					ImmutableList.of()
 			);
 			newNet.addConnector(pos, proxy, this);
+			localNetSet.add(newNet);
 			return newNet;
 		});
 		Preconditions.checkState(ret.isValid(pos), "%s is not a valid net", ret);
@@ -257,7 +260,7 @@ public class GlobalWireNetwork implements IWorldTickable
 	public LocalWireNetwork getNullableLocalNet(ConnectionPoint pos)
 	{
 		processQueuedLoads();
-		LocalWireNetwork ret = localNets.get(pos);
+		LocalWireNetwork ret = localNetsByPos.get(pos);
 		if(ret!=null)
 			Preconditions.checkState(ret.isValid(pos), "%s is not valid for position %s", ret, pos);
 		return ret;
@@ -281,7 +284,10 @@ public class GlobalWireNetwork implements IWorldTickable
 		for(LocalWireNetwork net : netsToRemoveFrom)
 		{
 			net.removeConnector(iicPos);
-			splitNet(net);
+			if (net.getConnectionPoints().isEmpty())
+				localNetSet.remove(net);
+			else
+				splitNet(net);
 		}
 		validateNextTick = true;
 	}
@@ -417,10 +423,8 @@ public class GlobalWireNetwork implements IWorldTickable
 			validateNextTick = false;
 		}
 		processQueuedLoads();
-		Set<LocalWireNetwork> ticked = new HashSet<>();
-		for(LocalWireNetwork net : localNets.values())
-			if(ticked.add(net))
-				net.update(world);
+		for(LocalWireNetwork net : localNetSet)
+			net.update(world);
 		if(SANITIZE_CONNECTIONS.getValue().getAsBoolean())
 			NetworkSanitizer.tick(world, this);
 	}
@@ -439,7 +443,7 @@ public class GlobalWireNetwork implements IWorldTickable
 			Thread.dumpStack();
 		}
 		validating = true;
-		localNets.values().stream().distinct().forEach(
+		localNetsByPos.values().stream().distinct().forEach(
 				(local) -> {
 					Map<ResourceLocation, Multiset<ILocalHandlerProvider>> handlerUsers = new HashMap<>();
 					Function<ResourceLocation, Multiset<ILocalHandlerProvider>> getHandler = rl ->
@@ -454,14 +458,14 @@ public class GlobalWireNetwork implements IWorldTickable
 						}
 						for(ResourceLocation rl : iic.getRequestedHandlers())
 							getHandler.apply(rl).add(iic);
-						if(localNets.get(cp)!=local)
-							WireLogger.logger.warn("{} has net {}, but is in net {}", cp, localNets.get(cp), local);
+						if(localNetsByPos.get(cp)!=local)
+							WireLogger.logger.warn("{} has net {}, but is in net {}", cp, localNetsByPos.get(cp), local);
 						else
 							for(Connection c : local.getConnections(cp))
 							{
-								if(localNets.get(c.getOtherEnd(cp))!=local)
+								if(localNetsByPos.get(c.getOtherEnd(cp))!=local)
 									WireLogger.logger.warn("{} is connected to {}, but nets are {} and {}", cp,
-											c.getOtherEnd(cp), localNets.get(c.getOtherEnd(cp)), local);
+											c.getOtherEnd(cp), localNetsByPos.get(c.getOtherEnd(cp)), local);
 								else if(!local.getConnections(c.getOtherEnd(cp)).contains(c))
 									WireLogger.logger.warn("Connection {} from {} to {} is a diode!", c, cp,
 											c.getOtherEnd(cp));
@@ -490,6 +494,14 @@ public class GlobalWireNetwork implements IWorldTickable
 						}
 				}
 		);
+		Set<LocalWireNetwork> actualLocalSet = new ReferenceOpenHashSet<>(localNetsByPos.values());
+		actualLocalSet.removeIf(lwn -> !lwn.isValid());
+		if (!localNetSet.equals(actualLocalSet))
+		{
+			WireLogger.logger.warn("Local net set does not match value set of local nets by position");
+			WireLogger.logger.warn("Actual set, but not in stored set: {}", new HashSet<>(Sets.difference(actualLocalSet, localNetSet)));
+			WireLogger.logger.warn("Stored set, but not in actual set: {}", new HashSet<>(Sets.difference(localNetSet, actualLocalSet)));
+		}
 		WireLogger.logger.info("Validated!");
 		validating = false;
 	}
@@ -503,7 +515,7 @@ public class GlobalWireNetwork implements IWorldTickable
 	{
 		//TODO better way of finding all connectors in a chunk
 		Collection<ConnectionPoint> ret = new ArrayList<>();
-		for(ConnectionPoint cp : localNets.keySet())
+		for(ConnectionPoint cp : localNetsByPos.keySet())
 			if(pos.equals(new ChunkPos(cp.getPosition())))
 				ret.add(cp);
 		return ret;
@@ -520,7 +532,7 @@ public class GlobalWireNetwork implements IWorldTickable
 	void removeConnector(BlockPos pos)
 	{
 		Collection<ConnectionPoint> cpsAtInvalid = new ArrayList<>();
-		for(ConnectionPoint cp : localNets.keySet())
+		for(ConnectionPoint cp : localNetsByPos.keySet())
 			if(cp.getPosition().equals(pos))
 				cpsAtInvalid.add(cp);
 		for(ConnectionPoint toRemove : cpsAtInvalid)
@@ -538,16 +550,20 @@ public class GlobalWireNetwork implements IWorldTickable
 
 	private void putLocalNet(ConnectionPoint cp, @Nullable LocalWireNetwork net)
 	{
-		LocalWireNetwork oldNet = localNets.get(cp);
+		LocalWireNetwork oldNet = localNetsByPos.get(cp);
 		if(oldNet!=null&&net!=null&&oldNet.isValid(cp))
 		{
 			WireLogger.logger.info("Marking {} as invalid", oldNet);
 			oldNet.setInvalid();
+			localNetSet.remove(oldNet);
 		}
 		if(net!=null)
-			localNets.put(cp, net);
+		{
+			localNetsByPos.put(cp, net);
+			localNetSet.add(net);
+		}
 		else
-			localNets.remove(cp);
+			localNetsByPos.remove(cp);
 	}
 
 	public IImmersiveConnectable getExistingConnector(ConnectionPoint cp)
