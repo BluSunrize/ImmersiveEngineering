@@ -36,6 +36,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -62,9 +63,9 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 {
 	public float animation_barrelRotation = 0;
 
-	public CrusherTileEntity()
+	public CrusherTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IEMultiblocks.CRUSHER, 32000, true, IETileTypes.CRUSHER.get());
+		super(IEMultiblocks.CRUSHER, 32000, true, IETileTypes.CRUSHER.get(), pos, state);
 	}
 
 	@Override
@@ -288,10 +289,10 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 					master.addProcessToQueue(process, false, true);
 					stack.shrink(displayStack.getCount());
 					if(stack.getCount() <= 0)
-						entity.remove();
+						entity.discard();
 				}
 			}
-			else if(entity instanceof LivingEntity&&(!(entity instanceof Player)||!((Player)entity).abilities.invulnerable))
+			else if(entity instanceof LivingEntity&&(!(entity instanceof Player)||!((Player)entity).getAbilities().invulnerable))
 			{
 				int consumed = master.energyStorage.extractEnergy(80, true);
 				if(consumed > 0)

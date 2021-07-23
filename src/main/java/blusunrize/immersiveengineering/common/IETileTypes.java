@@ -27,7 +27,7 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
 public class IETileTypes
 {
 	public static final DeferredRegister<BlockEntityType<?>> REGISTER = DeferredRegister.create(
-			ForgeRegistries.TILE_ENTITIES, ImmersiveEngineering.MODID);
+			ForgeRegistries.BLOCK_ENTITIES, ImmersiveEngineering.MODID);
 
 	public static final RegistryObject<BlockEntityType<BalloonTileEntity>> BALLOON = REGISTER.register(
 			"balloon", makeType(BalloonTileEntity::new, Cloth.balloon)
@@ -146,13 +146,13 @@ public class IETileTypes
 			"feedthrough", makeType(FeedthroughTileEntity::new, Connectors.feedthrough)
 	);
 	public static final RegistryObject<BlockEntityType<CapacitorTileEntity>> CAPACITOR_LV = REGISTER.register(
-			"capacitorlv", makeType(() -> new CapacitorTileEntity(IEServerConfig.MACHINES.lvCapConfig), MetalDevices.capacitorLV)
+			"capacitorlv", makeType((pos, state) -> new CapacitorTileEntity(IEServerConfig.MACHINES.lvCapConfig, pos, state), MetalDevices.capacitorLV)
 	);
 	public static final RegistryObject<BlockEntityType<CapacitorTileEntity>> CAPACITOR_MV = REGISTER.register(
-			"capacitormv", makeType(() -> new CapacitorTileEntity(IEServerConfig.MACHINES.mvCapConfig), MetalDevices.capacitorMV)
+			"capacitormv", makeType((pos, state) -> new CapacitorTileEntity(IEServerConfig.MACHINES.mvCapConfig, pos, state), MetalDevices.capacitorMV)
 	);
 	public static final RegistryObject<BlockEntityType<CapacitorTileEntity>> CAPACITOR_HV = REGISTER.register(
-			"capacitorhv", makeType(() -> new CapacitorTileEntity(IEServerConfig.MACHINES.hvCapConfig), MetalDevices.capacitorHV)
+			"capacitorhv", makeType((pos, state) -> new CapacitorTileEntity(IEServerConfig.MACHINES.hvCapConfig, pos, state), MetalDevices.capacitorHV)
 	);
 	public static final RegistryObject<BlockEntityType<CapacitorCreativeTileEntity>> CAPACITOR_CREATIVE = REGISTER.register(
 			"capacitorcreative", makeType(CapacitorCreativeTileEntity::new, MetalDevices.capacitorCreative)
@@ -268,13 +268,13 @@ public class IETileTypes
 		EnergyConnectorTileEntity.registerConnectorTEs(REGISTER);
 	}
 
-	private static <T extends BlockEntity> Supplier<BlockEntityType<T>> makeType(Supplier<T> create, Supplier<? extends Block> valid)
+	private static <T extends BlockEntity> Supplier<BlockEntityType<T>> makeType(BlockEntityType.BlockEntitySupplier<T> create, Supplier<? extends Block> valid)
 	{
 		return makeTypeMultipleBlocks(create, ImmutableSet.of(valid));
 	}
 
 	private static <T extends BlockEntity> Supplier<BlockEntityType<T>> makeTypeMultipleBlocks(
-			Supplier<T> create, Collection<? extends Supplier<? extends Block>> valid
+			BlockEntityType.BlockEntitySupplier<T> create, Collection<? extends Supplier<? extends Block>> valid
 	)
 	{
 		return () -> new BlockEntityType<>(

@@ -43,7 +43,7 @@ public abstract class ShaderBannerBlock extends IETileProviderBlock
 
 	@Nullable
 	@Override
-	public BlockEntity createTileEntity(@Nonnull BlockState state, @Nonnull BlockGetter world)
+	public BlockEntity newBlockEntity(@Nonnull BlockPos pos, @Nonnull BlockState state)
 	{
 		return new ShaderBannerTileEntity();
 	}

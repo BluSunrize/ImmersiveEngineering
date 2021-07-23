@@ -55,15 +55,15 @@ public abstract class IEBaseTileEntity extends BlockEntity implements Blockstate
 
 	private final EnumMap<Direction, Integer> redstoneBySide = new EnumMap<>(Direction.class);
 
-	public IEBaseTileEntity(BlockEntityType<? extends BlockEntity> type)
+	public IEBaseTileEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
 	{
-		super(type);
+		super(type, pos, state);
 	}
 
 	@Override
-	public void load(BlockState stateIn, CompoundTag nbtIn)
+	public void load(CompoundTag nbtIn)
 	{
-		super.load(stateIn, nbtIn);
+		super.load(nbtIn);
 		this.readCustomNBT(nbtIn, false);
 	}
 
@@ -208,8 +208,7 @@ public abstract class IEBaseTileEntity extends BlockEntity implements Blockstate
 	public double getViewDistance()
 	{
 		double increase = IEClientConfig.increasedTileRenderdistance.get();
-		return super.getViewDistance()*
-				increase*increase;
+		return super.getViewDistance()*increase*increase;
 	}
 
 	@Override
@@ -307,9 +306,9 @@ public abstract class IEBaseTileEntity extends BlockEntity implements Blockstate
 	}
 
 	@Override
-	public void setLevelAndPosition(Level world, BlockPos pos)
+	public void setLevel(Level world)
 	{
-		super.setLevelAndPosition(world, pos);
+		super.setLevel(world);
 		this.redstoneBySide.clear();
 	}
 
@@ -318,11 +317,13 @@ public abstract class IEBaseTileEntity extends BlockEntity implements Blockstate
 	@Override
 	public void setChanged()
 	{
-		if (this.level != null) {
+		if (this.level !=null)
+		{
 			BlockState state = this.level.getBlockState(this.worldPosition);
-			((TileEntityAccess) this).setBlockState(state);
+			((TileEntityAccess)this).setBlockState(state);
 			markChunkDirty();
-			if (this instanceof IComparatorOverride && !state.isAir(this.level, this.worldPosition)) {
+			if(this instanceof IComparatorOverride&&!state.isAir())
+			{
 				this.level.updateNeighbourForOutputSignal(this.worldPosition, state.getBlock());
 			}
 		}

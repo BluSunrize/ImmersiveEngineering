@@ -21,6 +21,7 @@ import blusunrize.immersiveengineering.common.blocks.generic.ImmersiveConnectabl
 import com.mojang.math.Quaternion;
 import com.mojang.math.Transformation;
 import com.mojang.math.Vector3f;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
@@ -44,14 +45,14 @@ public class ConnectorStructuralTileEntity extends ImmersiveConnectableTileEntit
 {
 	public float rotation = 0;
 
-	public ConnectorStructuralTileEntity()
+	public ConnectorStructuralTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IETileTypes.CONNECTOR_STRUCTURAL.get());
+		this(IETileTypes.CONNECTOR_STRUCTURAL.get(), pos, state);
 	}
 
-	public ConnectorStructuralTileEntity(BlockEntityType<? extends ConnectorStructuralTileEntity> type)
+	public ConnectorStructuralTileEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
 	{
-		super(type);
+		super(type, pos, state);
 	}
 
 	@Override

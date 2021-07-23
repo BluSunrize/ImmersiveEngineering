@@ -35,6 +35,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -64,9 +65,9 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 	public float animation_agitator = 0;
 	public boolean outputAll;
 
-	public MixerTileEntity()
+	public MixerTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IEMultiblocks.MIXER, 16000, true, IETileTypes.MIXER.get());
+		super(IEMultiblocks.MIXER, 16000, true, IETileTypes.MIXER.get(), pos, state);
 	}
 
 	@Override

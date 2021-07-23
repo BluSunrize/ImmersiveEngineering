@@ -22,7 +22,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBou
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.blocks.generic.ImmersiveConnectableTileEntity;
 import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectableBlock;
-import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -52,7 +51,7 @@ public class ConnectorBundledTileEntity extends ImmersiveConnectableTileEntity i
 {
 	public static final List<IBundledProvider> EXTRA_SOURCES = new ArrayList<>();
 
-	public ConnectorBundledTileEntity()
+	public ConnectorBundledTileEntity(BlockPos pos, BlockState state)
 	{
 		this(IETileTypes.CONNECTOR_BUNDLED.get());
 	}

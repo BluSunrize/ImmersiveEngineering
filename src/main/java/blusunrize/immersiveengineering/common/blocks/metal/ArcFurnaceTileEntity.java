@@ -38,6 +38,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -90,9 +91,9 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 			() -> new DirectionalBlockPos(this.getBlockPosForPos(SLAG_OUT_POS).relative(getFacing()), getFacing().getOpposite()),
 			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 
-	public ArcFurnaceTileEntity()
+	public ArcFurnaceTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IEMultiblocks.ARC_FURNACE, 64000, true, IETileTypes.ARC_FURNACE.get());
+		super(IEMultiblocks.ARC_FURNACE, 64000, true, IETileTypes.ARC_FURNACE.get(), pos, state);
 	}
 
 	@Override

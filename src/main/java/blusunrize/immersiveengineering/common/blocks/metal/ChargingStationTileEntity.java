@@ -27,6 +27,8 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWra
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
+import com.mojang.math.Vector3f;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.NonNullList;
@@ -36,6 +38,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -58,16 +61,16 @@ public class ChargingStationTileEntity extends IEBaseTileEntity implements IETic
 	private boolean charging = true;
 	public int comparatorOutput = 0;
 
-	public ChargingStationTileEntity()
+	public ChargingStationTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IETileTypes.CHARGING_STATION.get());
+		super(IETileTypes.CHARGING_STATION.get(), pos, state);
 	}
 
 	@Override
 	public void tickClient()
 	{
 		particles.get().clientTick();
-		if(EnergyHelper.isFluxReceiver(inventory.get(0)) && charging)
+		if(EnergyHelper.isFluxReceiver(inventory.get(0))&&charging)
 		{
 			float charge = 0;
 			float max = EnergyHelper.getMaxEnergyStored(inventory.get(0));
@@ -84,7 +87,7 @@ public class ChargingStationTileEntity extends IEBaseTileEntity implements IETic
 					double y = .25;
 					double z = .5+(getFacing()==Direction.NORTH?-.46875: getFacing()==Direction.SOUTH?.46875: getFacing()==Direction.EAST?(-.1875*shift): (.1875*shift));
 					particles.get().add(
-							new DustParticleOptions(1-charge, charge, 0, .5f), x, y, z, .25, .25, .25, -1
+							new DustParticleOptions(new Vector3f(1-charge, charge, 0), .5f), x, y, z, .25, .25, .25, -1
 					);
 				}
 			}

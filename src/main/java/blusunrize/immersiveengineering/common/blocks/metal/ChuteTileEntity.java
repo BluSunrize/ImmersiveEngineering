@@ -62,9 +62,9 @@ public class ChuteTileEntity extends IEBaseTileEntity implements IStateBasedDire
 	private static final String NBT_GLITCH = "immersiveengineering:chuteGlitched";
 	private boolean diagonal = false;
 
-	public ChuteTileEntity()
+	public ChuteTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IETileTypes.CHUTE.get());
+		super(IETileTypes.CHUTE.get(), pos, state);
 	}
 
 	@Override

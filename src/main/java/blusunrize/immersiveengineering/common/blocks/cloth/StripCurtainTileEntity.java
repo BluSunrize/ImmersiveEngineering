@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.nbt.CompoundTag;
@@ -53,9 +54,9 @@ public class StripCurtainTileEntity extends IEBaseTileEntity implements IETickab
 	private int redstoneSignal = 0;
 	private boolean strongSignal = false;
 
-	public StripCurtainTileEntity()
+	public StripCurtainTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IETileTypes.STRIP_CURTAIN.get());
+		super(IETileTypes.STRIP_CURTAIN.get(), pos, state);
 	}
 
 	@Override

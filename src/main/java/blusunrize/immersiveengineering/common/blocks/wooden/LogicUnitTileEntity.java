@@ -31,6 +31,7 @@ import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -63,9 +64,9 @@ public class LogicUnitTileEntity extends IEBaseTileEntity implements IIEInventor
 	private final boolean[] registers = new boolean[SIZE_REGISTERS];
 	private final boolean[] outputs = new boolean[SIZE_COLORS];
 
-	public LogicUnitTileEntity()
+	public LogicUnitTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IETileTypes.LOGIC_UNIT.get());
+		super(IETileTypes.LOGIC_UNIT.get(), pos, state);
 	}
 
 	@Override

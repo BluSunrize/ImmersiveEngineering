@@ -17,7 +17,6 @@ import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
-import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.collect.Lists;
 import net.minecraft.core.BlockPos;
@@ -49,9 +48,9 @@ public class WindmillTileEntity extends IEBaseTileEntity implements IETickableBl
 	public float turnSpeed = 0;
 	public int sails = 0;
 
-	public WindmillTileEntity()
+	public WindmillTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IETileTypes.WINDMILL.get());
+		super(IETileTypes.WINDMILL.get(), pos, state);
 	}
 
 	@Override

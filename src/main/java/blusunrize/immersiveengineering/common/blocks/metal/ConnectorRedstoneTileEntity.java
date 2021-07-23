@@ -22,7 +22,6 @@ import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.generic.ImmersiveConnectableTileEntity;
 import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectableBlock;
-import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import com.mojang.math.Vector4f;
@@ -66,7 +65,7 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 	//Only write to this in wire network updates!
 	private int output;
 
-	public ConnectorRedstoneTileEntity()
+	public ConnectorRedstoneTileEntity(BlockPos pos, BlockState state)
 	{
 		this(IETileTypes.CONNECTOR_REDSTONE.get());
 	}

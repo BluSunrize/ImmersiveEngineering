@@ -16,12 +16,14 @@ import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop;
 import com.google.common.collect.ImmutableList;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -35,9 +37,9 @@ public class ShaderBannerTileEntity extends IEBaseTileEntity implements ITileDro
 {
 	public ShaderWrapper_Direct shader = new ShaderWrapper_Direct(new ResourceLocation(ImmersiveEngineering.MODID, "banner"));
 
-	public ShaderBannerTileEntity()
+	public ShaderBannerTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IETileTypes.SHADER_BANNER.get());
+		super(IETileTypes.SHADER_BANNER.get(), pos, state);
 		reInitCapability();
 	}
 

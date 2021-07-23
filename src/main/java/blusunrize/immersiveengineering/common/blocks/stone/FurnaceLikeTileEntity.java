@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileE
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMultiblock;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -25,6 +26,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -54,10 +56,11 @@ public abstract class FurnaceLikeTileEntity<R, T extends FurnaceLikeTileEntity<R
 	private final ToIntFunction<R> getProcessingTime;
 
 	protected FurnaceLikeTileEntity(
-			IETemplateMultiblock mb, BlockEntityType<T> type, int fuelSlot, List<InputSlot<R>> inputs, List<OutputSlot<R>> outputs, ToIntFunction<R> getProcessingTime
+			IETemplateMultiblock mb, BlockEntityType<T> type, int fuelSlot, List<InputSlot<R>> inputs, List<OutputSlot<R>> outputs, ToIntFunction<R> getProcessingTime,
+			BlockPos pos, BlockState state
 	)
 	{
-		super(mb, type, false);
+		super(mb, type, false, pos, state);
 		this.fuelSlot = fuelSlot;
 		this.inputs = inputs;
 		this.outputs = outputs;

@@ -71,9 +71,9 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 	public FluidTank[] tanks = new FluidTank[]{new FluidTank(8*FluidAttributes.BUCKET_VOLUME)};
 	public List<BottlingProcess> bottlingProcessQueue = new ArrayList<>();
 
-	public BottlingMachineTileEntity()
+	public BottlingMachineTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IEMultiblocks.BOTTLING_MACHINE, 16000, true, IETileTypes.BOTTLING_MACHINE.get());
+		super(IEMultiblocks.BOTTLING_MACHINE, 16000, true, IETileTypes.BOTTLING_MACHINE.get(), pos, state);
 	}
 
 	@Override

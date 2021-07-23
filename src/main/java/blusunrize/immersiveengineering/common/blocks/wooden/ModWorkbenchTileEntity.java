@@ -53,9 +53,9 @@ public class ModWorkbenchTileEntity extends IEBaseTileEntity implements IIEInven
 	public static final BlockPos DUMMY_POS = new BlockPos(1, 0, 0);
 	private final NonNullList<ItemStack> inventory = NonNullList.withSize(7, ItemStack.EMPTY);
 
-	public ModWorkbenchTileEntity()
+	public ModWorkbenchTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IETileTypes.MOD_WORKBENCH.get());
+		super(IETileTypes.MOD_WORKBENCH.get(), pos, state);
 	}
 
 	@Override

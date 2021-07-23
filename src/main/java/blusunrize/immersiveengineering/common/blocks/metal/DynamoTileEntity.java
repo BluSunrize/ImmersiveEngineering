@@ -25,6 +25,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.Vec3;
 
@@ -33,9 +34,9 @@ import javax.annotation.Nullable;
 
 public class DynamoTileEntity extends IEBaseTileEntity implements IIEInternalFluxConnector, IStateBasedDirectional, IRotationAcceptor
 {
-	public DynamoTileEntity()
+	public DynamoTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IETileTypes.DYNAMO.get());
+		super(IETileTypes.DYNAMO.get(), pos, state);
 	}
 
 	@Override

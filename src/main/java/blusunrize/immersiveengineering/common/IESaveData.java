@@ -34,12 +34,12 @@ public class IESaveData extends SavedData
 
 	public IESaveData()
 	{
-		super(dataName);
+		super();
 	}
 
-	@Override
-	public void load(CompoundTag nbt)
+	public IESaveData(CompoundTag nbt)
 	{
+		this();
 		ListTag dimensionList = nbt.getList("mineralVeins", NBT.TAG_COMPOUND);
 		synchronized(ExcavatorHandler.getMineralVeinList())
 		{

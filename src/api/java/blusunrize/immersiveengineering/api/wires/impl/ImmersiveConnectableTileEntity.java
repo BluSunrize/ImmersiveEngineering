@@ -23,6 +23,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.IModelData;
 
 import javax.annotation.Nonnull;
@@ -31,16 +32,16 @@ public abstract class ImmersiveConnectableTileEntity extends BlockEntity impleme
 {
 	protected GlobalWireNetwork globalNet;
 
-	public ImmersiveConnectableTileEntity(BlockEntityType<?> tileEntityTypeIn)
+	public ImmersiveConnectableTileEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState state)
 	{
-		super(tileEntityTypeIn);
+		super(tileEntityTypeIn, pos, state);
 	}
 
 	@Override
-	public void setLevelAndPosition(@Nonnull Level worldIn, @Nonnull BlockPos pos)
+	public void setLevel(Level world)
 	{
-		super.setLevelAndPosition(worldIn, pos);
-		globalNet = GlobalWireNetwork.getNetwork(worldIn);
+		super.setLevel(world);
+		globalNet = GlobalWireNetwork.getNetwork(world);
 	}
 
 	@Nonnull

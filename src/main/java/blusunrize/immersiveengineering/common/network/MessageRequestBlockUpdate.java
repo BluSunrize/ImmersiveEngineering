@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.common.EventHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraftforge.fml.network.NetworkEvent.Context;
+import net.minecraftforge.fmllegacy.network.NetworkEvent.Context;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import java.util.Objects;

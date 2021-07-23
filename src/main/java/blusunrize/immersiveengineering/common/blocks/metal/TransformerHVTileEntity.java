@@ -11,14 +11,16 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import com.google.common.collect.ImmutableSet;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
 
 import static blusunrize.immersiveengineering.api.wires.WireType.HV_CATEGORY;
 
 public class TransformerHVTileEntity extends TransformerTileEntity
 {
-	public TransformerHVTileEntity()
+	public TransformerHVTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IETileTypes.TRANSFORMER_HV.get());
+		super(IETileTypes.TRANSFORMER_HV.get(), pos, state);
 		acceptableLowerWires = ImmutableSet.of(WireType.LV_CATEGORY, WireType.MV_CATEGORY);
 	}
 

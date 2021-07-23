@@ -34,7 +34,7 @@ public abstract class IERecipeSerializer<R extends Recipe<?>> extends ForgeRegis
 	protected ItemStack readOutput(JsonElement outputObject)
 	{
 		if(outputObject.isJsonObject()&&outputObject.getAsJsonObject().has("item"))
-			return ShapedRecipe.itemFromJson(outputObject.getAsJsonObject());
+			return ShapedRecipe.itemStackFromJson(outputObject.getAsJsonObject());
 		IngredientWithSize outgredient = IngredientWithSize.deserialize(outputObject);
 		return IEApi.getPreferredStackbyMod(outgredient.getMatchingStacks());
 	}

@@ -35,6 +35,7 @@ import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -67,9 +68,9 @@ public class SqueezerTileEntity extends PoweredMultiblockTileEntity<SqueezerTile
 			this, this::getOutputPos, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
 	);
 
-	public SqueezerTileEntity()
+	public SqueezerTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IEMultiblocks.SQUEEZER, 16000, true, IETileTypes.SQUEEZER.get());
+		super(IEMultiblocks.SQUEEZER, 16000, true, IETileTypes.SQUEEZER.get(), pos, state);
 	}
 
 	@Override

@@ -59,9 +59,9 @@ public class StructuralArmTileEntity extends IEBaseTileEntity implements IOBJMod
 	private Direction facing = null;
 	private boolean onCeiling = false;
 
-	public StructuralArmTileEntity()
+	public StructuralArmTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IETileTypes.STRUCTURAL_ARM.get());
+		super(IETileTypes.STRUCTURAL_ARM.get(), pos, state);
 	}
 
 	@Override

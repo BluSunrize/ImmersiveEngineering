@@ -31,6 +31,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -61,9 +62,9 @@ public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTi
 	public final FluidTank[] tanks = new FluidTank[]{new FluidTank(24*FluidAttributes.BUCKET_VOLUME)};
 	public final NonNullList<ItemStack> inventory = NonNullList.withSize(11, ItemStack.EMPTY);
 
-	public FermenterTileEntity()
+	public FermenterTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IEMultiblocks.FERMENTER, 16000, true, IETileTypes.FERMENTER.get());
+		super(IEMultiblocks.FERMENTER, 16000, true, IETileTypes.FERMENTER.get(), pos, state);
 	}
 
 	@Override

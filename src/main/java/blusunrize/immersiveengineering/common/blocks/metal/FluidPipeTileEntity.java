@@ -93,9 +93,9 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 	public static ArrayList<Predicate<Block>> validPipeCovers = new ArrayList<>();
 	public static ArrayList<Predicate<Block>> climbablePipeCovers = new ArrayList<>();
 
-	public FluidPipeTileEntity()
+	public FluidPipeTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IETileTypes.FLUID_PIPE.get());
+		super(IETileTypes.FLUID_PIPE.get(), pos, state);
 	}
 
 	public static void initCovers()

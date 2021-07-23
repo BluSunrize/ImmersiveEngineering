@@ -62,9 +62,9 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 	private int compVal = -1;
 	private Connection shuntConnection;
 
-	public EnergyMeterTileEntity()
+	public EnergyMeterTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IETileTypes.ENERGY_METER.get());
+		super(IETileTypes.ENERGY_METER.get(), pos, state);
 	}
 
 	@Override

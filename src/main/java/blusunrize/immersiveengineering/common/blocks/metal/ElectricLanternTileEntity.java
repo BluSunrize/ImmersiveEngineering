@@ -26,6 +26,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -42,9 +43,9 @@ public class ElectricLanternTileEntity extends ImmersiveConnectableTileEntity im
 	private int energyDraw = IEServerConfig.MACHINES.lantern_energyDraw.get();
 	private int maximumStorage = IEServerConfig.MACHINES.lantern_maximumStorage.get();
 
-	public ElectricLanternTileEntity()
+	public ElectricLanternTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IETileTypes.ELECTRIC_LANTERN.get());
+		super(IETileTypes.ELECTRIC_LANTERN.get(), pos, state);
 	}
 
 	@Override

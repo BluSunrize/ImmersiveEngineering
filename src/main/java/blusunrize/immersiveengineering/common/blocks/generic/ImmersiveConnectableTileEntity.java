@@ -23,6 +23,7 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.IModelData;
 
 import javax.annotation.Nonnull;
@@ -33,9 +34,9 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 {
 	protected GlobalWireNetwork globalNet;
 
-	public ImmersiveConnectableTileEntity(BlockEntityType<? extends ImmersiveConnectableTileEntity> type)
+	public ImmersiveConnectableTileEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
 	{
-		super(type);
+		super(type, pos, state);
 	}
 
 	@Override
@@ -62,9 +63,9 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 	}
 
 	@Override
-	public void setLevelAndPosition(@Nonnull Level worldIn, @Nonnull BlockPos pos)
+	public void setLevel(Level worldIn)
 	{
-		super.setLevelAndPosition(worldIn, pos);
+		super.setLevel(worldIn);
 		globalNet = GlobalWireNetwork.getNetwork(worldIn);
 	}
 

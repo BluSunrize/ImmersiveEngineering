@@ -30,6 +30,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -59,9 +60,9 @@ public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTile
 	};
 	public final NonNullList<ItemStack> inventory = NonNullList.withSize(6, ItemStack.EMPTY);
 
-	public RefineryTileEntity()
+	public RefineryTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IEMultiblocks.REFINERY, 16000, true, IETileTypes.REFINERY.get());
+		super(IEMultiblocks.REFINERY, 16000, true, IETileTypes.REFINERY.get(), pos, state);
 	}
 
 	@Override

@@ -15,8 +15,11 @@ import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
 import blusunrize.immersiveengineering.common.gui.IEContainerTypes.TileContainer;
 import blusunrize.immersiveengineering.common.util.CachedRecipe;
 import com.google.common.collect.ImmutableList;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.ForgeHooks;
 
 import javax.annotation.Nullable;
@@ -28,13 +31,14 @@ public class AlloySmelterTileEntity extends FurnaceLikeTileEntity<AlloyRecipe, A
 			AlloyRecipe::findRecipe, () -> inventory.get(0), () -> inventory.get(1)
 	);
 
-	public AlloySmelterTileEntity()
+	public AlloySmelterTileEntity(BlockPos pos, BlockState state)
 	{
 		super(
 				IEMultiblocks.ALLOY_SMELTER, IETileTypes.ALLOY_SMELTER.get(), 2,
 				ImmutableList.of(new InputSlot<>(a -> a.input0, 0), new InputSlot<>(a -> a.input1, 1)),
 				ImmutableList.of(new OutputSlot<>(a -> a.output, 3)),
-				a -> a.time
+				a -> a.time,
+				pos, state
 		);
 	}
 
@@ -54,7 +58,8 @@ public class AlloySmelterTileEntity extends FurnaceLikeTileEntity<AlloyRecipe, A
 	@Override
 	protected int getBurnTimeOf(ItemStack fuel)
 	{
-		return ForgeHooks.getBurnTime(fuel);
+		//TODO more specific type?
+		return ForgeHooks.getBurnTime(fuel, RecipeType.SMELTING);
 	}
 
 	@Override

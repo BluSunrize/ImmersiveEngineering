@@ -58,9 +58,9 @@ public class CircuitTableTileEntity extends IEBaseTileEntity implements IIEInven
 	private final FluxStorageAdvanced energyStorage = new FluxStorageAdvanced(32000);
 	private final NonNullList<ItemStack> inventory = NonNullList.withSize(3, ItemStack.EMPTY);
 
-	public CircuitTableTileEntity()
+	public CircuitTableTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IETileTypes.CIRCUIT_TABLE.get());
+		super(IETileTypes.CIRCUIT_TABLE.get(), pos, state);
 	}
 
 	@Override

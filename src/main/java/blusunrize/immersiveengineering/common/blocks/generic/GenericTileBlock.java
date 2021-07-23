@@ -9,11 +9,11 @@
 package blusunrize.immersiveengineering.common.blocks.generic;
 
 import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
-import net.minecraft.world.level.BlockGetter;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.fmllegacy.RegistryObject;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -30,7 +30,7 @@ public class GenericTileBlock<T extends BlockEntity> extends IETileProviderBlock
 
 	@Nullable
 	@Override
-	public BlockEntity createTileEntity(@Nonnull BlockState state, @Nonnull BlockGetter world)
+	public BlockEntity newBlockEntity(@Nonnull BlockPos pos, @Nonnull BlockState state)
 	{
 		return tileType.get().create();
 	}

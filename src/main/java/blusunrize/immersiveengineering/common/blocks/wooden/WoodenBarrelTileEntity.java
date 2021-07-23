@@ -23,6 +23,7 @@ import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.nbt.CompoundTag;
@@ -33,6 +34,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -63,14 +65,14 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements IETickab
 	));
 	public FluidTank tank = new FluidTank(12*FluidAttributes.BUCKET_VOLUME, this::isFluidValid);
 
-	public WoodenBarrelTileEntity(BlockEntityType<? extends WoodenBarrelTileEntity> type)
+	public WoodenBarrelTileEntity(BlockEntityType<? extends WoodenBarrelTileEntity> type, BlockPos pos, BlockState state)
 	{
-		super(type);
+		super(type, pos, state);
 	}
 
-	public WoodenBarrelTileEntity()
+	public WoodenBarrelTileEntity(BlockPos pos, BlockState state)
 	{
-		this(IETileTypes.WOODEN_BARREL.get());
+		this(IETileTypes.WOODEN_BARREL.get(), pos, state);
 	}
 
 	private Map<Direction, CapabilityReference<IFluidHandler>> neighbors = ImmutableMap.of(

@@ -10,19 +10,21 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.wooden.WoodenBarrelTileEntity;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
 
 public class MetalBarrelTileEntity extends WoodenBarrelTileEntity
 {
-	public MetalBarrelTileEntity(BlockEntityType<? extends WoodenBarrelTileEntity> type)
+	public MetalBarrelTileEntity(BlockEntityType<? extends WoodenBarrelTileEntity> type, BlockPos pos, BlockState state)
 	{
-		super(type);
+		super(type, pos, state);
 	}
 
-	public MetalBarrelTileEntity()
+	public MetalBarrelTileEntity(BlockPos pos, BlockState state)
 	{
-		this(IETileTypes.METAL_BARREL.get());
+		this(IETileTypes.METAL_BARREL.get(), pos, state);
 	}
 
 	@Override

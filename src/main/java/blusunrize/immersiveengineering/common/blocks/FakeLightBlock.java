@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.blocks;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISpawnInterdiction;
 import blusunrize.immersiveengineering.common.blocks.metal.FloodlightTileEntity;
-import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.SpawnInterdictionHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
@@ -68,7 +67,7 @@ public class FakeLightBlock extends IETileProviderBlock
 	}
 
 	@Override
-	public BlockEntity createTileEntity(@Nonnull BlockState state, @Nonnull BlockGetter world)
+	public BlockEntity newBlockEntity(@Nonnull BlockPos pos, @Nonnull BlockState state)
 	{
 		return new FakeLightTileEntity();
 	}
@@ -83,7 +82,7 @@ public class FakeLightBlock extends IETileProviderBlock
 	{
 		public BlockPos floodlightCoords = null;
 
-		public FakeLightTileEntity()
+		public FakeLightTileEntity(BlockPos pos, BlockState state)
 		{
 			super(IETileTypes.FAKE_LIGHT.get());
 		}

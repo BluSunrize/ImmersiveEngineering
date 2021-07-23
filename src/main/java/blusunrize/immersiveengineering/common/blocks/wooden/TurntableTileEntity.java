@@ -23,6 +23,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.Vec3;
 
@@ -33,9 +34,9 @@ public class TurntableTileEntity extends IEBaseTileEntity implements IStateBased
 	private boolean[] redstone = {false, false, false, false};
 	private static final int[] rotationDirectionIndexMap = {0, 2, 1, 3, 1};
 
-	public TurntableTileEntity()
+	public TurntableTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IETileTypes.TURNTABLE.get());
+		super(IETileTypes.TURNTABLE.get(), pos, state);
 	}
 
 	@Override

@@ -28,6 +28,7 @@ import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.collect.ImmutableList;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Transformation;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Vec3i;
@@ -63,14 +64,14 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 	public int wires = 0;
 	public boolean inverted = false;
 
-	public BreakerSwitchTileEntity()
+	public BreakerSwitchTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IETileTypes.BREAKER_SWITCH.get());
+		this(IETileTypes.BREAKER_SWITCH.get(), pos, state);
 	}
 
-	public BreakerSwitchTileEntity(BlockEntityType<? extends BreakerSwitchTileEntity> type)
+	public BreakerSwitchTileEntity(BlockEntityType<? extends BreakerSwitchTileEntity> type, BlockPos pos, BlockState state)
 	{
-		super(type);
+		super(type, pos, state);
 	}
 
 	@Nullable

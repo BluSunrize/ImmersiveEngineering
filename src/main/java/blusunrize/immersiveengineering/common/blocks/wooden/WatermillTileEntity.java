@@ -18,7 +18,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralM
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
-import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -48,15 +47,15 @@ public class WatermillTileEntity extends IEBaseTileEntity implements IETickableB
 	private boolean beingBroken = false;
 	public double perTick;
 
-	public WatermillTileEntity()
+	public WatermillTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IETileTypes.WATERMILL.get());
+		super(IETileTypes.WATERMILL.get(), pos, state);
 	}
 
 	@Override
 	public boolean canTickAny()
 	{
-		return offset[0] == 0 && offset[1] == 0;
+		return offset[0]==0&&offset[1]==0;
 	}
 
 	@Override

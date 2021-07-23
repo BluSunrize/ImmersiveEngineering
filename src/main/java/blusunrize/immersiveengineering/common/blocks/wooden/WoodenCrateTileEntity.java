@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -38,6 +39,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
@@ -61,9 +63,9 @@ public class WoodenCrateTileEntity extends IEBaseTileEntity implements IIEInvent
 	public String name;
 	private ListTag enchantments;
 
-	public WoodenCrateTileEntity()
+	public WoodenCrateTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IETileTypes.WOODEN_CRATE.get());
+		super(IETileTypes.WOODEN_CRATE.get(), pos, state);
 	}
 
 	@Override

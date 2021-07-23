@@ -8,24 +8,21 @@
 
 package blusunrize.immersiveengineering.common.blocks.cloth;
 
-import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
+import blusunrize.immersiveengineering.common.IETileTypes;
+import blusunrize.immersiveengineering.common.blocks.generic.GenericTileBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Material;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
-public class BalloonBlock extends IETileProviderBlock
+public class BalloonBlock extends GenericTileBlock<BalloonTileEntity>
 {
 	public static final Supplier<Properties> PROPERTIES = () -> Properties.of(Material.WOOL)
 			.sound(SoundType.WOOL)
@@ -35,7 +32,7 @@ public class BalloonBlock extends IETileProviderBlock
 
 	public BalloonBlock(Properties props)
 	{
-		super(props);
+		super(IETileTypes.BALLOON, props);
 		setHasColours();
 		setLightOpacity(0);
 	}
@@ -47,15 +44,8 @@ public class BalloonBlock extends IETileProviderBlock
 		builder.add(BlockStateProperties.WATERLOGGED);
 	}
 
-	@Nullable
 	@Override
-	public BlockEntity createTileEntity(@Nonnull BlockState state, @Nonnull BlockGetter world)
-	{
-		return new BalloonTileEntity();
-	}
-
-	@Override
-	public void fallOn(Level w, BlockPos pos, Entity entity, float fallStrength)
+	public void fallOn(Level w, BlockState state, BlockPos pos, Entity entity, float fallStrength)
 	{
 		entity.fallDistance = 0;
 	}

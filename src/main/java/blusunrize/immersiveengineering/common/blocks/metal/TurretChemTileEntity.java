@@ -16,9 +16,11 @@ import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
 import blusunrize.immersiveengineering.common.gui.IEContainerTypes.TileContainer;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -38,9 +40,9 @@ public class TurretChemTileEntity extends TurretTileEntity<TurretChemTileEntity>
 	public FluidTank tank = new FluidTank(4*FluidAttributes.BUCKET_VOLUME);
 	public boolean ignite = false;
 
-	public TurretChemTileEntity()
+	public TurretChemTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IETileTypes.TURRET_CHEM.get());
+		super(IETileTypes.TURRET_CHEM.get(), pos, state);
 	}
 
 	@Override

@@ -36,17 +36,14 @@ public class SafeChunkUtils
 {
 	private static final Map<LevelAccessor, Set<ChunkPos>> unloadingChunks = new WeakHashMap<>();
 
-	//Based on a version by Ellpeck, but changed to use canTick and slightly extended
 	public static LevelChunk getSafeChunk(LevelAccessor w, BlockPos pos)
 	{
 		ChunkSource provider = w.getChunkSource();
 		ChunkPos chunkPos = new ChunkPos(pos);
 		if(unloadingChunks.getOrDefault(w, ImmutableSet.of()).contains(chunkPos))
 			return null;
-		else if(provider.isTickingChunk(pos))
-			return provider.getChunk(chunkPos.x, chunkPos.z, false);
-		else
-			return null;
+		//TODO does this do what I want?
+		return provider.getChunkNow(chunkPos.x, chunkPos.z);
 	}
 
 	public static boolean isChunkSafe(LevelAccessor w, BlockPos pos)

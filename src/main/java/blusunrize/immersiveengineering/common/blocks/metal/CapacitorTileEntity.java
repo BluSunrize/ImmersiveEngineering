@@ -34,6 +34,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -53,9 +54,9 @@ public class CapacitorTileEntity extends IEBaseTileEntity implements IETickableB
 
 	public int comparatorOutput = 0;
 
-	public CapacitorTileEntity(CapacitorConfig configValues)
+	public CapacitorTileEntity(CapacitorConfig configValues, BlockPos pos, BlockState state)
 	{
-		super(configValues.tileType.get());
+		super(configValues.tileType.get(), pos, state);
 		this.configValues = configValues;
 		for(Direction f : DirectionUtils.VALUES)
 		{

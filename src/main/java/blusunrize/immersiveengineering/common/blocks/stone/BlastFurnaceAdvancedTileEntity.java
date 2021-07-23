@@ -21,6 +21,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -37,9 +38,9 @@ import java.util.function.Function;
 
 public class BlastFurnaceAdvancedTileEntity extends BlastFurnaceTileEntity<BlastFurnaceAdvancedTileEntity>
 {
-	public BlastFurnaceAdvancedTileEntity()
+	public BlastFurnaceAdvancedTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IEMultiblocks.ADVANCED_BLAST_FURNACE, IETileTypes.BLAST_FURNACE_ADVANCED.get());
+		super(IEMultiblocks.ADVANCED_BLAST_FURNACE, IETileTypes.BLAST_FURNACE_ADVANCED.get(), pos, state);
 	}
 
 	private final CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntityAt(this,

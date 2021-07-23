@@ -44,9 +44,9 @@ public class BlastFurnacePreheaterTileEntity extends IEBaseTileEntity implements
 	public float angle = 0;
 	public long lastRenderTick = -1;
 
-	public BlastFurnacePreheaterTileEntity()
+	public BlastFurnacePreheaterTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IETileTypes.BLASTFURNACE_PREHEATER.get());
+		super(IETileTypes.BLASTFURNACE_PREHEATER.get(), pos, state);
 	}
 
 	public int doSpeedup()

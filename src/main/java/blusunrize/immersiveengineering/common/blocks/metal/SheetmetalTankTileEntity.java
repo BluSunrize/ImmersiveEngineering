@@ -29,6 +29,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -69,9 +70,9 @@ public class SheetmetalTankTileEntity extends MultiblockPartTileEntity<Sheetmeta
 	);
 	private final List<CapabilityReference<IFluidHandler>> fluidNeighbors = new ArrayList<>();
 
-	public SheetmetalTankTileEntity()
+	public SheetmetalTankTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IEMultiblocks.SHEETMETAL_TANK, IETileTypes.SHEETMETAL_TANK.get(), true);
+		super(IEMultiblocks.SHEETMETAL_TANK, IETileTypes.SHEETMETAL_TANK.get(), true, pos, state);
 		// Tanks should not output by default
 		this.redstoneControlInverted = true;
 		for(Direction f : DirectionUtils.VALUES)

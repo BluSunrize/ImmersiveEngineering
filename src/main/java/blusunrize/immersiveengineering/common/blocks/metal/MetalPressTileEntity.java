@@ -59,9 +59,9 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 	private static final float STANDARD_PRESS_TIME = 3.75f;
 	private static final float MIN_CYCLE_TIME = 60f; //set >= 2*(STANDARD_PRESS_TIME+STANDARD_TRANSPORT_TIME)
 
-	public MetalPressTileEntity()
+	public MetalPressTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IEMultiblocks.METAL_PRESS, 16000, true, IETileTypes.METAL_PRESS.get());
+		super(IEMultiblocks.METAL_PRESS, 16000, true, IETileTypes.METAL_PRESS.get(), pos, state);
 	}
 
 	public ItemStack mold = ItemStack.EMPTY;

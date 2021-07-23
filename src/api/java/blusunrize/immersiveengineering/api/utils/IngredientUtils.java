@@ -95,9 +95,9 @@ public class IngredientUtils
 					return true;
 			}
 		}
-		for(int i = 0; i < player.inventory.getContainerSize(); i++)
+		for(int i = 0; i < player.getInventory().getContainerSize(); i++)
 		{
-			itemstack = player.inventory.getItem(i);
+			itemstack = player.getInventory().getItem(i);
 			if(ingredient.test(itemstack))
 			{
 				amount -= itemstack.getCount();
@@ -126,16 +126,16 @@ public class IngredientUtils
 					return;
 			}
 		}
-		for(int i = 0; i < player.inventory.getContainerSize(); i++)
+		for(int i = 0; i < player.getInventory().getContainerSize(); i++)
 		{
-			itemstack = player.inventory.getItem(i);
+			itemstack = player.getInventory().getItem(i);
 			if(ingredient.testIgnoringSize(itemstack))
 			{
 				int taken = Math.min(amount, itemstack.getCount());
 				amount -= taken;
 				itemstack.shrink(taken);
 				if(itemstack.getCount() <= 0)
-					player.inventory.setItem(i, ItemStack.EMPTY);
+					player.getInventory().setItem(i, ItemStack.EMPTY);
 				if(amount <= 0)
 					return;
 			}

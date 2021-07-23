@@ -53,14 +53,14 @@ public class TransformerTileEntity extends AbstractTransformerTileEntity impleme
 {
 	public int dummy = 0;
 
-	public TransformerTileEntity()
+	public TransformerTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IETileTypes.TRANSFORMER.get());
+		this(IETileTypes.TRANSFORMER.get(), pos, state);
 	}
 
-	public TransformerTileEntity(BlockEntityType<? extends TransformerTileEntity> type)
+	public TransformerTileEntity(BlockEntityType<? extends TransformerTileEntity> type, BlockPos pos, BlockState state)
 	{
-		super(type);
+		super(type, pos, state);
 	}
 
 	@Override

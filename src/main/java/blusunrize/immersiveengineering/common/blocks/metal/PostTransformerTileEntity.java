@@ -15,9 +15,11 @@ import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import com.google.common.collect.ImmutableList;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.util.Unit;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -28,9 +30,9 @@ import javax.annotation.Nullable;
 
 public class PostTransformerTileEntity extends AbstractTransformerTileEntity implements IBlockBounds
 {
-	public PostTransformerTileEntity()
+	public PostTransformerTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IETileTypes.POST_TRANSFORMER.get());
+		super(IETileTypes.POST_TRANSFORMER.get(), pos, state);
 	}
 
 	@Override

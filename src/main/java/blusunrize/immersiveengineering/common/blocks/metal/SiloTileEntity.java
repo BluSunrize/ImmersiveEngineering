@@ -24,6 +24,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -67,9 +68,9 @@ public class SiloTileEntity extends MultiblockPartTileEntity<SiloTileEntity> imp
 			}
 	);
 
-	public SiloTileEntity()
+	public SiloTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IEMultiblocks.SILO, IETileTypes.SILO.get(), true);
+		super(IEMultiblocks.SILO, IETileTypes.SILO.get(), true, pos, state);
 		// Silos should not output by default
 		this.redstoneControlInverted = true;
 	}

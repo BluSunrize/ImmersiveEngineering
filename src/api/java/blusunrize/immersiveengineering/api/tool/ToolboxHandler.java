@@ -10,11 +10,13 @@ package blusunrize.immersiveengineering.api.tool;
 
 import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.wires.IWireCoil;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.DiggerItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ShearsItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.ArrayList;
@@ -30,7 +32,7 @@ public class ToolboxHandler
 
 	static
 	{
-		tools.add((s) -> (s.getItem() instanceof ITool&&((ITool)s.getItem()).isTool(s)));
+		tools.add((s) -> (s.getItem() instanceof ITool tool&&tool.isTool(s)));
 		tools.add((s) -> (s.getItem() instanceof DiggerItem));
 		tools.add((s) -> (s.getItem() instanceof ShearsItem));
 		foods.add((s) -> (s.getItem().isEdible()));
@@ -39,7 +41,9 @@ public class ToolboxHandler
 				{
 					Block b = Block.byItem(s.getItem());
 					BlockState defaultState = b.defaultBlockState();
-					return b.hasTileEntity(defaultState)&&b.createTileEntity(defaultState, w) instanceof IImmersiveConnectable;
+					if(!(b instanceof EntityBlock eb))
+						return false;
+					return eb.newBlockEntity(BlockPos.ZERO, defaultState) instanceof IImmersiveConnectable;
 				}
 		);
 	}

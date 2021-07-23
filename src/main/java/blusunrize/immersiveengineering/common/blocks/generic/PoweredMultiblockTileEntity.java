@@ -32,6 +32,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -55,9 +56,9 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 	public final FluxStorageAdvanced energyStorage;
 
 	public PoweredMultiblockTileEntity(IETemplateMultiblock multiblockInstance, int energyCapacity, boolean redstoneControl,
-									   BlockEntityType<? extends T> type)
+									   BlockEntityType<? extends T> type, BlockPos pos, BlockState state)
 	{
-		super(multiblockInstance, type, redstoneControl);
+		super(multiblockInstance, type, redstoneControl, pos, state);
 		this.energyStorage = new FluxStorageAdvanced(energyCapacity);
 	}
 

@@ -15,7 +15,7 @@ import blusunrize.immersiveengineering.client.ClientEventHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.fml.network.NetworkEvent.Context;
+import net.minecraftforge.fmllegacy.network.NetworkEvent.Context;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import java.util.ArrayList;

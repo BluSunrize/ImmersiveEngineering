@@ -73,9 +73,12 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	//Absent means no controlling computers
 	public ComputerControlState computerControl = ComputerControlState.NO_COMPUTER;
 
-	protected MultiblockPartTileEntity(IETemplateMultiblock multiblockInstance, BlockEntityType<? extends T> type, boolean hasRSControl)
+	protected MultiblockPartTileEntity(
+			IETemplateMultiblock multiblockInstance, BlockEntityType<? extends T> type, boolean hasRSControl,
+			BlockPos pos, BlockState state
+	)
 	{
-		super(type);
+		super(type, pos, state);
 		this.multiblockInstance = multiblockInstance;
 		this.structureDimensions = Lazy.of(() -> multiblockInstance.getSize(level));
 		this.hasRedstoneControl = hasRSControl;

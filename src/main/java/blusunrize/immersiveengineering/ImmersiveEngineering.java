@@ -56,15 +56,16 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.ModLoadingStage;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.network.NetworkDirection;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraftforge.fmllegacy.network.NetworkDirection;
+import net.minecraftforge.fmllegacy.network.NetworkRegistry;
+import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
+import net.minecraftforge.fmlserverevents.FMLServerStartedEvent;
 import org.apache.logging.log4j.LogManager;
 
 import javax.annotation.Nonnull;
@@ -77,8 +78,8 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import static net.minecraftforge.fml.network.NetworkDirection.PLAY_TO_CLIENT;
-import static net.minecraftforge.fml.network.NetworkDirection.PLAY_TO_SERVER;
+import static net.minecraftforge.fmllegacy.network.NetworkDirection.PLAY_TO_CLIENT;
+import static net.minecraftforge.fmllegacy.network.NetworkDirection.PLAY_TO_SERVER;
 
 @Mod(ImmersiveEngineering.MODID)
 public class ImmersiveEngineering
@@ -117,7 +118,10 @@ public class ImmersiveEngineering
 		IEWorldGen ieWorldGen = new IEWorldGen();
 		MinecraftForge.EVENT_BUS.register(ieWorldGen);
 		IEWorldGen.init();
-		DeferredWorkQueue.runLater(IERecipes::registerRecipeTypes);
+		DeferredWorkQueue queue = DeferredWorkQueue.lookup(Optional.of(ModLoadingStage.CONSTRUCT)).orElseThrow();
+		queue.enqueueWork(
+				ModLoadingContext.get().getActiveContainer().getModInfo(), IERecipes::registerRecipeTypes
+		);
 	}
 
 	public void setup(FMLCommonSetupEvent event)
@@ -258,7 +262,7 @@ public class ImmersiveEngineering
 			ServerLevel world = event.getServer().getLevel(Level.OVERWORLD);
 			if(!world.isClientSide)
 			{
-				IESaveData worldData = world.getDataStorage().computeIfAbsent(IESaveData::new, IESaveData.dataName);
+				IESaveData worldData = world.getDataStorage().computeIfAbsent(IESaveData::new, IESaveData::new, IESaveData.dataName);
 				IESaveData.setInstance(worldData);
 			}
 		}

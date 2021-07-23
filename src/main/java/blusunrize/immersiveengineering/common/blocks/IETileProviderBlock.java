@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.blocks;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile.PlacementLimitation;
+import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
@@ -28,9 +29,12 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.BlockHitResult;
@@ -38,12 +42,12 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
 
-public abstract class IETileProviderBlock extends IEBaseBlock implements IColouredBlock
+public abstract class IETileProviderBlock extends IEBaseBlock implements IColouredBlock, EntityBlock
 {
 	private boolean hasColours = false;
 
@@ -52,10 +56,21 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 		super(blockProps);
 	}
 
+	@Nullable
 	@Override
-	public boolean hasTileEntity(BlockState state)
+	public <T extends BlockEntity>
+	BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type)
 	{
-		return true;
+		//TODO proper implementation
+		BlockEntity tempBE = type.create(BlockPos.ZERO, state);
+		if(tempBE instanceof IETickableBlockEntity)
+		{
+			return (Level world1, BlockPos pos, BlockState state1, T be) -> ((IETickableBlockEntity)be).tick();
+		}
+		else
+		{
+			return null;
+		}
 	}
 
 	@Override
@@ -420,7 +435,7 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 		return true;
 	}
 
-	@Override
+	//TODO missing Forge method? @Override
 	public boolean canConnectRedstone(BlockState state, BlockGetter world, BlockPos pos, Direction side)
 	{
 		BlockEntity te = world.getBlockEntity(pos);

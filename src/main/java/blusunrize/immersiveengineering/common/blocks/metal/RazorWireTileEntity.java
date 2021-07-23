@@ -52,9 +52,9 @@ import java.util.Objects;
 public class RazorWireTileEntity extends ImmersiveConnectableTileEntity implements IStateBasedDirectional, ICollisionBounds,
 		IOBJModelCallback<BlockState>, EnergyConnector, ISelectionBounds
 {
-	public RazorWireTileEntity()
+	public RazorWireTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IETileTypes.RAZOR_WIRE.get());
+		super(IETileTypes.RAZOR_WIRE.get(), pos, state);
 	}
 
 	@Override

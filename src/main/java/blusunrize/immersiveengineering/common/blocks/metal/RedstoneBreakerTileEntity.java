@@ -13,10 +13,12 @@ import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -28,9 +30,9 @@ import javax.annotation.Nullable;
 
 public class RedstoneBreakerTileEntity extends BreakerSwitchTileEntity implements IETickableBlockEntity
 {
-	public RedstoneBreakerTileEntity()
+	public RedstoneBreakerTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IETileTypes.REDSTONE_BREAKER.get());
+		super(IETileTypes.REDSTONE_BREAKER.get(), pos, state);
 	}
 
 	@Override

@@ -55,9 +55,9 @@ import java.util.Set;
 public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWorkbenchTileEntity, MultiblockRecipe>
 		implements IInteractionObjectIE<AutoWorkbenchTileEntity>, IConveyorAttachable, IBlockBounds
 {
-	public AutoWorkbenchTileEntity()
+	public AutoWorkbenchTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IEMultiblocks.AUTO_WORKBENCH, 32000, true, IETileTypes.AUTO_WORKBENCH.get());
+		super(IEMultiblocks.AUTO_WORKBENCH, 32000, true, IETileTypes.AUTO_WORKBENCH.get(), pos, state);
 	}
 
 	public final NonNullList<ItemStack> inventory = NonNullList.withSize(17, ItemStack.EMPTY);

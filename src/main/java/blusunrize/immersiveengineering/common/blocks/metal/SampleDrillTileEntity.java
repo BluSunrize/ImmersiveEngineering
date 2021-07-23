@@ -23,7 +23,6 @@ import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.items.CoresampleItem;
 import blusunrize.immersiveengineering.common.items.CoresampleItem.VeinSampleData;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
-import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -58,9 +57,9 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements IETickabl
 	@Nonnull
 	public ItemStack sample = ItemStack.EMPTY;
 
-	public SampleDrillTileEntity()
+	public SampleDrillTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IETileTypes.SAMPLE_DRILL.get());
+		super(IETileTypes.SAMPLE_DRILL.get(), pos, state);
 	}
 
 	@Override

@@ -49,9 +49,9 @@ public class ConnectorProbeTileEntity extends ConnectorRedstoneTileEntity
 	public DyeColor redstoneChannelSending = DyeColor.WHITE;
 	private int lastOutput = 0;
 
-	public ConnectorProbeTileEntity()
+	public ConnectorProbeTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IETileTypes.CONNECTOR_PROBE.get());
+		super(IETileTypes.CONNECTOR_PROBE.get(), pos, state);
 	}
 
 	@Override

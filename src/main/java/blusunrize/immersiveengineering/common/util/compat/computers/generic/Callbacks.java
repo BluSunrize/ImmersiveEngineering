@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.common.util.compat.computers.generic.owne
 import com.google.common.base.Preconditions;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.fmllegacy.RegistryObject;
 
 import java.util.Collections;
 import java.util.HashMap;

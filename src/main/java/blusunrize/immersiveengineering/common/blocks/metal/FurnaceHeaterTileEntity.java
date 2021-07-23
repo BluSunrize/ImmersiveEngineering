@@ -24,12 +24,14 @@ import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.Vec3;
 
@@ -42,9 +44,9 @@ public class FurnaceHeaterTileEntity extends IEBaseTileEntity implements IETicka
 	public FluxStorage energyStorage = new FluxStorage(32000, Math.max(256,
 			Math.max(IEServerConfig.MACHINES.heater_consumption.get(), IEServerConfig.MACHINES.heater_speedupConsumption.get())));
 
-	public FurnaceHeaterTileEntity()
+	public FurnaceHeaterTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IETileTypes.FURNACE_HEATER.get());
+		super(IETileTypes.FURNACE_HEATER.get(), pos, state);
 	}
 
 	@Override

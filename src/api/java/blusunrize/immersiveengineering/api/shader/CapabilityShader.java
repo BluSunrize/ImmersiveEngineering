@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.api.shader;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.model.data.ModelProperty;
@@ -25,7 +24,6 @@ import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.concurrent.Callable;
 
 /**
  * @author BluSunrize - 09.11.2016
@@ -148,46 +146,15 @@ public class CapabilityShader
 		@Override
 		public void deserializeNBT(CompoundTag nbt)
 		{
-			CompoundTag tags = nbt;
-			setShaderType(new ResourceLocation(tags.getString("IE:ShaderType")));
-			if(!tags.contains("IE:NoShader"))
-				setShaderItem(ItemStack.of(tags));
+			setShaderType(new ResourceLocation(nbt.getString("IE:ShaderType")));
+			if(!nbt.contains("IE:NoShader"))
+				setShaderItem(ItemStack.of(nbt));
 		}
 	}
 
 	public static void register()
 	{
-		CapabilityManager.INSTANCE.register(ShaderWrapper.class, new Capability.IStorage<ShaderWrapper>()
-		{
-			@Override
-			public Tag writeNBT(Capability<ShaderWrapper> capability, ShaderWrapper instance, Direction side)
-			{
-				CompoundTag nbt = new CompoundTag();
-				ItemStack shader = instance.getShaderItem();
-				if(!shader.isEmpty())
-					shader.save(nbt);
-				else
-					nbt.putString("IE:NoShader", "");
-				nbt.putString("IE:ShaderType", instance.getShaderType().toString());
-				return nbt;
-			}
-
-			@Override
-			public void readNBT(Capability<ShaderWrapper> capability, ShaderWrapper instance, Direction side, Tag nbt)
-			{
-				CompoundTag tags = (CompoundTag)nbt;
-				instance.setShaderType(new ResourceLocation(tags.getString("IE:ShaderType")));
-				if(!tags.contains("IE:NoShader"))
-					instance.setShaderItem(ItemStack.of(tags));
-			}
-		}, new Callable<ShaderWrapper>()
-		{
-			@Override
-			public ShaderWrapper call()
-			{
-				return new ShaderWrapper_Direct(new ResourceLocation(""));
-			}
-		});
+		CapabilityManager.INSTANCE.register(ShaderWrapper.class);
 	}
 
 	public static ModelProperty<ShaderWrapper> MODEL_PROPERTY = new ModelProperty<>();

@@ -73,9 +73,9 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 	// this is a temporary counter to keep track of the "same" kind of log inserted. Allows combining them into threes.
 	private int combinedLogs = 0;
 
-	public SawmillTileEntity()
+	public SawmillTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IEMultiblocks.SAWMILL, 32000, true, IETileTypes.SAWMILL.get());
+		super(IEMultiblocks.SAWMILL, 32000, true, IETileTypes.SAWMILL.get(), pos, state);
 	}
 
 	@Override

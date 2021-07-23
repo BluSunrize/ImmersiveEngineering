@@ -32,6 +32,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -68,9 +69,9 @@ public class CokeOvenTileEntity extends MultiblockPartTileEntity<CokeOvenTileEnt
 	public int processMax = 0;
 	public CokeOvenData guiData = new CokeOvenData();
 
-	public CokeOvenTileEntity()
+	public CokeOvenTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IEMultiblocks.COKE_OVEN, IETileTypes.COKE_OVEN.get(), false);
+		super(IEMultiblocks.COKE_OVEN, IETileTypes.COKE_OVEN.get(), false, pos, state);
 	}
 
 	@Override

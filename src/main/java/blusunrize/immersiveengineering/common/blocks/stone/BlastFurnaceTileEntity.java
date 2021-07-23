@@ -17,8 +17,10 @@ import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
 import blusunrize.immersiveengineering.common.gui.IEContainerTypes.TileContainer;
 import blusunrize.immersiveengineering.common.util.CachedRecipe;
 import com.google.common.collect.ImmutableList;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
@@ -29,13 +31,14 @@ public class BlastFurnaceTileEntity<T extends BlastFurnaceTileEntity<T>> extends
 			BlastFurnaceRecipe::findRecipe, () -> inventory.get(0)
 	);
 
-	public BlastFurnaceTileEntity(IETemplateMultiblock mb, BlockEntityType<T> type)
+	public BlastFurnaceTileEntity(IETemplateMultiblock mb, BlockEntityType<T> type, BlockPos pos, BlockState state)
 	{
 		super(
 				mb, type, 1,
 				ImmutableList.of(new InputSlot<>(r -> r.input, 0)),
 				ImmutableList.of(new OutputSlot<>(r -> r.output, 2), new OutputSlot<>(r -> r.slag, 3)),
-				r -> r.time
+				r -> r.time,
+				pos, state
 		);
 	}
 
@@ -67,9 +70,9 @@ public class BlastFurnaceTileEntity<T extends BlastFurnaceTileEntity<T>> extends
 	public static class CrudeBlastFurnaceTileEntity extends BlastFurnaceTileEntity<CrudeBlastFurnaceTileEntity>
 	{
 
-		public CrudeBlastFurnaceTileEntity()
+		public CrudeBlastFurnaceTileEntity(BlockPos pos, BlockState state)
 		{
-			super(IEMultiblocks.BLAST_FURNACE, IETileTypes.BLAST_FURNACE.get());
+			super(IEMultiblocks.BLAST_FURNACE, IETileTypes.BLAST_FURNACE.get(), pos, state);
 		}
 	}
 }

@@ -17,7 +17,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOve
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IScrewdriverInteraction;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
-import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import net.minecraft.core.BlockPos;
@@ -70,9 +69,9 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements IETickabl
 	private final TreeMap<Integer, Queue<BlockPos>> layeredPlacementQueue = new TreeMap<>();
 	private final Queue<BlockPos> tempFluids = new LinkedList<>();
 
-	public FluidPlacerTileEntity()
+	public FluidPlacerTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IETileTypes.FLUID_PLACER.get());
+		super(IETileTypes.FLUID_PLACER.get(), pos, state);
 	}
 
 	@Override

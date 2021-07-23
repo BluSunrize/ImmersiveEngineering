@@ -22,7 +22,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Misc;
 import blusunrize.immersiveengineering.common.blocks.generic.ImmersiveConnectableTileEntity;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
-import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.SpawnInterdictionHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -80,9 +79,9 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 	public ComputerControlState computerControl = ComputerControlState.NO_COMPUTER;
 	public int turnCooldown = 0;
 
-	public FloodlightTileEntity()
+	public FloodlightTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IETileTypes.FLOODLIGHT.get());
+		super(IETileTypes.FLOODLIGHT.get(), pos, state);
 	}
 
 	@Override

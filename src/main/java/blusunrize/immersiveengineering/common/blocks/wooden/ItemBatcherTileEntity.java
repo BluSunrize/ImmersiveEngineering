@@ -24,6 +24,7 @@ import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -32,6 +33,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -54,9 +56,9 @@ public class ItemBatcherTileEntity extends IEBaseTileEntity implements IETickabl
 	public BatchMode batchMode = BatchMode.ALL;
 	public NonNullList<DyeColor> redstoneColors = NonNullList.withSize(NUM_SLOTS, DyeColor.WHITE);
 
-	public ItemBatcherTileEntity()
+	public ItemBatcherTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IETileTypes.ITEM_BATCHER.get());
+		super(IETileTypes.ITEM_BATCHER.get(), pos, state);
 	}
 
 	@Override

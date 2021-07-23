@@ -545,7 +545,7 @@ public class ConveyorHandler
 				{
 					temp = ItemHandlerHelper.insertItem(itemHandler, stack, false);
 					if(temp.isEmpty())
-						entity.remove();
+						entity.discard();
 					else if(temp.getCount() < stack.getCount())
 						entity.setItem(temp);
 				}

@@ -22,7 +22,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
-import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
@@ -54,7 +53,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -72,9 +71,9 @@ public class TeslaCoilTileEntity extends IEBaseTileEntity implements IETickableB
 	public final List<LightningAnimation> effectMap = new ArrayList<>();
 	private static final ElectricSource TC_FIELD = new ElectricSource(-1);
 
-	public TeslaCoilTileEntity()
+	public TeslaCoilTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IETileTypes.TESLACOIL.get());
+		super(IETileTypes.TESLACOIL.get(), pos, state);
 	}
 
 	@Override

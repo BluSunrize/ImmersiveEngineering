@@ -86,7 +86,7 @@ public class ThermoelectricHandler
 
 		public ThermoelectricSource(Tag<Block> tag, int temperature, TemperatureScale scale)
 		{
-			this(b -> b.is(tag), temperature, () -> {
+			this(tag::contains, temperature, () -> {
 				Collection<Block> allMatching = tag.getValues();
 				return allMatching.stream().findAny();
 			}, scale);

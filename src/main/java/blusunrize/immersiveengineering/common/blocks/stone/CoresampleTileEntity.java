@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.common.items.CoresampleItem;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.nbt.CompoundTag;
@@ -31,6 +32,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.MapItem;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.saveddata.maps.MapDecoration;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
@@ -50,9 +52,9 @@ public class CoresampleTileEntity extends IEBaseTileEntity implements IStateBase
 {
 	public ItemStack coresample = ItemStack.EMPTY;
 
-	public CoresampleTileEntity()
+	public CoresampleTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IETileTypes.CORE_SAMPLE.get());
+		super(IETileTypes.CORE_SAMPLE.get(), pos, state);
 	}
 
 	@Override
@@ -117,7 +119,7 @@ public class CoresampleTileEntity extends IEBaseTileEntity implements IStateBase
 		{
 			if(!level.isClientSide)
 			{
-				MapItemSavedData mapData = MapItem.getOrCreateSavedData(heldItem, player.getCommandSenderWorld());
+				MapItemSavedData mapData = MapItem.getSavedData(heldItem, player.getCommandSenderWorld());
 				if(mapData!=null)
 				{
 					if(mapData.dimension!=CoresampleItem.getDimension(coresample))
@@ -126,7 +128,7 @@ public class CoresampleTileEntity extends IEBaseTileEntity implements IStateBase
 						return true;
 					}
 
-					String ident = "ie:coresample_"+coords.toString();
+					String ident = "ie:coresample_"+coords;
 					CompoundTag mapTagCompound = heldItem.getOrCreateTag();
 					ListTag nbttaglist = mapTagCompound.getList("Decorations", 10);
 
@@ -137,7 +139,7 @@ public class CoresampleTileEntity extends IEBaseTileEntity implements IStateBase
 						{
 							nbttaglist.remove(i);
 							mapTagCompound.put("Decorations", nbttaglist);
-							mapData.decorations.remove(ident);
+							//TODO mapData.removeDecoration(ident);
 							return true;
 						}
 					}

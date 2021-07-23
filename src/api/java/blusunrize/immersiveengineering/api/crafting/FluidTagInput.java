@@ -20,7 +20,7 @@ import com.mojang.datafixers.util.Either;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.SerializationTags;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagCollection;
 import net.minecraft.util.GsonHelper;
@@ -129,7 +129,7 @@ public class FluidTagInput implements Predicate<FluidStack>
 	{
 		JsonObject jsonObject = new JsonObject();
 		Tag<Fluid> unnamedTag = this.fluidTag.orThrow();
-		ResourceLocation name = getTagCollection().getIdOrThrow(unnamedTag);
+		ResourceLocation name = getTagCollection().getId(unnamedTag);
 		jsonObject.addProperty("tag", name.toString());
 		jsonObject.addProperty("amount", this.amount);
 		if(this.nbtTag!=null)
@@ -176,7 +176,7 @@ public class FluidTagInput implements Predicate<FluidStack>
 
 	private static TagCollection<Fluid> getTagCollection()
 	{
-		return SerializationTags.getInstance().getFluids();
+		return FluidTags.getAllTags();
 	}
 
 	public boolean extractFrom(IFluidHandler handler, FluidAction action)

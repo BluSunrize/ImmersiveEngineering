@@ -10,11 +10,13 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBas
 import blusunrize.immersiveengineering.common.blocks.generic.ImmersiveConnectableTileEntity;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.Vec3;
 
@@ -34,9 +36,9 @@ public abstract class AbstractTransformerTileEntity extends ImmersiveConnectable
 	protected WireType rightType;
 	protected Set<String> acceptableLowerWires = ImmutableSet.of(WireType.LV_CATEGORY);
 
-	public AbstractTransformerTileEntity(BlockEntityType<? extends ImmersiveConnectableTileEntity> type)
+	public AbstractTransformerTileEntity(BlockEntityType<? extends ImmersiveConnectableTileEntity> type, BlockPos pos, BlockState state)
 	{
-		super(type);
+		super(type, pos, state);
 	}
 
 	protected boolean canAttach(WireType toAttach, @Nullable WireType atConn, @Nullable WireType other)

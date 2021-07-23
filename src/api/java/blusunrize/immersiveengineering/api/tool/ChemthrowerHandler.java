@@ -30,7 +30,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.living.EnderTeleportEvent;
+import net.minecraftforge.event.entity.EntityTeleportEvent;
 import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -227,7 +227,7 @@ public class ChemthrowerHandler
 				double z = target.getZ()-8+ApiUtils.RANDOM.nextInt(17);
 				if(!target.level.getBlockState(new BlockPos(x, y, z)).getMaterial().isSolid())
 				{
-					EnderTeleportEvent event = new EnderTeleportEvent(target, x, y, z, 0);
+					EntityTeleportEvent event = new EntityTeleportEvent.EnderEntity(target, x, y, z);
 					if(MinecraftForge.EVENT_BUS.post(event))
 						return;
 					target.teleportTo(event.getTargetX(), event.getTargetY(), event.getTargetZ());

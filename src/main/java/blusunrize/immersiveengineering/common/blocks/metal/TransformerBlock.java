@@ -12,8 +12,8 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectableBlock;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -49,10 +49,10 @@ public class TransformerBlock extends MiscConnectableBlock<TransformerTileEntity
 
 	@Nullable
 	@Override
-	public BlockEntity createTileEntity(@Nonnull BlockState state, @Nonnull BlockGetter world)
+	public BlockEntity newBlockEntity(@Nonnull BlockPos pos, @Nonnull BlockState state)
 	{
 		TransformerTileEntity te = new TransformerTileEntity();
-		te.dummy = state.getValue(IEProperties.MULTIBLOCKSLAVE)?1: 0;
+		te.dummy = pos.getValue(IEProperties.MULTIBLOCKSLAVE)?1: 0;
 		return te;
 	}
 }

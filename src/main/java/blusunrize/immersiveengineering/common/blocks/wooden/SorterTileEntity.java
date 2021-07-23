@@ -27,6 +27,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
@@ -56,9 +57,9 @@ public class SorterTileEntity extends IEBaseTileEntity implements IInteractionOb
 
 	private EnumMap<Direction, CapabilityReference<IItemHandler>> neighborCaps = new EnumMap<>(Direction.class);
 
-	public SorterTileEntity()
+	public SorterTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IETileTypes.SORTER.get());
+		super(IETileTypes.SORTER.get(), pos, state);
 		filter = new SorterInventory();
 		for(Direction f : DirectionUtils.VALUES)
 			neighborCaps.put(f, CapabilityReference.forNeighbor(this, ITEM_HANDLER_CAPABILITY, f));

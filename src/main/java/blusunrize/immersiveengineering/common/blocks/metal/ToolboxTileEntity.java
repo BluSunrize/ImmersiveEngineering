@@ -20,6 +20,7 @@ import blusunrize.immersiveengineering.common.items.InternalStorageItem;
 import blusunrize.immersiveengineering.common.items.ToolboxItem;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.collect.ImmutableList;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.NonNullList;
@@ -32,6 +33,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.phys.BlockHitResult;
@@ -52,9 +54,9 @@ public class ToolboxTileEntity extends IEBaseTileEntity implements IStateBasedDi
 	public Component name;
 	private ListTag enchantments;
 
-	public ToolboxTileEntity()
+	public ToolboxTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IETileTypes.TOOLBOX.get());
+		super(IETileTypes.TOOLBOX.get(), pos, state);
 	}
 
 	@Override

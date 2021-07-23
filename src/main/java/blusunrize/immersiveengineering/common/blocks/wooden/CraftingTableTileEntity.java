@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
 import blusunrize.immersiveengineering.common.gui.IEContainerTypes.TileContainer;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -26,6 +27,7 @@ import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
@@ -40,9 +42,9 @@ public class CraftingTableTileEntity extends IEBaseTileEntity implements IIEInve
 {
 	private final NonNullList<ItemStack> inventory = NonNullList.withSize(27, ItemStack.EMPTY);
 
-	public CraftingTableTileEntity()
+	public CraftingTableTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IETileTypes.CRAFTING_TABLE.get());
+		super(IETileTypes.CRAFTING_TABLE.get(), pos, state);
 	}
 
 	@Override

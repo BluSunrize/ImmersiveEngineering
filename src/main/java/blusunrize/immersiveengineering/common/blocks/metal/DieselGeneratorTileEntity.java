@@ -30,6 +30,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -62,9 +63,9 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 	public int animation_fanFadeIn = 0;
 	public int animation_fanFadeOut = 0;
 
-	public DieselGeneratorTileEntity()
+	public DieselGeneratorTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IEMultiblocks.DIESEL_GENERATOR, IETileTypes.DIESEL_GENERATOR.get(), true);
+		super(IEMultiblocks.DIESEL_GENERATOR, IETileTypes.DIESEL_GENERATOR.get(), true, pos, state);
 	}
 
 	@Override

@@ -21,6 +21,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
@@ -54,9 +55,9 @@ public class FluidSorterTileEntity extends IEBaseTileEntity implements IInteract
 	private static Set<BlockPos> usedRouters = null;
 	private EnumMap<Direction, CapabilityReference<IFluidHandler>> neighborCaps = new EnumMap<>(Direction.class);
 
-	public FluidSorterTileEntity()
+	public FluidSorterTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IETileTypes.FLUID_SORTER.get());
+		super(IETileTypes.FLUID_SORTER.get(), pos, state);
 		for(Direction f : DirectionUtils.VALUES)
 			neighborCaps.put(f, CapabilityReference.forNeighbor(this, FLUID_HANDLER_CAPABILITY, f));
 	}

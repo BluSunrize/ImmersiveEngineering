@@ -31,6 +31,7 @@ import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -39,7 +40,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -50,9 +51,9 @@ public class BucketWheelTileEntity extends MultiblockPartTileEntity<BucketWheelT
 	public final NonNullList<ItemStack> digStacks = NonNullList.withSize(8, ItemStack.EMPTY);
 	public boolean active = false;
 
-	public BucketWheelTileEntity()
+	public BucketWheelTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IEMultiblocks.BUCKET_WHEEL, IETileTypes.BUCKET_WHEEL.get(), false);
+		super(IEMultiblocks.BUCKET_WHEEL, IETileTypes.BUCKET_WHEEL.get(), false, pos, state);
 	}
 
 	@Override

@@ -60,9 +60,9 @@ public class BalloonTileEntity extends ConnectorStructuralTileEntity implements 
 	public DyeColor colour1 = null;
 	public ShaderWrapper_Direct shader = new ShaderWrapper_Direct(new ResourceLocation(ImmersiveEngineering.MODID, "balloon"));
 
-	public BalloonTileEntity()
+	public BalloonTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IETileTypes.BALLOON.get());
+		super(IETileTypes.BALLOON.get(), pos, state);
 		reInitCapability();
 	}
 

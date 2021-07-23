@@ -74,7 +74,7 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import net.minecraftforge.items.ItemHandlerHelper;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -165,7 +165,8 @@ public class EventHandler
 
 			if(!REMOVE_FROM_TICKING.isEmpty())
 			{
-				event.world.tickableBlockEntities.removeAll(REMOVE_FROM_TICKING);
+				//TODO replace with vanilla system event.world.tickableBlockEntities.removeAll(REMOVE_FROM_TICKING);
+				// (should be near-trivial since you have a blockstate available)
 				REMOVE_FROM_TICKING.removeIf((te) -> te.getLevel()==event.world);
 			}
 			// Explicitly support tasks adding more tasks to be delayed

@@ -15,8 +15,6 @@ import blusunrize.lib.manual.PositionedItemStack;
 import blusunrize.lib.manual.SpecialManualElements;
 import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.ManualScreen;
-import com.mojang.blaze3d.platform.Lighting;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.Button;
@@ -95,9 +93,6 @@ public class ManualElementBlueprint extends SpecialManualElements
 	@Override
 	public void render(PoseStack transform, ManualScreen gui, int x, int y, int mouseX, int mouseY)
 	{
-		RenderSystem.enableRescaleNormal();
-		Lighting.turnBackOn();
-
 		highlighted = ItemStack.EMPTY;
 
 		if(!recipes.isEmpty()&&recipePage >= 0&&recipePage < this.recipes.size())

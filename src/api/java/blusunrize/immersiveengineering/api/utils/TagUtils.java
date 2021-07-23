@@ -32,10 +32,8 @@ public class TagUtils
 
 	static
 	{
-		setTagCollectionGetters(
-				() -> SerializationTags.getInstance().getItems(),
-				() -> SerializationTags.getInstance().getBlocks()
-		);
+		//TODO are these the right ones? Do we still need the complexity?
+		setTagCollectionGetters(ItemTags::getAllTags, BlockTags::getAllTags);
 	}
 
 	public static void setTagCollectionGetters(

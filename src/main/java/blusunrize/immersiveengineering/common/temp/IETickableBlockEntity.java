@@ -9,16 +9,15 @@
 package blusunrize.immersiveengineering.common.temp;
 
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.TickableBlockEntity;
 
-public interface IETickableBlockEntity extends TickableBlockEntity, IEClientTickableBE, IEServerTickableBE, IECommonTickableBE
+public interface IETickableBlockEntity extends IEClientTickableBE, IEServerTickableBE, IECommonTickableBE
 {
-	@Override
-	default void tick() {
-		if (!canTickAny())
+	default void tick()
+	{
+		if(!canTickAny())
 			return;
 		tickCommon();
-		if (((BlockEntity) this).getLevel().isClientSide)
+		if(((BlockEntity)this).getLevel().isClientSide)
 			tickClient();
 		else
 			tickServer();

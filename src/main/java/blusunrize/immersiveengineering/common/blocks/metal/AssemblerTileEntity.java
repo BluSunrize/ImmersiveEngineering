@@ -74,9 +74,9 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 			ComputerControlState.NO_COMPUTER,
 	};
 
-	public AssemblerTileEntity()
+	public AssemblerTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IEMultiblocks.ASSEMBLER, 32000, true, IETileTypes.ASSEMBLER.get());
+		super(IEMultiblocks.ASSEMBLER, 32000, true, IETileTypes.ASSEMBLER.get(), pos, state);
 	}
 
 	public FluidTank[] tanks = {

@@ -41,6 +41,7 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.mojang.math.Transformation;
+import com.mojang.math.Vector3f;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
@@ -77,7 +78,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -123,9 +124,9 @@ public class ClocheTileEntity extends IEBaseTileEntity implements IETickableBloc
 	public float renderGrowth = 0;
 	public boolean renderActive = false;
 
-	public ClocheTileEntity()
+	public ClocheTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IETileTypes.CLOCHE.get());
+		super(IETileTypes.CLOCHE.get(), pos, state);
 	}
 
 	private final CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntityAt(this,
@@ -164,7 +165,7 @@ public class ClocheTileEntity extends IEBaseTileEntity implements IETickableBloc
 				else
 					renderGrowth = 0;
 				if(Utils.RAND.nextInt(8)==0)
-					particles.get().add(new DustParticleOptions(.55f, .1f, .1f, 1), .5, 2.6875, .5, .25, .25, .25, 20);
+					particles.get().add(new DustParticleOptions(new Vector3f(.55f, .1f, .1f), 1), .5, 2.6875, .5, .25, .25, .25, 20);
 			}
 		}
 	}

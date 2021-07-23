@@ -17,7 +17,7 @@ import net.minecraft.world.level.block.BaseRailBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.extensions.IForgeEntityMinecart;
+import net.minecraftforge.common.extensions.IForgeAbstractMinecart;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -43,7 +43,7 @@ public class CapabilityUtils
 		{
 			if(BaseRailBlock.isRail(world, pos))
 			{
-				List<Entity> list = world.getEntities((Entity)null, new AABB(pos), entity -> entity instanceof IForgeEntityMinecart);
+				List<Entity> list = world.getEntities((Entity)null, new AABB(pos), entity -> entity instanceof IForgeAbstractMinecart);
 				if(!list.isEmpty())
 				{
 					LazyOptional<T> cap = list.get(world.random.nextInt(list.size())).getCapability(capability);

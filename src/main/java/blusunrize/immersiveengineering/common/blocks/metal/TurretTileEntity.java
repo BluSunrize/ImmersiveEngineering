@@ -87,9 +87,9 @@ public abstract class TurretTileEntity<T extends TurretTileEntity<T>> extends IE
 
 	private UUID targetId;
 
-	public TurretTileEntity(BlockEntityType<T> type)
+	public TurretTileEntity(BlockEntityType<T> type, BlockPos pos, BlockState state)
 	{
-		super(type);
+		super(type, pos, state);
 	}
 
 	@Override

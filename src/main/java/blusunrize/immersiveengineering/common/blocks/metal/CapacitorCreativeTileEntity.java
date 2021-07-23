@@ -13,14 +13,16 @@ import blusunrize.immersiveengineering.common.config.IEServerConfig.Machines.Cap
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class CapacitorCreativeTileEntity extends CapacitorTileEntity
 {
-	public CapacitorCreativeTileEntity()
+	public CapacitorCreativeTileEntity(BlockPos pos, BlockState state)
 	{
-		super(CapacitorConfig.CREATIVE);
+		super(CapacitorConfig.CREATIVE, pos, state);
 		for(Direction d : DirectionUtils.VALUES)
 			sideConfig.put(d, IOSideConfig.OUTPUT);
 	}

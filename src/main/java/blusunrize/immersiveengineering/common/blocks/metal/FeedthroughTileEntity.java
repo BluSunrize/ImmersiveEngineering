@@ -64,9 +64,9 @@ public class FeedthroughTileEntity extends ImmersiveConnectableTileEntity implem
 	public int offset = 0;
 	public boolean currentlyDisassembling = false;
 
-	public FeedthroughTileEntity()
+	public FeedthroughTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IETileTypes.FEEDTHROUGH.get());
+		super(IETileTypes.FEEDTHROUGH.get(), pos, state);
 	}
 
 	@Override

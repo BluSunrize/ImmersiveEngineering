@@ -23,7 +23,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.FluidPipeTileEntity.DirectionalFluidOutput;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
-import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
@@ -90,9 +89,9 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements IETickableB
 	ArrayList<BlockPos> closedList = new ArrayList<>();
 	ArrayList<BlockPos> checked = new ArrayList<>();
 
-	public FluidPumpTileEntity()
+	public FluidPumpTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IETileTypes.FLUID_PUMP.get());
+		super(IETileTypes.FLUID_PUMP.get(), pos, state);
 	}
 
 	private final Map<Direction, CapabilityReference<IFluidHandler>> neighborFluids = new EnumMap<>(Direction.class);

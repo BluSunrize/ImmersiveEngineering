@@ -28,6 +28,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -49,9 +50,9 @@ public class LightningrodTileEntity extends MultiblockPartTileEntity<Lightningro
 	private List<BlockPos> fenceNet = null;
 	private int height;
 
-	public LightningrodTileEntity()
+	public LightningrodTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IEMultiblocks.LIGHTNING_ROD, IETileTypes.LIGHTNING_ROD.get(), false);
+		super(IEMultiblocks.LIGHTNING_ROD, IETileTypes.LIGHTNING_ROD.get(), false, pos, state);
 	}
 
 	@Override

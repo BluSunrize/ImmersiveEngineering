@@ -53,7 +53,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import org.apache.commons.lang3.tuple.Pair;
@@ -68,9 +68,9 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 	private static final BlockPos wheelCenterOffset = new BlockPos(1, 1, 1);
 	public boolean active = false;
 
-	public ExcavatorTileEntity()
+	public ExcavatorTileEntity(BlockPos pos, BlockState state)
 	{
-		super(IEMultiblocks.EXCAVATOR, 64000, true, IETileTypes.EXCAVATOR.get());
+		super(IEMultiblocks.EXCAVATOR, 64000, true, IETileTypes.EXCAVATOR.get(), pos, state);
 	}
 
 
